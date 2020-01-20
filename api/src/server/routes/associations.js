@@ -1,8 +1,8 @@
 const Router = require('koa-router');
-const queries = require('../db/queries/associations');
+const queries = require('../../db/queries/associations');
 
 const router = new Router();
-const BASE_URL = `/api/v1/associations`;
+const BASE_URL = '/api/v1/associations';
 
 router.get(BASE_URL, async (ctx) => {
   try {

@@ -1,8 +1,8 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 
-const indexRoutes = require('./routes/index');
-const associationRoutes = require('./routes/associations');
+const indexRoutes = require('./server/routes/index');
+const associationRoutes = require('./server/routes/associations');
 
 const app = new Koa();
 const PORT = process.env.PORT || 1337;
