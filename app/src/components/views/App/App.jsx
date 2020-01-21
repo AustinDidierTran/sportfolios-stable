@@ -10,25 +10,25 @@ import Main from '../Main/Main';
 import Login from '../Login/Login';
 import Tabs from '../Tabs/Tabs';
 
-import './App.css';
+import styles from './App.module.css';
 
 export default function App() {
   return (
     <Router>
-      <div className="app">
-        <div className="header">
+      <div className={styles.app}>
+        <div className={styles.header}>
           <Header />
         </div>
-        <div className="tabs">
+        <div className={styles.tabs}>
           <Tabs />
         </div>
-        <div className="main">
+        <div className={styles.main}>
           <Switch>
             <Route exact path="/" component={Main} />
             <Route exact path="/login" component={Login} />
           </Switch>
         </div>
-        <div className="footer"></div>
+        <div className={styles.footer}></div>
       </div>
     </Router>
   );

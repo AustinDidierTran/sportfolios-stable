@@ -1,7 +1,11 @@
 import React from 'react';
 
-import './Header.css';
+import styles from './Header.module.css';
 
 export default function Header() {
-  return <span className="title">Sportfolios</span>;
+  return (
+    <div className={styles.header}>
+      <span className="title">Sportfolios</span>
+    </div>
+  );
 }

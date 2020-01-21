@@ -1,15 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import './Tabs.css';
+import styles from './Tabs.module.css';
 
 export default function Tabs() {
   return (
-    <div className="tabs">
-      <Link to={'/'} className="nav-link">
+    <div className={styles.tabs}>
+      <Link to={'/'} className={styles.navLink}>
         Home
       </Link>
-      <Link to={'/login'} className="nav-link">
+      <Link to={'/login'} className={styles.navLink}>
         Login
       </Link>
     </div>

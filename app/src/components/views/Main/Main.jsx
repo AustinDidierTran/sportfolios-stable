@@ -1,11 +1,11 @@
 import React from 'react';
 
-import './Main.css';
+import styles from './Main.module.css';
 
 export default function Main() {
   return (
-    <div className="main">
-      <h3 className="title">Main</h3>
+    <div className={styles.main}>
+      <h3 className={styles.title}>Main</h3>
     </div>
   );
 }

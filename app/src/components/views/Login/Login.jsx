@@ -1,11 +1,11 @@
 import React from 'react';
 
-import './Login.css';
+import styles from './Login.module.css';
 
-export default function Main() {
+export default function Login() {
   return (
-    <div className="main">
-      <h3 className="title">Login</h3>
+    <div className={styles.main}>
+      <h3 className={styles.title}>Login</h3>
     </div>
   );
 }
