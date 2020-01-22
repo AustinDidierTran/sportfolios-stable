@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 import styles from './Login.module.css';
 
@@ -10,7 +12,6 @@ import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '../../components/TextField/TextField';
-import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -31,16 +32,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Login() {
+export default function Login(props) {
+  const { t } = useTranslation();
   const classes = useStyles();
 
   return (
     <div className={styles.main}>
       <Card className={classes.card}>
         <CardContent>
-          <TextField placeholder="username" fullWidth />
+          <TextField placeholder={t('username')} fullWidth />
           <TextField
-            placeholder="password"
+            placeholder={t('password')}
             type="password"
             fullWidth
           />
@@ -52,16 +54,16 @@ export default function Login() {
             variant="contained"
             className={classes.button}
           >
-            Login
+            {t('login')}
           </Button>
         </CardActions>
         <Divider />
         <CardActions className={classes.linksContainer}>
           <Link>
-            <Typography>Forgot password?</Typography>
+            <Typography>{t('forgot_password')}</Typography>
           </Link>
           <Link>
-            <Typography>Don't have an account? Sign up!</Typography>
+            <Typography>{t('no_account_signup')}</Typography>
           </Link>
         </CardActions>
       </Card>
