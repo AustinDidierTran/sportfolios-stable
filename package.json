@@ -20,6 +20,8 @@
   "author": "Austin-Didier Tran",
   "license": "ISC",
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.8.3",
+    "@babel/runtime": "^7.8.3",
     "babel-eslint": "^10.0.3",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
