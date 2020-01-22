@@ -1,0 +1,13 @@
+.header {
+  background-color: #54b095;
+  color: white;
+  height: 100%;
+}
+
+.title {
+  flex-grow: 1;
+}
+
+.menuButton {
+  margin-right: 16px;
+}
