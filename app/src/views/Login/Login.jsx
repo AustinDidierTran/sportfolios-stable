@@ -16,7 +16,7 @@ import TextField from '../../components/TextField/TextField';
 const useStyles = makeStyles(theme => ({
   card: {
     marginTop: 32,
-    maxWidth: 400,
+    maxWidth: 534,
     marginLeft: 'auto',
     marginRight: 'auto',
   },
@@ -32,9 +32,18 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const BASE_URL = 'https://localhost:1337';
+
 export default function Login(props) {
   const { t } = useTranslation();
   const classes = useStyles();
+
+  const login = async () => {
+    const res = await fetch(`${BASE_URL}/api/v1/login`);
+    const body = await res.json();
+    console.log('res', res);
+    console.log('body', body);
+  };
 
   return (
     <div className={styles.main}>
@@ -59,10 +68,10 @@ export default function Login(props) {
         </CardActions>
         <Divider />
         <CardActions className={classes.linksContainer}>
-          <Link>
+          <Link to={'/forgot_password'}>
             <Typography>{t('forgot_password')}</Typography>
           </Link>
-          <Link>
+          <Link to={'/signup'}>
             <Typography>{t('no_account_signup')}</Typography>
           </Link>
         </CardActions>
