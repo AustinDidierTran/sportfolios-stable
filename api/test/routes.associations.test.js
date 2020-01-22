@@ -5,16 +5,27 @@ const should = chai.should();
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
-const server = require('../src/server/index');
+const server = require('../src/server');
 const knex = require('../src/server/db/connection');
 
-const expectedKeys = ['id', 'name', 'sport', 'memberLimit', 'isDeleted'];
+const expectedKeys = [
+  'id',
+  'name',
+  'sport',
+  'memberLimit',
+  'isDeleted',
+];
 
 describe('routes : associations', () => {
   beforeEach(() => {
-    return knex.migrate.rollback()
-      .then(() => { return knex.migrate.latest(); })
-      .then(() => { return knex.seed.run(); });
+    return knex.migrate
+      .rollback()
+      .then(() => {
+        return knex.migrate.latest();
+      })
+      .then(() => {
+        return knex.seed.run();
+      });
   });
 
   afterEach(() => {
@@ -22,8 +33,9 @@ describe('routes : associations', () => {
   });
 
   describe('GET /api/v1/associations', () => {
-    it('should return all associations', (done) => {
-      chai.request(server)
+    it('should return all associations', done => {
+      chai
+        .request(server)
         .get('/api/v1/associations')
         .end((err, res) => {
           should.not.exist(err);
@@ -31,32 +43,30 @@ describe('routes : associations', () => {
           res.type.should.equal('application/json');
           res.body.status.should.eql('success');
           res.body.data.length.should.eql(3);
-          res.body.data[0].should.include.keys(
-            ...expectedKeys
-          );
+          res.body.data[0].should.include.keys(...expectedKeys);
           done();
         });
     });
   });
 
   describe('GET /api/v1/associations/:id', () => {
-    it('should respond with a single association', (done) => {
-      chai.request(server)
+    it('should respond with a single association', done => {
+      chai
+        .request(server)
         .get('/api/v1/associations/1')
         .end((err, res) => {
           should.not.exist(err);
           res.status.should.equal(200);
           res.type.should.equal('application/json');
           res.body.status.should.eql('success');
-          res.body.data[0].should.include.keys(
-            ...expectedKeys
-          );
+          res.body.data[0].should.include.keys(...expectedKeys);
           done();
         });
     });
 
-    it('should throw an error if the association does not exist', (done) => {
-      chai.request(server)
+    it('should throw an error if the association does not exist', done => {
+      chai
+        .request(server)
         .get('/api/v1/associations/9999999')
         .end((err, res) => {
           should.not.exist(err);
@@ -69,13 +79,13 @@ describe('routes : associations', () => {
     });
   });
 
-
   describe('POST /api/v1/associations', () => {
-    it('should return the association that was added', (done) => {
-      chai.request(server)
+    it('should return the association that was added', done => {
+      chai
+        .request(server)
         .post('/api/v1/associations')
         .send({
-          name: 'Association d\'ultimate d\'Orford',
+          name: "Association d'ultimate d'Orford",
           sport: 'Ultimate Frisbee',
           memberLimit: 8,
           isDeleted: false,
@@ -85,18 +95,17 @@ describe('routes : associations', () => {
           res.status.should.equal(201);
           res.type.should.equal('application/json');
           res.body.status.should.eql('success');
-          res.body.data[0].should.include.keys(
-            ...expectedKeys
-          );
+          res.body.data[0].should.include.keys(...expectedKeys);
           done();
         });
     });
 
-    it('should throw an error if the payload is malformed', (done) => {
-      chai.request(server)
+    it('should throw an error if the payload is malformed', done => {
+      chai
+        .request(server)
         .post('/api/v1/associations')
         .send({
-          name: 'Association d\'ultimate de Orford'
+          name: "Association d'ultimate de Orford",
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -110,36 +119,38 @@ describe('routes : associations', () => {
   });
 
   describe('PUT /api/v1/associations', () => {
-    it('should return the association that was updated', (done) => {
+    it('should return the association that was updated', done => {
       knex('associations')
         .select('*')
-        .then((association) => {
+        .then(association => {
           const associationObject = association[0];
           console.log('associationObject', associationObject);
-          chai.request(server)
+          chai
+            .request(server)
             .put(`/api/v1/associations/${associationObject.id}`)
             .send({
-              memberLimit: 50
+              memberLimit: 50,
             })
             .end((err, res) => {
               should.not.exist(err);
               res.status.should.equal(200);
               res.type.should.equal('application/json');
               res.body.status.should.eql('success');
-              res.body.data[0].should.include.keys(
-                ...expectedKeys
-              );
+              res.body.data[0].should.include.keys(...expectedKeys);
               const newAssociationObject = res.body.data[0];
-              newAssociationObject.memberLimit.should.not.eql(associationObject.memberLimit);
+              newAssociationObject.memberLimit.should.not.eql(
+                associationObject.memberLimit,
+              );
               done();
             });
         });
     });
-    it('should throw an error if the association does not exist', (done) => {
-      chai.request(server)
+    it('should throw an error if the association does not exist', done => {
+      chai
+        .request(server)
         .put('/api/v1/association/9999999')
         .send({
-          rating: 9
+          rating: 9,
         })
         .end((err, res) => {
           should.not.exist(err);
@@ -153,13 +164,14 @@ describe('routes : associations', () => {
   });
 
   describe('DELETE /api/v1/associations/:id', () => {
-    it('should return the association that was deleted', (done) => {
+    it('should return the association that was deleted', done => {
       knex('associations')
         .select('*')
-        .then((associations) => {
+        .then(associations => {
           const associationObject = associations[0];
           const lengthBeforeDelete = associations.length;
-          chai.request(server)
+          chai
+            .request(server)
             .delete(`/api/v1/associations/${associationObject.id}`)
             .end((err, res) => {
               // there should be no errors
@@ -173,20 +185,22 @@ describe('routes : associations', () => {
               res.body.status.should.eql('success');
               // the JSON response body should have a
               // key-value pair of {"data": 1 association object}
-              res.body.data[0].should.include.keys(
-                ...expectedKeys
-              );
+              res.body.data[0].should.include.keys(...expectedKeys);
               // ensure the association was in fact deleted
-              knex('associations').select('*')
-                .then((updatedAssociations) => {
-                  updatedAssociations.length.should.eql(lengthBeforeDelete - 1);
+              knex('associations')
+                .select('*')
+                .then(updatedAssociations => {
+                  updatedAssociations.length.should.eql(
+                    lengthBeforeDelete - 1,
+                  );
                   done();
                 });
             });
         });
     });
-    it('should throw an error if the association does not exist', (done) => {
-      chai.request(server)
+    it('should throw an error if the association does not exist', done => {
+      chai
+        .request(server)
         .delete('/api/v1/associations/9999999')
         .end((err, res) => {
           // there should an error
@@ -200,7 +214,9 @@ describe('routes : associations', () => {
           res.body.status.should.eql('error');
           // the JSON response body should have a
           // key-value pair of {"message": "That association does not exist."}
-          res.body.message.should.eql('That association does not exist.');
+          res.body.message.should.eql(
+            'That association does not exist.',
+          );
           done();
         });
     });

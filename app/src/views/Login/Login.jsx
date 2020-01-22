@@ -32,14 +32,27 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const BASE_URL = 'https://localhost:1337';
+const BASE_URL = 'http://localhost:1337';
 
 export default function Login(props) {
   const { t } = useTranslation();
   const classes = useStyles();
 
   const login = async () => {
-    const res = await fetch(`${BASE_URL}/api/v1/login`);
+    console.log('login');
+
+    const res = await fetch(`${BASE_URL}/api/v1/login`, {
+      method: 'POST',
+      headers: {
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: 'AustinDidierTran',
+        password: 'YEAHHH',
+      }),
+    });
     const body = await res.json();
     console.log('res', res);
     console.log('body', body);
@@ -62,6 +75,7 @@ export default function Login(props) {
             color="primary"
             variant="contained"
             className={classes.button}
+            onClick={login}
           >
             {t('login')}
           </Button>

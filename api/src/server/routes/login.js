@@ -5,12 +5,15 @@ const router = new Router();
 const BASE_URL = '/api/v1/login';
 
 router.post(BASE_URL, async ctx => {
+  console.log('/api/v1/login');
+
   ctx.status = 200;
+  console.log('ctx.request.body', ctx.request.body);
   ctx.body = {
     status: 'success',
-    data: {
+    data: JSON.stringify({
       username: 'AustinDidierTran',
-    },
+    }),
   };
   // try {
   //   const association = await queries.addAssociation(

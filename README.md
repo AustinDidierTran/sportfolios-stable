@@ -1,5 +1,17 @@
 # Todo list
 
+### How to create a migration
+
+1. db-migrate create _migration_name_ --sql-file
+2. Edit up and down migration files
+3. Run it with `db-migrate up [2020....]`. You can also set
+
+REF: https://db-migrate.readthedocs.io/en/latest/Getting%20Started/commands/#up
+
+### Setup hooks
+
+Setup hooks, for example, on user delete, all user_to_team relations should be deleted for this
+
 ### Setup authentication, koa and test
 
 https://mherman.org/blog/building-a-restful-api-with-koa-and-postgres/

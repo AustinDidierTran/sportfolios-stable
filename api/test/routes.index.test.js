@@ -8,10 +8,10 @@ chai.use(chaiHttp);
 const server = require('../src/server/index');
 
 describe('routes : index', () => {
-
   describe('GET /', () => {
-    it('should return json', (done) => {
-      chai.request(server)
+    it('should return json', done => {
+      chai
+        .request(server)
         .get('/')
         .end((err, res) => {
           should.not.exist(err);
@@ -23,5 +23,4 @@ describe('routes : index', () => {
         });
     });
   });
-
 });
