@@ -39,13 +39,9 @@ export default function Login(props) {
   const classes = useStyles();
 
   const login = async () => {
-    console.log('login');
-
     const res = await fetch(`${BASE_URL}/api/v1/login`, {
       method: 'POST',
       headers: {
-        'Access-Control-Allow-Credentials': 'true',
-        'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -54,8 +50,6 @@ export default function Login(props) {
       }),
     });
     const body = await res.json();
-    console.log('res', res);
-    console.log('body', body);
   };
 
   return (

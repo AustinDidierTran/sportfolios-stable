@@ -12,7 +12,7 @@ router.post(BASE_URL, async ctx => {
   ctx.body = {
     status: 'success',
     data: JSON.stringify({
-      username: 'AustinDidierTran',
+      authToken: '5u8gajsdoifj8u598fasdfji',
     }),
   };
   // try {

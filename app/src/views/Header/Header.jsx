@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
@@ -29,6 +30,10 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
+  },
+  titleLink: {
+    color: 'white',
+    textDecoration: 'none',
   },
   search: {
     position: 'relative',
@@ -181,7 +186,10 @@ export default function PrimarySearchAppBar() {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            Sportfolios
+            <Link to={'/'} className={classes.titleLink}>
+              {' '}
+              Sportfolios
+            </Link>
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
