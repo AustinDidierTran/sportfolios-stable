@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
-import styles from './Login.module.css';
+import styles from './Signup.module.css';
 
 import Button from '../../components/Button/Button';
 import Card from '@material-ui/core/Card';
@@ -34,19 +34,19 @@ const useStyles = makeStyles(theme => ({
 
 const BASE_URL = 'http://localhost:1337';
 
-export default function Login(props) {
+export default function Signup(props) {
   const { t } = useTranslation();
   const classes = useStyles();
 
-  const login = async () => {
-    const res = await fetch(`${BASE_URL}/api/v1/login`, {
+  const signup = async () => {
+    const res = await fetch(`${BASE_URL}/api/v1/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: 'idees@austindidier.com',
-        password: 'Salut123',
+        email: 'AustinDidierTran',
+        password: 'YEAHHH',
       }),
     });
     const body = await res.json();
@@ -69,9 +69,9 @@ export default function Login(props) {
             color="primary"
             variant="contained"
             className={classes.button}
-            onClick={login}
+            onClick={signup}
           >
-            {t('login')}
+            {t('signup')}
           </Button>
         </CardActions>
         <Divider />

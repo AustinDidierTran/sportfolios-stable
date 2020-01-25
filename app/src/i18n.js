@@ -10,6 +10,8 @@ i18n.use(LanguageDetector).init({
         no_account_signup: "Don't have an account? Signup!",
         password: 'Password',
         search: 'Search...',
+        signup: 'Signup',
+
         username: 'Username',
       },
     },
@@ -20,6 +22,7 @@ i18n.use(LanguageDetector).init({
         no_account_signup: 'Pas de compte? Inscrivez-vous!',
         password: 'Mot de passe',
         search: 'Rechercher...',
+        signup: "S'enregistrer",
         username: "Nom d'utilisateur",
       },
     },
