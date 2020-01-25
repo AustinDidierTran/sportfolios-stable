@@ -12,7 +12,7 @@ i18n.use(LanguageDetector).init({
         search: 'Search...',
         signup: 'Signup',
 
-        username: 'Username',
+        email: 'Courriel',
       },
     },
     fr: {
@@ -23,7 +23,7 @@ i18n.use(LanguageDetector).init({
         password: 'Mot de passe',
         search: 'Rechercher...',
         signup: "S'enregistrer",
-        username: "Nom d'utilisateur",
+        email: 'Email',
       },
     },
   },

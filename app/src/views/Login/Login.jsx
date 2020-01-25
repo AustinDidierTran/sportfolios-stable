@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useFormInput } from '../../hooks/forms';
 
 import styles from './Login.module.css';
 
@@ -37,6 +38,10 @@ const BASE_URL = 'http://localhost:1337';
 export default function Login(props) {
   const { t } = useTranslation();
   const classes = useStyles();
+  const email = useFormInput('');
+  const password = useFormInput('');
+
+  console.log('email', email);
 
   const login = async () => {
     const res = await fetch(`${BASE_URL}/api/v1/login`, {
@@ -45,8 +50,8 @@ export default function Login(props) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: 'idees@austindidier.com',
-        password: 'Salut123',
+        email: email.value,
+        password: password.value,
       }),
     });
     const body = await res.json();
@@ -56,8 +61,9 @@ export default function Login(props) {
     <div className={styles.main}>
       <Card className={classes.card}>
         <CardContent>
-          <TextField placeholder={t('username')} fullWidth />
+          <TextField {...email} placeholder={t('email')} fullWidth />
           <TextField
+            {...password}
             placeholder={t('password')}
             type="password"
             fullWidth
