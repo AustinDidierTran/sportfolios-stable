@@ -3,4 +3,4 @@ node_modules/
 build/
 npm-debug.log
 .DS_Store
-api/src/db/database.json
+api/src/db/dbconfig.json

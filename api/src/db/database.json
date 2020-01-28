@@ -1,5 +1,0 @@
-{
-  "dev": "postgres://postgres:AustinTranDidier8014@localhost/koa_api",
-  "test": "postgres://postgres:AustinTranDidier8014@localhost/koa_api_test",
-  "other": "postgres://uname:pw@server.com/dbname"
-}
