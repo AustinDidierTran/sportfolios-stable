@@ -5,6 +5,12 @@ const bcrypt = require('bcrypt');
 const router = new Router();
 const BASE_URL = '/api/v1';
 
+router.get(`${BASE_URL}/token/:id`, async ctx => {
+  const association = await queries.getSingleAssociation(
+    ctx.params.id,
+  );
+});
+
 router.post(`${BASE_URL}/signup`, async ctx => {
   try {
     const token = await queries.signup(ctx.request.body);

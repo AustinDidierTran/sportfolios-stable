@@ -1,18 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../hooks/forms';
 
 import styles from './Login.module.css';
 
+import { ACTION_ENUM, Store } from '../../Store';
+import { makeStyles } from '@material-ui/core/styles';
 import Button from '../../components/Button/Button';
 import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '../../components/TextField/TextField';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -35,13 +36,12 @@ const useStyles = makeStyles(theme => ({
 
 const BASE_URL = 'http://localhost:1337';
 
-export default function Login(props) {
+export default function Login() {
+  const { dispatch } = useContext(Store);
   const { t } = useTranslation();
   const classes = useStyles();
   const email = useFormInput('');
   const password = useFormInput('');
-
-  console.log('email', email);
 
   const login = async () => {
     const res = await fetch(`${BASE_URL}/api/v1/login`, {
@@ -54,7 +54,18 @@ export default function Login(props) {
         password: password.value,
       }),
     });
-    const body = await res.json();
+
+    const { data } = await res.json();
+
+    if (data) {
+      const { token } = JSON.parse(data);
+      dispatch({
+        type: ACTION_ENUM.LOGIN,
+        payload: token,
+      });
+    } else {
+      // TODO: 1 - handle login failure
+    }
   };
 
   return (

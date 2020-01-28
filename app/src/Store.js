@@ -2,11 +2,16 @@ import React, { useReducer } from 'react';
 
 export const Store = React.createContext();
 
-const initialState = { authToken: '' };
+const initialState = { authToken: localStorage.getItem('authToken') };
+
+export const ACTION_ENUM = {
+  LOGIN: 'login',
+};
 
 function reducer(state, action) {
   switch (action.type) {
-    case 'LOGIN': {
+    case ACTION_ENUM.LOGIN: {
+      localStorage.setItem('authToken', action.payload);
       return { ...state, authToken: action.payload };
     }
     default:

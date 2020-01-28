@@ -8,8 +8,7 @@ body {
   display: grid;
   grid-template-areas:
     'header header'
-    'main main'
-    'footer footer';
+    'main main';
   grid-template-rows: 64px calc(100vh - 128px) 64px;
   grid-template-columns: 160px calc(100vw - 160px);
 }
