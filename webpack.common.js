@@ -39,15 +39,6 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
   },
-  devtool: 'inline-source-map',
-  devServer: {
-    contentBase: path.resolve(ROOT_PATH, 'app/build'),
-    historyApiFallback: true,
-    hot: true,
-    inline: true,
-    progress: true,
-    port: 3000,
-  },
   plugins: [
     new CleanWebpackPlugin(),
     new webpack.HotModuleReplacementPlugin(),

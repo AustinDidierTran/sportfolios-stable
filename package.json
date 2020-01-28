@@ -7,9 +7,9 @@
   "scripts": {
     "watch": "webpack --watch",
     "webserver": "node api/src/server.js",
-    "dev": "webpack-dev-server --open",
+    "dev": "webpack-dev-server --open --config webpack.dev.js",
     "test": "./node_modules/mocha/bin/_mocha --recursive --exit",
-    "build": "webpack",
+    "build": "webpack --config webpack.prod.js",
     "lint": "eslint . --ext .js --ext .jsx"
   },
   "repository": {
@@ -42,6 +42,7 @@
     "webpack-cli": "^3.3.10",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.10.1",
+    "webpack-merge": "^4.2.2",
     "xml-loader": "^1.2.1"
   },
   "dependencies": {
