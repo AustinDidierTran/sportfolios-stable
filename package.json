@@ -10,7 +10,8 @@
     "dev": "webpack-dev-server --open --config webpack.dev.js",
     "test": "./node_modules/mocha/bin/_mocha --recursive --exit",
     "build": "webpack --config webpack.prod.js",
-    "lint": "eslint . --ext .js --ext .jsx"
+    "lint": "eslint . --ext .js --ext .jsx",
+    "prod": "node ./app/server.js"
   },
   "repository": {
     "type": "git",
