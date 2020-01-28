@@ -79,7 +79,20 @@ module.exports = {
 };
 ```
 
-Where koa_api_test is our test database, koa_api_dev is our development and koa_api is our production api.
+Where koa_api_test is our test database, koa_api_dev is our development and koa_api is our production api. Don't forget to change database, username and password for the right arguments in the connection parameters
+
+You will also need to create a new file at `api/src/db` called `database.json`. Its content will look like this:
+
+```json
+{
+  "dev": "database://username:password@localhost/koa_api",
+  "test": "database://username:password@localhost/koa_api_test",
+  "prod": "database://username:password@localhost/koa_api_test",
+  "other": "postgres://uname:pw@server.com/dbname"
+}
+```
+
+Don't forget to change `database`, `username` and `password` for the right parameters.
 
 You will then need to run migrations. To do so, you will need to install globally the `db-migrate` package.
 
@@ -94,6 +107,15 @@ db-migrate up
 ```
 
 For more info about db-migrate, you can look at the documentation: https://db-migrate.readthedocs.io/en/latest/Getting%20Started/commands/#up
+
+There you go. After this, run in two different terminals the following commands to run in dev:
+
+```sh
+npm run webserver
+npm run dev
+```
+
+There you go, you should have a running API on port 1337 and server on port 3000!
 
 ## FAQ
 
