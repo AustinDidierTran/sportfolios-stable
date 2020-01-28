@@ -1,57 +1,108 @@
-# Todo list
+# Sportfolios
 
-### How to create a migration
+A sport platform looking to generate sport portfolios (Sportfolios) automatically by helping sport associations handle their logistics, schedule and results and gather this data related to players.
 
-1. db-migrate create _migration_name_ --sql-file
-2. Edit up and down migration files
-3. Run it with `db-migrate up [2020....]`. You can also set
+## Project setup
 
-REF: https://db-migrate.readthedocs.io/en/latest/Getting%20Started/commands/#up
+Clone this repository using the url, like in this command.
 
-### Setup hooks
+```sh
+git clone git@github.com:AustinDidierTran/sportfolios-stable.git
+```
 
-Setup hooks, for example, on user delete, all user_to_team relations should be deleted for this
+Once this is done, enter the project and install npm dependencies.
 
-### Setup authentication, koa and test
+```sh
+cd sportfolios-stable
+npm install
+```
 
-https://mherman.org/blog/building-a-restful-api-with-koa-and-postgres/
+Then, you will need to setup your postgresql database. Go to this link to install postgresql:
 
-### Setup webpack
+https://www.postgresql.org/download/
 
-Follow all the steps from this guide: https://webpack.js.org/guides/hot-module-replacement/
+After this, connect postgresql
 
-[x] Getting Started
-[x] Asset management
-[x] Output Management
-[x] Development
-[] Code splitting
-[] Caching
-[] Authoring libraries
-[] Environment variables
-[] Build performance
-[] concent security policies
-[] Development - Vagrant
-[] Dependency Management
-[] Installation
-[] Scaffolding
-[x] Hot module replacement
-[] Tree Shaking
-[] Production
-[] Lazy Loading
-[] Shimming
-[] Typescript
-[] Progresive Web Application
-[] Public Path
-[] Integrations
-[] Asset Modules
-[] Advanced Entry
+```
+psql -U username
+```
 
-### Asset-management
+Where username is the username you set for postgresql.
 
-[] A logical next step from here is minifying and optimizing your images. Check out the image-webpack-loader and url-loader for more on how you can enhance your image loading process. (https://github.com/tcoopman/image-webpack-loader) (https://webpack.js.org/loaders/url-loader/)
+Then, you will need to create 3 databases
 
-# FAQ
+```sql
+CREATE DATABASE koa_api;
+CREATE DATABASE koa_api_dev;
+CREATE DATABASE koa_api_test;
+\q
+```
+
+Once this is done, you will need to create a knexfile.js with your own configuration. It should look like this:
+
+```javascript
+const path = require('path');
+
+const BASE_PATH = path.join(__dirname, 'api', 'src', 'db');
+
+module.exports = {
+  test: {
+    client: 'pg',
+    connection: 'database://username:password@localhost/koa_api_test',
+    migrations: {
+      directory: path.join(BASE_PATH, 'migrations'),
+    },
+    seeds: {
+      directory: path.join(BASE_PATH, 'seeds'),
+    },
+  },
+  development: {
+    client: 'pg',
+    connection: 'database://username:password@localhost/koa_api_dev',
+    migrations: {
+      directory: path.join(BASE_PATH, 'migrations'),
+    },
+    seeds: {
+      directory: path.join(BASE_PATH, 'seeds'),
+    },
+  },
+  development: {
+    client: 'pg',
+    connection: 'database://username:password@localhost/koa_api',
+    migrations: {
+      directory: path.join(BASE_PATH, 'migrations'),
+    },
+    seeds: {
+      directory: path.join(BASE_PATH, 'seeds'),
+    },
+  },
+};
+```
+
+Where koa_api_test is our test database, koa_api_dev is our development and koa_api is our production api.
+
+You will then need to run migrations. To do so, you will need to install globally the `db-migrate` package.
+
+```
+npm install -g db-migrate
+```
+
+You can now run migrations to setup the database
+
+```
+db-migrate up
+```
+
+For more info about db-migrate, you can look at the documentation: https://db-migrate.readthedocs.io/en/latest/Getting%20Started/commands/#up
+
+## FAQ
 
 ### What to do if you can't connect to SSH
 
 1. If it's your first time trying on your machine and on this network, you probably aren't authorized by the security group.
+
+## References
+
+### Webpack setup
+
+Follow all the steps from this guide: https://webpack.js.org/guides/
