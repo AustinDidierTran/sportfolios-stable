@@ -1,5 +1,9 @@
+const path = require('path');
+
 const merge = require('webpack-merge');
 const common = require('./webpack.common');
+
+const ROOT_PATH = path.resolve(__dirname);
 
 module.exports = merge(common, {
   mode: 'development',

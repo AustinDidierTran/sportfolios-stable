@@ -5,3 +5,4 @@ npm-debug.log
 .DS_Store
 api/src/db/dbconfig.json
 api/src/db/database.json
+api/src/server/utils/keys

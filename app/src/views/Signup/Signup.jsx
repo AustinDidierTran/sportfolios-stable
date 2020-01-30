@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useFormInput } from '../../hooks/forms';
+import history from '../../stores/history';
 
 import styles from './Signup.module.css';
 
@@ -34,9 +36,12 @@ const useStyles = makeStyles(theme => ({
 
 const BASE_URL = 'http://localhost:1337';
 
-export default function Signup(props) {
+export default function Signup() {
   const { t } = useTranslation();
   const classes = useStyles();
+
+  const email = useFormInput('');
+  const password = useFormInput('');
 
   const signup = async () => {
     const res = await fetch(`${BASE_URL}/api/v1/signup`, {
@@ -45,19 +50,26 @@ export default function Signup(props) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        email: 'AustinDidierTran',
-        password: 'YEAHHH',
+        email: email.value,
+        password: password.value,
       }),
     });
     const body = await res.json();
+
+    history.push('/confirmation_email_sent');
   };
 
   return (
     <div className={styles.main}>
       <Card className={classes.card}>
         <CardContent>
-          <TextField placeholder={t('username')} fullWidth />
           <TextField
+            {...email}
+            placeholder={t('username')}
+            fullWidth
+          />
+          <TextField
+            {...password}
             placeholder={t('password')}
             type="password"
             fullWidth

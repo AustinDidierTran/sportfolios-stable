@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const queries = require('../../db/queries/login');
+const mail = require('../utils/nodeMailer');
 const bcrypt = require('bcrypt');
 
 const router = new Router();
@@ -10,6 +11,10 @@ router.get(`${BASE_URL}/token/:id`, async ctx => {
     ctx.params.id,
   );
 });
+
+// router.get(`${BASE_URL}/resend_mail`, async ctx => {
+//   await mail.sendMail();
+// });
 
 router.post(`${BASE_URL}/signup`, async ctx => {
   try {
