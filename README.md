@@ -45,14 +45,24 @@ cd sportfolios-stable
 npm install
 ```
 
-Then, you will need to setup your postgresql database. Go to this link to install postgresql:
+To install postgres, you will need homebrew:
 
-https://www.postgresql.org/download/
+```
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
+Then, install postgres:
+
+```
+brew install postgres
+```
+
+When you'll be prompted for a password, decide your own password. Know that it will be written in a config file, so it won't be encrypted on your computer, so don't choose a personal password. It will also be used for all projects locally, so make sure to remember it. Also, keep default port.
 
 After this, connect postgresql
 
 ```
-psql -U username
+psql -U postgres
 ```
 
 Where username is the username you set for postgresql.
