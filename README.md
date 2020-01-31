@@ -25,12 +25,12 @@ Copy your SSH key to your clipboard by running the following command
 pbcopy < ~/.ssh/id_rsa.pub
 ```
 
-Go to your Github Account on https://github.com
-Click on your picture on the top right and access your Settings
-In the Personal Settings, go to SSH and GPG keys
-On the top right, press on New SSH Key
-Give Personal Computer as the title. For the Key, paste your public SSH key
-Your computer now has access to your Git Repository
+- Go to your Github Account on https://github.com
+- Click on your picture on the top right and access your Settings
+- In the Personal Settings, go to SSH and GPG keys
+- On the top right, press on New SSH Key
+- Give Personal Computer as the title. For the Key, paste your public SSH key
+- Your computer now has access to your Git Repository
 
 Clone this repository using the url, like in this command.
 
