@@ -4,6 +4,34 @@ A sport platform looking to generate sport portfolios (Sportfolios) automaticall
 
 ## Project setup
 
+Give your computer access to your Github account with an SSH Key
+
+Verify if you already have an ssh key by running the following command:
+
+```
+cat ~/.ssh/id_rsa.pub
+```
+
+If it says file is not found, then you need to generate your SSH key using the following command
+
+```
+ssh-keygen -t rsa
+```
+
+Press enter until the ssh key is generated
+Copy your SSH key to your clipboard by running the following command
+
+```
+pbcopy < ~/.ssh/id_rsa.pub
+```
+
+Go to your Github Account on https://github.com
+Click on your picture on the top right and access your Settings
+In the Personal Settings, go to SSH and GPG keys
+On the top right, press on New SSH Key
+Give Personal Computer as the title. For the Key, paste your public SSH key
+Your computer now has access to your Git Repository
+
 Clone this repository using the url, like in this command.
 
 ```sh
