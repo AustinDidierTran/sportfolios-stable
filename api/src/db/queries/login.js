@@ -6,9 +6,15 @@ const { sendMail } = require('../../server/utils/nodeMailer');
 const signup = async ({ email, password }) => {
   const salt = await bcrypt.genSalt();
 
+  console.log('salt', salt);
+
   const hashedPassword = await bcrypt.hash(password, salt);
 
+  console.log('hashedPassword', hashedPassword);
+
   const confirmationEmailToken = uuid.v1();
+
+  console.log('confirmationEmailToken', confirmationEmailToken);
 
   const response = await knex('users')
     .insert({
@@ -17,6 +23,8 @@ const signup = async ({ email, password }) => {
       confirmation_email_token: confirmationEmailToken,
     })
     .returning('*');
+
+  console.log('response', response);
 
   // Send confirmation email with link
   await sendMail({

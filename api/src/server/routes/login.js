@@ -17,13 +17,21 @@ router.get(`${BASE_URL}/token/:id`, async ctx => {
 // });
 
 router.post(`${BASE_URL}/signup`, async ctx => {
+  console.log('before try');
+
   try {
+    console.log('inside try');
+
     const token = await queries.signup(ctx.request.body);
+    console.log('after queries');
+
     ctx.body = {
       status: 'success',
       data: JSON.stringify({ token }),
     };
   } catch (err) {
+    console.log('err');
+
     console.error(err.message);
     ctx.status = 400;
     ctx.body = {
