@@ -8,7 +8,11 @@ const signup = async ({ email, password }) => {
 
   const hashedPassword = await bcrypt.hash(password, salt);
 
+  console.log('hashedPassword', hashedPassword);
+
   const confirmationEmailToken = uuid.v1();
+
+  console.log('confirmationEmailToken', confirmationEmailToken);
 
   const response = await knex('users')
     .insert({
@@ -24,6 +28,8 @@ const signup = async ({ email, password }) => {
     subject: 'Confirmation Email',
     text: `There is your confirmation email with your token ${confirmationEmailToken}`,
   });
+
+  console.log('response', response);
 
   return null;
 };
