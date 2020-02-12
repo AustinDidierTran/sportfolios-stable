@@ -30,7 +30,7 @@ router.post(`${BASE_URL}/signup`, async ctx => {
       data: JSON.stringify({ token }),
     };
   } catch (err) {
-    console.log('err');
+    console.log('err', err);
 
     console.error(err.message);
     ctx.status = 400;
