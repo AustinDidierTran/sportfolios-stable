@@ -166,3 +166,12 @@ There you go, you should have a running API on port 1337 and server on port 3000
 ### Webpack setup
 
 Follow all the steps from this guide: https://webpack.js.org/guides/
+
+### How to create SSL certificates
+
+```
+openssl genrsa -out key.pem
+openssl req -new -key key.pem -out csr.pem
+openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
+rm csr.pem
+```
