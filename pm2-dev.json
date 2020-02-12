@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "name": "webclient",
+      "script": "npm run dev"
+    },
+    {
+      "name": "api",
+      "script": "npm run webserver"
+    }
+  ]
+}
