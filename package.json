@@ -6,12 +6,13 @@
   "main": "index.js",
   "scripts": {
     "watch": "webpack --watch",
-    "webserver": "node api/src/server.js",
+    "webserver": "NODE_ENV=production node api/src/server.js",
+    "dev-webserver": "node api/src/server.js",
     "dev": "webpack-dev-server --open --config webpack.dev.js",
     "test": "./node_modules/mocha/bin/_mocha --recursive --exit",
     "build": "webpack --config webpack.prod.js",
     "lint": "eslint . --ext .js --ext .jsx",
-    "prod": "ENV=prod node ./app/server.js"
+    "prod": "NODE_ENV=prod node ./app/server.js"
   },
   "repository": {
     "type": "git",
