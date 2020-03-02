@@ -33,7 +33,10 @@ const login = async ({ email, password }) => {
     .where({ email })
     .returning('*');
 
+  console.log('response', response)
+
   const user = response[0];
+
 
   if (!user) {
     // do something

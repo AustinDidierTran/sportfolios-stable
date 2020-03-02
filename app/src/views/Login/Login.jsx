@@ -43,7 +43,7 @@ export default function Login() {
   const password = useFormInput('');
 
   const login = async () => {
-    const res = await fetch(`${API_BASEURL}/api/v1/login`, {
+    const res = await fetch(`${API_BASEURL}/api/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

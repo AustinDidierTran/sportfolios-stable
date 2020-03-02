@@ -45,7 +45,7 @@ export default function Signup() {
   const password = useFormInput('');
 
   const signup = async () => {
-    const res = await fetch(`${API_BASE_URL}/api/v1/signup`, {
+    const res = await fetch(`${API_BASE_URL}/api/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -3,7 +3,7 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
 
 const associationRoutes = require('./server/routes/associations');
-const loginRoutes = require('./server/routes/login');
+const loginRoutes = require('./server/routes/auth');
 const indexRoutes = require('./server/routes/index');
 
 const app = new Koa();

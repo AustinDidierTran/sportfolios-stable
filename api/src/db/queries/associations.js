@@ -1,33 +1,46 @@
 const knex = require('../connection');
 
-function getAllAssociations() {
-  return knex('associations').select('*');
+function getAllAssociations(includeDeleted) {
+  if (includeDeleted && includeDeleted !== 'false') {
+    return knex('associations')
+      .select(['id', 'name']);
+  } else {
+    return knex('associations')
+      .select(['id', 'name'])
+      .where({ deleted_at: null });
+  }
 }
 
 function getSingleAssociation(id) {
   return knex('associations')
-    .select('*')
-    .where({ id: parseInt(id) });
+    .select(['id', 'name'])
+    .where({ id, deleted_at: null });
 }
 
 function addAssociation(association) {
   return knex('associations')
     .insert(association)
-    .returning('*');
+    .returning(['id', 'name']);
 }
 
 function updateAssociation(id, association) {
   return knex('associations')
     .update(association)
-    .where({ id: parseInt(id) })
-    .returning('*');
+    .where({ id, deleted_at: null })
+    .returning(['id', 'name']);
 }
 
 function deleteAssociation(id) {
   return knex('associations')
-    .del()
-    .where({ id: parseInt(id) })
-    .returning('*');
+    .where('id', id)
+    .del();
+}
+
+function restoreAssociation(id) {
+  return knex('associations')
+    .update({ deleted_at: null })
+    .where({ id })
+    .returning(['id', 'name']);
 }
 
 module.exports = {
@@ -35,5 +48,6 @@ module.exports = {
   deleteAssociation,
   getAllAssociations,
   getSingleAssociation,
+  restoreAssociation,
   updateAssociation,
 };

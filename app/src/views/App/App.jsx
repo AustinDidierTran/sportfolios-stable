@@ -9,10 +9,10 @@ import teal from '@material-ui/core/colors/teal';
 import { Router, Switch, Redirect, Route } from 'react-router-dom';
 
 import Header from '../Header/Header';
-import Main from '../Main/Main';
 import Login from '../Login/Login';
 import Signup from '../Signup/Signup';
 import ConfirmationEmailSent from '../ConfirmationEmailSent/ConfirmationEmailSent';
+import ConfirmEmail from '../ConfirmEmail/ConfirmEmail';
 
 import styles from './App.module.css';
 import history from '../../stores/history';
@@ -33,6 +33,7 @@ export default function App() {
           </div>
           <div className={styles.main}>
             <Switch>
+              <Route path="/confirmEmail/:token" component={ConfirmEmail} />
               <Route exact path="/login" component={Login} />
               <Route
                 exact

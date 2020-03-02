@@ -1,38 +1,17 @@
 const Router = require('koa-router');
-const queries = require('../../db/queries/login');
-const mail = require('../utils/nodeMailer');
-const bcrypt = require('bcrypt');
+const queries = require('../../db/queries/auth');
 
 const router = new Router();
-const BASE_URL = '/api/v1';
-
-router.get(`${BASE_URL}/token/:id`, async ctx => {
-  const association = await queries.getSingleAssociation(
-    ctx.params.id,
-  );
-});
-
-// router.get(`${BASE_URL}/resend_mail`, async ctx => {
-//   await mail.sendMail();
-// });
+const BASE_URL = '/api/auth';
 
 router.post(`${BASE_URL}/signup`, async ctx => {
-  console.log('before try');
-
   try {
-    console.log('inside try');
-
-    const token = await queries.signup(ctx.request.body);
-    console.log('after queries');
+    await queries.signup(ctx.request.body);
 
     ctx.body = {
       status: 'success',
-      data: JSON.stringify({ token }),
     };
   } catch (err) {
-    console.log('err', err);
-
-    console.error(err.message);
     ctx.status = 400;
     ctx.body = {
       status: 'error',
