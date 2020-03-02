@@ -2,13 +2,16 @@ const nodemailer = require('nodemailer');
 const { CLIENT_BASE_URL } = require('../../../../conf');
 const fs = require('fs');
 
-const key =
-  fs.existsSync('./keys/google-keys.json') &&
-  require('./keys/google-keys.json');
+let key;
 
-console.log('key', key);
+try {
+  key = require('./keys/google-keys123.json');
+} catch (e) {
+
+}
 
 const YOUR_EMAIL_ADDRESS = 'info@sportfolios.app';
+
 
 async function sendMail({ sendTo, subject, text }) {
   if (!key) {

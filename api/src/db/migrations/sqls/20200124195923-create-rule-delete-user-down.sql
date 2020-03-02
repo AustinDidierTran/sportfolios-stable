@@ -1,2 +1,2 @@
 /* Replace with your SQL commands */
-DELETE RULE delete_user;
+DROP RULE delete_user ON users;

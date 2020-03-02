@@ -6,8 +6,8 @@
   "main": "index.js",
   "scripts": {
     "watch": "webpack --watch",
-    "webserver": "NODE_ENV=production node api/src/server.js",
-    "dev-webserver": "node api/src/server.js",
+    "prod-webserver": "NODE_ENV=production node api/src/server.js",
+    "webserver": "node api/src/server.js",
     "dev": "webpack-dev-server --open --config webpack.dev.js",
     "test": "./node_modules/mocha/bin/_mocha --recursive --exit",
     "build": "webpack --config webpack.prod.js",

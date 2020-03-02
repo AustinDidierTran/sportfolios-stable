@@ -166,6 +166,7 @@ There you go, you should have a running API on port 1337 and server on port 3000
 ### Webpack setup
 
 Follow all the steps from this guide: https://webpack.js.org/guides/
+https://www.freecodecamp.org/news/production-fullstack-react-express/
 
 ### How to create SSL certificates
 
