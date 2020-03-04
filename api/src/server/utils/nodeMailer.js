@@ -12,7 +12,7 @@ try {
 
 const YOUR_EMAIL_ADDRESS = 'info@sportfolios.app';
 
-
+// Do not export this function. Create your own who uses it, then export this one
 async function sendMail({ sendTo, subject, text }) {
   if (!key) {
     console.log(
@@ -48,11 +48,10 @@ async function sendConfirmationEmail({ sendTo, token }) {
   await sendMail({
     sendTo,
     subject: 'Confirm your email address.',
-    text: `To confirm your email, please click on the following link: ${CLIENT_BASE_URL}/confirmEmail?token=${token}.`,
+    text: `To confirm your email, please click on the following link: ${CLIENT_BASE_URL}/confirmEmail/${token}.`,
   });
 }
 
 module.exports = {
-  sendMail,
   sendConfirmationEmail,
 };

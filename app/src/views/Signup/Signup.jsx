@@ -16,8 +16,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '../../components/TextField/TextField';
 import { API_BASE_URL } from '../../../../conf';
 
-console.log('API_BASEURL', API_BASE_URL);
-
 const useStyles = makeStyles(theme => ({
   card: {
     marginTop: 32,
@@ -45,7 +43,7 @@ export default function Signup() {
   const password = useFormInput('');
 
   const signup = async () => {
-    const res = await fetch(`${API_BASE_URL}/api/signup`, {
+    const res = await fetch(`${API_BASE_URL}/api/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

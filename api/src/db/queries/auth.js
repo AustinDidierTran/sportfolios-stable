@@ -1,7 +1,7 @@
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
-const { sendMail } = require('../../server/utils/nodeMailer');
+const { sendConfirmationEmail } = require('../../server/utils/nodeMailer');
 
 const signup = async ({ email, password }) => {
   const salt = await bcrypt.genSalt();
@@ -10,19 +10,29 @@ const signup = async ({ email, password }) => {
 
   const confirmationEmailToken = uuid.v1();
 
-  await knex('users')
+  const users = await knex('users')
     .insert({
-      email,
       password: hashedPassword,
-      confirmation_email_token: confirmationEmailToken,
     })
-    .returning('*');
+    .returning(['id']);
+
+  const user = users[0];
+
+  await knex('user_email').insert({
+    user_id: user.id,
+    email,
+  })
+
+  await knex('confirmation_email_token').insert({
+    email,
+    token: confirmationEmailToken,
+    expires_at: new Date(Date.now() + 60 * 60 * 1000)
+  });
 
   // Send confirmation email with link
-  await sendMail({
+  await sendConfirmationEmail({
     sendTo: email,
-    subject: 'Confirmation Email',
-    text: `There is your confirmation email with your token ${confirmationEmailToken}`,
+    token: confirmationEmailToken,
   });
 
   return null;
@@ -33,10 +43,7 @@ const login = async ({ email, password }) => {
     .where({ email })
     .returning('*');
 
-  console.log('response', response)
-
   const user = response[0];
-
 
   if (!user) {
     // do something
@@ -60,7 +67,33 @@ const login = async ({ email, password }) => {
   }
 };
 
+const confirmEmail = async ({ token }) => {
+  const response = await knex('confirmation_email_token')
+    .select(['email', 'expires_at'])
+    .where({ token });
+
+  console.log(response);
+  const [{ email, expires_at }] = response;
+
+  if (!email) {
+    // Email not found
+    return 404;
+  }
+
+  if (Date.now() > expires_at) {
+    // Token expired
+    return 403;
+  }
+
+  await knex('user_email')
+    .update('confirmed_email_at', new Date())
+    .where({ email })
+
+  return 200;
+}
+
 module.exports = {
+  confirmEmail,
   login,
   signup,
 };

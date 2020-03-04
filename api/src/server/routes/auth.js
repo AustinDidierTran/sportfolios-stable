@@ -40,13 +40,38 @@ router.post(`${BASE_URL}/login`, async ctx => {
       };
     }
   } catch (err) {
-    console.error(err.message);
-    ctx.status = 401;
+    ctx.status = 400;
     ctx.body = {
       status: 'error',
       message: err.message || 'Sorry, an error has occured',
     };
   }
 });
+
+// Confirm email
+router.post(`${BASE_URL}/confirmEmail`, async ctx => {
+  console.log('heyyy')
+  console.log(ctx.request.body);
+  try {
+    queries.confirmEmail(ctx.request.body);
+
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success'
+    }
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+})
+
+// Resend confirmation email
+
+// Send forgotten password email
+
+// Reset password
 
 module.exports = router;
