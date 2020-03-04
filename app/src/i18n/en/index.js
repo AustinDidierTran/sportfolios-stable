@@ -9,6 +9,13 @@ export default {
         signup: 'Signup',
         email: 'Email',
         first_name: 'First Name',
-        last_name: 'Last Name'
+        last_name: 'Last Name',
+        // Validation
+        invalid_email: 'Invalid email address.',
+        password_length: 'Password must be within 8 and 16 characters long.',
+        value_is_required: 'Value is required.',
+        email_not_confirmed: 'Email has not been confirmed. Please look at your emails.',
+        email_password_no_match: 'Email and password do not match. Please try again.'
+
     },
 };

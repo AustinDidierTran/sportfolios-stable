@@ -22,15 +22,15 @@ export default function Login() {
   const validate = values => {
     const errors = {};
     if (!values.email) {
-      errors.email = 'Value is required';
+      errors.email = t('value_is_required');
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-      errors.email = 'Invalid email address';
+      errors.email = t('invalid_email');
     }
 
     if (!values.password) {
-      errors.password = 'Value is required';
+      errors.password = t('value_is_required');
     } else if (values.password.length < 8 || values.password.length > 16) {
-      errors.password = 'Password must be within 8 to 16 characters long';
+      errors.password = t('password_length');
     }
     return errors;
   }
@@ -38,7 +38,7 @@ export default function Login() {
   const formik = useFormik({
     initialValues: {
       email: '',
-      password: ''
+      password: '',
     },
     validate,
     validateOnChange: false,
@@ -58,12 +58,12 @@ export default function Login() {
 
       if (res.status === 401) {
         // Email is not validated
-        formik.setFieldError('email', 'Email has not been confirmed. Please look at your emails.');
+        formik.setFieldError('email', t('email_not_confirmed'));
       }
 
       if (res.status === 403) {
         // Password is not good
-        formik.setFieldError('password', 'Email and password do not match. Please try again.');
+        formik.setFieldError('password', t('email_password_no_match'));
       }
 
       const { data } = await res.json();
@@ -74,8 +74,6 @@ export default function Login() {
           type: ACTION_ENUM.LOGIN,
           payload: token,
         });
-      } else {
-        // TODO: 1 - handle login failure
       }
     }
   })
