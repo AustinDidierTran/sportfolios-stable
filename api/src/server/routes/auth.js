@@ -31,13 +31,12 @@ router.post(`${BASE_URL}/signup`, async ctx => {
 
 router.post(`${BASE_URL}/login`, async ctx => {
   try {
-    const token = await queries.login(ctx.request.body);
+    const { status, token } = await queries.login(ctx.request.body);
 
     if (!token) {
-      ctx.status = 401;
+      ctx.status = status;
       ctx.body = {
         status: 'error',
-        message: 'Login failed',
       };
     } else {
       ctx.status = 200;

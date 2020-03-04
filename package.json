@@ -63,6 +63,7 @@
     "db-migrate": "^0.11.6",
     "db-migrate-pg": "^1.0.0",
     "extract-text-webpack-plugin": "^3.0.2",
+    "formik": "^2.1.4",
     "i18next": "^19.0.3",
     "i18next-browser-languagedetector": "^4.0.1",
     "knex": "^0.20.8",

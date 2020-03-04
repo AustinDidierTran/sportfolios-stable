@@ -96,7 +96,7 @@ const login = async ({ email, password }) => {
 
   if (!emailIsConfirmed) {
     // TODO: do something
-    return null;
+    return { status: 401 };
   }
 
   const user_id = await getUserIdFromEmail(email);
@@ -104,7 +104,7 @@ const login = async ({ email, password }) => {
   const hashedPassword = await getHashedPasswordFromId(user_id);
   if (!hashedPassword) {
     // TODO: do something
-    return null;
+    return { status: 402 };
   }
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
@@ -118,9 +118,9 @@ const login = async ({ email, password }) => {
       expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
-    return token;
+    return { status: 200, token };
   } else {
-    return null;
+    return { status: 403 };
   }
 };
 

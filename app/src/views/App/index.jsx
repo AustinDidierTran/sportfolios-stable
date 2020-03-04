@@ -8,11 +8,12 @@ import teal from '@material-ui/core/colors/teal';
 
 import { Router, Switch, Redirect, Route } from 'react-router-dom';
 
-import Header from '../Header/Header';
-import Login from '../Login/Login';
-import Signup from '../Signup/Signup';
-import ConfirmationEmailSent from '../ConfirmationEmailSent/ConfirmationEmailSent';
-import ConfirmEmail from '../ConfirmEmail/ConfirmEmail';
+import Header from '../Header';
+import Login from '../Login';
+import Main from '../Main';
+import Signup from '../Signup';
+import ConfirmationEmailSent from '../ConfirmationEmailSent';
+import ConfirmEmail from '../ConfirmEmail';
 import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
 import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
 
@@ -48,7 +49,7 @@ export default function App() {
               <Route
                 exact
                 path="/"
-                render={() => <Redirect to="/login" />}
+                component={Main}
               />
             </Switch>
           </div>
