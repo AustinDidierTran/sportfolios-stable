@@ -14,7 +14,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 import TextField from '../../components/TextField/TextField';
 import Typography from '@material-ui/core/Typography';
-import { API_BASEURL } from '../../../../conf';
+import { API_BASE_URL } from '../../../../conf';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -43,7 +43,7 @@ export default function Login() {
   const password = useFormInput('');
 
   const login = async () => {
-    const res = await fetch(`${API_BASEURL}/api/login`, {
+    const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

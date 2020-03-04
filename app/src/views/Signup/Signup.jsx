@@ -39,6 +39,8 @@ export default function Signup() {
   const { t } = useTranslation();
   const classes = useStyles();
 
+  const firstName = useFormInput('');
+  const lastName = useFormInput('');
   const email = useFormInput('');
   const password = useFormInput('');
 
@@ -49,6 +51,8 @@ export default function Signup() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        firstName: firstName.value,
+        lastName: lastName.value,
         email: email.value,
         password: password.value,
       }),
@@ -63,8 +67,18 @@ export default function Signup() {
       <Card className={classes.card}>
         <CardContent>
           <TextField
+            {...firstName}
+            placeholder={t('first_name')}
+            fullWidth
+          />
+          <TextField
+            {...lastName}
+            placeholder={t('last_name')}
+            fullWidth
+          />
+          <TextField
             {...email}
-            placeholder={t('username')}
+            placeholder={t('email')}
             fullWidth
           />
           <TextField
@@ -87,11 +101,8 @@ export default function Signup() {
         </CardActions>
         <Divider />
         <CardActions className={classes.linksContainer}>
-          <Link to={'/forgot_password'}>
-            <Typography>{t('forgot_password')}</Typography>
-          </Link>
-          <Link to={'/signup'}>
-            <Typography>{t('no_account_signup')}</Typography>
+          <Link to={'/login'}>
+            <Typography>{t('have_an_account_signin')}</Typography>
           </Link>
         </CardActions>
       </Card>

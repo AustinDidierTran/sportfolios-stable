@@ -6,11 +6,20 @@ const BASE_URL = '/api/auth';
 
 router.post(`${BASE_URL}/signup`, async ctx => {
   try {
-    await queries.signup(ctx.request.body);
+    const res = await queries.signup(ctx.request.body);
 
-    ctx.body = {
-      status: 'success',
-    };
+    if (res.code === 403) {
+      ctx.status = 403;
+      ctx.body = {
+        status: 'error',
+        message: 'Email is already in use.'
+      }
+    } else {
+      ctx.body = {
+        status: 'success',
+      };
+    }
+
   } catch (err) {
     ctx.status = 400;
     ctx.body = {
@@ -50,8 +59,6 @@ router.post(`${BASE_URL}/login`, async ctx => {
 
 // Confirm email
 router.post(`${BASE_URL}/confirmEmail`, async ctx => {
-  console.log('heyyy')
-  console.log(ctx.request.body);
   try {
     queries.confirmEmail(ctx.request.body);
 

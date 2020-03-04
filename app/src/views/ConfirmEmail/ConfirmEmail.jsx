@@ -21,10 +21,10 @@ export default function ConfirmEmail(props) {
 
     if (res.status < 300) {
       // Success!
-      history.push('');
+      history.push('/confirmEmailSuccess');
     } else {
       // Failure...
-      history.push('');
+      history.push('/confirmEmailFailure');
     }
   }
 

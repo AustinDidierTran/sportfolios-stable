@@ -13,6 +13,8 @@ import Login from '../Login/Login';
 import Signup from '../Signup/Signup';
 import ConfirmationEmailSent from '../ConfirmationEmailSent/ConfirmationEmailSent';
 import ConfirmEmail from '../ConfirmEmail/ConfirmEmail';
+import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
+import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
 
 import styles from './App.module.css';
 import history from '../../stores/history';
@@ -34,6 +36,8 @@ export default function App() {
           <div className={styles.main}>
             <Switch>
               <Route path="/confirmEmail/:token" component={ConfirmEmail} />
+              <Route path="/ConfirmEmailFailure" component={ConfirmEmailFailure} />
+              <Route path="/confirmEmailSuccess" component={ConfirmEmailSuccess} />
               <Route exact path="/login" component={Login} />
               <Route
                 exact
