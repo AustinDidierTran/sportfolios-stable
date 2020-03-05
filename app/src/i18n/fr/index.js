@@ -15,7 +15,7 @@ export default {
         invalid_email: 'Courriel invalid.',
         password_length: 'Votre mot de passe doit contenir entre 8 et 16 caractères',
         value_is_required: 'Une valeur est obligatoire.',
-        email_not_confirmed: 'Adresse courriel non confirmé. Svp, regardez vos courriels.',
+        email_not_confirmed: 'Adresse courriel non confirmé. Un nouveau courriel de confirmation a été envoyé. Svp, regardez vos courriels.',
         email_not_found: 'Il n\'existe pas de compte avec ce courriel',
         email_password_no_match: 'Erreur du courriel ou du mot de passe. Svp, réessayez.',
         token_expired: 'Le token n\'est plus valide, svp en demander un autre.'

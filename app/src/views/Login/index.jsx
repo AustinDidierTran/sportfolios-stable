@@ -58,6 +58,15 @@ export default function Login() {
 
       if (res.status === 401) {
         // Email is not validated
+        await fetch(`${API_BASE_URL}/api/auth/sendConfirmationEmail`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+          }),
+        });
         formik.setFieldError('email', t('email_not_confirmed'));
       }
 
@@ -117,15 +126,9 @@ export default function Login() {
           </CardActions>
           <Divider />
           <CardActions className={styles.linksContainer}>
-
-            <Link to={'/newConfirmationEmail'}>
-              <Typography>{t('send_new_confirmation_email')}</Typography>
-            </Link>
             <Link to={'/forgot_password'}>
               <Typography>{t('forgot_password')}</Typography>
             </Link>
-
-
             <Link to={'/signup'}>
               <Typography>{t('no_account_signup')}</Typography>
             </Link>

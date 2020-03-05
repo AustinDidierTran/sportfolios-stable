@@ -17,7 +17,6 @@ import ConfirmEmail from '../ConfirmEmail';
 import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
 import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
 import ForgotPassword from '../ForgotPassword';
-import NewConfirmationEmail from '../NewConfirmationEmail';
 import PasswordRecovery from '../PasswordRecovery';
 
 import styles from './App.module.css';
@@ -44,7 +43,6 @@ export default function App() {
               <Route path="/confirmEmailSuccess" component={ConfirmEmailSuccess} />
               <Route path="/forgot_password" component={ForgotPassword} />
               <Route path="/recoveryEmail/:token" component={PasswordRecovery} />
-              <Route path="/newConfirmationEmail" component={NewConfirmationEmail} />
               <Route exact path="/login" component={Login} />
               <Route
                 exact
