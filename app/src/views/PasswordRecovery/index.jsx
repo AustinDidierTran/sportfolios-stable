@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
-import styles from './Login.module.css';
+import styles from './PasswordRecovery.module.css';
 
 import { ACTION_ENUM, Store } from '../../Store';
 import Button from '../../components/Button/Button';
@@ -15,18 +15,13 @@ import TextField from '../../components/TextField/TextField';
 import Typography from '@material-ui/core/Typography';
 import { API_BASE_URL } from '../../../../conf';
 
-export default function Login() {
-  const { dispatch } = useContext(Store);
+export default function Login(props) {
+  const { match: { params: { token } } } = props;
+
   const { t } = useTranslation();
 
   const validate = values => {
     const errors = {};
-    if (!values.email) {
-      errors.email = t('value_is_required');
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-      errors.email = t('invalid_email');
-    }
-
     if (!values.password) {
       errors.password = t('value_is_required');
     } else if (values.password.length < 8 || values.password.length > 16) {
@@ -44,37 +39,24 @@ export default function Login() {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
-      const { email, password } = values;
-      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      console.log('submit')
+      const { password } = values;
+      const res = await fetch(`${API_BASE_URL}/api/auth/recoverPassword`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email,
+          token,
           password,
         }),
       });
 
-      if (res.status === 401) {
-        // Email is not validated
-        formik.setFieldError('email', t('email_not_confirmed'));
-      }
-
       if (res.status === 403) {
-        // Password is not good
-        formik.setFieldError('password', t('email_password_no_match'));
+        // Token expired
+        formik.setFieldError('password', t('token_expired'));
       }
 
-      const { data } = await res.json();
-
-      if (data) {
-        const { token } = JSON.parse(data);
-        dispatch({
-          type: ACTION_ENUM.LOGIN,
-          payload: token,
-        });
-      }
     }
   })
 
@@ -83,16 +65,6 @@ export default function Login() {
       <Card className={styles.card}>
         <form onSubmit={formik.handleSubmit}>
           <CardContent>
-            <TextField
-              id="email"
-              name="email"
-              type="email"
-              placeholder={t('email')}
-              onChange={formik.handleChange}
-              fullWidth
-              error={formik.errors.email}
-              helperText={formik.errors.email}
-            />
             <TextField
               id="password"
               name="password"
@@ -117,15 +89,9 @@ export default function Login() {
           </CardActions>
           <Divider />
           <CardActions className={styles.linksContainer}>
-
-            <Link to={'/newConfirmationEmail'}>
-              <Typography>{t('send_new_confirmation_email')}</Typography>
-            </Link>
             <Link to={'/forgot_password'}>
               <Typography>{t('forgot_password')}</Typography>
             </Link>
-
-
             <Link to={'/signup'}>
               <Typography>{t('no_account_signup')}</Typography>
             </Link>

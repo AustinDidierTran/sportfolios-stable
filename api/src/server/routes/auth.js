@@ -15,6 +15,7 @@ router.post(`${BASE_URL}/signup`, async ctx => {
         message: 'Email is already in use.'
       }
     } else {
+      ctx.status = 200;
       ctx.body = {
         status: 'success',
       };
@@ -59,11 +60,18 @@ router.post(`${BASE_URL}/login`, async ctx => {
 // Confirm email
 router.post(`${BASE_URL}/confirmEmail`, async ctx => {
   try {
-    queries.confirmEmail(ctx.request.body);
+    const code = await queries.confirmEmail(ctx.request.body);
 
-    ctx.status = 200;
-    ctx.body = {
-      status: 'success'
+    if (code === 200) {
+      ctx.status = 200;
+      ctx.body = {
+        status: 'success',
+      }
+    } else {
+      ctx.status = code;
+      ctx.body = {
+        status: 'error',
+      }
     }
   } catch (err) {
     ctx.status = 400;
@@ -75,9 +83,100 @@ router.post(`${BASE_URL}/confirmEmail`, async ctx => {
 })
 
 // Resend confirmation email
+router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
+  try {
+    const code = await queries.sendConfirmationEmail(ctx.request.body);
 
-// Send forgotten password email
+    console.log(code);
+
+    if (code === 200) {
+      ctx.status = 200;
+      ctx.body = {
+        status: 'success',
+      }
+    } else if (code === 404) {
+      ctx.status = 404;
+      ctx.body = {
+        status: 'error',
+        message: 'Email is not found'
+      }
+    } else {
+      ctx.status = code;
+      ctx.body = {
+        status: 'error',
+      }
+    }
+  }
+  catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+})
+
+
+// Send password recovery email
+router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
+  try {
+    const code = await queries.recoveryEmail(ctx.request.body);
+
+    if (code === 200) {
+      ctx.status = 200;
+      ctx.body = {
+        status: 'success',
+      }
+    } else if (code === 404) {
+      ctx.status = 404;
+      ctx.body = {
+        status: 'error',
+        message: 'Email is not found'
+      }
+    } else {
+      ctx.status = code;
+      ctx.body = {
+        status: 'error',
+      }
+    }
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+})
 
 // Reset password
+router.post(`${BASE_URL}/recoverPassword`, async ctx => {
+  try {
+    const code = await queries.recoverPassword(ctx.request.body);
+
+    if (code === 200) {
+      ctx.status = 200;
+      ctx.body = {
+        status: 'success',
+      }
+    } else if (code === 403) {
+      ctx.status = 403;
+      ctx.body = {
+        status: 'error',
+        message: 'Token is invalid'
+      }
+    } else {
+      ctx.status = code;
+      ctx.body = {
+        status: 'error',
+      }
+    }
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+})
 
 module.exports = router;

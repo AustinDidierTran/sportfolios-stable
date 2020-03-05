@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
-import styles from './Login.module.css';
+import styles from './NewConfirmationEmail.module.css';
 
-import { ACTION_ENUM, Store } from '../../Store';
+import history from '../../stores/history';
+
 import Button from '../../components/Button/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -15,8 +16,9 @@ import TextField from '../../components/TextField/TextField';
 import Typography from '@material-ui/core/Typography';
 import { API_BASE_URL } from '../../../../conf';
 
-export default function Login() {
-  const { dispatch } = useContext(Store);
+export default function Login(props) {
+  const { match: { params: { token } } } = props;
+
   const { t } = useTranslation();
 
   const validate = values => {
@@ -27,11 +29,6 @@ export default function Login() {
       errors.email = t('invalid_email');
     }
 
-    if (!values.password) {
-      errors.password = t('value_is_required');
-    } else if (values.password.length < 8 || values.password.length > 16) {
-      errors.password = t('password_length');
-    }
     return errors;
   }
 
@@ -44,36 +41,24 @@ export default function Login() {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
-      const { email, password } = values;
-      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      const { email } = values;
+      const res = await fetch(`${API_BASE_URL}/api/auth/sendConfirmationEmail`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email,
-          password,
         }),
       });
 
-      if (res.status === 401) {
-        // Email is not validated
-        formik.setFieldError('email', t('email_not_confirmed'));
+      if (res.status === 404) {
+        // Account does not exist
+        formik.setFieldError('email', t('email_not_found'));
       }
 
-      if (res.status === 403) {
-        // Password is not good
-        formik.setFieldError('password', t('email_password_no_match'));
-      }
-
-      const { data } = await res.json();
-
-      if (data) {
-        const { token } = JSON.parse(data);
-        dispatch({
-          type: ACTION_ENUM.LOGIN,
-          payload: token,
-        });
+      if (res.status < 300) {
+        history.push('/confirmation_email_sent');
       }
     }
   })
@@ -86,22 +71,12 @@ export default function Login() {
             <TextField
               id="email"
               name="email"
-              type="email"
               placeholder={t('email')}
+              type="email"
               onChange={formik.handleChange}
               fullWidth
               error={formik.errors.email}
               helperText={formik.errors.email}
-            />
-            <TextField
-              id="password"
-              name="password"
-              placeholder={t('password')}
-              type="password"
-              onChange={formik.handleChange}
-              fullWidth
-              error={formik.errors.password}
-              helperText={formik.errors.password}
             />
           </CardContent>
           <CardActions>
@@ -112,20 +87,14 @@ export default function Login() {
               className={styles.button}
               type="submit"
             >
-              {t('login')}
+              {t('send_new_confirmation_email')}
             </Button>
           </CardActions>
           <Divider />
           <CardActions className={styles.linksContainer}>
-
-            <Link to={'/newConfirmationEmail'}>
-              <Typography>{t('send_new_confirmation_email')}</Typography>
-            </Link>
             <Link to={'/forgot_password'}>
               <Typography>{t('forgot_password')}</Typography>
             </Link>
-
-
             <Link to={'/signup'}>
               <Typography>{t('no_account_signup')}</Typography>
             </Link>

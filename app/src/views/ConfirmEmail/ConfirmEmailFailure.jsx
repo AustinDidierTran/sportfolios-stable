@@ -9,7 +9,7 @@ export default function ConfirmEmail(props) {
     <div className={styles.main}>
       <Container>
         <p>
-          Email confirmation failed, please contact an administrator.
+          Email confirmation failed, please contact an administrator. <Link to="/newConfirmationEmail">Click here to send a new confirmation email.</Link>
         </p>
       </Container>
     </div>

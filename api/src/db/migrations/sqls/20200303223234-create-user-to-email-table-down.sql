@@ -11,7 +11,7 @@ UPDATE users
     FROM user_email
     WHERE users.id = user_email.user_id;
 
--- ALTER TABLE users
---     ALTER COLUMN email SET NOT NULL;
+ALTER TABLE users
+    ALTER COLUMN email SET NOT NULL;
 
 DROP TABLE user_email;

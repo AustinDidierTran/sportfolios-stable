@@ -1,7 +1,7 @@
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
-const { sendConfirmationEmail } = require('../../server/utils/nodeMailer');
+const { sendConfirmationEmail, sendRecoveryEmail } = require('../../server/utils/nodeMailer');
 
 const validateEmailIsUnique = async (email) => {
   const users = await knex('user_email')
@@ -42,6 +42,14 @@ const getHashedPasswordFromId = async (id) => {
   return response[0].password;
 }
 
+const generateHashedPassword = async password => {
+  const salt = await bcrypt.genSalt();
+
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  return hashedPassword;
+}
+
 const validateEmailIsConfirmed = async (email) => {
   const response = await knex('user_email')
     .where({ email })
@@ -50,17 +58,19 @@ const validateEmailIsConfirmed = async (email) => {
   return response.length && response[0].confirmed_email_at !== null;
 }
 
+const generateToken = () => {
+  return uuid.v1();
+}
+
 const signup = async ({ firstName, lastName, email, password }) => {
   // Validate email is not already taken
   const isUnique = validateEmailIsUnique(email);
 
   if (!isUnique) return { code: 403 };
 
-  const salt = await bcrypt.genSalt();
+  const hashedPassword = await generateHashedPassword(password)
 
-  const hashedPassword = await bcrypt.hash(password, salt);
-
-  const confirmationEmailToken = uuid.v1();
+  const confirmationEmailToken = generateToken();
 
   const user = await createUser(hashedPassword);
 
@@ -83,11 +93,11 @@ const signup = async ({ firstName, lastName, email, password }) => {
 
   // Send confirmation email with link
   await sendConfirmationEmail({
-    sendTo: email,
+    email,
     token: confirmationEmailToken,
   });
 
-  return null;
+  return { code: 200 };
 };
 
 const login = async ({ email, password }) => {
@@ -95,7 +105,6 @@ const login = async ({ email, password }) => {
   const emailIsConfirmed = await validateEmailIsConfirmed(email);
 
   if (!emailIsConfirmed) {
-    // TODO: do something
     return { status: 401 };
   }
 
@@ -103,14 +112,13 @@ const login = async ({ email, password }) => {
 
   const hashedPassword = await getHashedPasswordFromId(user_id);
   if (!hashedPassword) {
-    // TODO: do something
     return { status: 402 };
   }
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
 
   if (isSame) {
-    const token = uuid.v1();
+    const token = generateToken();
 
     await knex('user_token').insert({
       user_id: user_id,
@@ -148,8 +156,92 @@ const confirmEmail = async ({ token }) => {
   return 200;
 }
 
+const recoveryEmail = async ({ email }) => {
+  const response = await knex('user_email')
+    .select(['user_id'])
+    .where({ email });
+
+  if (!response.length) {
+    return 404;
+  }
+
+  const { user_id } = response[0];
+  const token = generateToken();
+
+  await knex('recovery_email_token')
+    .insert({
+      user_id,
+      token,
+      expires_at: new Date(Date.now() + 60 * 60 * 1000)
+    });
+
+  await sendRecoveryEmail({ email, token });
+
+  return 200;
+}
+
+const recoverPassword = async ({ token, password }) => {
+  const response = await knex('recovery_email_token')
+    .select(['user_id', 'expires_at', 'used_at'])
+    .where({ token });
+
+  if (!response.length || response[0].used_at || Date.now() > response[0].expires_at) {
+    return 403;
+  }
+
+  const hashedPassword = await generateHashedPassword(password);
+
+
+  await knex('users')
+    .update({ password: hashedPassword })
+    .where({ id: response[0].user_id });
+
+  await knex('recovery_email_token')
+    .update({ used_at: new Date() })
+    .where({ token })
+
+  return 200;
+}
+
+const resendConfirmationEmail = async ({ email }) => {
+  const response = await knex('user_email')
+    .select(['confirmed_email_at'])
+    .where({ email });
+
+  console.log(response);
+
+  if (!response.length) {
+    // Account does not exist
+    return 404;
+  }
+
+  if (response[0].confirmed_email_at) {
+    // Email is already confirmed, don't send a new email
+    return 403;
+  }
+
+  const token = generateToken();
+
+  await knex('confirmation_email_token').insert({
+    email,
+    token,
+    expires_at: new Date(Date.now() + 60 * 60 * 1000)
+  });
+
+  // Send confirmation email with link
+  await sendConfirmationEmail({
+    email,
+    token,
+  });
+
+  return 200;
+}
+
 module.exports = {
   confirmEmail,
+  recoverPassword,
+  recoveryEmail,
+  sendConfirmationEmail: resendConfirmationEmail,
   login,
   signup,
 };

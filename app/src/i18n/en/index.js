@@ -10,12 +10,15 @@ export default {
         email: 'Email',
         first_name: 'First Name',
         last_name: 'Last Name',
+        send_password_recovery_email: 'Send password recovery email',
+        send_new_confirmation_email: 'Send new confirmation email',
         // Validation
         invalid_email: 'Invalid email address.',
         password_length: 'Password must be within 8 and 16 characters long.',
         value_is_required: 'Value is required.',
         email_not_confirmed: 'Email has not been confirmed. Please look at your emails.',
-        email_password_no_match: 'Email and password do not match. Please try again.'
-
+        email_not_found: 'There is no account with this email.',
+        email_password_no_match: 'Email and password do not match. Please try again.',
+        token_expired: 'Token is no longer valid, please request a new one.'
     },
 };

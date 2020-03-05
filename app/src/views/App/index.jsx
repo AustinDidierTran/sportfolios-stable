@@ -6,7 +6,7 @@ import {
 
 import teal from '@material-ui/core/colors/teal';
 
-import { Router, Switch, Redirect, Route } from 'react-router-dom';
+import { Router, Switch, Route } from 'react-router-dom';
 
 import Header from '../Header';
 import Login from '../Login';
@@ -16,6 +16,9 @@ import ConfirmationEmailSent from '../ConfirmationEmailSent';
 import ConfirmEmail from '../ConfirmEmail';
 import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
 import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
+import ForgotPassword from '../ForgotPassword';
+import NewConfirmationEmail from '../NewConfirmationEmail';
+import PasswordRecovery from '../PasswordRecovery';
 
 import styles from './App.module.css';
 import history from '../../stores/history';
@@ -39,6 +42,9 @@ export default function App() {
               <Route path="/confirmEmail/:token" component={ConfirmEmail} />
               <Route path="/ConfirmEmailFailure" component={ConfirmEmailFailure} />
               <Route path="/confirmEmailSuccess" component={ConfirmEmailSuccess} />
+              <Route path="/forgot_password" component={ForgotPassword} />
+              <Route path="/recoveryEmail/:token" component={PasswordRecovery} />
+              <Route path="/newConfirmationEmail" component={NewConfirmationEmail} />
               <Route exact path="/login" component={Login} />
               <Route
                 exact
@@ -49,6 +55,9 @@ export default function App() {
               <Route
                 exact
                 path="/"
+                component={Main}
+              />
+              <Route
                 component={Main}
               />
             </Switch>
