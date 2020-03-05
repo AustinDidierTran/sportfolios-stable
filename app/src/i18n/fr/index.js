@@ -18,6 +18,8 @@ export default {
         email_not_confirmed: 'Adresse courriel non confirmé. Un nouveau courriel de confirmation a été envoyé. Svp, regardez vos courriels.',
         email_not_found: 'Il n\'existe pas de compte avec ce courriel',
         email_password_no_match: 'Erreur du courriel ou du mot de passe. Svp, réessayez.',
-        token_expired: 'Le token n\'est plus valide, svp en demander un autre.'
+        token_expired: 'Le token n\'est plus valide, svp en demander un autre.',
+        password_must_match: 'Vos mots de passes doivent être identique',
+        wrong_password: 'Mauvais mot de passe. Veuillez réessayer.'
     },
 }

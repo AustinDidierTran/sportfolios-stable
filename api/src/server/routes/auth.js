@@ -146,10 +146,41 @@ router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
   }
 })
 
-// Reset password
+// Reset password with token
 router.post(`${BASE_URL}/recoverPassword`, async ctx => {
   try {
     const code = await queries.recoverPassword(ctx.request.body);
+
+    if (code === 200) {
+      ctx.status = 200;
+      ctx.body = {
+        status: 'success',
+      }
+    } else if (code === 403) {
+      ctx.status = 403;
+      ctx.body = {
+        status: 'error',
+        message: 'Token is invalid'
+      }
+    } else {
+      ctx.status = code;
+      ctx.body = {
+        status: 'error',
+      }
+    }
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+})
+
+// Reset password
+router.post(`${BASE_URL}/changePassword`, async ctx => {
+  try {
+    const code = await queries.changePassword(ctx.request.body);
 
     if (code === 200) {
       ctx.status = 200;

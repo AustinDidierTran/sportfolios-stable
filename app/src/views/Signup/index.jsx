@@ -7,13 +7,13 @@ import styles from './Signup.module.css';
 
 import history from '../../stores/history';
 
-import Button from '../../components/Button/Button';
+import Button from '../../components/MUI/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
-import TextField from '../../components/TextField/TextField';
+import TextField from '../../components/MUI/TextField';
 import { API_BASE_URL } from '../../../../conf';
 
 export default function Signup() {

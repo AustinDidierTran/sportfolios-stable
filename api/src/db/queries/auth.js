@@ -191,14 +191,13 @@ const recoverPassword = async ({ token, password }) => {
 
   const hashedPassword = await generateHashedPassword(password);
 
-
   await knex('users')
     .update({ password: hashedPassword })
     .where({ id: response[0].user_id });
 
   await knex('recovery_email_token')
     .update({ used_at: new Date() })
-    .where({ token })
+    .where({ token });
 
   return 200;
 }
@@ -235,7 +234,44 @@ const resendConfirmationEmail = async ({ email }) => {
   return 200;
 }
 
+const changePassword = async ({ authToken, oldPassword, newPassword }) => {
+  let response = await knex('user_token')
+    .select(['user_id', 'expires_at'])
+    .where({ token_id: authToken });
+
+  if (!response.length || response[0].expires_at < new Date()) {
+    return 402;
+  }
+
+  const user_id = response[0].user_id;
+
+  response = await knex('users')
+    .select(['password'])
+    .where({ id: user_id })
+
+  if (!response.length) {
+    return 404;
+  }
+
+  const oldHashedPassword = response[0].password;
+
+  const isSame = bcrypt.compareSync(oldPassword, oldHashedPassword);
+
+  if (!isSame) {
+    return 403;
+  }
+
+  const newHashedPassword = await generateHashedPassword(newPassword);
+
+  await knex('users')
+    .update({ password: newHashedPassword })
+    .where({ id: user_id });
+
+  return 200;
+}
+
 module.exports = {
+  changePassword,
   confirmEmail,
   recoverPassword,
   recoveryEmail,

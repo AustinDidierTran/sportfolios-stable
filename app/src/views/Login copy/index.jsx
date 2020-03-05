@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
-import styles from './PasswordRecovery.module.css';
+import styles from './Login.module.css';
 
+import { ACTION_ENUM, Store } from '../../Store';
 import Button from '../../components/MUI/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -14,13 +15,18 @@ import TextField from '../../components/MUI/TextField';
 import Typography from '@material-ui/core/Typography';
 import { API_BASE_URL } from '../../../../conf';
 
-export default function Login(props) {
-  const { match: { params: { token } } } = props;
-
+export default function Login() {
+  const { dispatch } = useContext(Store);
   const { t } = useTranslation();
 
   const validate = values => {
     const errors = {};
+    if (!values.email) {
+      errors.email = t('value_is_required');
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+      errors.email = t('invalid_email');
+    }
+
     if (!values.password) {
       errors.password = t('value_is_required');
     } else if (values.password.length < 8 || values.password.length > 16) {
@@ -38,21 +44,36 @@ export default function Login(props) {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
-      const { password } = values;
-      const res = await fetch(`${API_BASE_URL}/api/auth/recoverPassword`, {
+      const { email, password } = values;
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          token,
+          email,
           password,
         }),
       });
 
+      if (res.status === 401) {
+        // Email is not validated
+        formik.setFieldError('email', t('email_not_confirmed'));
+      }
+
       if (res.status === 403) {
-        // Token expired
-        formik.setFieldError('password', t('token_expired'));
+        // Password is not good
+        formik.setFieldError('password', t('email_password_no_match'));
+      }
+
+      const { data } = await res.json();
+
+      if (data) {
+        const { token } = JSON.parse(data);
+        dispatch({
+          type: ACTION_ENUM.LOGIN,
+          payload: token,
+        });
       }
     }
   })
@@ -62,6 +83,16 @@ export default function Login(props) {
       <Card className={styles.card}>
         <form onSubmit={formik.handleSubmit}>
           <CardContent>
+            <TextField
+              id="email"
+              name="email"
+              type="email"
+              placeholder={t('email')}
+              onChange={formik.handleChange}
+              fullWidth
+              error={formik.errors.email}
+              helperText={formik.errors.email}
+            />
             <TextField
               id="password"
               name="password"

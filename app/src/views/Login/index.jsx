@@ -6,12 +6,12 @@ import { useFormik } from 'formik';
 import styles from './Login.module.css';
 
 import { ACTION_ENUM, Store } from '../../Store';
-import Button from '../../components/Button/Button';
+import Button from '../../components/MUI/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
-import TextField from '../../components/TextField/TextField';
+import TextField from '../../components/MUI/TextField';
 import Typography from '@material-ui/core/Typography';
 import { API_BASE_URL } from '../../../../conf';
 

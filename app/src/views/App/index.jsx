@@ -18,9 +18,11 @@ import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
 import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
 import ForgotPassword from '../ForgotPassword';
 import PasswordRecovery from '../PasswordRecovery';
+import UserSettings from '../UserSettings';
 
 import styles from './App.module.css';
 import history from '../../stores/history';
+import PrivateRoute from './PrivateRoute';
 
 const theme = createMuiTheme({
   palette: {
@@ -50,12 +52,10 @@ export default function App() {
                 component={ConfirmationEmailSent}
               />
               <Route exact path="/signup" component={Signup} />
-              <Route
-                exact
-                path="/"
-                component={Main}
+              <PrivateRoute path='/userSettings'
+                component={UserSettings}
               />
-              <Route
+              <PrivateRoute
                 component={Main}
               />
             </Switch>
