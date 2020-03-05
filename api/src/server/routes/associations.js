@@ -7,7 +7,6 @@ const BASE_URL = '/api/associations';
 router.get(BASE_URL, async (ctx) => {
   const { includeDeleted } = ctx.query;
 
-  console.log(includeDeleted);
   try {
     const associations = await queries.getAllAssociations(includeDeleted);
     ctx.body = {
@@ -110,8 +109,6 @@ router.delete(`${BASE_URL}/:id`, async (ctx) => {
       }
     } else {
       ctx.status = 404;
-
-      console.log(ctx);
 
       ctx.body = {
         status: 'error',

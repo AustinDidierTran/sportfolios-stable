@@ -124,7 +124,6 @@ describe('routes : associations', () => {
         .select('*')
         .then(association => {
           const associationObject = association[0];
-          console.log('associationObject', associationObject);
           chai
             .request(server)
             .put(`/api/associations/${associationObject.id}`)

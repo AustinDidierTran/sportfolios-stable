@@ -208,8 +208,6 @@ const resendConfirmationEmail = async ({ email }) => {
     .select(['confirmed_email_at'])
     .where({ email });
 
-  console.log(response);
-
   if (!response.length) {
     // Account does not exist
     return 404;

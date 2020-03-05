@@ -39,7 +39,6 @@ export default function Login(props) {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
-      console.log('submit')
       const { password } = values;
       const res = await fetch(`${API_BASE_URL}/api/auth/recoverPassword`, {
         method: 'POST',

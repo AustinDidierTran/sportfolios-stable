@@ -87,8 +87,6 @@ router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
   try {
     const code = await queries.sendConfirmationEmail(ctx.request.body);
 
-    console.log(code);
-
     if (code === 200) {
       ctx.status = 200;
       ctx.body = {
