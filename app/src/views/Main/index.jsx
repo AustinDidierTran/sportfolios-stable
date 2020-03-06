@@ -1,7 +1,7 @@
 import React from 'react';
 
 import styles from './Main.module.css';
-import { Card, CardContent, TextField } from '@material-ui/core';
+import { Card, CardContent, TextField } from '../../components/MUI';
 
 export default function Main() {
   return (

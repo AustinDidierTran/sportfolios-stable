@@ -5,13 +5,7 @@ import { useFormik } from 'formik';
 
 import styles from './PasswordRecovery.module.css';
 
-import Button from '../../components/MUI/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Divider from '@material-ui/core/Divider';
-import TextField from '../../components/MUI/TextField';
-import Typography from '@material-ui/core/Typography';
+import { Button, Card, CardActions, CardContent, Divider, TextField, Typography } from '../../components/MUI';
 import { API_BASE_URL } from '../../../../conf';
 
 export default function Login(props) {
@@ -63,14 +57,11 @@ export default function Login(props) {
         <form onSubmit={formik.handleSubmit}>
           <CardContent>
             <TextField
-              id="password"
-              name="password"
+              namespace="password"
+              formik={formik}
               placeholder={t('password')}
               type="password"
-              onChange={formik.handleChange}
               fullWidth
-              error={formik.errors.password}
-              helperText={formik.errors.password}
             />
           </CardContent>
           <CardActions>

@@ -1,11 +1,9 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-import Card from '../../MUI/Card';
+import { Button, Card, CardContent, TextField } from '../../MUI';
 import styles from './ChangePassword.module.css';
-import { CardContent } from '@material-ui/core';
-import Button from '../../MUI/Button'
-import TextField from '../../MUI/TextField';
+
 import { API_BASE_URL } from '../../../../../conf';
 import { Store } from '../../../Store';
 import history from '../../../stores/history';
@@ -58,12 +56,16 @@ export default function ChangePassword(props) {
         })
       });
 
+      console.log('res.status', res.status);
+
+
       if (res.status === 402) {
         // Token is expired, redirect
         history.push('/login');
       }
 
       if (res.status === 403) {
+        console.log('heyyyy')
         // old password doesn't match
         formik.setFieldError('oldPassword', t('wrong_password'));
       }
@@ -71,40 +73,31 @@ export default function ChangePassword(props) {
   })
 
 
+
   return (
     <Card className={styles.card}>
       <form onSubmit={formik.handleSubmit}>
-
         <CardContent>
           <TextField
-            id="oldPassword"
-            name="oldPassword"
+            formik={formik}
+            namespace="oldPassword"
             placeholder={t('old_password')}
             type="password"
-            onChange={formik.handleChange}
             fullWidth
-            error={formik.errors.password}
-            helperText={formik.errors.password}
           />
           <TextField
-            id="newPassword"
-            name="newPassword"
+            formik={formik}
+            namespace="newPassword"
             placeholder={t('new_password')}
             type="password"
-            onChange={formik.handleChange}
             fullWidth
-            error={formik.errors.password}
-            helperText={formik.errors.password}
           />
           <TextField
-            id="newPasswordConfirm"
-            name="newPasswordConfirm"
+            formik={formik}
+            namespace="newPasswordConfirm"
             placeholder={t('confirm_new_password')}
             type="password"
-            onChange={formik.handleChange}
             fullWidth
-            error={formik.errors.password}
-            helperText={formik.errors.password}
           />
           <Button size="small"
             color="primary"

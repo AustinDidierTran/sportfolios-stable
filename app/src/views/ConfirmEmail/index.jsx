@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Container from '@material-ui/core/Container';
+import { Container } from '../../components/MUI';
 import styles from './ConfirmEmail.module.css';
 import { API_BASE_URL } from '../../../../conf';
 import history from '../../stores/history';

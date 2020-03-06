@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 
-import Container from '@material-ui/core/Container';
+import { Container } from '../../components/MUI';
+
 import styles from './ConfirmEmail.module.css';
 
 export default function ConfirmEmail(props) {

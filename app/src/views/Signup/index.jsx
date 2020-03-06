@@ -7,13 +7,7 @@ import styles from './Signup.module.css';
 
 import history from '../../stores/history';
 
-import Button from '../../components/MUI/Button';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import TextField from '../../components/MUI/TextField';
+import { Button, Card, CardContent, CardActions, Divider, TextField, Typography } from '../../components/MUI';
 import { API_BASE_URL } from '../../../../conf';
 
 export default function Signup() {
@@ -77,44 +71,32 @@ export default function Signup() {
         <form onSubmit={formik.handleSubmit}>
           <CardContent>
             <TextField
-              id="firstName"
-              name="firstName"
+              namespace="firstName"
+              formik={formik}
               type="text"
               placeholder={t('first_name')}
-              onChange={formik.handleChange}
               fullWidth
-              error={formik.errors.firstName}
-              helperText={formik.errors.firstName}
             />
             <TextField
-              id="lastName"
-              name="lastName"
+              namespace="firstName"
+              formik={formik}
               type="text"
               placeholder={t('last_name')}
-              onChange={formik.handleChange}
               fullWidth
-              error={formik.errors.lastName}
-              helperText={formik.errors.lastName}
             />
             <TextField
-              id="email"
-              name="email"
+              namespace="firstName"
+              formik={formik}
               type="email"
-              onChange={formik.handleChange}
               placeholder={t('email')}
               fullWidth
-              error={formik.errors.email}
-              helperText={formik.errors.email}
             />
             <TextField
-              id="password"
-              onChange={formik.handleChange}
-              name="password"
+              namespace="firstName"
+              formik={formik}
               placeholder={t('password')}
               type="password"
               fullWidth
-              error={formik.errors.password}
-              helperText={formik.errors.password}
             />
           </CardContent>
           <CardActions>

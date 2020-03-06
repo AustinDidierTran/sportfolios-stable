@@ -1,4 +1,5 @@
 import React, { useReducer } from 'react';
+import history from './stores/history';
 
 export const Store = React.createContext();
 
@@ -12,6 +13,7 @@ function reducer(state, action) {
   switch (action.type) {
     case ACTION_ENUM.LOGIN: {
       localStorage.setItem('authToken', action.payload);
+      history.push('/userSettings')
       return { ...state, authToken: action.payload };
     }
     default:
