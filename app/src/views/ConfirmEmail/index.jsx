@@ -3,7 +3,7 @@ import React from 'react';
 import { Container } from '../../components/MUI';
 import styles from './ConfirmEmail.module.css';
 import { API_BASE_URL } from '../../../../conf';
-import history from '../../stores/history';
+import { goTo, ROUTES } from '../../actions/goTo';
 
 export default function ConfirmEmail(props) {
   const { match: { params: { token } } } = props;
@@ -21,10 +21,10 @@ export default function ConfirmEmail(props) {
 
     if (res.status < 300) {
       // Success!
-      history.push('/confirmEmailSuccess');
+      goTo(ROUTES.confirmEmailSuccess);
     } else {
       // Failure...
-      history.push('/confirmEmailFailure');
+      goTo(ROUTES.confirmEmailFailure);
     }
   }
 

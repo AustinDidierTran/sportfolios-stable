@@ -94,7 +94,7 @@ export default function Login() {
               fullWidth
             />
             <TextField
-              namespace="email"
+              namespace="password"
               formik={formik}
               placeholder={t('password')}
               type="password"

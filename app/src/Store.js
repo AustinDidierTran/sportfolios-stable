@@ -1,5 +1,5 @@
 import React, { useReducer } from 'react';
-import history from './stores/history';
+import { goTo, ROUTES } from './actions/goTo';
 
 export const Store = React.createContext();
 
@@ -7,14 +7,20 @@ const initialState = { authToken: localStorage.getItem('authToken') };
 
 export const ACTION_ENUM = {
   LOGIN: 'login',
+  LOGOUT: 'logout'
 };
 
 function reducer(state, action) {
   switch (action.type) {
     case ACTION_ENUM.LOGIN: {
       localStorage.setItem('authToken', action.payload);
-      history.push('/userSettings')
+      goTo(ROUTES.userSettings);
       return { ...state, authToken: action.payload };
+    }
+    case ACTION_ENUM.LOGOUT: {
+      localStorage.setItem('authToken', null);
+      goTo(ROUTES.login);
+      return { ...state, authToken: null }
     }
     default:
       return state;

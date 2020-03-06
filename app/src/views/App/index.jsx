@@ -23,6 +23,7 @@ import UserSettings from '../UserSettings';
 import styles from './App.module.css';
 import history from '../../stores/history';
 import PrivateRoute from './PrivateRoute';
+import { ROUTES } from '../../actions/goTo';
 
 const theme = createMuiTheme({
   palette: {
@@ -40,19 +41,19 @@ export default function App() {
           </div>
           <div className={styles.main}>
             <Switch>
-              <Route path="/confirmEmail/:token" component={ConfirmEmail} />
-              <Route path="/ConfirmEmailFailure" component={ConfirmEmailFailure} />
-              <Route path="/confirmEmailSuccess" component={ConfirmEmailSuccess} />
-              <Route path="/forgot_password" component={ForgotPassword} />
-              <Route path="/recoveryEmail/:token" component={PasswordRecovery} />
-              <Route exact path="/login" component={Login} />
+              <Route path={ROUTES.confirmEmail} component={ConfirmEmail} />
+              <Route path={ROUTES.confirmEmailFailure} component={ConfirmEmailFailure} />
+              <Route path={ROUTES.confirmEmailSuccess} component={ConfirmEmailSuccess} />
+              <Route path={ROUTES.forgotPassword} component={ForgotPassword} />
+              <Route path={ROUTES.recoveryEmail} component={PasswordRecovery} />
+              <Route exact path={ROUTES.login} component={Login} />
               <Route
                 exact
-                path="/confirmation_email_sent"
+                path={ROUTES.confirmationEmailSent}
                 component={ConfirmationEmailSent}
               />
-              <Route exact path="/signup" component={Signup} />
-              <PrivateRoute path='/userSettings'
+              <Route exact path={ROUTES.signup} component={Signup} />
+              <PrivateRoute path={ROUTES.userSettings}
                 component={UserSettings}
               />
               <PrivateRoute

@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-import { Button, Card, CardContent, TextField } from '../../MUI';
+import { Button, Card, CardContent, TextField, CardActions } from '../../MUI';
 import styles from './ChangePassword.module.css';
 
 import { API_BASE_URL } from '../../../../../conf';
 import { Store } from '../../../Store';
-import history from '../../../stores/history';
+import { goTo, ROUTES } from '../../../actions/goTo';
+
 
 
 export default function ChangePassword(props) {
@@ -61,7 +62,7 @@ export default function ChangePassword(props) {
 
       if (res.status === 402) {
         // Token is expired, redirect
-        history.push('/login');
+        goTo(ROUTES.login);
       }
 
       if (res.status === 403) {
@@ -71,8 +72,6 @@ export default function ChangePassword(props) {
       }
     }
   })
-
-
 
   return (
     <Card className={styles.card}>
@@ -99,6 +98,8 @@ export default function ChangePassword(props) {
             type="password"
             fullWidth
           />
+        </CardContent>
+        <CardActions>
           <Button size="small"
             color="primary"
             variant="contained"
@@ -106,7 +107,7 @@ export default function ChangePassword(props) {
             type="submit">
             {t('change_password')}
           </Button>
-        </CardContent>
+        </CardActions>
       </form>
     </Card>
   )

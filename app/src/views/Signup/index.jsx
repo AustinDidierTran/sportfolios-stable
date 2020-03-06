@@ -5,10 +5,9 @@ import { useFormik } from 'formik';
 
 import styles from './Signup.module.css';
 
-import history from '../../stores/history';
-
 import { Button, Card, CardContent, CardActions, Divider, TextField, Typography } from '../../components/MUI';
 import { API_BASE_URL } from '../../../../conf';
+import { goTo, ROUTES } from '../../actions/goTo';
 
 export default function Signup() {
   const { t } = useTranslation();
@@ -61,7 +60,7 @@ export default function Signup() {
         }),
       });
 
-      history.push('/confirmation_email_sent');
+      goTo(ROUTES.confirmationEmailSent);
     }
   });
 

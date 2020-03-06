@@ -7,8 +7,7 @@ import styles from './ForgotPassword.module.css';
 
 import { Store } from '../../Store';
 import Button from '../../components/MUI/Button';
-import { Card, CardActions, CardContent, Divider, TextField } from '../../components/MUI';
-import Typography from '@material-ui/core/Typography';
+import { Card, CardActions, CardContent, Divider, TextField, Typography } from '../../components/MUI';
 import { API_BASE_URL } from '../../../../conf';
 
 export default function ForgotPassword() {

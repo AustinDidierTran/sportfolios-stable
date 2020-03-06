@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { ACTION_ENUM, Store } from '../../Store';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
 
@@ -22,7 +23,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import history from '../../stores/history';
+import { goTo, ROUTES } from '../../actions/goTo';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -93,6 +94,7 @@ const useStyles = makeStyles(theme => ({
 export default function PrimarySearchAppBar() {
   const classes = useStyles();
   const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(
@@ -131,7 +133,8 @@ export default function PrimarySearchAppBar() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={() => history.push('/userSettings')}>User Settings</MenuItem>
+      <MenuItem onClick={() => goTo(ROUTES.userSettings)}>User Settings</MenuItem>
+      <MenuItem onClick={() => dispatch({ type: ACTION_ENUM.LOGOUT })}>Log out</MenuItem>
     </Menu>
   );
 
