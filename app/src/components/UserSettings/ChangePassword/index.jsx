@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-import { Button, Card, CardContent, TextField, CardActions } from '../../MUI';
+import { Button, Card, CardContent, TextField, CardActions, Typography, Divider } from '../../MUI';
 import styles from './ChangePassword.module.css';
 
 import { API_BASE_URL } from '../../../../../conf';
@@ -77,6 +77,7 @@ export default function ChangePassword(props) {
     <Card className={styles.card}>
       <form onSubmit={formik.handleSubmit}>
         <CardContent>
+          <Typography gutterBottom variant="h5" component="h2">{t('change_password')}</Typography>
           <TextField
             formik={formik}
             namespace="oldPassword"

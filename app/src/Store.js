@@ -14,11 +14,10 @@ function reducer(state, action) {
   switch (action.type) {
     case ACTION_ENUM.LOGIN: {
       localStorage.setItem('authToken', action.payload);
-      goTo(ROUTES.userSettings);
       return { ...state, authToken: action.payload };
     }
     case ACTION_ENUM.LOGOUT: {
-      localStorage.setItem('authToken', null);
+      localStorage.removeItem('authToken');
       goTo(ROUTES.login);
       return { ...state, authToken: null }
     }

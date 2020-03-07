@@ -9,8 +9,8 @@ export default function CustomTextField(props) {
   return <TextField
     id={namespace}
     name={namespace}
-    error={formik.errors[namespace]}
-    helperText={formik.errors[namespace]}
-    onChange={formik.handleChange}
+    error={formik && formik.errors[namespace]}
+    helperText={formik && formik.errors[namespace]}
+    onChange={formik && formik.handleChange}
     {...props} />;
 }

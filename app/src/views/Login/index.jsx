@@ -6,8 +6,9 @@ import { useFormik } from 'formik';
 import styles from './Login.module.css';
 
 import { ACTION_ENUM, Store } from '../../Store';
-import { Button, Card, CardActions, CardContent, Divider, TextField, Typography } from '../../components/MUI';
+import { Button, Card, CardActions, CardContent, Divider, TextField, Typography, Container } from '../../components/MUI';
 import { API_BASE_URL } from '../../../../conf';
+import { goTo, ROUTES } from '../../actions/goTo';
 
 export default function Login() {
   const { dispatch } = useContext(Store);
@@ -77,52 +78,56 @@ export default function Login() {
           type: ACTION_ENUM.LOGIN,
           payload: token,
         });
+        goTo(ROUTES.userSettings);
       }
     }
   })
 
   return (
     <div className={styles.main}>
-      <Card className={styles.card}>
-        <form onSubmit={formik.handleSubmit}>
-          <CardContent>
-            <TextField
-              namespace="email"
-              formik={formik}
-              type="email"
-              placeholder={t('email')}
-              fullWidth
-            />
-            <TextField
-              namespace="password"
-              formik={formik}
-              placeholder={t('password')}
-              type="password"
-              fullWidth
-            />
-          </CardContent>
-          <CardActions>
-            <Button
-              size="small"
-              color="primary"
-              variant="contained"
-              className={styles.button}
-              type="submit"
-            >
-              {t('login')}
-            </Button>
-          </CardActions>
-          <Divider />
-          <CardActions className={styles.linksContainer}>
-            <Link to={'/forgot_password'}>
-              <Typography>{t('forgot_password')}</Typography>
-            </Link>
-            <Link to={'/signup'}>
-              <Typography>{t('no_account_signup')}</Typography>
-            </Link>
-          </CardActions>
-        </form>
-      </Card>
+      <Container>
+        <Card className={styles.card}>
+          <form onSubmit={formik.handleSubmit}>
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="h2">{t('login')}</Typography>
+              <TextField
+                namespace="email"
+                formik={formik}
+                type="email"
+                placeholder={t('email')}
+                fullWidth
+              />
+              <TextField
+                namespace="password"
+                formik={formik}
+                placeholder={t('password')}
+                type="password"
+                fullWidth
+              />
+            </CardContent>
+            <CardActions>
+              <Button
+                size="small"
+                color="primary"
+                variant="contained"
+                className={styles.button}
+                type="submit"
+              >
+                {t('login')}
+              </Button>
+            </CardActions>
+            <Divider />
+            <CardActions className={styles.linksContainer}>
+              <Link to={'/forgot_password'}>
+                <Typography>{t('forgot_password')}</Typography>
+              </Link>
+              <Link to={'/signup'}>
+                <Typography>{t('no_account_signup')}</Typography>
+              </Link>
+            </CardActions>
+          </form>
+        </Card>
+      </Container>
     </div>
   );
 }
