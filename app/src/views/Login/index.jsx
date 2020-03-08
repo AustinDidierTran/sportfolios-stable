@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
@@ -9,10 +9,14 @@ import { ACTION_ENUM, Store } from '../../Store';
 import { Button, Card, CardActions, CardContent, Divider, TextField, Typography, Container } from '../../components/MUI';
 import { API_BASE_URL } from '../../../../conf';
 import { goTo, ROUTES } from '../../actions/goTo';
+import LoginCard from './LoginCard';
+import SignupCard from './SignupCard';
+import DescriptionCard from './DescriptionCard';
 
 export default function Login() {
   const { dispatch } = useContext(Store);
   const { t } = useTranslation();
+  const [isSignup, setIsSignup] = useState(true);
 
   const validate = values => {
     const errors = {};
@@ -85,48 +89,11 @@ export default function Login() {
 
   return (
     <div className={styles.main}>
-      <Container>
-        <Card className={styles.card}>
-          <form onSubmit={formik.handleSubmit}>
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">{t('login')}</Typography>
-              <TextField
-                namespace="email"
-                formik={formik}
-                type="email"
-                placeholder={t('email')}
-                fullWidth
-              />
-              <TextField
-                namespace="password"
-                formik={formik}
-                placeholder={t('password')}
-                type="password"
-                fullWidth
-              />
-            </CardContent>
-            <CardActions>
-              <Button
-                size="small"
-                color="primary"
-                variant="contained"
-                className={styles.button}
-                type="submit"
-              >
-                {t('login')}
-              </Button>
-            </CardActions>
-            <Divider />
-            <CardActions className={styles.linksContainer}>
-              <Link to={'/forgot_password'}>
-                <Typography>{t('forgot_password')}</Typography>
-              </Link>
-              <Link to={'/signup'}>
-                <Typography>{t('no_account_signup')}</Typography>
-              </Link>
-            </CardActions>
-          </form>
-        </Card>
+      <Container className={styles.container}>
+        <DescriptionCard />
+        {isSignup ?
+          <SignupCard setIsSignup={setIsSignup} /> :
+          <LoginCard />}
       </Container>
     </div>
   );

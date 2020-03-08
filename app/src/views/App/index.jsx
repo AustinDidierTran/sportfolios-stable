@@ -11,7 +11,6 @@ import { Router, Switch, Route } from 'react-router-dom';
 import Header from '../Header';
 import Login from '../Login';
 import Main from '../Main';
-import Signup from '../Signup';
 import ConfirmationEmailSent from '../ConfirmationEmailSent';
 import ConfirmEmail from '../ConfirmEmail';
 import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
@@ -52,7 +51,6 @@ export default function App() {
                 path={ROUTES.confirmationEmailSent}
                 component={ConfirmationEmailSent}
               />
-              <Route exact path={ROUTES.signup} component={Signup} />
               <PrivateRoute path={ROUTES.userSettings}
                 component={UserSettings}
               />

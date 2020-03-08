@@ -1,36 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
-import styles from './Signup.module.css';
+import styles from './LoginCard.module.css';
 
-import {
-  Button,
-  Card,
-  CardContent,
-  CardActions,
-  Divider,
-  TextField,
-  Typography
-} from '../../components/MUI';
+import { ACTION_ENUM, Store } from '../../../Store';
+import { Button, Card, CardActions, CardContent, Divider, TextField, Typography } from '../../../components/MUI';
+import { API_BASE_URL } from '../../../../../conf';
+import { goTo, ROUTES } from '../../../actions/goTo';
 
-import { API_BASE_URL } from '../../../../conf';
-import { goTo, ROUTES } from '../../actions/goTo';
 
-export default function SignupCard(props) {
+export default function LoginCard() {
+  const { dispatch } = useContext(Store);
   const { t } = useTranslation();
 
   const validate = values => {
     const errors = {};
-    if (!values.firstName) {
-      errors.firstName = t('value_is_required');
-    }
-
-    if (!values.lastName) {
-      errors.lastName = t('value_is_required');
-    }
-
     if (!values.email) {
       errors.email = t('value_is_required');
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
@@ -54,53 +40,64 @@ export default function SignupCard(props) {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
-      const { firstName, lastName, email, password } = values;
-
-      const res = await fetch(`${API_BASE_URL}/api/auth/signup`, {
+      const { email, password } = values;
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          firstName,
-          lastName,
           email,
           password,
         }),
       });
 
-      goTo(ROUTES.confirmationEmailSent);
+      if (res.status === 401) {
+        // Email is not validated
+        await fetch(`${API_BASE_URL}/api/auth/sendConfirmationEmail`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+          }),
+        });
+        formik.setFieldError('email', t('email_not_confirmed'));
+      }
+
+      if (res.status === 403) {
+        // Password is not good
+        formik.setFieldError('password', t('email_password_no_match'));
+      }
+
+      const { data } = await res.json();
+
+      if (data) {
+        const { token } = JSON.parse(data);
+        dispatch({
+          type: ACTION_ENUM.LOGIN,
+          payload: token,
+        });
+        goTo(ROUTES.userSettings);
+      }
     }
-  });
+  })
 
   return (
-    <Card className={styles.signup}>
+    <Card className={styles.card}>
       <form onSubmit={formik.handleSubmit}>
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">{t('signup')}</Typography>
+          <Typography gutterBottom variant="h5" component="h2">{t('login')}</Typography>
           <TextField
-            namespace="firstName"
-            formik={formik}
-            type="text"
-            placeholder={t('first_name')}
-            fullWidth
-          />
-          <TextField
-            namespace="firstName"
-            formik={formik}
-            type="text"
-            placeholder={t('last_name')}
-            fullWidth
-          />
-          <TextField
-            namespace="firstName"
+            namespace="email"
             formik={formik}
             type="email"
             placeholder={t('email')}
             fullWidth
           />
           <TextField
-            namespace="firstName"
+            namespace="password"
             formik={formik}
             placeholder={t('password')}
             type="password"
@@ -115,15 +112,19 @@ export default function SignupCard(props) {
             className={styles.button}
             type="submit"
           >
-            {t('signup')}
+            {t('login')}
           </Button>
         </CardActions>
         <Divider />
         <CardActions className={styles.linksContainer}>
-          <Link to={'/login'}>
-            <Typography>{t('have_an_account_signin')}</Typography>
+          <Link to={'/forgot_password'}>
+            <Typography>{t('forgot_password')}</Typography>
+          </Link>
+          <Link to={'/signup'}>
+            <Typography>{t('no_account_signup')}</Typography>
           </Link>
         </CardActions>
       </form>
-    </Card>)
+    </Card>
+  )
 }

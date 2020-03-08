@@ -2,18 +2,11 @@
   margin-top: 32px;
   margin-left: auto;
   margin-right: auto;
-}
-
-.description {
-  grid-area: description;
-  margin-top: 32px;
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
+  grid-area: signup;
 }
 
 .signup {
-  grid-area: signup;
+  grid-area: login;
   width: 100%;
   margin-top: 32px;
   margin-left: auto;

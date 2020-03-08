@@ -1,5 +1,7 @@
 .card {
+    grid-area: login;
     margin-top: 32px;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -12,11 +14,4 @@
 }
 .button {
     width: 100%;
-}
-
-.container {
-    display: grid;
-    grid-template-areas: 'description login';
-    grid-template-columns: 1fr 1fr;
-    column-gap: 32px;
 }
