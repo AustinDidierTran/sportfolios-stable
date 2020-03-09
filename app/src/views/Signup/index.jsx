@@ -1,15 +1,14 @@
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
-import styles from './Login.module.css';
+import styles from './Signup.module.css';
 
 import { ACTION_ENUM, Store } from '../../Store';
 import { Container } from '../../components/MUI';
 import { API_BASE_URL } from '../../../../conf';
 import { goTo, ROUTES } from '../../actions/goTo';
-import ForgotPasswordCard from './ForgotPasswordCard';
+import SignupCard from './SignupCard';
 import DescriptionCard from './DescriptionCard';
 
 export default function Login() {
@@ -89,7 +88,7 @@ export default function Login() {
     <div className={styles.main}>
       <Container className={styles.container}>
         <DescriptionCard />
-        <ForgotPasswordCard />
+        <SignupCard />
       </Container>
     </div>
   );

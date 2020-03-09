@@ -17,6 +17,7 @@ import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
 import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
 import ForgotPassword from '../ForgotPassword';
 import PasswordRecovery from '../PasswordRecovery';
+import Signup from '../Signup';
 import UserSettings from '../UserSettings';
 
 import styles from './App.module.css';
@@ -46,6 +47,7 @@ export default function App() {
               <Route path={ROUTES.forgotPassword} component={ForgotPassword} />
               <Route path={ROUTES.recoveryEmail} component={PasswordRecovery} />
               <Route exact path={ROUTES.login} component={Login} />
+              <Route exact path={ROUTES.signup} component={Signup} />
               <Route
                 exact
                 path={ROUTES.confirmationEmailSent}

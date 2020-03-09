@@ -1,29 +1,19 @@
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
 import styles from './Login.module.css';
 
 import { ACTION_ENUM, Store } from '../../Store';
-import { Button, Card, CardActions, CardContent, Divider, TextField, Typography, Container } from '../../components/MUI';
+import { Container } from '../../components/MUI';
 import { API_BASE_URL } from '../../../../conf';
 import { goTo, ROUTES } from '../../actions/goTo';
 import LoginCard from './LoginCard';
-import SignupCard from './SignupCard';
-import ForgotPasswordCard from './ForgotPasswordCard';
 import DescriptionCard from './DescriptionCard';
 
 export default function Login() {
   const { dispatch } = useContext(Store);
   const { t } = useTranslation();
-  const CARD_ENUM = {
-    SIGNUP: 1,
-    FORGOTPASSWORD: 2,
-    LOGIN: 3,
-  }
-
-  const [card, setCard] = useState(CARD_ENUM.SIGNUP);
 
   const validate = values => {
     const errors = {};
@@ -98,11 +88,7 @@ export default function Login() {
     <div className={styles.main}>
       <Container className={styles.container}>
         <DescriptionCard />
-        {card === CARD_ENUM.SIGNUP ?
-          <SignupCard setCard={setCard} /> :
-          card === CARD_ENUM.LOGIN ?
-            <LoginCard setCard={setCard} /> :
-            <ForgotPasswordCard setCard={setCard} />}
+        <LoginCard />
       </Container>
     </div>
   );

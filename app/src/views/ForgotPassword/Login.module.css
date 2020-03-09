@@ -14,7 +14,7 @@
 }
 
 .container {
-    margin-top: 32px;
+  margin-top: 32px;
     display: grid;
     grid-template-areas: 'description' 'login';
     grid-template-columns: 1fr;

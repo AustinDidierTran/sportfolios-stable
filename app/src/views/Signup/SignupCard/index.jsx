@@ -121,7 +121,7 @@ export default function SignupCard(props) {
         </CardActions>
         <Divider />
         <CardActions className={styles.linksContainer}>
-          <Link onClick={() => setCard(3)}>
+          <Link to={ROUTES.login}>
             <Typography>{t('have_an_account_signin')}</Typography>
           </Link>
         </CardActions>

@@ -12,7 +12,6 @@ import { goTo, ROUTES } from '../../../actions/goTo';
 
 
 export default function LoginCard(props) {
-  const { setCard } = props
   const { dispatch } = useContext(Store);
   const { t } = useTranslation();
 
@@ -118,10 +117,10 @@ export default function LoginCard(props) {
         </CardActions>
         <Divider />
         <CardActions className={styles.linksContainer}>
-          <Link onClick={() => setCard(2)}>
+          <Link to={ROUTES.forgotPassword}>
             <Typography>{t('forgot_password')}</Typography>
           </Link>
-          <Link onClick={() => setCard(1)}>
+          <Link to={ROUTES.signup}>
             <Typography>{t('no_account_signup')}</Typography>
           </Link>
         </CardActions>

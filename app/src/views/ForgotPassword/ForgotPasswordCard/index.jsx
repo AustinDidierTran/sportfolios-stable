@@ -9,6 +9,7 @@ import { Store } from '../../../Store';
 import Button from '../../../components/MUI/Button';
 import { Card, CardActions, CardContent, Divider, TextField, Typography } from '../../../components/MUI';
 import { API_BASE_URL } from '../../../../../conf';
+import { ROUTES } from '../../../actions/goTo';
 
 export default function ForgotPassword(props) {
   const { setCard } = props;
@@ -54,9 +55,10 @@ export default function ForgotPassword(props) {
 
   return (
     <div className={styles.main}>
-      <Card className={styles.card}>
-        <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={formik.handleSubmit}>
+        <Card className={styles.card}>
           <CardContent>
+            <Typography gutterBottom variant="h5" component="h2">{t('forgot_password')}</Typography>
             <TextField
               namespace="email"
               formik={formik}
@@ -78,15 +80,15 @@ export default function ForgotPassword(props) {
           </CardActions>
           <Divider />
           <CardActions className={styles.linksContainer}>
-            <Link onClick={() => setCard(3)}>
-              <Typography>{t('login')}</Typography>
+            <Link to={ROUTES.login}>
+              <Typography>{t('have_an_account_signin')}</Typography>
             </Link>
-            <Link onClick={() => setCard(1)}>
+            <Link to={ROUTES.signup}>
               <Typography>{t('no_account_signup')}</Typography>
             </Link>
           </CardActions>
-        </form>
-      </Card>
+        </Card>
+      </form>
     </div>
   );
 }
