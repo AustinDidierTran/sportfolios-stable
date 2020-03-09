@@ -93,13 +93,13 @@ export default function LoginCard() {
             namespace="email"
             formik={formik}
             type="email"
-            placeholder={t('email')}
+            label={t('email')}
             fullWidth
           />
           <TextField
             namespace="password"
             formik={formik}
-            placeholder={t('password')}
+            label={t('password')}
             type="password"
             fullWidth
           />

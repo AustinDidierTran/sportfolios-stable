@@ -13,6 +13,8 @@ export default {
         send_password_recovery_email: 'Send password recovery email',
         send_new_confirmation_email: 'Send new confirmation email',
         change_password: 'Change password',
+        basic_info: 'Basic Info',
+        emails: 'Emails',
         // Validation
         invalid_email: 'Invalid email address.',
         password_length: 'Password must be within 8 and 16 characters long.',
@@ -26,8 +28,8 @@ export default {
         old_password: 'Old password',
         new_password: 'New Password',
         confirm_new_password: 'Confirm New Password',
-        basic_info: 'Basic Info',
-        emails: 'Emails',
+        something_went_wrong: 'Something went wrong, please try again',
+
         // DESCRIPTION CARD
         description_card_title: 'Improve your amateur sport experience.',
         description_card_first_point: 'Automate your league\'s organisation workflow.',

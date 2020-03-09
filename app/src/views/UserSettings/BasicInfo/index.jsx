@@ -14,71 +14,88 @@ export default function BasicInfo(props) {
   const { state: { authToken } } = useContext(Store);
   const { t } = useTranslation();
 
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/api/auth/userInfo?authToken=${authToken}`).then((res) => res.json()).then(res => console.log('res', res))
-
-  }, []);
-
   const validate = values => {
     const errors = {};
 
-    if (!values.oldPassword) {
-      errors.oldPassword = t('value_is_required');
-    } else if (values.oldPassword.length < 8 || values.oldPassword.length > 16) {
-      errors.oldPassword = t('password_length');
+    if (!values.firstName) {
+      errors.firstName = t('value_is_required');
     }
 
-    if (!values.newPassword) {
-      errors.newPassword = t('value_is_required');
-    } else if (values.newPassword.length < 8 || values.newPassword.length > 16) {
-      errors.newPassword = t('password_length');
-    }
-
-    if (!values.newPasswordConfirm) {
-      errors.newPasswordConfirm = t('value_is_required');
-    } else if (values.newPassword !== values.newPasswordConfirm) {
-      errors.newPasswordConfirm = t('password_must_match');
+    if (!values.lastName) {
+      errors.lastName = t('value_is_required');
     }
   }
 
   const formik = useFormik({
     initialValues: {
-      oldPassword: '',
-      newPassword: '',
-      newPasswordConfirm: ''
+      firstName: '',
+      lastName: ''
     },
     validate,
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
-      const { oldPassword, newPassword } = values;
-      const res = await fetch(`${API_BASE_URL}/api/auth/changePassword?token=${authToken}`, {
+      const { firstName, lastName } = values;
+      const res = await fetch(`${API_BASE_URL}/api/auth/changeBasicUserInfo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          authToken, oldPassword, newPassword
+          authToken, firstName, lastName
         })
       });
+
 
       if (res.status === 402) {
         // Token is expired, redirect
         goTo(ROUTES.login);
-      }
-
-      if (res.status === 403) {
-        // old password doesn't match
-        formik.setFieldError('oldPassword', t('wrong_password'));
+      } else if (res.status >= 400) {
+        formik.setFieldError('lastName', t('something_went_wrong'));
       }
     }
   })
 
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/auth/userInfo?authToken=${authToken}`)
+      .then((res) => res.json())
+      .then(({ data }) => {
+        formik.setValues({ firstName: data.first_name, lastName: data.last_name });
+      });
+  }, []);
+
   return (
     <Card className={styles.card}>
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="h2">{t('basic_info')}</Typography>
-      </CardContent>
+      <form onSubmit={formik.handleSubmit}>
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="h2">{t('basic_info')}</Typography>
+          <TextField
+            namespace="firstName"
+            formik={formik}
+            type="text"
+            label={t('first_name')}
+            fullWidth
+          />
+          <TextField
+            namespace="lastName"
+            formik={formik}
+            type="text"
+            label={t('last_name')}
+            fullWidth
+          />
+        </CardContent>
+        <CardActions>
+          <Button
+            size="small"
+            color="primary"
+            variant="contained"
+            className={styles.button}
+            type="submit"
+          >
+            {t('signup')}
+          </Button>
+        </CardActions>
+      </form>
     </Card>
   )
 }

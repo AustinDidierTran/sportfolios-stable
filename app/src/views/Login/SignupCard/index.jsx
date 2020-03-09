@@ -83,27 +83,27 @@ export default function SignupCard(props) {
             namespace="firstName"
             formik={formik}
             type="text"
-            placeholder={t('first_name')}
+            label={t('first_name')}
             fullWidth
           />
           <TextField
             namespace="lastName"
             formik={formik}
             type="text"
-            placeholder={t('last_name')}
+            label={t('last_name')}
             fullWidth
           />
           <TextField
             namespace="email"
             formik={formik}
             type="email"
-            placeholder={t('email')}
+            label={t('email')}
             fullWidth
           />
           <TextField
             namespace="password"
             formik={formik}
-            placeholder={t('password')}
+            label={t('password')}
             type="password"
             fullWidth
           />

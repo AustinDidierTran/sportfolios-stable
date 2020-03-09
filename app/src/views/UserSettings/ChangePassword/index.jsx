@@ -77,21 +77,21 @@ export default function ChangePassword(props) {
           <TextField
             formik={formik}
             namespace="oldPassword"
-            placeholder={t('old_password')}
+            label={t('old_password')}
             type="password"
             fullWidth
           />
           <TextField
             formik={formik}
             namespace="newPassword"
-            placeholder={t('new_password')}
+            label={t('new_password')}
             type="password"
             fullWidth
           />
           <TextField
             formik={formik}
             namespace="newPasswordConfirm"
-            placeholder={t('confirm_new_password')}
+            label={t('confirm_new_password')}
             type="password"
             fullWidth
           />

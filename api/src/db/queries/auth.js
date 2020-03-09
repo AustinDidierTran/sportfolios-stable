@@ -17,6 +17,7 @@ const {
   getUserIdFromRecoveryPasswordToken,
   getUserIdFromToken,
   setRecoveryTokenToUsed,
+  updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,
   validateEmailIsConfirmed,
   validateEmailIsUnique,
@@ -185,13 +186,32 @@ const userInfo = async ({ authToken }) => {
   return { basicUserInfo, status: 200 };
 }
 
+const changeUserInfo = async ({ authToken, firstName, lastName }) => {
+  console.log('authToken', authToken);
+
+  const user_id = await getUserIdFromToken(authToken);
+
+  if (!user_id) {
+    return 402;
+  }
+
+  await updateBasicUserInfoFromUserId({
+    user_id,
+    firstName,
+    lastName
+  });
+
+  return 200;
+}
+
 module.exports = {
-  signup,
-  login,
-  confirmEmail: confirmEmailRoute,
-  recoveryEmail,
-  recoverPassword,
-  resendConfirmationEmail,
   changePassword,
-  userInfo
+  changeUserInfo,
+  confirmEmail: confirmEmailRoute,
+  login,
+  recoverPassword,
+  recoveryEmail,
+  resendConfirmationEmail,
+  signup,
+  userInfo,
 }

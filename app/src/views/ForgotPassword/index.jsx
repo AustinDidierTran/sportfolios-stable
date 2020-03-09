@@ -60,7 +60,7 @@ export default function ForgotPassword() {
               namespace="email"
               formik={formik}
               type="email"
-              placeholder={t('email')}
+              label={t('email')}
               fullWidth
             />
           </CardContent>

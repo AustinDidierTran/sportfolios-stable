@@ -240,5 +240,37 @@ router.get(`${BASE_URL}/userInfo`, async ctx => {
     };
   }
 })
+// Basic User Info
+router.post(`${BASE_URL}/changeBasicUserInfo`, async ctx => {
+  try {
+    console.log('insude change basic user info');
+
+    const status = await queries.changeUserInfo(ctx.request.body);
+
+    if (status === 200) {
+      ctx.status = 200;
+      ctx.body = {
+        status: 'success',
+      }
+    } else if (status === 403) {
+      ctx.status = 403;
+      ctx.body = {
+        status: 'error',
+        message: 'Token is invalid'
+      }
+    } else {
+      ctx.status = status;
+      ctx.body = {
+        status: 'error',
+      }
+    }
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+})
 
 module.exports = router;

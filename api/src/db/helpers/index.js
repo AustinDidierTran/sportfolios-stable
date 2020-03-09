@@ -131,6 +131,22 @@ const setRecoveryTokenToUsed = async (token) => {
     .where({ token });
 }
 
+const updateBasicUserInfoFromUserId = async ({ user_id, firstName, lastName }) => {
+  const update = {};
+
+  if (firstName) {
+    update.first_name = firstName;
+  }
+
+  if (lastName) {
+    update.last_name = lastName;
+  }
+
+  await knex('user_info')
+    .update(update)
+    .where({ user_id });
+}
+
 const updatePasswordFromUserId = async ({
   hashedPassword,
   id,
@@ -172,6 +188,7 @@ module.exports = {
   getUserIdFromRecoveryPasswordToken,
   getUserIdFromToken,
   setRecoveryTokenToUsed,
+  updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,
   validateEmailIsConfirmed,
   validateEmailIsUnique,

@@ -59,7 +59,7 @@ export default function Login(props) {
             <TextField
               namespace="password"
               formik={formik}
-              placeholder={t('password')}
+              label={t('password')}
               type="password"
               fullWidth
             />

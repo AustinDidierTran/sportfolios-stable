@@ -205,7 +205,7 @@ export default function LoggedIn() {
               <SearchIcon />
             </div>
             <InputBase
-              placeholder={t('search')}
+              label={t('search')}
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
