@@ -34,6 +34,8 @@ export default function ChangePassword(props) {
     } else if (values.newPassword !== values.newPasswordConfirm) {
       errors.newPasswordConfirm = t('password_must_match');
     }
+
+    return errors;
   }
 
   const formik = useFormik({
