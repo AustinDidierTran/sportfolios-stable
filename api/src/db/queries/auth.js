@@ -29,6 +29,8 @@ const signup = async ({ firstName, lastName, email, password }) => {
 
   if (!isUnique) return { code: 403 };
 
+  if (!password || password.length < 8 || password.length > 16) { return { code: 403 } }
+
   const hashedPassword = await generateHashedPassword(password)
 
   const confirmationEmailToken = generateToken();
@@ -152,6 +154,14 @@ const resendConfirmationEmail = async ({ email }) => {
 
 const changePassword = async ({ authToken, oldPassword, newPassword }) => {
   const user_id = await getUserIdFromToken(authToken);
+
+  if (!oldPassword || oldPassword.length < 8 || oldPassword.length > 16) {
+    return 404;
+  }
+
+  if (!newPassword || newPassword.length < 8 || newPassword.length > 16) {
+    return 404;
+  }
 
   if (!user_id) {
     return 402;
