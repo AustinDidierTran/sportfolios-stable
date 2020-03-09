@@ -62,9 +62,29 @@ const generateToken = () => {
 const getBasicUserInfoFromToken = async authToken => {
   const user_id = await getUserIdFromToken(authToken);
 
-  return knex('user_info')
+  const basicUserInfo = await knex('user_info')
     .select(['first_name', 'language', 'last_name'])
     .where({ user_id });
+
+  if (!basicUserInfo || !basicUserInfo.length) {
+    return null;
+  }
+
+  return basicUserInfo[0];
+}
+
+const getEmailsFromAuthToken = async (authToken) => {
+  const user_id = await getUserIdFromToken(authToken);
+
+  if (!user_id) {
+    return null;
+  }
+
+  const emails = await knex('user_email')
+    .select(['email', 'confirmed_email_at'])
+    .where({ user_id });
+
+  return emails;
 }
 
 const getEmailFromToken = async ({ token }) => {
@@ -187,6 +207,7 @@ module.exports = {
   generateToken,
   getBasicUserInfoFromToken,
   getEmailFromToken,
+  getEmailsFromAuthToken,
   getHashedPasswordFromId,
   getUserIdFromEmail,
   getUserIdFromRecoveryPasswordToken,

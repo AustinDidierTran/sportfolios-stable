@@ -36,7 +36,7 @@ export function StoreProvider(props) {
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
 
-    fetch(`${API_BASE_URL}/api/auth/userInfo?authToken=${authToken}`)
+    fetch(`${API_BASE_URL}/api/user/userInfo?authToken=${authToken}`)
       .then((res) => res.json())
       .then(({ data }) => {
         if (data.language) {

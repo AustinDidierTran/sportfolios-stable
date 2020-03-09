@@ -10,14 +10,11 @@ const {
   createRecoveryEmailToken,
   generateHashedPassword,
   generateToken,
-  getBasicUserInfoFromToken,
   getEmailFromToken,
   getHashedPasswordFromId,
   getUserIdFromEmail,
   getUserIdFromRecoveryPasswordToken,
-  getUserIdFromToken,
   setRecoveryTokenToUsed,
-  updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,
   validateEmailIsConfirmed,
   validateEmailIsUnique,
@@ -152,75 +149,11 @@ const resendConfirmationEmail = async ({ email }) => {
   return 200;
 }
 
-const changePassword = async ({ authToken, oldPassword, newPassword }) => {
-  const user_id = await getUserIdFromToken(authToken);
-
-  if (!oldPassword || oldPassword.length < 8 || oldPassword.length > 16) {
-    return 404;
-  }
-
-  if (!newPassword || newPassword.length < 8 || newPassword.length > 16) {
-    return 404;
-  }
-
-  if (!user_id) {
-    return 402;
-  }
-
-  const oldHashedPassword = await getHashedPasswordFromId(user_id);
-
-  if (!oldHashedPassword) {
-    return 404;
-  }
-
-  const isSame = bcrypt.compareSync(oldPassword, oldHashedPassword);
-
-  if (!isSame) {
-    return 403;
-  }
-
-  const newHashedPassword = await generateHashedPassword(newPassword);
-
-  await updatePasswordFromUserId({ id: user_id, hashedPassword: newHashedPassword })
-
-  return 200;
-}
-
-const userInfo = async ({ authToken }) => {
-  const [basicUserInfo] = await getBasicUserInfoFromToken(authToken);
-
-  if (!basicUserInfo) {
-    return { status: 403 }
-  }
-  // get basic user info
-  return { basicUserInfo, status: 200 };
-}
-
-const changeUserInfo = async ({ authToken, firstName, language, lastName }) => {
-  const user_id = await getUserIdFromToken(authToken);
-
-  if (!user_id) {
-    return 402;
-  }
-
-  await updateBasicUserInfoFromUserId({
-    user_id,
-    firstName,
-    language,
-    lastName
-  });
-
-  return 200;
-}
-
 module.exports = {
-  changePassword,
-  changeUserInfo,
   confirmEmail: confirmEmailRoute,
   login,
   recoverPassword,
   recoveryEmail,
   resendConfirmationEmail,
   signup,
-  userInfo,
 }

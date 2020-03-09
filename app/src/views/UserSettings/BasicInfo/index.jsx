@@ -37,7 +37,7 @@ export default function BasicInfo(props) {
     onSubmit: async values => {
       const { firstName, language, lastName } = values;
 
-      const res = await fetch(`${API_BASE_URL}/api/auth/changeBasicUserInfo`, {
+      const res = await fetch(`${API_BASE_URL}/api/user/changeBasicUserInfo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ export default function BasicInfo(props) {
   })
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/auth/userInfo?authToken=${authToken}`)
+    fetch(`${API_BASE_URL}/api/user/userInfo?authToken=${authToken}`)
       .then((res) => res.json())
       .then(({ data }) => {
         formik.setValues({ firstName: data.first_name, language: data.language, lastName: data.last_name });

@@ -49,7 +49,7 @@ export default function ChangePassword(props) {
     validateOnBlur: false,
     onSubmit: async values => {
       const { oldPassword, newPassword } = values;
-      const res = await fetch(`${API_BASE_URL}/api/auth/changePassword`, {
+      const res = await fetch(`${API_BASE_URL}/api/user/changePassword`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
