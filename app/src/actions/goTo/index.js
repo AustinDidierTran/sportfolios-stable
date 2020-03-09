@@ -1,7 +1,7 @@
 import history from "../../stores/history";
 
 export const ROUTES = {
-  confirmationEmailSent: '/confirmationEmailSent',
+  confirmationEmailSent: '/confirmationEmailSent/:email',
   confirmEmail: '/confirmEmail/:token',
   confirmEmailFailure: '/ConfirmEmailFailure',
   confirmEmailSuccess: '/confirmEmailSuccess',

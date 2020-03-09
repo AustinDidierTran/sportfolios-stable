@@ -70,7 +70,7 @@ export default function SignupCard(props) {
         }),
       });
 
-      goTo(ROUTES.confirmationEmailSent);
+      goTo(ROUTES.confirmationEmailSent, { email });
     }
   });
 
