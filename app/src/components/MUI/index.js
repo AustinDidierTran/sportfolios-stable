@@ -10,6 +10,7 @@ export { default as IconButton } from './IconButton';
 export { default as InputBase } from './InputBase';
 export { default as Menu } from './Menu';
 export { default as MenuItem } from './MenuItem';
+export { default as Select } from './Select';
 export { default as TextField } from './TextField';
 export { default as Toolbar } from './Toolbar';
 export { default as Typography } from './Typography';

@@ -63,7 +63,7 @@ const getBasicUserInfoFromToken = async authToken => {
   const user_id = await getUserIdFromToken(authToken);
 
   return knex('user_info')
-    .select(['first_name', 'last_name'])
+    .select(['first_name', 'language', 'last_name'])
     .where({ user_id });
 }
 
@@ -131,11 +131,15 @@ const setRecoveryTokenToUsed = async (token) => {
     .where({ token });
 }
 
-const updateBasicUserInfoFromUserId = async ({ user_id, firstName, lastName }) => {
+const updateBasicUserInfoFromUserId = async ({ user_id, firstName, language, lastName }) => {
   const update = {};
 
   if (firstName) {
     update.first_name = firstName;
+  }
+
+  if (language) {
+    update.language = language;
   }
 
   if (lastName) {

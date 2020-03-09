@@ -71,8 +71,8 @@ export default function ChangePassword(props) {
 
   return (
     <Card className={styles.card}>
-      <form onSubmit={formik.handleSubmit}>
-        <CardContent>
+      <form onSubmit={formik.handleSubmit} className={styles.form}>
+        <CardContent className={styles.inputs}>
           <Typography gutterBottom variant="h5" component="h2">{t('change_password')}</Typography>
           <TextField
             formik={formik}
@@ -96,7 +96,7 @@ export default function ChangePassword(props) {
             fullWidth
           />
         </CardContent>
-        <CardActions>
+        <CardActions className={styles.buttons}>
           <Button size="small"
             color="primary"
             variant="contained"

@@ -6,9 +6,6 @@ import TextField from '@material-ui/core/TextField';
 export default function CustomTextField(props) {
   const { formik, namespace } = props;
 
-  console.log('formik', formik);
-
-
   return <TextField
     id={namespace}
     name={namespace}

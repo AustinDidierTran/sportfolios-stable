@@ -4,13 +4,21 @@
   margin-left: auto;
   margin-right: auto;
 }
-.loginButton {
-  margin-left: auto;
-  margin-right: auto;
-}
-.linksContainer {
-  justify-content: space-between;
-}
 .button {
   width: 100%;
+}
+
+.form {
+  display: grid;
+  grid-template-areas: 'inputs' 'buttons';
+  grid-template-rows: auto 46px;
+  height: 100%;
+}
+
+.inputs {
+  grid-area: inputs;
+}
+
+.buttons {
+  grid-area: buttons;
 }

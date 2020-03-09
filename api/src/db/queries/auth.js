@@ -186,9 +186,7 @@ const userInfo = async ({ authToken }) => {
   return { basicUserInfo, status: 200 };
 }
 
-const changeUserInfo = async ({ authToken, firstName, lastName }) => {
-  console.log('authToken', authToken);
-
+const changeUserInfo = async ({ authToken, firstName, language, lastName }) => {
   const user_id = await getUserIdFromToken(authToken);
 
   if (!user_id) {
@@ -198,6 +196,7 @@ const changeUserInfo = async ({ authToken, firstName, lastName }) => {
   await updateBasicUserInfoFromUserId({
     user_id,
     firstName,
+    language,
     lastName
   });
 

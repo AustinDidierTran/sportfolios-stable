@@ -1,6 +1,9 @@
 import React, { useReducer, useEffect } from 'react';
 import { goTo, ROUTES } from './actions/goTo';
 
+import { API_BASE_URL } from '../../conf';
+import i18n from './i18n';
+
 export const Store = React.createContext();
 
 const initialState = { authToken: localStorage.getItem('authToken') };
@@ -31,9 +34,15 @@ export function StoreProvider(props) {
   const value = { state, dispatch };
 
   useEffect(() => {
+    const authToken = localStorage.getItem('authToken');
 
-    fetch('')
-
+    fetch(`${API_BASE_URL}/api/auth/userInfo?authToken=${authToken}`)
+      .then((res) => res.json())
+      .then(({ data }) => {
+        if (data.language) {
+          i18n.changeLanguage(data.language)
+        }
+      });
   }, []);
 
   return (

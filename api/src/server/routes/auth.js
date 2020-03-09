@@ -211,7 +211,6 @@ router.post(`${BASE_URL}/changePassword`, async ctx => {
 // Basic User Info
 router.get(`${BASE_URL}/userInfo`, async ctx => {
   try {
-
     const { basicUserInfo, status } = await queries.userInfo(ctx.request.query);
 
     if (status === 200) {
@@ -243,8 +242,6 @@ router.get(`${BASE_URL}/userInfo`, async ctx => {
 // Basic User Info
 router.post(`${BASE_URL}/changeBasicUserInfo`, async ctx => {
   try {
-    console.log('insude change basic user info');
-
     const status = await queries.changeUserInfo(ctx.request.body);
 
     if (status === 200) {
