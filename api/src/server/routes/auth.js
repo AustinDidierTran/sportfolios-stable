@@ -208,4 +208,35 @@ router.post(`${BASE_URL}/changePassword`, async ctx => {
   }
 })
 
+// Basic User Info
+router.post(`${BASE_URL}/userInfo`, async ctx => {
+  try {
+    const code = await queries.userInfo(ctx.request.body);
+
+    if (code === 200) {
+      ctx.status = 200;
+      ctx.body = {
+        status: 'success',
+      }
+    } else if (code === 403) {
+      ctx.status = 403;
+      ctx.body = {
+        status: 'error',
+        message: 'Token is invalid'
+      }
+    } else {
+      ctx.status = code;
+      ctx.body = {
+        status: 'error',
+      }
+    }
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+})
+
 module.exports = router;

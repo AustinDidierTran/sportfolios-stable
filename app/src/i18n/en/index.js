@@ -26,10 +26,12 @@ export default {
         old_password: 'Old password',
         new_password: 'New Password',
         confirm_new_password: 'Confirm New Password',
+        basic_info: 'Basic Info',
+        emails: 'Emails',
         // DESCRIPTION CARD
-        description_card_title: 'Improve your athlete amateur sport experience.',
-        description_card_first_point: 'Automate your league\'s organisation workflow',
-        description_card_second_point: 'Archive all your previous results in your personal Sportfolio.',
-        description_card_third_point: 'Find your perfect teammates based on their previous results.',
+        description_card_title: 'Improve your amateur sport experience.',
+        description_card_first_point: 'Automate your league\'s organisation workflow.',
+        description_card_second_point: 'Archive your results in your personal Sportfolio.',
+        description_card_third_point: 'Connect with your perfect teammates.',
     },
 };

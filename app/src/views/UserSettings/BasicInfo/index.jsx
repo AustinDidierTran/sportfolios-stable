@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { Button, Card, CardContent, TextField, CardActions, Typography } from '../../../components/MUI';
-import styles from './ChangePassword.module.css';
+import styles from './BasicInfo.module.css';
 
 import { API_BASE_URL } from '../../../../../conf';
 import { Store } from '../../../Store';
@@ -78,41 +78,9 @@ export default function ChangePassword(props) {
 
   return (
     <Card className={styles.card}>
-      <form onSubmit={formik.handleSubmit}>
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">{t('change_password')}</Typography>
-          <TextField
-            formik={formik}
-            namespace="oldPassword"
-            placeholder={t('old_password')}
-            type="password"
-            fullWidth
-          />
-          <TextField
-            formik={formik}
-            namespace="newPassword"
-            placeholder={t('new_password')}
-            type="password"
-            fullWidth
-          />
-          <TextField
-            formik={formik}
-            namespace="newPasswordConfirm"
-            placeholder={t('confirm_new_password')}
-            type="password"
-            fullWidth
-          />
-        </CardContent>
-        <CardActions>
-          <Button size="small"
-            color="primary"
-            variant="contained"
-            className={styles.button}
-            type="submit">
-            {t('change_password')}
-          </Button>
-        </CardActions>
-      </form>
+      <CardContent>
+        <Typography gutterBottom variant="h5" component="h2">{t('basic_info')}</Typography>
+      </CardContent>
     </Card>
   )
 }

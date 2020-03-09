@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import { goTo, ROUTES } from './actions/goTo';
 
 export const Store = React.createContext();
@@ -29,6 +29,13 @@ function reducer(state, action) {
 export function StoreProvider(props) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const value = { state, dispatch };
+
+  useEffect(() => {
+
+    fetch('')
+
+  }, []);
+
   return (
     <Store.Provider value={value}>{props.children}</Store.Provider>
   );

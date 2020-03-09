@@ -20,6 +20,13 @@ export default {
         email_password_no_match: 'Erreur du courriel ou du mot de passe. Svp, réessayez.',
         token_expired: 'Le token n\'est plus valide, svp en demander un autre.',
         password_must_match: 'Vos mots de passes doivent être identique',
-        wrong_password: 'Mauvais mot de passe. Veuillez réessayer.'
+        wrong_password: 'Mauvais mot de passe. Veuillez réessayer.',
+        basic_info: 'Information générales',
+        emails: 'Courriels',
+        // DESCRIPTION CARD
+        description_card_title: 'Améliorer votre expérience de sport amateur',
+        description_card_first_point: 'Automatisé la logistique de votre organisation',
+        description_card_second_point: 'Archivé les résultats dans votre Sportfolios personnel.',
+        description_card_third_point: 'Connectez vos coéquipiers idéaux.',
     },
 }

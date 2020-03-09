@@ -1,19 +1,28 @@
 .title {
     margin-top: 32px;
+    grid-area: title;
 }
-.card {
-    margin-top: 32px;
-    max-width: 534px;
-    margin-left: auto;
-    margin-right: auto;
+
+.container {
+    display: grid;
+    grid-template-areas: 'title' 'basic' 'password' 'email';
+    grid-template-columns: 1fr;
+    column-gap: 32px;
 }
-.loginButton {
-    margin-left: auto;
-    margin-right: auto;
+
+@media (min-width: 768px) {
+    .container {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas: 
+            'title .'
+            'basic password' 
+            'email email';
+    }
 }
-.linksContainer {
-    justify-content: space-between;
-}
-.button {
-    width: 100%;
+
+@media (min-width: 992px) {
+    .container {
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-areas: 'title . .' 'basic password email' ;
+    }
 }
