@@ -11,12 +11,19 @@ import { API_BASE_URL } from '../../../../conf';
 import { goTo, ROUTES } from '../../actions/goTo';
 import LoginCard from './LoginCard';
 import SignupCard from './SignupCard';
+import ForgotPasswordCard from './ForgotPasswordCard';
 import DescriptionCard from './DescriptionCard';
 
 export default function Login() {
   const { dispatch } = useContext(Store);
   const { t } = useTranslation();
-  const [isSignup, setIsSignup] = useState(true);
+  const CARD_ENUM = {
+    SIGNUP: 1,
+    FORGOTPASSWORD: 2,
+    LOGIN: 3,
+  }
+
+  const [card, setCard] = useState(CARD_ENUM.SIGNUP);
 
   const validate = values => {
     const errors = {};
@@ -91,9 +98,11 @@ export default function Login() {
     <div className={styles.main}>
       <Container className={styles.container}>
         <DescriptionCard />
-        {isSignup ?
-          <SignupCard setIsSignup={setIsSignup} /> :
-          <LoginCard />}
+        {card === CARD_ENUM.SIGNUP ?
+          <SignupCard setCard={setCard} /> :
+          card === CARD_ENUM.LOGIN ?
+            <LoginCard setCard={setCard} /> :
+            <ForgotPasswordCard setCard={setCard} />}
       </Container>
     </div>
   );

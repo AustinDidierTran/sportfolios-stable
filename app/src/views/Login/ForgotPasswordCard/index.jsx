@@ -3,14 +3,15 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
-import styles from './ForgotPassword.module.css';
+import styles from './ForgotPasswordCard.module.css';
 
-import { Store } from '../../Store';
-import Button from '../../components/MUI/Button';
-import { Card, CardActions, CardContent, Divider, TextField, Typography } from '../../components/MUI';
-import { API_BASE_URL } from '../../../../conf';
+import { Store } from '../../../Store';
+import Button from '../../../components/MUI/Button';
+import { Card, CardActions, CardContent, Divider, TextField, Typography } from '../../../components/MUI';
+import { API_BASE_URL } from '../../../../../conf';
 
-export default function ForgotPasswordCard() {
+export default function ForgotPassword(props) {
+  const { setCard } = props;
   const { dispatch } = useContext(Store);
   const { t } = useTranslation();
 
@@ -77,10 +78,10 @@ export default function ForgotPasswordCard() {
           </CardActions>
           <Divider />
           <CardActions className={styles.linksContainer}>
-            <Link to={'/login'}>
+            <Link onClick={() => setCard(3)}>
               <Typography>{t('login')}</Typography>
             </Link>
-            <Link to={'/signup'}>
+            <Link onClick={() => setCard(1)}>
               <Typography>{t('no_account_signup')}</Typography>
             </Link>
           </CardActions>

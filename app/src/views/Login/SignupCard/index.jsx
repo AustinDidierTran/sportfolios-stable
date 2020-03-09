@@ -19,7 +19,7 @@ import { API_BASE_URL } from '../../../../../conf';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
 export default function SignupCard(props) {
-  const { setIsSignup } = props;
+  const { setCard } = props;
   const { t } = useTranslation();
 
   const validate = values => {
@@ -121,7 +121,7 @@ export default function SignupCard(props) {
         </CardActions>
         <Divider />
         <CardActions className={styles.linksContainer}>
-          <Link onClick={() => setIsSignup(false)}>
+          <Link onClick={() => setCard(3)}>
             <Typography>{t('have_an_account_signin')}</Typography>
           </Link>
         </CardActions>
