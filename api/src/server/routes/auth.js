@@ -209,23 +209,25 @@ router.post(`${BASE_URL}/changePassword`, async ctx => {
 })
 
 // Basic User Info
-router.post(`${BASE_URL}/userInfo`, async ctx => {
+router.get(`${BASE_URL}/userInfo`, async ctx => {
   try {
-    const code = await queries.userInfo(ctx.request.body);
 
-    if (code === 200) {
+    const { basicUserInfo, status } = await queries.userInfo(ctx.request.query);
+
+    if (status === 200) {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
+        data: basicUserInfo
       }
-    } else if (code === 403) {
+    } else if (status === 403) {
       ctx.status = 403;
       ctx.body = {
         status: 'error',
         message: 'Token is invalid'
       }
     } else {
-      ctx.status = code;
+      ctx.status = status;
       ctx.body = {
         status: 'error',
       }

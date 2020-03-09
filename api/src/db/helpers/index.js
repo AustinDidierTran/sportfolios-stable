@@ -59,6 +59,14 @@ const generateToken = () => {
   return uuid.v1();
 }
 
+const getBasicUserInfoFromToken = async authToken => {
+  const user_id = await getUserIdFromToken(authToken);
+
+  return knex('user_info')
+    .select(['first_name', 'last_name'])
+    .where({ user_id });
+}
+
 const getEmailFromToken = async ({ token }) => {
   const response = await knex('confirmation_email_token')
     .select(['email', 'expires_at'])
@@ -148,7 +156,6 @@ const validateEmailIsUnique = async (email) => {
   return !users.length;
 }
 
-
 module.exports = {
   confirmEmail,
   createUser,
@@ -158,6 +165,7 @@ module.exports = {
   createRecoveryEmailToken,
   generateHashedPassword,
   generateToken,
+  getBasicUserInfoFromToken,
   getEmailFromToken,
   getHashedPasswordFromId,
   getUserIdFromEmail,

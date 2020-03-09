@@ -10,6 +10,7 @@ const {
   createRecoveryEmailToken,
   generateHashedPassword,
   generateToken,
+  getBasicUserInfoFromToken,
   getEmailFromToken,
   getHashedPasswordFromId,
   getUserIdFromEmail,
@@ -175,7 +176,13 @@ const changePassword = async ({ authToken, oldPassword, newPassword }) => {
 }
 
 const userInfo = async ({ authToken }) => {
+  const [basicUserInfo] = await getBasicUserInfoFromToken(authToken);
 
+  if (!basicUserInfo) {
+    return { status: 403 }
+  }
+  // get basic user info
+  return { basicUserInfo, status: 200 };
 }
 
 module.exports = {

@@ -57,24 +57,17 @@ export default function ChangePassword(props) {
         })
       });
 
-      console.log('res.status', res.status);
-
-
       if (res.status === 402) {
         // Token is expired, redirect
         goTo(ROUTES.login);
       }
 
       if (res.status === 403) {
-        console.log('heyyyy')
         // old password doesn't match
         formik.setFieldError('oldPassword', t('wrong_password'));
       }
     }
   })
-
-  console.log('styles', styles);
-
 
   return (
     <Card className={styles.card}>

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { Button, Card, CardContent, TextField, CardActions, Typography } from '../../../components/MUI';
@@ -10,9 +10,14 @@ import { goTo, ROUTES } from '../../../actions/goTo';
 
 
 
-export default function ChangePassword(props) {
+export default function BasicInfo(props) {
   const { state: { authToken } } = useContext(Store);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/auth/userInfo?authToken=${authToken}`).then((res) => res.json()).then(res => console.log('res', res))
+
+  }, []);
 
   const validate = values => {
     const errors = {};
@@ -47,7 +52,7 @@ export default function ChangePassword(props) {
     validateOnBlur: false,
     onSubmit: async values => {
       const { oldPassword, newPassword } = values;
-      const res = await fetch(`${API_BASE_URL}/api/auth/changePassword`, {
+      const res = await fetch(`${API_BASE_URL}/api/auth/changePassword?token=${authToken}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,24 +62,17 @@ export default function ChangePassword(props) {
         })
       });
 
-      console.log('res.status', res.status);
-
-
       if (res.status === 402) {
         // Token is expired, redirect
         goTo(ROUTES.login);
       }
 
       if (res.status === 403) {
-        console.log('heyyyy')
         // old password doesn't match
         formik.setFieldError('oldPassword', t('wrong_password'));
       }
     }
   })
-
-  console.log('styles', styles);
-
 
   return (
     <Card className={styles.card}>
