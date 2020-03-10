@@ -2,6 +2,8 @@ const knex = require('../connection');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 
+const { sendConfirmationEmail } = require('../../server/utils//nodeMailer');
+
 const confirmEmail = async ({ email }) => {
   await knex('user_email')
     .update('confirmed_email_at', new Date())
@@ -196,6 +198,20 @@ const validateEmailIsUnique = async (email) => {
   return !users.length;
 }
 
+const sendNewConfirmationEmailAllIncluded = async (email) => {
+  const confirmationEmailToken = generateToken();
+
+  await createConfirmationEmailToken({
+    email,
+    token: confirmationEmailToken,
+  });
+
+  await sendConfirmationEmail({
+    email,
+    token: confirmationEmailToken,
+  });
+}
+
 module.exports = {
   confirmEmail,
   createUser,
@@ -212,6 +228,7 @@ module.exports = {
   getUserIdFromEmail,
   getUserIdFromRecoveryPasswordToken,
   getUserIdFromToken,
+  sendNewConfirmationEmailAllIncluded,
   setRecoveryTokenToUsed,
   updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,

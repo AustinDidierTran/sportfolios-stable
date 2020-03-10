@@ -20,7 +20,7 @@ export default function CustomSelect(props) {
       <MenuItem disabled value="">
         {label}
       </MenuItem>
-      {options && options.length ? options.map(option => <MenuItem value={option.value}>
+      {options && options.length ? options.map(option => <MenuItem value={option.value} key={option.value}>
         {option.display}
       </MenuItem>
       ) : <></>}

@@ -1,13 +1,31 @@
 const bcrypt = require('bcrypt');
+
+
 const {
+  createUserEmail,
   generateHashedPassword,
   getBasicUserInfoFromToken,
   getEmailsFromAuthToken,
   getHashedPasswordFromId,
   getUserIdFromToken,
+  sendNewConfirmationEmailAllIncluded,
   updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,
 } = require('../helpers');
+
+const addEmail = async ({ authToken, email }) => {
+  const user_id = await getUserIdFromToken(authToken);
+
+  if (!user_id) {
+    return 402;
+  }
+
+  await createUserEmail({ user_id, email });
+
+  await sendNewConfirmationEmailAllIncluded(email);
+
+  return 200;
+}
 
 const changePassword = async ({ authToken, oldPassword, newPassword }) => {
   const user_id = await getUserIdFromToken(authToken);
@@ -82,6 +100,7 @@ const userInfo = async ({ authToken }) => {
 }
 
 module.exports = {
+  addEmail,
   changePassword,
   changeUserInfo,
   getEmails,

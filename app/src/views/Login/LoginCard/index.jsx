@@ -11,7 +11,7 @@ import { API_BASE_URL } from '../../../../../conf';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
 
-export default function LoginCard(props) {
+export default function LoginCard() {
   const { dispatch } = useContext(Store);
   const { t } = useTranslation();
 
