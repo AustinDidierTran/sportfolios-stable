@@ -1,0 +1,15 @@
+.card {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.description {
+  grid-area: description;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.button {
+  width: 100%;
+}

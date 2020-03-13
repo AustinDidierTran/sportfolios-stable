@@ -2,11 +2,13 @@ const Router = require('koa-router');
 const queries = require('../../db/queries/associations');
 
 const router = new Router();
-const BASE_URL = '/api/v1/associations';
+const BASE_URL = '/api/associations';
 
 router.get(BASE_URL, async (ctx) => {
+  const { includeDeleted } = ctx.query;
+
   try {
-    const associations = await queries.getAllAssociations();
+    const associations = await queries.getAllAssociations(includeDeleted);
     ctx.body = {
       status: 'success',
       data: associations,
@@ -107,6 +109,7 @@ router.delete(`${BASE_URL}/:id`, async (ctx) => {
       }
     } else {
       ctx.status = 404;
+
       ctx.body = {
         status: 'error',
         message: 'That association does not exist.'
@@ -115,6 +118,31 @@ router.delete(`${BASE_URL}/:id`, async (ctx) => {
   } catch (err) {
     ctx.status = 400;
     ctx.body = { status: 'error', message: err.message || 'Sorry, an error has occured.' }
+  }
+})
+
+router.put(`${BASE_URL}/restore/:id`, async (ctx) => {
+  try {
+    const association = await queries.restoreAssociation(ctx.params.id);
+    if (association.length) {
+      ctx.status = 200;
+      ctx.body = {
+        status: 'success',
+        data: association,
+      };
+    } else {
+      ctx.status = 404;
+      ctx.body = {
+        status: 'error',
+        message: 'That association does not exist.'
+      };
+    }
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured'
+    };
   }
 })
 

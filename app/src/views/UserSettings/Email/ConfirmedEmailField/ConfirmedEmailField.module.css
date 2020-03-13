@@ -1,0 +1,17 @@
+.container {
+  display: grid;
+  grid-template-areas: 'text confirmed-icon delete-icon';
+  grid-template-columns: auto 24px 24px;
+  column-gap: 16px;
+}
+
+.textField {
+  grid-area: text;
+}
+
+.confirmedIcon {
+  grid-area: confirmed-icon;
+}
+.deleteIcon {
+  grid-area: delete-icon;
+}

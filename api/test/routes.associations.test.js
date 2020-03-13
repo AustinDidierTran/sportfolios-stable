@@ -32,11 +32,11 @@ describe('routes : associations', () => {
     return knex.migrate.rollback();
   });
 
-  describe('GET /api/v1/associations', () => {
+  describe('GET /api/associations', () => {
     it('should return all associations', done => {
       chai
         .request(server)
-        .get('/api/v1/associations')
+        .get('/api/associations')
         .end((err, res) => {
           should.not.exist(err);
           res.status.should.equal(200);
@@ -49,11 +49,11 @@ describe('routes : associations', () => {
     });
   });
 
-  describe('GET /api/v1/associations/:id', () => {
+  describe('GET /api/associations/:id', () => {
     it('should respond with a single association', done => {
       chai
         .request(server)
-        .get('/api/v1/associations/1')
+        .get('/api/associations/1')
         .end((err, res) => {
           should.not.exist(err);
           res.status.should.equal(200);
@@ -67,7 +67,7 @@ describe('routes : associations', () => {
     it('should throw an error if the association does not exist', done => {
       chai
         .request(server)
-        .get('/api/v1/associations/9999999')
+        .get('/api/associations/9999999')
         .end((err, res) => {
           should.not.exist(err);
           res.status.should.equal(404);
@@ -79,11 +79,11 @@ describe('routes : associations', () => {
     });
   });
 
-  describe('POST /api/v1/associations', () => {
+  describe('POST /api/associations', () => {
     it('should return the association that was added', done => {
       chai
         .request(server)
-        .post('/api/v1/associations')
+        .post('/api/associations')
         .send({
           name: "Association d'ultimate d'Orford",
           sport: 'Ultimate Frisbee',
@@ -103,7 +103,7 @@ describe('routes : associations', () => {
     it('should throw an error if the payload is malformed', done => {
       chai
         .request(server)
-        .post('/api/v1/associations')
+        .post('/api/associations')
         .send({
           name: "Association d'ultimate de Orford",
         })
@@ -118,16 +118,15 @@ describe('routes : associations', () => {
     });
   });
 
-  describe('PUT /api/v1/associations', () => {
+  describe('PUT /api/associations', () => {
     it('should return the association that was updated', done => {
       knex('associations')
         .select('*')
         .then(association => {
           const associationObject = association[0];
-          console.log('associationObject', associationObject);
           chai
             .request(server)
-            .put(`/api/v1/associations/${associationObject.id}`)
+            .put(`/api/associations/${associationObject.id}`)
             .send({
               memberLimit: 50,
             })
@@ -148,7 +147,7 @@ describe('routes : associations', () => {
     it('should throw an error if the association does not exist', done => {
       chai
         .request(server)
-        .put('/api/v1/association/9999999')
+        .put('/api/association/9999999')
         .send({
           rating: 9,
         })
@@ -163,7 +162,7 @@ describe('routes : associations', () => {
     });
   });
 
-  describe('DELETE /api/v1/associations/:id', () => {
+  describe('DELETE /api/associations/:id', () => {
     it('should return the association that was deleted', done => {
       knex('associations')
         .select('*')
@@ -172,7 +171,7 @@ describe('routes : associations', () => {
           const lengthBeforeDelete = associations.length;
           chai
             .request(server)
-            .delete(`/api/v1/associations/${associationObject.id}`)
+            .delete(`/api/associations/${associationObject.id}`)
             .end((err, res) => {
               // there should be no errors
               should.not.exist(err);
@@ -201,7 +200,7 @@ describe('routes : associations', () => {
     it('should throw an error if the association does not exist', done => {
       chai
         .request(server)
-        .delete('/api/v1/associations/9999999')
+        .delete('/api/associations/9999999')
         .end((err, res) => {
           // there should an error
           should.not.exist(err);
