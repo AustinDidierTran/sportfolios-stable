@@ -29,7 +29,6 @@ export default {
         password_must_match: 'Passwords must match',
         something_went_wrong: 'Something went wrong, please try again',
         token_expired: 'Token is no longer valid, please request a new one.',
-        user_settings: 'User Settings',
         value_is_required: 'Value is required.',
         wrong_password: 'Wrong password. Please try again',
         // DESCRIPTION CARD
@@ -37,5 +36,8 @@ export default {
         description_card_first_point: 'Automate your league\'s organisation workflow.',
         description_card_second_point: 'Archive your results in your personal Sportfolio.',
         description_card_third_point: 'Connect with your perfect teammates.',
+        // Page names
+        admin_panel: 'Admin Panel',
+        user_settings: 'User Settings',
     },
 };

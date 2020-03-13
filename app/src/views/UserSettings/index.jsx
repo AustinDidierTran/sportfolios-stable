@@ -9,7 +9,7 @@ import ChangePassword from './ChangePassword';
 import Email from './Email';
 import { Typography, Container } from '../../components/MUI';
 
-export default function Login() {
+export default function UserSettings() {
   const { t } = useTranslation();
 
   return (

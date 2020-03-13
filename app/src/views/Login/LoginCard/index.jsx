@@ -74,11 +74,15 @@ export default function LoginCard() {
       const { data } = await res.json();
 
       if (data) {
-        const { token } = JSON.parse(data);
+        const { token, userInfo } = JSON.parse(data);
         dispatch({
           type: ACTION_ENUM.LOGIN,
           payload: token,
         });
+        dispatch({
+          type: ACTION_ENUM.UPDATE_USER_INFO,
+          payload: userInfo
+        })
         goTo(ROUTES.userSettings);
       }
     }

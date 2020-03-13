@@ -8,6 +8,7 @@ import teal from '@material-ui/core/colors/teal';
 
 import { Router, Switch, Route } from 'react-router-dom';
 
+import AdminPanel from '../AdminPanel';
 import Header from '../Header';
 import Login from '../Login';
 import Main from '../Main';
@@ -22,6 +23,7 @@ import UserSettings from '../UserSettings';
 
 import styles from './App.module.css';
 import history from '../../stores/history';
+import AdminRoute from './AdminRoute';
 import PrivateRoute from './PrivateRoute';
 import { ROUTES } from '../../actions/goTo';
 
@@ -41,6 +43,7 @@ export default function App() {
           </div>
           <div className={styles.main}>
             <Switch>
+              <AdminRoute path={ROUTES.adminPanel} component={AdminPanel} />
               <Route path={ROUTES.confirmEmail} component={ConfirmEmail} />
               <Route path={ROUTES.confirmEmailFailure} component={ConfirmEmailFailure} />
               <Route path={ROUTES.confirmEmailSuccess} component={ConfirmEmailSuccess} />
