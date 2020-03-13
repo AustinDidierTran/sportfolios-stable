@@ -1,6 +1,7 @@
 import history from "../../stores/history";
 
 export const ROUTES = {
+  adminPanel: '/adminPanel',
   confirmationEmailSent: '/confirmationEmailSent/:email',
   confirmEmail: '/confirmEmail/:token',
   confirmEmailFailure: '/ConfirmEmailFailure',

@@ -10,6 +10,7 @@ const {
   createRecoveryEmailToken,
   generateHashedPassword,
   generateToken,
+  getBasicUserInfoFromToken,
   getEmailFromToken,
   getHashedPasswordFromId,
   getUserIdFromEmail,
@@ -82,7 +83,9 @@ const login = async ({ email, password }) => {
       expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
-    return { status: 200, token };
+    const userInfo = await getBasicUserInfoFromToken(token);
+
+    return { status: 200, token, userInfo };
   } else {
     return { status: 403 };
   }

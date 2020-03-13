@@ -32,7 +32,7 @@ router.post(`${BASE_URL}/signup`, async ctx => {
 
 router.post(`${BASE_URL}/login`, async ctx => {
   try {
-    const { status, token } = await queries.login(ctx.request.body);
+    const { status, token, userInfo } = await queries.login(ctx.request.body);
 
     if (!token) {
       ctx.status = status;
@@ -45,6 +45,7 @@ router.post(`${BASE_URL}/login`, async ctx => {
         status: 'success',
         data: JSON.stringify({
           token,
+          userInfo
         }),
       };
     }

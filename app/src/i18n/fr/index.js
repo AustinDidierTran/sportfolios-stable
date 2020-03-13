@@ -29,8 +29,6 @@ export default {
         password_must_match: 'Vos mots de passes doivent être identique',
         something_went_wrong: 'Une erreur s\'est produite. Veuillez réessayer.',
         token_expired: 'Le token n\'est plus valide, svp en demander un autre.',
-        user_settings: 'Paramètres utilisateur',
-
         value_is_required: 'Une valeur est obligatoire.',
         wrong_password: 'Mauvais mot de passe. Veuillez réessayer.',
         // DESCRIPTION CARD
@@ -38,5 +36,8 @@ export default {
         description_card_first_point: 'Automatisez la logistique de vos activités.',
         description_card_second_point: 'Archivez les résultats dans votre Sportfolios personnel.',
         description_card_third_point: 'Connectez avec vos communautés sportives.',
+        // Page names
+        admin_panel: 'Panneaux des administrateurs',
+        user_settings: 'Paramètres utilisateur',
     },
 }

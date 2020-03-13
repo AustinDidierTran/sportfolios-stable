@@ -68,11 +68,15 @@ const getBasicUserInfoFromToken = async authToken => {
     .select(['first_name', 'language', 'last_name'])
     .where({ user_id });
 
+  const app_role = await knex('user_app_role')
+    .select(['app_role'])
+    .where({ user_id });
+
   if (!basicUserInfo || !basicUserInfo.length) {
     return null;
   }
 
-  return basicUserInfo[0];
+  return app_role.length ? { ...basicUserInfo[0], app_role: app_role[0].app_role } : basicUserInfo[0];
 }
 
 const getEmailsFromAuthToken = async (authToken) => {
