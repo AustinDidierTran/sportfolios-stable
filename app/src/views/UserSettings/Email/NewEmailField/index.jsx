@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useFormik } from 'formik';
 import { TextField } from '../../../../components/MUI';
 import { useTranslation } from 'react-i18next';
-import { API_BASE_URL } from '../../../../../../conf';
+import api from '../../../../actions/api';
 
 import Add from '@material-ui/icons/AddCircle';
 
@@ -38,11 +38,8 @@ export default function EmailField(props) {
     onSubmit: async values => {
       const { email } = values;
 
-      const res = await fetch(`${API_BASE_URL}/api/user/addEmail`, {
+      const res = await api('/api/user/addEmail', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           authToken,
           email,

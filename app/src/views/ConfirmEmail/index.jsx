@@ -2,18 +2,15 @@ import React from 'react';
 
 import { Container } from '../../components/MUI';
 import styles from './ConfirmEmail.module.css';
-import { API_BASE_URL } from '../../../../conf';
+import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 
 export default function ConfirmEmail(props) {
   const { match: { params: { token } } } = props;
 
   const confirmEmail = async () => {
-    const res = await fetch(`${API_BASE_URL}/api/auth/confirmEmail`, {
+    const res = await api('/api/auth/confirmEmail', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
       body: JSON.stringify({
         token
       })

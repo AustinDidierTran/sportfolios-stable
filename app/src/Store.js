@@ -6,9 +6,12 @@ import i18n from './i18n';
 
 export const Store = React.createContext();
 
+const localAuthToken = localStorage.getItem('authToken');
+const localUserInfo = localStorage.getItem('userInfo')
+
 const initialState = {
-  authToken: localStorage.getItem('authToken'),
-  userInfo: JSON.parse(localStorage.getItem('userInfo'))
+  authToken: localAuthToken,
+  userInfo: localUserInfo && JSON.parse(localUserInfo)
 };
 
 export const ACTION_ENUM = {
@@ -45,7 +48,11 @@ export function StoreProvider(props) {
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
 
-    fetch(`${API_BASE_URL}/api/user/userInfo?authToken=${authToken}`)
+    fetch(`${API_BASE_URL}/api/user/userInfo?authToken=${authToken}`, {
+      headers: {
+        Authorization: authToken
+      }
+    })
       .then((res) => res.json())
       .then(({ data }) => {
         dispatch({ type: ACTION_ENUM.UPDATE_USER_INFO, payload: data })

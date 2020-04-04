@@ -6,7 +6,7 @@ import styles from './Signup.module.css';
 
 import { ACTION_ENUM, Store } from '../../Store';
 import { Container } from '../../components/MUI';
-import { API_BASE_URL } from '../../../../conf';
+import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import SignupCard from './SignupCard';
 import DescriptionCard from './DescriptionCard';
@@ -41,11 +41,8 @@ export default function Login() {
     validateOnBlur: false,
     onSubmit: async values => {
       const { email, password } = values;
-      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      const res = await api('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           email,
           password,
@@ -54,11 +51,8 @@ export default function Login() {
 
       if (res.status === 401) {
         // Email is not validated
-        await fetch(`${API_BASE_URL}/api/auth/sendConfirmationEmail`, {
+        await api('/api/auth/sendConfirmationEmail', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           body: JSON.stringify({
             email,
           }),

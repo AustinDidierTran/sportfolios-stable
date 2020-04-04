@@ -60,7 +60,6 @@ const signup = async ({ firstName, lastName, email, password }) => {
 const login = async ({ email, password }) => {
   // Validate email is confirmed
   const emailIsConfirmed = await validateEmailIsConfirmed(email);
-
   if (!emailIsConfirmed) {
     return { status: 401 };
   }
@@ -73,10 +72,8 @@ const login = async ({ email, password }) => {
   }
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
-
   if (isSame) {
     const token = generateToken();
-
     await knex('user_token').insert({
       user_id: user_id,
       token_id: token,

@@ -6,6 +6,7 @@ import { Button, Card, CardContent, TextField, CardActions, Select, Typography }
 import styles from './BasicInfo.module.css';
 
 import { API_BASE_URL } from '../../../../../conf';
+import api from '../../../actions/api';
 import { Store } from '../../../Store';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
@@ -37,11 +38,8 @@ export default function BasicInfo(props) {
     onSubmit: async values => {
       const { firstName, language, lastName } = values;
 
-      const res = await fetch(`${API_BASE_URL}/api/user/changeBasicUserInfo`, {
+      const res = await api(`/api/user/changeBasicUserInfo`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           authToken, firstName, language, lastName
         })
