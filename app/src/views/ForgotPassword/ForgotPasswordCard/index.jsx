@@ -8,12 +8,10 @@ import styles from './ForgotPasswordCard.module.css';
 import { Store } from '../../../Store';
 import Button from '../../../components/MUI/Button';
 import { Card, CardActions, CardContent, Divider, TextField, Typography } from '../../../components/MUI';
-import { API_BASE_URL } from '../../../../../conf';
+import api from '../../../actions/api';
 import { ROUTES } from '../../../actions/goTo';
 
-export default function ForgotPassword(props) {
-  const { setCard } = props;
-  const { dispatch } = useContext(Store);
+export default function ForgotPassword() {
   const { t } = useTranslation();
 
   const validate = values => {
@@ -35,11 +33,8 @@ export default function ForgotPassword(props) {
     validateOnBlur: false,
     onSubmit: async values => {
       const { email } = values;
-      const res = await fetch(`${API_BASE_URL}/api/auth/recoveryEmail`, {
+      const res = await api('/api/auth/recoveryEmail', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           email,
         }),

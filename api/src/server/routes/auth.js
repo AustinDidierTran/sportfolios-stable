@@ -20,7 +20,6 @@ router.post(`${BASE_URL}/signup`, async ctx => {
         status: 'success',
       };
     }
-
   } catch (err) {
     ctx.status = 400;
     ctx.body = {

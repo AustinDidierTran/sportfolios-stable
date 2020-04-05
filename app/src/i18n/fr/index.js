@@ -36,6 +36,8 @@ export default {
         description_card_first_point: 'Automatisez la logistique de vos activités.',
         description_card_second_point: 'Archivez les résultats dans votre Sportfolios personnel.',
         description_card_third_point: 'Connectez avec vos communautés sportives.',
+        // USERS TABLE
+        users_table_title: 'Liste des utilisateurs',
         // Page names
         admin_panel: 'Panneaux des administrateurs',
         user_settings: 'Paramètres utilisateur',

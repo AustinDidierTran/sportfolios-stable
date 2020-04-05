@@ -15,7 +15,7 @@ import {
   Typography
 } from '../../../components/MUI';
 
-import { API_BASE_URL } from '../../../../../conf';
+import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
 export default function SignupCard(props) {
@@ -57,11 +57,8 @@ export default function SignupCard(props) {
     onSubmit: async values => {
       const { firstName, lastName, email, password } = values;
 
-      const res = await fetch(`${API_BASE_URL}/api/auth/signup`, {
+      const res = await api('/api/auth/signup', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           firstName,
           lastName,
@@ -70,7 +67,11 @@ export default function SignupCard(props) {
         }),
       });
 
-      goTo(ROUTES.confirmationEmailSent, { email });
+      if (res >= 400) {
+        formik.setFieldError('firstName', t('something_went_wrong'));
+      } else {
+        goTo(ROUTES.confirmationEmailSent, { email });
+      }
     }
   });
 

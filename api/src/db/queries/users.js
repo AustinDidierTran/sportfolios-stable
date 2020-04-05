@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 
-
 const {
   createUserEmail,
   generateHashedPassword,

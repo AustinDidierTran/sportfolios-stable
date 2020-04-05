@@ -7,7 +7,7 @@ import styles from './LoginCard.module.css';
 
 import { ACTION_ENUM, Store } from '../../../Store';
 import { Button, Card, CardActions, CardContent, Divider, TextField, Typography } from '../../../components/MUI';
-import { API_BASE_URL } from '../../../../../conf';
+import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
 
@@ -41,11 +41,8 @@ export default function LoginCard() {
     validateOnBlur: false,
     onSubmit: async values => {
       const { email, password } = values;
-      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      const res = await api('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           email,
           password,
@@ -54,11 +51,8 @@ export default function LoginCard() {
 
       if (res.status === 401) {
         // Email is not validated
-        await fetch(`${API_BASE_URL}/api/auth/sendConfirmationEmail`, {
+        await api('/api/auth/sendConfirmationEmail', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           body: JSON.stringify({
             email,
           }),

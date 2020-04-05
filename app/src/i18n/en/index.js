@@ -36,6 +36,8 @@ export default {
         description_card_first_point: 'Automate your league\'s organisation workflow.',
         description_card_second_point: 'Archive your results in your personal Sportfolio.',
         description_card_third_point: 'Connect with your perfect teammates.',
+        // USERS TABLE
+        users_table_title: 'Users List',
         // Page names
         admin_panel: 'Admin Panel',
         user_settings: 'User Settings',

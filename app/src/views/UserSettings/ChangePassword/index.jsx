@@ -4,11 +4,9 @@ import { useFormik } from 'formik';
 import { Button, Card, CardContent, TextField, CardActions, Typography } from '../../../components/MUI';
 import styles from './ChangePassword.module.css';
 
-import { API_BASE_URL } from '../../../../../conf';
 import { Store } from '../../../Store';
+import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
-
-
 
 export default function ChangePassword(props) {
   const { state: { authToken } } = useContext(Store);
@@ -49,11 +47,8 @@ export default function ChangePassword(props) {
     validateOnBlur: false,
     onSubmit: async values => {
       const { oldPassword, newPassword } = values;
-      const res = await fetch(`${API_BASE_URL}/api/user/changePassword`, {
+      const res = await api('/api/user/changePassword', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           authToken, oldPassword, newPassword
         })
