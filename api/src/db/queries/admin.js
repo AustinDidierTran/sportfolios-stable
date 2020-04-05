@@ -1,5 +1,19 @@
 const knex = require('../connection');
 
+function createSport(sport) {
+  return knex('sports')
+    .insert({
+      name: sport.name,
+      score_type: sport.scoreType
+    })
+    .returning(['id', 'name']);
+}
+
+function getAllSports() {
+  return knex('sports')
+    .select('*');
+}
+
 function getAllUsers() {
   return knex
     .select(knex.raw('users.id, array_agg(user_email.email ORDER BY user_email.email) AS emails, user_info.first_name, user_info.last_name, user_app_role.app_role'))
@@ -15,6 +29,10 @@ function getAllUsers() {
   // .limit(10);
 }
 
+
+
 module.exports = {
+  createSport,
+  getAllSports,
   getAllUsers
 };

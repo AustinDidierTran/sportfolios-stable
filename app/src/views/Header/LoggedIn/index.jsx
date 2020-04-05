@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ACTION_ENUM, Store } from '../../../Store';
-
+import APP_ROLES from '../../App/appRoles';
 import { fade, makeStyles } from '@material-ui/core/styles';
 
 import {
@@ -91,7 +91,9 @@ const useStyles = makeStyles(theme => ({
 export default function LoggedIn() {
   const classes = useStyles();
   const { t } = useTranslation();
-  const { dispatch } = useContext(Store);
+  const { state: { userInfo }, dispatch } = useContext(Store);
+
+  const isAdmin = userInfo && userInfo.app_role === APP_ROLES.APP_ADMIN;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(
@@ -131,7 +133,7 @@ export default function LoggedIn() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={() => goTo(ROUTES.userSettings)}>User Settings</MenuItem>
-      {<MenuItem onClick={() => goTo(ROUTES.adminPanel)}>Admin Panel</MenuItem>}
+      {isAdmin ? <MenuItem onClick={() => goTo(ROUTES.adminPanel)}>Admin Panel</MenuItem> : <></>}
       <MenuItem onClick={() => dispatch({ type: ACTION_ENUM.LOGOUT })}>Log out</MenuItem>
     </Menu>
   );
