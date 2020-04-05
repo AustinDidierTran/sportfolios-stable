@@ -12,8 +12,6 @@ export default function UsersTable() {
   const updateUsers = async () => {
     const res = await api('/api/admin/users');
 
-    console.log('res', res);
-
     setUsers(res.data);
   }
 
