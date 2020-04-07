@@ -75,7 +75,7 @@ export default function SportsTable() {
           title={t('sports_table_title')}
           headers={[
             { display: 'Name', type: 'text', value: 'name' },
-            { display: 'Score Type', type: 'number', value: 'scoreType' },
+            { display: 'Score Type', initialValue: 1, type: 'number', value: 'scoreType' },
           ]}
           data={sports}
           onCreate={onCreate}

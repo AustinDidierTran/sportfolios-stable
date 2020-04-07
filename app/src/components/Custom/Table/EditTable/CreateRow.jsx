@@ -12,10 +12,14 @@ export default function CreateRow(props) {
   const { allowCreate, headers, onCreate, validationSchema } = props;
   const [validationErrors, setValidationErrors] = useState({});
 
-  const values = headers.reduce((prev, h) => ({
+  let values = headers.reduce((prev, h) => ({
     ...prev,
-    [h.value]: useFormInput('')
-  }), {})
+    [h.value]: useFormInput(h.initialValue)
+  }), {});
+
+  const resetValues = () => {
+    Object.keys(values).forEach(key => values[key].reset());
+  }
 
   const validateValues = async (v) => {
     if (!validationSchema) {
@@ -54,6 +58,7 @@ export default function CreateRow(props) {
       setValidationErrors(errors);
     } else {
       setValidationErrors({});
+      resetValues();
       onCreate(validatedValues);
     }
   }
@@ -73,7 +78,7 @@ export default function CreateRow(props) {
           <IconButton size="small" onClick={onSubmit}>
             <Add size="small" />
           </IconButton>
-          <IconButton size="small">
+          <IconButton size="small" onClick={resetValues}>
             <Delete size="small" />
           </IconButton>
         </TableCell>
