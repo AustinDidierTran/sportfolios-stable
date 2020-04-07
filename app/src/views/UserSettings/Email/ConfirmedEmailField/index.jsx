@@ -1,10 +1,10 @@
 import React from 'react';
 import CheckCircle from '@material-ui/icons/CheckCircle'
-import Delete from '@material-ui/icons/Delete'
-import { TextField } from '../../../../components/MUI';
+import Delete from '@material-ui/icons/Delete';
+import { IconButton, TextField } from '../../../../components/MUI';
 
 import styles from './ConfirmedEmailField.module.css';
-import { IconButton, Tooltip } from '@material-ui/core';
+import { Tooltip } from '@material-ui/core';
 
 export default function EmailField(props) {
   const { email: { email, confirmed_email_at }, isDeletable } = props;

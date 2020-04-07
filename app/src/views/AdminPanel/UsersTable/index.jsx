@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Table } from '../../../components/Custom';
 
-import { Card, CardContent, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '../../../components/MUI';
+import { Card, CardContent, TableBody, TableCell, TableHead, TableRow, Typography } from '../../../components/MUI';
 import styles from './UsersTable.module.css';
 import api from '../../../actions/api';
 
@@ -12,40 +13,31 @@ export default function UsersTable() {
   const updateUsers = async () => {
     const res = await api('/api/admin/users');
 
-    setUsers(res.data);
+    setUsers(res.data.map((user) => ({
+      ...user,
+      emails: user.emails.join(', ')
+    })));
   }
 
   useEffect(() => {
     updateUsers()
   }, []);
 
+  const headers = [
+    { display: 'First Name', value: 'first_name' },
+    { display: 'Last Name', value: 'last_name' },
+    { display: 'Emails', value: 'emails' },
+    { display: 'App Role', value: 'app_role' },
+  ]
+
   return (
     <Card className={styles.card}>
       <CardContent className={styles.inputs}>
-        <Typography gutterBottom variant="h5" component="h2">{t('users_table_title')}</Typography>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>User ID</TableCell>
-              <TableCell>First Name</TableCell>
-              <TableCell>Last Name</TableCell>
-              <TableCell>Emails</TableCell>
-              <TableCell>Is App Admin</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {users.map((user) => (
-              <TableRow key={user.id}>
-                <TableCell>{user.id}</TableCell>
-                <TableCell>{user.first_name}</TableCell>
-                <TableCell>{user.last_name}</TableCell>
-                <TableCell>{user.emails.join(', ')}</TableCell>
-                <TableCell>{user.app_role}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-
+        <Table
+          data={users}
+          headers={headers}
+          title={t('users_table_title')}
+        />
       </CardContent>
     </Card>
   )

@@ -25,7 +25,10 @@ router.get(`${BASE_URL}/sports`, async (ctx) => {
     const sports = await queries.getAllSports();
     ctx.body = {
       status: 'success',
-      data: sports,
+      data: sports.map((sport) => ({
+        name: sport.name,
+        scoreType: sport.score_type
+      })),
     };
   } catch (err) {
     ctx.status = 400;
