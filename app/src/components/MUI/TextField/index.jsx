@@ -4,13 +4,13 @@ import TextField from '@material-ui/core/TextField';
 // See native documentation here: https://material-ui.com/components/text-fields/
 
 export default function CustomTextField(props) {
-  const { formik, namespace } = props;
+  const { error, formik, namespace } = props;
 
   return <TextField
     id={namespace}
     name={namespace}
-    error={formik && formik.errors[namespace]}
-    helperText={formik && formik.errors[namespace]}
+    error={formik && formik.errors[namespace] || error}
+    helperText={formik && formik.errors[namespace] || error}
     onChange={formik && formik.handleChange}
     value={formik && formik.values[namespace]}
     {...props} />;

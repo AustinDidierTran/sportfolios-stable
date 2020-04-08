@@ -1,4 +1,4 @@
-import history from "../../stores/history";
+import history from '../../stores/history';
 
 export const ROUTES = {
   adminPanel: '/adminPanel',

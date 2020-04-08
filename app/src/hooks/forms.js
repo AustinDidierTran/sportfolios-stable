@@ -1,14 +1,31 @@
 import React, { useState } from 'react';
 
 export const useFormInput = initialValue => {
+  const [defaultValue, setDefaultValue] = useState(initialValue);
   const [value, setValue] = useState(initialValue);
 
   const handleChange = e => {
     setValue(e.target.value);
   };
 
-  return {
+  const changeDefault = newDefault => {
+    if (newDefault !== defaultValue) {
+      setDefaultValue(newDefault);
+      setValue(newDefault);
+    }
+  };
+
+  const reset = () => setValue(defaultValue);
+
+  const inputProps = {
     value,
     onChange: handleChange,
+  }
+
+  return {
+    ...inputProps,
+    reset,
+    changeDefault,
+    inputProps
   };
 };

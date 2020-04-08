@@ -17,6 +17,20 @@ export default async (route, { method, body } = {}) => {
     return res;
   }
 
+  if (method === 'PUT') {
+    const res = await fetch(`${API_BASE_URL}${route}`, {
+      method: 'PUT',
+      headers,
+      body
+    });
+
+    const status = res.status;
+
+    const data = await res.json();
+
+    return { data, status };
+  }
+
   // Then, it is a get
 
   const res = await fetch(
