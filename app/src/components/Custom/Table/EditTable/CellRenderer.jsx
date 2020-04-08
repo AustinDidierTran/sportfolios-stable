@@ -13,7 +13,7 @@ export default function CellRenderer(props) {
           namespace={header.value}
           error={error}
           type="number"
-          {...values}
+          {...values.inputProps}
         />
       </TableCell>)
 
@@ -24,7 +24,7 @@ export default function CellRenderer(props) {
       label={header.display}
       namespace={header.value}
       error={error}
-      {...values}
+      {...values.inputProps}
     />
   </TableCell>)
 }

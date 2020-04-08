@@ -13,7 +13,7 @@ function main() {
   link.rel = 'stylesheet';
   const meta = document.createElement('meta');
   meta.name = 'viewport';
-  meta.content = "width=device-width,initial-scale=1.0";
+  meta.content = 'width=device-width,initial-scale=1.0';
   link.href =
     'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap';
   document.head.appendChild(link);

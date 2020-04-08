@@ -4,14 +4,8 @@ module.exports = async (ctx, next) => {
   const token = ctx.headers['authorization'];
 
   if (!token) {
-    console.log('token IS null')
     return next();
   }
-
-  console.log('token should not be null')
-  console.log('token == null', token == null);
-
-  console.log('token', token);
 
   const req = await knex('user_token')
     .select(['user_id', 'expires_at'])

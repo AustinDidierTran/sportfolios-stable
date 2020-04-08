@@ -1,3 +1,4 @@
+
 const knex = require('../connection');
 
 function createSport(sport) {
@@ -11,7 +12,9 @@ function createSport(sport) {
 
 function getAllSports() {
   return knex('sports')
-    .select('*');
+    .select('*')
+    .orderBy('score_type', 'asc')
+    .orderBy('name', 'asc');
 }
 
 function getAllUsers() {
@@ -29,10 +32,27 @@ function getAllUsers() {
   // .limit(10);
 }
 
+function updateSport(id, sport) {
+  const updateObject = {};
 
+  if (sport.name) {
+    updateObject.name = sport.name;
+  }
+
+  if (sport.scoreType || sport.scoreType === 0) {
+    updateObject.score_type = sport.scoreType;
+  }
+
+
+  return knex('sports')
+    .update(updateObject)
+    .where({ id, deleted_at: null })
+    .returning('*')
+}
 
 module.exports = {
   createSport,
   getAllSports,
-  getAllUsers
+  getAllUsers,
+  updateSport
 };

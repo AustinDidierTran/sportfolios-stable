@@ -6,11 +6,8 @@ import * as Yup from 'yup';
 import { Table } from '../../../components/Custom';
 
 import {
-  Button,
   Card,
   CardContent,
-  CardActions,
-  TextField
 } from '../../../components/MUI';
 import styles from './SportsTable.module.css';
 import api from '../../../actions/api';
@@ -50,6 +47,21 @@ export default function SportsTable() {
     }
   }
 
+  const onEdit = async (id, values) => {
+    const { name, scoreType } = values;
+    const res = await api(`/api/admin/sport/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        name,
+        scoreType
+      })
+    })
+
+    if (res.status <= 299) {
+      updateSports();
+    }
+  }
+
   const formikCreate = useFormik({
     initialValues: {
       name: '',
@@ -69,7 +81,7 @@ export default function SportsTable() {
     <Card className={styles.card}>
       <CardContent className={styles.inputs}>
         <Table
-          allowCreate={true}
+          allowCreate
           formik={formikCreate}
           mode="edit"
           title={t('sports_table_title')}
@@ -79,6 +91,7 @@ export default function SportsTable() {
           ]}
           data={sports}
           onCreate={onCreate}
+          onEdit={onEdit}
           validationSchema={validationSchema}
         />
       </CardContent>

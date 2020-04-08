@@ -12,12 +12,12 @@ export default function CreateRow(props) {
   const { allowCreate, headers, onCreate, validationSchema } = props;
   const [validationErrors, setValidationErrors] = useState({});
 
-  let values = headers.reduce((prev, h) => ({
+  const values = headers.reduce((prev, h) => ({
     ...prev,
-    [h.value]: useFormInput(h.initialValue)
+    [h.value]: useFormInput(h.initialValue || '')
   }), {});
 
-  const resetValues = () => {
+  const onReset = () => {
     Object.keys(values).forEach(key => values[key].reset());
   }
 
@@ -38,21 +38,22 @@ export default function CreateRow(props) {
     }
   }
 
-  const formatValues = () => {
+  const flattenValues = () => {
     const keys = Object.keys(values);
 
-    const formattedValues = keys.reduce((prev, key) => ({
+    const flattenedValues = keys.reduce((prev, key) => ({
       ...prev,
       [key]: values[key].value
     }), {})
 
-    return validationSchema.cast(formattedValues);
+    return validationSchema.cast(flattenedValues);
   }
 
-  const onSubmit = async () => {
-    const formattedValues = formatValues();
+  const onSave = async () => {
+    const formattedValues = flattenValues();
 
-    const { isValid, errors, validatedValues } = await validateValues(formattedValues)
+    const { isValid, errors, validatedValues } = await validateValues(formattedValues);
+
 
     if (!isValid) {
       setValidationErrors(errors);
@@ -75,10 +76,10 @@ export default function CreateRow(props) {
           />
         )}
         <TableCell>
-          <IconButton size="small" onClick={onSubmit}>
+          <IconButton size="small" onClick={onSave}>
             <Add size="small" />
           </IconButton>
-          <IconButton size="small" onClick={resetValues}>
+          <IconButton size="small" onClick={onReset}>
             <Delete size="small" />
           </IconButton>
         </TableCell>

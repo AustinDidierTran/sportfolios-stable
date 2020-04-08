@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Table } from '../../../components/Custom';
 
-import { Card, CardContent, TableBody, TableCell, TableHead, TableRow, Typography } from '../../../components/MUI';
+import { Card, CardContent } from '../../../components/MUI';
 import styles from './UsersTable.module.css';
 import api from '../../../actions/api';
 

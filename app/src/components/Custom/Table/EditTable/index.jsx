@@ -5,7 +5,7 @@ import CreateRow from './CreateRow';
 import DataRow from './DataRow';
 
 export default function EditTable(props) {
-  const { allowCreate, data, headers, onCreate, title, validationSchema } = props;
+  const { allowCreate, data, headers, onCreate, onEdit, title, validationSchema } = props;
 
   return (
     <>
@@ -18,8 +18,14 @@ export default function EditTable(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((d, index) =>
-            <DataRow datum={d} headers={headers} key={index} />
+          {data.map((d) =>
+            <DataRow
+              datum={d}
+              headers={headers}
+              onEdit={onEdit}
+              validationSchema={validationSchema}
+              key={d.id}
+            />
           )}
           <CreateRow
             allowCreate={allowCreate}
