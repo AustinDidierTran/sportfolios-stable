@@ -12,12 +12,16 @@ export default function AdminPanel() {
   const { t } = useTranslation();
 
   return (
-    <div className={styles.main}>
-      <Container className={styles.container}>
-        <Typography variant='h3' className={styles.title} style={{ marginTop: 32 }}>{t('admin_panel')}</Typography>
-        <UsersTable />
-        <SportsTable />
-      </Container>
-    </div>
+    <Container className={styles.container}>
+      <Typography
+        variant="h3"
+        className={styles.title}
+        style={{ marginTop: 24 }}
+      >
+        {t('admin_panel')}
+      </Typography>
+      <UsersTable />
+      <SportsTable />
+    </Container>
   );
 }

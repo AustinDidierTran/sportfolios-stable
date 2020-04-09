@@ -2,18 +2,20 @@ import { API_BASE_URL } from '../../../../conf';
 
 export default async (route, { method, body } = {}) => {
   const authToken = localStorage.getItem('authToken');
-  const headers = authToken ? {
-    'Content-Type': 'application/json',
-    Authorization: authToken
-  } : {
-      'Content-Type': 'application/json',
-    }
+  const headers = authToken
+    ? {
+        'Content-Type': 'application/json',
+        Authorization: authToken,
+      }
+    : {
+        'Content-Type': 'application/json',
+      };
   if (method === 'POST') {
     const res = await fetch(`${API_BASE_URL}${route}`, {
       method: 'POST',
       headers,
-      body
-    })
+      body,
+    });
     return res;
   }
 
@@ -21,7 +23,7 @@ export default async (route, { method, body } = {}) => {
     const res = await fetch(`${API_BASE_URL}${route}`, {
       method: 'PUT',
       headers,
-      body
+      body,
     });
 
     const status = res.status;
@@ -33,12 +35,10 @@ export default async (route, { method, body } = {}) => {
 
   // Then, it is a get
 
-  const res = await fetch(
-    `${API_BASE_URL}${route}`,
-    {
-      headers: {
-        Authorization: authToken
-      }
-    }).then(res => res.json())
+  const res = await fetch(`${API_BASE_URL}${route}`, {
+    headers: {
+      Authorization: authToken,
+    },
+  }).then(res => res.json());
   return res;
-}
+};

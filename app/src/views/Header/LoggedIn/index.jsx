@@ -7,9 +7,7 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 
 import {
   AppBar,
-  Badge,
   IconButton,
-  InputBase,
   Menu,
   MenuItem,
   Toolbar,
@@ -91,9 +89,13 @@ const useStyles = makeStyles(theme => ({
 export default function LoggedIn() {
   const classes = useStyles();
   const { t } = useTranslation();
-  const { state: { userInfo }, dispatch } = useContext(Store);
+  const {
+    state: { userInfo },
+    dispatch,
+  } = useContext(Store);
 
-  const isAdmin = userInfo && userInfo.app_role === APP_ROLES.APP_ADMIN;
+  const isAdmin =
+    userInfo && userInfo.app_role === APP_ROLES.APP_ADMIN;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(
@@ -131,10 +133,26 @@ export default function LoggedIn() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={() => goTo(ROUTES.userSettings)}>User Settings</MenuItem>
-      {isAdmin ? <MenuItem onClick={() => goTo(ROUTES.adminPanel)}>Admin Panel</MenuItem> : <></>}
-      <MenuItem onClick={() => dispatch({ type: ACTION_ENUM.LOGOUT })}>Log out</MenuItem>
+      <MenuItem
+        onClick={() => goTo(ROUTES.profile, { id: userInfo.user_id })}
+      >
+        {t('profile')}
+      </MenuItem>
+      <MenuItem onClick={() => goTo(ROUTES.userSettings)}>
+        {t('user_settings')}
+      </MenuItem>
+      {isAdmin ? (
+        <MenuItem onClick={() => goTo(ROUTES.adminPanel)}>
+          {t('admin_panel')}
+        </MenuItem>
+      ) : (
+        <></>
+      )}
+      <MenuItem
+        onClick={() => dispatch({ type: ACTION_ENUM.LOGOUT })}
+      >
+        {t('logout')}
+      </MenuItem>
     </Menu>
   );
 

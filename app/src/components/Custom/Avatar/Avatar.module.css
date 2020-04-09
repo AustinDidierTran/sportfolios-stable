@@ -1,0 +1,10 @@
+.avatar {
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 64px !important;
+  width: 128px !important;
+  height: 128px !important;
+  border-radius: 2px;
+  border-color: black;
+  border: 4px solid black;
+}

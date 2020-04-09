@@ -8,7 +8,7 @@ import styles from './PasswordRecovery.module.css';
 import { Button, Card, CardActions, CardContent, Divider, TextField, Typography } from '../../components/MUI';
 import api from '../../actions/api';
 
-export default function Login(props) {
+export default function PasswordRecovery(props) {
   const { match: { params: { token } } } = props;
 
   const { t } = useTranslation();

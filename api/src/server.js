@@ -1,6 +1,9 @@
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
+const { CLIENT_BASE_URL } = require('../../conf');
+
+console.log('CLIENT_BASE_URL', CLIENT_BASE_URL);
 
 // Middlewares
 const checkAuth = require('./server/middleware/check-auth');
@@ -18,7 +21,11 @@ const adminRoutes = require('./server/routes/admin');
 const app = new Koa();
 const PORT = process.env.PORT || 1337;
 
-app.use(cors());
+const corsOptions = {
+  origin: CLIENT_BASE_URL,
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser());
 app.use(checkAuth);
 app.use(indexRoutes.routes());
