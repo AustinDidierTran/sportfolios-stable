@@ -24,16 +24,28 @@ const addEmail = async ({ authToken, email }) => {
   await sendNewConfirmationEmailAllIncluded(email);
 
   return 200;
-}
+};
 
-const changePassword = async ({ authToken, oldPassword, newPassword }) => {
+const changePassword = async ({
+  authToken,
+  oldPassword,
+  newPassword,
+}) => {
   const user_id = await getUserIdFromToken(authToken);
 
-  if (!oldPassword || oldPassword.length < 8 || oldPassword.length > 16) {
+  if (
+    !oldPassword ||
+    oldPassword.length < 8 ||
+    oldPassword.length > 16
+  ) {
     return 404;
   }
 
-  if (!newPassword || newPassword.length < 8 || newPassword.length > 16) {
+  if (
+    !newPassword ||
+    newPassword.length < 8 ||
+    newPassword.length > 16
+  ) {
     return 404;
   }
 
@@ -55,13 +67,20 @@ const changePassword = async ({ authToken, oldPassword, newPassword }) => {
 
   const newHashedPassword = await generateHashedPassword(newPassword);
 
-  await updatePasswordFromUserId({ id: user_id, hashedPassword: newHashedPassword })
+  await updatePasswordFromUserId({
+    id: user_id,
+    hashedPassword: newHashedPassword,
+  });
 
   return 200;
-}
+};
 
-
-const changeUserInfo = async ({ authToken, firstName, language, lastName }) => {
+const changeUserInfo = async ({
+  authToken,
+  firstName,
+  language,
+  lastName,
+}) => {
   const user_id = await getUserIdFromToken(authToken);
 
   if (!user_id) {
@@ -72,11 +91,11 @@ const changeUserInfo = async ({ authToken, firstName, language, lastName }) => {
     user_id,
     firstName,
     language,
-    lastName
+    lastName,
   });
 
   return 200;
-}
+};
 
 const getEmails = async ({ authToken }) => {
   const emails = await getEmailsFromAuthToken(authToken);
@@ -86,17 +105,17 @@ const getEmails = async ({ authToken }) => {
   }
 
   return { status: 200, emails };
-}
+};
 
 const userInfo = async ({ authToken }) => {
   const basicUserInfo = await getBasicUserInfoFromToken(authToken);
 
   if (!basicUserInfo) {
-    return { status: 403 }
+    return { status: 403 };
   }
   // get basic user info
   return { basicUserInfo, status: 200 };
-}
+};
 
 module.exports = {
   addEmail,
@@ -104,4 +123,4 @@ module.exports = {
   changeUserInfo,
   getEmails,
   userInfo,
-}
+};

@@ -1,6 +1,9 @@
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
-const { sendConfirmationEmail, sendRecoveryEmail } = require('../../server/utils/nodeMailer');
+const {
+  sendConfirmationEmail,
+  sendRecoveryEmail,
+} = require('../../server/utils/nodeMailer');
 const {
   confirmEmail,
   createUser,
@@ -27,9 +30,11 @@ const signup = async ({ firstName, lastName, email, password }) => {
 
   if (!isUnique) return { code: 403 };
 
-  if (!password || password.length < 8 || password.length > 16) { return { code: 403 } }
+  if (!password || password.length < 8 || password.length > 16) {
+    return { code: 403 };
+  }
 
-  const hashedPassword = await generateHashedPassword(password)
+  const hashedPassword = await generateHashedPassword(password);
 
   const confirmationEmailToken = generateToken();
 
@@ -40,7 +45,7 @@ const signup = async ({ firstName, lastName, email, password }) => {
   await createUserInfo({
     user_id: user.id,
     first_name: firstName,
-    last_name: lastName
+    last_name: lastName,
   });
 
   await createConfirmationEmailToken({
@@ -99,7 +104,7 @@ const confirmEmailRoute = async ({ token }) => {
   await confirmEmail({ email });
 
   return 200;
-}
+};
 
 const recoveryEmail = async ({ email }) => {
   const user_id = await getUserIdFromEmail({ email });
@@ -110,12 +115,12 @@ const recoveryEmail = async ({ email }) => {
 
   const token = generateToken();
 
-  await createRecoveryEmailToken({ user_id, token })
+  await createRecoveryEmailToken({ user_id, token });
 
   await sendRecoveryEmail({ email, token });
 
   return 200;
-}
+};
 
 const recoverPassword = async ({ token, password }) => {
   const userId = await getUserIdFromRecoveryPasswordToken(token);
@@ -131,7 +136,7 @@ const recoverPassword = async ({ token, password }) => {
   await setRecoveryTokenToUsed(token);
 
   return 200;
-}
+};
 
 const resendConfirmationEmail = async ({ email }) => {
   const isEmailConfirmed = await validateEmailIsConfirmed(email);
@@ -144,10 +149,10 @@ const resendConfirmationEmail = async ({ email }) => {
 
   await createConfirmationEmailToken({ email, token });
 
-  await sendConfirmationEmail({ email, token, });
+  await sendConfirmationEmail({ email, token });
 
   return 200;
-}
+};
 
 module.exports = {
   confirmEmail: confirmEmailRoute,
@@ -156,4 +161,4 @@ module.exports = {
   recoveryEmail,
   resendConfirmationEmail,
   signup,
-}
+};

@@ -2,8 +2,7 @@ const knex = require('../connection');
 
 function getAllAssociations(includeDeleted) {
   if (includeDeleted && includeDeleted !== 'false') {
-    return knex('associations')
-      .select(['id', 'name']);
+    return knex('associations').select(['id', 'name']);
   } else {
     return knex('associations')
       .select(['id', 'name'])

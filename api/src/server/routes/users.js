@@ -13,18 +13,18 @@ router.post(`${BASE_URL}/addEmail`, async ctx => {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-      }
+      };
     } else if (code === 403) {
       ctx.status = 403;
       ctx.body = {
         status: 'error',
-        message: 'Token is invalid'
-      }
+        message: 'Token is invalid',
+      };
     } else {
       ctx.status = code;
       ctx.body = {
         status: 'error',
-      }
+      };
     }
   } catch (err) {
     ctx.status = 400;
@@ -33,7 +33,7 @@ router.post(`${BASE_URL}/addEmail`, async ctx => {
       message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 
 // Reset password
 router.post(`${BASE_URL}/changePassword`, async ctx => {
@@ -44,18 +44,18 @@ router.post(`${BASE_URL}/changePassword`, async ctx => {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-      }
+      };
     } else if (code === 403) {
       ctx.status = 403;
       ctx.body = {
         status: 'error',
-        message: 'Token is invalid'
-      }
+        message: 'Token is invalid',
+      };
     } else {
       ctx.status = code;
       ctx.body = {
         status: 'error',
-      }
+      };
     }
   } catch (err) {
     ctx.status = 400;
@@ -64,30 +64,32 @@ router.post(`${BASE_URL}/changePassword`, async ctx => {
       message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 
 // Basic User Info
 router.get(`${BASE_URL}/userInfo`, async ctx => {
   try {
-    const { basicUserInfo, status } = await queries.userInfo(ctx.request.query);
+    const { basicUserInfo, status } = await queries.userInfo(
+      ctx.request.query,
+    );
 
     if (status === 200) {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-        data: basicUserInfo
-      }
+        data: basicUserInfo,
+      };
     } else if (status === 403) {
       ctx.status = 403;
       ctx.body = {
         status: 'error',
-        message: 'Token is invalid'
-      }
+        message: 'Token is invalid',
+      };
     } else {
       ctx.status = status;
       ctx.body = {
         status: 'error',
-      }
+      };
     }
   } catch (err) {
     ctx.status = 400;
@@ -96,7 +98,7 @@ router.get(`${BASE_URL}/userInfo`, async ctx => {
       message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 
 // Basic User Info
 router.post(`${BASE_URL}/changeBasicUserInfo`, async ctx => {
@@ -107,18 +109,18 @@ router.post(`${BASE_URL}/changeBasicUserInfo`, async ctx => {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-      }
+      };
     } else if (status === 403) {
       ctx.status = 403;
       ctx.body = {
         status: 'error',
-        message: 'Token is invalid'
-      }
+        message: 'Token is invalid',
+      };
     } else {
       ctx.status = status;
       ctx.body = {
         status: 'error',
-      }
+      };
     }
   } catch (err) {
     ctx.status = 400;
@@ -127,30 +129,32 @@ router.post(`${BASE_URL}/changeBasicUserInfo`, async ctx => {
       message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 
 // Email Info
 router.get(`${BASE_URL}/emails`, async ctx => {
   try {
-    const { status, emails } = await queries.getEmails(ctx.request.query);
+    const { status, emails } = await queries.getEmails(
+      ctx.request.query,
+    );
 
     if (status === 200) {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-        data: emails
-      }
+        data: emails,
+      };
     } else if (status === 403) {
       ctx.status = 403;
       ctx.body = {
         status: 'error',
-        message: 'Token is invalid'
-      }
+        message: 'Token is invalid',
+      };
     } else {
       ctx.status = status;
       ctx.body = {
         status: 'error',
-      }
+      };
     }
   } catch (err) {
     ctx.status = 400;
@@ -159,7 +163,6 @@ router.get(`${BASE_URL}/emails`, async ctx => {
       message: err.message || 'Sorry, an error has occured',
     };
   }
-})
-
+});
 
 module.exports = router;

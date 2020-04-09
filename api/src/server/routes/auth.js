@@ -12,8 +12,8 @@ router.post(`${BASE_URL}/signup`, async ctx => {
       ctx.status = 403;
       ctx.body = {
         status: 'error',
-        message: 'Email is already in use.'
-      }
+        message: 'Email is already in use.',
+      };
     } else {
       ctx.status = 200;
       ctx.body = {
@@ -31,7 +31,9 @@ router.post(`${BASE_URL}/signup`, async ctx => {
 
 router.post(`${BASE_URL}/login`, async ctx => {
   try {
-    const { status, token, userInfo } = await queries.login(ctx.request.body);
+    const { status, token, userInfo } = await queries.login(
+      ctx.request.body,
+    );
 
     if (!token) {
       ctx.status = status;
@@ -44,7 +46,7 @@ router.post(`${BASE_URL}/login`, async ctx => {
         status: 'success',
         data: JSON.stringify({
           token,
-          userInfo
+          userInfo,
         }),
       };
     }
@@ -66,12 +68,12 @@ router.post(`${BASE_URL}/confirmEmail`, async ctx => {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-      }
+      };
     } else {
       ctx.status = code;
       ctx.body = {
         status: 'error',
-      }
+      };
     }
   } catch (err) {
     ctx.status = 400;
@@ -80,40 +82,40 @@ router.post(`${BASE_URL}/confirmEmail`, async ctx => {
       message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 
 // Resend confirmation email
 router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
   try {
-    const code = await queries.sendConfirmationEmail(ctx.request.body);
+    const code = await queries.sendConfirmationEmail(
+      ctx.request.body,
+    );
 
     if (code === 200) {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-      }
+      };
     } else if (code === 404) {
       ctx.status = 404;
       ctx.body = {
         status: 'error',
-        message: 'Email is not found'
-      }
+        message: 'Email is not found',
+      };
     } else {
       ctx.status = code;
       ctx.body = {
         status: 'error',
-      }
+      };
     }
-  }
-  catch (err) {
+  } catch (err) {
     ctx.status = 400;
     ctx.body = {
       status: 'error',
       message: err.message || 'Sorry, an error has occured',
     };
   }
-})
-
+});
 
 // Send password recovery email
 router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
@@ -124,18 +126,18 @@ router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-      }
+      };
     } else if (code === 404) {
       ctx.status = 404;
       ctx.body = {
         status: 'error',
-        message: 'Email is not found'
-      }
+        message: 'Email is not found',
+      };
     } else {
       ctx.status = code;
       ctx.body = {
         status: 'error',
-      }
+      };
     }
   } catch (err) {
     ctx.status = 400;
@@ -144,7 +146,7 @@ router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
       message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 
 // Reset password with token
 router.post(`${BASE_URL}/recoverPassword`, async ctx => {
@@ -155,18 +157,18 @@ router.post(`${BASE_URL}/recoverPassword`, async ctx => {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-      }
+      };
     } else if (code === 403) {
       ctx.status = 403;
       ctx.body = {
         status: 'error',
-        message: 'Token is invalid'
-      }
+        message: 'Token is invalid',
+      };
     } else {
       ctx.status = code;
       ctx.body = {
         status: 'error',
-      }
+      };
     }
   } catch (err) {
     ctx.status = 400;
@@ -175,9 +177,7 @@ router.post(`${BASE_URL}/recoverPassword`, async ctx => {
       message: err.message || 'Sorry, an error has occured',
     };
   }
-})
-
-
+});
 
 // Reset password
 router.post(`${BASE_URL}/changePassword`, async ctx => {
@@ -188,18 +188,18 @@ router.post(`${BASE_URL}/changePassword`, async ctx => {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-      }
+      };
     } else if (code === 403) {
       ctx.status = 403;
       ctx.body = {
         status: 'error',
-        message: 'Token is invalid'
-      }
+        message: 'Token is invalid',
+      };
     } else {
       ctx.status = code;
       ctx.body = {
         status: 'error',
-      }
+      };
     }
   } catch (err) {
     ctx.status = 400;
@@ -208,30 +208,32 @@ router.post(`${BASE_URL}/changePassword`, async ctx => {
       message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 
 // Basic User Info
 router.get(`${BASE_URL}/userInfo`, async ctx => {
   try {
-    const { basicUserInfo, status } = await queries.userInfo(ctx.request.query);
+    const { basicUserInfo, status } = await queries.userInfo(
+      ctx.request.query,
+    );
 
     if (status === 200) {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-        data: basicUserInfo
-      }
+        data: basicUserInfo,
+      };
     } else if (status === 403) {
       ctx.status = 403;
       ctx.body = {
         status: 'error',
-        message: 'Token is invalid'
-      }
+        message: 'Token is invalid',
+      };
     } else {
       ctx.status = status;
       ctx.body = {
         status: 'error',
-      }
+      };
     }
   } catch (err) {
     ctx.status = 400;
@@ -240,7 +242,7 @@ router.get(`${BASE_URL}/userInfo`, async ctx => {
       message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 // Basic User Info
 router.post(`${BASE_URL}/changeBasicUserInfo`, async ctx => {
   try {
@@ -250,18 +252,18 @@ router.post(`${BASE_URL}/changeBasicUserInfo`, async ctx => {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-      }
+      };
     } else if (status === 403) {
       ctx.status = 403;
       ctx.body = {
         status: 'error',
-        message: 'Token is invalid'
-      }
+        message: 'Token is invalid',
+      };
     } else {
       ctx.status = status;
       ctx.body = {
         status: 'error',
-      }
+      };
     }
   } catch (err) {
     ctx.status = 400;
@@ -270,6 +272,6 @@ router.post(`${BASE_URL}/changeBasicUserInfo`, async ctx => {
       message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 
 module.exports = router;

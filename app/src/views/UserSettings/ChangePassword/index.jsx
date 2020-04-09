@@ -1,7 +1,14 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-import { Button, Card, CardContent, TextField, CardActions, Typography } from '../../../components/MUI';
+import {
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  CardActions,
+  Typography,
+} from '../../../components/MUI';
 import styles from './ChangePassword.module.css';
 
 import { Store } from '../../../Store';
@@ -9,7 +16,9 @@ import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
 export default function ChangePassword(props) {
-  const { state: { authToken } } = useContext(Store);
+  const {
+    state: { authToken },
+  } = useContext(Store);
   const { t } = useTranslation();
 
   const validate = values => {
@@ -17,13 +26,19 @@ export default function ChangePassword(props) {
 
     if (!values.oldPassword) {
       errors.oldPassword = t('value_is_required');
-    } else if (values.oldPassword.length < 8 || values.oldPassword.length > 16) {
+    } else if (
+      values.oldPassword.length < 8 ||
+      values.oldPassword.length > 16
+    ) {
       errors.oldPassword = t('password_length');
     }
 
     if (!values.newPassword) {
       errors.newPassword = t('value_is_required');
-    } else if (values.newPassword.length < 8 || values.newPassword.length > 16) {
+    } else if (
+      values.newPassword.length < 8 ||
+      values.newPassword.length > 16
+    ) {
       errors.newPassword = t('password_length');
     }
 
@@ -34,13 +49,13 @@ export default function ChangePassword(props) {
     }
 
     return errors;
-  }
+  };
 
   const formik = useFormik({
     initialValues: {
       oldPassword: '',
       newPassword: '',
-      newPasswordConfirm: ''
+      newPasswordConfirm: '',
     },
     validate,
     validateOnChange: false,
@@ -50,8 +65,10 @@ export default function ChangePassword(props) {
       const res = await api('/api/user/changePassword', {
         method: 'POST',
         body: JSON.stringify({
-          authToken, oldPassword, newPassword
-        })
+          authToken,
+          oldPassword,
+          newPassword,
+        }),
       });
 
       if (res.status === 402) {
@@ -63,14 +80,16 @@ export default function ChangePassword(props) {
         // old password doesn't match
         formik.setFieldError('oldPassword', t('wrong_password'));
       }
-    }
-  })
+    },
+  });
 
   return (
     <Card className={styles.card}>
       <form onSubmit={formik.handleSubmit} className={styles.form}>
         <CardContent className={styles.inputs}>
-          <Typography gutterBottom variant="h5" component="h2">{t('change_password')}</Typography>
+          <Typography gutterBottom variant="h5" component="h2">
+            {t('change_password')}
+          </Typography>
           <TextField
             formik={formik}
             namespace="oldPassword"
@@ -94,15 +113,17 @@ export default function ChangePassword(props) {
           />
         </CardContent>
         <CardActions className={styles.buttons}>
-          <Button size="small"
+          <Button
+            size="small"
             color="primary"
             variant="contained"
             className={styles.button}
-            type="submit">
+            type="submit"
+          >
             {t('change_password')}
           </Button>
         </CardActions>
       </form>
     </Card>
-  )
+  );
 }

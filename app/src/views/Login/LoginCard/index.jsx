@@ -13,7 +13,7 @@ import {
   CardContent,
   Divider,
   TextField,
-  Typography
+  Typography,
 } from '../../../components/MUI';
 import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
@@ -26,17 +26,22 @@ export default function LoginCard() {
     const errors = {};
     if (!values.email) {
       errors.email = t('value_is_required');
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+    ) {
       errors.email = t('invalid_email');
     }
 
     if (!values.password) {
       errors.password = t('value_is_required');
-    } else if (values.password.length < 8 || values.password.length > 16) {
+    } else if (
+      values.password.length < 8 ||
+      values.password.length > 16
+    ) {
       errors.password = t('password_length');
     }
     return errors;
-  }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -69,7 +74,10 @@ export default function LoginCard() {
 
       if (res.status === 403) {
         // Password is not good
-        formik.setFieldError('password', t('email_password_no_match'));
+        formik.setFieldError(
+          'password',
+          t('email_password_no_match'),
+        );
       }
 
       const { data } = await res.json();
@@ -82,18 +90,20 @@ export default function LoginCard() {
         });
         dispatch({
           type: ACTION_ENUM.UPDATE_USER_INFO,
-          payload: userInfo
-        })
+          payload: userInfo,
+        });
         goTo(ROUTES.userSettings);
       }
-    }
-  })
+    },
+  });
 
   return (
     <Card className={styles.card}>
       <form onSubmit={formik.handleSubmit}>
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">{t('login')}</Typography>
+          <Typography gutterBottom variant="h5" component="h2">
+            {t('login')}
+          </Typography>
           <TextField
             namespace="email"
             formik={formik}
@@ -131,5 +141,5 @@ export default function LoginCard() {
         </CardActions>
       </form>
     </Card>
-  )
+  );
 }

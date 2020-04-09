@@ -7,7 +7,9 @@ let key;
 try {
   key = require('./keys/google-keys.json');
 } catch (e) {
-  console.log(`There is an error, keys are probably simply not configured: ${e}`);
+  console.log(
+    `There is an error, keys are probably simply not configured: ${e}`,
+  );
 }
 
 const YOUR_EMAIL_ADDRESS = 'info@sportfolios.app';
@@ -62,5 +64,5 @@ async function sendRecoveryEmail({ email, token }) {
 
 module.exports = {
   sendConfirmationEmail,
-  sendRecoveryEmail
+  sendRecoveryEmail,
 };

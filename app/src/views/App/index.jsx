@@ -18,6 +18,7 @@ import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
 import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
 import ForgotPassword from '../ForgotPassword';
 import PasswordRecovery from '../PasswordRecovery';
+import Profile from '../Profile';
 import Signup from '../Signup';
 import UserSettings from '../UserSettings';
 
@@ -43,12 +44,31 @@ export default function App() {
           </div>
           <div className={styles.main}>
             <Switch>
-              <AdminRoute path={ROUTES.adminPanel} component={AdminPanel} />
-              <Route path={ROUTES.confirmEmail} component={ConfirmEmail} />
-              <Route path={ROUTES.confirmEmailFailure} component={ConfirmEmailFailure} />
-              <Route path={ROUTES.confirmEmailSuccess} component={ConfirmEmailSuccess} />
-              <Route path={ROUTES.forgotPassword} component={ForgotPassword} />
-              <Route path={ROUTES.recoveryEmail} component={PasswordRecovery} />
+              <AdminRoute
+                path={ROUTES.adminPanel}
+                component={AdminPanel}
+              />
+              <Route
+                path={ROUTES.confirmEmail}
+                component={ConfirmEmail}
+              />
+              <Route
+                path={ROUTES.confirmEmailFailure}
+                component={ConfirmEmailFailure}
+              />
+              <Route
+                path={ROUTES.confirmEmailSuccess}
+                component={ConfirmEmailSuccess}
+              />
+              <Route
+                path={ROUTES.forgotPassword}
+                component={ForgotPassword}
+              />
+              <Route
+                path={ROUTES.recoveryEmail}
+                component={PasswordRecovery}
+              />
+              <Route path={ROUTES.profile} component={Profile} />
               <Route exact path={ROUTES.login} component={Login} />
               <Route exact path={ROUTES.signup} component={Signup} />
               <Route
@@ -56,12 +76,11 @@ export default function App() {
                 path={ROUTES.confirmationEmailSent}
                 component={ConfirmationEmailSent}
               />
-              <PrivateRoute path={ROUTES.userSettings}
+              <PrivateRoute
+                path={ROUTES.userSettings}
                 component={UserSettings}
               />
-              <PrivateRoute
-                component={Main}
-              />
+              <PrivateRoute component={Main} />
             </Switch>
           </div>
         </div>

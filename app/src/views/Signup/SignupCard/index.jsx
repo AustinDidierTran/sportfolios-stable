@@ -12,7 +12,7 @@ import {
   CardActions,
   Divider,
   TextField,
-  Typography
+  Typography,
 } from '../../../components/MUI';
 
 import api from '../../../actions/api';
@@ -34,17 +34,22 @@ export default function SignupCard(props) {
 
     if (!values.email) {
       errors.email = t('value_is_required');
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+    ) {
       errors.email = t('invalid_email');
     }
 
     if (!values.password) {
       errors.password = t('value_is_required');
-    } else if (values.password.length < 8 || values.password.length > 16) {
+    } else if (
+      values.password.length < 8 ||
+      values.password.length > 16
+    ) {
       errors.password = t('password_length');
     }
     return errors;
-  }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -72,14 +77,16 @@ export default function SignupCard(props) {
       } else {
         goTo(ROUTES.confirmationEmailSent, { email });
       }
-    }
+    },
   });
 
   return (
     <Card className={styles.signup}>
       <form onSubmit={formik.handleSubmit}>
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">{t('signup')}</Typography>
+          <Typography gutterBottom variant="h5" component="h2">
+            {t('signup')}
+          </Typography>
           <TextField
             namespace="firstName"
             formik={formik}
@@ -127,5 +134,6 @@ export default function SignupCard(props) {
           </Link>
         </CardActions>
       </form>
-    </Card>)
+    </Card>
+  );
 }

@@ -29,21 +29,21 @@ module.exports = async (ctx, next) => {
 
   const userInfo = {
     id: user_id,
-  }
+  };
 
   const userRole = await knex('user_app_role')
     .select('app_role')
-    .where({ user_id })
+    .where({ user_id });
 
   if (userRole.length) {
-    userInfo.appRole = userRole[0].app_role
+    userInfo.appRole = userRole[0].app_role;
   }
 
   if (ctx.body) {
     ctx.body.userInfo = userInfo;
   } else {
-    ctx.body = { userInfo }
+    ctx.body = { userInfo };
   }
 
   await next();
-}
+};

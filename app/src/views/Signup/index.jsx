@@ -19,17 +19,22 @@ export default function Login() {
     const errors = {};
     if (!values.email) {
       errors.email = t('value_is_required');
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+    ) {
       errors.email = t('invalid_email');
     }
 
     if (!values.password) {
       errors.password = t('value_is_required');
-    } else if (values.password.length < 8 || values.password.length > 16) {
+    } else if (
+      values.password.length < 8 ||
+      values.password.length > 16
+    ) {
       errors.password = t('password_length');
     }
     return errors;
-  }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -62,7 +67,10 @@ export default function Login() {
 
       if (res.status === 403) {
         // Password is not good
-        formik.setFieldError('password', t('email_password_no_match'));
+        formik.setFieldError(
+          'password',
+          t('email_password_no_match'),
+        );
       }
 
       const { data } = await res.json();
@@ -75,8 +83,8 @@ export default function Login() {
         });
         goTo(ROUTES.userSettings);
       }
-    }
-  })
+    },
+  });
 
   return (
     <div className={styles.main}>

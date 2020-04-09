@@ -13,22 +13,24 @@ export default function UsersTable() {
   const updateUsers = async () => {
     const res = await api('/api/admin/users');
 
-    setUsers(res.data.map((user) => ({
-      ...user,
-      emails: user.emails.join(', ')
-    })));
-  }
+    setUsers(
+      res.data.map(user => ({
+        ...user,
+        emails: user.emails.join(', '),
+      })),
+    );
+  };
 
   useEffect(() => {
-    updateUsers()
+    updateUsers();
   }, []);
 
   const headers = [
-    { display: 'First Name', value: 'first_name' },
-    { display: 'Last Name', value: 'last_name' },
-    { display: 'Emails', value: 'emails' },
-    { display: 'App Role', value: 'app_role' },
-  ]
+    { display: t('first_name'), value: 'first_name' },
+    { display: t('last_name'), value: 'last_name' },
+    { display: t('emails'), value: 'emails' },
+    { display: t('app_role'), value: 'app_role' },
+  ];
 
   return (
     <Card className={styles.card}>
@@ -40,5 +42,5 @@ export default function UsersTable() {
         />
       </CardContent>
     </Card>
-  )
+  );
 }

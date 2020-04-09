@@ -7,7 +7,14 @@ import styles from './ForgotPasswordCard.module.css';
 
 import { Store } from '../../../Store';
 import Button from '../../../components/MUI/Button';
-import { Card, CardActions, CardContent, Divider, TextField, Typography } from '../../../components/MUI';
+import {
+  Card,
+  CardActions,
+  CardContent,
+  Divider,
+  TextField,
+  Typography,
+} from '../../../components/MUI';
 import api from '../../../actions/api';
 import { ROUTES } from '../../../actions/goTo';
 
@@ -18,11 +25,13 @@ export default function ForgotPassword() {
     const errors = {};
     if (!values.email) {
       errors.email = t('value_is_required');
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+    ) {
       errors.email = t('invalid_email');
     }
     return errors;
-  }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -44,16 +53,17 @@ export default function ForgotPassword() {
         // Email not found
         formik.setFieldError('email', t('email_not_found'));
       }
-
-    }
-  })
+    },
+  });
 
   return (
     <div className={styles.main}>
       <form onSubmit={formik.handleSubmit}>
         <Card className={styles.card}>
           <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">{t('forgot_password')}</Typography>
+            <Typography gutterBottom variant="h5" component="h2">
+              {t('forgot_password')}
+            </Typography>
             <TextField
               namespace="email"
               formik={formik}

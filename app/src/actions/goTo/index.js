@@ -8,10 +8,11 @@ export const ROUTES = {
   confirmEmailSuccess: '/confirmEmailSuccess',
   forgotPassword: '/forgotPassword',
   login: '/login',
+  profile: '/profile/:id',
   recoveryEmail: '/recoveryEmail/:token',
   signup: '/signup',
-  userSettings: '/userSettings'
-}
+  userSettings: '/userSettings',
+};
 
 export const formatRoute = (route, params) => {
   if (!params) {
@@ -20,9 +21,12 @@ export const formatRoute = (route, params) => {
 
   const paramKeys = Object.keys(params);
 
-  return paramKeys.reduce((prev, curr) => prev.replace(`:${curr}`, params[curr]), route);
-}
+  return paramKeys.reduce(
+    (prev, curr) => prev.replace(`:${curr}`, params[curr]),
+    route,
+  );
+};
 
 export const goTo = (route, params) => {
   history.push(formatRoute(route, params));
-}
+};
