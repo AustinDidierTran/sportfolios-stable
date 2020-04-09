@@ -7,15 +7,17 @@ import { StoreProvider } from './Store';
 
 import App from './views/App';
 
+import '../styles/global.css';
+
 main();
 function main() {
   const link = document.createElement('link');
   link.rel = 'stylesheet';
+  link.href =
+    'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap';
   const meta = document.createElement('meta');
   meta.name = 'viewport';
   meta.content = 'width=device-width,initial-scale=1.0';
-  link.href =
-    'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap';
   document.head.appendChild(link);
   document.head.appendChild(meta);
   const app = document.createElement('div');
