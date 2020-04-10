@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 
 import { useFormInput } from '../../../../hooks/forms';
-import { TableRow, TableCell, TextField, IconButton } from '../../../MUI';
+import {
+  TableRow,
+  TableCell,
+  TextField,
+  IconButton,
+} from '../../../MUI';
 
 // Buttons
 import Add from '@material-ui/icons/Add';
@@ -12,16 +17,19 @@ export default function CreateRow(props) {
   const { allowCreate, headers, onCreate, validationSchema } = props;
   const [validationErrors, setValidationErrors] = useState({});
 
-  const values = headers.reduce((prev, h) => ({
-    ...prev,
-    [h.value]: useFormInput(h.initialValue || '')
-  }), {});
+  const values = headers.reduce(
+    (prev, h) => ({
+      ...prev,
+      [h.value]: useFormInput(h.initialValue || ''),
+    }),
+    {},
+  );
 
   const onReset = () => {
     Object.keys(values).forEach(key => values[key].reset());
-  }
+  };
 
-  const validateValues = async (v) => {
+  const validateValues = async v => {
     if (!validationSchema) {
       return true;
     }
@@ -34,56 +42,60 @@ export default function CreateRow(props) {
       return { isValid, validatedValues };
     } catch (err) {
       isValid = false;
-      return { isValid, errors: { [err.path]: err.errors[0] } }
+      return { isValid, errors: { [err.path]: err.errors[0] } };
     }
-  }
+  };
 
   const flattenValues = () => {
     const keys = Object.keys(values);
 
-    const flattenedValues = keys.reduce((prev, key) => ({
-      ...prev,
-      [key]: values[key].value
-    }), {})
+    const flattenedValues = keys.reduce(
+      (prev, key) => ({
+        ...prev,
+        [key]: values[key].value,
+      }),
+      {},
+    );
 
     return validationSchema.cast(flattenedValues);
-  }
+  };
 
   const onSave = async () => {
     const formattedValues = flattenValues();
 
-    const { isValid, errors, validatedValues } = await validateValues(formattedValues);
-
+    const { isValid, errors, validatedValues } = await validateValues(
+      formattedValues,
+    );
 
     if (!isValid) {
       setValidationErrors(errors);
     } else {
       setValidationErrors({});
-      resetValues();
+      onReset();
       onCreate(validatedValues);
     }
-  }
+  };
 
-  return (
-    allowCreate ?
-      <TableRow>
-        {headers.map((h, index) =>
-          <CellRenderer
-            error={validationErrors[h.value]}
-            header={h}
-            index={index}
-            {...values[h.value]}
-          />
-        )}
-        <TableCell>
-          <IconButton size="small" onClick={onSave}>
-            <Add size="small" />
-          </IconButton>
-          <IconButton size="small" onClick={onReset}>
-            <Delete size="small" />
-          </IconButton>
-        </TableCell>
-      </TableRow>
-      : <></>
-  )
+  return allowCreate ? (
+    <TableRow>
+      {headers.map((h, index) => (
+        <CellRenderer
+          error={validationErrors[h.value]}
+          header={h}
+          index={index}
+          {...values[h.value]}
+        />
+      ))}
+      <TableCell>
+        <IconButton size="small" onClick={onSave}>
+          <Add size="small" />
+        </IconButton>
+        <IconButton size="small" onClick={onReset}>
+          <Delete size="small" />
+        </IconButton>
+      </TableCell>
+    </TableRow>
+  ) : (
+    <></>
+  );
 }

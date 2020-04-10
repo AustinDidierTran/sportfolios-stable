@@ -63,13 +63,17 @@ const signup = async ({ firstName, lastName, email, password }) => {
 };
 
 const login = async ({ email, password }) => {
+  // Validate account with this email exists
+  const user_id = await getUserIdFromEmail(email);
+  if (!user_id) {
+    return { status: 404 };
+  }
+
   // Validate email is confirmed
   const emailIsConfirmed = await validateEmailIsConfirmed(email);
   if (!emailIsConfirmed) {
     return { status: 401 };
   }
-
-  const user_id = await getUserIdFromEmail(email);
 
   const hashedPassword = await getHashedPasswordFromId(user_id);
   if (!hashedPassword) {
