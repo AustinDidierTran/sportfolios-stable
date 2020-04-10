@@ -13,6 +13,7 @@ const adminOnly = require('./server/middleware/admin-only');
 const associationRoutes = require('./server/routes/associations');
 const indexRoutes = require('./server/routes/index');
 const authRoutes = require('./server/routes/auth');
+const profileRoutes = require('./server/routes/profile');
 const userRoutes = require('./server/routes/users');
 
 // Admin routes
@@ -31,6 +32,7 @@ app.use(checkAuth);
 app.use(indexRoutes.routes());
 app.use(associationRoutes.routes());
 app.use(authRoutes.routes());
+app.use(profileRoutes.routes());
 app.use(userRoutes.routes());
 app.use(adminOnly);
 app.use(adminRoutes.routes());

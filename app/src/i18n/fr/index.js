@@ -28,6 +28,8 @@ export default {
     signup: "S'enregistrer",
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',
+    email_already_used:
+      'Courriel déjà utilisé. Veuillez en choisir un autre.',
     email_not_confirmed:
       'Adresse courriel non confirmé. Un nouveau courriel de confirmation a été envoyé. Svp, regardez vos courriels.',
     email_not_found: "Il n'existe pas de compte avec ce courriel",

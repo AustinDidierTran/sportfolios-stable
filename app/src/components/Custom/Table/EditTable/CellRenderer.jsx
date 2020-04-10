@@ -1,30 +1,43 @@
 import React from 'react';
 
-import { TableCell, TextField } from '../../../MUI';
+import Input from '../../Input';
+import { TableCell } from '../../../MUI';
 
 export default function CellRenderer(props) {
-  const { error, header, index, ...values } = props;
+  const {
+    error,
+    header: { display, value, type = 'text' },
+    index,
+    ...values
+  } = props;
 
-  switch (header.type) {
+  console.log('type', type);
+
+  switch (type) {
     case 'number':
-      return (<TableCell key={index}>
-        <TextField
-          label={header.display}
-          namespace={header.value}
-          error={error}
-          type="number"
-          {...values.inputProps}
-        />
-      </TableCell>)
-
+      return (
+        <TableCell key={index}>
+          <Input
+            label={display}
+            namespace={value}
+            error={error}
+            type="number"
+            {...values.inputProps}
+          />
+        </TableCell>
+      );
+    default:
   }
 
-  return (<TableCell key={index}>
-    <TextField
-      label={header.display}
-      namespace={header.value}
-      error={error}
-      {...values.inputProps}
-    />
-  </TableCell>)
+  return (
+    <TableCell key={index}>
+      <Input
+        label={display}
+        namespace={value}
+        error={error}
+        type={type}
+        {...values.inputProps}
+      />
+    </TableCell>
+  );
 }

@@ -201,13 +201,17 @@ const validateEmailIsConfirmed = async email => {
     .where({ email })
     .returning(['confirmed_email_at']);
 
+  console.log('response', response);
+
   return response.length && response[0].confirmed_email_at !== null;
 };
 
 const validateEmailIsUnique = async email => {
   const users = await knex('user_email')
-    .where('email', email)
+    .where({ email })
     .returning(['id']);
+
+  console.log('users', users);
 
   return !users.length;
 };

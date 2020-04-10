@@ -26,7 +26,7 @@ const {
 
 const signup = async ({ firstName, lastName, email, password }) => {
   // Validate email is not already taken
-  const isUnique = validateEmailIsUnique(email);
+  const isUnique = await validateEmailIsUnique(email);
 
   if (!isUnique) return { code: 403 };
 
