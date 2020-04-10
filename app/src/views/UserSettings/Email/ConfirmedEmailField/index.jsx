@@ -6,7 +6,7 @@ import { IconButton, TextField } from '../../../../components/MUI';
 import styles from './ConfirmedEmailField.module.css';
 import { Tooltip } from '@material-ui/core';
 
-export default function EmailField(props) {
+export default function ConfirmedEmailField(props) {
   const {
     email: { email, confirmed_email_at },
     isDeletable,

@@ -1,12 +1,14 @@
 import React, { useContext } from 'react';
+import moment from 'moment';
 
 import styles from './BasicInfos.module.css';
 
 import { Store } from '../../../../Store';
 
 import { Avatar, Input } from '../../../../components/Custom';
-import { Card, Typography } from '../../../../components/MUI';
+import { Button, Card, Typography } from '../../../../components/MUI';
 import { useFormInput } from '../../../../hooks/forms';
+import api from '../../../../actions/api';
 
 export default function BasicInfos(props) {
   const {
@@ -21,8 +23,23 @@ export default function BasicInfos(props) {
       '',
     );
 
-  const today = new Date();
+  console.log('userInfo', userInfo);
+
+  const today = moment().format('YYYY-MM-DD');
   const birthDate = useFormInput(today);
+  const onSaveBirthDate = async () => {
+    console.log('birthDate', birthDate);
+
+    const res = await api(
+      `/api/profile/birthDate/${userInfo.user_id}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({ birthDate: birthDate.value }),
+      },
+    );
+
+    console.log('res', res);
+  };
 
   return (
     <Card className={styles.card}>
@@ -30,6 +47,7 @@ export default function BasicInfos(props) {
       <br />
       <Typography variant="h3">{completeName}</Typography>
       <Input type="date" {...birthDate.inputProps} />
+      <Button onClick={onSaveBirthDate}>Save</Button>
     </Card>
   );
 }

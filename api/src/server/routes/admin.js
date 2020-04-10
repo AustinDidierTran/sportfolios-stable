@@ -67,20 +67,18 @@ router.post(`${BASE_URL}/sport`, async ctx => {
 
 router.put(`${BASE_URL}/sport/:id`, async ctx => {
   try {
-    const sport = await queries.updateSport(
+    const [sport] = await queries.updateSport(
       ctx.params.id,
       ctx.request.body,
     );
-    if (sport.length) {
-      console.log('sport[0]', sport[0]);
-
+    if (sport) {
       ctx.status = 201;
       ctx.body = {
         status: 'success',
         data: {
-          id: sport[0].id,
-          name: sport[0].name,
-          scoreType: sport[0].score_type,
+          id: sport.id,
+          name: sport.name,
+          scoreType: sport.score_type,
         },
       };
     } else {

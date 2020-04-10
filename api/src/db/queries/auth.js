@@ -5,7 +5,7 @@ const {
   sendRecoveryEmail,
 } = require('../../server/utils/nodeMailer');
 const {
-  confirmEmail,
+  confirmEmail: confirmEmailHelper,
   createUser,
   createUserEmail,
   createUserInfo,
@@ -31,7 +31,7 @@ const signup = async ({ firstName, lastName, email, password }) => {
   if (!isUnique) return { code: 403 };
 
   if (!password || password.length < 8 || password.length > 16) {
-    return { code: 403 };
+    return { code: 402 };
   }
 
   const hashedPassword = await generateHashedPassword(password);
@@ -97,7 +97,7 @@ const login = async ({ email, password }) => {
   }
 };
 
-const confirmEmailRoute = async ({ token }) => {
+const confirmEmail = async ({ token }) => {
   const email = await getEmailFromToken({ token });
 
   if (!email) {
@@ -105,7 +105,7 @@ const confirmEmailRoute = async ({ token }) => {
     return 403;
   }
 
-  await confirmEmail({ email });
+  await confirmEmailHelper({ email });
 
   return 200;
 };
@@ -159,7 +159,7 @@ const resendConfirmationEmail = async ({ email }) => {
 };
 
 module.exports = {
-  confirmEmail: confirmEmailRoute,
+  confirmEmail,
   login,
   recoverPassword,
   recoveryEmail,
