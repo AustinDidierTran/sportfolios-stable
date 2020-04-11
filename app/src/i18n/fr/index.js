@@ -3,6 +3,7 @@ export default {
     actions: 'Actions',
     app_role: 'App Role',
     basic_info: 'Information générales',
+    birth_date_format: '{{date, LL}} ({{age}} ans)',
     change_password: 'Changer votre mot de passe',
     email: 'Courriel',
     emails: 'Courriels',

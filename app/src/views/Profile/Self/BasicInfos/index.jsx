@@ -1,4 +1,6 @@
 import React, { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
 import moment from 'moment';
 
 import styles from './BasicInfos.module.css';
@@ -15,6 +17,8 @@ import { useFormInput } from '../../../../hooks/forms';
 import api from '../../../../actions/api';
 
 export default function BasicInfos(props) {
+  const { t } = useTranslation();
+
   const {
     state: { userInfo },
   } = useContext(Store);
@@ -71,7 +75,12 @@ export default function BasicInfos(props) {
       {isEditMode ? (
         <Input type="date" {...birthDate.inputProps} />
       ) : (
-        <span>{birthDate.value}</span>
+        <span>
+          {t('birth_date_format', {
+            age: moment().diff(moment(birthDate.value), 'years'),
+            date: moment(birthDate.value),
+          })}
+        </span>
       )}
     </Card>
   );
