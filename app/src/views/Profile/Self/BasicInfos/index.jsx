@@ -74,13 +74,15 @@ export default function BasicInfos(props) {
       </Typography>
       {isEditMode ? (
         <Input type="date" {...birthDate.inputProps} />
-      ) : (
+      ) : birth_date ? (
         <span>
           {t('birth_date_format', {
             age: moment().diff(moment(birthDate.value), 'years'),
             date: moment(birthDate.value),
           })}
         </span>
+      ) : (
+        <></>
       )}
     </Card>
   );

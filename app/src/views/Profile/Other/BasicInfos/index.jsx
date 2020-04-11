@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
+import moment from 'moment';
+
 import styles from './BasicInfos.module.css';
 
 import { Avatar } from '../../../../components/Custom';
@@ -7,6 +11,8 @@ import { Card, Typography } from '../../../../components/MUI';
 import api from '../../../../actions/api';
 
 export default function BasicInfos(props) {
+  const { t } = useTranslation();
+
   const { userId } = props;
   const [completeName, setCompleteName] = useState('');
   const [initials, setInitials] = useState('');
@@ -37,7 +43,16 @@ export default function BasicInfos(props) {
       <Avatar className={styles.avatar}>{initials}</Avatar>
       <br />
       <Typography variant="h3">{completeName}</Typography>
-      <span>{birthDate}</span>
+      {birthDate ? (
+        <span>
+          {t('birth_date_format', {
+            age: moment().diff(moment(birthDate), 'years'),
+            date: moment(birthDate),
+          })}
+        </span>
+      ) : (
+        <></>
+      )}
     </Card>
   );
 }
