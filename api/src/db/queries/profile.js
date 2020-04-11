@@ -7,8 +7,6 @@ function getUserInfo(user_id) {
 }
 
 async function updateBirthDate(user_id, { birthDate }) {
-  console.log('birthDate', birthDate);
-
   const updatedUser = await knex('user_info')
     .update({ birth_date: birthDate })
     .where({ user_id })

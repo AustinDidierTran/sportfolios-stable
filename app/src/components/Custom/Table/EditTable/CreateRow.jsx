@@ -1,16 +1,11 @@
 import React, { useState } from 'react';
 
 import { useFormInput } from '../../../../hooks/forms';
-import {
-  TableRow,
-  TableCell,
-  TextField,
-  IconButton,
-} from '../../../MUI';
+import { TableRow, TableCell } from '../../../MUI';
+
+import IconButton from '../../IconButton';
 
 // Buttons
-import Add from '@material-ui/icons/Add';
-import Delete from '@material-ui/icons/Delete';
 import CellRenderer from './CellRenderer';
 
 export default function CreateRow(props) {
@@ -82,17 +77,14 @@ export default function CreateRow(props) {
         <CellRenderer
           error={validationErrors[h.value]}
           header={h}
+          key={index}
           index={index}
           {...values[h.value]}
         />
       ))}
       <TableCell>
-        <IconButton size="small" onClick={onSave}>
-          <Add size="small" />
-        </IconButton>
-        <IconButton size="small" onClick={onReset}>
-          <Delete size="small" />
-        </IconButton>
+        <IconButton size="small" onClick={onSave} icon="Add" />
+        <IconButton size="small" onClick={onReset} icon="Delete" />
       </TableCell>
     </TableRow>
   ) : (

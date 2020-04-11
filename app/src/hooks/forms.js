@@ -17,6 +17,8 @@ export const useFormInput = initialValue => {
     }
   };
 
+  const setCurrentAsDefault = () => setDefaultValue(value);
+
   const reset = () => setValue(defaultValue);
 
   const inputProps = {
@@ -29,5 +31,6 @@ export const useFormInput = initialValue => {
     reset,
     changeDefault,
     inputProps,
+    setCurrentAsDefault,
   };
 };

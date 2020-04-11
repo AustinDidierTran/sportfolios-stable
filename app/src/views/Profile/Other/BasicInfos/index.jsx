@@ -10,10 +10,13 @@ export default function BasicInfos(props) {
   const { userId } = props;
   const [completeName, setCompleteName] = useState('');
   const [initials, setInitials] = useState('');
+  const [birthDate, setBirthDate] = useState('');
 
   useEffect(() => {
     api(`/api/profile/${userId}`).then(res => {
       const userInfo = res.data;
+      console.log('userInfo', userInfo);
+
       const cName = `${userInfo.first_name} ${userInfo.last_name}`;
       const iTials = cName
         .split(/(?:-| )+/)
@@ -25,6 +28,7 @@ export default function BasicInfos(props) {
 
       setCompleteName(cName);
       setInitials(iTials);
+      setBirthDate(userInfo.birth_date);
     });
   }, []);
 
@@ -33,6 +37,7 @@ export default function BasicInfos(props) {
       <Avatar className={styles.avatar}>{initials}</Avatar>
       <br />
       <Typography variant="h3">{completeName}</Typography>
+      <span>{birthDate}</span>
     </Card>
   );
 }

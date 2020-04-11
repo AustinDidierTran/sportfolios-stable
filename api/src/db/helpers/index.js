@@ -67,7 +67,7 @@ const getBasicUserInfoFromToken = async authToken => {
   const user_id = await getUserIdFromToken(authToken);
 
   const basicUserInfo = await knex('user_info')
-    .select(['first_name', 'language', 'last_name', 'user_id'])
+    .select('*')
     .where({ user_id });
 
   const app_role = await knex('user_app_role')

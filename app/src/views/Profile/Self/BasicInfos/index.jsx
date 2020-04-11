@@ -1,11 +1,15 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import moment from 'moment';
 
 import styles from './BasicInfos.module.css';
 
 import { Store } from '../../../../Store';
 
-import { Avatar, Input } from '../../../../components/Custom';
+import {
+  Avatar,
+  IconButton,
+  Input,
+} from '../../../../components/Custom';
 import { Button, Card, Typography } from '../../../../components/MUI';
 import { useFormInput } from '../../../../hooks/forms';
 import api from '../../../../actions/api';
@@ -14,6 +18,9 @@ export default function BasicInfos(props) {
   const {
     state: { userInfo },
   } = useContext(Store);
+  const [isEditMode, setEditMode] = useState(false);
+
+  const { birth_date } = userInfo;
   const completeName = `${userInfo.first_name} ${userInfo.last_name}`;
   const initials = completeName
     .split(/(?:-| )+/)
@@ -23,13 +30,8 @@ export default function BasicInfos(props) {
       '',
     );
 
-  console.log('userInfo', userInfo);
-
-  const today = moment().format('YYYY-MM-DD');
-  const birthDate = useFormInput(today);
-  const onSaveBirthDate = async () => {
-    console.log('birthDate', birthDate);
-
+  const birthDate = useFormInput(birth_date);
+  const onSave = async () => {
     const res = await api(
       `/api/profile/birthDate/${userInfo.user_id}`,
       {
@@ -38,16 +40,39 @@ export default function BasicInfos(props) {
       },
     );
 
-    console.log('res', res);
+    if (res.status === 200) {
+      birthDate.setCurrentAsDefault();
+      setEditMode(false);
+    }
   };
+
+  const onCancel = async () => {
+    setEditMode(false);
+    birthDate.reset();
+  };
+
+  const onEdit = async () => setEditMode(true);
 
   return (
     <Card className={styles.card}>
       <Avatar className={styles.avatar}>{initials}</Avatar>
       <br />
-      <Typography variant="h3">{completeName}</Typography>
-      <Input type="date" {...birthDate.inputProps} />
-      <Button onClick={onSaveBirthDate}>Save</Button>
+      <Typography variant="h3">
+        {completeName}
+        {isEditMode ? (
+          <>
+            <IconButton icon="Check" onClick={onSave} />
+            <IconButton icon="Close" onClick={onCancel} />
+          </>
+        ) : (
+          <IconButton icon="Edit" onClick={onEdit} />
+        )}
+      </Typography>
+      {isEditMode ? (
+        <Input type="date" {...birthDate.inputProps} />
+      ) : (
+        <span>{birthDate.value}</span>
+      )}
     </Card>
   );
 }
