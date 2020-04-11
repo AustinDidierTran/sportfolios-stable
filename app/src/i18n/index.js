@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import en from './en';
 import fr from './fr';
+import moment from 'moment';
 
 i18n.use(LanguageDetector).init({
   resources: {
@@ -17,11 +18,23 @@ i18n.use(LanguageDetector).init({
   interpolation: {
     escapeValue: false, // not needed for react!!
     formatSeparator: ',',
+    format: function(value, format, lng) {
+      if (moment.isMoment(value)) {
+        return moment(value)
+          .locale(lng)
+          .format(format);
+      }
+      return value;
+    },
   },
 
   react: {
     wait: true,
   },
 });
+
+const changeLanguage = language => {
+  i18n.changeLanguage(language);
+};
 
 export default i18n;

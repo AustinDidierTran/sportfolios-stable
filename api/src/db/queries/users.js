@@ -6,6 +6,7 @@ const {
   getBasicUserInfoFromToken,
   getEmailsFromAuthToken,
   getHashedPasswordFromId,
+  getUserIdFromEmail,
   getUserIdFromToken,
   sendNewConfirmationEmailAllIncluded,
   updateBasicUserInfoFromUserId,
@@ -17,6 +18,13 @@ const addEmail = async ({ authToken, email }) => {
 
   if (!user_id) {
     return 402;
+  }
+
+  // validate there is no user with said email
+  const email_user_id = await getUserIdFromEmail(email);
+
+  if (email_user_id) {
+    return 403;
   }
 
   await createUserEmail({ user_id, email });

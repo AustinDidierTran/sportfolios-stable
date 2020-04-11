@@ -5,7 +5,7 @@ const {
   sendRecoveryEmail,
 } = require('../../server/utils/nodeMailer');
 const {
-  confirmEmail,
+  confirmEmail: confirmEmailHelper,
   createUser,
   createUserEmail,
   createUserInfo,
@@ -26,12 +26,12 @@ const {
 
 const signup = async ({ firstName, lastName, email, password }) => {
   // Validate email is not already taken
-  const isUnique = validateEmailIsUnique(email);
+  const isUnique = await validateEmailIsUnique(email);
 
   if (!isUnique) return { code: 403 };
 
   if (!password || password.length < 8 || password.length > 16) {
-    return { code: 403 };
+    return { code: 402 };
   }
 
   const hashedPassword = await generateHashedPassword(password);
@@ -63,13 +63,17 @@ const signup = async ({ firstName, lastName, email, password }) => {
 };
 
 const login = async ({ email, password }) => {
+  // Validate account with this email exists
+  const user_id = await getUserIdFromEmail(email);
+  if (!user_id) {
+    return { status: 404 };
+  }
+
   // Validate email is confirmed
   const emailIsConfirmed = await validateEmailIsConfirmed(email);
   if (!emailIsConfirmed) {
     return { status: 401 };
   }
-
-  const user_id = await getUserIdFromEmail(email);
 
   const hashedPassword = await getHashedPasswordFromId(user_id);
   if (!hashedPassword) {
@@ -93,7 +97,7 @@ const login = async ({ email, password }) => {
   }
 };
 
-const confirmEmailRoute = async ({ token }) => {
+const confirmEmail = async ({ token }) => {
   const email = await getEmailFromToken({ token });
 
   if (!email) {
@@ -101,7 +105,7 @@ const confirmEmailRoute = async ({ token }) => {
     return 403;
   }
 
-  await confirmEmail({ email });
+  await confirmEmailHelper({ email });
 
   return 200;
 };
@@ -155,7 +159,7 @@ const resendConfirmationEmail = async ({ email }) => {
 };
 
 module.exports = {
-  confirmEmail: confirmEmailRoute,
+  confirmEmail,
   login,
   recoverPassword,
   recoveryEmail,

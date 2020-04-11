@@ -70,29 +70,29 @@ export default function LoginCard() {
           }),
         });
         formik.setFieldError('email', t('email_not_confirmed'));
-      }
-
-      if (res.status === 403) {
+      } else if (res.status === 403) {
         // Password is not good
         formik.setFieldError(
           'password',
           t('email_password_no_match'),
         );
-      }
+      } else if (res.status === 404) {
+        formik.setFieldError('email', t('email_not_found'));
+      } else {
+        const { data } = await res.json();
 
-      const { data } = await res.json();
-
-      if (data) {
-        const { token, userInfo } = JSON.parse(data);
-        dispatch({
-          type: ACTION_ENUM.LOGIN,
-          payload: token,
-        });
-        dispatch({
-          type: ACTION_ENUM.UPDATE_USER_INFO,
-          payload: userInfo,
-        });
-        goTo(ROUTES.userSettings);
+        if (data) {
+          const { token, userInfo } = JSON.parse(data);
+          dispatch({
+            type: ACTION_ENUM.LOGIN,
+            payload: token,
+          });
+          dispatch({
+            type: ACTION_ENUM.UPDATE_USER_INFO,
+            payload: userInfo,
+          });
+          goTo(ROUTES.userSettings);
+        }
       }
     },
   });

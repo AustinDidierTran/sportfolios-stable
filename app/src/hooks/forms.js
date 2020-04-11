@@ -5,6 +5,8 @@ export const useFormInput = initialValue => {
   const [value, setValue] = useState(initialValue);
 
   const handleChange = e => {
+    console.log('e.target.value', e.target.value);
+
     setValue(e.target.value);
   };
 
@@ -15,17 +17,20 @@ export const useFormInput = initialValue => {
     }
   };
 
+  const setCurrentAsDefault = () => setDefaultValue(value);
+
   const reset = () => setValue(defaultValue);
 
   const inputProps = {
     value,
     onChange: handleChange,
-  }
+  };
 
   return {
     ...inputProps,
     reset,
     changeDefault,
-    inputProps
+    inputProps,
+    setCurrentAsDefault,
   };
 };

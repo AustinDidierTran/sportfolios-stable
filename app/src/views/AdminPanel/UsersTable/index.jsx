@@ -5,6 +5,7 @@ import { Table } from '../../../components/Custom';
 import { Card, CardContent } from '../../../components/MUI';
 import styles from './UsersTable.module.css';
 import api from '../../../actions/api';
+import history from '../../../stores/history';
 
 export default function UsersTable() {
   const { t } = useTranslation();
@@ -38,6 +39,7 @@ export default function UsersTable() {
         <Table
           data={users}
           headers={headers}
+          onRowClick={d => () => history.push(`/profile/${d.id}`)}
           title={t('users_table_title')}
         />
       </CardContent>

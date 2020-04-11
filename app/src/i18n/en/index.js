@@ -3,6 +3,7 @@ export default {
     actions: 'Actions',
     app_role: 'App Role',
     basic_info: 'Basic Info',
+    birth_date_format: '{{date, LL}} ({{age}} years old)',
     change_password: 'Change password',
     email: 'Email',
     emails: 'Emails',
@@ -25,6 +26,8 @@ export default {
     signup: 'Signup',
     // Validation
     confirm_new_password: 'Confirm New Password',
+    email_already_used:
+      'Email is already in used. Please choose another one',
     email_not_confirmed:
       'Email has not been confirmed. A new confirmation email has been sent. Please look at your emails.',
     email_not_found: 'There is no account with this email.',

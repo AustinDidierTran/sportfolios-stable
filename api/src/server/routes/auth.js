@@ -8,16 +8,15 @@ router.post(`${BASE_URL}/signup`, async ctx => {
   try {
     const res = await queries.signup(ctx.request.body);
 
-    if (res.code === 403) {
-      ctx.status = 403;
-      ctx.body = {
-        status: 'error',
-        message: 'Email is already in use.',
-      };
-    } else {
+    if (res.code === 200) {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
+      };
+    } else {
+      ctx.status = res.code;
+      ctx.body = {
+        status: 'error',
       };
     }
   } catch (err) {
@@ -95,12 +94,6 @@ router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-      };
-    } else if (code === 404) {
-      ctx.status = 404;
-      ctx.body = {
-        status: 'error',
-        message: 'Email is not found',
       };
     } else {
       ctx.status = code;

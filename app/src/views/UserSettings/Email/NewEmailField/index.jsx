@@ -50,6 +50,8 @@ export default function EmailField(props) {
 
       if (res.status === 200) {
         onSubmit();
+      } else if (res.status === 403) {
+        formik.setFieldError('email', t('email_already_used'));
       }
     },
   });

@@ -18,7 +18,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import { goTo, ROUTES } from '../../../actions/goTo';
+import { formatRoute, goTo, ROUTES } from '../../../actions/goTo';
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -133,18 +133,25 @@ export default function LoggedIn() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem
-        onClick={() => goTo(ROUTES.profile, { id: userInfo.user_id })}
+      <Link
+        style={{ color: 'black', textDecoration: 'none' }}
+        to={formatRoute(ROUTES.profile, { id: userInfo.user_id })}
       >
-        {t('profile')}
-      </MenuItem>
-      <MenuItem onClick={() => goTo(ROUTES.userSettings)}>
-        {t('user_settings')}
-      </MenuItem>
+        <MenuItem>{t('profile')}</MenuItem>
+      </Link>
+      <Link
+        style={{ color: 'black', textDecoration: 'none' }}
+        to={formatRoute(ROUTES.userSettings)}
+      >
+        <MenuItem>{t('user_settings')}</MenuItem>
+      </Link>
       {isAdmin ? (
-        <MenuItem onClick={() => goTo(ROUTES.adminPanel)}>
-          {t('admin_panel')}
-        </MenuItem>
+        <Link
+          style={{ color: 'black', textDecoration: 'none' }}
+          to={formatRoute(ROUTES.adminPanel)}
+        >
+          <MenuItem>{t('admin_panel')}</MenuItem>
+        </Link>
       ) : (
         <></>
       )}
