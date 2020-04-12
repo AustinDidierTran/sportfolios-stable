@@ -5,6 +5,7 @@ import { Tooltip } from '@material-ui/core';
 import { IconButton } from '../../MUI';
 
 import Add from '@material-ui/icons/Add';
+import AddAPhoto from '@material-ui/icons/AddAPhoto';
 import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
 import Delete from '@material-ui/icons/Delete';
@@ -20,6 +21,7 @@ export default function CustomIconButton(props) {
 
   const icons = {
     Add,
+    AddAPhoto,
     Check,
     Close,
     Delete,
