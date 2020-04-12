@@ -6,16 +6,23 @@ import clsx from 'clsx';
 import styles from './Avatar.module.css';
 
 export default function CustomAvatar(props) {
-  const { children, ...otherProps } = props;
+  const { initials, photoUrl, ...otherProps } = props;
 
-  console.log('children', children);
-
-  return (
+  return photoUrl ? (
+    <Avatar
+      {...otherProps}
+      className={clsx(styles.avatar, props.className)}
+      src={photoUrl}
+      alt={initials}
+    >
+      {initials}
+    </Avatar>
+  ) : (
     <Avatar
       {...otherProps}
       className={clsx(styles.avatar, props.className)}
     >
-      {props.children}
+      {initials}
     </Avatar>
   );
 }
