@@ -57,6 +57,12 @@ export default function BasicInfos(props) {
 
   const onEdit = async () => setEditMode(true);
 
+  const onS3Signature = async () => {
+    const res = await api(
+      `/api/profile/s3Signature/${userInfo.user_id}`,
+    );
+  };
+
   const onAddPhoto = async () => {
     const res = await api(
       `/api/profile/photoUrl/${userInfo.user_id}`,
@@ -87,7 +93,10 @@ export default function BasicInfos(props) {
             <IconButton icon="Close" onClick={onCancel} />
           </>
         ) : (
-          <IconButton icon="Edit" onClick={onEdit} />
+          <>
+            <IconButton icon="Check" onClick={onS3Signature} />
+            <IconButton icon="Edit" onClick={onEdit} />
+          </>
         )}
       </Typography>
       {isEditMode ? (
