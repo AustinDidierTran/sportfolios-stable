@@ -51,14 +51,13 @@ export function StoreProvider(props) {
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
 
-    fetch(
-      `${API_BASE_URL}/api/user/userInfo?authToken=${authToken}`,
-      {
-        headers: {
-          Authorization: authToken,
-        },
+    console.log('authToken', authToken);
+
+    fetch(`${API_BASE_URL}/api/user/userInfo`, {
+      headers: {
+        Authorization: authToken,
       },
-    )
+    })
       .then(res => res.json())
       .then(({ data }) => {
         dispatch({

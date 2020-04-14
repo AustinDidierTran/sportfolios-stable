@@ -10,6 +10,7 @@ import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
 import Delete from '@material-ui/icons/Delete';
 import Edit from '@material-ui/icons/Edit';
+import Publish from '@material-ui/icons/Publish';
 
 export default function CustomIconButton(props) {
   const {
@@ -26,6 +27,7 @@ export default function CustomIconButton(props) {
     Close,
     Delete,
     Edit,
+    Publish,
   };
 
   const Icon = icons[icon];

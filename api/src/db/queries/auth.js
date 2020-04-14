@@ -30,7 +30,7 @@ const signup = async ({ firstName, lastName, email, password }) => {
 
   if (!isUnique) return { code: 403 };
 
-  if (!password || password.length < 8 || password.length > 16) {
+  if (!password || password.length < 8 || password.length > 40) {
     return { code: 402 };
   }
 

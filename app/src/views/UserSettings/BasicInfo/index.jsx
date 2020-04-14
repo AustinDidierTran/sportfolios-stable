@@ -67,16 +67,20 @@ export default function BasicInfo(props) {
     },
   });
 
+  const setBasicInfoValues = async () => {
+    const { status, data } = await api('/api/user/userInfo');
+
+    formik.setValues({
+      firstName: data.first_name,
+      language: data.language,
+      lastName: data.last_name,
+    });
+  };
+
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/user/userInfo?authToken=${authToken}`)
-      .then(res => res.json())
-      .then(({ data }) => {
-        formik.setValues({
-          firstName: data.first_name,
-          language: data.language,
-          lastName: data.last_name,
-        });
-      });
+    console.log('useEffect');
+
+    setBasicInfoValues();
   }, []);
 
   useEffect(() => {

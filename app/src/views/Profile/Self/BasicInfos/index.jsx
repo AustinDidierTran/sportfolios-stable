@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
+import axios from 'axios';
 import moment from 'moment';
 
 import styles from './BasicInfos.module.css';
@@ -15,6 +15,7 @@ import {
 import { Button, Card, Typography } from '../../../../components/MUI';
 import { useFormInput } from '../../../../hooks/forms';
 import api from '../../../../actions/api';
+import { useEffect } from 'react';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
@@ -61,6 +62,8 @@ export default function BasicInfos(props) {
     const res = await api(
       `/api/profile/s3Signature/${userInfo.user_id}`,
     );
+
+    console.log('res', res);
   };
 
   const onAddPhoto = async () => {
@@ -76,6 +79,43 @@ export default function BasicInfos(props) {
     );
   };
 
+  const uploadToS3 = async (file, signedRequest) => {
+    const options = {
+      headers: {
+        'Content-Type': file.type,
+      },
+    };
+
+    await axios.put(signedRequest, file, options);
+  };
+
+  const [img, setImg] = useState(null);
+
+  const onImgChange = ([file]) => {
+    console.log('files', file);
+    console.log('files[0]', file);
+
+    setImg(file);
+  };
+
+  const onImgUpload = async () => {
+    const {
+      data: { fileName, presignedS3URL },
+    } = await api(`/api/profile/s3Signature/${userInfo.user_id}`);
+
+    console.log('fileName', fileName);
+    console.log('presignedS3URL', presignedS3URL);
+
+    await uploadToS3(
+      img,
+      `https://s3.amazonaws.com/sportfolios-image${fileName}`,
+    );
+  };
+
+  useEffect(() => {
+    console.log('img', img);
+  }, [img]);
+
   return (
     <Card className={styles.card}>
       <Avatar
@@ -83,7 +123,10 @@ export default function BasicInfos(props) {
         initials={initials}
         photoUrl={photo_url}
       />
+      <IconButton icon="Check" onClick={onS3Signature} />
       <IconButton icon="AddAPhoto" onClick={onAddPhoto} />
+      <Input type="file" onChange={onImgChange} />
+      <IconButton icon="Publish" onClick={onImgUpload} />
       <br />
       <Typography variant="h3">
         {completeName}
@@ -94,7 +137,6 @@ export default function BasicInfos(props) {
           </>
         ) : (
           <>
-            <IconButton icon="Check" onClick={onS3Signature} />
             <IconButton icon="Edit" onClick={onEdit} />
           </>
         )}

@@ -7,7 +7,10 @@ const BASE_URL = '/api/user';
 // Add email
 router.post(`${BASE_URL}/addEmail`, async ctx => {
   try {
-    const code = await queries.addEmail(ctx.request.body);
+    const code = await queries.addEmail(
+      ctx.body.userInfo.user_id,
+      ctx.request.body,
+    );
 
     if (code === 200) {
       ctx.status = 200;
@@ -38,7 +41,10 @@ router.post(`${BASE_URL}/addEmail`, async ctx => {
 // Reset password
 router.post(`${BASE_URL}/changePassword`, async ctx => {
   try {
-    const code = await queries.changePassword(ctx.request.body);
+    const code = await queries.changePassword(
+      ctx.body.userInfo.user_id,
+      ctx.request.body,
+    );
 
     if (code === 200) {
       ctx.status = 200;
@@ -69,9 +75,15 @@ router.post(`${BASE_URL}/changePassword`, async ctx => {
 // Basic User Info
 router.get(`${BASE_URL}/userInfo`, async ctx => {
   try {
+    console.log('inside try!');
+
+    console.log('ctx', ctx.body.userInfo.id);
+
     const { basicUserInfo, status } = await queries.userInfo(
-      ctx.request.query,
+      ctx.body.userInfo.id,
     );
+
+    console.log('basicUserInfo', basicUserInfo);
 
     if (status === 200) {
       ctx.status = 200;

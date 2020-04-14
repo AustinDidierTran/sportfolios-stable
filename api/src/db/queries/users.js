@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const {
   createUserEmail,
   generateHashedPassword,
-  getBasicUserInfoFromToken,
+  getBasicUserInfoFromId,
   getEmailsFromAuthToken,
   getHashedPasswordFromId,
   getUserIdFromEmail,
@@ -13,9 +13,7 @@ const {
   updatePasswordFromUserId,
 } = require('../helpers');
 
-const addEmail = async ({ authToken, email }) => {
-  const user_id = await getUserIdFromToken(authToken);
-
+const addEmail = async (user_id, { email }) => {
   if (!user_id) {
     return 402;
   }
@@ -34,25 +32,14 @@ const addEmail = async ({ authToken, email }) => {
   return 200;
 };
 
-const changePassword = async ({
-  authToken,
-  oldPassword,
-  newPassword,
-}) => {
-  const user_id = await getUserIdFromToken(authToken);
-
-  if (
-    !oldPassword ||
-    oldPassword.length < 8 ||
-    oldPassword.length > 16
-  ) {
-    return 404;
-  }
-
+const changePassword = async (
+  user_id,
+  { oldPassword, newPassword },
+) => {
   if (
     !newPassword ||
     newPassword.length < 8 ||
-    newPassword.length > 16
+    newPassword.length > 40
   ) {
     return 404;
   }
@@ -115,8 +102,8 @@ const getEmails = async ({ authToken }) => {
   return { status: 200, emails };
 };
 
-const userInfo = async ({ authToken }) => {
-  const basicUserInfo = await getBasicUserInfoFromToken(authToken);
+const userInfo = async id => {
+  const basicUserInfo = await getBasicUserInfoFromId(id);
 
   if (!basicUserInfo) {
     return { status: 403 };

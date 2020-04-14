@@ -63,9 +63,7 @@ const generateToken = () => {
   return uuid.v1();
 };
 
-const getBasicUserInfoFromToken = async authToken => {
-  const user_id = await getUserIdFromToken(authToken);
-
+const getBasicUserInfoFromId = async user_id => {
   const basicUserInfo = await knex('user_info')
     .select('*')
     .where({ user_id });
@@ -239,7 +237,7 @@ module.exports = {
   createRecoveryEmailToken,
   generateHashedPassword,
   generateToken,
-  getBasicUserInfoFromToken,
+  getBasicUserInfoFromId,
   getEmailFromToken,
   getEmailsFromAuthToken,
   getHashedPasswordFromId,
