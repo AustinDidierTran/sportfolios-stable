@@ -70,9 +70,9 @@ Where username is the username you set for postgresql.
 Then, you will need to create 3 databases
 
 ```sql
-CREATE DATABASE koa_api;
-CREATE DATABASE koa_api_dev;
-CREATE DATABASE koa_api_test;
+CREATE DATABASE sportfolios_api;
+CREATE DATABASE sportfolios_api_dev;
+CREATE DATABASE sportfolios_api_test;
 \q
 ```
 
@@ -86,7 +86,8 @@ const BASE_PATH = path.join(__dirname, 'api', 'src', 'db');
 module.exports = {
   test: {
     client: 'pg',
-    connection: 'database://username:password@localhost/koa_api_test',
+    connection:
+      'database://username:password@localhost/sportfolios_api_test',
     migrations: {
       directory: path.join(BASE_PATH, 'migrations'),
     },
@@ -96,7 +97,8 @@ module.exports = {
   },
   development: {
     client: 'pg',
-    connection: 'database://username:password@localhost/koa_api_dev',
+    connection:
+      'database://username:password@localhost/sportfolios_api_dev',
     migrations: {
       directory: path.join(BASE_PATH, 'migrations'),
     },
@@ -104,9 +106,10 @@ module.exports = {
       directory: path.join(BASE_PATH, 'seeds'),
     },
   },
-  development: {
+  production: {
     client: 'pg',
-    connection: 'database://username:password@localhost/koa_api',
+    connection:
+      'database://username:password@localhost/sportfolios_api',
     migrations: {
       directory: path.join(BASE_PATH, 'migrations'),
     },
@@ -117,15 +120,15 @@ module.exports = {
 };
 ```
 
-Where koa_api_test is our test database, koa_api_dev is our development and koa_api is our production api. Don't forget to change database, username and password for the right arguments in the connection parameters
+Where sportfolios_api_test is our test database, sportfolios_api_dev is our development and sportfolios_api is our production api. Don't forget to change database, username and password for the right arguments in the connection parameters
 
 You will also need to create a new file at `api/src/db` called `database.json`. Its content will look like this:
 
 ```json
 {
-  "dev": "database://username:password@localhost/koa_api",
-  "test": "database://username:password@localhost/koa_api_test",
-  "prod": "database://username:password@localhost/koa_api_test",
+  "dev": "database://username:password@localhost/sportfolios_api_dev",
+  "test": "database://username:password@localhost/sportfolios_api_test",
+  "prod": "database://username:password@localhost/sportfolios_api",
   "other": "postgres://uname:pw@server.com/dbname"
 }
 ```

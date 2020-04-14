@@ -1,5 +1,5 @@
 .container {
-  display: grid;
+  display: grid !important;
   grid-template-areas: 'text unconfirmed-icon delete-icon';
   grid-template-columns: auto 24px 24px;
   column-gap: 16px;
