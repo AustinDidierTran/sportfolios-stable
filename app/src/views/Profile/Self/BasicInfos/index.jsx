@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import axios from 'axios';
 import moment from 'moment';
 
 import styles from './BasicInfos.module.css';
@@ -11,6 +10,7 @@ import { Avatar, Button, Input } from '../../../../components/Custom';
 import { Card, Typography } from '../../../../components/MUI';
 import { useFormInput } from '../../../../hooks/forms';
 import api from '../../../../actions/api';
+import { uploadProfilePicture } from '../../../../actions/aws';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
@@ -55,35 +55,6 @@ export default function BasicInfos(props) {
 
   const onEdit = async () => setEditMode(true);
 
-  const onAddPhoto = async url => {
-    await api(`/api/profile/photoUrl/${userInfo.user_id}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        photoUrl: url,
-      }),
-    });
-
-    dispatch({
-      type: ACTION_ENUM.UPDATE_PROFILE_PICTURE,
-      payload: url,
-    });
-  };
-
-  const uploadToS3 = async (file, signedRequest) => {
-    const options = {
-      headers: {
-        'Access-Control-Allow-Origin': 's3.amazonaws.com',
-        'Access-Control-Allow-Methods':
-          'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-        'Access-Control-Allow-Headers':
-          'Origin, Content-Type, X-Auth-Token',
-        'Content-Type': file.type,
-      },
-    };
-
-    await axios.put(signedRequest, file, options);
-  };
-
   const [img, setImg] = useState(null);
 
   const onImgChange = ([file]) => {
@@ -91,14 +62,15 @@ export default function BasicInfos(props) {
   };
 
   const onImgUpload = async () => {
-    if (img && img.size < 1024 * 1024 * 100) {
-      const { data } = await api(
-        `/api/profile/s3Signature/${userInfo.user_id}?fileType=${img.type}`,
-      );
+    const photoUrl = await uploadProfilePicture(
+      userInfo.user_id,
+      img,
+    );
 
-      await uploadToS3(img, data.signedRequest);
-      await onAddPhoto(data.url);
-    }
+    dispatch({
+      type: ACTION_ENUM.UPDATE_PROFILE_PICTURE,
+      payload: photoUrl,
+    });
   };
 
   return (
