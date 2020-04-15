@@ -60,5 +60,9 @@ export default {
     admin_panel: 'Admin Panel',
     profile: 'Profile',
     user_settings: 'User Settings',
+    // Buttons
+    cancel: 'Cancel',
+    edit: 'Edit',
+    save: 'Save',
   },
 };

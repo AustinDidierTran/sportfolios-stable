@@ -1,26 +1,23 @@
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import moment from 'moment';
 
 import styles from './BasicInfos.module.css';
 
-import { Store } from '../../../../Store';
+import { Store, ACTION_ENUM } from '../../../../Store';
 
-import {
-  Avatar,
-  IconButton,
-  Input,
-} from '../../../../components/Custom';
-import { Button, Card, Typography } from '../../../../components/MUI';
+import { Avatar, Button, Input } from '../../../../components/Custom';
+import { Card, Typography } from '../../../../components/MUI';
 import { useFormInput } from '../../../../hooks/forms';
 import api from '../../../../actions/api';
+import { uploadProfilePicture } from '../../../../actions/aws';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
 
   const {
     state: { userInfo },
+    dispatch,
   } = useContext(Store);
   const [isEditMode, setEditMode] = useState(false);
 
@@ -36,6 +33,7 @@ export default function BasicInfos(props) {
 
   const birthDate = useFormInput(birth_date);
   const onSave = async () => {
+    await onImgUpload();
     const res = await api(
       `/api/profile/birthDate/${userInfo.user_id}`,
       {
@@ -57,23 +55,22 @@ export default function BasicInfos(props) {
 
   const onEdit = async () => setEditMode(true);
 
-  const onS3Signature = async () => {
-    const res = await api(
-      `/api/profile/s3Signature/${userInfo.user_id}`,
-    );
+  const [img, setImg] = useState(null);
+
+  const onImgChange = ([file]) => {
+    setImg(file);
   };
 
-  const onAddPhoto = async () => {
-    const res = await api(
-      `/api/profile/photoUrl/${userInfo.user_id}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify({
-          photoUrl:
-            'https://pimage.sport-thieme.de/detail-fillscale/frisbee-freestyle-frisbee/134-4644',
-        }),
-      },
+  const onImgUpload = async () => {
+    const photoUrl = await uploadProfilePicture(
+      userInfo.user_id,
+      img,
     );
+
+    dispatch({
+      type: ACTION_ENUM.UPDATE_PROFILE_PICTURE,
+      payload: photoUrl,
+    });
   };
 
   return (
@@ -83,22 +80,13 @@ export default function BasicInfos(props) {
         initials={initials}
         photoUrl={photo_url}
       />
-      <IconButton icon="AddAPhoto" onClick={onAddPhoto} />
+      {isEditMode ? (
+        <Input type="file" onChange={onImgChange} />
+      ) : (
+        <></>
+      )}
       <br />
-      <Typography variant="h3">
-        {completeName}
-        {isEditMode ? (
-          <>
-            <IconButton icon="Check" onClick={onSave} />
-            <IconButton icon="Close" onClick={onCancel} />
-          </>
-        ) : (
-          <>
-            <IconButton icon="Check" onClick={onS3Signature} />
-            <IconButton icon="Edit" onClick={onEdit} />
-          </>
-        )}
-      </Typography>
+      <Typography variant="h3">{completeName}</Typography>
       {isEditMode ? (
         <Input type="date" {...birthDate.inputProps} />
       ) : birth_date ? (
@@ -110,6 +98,32 @@ export default function BasicInfos(props) {
         </span>
       ) : (
         <></>
+      )}
+      <br />
+      <br />
+
+      {isEditMode ? (
+        <>
+          <Button
+            endIcon="Check"
+            onClick={onSave}
+            style={{ marginRight: '8px' }}
+          >
+            {t('save')}
+          </Button>
+          <Button
+            endIcon="Close"
+            onClick={onCancel}
+            style={{ marginLeft: '8px' }}
+            color="secondary"
+          >
+            {t('cancel')}
+          </Button>
+        </>
+      ) : (
+        <Button onClick={onEdit} endIcon="Edit">
+          {t('edit')}
+        </Button>
       )}
     </Card>
   );

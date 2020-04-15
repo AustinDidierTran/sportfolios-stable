@@ -10,15 +10,16 @@ router.get(`${BASE_URL}/s3Signature/:id`, async ctx => {
       throw Error('Unauthorized operation');
     }
 
-    const { code, fileName, presignedS3URL } = queries.getS3Signature(
+    const { code, data } = await queries.getS3Signature(
       ctx.params.id,
+      ctx.request.query,
     );
 
     if (code === 200) {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-        data: { fileName, presignedS3URL },
+        data,
       };
     } else {
       ctx.status = code;

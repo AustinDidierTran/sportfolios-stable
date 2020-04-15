@@ -13,7 +13,7 @@ const {
   createRecoveryEmailToken,
   generateHashedPassword,
   generateToken,
-  getBasicUserInfoFromToken,
+  getBasicUserInfoFromId,
   getEmailFromToken,
   getHashedPasswordFromId,
   getUserIdFromEmail,
@@ -30,7 +30,7 @@ const signup = async ({ firstName, lastName, email, password }) => {
 
   if (!isUnique) return { code: 403 };
 
-  if (!password || password.length < 8 || password.length > 16) {
+  if (!password || password.length < 8 || password.length > 40) {
     return { code: 402 };
   }
 
@@ -89,7 +89,7 @@ const login = async ({ email, password }) => {
       expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
-    const userInfo = await getBasicUserInfoFromToken(token);
+    const userInfo = await getBasicUserInfoFromId(token);
 
     return { status: 200, token, userInfo };
   } else {

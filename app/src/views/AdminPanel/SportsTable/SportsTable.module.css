@@ -3,7 +3,7 @@
 }
 
 .actions {
-  display: grid;
+  display: grid !important;
   grid-template-areas: 'sport scoreType input';
   grid-template-columns: 64px auto 64px;
   grid-column-gap: 8px;

@@ -17,6 +17,7 @@ const initialState = {
 export const ACTION_ENUM = {
   LOGIN: 'login',
   LOGOUT: 'logout',
+  UPDATE_PROFILE_PICTURE: 'update_profile_picture',
   UPDATE_USER_INFO: 'update_user_info',
 };
 
@@ -32,6 +33,14 @@ function reducer(state, action) {
       goTo(ROUTES.login);
       return { ...state, authToken: null };
     }
+    case ACTION_ENUM.UPDATE_PROFILE_PICTURE: {
+      const newUserInfo = {
+        ...state.userInfo,
+        photo_url: action.payload,
+      };
+      localStorage.setItem('userInfo', JSON.stringify(newUserInfo));
+      return { ...state, userInfo: newUserInfo };
+    }
     case ACTION_ENUM.UPDATE_USER_INFO: {
       localStorage.setItem(
         'userInfo',
@@ -39,6 +48,7 @@ function reducer(state, action) {
       );
       return { ...state, userInfo: action.payload };
     }
+
     default:
       return state;
   }
@@ -51,14 +61,11 @@ export function StoreProvider(props) {
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
 
-    fetch(
-      `${API_BASE_URL}/api/user/userInfo?authToken=${authToken}`,
-      {
-        headers: {
-          Authorization: authToken,
-        },
+    fetch(`${API_BASE_URL}/api/user/userInfo`, {
+      headers: {
+        Authorization: authToken,
       },
-    )
+    })
       .then(res => res.json())
       .then(({ data }) => {
         dispatch({
