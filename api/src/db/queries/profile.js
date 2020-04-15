@@ -2,16 +2,16 @@ const knex = require('../connection');
 const moment = require('moment');
 const { signS3Request } = require('../../server/utils/aws');
 
-function getS3Signature(userId) {
+async function getS3Signature(userId, { fileType }) {
   const date = moment().format('YYYYMMDD');
   const randomString = Math.random()
     .toString(36)
     .substring(2, 7);
 
-  const fileName = `/images/profile/${date}-${randomString}-${userId}`;
-  const presignedS3URL = signS3Request(fileName);
+  const fileName = `images/profile/${date}-${randomString}-${userId}`;
+  const data = await signS3Request(fileName, fileType);
 
-  return { code: 200, fileName, presignedS3URL };
+  return { code: 200, data };
 }
 
 function getUserInfo(user_id) {

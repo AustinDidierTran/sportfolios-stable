@@ -6,8 +6,8 @@ export default function Table(props) {
   const { mode } = props;
 
   if (mode === 'edit') {
-    return <EditTable {...props}>{props.children}</EditTable>
+    return <EditTable {...props}>{props.children}</EditTable>;
   }
 
-  return <ViewTable {...props}>{props.children}</ViewTable>
+  return <ViewTable {...props}>{props.children}</ViewTable>;
 }

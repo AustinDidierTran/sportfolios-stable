@@ -75,10 +75,6 @@ router.post(`${BASE_URL}/changePassword`, async ctx => {
 // Basic User Info
 router.get(`${BASE_URL}/userInfo`, async ctx => {
   try {
-    console.log('inside try!');
-
-    console.log('ctx', ctx.body.userInfo.id);
-
     const { basicUserInfo, status } = await queries.userInfo(
       ctx.body.userInfo.id,
     );

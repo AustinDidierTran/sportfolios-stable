@@ -82,34 +82,38 @@ export default function BasicInfos(props) {
   const uploadToS3 = async (file, signedRequest) => {
     const options = {
       headers: {
+        'Access-Control-Allow-Origin': 's3.amazonaws.com',
+        'Access-Control-Allow-Methods':
+          'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers':
+          'Origin, Content-Type, X-Auth-Token',
         'Content-Type': file.type,
       },
     };
 
-    await axios.put(signedRequest, file, options);
+    try {
+      await axios.put(signedRequest, file, options);
+    } catch (err) {
+      console.log('err', err);
+    }
   };
 
   const [img, setImg] = useState(null);
 
   const onImgChange = ([file]) => {
-    console.log('files', file);
-    console.log('files[0]', file);
-
     setImg(file);
   };
 
   const onImgUpload = async () => {
-    const {
-      data: { fileName, presignedS3URL },
-    } = await api(`/api/profile/s3Signature/${userInfo.user_id}`);
+    console.log('img.type', img.type);
 
-    console.log('fileName', fileName);
-    console.log('presignedS3URL', presignedS3URL);
-
-    await uploadToS3(
-      img,
-      `https://s3.amazonaws.com/sportfolios-image${fileName}`,
+    const { data } = await api(
+      `/api/profile/s3Signature/${userInfo.user_id}?fileType=${img.type}`,
     );
+
+    console.log('data', data);
+
+    await uploadToS3(img, data.signedRequest);
   };
 
   useEffect(() => {
