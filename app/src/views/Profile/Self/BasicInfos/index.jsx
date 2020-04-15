@@ -57,9 +57,23 @@ export default function BasicInfos(props) {
 
   const onEdit = async () => setEditMode(true);
 
+  const onAddPhoto = async () => {
+    const res = await api(
+      `/api/profile/photoUrl/${userInfo.user_id}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify({
+          photoUrl:
+            'https://pimage.sport-thieme.de/detail-fillscale/frisbee-freestyle-frisbee/134-4644',
+        }),
+      },
+    );
+  };
+
   return (
     <Card className={styles.card}>
       <Avatar className={styles.avatar}>{initials}</Avatar>
+      <IconButton icon="AddAPhoto" onClick={onAddPhoto} />
       <br />
       <Typography variant="h3">
         {completeName}

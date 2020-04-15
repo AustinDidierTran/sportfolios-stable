@@ -135,7 +135,9 @@ export default function LoggedIn() {
     >
       <Link
         style={{ color: 'black', textDecoration: 'none' }}
-        to={formatRoute(ROUTES.profile, { id: userInfo.user_id })}
+        to={formatRoute(ROUTES.profile, {
+          id: userInfo && userInfo.user_id,
+        })}
       >
         <MenuItem>{t('profile')}</MenuItem>
       </Link>
