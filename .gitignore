@@ -9,3 +9,4 @@ api/src/server/utils/keys
 conf.js
 pm2.json
 api/src/db/connect_to_db.sh
+.env
