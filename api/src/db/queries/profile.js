@@ -1,4 +1,18 @@
 const knex = require('../connection');
+const moment = require('moment');
+const { signS3Request } = require('../../server/utils/aws');
+
+function getS3Signature(userId) {
+  const date = moment().format('YYYYMMDD');
+  const randomString = Math.random()
+    .toString(36)
+    .substring(2, 7);
+
+  const fileName = `/images/profile/${date}-${randomString}-${userId}`;
+  const presignedS3URL = signS3Request(fileName);
+
+  return { code: 200, fileName, presignedS3URL };
+}
 
 function getUserInfo(user_id) {
   return knex('user_info')
@@ -33,6 +47,7 @@ async function updatePhotoUrl(user_id, { photoUrl }) {
 }
 
 module.exports = {
+  getS3Signature,
   getUserInfo,
   updateBirthDate,
   updatePhotoUrl,

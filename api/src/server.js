@@ -3,15 +3,12 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
 const { CLIENT_BASE_URL } = require('../../conf');
 
-console.log('CLIENT_BASE_URL', CLIENT_BASE_URL);
-
 // Middlewares
 const checkAuth = require('./server/middleware/check-auth');
 const adminOnly = require('./server/middleware/admin-only');
 
 // Unprotected routes
 const associationRoutes = require('./server/routes/associations');
-const indexRoutes = require('./server/routes/index');
 const authRoutes = require('./server/routes/auth');
 const profileRoutes = require('./server/routes/profile');
 const userRoutes = require('./server/routes/users');
@@ -29,7 +26,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser());
 app.use(checkAuth);
-app.use(indexRoutes.routes());
 app.use(associationRoutes.routes());
 app.use(authRoutes.routes());
 app.use(profileRoutes.routes());
