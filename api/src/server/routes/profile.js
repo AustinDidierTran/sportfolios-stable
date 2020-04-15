@@ -83,8 +83,6 @@ router.put(`${BASE_URL}/photoUrl/:id`, async ctx => {
       };
     }
   } catch (err) {
-    console.log('inside catch');
-
     ctx.status = 400;
     ctx.body = {
       status: 'error',

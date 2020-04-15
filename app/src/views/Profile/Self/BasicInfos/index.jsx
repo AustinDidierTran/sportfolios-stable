@@ -24,7 +24,7 @@ export default function BasicInfos(props) {
   } = useContext(Store);
   const [isEditMode, setEditMode] = useState(false);
 
-  const { birth_date } = userInfo;
+  const { birth_date, photo_url } = userInfo;
   const completeName = `${userInfo.first_name} ${userInfo.last_name}`;
   const initials = completeName
     .split(/(?:-| )+/)
@@ -72,7 +72,11 @@ export default function BasicInfos(props) {
 
   return (
     <Card className={styles.card}>
-      <Avatar className={styles.avatar}>{initials}</Avatar>
+      <Avatar
+        className={styles.avatar}
+        initials={initials}
+        photoUrl={photo_url}
+      />
       <IconButton icon="AddAPhoto" onClick={onAddPhoto} />
       <br />
       <Typography variant="h3">

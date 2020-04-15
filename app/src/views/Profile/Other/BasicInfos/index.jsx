@@ -17,6 +17,7 @@ export default function BasicInfos(props) {
   const [completeName, setCompleteName] = useState('');
   const [initials, setInitials] = useState('');
   const [birthDate, setBirthDate] = useState('');
+  const [photoUrl, setPhotoUrl] = useState('');
 
   useEffect(() => {
     api(`/api/profile/${userId}`).then(res => {
@@ -35,12 +36,17 @@ export default function BasicInfos(props) {
       setCompleteName(cName);
       setInitials(iTials);
       setBirthDate(userInfo.birth_date);
+      setPhotoUrl(userInfo.photo_url);
     });
   }, []);
 
   return (
     <Card className={styles.card}>
-      <Avatar className={styles.avatar}>{initials}</Avatar>
+      <Avatar
+        className={styles.avatar}
+        initials={initials}
+        photoUrl={photoUrl}
+      ></Avatar>
       <br />
       <Typography variant="h3">{completeName}</Typography>
       {birthDate ? (
