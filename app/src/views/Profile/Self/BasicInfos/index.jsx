@@ -5,23 +5,24 @@ import moment from 'moment';
 
 import styles from './BasicInfos.module.css';
 
-import { Store } from '../../../../Store';
+import { Store, ACTION_ENUM } from '../../../../Store';
 
 import {
   Avatar,
+  Button,
   IconButton,
   Input,
 } from '../../../../components/Custom';
-import { Button, Card, Typography } from '../../../../components/MUI';
+import { Card, Typography } from '../../../../components/MUI';
 import { useFormInput } from '../../../../hooks/forms';
 import api from '../../../../actions/api';
-import { useEffect } from 'react';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
 
   const {
     state: { userInfo },
+    dispatch,
   } = useContext(Store);
   const [isEditMode, setEditMode] = useState(false);
 
@@ -37,6 +38,7 @@ export default function BasicInfos(props) {
 
   const birthDate = useFormInput(birth_date);
   const onSave = async () => {
+    await onImgUpload();
     const res = await api(
       `/api/profile/birthDate/${userInfo.user_id}`,
       {
@@ -58,25 +60,18 @@ export default function BasicInfos(props) {
 
   const onEdit = async () => setEditMode(true);
 
-  const onS3Signature = async () => {
-    const res = await api(
-      `/api/profile/s3Signature/${userInfo.user_id}`,
-    );
+  const onAddPhoto = async url => {
+    await api(`/api/profile/photoUrl/${userInfo.user_id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        photoUrl: url,
+      }),
+    });
 
-    console.log('res', res);
-  };
-
-  const onAddPhoto = async () => {
-    const res = await api(
-      `/api/profile/photoUrl/${userInfo.user_id}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify({
-          photoUrl:
-            'https://pimage.sport-thieme.de/detail-fillscale/frisbee-freestyle-frisbee/134-4644',
-        }),
-      },
-    );
+    dispatch({
+      type: ACTION_ENUM.UPDATE_PROFILE_PICTURE,
+      payload: url,
+    });
   };
 
   const uploadToS3 = async (file, signedRequest) => {
@@ -105,20 +100,15 @@ export default function BasicInfos(props) {
   };
 
   const onImgUpload = async () => {
-    console.log('img.type', img.type);
+    if (img) {
+      const { data } = await api(
+        `/api/profile/s3Signature/${userInfo.user_id}?fileType=${img.type}`,
+      );
 
-    const { data } = await api(
-      `/api/profile/s3Signature/${userInfo.user_id}?fileType=${img.type}`,
-    );
-
-    console.log('data', data);
-
-    await uploadToS3(img, data.signedRequest);
+      await uploadToS3(img, data.signedRequest);
+      await onAddPhoto(data.url);
+    }
   };
-
-  useEffect(() => {
-    console.log('img', img);
-  }, [img]);
 
   return (
     <Card className={styles.card}>
@@ -127,24 +117,13 @@ export default function BasicInfos(props) {
         initials={initials}
         photoUrl={photo_url}
       />
-      <IconButton icon="Check" onClick={onS3Signature} />
-      <IconButton icon="AddAPhoto" onClick={onAddPhoto} />
-      <Input type="file" onChange={onImgChange} />
-      <IconButton icon="Publish" onClick={onImgUpload} />
+      {isEditMode ? (
+        <Input type="file" onChange={onImgChange} />
+      ) : (
+        <></>
+      )}
       <br />
-      <Typography variant="h3">
-        {completeName}
-        {isEditMode ? (
-          <>
-            <IconButton icon="Check" onClick={onSave} />
-            <IconButton icon="Close" onClick={onCancel} />
-          </>
-        ) : (
-          <>
-            <IconButton icon="Edit" onClick={onEdit} />
-          </>
-        )}
-      </Typography>
+      <Typography variant="h3">{completeName}</Typography>
       {isEditMode ? (
         <Input type="date" {...birthDate.inputProps} />
       ) : birth_date ? (
@@ -156,6 +135,32 @@ export default function BasicInfos(props) {
         </span>
       ) : (
         <></>
+      )}
+      <br />
+      <br />
+
+      {isEditMode ? (
+        <>
+          <Button
+            endIcon="Check"
+            onClick={onSave}
+            style={{ marginRight: '2px' }}
+          >
+            Save
+          </Button>
+          <Button
+            endIcon="Close"
+            onClick={onCancel}
+            style={{ marginLeft: '2px' }}
+            color="secondary"
+          >
+            Cancel
+          </Button>
+        </>
+      ) : (
+        <Button onClick={onEdit} endIcon="Edit">
+          Edit
+        </Button>
       )}
     </Card>
   );
