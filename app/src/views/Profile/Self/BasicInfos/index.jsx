@@ -7,12 +7,7 @@ import styles from './BasicInfos.module.css';
 
 import { Store, ACTION_ENUM } from '../../../../Store';
 
-import {
-  Avatar,
-  Button,
-  IconButton,
-  Input,
-} from '../../../../components/Custom';
+import { Avatar, Button, Input } from '../../../../components/Custom';
 import { Card, Typography } from '../../../../components/MUI';
 import { useFormInput } from '../../../../hooks/forms';
 import api from '../../../../actions/api';
@@ -86,11 +81,7 @@ export default function BasicInfos(props) {
       },
     };
 
-    try {
-      await axios.put(signedRequest, file, options);
-    } catch (err) {
-      console.log('err', err);
-    }
+    await axios.put(signedRequest, file, options);
   };
 
   const [img, setImg] = useState(null);
@@ -100,7 +91,7 @@ export default function BasicInfos(props) {
   };
 
   const onImgUpload = async () => {
-    if (img) {
+    if (img && img.size < 1024 * 1024 * 100) {
       const { data } = await api(
         `/api/profile/s3Signature/${userInfo.user_id}?fileType=${img.type}`,
       );
@@ -144,22 +135,22 @@ export default function BasicInfos(props) {
           <Button
             endIcon="Check"
             onClick={onSave}
-            style={{ marginRight: '2px' }}
+            style={{ marginRight: '8px' }}
           >
-            Save
+            {t('save')}
           </Button>
           <Button
             endIcon="Close"
             onClick={onCancel}
-            style={{ marginLeft: '2px' }}
+            style={{ marginLeft: '8px' }}
             color="secondary"
           >
-            Cancel
+            {t('cancel')}
           </Button>
         </>
       ) : (
         <Button onClick={onEdit} endIcon="Edit">
-          Edit
+          {t('edit')}
         </Button>
       )}
     </Card>

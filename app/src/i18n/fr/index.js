@@ -65,5 +65,9 @@ export default {
     admin_panel: 'Panneaux des administrateurs',
     profile: 'Profil',
     user_settings: 'Paramètres utilisateur',
+    // Buttons
+    cancel: 'Annuler',
+    edit: 'Modifier',
+    save: 'Sauvegarder',
   },
 };
