@@ -11,6 +11,7 @@ const adminOnly = require('./server/middleware/admin-only');
 
 // Unprotected routes
 const associationRoutes = require('./server/routes/associations');
+const dataRoutes = require('./server/routes/data');
 const authRoutes = require('./server/routes/auth');
 const profileRoutes = require('./server/routes/profile');
 const userRoutes = require('./server/routes/users');
@@ -30,6 +31,7 @@ app.use(bodyParser());
 app.use(authRoutes.routes());
 app.use(checkAuth);
 app.use(associationRoutes.routes());
+app.use(dataRoutes.routes());
 app.use(profileRoutes.routes());
 app.use(userRoutes.routes());
 app.use(adminOnly);
