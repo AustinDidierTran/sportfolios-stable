@@ -79,10 +79,15 @@ export default function LoginCard() {
       } else if (res.status === 404) {
         formik.setFieldError('email', t('email_not_found'));
       } else {
-        const { data } = await res.json();
+        let { data } = await res.json();
 
         if (data) {
-          const { token, userInfo } = JSON.parse(data);
+          if (typeof data === 'string') {
+            data = JSON.parse(data);
+          }
+
+          const { token, userInfo } = data;
+
           dispatch({
             type: ACTION_ENUM.LOGIN,
             payload: token,
@@ -91,6 +96,7 @@ export default function LoginCard() {
             type: ACTION_ENUM.UPDATE_USER_INFO,
             payload: userInfo,
           });
+
           goTo(ROUTES.userSettings);
         }
       }

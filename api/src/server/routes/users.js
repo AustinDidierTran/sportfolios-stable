@@ -79,8 +79,6 @@ router.get(`${BASE_URL}/userInfo`, async ctx => {
       ctx.body.userInfo.id,
     );
 
-    console.log('basicUserInfo', basicUserInfo);
-
     if (status === 200) {
       ctx.status = 200;
       ctx.body = {
@@ -111,7 +109,10 @@ router.get(`${BASE_URL}/userInfo`, async ctx => {
 // Basic User Info
 router.post(`${BASE_URL}/changeBasicUserInfo`, async ctx => {
   try {
-    const status = await queries.changeUserInfo(ctx.request.body);
+    const status = await queries.changeUserInfo(
+      ctx.body.userInfo.id,
+      ctx.request.body,
+    );
 
     if (status === 200) {
       ctx.status = 200;
@@ -143,7 +144,7 @@ router.post(`${BASE_URL}/changeBasicUserInfo`, async ctx => {
 router.get(`${BASE_URL}/emails`, async ctx => {
   try {
     const { status, emails } = await queries.getEmails(
-      ctx.request.query,
+      ctx.body.userInfo.id,
     );
 
     if (status === 200) {

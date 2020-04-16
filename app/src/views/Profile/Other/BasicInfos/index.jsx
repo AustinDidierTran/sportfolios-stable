@@ -20,7 +20,7 @@ export default function BasicInfos(props) {
   const [photoUrl, setPhotoUrl] = useState('');
 
   useEffect(() => {
-    api(`/api/profile/${userId}`).then(res => {
+    api(`/api/profile/userInfo/${userId}`).then(res => {
       const userInfo = res.data;
       console.log('userInfo', userInfo);
 
