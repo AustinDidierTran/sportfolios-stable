@@ -45,6 +45,38 @@ cd sportfolios-stable
 npm install
 ```
 
+So there it is, you have installed the project! If you only need to do client-side development, setup the project with the mock server
+
+## Setup the project with the mock server
+
+First, create a copy of _conf-template.js_ and name it _conf.js_ at the root.
+
+Second, create a _.env_ file at the root with the following content:
+
+```
+NODE_ENV=development
+
+AWS_ACCESS_KEY_ID=AKIA6JQINATQN5SREG4U
+AWS_SECRET_ACCESS_KEY=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
+AWS_S3_BUCKET=sportfolios-images
+```
+
+Then, install pm2:
+
+```
+npm install pm2 -g
+```
+
+Then, at the root, simply run:
+
+```
+pm2 start pm2-dev.json
+```
+
+There it is, you have a running project pointing to the mock-server! Note that all your requests won't affect the data as it is all mocked.
+
+## Setup the project with a server
+
 To install postgres, you will need homebrew:
 
 ```
