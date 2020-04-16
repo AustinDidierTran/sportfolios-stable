@@ -27,9 +27,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(bodyParser());
+app.use(authRoutes.routes());
 app.use(checkAuth);
 app.use(associationRoutes.routes());
-app.use(authRoutes.routes());
 app.use(profileRoutes.routes());
 app.use(userRoutes.routes());
 app.use(adminOnly);
