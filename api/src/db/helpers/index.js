@@ -81,9 +81,7 @@ const getBasicUserInfoFromId = async user_id => {
     : basicUserInfo[0];
 };
 
-const getEmailsFromAuthToken = async authToken => {
-  const user_id = await getUserIdFromToken(authToken);
-
+const getEmailsFromUserId = async user_id => {
   if (!user_id) {
     return null;
   }
@@ -143,18 +141,6 @@ const getUserIdFromRecoveryPasswordToken = async token => {
   ) {
     return null;
   }
-};
-
-const getUserIdFromToken = async token => {
-  let response = await knex('user_token')
-    .select(['user_id', 'expires_at'])
-    .where({ token_id: token });
-
-  if (!response.length || response[0].expires_at < new Date()) {
-    return null;
-  }
-
-  return response[0].user_id;
 };
 
 const setRecoveryTokenToUsed = async token => {
@@ -239,11 +225,10 @@ module.exports = {
   generateToken,
   getBasicUserInfoFromId,
   getEmailFromToken,
-  getEmailsFromAuthToken,
+  getEmailsFromUserId,
   getHashedPasswordFromId,
   getUserIdFromEmail,
   getUserIdFromRecoveryPasswordToken,
-  getUserIdFromToken,
   sendNewConfirmationEmailAllIncluded,
   setRecoveryTokenToUsed,
   updateBasicUserInfoFromUserId,

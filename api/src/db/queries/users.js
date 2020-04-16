@@ -4,10 +4,9 @@ const {
   createUserEmail,
   generateHashedPassword,
   getBasicUserInfoFromId,
-  getEmailsFromAuthToken,
+  getEmailsFromUserId,
   getHashedPasswordFromId,
   getUserIdFromEmail,
-  getUserIdFromToken,
   sendNewConfirmationEmailAllIncluded,
   updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,
@@ -70,14 +69,10 @@ const changePassword = async (
   return 200;
 };
 
-const changeUserInfo = async ({
-  authToken,
-  firstName,
-  language,
-  lastName,
-}) => {
-  const user_id = await getUserIdFromToken(authToken);
-
+const changeUserInfo = async (
+  user_id,
+  { firstName, language, lastName },
+) => {
   if (!user_id) {
     return 402;
   }
@@ -85,15 +80,15 @@ const changeUserInfo = async ({
   await updateBasicUserInfoFromUserId({
     user_id,
     firstName,
-    language,
     lastName,
+    language,
   });
 
   return 200;
 };
 
-const getEmails = async ({ authToken }) => {
-  const emails = await getEmailsFromAuthToken(authToken);
+const getEmails = async userId => {
+  const emails = await getEmailsFromUserId(userId);
 
   if (!emails) {
     return { status: 403 };

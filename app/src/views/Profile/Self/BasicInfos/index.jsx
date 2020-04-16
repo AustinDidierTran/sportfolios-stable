@@ -34,13 +34,10 @@ export default function BasicInfos(props) {
   const birthDate = useFormInput(birth_date);
   const onSave = async () => {
     await onImgUpload();
-    const res = await api(
-      `/api/profile/birthDate/${userInfo.user_id}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify({ birthDate: birthDate.value }),
-      },
-    );
+    const res = await api('/api/profile/birthDate', {
+      method: 'PUT',
+      body: JSON.stringify({ birthDate: birthDate.value }),
+    });
 
     if (res.status === 200) {
       birthDate.setCurrentAsDefault();
@@ -62,10 +59,7 @@ export default function BasicInfos(props) {
   };
 
   const onImgUpload = async () => {
-    const photoUrl = await uploadProfilePicture(
-      userInfo.user_id,
-      img,
-    );
+    const photoUrl = await uploadProfilePicture(img);
 
     dispatch({
       type: ACTION_ENUM.UPDATE_PROFILE_PICTURE,

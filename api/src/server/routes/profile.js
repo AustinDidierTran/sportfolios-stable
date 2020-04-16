@@ -4,14 +4,10 @@ const queries = require('../../db/queries/profile');
 const router = new Router();
 const BASE_URL = '/api/profile';
 
-router.get(`${BASE_URL}/s3Signature/:id`, async ctx => {
+router.get(`${BASE_URL}/s3Signature`, async ctx => {
   try {
-    if (ctx.body.userInfo.id !== ctx.params.id) {
-      throw Error('Unauthorized operation');
-    }
-
     const { code, data } = await queries.getS3Signature(
-      ctx.params.id,
+      ctx.body.userInfo.id,
       ctx.request.query,
     );
 
@@ -36,7 +32,7 @@ router.get(`${BASE_URL}/s3Signature/:id`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/:id`, async ctx => {
+router.get(`${BASE_URL}/userInfo/:id`, async ctx => {
   try {
     const [userInfo] = await queries.getUserInfo(ctx.params.id);
 
@@ -61,14 +57,10 @@ router.get(`${BASE_URL}/:id`, async ctx => {
   }
 });
 
-router.put(`${BASE_URL}/birthDate/:id`, async ctx => {
+router.put(`${BASE_URL}/birthDate`, async ctx => {
   try {
-    if (ctx.body.userInfo.id !== ctx.params.id) {
-      throw Error('Unauthorized operation');
-    }
-
     const res = await queries.updateBirthDate(
-      ctx.params.id,
+      ctx.body.userInfo.id,
       ctx.request.body,
     );
 
@@ -92,14 +84,10 @@ router.put(`${BASE_URL}/birthDate/:id`, async ctx => {
   }
 });
 
-router.put(`${BASE_URL}/photoUrl/:id`, async ctx => {
+router.put(`${BASE_URL}/photoUrl`, async ctx => {
   try {
-    if (ctx.body.userInfo.id !== ctx.params.id) {
-      throw Error('Unauthorized operation');
-    }
-
     const res = await queries.updatePhotoUrl(
-      ctx.params.id,
+      ctx.body.userInfo.id,
       ctx.request.body,
     );
 
