@@ -1,19 +1,37 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-import { Container } from '../../components/MUI';
+import { Button } from '../../components/Custom';
+
+import {
+  Card,
+  CardActions,
+  CardContent,
+  Container,
+  Typography,
+} from '../../components/MUI';
 
 import styles from './ConfirmEmail.module.css';
+import { goTo, ROUTES } from '../../actions/goTo';
 
-export default function ConfirmEmailSuccess(props) {
+export default function ConfirmEmailSuccess() {
+  const { t } = useTranslation();
+
   return (
-    <div className={styles.main}>
-      <Container>
-        <p>
-          Email successfully confirmed! You can now login{' '}
-          <Link to="/login">here</Link>
-        </p>
-      </Container>
-    </div>
+    <Container className={styles.container}>
+      <Card className={styles.card}>
+        <CardContent>
+          <Typography>{t('email_confirm_success')}</Typography>
+        </CardContent>
+        <CardActions>
+          <Button
+            endIcon="NavigateNext"
+            onClick={() => goTo(ROUTES.login)}
+          >
+            {t('go_to_login')}
+          </Button>
+        </CardActions>
+      </Card>
+    </Container>
   );
 }

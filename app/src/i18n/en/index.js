@@ -64,5 +64,9 @@ export default {
     cancel: 'Cancel',
     edit: 'Edit',
     save: 'Save',
+    email_confirm_success: 'Email successfully confirmed!',
+    go_to_login: 'Go to login',
+    email_confirm_failure:
+      'Email confirmation failed. To send a new email, try to login again. By doing so, we will send you a new confirmation email.',
   },
 };
