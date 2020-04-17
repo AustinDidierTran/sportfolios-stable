@@ -41,8 +41,6 @@ function getAllUsers() {
       'user_info.last_name',
       'user_app_role.app_role',
     );
-  // .offset(0)
-  // .limit(10);
 }
 
 function updateSport(id, sport) {

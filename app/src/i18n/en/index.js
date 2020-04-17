@@ -68,5 +68,6 @@ export default {
     go_to_login: 'Go to login',
     email_confirm_failure:
       'Email confirmation failed. To send a new email, try to login again. By doing so, we will send you a new confirmation email.',
+    recent_search_results: 'Recent search results',
   },
 };

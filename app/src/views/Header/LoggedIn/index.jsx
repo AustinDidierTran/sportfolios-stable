@@ -8,14 +8,18 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import {
   AppBar,
   IconButton,
+  InputBase,
   Menu,
   MenuItem,
   Toolbar,
   Typography,
 } from '../../../components/MUI';
 
+import { SearchInput } from '../../../components/Custom';
+
 // Material ui icons
 import MenuIcon from '@material-ui/icons/Menu';
+import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import { formatRoute, goTo, ROUTES } from '../../../actions/goTo';
@@ -227,19 +231,7 @@ export default function LoggedIn() {
               Sportfolios
             </Link>
           </Typography>
-          {/* <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              label={t('search')}
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div> */}
+          <SearchInput />
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             {/* <IconButton aria-label="show 4 new mails" color="inherit">
