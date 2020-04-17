@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
@@ -65,7 +65,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function SearchInput(props) {
   const classes = useStyles();
-  const [isFocused, setFocused] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
   const [previousResults, setPreviousResults] = useState([]);
   const searchValue = useFormInput('');
   const { t } = useTranslation();
@@ -86,12 +86,28 @@ export default function SearchInput(props) {
     fetchPreviousResults();
   }, []);
 
-  const onFocus = () => {
-    setFocused(true);
-  };
+  useEffect(() => {
+    if (searchValue.value) {
+      setSelectedIndex(-1);
+    }
+  }, [searchValue.value]);
 
   const open = Boolean(searchValue.value);
-  const id = open ? 'simple-popover' : undefined;
+  const id = useMemo(() => (open ? 'simple-popover' : undefined), [
+    open,
+  ]);
+
+  const listItems = useMemo(
+    () =>
+      previousResults.map(r => ({
+        icon: 'Search',
+        value: r,
+        onClick: () => {
+          goToSearch(r);
+        },
+      })),
+    [previousResults],
+  );
 
   return (
     <div className={classes.search}>
@@ -108,11 +124,30 @@ export default function SearchInput(props) {
         inputProps={{
           'aria-label': 'search',
           onKeyUp: e => {
+            // On enter
             if (e.keyCode === 13) {
-              goToSearch(searchValue.value);
+              if (selectedIndex > -1) {
+                goToSearch(previousResults[selectedIndex]);
+              } else {
+                goToSearch(searchValue.value);
+              }
+            }
+
+            // On arrow down
+            else if (e.keyCode === 40) {
+              setSelectedIndex(
+                Math.min(
+                  previousResults.length - 1,
+                  selectedIndex + 1,
+                ),
+              );
+            }
+
+            // on arrow up
+            else if (e.keyCode === 38) {
+              setSelectedIndex(Math.max(-1, selectedIndex - 1));
             }
           },
-          onFocus,
         }}
         {...searchValue.inputProps}
       />
@@ -124,13 +159,8 @@ export default function SearchInput(props) {
       >
         <List
           title={t('recent_search_results')}
-          items={previousResults.map(r => ({
-            icon: 'Search',
-            value: r,
-            onClick: () => {
-              goToSearch(r);
-            },
-          }))}
+          items={listItems}
+          selectedIndex={selectedIndex}
         />
       </Paper>
     </div>

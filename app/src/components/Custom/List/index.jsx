@@ -24,12 +24,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function CustomList(props) {
-  const { title, items, ref } = props;
+  const { title, items, ref, selectedIndex } = props;
   const classes = useStyles();
-
-  const handleClick = () => {
-    console.log('handleClick');
-  };
 
   return (
     <List
@@ -44,8 +40,13 @@ export default function CustomList(props) {
       className={classes.root}
       disablePadding={true}
     >
-      {items.map(item => (
-        <ListItem button onClick={item.onClick}>
+      {items.map((item, index) => (
+        <ListItem
+          button
+          onClick={item.onClick}
+          selected={selectedIndex === index}
+          key={item.value}
+        >
           <ListItemIcon>
             <Icon icon={item.icon} />
           </ListItemIcon>
