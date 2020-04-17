@@ -9,6 +9,7 @@ const getPreviousSearchQueriesFromId = async user_id => {
         .from('previous_search_queries')
         .where({ user_id })
         .orderBy('previous_search_queries.created_at', 'desc')
+        .limit(10)
         .as('subQuery'),
     );
 };

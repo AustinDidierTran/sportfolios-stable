@@ -10,6 +10,7 @@ export const ROUTES = {
   login: '/login',
   profile: '/profile/:id',
   recoveryEmail: '/recoveryEmail/:token',
+  search: '/search/:query',
   signup: '/signup',
   userSettings: '/userSettings',
 };

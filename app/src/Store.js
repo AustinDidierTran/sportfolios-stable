@@ -68,8 +68,6 @@ export function StoreProvider(props) {
     })
       .then(res => res.json())
       .then(({ data }) => {
-        console.log('data', data);
-
         dispatch({
           type: ACTION_ENUM.UPDATE_USER_INFO,
           payload: data,
