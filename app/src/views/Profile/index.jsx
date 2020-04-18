@@ -9,10 +9,10 @@ import styles from './Profile.module.css';
 
 export default function Profile(props) {
   const {
-    state: {
-      userInfo: { user_id },
-    },
+    state: { userInfo },
   } = useContext(Store);
+
+  const user_id = userInfo && userInfo.user_id;
 
   const {
     match: {

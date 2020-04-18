@@ -1,5 +1,12 @@
 const knex = require('../connection');
 
+const getUsersFromQuery = async query => {
+  return knex('user_info')
+    .select('user_id', 'first_name', 'last_name', 'photo_url')
+    .where('user_info.first_name', 'ILIKE', `%${query}%`)
+    .orWhere('user_info.last_name', 'ILIKE', `%${query}%`);
+};
+
 const getPreviousSearchQueriesFromId = async user_id => {
   return knex
     .select(knex.raw('array_agg(search_query) AS search_queries'))
@@ -14,4 +21,7 @@ const getPreviousSearchQueriesFromId = async user_id => {
     );
 };
 
-module.exports = { getPreviousSearchQueriesFromId };
+module.exports = {
+  getPreviousSearchQueriesFromId,
+  getUsersFromQuery,
+};
