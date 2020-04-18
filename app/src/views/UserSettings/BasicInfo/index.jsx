@@ -13,12 +13,11 @@ import {
 } from '../../../components/MUI';
 import styles from './BasicInfo.module.css';
 
-import { API_BASE_URL } from '../../../../../conf';
 import api from '../../../actions/api';
 import { Store } from '../../../Store';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
-export default function BasicInfo(props) {
+export default function BasicInfo() {
   const {
     state: { authToken },
   } = useContext(Store);
@@ -34,6 +33,8 @@ export default function BasicInfo(props) {
     if (!values.lastName) {
       errors.lastName = t('value_is_required');
     }
+
+    return errors;
   };
 
   const formik = useFormik({
@@ -78,8 +79,6 @@ export default function BasicInfo(props) {
   };
 
   useEffect(() => {
-    console.log('useEffect');
-
     setBasicInfoValues();
   }, []);
 

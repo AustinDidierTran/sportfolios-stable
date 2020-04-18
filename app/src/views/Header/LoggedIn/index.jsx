@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ACTION_ENUM, Store } from '../../../Store';
@@ -8,7 +8,6 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import {
   AppBar,
   IconButton,
-  InputBase,
   Menu,
   MenuItem,
   Toolbar,
@@ -19,10 +18,9 @@ import { SearchInput } from '../../../components/Custom';
 
 // Material ui icons
 import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import { formatRoute, goTo, ROUTES } from '../../../actions/goTo';
+import { formatRoute, ROUTES } from '../../../actions/goTo';
 
 const useStyles = makeStyles(theme => ({
   grow: {

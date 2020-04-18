@@ -11,7 +11,10 @@ const localUserInfo = localStorage.getItem('userInfo');
 
 const initialState = {
   authToken: localAuthToken,
-  userInfo: localUserInfo && JSON.parse(localUserInfo),
+  userInfo:
+    localUserInfo &&
+    localUserInfo !== 'undefined' &&
+    JSON.parse(localUserInfo),
 };
 
 export const ACTION_ENUM = {
@@ -61,6 +64,12 @@ export function StoreProvider(props) {
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
 
+    if (!authToken) {
+      dispatch({
+        type: ACTION_ENUM.LOGOUT,
+      });
+    }
+
     fetch(`${API_BASE_URL}/api/user/userInfo`, {
       headers: {
         Authorization: authToken,
@@ -68,13 +77,19 @@ export function StoreProvider(props) {
     })
       .then(res => res.json())
       .then(({ data }) => {
-        dispatch({
-          type: ACTION_ENUM.UPDATE_USER_INFO,
-          payload: data,
-        });
+        if (!data) {
+          dispatch({
+            type: ACTION_ENUM.LOGOUT,
+          });
+        } else {
+          dispatch({
+            type: ACTION_ENUM.UPDATE_USER_INFO,
+            payload: data,
+          });
 
-        if (data.language) {
-          i18n.changeLanguage(data.language);
+          if (data.language) {
+            i18n.changeLanguage(data.language);
+          }
         }
       });
   }, []);
