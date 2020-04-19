@@ -58,22 +58,30 @@ export default function UserSearch(props) {
         disablePadding={true}
         className={styles.list}
       >
-        {users.map(user => (
-          <ListItem
-            button
-            onClick={() => goTo(ROUTES.profile, { id: user.user_id })}
-            key={fullName(user)}
-          >
-            <ListItemIcon className={styles.icon}>
-              <Avatar
-                initials={initials(user)}
-                className={styles.avatar}
-                photoUrl={user.photo_url}
-              />
-            </ListItemIcon>
-            <ListItemText primary={fullName(user)} />
-          </ListItem>
-        ))}
+        {users.length ? (
+          users.map(user => (
+            <ListItem
+              button
+              onClick={() =>
+                goTo(ROUTES.profile, { id: user.user_id })
+              }
+              key={fullName(user)}
+            >
+              <ListItemIcon className={styles.icon}>
+                <Avatar
+                  initials={initials(user)}
+                  className={styles.avatar}
+                  photoUrl={user.photo_url}
+                />
+              </ListItemIcon>
+              <ListItemText primary={fullName(user)} />
+            </ListItem>
+          ))
+        ) : (
+          <Typography gutterBottom component="h4" variant="h5">
+            {t('no_users_found')}
+          </Typography>
+        )}
       </List>
     </Card>
   );

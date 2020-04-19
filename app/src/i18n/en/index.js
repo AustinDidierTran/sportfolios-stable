@@ -70,5 +70,6 @@ export default {
       'Email confirmation failed. To send a new email, try to login again. By doing so, we will send you a new confirmation email.',
     recent_search_results: 'Recent search results',
     users_found_query: 'Users found with query {{query}}',
+    no_users_found: 'No users found',
   },
 };
