@@ -1,9 +1,11 @@
 const {
+  addQueryToRecentSearches,
   getPreviousSearchQueriesFromId,
   getUsersFromQuery,
 } = require('../helpers/data');
 
 const globalSearch = async (user_id, query) => {
+  await addQueryToRecentSearches(user_id, query);
   const users = await getUsersFromQuery(query);
 
   return {

@@ -84,7 +84,7 @@ export default function SearchInput(props) {
 
   useEffect(() => {
     fetchPreviousResults();
-  }, []);
+  }, [Boolean(searchValue.value)]);
 
   useEffect(() => {
     if (searchValue.value) {

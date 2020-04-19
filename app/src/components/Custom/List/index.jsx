@@ -9,8 +9,7 @@ import {
   ListItemIcon,
   ListItemText,
 } from '../../MUI';
-import { Icon } from '../../Custom';
-import SendIcon from '@material-ui/icons/Send';
+import { Icon } from '..';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -45,7 +44,7 @@ export default function CustomList(props) {
           button
           onClick={item.onClick}
           selected={selectedIndex === index}
-          key={item.value}
+          key={`${item.value}${index}`}
         >
           <ListItemIcon>
             <Icon icon={item.icon} />
