@@ -19,6 +19,7 @@ import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
 import ForgotPassword from '../ForgotPassword';
 import PasswordRecovery from '../PasswordRecovery';
 import Profile from '../Profile';
+import Search from '../Search';
 import Signup from '../Signup';
 import UserSettings from '../UserSettings';
 
@@ -68,7 +69,6 @@ export default function App() {
                 path={ROUTES.recoveryEmail}
                 component={PasswordRecovery}
               />
-              <Route path={ROUTES.profile} component={Profile} />
               <Route exact path={ROUTES.login} component={Login} />
               <Route exact path={ROUTES.signup} component={Signup} />
               <Route
@@ -76,6 +76,11 @@ export default function App() {
                 path={ROUTES.confirmationEmailSent}
                 component={ConfirmationEmailSent}
               />
+              <PrivateRoute
+                path={ROUTES.profile}
+                component={Profile}
+              />
+              <PrivateRoute path={ROUTES.search} component={Search} />
               <PrivateRoute
                 path={ROUTES.userSettings}
                 component={UserSettings}

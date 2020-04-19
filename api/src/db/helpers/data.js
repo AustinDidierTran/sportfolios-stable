@@ -1,5 +1,17 @@
 const knex = require('../connection');
 
+const addQueryToRecentSearches = async (user_id, search_query) => {
+  console.log('user_id', user_id);
+  console.log('search_query', search_query);
+
+  return knex('previous_search_queries')
+    .insert({
+      user_id,
+      search_query,
+    })
+    .returning('*');
+};
+
 const getUsersFromQuery = async query => {
   return knex('user_info')
     .select('user_id', 'first_name', 'last_name', 'photo_url')
@@ -22,6 +34,7 @@ const getPreviousSearchQueriesFromId = async user_id => {
 };
 
 module.exports = {
+  addQueryToRecentSearches,
   getPreviousSearchQueriesFromId,
   getUsersFromQuery,
 };

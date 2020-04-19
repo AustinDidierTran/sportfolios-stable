@@ -74,5 +74,7 @@ export default {
     email_confirm_failure:
       'La confirmation du courriel a échoué. Veuillez réessayer de vous connecter et suite à cette tentative, nous allons vous renvoyer un nouveau courriel de confirmation.',
     recent_search_results: 'Dernières recherches',
+    users_found_query:
+      'Utilisateurs trouvés avec la requête <b>{{query}}</b>',
   },
 };
