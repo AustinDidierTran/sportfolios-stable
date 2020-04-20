@@ -76,5 +76,8 @@ export default {
     recent_search_results: 'Dernières recherches',
     users_found_query:
       'Utilisateurs trouvés avec la requête <b>{{query}}</b>',
+    no_users_found: 'Aucun utilisateur trouvé',
+    follow: "S'abonner",
+    following: 'Abonné(e)',
   },
 };

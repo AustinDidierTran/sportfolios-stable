@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Button } from '../../MUI';
+import { Icon } from '../../Custom';
 
 import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
@@ -15,15 +16,13 @@ export default function CustomButton(props) {
     NavigateNext,
   };
 
-  const EndIcon = icons[props.endIcon];
-
   return (
     <Button
       size="small"
       color="primary"
       variant="contained"
       {...props}
-      endIcon={<EndIcon />}
+      endIcon={<Icon icon={props.endIcon} />}
     />
   );
 }

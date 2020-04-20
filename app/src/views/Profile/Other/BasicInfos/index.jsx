@@ -6,7 +6,7 @@ import moment from 'moment';
 
 import styles from './BasicInfos.module.css';
 
-import { Avatar } from '../../../../components/Custom';
+import { Avatar, Button } from '../../../../components/Custom';
 import { Card, Typography } from '../../../../components/MUI';
 import api from '../../../../actions/api';
 
@@ -18,6 +18,35 @@ export default function BasicInfos(props) {
   const [initials, setInitials] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  const follow = async () => {
+    try {
+      await api(`/api/data/followers/follow`, {
+        method: 'POST',
+        body: JSON.stringify({
+          targetId: userId,
+        }),
+      });
+      setIsFollowing(true);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const unfollow = async () => {
+    try {
+      await api(`/api/data/followers/unfollow`, {
+        method: 'POST',
+        body: JSON.stringify({
+          targetId: userId,
+        }),
+      });
+      setIsFollowing(false);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   useEffect(() => {
     api(`/api/profile/userInfo/${userId}`).then(res => {
@@ -37,6 +66,7 @@ export default function BasicInfos(props) {
       setInitials(iTials);
       setBirthDate(userInfo.birth_date);
       setPhotoUrl(userInfo.photo_url);
+      setIsFollowing(userInfo.isFollowing);
     });
   }, []);
 
@@ -58,6 +88,19 @@ export default function BasicInfos(props) {
         </span>
       ) : (
         <></>
+      )}
+      {isFollowing ? (
+        <Button
+          onClick={unfollow}
+          variant="outlined"
+          endIcon="Person"
+        >
+          {t('following')}
+        </Button>
+      ) : (
+        <Button onClick={follow} endIcon="PersonAdd">
+          {t('follow')}
+        </Button>
       )}
     </Card>
   );
