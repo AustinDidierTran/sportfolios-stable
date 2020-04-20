@@ -15,12 +15,10 @@ async function getS3Signature(userId, { fileType }) {
 }
 
 async function getUserInfo(sender, user_id) {
-  const [followers] =
-    (sender !== user_id &&
-      (await knex('followers')
-        .select('*')
-        .where({ sender }))) ||
-    [];
+  const [{ count }] = (sender !== user_id &&
+    (await knex('followers')
+      .count('*')
+      .where({ sender }))) || [{ count: 0 }];
 
   const [userInfo] = await knex('user_info')
     .select('*')
@@ -30,7 +28,7 @@ async function getUserInfo(sender, user_id) {
     return null;
   }
 
-  return { ...userInfo, isFollowing: Boolean(followers) };
+  return { ...userInfo, isFollowing: Boolean(count) };
 }
 
 async function updateBirthDate(user_id, { birthDate }) {
