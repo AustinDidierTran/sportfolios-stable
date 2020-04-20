@@ -34,7 +34,10 @@ router.get(`${BASE_URL}/s3Signature`, async ctx => {
 
 router.get(`${BASE_URL}/userInfo/:id`, async ctx => {
   try {
-    const [userInfo] = await queries.getUserInfo(ctx.params.id);
+    const userInfo = await queries.getUserInfo(
+      ctx.body.userInfo.id,
+      ctx.params.id,
+    );
 
     if (userInfo) {
       ctx.body = {
