@@ -14,10 +14,21 @@ async function getS3Signature(userId, { fileType }) {
   return { code: 200, data };
 }
 
-function getUserInfo(user_id) {
-  return knex('user_info')
+async function getUserInfo(sender, user_id) {
+  const [{ count }] = (sender !== user_id &&
+    (await knex('followers')
+      .count('*')
+      .where({ sender }))) || [{ count: 0 }];
+
+  const [userInfo] = await knex('user_info')
     .select('*')
     .where({ user_id });
+
+  if (!userInfo) {
+    return null;
+  }
+
+  return { ...userInfo, isFollowing: Boolean(count) };
 }
 
 async function updateBirthDate(user_id, { birthDate }) {
