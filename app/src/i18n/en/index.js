@@ -71,5 +71,7 @@ export default {
     recent_search_results: 'Recent search results',
     users_found_query: 'Users found with query {{query}}',
     no_users_found: 'No users found',
+    follow: 'Follow',
+    following: 'Following',
   },
 };
