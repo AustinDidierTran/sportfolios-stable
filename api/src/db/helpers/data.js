@@ -1,9 +1,6 @@
 const knex = require('../connection');
 
 const addQueryToRecentSearches = async (user_id, search_query) => {
-  console.log('user_id', user_id);
-  console.log('search_query', search_query);
-
   return knex('previous_search_queries')
     .insert({
       user_id,
