@@ -51,7 +51,6 @@ export default function BasicInfos(props) {
   useEffect(() => {
     api(`/api/profile/userInfo/${userId}`).then(res => {
       const userInfo = res.data;
-      console.log('userInfo', userInfo);
 
       const cName = `${userInfo.first_name} ${userInfo.last_name}`;
       const iTials = cName
@@ -80,12 +79,16 @@ export default function BasicInfos(props) {
       <br />
       <Typography variant="h3">{completeName}</Typography>
       {birthDate ? (
-        <span>
-          {t('birth_date_format', {
-            age: moment().diff(moment(birthDate), 'years'),
-            date: moment(birthDate),
-          })}
-        </span>
+        <>
+          <span>
+            {t('birth_date_format', {
+              age: moment().diff(moment(birthDate), 'years'),
+              date: moment(birthDate),
+            })}
+          </span>
+          <br />
+          <br />
+        </>
       ) : (
         <></>
       )}

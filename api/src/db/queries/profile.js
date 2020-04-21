@@ -28,7 +28,7 @@ async function getUserInfo(sender, user_id) {
     return null;
   }
 
-  return { ...userInfo, isFollowing: Boolean(count) };
+  return { ...userInfo, isFollowing: Boolean(+count) };
 }
 
 async function updateBirthDate(user_id, { birthDate }) {

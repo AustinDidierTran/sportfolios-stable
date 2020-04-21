@@ -1,12 +1,15 @@
 const knex = require('../connection');
 
-const createFollowNotification = async (user_id, follower) => {
-  return knex('notification_follow').insert({ user_id, follower });
+const createFollowNotification = async (user_id, target) => {
+  return knex('notification_follow').insert({
+    user_id: target,
+    follower: user_id,
+  });
 };
 
-const deleteFollowNotification = async (user_id, follower) => {
+const deleteFollowNotification = async (user_id, target) => {
   return knex('notification_follow')
-    .where({ user_id, follower })
+    .where({ user_id: target, follower: user_id })
     .del();
 };
 

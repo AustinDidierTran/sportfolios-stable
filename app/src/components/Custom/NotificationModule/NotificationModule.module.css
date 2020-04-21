@@ -1,0 +1,10 @@
+.root {
+  position: relative;
+}
+
+.paper {
+  position: absolute;
+  left: 100%;
+  transform: translateX(-100%);
+  width: 400px;
+}

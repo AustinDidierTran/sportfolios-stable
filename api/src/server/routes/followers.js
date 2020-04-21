@@ -23,8 +23,6 @@ router.post(`${BASE_URL}/follow`, async ctx => {
 });
 
 router.post(`${BASE_URL}/unfollow`, async ctx => {
-  console.log('unfollow');
-
   try {
     await queries.unfollowAthlete(
       ctx.body.userInfo.id,
