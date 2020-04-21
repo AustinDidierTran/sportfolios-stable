@@ -14,6 +14,7 @@ const associationRoutes = require('./server/routes/associations');
 const dataRoutes = require('./server/routes/data');
 const authRoutes = require('./server/routes/auth');
 const followerRoutes = require('./server/routes/followers');
+const notificationRoutes = require('./server/routes/notifications');
 const profileRoutes = require('./server/routes/profile');
 const userRoutes = require('./server/routes/users');
 
@@ -34,6 +35,7 @@ app.use(checkAuth);
 app.use(associationRoutes.routes());
 app.use(dataRoutes.routes());
 app.use(followerRoutes.routes());
+app.use(notificationRoutes.routes());
 app.use(profileRoutes.routes());
 app.use(userRoutes.routes());
 app.use(adminOnly);
