@@ -22,7 +22,7 @@ export default function BasicInfos(props) {
 
   const follow = async () => {
     try {
-      await api(`/api/data/followers/follow`, {
+      await api(`/api/followers/follow`, {
         method: 'POST',
         body: JSON.stringify({
           targetId: userId,
@@ -36,7 +36,7 @@ export default function BasicInfos(props) {
 
   const unfollow = async () => {
     try {
-      await api(`/api/data/followers/unfollow`, {
+      await api(`/api/followers/unfollow`, {
         method: 'POST',
         body: JSON.stringify({
           targetId: userId,

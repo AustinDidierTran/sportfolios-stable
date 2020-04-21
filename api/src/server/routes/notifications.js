@@ -1,14 +1,14 @@
 const Router = require('koa-router');
-const queries = require('../../db/queries/followers');
+const queries = require('../../db/queries/notifications');
 
 const router = new Router();
-const BASE_URL = '/api/followers';
+const BASE_URL = '/api/notifications';
 
-router.post(`${BASE_URL}/follow`, async ctx => {
+router.post(`${BASE_URL}/follow/see`, async ctx => {
   try {
-    await queries.followAthlete(
+    await queries.seeFollowNotification(
       ctx.body.userInfo.id,
-      ctx.request.body.targetId,
+      ctx.request.body.follower,
     );
     ctx.body = {
       status: 'success',
@@ -22,16 +22,14 @@ router.post(`${BASE_URL}/follow`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/unfollow`, async ctx => {
-  console.log('unfollow');
-
+router.get(`${BASE_URL}/all`, async ctx => {
   try {
-    await queries.unfollowAthlete(
+    const notifications = await queries.getAllNotifications(
       ctx.body.userInfo.id,
-      ctx.request.body.targetId,
     );
     ctx.body = {
       status: 'success',
+      data: notifications,
     };
   } catch (err) {
     ctx.status = 400;
