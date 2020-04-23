@@ -1,6 +1,6 @@
 const {
   getAllNotifications: getAllNotificationsHelper,
-  seeFollowNotification: seeFollowNotificationHelper,
+  seeFollowNotifications: seeFollowNotificationHelper,
 } = require('../helpers/notifications');
 
 const seeFollowNotification = async (user_id, query) => {

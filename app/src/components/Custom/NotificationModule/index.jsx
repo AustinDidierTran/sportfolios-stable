@@ -1,32 +1,30 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import api from '../../../actions/api';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import NotificationList from './NotificationList';
 
 import styles from './NotificationModule.module.css';
 
-import {
-  Badge,
-  IconButton,
-  List,
-  Paper,
-} from '../../../components/MUI';
+import { Badge, IconButton } from '../../../components/MUI';
 import { useEffect } from 'react';
 
-export default function NotificationModule(props) {
+export default function NotificationModule() {
   const [notifications, setNotifications] = useState([]);
   const [open, setOpen] = useState(false);
 
   const toggleNotification = () => setOpen(!open);
 
+  const closeNotificationModule = () => setOpen(false);
+
   const unreadNotificationsCount = useMemo(
-    () => notifications.filter(n => !n.seen_at).length,
+    () =>
+      (notifications &&
+        notifications.filter(n => !n.seen_at).length) ||
+      0,
     [notifications],
   );
-
-  // const listItems = useMemo(() => notifications.map({}), [
-  //   notifications,
-  // ]);
 
   const initializeNotifications = async () => {
     const { data } = await api('/api/notifications/all');
@@ -55,9 +53,11 @@ export default function NotificationModule(props) {
           <NotificationsIcon />
         )}
       </IconButton>
-      <Paper className={styles.paper}>
-        <List></List>
-      </Paper>
+      <NotificationList
+        closeNotificationModule={closeNotificationModule}
+        open={open}
+        notifications={notifications}
+      />
     </div>
   );
 }
