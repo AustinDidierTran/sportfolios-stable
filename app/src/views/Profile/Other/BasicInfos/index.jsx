@@ -48,25 +48,29 @@ export default function BasicInfos(props) {
     }
   };
 
+  const init = async () => {
+    const res = await api(`/api/profile/userInfo/${userId}`);
+
+    const userInfo = res.data;
+
+    const cName = `${userInfo.first_name} ${userInfo.last_name}`;
+    const iTials = cName
+      .split(/(?:-| )+/)
+      .reduce(
+        (prev, curr, index) =>
+          index <= 2 ? `${prev}${curr[0]}` : prev,
+        '',
+      );
+
+    setCompleteName(cName);
+    setInitials(iTials);
+    setBirthDate(userInfo.birth_date);
+    setPhotoUrl(userInfo.photo_url);
+    setIsFollowing(Boolean(userInfo.isFollowing));
+  };
+
   useEffect(() => {
-    api(`/api/profile/userInfo/${userId}`).then(res => {
-      const userInfo = res.data;
-
-      const cName = `${userInfo.first_name} ${userInfo.last_name}`;
-      const iTials = cName
-        .split(/(?:-| )+/)
-        .reduce(
-          (prev, curr, index) =>
-            index <= 2 ? `${prev}${curr[0]}` : prev,
-          '',
-        );
-
-      setCompleteName(cName);
-      setInitials(iTials);
-      setBirthDate(userInfo.birth_date);
-      setPhotoUrl(userInfo.photo_url);
-      setIsFollowing(userInfo.isFollowing);
-    });
+    init();
   }, []);
 
   return (
