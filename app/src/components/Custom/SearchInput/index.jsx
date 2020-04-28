@@ -99,6 +99,7 @@ export default function SearchInput(props) {
 
   const listItems = useMemo(
     () =>
+      previousResults &&
       previousResults.map(r => ({
         icon: 'Search',
         value: r,
@@ -137,7 +138,8 @@ export default function SearchInput(props) {
             else if (e.keyCode === 40) {
               setSelectedIndex(
                 Math.min(
-                  previousResults.length - 1,
+                  (previousResults && previousResults.length - 1) ||
+                    -1,
                   selectedIndex + 1,
                 ),
               );

@@ -1,12 +1,12 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ACTION_ENUM, Store } from '../../../Store';
 import APP_ROLES from '../../App/appRoles';
-import { fade, makeStyles } from '@material-ui/core/styles';
 
 import {
   AppBar,
+  Badge,
   IconButton,
   Menu,
   MenuItem,
@@ -14,79 +14,21 @@ import {
   Typography,
 } from '../../../components/MUI';
 
-import { SearchInput } from '../../../components/Custom';
+import {
+  NotificationModule,
+  SearchInput,
+} from '../../../components/Custom';
 
 // Material ui icons
 import MenuIcon from '@material-ui/icons/Menu';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import { formatRoute, ROUTES } from '../../../actions/goTo';
 
-const useStyles = makeStyles(theme => ({
-  grow: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
-    },
-  },
-  titleLink: {
-    color: 'white',
-    textDecoration: 'none',
-  },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
-  },
-  searchIcon: {
-    width: theme.spacing(7),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputRoot: {
-    color: 'inherit',
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 7),
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: 200,
-    },
-  },
-  sectionDesktop: {
-    display: 'none',
-    [theme.breakpoints.up('md')]: {
-      display: 'flex',
-    },
-  },
-  sectionMobile: {
-    display: 'flex',
-    [theme.breakpoints.up('md')]: {
-      display: 'none',
-    },
-  },
-}));
+import useStyles from './useStyles';
+import api from '../../../actions/api';
+import { useMemo } from 'react';
 
 export default function LoggedIn() {
   const classes = useStyles();
@@ -186,7 +128,7 @@ export default function LoggedIn() {
         </IconButton>
         <p>Messages</p>
       </MenuItem> */}
-      {/* <MenuItem>
+      <MenuItem>
         <IconButton
           aria-label="show 11 new notifications"
           color="inherit"
@@ -196,7 +138,7 @@ export default function LoggedIn() {
           </Badge>
         </IconButton>
         <p>Notifications</p>
-      </MenuItem> */}
+      </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label="account of current user"
@@ -236,15 +178,8 @@ export default function LoggedIn() {
               <Badge badgeContent={4} color="secondary">
                 <MailIcon />
               </Badge>
-            </IconButton>
-            <IconButton
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="secondary">
-                <NotificationsIcon />
-              </Badge>
             </IconButton> */}
+            <NotificationModule />
             <IconButton
               edge="end"
               aria-label="account of current user"

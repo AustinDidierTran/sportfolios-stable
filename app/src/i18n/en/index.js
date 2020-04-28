@@ -16,6 +16,7 @@ export default {
     name: 'Name',
     new_email: 'New email',
     no_account_signup: "Don't have an account? Signup!",
+    notifications: 'Notifications',
     password: 'Password',
     search: 'Search...',
     save_basic_info: 'Save new basic infos',
@@ -73,5 +74,6 @@ export default {
     no_users_found: 'No users found',
     follow: 'Follow',
     following: 'Following',
+    follow_notification_text: '{{follower}} is now following you.',
   },
 };

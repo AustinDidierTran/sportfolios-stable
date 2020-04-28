@@ -39,19 +39,20 @@ export default function CustomList(props) {
       className={classes.root}
       disablePadding={true}
     >
-      {items.map((item, index) => (
-        <ListItem
-          button
-          onClick={item.onClick}
-          selected={selectedIndex === index}
-          key={`${item.value}${index}`}
-        >
-          <ListItemIcon>
-            <Icon icon={item.icon} />
-          </ListItemIcon>
-          <ListItemText primary={item.value} />
-        </ListItem>
-      ))}
+      {items &&
+        items.map((item, index) => (
+          <ListItem
+            button
+            onClick={item.onClick}
+            selected={selectedIndex === index}
+            key={`${item.value}${index}`}
+          >
+            <ListItemIcon>
+              <Icon icon={item.icon} />
+            </ListItemIcon>
+            <ListItemText primary={item.value} />
+          </ListItem>
+        ))}
     </List>
   );
 }

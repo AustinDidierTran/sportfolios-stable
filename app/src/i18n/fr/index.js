@@ -17,6 +17,7 @@ export default {
     name: 'Nom',
     new_email: 'Nouveau courriel',
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
+    notifications: 'Notifications',
     password: 'Mot de passe',
     score_type: 'Type de pointage',
     search: 'Rechercher...',
@@ -79,5 +80,6 @@ export default {
     no_users_found: 'Aucun utilisateur trouvé',
     follow: "S'abonner",
     following: 'Abonné(e)',
+    follow_notification_text: "{{follower}} s'est abonné à vous.",
   },
 };
