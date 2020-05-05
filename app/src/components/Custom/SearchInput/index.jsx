@@ -72,7 +72,7 @@ export default function SearchInput(props) {
 
   const fetchPreviousResults = async () => {
     const {
-      data: [{ search_queries }],
+      data: { search_queries },
     } = await api('/api/data/search/previous');
     setPreviousResults(search_queries);
   };

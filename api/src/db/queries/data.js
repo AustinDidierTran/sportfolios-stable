@@ -14,7 +14,8 @@ const globalSearch = async (user_id, query) => {
 };
 
 const getPreviousSearchQueries = async user_id => {
-  return getPreviousSearchQueriesFromId(user_id);
+  const res = await getPreviousSearchQueriesFromId(user_id);
+  return res[0];
 };
 
 module.exports = {
