@@ -24,7 +24,7 @@ export default function Search(props) {
   const fetchSearchResults = async () => {
     const {
       data: { users: oUsers },
-    } = await api(`/api/data/search/global/${query}`);
+    } = await api(`/api/data/search/global?query=${query}`);
 
     setUsers(oUsers);
   };

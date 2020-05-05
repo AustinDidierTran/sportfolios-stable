@@ -4,11 +4,12 @@ const queries = require('../../db/queries/data');
 const router = new Router();
 const BASE_URL = '/api/data';
 
-router.get(`${BASE_URL}/search/global/:query`, async ctx => {
+router.get(`${BASE_URL}/search/global`, async ctx => {
   try {
+    const { query } = ctx.query;
     const previousSearchQueries = await queries.globalSearch(
       ctx.body.userInfo.id,
-      ctx.params.query,
+      query,
     );
     ctx.body = {
       status: 'success',
