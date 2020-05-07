@@ -2,10 +2,12 @@ const {
   getFollowingUsers: getFollowingUsersHelper,
 } = require('../helpers/followers');
 
-const getFollowingUsers = async (user_id, query) => {
-  return getFollowingUsersHelper(user_id, query);
+const getAllMainInformations = async user_id => {
+  const users = await getFollowingUsersHelper(user_id);
+
+  return { users };
 };
 
 module.exports = {
-  getFollowingUsers,
+  getAllMainInformations,
 };

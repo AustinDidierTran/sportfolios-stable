@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-const useFollowingUserInformations = async () => {
+import api from '../index';
+
+const useFollowingUserInformations = () => {
   const [users, setUsers] = useState([]);
 
   const init = async () => {
@@ -15,10 +17,10 @@ const useFollowingUserInformations = async () => {
     init();
   }, []);
 
-  return { users };
+  return users;
 };
 
-export const useAllMainInformations = async () => {
+export const useAllMainInformations = () => {
   const users = useFollowingUserInformations();
 
   return { users };

@@ -31,17 +31,23 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(bodyParser());
+
+// public routes
 app.use(authRoutes.routes());
+
+// private routes
 app.use(checkAuth);
 app.use(associationRoutes.routes());
 app.use(dataRoutes.routes());
 app.use(followerRoutes.routes());
+app.use(mainRoutes.routes());
 app.use(notificationRoutes.routes());
 app.use(profileRoutes.routes());
 app.use(userRoutes.routes());
+
+// admin routes
 app.use(adminOnly);
 app.use(adminRoutes.routes());
-app.use(mainRoutes.routes());
 
 const server = app.listen(PORT, () => {
   console.log(`Server listening on port: ${PORT}`);
