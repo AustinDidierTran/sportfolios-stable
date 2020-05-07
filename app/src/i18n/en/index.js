@@ -72,6 +72,7 @@ export default {
     recent_search_results: 'Recent search results',
     users_found_query: 'Users found with query {{query}}',
     no_users_found: 'No users found',
+    no_following: 'You are following no one',
     follow: 'Follow',
     following: 'Following',
     follow_notification_text: '{{follower}} is now following you.',

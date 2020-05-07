@@ -17,6 +17,7 @@ const followerRoutes = require('./server/routes/followers');
 const notificationRoutes = require('./server/routes/notifications');
 const profileRoutes = require('./server/routes/profile');
 const userRoutes = require('./server/routes/users');
+const mainRoutes = require('./server/routes/main');
 
 // Admin routes
 const adminRoutes = require('./server/routes/admin');
@@ -40,6 +41,7 @@ app.use(profileRoutes.routes());
 app.use(userRoutes.routes());
 app.use(adminOnly);
 app.use(adminRoutes.routes());
+app.use(mainRoutes.routes());
 
 const server = app.listen(PORT, () => {
   console.log(`Server listening on port: ${PORT}`);

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import { Store } from '../../Store';
 import { Container } from '../../components/MUI';
 
 import UserSearch from './UserSearch/index';
@@ -14,10 +13,6 @@ export default function Search(props) {
       params: { query },
     },
   } = props;
-
-  const {
-    state: { userInfo },
-  } = useContext(Store);
 
   const [users, setUsers] = useState([]);
 
