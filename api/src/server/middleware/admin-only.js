@@ -9,7 +9,7 @@ module.exports = async (ctx, next) => {
     ctx.status = 404;
     ctx.body = {
       status: 'error',
-      message: 'Access denied234',
+      message: 'Access denied',
     };
   }
 };
