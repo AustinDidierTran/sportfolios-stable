@@ -4,11 +4,6 @@ module.exports = async (ctx, next) => {
   if (userInfo.appRole === 1) {
     await next();
   } else {
-
-  if (userInfo.appRole === 1) {
-    await next();
-  } else {
-
     ctx.status = 404;
     ctx.body = {
       status: 'error',
