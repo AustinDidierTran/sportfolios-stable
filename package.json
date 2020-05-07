@@ -86,6 +86,7 @@
     "react-dom": "^16.13.1",
     "react-i18next": "^11.3.4",
     "react-router-dom": "^5.1.2",
+    "stripe": "^8.49.0",
     "uuid": "^3.4.0",
     "webpack": "^4.42.1",
     "yup": "^0.28.3"

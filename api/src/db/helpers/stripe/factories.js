@@ -1,0 +1,49 @@
+const { BUSINESS_TYPE_ENUM } = require('./enums');
+
+const accountParamsFactory = params => {
+  const {
+    business_type,
+    city,
+    country,
+    dob,
+    email,
+    external_account,
+    first_name,
+    ip,
+    last_name,
+    line1,
+    postal_code,
+    state,
+  } = params;
+
+  if (business_type === BUSINESS_TYPE_ENUM.INDIVIDUAL) {
+    return {
+      business_type,
+      individual: {
+        address: {
+          city,
+          country,
+          line1,
+          postal_code,
+          state,
+        },
+        dob,
+        first_name,
+        last_name,
+      },
+      type: 'custom',
+      country,
+      email,
+      external_account,
+      requested_capabilities: ['card_payments', 'transfers'],
+      tos_acceptance: {
+        date: Math.floor(Date.now() / 1000),
+        ip,
+      },
+    };
+  } else {
+    throw 'Unsupported business type';
+  }
+};
+
+module.exports = { accountParamsFactory };

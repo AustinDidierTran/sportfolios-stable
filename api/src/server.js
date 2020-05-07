@@ -12,6 +12,7 @@ const adminOnly = require('./server/middleware/admin-only');
 // Unprotected routes
 const associationRoutes = require('./server/routes/associations');
 const dataRoutes = require('./server/routes/data');
+const devRoutes = require('./server/routes/dev');
 const authRoutes = require('./server/routes/auth');
 const followerRoutes = require('./server/routes/followers');
 const notificationRoutes = require('./server/routes/notifications');
@@ -34,6 +35,9 @@ app.use(authRoutes.routes());
 app.use(checkAuth);
 app.use(associationRoutes.routes());
 app.use(dataRoutes.routes());
+if (process.env.NODE_ENV === 'development') {
+  app.use(devRoutes.routes());
+}
 app.use(followerRoutes.routes());
 app.use(notificationRoutes.routes());
 app.use(profileRoutes.routes());
