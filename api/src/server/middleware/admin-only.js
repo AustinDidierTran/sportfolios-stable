@@ -5,7 +5,6 @@ module.exports = async (ctx, next) => {
   if (userInfo.appRole === 1) {
     await next();
   } else {
-    console.log('Access denied');
 
     ctx.status = 404;
     ctx.body = {
