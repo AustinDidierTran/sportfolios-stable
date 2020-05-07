@@ -17,6 +17,7 @@ const followerRoutes = require('./server/routes/followers');
 const notificationRoutes = require('./server/routes/notifications');
 const profileRoutes = require('./server/routes/profile');
 const userRoutes = require('./server/routes/users');
+const mainRoutes = require('./server/routes/main');
 
 // Admin routes
 const adminRoutes = require('./server/routes/admin');
@@ -30,14 +31,21 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(bodyParser());
+
+// public routes
 app.use(authRoutes.routes());
+
+// private routes
 app.use(checkAuth);
 app.use(associationRoutes.routes());
 app.use(dataRoutes.routes());
 app.use(followerRoutes.routes());
+app.use(mainRoutes.routes());
 app.use(notificationRoutes.routes());
 app.use(profileRoutes.routes());
 app.use(userRoutes.routes());
+
+// admin routes
 app.use(adminOnly);
 app.use(adminRoutes.routes());
 

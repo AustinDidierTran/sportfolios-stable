@@ -1,0 +1,19 @@
+.card {
+  width: 100%;
+  padding-top: 24px;
+  text-align: center;
+}
+
+.avatar {
+  font-size: 24px !important;
+  width: 64px !important;
+  height: 64px !important;
+}
+
+.list {
+  width: 100%;
+}
+
+.icon {
+  margin-right: 24px;
+}
