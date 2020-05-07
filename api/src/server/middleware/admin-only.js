@@ -1,7 +1,6 @@
 module.exports = async (ctx, next) => {
   const { userInfo } = ctx.body;
 
-  console.log('Inside admin only');
 
   if (userInfo.appRole === 1) {
     await next();
