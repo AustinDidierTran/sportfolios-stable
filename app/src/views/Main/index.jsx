@@ -12,7 +12,7 @@ export default function Main() {
   const { users } = useAllMainInformations();
 
   return (
-    <Container>
+    <Container className={styles.container}>
       <FollowingUsersCard users={users} />
     </Container>
   );
