@@ -4,7 +4,7 @@ import { Store } from '../../Store';
 import LoggedIn from './LoggedIn';
 import LoggedOut from './LoggedOut';
 
-export default function PrimarySearchAppBar() {
+export default function Header() {
   const {
     state: { authToken },
   } = useContext(Store);

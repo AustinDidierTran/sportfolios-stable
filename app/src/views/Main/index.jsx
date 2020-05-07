@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 
 import styles from './Main.module.css';
-import { Card, CardContent, TextField } from '../../components/MUI';
+
+import { Card, CardContent, Container } from '../../components/MUI';
+
+import { useAllMainInformations } from '../../actions/api/helpers';
+
+import FollowingUsersCard from './FollowingUsersCard/index';
 
 export default function Main() {
+  const { users } = useAllMainInformations();
+
   return (
-    <div className={styles.main}>
-      <Card>
-        <CardContent>
-          <h1>Heyyy</h1>
-        </CardContent>
-      </Card>
-    </div>
+    <Container className={styles.container}>
+      <FollowingUsersCard users={users} />
+    </Container>
   );
 }
