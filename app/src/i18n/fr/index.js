@@ -78,7 +78,11 @@ export default {
     users_found_query:
       'Utilisateurs trouvés avec la requête {{query}}',
     no_users_found: 'Aucun utilisateur trouvé',
+<<<<<<< HEAD
     no_following: "Vous n'êtes abonné à personne",
+=======
+    no_following: 'Vous n'êtes abonné à personne',
+>>>>>>> 861dff54963c97f148cdd1ffd688a3bd44b9b7ac
     follow: "S'abonner",
     following: 'Abonné(e)',
     follow_notification_text: "{{follower}} s'est abonné à vous.",
