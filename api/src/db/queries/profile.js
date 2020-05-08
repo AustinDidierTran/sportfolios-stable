@@ -15,11 +15,10 @@ async function getS3Signature(userId, { fileType }) {
 }
 
 async function getUserInfo(sender, target) {
-  const [{ count }] =
-    sender !== target &&
+  const [{ count }] = (sender !== target &&
     (await knex('followers')
       .count('*')
-      .where({ sender, target }));
+      .where({ sender, target }))) || [{ count: 0 }];
 
   const [userInfo] = await knex('user_info')
     .select('*')
