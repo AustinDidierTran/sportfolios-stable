@@ -4,14 +4,16 @@ import { TextField } from '../../MUI';
 
 import FileInput from './FileInput';
 
+import DateInput from './DateInput';
+
 export default function CustomInput(props) {
   const { type, ...inputProps } = props;
 
   switch (type) {
     case 'date':
-      return <TextField {...props} />;
+      return <DateInput {...props} />;
     case 'file':
-      return <FileInput type="file" {...inputProps} />;
+      return <FileInput type="file" {...props} />;
     case 'number':
       return <TextField type="number" {...inputProps} />;
     case 'text':
