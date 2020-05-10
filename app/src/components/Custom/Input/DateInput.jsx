@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import { TextField } from '../../MUI';
+import { useTranslation } from 'react-i18next';
 
-// TODO: Update this input so it has 3 fields for day, month and year
 export default function CustomDateInput(props) {
   const { error, value } = { ...props };
+  const { t } = useTranslation();
 
   const [inputError, setInputError] = useState();
 
@@ -14,9 +15,9 @@ export default function CustomDateInput(props) {
     var match = value.match(pattern);
     var year = match[1];
 
-    date.isValid() && year > 1900 && year < 10000
+    date.isValid() && year > 1900 && year <= moment().year()
       ? setInputError()
-      : setInputError('Invalid Format');
+      : setInputError(t('invalid_date'));
   };
 
   return (

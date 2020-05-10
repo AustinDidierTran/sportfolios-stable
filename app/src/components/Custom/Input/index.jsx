@@ -13,7 +13,7 @@ export default function CustomInput(props) {
     case 'date':
       return <DateInput {...props} />;
     case 'file':
-      return <FileInput type="file" {...props} />;
+      return <FileInput type="file" {...inputProps} />;
     case 'number':
       return <TextField type="number" {...inputProps} />;
     case 'text':
