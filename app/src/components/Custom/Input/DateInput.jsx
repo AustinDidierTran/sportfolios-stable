@@ -26,7 +26,7 @@ export default function CustomDateInput(props) {
         type="date"
         placeholder="yyyy-mm-dd"
         inputProps={{
-          onBlur() {
+          onBlur: () => {
             validateInput();
           },
         }}
