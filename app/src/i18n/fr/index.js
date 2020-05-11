@@ -1,6 +1,7 @@
 export default {
   translations: {
     actions: 'Actions',
+    address: 'Adresse',
     app_role: 'App Role',
     basic_info: 'Information générales',
     birth_date_format: '{{date, LL}} ({{age}} ans)',
@@ -16,9 +17,12 @@ export default {
     logout: 'Déconnexion',
     name: 'Nom',
     new_email: 'Nouveau courriel',
+    new_organisation: 'Nouvelle organisation',
+    new_team: 'Nouvelle équipe',
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
     notifications: 'Notifications',
     password: 'Mot de passe',
+    phone_number: 'Numéro de téléphone',
     score_type: 'Type de pointage',
     search: 'Rechercher...',
     save_basic_info: 'Sauvegarder informations',
@@ -28,6 +32,7 @@ export default {
     send_password_recovery_email:
       'Envoyer le courriel de réinitialisation de mot de passe',
     signup: "S'enregistrer",
+    teams: 'Équipes',
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',
     email_already_used:

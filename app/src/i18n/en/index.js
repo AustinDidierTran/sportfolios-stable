@@ -1,6 +1,7 @@
 export default {
   translations: {
     actions: 'Actions',
+    adress: 'Address',
     app_role: 'App Role',
     basic_info: 'Basic Info',
     birth_date_format: '{{date, LL}} ({{age}} years old)',
@@ -15,9 +16,12 @@ export default {
     logout: 'Log out',
     name: 'Name',
     new_email: 'New email',
+    new_organisation: 'New organisation',
+    new_team: 'New team',
     no_account_signup: "Don't have an account? Signup!",
     notifications: 'Notifications',
     password: 'Password',
+    phone_number: 'Phone Number',
     search: 'Search...',
     save_basic_info: 'Save new basic infos',
     score_type: 'Score Type',
@@ -25,6 +29,8 @@ export default {
     send_new_confirmation_email: 'Send new confirmation email',
     send_password_recovery_email: 'Send password recovery email',
     signup: 'Signup',
+    teams: 'Teams',
+
     // Validation
     confirm_new_password: 'Confirm New Password',
     email_already_used:
