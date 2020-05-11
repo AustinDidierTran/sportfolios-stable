@@ -11,13 +11,9 @@ export default function CustomDateInput(props) {
 
   const validateInput = () => {
     var date = moment(value);
-    var pattern = /^(\d{4})(\-)(\d{1,2})(\-)(\d{1,2})$/;
-    var match = value.match(pattern);
-    var year = match[1];
 
-    date.isValid() && date < moment() && year > 1900
-      ? setInputError()
-      : setInputError(t('invalid_date'));
+    if (!date.isValid()) setInputError(t('invalid_date'));
+    else if (date > moment()) setInputError(t('date_in_future'));
   };
 
   return (
