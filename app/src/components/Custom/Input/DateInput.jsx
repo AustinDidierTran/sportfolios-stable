@@ -12,8 +12,13 @@ export default function CustomDateInput(props) {
   const validateInput = () => {
     var date = moment(value);
 
-    if (!date.isValid()) setInputError(t('invalid_date'));
-    else if (date > moment()) setInputError(t('date_in_future'));
+    if (!date.isValid()) {
+      setInputError(t('invalid_date'));
+    } else if (date > moment()) {
+      setInputError(t('date_in_future'));
+    } else {
+      setInputError();
+    }
   };
 
   return (
