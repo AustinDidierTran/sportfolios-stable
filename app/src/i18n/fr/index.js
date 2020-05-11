@@ -50,8 +50,8 @@ export default {
     value_is_required: 'Une valeur est obligatoire.',
     wrong_password: 'Mauvais mot de passe. Veuillez réessayer.',
     invalid_date:
-      'Format invalide. Le format devrais suivre: aaaa-mm-jj',
-    date_in_future: 'La date entré est dans le futur',
+      'Format invalide. Le format devrait suivre: aaaa-mm-jj',
+    date_in_future: 'La date entrée est dans le futur',
     // DESCRIPTION CARD
     description_card_title:
       'Améliorer votre expérience de sport amateur',

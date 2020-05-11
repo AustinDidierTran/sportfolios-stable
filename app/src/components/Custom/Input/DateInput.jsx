@@ -15,7 +15,7 @@ export default function CustomDateInput(props) {
     var match = value.match(pattern);
     var year = match[1];
 
-    date.isValid() && year < moment()
+    date.isValid() && date < moment() && year > 1900
       ? setInputError()
       : setInputError(t('invalid_date'));
   };
