@@ -32,6 +32,16 @@ async function getUserInfo(sender, target) {
 }
 
 async function updateBirthDate(user_id, { birthDate }) {
+  const date = moment(birthDate);
+
+  if (!date.isValid()) {
+    return { code: 403 };
+  }
+
+  if (date.diff(moment()) > 0) {
+    return { code: 402 };
+  }
+
   const updatedUser = await knex('user_info')
     .update({ birth_date: birthDate })
     .where({ user_id })

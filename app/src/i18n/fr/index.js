@@ -49,6 +49,9 @@ export default {
       "Le token n'est plus valide, svp en demander un autre.",
     value_is_required: 'Une valeur est obligatoire.',
     wrong_password: 'Mauvais mot de passe. Veuillez réessayer.',
+    invalid_date:
+      'Format invalide. Le format devrait suivre: aaaa-mm-jj',
+    date_in_future: 'La date entrée est dans le futur',
     // DESCRIPTION CARD
     description_card_title:
       'Améliorer votre expérience de sport amateur',

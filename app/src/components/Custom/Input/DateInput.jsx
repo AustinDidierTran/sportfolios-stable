@@ -1,18 +1,38 @@
-import React, { useEffect, useRef } from 'react';
-
+import React, { useState } from 'react';
+import moment from 'moment';
 import { TextField } from '../../MUI';
+import { useTranslation } from 'react-i18next';
 
 export default function CustomDateInput(props) {
-  const { onChange } = props;
-  const inputEl = useRef(null);
+  const { error, value } = { ...props };
+  const { t } = useTranslation();
+
+  const [inputError, setInputError] = useState();
+
+  const validateInput = () => {
+    var date = moment(value);
+
+    if (!date.isValid()) {
+      setInputError(t('invalid_date'));
+    } else if (date > moment()) {
+      setInputError(t('date_in_future'));
+    } else {
+      setInputError();
+    }
+  };
 
   return (
     <>
       <TextField
-        inputRef={inputEl}
-        type="file"
+        error={error || inputError}
+        type="date"
+        placeholder="yyyy-mm-dd"
+        inputProps={{
+          onBlur: () => {
+            validateInput();
+          },
+        }}
         {...props}
-        onChange={() => onChange(inputEl.current.files)}
       />
     </>
   );

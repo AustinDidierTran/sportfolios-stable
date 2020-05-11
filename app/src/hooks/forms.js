@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
 export const useFormInput = initialValue => {
   const [defaultValue, setDefaultValue] = useState(initialValue);
+  const [error, setError] = useState(null);
   const [value, setValue] = useState(initialValue);
 
   const handleChange = e => {
     setValue(e.target.value);
   };
+
+  // Public Attributes
 
   const changeDefault = newDefault => {
     if (newDefault !== defaultValue) {
@@ -15,20 +18,28 @@ export const useFormInput = initialValue => {
     }
   };
 
-  const setCurrentAsDefault = () => setDefaultValue(value);
-
-  const reset = () => setValue(defaultValue);
+  const hasChanged = useMemo(() => defaultValue !== value, [
+    defaultValue,
+    value,
+  ]);
 
   const inputProps = {
+    error,
     value,
     onChange: handleChange,
   };
 
+  const reset = () => setValue(defaultValue);
+
+  const setCurrentAsDefault = () => setDefaultValue(value);
+
   return {
     ...inputProps,
-    reset,
     changeDefault,
+    hasChanged,
     inputProps,
+    reset,
     setCurrentAsDefault,
+    setError,
   };
 };
