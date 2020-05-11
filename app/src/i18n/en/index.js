@@ -45,7 +45,8 @@ export default {
       'Token is no longer valid, please request a new one.',
     value_is_required: 'Value is required.',
     wrong_password: 'Wrong password. Please try again',
-    invalid_date: 'Invalid format. It should follow: yyyy-mm-dd',
+    invalid_date: 'Invalid date. It should follow: yyyy-mm-dd',
+    date_in_future: 'Date is in the future',
     // DESCRIPTION CARD
     description_card_title: 'Improve your amateur sport experience.',
     description_card_first_point:
