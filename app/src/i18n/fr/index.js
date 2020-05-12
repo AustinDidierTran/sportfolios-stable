@@ -10,6 +10,7 @@ export default {
     emails: 'Courriels',
     first_name: 'Prénom',
     forgot_password: 'Mot de passe oublié?',
+    funding: 'Financement',
     have_an_account_signin:
       'Vous avez déjà un compte? Connectez-vous!',
     last_name: 'Nom de famille',
@@ -17,11 +18,14 @@ export default {
     logout: 'Déconnexion',
     name: 'Nom',
     new_email: 'Nouveau courriel',
-    new_organisation: 'Nouvelle organisation',
+    new_organization: 'Nouvelle organisation',
     new_team: 'Nouvelle équipe',
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
     notifications: 'Notifications',
+    organization: 'Organisation',
+    organizations: 'Organisations',
     password: 'Mot de passe',
+    athlete_history: "Historique de l'Athlète",
     phone_number: 'Numéro de téléphone',
     score_type: 'Type de pointage',
     search: 'Rechercher...',
@@ -32,6 +36,7 @@ export default {
     send_password_recovery_email:
       'Envoyer le courriel de réinitialisation de mot de passe',
     signup: "S'enregistrer",
+    team: 'Équipe',
     teams: 'Équipes',
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',

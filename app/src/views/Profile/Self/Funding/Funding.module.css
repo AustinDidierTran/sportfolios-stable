@@ -1,12 +1,15 @@
 .card {
-  grid-area: basicInfos;
+  grid-area: funding;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
+  padding-top: 24px;
+  padding-bottom: 24px;
   text-align: center;
 }
 
-.avatar {
+.container {
+  width: 90%;
   margin-left: auto;
   margin-right: auto;
 }

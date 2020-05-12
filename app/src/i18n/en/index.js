@@ -1,3 +1,5 @@
+import Teams from '../../views/Profile/Self/Teams';
+
 export default {
   translations: {
     actions: 'Actions',
@@ -10,17 +12,21 @@ export default {
     emails: 'Emails',
     first_name: 'First Name',
     forgot_password: 'Forgot Password?',
+    funding: 'Funding',
     have_an_account_signin: 'Already have an account? Sign in!',
     last_name: 'Last Name',
     login: 'Login',
     logout: 'Log out',
     name: 'Name',
     new_email: 'New email',
-    new_organisation: 'New organisation',
+    new_organization: 'New organization',
     new_team: 'New team',
     no_account_signup: "Don't have an account? Signup!",
     notifications: 'Notifications',
+    organization: 'Organization',
+    organizations: 'Organizations',
     password: 'Password',
+    athlete_history: 'Athlete history',
     phone_number: 'Phone Number',
     search: 'Search...',
     save_basic_info: 'Save new basic infos',
@@ -29,6 +35,7 @@ export default {
     send_new_confirmation_email: 'Send new confirmation email',
     send_password_recovery_email: 'Send password recovery email',
     signup: 'Signup',
+    team: 'Teams',
     teams: 'Teams',
 
     // Validation
@@ -56,7 +63,7 @@ export default {
     // DESCRIPTION CARD
     description_card_title: 'Improve your amateur sport experience.',
     description_card_first_point:
-      "Automate your league's organisation workflow.",
+      "Automate your league's organization workflow.",
     description_card_second_point:
       'Archive your results in your personal Sportfolio.',
     description_card_third_point:

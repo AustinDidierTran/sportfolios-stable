@@ -1,0 +1,25 @@
+.card {
+  grid-area: athleteHistory;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 24px;
+  padding-bottom: 24px;
+  text-align: center;
+}
+
+.container {
+  display: grid !important;
+  grid-template-areas: 'text switch';
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+}
+
+.textField {
+  grid-area: text;
+}
+
+.switch {
+  grid-area: switch;
+  float: left;
+}

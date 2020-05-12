@@ -104,6 +104,15 @@ export default function BasicInfos(props) {
     });
   };
 
+  const onFirstNameChange = async () => {
+    console.log({ userInfo });
+    console.log(userInfo.first_name);
+  };
+  const onLastNameChange = async () => {
+    console.log({ userInfo });
+    console.log(userInfo.last_name);
+  };
+
   return (
     <Card className={styles.card}>
       <Avatar
@@ -123,11 +132,15 @@ export default function BasicInfos(props) {
             namespace="firstName"
             type="text"
             label={t('first_name')}
+            value={userInfo.first_name}
+            onChange={onFirstNameChange}
           />
           <TextField
             namespace="lastName"
             type="text"
             label={t('last_name')}
+            value={userInfo.last_name}
+            onChange={onLastNameChange}
           />
         </>
       ) : (
