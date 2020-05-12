@@ -33,15 +33,37 @@ export default function BasicInfos(props) {
 
   const birthDate = useFormInput(birth_date);
   const onSave = async () => {
-    await onImgUpload();
-    const res = await api('/api/profile/birthDate', {
-      method: 'PUT',
-      body: JSON.stringify({ birthDate: birthDate.value }),
-    });
+    const promises = [];
 
-    if (res.status === 200) {
+    if (img) {
+      promises.push(onImgUpload());
+    }
+
+    if (birthDate.hasChanged) {
+      promises.push(onBirthDateChange());
+    }
+
+    const res = await Promise.all(promises);
+
+    const resErrors = res.filter(r => r.status !== 200);
+
+    if (!resErrors.length) {
       birthDate.setCurrentAsDefault();
       setEditMode(false);
+    } else {
+      // handle errors
+      resErrors.forEach(r => {
+        if (r.data.key === 'birthDate') {
+          if (r.status === 402) {
+            // Date is in the future
+            birthDate.setError(t('date_in_future'));
+          }
+          if (r.status === 403) {
+            // Date is invalid
+            birthDate.setError(t('invalid_date'));
+          }
+        }
+      });
     }
   };
 
@@ -61,9 +83,20 @@ export default function BasicInfos(props) {
   const onImgUpload = async () => {
     const photoUrl = await uploadProfilePicture(img);
 
-    dispatch({
-      type: ACTION_ENUM.UPDATE_PROFILE_PICTURE,
-      payload: photoUrl,
+    if (photoUrl) {
+      dispatch({
+        type: ACTION_ENUM.UPDATE_PROFILE_PICTURE,
+        payload: photoUrl,
+      });
+      return { status: 200 };
+    }
+    return { status: 404 };
+  };
+
+  const onBirthDateChange = async () => {
+    return api('/api/profile/birthDate', {
+      method: 'PUT',
+      body: JSON.stringify({ birthDate: birthDate.value }),
     });
   };
 

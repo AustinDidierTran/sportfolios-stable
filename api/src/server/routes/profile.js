@@ -76,6 +76,7 @@ router.put(`${BASE_URL}/birthDate`, async ctx => {
       ctx.status = res.code;
       ctx.body = {
         status: 'error',
+        key: 'birthDate',
       };
     }
   } catch (err) {
