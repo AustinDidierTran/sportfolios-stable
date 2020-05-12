@@ -1,5 +1,14 @@
 const { BUSINESS_TYPE_ENUM } = require('./enums');
 
+const dobFormatter = dob => {
+  const dobArray = dob.split('-');
+  return {
+    year: +dobArray[0],
+    month: +dobArray[1],
+    day: +dobArray[2],
+  };
+};
+
 const accountParamsFactory = params => {
   const {
     business_type,
@@ -27,7 +36,7 @@ const accountParamsFactory = params => {
           postal_code,
           state,
         },
-        dob,
+        dob: dobFormatter(dob),
         first_name,
         last_name,
       },

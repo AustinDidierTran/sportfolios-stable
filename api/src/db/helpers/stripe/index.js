@@ -3,9 +3,7 @@
  * Testing account numbers: https://stripe.com/docs/connect/testing#account-numbers
  */
 
-const stripe = require('stripe')(
-  'sk_test_tzvUgJHRWyWNg0s3ctjHFd6P00DoFwlm9f',
-);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 /* Private arguments */
 
@@ -19,21 +17,33 @@ const { accountParamsFactory } = stripeFactories;
 
 // REF: https://stripe.com/docs/api/accounts/create?lang=node
 const createStripeConnectedAccount = async props => {
-  const { business_type, email, ip } = props;
+  const {
+    business_type,
+    city,
+    country,
+    dob,
+    email,
+    first_name,
+    ip,
+    last_name,
+    line1,
+    postal_code,
+    state,
+  } = props;
 
   const params = accountParamsFactory({
     business_type,
-    city: 'Sherbrooke',
-    country: 'CA',
-    dob: { day: 17, month: 2, year: 1994 },
+    city,
+    country,
+    dob,
     email,
     external_account: TEST_EXTERNAL_ACCOUNT.PAYOUT_SUCCEED,
-    first_name: 'Austin-Didier',
+    first_name,
     ip,
-    last_name: 'Tran',
-    line1: '590 rue Short',
-    postal_code: 'J1H2E4',
-    state: 'QC',
+    last_name,
+    line1,
+    postal_code,
+    state,
   });
 
   const account = await stripe.account.create(params);
