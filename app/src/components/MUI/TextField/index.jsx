@@ -1,12 +1,15 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 // See native documentation here: https://material-ui.com/components/text-fields/
 
 export default function CustomTextField(props) {
-  const { error, formik, namespace } = props;
+  const { disabled, error, formik, namespace } = props;
 
-  return (
+  return disabled ? (
+    <Typography>{props.value}</Typography>
+  ) : (
     <TextField
       id={namespace}
       name={namespace}

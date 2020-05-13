@@ -22,9 +22,5 @@ export default function Profile(props) {
 
   const isSelf = id === user_id;
 
-  return (
-    <Container className={styles.container}>
-      {isSelf ? <SelfProfile /> : <OtherProfile userId={id} />}
-    </Container>
-  );
+  return isSelf ? <SelfProfile /> : <OtherProfile userId={id} />;
 }

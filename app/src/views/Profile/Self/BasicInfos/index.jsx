@@ -7,7 +7,11 @@ import styles from './BasicInfos.module.css';
 import { Store, ACTION_ENUM } from '../../../../Store';
 
 import { Avatar, Button, Input } from '../../../../components/Custom';
-import { Card, Typography } from '../../../../components/MUI';
+import {
+  Card,
+  Typography,
+  TextField,
+} from '../../../../components/MUI';
 import { useFormInput } from '../../../../hooks/forms';
 import api from '../../../../actions/api';
 import { uploadProfilePicture } from '../../../../actions/aws';
@@ -100,6 +104,15 @@ export default function BasicInfos(props) {
     });
   };
 
+  const onFirstNameChange = async () => {
+    console.log({ userInfo });
+    console.log(userInfo.first_name);
+  };
+  const onLastNameChange = async () => {
+    console.log({ userInfo });
+    console.log(userInfo.last_name);
+  };
+
   return (
     <Card className={styles.card}>
       <Avatar
@@ -113,7 +126,27 @@ export default function BasicInfos(props) {
         <></>
       )}
       <br />
-      <Typography variant="h3">{completeName}</Typography>
+      {isEditMode ? (
+        <>
+          <TextField
+            namespace="firstName"
+            type="text"
+            label={t('first_name')}
+            value={userInfo.first_name}
+            onChange={onFirstNameChange}
+          />
+          <TextField
+            namespace="lastName"
+            type="text"
+            label={t('last_name')}
+            value={userInfo.last_name}
+            onChange={onLastNameChange}
+          />
+        </>
+      ) : (
+        <Typography variant="h3">{completeName}</Typography>
+      )}
+      <br />
       {isEditMode ? (
         <Input type="date" {...birthDate.inputProps} />
       ) : birth_date ? (

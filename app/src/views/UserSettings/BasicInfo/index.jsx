@@ -42,6 +42,8 @@ export default function BasicInfo() {
       firstName: '',
       language: '',
       lastName: '',
+      address: '',
+      phoneNumber: '',
     },
     validate,
     validateOnChange: false,
@@ -107,6 +109,20 @@ export default function BasicInfo() {
             formik={formik}
             type="text"
             label={t('last_name')}
+            fullWidth
+          />
+          <TextField
+            namespace="address"
+            formik={formik}
+            type="text"
+            label={t('address')}
+            fullWidth
+          />
+          <TextField
+            namespace="phoneNumber"
+            formik={formik}
+            type="text"
+            label={t('phone_number')}
             fullWidth
           />
           <Select
