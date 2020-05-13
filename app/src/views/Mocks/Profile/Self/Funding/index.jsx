@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './Funding.module.css';
-import { Card, Typography, Button } from '../../../../components/MUI';
+import {
+  Card,
+  Typography,
+  Button,
+} from '../../../../../components/MUI';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 import CardHeader from '@material-ui/core/CardHeader';
@@ -27,13 +31,15 @@ export default function Funding(props) {
   };
 
   const donate = () => {
-    //TODO
     console.log('Donate!');
   };
 
   return (
     <Card className={styles.card}>
-      <CardHeader title="Nom de la campagne" subheader="Objectif" />
+      <CardHeader
+        title="Campagne de financement Hydra 2020"
+        subheader="Objectif: 100$"
+      />
       <CardContent>
         <LinearProgress
           className={styles.bar}
@@ -46,7 +52,7 @@ export default function Funding(props) {
           color="textSecondary"
           component="p"
         >
-          Courte présentation
+          Bonjour, voici ma campagne de financement...
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
@@ -70,7 +76,12 @@ export default function Funding(props) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography paragraph>Description complète</Typography>
+          <Typography paragraph>
+            Cet été mon équipe et moi voulons participer à plusieurs
+            tournois, nous planifions voyager à Boston, New-York pour
+            compétitionner avec les meilleurs équipes junior en
+            Amérique du Nord...
+          </Typography>
         </CardContent>
       </Collapse>
     </Card>

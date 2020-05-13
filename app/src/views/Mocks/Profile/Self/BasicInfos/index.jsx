@@ -4,17 +4,21 @@ import moment from 'moment';
 
 import styles from './BasicInfos.module.css';
 
-import { Store, ACTION_ENUM } from '../../../../Store';
+import { Store, ACTION_ENUM } from '../../../../../Store';
 
-import { Avatar, Button, Input } from '../../../../components/Custom';
+import {
+  Avatar,
+  Button,
+  Input,
+} from '../../../../../components/Custom';
 import {
   Card,
   Typography,
   TextField,
-} from '../../../../components/MUI';
-import { useFormInput } from '../../../../hooks/forms';
-import api from '../../../../actions/api';
-import { uploadProfilePicture } from '../../../../actions/aws';
+} from '../../../../../components/MUI';
+import { useFormInput } from '../../../../../hooks/forms';
+import api from '../../../../../actions/api';
+import { uploadProfilePicture } from '../../../../../actions/aws';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
@@ -105,12 +109,10 @@ export default function BasicInfos(props) {
   };
 
   const onFirstNameChange = async () => {
-    //TODO
     console.log({ userInfo });
     console.log(userInfo.first_name);
   };
   const onLastNameChange = async () => {
-    //TODO
     console.log({ userInfo });
     console.log(userInfo.last_name);
   };

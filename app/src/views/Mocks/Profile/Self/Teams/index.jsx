@@ -1,35 +1,35 @@
 import React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import styles from './Organizations.module.css';
-import { Avatar } from '../../../../components/Custom';
+import styles from './Teams.module.css';
 import {
   TextField,
   Card,
   List,
   ListItem,
   ListItemIcon,
-} from '../../../../components/MUI';
+} from '../../../../../components/MUI';
 import CardHeader from '@material-ui/core/CardHeader';
+import { Avatar } from '../../../../../components/Custom';
 
-export default function Organizations(props) {
+export default function Teams(props) {
   const { t } = useTranslation();
 
   return (
     <Card className={styles.card}>
-      <CardHeader title={t('organizations')} />
+      <CardHeader title={t('teams')} />
       <List>
         <ListItem>
           <ListItemIcon>
             <Avatar
               className={styles.avatar}
-              initials={'AUS'}
+              initials={'SGC'}
               photoUrl={null}
             />
           </ListItemIcon>
           <TextField
             disabled
-            value={"Nom de l'organisations"}
+            value={"Sherbrooke Gentlemen's Club"}
             className={styles.textField}
           />
         </ListItem>

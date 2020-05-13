@@ -7,7 +7,7 @@ import {
   Card,
   List,
   ListItem,
-} from '../../../../components/MUI';
+} from '../../../../../components/MUI';
 
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -30,7 +30,7 @@ export default function AthleteHistory(props) {
           <TextField
             disabled
             namespace="AthleteHistory"
-            value={'Position Évenements Équipe Année'}
+            value={'1st Place C4UC Louis Luncheonette 2019'}
             className={styles.textField}
           />
           <Select

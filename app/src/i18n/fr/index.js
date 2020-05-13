@@ -11,6 +11,7 @@ export default {
     first_name: 'Prénom',
     forgot_password: 'Mot de passe oublié?',
     funding: 'Financement',
+    goal: 'Objectif',
     have_an_account_signin:
       'Vous avez déjà un compte? Connectez-vous!',
     last_name: 'Nom de famille',
@@ -25,6 +26,7 @@ export default {
     organization: 'Organisation',
     organizations: 'Organisations',
     password: 'Mot de passe',
+    private: 'privée',
     athlete_history: "Historique de l'Athlète",
     phone_number: 'Numéro de téléphone',
     score_type: 'Type de pointage',
