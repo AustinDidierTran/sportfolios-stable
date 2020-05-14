@@ -7,7 +7,11 @@ import styles from './BasicInfos.module.css';
 import { Store, ACTION_ENUM } from '../../../../Store';
 
 import { Avatar, Button, Input } from '../../../../components/Custom';
-import { Card, Typography } from '../../../../components/MUI';
+import {
+  Card,
+  Typography,
+  TextField,
+} from '../../../../components/MUI';
 import { useFormInput } from '../../../../hooks/forms';
 import api from '../../../../actions/api';
 import { uploadProfilePicture } from '../../../../actions/aws';
@@ -100,33 +104,59 @@ export default function BasicInfos(props) {
     });
   };
 
+  const onFirstNameChange = async () => {
+    //TODO
+    console.log({ userInfo });
+    console.log(userInfo.first_name);
+  };
+  const onLastNameChange = async () => {
+    //TODO
+    console.log({ userInfo });
+    console.log(userInfo.last_name);
+  };
+
   return (
     <Card className={styles.card}>
-      <Avatar
-        className={styles.avatar}
-        initials={initials}
-        photoUrl={photo_url}
-      />
+      <Avatar initials={initials} photoUrl={photo_url} size="lg" />
       {isEditMode ? (
         <Input type="file" onChange={onImgChange} />
       ) : (
         <></>
       )}
       <br />
-      <Typography variant="h3">{completeName}</Typography>
+      {isEditMode ? (
+        <>
+          <TextField
+            namespace="firstName"
+            type="text"
+            label={t('first_name')}
+            value={userInfo.first_name}
+            onChange={onFirstNameChange}
+          />
+          <TextField
+            namespace="lastName"
+            type="text"
+            label={t('last_name')}
+            value={userInfo.last_name}
+            onChange={onLastNameChange}
+          />
+        </>
+      ) : (
+        <Typography variant="h3">{completeName}</Typography>
+      )}
       {isEditMode ? (
         <Input type="date" {...birthDate.inputProps} />
       ) : birth_date ? (
-        <span>
-          {t('birth_date_format', {
+        <TextField
+          disabled
+          value={t('birth_date_format', {
             age: moment().diff(moment(birthDate.value), 'years'),
             date: moment(birthDate.value),
           })}
-        </span>
+        />
       ) : (
         <></>
       )}
-      <br />
       <br />
 
       {isEditMode ? (

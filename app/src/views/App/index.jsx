@@ -23,6 +23,10 @@ import Search from '../Search';
 import Signup from '../Signup';
 import UserSettings from '../UserSettings';
 
+// Mocks
+import MockSelfProfile from '../Mocks/Profile/Self';
+import MockOrganization from '../Mocks/Organization';
+
 import styles from './App.module.css';
 import history from '../../stores/history';
 import AdminRoute from './AdminRoute';
@@ -68,6 +72,16 @@ export default function App() {
               <Route
                 path={ROUTES.recoveryEmail}
                 component={PasswordRecovery}
+              />
+              <Route
+                exact
+                path={ROUTES.mockSelfProfile}
+                component={MockSelfProfile}
+              />
+              <Route
+                exact
+                path={ROUTES.mockOrganization}
+                component={MockOrganization}
               />
               <Route exact path={ROUTES.login} component={Login} />
               <Route exact path={ROUTES.signup} component={Signup} />

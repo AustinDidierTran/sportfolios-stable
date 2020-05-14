@@ -8,6 +8,8 @@ export const ROUTES = {
   confirmEmailSuccess: '/confirmEmailSuccess',
   forgotPassword: '/forgotPassword',
   login: '/login',
+  mockOrganization: '/mock/Organization',
+  mockSelfProfile: '/mock/selfProfile',
   profile: '/profile/:id',
   recoveryEmail: '/recoveryEmail/:token',
   search: '/search/:query',

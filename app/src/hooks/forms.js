@@ -10,7 +10,6 @@ export const useFormInput = initialValue => {
   };
 
   // Public Attributes
-
   const changeDefault = newDefault => {
     if (newDefault !== defaultValue) {
       setDefaultValue(newDefault);

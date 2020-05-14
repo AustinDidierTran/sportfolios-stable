@@ -24,6 +24,8 @@
 @media (min-width: 992px) {
   .container {
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-areas: 'title title title' 'basic password email';
+    grid-template-areas:
+      'title title title'
+      'basic password email';
   }
 }
