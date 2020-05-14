@@ -12,6 +12,9 @@ import {
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import CardHeader from '@material-ui/core/CardHeader';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import EmojiEvents from '@material-ui/icons/EmojiEvents';
 
 export default function AthleteHistory(props) {
   const { t } = useTranslation();
@@ -27,12 +30,11 @@ export default function AthleteHistory(props) {
       <CardHeader title={t('athlete_history')} />
       <List>
         <ListItem>
-          <TextField
-            disabled
-            namespace="AthleteHistory"
-            value={'Position Évenements Équipe Année'}
-            className={styles.textField}
-          />
+          <ListItemIcon>
+            <EmojiEvents />
+          </ListItemIcon>
+          <ListItemText primary="Position Évenements Équipe Année" />
+
           <Select
             className={styles.select}
             labelId="public-or-private"

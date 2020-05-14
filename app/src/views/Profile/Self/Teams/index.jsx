@@ -21,11 +21,7 @@ export default function Teams(props) {
       <List>
         <ListItem>
           <ListItemIcon>
-            <Avatar
-              className={styles.avatar}
-              initials={'SGC'}
-              photoUrl={null}
-            />
+            <Avatar initials={'SGC'} photoUrl={null} />
           </ListItemIcon>
           <TextField
             disabled

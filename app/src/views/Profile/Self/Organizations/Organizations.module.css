@@ -1,12 +1,4 @@
 .card {
   grid-area: organizations;
   text-align: center;
-  padding-left: 32px;
-  padding-right: 32px;
-}
-
-.avatar {
-  font-size: 24px !important;
-  width: 48px !important;
-  height: 48px !important;
 }

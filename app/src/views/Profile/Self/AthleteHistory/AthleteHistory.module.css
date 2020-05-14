@@ -1,13 +1,12 @@
 .card {
   grid-area: athleteHistory;
   text-align: center;
-  padding-left: 32px;
-  padding-right: 32px;
 }
 
 .textField {
   margin-right: auto;
   margin-left: auto;
+  padding-right: 32px;
 }
 
 .select {

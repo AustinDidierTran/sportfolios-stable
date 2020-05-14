@@ -1,14 +1,38 @@
 .card {
   grid-area: funding;
   text-align: center;
-  padding-left: 32px;
-  padding-right: 32px;
 }
 
 .expand {
-  transform: 'rotate(0deg)';
-  margin-left: 'auto';
+  grid-area: expand;
 }
-.expandOpen {
-  transform: 'rotate(180deg)';
+
+.bar {
+  grid-area: bar;
+}
+
+.edit {
+  grid-area: edit;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.goal {
+  grid-area: goal;
+  text-align: right;
+}
+
+.progression {
+  grid-area: progression;
+}
+
+.funded {
+  grid-area: funded;
+  text-align: left;
+}
+
+.container {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: 'bar bar bar' 'funded progression goal' 'edit edit edit' '. . expand';
 }

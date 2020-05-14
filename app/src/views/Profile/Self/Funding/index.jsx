@@ -2,16 +2,21 @@ import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './Funding.module.css';
-import { Card, Typography, Button } from '../../../../components/MUI';
-import LinearProgress from '@material-ui/core/LinearProgress';
+import {
+  Card,
+  Typography,
+  IconButton,
+  Container,
+} from '../../../../components/MUI';
+import { Button } from '../../../../components/Custom';
 
+import LinearProgress from '@material-ui/core/LinearProgress';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
-import IconButton from '@material-ui/core/IconButton';
 import clsx from 'clsx';
+import { withStyles } from '@material-ui/core/styles';
 
 export default function Funding(props) {
   const { t } = useTranslation();
@@ -20,54 +25,88 @@ export default function Funding(props) {
 
   const [goal, setGoal] = useState(100);
 
+  const [editMode, setEditMode] = useState(false);
+
   const [expanded, setExpanded] = useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
-  const donate = () => {
-    //TODO
-    console.log('Donate!');
+  const onEdit = async () => {
+    setEditMode(true);
   };
+
+  const percentage = () => {
+    return (completed / goal) * 100;
+  };
+
+  const BorderLinearProgress = withStyles({
+    root: {
+      height: 12,
+      borderRadius: 32,
+    },
+    bar: {
+      borderRadius: 24,
+    },
+  })(LinearProgress);
 
   return (
     <Card className={styles.card}>
-      <CardHeader title="Nom de la campagne" subheader="Objectif" />
-      <CardContent>
-        <LinearProgress
-          className={styles.bar}
-          variant="determinate"
-          value={completed}
-          color="primary"
-        />
+      <CardHeader
+        title="Nom de la campagne"
+        subheader="Courte description"
+      />
+      <Container className={styles.container}>
+        <div className={styles.bar}>
+          <BorderLinearProgress
+            variant="determinate"
+            value={completed}
+            color="primary"
+          />
+        </div>
         <Typography
-          variant="body2"
-          color="textSecondary"
-          component="p"
-        >
-          Courte présentation
-        </Typography>
-      </CardContent>
-      <CardActions disableSpacing>
-        <Button
-          onClick={donate}
-          className={styles.donate}
+          className={styles.funded}
+          disabled
+          variant="h3"
           color="primary"
         >
-          {t('donate')}
-        </Button>
+          {completed}$
+        </Typography>
+        <Typography
+          className={styles.goal}
+          disabled
+          variant="h5"
+          color="primary"
+        >
+          Goal: {goal}$
+        </Typography>
+        <Typography
+          className={styles.progression}
+          disabled
+          variant="h4"
+          color="primary"
+        >
+          {percentage()}%
+        </Typography>
+        <div className={styles.edit}>
+          <Button endIcon="Edit" onClick={onEdit} color="primary">
+            {t('edit')}
+          </Button>
+        </div>
+
         <IconButton
           className={clsx(styles.expand, {
             [styles.expandOpen]: expanded,
           })}
           onClick={handleExpandClick}
           aria-expanded={expanded}
-          aria-label="show more"
+          label="show more"
         >
           <ExpandMoreIcon />
         </IconButton>
-      </CardActions>
+      </Container>
+
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph>Description complète</Typography>

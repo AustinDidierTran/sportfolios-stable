@@ -4,9 +4,7 @@
   padding-left: 32px;
   padding-right: 32px;
 }
-
-.avatar {
-  font-size: 24px !important;
-  width: 48px !important;
-  height: 48px !important;
+.textField {
+  margin-left: auto;
+  margin-right: auto;
 }

@@ -21,11 +21,7 @@ export default function Organizations(props) {
       <List>
         <ListItem>
           <ListItemIcon>
-            <Avatar
-              className={styles.avatar}
-              initials={'AUS'}
-              photoUrl={null}
-            />
+            <Avatar initials={'AUS'} photoUrl={null} />
           </ListItemIcon>
           <TextField
             disabled

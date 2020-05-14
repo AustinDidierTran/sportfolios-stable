@@ -123,6 +123,7 @@ export default function BasicInfos(props) {
         className={styles.avatar}
         initials={initials}
         photoUrl={photo_url}
+        size="lg"
       />
       {isEditMode ? (
         <Input type="file" onChange={onImgChange} />
@@ -152,18 +153,22 @@ export default function BasicInfos(props) {
       )}
       <br />
       {isEditMode ? (
-        <Input type="date" {...birthDate.inputProps} />
+        <Input
+          label={t('birth_date')}
+          type="date"
+          {...birthDate.inputProps}
+        />
       ) : birth_date ? (
-        <span>
-          {t('birth_date_format', {
+        <TextField
+          disabled
+          value={t('birth_date_format', {
             age: moment().diff(moment(birthDate.value), 'years'),
             date: moment(birthDate.value),
           })}
-        </span>
+        />
       ) : (
         <></>
       )}
-      <br />
       <br />
 
       {isEditMode ? (

@@ -33,6 +33,20 @@ export default function Teams(props) {
             className={styles.textField}
           />
         </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <Avatar
+              className={styles.avatar}
+              initials={'LL'}
+              photoUrl={null}
+            />
+          </ListItemIcon>
+          <TextField
+            disabled
+            value={'Louis Luncheonette'}
+            className={styles.textField}
+          />
+        </ListItem>
       </List>
     </Card>
   );

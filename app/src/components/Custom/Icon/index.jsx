@@ -2,6 +2,7 @@ import React from 'react';
 
 import Add from '@material-ui/icons/Add';
 import AddAPhoto from '@material-ui/icons/AddAPhoto';
+import AttachMoney from '@material-ui/icons/AttachMoney';
 import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
 import Delete from '@material-ui/icons/Delete';
@@ -15,6 +16,7 @@ import Search from '@material-ui/icons/Search';
 const icons = {
   Add,
   AddAPhoto,
+  AttachMoney,
   Check,
   Close,
   Delete,
