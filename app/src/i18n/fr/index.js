@@ -12,6 +12,7 @@ export default {
     emails: 'Courriels',
     first_name: 'Prénom',
     forgot_password: 'Mot de passe oublié?',
+    founded_in: 'Fondée en',
     funding: 'Financement',
     goal: 'Objectif',
     have_an_account_signin:

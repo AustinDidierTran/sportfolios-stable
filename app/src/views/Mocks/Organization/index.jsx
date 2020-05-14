@@ -4,6 +4,7 @@ import { Container, Typography } from '../../../components/MUI';
 
 import styles from './Organization.module.css';
 import { useTranslation } from 'react-i18next';
+import BasicInfos from './BasicInfos';
 
 export default function selfProfile(props) {
   const { t } = useTranslation();
@@ -18,6 +19,7 @@ export default function selfProfile(props) {
         >
           {t('organization')}
         </Typography>
+        <BasicInfos />
       </Container>
     </div>
   );
