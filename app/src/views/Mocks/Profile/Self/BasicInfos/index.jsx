@@ -108,14 +108,8 @@ export default function BasicInfos(props) {
     });
   };
 
-  const onFirstNameChange = async () => {
-    console.log({ userInfo });
-    console.log(userInfo.first_name);
-  };
-  const onLastNameChange = async () => {
-    console.log({ userInfo });
-    console.log(userInfo.last_name);
-  };
+  const onFirstNameChange = async () => {};
+  const onLastNameChange = async () => {};
 
   return (
     <Card className={styles.card}>

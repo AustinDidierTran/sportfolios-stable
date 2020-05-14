@@ -15,7 +15,6 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
-import CardMedia from '@material-ui/core/CardMedia';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -44,7 +43,7 @@ export default function Funding(props) {
 
   const BorderLinearProgress = withStyles({
     root: {
-      height: 12,
+      height: 24,
       borderRadius: 32,
     },
     bar: {
@@ -69,24 +68,24 @@ export default function Funding(props) {
         <Typography
           className={styles.funded}
           disabled
-          variant="h3"
           color="primary"
+          variant="h5"
         >
           {completed}$
         </Typography>
         <Typography
           className={styles.goal}
+          variant="h6"
           disabled
-          variant="h5"
           color="primary"
         >
-          Goal: {goal}$
+          Objectif: {goal}$
         </Typography>
         <Typography
           className={styles.progression}
           disabled
-          variant="h4"
           color="primary"
+          variant="h6"
         >
           {percentage()}%
         </Typography>
