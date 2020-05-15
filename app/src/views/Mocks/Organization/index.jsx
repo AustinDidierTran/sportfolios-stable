@@ -6,6 +6,7 @@ import styles from './Organization.module.css';
 import { useTranslation } from 'react-i18next';
 import BasicInfos from './BasicInfos';
 import NextEvents from './NextEvents';
+import BecomeMember from './BecomeMember';
 
 export default function selfProfile(props) {
   const { t } = useTranslation();
@@ -22,6 +23,7 @@ export default function selfProfile(props) {
       <Container className={styles.container}>
         <BasicInfos />
         <NextEvents />
+        <BecomeMember />
       </Container>
     </div>
   );
