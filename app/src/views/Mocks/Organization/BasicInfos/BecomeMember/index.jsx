@@ -19,7 +19,7 @@ export default function BecomeMember(props) {
       {isMember ? (
         <Button
           variant="contained"
-          color="primary"
+          color="grey"
           onClick={handleClick}
         >
           {t('competitive_member')}
@@ -27,7 +27,7 @@ export default function BecomeMember(props) {
       ) : (
         <Button
           variant="contained"
-          color="secondary"
+          color="primary"
           onClick={handleClick}
         >
           {t('become_member')}
