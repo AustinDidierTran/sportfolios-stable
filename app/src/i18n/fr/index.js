@@ -43,6 +43,7 @@ export default {
     signup: "S'enregistrer",
     team: 'Équipe',
     teams: 'Équipes',
+    upcoming_events: 'Événements',
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',
     email_already_used:

@@ -18,6 +18,14 @@ export default function CustomAvatar(props) {
     style.marginLeft = 'auto';
   }
 
+  if (props.size === 'md') {
+    style.fontSize = '24px';
+    style.width = '64px';
+    style.height = '64px';
+    style.marginRight = 'auto';
+    style.marginLeft = 'auto';
+  }
+
   return photoUrl ? (
     <Avatar
       {...otherProps}
