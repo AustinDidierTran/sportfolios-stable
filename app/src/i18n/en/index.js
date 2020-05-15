@@ -14,6 +14,7 @@ export default {
     emails: 'Emails',
     first_name: 'First Name',
     forgot_password: 'Forgot Password?',
+    founded_in: 'Founded in',
     funding: 'Funding',
     goal: 'Goal',
     have_an_account_signin: 'Already have an account? Sign in!',
