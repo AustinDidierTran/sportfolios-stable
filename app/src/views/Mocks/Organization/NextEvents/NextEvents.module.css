@@ -1,0 +1,22 @@
+.card {
+  grid-area: nextEvents;
+  text-align: center;
+}
+
+.event {
+  display: grid !important;
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-areas: 'avatar infos expand';
+}
+
+.avatar {
+  grid-area: avatar;
+}
+
+.expand {
+  grid-area: expand;
+  justify-self: end;
+}
+.infos {
+  grid-area: infos;
+}

@@ -42,6 +42,7 @@ export default {
     signup: 'Signup',
     team: 'Teams',
     teams: 'Teams',
+    upcoming_events: 'Upcoming Events',
 
     // Validation
     confirm_new_password: 'Confirm New Password',
