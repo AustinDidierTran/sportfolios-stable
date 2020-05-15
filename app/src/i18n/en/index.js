@@ -10,6 +10,7 @@ export default {
     birth_date_format: '{{date, LL}} ({{age}} years old)',
     birth_date: 'Birth date',
     change_password: 'Change password',
+    competitive_member: 'Competitive Member',
     donate: 'Donate',
     email: 'Email',
     emails: 'Emails',

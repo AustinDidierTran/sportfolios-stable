@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './BecomeMember.module.css';
 
-import { Container, Button } from '../../../../components/MUI';
+import { Container, Button } from '../../../../../components/MUI';
 
 export default function BecomeMember(props) {
   const { t } = useTranslation();
@@ -22,7 +22,7 @@ export default function BecomeMember(props) {
           color="primary"
           onClick={handleClick}
         >
-          {t('your_a_member')}
+          {t('competitive_member')}
         </Button>
       ) : (
         <Button

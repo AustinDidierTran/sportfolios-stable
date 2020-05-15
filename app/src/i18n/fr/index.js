@@ -8,6 +8,7 @@ export default {
     birth_date_format: '{{date, LL}} ({{age}} ans)',
     birth_date: 'Date de naissance',
     change_password: 'Changer votre mot de passe',
+    competitive_member: 'Membre compétitif',
     donate: 'Faire un don',
     email: 'Courriel',
     emails: 'Courriels',
