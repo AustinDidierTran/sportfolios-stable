@@ -11,6 +11,9 @@
 
 .infos {
   grid-area: infos;
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-areas: 'avatar infos expand';
+
 }
 
 .avatar {
@@ -56,4 +59,4 @@
 .date {
   grid-area: date;
   justify-self: left;
-}
+

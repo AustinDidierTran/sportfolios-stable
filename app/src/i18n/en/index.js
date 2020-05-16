@@ -6,9 +6,11 @@ export default {
     adress: 'Address',
     app_role: 'App Role',
     basic_info: 'Basic Info',
+    become_member: 'Become Member',
     birth_date_format: '{{date, LL}} ({{age}} years old)',
     birth_date: 'Birth date',
     change_password: 'Change password',
+    competitive_member: 'Competitive Member',
     donate: 'Donate',
     email: 'Email',
     emails: 'Emails',
@@ -43,6 +45,7 @@ export default {
     team: 'Teams',
     teams: 'Teams',
     upcoming_events: 'Upcoming Events',
+    your_a_member: 'You are a member',
 
     // Validation
     confirm_new_password: 'Confirm New Password',

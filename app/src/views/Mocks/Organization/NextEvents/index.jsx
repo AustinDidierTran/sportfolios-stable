@@ -75,6 +75,7 @@ export default function NextEvents(props) {
               unmountOnExit
               className={styles.description}
             >
+
               <CardContent>
                 <Typography paragraph>Plus d'informations</Typography>
               </CardContent>
