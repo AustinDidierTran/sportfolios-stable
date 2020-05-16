@@ -35,19 +35,29 @@ export default function NextEvents(props) {
           <Container className={styles.event}>
             <ListItemIcon>
               <Avatar
-                initials={'5 May'}
+                initials={'P'}
                 size="md"
                 className={styles.avatar}
               />
             </ListItemIcon>
             <Container className={styles.infos}>
-              <Typography className={styles.name} variant="h6">
-                CQU5-Primavera
-              </Typography>
+              <Container className={styles.tournoi}>
+                <Typography className={styles.name} variant="h4">
+                  Primavera
+                </Typography>
+                <Typography className={styles.circuit} variant="h5">
+                  CQU5
+                </Typography>
+              </Container>
               <hr />
-              <Typography className={styles.place} variant="h7">
-                Montréal
-              </Typography>
+              <Container className={styles.placetime}>
+                <Typography className={styles.date} variant="h5">
+                  5 Mai
+                </Typography>
+                <Typography className={styles.place} variant="h7">
+                  3791, Chemin Queen Mary, Montréal, QC H3V 1A8
+                </Typography>
+              </Container>
             </Container>
             <IconButton
               className={clsx(styles.expand, {
@@ -59,7 +69,13 @@ export default function NextEvents(props) {
             >
               <ExpandMoreIcon />
             </IconButton>
-            <Collapse in={expanded} timeout="auto" unmountOnExit>
+            <Collapse
+              in={expanded}
+              timeout="auto"
+              unmountOnExit
+              className={styles.description}
+            >
+
               <CardContent>
                 <Typography paragraph>Plus d'informations</Typography>
               </CardContent>

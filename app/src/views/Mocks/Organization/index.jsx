@@ -12,6 +12,13 @@ export default function selfProfile(props) {
 
   return (
     <div className={styles.main}>
+      <Typography
+        variant="h3"
+        className={styles.title}
+        style={{ marginTop: 24 }}
+      >
+        {t('organization')}
+      </Typography>
       <Container className={styles.container}>
         <BasicInfos />
         <NextEvents />
