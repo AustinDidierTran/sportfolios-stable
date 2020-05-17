@@ -28,7 +28,9 @@ export default function BasicInfos(props) {
         Fédération Québécoise d'Ultimate
       </Typography>
 
-      <TextField disabled value={t('founded_in') + ' 2003'} />
+      <Typography variant="h5">
+        {t('founded_in') + ' 2003'}
+      </Typography>
       <BecomeMember />
     </Card>
   );

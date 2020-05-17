@@ -12,7 +12,6 @@ import {
   IconButton,
   Container,
 } from '../../../../components/MUI';
-import CardHeader from '@material-ui/core/CardHeader';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CardContent from '@material-ui/core/CardContent';
 import Collapse from '@material-ui/core/Collapse';
@@ -29,7 +28,9 @@ export default function NextEvents(props) {
 
   return (
     <Card className={styles.card}>
-      <CardHeader title={t('upcoming_events')} />
+      <Typography className={styles.title} variant="h3">
+        {t('upcoming_events')}
+      </Typography>
       <List>
         <ListItem>
           <Container className={styles.event}>
@@ -42,7 +43,7 @@ export default function NextEvents(props) {
             </ListItemIcon>
             <Container className={styles.infos}>
               <Container className={styles.tournoi}>
-                <Typography className={styles.name} variant="h4">
+                <Typography className={styles.name} variant="h3">
                   Primavera
                 </Typography>
                 <Typography className={styles.circuit} variant="h5">
@@ -53,9 +54,6 @@ export default function NextEvents(props) {
               <Container className={styles.placetime}>
                 <Typography className={styles.date} variant="h5">
                   5 Mai
-                </Typography>
-                <Typography className={styles.place} variant="h7">
-                  3791, Chemin Queen Mary, Montréal, QC H3V 1A8
                 </Typography>
               </Container>
             </Container>
@@ -75,9 +73,14 @@ export default function NextEvents(props) {
               unmountOnExit
               className={styles.description}
             >
-
               <CardContent>
-                <Typography paragraph>Plus d'informations</Typography>
+                <Typography className={styles.place} variant="h6">
+                  3791, Chemin Queen Mary, Montréal, QC H3V 1A8
+                </Typography>
+                <br />
+                <Typography paragraph variant="h6">
+                  Plus d'informations
+                </Typography>
               </CardContent>
             </Collapse>
           </Container>

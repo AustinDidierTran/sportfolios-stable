@@ -3,17 +3,18 @@
   text-align: center;
 }
 
+.title {
+  padding-top: 16px;
+}
+
 .event {
   display: grid !important;
   grid-template-columns: 1fr 9fr 1fr;
-  grid-template-areas: ' avatar infos expand' ' description description description';
+  grid-template-areas: ' avatar infos expand' 'description description description';
 }
 
 .infos {
   grid-area: infos;
-  grid-template-columns: 1fr 3fr 1fr;
-  grid-template-areas: 'avatar infos expand';
-
 }
 
 .avatar {
@@ -39,19 +40,21 @@
 .name {
   grid-area: name;
   justify-self: left;
+  align-self: flex-end;
 }
 
 .circuit {
   grid-area: circuit;
   justify-self: right;
+  align-self: flex-end;
 }
-
 .placetime {
   grid-area: tournoi;
   display: grid !important;
-  grid-template-columns: 1fr 3fr;
-  grid-template-areas: 'date place';
+  grid-template-columns: 1fr;
+  grid-template-areas: 'date';
 }
+
 .place {
   grid-area: place;
   justify-self: right;
@@ -59,4 +62,4 @@
 .date {
   grid-area: date;
   justify-self: left;
-
+}
