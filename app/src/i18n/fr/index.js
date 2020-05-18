@@ -4,9 +4,11 @@ export default {
     address: 'Adresse',
     app_role: 'App Role',
     basic_info: 'Information générales',
+    become_member: 'Devenir Membre',
     birth_date_format: '{{date, LL}} ({{age}} ans)',
     birth_date: 'Date de naissance',
     change_password: 'Changer votre mot de passe',
+    competitive_member: 'Membre compétitif',
     donate: 'Faire un don',
     email: 'Courriel',
     emails: 'Courriels',
@@ -43,6 +45,9 @@ export default {
     signup: "S'enregistrer",
     team: 'Équipe',
     teams: 'Équipes',
+    upcoming_events: 'Événements',
+    your_a_member: 'Vous êtes membre',
+
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',
     email_already_used:
