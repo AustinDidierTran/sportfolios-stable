@@ -41,6 +41,8 @@ export default function App() {
   });
 
   theme.typography.h3 = {
+    fontFamily: 'Montserrat',
+    fontWeight: 350,
     fontSize: '1.2rem',
     '@media (min-width:600px)': {
       fontSize: '1.5rem',
@@ -49,6 +51,31 @@ export default function App() {
       fontSize: '2.4rem',
     },
   };
+
+  theme.typography.h5 = {
+    fontFamily: 'Montserrat',
+    fontWeight: 350,
+    fontSize: '1rem',
+    '@media (min-width:600px)': {
+      fontSize: '1.4rem',
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: '1.8rem',
+    },
+  };
+
+  theme.typography.h6 = {
+    fontFamily: 'Montserrat',
+    fontWeight: 350,
+    fontSize: '1.0rem',
+    '@media (min-width:600px)': {
+      fontSize: '1.3rem',
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: '1.6rem',
+    },
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Router history={history}>
