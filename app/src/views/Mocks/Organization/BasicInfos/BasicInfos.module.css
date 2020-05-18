@@ -8,3 +8,35 @@
   margin-left: auto;
   margin-right: auto;
 }
+
+.titre {
+  padding: 8px;
+}
+
+.container {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: 'member donate';
+  column-gap: 8px;
+  padding: 0px !important;
+  margin-right: auto;
+  margin-left: auto;
+}
+@media (min-width: 768px) {
+  .container {
+    column-gap: 32px;
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+}
+
+.donate {
+  grid-area: donate;
+  margin-right: auto;
+  margin-left: auto;
+}
+.member {
+  grid-area: member;
+  margin-right: auto;
+  margin-left: auto;
+}
