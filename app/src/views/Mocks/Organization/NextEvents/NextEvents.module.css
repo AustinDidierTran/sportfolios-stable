@@ -72,3 +72,7 @@
   grid-area: register;
   justify-self: right;
 }
+
+.divider {
+  margin-top: 16px !important;
+}

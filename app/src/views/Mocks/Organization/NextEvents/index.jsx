@@ -12,6 +12,7 @@ import {
   ListItemIcon,
   IconButton,
   Container,
+  Divider,
 } from '../../../../components/MUI';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CardContent from '@material-ui/core/CardContent';
@@ -75,13 +76,22 @@ export default function NextEvents(props) {
               unmountOnExit
               className={styles.description}
             >
+              <Divider className={styles.divider} />
               <CardContent>
                 <Typography className={styles.place} variant="h6">
                   3791, Chemin Queen Mary, Montréal, QC H3V 1A8
                 </Typography>
                 <br />
                 <Typography paragraph variant="h6">
-                  Plus d'informations
+                  Lorem ipsum dolor sit amet, consectetur adipiscing
+                  elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua. Ut enim ad minim veniam, quis
+                  nostrud exercitation ullamco laboris nisi ut aliquip
+                  ex ea commodo consequat. Duis aute irure dolor in
+                  reprehenderit in voluptate velit esse cillum dolore
+                  eu fugiat nulla pariatur. Excepteur sint occaecat
+                  cupidatat non proident, sunt in culpa qui officia
+                  deserunt mollit anim id est laborum.
                 </Typography>
               </CardContent>
             </Collapse>
