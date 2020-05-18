@@ -1,0 +1,23 @@
+.card {
+  grid-area: sports;
+}
+
+.actions {
+  display: grid !important;
+  grid-template-areas: 'sport scoreType input';
+  grid-template-columns: 64px auto 64px;
+  grid-column-gap: 8px;
+  justify-content: center;
+}
+
+.sport {
+  grid-area: sport;
+}
+
+.scoreType {
+  grid-area: scoreType;
+}
+
+.input {
+  grid-area: input;
+}

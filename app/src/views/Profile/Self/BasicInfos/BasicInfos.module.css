@@ -1,0 +1,5 @@
+.card {
+  grid-area: basicInfos;
+  text-align: center;
+  padding: 32px;
+}

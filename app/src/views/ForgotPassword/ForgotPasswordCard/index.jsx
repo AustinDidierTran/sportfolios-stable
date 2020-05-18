@@ -7,24 +7,31 @@ import styles from './ForgotPasswordCard.module.css';
 
 import { Store } from '../../../Store';
 import Button from '../../../components/MUI/Button';
-import { Card, CardActions, CardContent, Divider, TextField, Typography } from '../../../components/MUI';
-import { API_BASE_URL } from '../../../../../conf';
+import {
+  Card,
+  CardActions,
+  CardContent,
+  Divider,
+  TextField,
+  Typography,
+} from '../../../components/MUI';
+import api from '../../../actions/api';
 import { ROUTES } from '../../../actions/goTo';
 
-export default function ForgotPassword(props) {
-  const { setCard } = props;
-  const { dispatch } = useContext(Store);
+export default function ForgotPassword() {
   const { t } = useTranslation();
 
   const validate = values => {
     const errors = {};
     if (!values.email) {
       errors.email = t('value_is_required');
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+    ) {
       errors.email = t('invalid_email');
     }
     return errors;
-  }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -35,11 +42,8 @@ export default function ForgotPassword(props) {
     validateOnBlur: false,
     onSubmit: async values => {
       const { email } = values;
-      const res = await fetch(`${API_BASE_URL}/api/auth/recoveryEmail`, {
+      const res = await api('/api/auth/recoveryEmail', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           email,
         }),
@@ -49,16 +53,17 @@ export default function ForgotPassword(props) {
         // Email not found
         formik.setFieldError('email', t('email_not_found'));
       }
-
-    }
-  })
+    },
+  });
 
   return (
     <div className={styles.main}>
       <form onSubmit={formik.handleSubmit}>
         <Card className={styles.card}>
           <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">{t('forgot_password')}</Typography>
+            <Typography gutterBottom variant="h5" component="h2">
+              {t('forgot_password')}
+            </Typography>
             <TextField
               namespace="email"
               formik={formik}

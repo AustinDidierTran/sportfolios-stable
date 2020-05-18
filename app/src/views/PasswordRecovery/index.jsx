@@ -6,9 +6,9 @@ import { useFormik } from 'formik';
 import styles from './PasswordRecovery.module.css';
 
 import { Button, Card, CardActions, CardContent, Divider, TextField, Typography } from '../../components/MUI';
-import { API_BASE_URL } from '../../../../conf';
+import api from '../../actions/api';
 
-export default function Login(props) {
+export default function PasswordRecovery(props) {
   const { match: { params: { token } } } = props;
 
   const { t } = useTranslation();
@@ -33,11 +33,8 @@ export default function Login(props) {
     validateOnBlur: false,
     onSubmit: async values => {
       const { password } = values;
-      const res = await fetch(`${API_BASE_URL}/api/auth/recoverPassword`, {
+      const res = await api('/api/auth/recoverPassword', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           token,
           password,

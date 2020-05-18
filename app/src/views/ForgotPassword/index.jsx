@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
@@ -7,7 +6,7 @@ import styles from './Login.module.css';
 
 import { ACTION_ENUM, Store } from '../../Store';
 import { Container } from '../../components/MUI';
-import { API_BASE_URL } from '../../../../conf';
+import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import ForgotPasswordCard from './ForgotPasswordCard';
 import DescriptionCard from './DescriptionCard';
@@ -20,17 +19,22 @@ export default function Login() {
     const errors = {};
     if (!values.email) {
       errors.email = t('value_is_required');
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+    ) {
       errors.email = t('invalid_email');
     }
 
     if (!values.password) {
       errors.password = t('value_is_required');
-    } else if (values.password.length < 8 || values.password.length > 16) {
+    } else if (
+      values.password.length < 8 ||
+      values.password.length > 16
+    ) {
       errors.password = t('password_length');
     }
     return errors;
-  }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -42,11 +46,8 @@ export default function Login() {
     validateOnBlur: false,
     onSubmit: async values => {
       const { email, password } = values;
-      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      const res = await api('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           email,
           password,
@@ -55,11 +56,8 @@ export default function Login() {
 
       if (res.status === 401) {
         // Email is not validated
-        await fetch(`${API_BASE_URL}/api/auth/sendConfirmationEmail`, {
+        await api('/api/auth/sendConfirmationEmail', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           body: JSON.stringify({
             email,
           }),
@@ -69,7 +67,10 @@ export default function Login() {
 
       if (res.status === 403) {
         // Password is not good
-        formik.setFieldError('password', t('email_password_no_match'));
+        formik.setFieldError(
+          'password',
+          t('email_password_no_match'),
+        );
       }
 
       const { data } = await res.json();
@@ -82,8 +83,8 @@ export default function Login() {
         });
         goTo(ROUTES.userSettings);
       }
-    }
-  })
+    },
+  });
 
   return (
     <div className={styles.main}>

@@ -1,8 +1,11 @@
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
-const { sendConfirmationEmail, sendRecoveryEmail } = require('../../server/utils/nodeMailer');
 const {
-  confirmEmail,
+  sendConfirmationEmail,
+  sendRecoveryEmail,
+} = require('../../server/utils/nodeMailer');
+const {
+  confirmEmail: confirmEmailHelper,
   createUser,
   createUserEmail,
   createUserInfo,
@@ -10,6 +13,7 @@ const {
   createRecoveryEmailToken,
   generateHashedPassword,
   generateToken,
+  getBasicUserInfoFromId,
   getEmailFromToken,
   getHashedPasswordFromId,
   getUserIdFromEmail,
@@ -22,13 +26,15 @@ const {
 
 const signup = async ({ firstName, lastName, email, password }) => {
   // Validate email is not already taken
-  const isUnique = validateEmailIsUnique(email);
+  const isUnique = await validateEmailIsUnique(email);
 
   if (!isUnique) return { code: 403 };
 
-  if (!password || password.length < 8 || password.length > 16) { return { code: 403 } }
+  if (!password || password.length < 8 || password.length > 40) {
+    return { code: 402 };
+  }
 
-  const hashedPassword = await generateHashedPassword(password)
+  const hashedPassword = await generateHashedPassword(password);
 
   const confirmationEmailToken = generateToken();
 
@@ -39,7 +45,7 @@ const signup = async ({ firstName, lastName, email, password }) => {
   await createUserInfo({
     user_id: user.id,
     first_name: firstName,
-    last_name: lastName
+    last_name: lastName,
   });
 
   await createConfirmationEmailToken({
@@ -57,14 +63,17 @@ const signup = async ({ firstName, lastName, email, password }) => {
 };
 
 const login = async ({ email, password }) => {
+  // Validate account with this email exists
+  const user_id = await getUserIdFromEmail(email);
+  if (!user_id) {
+    return { status: 404 };
+  }
+
   // Validate email is confirmed
   const emailIsConfirmed = await validateEmailIsConfirmed(email);
-
   if (!emailIsConfirmed) {
     return { status: 401 };
   }
-
-  const user_id = await getUserIdFromEmail(email);
 
   const hashedPassword = await getHashedPasswordFromId(user_id);
   if (!hashedPassword) {
@@ -72,23 +81,23 @@ const login = async ({ email, password }) => {
   }
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
-
   if (isSame) {
     const token = generateToken();
-
     await knex('user_token').insert({
       user_id: user_id,
       token_id: token,
       expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });
 
-    return { status: 200, token };
+    const userInfo = await getBasicUserInfoFromId(user_id);
+
+    return { status: 200, token, userInfo };
   } else {
     return { status: 403 };
   }
 };
 
-const confirmEmailRoute = async ({ token }) => {
+const confirmEmail = async ({ token }) => {
   const email = await getEmailFromToken({ token });
 
   if (!email) {
@@ -96,10 +105,10 @@ const confirmEmailRoute = async ({ token }) => {
     return 403;
   }
 
-  await confirmEmail({ email });
+  await confirmEmailHelper({ email });
 
   return 200;
-}
+};
 
 const recoveryEmail = async ({ email }) => {
   const user_id = await getUserIdFromEmail({ email });
@@ -110,12 +119,12 @@ const recoveryEmail = async ({ email }) => {
 
   const token = generateToken();
 
-  await createRecoveryEmailToken({ user_id, token })
+  await createRecoveryEmailToken({ user_id, token });
 
   await sendRecoveryEmail({ email, token });
 
   return 200;
-}
+};
 
 const recoverPassword = async ({ token, password }) => {
   const userId = await getUserIdFromRecoveryPasswordToken(token);
@@ -131,7 +140,7 @@ const recoverPassword = async ({ token, password }) => {
   await setRecoveryTokenToUsed(token);
 
   return 200;
-}
+};
 
 const resendConfirmationEmail = async ({ email }) => {
   const isEmailConfirmed = await validateEmailIsConfirmed(email);
@@ -144,16 +153,16 @@ const resendConfirmationEmail = async ({ email }) => {
 
   await createConfirmationEmailToken({ email, token });
 
-  await sendConfirmationEmail({ email, token, });
+  await sendConfirmationEmail({ email, token });
 
   return 200;
-}
+};
 
 module.exports = {
-  confirmEmail: confirmEmailRoute,
+  confirmEmail,
   login,
   recoverPassword,
   recoveryEmail,
   resendConfirmationEmail,
   signup,
-}
+};

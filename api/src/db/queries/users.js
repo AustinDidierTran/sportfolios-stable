@@ -1,23 +1,27 @@
 const bcrypt = require('bcrypt');
 
-
 const {
   createUserEmail,
   generateHashedPassword,
-  getBasicUserInfoFromToken,
-  getEmailsFromAuthToken,
+  getBasicUserInfoFromId,
+  getEmailsFromUserId,
   getHashedPasswordFromId,
-  getUserIdFromToken,
+  getUserIdFromEmail,
   sendNewConfirmationEmailAllIncluded,
   updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,
 } = require('../helpers');
 
-const addEmail = async ({ authToken, email }) => {
-  const user_id = await getUserIdFromToken(authToken);
-
+const addEmail = async (user_id, { email }) => {
   if (!user_id) {
     return 402;
+  }
+
+  // validate there is no user with said email
+  const email_user_id = await getUserIdFromEmail(email);
+
+  if (email_user_id) {
+    return 403;
   }
 
   await createUserEmail({ user_id, email });
@@ -25,16 +29,17 @@ const addEmail = async ({ authToken, email }) => {
   await sendNewConfirmationEmailAllIncluded(email);
 
   return 200;
-}
+};
 
-const changePassword = async ({ authToken, oldPassword, newPassword }) => {
-  const user_id = await getUserIdFromToken(authToken);
-
-  if (!oldPassword || oldPassword.length < 8 || oldPassword.length > 16) {
-    return 404;
-  }
-
-  if (!newPassword || newPassword.length < 8 || newPassword.length > 16) {
+const changePassword = async (
+  user_id,
+  { oldPassword, newPassword },
+) => {
+  if (
+    !newPassword ||
+    newPassword.length < 8 ||
+    newPassword.length > 40
+  ) {
     return 404;
   }
 
@@ -56,15 +61,18 @@ const changePassword = async ({ authToken, oldPassword, newPassword }) => {
 
   const newHashedPassword = await generateHashedPassword(newPassword);
 
-  await updatePasswordFromUserId({ id: user_id, hashedPassword: newHashedPassword })
+  await updatePasswordFromUserId({
+    id: user_id,
+    hashedPassword: newHashedPassword,
+  });
 
   return 200;
-}
+};
 
-
-const changeUserInfo = async ({ authToken, firstName, language, lastName }) => {
-  const user_id = await getUserIdFromToken(authToken);
-
+const changeUserInfo = async (
+  user_id,
+  { firstName, language, lastName },
+) => {
   if (!user_id) {
     return 402;
   }
@@ -72,32 +80,32 @@ const changeUserInfo = async ({ authToken, firstName, language, lastName }) => {
   await updateBasicUserInfoFromUserId({
     user_id,
     firstName,
+    lastName,
     language,
-    lastName
   });
 
   return 200;
-}
+};
 
-const getEmails = async ({ authToken }) => {
-  const emails = await getEmailsFromAuthToken(authToken);
+const getEmails = async userId => {
+  const emails = await getEmailsFromUserId(userId);
 
   if (!emails) {
     return { status: 403 };
   }
 
   return { status: 200, emails };
-}
+};
 
-const userInfo = async ({ authToken }) => {
-  const basicUserInfo = await getBasicUserInfoFromToken(authToken);
+const userInfo = async id => {
+  const basicUserInfo = await getBasicUserInfoFromId(id);
 
   if (!basicUserInfo) {
-    return { status: 403 }
+    return { status: 403 };
   }
   // get basic user info
   return { basicUserInfo, status: 200 };
-}
+};
 
 module.exports = {
   addEmail,
@@ -105,4 +113,4 @@ module.exports = {
   changeUserInfo,
   getEmails,
   userInfo,
-}
+};

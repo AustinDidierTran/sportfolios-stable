@@ -6,10 +6,17 @@ import { useFormik } from 'formik';
 import styles from './LoginCard.module.css';
 
 import { ACTION_ENUM, Store } from '../../../Store';
-import { Button, Card, CardActions, CardContent, Divider, TextField, Typography } from '../../../components/MUI';
-import { API_BASE_URL } from '../../../../../conf';
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  Divider,
+  TextField,
+  Typography,
+} from '../../../components/MUI';
+import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
-
 
 export default function LoginCard() {
   const { dispatch } = useContext(Store);
@@ -19,17 +26,22 @@ export default function LoginCard() {
     const errors = {};
     if (!values.email) {
       errors.email = t('value_is_required');
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+    ) {
       errors.email = t('invalid_email');
     }
 
     if (!values.password) {
       errors.password = t('value_is_required');
-    } else if (values.password.length < 8 || values.password.length > 16) {
+    } else if (
+      values.password.length < 8 ||
+      values.password.length > 16
+    ) {
       errors.password = t('password_length');
     }
     return errors;
-  }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -41,11 +53,8 @@ export default function LoginCard() {
     validateOnBlur: false,
     onSubmit: async values => {
       const { email, password } = values;
-      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
+      const res = await api('/api/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({
           email,
           password,
@@ -54,41 +63,53 @@ export default function LoginCard() {
 
       if (res.status === 401) {
         // Email is not validated
-        await fetch(`${API_BASE_URL}/api/auth/sendConfirmationEmail`, {
+        await api('/api/auth/sendConfirmationEmail', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           body: JSON.stringify({
             email,
           }),
         });
         formik.setFieldError('email', t('email_not_confirmed'));
-      }
-
-      if (res.status === 403) {
+      } else if (res.status === 403) {
         // Password is not good
-        formik.setFieldError('password', t('email_password_no_match'));
-      }
+        formik.setFieldError(
+          'password',
+          t('email_password_no_match'),
+        );
+      } else if (res.status === 404) {
+        formik.setFieldError('email', t('email_not_found'));
+      } else {
+        let { data } = await res.json();
 
-      const { data } = await res.json();
+        if (data) {
+          if (typeof data === 'string') {
+            data = JSON.parse(data);
+          }
 
-      if (data) {
-        const { token } = JSON.parse(data);
-        dispatch({
-          type: ACTION_ENUM.LOGIN,
-          payload: token,
-        });
-        goTo(ROUTES.userSettings);
+          const { token, userInfo } = data;
+
+          dispatch({
+            type: ACTION_ENUM.LOGIN,
+            payload: token,
+          });
+          dispatch({
+            type: ACTION_ENUM.UPDATE_USER_INFO,
+            payload: userInfo,
+          });
+
+          goTo(ROUTES.userSettings);
+        }
       }
-    }
-  })
+    },
+  });
 
   return (
     <Card className={styles.card}>
       <form onSubmit={formik.handleSubmit}>
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">{t('login')}</Typography>
+          <Typography gutterBottom variant="h5" component="h2">
+            {t('login')}
+          </Typography>
           <TextField
             namespace="email"
             formik={formik}
@@ -126,5 +147,5 @@ export default function LoginCard() {
         </CardActions>
       </form>
     </Card>
-  )
+  );
 }

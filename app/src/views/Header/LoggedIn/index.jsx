@@ -1,100 +1,45 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ACTION_ENUM, Store } from '../../../Store';
-
-import { fade, makeStyles } from '@material-ui/core/styles';
+import APP_ROLES from '../../App/appRoles';
 
 import {
   AppBar,
   Badge,
   IconButton,
-  InputBase,
   Menu,
   MenuItem,
   Toolbar,
   Typography,
 } from '../../../components/MUI';
 
+import {
+  NotificationModule,
+  SearchInput,
+} from '../../../components/Custom';
+
 // Material ui icons
 import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import { goTo, ROUTES } from '../../../actions/goTo';
+import { formatRoute, ROUTES } from '../../../actions/goTo';
 
-const useStyles = makeStyles(theme => ({
-  grow: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    display: 'none',
-    [theme.breakpoints.up('sm')]: {
-      display: 'block',
-    },
-  },
-  titleLink: {
-    color: 'white',
-    textDecoration: 'none',
-  },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
-  },
-  searchIcon: {
-    width: theme.spacing(7),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputRoot: {
-    color: 'inherit',
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 7),
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: 200,
-    },
-  },
-  sectionDesktop: {
-    display: 'none',
-    [theme.breakpoints.up('md')]: {
-      display: 'flex',
-    },
-  },
-  sectionMobile: {
-    display: 'flex',
-    [theme.breakpoints.up('md')]: {
-      display: 'none',
-    },
-  },
-}));
+import useStyles from './useStyles';
+import api from '../../../actions/api';
+import { useMemo } from 'react';
 
 export default function LoggedIn() {
   const classes = useStyles();
   const { t } = useTranslation();
-  const { dispatch } = useContext(Store);
+  const {
+    state: { userInfo },
+    dispatch,
+  } = useContext(Store);
+
+  const isAdmin =
+    userInfo && userInfo.app_role === APP_ROLES.APP_ADMIN;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(
@@ -132,9 +77,35 @@ export default function LoggedIn() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={() => goTo(ROUTES.userSettings)}>User Settings</MenuItem>
-      <MenuItem onClick={() => dispatch({ type: ACTION_ENUM.LOGOUT })}>Log out</MenuItem>
+      <Link
+        style={{ color: 'black', textDecoration: 'none' }}
+        to={formatRoute(ROUTES.profile, {
+          id: userInfo && userInfo.user_id,
+        })}
+      >
+        <MenuItem>{t('profile')}</MenuItem>
+      </Link>
+      <Link
+        style={{ color: 'black', textDecoration: 'none' }}
+        to={formatRoute(ROUTES.userSettings)}
+      >
+        <MenuItem>{t('user_settings')}</MenuItem>
+      </Link>
+      {isAdmin ? (
+        <Link
+          style={{ color: 'black', textDecoration: 'none' }}
+          to={formatRoute(ROUTES.adminPanel)}
+        >
+          <MenuItem>{t('admin_panel')}</MenuItem>
+        </Link>
+      ) : (
+        <></>
+      )}
+      <MenuItem
+        onClick={() => dispatch({ type: ACTION_ENUM.LOGOUT })}
+      >
+        {t('logout')}
+      </MenuItem>
     </Menu>
   );
 
@@ -157,7 +128,7 @@ export default function LoggedIn() {
         </IconButton>
         <p>Messages</p>
       </MenuItem> */}
-      {/* <MenuItem>
+      <MenuItem>
         <IconButton
           aria-label="show 11 new notifications"
           color="inherit"
@@ -167,7 +138,7 @@ export default function LoggedIn() {
           </Badge>
         </IconButton>
         <p>Notifications</p>
-      </MenuItem> */}
+      </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label="account of current user"
@@ -200,34 +171,15 @@ export default function LoggedIn() {
               Sportfolios
             </Link>
           </Typography>
-          {/* <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              label={t('search')}
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </div> */}
+          <SearchInput />
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             {/* <IconButton aria-label="show 4 new mails" color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <MailIcon />
               </Badge>
-            </IconButton>
-            <IconButton
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={17} color="secondary">
-                <NotificationsIcon />
-              </Badge>
             </IconButton> */}
+            <NotificationModule />
             <IconButton
               edge="end"
               aria-label="account of current user"

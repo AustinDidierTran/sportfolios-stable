@@ -4,12 +4,12 @@ import { Store } from '../../Store';
 import LoggedIn from './LoggedIn';
 import LoggedOut from './LoggedOut';
 
-export default function PrimarySearchAppBar() {
-  const { state: { authToken } } = useContext(Store);
+export default function Header() {
+  const {
+    state: { authToken },
+  } = useContext(Store);
 
   const isAuthenticated = Boolean(authToken);
 
-  return (
-    isAuthenticated ? <LoggedIn /> : <LoggedOut />
-  );
+  return isAuthenticated ? <LoggedIn /> : <LoggedOut />;
 }

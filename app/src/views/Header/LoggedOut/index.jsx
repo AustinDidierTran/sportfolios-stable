@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     display: 'block',
-    width: '100%'
+    width: '100%',
   },
   titleLink: {
     color: 'white',
@@ -127,8 +127,14 @@ export default function LoggedOut() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={() => goTo(ROUTES.userSettings)}>User Settings</MenuItem>
-      <MenuItem onClick={() => dispatch({ type: ACTION_ENUM.LOGOUT })}>Log out</MenuItem>
+      <MenuItem onClick={() => goTo(ROUTES.userSettings)}>
+        User Settings
+      </MenuItem>
+      <MenuItem
+        onClick={() => dispatch({ type: ACTION_ENUM.LOGOUT })}
+      >
+        Log out
+      </MenuItem>
     </Menu>
   );
 
@@ -186,15 +192,10 @@ export default function LoggedOut() {
               Sportfolios
             </Link>
           </Typography>
-          <div className={classes.search}>
-
-          </div>
+          <div className={classes.search}></div>
           <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-          </div>
-          <div className={classes.sectionMobile}>
-
-          </div>
+          <div className={classes.sectionDesktop}></div>
+          <div className={classes.sectionMobile}></div>
         </Toolbar>
       </AppBar>
     </div>

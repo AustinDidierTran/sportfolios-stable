@@ -1,0 +1,4 @@
+.card {
+  grid-area: users;
+  width: 100%;
+}

@@ -2,52 +2,54 @@ const knex = require('../connection');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 
-const { sendConfirmationEmail } = require('../../server/utils//nodeMailer');
+const {
+  sendConfirmationEmail,
+} = require('../../server/utils//nodeMailer');
 
 const confirmEmail = async ({ email }) => {
   await knex('user_email')
     .update('confirmed_email_at', new Date())
-    .where({ email })
-}
+    .where({ email });
+};
 
-const createUser = async (password) => {
+const createUser = async password => {
   const userArray = await knex('users')
-    .insert({ password }).returning(['id']);
+    .insert({ password })
+    .returning(['id']);
 
   return userArray[0];
-}
+};
 
 const createUserEmail = async ({ user_id, email }) => {
   await knex('user_email').insert({
     user_id,
     email,
-  })
-}
+  });
+};
 
 const createUserInfo = async ({ user_id, first_name, last_name }) => {
   await knex('user_info').insert({
     user_id: user_id,
     first_name,
-    last_name
+    last_name,
   });
-}
+};
 
 const createConfirmationEmailToken = async ({ email, token }) => {
   await knex('confirmation_email_token').insert({
     email,
     token: token,
-    expires_at: new Date(Date.now() + 60 * 60 * 1000)
+    expires_at: new Date(Date.now() + 60 * 60 * 1000),
   });
-}
+};
 
 const createRecoveryEmailToken = async ({ user_id, token }) => {
-  await knex('recovery_email_token')
-    .insert({
-      user_id,
-      token,
-      expires_at: new Date(Date.now() + 60 * 60 * 1000)
-    });
-}
+  await knex('recovery_email_token').insert({
+    user_id,
+    token,
+    expires_at: new Date(Date.now() + 60 * 60 * 1000),
+  });
+};
 
 const generateHashedPassword = async password => {
   const salt = await bcrypt.genSalt();
@@ -55,29 +57,31 @@ const generateHashedPassword = async password => {
   const hashedPassword = await bcrypt.hash(password, salt);
 
   return hashedPassword;
-}
+};
 
 const generateToken = () => {
   return uuid.v1();
-}
+};
 
-const getBasicUserInfoFromToken = async authToken => {
-  const user_id = await getUserIdFromToken(authToken);
-
+const getBasicUserInfoFromId = async user_id => {
   const basicUserInfo = await knex('user_info')
-    .select(['first_name', 'language', 'last_name'])
+    .select('*')
+    .where({ user_id });
+
+  const app_role = await knex('user_app_role')
+    .select(['app_role'])
     .where({ user_id });
 
   if (!basicUserInfo || !basicUserInfo.length) {
     return null;
   }
 
-  return basicUserInfo[0];
-}
+  return app_role.length
+    ? { ...basicUserInfo[0], app_role: app_role[0].app_role }
+    : basicUserInfo[0];
+};
 
-const getEmailsFromAuthToken = async (authToken) => {
-  const user_id = await getUserIdFromToken(authToken);
-
+const getEmailsFromUserId = async user_id => {
   if (!user_id) {
     return null;
   }
@@ -87,7 +91,7 @@ const getEmailsFromAuthToken = async (authToken) => {
     .where({ user_id });
 
   return emails;
-}
+};
 
 const getEmailFromToken = async ({ token }) => {
   const response = await knex('confirmation_email_token')
@@ -99,9 +103,9 @@ const getEmailFromToken = async ({ token }) => {
   }
 
   return response[0].email;
-}
+};
 
-const getHashedPasswordFromId = async (id) => {
+const getHashedPasswordFromId = async id => {
   const response = await knex('users')
     .where({ id })
     .returning(['password']);
@@ -111,9 +115,9 @@ const getHashedPasswordFromId = async (id) => {
   }
 
   return response[0].password;
-}
+};
 
-const getUserIdFromEmail = async (email) => {
+const getUserIdFromEmail = async email => {
   const response = await knex('user_email')
     .select(['user_id'])
     .where({ email });
@@ -123,37 +127,34 @@ const getUserIdFromEmail = async (email) => {
   }
 
   return response[0].user_id;
-}
+};
 
-const getUserIdFromRecoveryPasswordToken = async (token) => {
+const getUserIdFromRecoveryPasswordToken = async token => {
   const response = await knex('recovery_email_token')
     .select(['user_id', 'expires_at', 'used_at'])
     .where({ token });
 
-  if (!response.length || response[0].used_at || Date.now() > response[0].expires_at) {
+  if (
+    !response.length ||
+    response[0].used_at ||
+    Date.now() > response[0].expires_at
+  ) {
     return null;
   }
-}
+};
 
-const getUserIdFromToken = async (token) => {
-  let response = await knex('user_token')
-    .select(['user_id', 'expires_at'])
-    .where({ token_id: token });
-
-  if (!response.length || response[0].expires_at < new Date()) {
-    return null;
-  }
-
-  return response[0].user_id;
-}
-
-const setRecoveryTokenToUsed = async (token) => {
+const setRecoveryTokenToUsed = async token => {
   await knex('recovery_email_token')
     .update({ used_at: new Date() })
     .where({ token });
-}
+};
 
-const updateBasicUserInfoFromUserId = async ({ user_id, firstName, language, lastName }) => {
+const updateBasicUserInfoFromUserId = async ({
+  user_id,
+  firstName,
+  language,
+  lastName,
+}) => {
   const update = {};
 
   if (firstName) {
@@ -171,34 +172,31 @@ const updateBasicUserInfoFromUserId = async ({ user_id, firstName, language, las
   await knex('user_info')
     .update(update)
     .where({ user_id });
-}
+};
 
-const updatePasswordFromUserId = async ({
-  hashedPassword,
-  id,
-}) => {
+const updatePasswordFromUserId = async ({ hashedPassword, id }) => {
   await knex('users')
     .update({ password: hashedPassword })
     .where({ id });
-}
+};
 
-const validateEmailIsConfirmed = async (email) => {
+const validateEmailIsConfirmed = async email => {
   const response = await knex('user_email')
     .where({ email })
     .returning(['confirmed_email_at']);
 
   return response.length && response[0].confirmed_email_at !== null;
-}
+};
 
-const validateEmailIsUnique = async (email) => {
+const validateEmailIsUnique = async email => {
   const users = await knex('user_email')
-    .where('email', email)
+    .where({ email })
     .returning(['id']);
 
   return !users.length;
-}
+};
 
-const sendNewConfirmationEmailAllIncluded = async (email) => {
+const sendNewConfirmationEmailAllIncluded = async email => {
   const confirmationEmailToken = generateToken();
 
   await createConfirmationEmailToken({
@@ -210,7 +208,7 @@ const sendNewConfirmationEmailAllIncluded = async (email) => {
     email,
     token: confirmationEmailToken,
   });
-}
+};
 
 module.exports = {
   confirmEmail,
@@ -221,17 +219,16 @@ module.exports = {
   createRecoveryEmailToken,
   generateHashedPassword,
   generateToken,
-  getBasicUserInfoFromToken,
+  getBasicUserInfoFromId,
   getEmailFromToken,
-  getEmailsFromAuthToken,
+  getEmailsFromUserId,
   getHashedPasswordFromId,
   getUserIdFromEmail,
   getUserIdFromRecoveryPasswordToken,
-  getUserIdFromToken,
   sendNewConfirmationEmailAllIncluded,
   setRecoveryTokenToUsed,
   updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,
   validateEmailIsConfirmed,
   validateEmailIsUnique,
-}
+};

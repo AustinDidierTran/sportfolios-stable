@@ -4,11 +4,13 @@ const queries = require('../../db/queries/associations');
 const router = new Router();
 const BASE_URL = '/api/associations';
 
-router.get(BASE_URL, async (ctx) => {
+router.get(BASE_URL, async ctx => {
   const { includeDeleted } = ctx.query;
 
   try {
-    const associations = await queries.getAllAssociations(includeDeleted);
+    const associations = await queries.getAllAssociations(
+      includeDeleted,
+    );
     ctx.body = {
       status: 'success',
       data: associations,
@@ -17,65 +19,71 @@ router.get(BASE_URL, async (ctx) => {
     ctx.status = 400;
     ctx.body = {
       status: 'error',
-      message: err.message || 'Sorry, an error has occured'
+      message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 
-router.get(`${BASE_URL}/:id`, async (ctx) => {
+router.get(`${BASE_URL}/:id`, async ctx => {
   try {
-    const association = await queries.getSingleAssociation(ctx.params.id);
+    const association = await queries.getSingleAssociation(
+      ctx.params.id,
+    );
 
     if (association.length) {
       ctx.body = {
         status: 'success',
         data: association,
-      }
-
+      };
     } else {
       ctx.status = 404;
       ctx.body = {
         status: 'error',
         message: 'That record does not exist.',
-      }
+      };
     }
   } catch (err) {
     ctx.status = 400;
     ctx.body = {
       status: 'error',
-      message: err.message || 'Sorry, an error has occured'
+      message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 
-router.post(BASE_URL, async (ctx) => {
+router.post(BASE_URL, async ctx => {
   try {
-    const association = await queries.addAssociation(ctx.request.body);
+    const association = await queries.addAssociation(
+      ctx.request.body,
+    );
     if (association.length) {
       ctx.status = 201;
       ctx.body = {
         status: 'success',
-        data: association
+        data: association,
       };
     } else {
       ctx.status = 400;
       ctx.body = {
         status: 'error',
         message: 'Something went wrong',
-      }
+      };
     }
   } catch (err) {
     ctx.status = 400;
     ctx.body = {
       status: 'error',
-      message: err.message || 'Sorry, an error has occured'
+      message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 
-router.put(`${BASE_URL}/:id`, async (ctx) => {
+router.put(`${BASE_URL}/:id`, async ctx => {
   try {
-    const association = await queries.updateAssociation(ctx.params.id, ctx.request.body);
+    const association = await queries.updateAssociation(
+      ctx.params.id,
+      ctx.request.body,
+    );
     if (association.length) {
       ctx.status = 200;
       ctx.body = {
@@ -86,44 +94,51 @@ router.put(`${BASE_URL}/:id`, async (ctx) => {
       ctx.status = 404;
       ctx.body = {
         status: 'error',
-        message: 'That association does not exist.'
+        message: 'That association does not exist.',
       };
     }
   } catch (err) {
     ctx.status = 400;
     ctx.body = {
       status: 'error',
-      message: err.message || 'Sorry, an error has occured'
+      message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 
-router.delete(`${BASE_URL}/:id`, async (ctx) => {
+router.delete(`${BASE_URL}/:id`, async ctx => {
   try {
-    const association = await queries.deleteAssociation(ctx.params.id);
+    const association = await queries.deleteAssociation(
+      ctx.params.id,
+    );
     if (association.length) {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-        data: association
-      }
+        data: association,
+      };
     } else {
       ctx.status = 404;
 
       ctx.body = {
         status: 'error',
-        message: 'That association does not exist.'
-      }
+        message: 'That association does not exist.',
+      };
     }
   } catch (err) {
     ctx.status = 400;
-    ctx.body = { status: 'error', message: err.message || 'Sorry, an error has occured.' }
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured.',
+    };
   }
-})
+});
 
-router.put(`${BASE_URL}/restore/:id`, async (ctx) => {
+router.put(`${BASE_URL}/restore/:id`, async ctx => {
   try {
-    const association = await queries.restoreAssociation(ctx.params.id);
+    const association = await queries.restoreAssociation(
+      ctx.params.id,
+    );
     if (association.length) {
       ctx.status = 200;
       ctx.body = {
@@ -134,16 +149,16 @@ router.put(`${BASE_URL}/restore/:id`, async (ctx) => {
       ctx.status = 404;
       ctx.body = {
         status: 'error',
-        message: 'That association does not exist.'
+        message: 'That association does not exist.',
       };
     }
   } catch (err) {
     ctx.status = 400;
     ctx.body = {
       status: 'error',
-      message: err.message || 'Sorry, an error has occured'
+      message: err.message || 'Sorry, an error has occured',
     };
   }
-})
+});
 
 module.exports = router;

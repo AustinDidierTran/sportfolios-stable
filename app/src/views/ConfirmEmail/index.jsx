@@ -2,21 +2,22 @@ import React from 'react';
 
 import { Container } from '../../components/MUI';
 import styles from './ConfirmEmail.module.css';
-import { API_BASE_URL } from '../../../../conf';
+import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 
 export default function ConfirmEmail(props) {
-  const { match: { params: { token } } } = props;
+  const {
+    match: {
+      params: { token },
+    },
+  } = props;
 
   const confirmEmail = async () => {
-    const res = await fetch(`${API_BASE_URL}/api/auth/confirmEmail`, {
+    const res = await api('/api/auth/confirmEmail', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
       body: JSON.stringify({
-        token
-      })
+        token,
+      }),
     });
 
     if (res.status < 300) {
@@ -26,17 +27,18 @@ export default function ConfirmEmail(props) {
       // Failure...
       goTo(ROUTES.confirmEmailFailure);
     }
-  }
+  };
 
   React.useEffect(() => {
-    confirmEmail()
+    confirmEmail();
   }, []);
 
   return (
     <div className={styles.main}>
       <Container>
         <p>
-          Hey, we are now trying to confirm your email, please wait a moment...
+          Hey, we are now trying to confirm your email, please wait a
+          moment...
         </p>
       </Container>
     </div>
