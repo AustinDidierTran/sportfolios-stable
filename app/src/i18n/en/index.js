@@ -1,5 +1,3 @@
-import Teams from '../../views/Profile/Self/Teams';
-
 export default {
   translations: {
     actions: 'Actions',
@@ -17,7 +15,6 @@ export default {
     emails: 'Emails',
     first_name: 'First Name',
     forgot_password: 'Forgot Password?',
-    founded_in: 'Founded in',
     funding: 'Funding',
     goal: 'Goal',
     have_an_account_signin: 'Already have an account? Sign in!',
@@ -33,7 +30,7 @@ export default {
     organization: 'Organization',
     organizations: 'Organizations',
     password: 'Password',
-    private: 'private',
+    private: 'Private',
     phone_number: 'Phone Number',
     register: 'Register',
     registered: 'Registered',
@@ -47,8 +44,6 @@ export default {
     team: 'Teams',
     teams: 'Teams',
     upcoming_events: 'Upcoming Events',
-    your_a_member: 'You are a member',
-
     // Validation
     confirm_new_password: 'Confirm New Password',
     email_already_used:
