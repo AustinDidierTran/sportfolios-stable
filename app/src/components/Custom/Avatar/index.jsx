@@ -8,8 +8,6 @@ import styles from './Avatar.module.css';
 export default function CustomAvatar(props) {
   const { initials, photoUrl, ...otherProps } = props;
 
-  console.log('props.size', props.size);
-
   let className = clsx(styles.avatar, props.className);
   if (props.size === 'md') {
     className = clsx(styles.avatar, styles.md, props.className);

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './NextEvents.module.css';
+import Register from './Register';
 import { Avatar } from '../../../../components/Custom';
 import {
   Typography,
@@ -51,10 +52,11 @@ export default function NextEvents(props) {
                 </Typography>
               </Container>
               <hr />
-              <Container className={styles.placetime}>
+              <Container className={styles.dateregister}>
                 <Typography className={styles.date} variant="h5">
                   5 Mai
                 </Typography>
+                <Register className={styles.register} />
               </Container>
             </Container>
             <IconButton

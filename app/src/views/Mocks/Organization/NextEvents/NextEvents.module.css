@@ -9,12 +9,14 @@
 
 .event {
   display: grid !important;
-  grid-template-columns: 1fr 9fr 1fr;
+  grid-template-columns: 3fr 20fr 1fr;
   grid-template-areas: ' avatar infos expand' 'description description description';
+  padding: 0px !important;
 }
 
 .infos {
   grid-area: infos;
+  padding: 0px !important;
 }
 
 .avatar {
@@ -35,6 +37,7 @@
   display: grid !important;
   grid-template-columns: 1fr 1fr;
   grid-template-areas: 'name circuit';
+  padding: 0px !important;
 }
 
 .name {
@@ -48,11 +51,12 @@
   justify-self: right;
   align-self: flex-end;
 }
-.placetime {
+.dateregister {
   grid-area: tournoi;
   display: grid !important;
   grid-template-columns: 1fr;
-  grid-template-areas: 'date';
+  grid-template-areas: 'date register';
+  padding: 0px !important;
 }
 
 .place {
@@ -62,4 +66,9 @@
 .date {
   grid-area: date;
   justify-self: left;
+}
+
+.register {
+  grid-area: register;
+  justify-self: right;
 }
