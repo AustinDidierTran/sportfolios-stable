@@ -33,13 +33,49 @@ import AdminRoute from './AdminRoute';
 import PrivateRoute from './PrivateRoute';
 import { ROUTES } from '../../actions/goTo';
 
-const theme = createMuiTheme({
-  palette: {
-    primary: teal,
-  },
-});
-
 export default function App() {
+  const theme = createMuiTheme({
+    palette: {
+      primary: teal,
+    },
+  });
+
+  theme.typography.h3 = {
+    fontFamily: 'Montserrat',
+    fontWeight: 350,
+    fontSize: '1.2rem',
+    '@media (min-width:600px)': {
+      fontSize: '1.5rem',
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: '2.4rem',
+    },
+  };
+
+  theme.typography.h5 = {
+    fontFamily: 'Montserrat',
+    fontWeight: 350,
+    fontSize: '1rem',
+    '@media (min-width:600px)': {
+      fontSize: '1.4rem',
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: '1.8rem',
+    },
+  };
+
+  theme.typography.h6 = {
+    fontFamily: 'Montserrat',
+    fontWeight: 350,
+    fontSize: '1.0rem',
+    '@media (min-width:600px)': {
+      fontSize: '1.3rem',
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: '1.6rem',
+    },
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Router history={history}>

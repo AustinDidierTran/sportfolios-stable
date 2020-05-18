@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './BasicInfos.module.css';
+import BecomeMember from './BecomeMember';
 
 import { Avatar } from '../../../../components/Custom';
 import {
@@ -27,7 +28,10 @@ export default function BasicInfos(props) {
         Fédération Québécoise d'Ultimate
       </Typography>
 
-      <TextField disabled value={t('founded_in') + ' 2003'} />
+      <Typography variant="h5">
+        {t('founded_in') + ' 2003'}
+      </Typography>
+      <BecomeMember />
     </Card>
   );
 }
