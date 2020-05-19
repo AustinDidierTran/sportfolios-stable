@@ -4,6 +4,7 @@ import {
   Container,
   Typography,
   Button,
+  Card,
 } from '../../../components/MUI';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 
@@ -40,47 +41,54 @@ export default function Schedule(props) {
 
   return (
     <Container className={styles.container}>
-      <ButtonGroup className={styles.buttons}>
-        {schedule ? (
-          <Button
-            onClick={scheduleClick}
-            variant="contained"
-            color="primary"
-          >
-            {t('schedule')}
-          </Button>
-        ) : (
-          <Button onClick={scheduleClick} variant="contained">
-            {t('schedule')}
-          </Button>
-        )}
-        {infos ? (
-          <Button
-            onClick={infosClick}
-            variant="contained"
-            color="primary"
-          >
-            Infos
-          </Button>
-        ) : (
-          <Button onClick={infosClick} variant="contained">
-            Infos
-          </Button>
-        )}
-        {ranking ? (
-          <Button
-            onClick={rankingClick}
-            variant="contained"
-            color="primary"
-          >
-            {t('ranking')}
-          </Button>
-        ) : (
-          <Button onClick={rankingClick} variant="contained">
-            {t('ranking')}
-          </Button>
-        )}
-      </ButtonGroup>
+      <Card className={styles.card}>
+        <Container className={styles.titre}>
+          <Typography variant="h3">Frisbee Fest</Typography>
+          <Typography variant="h5">30-31 Mai</Typography>
+          <Typography variant="h5">Trois-Rivière</Typography>
+        </Container>
+        <ButtonGroup className={styles.buttons}>
+          {schedule ? (
+            <Button
+              onClick={scheduleClick}
+              variant="contained"
+              color="primary"
+            >
+              {t('schedule')}
+            </Button>
+          ) : (
+            <Button onClick={scheduleClick} variant="contained">
+              {t('schedule')}
+            </Button>
+          )}
+          {infos ? (
+            <Button
+              onClick={infosClick}
+              variant="contained"
+              color="primary"
+            >
+              Infos
+            </Button>
+          ) : (
+            <Button onClick={infosClick} variant="contained">
+              Infos
+            </Button>
+          )}
+          {ranking ? (
+            <Button
+              onClick={rankingClick}
+              variant="contained"
+              color="primary"
+            >
+              {t('ranking')}
+            </Button>
+          ) : (
+            <Button onClick={rankingClick} variant="contained">
+              {t('ranking')}
+            </Button>
+          )}
+        </ButtonGroup>
+      </Card>
       {schedule ? <TeamSchedule /> : <> </>}
       {infos ? <Infos /> : <> </>}
       {ranking ? <Ranking /> : <> </>}
