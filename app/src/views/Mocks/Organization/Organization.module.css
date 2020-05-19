@@ -1,7 +1,11 @@
 .container {
   display: grid !important;
   grid-template-columns: 1fr;
-  grid-template-areas: 'basicInfos' 'nextEvents';
+  grid-template-areas: 'basicInfos' 'buttons' 'nextEvents';
   row-gap: 32px;
   column-gap: 32px;
+}
+
+.buttons {
+  justify-self: center;
 }
