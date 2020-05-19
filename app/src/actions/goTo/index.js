@@ -10,6 +10,7 @@ export const ROUTES = {
   login: '/login',
   mockOrganization: '/mock/Organization',
   mockSelfProfile: '/mock/selfProfile',
+  mockSchedule: '/mock/Schedule',
   profile: '/profile/:id',
   recoveryEmail: '/recoveryEmail/:token',
   search: '/search/:query',

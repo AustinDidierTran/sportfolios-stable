@@ -13,7 +13,7 @@ import BasicInfos from './BasicInfos';
 import NextEvents from './NextEvents';
 import Shop from './Shop';
 
-export default function selfProfile(props) {
+export default function Organization(props) {
   const { t } = useTranslation();
 
   const [general, setGeneral] = useState(true);
