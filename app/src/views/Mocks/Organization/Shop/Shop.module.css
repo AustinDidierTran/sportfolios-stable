@@ -1,3 +1,41 @@
-.buttons {
-  justify-self: center;
+.infos {
+  display: grid !important;
+  grid-template-columns: 7fr 1fr;
+  grid-template-areas: 'name price' 'description description' 'cart cart';
+  padding-bottom: 0px !important;
+}
+
+.name {
+  grid-area: name;
+}
+
+.price {
+  grid-area: price;
+}
+
+.description {
+  grid-area: description;
+}
+.cart {
+  grid-area: cart;
+  margin: 16px !important;
+}
+
+.items {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  column-gap: 16px;
+  row-gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .items {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 992px) {
+  .items {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }

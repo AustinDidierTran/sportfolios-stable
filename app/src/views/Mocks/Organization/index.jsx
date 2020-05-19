@@ -9,6 +9,7 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 import styles from './Organization.module.css';
 import { useTranslation } from 'react-i18next';
+import BasicInfos from './BasicInfos';
 import NextEvents from './NextEvents';
 import Shop from './Shop';
 
