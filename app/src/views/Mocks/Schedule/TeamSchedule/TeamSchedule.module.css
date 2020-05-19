@@ -1,7 +1,47 @@
-.card {
-  width: 100%;
+.container {
+  padding: 0px !important;
 }
 
 .select {
   width: 100%;
+}
+
+.game {
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.scores {
+  display: grid !important;
+  grid-template-columns: 1fr 6fr 1fr;
+  grid-template-areas: 'leftTeamScore matchup rightTeamScore';
+}
+.leftTeamScore {
+  grid-area: leftTeamScore;
+}
+
+.rightTeamScore {
+  grid-area: rightTeamScore;
+}
+
+.matchup {
+  grid-area: matchup;
+}
+
+.infos {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: 'time type field';
+}
+
+.time {
+  grid-area: time;
+}
+
+.field {
+  grid-area: field;
+}
+
+.type {
+  grid-area: type;
 }
