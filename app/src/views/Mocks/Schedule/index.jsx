@@ -6,7 +6,9 @@ import {
   Button,
   Card,
 } from '../../../components/MUI';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 import styles from './Schedule.module.css';
 import TeamSchedule from './TeamSchedule';
@@ -16,6 +18,19 @@ import { useTranslation } from 'react-i18next';
 
 export default function Schedule(props) {
   const { t } = useTranslation();
+
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+    if (value === 1) {
+      scheduleClick();
+    } else if (value === 2) {
+      infosClick();
+    } else {
+      rankingClick();
+    }
+  };
 
   const [schedule, setSchedule] = useState(true);
 
@@ -47,47 +62,20 @@ export default function Schedule(props) {
           <Typography variant="h5">30-31 Mai</Typography>
           <Typography variant="h5">Trois-Rivière</Typography>
         </Container>
-        <ButtonGroup className={styles.buttons}>
-          {schedule ? (
-            <Button
-              onClick={scheduleClick}
-              variant="contained"
-              color="primary"
-            >
-              {t('schedule')}
-            </Button>
-          ) : (
-            <Button onClick={scheduleClick} variant="contained">
-              {t('schedule')}
-            </Button>
-          )}
-          {infos ? (
-            <Button
-              onClick={infosClick}
-              variant="contained"
-              color="primary"
-            >
-              Infos
-            </Button>
-          ) : (
-            <Button onClick={infosClick} variant="contained">
-              Infos
-            </Button>
-          )}
-          {ranking ? (
-            <Button
-              onClick={rankingClick}
-              variant="contained"
-              color="primary"
-            >
-              {t('ranking')}
-            </Button>
-          ) : (
-            <Button onClick={rankingClick} variant="contained">
-              {t('ranking')}
-            </Button>
-          )}
-        </ButtonGroup>
+        <Paper square>
+          <Tabs
+            value={value}
+            indicatorColor="primary"
+            textColor="primary"
+            className={styles.tabs}
+            onChange={handleChange}
+            centered
+          >
+            <Tab label={t('schedule')} onClick={scheduleClick} />
+            <Tab label="Infos" onClick={infosClick} />
+            <Tab label={t('ranking')} onClick={rankingClick} />
+          </Tabs>
+        </Paper>
       </Card>
       {schedule ? <TeamSchedule /> : <> </>}
       {infos ? <Infos /> : <> </>}

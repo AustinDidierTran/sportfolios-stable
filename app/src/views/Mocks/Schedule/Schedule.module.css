@@ -3,13 +3,9 @@
   padding: 16px;
 }
 .card {
-  text-align: center;
+  text-align: center !important;
   margin-bottom: 16px;
 }
 .titre {
   padding: 16px;
-}
-
-.buttons {
-  padding-bottom: 16px;
 }
