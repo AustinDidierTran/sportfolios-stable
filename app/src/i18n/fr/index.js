@@ -36,6 +36,8 @@ export default {
     phone_number: 'Numéro de téléphone',
     register: "S'inscrire",
     registered: 'Inscrit',
+    results: 'Résultats',
+    schedule: 'Horaire',
     score_type: 'Type de pointage',
     search: 'Rechercher...',
     save_basic_info: 'Sauvegarder informations',

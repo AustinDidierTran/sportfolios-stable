@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import styles from './Register.module.css';
+import styles from './Results.module.css';
 
 import { Container, Button } from '../../../../../components/MUI';
 
-export default function Register(props) {
+export default function Results(props) {
   const { t } = useTranslation();
 
   return (
@@ -15,7 +15,7 @@ export default function Register(props) {
         color="primary"
         className={styles.button}
       >
-        {t('register')}
+        {t('results')}
       </Button>
     </Container>
   );

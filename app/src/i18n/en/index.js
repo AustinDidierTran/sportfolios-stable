@@ -37,6 +37,8 @@ export default {
     phone_number: 'Phone Number',
     register: 'Register',
     registered: 'Registered',
+    results: 'Results',
+    schedule: 'Schedule',
     search: 'Search...',
     save_basic_info: 'Save new basic infos',
     score_type: 'Score Type',

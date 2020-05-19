@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './NextEvents.module.css';
 import Register from './Register';
+import Results from './Results';
+import Schedule from './Schedule';
 import { Avatar } from '../../../../components/Custom';
 import {
   Typography,
@@ -14,7 +16,6 @@ import {
   Container,
   Divider,
 } from '../../../../components/MUI';
-import { Divider } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import CardContent from '@material-ui/core/CardContent';
 import Collapse from '@material-ui/core/Collapse';
@@ -58,7 +59,7 @@ export default function NextEvents(props) {
                 <Typography className={styles.date} variant="h5">
                   5 Mai
                 </Typography>
-                <Register className={styles.register} />
+                <Results className={styles.button} />
               </Container>
             </Container>
             <IconButton
@@ -77,16 +78,12 @@ export default function NextEvents(props) {
               unmountOnExit
               className={styles.description}
             >
-              <Divider className={styles.divider} />
               <CardContent>
                 <Divider />
                 <Typography className={styles.place} variant="h6">
                   3791, Chemin Queen Mary, Montréal, QC H3V 1A8
                 </Typography>
                 <br />
-<<<<<<< Updated upstream
-                <Typography paragraph variant="h6">
-=======
                 <Typography
                   paragraph
                   variant="h6"
@@ -129,7 +126,7 @@ export default function NextEvents(props) {
                 <Typography className={styles.date} variant="h5">
                   30 Mai
                 </Typography>
-                <Register className={styles.register} />
+                <Schedule className={styles.button} />
               </Container>
             </Container>
             <IconButton
@@ -196,7 +193,7 @@ export default function NextEvents(props) {
                 <Typography className={styles.date} variant="h5">
                   20 Juin
                 </Typography>
-                <Register className={styles.register} />
+                <Register className={styles.button} />
               </Container>
             </Container>
             <IconButton
@@ -226,7 +223,6 @@ export default function NextEvents(props) {
                   variant="h6"
                   color="textSecondary"
                 >
->>>>>>> Stashed changes
                   Lorem ipsum dolor sit amet, consectetur adipiscing
                   elit, sed do eiusmod tempor incididunt ut labore et
                   dolore magna aliqua. Ut enim ad minim veniam, quis
