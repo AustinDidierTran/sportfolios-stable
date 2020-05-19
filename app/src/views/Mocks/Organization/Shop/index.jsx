@@ -3,19 +3,14 @@ import React, { useState } from 'react';
 import styles from './Shop.module.css';
 
 import { Typography, Card } from '../../../../components/MUI';
-import { Button, Icon } from '../../../../components/Custom';
+import { Button } from '../../../../components/Custom';
 
 import { makeStyles } from '@material-ui/core/styles';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { Container } from '@material-ui/core';
 
 const useStyles = makeStyles({
-  root: {
-    maxWidth: 345,
-    margin: 'auto',
-  },
   media: {
     height: 200,
   },

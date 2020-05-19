@@ -16,6 +16,7 @@
 .description {
   grid-area: description;
 }
+
 .cart {
   grid-area: cart;
   margin: 16px !important;
@@ -26,6 +27,7 @@
   grid-template-columns: 1fr;
   column-gap: 16px;
   row-gap: 16px;
+  padding: 0px !important;
 }
 
 @media (min-width: 768px) {
