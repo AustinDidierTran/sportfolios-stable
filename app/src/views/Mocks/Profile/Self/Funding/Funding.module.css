@@ -13,6 +13,8 @@
 
 .donate {
   grid-area: donate;
+  height: 25px;
+  width: 100%;
 }
 
 .goal {
@@ -31,14 +33,22 @@
 .container {
   display: grid !important;
   grid-template-columns: 1fr 1fr;
-  grid-template-areas: 'progression progression' 'bar bar' 'funded goal' 'donate donate';
+  grid-template-areas: 'progression progression' 'bar bar' 'funded goal' 'donate donate' 'expand expand';
   row-gap: 4px;
+}
+
+.subtitle {
+  padding-bottom: 16px;
+}
+
+.title {
+  padding: 8px;
 }
 
 @media (min-width: 992px) {
   .container {
-    grid-template-columns: 1fr 2fr 1fr 1fr;
-    grid-template-areas: 'funded progression progression goal' 'bar bar bar donate';
+    grid-template-columns: 4fr 8fr 4fr 1fr;
+    grid-template-areas: 'funded progression  goal .' 'bar bar donate expand';
     column-gap: 32px;
     row-gap: 0px;
   }
