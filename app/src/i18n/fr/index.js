@@ -1,21 +1,19 @@
 export default {
   translations: {
     actions: 'Actions',
-    address: 'Adresse',
+    adress: 'Addresse',
     app_role: 'App Role',
-    athlete_history: "Historique de l'Athlète",
+    athlete_history: "Historique de l'athlète",
     basic_info: 'Information générales',
-    become_member: 'Devenir Membre',
-    birth_date_format: '{{date, LL}} ({{age}} ans)',
+    become_member: 'Devenir membre',
     birth_date: 'Date de naissance',
+    birth_date_format: '{{date, LL}} ({{age}} ans)',
     change_password: 'Changer votre mot de passe',
-    competitive_member: 'Membre compétitif',
-    donate: 'Faire un don',
+    competitive_member: 'Membre Compétitif',
     email: 'Courriel',
     emails: 'Courriels',
     first_name: 'Prénom',
     forgot_password: 'Mot de passe oublié?',
-    founded_in: 'Fondée en',
     funding: 'Financement',
     goal: 'Objectif',
     have_an_account_signin:
@@ -25,17 +23,16 @@ export default {
     logout: 'Déconnexion',
     name: 'Nom',
     new_email: 'Nouveau courriel',
-    new_organization: 'Nouvelle organisation',
-    new_team: 'Nouvelle équipe',
+    new_organization: 'Nouvelle Organisation',
+    new_team: 'Nouvelle Équipe',
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
     notifications: 'Notifications',
     organization: 'Organisation',
     organizations: 'Organisations',
     password: 'Mot de passe',
-    private: 'privée',
+    private: 'Privée',
     phone_number: 'Numéro de téléphone',
     register: "S'inscrire",
-    registered: 'Inscrit',
     results: 'Résultats',
     schedule: 'Horaire',
     score_type: 'Type de pointage',
@@ -50,8 +47,6 @@ export default {
     team: 'Équipe',
     teams: 'Équipes',
     upcoming_events: 'Événements',
-    your_a_member: 'Vous êtes membre',
-
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',
     email_already_used:
@@ -73,9 +68,6 @@ export default {
       "Le token n'est plus valide, svp en demander un autre.",
     value_is_required: 'Une valeur est obligatoire.',
     wrong_password: 'Mauvais mot de passe. Veuillez réessayer.',
-    invalid_date:
-      'Format invalide. Le format devrait suivre: aaaa-mm-jj',
-    date_in_future: 'La date entrée est dans le futur',
     // DESCRIPTION CARD
     description_card_title:
       'Améliorer votre expérience de sport amateur',
@@ -105,7 +97,6 @@ export default {
     users_found_query:
       'Utilisateurs trouvés avec la requête {{query}}',
     no_users_found: 'Aucun utilisateur trouvé',
-    no_following: "Vous n'êtes abonné à personne",
     follow: "S'abonner",
     following: 'Abonné(e)',
     follow_notification_text: "{{follower}} s'est abonné à vous.",

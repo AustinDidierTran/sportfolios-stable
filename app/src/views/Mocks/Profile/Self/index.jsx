@@ -17,13 +17,6 @@ export default function selfProfile(props) {
   return (
     <div className={styles.main}>
       <Container className={styles.container}>
-        <Typography
-          variant="h3"
-          className={styles.title}
-          style={{ marginTop: 24 }}
-        >
-          {t('Profil')}
-        </Typography>
         <BasicInfos />
         <Funding />
         <Organizations />

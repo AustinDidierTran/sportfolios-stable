@@ -3,12 +3,13 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './BasicInfos.module.css';
 import BecomeMember from './BecomeMember';
+import Donate from './Donate';
 
 import { Avatar } from '../../../../components/Custom';
 import {
   Card,
   Typography,
-  TextField,
+  Container,
 } from '../../../../components/MUI';
 
 export default function BasicInfos(props) {
@@ -24,14 +25,13 @@ export default function BasicInfos(props) {
         }
         size="lg"
       />
-      <Typography variant="h3">
+      <Typography variant="h3" className={styles.titre}>
         Fédération Québécoise d'Ultimate
       </Typography>
-
-      <Typography variant="h5">
-        {t('founded_in') + ' 2003'}
-      </Typography>
-      <BecomeMember />
+      <Container className={styles.container}>
+        <BecomeMember className={styles.member} />
+        <Donate className={styles.donate} />
+      </Container>
     </Card>
   );
 }

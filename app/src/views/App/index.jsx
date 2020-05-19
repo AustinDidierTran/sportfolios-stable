@@ -43,9 +43,9 @@ export default function App() {
   theme.typography.h3 = {
     fontFamily: 'Montserrat',
     fontWeight: 350,
-    fontSize: '1.2rem',
+    fontSize: '1.4rem',
     '@media (min-width:600px)': {
-      fontSize: '1.5rem',
+      fontSize: '1.8rem',
     },
     [theme.breakpoints.up('md')]: {
       fontSize: '2.4rem',
