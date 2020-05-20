@@ -31,6 +31,27 @@ export default function NextEvents(props) {
       date: '5 Mai',
       circuit: 'CQU5',
       place: '3791, Chemin Queen Mary, Montréal, QC H3V 1A8',
+      type: 'past',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    },
+    {
+      name: 'FrisbeeFest',
+      initial: 'FF',
+      date: '30 Mai',
+      circuit: 'CQU7',
+      place: 'Trois-Rivières',
+      type: 'soon',
+      description:
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    },
+    {
+      name: 'Jazz',
+      initial: 'JZ',
+      date: '30 Juin',
+      circuit: 'CQU7',
+      place: 'Montréal',
+      type: 'longTime',
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
     },
@@ -52,7 +73,7 @@ export default function NextEvents(props) {
             <Container className={styles.event}>
               <ListItemIcon>
                 <Avatar
-                  initials={'P'}
+                  initials={event.initial}
                   size="md"
                   className={styles.avatar}
                 />
@@ -71,7 +92,13 @@ export default function NextEvents(props) {
                   <Typography className={styles.date} variant="h5">
                     {event.date}
                   </Typography>
-                  <Register className={styles.register} />
+                  {event.type == 'longTime' ? (
+                    <Register />
+                  ) : event.type == 'soon' ? (
+                    <Schedule />
+                  ) : (
+                    <Results />
+                  )}
                 </Container>
               </Container>
             </Container>

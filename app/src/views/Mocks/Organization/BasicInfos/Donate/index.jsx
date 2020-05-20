@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './Donate.module.css';
 
-import { Container, Button } from '../../../../../components/MUI';
+import { IconButton } from '../../../../../components/MUI';
+import { Button } from '../../../../../components/Custom';
 
 export default function BecomeMember(props) {
   const { t } = useTranslation();
@@ -18,6 +19,7 @@ export default function BecomeMember(props) {
       color="primary"
       onClick={handleClick}
       className={styles.button}
+      endIcon="AttachMoney"
     >
       {t('donate')}
     </Button>

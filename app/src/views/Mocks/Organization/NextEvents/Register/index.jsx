@@ -11,7 +11,7 @@ export default function Register(props) {
   const { t } = useTranslation();
 
   const handleClick = () => {
-    goTo(ROUTES.mockEvent, { openTab: 'register' });
+    goTo(ROUTES.mockEvent, { openTab: TABS_ENUM.REGISTER });
   };
 
   return (
