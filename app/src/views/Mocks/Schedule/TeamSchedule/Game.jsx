@@ -1,58 +1,72 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { Card, Typography } from '../../../../components/MUI';
-import styles from './TeamSchedule.module.css';
+import styles from './Game.module.css';
+import { Container } from '@material-ui/core';
 
 export default function Game(props) {
   const { game } = props;
 
-  return game ? (
-    <Card className={styles.game}>
-      <div className={styles.infos}>
-        <Typography
-          className={styles.time}
-          variant="h6"
-          color="textSecondary"
-        >
-          {game.time}
-        </Typography>
-        <Typography
-          className={styles.type}
-          variant="h6"
-          color="textSecondary"
-        >
-          {game.type}
-        </Typography>
-        <Typography
-          className={styles.field}
-          variant="h6"
-          color="textSecondary"
-        >
-          {game.field}
-        </Typography>
-      </div>
-      <hr />
-      <div className={styles.scores}>
-        <Typography className={styles.leftTeamScore} variant="h5">
-          {game.leftTeamScore}
-        </Typography>
-        <Typography className={styles.rightTeamScore} variant="h5">
-          {game.rightTeamScore}
-        </Typography>
-        <Typography className={styles.matchup} variant="h3">
-          {game.matchup}
-        </Typography>
-      </div>
-    </Card>
-  ) : (
-    <Card className={styles.game}>
+  const MIN_WIDTH = 768;
+
+  const time = useMemo(
+    () =>
+      game
+        ? window.innerWidth < MIN_WIDTH
+          ? game.startTime
+          : `${game.startTime} - ${game.endTime}`
+        : null,
+    [window.innerWidth],
+  );
+
+  return game.type == 'game' ? (
+    <Container className={styles.game}>
       <Typography
-        className={styles.matchup}
+        className={styles.time}
+        variant="h6"
+        color="textSecondary"
+      >
+        {time}
+      </Typography>
+      <Typography className={styles.leftTeamScore} variant="h5">
+        {game.leftTeamScore}
+      </Typography>
+      <Typography className={styles.leftTeam} variant="h3">
+        {game.leftTeam}
+      </Typography>
+      <Typography className={styles.VS} variant="h3">
+        VS
+      </Typography>
+      <Typography className={styles.rightTeam} variant="h3">
+        {game.rightTeam}
+      </Typography>
+      <Typography className={styles.rightTeamScore} variant="h5">
+        {game.rightTeamScore}
+      </Typography>
+      <Typography
+        className={styles.field}
+        variant="h6"
+        color="textSecondary"
+      >
+        {game.field}
+      </Typography>
+    </Container>
+  ) : (
+    <Container className={styles.bail}>
+      <Typography
+        className={styles.time}
+        variant="h6"
+        color="textSecondary"
+      >
+        {time}
+      </Typography>
+      <Typography
+        className={styles.bailtxt}
         variant="h6"
         color="secondary"
       >
         BAIL
       </Typography>
-    </Card>
+    </Container>
   );
 }

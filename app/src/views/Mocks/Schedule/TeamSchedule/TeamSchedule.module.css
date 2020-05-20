@@ -3,45 +3,20 @@
 }
 
 .select {
-  width: 100%;
+  width: 40%;
+  padding: 8px !important;
 }
 
-.game {
+.phase {
+  width: 100%;
   margin-top: 16px;
   margin-bottom: 16px;
 }
 
-.scores {
-  display: grid !important;
-  grid-template-columns: 1fr 6fr 1fr;
-  grid-template-areas: 'leftTeamScore matchup rightTeamScore';
-}
-.leftTeamScore {
-  grid-area: leftTeamScore;
+.divider {
+  margin-top: 0px !important;
 }
 
-.rightTeamScore {
-  grid-area: rightTeamScore;
-}
-
-.matchup {
-  grid-area: matchup;
-}
-
-.infos {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-areas: 'time type field';
-}
-
-.time {
-  grid-area: time;
-}
-
-.field {
-  grid-area: field;
-}
-
-.type {
-  grid-area: type;
+.name {
+  padding: 8px !important;
 }

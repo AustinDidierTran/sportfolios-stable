@@ -60,7 +60,7 @@ export default function Schedule(props) {
         <Container className={styles.titre}>
           <Typography variant="h3">Frisbee Fest</Typography>
           <Typography variant="h5">30-31 Mai</Typography>
-          <Typography variant="h5">Trois-Rivière</Typography>
+          <Typography variant="h5">Trois-Rivières</Typography>
         </Container>
         <Paper square>
           <Tabs
