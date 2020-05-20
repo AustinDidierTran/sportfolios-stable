@@ -36,6 +36,7 @@ export default {
     register: "S'inscrire",
     registered: 'inscrit',
     results: 'Résultats',
+    registration: 'Inscription',
     schedule: 'Horaire',
     score_type: 'Type de pointage',
     search: 'Rechercher...',

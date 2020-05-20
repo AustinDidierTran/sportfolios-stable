@@ -36,6 +36,7 @@ export default {
     register: 'Register',
     registered: 'Registered',
     results: 'Results',
+    registration: 'Registration',
     schedule: 'Schedule',
     search: 'Search...',
     save_basic_info: 'Save new basic infos',
