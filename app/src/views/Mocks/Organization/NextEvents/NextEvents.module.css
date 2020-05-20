@@ -9,9 +9,9 @@
 
 .event {
   display: grid !important;
-  grid-template-columns: 3fr 20fr 1fr;
-  grid-template-areas: ' avatar infos expand' 'description description description';
-  padding: 0px !important;
+  grid-template-columns: 3fr 20fr;
+  grid-template-areas: ' avatar infos';
+  padding: 16px !important;
 }
 
 .infos {
@@ -22,15 +22,6 @@
 
 .avatar {
   grid-area: avatar;
-}
-
-.expand {
-  grid-area: expand;
-  justify-self: end;
-}
-
-.description {
-  grid-area: description;
 }
 
 .tournoi {
@@ -60,10 +51,6 @@
   padding: 0px !important;
 }
 
-.place {
-  grid-area: place;
-  justify-self: right;
-}
 .date {
   grid-area: date;
   justify-self: left;

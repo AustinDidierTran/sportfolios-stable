@@ -13,7 +13,7 @@ import {
   Container,
 } from '../../../../components/MUI';
 
-import styles from './TeamSchedule.module.css';
+import styles from './Schedule.module.css';
 import { useTranslation } from 'react-i18next';
 
 export default function TeamSchedule(props) {
