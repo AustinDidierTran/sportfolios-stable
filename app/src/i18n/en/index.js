@@ -35,6 +35,7 @@ export default {
     ranking: 'Ranking',
     register: 'Register',
     registered: 'Registered',
+    results: 'Results',
     schedule: 'Schedule',
     search: 'Search...',
     save_basic_info: 'Save new basic infos',

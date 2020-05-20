@@ -35,6 +35,7 @@ export default {
     ranking: 'Classement',
     register: "S'inscrire",
     registered: 'inscrit',
+    results: 'Résultats',
     schedule: 'Horaire',
     score_type: 'Type de pointage',
     search: 'Rechercher...',
