@@ -32,6 +32,7 @@ export default {
     password: 'Password',
     private: 'Private',
     phone_number: 'Phone Number',
+    ranking: 'Ranking',
     register: 'Register',
     registered: 'Registered',
     results: 'Results',

@@ -26,6 +26,7 @@ import UserSettings from '../UserSettings';
 // Mocks
 import MockSelfProfile from '../Mocks/Profile/Self';
 import MockOrganization from '../Mocks/Organization';
+import MockSchedule from '../Mocks/Schedule';
 
 import styles from './App.module.css';
 import history from '../../stores/history';
@@ -118,6 +119,11 @@ export default function App() {
                 exact
                 path={ROUTES.mockOrganization}
                 component={MockOrganization}
+              />
+              <Route
+                exact
+                path={ROUTES.mockSchedule}
+                component={MockSchedule}
               />
               <Route exact path={ROUTES.login} component={Login} />
               <Route exact path={ROUTES.signup} component={Signup} />
