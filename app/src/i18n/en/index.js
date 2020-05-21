@@ -1,5 +1,6 @@
 export default {
   translations: {
+    about: 'About',
     actions: 'Actions',
     adress: 'Address',
     app_role: 'App Role',
@@ -17,6 +18,7 @@ export default {
     first_name: 'First Name',
     forgot_password: 'Forgot Password?',
     funding: 'Funding',
+    general: 'General',
     general_informations: 'General informations',
     goal: 'Goal',
     have_an_account_signin: 'Already have an account? Sign in!',
@@ -48,6 +50,7 @@ export default {
     send_new_confirmation_email: 'Send new confirmation email',
     send_password_recovery_email: 'Send password recovery email',
     signup: 'Signup',
+    shop: 'Shop',
     team: 'Teams',
     teams: 'Teams',
     upcoming_events: 'Upcoming Events',

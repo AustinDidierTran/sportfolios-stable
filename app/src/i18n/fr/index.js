@@ -1,5 +1,6 @@
 export default {
   translations: {
+    about: 'À propos',
     actions: 'Actions',
     adress: 'Addresse',
     app_role: 'App Role',
@@ -16,6 +17,7 @@ export default {
     first_name: 'Prénom',
     forgot_password: 'Mot de passe oublié?',
     funding: 'Financement',
+    general: 'Général',
     general_informations: 'Informations générales',
     goal: 'Objectif',
     have_an_account_signin:
@@ -50,6 +52,7 @@ export default {
     send_password_recovery_email:
       'Envoyer le courriel de réinitialisation de mot de passe',
     signup: "S'enregistrer",
+    shop: 'Boutique',
     team: 'Équipe',
     teams: 'Équipes',
     upcoming_events: 'Événements',

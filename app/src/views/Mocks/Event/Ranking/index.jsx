@@ -66,16 +66,17 @@ export default function Ranking(props) {
 
   return (
     <Card className={styles.bigCard}>
-      <Typography variant="h3" className={styles.titre}>
+      <Typography variant="h3" className={styles.title}>
         {' '}
         {t('pre_ranking')}{' '}
       </Typography>
+      <hr className={styles.divider}></hr>
       {categories.map(categorie => (
-        <Container>
-          <Typography variant="h5">{categorie.name}</Typography>
+        <Container className={styles.container}>
+          <Typography variant="h4">{categorie.name}</Typography>
           {categorie.teams.map(team => (
             <List className={styles.list}>
-              <ListItem className={styles.container}>
+              <ListItem className={styles.listItem}>
                 <Typography
                   color="primary"
                   variant="h6"
