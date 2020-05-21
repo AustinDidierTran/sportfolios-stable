@@ -33,6 +33,7 @@ export default {
     organizations: 'Organisations',
     password: 'Mot de passe',
     private: 'Privée',
+    pre_ranking: 'Préclassement',
     phone_number: 'Numéro de téléphone',
     ranking: 'Classement',
     register: "S'inscrire",

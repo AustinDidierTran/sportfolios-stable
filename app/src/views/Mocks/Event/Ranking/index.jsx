@@ -1,16 +1,103 @@
 import React, { useState } from 'react';
 
 import {
-  Container,
+  TextField,
+  Card,
+  List,
+  ListItem,
   Typography,
-  Button,
+  Container,
 } from '../../../../components/MUI';
-
+import { Avatar } from '../../../../components/Custom';
+import CardHeader from '@material-ui/core/CardHeader';
 import styles from './Ranking.module.css';
 import { useTranslation } from 'react-i18next';
 
 export default function Ranking(props) {
   const { t } = useTranslation();
 
-  return <h1>Ranking</h1>;
+  const categories = [
+    {
+      name: 'Élite',
+      teams: [
+        {
+          name: "Sherbrooke Gentlemen's Club",
+          initials: 'SGC',
+          photoUrl: null,
+          position: 3,
+        },
+        { name: 'Manic', initials: 'M', photoUrl: null, position: 2 },
+        {
+          name: 'Quake',
+          initials: 'Qk',
+          photoUrl: null,
+          position: 1,
+        },
+      ],
+    },
+    {
+      name: 'Compétitif',
+      teams: [
+        {
+          name: 'Magma',
+          initials: 'Mg',
+          photoUrl: null,
+          position: 3,
+        },
+        {
+          name: 'Inferno',
+          initials: 'If',
+          photoUrl: null,
+          position: 2,
+        },
+        {
+          name: 'Mesa',
+          initials: 'Ms',
+          photoUrl: null,
+          position: 1,
+        },
+      ],
+    },
+  ];
+
+  categories.map(categorie =>
+    categorie.teams.sort((a, b) => a.position - b.position),
+  );
+
+  return (
+    <Card className={styles.bigCard}>
+      <Typography variant="h3" className={styles.titre}>
+        {' '}
+        {t('pre_ranking')}{' '}
+      </Typography>
+      {categories.map(categorie => (
+        <Container>
+          <Typography variant="h5">{categorie.name}</Typography>
+          {categorie.teams.map(team => (
+            <List className={styles.list}>
+              <ListItem className={styles.container}>
+                <Typography
+                  color="primary"
+                  variant="h6"
+                  className={styles.position}
+                >
+                  {team.position}
+                </Typography>
+                <Avatar
+                  className={styles.avatar}
+                  initials={team.initials}
+                  photoUrl={team.photoUrl}
+                  size="sm"
+                />
+                <Typography variant="h6" className={styles.name}>
+                  {team.name}
+                </Typography>
+                <hr className={styles.divider}></hr>
+              </ListItem>
+            </List>
+          ))}
+        </Container>
+      ))}
+    </Card>
+  );
 }

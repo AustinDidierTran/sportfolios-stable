@@ -5,6 +5,8 @@ import {
   Typography,
   Button,
   Card,
+  List,
+  ListItem,
 } from '../../../../components/MUI';
 
 import styles from './Infos.module.css';
@@ -23,7 +25,7 @@ export default function Infos(props) {
     lieu: 'Parc Olympic',
     adress: '3791, Chemin Queen Mary',
     city: 'Montréal',
-    province: 'QC',
+    nce: 'QC',
     postalCode: 'H3V 1A8',
     sections: [
       {
@@ -32,12 +34,17 @@ export default function Infos(props) {
       },
       {
         title: 'Alignement recommandé',
-        texte: '21 joueurs par équipe',
+        texte: "L'Alignement recommandé est de 21 joueurs par équipe",
       },
       {
         title: 'Règlement du tournoi',
         texte:
           'Le tournoi utiliseras la 11eme édition des règlements de la WFDF',
+      },
+      {
+        title: 'Lorem Ipsum',
+        texte:
+          'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?',
       },
     ],
   };
@@ -53,14 +60,7 @@ export default function Infos(props) {
           {infos.adress}, <br /> {infos.city}, {infos.province}{' '}
           {infos.postalCode}
         </Typography>
-      </Container>
-      <Container className={styles.description}>
-        <Typography variant="h3" color="primary">
-          Description
-        </Typography>
-        <Typography variant="h5" color="textSecondary">
-          {infos.description}
-        </Typography>
+        <hr />
       </Container>
       <Container className={styles.responsable}>
         <Typography variant="h3" color="primary">
@@ -72,20 +72,36 @@ export default function Infos(props) {
           <br />
           {infos.phone}
         </Typography>
+        <hr />
+      </Container>
+      <Container className={styles.description}>
+        <Typography variant="h3" color="primary">
+          Description
+        </Typography>
+        <Typography variant="h5">{infos.description}</Typography>
       </Container>
       <Container className={styles.infos}>
         <Typography variant="h3" color="primary">
           {t('general_informations')}
         </Typography>
-        {infos.sections.map(section => (
-          <Container>
-            <Typography variant="h5">{section.title}:</Typography>
-            <Typography variant="h5" color="textSecondary">
-              {section.texte}
-            </Typography>
-            <hr />
-          </Container>
-        ))}
+        <List>
+          {infos.sections.map(section => (
+            <Container className={styles.section}>
+              <Typography variant="h5" className={styles.title}>
+                {section.title}:{' '}
+              </Typography>
+              <Typography
+                variant="h5"
+                color="textSecondary"
+                className={styles.texte}
+              >
+                {' '}
+                {section.texte}
+              </Typography>
+              <hr className={styles.divider}></hr>
+            </Container>
+          ))}
+        </List>
       </Container>
     </Card>
   );

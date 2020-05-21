@@ -32,6 +32,7 @@ export default {
     organization: 'Organization',
     organizations: 'Organizations',
     password: 'Password',
+    pre_ranking: 'Pre-ranking',
     private: 'Private',
     phone_number: 'Phone Number',
     ranking: 'Ranking',

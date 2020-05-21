@@ -24,3 +24,23 @@
 .lieu {
   grid-area: lieu;
 }
+
+.section {
+  display: grid !important;
+  grid-template-columns: 2fr 6fr;
+  grid-template-areas: 'title texte' ' divider divider';
+  column-gap: 16px;
+}
+
+.title {
+  grid-area: title;
+}
+
+.texte {
+  grid-area: texte;
+}
+.divider {
+  grid-area: divider;
+  margin-left: 0px;
+  margin-right: 0px;
+}

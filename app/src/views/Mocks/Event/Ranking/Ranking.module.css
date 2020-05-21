@@ -1,0 +1,47 @@
+.bigCard {
+  text-align: center;
+}
+.titre {
+  padding: 16px !important;
+}
+
+.card {
+  grid-area: teams;
+  text-align: center;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.list {
+  padding: 0px !important;
+}
+
+.container {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 14fr;
+  grid-template-areas: 'position avatar name' 'divider divider divider';
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+.avatar {
+  grid-area: avatar;
+  align-self: center;
+}
+
+.name {
+  grid-area: name;
+  justify-self: start;
+  align-self: center;
+}
+
+.position {
+  grid-area: position;
+  align-self: center;
+}
+
+.divider {
+  grid-area: divider;
+  margin-left: 0px;
+  margin-right: 0px;
+}
