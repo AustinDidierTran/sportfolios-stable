@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import BasicInfos from './BasicInfos';
 import NextEvents from './NextEvents';
 import Shop from './Shop';
-import About from './Shop';
+import About from './About';
 
 export const TABS_ENUM = {
   GENERAL: 'general',

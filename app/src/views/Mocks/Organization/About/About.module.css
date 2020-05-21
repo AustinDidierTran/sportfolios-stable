@@ -1,0 +1,31 @@
+.card {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  grid-template-areas: 'description' 'team' 'contact';
+}
+
+.description {
+  grid-area: description;
+}
+
+.team {
+  grid-area: team;
+  text-align: start;
+}
+
+.contact {
+  grid-area: contact;
+  text-align: start;
+}
+
+.container {
+  display: inline-flex !important;
+}
+
+.name {
+  grid-area: name;
+}
+
+.text {
+  grid-area: txt;
+}
