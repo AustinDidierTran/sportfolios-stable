@@ -21,7 +21,10 @@ export default function Infos(props) {
     phone: '819-123-4567',
     informations: 'La tente de nourriture est situ',
     lieu: 'Parc Olympic',
-    adress: '3791, Chemin Queen Mary, Montréal, QC H3V 1A8',
+    adress: '3791, Chemin Queen Mary',
+    city: 'Montréal',
+    province: 'QC',
+    postalCode: 'H3V 1A8',
     sections: [
       {
         title: 'Prix',
@@ -43,11 +46,12 @@ export default function Infos(props) {
     <Card className={styles.card}>
       <Container className={styles.lieu}>
         <Typography variant="h3" color="primary">
-          Lieu
+          Location
         </Typography>
         <Typography variant="h5">{infos.lieu}</Typography>
         <Typography variant="h5" color="textSecondary">
-          {infos.adress}
+          {infos.adress}, <br /> {infos.city}, {infos.province}{' '}
+          {infos.postalCode}
         </Typography>
       </Container>
       <Container className={styles.description}>
@@ -60,7 +64,7 @@ export default function Infos(props) {
       </Container>
       <Container className={styles.responsable}>
         <Typography variant="h3" color="primary">
-          Responsable de l'événement
+          {t('event_manager')}
         </Typography>
         <Typography variant="h5">{infos.responsable}</Typography>
         <Typography variant="h5" color="textSecondary">
@@ -71,7 +75,7 @@ export default function Infos(props) {
       </Container>
       <Container className={styles.infos}>
         <Typography variant="h3" color="primary">
-          Informations Générales
+          {t('general_informations')}
         </Typography>
         {infos.sections.map(section => (
           <Container>

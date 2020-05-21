@@ -12,9 +12,11 @@ export default {
     competitive_member: 'Membre Compétitif',
     email: 'Courriel',
     emails: 'Courriels',
+    event_manager: "Responsable de l'événement",
     first_name: 'Prénom',
     forgot_password: 'Mot de passe oublié?',
     funding: 'Financement',
+    general_informations: 'Informations générales',
     goal: 'Objectif',
     have_an_account_signin:
       'Vous avez déjà un compte? Connectez-vous!',

@@ -4,6 +4,7 @@
   grid-template-columns: 1fr 1fr;
   grid-template-areas: 'lieu responsable' 'description description' 'infos infos';
   row-gap: 16px;
+  padding-top: 16px;
 }
 
 .description {
