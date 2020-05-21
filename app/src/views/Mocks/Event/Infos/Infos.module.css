@@ -1,0 +1,25 @@
+.card {
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: 'lieu responsable' 'description description' 'infos infos';
+  row-gap: 16px;
+}
+
+.description {
+  grid-area: description;
+  text-align: start;
+}
+
+.reponsable {
+  grid-area: responsable;
+}
+
+.infos {
+  grid-area: infos;
+  text-align: start;
+}
+
+.lieu {
+  grid-area: lieu;
+}
