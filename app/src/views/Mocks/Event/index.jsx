@@ -52,7 +52,6 @@ export default function Event(props) {
     },
     { value: TABS_ENUM.INFOS, component: Infos, label: 'Infos' },
   ];
-
   const OpenTab = states.find(s => s.value == eventState).component;
 
   return (

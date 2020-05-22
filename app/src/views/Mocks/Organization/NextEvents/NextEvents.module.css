@@ -11,7 +11,6 @@
   display: grid !important;
   grid-template-columns: 3fr 20fr;
   grid-template-areas: ' avatar infos';
-  padding: 16px !important;
 }
 
 .infos {

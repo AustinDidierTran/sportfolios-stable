@@ -1,5 +1,6 @@
 export default {
   translations: {
+    about: 'À propos',
     actions: 'Actions',
     adress: 'Addresse',
     app_role: 'App Role',
@@ -10,11 +11,15 @@ export default {
     birth_date_format: '{{date, LL}} ({{age}} ans)',
     change_password: 'Changer votre mot de passe',
     competitive_member: 'Membre Compétitif',
+    contact_us: 'Contactez-nous',
     email: 'Courriel',
     emails: 'Courriels',
+    event_manager: "Responsable de l'événement",
     first_name: 'Prénom',
     forgot_password: 'Mot de passe oublié?',
     funding: 'Financement',
+    general: 'Général',
+    general_informations: 'Informations générales',
     goal: 'Objectif',
     have_an_account_signin:
       'Vous avez déjà un compte? Connectez-vous!',
@@ -29,8 +34,10 @@ export default {
     notifications: 'Notifications',
     organization: 'Organisation',
     organizations: 'Organisations',
+    our_team: 'Notre Équipe',
     password: 'Mot de passe',
     private: 'Privée',
+    pre_ranking: 'Préclassement',
     phone_number: 'Numéro de téléphone',
     ranking: 'Classement',
     register: "S'inscrire",
@@ -47,6 +54,7 @@ export default {
     send_password_recovery_email:
       'Envoyer le courriel de réinitialisation de mot de passe',
     signup: "S'enregistrer",
+    shop: 'Boutique',
     team: 'Équipe',
     teams: 'Équipes',
     upcoming_events: 'Événements',

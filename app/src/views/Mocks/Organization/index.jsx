@@ -4,66 +4,79 @@ import {
   Container,
   Typography,
   Button,
+  Card,
 } from '../../../components/MUI';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Paper from '@material-ui/core/Paper';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 import styles from './Organization.module.css';
 import { useTranslation } from 'react-i18next';
 import BasicInfos from './BasicInfos';
 import NextEvents from './NextEvents';
 import Shop from './Shop';
+import About from './About';
+
+export const TABS_ENUM = {
+  GENERAL: 'general',
+  SHOP: 'shop',
+  ABOUT: 'about',
+};
 
 export default function Organization(props) {
   const { t } = useTranslation();
 
-  const [general, setGeneral] = useState(true);
+  const {
+    match: {
+      params: { openTab = TABS_ENUM.GENERAL },
+    },
+  } = props;
 
-  const [shop, setShop] = useState(false);
+  const [eventState, setEventState] = useState(openTab);
 
-  const generalClick = () => {
-    setShop(false);
-    setGeneral(true);
-  };
-  const shopClick = () => {
-    setGeneral(false);
-    setShop(true);
-  };
+  const states = [
+    {
+      value: TABS_ENUM.GENERAL,
+      component: NextEvents,
+      label: t('general'),
+    },
+    {
+      value: TABS_ENUM.SHOP,
+      component: Shop,
+      label: t('shop'),
+    },
+    {
+      value: TABS_ENUM.ABOUT,
+      component: About,
+      label: t('about'),
+    },
+  ];
+  const OpenTab = states.find(s => s.value == eventState).component;
 
   return (
-    <div className={styles.main}>
-      <Container className={styles.container}>
-        <BasicInfos />
-        <ButtonGroup className={styles.buttons}>
-          {general ? (
-            <Button
-              onClick={generalClick}
-              variant="contained"
-              color="primary"
-            >
-              General
-            </Button>
-          ) : (
-            <Button onClick={generalClick} variant="contained">
-              General
-            </Button>
-          )}
-          {shop ? (
-            <Button
-              onClick={shopClick}
-              variant="contained"
-              color="primary"
-            >
-              Shop
-            </Button>
-          ) : (
-            <Button onClick={shopClick} variant="contained">
-              Shop
-            </Button>
-          )}
-        </ButtonGroup>
-        {general ? <NextEvents /> : <> </>}
-        {shop ? <Shop /> : <> </>}
-      </Container>
-    </div>
+    <Container className={styles.container}>
+      <Card className={styles.card}>
+        <Container className={styles.titre}>
+          <BasicInfos />
+        </Container>
+        <Paper square>
+          <Tabs
+            value={Object.values(TABS_ENUM).indexOf(eventState)}
+            indicatorColor="primary"
+            textColor="primary"
+            className={styles.tabs}
+            centered
+          >
+            {states.map((s, index) => (
+              <Tab
+                label={s.label}
+                onClick={() => setEventState(s.value)}
+              />
+            ))}
+          </Tabs>
+        </Paper>
+      </Card>
+      <OpenTab />
+    </Container>
   );
 }

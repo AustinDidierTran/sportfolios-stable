@@ -16,7 +16,7 @@ export default function BasicInfos(props) {
   const { t } = useTranslation();
 
   return (
-    <Card className={styles.card}>
+    <Container className={styles.card}>
       <Avatar
         className={styles.avatar}
         initials="FQU"
@@ -32,6 +32,6 @@ export default function BasicInfos(props) {
         <BecomeMember className={styles.member} />
         <Donate className={styles.donate} />
       </Container>
-    </Card>
+    </Container>
   );
 }

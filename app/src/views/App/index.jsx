@@ -53,6 +53,18 @@ export default function App() {
     },
   };
 
+  theme.typography.h4 = {
+    fontFamily: 'Montserrat',
+    fontWeight: 350,
+    fontSize: '1.2rem',
+    '@media (min-width:600px)': {
+      fontSize: '1.6rem',
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: '2.1rem',
+    },
+  };
+
   theme.typography.h5 = {
     fontFamily: 'Montserrat',
     fontWeight: 350,
