@@ -52,18 +52,25 @@ export default function About(props) {
   };
 
   return (
-    <Card className={styles.card}>
-      <Container className={styles.description}>
-        <Typography variant="h4" color="primary">
+    <Container className={styles.main}>
+      <Card className={styles.description}>
+        <Typography
+          variant="h4"
+          color="primary"
+          className={styles.title}
+        >
           {description.title}
         </Typography>
         <Container className={styles.container}>
           <Typography variant="h6">{description.text}</Typography>
         </Container>
-        <hr />
-      </Container>
-      <Container className={styles.team}>
-        <Typography variant="h4" color="primary">
+      </Card>
+      <Card className={styles.team}>
+        <Typography
+          variant="h4"
+          color="primary"
+          className={styles.title}
+        >
           {team.title}
         </Typography>
         <List>
@@ -73,21 +80,25 @@ export default function About(props) {
                 <Typography
                   color="textSecondary"
                   variant="h6"
+                  noWrap
                   className={styles.name}
                 >
                   {text.name}:
                 </Typography>
-                <Typography variant="h6" className={styles.text}>
+                <Typography
+                  variant="h6"
+                  noWrap
+                  className={styles.text}
+                >
                   &nbsp;
                   {text.text}
                 </Typography>
               </Container>
             </ListItem>
           ))}
-          <hr />
         </List>
-      </Container>
-      <Container className={styles.contact}>
+      </Card>
+      <Card className={styles.contact}>
         <Typography
           variant="h4"
           color="primary"
@@ -114,7 +125,7 @@ export default function About(props) {
             </ListItem>
           ))}
         </List>
-      </Container>
-    </Card>
+      </Card>
+    </Container>
   );
 }
