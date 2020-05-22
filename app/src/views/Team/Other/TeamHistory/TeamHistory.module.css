@@ -1,0 +1,15 @@
+.card {
+  grid-area: teamHistory;
+  text-align: center;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.textField {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.title {
+  padding: 16px;
+}

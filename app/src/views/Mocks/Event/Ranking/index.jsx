@@ -79,7 +79,7 @@ export default function Ranking(props) {
               <ListItem className={styles.listItem}>
                 <Typography
                   color="primary"
-                  variant="h6"
+                  variant="h5"
                   className={styles.position}
                 >
                   {team.position}
@@ -90,7 +90,7 @@ export default function Ranking(props) {
                   photoUrl={team.photoUrl}
                   size="sm"
                 />
-                <Typography variant="h6" className={styles.name}>
+                <Typography variant="h5" className={styles.name}>
                   {team.name}
                 </Typography>
                 <hr className={styles.divider}></hr>

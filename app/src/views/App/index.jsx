@@ -21,6 +21,7 @@ import PasswordRecovery from '../PasswordRecovery';
 import Profile from '../Profile';
 import Search from '../Search';
 import Signup from '../Signup';
+import OtherTeam from '../Team/Other';
 import UserSettings from '../UserSettings';
 
 // Mocks
@@ -80,12 +81,24 @@ export default function App() {
   theme.typography.h6 = {
     fontFamily: 'Montserrat',
     fontWeight: 350,
-    fontSize: '1.0rem',
+    fontSize: '0.8rem',
     '@media (min-width:600px)': {
-      fontSize: '1.3rem',
+      fontSize: '1.2rem',
     },
     [theme.breakpoints.up('md')]: {
-      fontSize: '1.6rem',
+      fontSize: '1.5rem',
+    },
+  };
+
+  theme.typography.h7 = {
+    fontFamily: 'Montserrat',
+    fontWeight: 350,
+    fontSize: '0.6rem',
+    '@media (min-width:600px)': {
+      fontSize: '1.0rem',
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: '1.2rem',
     },
   };
 
@@ -143,6 +156,10 @@ export default function App() {
                 exact
                 path={ROUTES.confirmationEmailSent}
                 component={ConfirmationEmailSent}
+              />
+              <Route
+                path={ROUTES.team}
+                component={OtherTeam}
               />
               <PrivateRoute
                 path={ROUTES.profile}
