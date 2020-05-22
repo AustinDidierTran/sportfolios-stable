@@ -3,11 +3,17 @@
   grid-template-columns: 1fr;
   grid-template-areas: 'description' 'team' 'contact';
 }
+
+.title {
+  padding-bottom: 8px;
+  padding-top: 8px;
+}
+
 .description {
   grid-area: description;
   text-align: start;
+  padding: 8px;
 }
-
 .team {
   grid-area: team;
   text-align: start;
@@ -32,4 +38,8 @@
 
 .listItem {
   padding: 0px !important;
+}
+
+.divider {
+  margin: 4px !important;
 }

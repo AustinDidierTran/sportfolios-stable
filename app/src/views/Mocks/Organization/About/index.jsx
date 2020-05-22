@@ -54,13 +54,17 @@ export default function About(props) {
   return (
     <Card className={styles.card}>
       <Container className={styles.description}>
-        <Typography variant="h4" color="primary">
+        <Typography
+          variant="h4"
+          color="primary"
+          className={styles.title}
+        >
           {description.title}
         </Typography>
         <Container className={styles.container}>
           <Typography variant="h6">{description.text}</Typography>
         </Container>
-        <hr />
+        <hr className={styles.divider}></hr>
       </Container>
       <Container className={styles.team}>
         <Typography variant="h4" color="primary">
@@ -84,15 +88,11 @@ export default function About(props) {
               </Container>
             </ListItem>
           ))}
-          <hr />
+          <hr className={styles.divider}></hr>
         </List>
       </Container>
       <Container className={styles.contact}>
-        <Typography
-          variant="h4"
-          color="primary"
-          className={styles.title}
-        >
+        <Typography variant="h4" color="primary">
           {contact.title}
         </Typography>
         <List>
