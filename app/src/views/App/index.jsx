@@ -159,7 +159,7 @@ export default function App() {
               />
               <Route
                 exact
-                path={ROUTES.otherTeam}
+                path={ROUTES.team}
                 component={OtherTeam}
               />
               <PrivateRoute
