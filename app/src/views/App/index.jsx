@@ -21,6 +21,7 @@ import PasswordRecovery from '../PasswordRecovery';
 import Profile from '../Profile';
 import Search from '../Search';
 import Signup from '../Signup';
+import OtherTeam from '../Team/Other';
 import UserSettings from '../UserSettings';
 
 // Mocks
@@ -155,6 +156,11 @@ export default function App() {
                 exact
                 path={ROUTES.confirmationEmailSent}
                 component={ConfirmationEmailSent}
+              />
+              <Route
+                exact
+                path={ROUTES.otherTeam}
+                component={OtherTeam}
               />
               <PrivateRoute
                 path={ROUTES.profile}
