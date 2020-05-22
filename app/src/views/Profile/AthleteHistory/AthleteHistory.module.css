@@ -1,0 +1,15 @@
+.card {
+  grid-area: athleteHistory;
+  text-align: center;
+}
+
+.textField {
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 32px;
+}
+
+.select {
+  margin-right: auto;
+  margin-left: auto;
+}
