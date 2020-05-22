@@ -2,8 +2,13 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './About.module.css';
-import { Card } from '../../../../components/MUI';
-import { Typography, Container } from '@material-ui/core';
+import {
+  Card,
+  Typography,
+  Container,
+  List,
+  ListItem,
+} from '../../../../components/MUI';
 
 export default function About(props) {
   const { t } = useTranslation();
@@ -49,58 +54,66 @@ export default function About(props) {
   return (
     <Card className={styles.card}>
       <Container className={styles.description}>
-        <Typography variant="h3" color="primary">
+        <Typography variant="h4" color="primary">
           {description.title}
         </Typography>
-        <Typography variant="h5">{description.text}</Typography>
+        <Container className={styles.container}>
+          <Typography variant="h6">{description.text}</Typography>
+        </Container>
         <hr />
       </Container>
       <Container className={styles.team}>
-        <Typography
-          variant="h3"
-          color="primary"
-          className={styles.title}
-        >
+        <Typography variant="h4" color="primary">
           {team.title}
         </Typography>
-        {team.content.map(text => (
-          <Container className={styles.container}>
-            <Typography variant="h5" className={styles.name}>
-              {text.name}:
-            </Typography>
-            <Typography
-              variant="h5"
-              color="textSecondary"
-              className={styles.text}
-            >
-              {text.text}
-            </Typography>
-          </Container>
-        ))}
-        <hr />
+        <List>
+          {team.content.map(text => (
+            <ListItem className={styles.listItem}>
+              <Container className={styles.container}>
+                <Typography
+                  color="textSecondary"
+                  variant="h6"
+                  className={styles.name}
+                >
+                  {text.name}:
+                </Typography>
+                <Typography variant="h6" className={styles.text}>
+                  &nbsp;
+                  {text.text}
+                </Typography>
+              </Container>
+            </ListItem>
+          ))}
+          <hr />
+        </List>
       </Container>
       <Container className={styles.contact}>
         <Typography
-          variant="h3"
+          variant="h4"
           color="primary"
           className={styles.title}
         >
           {contact.title}
         </Typography>
-        {contact.content.map(text => (
-          <Container className={styles.container}>
-            <Typography variant="h5" className={styles.name}>
-              {text.name}:
-            </Typography>
-            <Typography
-              variant="h5"
-              color="textSecondary"
-              className={styles.text}
-            >
-              {text.text}
-            </Typography>
-          </Container>
-        ))}
+        <List>
+          {contact.content.map(text => (
+            <ListItem className={styles.listItem}>
+              <Container className={styles.container}>
+                <Typography
+                  color="textSecondary"
+                  variant="h6"
+                  className={styles.name}
+                >
+                  {text.name}:
+                </Typography>
+                <Typography variant="h6" className={styles.text}>
+                  &nbsp;
+                  {text.text}
+                </Typography>
+              </Container>
+            </ListItem>
+          ))}
+        </List>
       </Container>
     </Card>
   );

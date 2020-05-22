@@ -3,9 +3,9 @@
   grid-template-columns: 1fr;
   grid-template-areas: 'description' 'team' 'contact';
 }
-
 .description {
   grid-area: description;
+  text-align: start;
 }
 
 .team {
@@ -28,4 +28,8 @@
 
 .text {
   grid-area: txt;
+}
+
+.listItem {
+  padding: 0px !important;
 }

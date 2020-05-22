@@ -80,12 +80,24 @@ export default function App() {
   theme.typography.h6 = {
     fontFamily: 'Montserrat',
     fontWeight: 350,
-    fontSize: '1.0rem',
+    fontSize: '0.8rem',
     '@media (min-width:600px)': {
-      fontSize: '1.3rem',
+      fontSize: '1.2rem',
     },
     [theme.breakpoints.up('md')]: {
-      fontSize: '1.6rem',
+      fontSize: '1.5rem',
+    },
+  };
+
+  theme.typography.h7 = {
+    fontFamily: 'Montserrat',
+    fontWeight: 350,
+    fontSize: '0.6rem',
+    '@media (min-width:600px)': {
+      fontSize: '1.0rem',
+    },
+    [theme.breakpoints.up('md')]: {
+      fontSize: '1.2rem',
     },
   };
 
