@@ -52,8 +52,8 @@ export default function About(props) {
   };
 
   return (
-    <Card className={styles.card}>
-      <Container className={styles.description}>
+    <Container className={styles.main}>
+      <Card className={styles.description}>
         <Typography
           variant="h4"
           color="primary"
@@ -64,10 +64,13 @@ export default function About(props) {
         <Container className={styles.container}>
           <Typography variant="h6">{description.text}</Typography>
         </Container>
-        <hr className={styles.divider}></hr>
-      </Container>
-      <Container className={styles.team}>
-        <Typography variant="h4" color="primary">
+      </Card>
+      <Card className={styles.team}>
+        <Typography
+          variant="h4"
+          color="primary"
+          className={styles.title}
+        >
           {team.title}
         </Typography>
         <List>
@@ -77,22 +80,30 @@ export default function About(props) {
                 <Typography
                   color="textSecondary"
                   variant="h6"
+                  noWrap
                   className={styles.name}
                 >
                   {text.name}:
                 </Typography>
-                <Typography variant="h6" className={styles.text}>
+                <Typography
+                  variant="h6"
+                  noWrap
+                  className={styles.text}
+                >
                   &nbsp;
                   {text.text}
                 </Typography>
               </Container>
             </ListItem>
           ))}
-          <hr className={styles.divider}></hr>
         </List>
-      </Container>
-      <Container className={styles.contact}>
-        <Typography variant="h4" color="primary">
+      </Card>
+      <Card className={styles.contact}>
+        <Typography
+          variant="h4"
+          color="primary"
+          className={styles.title}
+        >
           {contact.title}
         </Typography>
         <List>
@@ -114,7 +125,7 @@ export default function About(props) {
             </ListItem>
           ))}
         </List>
-      </Container>
-    </Card>
+      </Card>
+    </Container>
   );
 }

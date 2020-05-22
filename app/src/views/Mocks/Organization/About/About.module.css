@@ -1,12 +1,13 @@
-.card {
+.main {
   display: grid !important;
   grid-template-columns: 1fr;
   grid-template-areas: 'description' 'team' 'contact';
+  row-gap: 8px;
+  padding: 0px !important;
 }
 
 .title {
-  padding-bottom: 8px;
-  padding-top: 8px;
+  padding: 8px;
 }
 
 .description {
@@ -40,6 +41,10 @@
   padding: 0px !important;
 }
 
-.divider {
-  margin: 4px !important;
+@media (min-width: 768px) {
+  .main {
+    grid-template-columns: 3fr 2fr;
+    grid-template-areas: 'description description' 'team contact';
+    column-gap: 8px;
+  }
 }
