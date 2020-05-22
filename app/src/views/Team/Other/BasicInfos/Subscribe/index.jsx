@@ -11,7 +11,7 @@ export default function Subscribe(props) {
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   const handleClick = () => {
-    setIsSubscribe(!isSubscribe);
+    setIsSubscribed(!isSubscribed);
   };
 
   return isSubscribe ? (
