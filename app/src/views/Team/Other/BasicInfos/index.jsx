@@ -19,18 +19,6 @@ import { useFormInput } from '../../../../hooks/forms';
 export default function BasicInfos(props) {
   const { t } = useTranslation();
 
-  // const {
-  //   state: { teamInfo },
-  // } = useContext(Store);
-
-  // const { photo_url } = teamInfo;
-  // const initials = completeName
-  //   .split(/(?:-| )+/)
-  //   .reduce(
-  //     (prev, curr, index) =>
-  //       index <= 2 ? `${prev}${curr[0]}` : prev,
-  //     '',
-  //   );
 
   const data = {
     photoUrl:
