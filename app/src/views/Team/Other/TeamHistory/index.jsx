@@ -26,7 +26,7 @@ export default function AthleteHistory(props) {
     {
       position: 1,
       event: 'Frisbee Fest',
-      year: '2018',
+      year: '2019',
     },
   ];
 
