@@ -14,7 +14,7 @@ export default function Subscribe(props) {
     setIsSubscribed(!isSubscribed);
   };
 
-  return isSubscribe ? (
+  return isSubscribed ? (
     <Button
       variant="contained"
       onClick={handleClick}
