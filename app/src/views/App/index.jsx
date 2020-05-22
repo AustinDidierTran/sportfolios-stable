@@ -158,7 +158,6 @@ export default function App() {
                 component={ConfirmationEmailSent}
               />
               <Route
-                exact
                 path={ROUTES.team}
                 component={OtherTeam}
               />
