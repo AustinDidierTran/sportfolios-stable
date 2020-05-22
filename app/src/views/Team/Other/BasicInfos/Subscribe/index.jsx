@@ -8,7 +8,7 @@ import { Container, Button } from '../../../../../components/MUI';
 export default function Subscribe(props) {
   const { t } = useTranslation();
 
-  const [isSubscribe, setIsSubscribe] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   const handleClick = () => {
     setIsSubscribe(!isSubscribe);
