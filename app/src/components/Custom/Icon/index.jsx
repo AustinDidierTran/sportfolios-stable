@@ -8,12 +8,18 @@ import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
 import Delete from '@material-ui/icons/Delete';
 import Edit from '@material-ui/icons/Edit';
+import Folder from '@material-ui/icons/Folder';
+import Home from '@material-ui/icons/Home';
+import Info from '@material-ui/icons/Info';
 import NavigateNext from '@material-ui/icons/NavigateNext';
+import Notifications from '@material-ui/icons/Notifications';
 import Person from '@material-ui/icons/Person';
 import PersonAdd from '@material-ui/icons/PersonAdd';
 import Publish from '@material-ui/icons/Publish';
 import RemoveShoppingCart from '@material-ui/icons/RemoveShoppingCart';
 import Search from '@material-ui/icons/Search';
+import Settings from '@material-ui/icons/Settings';
+import ShoppingCart from '@material-ui/icons/ShoppingCart';
 
 const icons = {
   Add,
@@ -24,12 +30,18 @@ const icons = {
   Close,
   Delete,
   Edit,
+  Folder,
+  Home,
+  Info,
   NavigateNext,
+  Notifications,
   Person,
   PersonAdd,
   Publish,
   RemoveShoppingCart,
   Search,
+  Settings,
+  ShoppingCart,
 };
 
 export default function CustomIcon(props) {

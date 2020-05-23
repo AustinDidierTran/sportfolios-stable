@@ -8,7 +8,7 @@ import { ACTION_ENUM } from '../../../Store';
 
 import { Avatar, Button, Input } from '../../../components/Custom';
 import { Card, Typography, TextField } from '../../../components/MUI';
-import getInitialsFromName from '../../../utils/getInitialsFromName';
+import { getInitialsFromName } from '../../../utils/stringFormats';
 import api from '../../../actions/api';
 import { useFormInput } from '../../../hooks/forms';
 import { uploadProfilePicture } from '../../../actions/aws';
@@ -106,35 +106,50 @@ export default function BasicInfos(props) {
     console.log(first_name);
   };
 
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  const onFollow = async () => {
+    setIsFollowing(true);
+  };
+
+  const onUnfollow = async () => {
+    setIsFollowing(false);
+  };
+
   return (
     <Card className={styles.card}>
       <Avatar initials={initials} photoUrl={photo_url} size="lg" />
       {isEditMode ? (
-        <Input type="file" onChange={onImgChange} />
+        <Input
+          type="file"
+          onChange={onImgChange}
+          isVisible={isEditMode}
+        />
       ) : (
         <></>
       )}
-      <br />
-      {isEditMode ? (
-        <>
-          <TextField
-            namespace="firstName"
-            type="text"
-            label={t('first_name')}
-            value={first_name}
-            onChange={onFirstNameChange}
-          />
-          <TextField
-            namespace="lastName"
-            type="text"
-            label={t('last_name')}
-            value={last_name}
-            onChange={onLastNameChange}
-          />
-        </>
-      ) : (
-        <Typography variant="h3">{completeName}</Typography>
-      )}
+      <div className={styles.fullName}>
+        {isEditMode ? (
+          <>
+            <TextField
+              namespace="firstName"
+              type="text"
+              label={t('first_name')}
+              value={first_name}
+              onChange={onFirstNameChange}
+            />
+            <TextField
+              namespace="lastName"
+              type="text"
+              label={t('last_name')}
+              value={last_name}
+              onChange={onLastNameChange}
+            />
+          </>
+        ) : (
+          <Typography variant="h3">{completeName}</Typography>
+        )}
+      </div>
       {isEditMode ? (
         <Input type="date" {...birthDate.inputProps} />
       ) : birth_date ? (
@@ -148,7 +163,6 @@ export default function BasicInfos(props) {
       ) : (
         <></>
       )}
-      <br />
       {isSelf ? (
         isEditMode ? (
           <>
@@ -173,8 +187,12 @@ export default function BasicInfos(props) {
             {t('edit')}
           </Button>
         )
+      ) : isFollowing ? (
+        <Button onClick={onUnfollow} variant="outlined">
+          {t('following')}
+        </Button>
       ) : (
-        <></>
+        <Button onClick={onFollow}>{t('follow')}</Button>
       )}
     </Card>
   );

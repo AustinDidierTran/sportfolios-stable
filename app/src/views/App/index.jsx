@@ -16,7 +16,9 @@ import ConfirmationEmailSent from '../ConfirmationEmailSent';
 import ConfirmEmail from '../ConfirmEmail';
 import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
 import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
+import EventView from '../Event';
 import ForgotPassword from '../ForgotPassword';
+import Organization from '../Organization';
 import PasswordRecovery from '../PasswordRecovery';
 import Profile from '../Profile';
 import Search from '../Search';
@@ -28,6 +30,9 @@ import UserSettings from '../UserSettings';
 import MockSelfProfile from '../Mocks/Profile/Self';
 import MockOrganization from '../Mocks/Organization';
 import MockEvent from '../Mocks/Event';
+
+// Custom
+import { BottomNavigation } from '../../components/Custom';
 
 import styles from './App.module.css';
 import history from '../../stores/history';
@@ -127,6 +132,7 @@ export default function App() {
                 path={ROUTES.confirmEmailSuccess}
                 component={ConfirmEmailSuccess}
               />
+              <Route path={ROUTES.event} component={EventView} />
               <Route
                 path={ROUTES.forgotPassword}
                 component={ForgotPassword}
@@ -151,16 +157,18 @@ export default function App() {
                 component={MockEvent}
               />
               <Route exact path={ROUTES.login} component={Login} />
+              <Route
+                exact
+                path={ROUTES.organization}
+                component={Organization}
+              />
               <Route exact path={ROUTES.signup} component={Signup} />
               <Route
                 exact
                 path={ROUTES.confirmationEmailSent}
                 component={ConfirmationEmailSent}
               />
-              <Route
-                path={ROUTES.team}
-                component={OtherTeam}
-              />
+              <Route path={ROUTES.team} component={OtherTeam} />
               <PrivateRoute
                 path={ROUTES.profile}
                 component={Profile}
@@ -173,6 +181,7 @@ export default function App() {
               <PrivateRoute component={Main} />
             </Switch>
           </div>
+          <BottomNavigation />
         </div>
       </Router>
     </ThemeProvider>

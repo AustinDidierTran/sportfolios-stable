@@ -23,36 +23,46 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function CustomList(props) {
-  const { title, items, ref, selectedIndex } = props;
+  const { title, items, ref, rowRenderer, selectedIndex } = props;
   const classes = useStyles();
+
+  const defaultRowRenderer = (item, index) => (
+    <ListItem
+      button
+      onClick={item.onClick}
+      selected={selectedIndex === index}
+      key={`${item.value}${index}`}
+      style={{ width: '100%' }}
+    >
+      {item.iconComponent ? (
+        <ListItemIcon>{item.iconComponent}</ListItemIcon>
+      ) : (
+        <ListItemIcon>
+          <Icon icon={item.icon} />
+        </ListItemIcon>
+      )}
+      <ListItemText primary={item.value} />
+    </ListItem>
+  );
 
   return (
     <List
       ref={ref}
-      component="nav"
+      style={{ maxWidth: 'unset' }}
       aria-labelledby="nested-list-subheader"
       subheader={
-        <ListSubheader component="div" id="nested-list-subheader">
-          {title}
-        </ListSubheader>
+        title ? (
+          <ListSubheader component="div" id="nested-list-subheader">
+            {title}
+          </ListSubheader>
+        ) : (
+          <></>
+        )
       }
       className={classes.root}
       disablePadding={true}
     >
-      {items &&
-        items.map((item, index) => (
-          <ListItem
-            button
-            onClick={item.onClick}
-            selected={selectedIndex === index}
-            key={`${item.value}${index}`}
-          >
-            <ListItemIcon>
-              <Icon icon={item.icon} />
-            </ListItemIcon>
-            <ListItemText primary={item.value} />
-          </ListItem>
-        ))}
+      {items && items.map(rowRenderer || defaultRowRenderer)}
     </List>
   );
 }
