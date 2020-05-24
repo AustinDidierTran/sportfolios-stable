@@ -8,6 +8,8 @@ import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
 import Delete from '@material-ui/icons/Delete';
 import Edit from '@material-ui/icons/Edit';
+import EmojiEvents from '@material-ui/icons/EmojiEvents';
+import Event from '@material-ui/icons/Event';
 import Folder from '@material-ui/icons/Folder';
 import Home from '@material-ui/icons/Home';
 import Info from '@material-ui/icons/Info';
@@ -30,6 +32,8 @@ const icons = {
   Close,
   Delete,
   Edit,
+  EmojiEvents,
+  Event,
   Folder,
   Home,
   Info,
@@ -46,6 +50,7 @@ const icons = {
 
 export default function CustomIcon(props) {
   const { icon } = props;
+  console.log('icon', icon);
 
   const Icon = icons[icon];
 

@@ -4,6 +4,8 @@ import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 
 import { Icon } from '../../Custom';
+import { Badge } from '../../MUI';
+
 import { ROUTES, goTo } from '../../../actions/goTo';
 import { Store } from '../../../Store';
 
@@ -66,7 +68,11 @@ export default function CustomBottomNavigation(props) {
       <BottomNavigationAction
         label="Notifications"
         value={TABS_ENUM.NOTIFICATIONS}
-        icon={<Icon icon="Notifications" />}
+        icon={
+          <Badge badgeContent="2" color="secondary">
+            <Icon icon="Notifications" />
+          </Badge>
+        }
       />
       <BottomNavigationAction
         label="Settings"

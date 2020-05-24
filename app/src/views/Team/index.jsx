@@ -7,7 +7,7 @@ import {
   Tabs,
 } from '../../components/MUI';
 import { Store } from '../../Store';
-import styles from './Profile.module.css';
+import styles from './Team.module.css';
 import BasicInfos from './BasicInfos';
 import General from './General';
 import Shop from './Shop';
@@ -22,7 +22,7 @@ export const TABS_ENUM = {
   SHOP: 'shop',
 };
 
-export default function Profile(props) {
+export default function Team(props) {
   const [basicInfos, setBasicInfos] = useState({});
   const { t } = useTranslation();
 

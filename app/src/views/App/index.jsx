@@ -23,7 +23,7 @@ import PasswordRecovery from '../PasswordRecovery';
 import Profile from '../Profile';
 import Search from '../Search';
 import Signup from '../Signup';
-import OtherTeam from '../Team/Other';
+import Team from '../Team';
 import UserSettings from '../UserSettings';
 
 // Mocks
@@ -168,7 +168,7 @@ export default function App() {
                 path={ROUTES.confirmationEmailSent}
                 component={ConfirmationEmailSent}
               />
-              <Route path={ROUTES.team} component={OtherTeam} />
+              <Route path={ROUTES.team} component={Team} />
               <PrivateRoute
                 path={ROUTES.profile}
                 component={Profile}

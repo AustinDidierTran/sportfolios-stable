@@ -19,7 +19,7 @@ export const ROUTES = {
   recoveryEmail: '/recoveryEmail/:token',
   search: '/search/:query',
   signup: '/signup',
-  team: '/team/:teamId',
+  team: '/team',
   userSettings: '/userSettings',
 };
 

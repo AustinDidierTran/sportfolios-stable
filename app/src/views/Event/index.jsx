@@ -3,12 +3,11 @@ import React, { useState } from 'react';
 import {
   Container,
   Typography,
-  Button,
   Card,
+  Tab,
+  Tabs,
 } from '../../components/MUI';
 import Paper from '@material-ui/core/Paper';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 
 import styles from './Event.module.css';
 import Schedule from './Schedule';
@@ -39,18 +38,26 @@ export default function Event(props) {
       value: TABS_ENUM.REGISTER,
       component: Ranking,
       label: t('registration'),
+      icon: 'Edit',
     },
     {
       value: TABS_ENUM.SCHEDULE,
       component: Schedule,
       label: t('schedule'),
+      icon: 'Event',
     },
     {
       value: TABS_ENUM.RANKING,
       component: Ranking,
       label: t('ranking'),
+      icon: 'EmojiEvents',
     },
-    { value: TABS_ENUM.INFOS, component: Infos, label: 'Infos' },
+    {
+      value: TABS_ENUM.INFOS,
+      component: Infos,
+      label: 'Infos',
+      icon: 'Info',
+    },
   ];
   const OpenTab = states.find(s => s.value == eventState).component;
 
@@ -64,7 +71,7 @@ export default function Event(props) {
         </Container>
         <Paper square>
           <Tabs
-            value={Object.values(TABS_ENUM).indexOf(eventState)}
+            value={states.findIndex(s => s.value === eventState)}
             indicatorColor="primary"
             textColor="primary"
             className={styles.tabs}
@@ -72,8 +79,10 @@ export default function Event(props) {
           >
             {states.map((s, index) => (
               <Tab
+                key={index}
                 label={s.label}
                 onClick={() => setEventState(s.value)}
+                icon={s.icon}
               />
             ))}
           </Tabs>

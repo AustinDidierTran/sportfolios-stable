@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './Subscribe.module.css';
 
-import { Container, Button } from '../../../../../components/MUI';
+import { Container, Button } from '../../../../components/MUI';
 
 export default function Subscribe(props) {
   const { t } = useTranslation();

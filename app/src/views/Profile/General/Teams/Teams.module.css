@@ -1,6 +1,6 @@
 .card {
-  grid-area: teams;
   text-align: center;
+  margin-bottom: 16px !important;
 }
 
 .highlight {

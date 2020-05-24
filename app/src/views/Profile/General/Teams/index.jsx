@@ -10,6 +10,8 @@ import {
   ListItem,
 } from '../../../../components/MUI';
 
+import history from '../../../../stores/history';
+
 import { getInitialsFromName } from '../../../../utils/stringFormats';
 
 import CardHeader from '@material-ui/core/CardHeader';
@@ -22,11 +24,15 @@ export default function Teams(props) {
   return (
     <Card className={styles.card}>
       <CardHeader title={t('teams')} />
-      <List>
+      <List disablePadding={true}>
         {teams.map((team, index) => {
           const { highlight, name } = team;
           return (
-            <ListItem key={index}>
+            <ListItem
+              button
+              key={index}
+              onClick={() => history.push('/team')}
+            >
               <ListItemIcon>
                 <Avatar
                   initials={getInitialsFromName(name)}

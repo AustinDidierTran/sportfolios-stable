@@ -6,19 +6,14 @@ import styles from './BasicInfos.module.css';
 import BecomeMember from './Subscribe';
 import Donate from './Donate';
 
-import { Store } from '../../../../Store';
+import { Store } from '../../../Store';
 
-import { Avatar } from '../../../../components/Custom';
-import {
-  Card,
-  Typography,
-  Container,
-} from '../../../../components/MUI';
-import { useFormInput } from '../../../../hooks/forms';
+import { Avatar } from '../../../components/Custom';
+import { Card, Typography, Container } from '../../../components/MUI';
+import { useFormInput } from '../../../hooks/forms';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
-
 
   const data = {
     photoUrl:

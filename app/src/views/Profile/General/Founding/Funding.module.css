@@ -1,6 +1,7 @@
 .card {
   grid-area: funding;
   text-align: center;
+  margin-bottom: 16px;
 }
 
 .expand {

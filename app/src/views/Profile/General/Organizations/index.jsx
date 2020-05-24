@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './Organizations.module.css';
-import { Avatar } from '../../../../components/Custom';
+import { Avatar, List } from '../../../../components/Custom';
 import {
   TextField,
   Card,
   ListItem,
 } from '../../../../components/MUI';
-import { List } from '../../../../components/Custom';
 import CardHeader from '@material-ui/core/CardHeader';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import { getInitialsFromName } from '../../../../utils/stringFormats';

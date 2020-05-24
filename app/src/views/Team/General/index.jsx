@@ -1,6 +1,5 @@
 import React from 'react';
 
-import BasicInfos from './BasicInfos';
 import TeamHistory from './TeamHistory';
 import Roster from './Roster';
 
@@ -15,7 +14,6 @@ export default function selfProfile(props) {
   return (
     <div className={styles.main}>
       <Container className={styles.container}>
-        <BasicInfos />
         <Roster />
         <TeamHistory />
       </Container>
