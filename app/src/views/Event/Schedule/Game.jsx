@@ -4,29 +4,22 @@ import { Card, Typography } from '../../../components/MUI';
 import styles from './Game.module.css';
 import { Container } from '@material-ui/core';
 
+export const GAME_TYPES = {
+  GAME: 'game',
+  BAIL: 'bail',
+};
+
 export default function Game(props) {
   const { game } = props;
 
-  const MIN_WIDTH = 768;
-
-  const time = useMemo(
-    () =>
-      game
-        ? window.innerWidth < MIN_WIDTH
-          ? game.startTime
-          : `${game.startTime} - ${game.endTime}`
-        : null,
-    [window.innerWidth],
-  );
-
-  return game.type == 'game' ? (
+  return game.type == GAME_TYPES.GAME ? (
     <Container className={styles.game}>
       <Typography
         className={styles.time}
         variant="h6"
         color="textSecondary"
       >
-        {time}
+        {game.startTime}
       </Typography>
       <Typography className={styles.leftTeamScore} variant="h5">
         {game.leftTeamScore}
@@ -58,7 +51,7 @@ export default function Game(props) {
         variant="h6"
         color="textSecondary"
       >
-        {time}
+        {game.startTime}
       </Typography>
       <Typography
         className={styles.bailtxt}

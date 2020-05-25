@@ -51,7 +51,7 @@ export default function App() {
     fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '1.4rem',
-    '@media (min-width:600px)': {
+    '@media (min-width:768px)': {
       fontSize: '1.8rem',
     },
     [theme.breakpoints.up('md')]: {
@@ -63,7 +63,7 @@ export default function App() {
     fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '1.2rem',
-    '@media (min-width:600px)': {
+    '@media (min-width:768px)': {
       fontSize: '1.6rem',
     },
     [theme.breakpoints.up('md')]: {
@@ -75,7 +75,7 @@ export default function App() {
     fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '1rem',
-    '@media (min-width:600px)': {
+    '@media (min-width:768px)': {
       fontSize: '1.4rem',
     },
     [theme.breakpoints.up('md')]: {
@@ -87,7 +87,7 @@ export default function App() {
     fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '0.8rem',
-    '@media (min-width:600px)': {
+    '@media (min-width:768px)': {
       fontSize: '1.2rem',
     },
     [theme.breakpoints.up('md')]: {
@@ -99,7 +99,7 @@ export default function App() {
     fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '0.6rem',
-    '@media (min-width:600px)': {
+    '@media (min-width:768px)': {
       fontSize: '1.0rem',
     },
     [theme.breakpoints.up('md')]: {

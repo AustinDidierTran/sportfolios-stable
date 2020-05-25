@@ -1,9 +1,12 @@
 .game {
   display: grid !important;
-  grid-template-columns: 1fr 20px 1fr 40px 1fr 20px 1fr;
+  grid-template-columns: 48px 16px 4fr 32px 4fr 16px 48px;
   grid-template-areas: ' time leftTeamScore leftTeam VS rightTeam rightTeamScore field';
   column-gap: 4px;
-  padding: 8px;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
 }
 
 .leftTeam {
@@ -40,13 +43,15 @@
 .time {
   grid-area: time;
   align-self: center;
-  justify-self: start;
-  padding-left: 8px;
+  justify-self: end;
+  padding-right: 8px;
 }
 
 .field {
   grid-area: field;
   align-self: center;
+  justify-self: end;
+  padding-right: 4px;
 }
 
 .bailtxt {
@@ -56,20 +61,29 @@
 
 .bail {
   display: grid !important;
-  grid-template-columns: 1fr 20px 1fr 40px 1fr 20px 1fr;
+  grid-template-columns: 48px 16px 4fr 32px 4fr 16px 48px;
   grid-template-areas: 'time . . bailtxt . .';
   column-gap: 4px;
-  padding: 8px;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
 }
 
 @media (min-width: 768px) {
   .game {
-    grid-template-columns: 1fr 20px 1fr 60px 1fr 20px 1fr;
+    grid-template-columns: 152px 24px 1fr 54px 1fr 24px 152px;
     grid-template-areas: ' time leftTeamScore leftTeam VS rightTeam rightTeamScore field';
   }
   .bail {
     display: grid !important;
-    grid-template-columns: 1fr 20px 1fr 60px 1fr 20px 1fr;
+    grid-template-columns: 152px 24px 1fr 54px 1fr 24px 152px;
     grid-template-areas: 'time . . bailtxt . .';
+  }
+  .time {
+    padding-right: 32px;
+  }
+  .field {
+    justify-self: center;
   }
 }
