@@ -48,7 +48,7 @@ export default function App() {
   });
 
   theme.typography.h3 = {
-    fontFamily: 'Montserrat',
+    fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '1.4rem',
     '@media (min-width:600px)': {
@@ -60,7 +60,7 @@ export default function App() {
   };
 
   theme.typography.h4 = {
-    fontFamily: 'Montserrat',
+    fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '1.2rem',
     '@media (min-width:600px)': {
@@ -72,7 +72,7 @@ export default function App() {
   };
 
   theme.typography.h5 = {
-    fontFamily: 'Montserrat',
+    fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '1rem',
     '@media (min-width:600px)': {
@@ -84,7 +84,7 @@ export default function App() {
   };
 
   theme.typography.h6 = {
-    fontFamily: 'Montserrat',
+    fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '0.8rem',
     '@media (min-width:600px)': {
@@ -96,7 +96,7 @@ export default function App() {
   };
 
   theme.typography.h7 = {
-    fontFamily: 'Montserrat',
+    fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '0.6rem',
     '@media (min-width:600px)': {
