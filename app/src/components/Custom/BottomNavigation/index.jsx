@@ -25,7 +25,10 @@ export default function CustomBottomNavigation(props) {
 
   const routeEnum = {
     [TABS_ENUM.HOME]: [ROUTES.home],
-    [TABS_ENUM.PROFILE]: [ROUTES.profile, { id: userInfo.user_id }],
+    [TABS_ENUM.PROFILE]: [
+      ROUTES.profile,
+      { id: userInfo && userInfo.user_id ? userInfo.user_id : 0 },
+    ],
     [TABS_ENUM.NOTIFICATIONS]: [ROUTES.notifications],
     [TABS_ENUM.SETTINGS]: [ROUTES.userSettings],
   };
@@ -53,7 +56,15 @@ export default function CustomBottomNavigation(props) {
     <BottomNavigation
       value={value}
       onChange={handleChange}
-      style={{ width: '100vw', position: 'fixed', bottom: 0 }}
+      style={{
+        width: '100vw',
+        position: 'fixed',
+        bottom: 0,
+        borderColor: 'white',
+        borderTopColor: 'grey',
+        borderWidth: 'thin',
+        borderStyle: 'solid',
+      }}
     >
       <BottomNavigationAction
         label="Home"

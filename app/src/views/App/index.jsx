@@ -25,6 +25,7 @@ import Search from '../Search';
 import Signup from '../Signup';
 import Team from '../Team';
 import UserSettings from '../UserSettings';
+import Notifications from '../Notifications';
 
 // Mocks
 import MockSelfProfile from '../Mocks/Profile/Self';
@@ -167,6 +168,11 @@ export default function App() {
                 exact
                 path={ROUTES.confirmationEmailSent}
                 component={ConfirmationEmailSent}
+              />
+              <Route
+                exact
+                path={ROUTES.notifications}
+                component={Notifications}
               />
               <Route path={ROUTES.team} component={Team} />
               <PrivateRoute
