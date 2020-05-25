@@ -28,7 +28,7 @@ export default function About(props) {
       },
       {
         name: 'Coordonnateur technique',
-        text: 'Malik Auger-Semmar Goulet',
+        text: 'Malik Auger-Semmar',
       },
       {
         name: 'Coordonnateur aux opérations',

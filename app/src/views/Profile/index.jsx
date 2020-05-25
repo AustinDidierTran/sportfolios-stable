@@ -57,19 +57,19 @@ export default function Profile(props) {
   const states = [
     {
       value: TABS_ENUM.GENERAL,
-      component: General,
+      component: <General isSelf={isSelf} />,
       label: t('general'),
       icon: 'Folder',
     },
     {
       value: TABS_ENUM.ABOUT,
-      component: About,
+      component: <About />,
       label: t('about'),
       icon: 'Info',
     },
     {
       value: TABS_ENUM.SHOP,
-      component: Shop,
+      component: <Shop />,
       label: t('shop'),
       icon: 'ShoppingCart',
     },
@@ -100,7 +100,7 @@ export default function Profile(props) {
           ))}
         </Tabs>
       </Card>
-      <OpenTab />
+      {OpenTab}
     </Container>
   );
 }
