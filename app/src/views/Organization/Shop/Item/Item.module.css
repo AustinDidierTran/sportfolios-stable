@@ -1,0 +1,25 @@
+.infos {
+  display: grid !important;
+  grid-template-columns: 8fr 2fr;
+  grid-template-areas: 'name price' 'description description' 'cart cart';
+  padding-bottom: 0px !important;
+}
+
+.name {
+  grid-area: name;
+  justify-self: start;
+}
+
+.price {
+  grid-area: price;
+  justify-self: end;
+}
+
+.description {
+  grid-area: description;
+}
+
+.cart {
+  grid-area: cart;
+  margin: 16px !important;
+}
