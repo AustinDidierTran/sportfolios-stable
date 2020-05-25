@@ -9,3 +9,6 @@
 .titre {
   padding: 16px;
 }
+.button {
+  padding: 3px 16px !important;
+}
