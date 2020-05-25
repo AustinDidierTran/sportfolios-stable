@@ -40,13 +40,13 @@
 .time {
   grid-area: time;
   align-self: center;
+  justify-self: start;
   padding-left: 8px;
 }
 
 .field {
   grid-area: field;
   align-self: center;
-  padding-right: 8px;
 }
 
 .bailtxt {

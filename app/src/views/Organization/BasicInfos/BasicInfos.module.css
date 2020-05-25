@@ -1,6 +1,7 @@
 .card {
   grid-area: basicInfos;
   text-align: center;
+  padding: 0px !important;
 }
 
 .avatar {

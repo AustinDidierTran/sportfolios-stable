@@ -6,7 +6,7 @@ import styles from './Donate.module.css';
 import { IconButton } from '../../../../components/MUI';
 import { Button } from '../../../../components/Custom';
 
-export default function BecomeMember(props) {
+export default function Donate(props) {
   const { t } = useTranslation();
 
   const handleClick = () => {

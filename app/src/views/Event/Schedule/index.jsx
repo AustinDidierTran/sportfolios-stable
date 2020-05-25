@@ -12,7 +12,7 @@ import { Card, Typography, Container } from '../../../components/MUI';
 import styles from './Schedule.module.css';
 import { useTranslation } from 'react-i18next';
 
-export default function TeamSchedule(props) {
+export default function Schedule(props) {
   const { t } = useTranslation();
 
   const poolPlay = {
