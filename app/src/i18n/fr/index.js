@@ -2,6 +2,8 @@ export default {
   translations: {
     about: 'À propos',
     actions: 'Actions',
+    add_to_cart: 'Ajouter au panier',
+    added_to_cart: 'Ajouté au panier',
     adress: 'Addresse',
     app_role: 'App Role',
     athlete_history: "Historique de l'athlète",

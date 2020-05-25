@@ -2,6 +2,8 @@ export default {
   translations: {
     about: 'About',
     actions: 'Actions',
+    add_to_cart: 'Add to cart',
+    added_to_cart: 'Added to cart',
     adress: 'Address',
     app_role: 'App Role',
     athlete_history: 'Athlete history',
