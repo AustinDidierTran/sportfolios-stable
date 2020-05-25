@@ -4,13 +4,14 @@ body {
 
 .app {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 112px);
   display: grid !important;
   grid-template-areas:
-    'header header'
-    'main main';
-  grid-template-rows: 64px calc(100vh - 128px) 64px;
-  grid-template-columns: 160px calc(100vw - 160px);
+    'header'
+    'main'
+    'footer';
+  grid-template-rows: 56px calc(100vh - 112px) 56px;
+  grid-template-columns: 1fr;
 }
 
 .header {
@@ -18,6 +19,7 @@ body {
 }
 .main {
   grid-area: main;
+  overflow-y: scroll;
 }
 .footer {
   grid-area: footer;

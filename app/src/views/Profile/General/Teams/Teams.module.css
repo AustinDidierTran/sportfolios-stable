@@ -1,0 +1,9 @@
+.card {
+  text-align: center;
+  margin-bottom: 16px !important;
+}
+
+.highlight {
+  margin-left: auto;
+  color: #7f7f7f;
+}

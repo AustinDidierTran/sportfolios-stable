@@ -7,7 +7,13 @@ import FileInput from './FileInput';
 import DateInput from './DateInput';
 
 export default function CustomInput(props) {
-  const { type, ...inputProps } = props;
+  const { isVisible = true, type, ...inputProps } = props;
+
+  console.log('isVisible', isVisible);
+
+  if (!isVisible) {
+    return <></>;
+  }
 
   switch (type) {
     case 'date':

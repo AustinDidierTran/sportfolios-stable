@@ -15,10 +15,13 @@ export default {
     donate: 'Donate',
     email: 'Email',
     emails: 'Emails',
+    email_confirmed:
+      'An email has just been sent to {{email}}. Please, go look at your inbox to confirm your email.',
     event_manager: 'Event Manager',
     first_name: 'First Name',
     forgot_password: 'Forgot Password?',
     funding: 'Funding',
+    funding_goal: 'Goal: {{goal}}$',
     general: 'General',
     general_informations: 'General informations',
     goal: 'Goal',

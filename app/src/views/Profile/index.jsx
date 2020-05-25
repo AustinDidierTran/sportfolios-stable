@@ -1,24 +1,39 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Container } from '../../components/MUI';
+import {
+  Card,
+  Container,
+  Paper,
+  Tab,
+  Tabs,
+} from '../../components/MUI';
 import { Store } from '../../Store';
 import styles from './Profile.module.css';
-import BasicInfos from './BasicInfos/index';
-import AthleteHistory from './AthleteHistory/index';
-import Organizations from './Organizations/index';
-import Teams from './Teams/index';
-import FundingOther from './FundingOther';
-import FundingSelf from './FundingSelf';
+import BasicInfos from './BasicInfos';
+import General from './General';
+import Shop from './Shop';
+import About from './About';
 import api from '../../actions/api';
+
+import { useTranslation } from 'react-i18next';
+
+export const TABS_ENUM = {
+  GENERAL: 'general',
+  ABOUT: 'about',
+  SHOP: 'shop',
+};
 
 export default function Profile(props) {
   const [basicInfos, setBasicInfos] = useState({});
+  const { t } = useTranslation();
+
+  const [eventState, setEventState] = useState(TABS_ENUM.GENERAL);
 
   const updateBasicInfos = async () => {
-    const res = await api(
-      `/api/profile/userInfo/:id?8317ff33-3b04-49a1-afd3-420202cddf73`,
+    const { data } = await api(
+      `/api/profile/userInfo/8317ff33-3b04-49a1-afd3-420202cddf73`,
     );
 
-    setBasicInfos(res);
+    setBasicInfos(data);
   };
 
   useEffect(() => {
@@ -39,24 +54,53 @@ export default function Profile(props) {
 
   const isSelf = id === user_id;
 
+  const states = [
+    {
+      value: TABS_ENUM.GENERAL,
+      component: General,
+      label: t('general'),
+      icon: 'Folder',
+    },
+    {
+      value: TABS_ENUM.ABOUT,
+      component: About,
+      label: t('about'),
+      icon: 'Info',
+    },
+    {
+      value: TABS_ENUM.SHOP,
+      component: Shop,
+      label: t('shop'),
+      icon: 'ShoppingCart',
+    },
+  ];
+
+  const OpenTab = states.find(s => s.value == eventState).component;
+
   return (
-    <div className={styles.main}>
-      <Container className={styles.container}>
-        <BasicInfos isSelf basicInfos={basicInfos} />
-        {isSelf ? <FundingSelf /> : <FundingOther />}
-        <Organizations
-          isSelf
-          organizations={[
-            'Association utlimate Sherbrooke',
-            'Association Utlimate quebec',
-          ]}
-        />
-        <Teams isSelf teams={['Barons', 'Montcalm']} />
-        <AthleteHistory
-          isSelf
-          achievements={['1er au monde', '3e au quebec']}
-        />
-      </Container>
-    </div>
+    <Container className={styles.container}>
+      <Card className={styles.card}>
+        <Container className={styles.title}>
+          <BasicInfos isSelf={isSelf} basicInfos={basicInfos} />
+        </Container>
+        <Tabs
+          value={states.findIndex(s => s.value === eventState)}
+          indicatorColor="primary"
+          textColor="primary"
+          className={styles.tabs}
+          // centered
+        >
+          {states.map((s, index) => (
+            <Tab
+              key={index}
+              onClick={() => setEventState(s.value)}
+              label={s.label}
+              icon={s.icon}
+            />
+          ))}
+        </Tabs>
+      </Card>
+      <OpenTab />
+    </Container>
   );
 }
