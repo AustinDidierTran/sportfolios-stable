@@ -23,7 +23,7 @@ export default function BasicInfos(props) {
   };
 
   return (
-    <Card className={styles.card}>
+    <Container className={styles.card}>
       <Avatar
         className={styles.avatar}
         initials={data.initials}
@@ -37,6 +37,6 @@ export default function BasicInfos(props) {
         <BecomeMember className={styles.member} />
         <Donate className={styles.donate} />
       </Container>
-    </Card>
+    </Container>
   );
 }

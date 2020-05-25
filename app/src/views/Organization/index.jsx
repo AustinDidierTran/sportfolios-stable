@@ -61,24 +61,22 @@ export default function Organization(props) {
         <Container className={styles.titre}>
           <BasicInfos />
         </Container>
-        <Paper square>
-          <Tabs
-            value={states.findIndex(s => s.value === eventState)}
-            indicatorColor="primary"
-            textColor="primary"
-            className={styles.tabs}
-            // centered
-          >
-            {states.map((s, index) => (
-              <Tab
-                key={index}
-                onClick={() => setEventState(s.value)}
-                label={s.label}
-                icon={s.icon}
-              />
-            ))}
-          </Tabs>
-        </Paper>
+        <Tabs
+          value={states.findIndex(s => s.value === eventState)}
+          indicatorColor="primary"
+          textColor="primary"
+          className={styles.tabs}
+          // centered
+        >
+          {states.map((s, index) => (
+            <Tab
+              key={index}
+              onClick={() => setEventState(s.value)}
+              label={s.label}
+              icon={s.icon}
+            />
+          ))}
+        </Tabs>
       </Card>
       <OpenTab />
     </Container>
