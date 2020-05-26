@@ -20,6 +20,9 @@ export default {
     email_confirmed:
       'Un courriel de confirmation a été envoyé à {{email}}. Veuillez regarder vos courriels pour confirmer votre compte.',
     event_manager: "Responsable de l'événement",
+    events: 'Événements',
+    events_that_might_interest_you:
+      'Événements qui pourrait vous intéresser',
     first_name: 'Prénom',
     forgot_password: 'Mot de passe oublié?',
     funding: 'Financement',
@@ -38,10 +41,13 @@ export default {
     new_team: 'Nouvelle Équipe',
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
     notifications: 'Notifications',
+    on_going_events: 'Événements en cours',
     organization: 'Organisation',
     organizations: 'Organisations',
     our_team: 'Notre Équipe',
     password: 'Mot de passe',
+    pay: 'Payer',
+    payments: 'Paiements',
     players: 'Joueurs',
     private: 'Privée',
     pre_ranking: 'Préclassement',
@@ -68,7 +74,7 @@ export default {
     team: 'Équipe',
     team_history: "Historique de l'équipe",
     teams: 'Équipes',
-    upcoming_events: 'Événements',
+    your_upcoming_events: 'Vos prochains événements',
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',
     email_already_used:
