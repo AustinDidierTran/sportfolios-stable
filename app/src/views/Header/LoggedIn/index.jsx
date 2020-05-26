@@ -14,10 +14,8 @@ import {
   Typography,
 } from '../../../components/MUI';
 
-import {
-  NotificationModule,
-  SearchInput,
-} from '../../../components/Custom';
+import { SearchInput } from '../../../components/Custom';
+import NotificationModule from './NotificationModule';
 
 // Material ui icons
 import MenuIcon from '@material-ui/icons/Menu';

@@ -10,16 +10,22 @@ import { Card, Button } from '../../../components/MUI';
 import Typography from '@material-ui/core/Typography';
 
 export default function Follow(props) {
-  const { first_name, last_name, follower } = props.data;
+  const { first_name, last_name, follower } = props;
+  const [buttonState, setButtonState] = useState(true);
 
-  const onClosed = () => {
-    console.log('CLOSED');
+  const onFollow = () => {
+    setButtonState(!buttonState);
+    if (buttonState) {
+      alert(`Followed ${first_name} ${last_name}`);
+    } else {
+      alert(`No longer following ${first_name} ${last_name}`);
+    }
   };
 
   return (
-    <div className={styles.n2}>
+    <div className={styles.follow}>
       <div
-        className={styles.n3}
+        className={styles.information}
         onClick={() => history.push(`/profile/${follower}`)}
       >
         <Avatar
@@ -31,7 +37,11 @@ export default function Follow(props) {
           <b>{`${first_name} ${last_name}`}</b> started following you.
         </Typography>
       </div>
-      <Button color="primary" className={styles.button}>
+      <Button
+        color="primary"
+        className={buttonState ? styles.button : styles.buttonpressed}
+        onClick={onFollow}
+      >
         FOLLOW
       </Button>
     </div>

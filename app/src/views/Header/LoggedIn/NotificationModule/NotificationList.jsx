@@ -1,8 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { List, ListSubheader, Paper } from '../../../components/MUI';
-import NotificationFactory from './NotificationFactory';
+import {
+  List,
+  ListSubheader,
+  Paper,
+} from '../../../../components/MUI';
+import NotificationFactory from '../../../../components/Custom/NotificationFactory';
 
 import styles from './NotificationModule.module.css';
 
@@ -23,8 +27,9 @@ export default function NotificationList(props) {
         }
         disablePadding={true}
       >
-        {notifications.map(notification => (
+        {notifications.map((notification, index) => (
           <NotificationFactory
+            key={index}
             {...notification}
             closeNotificationModule={closeNotificationModule}
           />

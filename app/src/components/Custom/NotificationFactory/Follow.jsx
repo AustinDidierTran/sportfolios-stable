@@ -1,15 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useContext, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Avatar } from '../../../Custom';
+import { Avatar } from '..';
 
-import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
-import { goTo, ROUTES } from '../../../../actions/goTo';
+import { ListItem, ListItemIcon, ListItemText } from '../../MUI';
+import { goTo, ROUTES } from '../../../actions/goTo';
 
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import styles from './NotificationFactory.module.css';
-import api from '../../../../actions/api';
+import api from '../../../actions/api';
 
 export default function FollowNotification(props) {
   const { t } = useTranslation();

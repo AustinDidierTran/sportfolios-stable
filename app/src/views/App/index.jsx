@@ -25,7 +25,7 @@ import Search from '../Search';
 import Signup from '../Signup';
 import Team from '../Team';
 import UserSettings from '../UserSettings';
-import Notifications from '../Notifications';
+import Notifications from '../../views/Notifications';
 
 // Mocks
 import MockSelfProfile from '../Mocks/Profile/Self';
