@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import {
+  Button,
   Container,
   Typography,
   Card,
@@ -16,7 +17,6 @@ import Ranking from './Ranking';
 import { useTranslation } from 'react-i18next';
 
 export const TABS_ENUM = {
-  REGISTER: 'register',
   SCHEDULE: 'schedule',
   RANKING: 'ranking',
   INFOS: 'infos',
@@ -31,15 +31,15 @@ export default function Event(props) {
     },
   } = props;
 
+  const [isRegistered, setIsRegistered] = useState(true);
+
+  const registerClick = () => {
+    setIsRegistered(!isRegistered);
+  };
+
   const [eventState, setEventState] = useState(openTab);
 
   const states = [
-    {
-      value: TABS_ENUM.REGISTER,
-      component: Ranking,
-      label: t('registration'),
-      icon: 'Edit',
-    },
     {
       value: TABS_ENUM.SCHEDULE,
       component: Schedule,
@@ -61,13 +61,40 @@ export default function Event(props) {
   ];
   const OpenTab = states.find(s => s.value == eventState).component;
 
+  const data = {
+    name: 'Frisbee Fest',
+    startDate: '30',
+    endDate: '31',
+    Month: 'Mai',
+    City: 'Trois-Rivières',
+  };
   return (
     <Container className={styles.container}>
       <Card className={styles.card}>
         <Container className={styles.titre}>
-          <Typography variant="h3">Frisbee Fest</Typography>
-          <Typography variant="h5">30-31 Mai</Typography>
-          <Typography variant="h5">Trois-Rivières</Typography>
+          <Typography variant="h3">{data.name}</Typography>
+          <Typography variant="h5">
+            {data.startDate}-{data.endDate} {data.Month}
+          </Typography>
+          <Typography variant="h5">{data.City}</Typography>
+          {isRegistered ? (
+            <Button
+              variant="contained"
+              onClick={registerClick}
+              className={styles.button}
+              color="primary"
+            >
+              {t('registration')}
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={registerClick}
+              className={styles.button}
+            >
+              {t('registered')}
+            </Button>
+          )}
         </Container>
         <Paper square>
           <Tabs

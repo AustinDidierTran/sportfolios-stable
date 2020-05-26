@@ -24,3 +24,9 @@ body {
 .footer {
   grid-area: footer;
 }
+
+@media (min-width: 768px) {
+  .app {
+    grid-template-rows: 56px calc(100vh - 56px) 0;
+  }
+}

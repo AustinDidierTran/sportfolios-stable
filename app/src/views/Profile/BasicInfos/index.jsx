@@ -7,7 +7,11 @@ import styles from './BasicInfos.module.css';
 import { ACTION_ENUM } from '../../../Store';
 
 import { Avatar, Button, Input } from '../../../components/Custom';
-import { Card, Typography, TextField } from '../../../components/MUI';
+import {
+  Container,
+  Typography,
+  TextField,
+} from '../../../components/MUI';
 import { getInitialsFromName } from '../../../utils/stringFormats';
 import api from '../../../actions/api';
 import { useFormInput } from '../../../hooks/forms';
@@ -117,7 +121,7 @@ export default function BasicInfos(props) {
   };
 
   return (
-    <Card className={styles.card}>
+    <Container className={styles.card}>
       <Avatar initials={initials} photoUrl={photo_url} size="lg" />
       {isEditMode ? (
         <Input
@@ -194,6 +198,6 @@ export default function BasicInfos(props) {
       ) : (
         <Button onClick={onFollow}>{t('follow')}</Button>
       )}
-    </Card>
+    </Container>
   );
 }

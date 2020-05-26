@@ -58,6 +58,8 @@ export default function Funding(props) {
 
   const buttonLabel = isSelf ? t('edit') : t('donate');
 
+  const endIcon = isSelf ? 'Edit' : 'AttachMoney';
+
   return (
     <Card className={styles.card}>
       <CardHeader title={name} subheader={description} />
@@ -95,7 +97,7 @@ export default function Funding(props) {
         </Typography>
         <div className={styles.edit}>
           <Button
-            endIcon="Edit"
+            endIcon={endIcon}
             onClick={onButtonClick}
             color="primary"
           >

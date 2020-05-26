@@ -40,7 +40,7 @@
 @media (min-width: 992px) {
   .container {
     grid-template-columns: 1fr 1fr 1fr 291px;
-    grid-template-areas: 'bar bar bar .' 'funded progression goal edit';
+    grid-template-areas: 'bar bar bar edit' 'funded progression goal edit';
   }
   .edit {
     padding-left: 16px;

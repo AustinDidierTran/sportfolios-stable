@@ -66,7 +66,7 @@ export default function Infos(props) {
         </Typography>
         <Typography variant="h5">{infos.responsable}</Typography>
         <Typography variant="h5" color="textSecondary">
-          {infos.email}
+          {infos.email} <br />
           {infos.phone}
         </Typography>
       </Card>

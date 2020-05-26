@@ -34,12 +34,12 @@
 
 @media (min-width: 768px) {
   .md {
-    font-size: 24px;
+    font-size: 24px !important;
     width: 64px !important;
     height: 64px !important;
   }
   .lg {
-    font-size: 24px;
+    font-size: 36px !important;
     width: 96px !important;
     height: 96px !important;
   }
@@ -47,7 +47,7 @@
 
 @media (min-width: 992px) {
   .lg {
-    font-size: 24px;
+    font-size: 48px !important;
     width: 128px !important;
     height: 128px !important;
   }
