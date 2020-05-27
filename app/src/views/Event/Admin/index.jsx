@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { Paper } from '../../../components/MUI';
 import { Store, SCREENSIZE_ENUM } from '../../../Store';
+import PaymentChip from './PaymentChip';
+import RosterChip from './RosterChip';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -45,37 +47,37 @@ export default function Ranking(props) {
     {
       name: 'Sherbrooke Gentlemens Club',
       captain: 'Vincent Sasseville',
-      rosterIsValid: 'Alignement conforme',
+      rosterIsValid: true,
       paymentDue: 0,
     },
     {
       name: 'Manic',
       captain: 'Elliot Heloir',
-      rosterIsValid: 'Alignement conforme',
-      paymentDue: 0,
+      rosterIsValid: true,
+      paymentDue: 300,
     },
     {
       name: 'Magma',
       captain: 'Cedric Aubut-Boucher',
-      rosterIsValid: 'Alignement conforme',
+      rosterIsValid: false,
       paymentDue: 0,
     },
     {
       name: 'Mesa',
       captain: 'Christian Painchaud',
-      rosterIsValid: 'Alignement non-conforme',
-      paymentDue: 0,
+      rosterIsValid: false,
+      paymentDue: 345,
     },
     {
       name: 'Quake',
       captain: 'Francis Vallée',
-      rosterIsValid: 'Alignement conforme',
-      paymentDue: 0,
+      rosterIsValid: true,
+      paymentDue: 245,
     },
     {
       name: 'Quartz',
       captain: 'Joseph Genest',
-      rosterIsValid: 'Alignement conforme',
+      rosterIsValid: true,
       paymentDue: 0,
     },
   ];
@@ -91,7 +93,7 @@ export default function Ranking(props) {
     },
     body: {
       fontSize: 14,
-      minWidth: 95,
+      minWidth: 25,
     },
   }))(TableCell);
 
@@ -129,22 +131,30 @@ export default function Ranking(props) {
               ) : (
                 <StyledTableCell />
               )}
-              <StyledTableCell />
+              {isMobile ? <></> : <StyledTableCell />}
               <StyledTableCell />
             </TableRow>
           </TableHead>
           <TableHead>
             <TableRow>
               <StyledTableCell>Nom de l'équipe</StyledTableCell>
-              <StyledTableCell align="right">
+              <StyledTableCell align="center">
                 Nom du capitaine
               </StyledTableCell>
-              <StyledTableCell align="right">
-                Conformité de l'alignement
-              </StyledTableCell>
-              <StyledTableCell align="right">
-                Solde a payer
-              </StyledTableCell>
+              {isMobile ? (
+                <StyledTableCell align="center">État</StyledTableCell>
+              ) : (
+                <StyledTableCell align="center">
+                  Alignement
+                </StyledTableCell>
+              )}
+              {isMobile ? (
+                <></>
+              ) : (
+                <StyledTableCell align="center">
+                  Solde
+                </StyledTableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -153,15 +163,32 @@ export default function Ranking(props) {
                 <StyledTableCell component="th" scope="row">
                   {team.name}
                 </StyledTableCell>
-                <StyledTableCell align="right">
+                <StyledTableCell align="center">
                   {team.captain}
                 </StyledTableCell>
-                <StyledTableCell align="right">
-                  {team.rosterIsValid}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {team.paymentDue}
-                </StyledTableCell>
+                {isMobile ? (
+                  <StyledTableCell align="center">
+                    <PaymentChip
+                      state={team.paymentDue}
+                      mobile={isMobile}
+                    />
+                    <RosterChip state={team.rosterIsValid} />
+                  </StyledTableCell>
+                ) : (
+                  <StyledTableCell align="center">
+                    <RosterChip state={team.rosterIsValid} />
+                  </StyledTableCell>
+                )}
+                {isMobile ? (
+                  <></>
+                ) : (
+                  <StyledTableCell align="center">
+                    <PaymentChip
+                      state={team.paymentDue}
+                      mobile={isMobile}
+                    />
+                  </StyledTableCell>
+                )}
               </StyledTableRow>
             ))}
           </TableBody>
