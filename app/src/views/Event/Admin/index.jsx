@@ -1,13 +1,28 @@
 import React from 'react';
 
-import { Table } from '../../../components/Custom';
+import { CardContent, Paper } from '../../../components/MUI';
 
-import { Card, CardContent } from '../../../components/MUI';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+
 import styles from './Admin.module.css';
 import { useTranslation } from 'react-i18next';
 
+const useStyles = makeStyles({
+  table: {
+    minWidth: 700,
+  },
+});
+
 export default function Ranking(props) {
   const { t } = useTranslation();
+
+  const classes = useStyles;
 
   const teams = [
     {
@@ -47,40 +62,94 @@ export default function Ranking(props) {
       paymentDue: 0,
     },
   ];
+  const numberOfTeams = {
+    title: t('registration_status'),
+    description: '6/16 inscrits',
+  };
+
+  const StyledTableCell = withStyles(theme => ({
+    head: {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.common.white,
+    },
+    body: {
+      fontSize: 14,
+      minWidth: 95,
+    },
+  }))(TableCell);
+
+  const StyledTableRow = withStyles(theme => ({
+    root: {
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+      },
+    },
+  }))(TableRow);
 
   return (
-    <Card className={styles.bigCard}>
-      <CardContent>
+    <Paper className={styles.paper}>
+      <TableContainer component={Paper}>
         <Table
-          title={t('registration_status')}
-          headers={[
-            {
-              display: "Nom de l'équipe",
-              type: 'text',
-              value: 'name',
-            },
-            {
-              display: 'Nom du capitaine',
-              type: 'text',
-              value: 'captain',
-            },
-            {
-              display: "Conformité de l'alignement",
-              type: 'text',
-              value: 'rosterIsValid',
-            },
-            {
-              display: 'Solde a payer',
-              type: 'text',
-              value: 'paymentDue',
-            },
-          ]}
-          data={teams}
-          description={
-            "Nombres d'équipes inscrites: 6 sur 16 places disponibles"
-          }
-        ></Table>
-      </CardContent>
-    </Card>
+          className={classes.table}
+          aria-label="customized table"
+        >
+          <TableHead>
+            <TableRow>
+              {window.innerWidth < 600 ? (
+                <StyledTableCell>
+                  {numberOfTeams.title}:
+                </StyledTableCell>
+              ) : (
+                <StyledTableCell>
+                  {numberOfTeams.title}:&nbsp;
+                  {numberOfTeams.description}
+                </StyledTableCell>
+              )}
+              {window.innerWidth < 600 ? (
+                <StyledTableCell>
+                  {numberOfTeams.description}
+                </StyledTableCell>
+              ) : (
+                <StyledTableCell />
+              )}
+              <StyledTableCell />
+              <StyledTableCell />
+            </TableRow>
+          </TableHead>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Nom de l'équipe</StyledTableCell>
+              <StyledTableCell align="right">
+                Nom du capitaine
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                Conformité de l'alignement
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                Solde a payer
+              </StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {teams.map(team => (
+              <StyledTableRow key={team.name}>
+                <StyledTableCell component="th" scope="row">
+                  {team.name}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {team.captain}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {team.rosterIsValid}
+                </StyledTableCell>
+                <StyledTableCell align="right">
+                  {team.paymentDue}
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
 }
