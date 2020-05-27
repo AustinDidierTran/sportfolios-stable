@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
-import { CardContent, Paper } from '../../../components/MUI';
+import { Paper } from '../../../components/MUI';
+import { Store, SCREENSIZE_ENUM } from '../../../Store';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -23,6 +24,22 @@ export default function Ranking(props) {
   const { t } = useTranslation();
 
   const classes = useStyles;
+
+  const {
+    state: { screenSize },
+  } = useContext(Store);
+
+  const [isMobile, setIsMobile] = useState(
+    screenSize === SCREENSIZE_ENUM.xs,
+  );
+
+  useEffect(() => {
+    if (screenSize === SCREENSIZE_ENUM.xs) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  }, [screenSize]);
 
   const teams = [
     {
@@ -95,7 +112,7 @@ export default function Ranking(props) {
         >
           <TableHead>
             <TableRow>
-              {window.innerWidth < 600 ? (
+              {isMobile ? (
                 <StyledTableCell>
                   {numberOfTeams.title}:
                 </StyledTableCell>
@@ -105,7 +122,7 @@ export default function Ranking(props) {
                   {numberOfTeams.description}
                 </StyledTableCell>
               )}
-              {window.innerWidth < 600 ? (
+              {isMobile ? (
                 <StyledTableCell>
                   {numberOfTeams.description}
                 </StyledTableCell>
