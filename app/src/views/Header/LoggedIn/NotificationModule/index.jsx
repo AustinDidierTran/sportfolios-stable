@@ -1,13 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-import api from '../../../actions/api';
+import api from '../../../../actions/api';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import NotificationList from './NotificationList';
 
 import styles from './NotificationModule.module.css';
 
-import { Badge, IconButton } from '../../../components/MUI';
+import { Badge, IconButton } from '../../../../components/MUI';
 import { useEffect } from 'react';
 
 export default function NotificationModule() {
