@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-
+import styles from './BottomNavigation.module.css';
 import { Icon } from '../../Custom';
 import { Badge } from '../../MUI';
 
@@ -27,7 +27,7 @@ export default function CustomBottomNavigation(props) {
     [TABS_ENUM.HOME]: [ROUTES.home],
     [TABS_ENUM.PROFILE]: [
       ROUTES.profile,
-      { id: userInfo && userInfo.user_id ? userInfo.user_id : 0 },
+      { id: userInfo && userInfo.user_id },
     ],
     [TABS_ENUM.NOTIFICATIONS]: [ROUTES.notifications],
     [TABS_ENUM.SETTINGS]: [ROUTES.userSettings],
@@ -56,15 +56,7 @@ export default function CustomBottomNavigation(props) {
     <BottomNavigation
       value={value}
       onChange={handleChange}
-      style={{
-        width: '100vw',
-        position: 'fixed',
-        bottom: 0,
-        borderColor: 'white',
-        borderTopColor: 'grey',
-        borderWidth: 'thin',
-        borderStyle: 'solid',
-      }}
+      className={styles.bottomnavigation}
     >
       <BottomNavigationAction
         label="Home"
