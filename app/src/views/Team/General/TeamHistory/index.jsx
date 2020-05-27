@@ -19,14 +19,14 @@ export default function AthleteHistory(props) {
 
   const data = [
     {
-      position: 11,
-      event: 'CUC',
-      year: '2018',
-    },
-    {
       position: 1,
       event: 'Frisbee Fest',
       year: '2019',
+    },
+    {
+      position: 11,
+      event: 'CUC',
+      year: '2018',
     },
   ];
 

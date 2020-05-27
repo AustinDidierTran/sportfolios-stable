@@ -20,35 +20,34 @@ export default function Notifications(props) {
     updateNotifications();
   }, []);
 
-  const test_notifications = [
+  const testNotifications = [
     {
-      first_name: 'Austin',
-      last_name: 'Didier',
-      follower: '8317ff33-3b04-49a1-afd3-420202cddf73',
+      follower: '31df10b0-1055-4e12-ad4a-5e732b8b8544',
+      seen_at: null,
+      created_at: '2020-04-22T22:05:52.631Z',
+      photoUrl:
+        'https://media-exp1.licdn.com/dms/image/C5603AQEGh4E9nsa79g/profile-displayphoto-shrink_200_200/0?e=1594857600&v=beta&t=5kAa6ReluqmUTbry-xa_0QtBmJZlRcTiyi4t03gdRm0',
+      first_name: 'Guillaume',
+      last_name: 'Proulx Goulet',
+      type: 'follow',
     },
     {
-      first_name: 'Emilie',
-      last_name: 'Bouchard',
-      follower: '8317ff33-3b04-49a1-afd3-420202cddf73',
-    },
-    {
-      first_name: 'Alexandre',
-      last_name: 'Lafleur',
-      follower: '8317ff33-3b04-49a1-afd3-420202cddf73',
-    },
-    {
-      first_name: 'Federation Quebecoise',
-      last_name: 'Ultimate',
-      follower: '8317ff33-3b04-49a1-afd3-420202cddf73',
+      follower: '31df10b0-1055-4e12-ad4a-5e732b8b8544',
+      seen_at: null,
+      created_at: '2020-04-22T22:05:52.631Z',
+      photoUrl: null,
+      first_name: 'Dave',
+      last_name: 'Brideau',
+      type: 'follow',
     },
   ];
 
-  return notifications.length > 0 ? (
+  return testNotifications.length > 0 ? (
     <div className={styles.n2}>
       <Paper elevation={0} className={styles.card}>
-        {notifications.map((notif, index) => {
-          return <NotificationFactory {...notif} key={index} />;
-        })}
+        {testNotifications.map((notif, index) => (
+          <NotificationFactory {...notif} key={index} />
+        ))}
       </Paper>
     </div>
   ) : (

@@ -15,11 +15,6 @@ export default function Follow(props) {
 
   const onFollow = () => {
     setButtonState(!buttonState);
-    if (buttonState) {
-      alert(`Followed ${first_name} ${last_name}`);
-    } else {
-      alert(`No longer following ${first_name} ${last_name}`);
-    }
   };
 
   return (

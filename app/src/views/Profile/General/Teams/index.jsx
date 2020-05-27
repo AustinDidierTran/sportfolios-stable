@@ -25,7 +25,7 @@ export default function Teams(props) {
       <CardHeader title={t('teams')} />
       <List disablePadding={true}>
         {teams.map((team, index) => {
-          const { highlight, name } = team;
+          const { highlight, name, photoUrl } = team;
           return (
             <ListItem
               button
@@ -35,7 +35,7 @@ export default function Teams(props) {
               <ListItemIcon>
                 <Avatar
                   initials={getInitialsFromName(name)}
-                  photoUrl={null}
+                  photoUrl={photoUrl}
                 />
               </ListItemIcon>
               <TextField

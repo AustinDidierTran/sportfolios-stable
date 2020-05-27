@@ -22,7 +22,7 @@ export default function NotificationList(props) {
       photoUrl:
         'https://media-exp1.licdn.com/dms/image/C5603AQEGh4E9nsa79g/profile-displayphoto-shrink_200_200/0?e=1594857600&v=beta&t=5kAa6ReluqmUTbry-xa_0QtBmJZlRcTiyi4t03gdRm0',
       first_name: 'Guillaume',
-      last_name: 'Proulx-Goulet',
+      last_name: 'Proulx Goulet',
       type: 'follow',
     },
     {

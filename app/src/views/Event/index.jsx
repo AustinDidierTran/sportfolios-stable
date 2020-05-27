@@ -22,7 +22,7 @@ export default function Event(props) {
 
   const {
     match: {
-      params: { openTab = TABS_ENUM.INFOS },
+      params: { openTab = TABS_ENUM.SCHEDULE },
     },
   } = props;
 
