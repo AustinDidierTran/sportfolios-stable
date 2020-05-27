@@ -10,6 +10,7 @@ import { Card, Button } from '../../../components/MUI';
 import Typography from '@material-ui/core/Typography';
 
 export default function Follow(props) {
+  const { t } = useTranslation();
   const { first_name, last_name, follower } = props;
   const [buttonState, setButtonState] = useState(true);
 
@@ -34,7 +35,8 @@ export default function Follow(props) {
           className={styles.avatar}
         />
         <Typography>
-          <b>{`${first_name} ${last_name}`}</b> started following you.
+          <b>{`${first_name} ${last_name}`}</b>
+          {t('follow_notification_text')}
         </Typography>
       </div>
       <Button
@@ -42,7 +44,7 @@ export default function Follow(props) {
         className={buttonState ? styles.button : styles.buttonpressed}
         onClick={onFollow}
       >
-        FOLLOW
+        {buttonState ? t('follow') : t('following')}
       </Button>
     </div>
   );

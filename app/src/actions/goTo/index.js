@@ -21,6 +21,7 @@ export const ROUTES = {
   signup: '/signup',
   team: '/team',
   userSettings: '/userSettings',
+  menu: '/menu',
 };
 
 export const formatRoute = (route, params) => {

@@ -26,6 +26,7 @@ import Signup from '../Signup';
 import Team from '../Team';
 import UserSettings from '../UserSettings';
 import Notifications from '../../views/Notifications';
+import Menu from '../Menu';
 
 // Mocks
 import MockSelfProfile from '../Mocks/Profile/Self';
@@ -184,6 +185,7 @@ export default function App() {
                 path={ROUTES.userSettings}
                 component={UserSettings}
               />
+              <PrivateRoute path={ROUTES.menu} component={Menu} />
               <PrivateRoute component={Main} />
             </Switch>
           </div>

@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Notifications.module.css';
 import api from '../../actions/api';
-import Follow from './Follow';
 import NotificationFactory from '../../components/Custom/NotificationFactory/index';
+import { useTranslation } from 'react-i18next';
 
 import { Paper } from '../../components/MUI';
 import { Typography } from '@material-ui/core';
 
 export default function Notifications(props) {
+  const { t } = useTranslation();
   const [notifications, setNotifications] = useState([]);
 
   const updateNotifications = async () => {
@@ -53,9 +54,9 @@ export default function Notifications(props) {
   ) : (
     <div className={styles.n1}>
       <Typography>
-        <b>NO NOTIFICATIONS</b>
+        <b>{t('no_notifications').toUpperCase()}</b>
       </Typography>
-      <Typography>Come back later.</Typography>
+      <Typography>{t('no_notifications_message')}</Typography>
     </div>
   );
 }

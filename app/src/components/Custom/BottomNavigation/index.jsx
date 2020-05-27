@@ -6,6 +6,8 @@ import styles from './BottomNavigation.module.css';
 import { Icon } from '../../Custom';
 import { Badge } from '../../MUI';
 
+import { useTranslation } from 'react-i18next';
+
 import { ROUTES, goTo } from '../../../actions/goTo';
 import { Store } from '../../../Store';
 
@@ -13,10 +15,11 @@ const TABS_ENUM = {
   HOME: 'home',
   PROFILE: 'profile',
   NOTIFICATIONS: 'notifications',
-  SETTINGS: 'settings',
+  MENU: 'menu',
 };
 
 export default function CustomBottomNavigation(props) {
+  const { t } = useTranslation();
   const {
     state: { userInfo },
   } = useContext(Store);
@@ -30,7 +33,7 @@ export default function CustomBottomNavigation(props) {
       { id: userInfo && userInfo.user_id },
     ],
     [TABS_ENUM.NOTIFICATIONS]: [ROUTES.notifications],
-    [TABS_ENUM.SETTINGS]: [ROUTES.userSettings],
+    [TABS_ENUM.MENU]: [ROUTES.menu],
   };
 
   const handleChange = (event, newValue) => {
@@ -59,17 +62,17 @@ export default function CustomBottomNavigation(props) {
       className={styles.bottomnavigation}
     >
       <BottomNavigationAction
-        label="Home"
+        label={t('home')}
         value={TABS_ENUM.HOME}
         icon={<Icon icon="Home" />}
       />
       <BottomNavigationAction
-        label="Profile"
+        label={t('profile')}
         value={TABS_ENUM.PROFILE}
         icon={<Icon icon="Person" />}
       />
       <BottomNavigationAction
-        label="Notifications"
+        label={t('notifications')}
         value={TABS_ENUM.NOTIFICATIONS}
         icon={
           <Badge badgeContent="2" color="secondary">
@@ -78,9 +81,9 @@ export default function CustomBottomNavigation(props) {
         }
       />
       <BottomNavigationAction
-        label="Settings"
-        value={TABS_ENUM.SETTINGS}
-        icon={<Icon icon="Settings" />}
+        label={t('menu')}
+        value={TABS_ENUM.MENU}
+        icon={<Icon icon="Menu" />}
       />
     </BottomNavigation>
   ) : (
