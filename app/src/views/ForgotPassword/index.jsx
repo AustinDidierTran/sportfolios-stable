@@ -5,7 +5,7 @@ import { useFormik } from 'formik';
 import styles from './Login.module.css';
 
 import { ACTION_ENUM, Store } from '../../Store';
-import { Container } from '../../components/MUI';
+import { Container } from '../../components/Custom';
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import ForgotPasswordCard from './ForgotPasswordCard';

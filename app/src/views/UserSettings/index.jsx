@@ -7,7 +7,7 @@ import styles from './UserSettings.module.css';
 import BasicInfo from './BasicInfo';
 import ChangePassword from './ChangePassword';
 import Email from './Email';
-import { Container } from '../../components/MUI';
+import { Container } from '../../components/Custom';
 
 export default function UserSettings() {
   const { t } = useTranslation();

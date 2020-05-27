@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 
 import {
   Button,
-  Container,
   Typography,
   Card,
   Tab,
   Tabs,
 } from '../../components/MUI';
+import { Container } from '../../components/Custom';
+
 import Paper from '@material-ui/core/Paper';
 
 import styles from './Event.module.css';
