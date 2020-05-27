@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ACTION_ENUM, Store } from '../../../Store';
+import { ACTION_ENUM, Store, SCREENSIZE_ENUM } from '../../../Store';
 import APP_ROLES from '../../App/appRoles';
+import logo from '../../../img/logo.png';
 
 import {
   AppBar,
@@ -32,7 +33,7 @@ export default function LoggedIn() {
   const classes = useStyles();
   const { t } = useTranslation();
   const {
-    state: { userInfo },
+    state: { userInfo, screenSize },
     dispatch,
   } = useContext(Store);
 
@@ -94,7 +95,7 @@ export default function LoggedIn() {
     </Menu>
   );
 
-  return (
+  return screenSize !== SCREENSIZE_ENUM.xs ? (
     <div className={classes.grow}>
       <AppBar position="static" style={{ position: 'fixed', top: 0 }}>
         <Toolbar>
@@ -118,6 +119,23 @@ export default function LoggedIn() {
             >
               <AccountCircle />
             </IconButton>
+          </div>
+        </Toolbar>
+      </AppBar>
+      {renderMenu}
+    </div>
+  ) : (
+    <div className={classes.grow}>
+      <AppBar position="static" style={{ position: 'fixed', top: 0 }}>
+        <Toolbar
+          style={{ display: 'flex', justifyContent: 'space-between' }}
+        >
+          <div style={{ flex: '0 0 75px' }}>
+            <img src={logo} />
+          </div>
+
+          <div style={{ flex: '1 0 100px' }}>
+            <SearchInput />
           </div>
         </Toolbar>
       </AppBar>

@@ -13,6 +13,11 @@ const useStyles = makeStyles(theme => ({
       display: 'block',
     },
   },
+  titlexs: {
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
+    },
+  },
   titleLink: {
     color: 'white',
     textDecoration: 'none',
