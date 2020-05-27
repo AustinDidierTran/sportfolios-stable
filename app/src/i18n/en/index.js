@@ -75,6 +75,7 @@ export default {
     subscribe: 'Subscribe',
     subscribed: 'Subscribed',
     shop: 'Shop',
+    tournament_fee: 'Tournament Fee',
     team: 'Teams',
     team_history: 'Team History',
     teams: 'Teams',

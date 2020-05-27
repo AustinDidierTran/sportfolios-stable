@@ -21,6 +21,7 @@
 
 .avatar {
   grid-area: avatar;
+  align-self: center;
 }
 
 .tournoi {

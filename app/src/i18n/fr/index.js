@@ -7,6 +7,7 @@ export default {
     admin: 'Administrateur',
     adress: 'Addresse',
     app_role: 'App Role',
+    awaiting_payments: 'Paiements en attentes',
     athlete_history: "Historique de l'athlète",
     basic_info: 'Information générales',
     become_member: 'Devenir membre',
@@ -76,6 +77,7 @@ export default {
     send_password_recovery_email:
       'Envoyer le courriel de réinitialisation de mot de passe',
     signup: "S'enregistrer",
+    tournament_fee: 'Frais de tournoi',
     shop: 'Boutique',
     subscribe: "S'abonner",
     subscribed: 'Abonné',

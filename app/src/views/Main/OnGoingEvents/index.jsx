@@ -27,7 +27,7 @@ export default function OnGoingEvents(props) {
     <Paper className={styles.card} gutterBottom>
       <Typography
         className={styles.title}
-        variant="h3"
+        variant="h5"
         color="primary"
       >
         {t('on_going_events')}
@@ -46,16 +46,16 @@ export default function OnGoingEvents(props) {
               </ListItemIcon>
               <Container className={styles.infos}>
                 <Container className={styles.tournoi}>
-                  <Typography className={styles.name} variant="h3">
+                  <Typography className={styles.name} variant="h5">
                     {event.name}
                   </Typography>
-                  <Typography className={styles.circuit} variant="h5">
+                  <Typography className={styles.circuit} variant="h7">
                     {event.circuit}
                   </Typography>
                 </Container>
                 <hr />
                 <Container className={styles.dateregister}>
-                  <Typography className={styles.date} variant="h5">
+                  <Typography className={styles.date} variant="h7">
                     {event.date}
                   </Typography>
                   {event.type === EVENT_STATUS_ENUM.REGISTRATION ? (
@@ -85,16 +85,16 @@ export default function OnGoingEvents(props) {
               </ListItemIcon>
               <Container className={styles.infos}>
                 <Container className={styles.tournoi}>
-                  <Typography className={styles.name} variant="h3">
+                  <Typography className={styles.name} variant="h5">
                     {event.name}
                   </Typography>
-                  <Typography className={styles.circuit} variant="h5">
+                  <Typography className={styles.circuit} variant="h7">
                     {event.circuit}
                   </Typography>
                 </Container>
                 <hr />
                 <Container className={styles.dateregister}>
-                  <Typography className={styles.date} variant="h5">
+                  <Typography className={styles.date} variant="h7">
                     {event.date}
                   </Typography>
                   {event.type === EVENT_STATUS_ENUM.REGISTRATION ? (

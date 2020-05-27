@@ -24,7 +24,7 @@ export default function YourPayments(props) {
         variant="h3"
         color="primary"
       >
-        {t('payments')}
+        {t('awaiting_payments')}
       </Typography>
       {payments.map(payment => (
         <Container className={styles.container}>
