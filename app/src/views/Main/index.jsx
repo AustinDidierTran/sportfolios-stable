@@ -6,6 +6,7 @@ import { Container } from '../../components/Custom';
 
 import { useAllMainInformations } from '../../actions/api/helpers';
 
+import { useTranslation } from 'react-i18next';
 import FollowingUsersCard from './FollowingUsersCard/index';
 import YourEventsCard from './YourEventsCard';
 import EventsOfInterest from './EventsOfInterest';
@@ -15,6 +16,8 @@ import OnGoingEvents from './OnGoingEvents';
 
 export default function Main() {
   const { users } = useAllMainInformations();
+
+  const { t } = useTranslation();
 
   const yourEvents = [
     {
@@ -78,23 +81,21 @@ export default function Main() {
   const payments = [
     {
       title: 'Primavera',
-      subtitle: 'Tournament Fee',
+      subtitle: t('tournament_fee'),
       price: '30$',
     },
     {
       title: 'Frisbee Fest',
-      subtitle: 'Tournament Fee',
+      subtitle: t('tournament_fee'),
       price: '25$',
     },
   ];
 
   return (
     <Container className={styles.container}>
+      <YourPayments payments={payments} />
       <OnGoingEvents events={onGoingEvents} />
       <YourEventsCard events={yourEvents} />
-      <YourPayments payments={payments} />
-      <EventsOfInterest events={eventsOfInterest} />
-      <FollowingUsersCard users={users} />
     </Container>
   );
 }

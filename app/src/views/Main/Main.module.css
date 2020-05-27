@@ -2,6 +2,14 @@
   text-align: center;
   display: grid !important;
   grid-template-columns: 1fr;
-  grid-template-areas: 'onGoingEvents' 'yourEvents' 'yourPayments' 'eventsOfInterest' 'followingUsersCard';
+  grid-template-areas: 'yourPayments' 'onGoingEvents' 'yourEvents';
   row-gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 'yourPayments yourPayments' 'onGoingEvents yourEvents';
+    column-gap: 16px;
+  }
 }

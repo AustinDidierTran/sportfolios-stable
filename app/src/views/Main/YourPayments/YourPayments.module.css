@@ -12,6 +12,7 @@
 
 .title {
   grid-area: title;
+  padding: 8px;
 }
 
 .subtitle {
@@ -20,6 +21,7 @@
 
 .price {
   grid-area: price;
+  align-self: center;
 }
 
 .button {
