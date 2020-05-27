@@ -71,6 +71,7 @@ export default function FollowingUsersCard(props) {
                   initials={initials(user)}
                   className={styles.avatar}
                   photoUrl={user.photo_url}
+                  size="md"
                 />
               </ListItemIcon>
               <ListItemText primary={fullName(user)} />

@@ -1,3 +1,7 @@
 .container {
   text-align: center;
+  display: grid !important;
+  grid-template-columns: 1fr;
+  grid-template-areas: 'onGoingEvents' 'yourEvents' 'yourPayments' 'eventsOfInterest' 'followingUsersCard';
+  row-gap: 16px;
 }
