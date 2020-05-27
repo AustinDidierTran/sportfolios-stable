@@ -29,6 +29,10 @@ export default function Roster(props) {
           name: 'Alexandre Lafleur',
           number: 14,
         },
+        {
+          name: 'Vincent Sasseville',
+          number: 9,
+        },
       ],
     },
     {

@@ -28,7 +28,7 @@ export default function Organizations(props) {
           iconComponent: (
             <Avatar
               initials={organization.initials}
-              photoUrl={null}
+              photoUrl={organization.photoUrl}
             />
           ),
         }))}
