@@ -23,6 +23,7 @@ import RemoveShoppingCart from '@material-ui/icons/RemoveShoppingCart';
 import Search from '@material-ui/icons/Search';
 import Settings from '@material-ui/icons/Settings';
 import ShoppingCart from '@material-ui/icons/ShoppingCart';
+import Menu from '@material-ui/icons/Menu';
 
 const icons = {
   Add,
@@ -48,6 +49,7 @@ const icons = {
   Search,
   Settings,
   ShoppingCart,
+  Menu,
 };
 
 export default function CustomIcon(props) {
