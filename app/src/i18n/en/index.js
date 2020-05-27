@@ -8,6 +8,7 @@ export default {
     adress: 'Address',
     app_role: 'App Role',
     athlete_history: 'Athlete history',
+    awaiting_payments: 'Awaiting payments',
     basic_info: 'Basic Info',
     become_member: 'Become Member',
     birth_date_format: '{{date, LL}} ({{age}} years old)',
