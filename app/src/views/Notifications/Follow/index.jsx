@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 
 export default function Follow(props) {
   const { t } = useTranslation();
-  const { first_name, last_name, follower } = props;
+  const { first_name, last_name, follower, photoUrl } = props;
   const [buttonState, setButtonState] = useState(true);
 
   const onFollow = () => {
@@ -31,7 +31,7 @@ export default function Follow(props) {
       >
         <Avatar
           initials={getInitialsFromName(`${first_name} ${last_name}`)}
-          photoUrl={null}
+          photoUrl={photoUrl}
           className={styles.avatar}
         />
         <Typography>

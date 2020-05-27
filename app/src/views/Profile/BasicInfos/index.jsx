@@ -101,15 +101,6 @@ export default function BasicInfos(props) {
     });
   };
 
-  const onFirstNameChange = async () => {
-    //TODO
-    console.log(first_name);
-  };
-  const onLastNameChange = async () => {
-    //TODO
-    console.log(first_name);
-  };
-
   const [isFollowing, setIsFollowing] = useState(false);
 
   const onFollow = async () => {

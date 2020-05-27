@@ -13,6 +13,7 @@ import Event from '@material-ui/icons/Event';
 import Folder from '@material-ui/icons/Folder';
 import Home from '@material-ui/icons/Home';
 import Info from '@material-ui/icons/Info';
+import Lock from '@material-ui/icons/Lock';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 import Notifications from '@material-ui/icons/Notifications';
 import Person from '@material-ui/icons/Person';
@@ -38,6 +39,7 @@ const icons = {
   Folder,
   Home,
   Info,
+  Lock,
   NavigateNext,
   Notifications,
   Person,
@@ -52,7 +54,6 @@ const icons = {
 
 export default function CustomIcon(props) {
   const { icon } = props;
-  console.log('icon', icon);
 
   const Icon = icons[icon];
 
