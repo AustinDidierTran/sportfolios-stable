@@ -1,0 +1,49 @@
+.card {
+  grid-area: funding;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.expand {
+  grid-area: expand;
+}
+
+.bar {
+  grid-area: bar;
+}
+
+.edit {
+  grid-area: edit;
+}
+
+.goal {
+  grid-area: goal;
+  text-align: right;
+}
+
+.progression {
+  grid-area: progression;
+}
+
+.funded {
+  grid-area: funded;
+  text-align: left;
+}
+
+.container {
+  display: grid !important;
+  grid-template-columns: 1fr 64px 1fr;
+  grid-template-areas: 'bar bar bar' 'funded progression goal' 'edit edit edit';
+  padding-bottom: 16px;
+}
+
+@media (min-width: 992px) {
+  .container {
+    grid-template-columns: 1fr 1fr 1fr 291px;
+    grid-template-areas: 'bar bar bar edit' 'funded progression goal edit';
+  }
+  .edit {
+    padding-left: 16px;
+    width: 160px;
+  }
+}

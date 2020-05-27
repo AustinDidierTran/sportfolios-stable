@@ -1,4 +1,15 @@
 .container {
   text-align: center;
-  padding-top: 24px;
+  display: grid !important;
+  grid-template-columns: 1fr;
+  grid-template-areas: 'yourPayments' 'onGoingEvents' 'yourEvents';
+  row-gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 'yourPayments yourPayments' 'onGoingEvents yourEvents';
+    column-gap: 16px;
+  }
 }

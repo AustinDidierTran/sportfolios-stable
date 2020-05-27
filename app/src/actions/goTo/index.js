@@ -6,15 +6,22 @@ export const ROUTES = {
   confirmEmail: '/confirmEmail/:token',
   confirmEmailFailure: '/ConfirmEmailFailure',
   confirmEmailSuccess: '/confirmEmailSuccess',
+  event: '/event',
   forgotPassword: '/forgotPassword',
+  home: '/',
   login: '/login',
-  mockOrganization: '/mock/Organization',
+  mockOrganization: '/mock/Organization/:openTab',
   mockSelfProfile: '/mock/selfProfile',
+  mockEvent: '/mock/Event/:openTab',
+  notifications: '/notifications',
+  organization: '/organization',
   profile: '/profile/:id',
   recoveryEmail: '/recoveryEmail/:token',
   search: '/search/:query',
   signup: '/signup',
+  team: '/team',
   userSettings: '/userSettings',
+  menu: '/menu',
 };
 
 export const formatRoute = (route, params) => {

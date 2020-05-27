@@ -9,7 +9,9 @@ export default function CustomAvatar(props) {
   const { initials, photoUrl, ...otherProps } = props;
 
   let className = clsx(styles.avatar, props.className);
-  if (props.size === 'md') {
+  if (props.size === 'sm') {
+    className = clsx(styles.avatar, styles.sm, props.className);
+  } else if (props.size === 'md') {
     className = clsx(styles.avatar, styles.md, props.className);
   } else if (props.size === 'lg') {
     className = clsx(styles.lg, styles.avatar, props.className);

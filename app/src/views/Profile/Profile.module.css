@@ -1,4 +1,12 @@
+.title {
+  padding: 16px;
+}
+
 .container {
   text-align: center;
-  padding-top: 24px;
+}
+
+.card {
+  text-align: center !important;
+  margin-bottom: 16px;
 }

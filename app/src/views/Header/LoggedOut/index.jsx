@@ -162,7 +162,7 @@ export default function LoggedOut() {
           aria-label="show 11 new notifications"
           color="inherit"
         >
-          <Badge badgeContent={11} color="secondary">
+          <Badge badgeContent={1} color="secondary">
             <NotificationsIcon />
           </Badge>
         </IconButton>

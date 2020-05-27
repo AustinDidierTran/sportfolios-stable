@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import { Container } from '../../components/MUI';
+import { Container } from '../../components/Custom';
 
 import UserSearch from './UserSearch/index';
 

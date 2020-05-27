@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Container } from '../../components/MUI';
+import { Container } from '../../components/Custom';
 import styles from './ConfirmEmail.module.css';
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';

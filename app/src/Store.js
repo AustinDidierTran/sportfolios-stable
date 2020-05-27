@@ -9,8 +9,25 @@ export const Store = React.createContext();
 const localAuthToken = localStorage.getItem('authToken');
 const localUserInfo = localStorage.getItem('userInfo');
 
+export const SCREENSIZE_ENUM = {
+  xs: 'xs',
+  sm: 'sm',
+  md: 'md',
+  lg: 'lg',
+  xl: 'xl',
+};
+
+export const BREAKPOINTS = [
+  { breakpoint: SCREENSIZE_ENUM.xl, value: 1920 },
+  { breakpoint: SCREENSIZE_ENUM.lg, value: 1280 },
+  { breakpoint: SCREENSIZE_ENUM.md, value: 960 },
+  { breakpoint: SCREENSIZE_ENUM.sm, value: 600 },
+  { breakpoint: SCREENSIZE_ENUM.xs, value: 0 },
+].sort((a, b) => b.value - a.value);
+
 const initialState = {
   authToken: localAuthToken,
+  screenSize: SCREENSIZE_ENUM.xs,
   userInfo:
     localUserInfo &&
     localUserInfo !== 'undefined' &&
@@ -22,6 +39,7 @@ export const ACTION_ENUM = {
   LOGOUT: 'logout',
   UPDATE_PROFILE_PICTURE: 'update_profile_picture',
   UPDATE_USER_INFO: 'update_user_info',
+  WINDOW_RESIZE: 'window_resize',
 };
 
 function reducer(state, action) {
@@ -51,6 +69,13 @@ function reducer(state, action) {
       );
       return { ...state, userInfo: action.payload };
     }
+    case ACTION_ENUM.WINDOW_RESIZE: {
+      const found = BREAKPOINTS.find(
+        ({ value }) => value < action.payload,
+      ) || { breakpoint: SCREENSIZE_ENUM.xs, value: 0 };
+
+      return { ...state, screenSize: found.breakpoint };
+    }
 
     default:
       return state;
@@ -60,6 +85,13 @@ function reducer(state, action) {
 export function StoreProvider(props) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const value = { state, dispatch };
+
+  const handleResize = () => {
+    dispatch({
+      type: ACTION_ENUM.WINDOW_RESIZE,
+      payload: window.innerWidth,
+    });
+  };
 
   useEffect(() => {
     const authToken = localStorage.getItem('authToken');
@@ -92,6 +124,11 @@ export function StoreProvider(props) {
           }
         }
       });
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   return (

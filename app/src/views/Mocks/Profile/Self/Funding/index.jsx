@@ -53,10 +53,17 @@ export default function Funding(props) {
 
   return (
     <Card className={styles.card}>
-      <CardHeader
-        title="Campagne de financement Hydra 2020"
-        subheader="Bonjour! Vous voulez m'aider à financer ma saison de frisbee cet été. Vous êtes à la bonne place!"
-      />
+      <Typography variant="h3" className={styles.title}>
+        Campagne de financement Hydra 2020
+      </Typography>
+      <Typography
+        variant="h6"
+        color="textSecondary"
+        className={styles.subtitle}
+      >
+        Bonjour! Vous voulez m'aider à financer ma saison de frisbee
+        cet été. Vous êtes à la bonne place!
+      </Typography>
       <Container className={styles.container}>
         <div className={styles.bar}>
           <BorderLinearProgress

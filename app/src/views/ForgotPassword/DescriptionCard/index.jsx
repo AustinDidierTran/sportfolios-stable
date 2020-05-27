@@ -2,18 +2,16 @@ import React from 'react';
 
 import styles from './DescriptionCard.module.css';
 
-import {
-  Card,
-  CardContent,
-  Typography,
-} from '../../../components/MUI';
+import { CardContent, Typography } from '../../../components/MUI';
+import { Paper } from '../../../components/Custom';
+
 import { useTranslation } from 'react-i18next';
 
 export default function DescriptionCard() {
   const { t } = useTranslation();
 
   return (
-    <Card className={styles.description}>
+    <Paper className={styles.description}>
       <CardContent>
         <Typography gutterBottom variant="h5" component="h2">
           {t('description_card_title')}
@@ -28,6 +26,6 @@ export default function DescriptionCard() {
           {t('description_card_third_point')}
         </Typography>
       </CardContent>
-    </Card>
+    </Paper>
   );
 }

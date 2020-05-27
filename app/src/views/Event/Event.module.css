@@ -1,0 +1,13 @@
+.container {
+  text-align: center;
+}
+.card {
+  text-align: center !important;
+  margin-bottom: 16px;
+}
+.titre {
+  padding: 16px;
+}
+.button {
+  padding: 3px 16px !important;
+}

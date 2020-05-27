@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { ACTION_ENUM, Store } from '../../../Store';
+import { ACTION_ENUM, Store, SCREENSIZE_ENUM } from '../../../Store';
 import APP_ROLES from '../../App/appRoles';
+import logo from '../../../img/logo.png';
 
 import {
   AppBar,
@@ -14,10 +15,8 @@ import {
   Typography,
 } from '../../../components/MUI';
 
-import {
-  NotificationModule,
-  SearchInput,
-} from '../../../components/Custom';
+import { SearchInput } from '../../../components/Custom';
+import NotificationModule from './NotificationModule';
 
 // Material ui icons
 import MenuIcon from '@material-ui/icons/Menu';
@@ -34,7 +33,7 @@ export default function LoggedIn() {
   const classes = useStyles();
   const { t } = useTranslation();
   const {
-    state: { userInfo },
+    state: { userInfo, screenSize },
     dispatch,
   } = useContext(Store);
 
@@ -42,28 +41,15 @@ export default function LoggedIn() {
     userInfo && userInfo.app_role === APP_ROLES.APP_ADMIN;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(
-    null,
-  );
 
   const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = event => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
-
   const handleMenuClose = () => {
     setAnchorEl(null);
-    handleMobileMenuClose();
-  };
-
-  const handleMobileMenuOpen = event => {
-    setMobileMoreAnchorEl(event.currentTarget);
   };
 
   const menuId = 'primary-search-account-menu';
@@ -109,62 +95,10 @@ export default function LoggedIn() {
     </Menu>
   );
 
-  const mobileMenuId = 'primary-search-account-menu-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    >
-      {/* <MenuItem>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem> */}
-      <MenuItem>
-        <IconButton
-          aria-label="show 11 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={11} color="secondary">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
-    </Menu>
-  );
-
-  return (
+  return screenSize !== SCREENSIZE_ENUM.xs ? (
     <div className={classes.grow}>
-      <AppBar position="static">
+      <AppBar position="static" style={{ position: 'fixed', top: 0 }}>
         <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-          >
-            <MenuIcon />
-          </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
             <Link to={'/'} className={classes.titleLink}>
               {' '}
@@ -174,11 +108,6 @@ export default function LoggedIn() {
           <SearchInput />
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            {/* <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <MailIcon />
-              </Badge>
-            </IconButton> */}
             <NotificationModule />
             <IconButton
               edge="end"
@@ -191,20 +120,25 @@ export default function LoggedIn() {
               <AccountCircle />
             </IconButton>
           </div>
-          <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
+        </Toolbar>
+      </AppBar>
+      {renderMenu}
+    </div>
+  ) : (
+    <div className={classes.grow}>
+      <AppBar position="static" style={{ position: 'fixed', top: 0 }}>
+        <Toolbar
+          style={{ display: 'flex', justifyContent: 'space-between' }}
+        >
+          <div style={{ flex: '0 0 75px' }}>
+            <img src={logo} />
+          </div>
+
+          <div style={{ flex: '1 0 100px' }}>
+            <SearchInput />
           </div>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
       {renderMenu}
     </div>
   );

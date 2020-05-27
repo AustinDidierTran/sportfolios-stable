@@ -1,0 +1,13 @@
+.button {
+  size: small;
+  font-size: xx-small !important;
+}
+
+@media (min-width: 768px) {
+  .button {
+    font-size: small !important;
+  }
+}
+.container {
+  padding: 0px !important;
+}

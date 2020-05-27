@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import {
   Button,
-  Card,
   CardContent,
   TextField,
   CardActions,
   Typography,
 } from '../../../components/MUI';
+import { Paper } from '../../../components/Custom';
 import styles from './ChangePassword.module.css';
 
 import { Store } from '../../../Store';
@@ -84,7 +84,7 @@ export default function ChangePassword(props) {
   });
 
   return (
-    <Card className={styles.card}>
+    <Paper className={styles.card}>
       <form onSubmit={formik.handleSubmit} className={styles.form}>
         <CardContent className={styles.inputs}>
           <Typography gutterBottom variant="h5" component="h2">
@@ -124,6 +124,6 @@ export default function ChangePassword(props) {
           </Button>
         </CardActions>
       </form>
-    </Card>
+    </Paper>
   );
 }

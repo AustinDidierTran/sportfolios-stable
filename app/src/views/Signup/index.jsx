@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './Signup.module.css';
 
-import { Container } from '../../components/MUI';
+import { Container } from '../../components/Custom';
 import SignupCard from './SignupCard';
 import DescriptionCard from './DescriptionCard';
 
