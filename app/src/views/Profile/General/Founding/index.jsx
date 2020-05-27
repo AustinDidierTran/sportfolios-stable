@@ -3,12 +3,11 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './Funding.module.css';
 import {
-  Card,
   Typography,
   IconButton,
   Container,
 } from '../../../../components/MUI';
-import { Button } from '../../../../components/Custom';
+import { Button, Paper } from '../../../../components/Custom';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -61,7 +60,7 @@ export default function Funding(props) {
   const endIcon = isSelf ? 'Edit' : 'AttachMoney';
 
   return (
-    <Card className={styles.card}>
+    <Paper className={styles.card}>
       <CardHeader title={name} subheader={description} />
       <Container className={styles.container}>
         <div className={styles.bar}>
@@ -122,6 +121,6 @@ export default function Funding(props) {
           <Typography paragraph>Description complète</Typography>
         </CardContent>
       </Collapse> */}
-    </Card>
+    </Paper>
   );
 }

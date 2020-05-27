@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './Teams.module.css';
-import { Avatar } from '../../../../components/Custom';
+import { Avatar, Paper } from '../../../../components/Custom';
 import {
   TextField,
-  Card,
   List,
   ListItem,
 } from '../../../../components/MUI';
@@ -22,7 +21,7 @@ export default function Teams(props) {
   const { isSelf, teams } = props;
 
   return (
-    <Card className={styles.card}>
+    <Paper className={styles.card}>
       <CardHeader title={t('teams')} />
       <List disablePadding={true}>
         {teams.map((team, index) => {
@@ -49,6 +48,6 @@ export default function Teams(props) {
           );
         })}
       </List>
-    </Card>
+    </Paper>
   );
 }

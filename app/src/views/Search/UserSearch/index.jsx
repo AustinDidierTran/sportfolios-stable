@@ -16,10 +16,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-import { Avatar } from '../../../components/Custom';
+import { Avatar, Paper } from '../../../components/Custom';
 
 import {
-  Card,
   List,
   ListItem,
   ListItemIcon,
@@ -47,7 +46,7 @@ export default function UserSearch(props) {
   };
 
   return (
-    <Card className={styles.card}>
+    <Paper className={styles.card}>
       <Typography gutterBottom component="h2" variant="h5">
         {t('users_found_query', { query })}
       </Typography>
@@ -83,6 +82,6 @@ export default function UserSearch(props) {
           </Typography>
         )}
       </List>
-    </Card>
+    </Paper>
   );
 }

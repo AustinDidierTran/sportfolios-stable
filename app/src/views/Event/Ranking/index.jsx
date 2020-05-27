@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 
 import {
   TextField,
-  Card,
   List,
   ListItem,
   Typography,
   Container,
 } from '../../../components/MUI';
-import { Avatar } from '../../../components/Custom';
-import CardHeader from '@material-ui/core/CardHeader';
+import { Avatar, Paper } from '../../../components/Custom';
 import styles from './Ranking.module.css';
 import { useTranslation } from 'react-i18next';
 
@@ -65,7 +63,7 @@ export default function Ranking(props) {
   );
 
   return (
-    <Card className={styles.bigCard}>
+    <Paper className={styles.bigCard}>
       <Typography variant="h3" className={styles.title}>
         {' '}
         {t('pre_ranking')}{' '}
@@ -99,6 +97,6 @@ export default function Ranking(props) {
           ))}
         </Container>
       ))}
-    </Card>
+    </Paper>
   );
 }

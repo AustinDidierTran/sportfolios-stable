@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './TeamHistory.module.css';
 import {
-  Card,
   List,
   ListItem,
   Typography,
 } from '../../../../components/MUI';
+import { Paper } from '../../../../components/Custom';
 
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -35,7 +35,7 @@ export default function AthleteHistory(props) {
   };
 
   return (
-    <Card className={styles.card}>
+    <Paper className={styles.card}>
       <Typography variant="h4" className={styles.title}>
         {t('team_history')}{' '}
       </Typography>
@@ -55,6 +55,6 @@ export default function AthleteHistory(props) {
           </ListItem>
         ))}
       </List>
-    </Card>
+    </Paper>
   );
 }

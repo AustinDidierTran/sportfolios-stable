@@ -1,10 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '../../components/Custom';
+import { Button, Paper } from '../../components/Custom';
 
 import {
-  Card,
   CardActions,
   CardContent,
   Container,
@@ -19,7 +18,7 @@ export default function ConfirmEmail() {
 
   return (
     <Container className={styles.container}>
-      <Card className={styles.card}>
+      <Paper className={styles.card}>
         <CardContent>
           <Typography>{t('email_confirm_failure')}</Typography>
         </CardContent>
@@ -31,7 +30,7 @@ export default function ConfirmEmail() {
             {t('go_to_login')}
           </Button>
         </CardActions>
-      </Card>
+      </Paper>
     </Container>
   );
 }

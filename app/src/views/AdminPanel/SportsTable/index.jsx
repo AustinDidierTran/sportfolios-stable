@@ -5,7 +5,8 @@ import * as Yup from 'yup';
 
 import { Table } from '../../../components/Custom';
 
-import { Card, CardContent } from '../../../components/MUI';
+import { CardContent } from '../../../components/MUI';
+import { Paper } from '../../../components/Custom';
 import styles from './SportsTable.module.css';
 import api from '../../../actions/api';
 
@@ -72,7 +73,7 @@ export default function SportsTable() {
   }, []);
 
   return (
-    <Card className={styles.card}>
+    <Paper className={styles.card}>
       <CardContent className={styles.inputs}>
         <Table
           allowCreate
@@ -94,6 +95,6 @@ export default function SportsTable() {
           validationSchema={validationSchema}
         />
       </CardContent>
-    </Card>
+    </Paper>
   );
 }

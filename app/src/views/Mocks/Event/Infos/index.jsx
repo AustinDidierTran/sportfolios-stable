@@ -4,10 +4,10 @@ import {
   Container,
   Typography,
   Button,
-  Card,
   List,
   ListItem,
 } from '../../../../components/MUI';
+import { Paper } from '../../../../components/Custom';
 
 import styles from './Infos.module.css';
 import { useTranslation } from 'react-i18next';
@@ -50,7 +50,7 @@ export default function Infos(props) {
   };
 
   return (
-    <Card className={styles.card}>
+    <Paper className={styles.card}>
       <Container className={styles.lieu}>
         <Typography variant="h3" color="primary">
           Location
@@ -103,6 +103,6 @@ export default function Infos(props) {
           ))}
         </List>
       </Container>
-    </Card>
+    </Paper>
   );
 }

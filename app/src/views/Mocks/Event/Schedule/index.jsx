@@ -7,11 +7,8 @@ import FormControl from '@material-ui/core/FormControl';
 
 import Game from './Game';
 
-import {
-  Card,
-  Typography,
-  Container,
-} from '../../../../components/MUI';
+import { Typography, Container } from '../../../../components/MUI';
+import { Paper } from '../../../../components/MUI';
 
 import styles from './Schedule.module.css';
 import { useTranslation } from 'react-i18next';
@@ -133,7 +130,7 @@ export default function TeamSchedule(props) {
         </Select>
       </FormControl>
       {phases.map(phase => (
-        <Card className={styles.phase}>
+        <Paper className={styles.phase}>
           <Typography
             variant="h6"
             color="textSecondary"
@@ -145,7 +142,7 @@ export default function TeamSchedule(props) {
           {phase.games.map(g => (
             <Game game={g} />
           ))}
-        </Card>
+        </Paper>
       ))}
     </Container>
   );

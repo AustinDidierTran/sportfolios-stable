@@ -4,9 +4,8 @@ import {
   Container,
   Typography,
   Button,
-  Card,
 } from '../../../components/MUI';
-import Paper from '@material-ui/core/Paper';
+import { Paper } from '../../../components/Custom';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
@@ -55,7 +54,7 @@ export default function Organization(props) {
 
   return (
     <Container className={styles.container}>
-      <Card className={styles.card}>
+      <Paper className={styles.card}>
         <Container className={styles.titre}>
           <BasicInfos />
         </Container>
@@ -75,7 +74,7 @@ export default function Organization(props) {
             ))}
           </Tabs>
         </Paper>
-      </Card>
+      </Paper>
       <OpenTab />
     </Container>
   );

@@ -9,7 +9,7 @@ import Donate from './Donate';
 import { Store } from '../../../Store';
 
 import { Avatar } from '../../../components/Custom';
-import { Card, Typography, Container } from '../../../components/MUI';
+import { Typography, Container } from '../../../components/MUI';
 import { useFormInput } from '../../../hooks/forms';
 
 export default function BasicInfos(props) {

@@ -2,12 +2,8 @@ import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './Organizations.module.css';
-import { Avatar, List } from '../../../../components/Custom';
-import {
-  TextField,
-  Card,
-  ListItem,
-} from '../../../../components/MUI';
+import { Avatar, List, Paper } from '../../../../components/Custom';
+import { TextField, ListItem } from '../../../../components/MUI';
 import CardHeader from '@material-ui/core/CardHeader';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import { getInitialsFromName } from '../../../../utils/stringFormats';
@@ -23,7 +19,7 @@ export default function Organizations(props) {
   };
 
   return (
-    <Card className={styles.card}>
+    <Paper className={styles.card}>
       <CardHeader title={t('organizations')} />
       <List
         items={organizations.map(organization => ({
@@ -37,6 +33,6 @@ export default function Organizations(props) {
           ),
         }))}
       />
-    </Card>
+    </Paper>
   );
 }

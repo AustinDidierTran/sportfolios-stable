@@ -4,9 +4,9 @@ import {
   Container,
   Typography,
   Button,
-  Card,
 } from '../../../components/MUI';
-import Paper from '@material-ui/core/Paper';
+import { Paper } from '../../../components/Custom';
+
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
@@ -56,7 +56,7 @@ export default function Event(props) {
 
   return (
     <Container className={styles.container}>
-      <Card className={styles.card}>
+      <Paper className={styles.card}>
         <Container className={styles.titre}>
           <Typography variant="h3">Frisbee Fest</Typography>
           <Typography variant="h5">30-31 Mai</Typography>
@@ -78,7 +78,7 @@ export default function Event(props) {
             ))}
           </Tabs>
         </Paper>
-      </Card>
+      </Paper>
       <OpenTab />
     </Container>
   );

@@ -7,10 +7,9 @@ import styles from './OnGoingEvents.module.css';
 import Register from '../../Organization/NextEvents/Register';
 import Results from '../../Organization/NextEvents/Results';
 import Schedule from '../../Organization/NextEvents/Schedule';
-import { Avatar } from '../../../components/Custom';
+import { Avatar, Paper } from '../../../components/Custom';
 import {
   Typography,
-  Card,
   ListItem,
   ListItemIcon,
   Container,
@@ -25,7 +24,7 @@ export default function OnGoingEvents(props) {
   const { events } = props;
 
   return (
-    <Card className={styles.card} gutterBottom>
+    <Paper className={styles.card} gutterBottom>
       <Typography
         className={styles.title}
         variant="h3"
@@ -112,6 +111,6 @@ export default function OnGoingEvents(props) {
             </Container>
           </ListItem>
         ))} */}
-    </Card>
+    </Paper>
   );
 }

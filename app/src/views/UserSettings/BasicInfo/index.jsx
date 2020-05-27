@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import {
   Button,
-  Card,
   CardContent,
   TextField,
   CardActions,
   Select,
   Typography,
 } from '../../../components/MUI';
+import { Paper } from '../../../components/Custom';
 import styles from './BasicInfo.module.css';
 
 import api from '../../../actions/api';
@@ -91,7 +91,7 @@ export default function BasicInfo() {
   }, [formik.values.language]);
 
   return (
-    <Card className={styles.card}>
+    <Paper className={styles.card}>
       <form className={styles.form} onSubmit={formik.handleSubmit}>
         <CardContent className={styles.inputs}>
           <Typography gutterBottom variant="h5" component="h2">
@@ -147,6 +147,6 @@ export default function BasicInfo() {
           </Button>
         </CardActions>
       </form>
-    </Card>
+    </Paper>
   );
 }

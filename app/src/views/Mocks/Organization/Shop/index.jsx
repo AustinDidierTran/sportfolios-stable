@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 
 import styles from './Shop.module.css';
 
-import { Typography, Card } from '../../../../components/MUI';
-import { Button } from '../../../../components/Custom';
+import { Typography } from '../../../../components/MUI';
+import { Button, Paper } from '../../../../components/Custom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';
@@ -26,9 +26,8 @@ export default function Shop(props) {
   };
 
   return (
-    //First Item
     <Container className={styles.items}>
-      <Card className={classes.root}>
+      <Paper className={classes.root}>
         <CardMedia
           className={classes.media}
           image="http://www.sherbrookeultimate.org/wp-content/uploads/2018/11/T-shirtVertLogoBlanc.png"
@@ -76,8 +75,8 @@ export default function Shop(props) {
             </Button>
           )}
         </CardContent>
-      </Card>
-      <Card className={classes.root}>
+      </Paper>
+      <Paper className={classes.root}>
         <CardMedia
           className={classes.media}
           image="http://www.sherbrookeultimate.org/wp-content/uploads/2018/11/T-shirtVertLogoBlanc.png"
@@ -125,8 +124,8 @@ export default function Shop(props) {
             </Button>
           )}
         </CardContent>
-      </Card>
-      <Card className={classes.root}>
+      </Paper>
+      <Paper className={classes.root}>
         <CardMedia
           className={classes.media}
           image="http://www.sherbrookeultimate.org/wp-content/uploads/2018/11/T-shirtVertLogoBlanc.png"
@@ -174,7 +173,7 @@ export default function Shop(props) {
             </Button>
           )}
         </CardContent>
-      </Card>
+      </Paper>
     </Container>
   );
 }

@@ -7,10 +7,9 @@ import styles from './NextEvents.module.css';
 import Register from './Register';
 import Results from './Results';
 import Schedule from './Schedule';
-import { Avatar } from '../../../components/Custom';
+import { Avatar, Paper } from '../../../components/Custom';
 import {
   Typography,
-  Card,
   ListItem,
   ListItemIcon,
   Container,
@@ -61,7 +60,7 @@ export default function NextEvents(props) {
   ];
 
   return (
-    <Card className={styles.card} gutterBottom>
+    <Paper className={styles.card} gutterBottom>
       <Typography className={styles.title} variant="h3">
         {t('events')}
       </Typography>
@@ -144,6 +143,6 @@ export default function NextEvents(props) {
             </Container>
           </ListItem>
         ))} */}
-    </Card>
+    </Paper>
   );
 }
