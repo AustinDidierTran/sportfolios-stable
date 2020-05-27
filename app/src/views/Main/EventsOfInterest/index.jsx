@@ -7,15 +7,13 @@ import styles from './EventsOfInterest.module.css';
 import Register from '../../Organization/NextEvents/Register';
 import Results from '../../Organization/NextEvents/Results';
 import Schedule from '../../Organization/NextEvents/Schedule';
-import { Avatar } from '../../../components/Custom';
 import {
   Typography,
-  Card,
   ListItem,
   ListItemIcon,
   Container,
 } from '../../../components/MUI';
-import { List } from '../../../components/Custom';
+import { Avatar, List, Paper } from '../../../components/Custom';
 import history from '../../../stores/history';
 import { EVENT_STATUS_ENUM } from '../../Organization/NextEvents';
 
@@ -25,7 +23,7 @@ export default function EventsOfInterest(props) {
   const { events } = props;
 
   return (
-    <Card className={styles.card} gutterBottom>
+    <Paper className={styles.card} gutterBottom>
       <Typography
         className={styles.title}
         variant="h3"
@@ -112,6 +110,6 @@ export default function EventsOfInterest(props) {
             </Container>
           </ListItem>
         ))} */}
-    </Card>
+    </Paper>
   );
 }

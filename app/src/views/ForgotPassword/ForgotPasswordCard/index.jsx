@@ -8,13 +8,13 @@ import styles from './ForgotPasswordCard.module.css';
 import { Store } from '../../../Store';
 import Button from '../../../components/MUI/Button';
 import {
-  Card,
   CardActions,
   CardContent,
   Divider,
   TextField,
   Typography,
 } from '../../../components/MUI';
+import { Paper } from '../../../components/Custom';
 import api from '../../../actions/api';
 import { ROUTES } from '../../../actions/goTo';
 
@@ -59,7 +59,7 @@ export default function ForgotPassword() {
   return (
     <div className={styles.main}>
       <form onSubmit={formik.handleSubmit}>
-        <Card className={styles.card}>
+        <Paper className={styles.card}>
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
               {t('forgot_password')}
@@ -92,7 +92,7 @@ export default function ForgotPassword() {
               <Typography>{t('no_account_signup')}</Typography>
             </Link>
           </CardActions>
-        </Card>
+        </Paper>
       </form>
     </div>
   );

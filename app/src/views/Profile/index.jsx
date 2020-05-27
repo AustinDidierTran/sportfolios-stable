@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Card, Paper, Tab, Tabs } from '../../components/MUI';
-import { Container } from '../../components/Custom';
+import { Tab, Tabs } from '../../components/MUI';
+import { Container, Paper } from '../../components/Custom';
 import { Store } from '../../Store';
 import styles from './Profile.module.css';
 import BasicInfos from './BasicInfos';
@@ -74,7 +74,7 @@ export default function Profile(props) {
 
   return (
     <Container className={styles.container}>
-      <Card className={styles.card}>
+      <Paper className={styles.card}>
         <Container className={styles.title}>
           <BasicInfos isSelf={isSelf} basicInfos={basicInfos} />
         </Container>
@@ -94,7 +94,7 @@ export default function Profile(props) {
             />
           ))}
         </Tabs>
-      </Card>
+      </Paper>
       {OpenTab}
     </Container>
   );

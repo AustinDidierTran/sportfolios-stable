@@ -3,12 +3,12 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './About.module.css';
 import {
-  Card,
   Typography,
   Container,
   List,
   ListItem,
 } from '../../../components/MUI';
+import { Paper } from '../../../components/Custom';
 
 export default function About(props) {
   const { t } = useTranslation();
@@ -53,7 +53,7 @@ export default function About(props) {
 
   return (
     <Container className={styles.main}>
-      <Card className={styles.description}>
+      <Paper className={styles.description}>
         <Typography
           variant="h4"
           color="primary"
@@ -64,8 +64,8 @@ export default function About(props) {
         <Container className={styles.container}>
           <Typography variant="h6">{description.text}</Typography>
         </Container>
-      </Card>
-      <Card className={styles.team}>
+      </Paper>
+      <Paper className={styles.team}>
         <Typography
           variant="h4"
           color="primary"
@@ -97,8 +97,8 @@ export default function About(props) {
             </ListItem>
           ))}
         </List>
-      </Card>
-      <Card className={styles.contact}>
+      </Paper>
+      <Paper className={styles.contact}>
         <Typography
           variant="h4"
           color="primary"
@@ -125,7 +125,7 @@ export default function About(props) {
             </ListItem>
           ))}
         </List>
-      </Card>
+      </Paper>
     </Container>
   );
 }

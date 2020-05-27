@@ -1,8 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Card } from '../../components/MUI';
-import { Container } from '../../components/Custom';
+import { Container, Paper } from '../../components/Custom';
 import styles from './ConfirmationEmailSent.module.css';
 
 export default function ConfirmationEmailSent(props) {
@@ -16,7 +15,7 @@ export default function ConfirmationEmailSent(props) {
   return (
     <div className={styles.main}>
       <Container>
-        <Card
+        <Paper
           style={{
             width: '100%',
             paddingLeft: '16px',
@@ -24,7 +23,7 @@ export default function ConfirmationEmailSent(props) {
           }}
         >
           <p>{t('email_confirmed', { email })}</p>
-        </Card>
+        </Paper>
       </Container>
     </div>
   );

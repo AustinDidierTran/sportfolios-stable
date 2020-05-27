@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { Card, Typography } from '../../../../components/MUI';
+import { Typography } from '../../../../components/MUI';
 import styles from './Game.module.css';
 import { Container } from '@material-ui/core';
 

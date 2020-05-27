@@ -1,15 +1,7 @@
 import React, { useState } from 'react';
 
-import {
-  Button,
-  Typography,
-  Card,
-  Tab,
-  Tabs,
-} from '../../components/MUI';
-import { Container } from '../../components/Custom';
-
-import Paper from '@material-ui/core/Paper';
+import { Button, Typography, Tab, Tabs } from '../../components/MUI';
+import { Container, Paper } from '../../components/Custom';
 
 import styles from './Event.module.css';
 import Schedule from './Schedule';
@@ -71,7 +63,7 @@ export default function Event(props) {
   };
   return (
     <Container className={styles.container}>
-      <Card className={styles.card}>
+      <Paper className={styles.card}>
         <Container className={styles.titre}>
           <Typography variant="h3">{data.name}</Typography>
           <Typography variant="h5">
@@ -115,7 +107,7 @@ export default function Event(props) {
             ))}
           </Tabs>
         </Paper>
-      </Card>
+      </Paper>
       <OpenTab />
     </Container>
   );

@@ -16,10 +16,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-import { Avatar } from '../../../components/Custom';
+import { Avatar, Paper } from '../../../components/Custom';
 
 import {
-  Card,
   List,
   ListItem,
   ListItemIcon,
@@ -46,7 +45,7 @@ export default function FollowingUsersCard(props) {
       );
 
   return (
-    <Card className={styles.card}>
+    <Paper className={styles.card}>
       <Typography gutterBottom component="h2" variant="h5">
         {t('following')}
       </Typography>
@@ -83,6 +82,6 @@ export default function FollowingUsersCard(props) {
           </Typography>
         )}
       </List>
-    </Card>
+    </Paper>
   );
 }

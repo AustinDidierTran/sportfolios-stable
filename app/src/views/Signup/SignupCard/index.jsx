@@ -7,13 +7,13 @@ import styles from './SignupCard.module.css';
 
 import {
   Button,
-  Card,
   CardContent,
   CardActions,
   Divider,
   TextField,
   Typography,
 } from '../../../components/MUI';
+import { Paper } from '../../../components/Custom';
 
 import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
@@ -85,7 +85,7 @@ export default function SignupCard(props) {
   });
 
   return (
-    <Card className={styles.signup}>
+    <Paper className={styles.signup}>
       <form onSubmit={formik.handleSubmit}>
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
@@ -138,6 +138,6 @@ export default function SignupCard(props) {
           </Link>
         </CardActions>
       </form>
-    </Card>
+    </Paper>
   );
 }

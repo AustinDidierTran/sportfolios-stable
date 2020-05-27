@@ -6,7 +6,7 @@ import BecomeMember from './BecomeMember';
 import Donate from './Donate';
 
 import { Avatar } from '../../../components/Custom';
-import { Card, Typography, Container } from '../../../components/MUI';
+import { Typography, Container } from '../../../components/MUI';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();

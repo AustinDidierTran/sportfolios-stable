@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Card, Paper, Tab, Tabs } from '../../components/MUI';
-import { Container } from '../../components/Custom';
+import { Tab, Tabs } from '../../components/MUI';
+import { Container, Paper } from '../../components/Custom';
 
 import { Store } from '../../Store';
 import styles from './Team.module.css';
@@ -75,7 +75,7 @@ export default function Team(props) {
 
   return (
     <Container className={styles.container}>
-      <Card className={styles.card}>
+      <Paper className={styles.card}>
         <Container className={styles.title}>
           <BasicInfos isSelf={isSelf} basicInfos={basicInfos} />
         </Container>
@@ -95,7 +95,7 @@ export default function Team(props) {
             />
           ))}
         </Tabs>
-      </Card>
+      </Paper>
       <OpenTab />
     </Container>
   );

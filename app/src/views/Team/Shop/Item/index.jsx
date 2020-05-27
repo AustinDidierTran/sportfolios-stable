@@ -3,12 +3,8 @@ import React, { useState } from 'react';
 import styles from './Item.module.css';
 import { useTranslation } from 'react-i18next';
 
-import {
-  Typography,
-  Card,
-  Container,
-} from '../../../../components/MUI';
-import { Button } from '../../../../components/Custom';
+import { Typography, Container } from '../../../../components/MUI';
+import { Button, Paper } from '../../../../components/Custom';
 
 import { makeStyles } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';
@@ -34,7 +30,7 @@ export default function Shop(props) {
   };
 
   return (
-    <Card className={classes.root}>
+    <Paper className={classes.root}>
       <CardMedia className={classes.media} image={photoUrl} />
       <CardContent className={styles.infos}>
         <Typography gutterBottom variant="h5" className={styles.name}>
@@ -73,6 +69,6 @@ export default function Shop(props) {
           </Button>
         )}
       </CardContent>
-    </Card>
+    </Paper>
   );
 }

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Table } from '../../../components/Custom';
+import { Table, Paper } from '../../../components/Custom';
 
-import { Card, CardContent } from '../../../components/MUI';
+import { CardContent } from '../../../components/MUI';
 import styles from './UsersTable.module.css';
 import api from '../../../actions/api';
 import history from '../../../stores/history';
@@ -34,7 +34,7 @@ export default function UsersTable() {
   ];
 
   return (
-    <Card className={styles.card}>
+    <Paper className={styles.card}>
       <CardContent className={styles.inputs}>
         <Table
           data={users}
@@ -43,6 +43,6 @@ export default function UsersTable() {
           title={t('users_table_title')}
         />
       </CardContent>
-    </Card>
+    </Paper>
   );
 }

@@ -17,13 +17,13 @@ export const SCREENSIZE_ENUM = {
   xl: 'xl',
 };
 
-const BREAKPOINTS = [
+export const BREAKPOINTS = [
   { breakpoint: SCREENSIZE_ENUM.xl, value: 1920 },
   { breakpoint: SCREENSIZE_ENUM.lg, value: 1280 },
   { breakpoint: SCREENSIZE_ENUM.md, value: 960 },
   { breakpoint: SCREENSIZE_ENUM.sm, value: 600 },
   { breakpoint: SCREENSIZE_ENUM.xs, value: 0 },
-];
+].sort((a, b) => b.value - a.value);
 
 const initialState = {
   authToken: localAuthToken,
@@ -70,13 +70,11 @@ function reducer(state, action) {
       return { ...state, userInfo: action.payload };
     }
     case ACTION_ENUM.WINDOW_RESIZE: {
-      action.payload;
-      BREAKPOINTS.forEach(({ breakpoint, value }) => {
-        if (value < action.payload) {
-          return { ...state, screenSize: breakpoint };
-        }
-      });
-      return state;
+      const found = BREAKPOINTS.find(
+        ({ value }) => value < action.payload,
+      ) || { breakpoint: SCREENSIZE_ENUM.xs, value: 0 };
+
+      return { ...state, screenSize: found.breakpoint };
     }
 
     default:

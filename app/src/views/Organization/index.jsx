@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import { Card, Paper, Tab, Tabs } from '../../components/MUI';
-import { Container } from '../../components/Custom';
+import { Tab, Tabs } from '../../components/MUI';
+import { Container, Paper } from '../../components/Custom';
 
 import styles from './Organization.module.css';
 import { useTranslation } from 'react-i18next';
@@ -52,7 +52,7 @@ export default function Organization(props) {
 
   return (
     <Container className={styles.container}>
-      <Card className={styles.card}>
+      <Paper className={styles.card}>
         <Container className={styles.title}>
           <BasicInfos />
         </Container>
@@ -72,7 +72,7 @@ export default function Organization(props) {
             />
           ))}
         </Tabs>
-      </Card>
+      </Paper>
       <OpenTab />
     </Container>
   );

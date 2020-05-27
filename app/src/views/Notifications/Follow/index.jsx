@@ -1,13 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
 
 import styles from './Follow.module.css';
-import { Avatar, Icon } from '../../../components/Custom';
+import { Avatar, Icon, Paper } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { getInitialsFromName } from '../../../utils/stringFormats';
 import history from '../../../stores/history';
 
-import { Card, Button } from '../../../components/MUI';
-import Typography from '@material-ui/core/Typography';
+import { Button, Typography } from '../../../components/MUI';
 
 export default function Follow(props) {
   const { first_name, last_name, follower } = props;
@@ -23,7 +22,7 @@ export default function Follow(props) {
   };
 
   return (
-    <div className={styles.follow}>
+    <Paper className={styles.follow}>
       <div
         className={styles.information}
         onClick={() => history.push(`/profile/${follower}`)}
@@ -44,6 +43,6 @@ export default function Follow(props) {
       >
         FOLLOW
       </Button>
-    </div>
+    </Paper>
   );
 }

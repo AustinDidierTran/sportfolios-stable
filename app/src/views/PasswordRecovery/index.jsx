@@ -5,11 +5,23 @@ import { useFormik } from 'formik';
 
 import styles from './PasswordRecovery.module.css';
 
-import { Button, Card, CardActions, CardContent, Divider, TextField, Typography } from '../../components/MUI';
+import {
+  Button,
+  CardActions,
+  CardContent,
+  Divider,
+  TextField,
+  Typography,
+} from '../../components/MUI';
+import { Paper } from '../../components/Custom';
 import api from '../../actions/api';
 
 export default function PasswordRecovery(props) {
-  const { match: { params: { token } } } = props;
+  const {
+    match: {
+      params: { token },
+    },
+  } = props;
 
   const { t } = useTranslation();
 
@@ -17,11 +29,14 @@ export default function PasswordRecovery(props) {
     const errors = {};
     if (!values.password) {
       errors.password = t('value_is_required');
-    } else if (values.password.length < 8 || values.password.length > 16) {
+    } else if (
+      values.password.length < 8 ||
+      values.password.length > 16
+    ) {
       errors.password = t('password_length');
     }
     return errors;
-  }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -45,12 +60,12 @@ export default function PasswordRecovery(props) {
         // Token expired
         formik.setFieldError('password', t('token_expired'));
       }
-    }
-  })
+    },
+  });
 
   return (
     <div className={styles.main}>
-      <Card className={styles.card}>
+      <Paper className={styles.card}>
         <form onSubmit={formik.handleSubmit}>
           <CardContent>
             <TextField
@@ -82,7 +97,7 @@ export default function PasswordRecovery(props) {
             </Link>
           </CardActions>
         </form>
-      </Card>
+      </Paper>
     </div>
   );
 }

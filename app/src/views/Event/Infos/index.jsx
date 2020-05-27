@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 
-import {
-  Container,
-  Typography,
-  Card,
-  List,
-} from '../../../components/MUI';
+import { Container, Typography, List } from '../../../components/MUI';
+
+import { Paper } from '../../../components/Custom';
 
 import styles from './Infos.module.css';
 import { useTranslation } from 'react-i18next';
@@ -50,7 +47,7 @@ export default function Infos(props) {
 
   return (
     <Container className={styles.container}>
-      <Card className={clsx(styles.card, styles.location)}>
+      <Paper className={clsx(styles.card, styles.location)}>
         <Typography variant="h3" color="primary">
           Location
         </Typography>
@@ -59,8 +56,8 @@ export default function Infos(props) {
           {infos.adress}, <br /> {infos.city}, {infos.province}{' '}
           {infos.postalCode}
         </Typography>
-      </Card>
-      <Card className={clsx(styles.card, styles.responsable)}>
+      </Paper>
+      <Paper className={clsx(styles.card, styles.responsable)}>
         <Typography variant="h3" color="primary">
           {t('event_manager')}
         </Typography>
@@ -69,14 +66,14 @@ export default function Infos(props) {
           {infos.email} <br />
           {infos.phone}
         </Typography>
-      </Card>
-      <Card className={clsx(styles.card, styles.description)}>
+      </Paper>
+      <Paper className={clsx(styles.card, styles.description)}>
         <Typography variant="h3" color="primary">
           Description
         </Typography>
         <Typography variant="h5">{infos.description}</Typography>
-      </Card>
-      <Card className={clsx(styles.card, styles.infos)}>
+      </Paper>
+      <Paper className={clsx(styles.card, styles.infos)}>
         <Typography variant="h3" color="primary">
           {t('general_informations')}
         </Typography>
@@ -97,7 +94,7 @@ export default function Infos(props) {
             </Container>
           ))}
         </List>
-      </Card>
+      </Paper>
     </Container>
   );
 }

@@ -6,12 +6,11 @@ import { Link } from 'react-router-dom';
 import styles from './YourPayments.module.css';
 import {
   Typography,
-  Card,
   ListItem,
   Button,
   Container,
 } from '../../../components/MUI';
-import { List } from '../../../components/Custom';
+import { Paper } from '../../../components/Custom';
 
 export default function YourPayments(props) {
   const { t } = useTranslation();
@@ -19,7 +18,7 @@ export default function YourPayments(props) {
   const { payments } = props;
 
   return (
-    <Card className={styles.card} gutterBottom>
+    <Paper className={styles.paper} gutterBottom>
       <Typography
         className={styles.title}
         variant="h3"
@@ -47,6 +46,6 @@ export default function YourPayments(props) {
           </Button>
         </Container>
       ))}
-    </Card>
+    </Paper>
   );
 }

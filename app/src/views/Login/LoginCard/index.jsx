@@ -8,13 +8,13 @@ import styles from './LoginCard.module.css';
 import { ACTION_ENUM, Store } from '../../../Store';
 import {
   Button,
-  Card,
   CardActions,
   CardContent,
   Divider,
   TextField,
   Typography,
 } from '../../../components/MUI';
+import { Paper } from '../../../components/Custom';
 import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
@@ -104,7 +104,7 @@ export default function LoginCard() {
   });
 
   return (
-    <Card className={styles.card}>
+    <Paper className={styles.card}>
       <form onSubmit={formik.handleSubmit}>
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
@@ -146,6 +146,6 @@ export default function LoginCard() {
           </Link>
         </CardActions>
       </form>
-    </Card>
+    </Paper>
   );
 }

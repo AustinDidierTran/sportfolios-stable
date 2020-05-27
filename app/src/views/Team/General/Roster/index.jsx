@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 
 import {
-  Card,
   List,
   ListItem,
   Typography,
   Container,
 } from '../../../../components/MUI';
-import { Avatar } from '../../../../components/Custom';
+import { Paper } from '../../../../components/Custom';
 import styles from './Roster.module.css';
 import { useTranslation } from 'react-i18next';
 
@@ -48,7 +47,7 @@ export default function Roster(props) {
   );
 
   return (
-    <Card className={styles.bigCard}>
+    <Paper className={styles.bigCard}>
       <Typography variant="h3" className={styles.title}>
         {' '}
         {t('roster')}{' '}
@@ -78,6 +77,6 @@ export default function Roster(props) {
           ))}
         </Container>
       ))}
-    </Card>
+    </Paper>
   );
 }
