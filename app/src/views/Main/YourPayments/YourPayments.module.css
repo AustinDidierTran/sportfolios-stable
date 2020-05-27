@@ -1,0 +1,39 @@
+.card {
+  grid-area: yourPayments;
+  text-align: center;
+}
+
+.container {
+  display: grid !important;
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-areas: 'price title button' 'price subtitle button';
+  padding: 4px;
+}
+
+.title {
+  grid-area: title;
+}
+
+.subtitle {
+  grid-area: subtitle;
+}
+
+.price {
+  grid-area: price;
+}
+
+.button {
+  grid-area: button;
+  font-size: x-small !important;
+  max-width: 50px;
+  max-height: 25px;
+  align-self: center;
+}
+
+@media (min-width: 768px) {
+  .button {
+    font-size: small !important;
+    max-width: 128px;
+    max-height: 48px;
+  }
+}

@@ -20,6 +20,8 @@ export default {
     email_confirmed:
       'An email has just been sent to {{email}}. Please, go look at your inbox to confirm your email.',
     event_manager: 'Event Manager',
+    events: 'Events',
+    events_that_might_interest_you: 'Events that might interest you',
     first_name: 'First Name',
     forgot_password: 'Forgot Password?',
     funding: 'Funding',
@@ -41,10 +43,13 @@ export default {
     notifications: 'Notifications',
     no_notifications: 'No Notifications',
     no_notifications_message: 'Come back later.',
+    on_going_events: 'On Going Events',
     organization: 'Organization',
     organizations: 'Organizations',
     our_team: 'Our Team',
     password: 'Password',
+    pay: 'Pay',
+    payments: 'Payments',
     players: 'Players',
     pre_ranking: 'Pre-ranking',
     private: 'Private',
@@ -70,7 +75,7 @@ export default {
     team: 'Teams',
     team_history: 'Team History',
     teams: 'Teams',
-    upcoming_events: 'Upcoming Events',
+    your_upcoming_events: 'Your Upcoming Events',
     // Validation
     confirm_new_password: 'Confirm New Password',
     email_already_used:
