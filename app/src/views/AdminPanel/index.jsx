@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './AdminPanel.module.css';
 
-import { Typography, Container } from '../../components/MUI';
+import { Typography } from '../../components/MUI';
+import { Container } from '../../components/Custom';
 import SportsTable from './SportsTable';
 import UsersTable from './UsersTable';
 

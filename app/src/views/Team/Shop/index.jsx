@@ -12,21 +12,21 @@ export default function Shop(props) {
       name: 'Disque Blanc',
       price: '12$',
       photoUrl:
-        'https://lh3.googleusercontent.com/proxy/9b1TvdEqFGtNdTy20WdOCzbqqBYbxMl-Kuk_eu9RWMVIopGxv0Vsvje8sZ3hS1DVBlSTkHoKqrjlSSBKbndswKW_iuXu-QRz_xyjikumvaUnTlDV3A',
+        'https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200527-zk1u9-9dba1457-42ae-4c37-be4e-b05f7acfd11d',
       description: 'Disque officiel 175g de couleur blanche',
     },
     {
       name: 'Disque Blanc',
       price: '12$',
       photoUrl:
-        'https://lh3.googleusercontent.com/proxy/9b1TvdEqFGtNdTy20WdOCzbqqBYbxMl-Kuk_eu9RWMVIopGxv0Vsvje8sZ3hS1DVBlSTkHoKqrjlSSBKbndswKW_iuXu-QRz_xyjikumvaUnTlDV3A',
+        'https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200527-zk1u9-9dba1457-42ae-4c37-be4e-b05f7acfd11d',
       description: 'Disque officiel 175g de couleur blanche',
     },
     {
       name: 'Disque Blanc',
       price: '12$',
       photoUrl:
-        'https://lh3.googleusercontent.com/proxy/9b1TvdEqFGtNdTy20WdOCzbqqBYbxMl-Kuk_eu9RWMVIopGxv0Vsvje8sZ3hS1DVBlSTkHoKqrjlSSBKbndswKW_iuXu-QRz_xyjikumvaUnTlDV3A',
+        'https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200527-zk1u9-9dba1457-42ae-4c37-be4e-b05f7acfd11d',
       description: 'Disque officiel 175g de couleur blanche',
     },
   ];

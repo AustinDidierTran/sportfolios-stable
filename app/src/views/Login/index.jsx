@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './Login.module.css';
 
-import { Container } from '../../components/MUI';
+import { Container } from '../../components/Custom';
 import LoginCard from './LoginCard';
 import DescriptionCard from './DescriptionCard';
 

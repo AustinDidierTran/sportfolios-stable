@@ -1,14 +1,7 @@
 .container {
   text-align: center;
-  padding: 0px !important;
   display: grid !important;
   grid-template-columns: 1fr;
   grid-template-areas: 'onGoingEvents' 'yourEvents' 'yourPayments' 'eventsOfInterest' 'followingUsersCard';
   row-gap: 16px;
-}
-
-@media (min-width: 992px) {
-  .container {
-    padding: 16px !important;
-  }
 }

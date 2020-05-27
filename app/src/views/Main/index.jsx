@@ -2,7 +2,8 @@ import React, { useEffect, useContext, useState } from 'react';
 
 import styles from './Main.module.css';
 
-import { Card, CardContent, Container } from '../../components/MUI';
+import { Card, CardContent } from '../../components/MUI';
+import { Container } from '../../components/Custom';
 
 import { useAllMainInformations } from '../../actions/api/helpers';
 

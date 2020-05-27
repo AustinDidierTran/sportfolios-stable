@@ -1,7 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Card, Container } from '../../components/MUI';
+import { Card } from '../../components/MUI';
+import { Container } from '../../components/Custom';
 import styles from './ConfirmationEmailSent.module.css';
 
 export default function ConfirmationEmailSent(props) {

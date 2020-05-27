@@ -1,11 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
-import {
-  Card,
-  Container,
-  Paper,
-  Tab,
-  Tabs,
-} from '../../components/MUI';
+import { Card, Paper, Tab, Tabs } from '../../components/MUI';
+import { Container } from '../../components/Custom';
+
 import { Store } from '../../Store';
 import styles from './Team.module.css';
 import BasicInfos from './BasicInfos';
