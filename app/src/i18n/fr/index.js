@@ -4,6 +4,7 @@ export default {
     actions: 'Actions',
     add_to_cart: 'Ajouter au panier',
     added_to_cart: 'Ajouté au panier',
+    admin: 'Administrateur',
     adress: 'Addresse',
     app_role: 'App Role',
     athlete_history: "Historique de l'athlète",
@@ -29,6 +30,7 @@ export default {
     goal: 'Objectif',
     have_an_account_signin:
       'Vous avez déjà un compte? Connectez-vous!',
+    infos: 'Infos',
     last_name: 'Nom de famille',
     login: 'Connexion',
     logout: 'Déconnexion',
@@ -51,6 +53,7 @@ export default {
     registered: 'inscrit',
     results: 'Résultats',
     registration: 'Inscription',
+    registration_status: 'État des inscriptions',
     roster: 'Alignement',
     schedule: 'Horaire',
     score_type: 'Type de pointage',

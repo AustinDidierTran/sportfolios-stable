@@ -5,5 +5,6 @@ import Follow from '../../../views/Notifications/Follow';
 
 export default function NotificationFactory(props) {
   const { type, ...otherProps } = props;
+
   return type == 'follow' ? <Follow {...otherProps} /> : <></>;
 }

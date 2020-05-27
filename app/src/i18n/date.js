@@ -8,8 +8,6 @@ const date = {
    * @return Promise
    */
   init(locale) {
-    console.log('locale', locale);
-
     // moment defaults to English and will throw an
     // error if we attempt to explicitly import 'en'
     if (locale === 'en') {
