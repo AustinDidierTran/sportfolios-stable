@@ -72,8 +72,6 @@ export default function SignupCard(props) {
         }),
       });
 
-      console.log('res', res);
-
       if (res.status === 403) {
         formik.setFieldError('email', t('email_already_used'));
       } else if (res.status >= 400) {

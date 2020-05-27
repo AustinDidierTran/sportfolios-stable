@@ -11,8 +11,6 @@ export default function CellRenderer(props) {
     ...values
   } = props;
 
-  console.log('type', type);
-
   switch (type) {
     case 'number':
       return (

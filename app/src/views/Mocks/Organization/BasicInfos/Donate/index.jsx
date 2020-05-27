@@ -10,7 +10,7 @@ export default function BecomeMember(props) {
   const { t } = useTranslation();
 
   const handleClick = () => {
-    console.log('Thanks for your donation!');
+    alert('Thanks for your donation!');
   };
 
   return (

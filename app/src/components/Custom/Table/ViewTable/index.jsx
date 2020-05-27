@@ -10,7 +10,7 @@ import {
 } from '../../../MUI';
 
 export default function ViewTable(props) {
-  const { data, headers, onRowClick, title } = props;
+  const { data, description, headers, onRowClick, title } = props;
 
   return (
     <>
@@ -19,6 +19,13 @@ export default function ViewTable(props) {
       </Typography>
       <Table>
         <TableHead>
+          {description ? (
+            <TableRow>
+              <TableCell>{description}</TableCell>
+            </TableRow>
+          ) : (
+            <></>
+          )}
           <TableRow>
             {headers.map((h, index) => (
               <TableCell key={index}>{h.display}</TableCell>
