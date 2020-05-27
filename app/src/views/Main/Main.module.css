@@ -1,23 +1,7 @@
 .container {
   text-align: center;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-  padding: 0px !important;
->>>>>>> Ajout du component CustomContainer
   display: grid !important;
   grid-template-columns: 1fr;
   grid-template-areas: 'onGoingEvents' 'yourEvents' 'yourPayments' 'eventsOfInterest' 'followingUsersCard';
   row-gap: 16px;
 }
-<<<<<<< HEAD
-=======
-
-@media (min-width: 992px) {
-  .container {
-    padding: 16px !important;
-  }
-=======
->>>>>>> Ajout du component CustomContainer
-}
->>>>>>> Ajout du component CustomContainer
