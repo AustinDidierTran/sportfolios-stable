@@ -13,6 +13,8 @@ CREATE TABLE persons (
 
 INSERT INTO persons(user_id, first_name, last_name, birth_date, photo_url,language) SELECT user_id, first_name, last_name, birth_date, photo_url, language FROM user_info;
 
+DROP TABLE user_info;
+
 CREATE TABLE teams (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
@@ -50,6 +52,9 @@ CREATE TABLE organizations (
 );
 
 INSERT INTO organizations(id, name, deleted_at) SELECT id, name, deleted_at FROM associations;
+
+DROP TABLE user_to_association;
+DROP TABLE associations;
 
 CREATE TABLE memberships (
   organization_id UUID REFERENCES organizations(id) NOT NULL,
