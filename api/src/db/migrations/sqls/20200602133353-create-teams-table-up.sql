@@ -3,8 +3,6 @@ CREATE TABLE teams (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   photo_url VARCHAR(255),
-  created_at TIMESTAMP NOT NULL,
-  deleted_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT now(),
+  deleted_at TIMESTAMP
 );
-
-INSERT INTO teams (created_at) VALUES (now);
