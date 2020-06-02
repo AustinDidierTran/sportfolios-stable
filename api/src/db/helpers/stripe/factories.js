@@ -1,6 +1,9 @@
 const { BUSINESS_TYPE_ENUM } = require('./enums');
 
 const dobFormatter = dob => {
+  if (!dob) {
+    return null;
+  }
   const dobArray = dob.split('-');
   return {
     year: +dobArray[0],

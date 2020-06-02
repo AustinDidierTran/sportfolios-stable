@@ -8,7 +8,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 /* Private arguments */
 
 const stripeEnums = require('./enums');
-const { TEST_EXTERNAL_ACCOUNT } = stripeEnums;
+const { BUSINESS_TYPE_ENUM, TEST_EXTERNAL_ACCOUNT } = stripeEnums;
 
 const stripeFactories = require('./factories');
 const { accountParamsFactory } = stripeFactories;
@@ -18,7 +18,7 @@ const { accountParamsFactory } = stripeFactories;
 // REF: https://stripe.com/docs/api/accounts/create?lang=node
 const createStripeConnectedAccount = async props => {
   const {
-    business_type,
+    business_type = BUSINESS_TYPE_ENUM.INDIVIDUAL,
     city,
     country,
     dob,
