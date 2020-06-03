@@ -28,8 +28,8 @@ const createUserEmail = async ({ user_id, email }) => {
 };
 
 const createUserInfo = async ({ user_id, first_name, last_name }) => {
-  await knex('user_info').insert({
-    user_id: user_id,
+  await knex('persons').insert({
+    user_id,
     first_name,
     last_name,
   });
@@ -64,7 +64,7 @@ const generateToken = () => {
 };
 
 const getBasicUserInfoFromId = async user_id => {
-  const basicUserInfo = await knex('user_info')
+  const basicUserInfo = await knex('persons')
     .select('*')
     .where({ user_id });
 
@@ -169,7 +169,7 @@ const updateBasicUserInfoFromUserId = async ({
     update.last_name = lastName;
   }
 
-  await knex('user_info')
+  await knex('persons')
     .update(update)
     .where({ user_id });
 };

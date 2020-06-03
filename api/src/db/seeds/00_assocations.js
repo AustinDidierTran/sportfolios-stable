@@ -1,10 +1,10 @@
 exports.seed = function(knex) {
   // Deletes ALL existing entries
-  return knex('associations')
+  return knex('organizations')
     .del()
     .then(function() {
       // Inserts seed entries
-      return knex('associations').insert([
+      return knex('organizations').insert([
         {
           name: "Association d'ultimate de Sherbrooke",
           sport: 'Ultimate frisbee',

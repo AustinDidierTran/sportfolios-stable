@@ -164,7 +164,7 @@ describe('routes : associations', () => {
 
   describe('DELETE /api/associations/:id', () => {
     it('should return the association that was deleted', done => {
-      knex('associations')
+      knex('organizations')
         .select('*')
         .then(associations => {
           const associationObject = associations[0];
@@ -186,7 +186,7 @@ describe('routes : associations', () => {
               // key-value pair of {"data": 1 association object}
               res.body.data[0].should.include.keys(...expectedKeys);
               // ensure the association was in fact deleted
-              knex('associations')
+              knex('organizations')
                 .select('*')
                 .then(updatedAssociations => {
                   updatedAssociations.length.should.eql(
@@ -214,7 +214,7 @@ describe('routes : associations', () => {
           // the JSON response body should have a
           // key-value pair of {"message": "That association does not exist."}
           res.body.message.should.eql(
-            'That association does not exist.',
+            'That organizations does not exist.',
           );
           done();
         });

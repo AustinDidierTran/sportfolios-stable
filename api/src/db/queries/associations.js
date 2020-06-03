@@ -2,41 +2,41 @@ const knex = require('../connection');
 
 function getAllAssociations(includeDeleted) {
   if (includeDeleted && includeDeleted !== 'false') {
-    return knex('associations').select(['id', 'name']);
+    return knex('organizations').select(['id', 'name']);
   } else {
-    return knex('associations')
+    return knex('organizations')
       .select(['id', 'name'])
       .where({ deleted_at: null });
   }
 }
 
 function getSingleAssociation(id) {
-  return knex('associations')
+  return knex('organizations')
     .select(['id', 'name'])
     .where({ id, deleted_at: null });
 }
 
 function addAssociation(association) {
-  return knex('associations')
+  return knex('organizations')
     .insert(association)
     .returning(['id', 'name']);
 }
 
 function updateAssociation(id, association) {
-  return knex('associations')
+  return knex('organizations')
     .update(association)
     .where({ id, deleted_at: null })
     .returning(['id', 'name']);
 }
 
 function deleteAssociation(id) {
-  return knex('associations')
+  return knex('organizations')
     .where('id', id)
     .del();
 }
 
 function restoreAssociation(id) {
-  return knex('associations')
+  return knex('organizations')
     .update({ deleted_at: null })
     .where({ id })
     .returning(['id', 'name']);
