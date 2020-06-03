@@ -4,11 +4,11 @@ const queries = require('../../db/queries/stripe');
 const router = new Router();
 const BASE_URL = '/api/stripe';
 
-router.post(`${BASE_URL}/createAccount`, async ctx => {
+router.get(`${BASE_URL}/accountLink`, async ctx => {
   try {
-    const data = await queries.createAccount(
+    const data = await queries.getAccountLink(
+      ctx.query.id,
       ctx.request.ip,
-      ctx.request.body,
     );
     ctx.body = {
       status: 'success',
