@@ -20,7 +20,7 @@ async function getUserInfo(sender, target) {
       .count('*')
       .where({ sender, target }))) || [{ count: 0 }];
 
-  const [userInfo] = await knex('user_info')
+  const [userInfo] = await knex('persons')
     .select('*')
     .where({ user_id: target });
 
@@ -42,7 +42,7 @@ async function updateBirthDate(user_id, { birthDate }) {
     return { code: 402 };
   }
 
-  const updatedUser = await knex('user_info')
+  const updatedUser = await knex('persons')
     .update({ birth_date: birthDate })
     .where({ user_id })
     .returning('user_id');
@@ -55,7 +55,7 @@ async function updateBirthDate(user_id, { birthDate }) {
 }
 
 async function updatePhotoUrl(user_id, { photoUrl }) {
-  const updatedUser = await knex('user_info')
+  const updatedUser = await knex('persons')
     .update({ photo_url: photoUrl })
     .where({ user_id })
     .returning('user_id');

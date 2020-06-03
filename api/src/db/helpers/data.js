@@ -10,10 +10,10 @@ const addQueryToRecentSearches = async (user_id, search_query) => {
 };
 
 const getUsersFromQuery = async query => {
-  return knex('user_info')
-    .select('user_id', 'first_name', 'last_name', 'photo_url')
-    .where('user_info.first_name', 'ILIKE', `%${query}%`)
-    .orWhere('user_info.last_name', 'ILIKE', `%${query}%`);
+  return knex('persons')
+    .select('id', 'first_name', 'last_name', 'photo_url')
+    .where('persons.first_name', 'ILIKE', `%${query}%`)
+    .orWhere('persons.last_name', 'ILIKE', `%${query}%`);
 };
 
 const getPreviousSearchQueriesFromId = async user_id => {
