@@ -17,23 +17,18 @@ const knex = require('../../connection');
 
 /* Public arguments */
 const getStripeAccountId = async senderId => {
-  return knex
+  const data = await knex
     .select('account_id')
     .from('stripe_accounts')
     .where('stripe_accounts.entity_id', senderId);
+
+  return (data.length && data[0].account_id) || null;
 };
 
 const getOrCreateStripeConnectedAccountId = async props => {
   const { entity_id, ip } = props;
 
-  console.log('entity_id', entity_id);
-  console.log('ip', ip);
-
-  let [{ account_id: accountId } = {}] = await getStripeAccountId(
-    entity_id,
-  );
-
-  console.log('accountId', accountId);
+  let accountId = await getStripeAccountId(entity_id);
 
   if (!accountId) {
     const account = await createStripeConnectedAccount(props); // must return accountId
@@ -85,11 +80,7 @@ const createStripeConnectedAccount = async props => {
 };
 
 const createAccountLink = async props => {
-  console.log('props', props);
-
-  const { accountId } = props;
-  // const account_id = getOrCreateStripeConnectedAccountId(...props);
-
+  const accountId = await getOrCreateStripeConnectedAccountId(props);
   const params = {
     account: accountId,
     failure_url: 'http://localhost:3000/profile',
@@ -98,18 +89,10 @@ const createAccountLink = async props => {
     collect: 'eventually_due',
   };
 
-  console.log('params', params);
-
-  const accountLink = await stripe.accountLinks.create(params);
-
-  return accountLink;
+  return stripe.accountLinks.create(params);
 };
 
 module.exports = {
-  createStripeConnectedAccount,
   createAccountLink,
-  getOrCreateStripeConnectedAccountId,
-  getStripeAccountId,
   stripeEnums,
-  stripeFactories,
 };
