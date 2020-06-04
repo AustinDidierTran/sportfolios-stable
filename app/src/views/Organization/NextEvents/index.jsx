@@ -60,7 +60,7 @@ export default function NextEvents(props) {
   ];
 
   return (
-    <Paper className={styles.card} gutterBottom>
+    <Paper className={styles.card}>
       <Typography className={styles.title} variant="h3">
         {t('events')}
       </Typography>

@@ -1,42 +1,31 @@
-.card {
-  grid-area: basicInfos;
-  text-align: center;
-  padding: 0px !important;
+.textField {
+  margin-bottom: 8px !important;
+  width: 100% !important;
+}
+.input {
+  padding: 8px !important;
 }
 
-.avatar {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.titre {
-  padding: 8px;
-}
-
-.container {
+.buttons {
   display: grid !important;
   grid-template-columns: 1fr 1fr;
-  grid-template-areas: 'member donate';
-  column-gap: 8px;
-  padding: 0px !important;
-  margin-right: auto;
-  margin-left: auto;
+}
+.edit {
+  padding-top: 8px;
 }
 @media (min-width: 768px) {
-  .container {
-    column-gap: 32px;
-    padding-left: 32px !important;
-    padding-right: 32px !important;
+  .buttons {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-areas: '. save cancel .';
   }
-}
+  .cancel {
+    grid-area: cancel;
+  }
 
-.donate {
-  grid-area: donate;
-  margin-right: auto;
-  margin-left: auto;
-}
-.member {
-  grid-area: member;
-  margin-right: auto;
-  margin-left: auto;
+  .save {
+    grid-area: save;
+  }
+  .textField {
+    width: 50% !important;
+  }
 }

@@ -16,7 +16,9 @@ export default {
     change_password: 'Changer votre mot de passe',
     competitive_member: 'Membre Compétitif',
     contact_us: 'Contactez-nous',
+    create_organization: 'Créer une organisation',
     donate: 'Faites un don',
+    done: 'Terminé',
     email: 'Courriel',
     emails: 'Courriels',
     email_confirmed:

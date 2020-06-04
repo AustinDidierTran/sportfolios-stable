@@ -1,19 +1,19 @@
 const Router = require('koa-router');
-const queries = require('../../db/queries/associations');
+const queries = require('../../db/queries/organization');
 
 const router = new Router();
-const BASE_URL = '/api/associations';
+const BASE_URL = '/api/organization';
 
 router.get(BASE_URL, async ctx => {
   const { includeDeleted } = ctx.query;
 
   try {
-    const associations = await queries.getAllAssociations(
+    const organizations = await queries.getAllOrganizations(
       includeDeleted,
     );
     ctx.body = {
       status: 'success',
-      data: associations,
+      data: organizations,
     };
   } catch (err) {
     ctx.status = 400;
@@ -26,14 +26,14 @@ router.get(BASE_URL, async ctx => {
 
 router.get(`${BASE_URL}/:id`, async ctx => {
   try {
-    const association = await queries.getSingleAssociation(
+    const organization = await queries.getSingleOrganization(
       ctx.params.id,
     );
 
-    if (association.length) {
+    if (organization.length) {
       ctx.body = {
         status: 'success',
-        data: association,
+        data: organization,
       };
     } else {
       ctx.status = 404;
@@ -53,14 +53,29 @@ router.get(`${BASE_URL}/:id`, async ctx => {
 
 router.post(BASE_URL, async ctx => {
   try {
-    const association = await queries.addAssociation(
+    const organizationId = await queries.addOrganization(
       ctx.request.body,
     );
-    if (association.length) {
+
+    if (organizationId) {
       ctx.status = 201;
       ctx.body = {
         status: 'success',
-        data: association,
+        data: organizationId,
+      };
+    } else if (false) {
+      //expired token
+      ctx.status = 405;
+      ctx.body = {
+        status: 'error',
+        message: 'Expired token',
+      };
+    } else if (false) {
+      //not a user
+      ctx.status = 406;
+      ctx.body = {
+        status: 'error',
+        message: 'No token',
       };
     } else {
       ctx.status = 400;
@@ -80,21 +95,21 @@ router.post(BASE_URL, async ctx => {
 
 router.put(`${BASE_URL}/:id`, async ctx => {
   try {
-    const association = await queries.updateAssociation(
+    const organization = await queries.updateOrganization(
       ctx.params.id,
       ctx.request.body,
     );
-    if (association.length) {
+    if (organization.length) {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-        data: association,
+        data: organization,
       };
     } else {
       ctx.status = 404;
       ctx.body = {
         status: 'error',
-        message: 'That association does not exist.',
+        message: 'That organization does not exist.',
       };
     }
   } catch (err) {
@@ -108,21 +123,21 @@ router.put(`${BASE_URL}/:id`, async ctx => {
 
 router.delete(`${BASE_URL}/:id`, async ctx => {
   try {
-    const association = await queries.deleteAssociation(
+    const organization = await queries.deleteOrganization(
       ctx.params.id,
     );
-    if (association.length) {
+    if (organization.length) {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-        data: association,
+        data: organization,
       };
     } else {
       ctx.status = 404;
 
       ctx.body = {
         status: 'error',
-        message: 'That association does not exist.',
+        message: 'That organization does not exist.',
       };
     }
   } catch (err) {
@@ -136,20 +151,20 @@ router.delete(`${BASE_URL}/:id`, async ctx => {
 
 router.put(`${BASE_URL}/restore/:id`, async ctx => {
   try {
-    const association = await queries.restoreAssociation(
+    const organization = await queries.restoreOrganization(
       ctx.params.id,
     );
-    if (association.length) {
+    if (organization.length) {
       ctx.status = 200;
       ctx.body = {
         status: 'success',
-        data: association,
+        data: organization,
       };
     } else {
       ctx.status = 404;
       ctx.body = {
         status: 'error',
-        message: 'That association does not exist.',
+        message: 'That organization does not exist.',
       };
     }
   } catch (err) {
