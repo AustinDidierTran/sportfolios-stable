@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 
 import { Tab, Tabs } from '../../components/MUI';
 import { Container, Paper } from '../../components/Custom';
 
+import { Store } from '../../Store';
+import api from '../../actions/api';
 import styles from './Organization.module.css';
 import { useTranslation } from 'react-i18next';
 import BasicInfos from './BasicInfos';
@@ -19,11 +21,35 @@ export const TABS_ENUM = {
 export default function Organization(props) {
   const { t } = useTranslation();
 
+  const [basicInfos, setBasicInfos] = useState({});
+
+  const updateBasicInfos = async () => {
+    const { data } = await api(`/api/organization/?id={id}`);
+
+    setBasicInfos(data);
+  };
+
+  useEffect(() => {
+    updateBasicInfos();
+  }, []);
+
+  const {
+    state: { organization },
+  } = useContext(Store);
+
+  const {
+    match: {
+      params: { id },
+    },
+  } = props;
+
   const {
     match: {
       params: { openTab = TABS_ENUM.GENERAL },
     },
   } = props;
+
+  const isManager = id === id; //Need query to identify users that are managers
 
   const [eventState, setEventState] = useState(openTab);
 
@@ -54,7 +80,7 @@ export default function Organization(props) {
     <Container className={styles.container}>
       <Paper className={styles.card}>
         <Container className={styles.title}>
-          <BasicInfos />
+          <BasicInfos basicInfos={basicInfos} isManager={isManager} />
         </Container>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}

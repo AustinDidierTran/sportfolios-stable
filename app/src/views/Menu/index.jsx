@@ -1,32 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import styles from './More.module.css';
 import history from '../../stores/history';
 import { ROUTES } from '../../actions/goTo/index';
 import { useTranslation } from 'react-i18next';
+import { Store, ACTION_ENUM } from '../../Store';
 
-import { Paper } from '../../components/MUI';
+import { Paper } from '../../components/Custom';
 import { Typography } from '@material-ui/core';
 
 export default function Menu(props) {
+  const { dispatch } = useContext(Store);
+
   const { t } = useTranslation();
+
+  const logout = () => dispatch({ type: ACTION_ENUM.LOGOUT });
+
+  const data = [
+    {
+      name: t('organizations'),
+      route: ROUTES.organization,
+    },
+    {
+      name: t('settings'),
+      route: ROUTES.userSettings,
+    },
+    {
+      name: t('logout'),
+      function: logout,
+      style: { color: 'red' },
+    },
+  ];
   return (
     <div className={styles.container}>
-      <Paper
-        elevation={0}
-        className={styles.card}
-        onClick={() => history.push(ROUTES.userSettings)}
-      >
-        <Typography>{t('settings')}</Typography>
-      </Paper>
-      <Paper
-        elevation={0}
-        className={styles.card}
-        onClick={() => history.push(ROUTES.userSettings)}
-      >
-        <Typography style={{ color: 'red' }}>
-          {t('logout')}
-        </Typography>
-      </Paper>
+      {data.map(d => (
+        <Paper
+          className={styles.card}
+          onClick={
+            d.function ||
+            (() => {
+              history.push(d.route);
+            })
+          }
+        >
+          <Typography style={d.style}>{d.name}</Typography>
+        </Paper>
+      ))}
     </div>
   );
 }

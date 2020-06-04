@@ -63,20 +63,6 @@ router.post(BASE_URL, async ctx => {
         status: 'success',
         data: organizationId,
       };
-    } else if (false) {
-      //expired token
-      ctx.status = 405;
-      ctx.body = {
-        status: 'error',
-        message: 'Expired token',
-      };
-    } else if (false) {
-      //not a user
-      ctx.status = 406;
-      ctx.body = {
-        status: 'error',
-        message: 'No token',
-      };
     } else {
       ctx.status = 400;
       ctx.body = {
