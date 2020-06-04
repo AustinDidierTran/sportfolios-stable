@@ -23,4 +23,24 @@ router.get(`${BASE_URL}/accountLink`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/externalAccount`, async ctx => {
+  try {
+    const data = await queries.addExternalAccount(
+      ctx.request.body,
+      ctx.body.userInfo.id,
+      ctx.request.ip,
+    );
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
 module.exports = router;

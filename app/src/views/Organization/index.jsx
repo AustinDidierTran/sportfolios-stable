@@ -11,6 +11,7 @@ import BasicInfos from './BasicInfos';
 import NextEvents from './NextEvents';
 import Shop from './Shop';
 import About from './About';
+import StripeAccount from '../../../src/utils/stripe/ExternalAccount';
 
 export const TABS_ENUM = {
   GENERAL: 'general',
@@ -81,6 +82,9 @@ export default function Organization(props) {
       <Paper className={styles.card}>
         <Container className={styles.title}>
           <BasicInfos basicInfos={basicInfos} isManager={isManager} />
+        </Container>
+        <Container className={styles.title}>
+          <StripeAccount />
         </Container>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}

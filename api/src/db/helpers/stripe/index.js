@@ -25,9 +25,7 @@ const getStripeAccountId = async senderId => {
   return (data.length && data[0].account_id) || null;
 };
 
-const getOrCreateStripeConnectedAccountId = async props => {
-  const { entity_id, ip } = props;
-
+const getOrCreateStripeConnectedAccountId = async entity_id => {
   let accountId = await getStripeAccountId(entity_id);
 
   if (!accountId) {
@@ -80,7 +78,10 @@ const createStripeConnectedAccount = async props => {
 };
 
 const createAccountLink = async props => {
-  const accountId = await getOrCreateStripeConnectedAccountId(props);
+  const { entity_id } = props;
+  const accountId = await getOrCreateStripeConnectedAccountId(
+    props.entity_id,
+  );
   const params = {
     account: accountId,
     failure_url: 'http://localhost:3000/profile',
@@ -92,7 +93,58 @@ const createAccountLink = async props => {
   return stripe.accountLinks.create(params);
 };
 
+const createExternalAccount = async (body, id, ip) => {
+  var created = 1;
+  const accountId = await getOrCreateStripeConnectedAccountId(id);
+  const params = {
+    bank_account: {
+      country: body.country,
+      currency: body.currency,
+      account_holder_name: body.account_holder_name,
+      account_holder_type: body.account_holder_type,
+      routing_number: body.routing_number,
+      account_number: body.account_number,
+    },
+  };
+  const tempParams = {
+    bank_account: {
+      country: 'US',
+      currency: 'usd',
+      account_holder_name: 'Jenny Rosen',
+      account_holder_type: 'individual',
+      routing_number: '110000000',
+      account_number: '000123456789',
+    },
+  };
+  stripe.tokens.create(tempParams, async (err, token) => {
+    if (token) {
+      console.log('Account Token Created', token.id);
+      await stripe.accounts.createExternalAccount(
+        accountId,
+        {
+          external_account: token.id,
+        },
+        async (err, account) => {
+          if (account) {
+            console.log('External Account Created', account.id);
+          }
+          if (err) {
+            console.log('ERROR: External Account NOT Created');
+            created = 0;
+          }
+        },
+      );
+    }
+    if (err) {
+      console.log('ERROR: Account Token NOT Created');
+      created = 0;
+    }
+  });
+  return created;
+};
+
 module.exports = {
   createAccountLink,
+  createExternalAccount,
   stripeEnums,
 };
