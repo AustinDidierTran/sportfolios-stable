@@ -16,12 +16,16 @@ function getSingleOrganization(id) {
     .where({ id, deleted_at: null });
 }
 
-const addOrganization = async organization => {
-  const res = await knex('organizations')
-    .insert(organization)
+const addOrganization = async organizationProps => {
+  const [entity] = await knex('entities')
+    .insert({ type: 2 })
     .returning(['id']);
 
-  return res[0];
+  const [organization = {}] = await knex('organizations')
+    .insert({ ...organizationProps, id: entity.id })
+    .returning(['id']);
+
+  return organization.id;
 };
 
 function updateOrganization(id, organization) {

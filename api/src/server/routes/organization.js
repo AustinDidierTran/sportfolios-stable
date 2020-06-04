@@ -53,14 +53,15 @@ router.get(`${BASE_URL}/:id`, async ctx => {
 
 router.post(BASE_URL, async ctx => {
   try {
-    const organization = await queries.addOrganization(
+    const organizationId = await queries.addOrganization(
       ctx.request.body,
     );
-    if (organization.length) {
+
+    if (organizationId) {
       ctx.status = 201;
       ctx.body = {
         status: 'success',
-        data: organization,
+        data: organizationId,
       };
     } else if (false) {
       //expired token

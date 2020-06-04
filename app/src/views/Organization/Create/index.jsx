@@ -60,7 +60,6 @@ export default function CreateOrganization(props) {
       if (res.status === 406) {
         // Not a user
       }
-      console.log(res);
       goTo(ROUTES.organization, { id: res.data });
       setIsLoading(false);
     },
