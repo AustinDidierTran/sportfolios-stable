@@ -16,7 +16,9 @@ export default {
     change_password: 'Change password',
     competitive_member: 'Competitive Member',
     contact_us: 'Contact us',
+    create_organization: 'Create Organization',
     donate: 'Donate',
+    done: 'Done',
     email: 'Email',
     emails: 'Emails',
     email_confirmed:

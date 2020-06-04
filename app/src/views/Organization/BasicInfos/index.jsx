@@ -1,33 +1,145 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './BasicInfos.module.css';
 import BecomeMember from './BecomeMember';
 import Donate from './Donate';
+import { uploadProfilePicture } from '../../../actions/aws';
+import { ACTION_ENUM, Store } from '../../../Store';
 
-import { Avatar } from '../../../components/Custom';
-import { Typography, Container } from '../../../components/MUI';
+import {
+  Avatar,
+  Input,
+  Button,
+  Paper,
+} from '../../../components/Custom';
+import {
+  Typography,
+  TextField,
+  Container,
+} from '../../../components/MUI';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
+
+  const { name, photo_url } = props;
+
+  const [isManager, setIsManager] = useState(true);
+
+  const [isEditMode, setEditMode] = useState(true);
+
+  const onSave = async () => {
+    const promises = [];
+
+    if (img) {
+      promises.push(onImgUpload());
+    }
+
+    const res = await Promise.all(promises);
+
+    const resErrors = res.filter(r => r.status !== 200);
+
+    if (!resErrors.length) {
+      setEditMode(false);
+    }
+  };
+
+  const onCancel = async () => {
+    setEditMode(false);
+  };
+
+  const onEdit = async () => setEditMode(true);
+
+  const [img, setImg] = useState(null);
+
+  const onImgChange = ([file]) => {
+    setImg(file);
+  };
+
+  const onImgUpload = async () => {
+    const photoUrl = await uploadProfilePicture(img);
+
+    if (photoUrl) {
+      dispatch({
+        type: ACTION_ENUM.UPDATE_ORGANIZATION_PROFILE_PICTURE,
+        payload: photoUrl,
+      });
+      return { status: 200 };
+    }
+    return { status: 404 };
+  };
 
   return (
-    <Container className={styles.card}>
+    <Container className={styles.paper}>
       <Avatar
         className={styles.avatar}
-        initials="FQU"
-        photoUrl={
-          'https://scontent.fymq2-1.fna.fbcdn.net/v/t1.0-9/66500989_10156181959966712_1462670276796874752_n.png?_nc_cat=102&_nc_sid=85a577&_nc_oc=AQmzziZEsG-RlLkW4MgiZgP6B7jjjjMbP24lyLJrYd32c6jevFEdoQLXMwDV-euRsMQ&_nc_ht=scontent.fymq2-1.fna&oh=e26d067f63be9d9c2fe46bf5a6f1a469&oe=5EEB812B'
-        }
+        photoUrl={photo_url}
         size="lg"
       />
-      <Typography variant="h3" className={styles.titre}>
-        Fédération Québécoise d'Ultimate
-      </Typography>
-      <Container className={styles.container}>
-        <BecomeMember className={styles.member} />
-        <Donate className={styles.donate} />
-      </Container>
+      {isEditMode ? (
+        <Input
+          className={styles.input}
+          type="file"
+          onChange={onImgChange}
+          isVisible={isEditMode}
+        />
+      ) : (
+        <></>
+      )}
+      <div className={styles.fullName}>
+        {isEditMode ? (
+          <TextField
+            className={styles.textField}
+            namespace="Name"
+            type="text"
+            label={t('name')}
+            defaultValue={name}
+          />
+        ) : (
+          <Typography variant="h3">{name}</Typography>
+        )}
+      </div>
+      {isManager ? (
+        isEditMode ? (
+          <Container className={styles.buttons}>
+            <Button
+              className={styles.save}
+              endIcon="Check"
+              onClick={onSave}
+              style={{ marginRight: '8px' }}
+            >
+              {t('save')}
+            </Button>
+            <Button
+              className={styles.cancel}
+              endIcon="Close"
+              onClick={onCancel}
+              style={{ marginLeft: '8px' }}
+              color="secondary"
+            >
+              {t('cancel')}
+            </Button>
+          </Container>
+        ) : (
+          <Container className={styles.edit}>
+            <Button
+              variant="contained"
+              color="primary"
+              className={styles.button}
+              endIcon="Edit"
+              onClick={onEdit}
+            >
+              {t('edit')}
+            </Button>
+          </Container>
+        )
+      ) : (
+        <>
+          <BecomeMember className={styles.button} />
+          <Donate className={styles.button} />
+        </>
+      )}
     </Container>
   );
 }

@@ -38,6 +38,8 @@ export const ACTION_ENUM = {
   LOGIN: 'login',
   LOGOUT: 'logout',
   UPDATE_PROFILE_PICTURE: 'update_profile_picture',
+  UPDATE_ORGANIZATION_PROFILE_PICTURE:
+    'update_organization_profile_picture',
   UPDATE_USER_INFO: 'update_user_info',
   WINDOW_RESIZE: 'window_resize',
 };
@@ -61,6 +63,17 @@ function reducer(state, action) {
       };
       localStorage.setItem('userInfo', JSON.stringify(newUserInfo));
       return { ...state, userInfo: newUserInfo };
+    }
+    case ACTION_ENUM.UPDATE_ORGANIZATION_PROFILE_PICTURE: {
+      const newOrganizationInfo = {
+        ...state.organization,
+        photo_url: action.payload,
+      };
+      localStorage.setItem(
+        'organization',
+        JSON.stringify(newOrganizationInfo),
+      );
+      return { ...state, organization: newOrganizationInfo };
     }
     case ACTION_ENUM.UPDATE_USER_INFO: {
       localStorage.setItem(

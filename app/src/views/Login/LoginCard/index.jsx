@@ -61,6 +61,8 @@ export default function LoginCard() {
         }),
       });
 
+      console.log('res', res);
+
       if (res.status === 401) {
         // Email is not validated
         await api('/api/auth/sendConfirmationEmail', {
@@ -79,7 +81,7 @@ export default function LoginCard() {
       } else if (res.status === 404) {
         formik.setFieldError('email', t('email_not_found'));
       } else {
-        let { data } = await res.json();
+        let { data } = res;
 
         if (data) {
           if (typeof data === 'string') {

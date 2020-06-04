@@ -16,7 +16,12 @@ export default async (route, { method, body } = {}) => {
       headers,
       body,
     });
-    return res;
+
+    const status = res.status;
+
+    const { data } = await res.json();
+
+    return { data, status };
   }
 
   if (method === 'PUT') {

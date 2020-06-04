@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 
 import styles from './BasicInfos.module.css';
 
-import { ACTION_ENUM } from '../../../Store';
+import { ACTION_ENUM, Store } from '../../../Store';
 
 import { Avatar, Button, Input } from '../../../components/Custom';
 import {
@@ -19,6 +19,7 @@ import { uploadProfilePicture } from '../../../actions/aws';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
   const [isEditMode, setEditMode] = useState(false);
 
   const {
