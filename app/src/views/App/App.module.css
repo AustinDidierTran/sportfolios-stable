@@ -18,6 +18,7 @@ body {
   grid-area: header;
 }
 .main {
+  height: 100%;
   grid-area: main;
   overflow-y: scroll;
 }
