@@ -53,13 +53,6 @@ export default function CreateOrganization(props) {
         }),
       });
 
-      if (res.status === 405) {
-        goTo(ROUTES.login); //expired token TODO
-      }
-
-      if (res.status === 406) {
-        // Not a user
-      }
       goTo(ROUTES.organization, { id: res.data });
       setIsLoading(false);
     },

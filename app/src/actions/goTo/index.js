@@ -16,6 +16,7 @@ export const ROUTES = {
   notifications: '/notifications',
   createOrganization: '/organization/create',
   organization: '/organization/:id',
+  organizationList: '/organizationList',
   profile: '/profile/:id',
   recoveryEmail: '/recoveryEmail/:token',
   search: '/search/:query',

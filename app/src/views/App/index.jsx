@@ -20,6 +20,7 @@ import EventView from '../Event';
 import ForgotPassword from '../ForgotPassword';
 import Organization from '../Organization';
 import CreateOrganization from '../Organization/Create';
+import OrganizationList from '../OrganizationList';
 import PasswordRecovery from '../PasswordRecovery';
 import Profile from '../Profile';
 import Search from '../Search';
@@ -160,6 +161,11 @@ export default function App() {
                 component={MockEvent}
               />
               <Route exact path={ROUTES.login} component={Login} />
+              <Route
+                exact
+                path={ROUTES.organizationList}
+                component={OrganizationList}
+              />
               <Route
                 exact
                 path={ROUTES.createOrganization}

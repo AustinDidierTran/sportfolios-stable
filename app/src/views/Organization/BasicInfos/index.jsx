@@ -23,9 +23,9 @@ export default function BasicInfos(props) {
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
 
-  const { name, photo_url } = props;
+  const { name, photo_url } = props.basicInfos;
 
-  const [isManager, setIsManager] = useState(true);
+  const { isManager } = props;
 
   const [isEditMode, setEditMode] = useState(true);
 
