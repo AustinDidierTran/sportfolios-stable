@@ -1,13 +1,23 @@
 import React from 'react';
 import Avatar from '../../Avatar';
-import renderer from 'react-test-renderer';
+import { createRender } from '@material-ui/core/test-utils';
 
-it('renders correctly', () => {
-  const props = {
-    initials: 'ADT',
-    photoUrl: 'photo',
-  };
+import Adapter from 'enzyme-adapter-react-16';
+import { configure } from 'enzyme';
 
-  const tree = renderer.create(<Avatar {...props} />).toJSON();
-  expect(tree).toMatchSnapshot();
+configure({ adapter: new Adapter() });
+
+const render = createRender();
+
+describe('<Avatar />', () => {
+  beforeEach(() => {});
+
+  it('renders correctly', () => {
+    const props = {
+      initials: 'ADT',
+      photoUrl: 'photo',
+    };
+    const body = render(<Avatar {...props} />);
+    expect(body).toMatchSnapshot();
+  });
 });
