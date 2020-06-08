@@ -4,30 +4,24 @@ body {
 
 .app {
   width: 100%;
-  height: calc(100vh - 112px);
-  display: grid !important;
-  grid-template-areas:
-    'header'
-    'main'
-    'footer';
-  grid-template-rows: 56px calc(100vh - 112px) 56px;
-  grid-template-columns: 1fr;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
-  grid-area: header;
+  height: 56px;
 }
 .main {
-  height: 100%;
-  grid-area: main;
+  flex: 1;
   overflow-y: scroll;
 }
 .footer {
-  grid-area: footer;
+  height: 56px;
 }
 
 @media (min-width: 768px) {
-  .app {
-    grid-template-rows: 56px calc(100vh - 56px) 0;
+  .footer {
+    display: none;
   }
 }
