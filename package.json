@@ -10,7 +10,7 @@
     "staging-webserver": "node api/src/server.js",
     "webserver": "nodemon api/src/server.js",
     "dev": "webpack-dev-server --open --config webpack.dev.js",
-    "test": "./node_modules/mocha/bin/_mocha --recursive --exit",
+    "test": "jest __tests__",
     "build": "webpack --config webpack.prod.js",
     "lint": "eslint . --ext .js --ext .jsx",
     "prod": "NODE_ENV=prod node ./app/server.js"
@@ -18,6 +18,11 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AustinDidierTran/sportfolios-stable.git"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm test"
+    }
   },
   "keywords": [],
   "author": "Austin-Didier Tran",
@@ -32,17 +37,24 @@
     "clean-webpack-plugin": "^3.0.0",
     "css-loader": "^3.5.2",
     "csv-loader": "^3.0.2",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
     "eslint": "^6.8.0",
     "eslint-loader": "^3.0.4",
     "eslint-plugin-react": "^7.19.0",
     "express": "^4.17.1",
     "file-loader": "^5.1.0",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^4.2.5",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^26.0.1",
+    "jest-localstorage-mock": "^2.4.2",
     "mini-css-extract-plugin": "^0.9.0",
     "mocha": "^7.1.1",
     "nodemon": "^2.0.3",
     "prettier": "^1.19.1",
     "react-hot-loader": "^4.12.20",
+    "react-test-renderer": "^16.13.1",
     "style-loader": "^1.1.3",
     "webpack-cli": "^3.3.11",
     "webpack-dev-middleware": "^3.7.2",

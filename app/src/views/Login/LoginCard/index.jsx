@@ -61,8 +61,6 @@ export default function LoginCard() {
         }),
       });
 
-      console.log('res', res);
-
       if (res.status === 401) {
         // Email is not validated
         await api('/api/auth/sendConfirmationEmail', {
