@@ -75,8 +75,8 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 Then, you will have to install and use node v10.13.
 
 ```
-nvm install 10.13
-nvm use 10.13
+nvm install 14.2
+nvm use 14.2
 ```
 
 ## Setup the project with the mock server
