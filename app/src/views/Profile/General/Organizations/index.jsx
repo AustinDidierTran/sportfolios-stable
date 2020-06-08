@@ -20,6 +20,16 @@ export default function Organizations(props) {
 
   getOrganizations();
 
+  const [organizations, setOrganizations] = useState([]);
+
+  const getOrganizations = async () => {
+    const { data } = await api(`/api/organizations`); //TO BE CHANGED
+
+    setOrganizations(data);
+  };
+
+  getOrganizations();
+
   return (
     <Paper className={styles.card}>
       <CardHeader title={t('organizations')} />
