@@ -20,6 +20,7 @@ import EventView from '../Event';
 import ForgotPassword from '../ForgotPassword';
 import Organization from '../Organization';
 import CreateOrganization from '../Organization/Create';
+import OrganizationNotFound from '../OrganizationNotFound';
 import OrganizationList from '../OrganizationList';
 import PasswordRecovery from '../PasswordRecovery';
 import Profile from '../Profile';
@@ -170,6 +171,11 @@ export default function App() {
                 exact
                 path={ROUTES.createOrganization}
                 component={CreateOrganization}
+              />
+              <Route
+                exact
+                path={ROUTES.organizationNotFound}
+                component={OrganizationNotFound}
               />
               <Route
                 exact

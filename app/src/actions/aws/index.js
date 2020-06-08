@@ -32,6 +32,34 @@ const changeProfileURLinUserInfo = async url => {
   });
 };
 
+const changeOrganizationURL = async (id, url) => {
+  await api(`/api/organization`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      id,
+      organization: { photo_url: url },
+    }),
+  });
+};
+
+export async function uploadOrganizationPicture(id, img) {
+  if (!img) {
+    throw 'Please select an image';
+  }
+
+  if (img.size > MAX_IMG_SIZE) {
+    throw 'Image is too big';
+  }
+
+  const { data } = await getSignature(img.type);
+
+  await uploadToS3(img, data.signedRequest);
+
+  await changeOrganizationURL(id, data.url);
+
+  return data.url;
+}
+
 export async function uploadProfilePicture(img) {
   if (!img) {
     throw 'Please select an image';

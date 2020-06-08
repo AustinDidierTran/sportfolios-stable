@@ -28,6 +28,7 @@ export default function BasicInfos(props) {
     birth_date,
     photo_url,
   } = props.basicInfos;
+
   const completeName = `${first_name} ${last_name}`;
   const initials = getInitialsFromName(completeName);
   const birthDate = useFormInput(birth_date);

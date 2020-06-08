@@ -1,11 +1,13 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './BasicInfos.module.css';
 import BecomeMember from './BecomeMember';
 import Donate from './Donate';
-import { uploadProfilePicture } from '../../../actions/aws';
+import { uploadOrganizationPicture } from '../../../actions/aws';
 import { ACTION_ENUM, Store } from '../../../Store';
+import { useFormInput } from '../../../hooks/forms';
+import api from '../../../actions/api';
 
 import {
   Avatar,
@@ -23,7 +25,15 @@ export default function BasicInfos(props) {
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
 
-  const { name, photo_url } = props.basicInfos;
+  const {
+    basicInfos: { id, name: initialName, photo_url },
+  } = props;
+
+  const name = useFormInput(initialName);
+
+  useEffect(() => {
+    name.changeDefault(initialName);
+  }, [initialName]);
 
   const { isManager } = props;
 
@@ -36,16 +46,25 @@ export default function BasicInfos(props) {
       promises.push(onImgUpload());
     }
 
+    promises.push(onNameChange());
+
     const res = await Promise.all(promises);
 
-    const resErrors = res.filter(r => r.status !== 200);
+    setEditMode(false);
+  };
 
-    if (!resErrors.length) {
-      setEditMode(false);
-    }
+  const onNameChange = async () => {
+    const res = await api(`/api/organization`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        id,
+        organization: { name: name.value },
+      }),
+    });
   };
 
   const onCancel = async () => {
+    name.reset();
     setEditMode(false);
   };
 
@@ -58,7 +77,7 @@ export default function BasicInfos(props) {
   };
 
   const onImgUpload = async () => {
-    const photoUrl = await uploadProfilePicture(img);
+    const photoUrl = await uploadOrganizationPicture(id, img);
 
     if (photoUrl) {
       dispatch({
@@ -87,19 +106,22 @@ export default function BasicInfos(props) {
       ) : (
         <></>
       )}
-      <div className={styles.fullName}>
-        {isEditMode ? (
-          <TextField
-            className={styles.textField}
-            namespace="Name"
-            type="text"
-            label={t('name')}
-            defaultValue={name}
-          />
-        ) : (
-          <Typography variant="h3">{name}</Typography>
-        )}
-      </div>
+      {name ? (
+        <div className={styles.fullName}>
+          {isEditMode ? (
+            <TextField
+              {...name.inputProps}
+              className={styles.textField}
+              namespace="Name"
+              label={t('name')}
+            />
+          ) : (
+            <Typography variant="h3">{name.value}</Typography>
+          )}
+        </div>
+      ) : (
+        <></>
+      )}
       {isManager ? (
         isEditMode ? (
           <Container className={styles.buttons}>
