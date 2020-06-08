@@ -76,7 +76,6 @@ export default function Profile(props) {
 
   return (
     <Container className={styles.container}>
-      <Button onClick={onClickStripe}>STRIPE</Button>
       <Paper className={styles.card}>
         <Container className={styles.title}>
           <BasicInfos isSelf={isSelf} basicInfos={basicInfos} />

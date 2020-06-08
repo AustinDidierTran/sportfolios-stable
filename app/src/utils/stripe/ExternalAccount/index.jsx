@@ -1,26 +1,30 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from '../../../components/MUI';
-import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
 
-export default function StripeAccount(props) {
+export function AccountLink(props) {
   const [accountLink, setAccountLink] = useState({});
-  const [externalAccount, setExternalAccount] = useState({});
-  const { t } = useTranslation();
 
-  const onClickAccountLink = async () => {
-    const res = await api(
-      `/api/stripe/accountLink?id=349ebb1c-0b63-47e0-a42a-13d20407e2ab`,
-    );
+  const onClick = async () => {
+    const { id } = props;
+    console.log('id', id);
+    const res = await api(`/api/stripe/accountLink?id=${id}`);
     const { data } = res;
     console.log('accountLink', data);
     setAccountLink(data);
+    window.location.href = data.url;
   };
 
-  const onClickExternalAccount = async () => {
+  return <Button onClick={onClick}>Generate Account Link</Button>;
+}
+
+export function ExternalAccount(props) {
+  const { id } = props;
+  const [externalAccount, setExternalAccount] = useState({});
+  const onClick = async () => {
     const res = await api('/api/stripe/externalAccount', {
       method: 'POST',
-      body: JSON.stringify({ allo: 'allo' }),
+      body: JSON.stringify({ id: id }),
     });
 
     const { data } = res;
@@ -28,14 +32,5 @@ export default function StripeAccount(props) {
     setExternalAccount(data);
   };
 
-  return (
-    <div>
-      <Button onClick={onClickAccountLink}>
-        Generate Account Link
-      </Button>
-      <Button onClick={onClickExternalAccount}>
-        Add Bank Account
-      </Button>
-    </div>
-  );
+  return <Button onClick={onClick}>Add Bank Account</Button>;
 }

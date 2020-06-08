@@ -19,6 +19,7 @@ import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
 import EventView from '../Event';
 import ForgotPassword from '../ForgotPassword';
 import Organization from '../Organization';
+import OrganizationSettings from '../Organization/Settings';
 import CreateOrganization from '../Organization/Create';
 import OrganizationNotFound from '../OrganizationNotFound';
 import OrganizationList from '../OrganizationList';
@@ -181,6 +182,10 @@ export default function App() {
                 exact
                 path={ROUTES.organization}
                 component={Organization}
+              />
+              <Route
+                path={ROUTES.organizationSettings}
+                component={OrganizationSettings}
               />
               <Route exact path={ROUTES.signup} component={Signup} />
               <Route

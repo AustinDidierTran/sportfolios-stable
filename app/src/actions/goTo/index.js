@@ -18,6 +18,7 @@ export const ROUTES = {
   organizationNotFound: '/organizationNotFound',
   organization: '/organization/:id',
   organizationList: '/organizationList',
+  organizationSettings: '/organization/settings/:id',
   profile: '/profile/:id',
   recoveryEmail: '/recoveryEmail/:token',
   search: '/search/:query',

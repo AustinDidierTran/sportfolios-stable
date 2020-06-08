@@ -19,17 +19,15 @@ const knex = require('../../connection');
 const getStripeAccountId = async senderId => {
   const data = await knex
     .select('account_id')
-    .from('stripe_accounts')
-    .where('stripe_accounts.entity_id', senderId);
-
+    .where('entity_id', senderId)
+    .from('stripe_accounts');
   return (data.length && data[0].account_id) || null;
 };
 
-const getOrCreateStripeConnectedAccountId = async entity_id => {
+const getOrCreateStripeConnectedAccountId = async (entity_id, ip) => {
   let accountId = await getStripeAccountId(entity_id);
-
   if (!accountId) {
-    const account = await createStripeConnectedAccount(props); // must return accountId
+    const account = await createStripeConnectedAccount({ ip }); // must return accountId
     accountId = account.id;
     // Should store account inside DB
     await knex('stripe_accounts').insert({
@@ -78,14 +76,16 @@ const createStripeConnectedAccount = async props => {
 };
 
 const createAccountLink = async props => {
-  const { entity_id } = props;
+  const { entity_id, ip } = props;
+  console.log('id', entity_id);
   const accountId = await getOrCreateStripeConnectedAccountId(
-    props.entity_id,
+    entity_id,
+    ip,
   );
   const params = {
     account: accountId,
     failure_url: 'http://localhost:3000/profile',
-    success_url: 'http://localhost:3000/profile',
+    success_url: `http://localhost:3000/organization/${entity_id}`,
     type: 'custom_account_verification',
     collect: 'eventually_due',
   };
@@ -93,9 +93,13 @@ const createAccountLink = async props => {
   return stripe.accountLinks.create(params);
 };
 
-const createExternalAccount = async (body, id, ip) => {
+const createExternalAccount = async (body, user_id, ip) => {
   var created = 1;
-  const accountId = await getOrCreateStripeConnectedAccountId(id);
+  const organizationId = body.id;
+  const accountId = await getOrCreateStripeConnectedAccountId(
+    organizationId,
+    ip,
+  );
   const params = {
     bank_account: {
       country: body.country,

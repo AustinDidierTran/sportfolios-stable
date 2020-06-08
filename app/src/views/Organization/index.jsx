@@ -7,18 +7,21 @@ import { Store } from '../../Store';
 import api from '../../actions/api';
 import styles from './Organization.module.css';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+
 import BasicInfos from './BasicInfos';
 import NextEvents from './NextEvents';
 import Shop from './Shop';
 import About from './About';
-import StripeAccount from '../../../src/utils/stripe/ExternalAccount';
+import Settings from './Settings';
 
 export const TABS_ENUM = {
   GENERAL: 'general',
   ABOUT: 'about',
   SHOP: 'shop',
+  SETTINGS: 'settings',
 };
-
+// http://localhost:3000/organization/7a9a635-5d63-4f04-b063-a2d323d4f63e
 export default function Organization(props) {
   const { t } = useTranslation();
 
@@ -35,20 +38,10 @@ export default function Organization(props) {
   }, []);
 
   const {
-    match: {
-      params: { id },
-    },
-  } = props;
-
-  const {
     state: { organization },
   } = useContext(Store);
 
-  const {
-    match: {
-      params: { openTab = TABS_ENUM.GENERAL },
-    },
-  } = props;
+  const { openTab = TABS_ENUM.GENERAL, id } = useParams();
 
   const isManager = id === id; //Need query to identify users that are managers
 
@@ -73,6 +66,12 @@ export default function Organization(props) {
       label: t('shop'),
       icon: 'ShoppingCart',
     },
+    {
+      value: TABS_ENUM.SETTINGS,
+      component: Settings,
+      label: t('settings'),
+      icon: 'Settings',
+    },
   ];
 
   const OpenTab = states.find(s => s.value == eventState).component;
@@ -83,9 +82,7 @@ export default function Organization(props) {
         <Container className={styles.title}>
           <BasicInfos basicInfos={basicInfos} isManager={isManager} />
         </Container>
-        <Container className={styles.title}>
-          <StripeAccount />
-        </Container>
+        <Container className={styles.title}></Container>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}
           indicatorColor="primary"
