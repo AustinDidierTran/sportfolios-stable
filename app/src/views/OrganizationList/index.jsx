@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import styles from './OrganizationList.module.css';
 import { Avatar, Paper, List, Button } from '../../components/Custom';
-import { Typography } from '../../components/Mui';
+import { Typography } from '../../components/MUI';
 import { ROUTES } from '../../actions/goTo';
 
 import history from '../../stores/history';
