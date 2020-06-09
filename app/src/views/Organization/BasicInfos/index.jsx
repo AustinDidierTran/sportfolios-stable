@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './BasicInfos.module.css';
 import BecomeMember from './BecomeMember';
 import Donate from './Donate';
-import { uploadOrganizationPicture } from '../../../actions/aws';
+import { uploadEntityPicture } from '../../../actions/aws';
 import { ACTION_ENUM, Store } from '../../../Store';
 import { useFormInput } from '../../../hooks/forms';
 import api from '../../../actions/api';
@@ -26,14 +26,24 @@ export default function BasicInfos(props) {
   const { dispatch } = useContext(Store);
 
   const {
-    basicInfos: { id, name: initialName, photo_url },
+    basicInfos: {
+      id,
+      name: initialName,
+      photo_url: initialPhoto_url,
+    },
   } = props;
+
+  const [photo_url, setPhoto_url] = useState(initialPhoto_url);
 
   const name = useFormInput(initialName);
 
   useEffect(() => {
     name.changeDefault(initialName);
   }, [initialName]);
+
+  useEffect(() => {
+    setPhoto_url(initialPhoto_url);
+  }, [initialPhoto_url]);
 
   const { isManager } = props;
 
@@ -58,9 +68,10 @@ export default function BasicInfos(props) {
       method: 'PUT',
       body: JSON.stringify({
         id,
-        organization: { name: name.value },
+        name: name.value,
       }),
     });
+    name.changeDefault(res.data.data.name);
   };
 
   const onCancel = async () => {
@@ -77,9 +88,10 @@ export default function BasicInfos(props) {
   };
 
   const onImgUpload = async () => {
-    const photoUrl = await uploadOrganizationPicture(id, img);
+    const photoUrl = await uploadEntityPicture(id, img);
 
     if (photoUrl) {
+      setPhoto_url(photoUrl);
       dispatch({
         type: ACTION_ENUM.UPDATE_ORGANIZATION_PROFILE_PICTURE,
         payload: photoUrl,

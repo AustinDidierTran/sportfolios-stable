@@ -5,11 +5,8 @@ const router = new Router();
 const BASE_URL = '/api/organization';
 
 router.get(`${BASE_URL}s`, async ctx => {
-  const { includeDeleted } = ctx.query;
   try {
-    const organizations = await queries.getAllOrganizations(
-      includeDeleted,
-    );
+    const organizations = await queries.getAllOrganizations();
     ctx.body = {
       status: 'success',
       data: organizations,
@@ -23,11 +20,10 @@ router.get(`${BASE_URL}s`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}`, async ctx => {
+router.get(BASE_URL, async ctx => {
   try {
     const organization = await queries.getSingleOrganization(
       ctx.query.id,
-      ctx.body.userInfo.id,
     );
 
     if (organization) {
@@ -79,11 +75,10 @@ router.post(BASE_URL, async ctx => {
   }
 });
 
-router.put(BASE_URL, async ctx => {
+router.put(`${BASE_URL}`, async ctx => {
   try {
     const organization = await queries.updateOrganization(
-      ctx.request.body.id,
-      ctx.request.body.organization,
+      ctx.request.body,
     );
     if (organization) {
       ctx.status = 200;

@@ -1,25 +1,19 @@
 const knex = require('../connection');
 
 const {
-  getOrganizationAccess: getOrganizationAccessHelper,
-  getSingleOrganization: getSingleOrganizationHelper,
-} = require('../helpers/notifications');
+  getEntity: getEntityHelper,
+  getAllTypeEntities: getAllTypeEntitiesHelper,
+  getAllEntities: getAllEntitiesHelper,
+  updateEntityName: updateEntityNameHelper,
+  updateEntityPhoto: updateEntityPhotoHelper,
+} = require('../helpers/entity');
 
-function getAllOrganizations(includeDeleted) {
-  if (includeDeleted && includeDeleted !== 'false') {
-    return knex('organizations').select(['id', 'name', 'photo_url']);
-  } else {
-    return knex('organizations')
-      .select(['id', 'name', 'photo_url'])
-      .where({ deleted_at: null });
-  }
+function getAllOrganizations() {
+  return getAllTypeEntitiesHelper(2);
 }
 
-async function getSingleOrganization(id, user_id) {
-  const [organization] = await knex('organizations')
-    .select(['id', 'name', 'photo_url'])
-    .where({ id, deleted_at: null });
-
+async function getSingleOrganization(id) {
+  const [organization] = await getEntityHelper(id);
   return organization;
 }
 
@@ -35,15 +29,15 @@ const addOrganization = async organizationProps => {
   return organization.id;
 };
 
-async function updateOrganization(id, organization) {
-  const { id: idProps, ...updateQuery } = organization;
-
-  const [org] = await knex('organizations')
-    .update(updateQuery)
-    .where({ id, deleted_at: null })
-    .returning(['id', 'name']);
-
-  return org;
+async function updateOrganization(body) {
+  const { id, name, photo_url } = body;
+  if (name) {
+    await updateEntityNameHelper(id, name);
+  }
+  if (photo_url) {
+    await updateEntityPhotoHelper(id, photo_url);
+  }
+  return { id, name, photo_url };
 }
 
 function deleteOrganization(id) {

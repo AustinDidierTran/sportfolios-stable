@@ -4,11 +4,12 @@ import { useTranslation } from 'react-i18next';
 import styles from './Organizations.module.css';
 import { Avatar, List, Paper } from '../../../../components/Custom';
 import CardHeader from '@material-ui/core/CardHeader';
-import history from '../../../../stores/history';
 import api from '../../../../actions/api';
+import { goTo, ROUTES } from '../../../../actions/goTo';
 
 export default function Organizations(props) {
   const { t } = useTranslation();
+<<<<<<< HEAD
 
   const [organizations, setOrganizations] = useState([]);
 
@@ -19,11 +20,12 @@ export default function Organizations(props) {
   };
 
   getOrganizations();
+=======
+>>>>>>> Change oh photo and name in entity
 
   const [organizations, setOrganizations] = useState([]);
-
   const getOrganizations = async () => {
-    const { data } = await api(`/api/organizations`); //TO BE CHANGED
+    const { data } = await api(`/api/organizations`);
 
     setOrganizations(data);
   };
@@ -36,7 +38,8 @@ export default function Organizations(props) {
       <List
         items={organizations.map(organization => ({
           value: organization.name,
-          onClick: () => goTo(ROUTES.organization, organization.id),
+          onClick: () =>
+            goTo(ROUTES.organization, { id: organization.id }),
           iconComponent: <Avatar photoUrl={organization.photoUrl} />,
         }))}
       />
