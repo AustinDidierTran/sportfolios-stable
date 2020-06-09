@@ -12,6 +12,7 @@ import { CLIENT_BASE_URL } from '../../../../conf';
 import { Link } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';
+import { Button } from '@material-ui/core';
 
 export const TABS_ENUM = {
   GENERAL: 'general',
@@ -21,6 +22,8 @@ export const TABS_ENUM = {
 
 export default function Profile(props) {
   const [basicInfos, setBasicInfos] = useState({});
+  const [accountInfo, setAccountInfo] = useState({});
+  const [accountLink, setAccountLink] = useState({});
   const { t } = useTranslation();
 
   const [eventState, setEventState] = useState(TABS_ENUM.GENERAL);
@@ -72,10 +75,22 @@ export default function Profile(props) {
     },
   ];
 
+  const onClickStripe = async () => {
+    const res = await api(
+      `/api/stripe/accountLink?id=349ebb1c-0b63-47e0-a42a-13d20407e2ab`,
+    );
+
+    const { data } = res;
+    setAccountLink(data);
+  };
+  console.log('accountInfo', accountInfo);
+  console.log('accountLink', accountLink);
+
   const OpenTab = states.find(s => s.value == eventState).component;
 
   return (
     <Container className={styles.container}>
+      <Button onClick={onClickStripe}>STRIPE</Button>
       <Paper className={styles.card}>
         <Container className={styles.title}>
           <BasicInfos isSelf={isSelf} basicInfos={basicInfos} />
