@@ -4,7 +4,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { Paper } from '../../../../components/Custom';
+import { Paper } from '../../../../../components/Custom';
 import styles from './Stepper.module.css';
 
 export default function HorizontalLinearStepper(props) {
