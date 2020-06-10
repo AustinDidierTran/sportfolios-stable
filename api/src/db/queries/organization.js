@@ -13,8 +13,7 @@ function getAllOrganizations() {
 }
 
 async function getSingleOrganization(id) {
-  const [organization] = await getEntityHelper(id);
-  return organization;
+  return getEntityHelper(id);
 }
 
 const addOrganization = async organizationProps => {

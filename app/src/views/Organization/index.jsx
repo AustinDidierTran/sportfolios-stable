@@ -25,11 +25,12 @@ export const TABS_ENUM = {
 export default function Organization(props) {
   const { t } = useTranslation();
 
+  const { openTab = TABS_ENUM.GENERAL, id } = useParams();
+
   const [basicInfos, setBasicInfos] = useState({});
 
   const updateBasicInfos = async () => {
     const { data } = await api(`/api/organization?id=${id}`);
-
     setBasicInfos(data);
   };
 
@@ -40,8 +41,6 @@ export default function Organization(props) {
   const {
     state: { organization },
   } = useContext(Store);
-
-  const { openTab = TABS_ENUM.GENERAL, id } = useParams();
 
   const isManager = id === id; //Need query to identify users that are managers
 
