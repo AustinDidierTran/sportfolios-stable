@@ -7,15 +7,19 @@ import { Store } from '../../Store';
 import api from '../../actions/api';
 import styles from './Organization.module.css';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+
 import BasicInfos from './BasicInfos';
 import NextEvents from './NextEvents';
 import Shop from './Shop';
 import About from './About';
+import Settings from './Settings';
 
 export const TABS_ENUM = {
   GENERAL: 'general',
   ABOUT: 'about',
   SHOP: 'shop',
+  SETTINGS: 'settings',
 };
 
 export default function Organization(props) {
@@ -38,6 +42,8 @@ export default function Organization(props) {
     state: { organization },
   } = useContext(Store);
 
+  const { openTab = TABS_ENUM.GENERAL, id } = useParams();
+        
   const isManager = id === id; //Need query to identify users that are managers
 
   const [eventState, setEventState] = useState(openTab);
@@ -61,6 +67,12 @@ export default function Organization(props) {
       label: t('shop'),
       icon: 'ShoppingCart',
     },
+    {
+      value: TABS_ENUM.SETTINGS,
+      component: Settings,
+      label: t('settings'),
+      icon: 'Settings',
+    },
   ];
 
   const OpenTab = states.find(s => s.value == eventState).component;
@@ -71,6 +83,7 @@ export default function Organization(props) {
         <Container className={styles.title}>
           <BasicInfos basicInfos={basicInfos} isManager={isManager} />
         </Container>
+        <Container className={styles.title}></Container>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}
           indicatorColor="primary"

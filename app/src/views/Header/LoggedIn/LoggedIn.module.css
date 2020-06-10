@@ -1,0 +1,9 @@
+.sectionDesktop {
+  display: none;
+}
+
+@media (min-device-width: 960px) {
+  .sectionDesktop {
+    display: flex;
+  }
+}

@@ -9,7 +9,7 @@ import { Badge } from '../../MUI';
 import { useTranslation } from 'react-i18next';
 
 import { ROUTES, goTo } from '../../../actions/goTo';
-import { Store } from '../../../Store';
+import { Store, SCREENSIZE_ENUM } from '../../../Store';
 
 const TABS_ENUM = {
   HOME: 'home',
@@ -21,7 +21,7 @@ const TABS_ENUM = {
 export default function CustomBottomNavigation(props) {
   const { t } = useTranslation();
   const {
-    state: { userInfo },
+    state: { screenSize, userInfo },
   } = useContext(Store);
 
   const [value, setValue] = useState(null);
@@ -43,17 +43,9 @@ export default function CustomBottomNavigation(props) {
 
   const [displayNav, setDisplayNav] = useState(false);
 
-  const handleResize = () => {
-    setDisplayNav(Boolean(window.innerWidth < 768));
-  };
-
   useEffect(() => {
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [window.innerWidth]);
+    setDisplayNav(screenSize === SCREENSIZE_ENUM.xs);
+  }, [screenSize]);
 
   return displayNav ? (
     <BottomNavigation
