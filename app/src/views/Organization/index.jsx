@@ -81,7 +81,6 @@ export default function Organization(props) {
         <Container className={styles.title}>
           <BasicInfos basicInfos={basicInfos} isManager={isManager} />
         </Container>
-        <Container className={styles.title}></Container>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}
           indicatorColor="primary"
