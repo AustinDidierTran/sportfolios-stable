@@ -5,7 +5,7 @@
 
 .container {
   display: grid !important;
-  grid-template-areas: 'title' 'basic' 'password' 'email';
+  grid-template-areas: 'title' 'basic' 'password' 'email' 'disconnect';
   grid-template-columns: 1fr;
   column-gap: 32px;
   row-gap: 32px;
@@ -17,7 +17,8 @@
     grid-template-areas:
       'title title'
       'basic password'
-      'email email';
+      'email email'
+      'disconnect disconnect';
   }
 }
 
@@ -26,6 +27,7 @@
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-areas:
       'title title title'
-      'basic password email';
+      'basic password email'
+      'disconnect disconnect disconnect';
   }
 }

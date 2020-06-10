@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ACTION_ENUM, Store, SCREENSIZE_ENUM } from '../../../Store';
@@ -7,7 +7,6 @@ import logo from '../../../img/logo.png';
 
 import {
   AppBar,
-  Badge,
   IconButton,
   Menu,
   MenuItem,
@@ -19,15 +18,14 @@ import { SearchInput } from '../../../components/Custom';
 import NotificationModule from './NotificationModule';
 
 // Material ui icons
-import MenuIcon from '@material-ui/icons/Menu';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import { formatRoute, ROUTES } from '../../../actions/goTo';
+import Settings from '@material-ui/icons/Settings';
+
+import { formatRoute, ROUTES, goTo } from '../../../actions/goTo';
+
+import styles from './LoggedIn.module.css';
 
 import useStyles from './useStyles';
-import api from '../../../actions/api';
-import { useMemo } from 'react';
 
 export default function LoggedIn() {
   const classes = useStyles();
@@ -53,48 +51,6 @@ export default function LoggedIn() {
   };
 
   const menuId = 'primary-search-account-menu';
-  const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <Link
-        style={{ color: 'black', textDecoration: 'none' }}
-        to={formatRoute(ROUTES.profile, {
-          id: userInfo && userInfo.user_id,
-        })}
-      >
-        <MenuItem>{t('profile')}</MenuItem>
-      </Link>
-      <Link
-        style={{ color: 'black', textDecoration: 'none' }}
-        to={formatRoute(ROUTES.userSettings)}
-      >
-        <MenuItem>{t('user_settings')}</MenuItem>
-      </Link>
-      {isAdmin ? (
-        <Link
-          style={{ color: 'black', textDecoration: 'none' }}
-          to={formatRoute(ROUTES.adminPanel)}
-        >
-          <MenuItem>{t('admin_panel')}</MenuItem>
-        </Link>
-      ) : (
-        <></>
-      )}
-      <MenuItem
-        onClick={() => dispatch({ type: ACTION_ENUM.LOGOUT })}
-      >
-        {t('logout')}
-      </MenuItem>
-    </Menu>
-  );
-
   return screenSize !== SCREENSIZE_ENUM.xs ? (
     <div className={classes.grow}>
       <AppBar position="static" style={{ position: 'fixed', top: 0 }}>
@@ -107,22 +63,27 @@ export default function LoggedIn() {
           </Typography>
           <SearchInput />
           <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            <NotificationModule />
+          <div className={styles.sectionDesktop}>
             <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
               color="inherit"
+              onClick={() =>
+                goTo(ROUTES.profile, {
+                  id: userInfo && userInfo.user_id,
+                })
+              }
             >
               <AccountCircle />
+            </IconButton>
+            <NotificationModule />
+            <IconButton
+              color="inherit"
+              onClick={() => goTo(ROUTES.userSettings)}
+            >
+              <Settings />
             </IconButton>
           </div>
         </Toolbar>
       </AppBar>
-      {renderMenu}
     </div>
   ) : (
     <div className={classes.grow}>
@@ -130,16 +91,15 @@ export default function LoggedIn() {
         <Toolbar
           style={{ display: 'flex', justifyContent: 'space-between' }}
         >
-          <div style={{ flex: '0 0 75px' }}>
+          <Link to={ROUTES.home} style={{ marginRight: '16px' }}>
             <img src={logo} />
-          </div>
+          </Link>
 
           <div style={{ flex: '1 0 100px' }}>
             <SearchInput />
           </div>
         </Toolbar>
       </AppBar>
-      {renderMenu}
     </div>
   );
 }

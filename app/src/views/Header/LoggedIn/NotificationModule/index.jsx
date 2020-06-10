@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '../../../../actions/api';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -12,6 +12,22 @@ import { useEffect } from 'react';
 export default function NotificationModule() {
   const [notifications, setNotifications] = useState([]);
   const [open, setOpen] = useState(false);
+
+  const node = useRef();
+
+  const handleClick = e => {
+    if (!node.current.contains(e.target)) {
+      setOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+    };
+  }, []);
 
   const toggleNotification = () => setOpen(!open);
 
@@ -35,7 +51,7 @@ export default function NotificationModule() {
   }, []);
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} ref={node}>
       <IconButton
         aria-label={`show ${unreadNotificationsCount} new notifications`}
         color="inherit"
