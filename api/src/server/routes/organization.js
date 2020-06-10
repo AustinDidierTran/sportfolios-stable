@@ -25,7 +25,6 @@ router.get(BASE_URL, async ctx => {
     const organization = await queries.getSingleOrganization(
       ctx.query.id,
     );
-
     if (organization) {
       ctx.body = {
         status: 'success',
