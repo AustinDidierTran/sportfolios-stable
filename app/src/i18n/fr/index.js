@@ -109,6 +109,7 @@ export default {
     token_expired:
       "Le token n'est plus valide, svp en demander un autre.",
     value_is_required: 'Une valeur est obligatoire.',
+    value_is_too_long: 'La valeur est trop longue',
     wrong_password: 'Mauvais mot de passe. Veuillez réessayer.',
     // DESCRIPTION CARD
     description_card_title:

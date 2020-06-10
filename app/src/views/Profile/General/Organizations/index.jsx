@@ -9,19 +9,6 @@ import { goTo, ROUTES } from '../../../../actions/goTo';
 
 export default function Organizations(props) {
   const { t } = useTranslation();
-<<<<<<< HEAD
-
-  const [organizations, setOrganizations] = useState([]);
-
-  const getOrganizations = async () => {
-    const { data } = await api(`/api/organizations`); //TO BE CHANGED
-
-    setOrganizations(data);
-  };
-
-  getOrganizations();
-=======
->>>>>>> Change oh photo and name in entity
 
   const [organizations, setOrganizations] = useState([]);
   const getOrganizations = async () => {

@@ -104,6 +104,7 @@ export default {
     token_expired:
       'Token is no longer valid, please request a new one.',
     value_is_required: 'Value is required.',
+    value_is_too_long: 'Value is too long.',
     wrong_password: 'Wrong password. Please try again',
     invalid_date: 'Invalid date. It should follow: yyyy-mm-dd',
     date_in_future: 'Date is in the future',
