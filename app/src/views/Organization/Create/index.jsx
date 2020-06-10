@@ -1,28 +1,21 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useFormik } from 'formik';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Store } from '../../../Store';
 import api from '../../../actions/api';
 import { ROUTES, goTo } from '../../../actions/goTo';
+import { useParams } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';
 
 import styles from './Create.module.css';
 
-import {
-  Container,
-  Avatar,
-  Paper,
-  Button,
-} from '../../../components/Custom';
+import { Container, Paper, Button } from '../../../components/Custom';
 import {
   TextField,
   Typography,
   CardActions,
   CardContent,
-  Divider,
 } from '../../../components/MUI';
 
 export default function CreateOrganization(props) {
@@ -52,8 +45,7 @@ export default function CreateOrganization(props) {
           name,
         }),
       });
-
-      goTo(ROUTES.organization, { id: res.data });
+      goTo(ROUTES.organization, { id: res.data.id });
       setIsLoading(false);
     },
   });

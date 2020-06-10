@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './OrganizationList.module.css';
 import { Avatar, Paper, List, Button } from '../../components/Custom';
 import { Typography } from '../../components/MUI';
-import { ROUTES } from '../../actions/goTo';
+import { goTo, ROUTES } from '../../actions/goTo';
 import api from '../../actions/api';
 
 import history from '../../stores/history';
@@ -37,7 +37,7 @@ export default function OrganizationList(props) {
       <List
         items={organizations.map(org => ({
           value: org.name,
-          onClick: () => goTo(ROUTES.organization, org.id),
+          onClick: () => goTo(ROUTES.organization, { id: org.id }),
           iconComponent: <Avatar photoUrl={org.photoUrl} />,
         }))}
       />
