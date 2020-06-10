@@ -42,8 +42,6 @@ export default function Organization(props) {
     state: { organization },
   } = useContext(Store);
 
-  const { openTab = TABS_ENUM.GENERAL, id } = useParams();
-        
   const isManager = id === id; //Need query to identify users that are managers
 
   const [eventState, setEventState] = useState(openTab);
