@@ -40,4 +40,4 @@ export default function OrganizationSettings(props) {
   );
 }
 
-// http://localhost:3000/organization/e7a9a635-5d63-4f04-b063-a2d323d4f63e
+// http://localhost:3000/organization/e7a9a635-5d63-4f04-b063-a2d323d4f63e/settings

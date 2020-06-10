@@ -77,7 +77,6 @@ const createStripeConnectedAccount = async props => {
 
 const createAccountLink = async props => {
   const { entity_id, ip } = props;
-  console.log('id', entity_id);
   const accountId = await getOrCreateStripeConnectedAccountId(
     entity_id,
     ip,
@@ -85,7 +84,7 @@ const createAccountLink = async props => {
   const params = {
     account: accountId,
     failure_url: 'http://localhost:3000/profile',
-    success_url: `http://localhost:3000/organization/${entity_id}`,
+    success_url: `http://localhost:3000/organization/${entity_id}/?tab=settings`,
     type: 'custom_account_verification',
     collect: 'eventually_due',
   };

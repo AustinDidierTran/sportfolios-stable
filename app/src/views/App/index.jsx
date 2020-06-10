@@ -188,7 +188,6 @@ export default function App() {
                 component={OrganizationNotFound}
               />
               <Route
-                exact
                 path={ROUTES.organization}
                 component={Organization}
               />
