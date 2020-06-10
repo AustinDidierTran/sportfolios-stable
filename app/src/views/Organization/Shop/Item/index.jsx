@@ -40,7 +40,7 @@ export default function Shop(props) {
           {price}
         </Typography>
         <Typography
-          variant="h7"
+          variant="h6"
           color="textSecondary"
           component="p"
           className={styles.description}

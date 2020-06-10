@@ -60,7 +60,7 @@ export default function CustomList(props) {
         )
       }
       className={classes.root}
-      disablePadding={true}
+      disablePadding
     >
       {items && items.map(rowRenderer || defaultRowRenderer)}
     </List>

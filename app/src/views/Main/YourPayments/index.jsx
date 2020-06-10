@@ -18,7 +18,7 @@ export default function YourPayments(props) {
   const { payments } = props;
 
   return (
-    <Paper className={styles.paper} gutterBottom>
+    <Paper className={styles.paper}>
       <Typography
         className={styles.title}
         variant="h3"
@@ -26,8 +26,8 @@ export default function YourPayments(props) {
       >
         {t('awaiting_payments')}
       </Typography>
-      {payments.map(payment => (
-        <Container className={styles.container}>
+      {payments.map((payment, index) => (
+        <Container className={styles.container} key={index}>
           <Typography variant="h5" className={styles.title}>
             {payment.title}
           </Typography>
@@ -41,7 +41,7 @@ export default function YourPayments(props) {
           <Typography variant="h3" className={styles.price}>
             {payment.price}
           </Typography>
-          <Button color="Primary" className={styles.button}>
+          <Button color="primary" className={styles.button}>
             {t('pay')}
           </Button>
         </Container>

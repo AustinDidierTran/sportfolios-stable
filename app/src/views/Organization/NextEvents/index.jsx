@@ -66,8 +66,12 @@ export default function NextEvents(props) {
       </Typography>
       <List
         items={events}
-        rowRenderer={event => (
-          <ListItem button onClick={() => history.push('/event')}>
+        rowRenderer={(event, index) => (
+          <ListItem
+            button
+            onClick={() => history.push('/event')}
+            key={index}
+          >
             <Container className={styles.event}>
               <ListItemIcon>
                 <Avatar
