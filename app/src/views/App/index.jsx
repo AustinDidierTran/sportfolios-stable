@@ -48,6 +48,15 @@ import { ROUTES } from '../../actions/goTo';
 
 export default function App() {
   const theme = createMuiTheme({
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 960,
+        lg: 1280,
+        xl: 1920,
+      },
+    },
     palette: {
       primary: teal,
     },
@@ -57,7 +66,7 @@ export default function App() {
     fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '1.4rem',
-    '@media (min-width:768px)': {
+    [theme.breakpoints.up('sm')]: {
       fontSize: '1.8rem',
     },
     [theme.breakpoints.up('md')]: {
@@ -69,7 +78,7 @@ export default function App() {
     fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '1.2rem',
-    '@media (min-width:768px)': {
+    [theme.breakpoints.up('sm')]: {
       fontSize: '1.6rem',
     },
     [theme.breakpoints.up('md')]: {
@@ -81,7 +90,7 @@ export default function App() {
     fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '1rem',
-    '@media (min-width:768px)': {
+    [theme.breakpoints.up('sm')]: {
       fontSize: '1.4rem',
     },
     [theme.breakpoints.up('md')]: {
@@ -93,7 +102,7 @@ export default function App() {
     fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '0.8rem',
-    '@media (min-width:768px)': {
+    [theme.breakpoints.up('sm')]: {
       fontSize: '1.2rem',
     },
     [theme.breakpoints.up('md')]: {
@@ -105,7 +114,7 @@ export default function App() {
     fontFamily: 'Helvetica',
     fontWeight: 350,
     fontSize: '0.6rem',
-    '@media (min-width:768px)': {
+    [theme.breakpoints.up('sm')]: {
       fontSize: '1.0rem',
     },
     [theme.breakpoints.up('md')]: {
