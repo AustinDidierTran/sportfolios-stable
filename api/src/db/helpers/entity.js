@@ -36,7 +36,7 @@ async function getAllTypeEntities(type) {
 }
 
 async function getEntity(id) {
-  return knex('entities')
+  const [entity] = await knex('entities')
     .select('id', 'type', 'name', 'photo_url')
     .leftJoin(
       'entities_name',
@@ -51,6 +51,7 @@ async function getEntity(id) {
       'entities_photo.entity_id',
     )
     .where({ id });
+  return entity;
 }
 
 async function updateEntityName(entity_id, name) {

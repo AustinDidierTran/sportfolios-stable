@@ -9,15 +9,15 @@ const {
 } = require('../helpers/entity');
 
 async function getEntity(id) {
-  return getEntityHelper(id)[0];
+  return getEntityHelper(id);
 }
 
 async function getAllEntities(id) {
-  return getAllEntitiesHelper(id)[0];
+  return getAllEntitiesHelper(id);
 }
 
 async function getAllTypeEntities(id) {
-  return getAllTypeEntitiesHelper(id)[0];
+  return getAllTypeEntitiesHelper(id);
 }
 
 async function getS3Signature(userId, { fileType }) {
