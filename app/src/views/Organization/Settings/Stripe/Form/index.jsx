@@ -2,13 +2,15 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { useParams } from 'react-router-dom';
-import Button from '../../../../components/MUI/Button';
-import { TextField, Typography } from '../../../../components/MUI';
-import { Paper } from '../../../../components/Custom';
+import {
+  TextField,
+  Typography,
+  Button,
+} from '../../../../../components/MUI';
 import styles from './form.module.css';
 import CountrySelect from './CountrySelect';
 import CurrencySelect from './CurrencySelect';
-import api from '../../../../actions/api';
+import api from '../../../../../actions/api';
 
 export default function ExternalAccountForm(props) {
   const { t } = useTranslation();

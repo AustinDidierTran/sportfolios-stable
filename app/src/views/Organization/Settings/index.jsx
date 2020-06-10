@@ -1,7 +1,7 @@
 import React from 'react';
-import Stepper from './Stepper';
+import Stepper from './Stripe/Stepper';
 import { AccountLink } from '../../../utils/stripe/ExternalAccount';
-import ExternalAccountForm from './Form';
+import ExternalAccountForm from './Stripe/Form';
 import { Typography } from '../../../components/MUI';
 import { useParams } from 'react-router-dom';
 
