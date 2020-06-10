@@ -24,7 +24,7 @@ export default function OnGoingEvents(props) {
   const { events } = props;
 
   return (
-    <Paper className={styles.card} gutterBottom>
+    <Paper className={styles.card}>
       <Typography
         className={styles.title}
         variant="h5"
@@ -34,8 +34,12 @@ export default function OnGoingEvents(props) {
       </Typography>
       <List
         items={events}
-        rowRenderer={event => (
-          <ListItem button onClick={() => history.push('/event')}>
+        rowRenderer={(event, index) => (
+          <ListItem
+            button
+            onClick={() => history.push('/event')}
+            key={index}
+          >
             <Container className={styles.event}>
               <ListItemIcon>
                 <Avatar
@@ -49,13 +53,13 @@ export default function OnGoingEvents(props) {
                   <Typography className={styles.name} variant="h5">
                     {event.name}
                   </Typography>
-                  <Typography className={styles.circuit} variant="h7">
+                  <Typography className={styles.circuit} variant="h6">
                     {event.circuit}
                   </Typography>
                 </Container>
                 <hr />
                 <Container className={styles.dateregister}>
-                  <Typography className={styles.date} variant="h7">
+                  <Typography className={styles.date} variant="h6">
                     {event.date}
                   </Typography>
                   {event.type === EVENT_STATUS_ENUM.REGISTRATION ? (
@@ -73,44 +77,6 @@ export default function OnGoingEvents(props) {
           </ListItem>
         )}
       />
-      {/* {events.map(event => (
-          <ListItem button onClick={() => history.push('/event')}>
-            <Container className={styles.event}>
-              <ListItemIcon>
-                <Avatar
-                  initials={event.initial}
-                  size="md"
-                  className={styles.avatar}
-                />
-              </ListItemIcon>
-              <Container className={styles.infos}>
-                <Container className={styles.tournoi}>
-                  <Typography className={styles.name} variant="h5">
-                    {event.name}
-                  </Typography>
-                  <Typography className={styles.circuit} variant="h7">
-                    {event.circuit}
-                  </Typography>
-                </Container>
-                <hr />
-                <Container className={styles.dateregister}>
-                  <Typography className={styles.date} variant="h7">
-                    {event.date}
-                  </Typography>
-                  {event.type === EVENT_STATUS_ENUM.REGISTRATION ? (
-                    <Register />
-                  ) : event.type === EVENT_STATUS_ENUM.ONGOING ? (
-                    <Schedule />
-                  ) : eventtype === EVENT_STATUS_ENUM.COMPLETED ? (
-                    <Results />
-                  ) : (
-                    <></>
-                  )}
-                </Container>
-              </Container>
-            </Container>
-          </ListItem>
-        ))} */}
     </Paper>
   );
 }

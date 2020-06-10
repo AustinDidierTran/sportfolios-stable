@@ -46,7 +46,7 @@ export default function Shop(props) {
             245$
           </Typography>
           <Typography
-            variant="h7"
+            variant="h6"
             color="textSecondary"
             component="p"
             className={styles.description}
@@ -95,7 +95,7 @@ export default function Shop(props) {
             245$
           </Typography>
           <Typography
-            variant="h7"
+            variant="h6"
             color="textSecondary"
             component="p"
             className={styles.description}
@@ -144,7 +144,7 @@ export default function Shop(props) {
             245$
           </Typography>
           <Typography
-            variant="h7"
+            variant="h6"
             color="textSecondary"
             component="p"
             className={styles.description}
