@@ -24,7 +24,7 @@ export default function Organization(props) {
   const [basicInfos, setBasicInfos] = useState({});
 
   const updateBasicInfos = async () => {
-    const { data } = await api(`/api/organization/?id={id}`);
+    const { data } = await api(`/api/organization?id=${id}`);
 
     setBasicInfos(data);
   };
@@ -34,14 +34,14 @@ export default function Organization(props) {
   }, []);
 
   const {
-    state: { organization },
-  } = useContext(Store);
-
-  const {
     match: {
       params: { id },
     },
   } = props;
+
+  const {
+    state: { organization },
+  } = useContext(Store);
 
   const {
     match: {

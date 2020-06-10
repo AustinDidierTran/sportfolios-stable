@@ -1,18 +1,16 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './BasicInfos.module.css';
 import BecomeMember from './BecomeMember';
 import Donate from './Donate';
-import { uploadProfilePicture } from '../../../actions/aws';
+import { uploadEntityPicture } from '../../../actions/aws';
 import { ACTION_ENUM, Store } from '../../../Store';
+import { useFormInput } from '../../../hooks/forms';
+import api from '../../../actions/api';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-import {
-  Avatar,
-  Input,
-  Button,
-  Paper,
-} from '../../../components/Custom';
+import { Avatar, Input, Button } from '../../../components/Custom';
 import {
   Typography,
   TextField,
@@ -23,44 +21,87 @@ export default function BasicInfos(props) {
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
 
-  const { name, photo_url } = props.basicInfos;
+  const {
+    basicInfos: {
+      id,
+      name: initialName,
+      photo_url: initialPhoto_url,
+    },
+  } = props;
 
   const { isManager } = props;
 
-  const [isEditMode, setEditMode] = useState(true);
+  const [photo_url, setPhoto_url] = useState(initialPhoto_url);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [isEditMode, setEditMode] = useState(false);
+
+  const [img, setImg] = useState(null);
+
+  const name = useFormInput(initialName);
+
+  useEffect(() => {
+    name.changeDefault(initialName);
+  }, [initialName]);
+
+  useEffect(() => {
+    setPhoto_url(initialPhoto_url);
+  }, [initialPhoto_url]);
 
   const onSave = async () => {
-    const promises = [];
+    if (name.value.length < 1) {
+      name.setError(t('value_is_required'));
+    } else if (name.value.length > 255) {
+      name.setError(t('value_is_too_long'));
+    } else {
+      setIsLoading(true);
+      name.setError(false);
 
-    if (img) {
-      promises.push(onImgUpload());
-    }
+      const promises = [];
 
-    const res = await Promise.all(promises);
+      if (img) {
+        promises.push(onImgUpload());
+      }
 
-    const resErrors = res.filter(r => r.status !== 200);
+      promises.push(onNameChange());
 
-    if (!resErrors.length) {
+      const res = await Promise.all(promises);
+
       setEditMode(false);
+
+      setIsLoading(false);
     }
   };
 
+  const onNameChange = async () => {
+    const res = await api(`/api/organization`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        id,
+        name: name.value,
+      }),
+    });
+    name.changeDefault(res.data.data.name);
+  };
+
   const onCancel = async () => {
+    name.reset();
+    name.setError(false);
     setEditMode(false);
   };
 
   const onEdit = async () => setEditMode(true);
-
-  const [img, setImg] = useState(null);
 
   const onImgChange = ([file]) => {
     setImg(file);
   };
 
   const onImgUpload = async () => {
-    const photoUrl = await uploadProfilePicture(img);
+    const photoUrl = await uploadEntityPicture(id, img);
 
     if (photoUrl) {
+      setPhoto_url(photoUrl);
       dispatch({
         type: ACTION_ENUM.UPDATE_ORGANIZATION_PROFILE_PICTURE,
         payload: photoUrl,
@@ -72,11 +113,17 @@ export default function BasicInfos(props) {
 
   return (
     <Container className={styles.paper}>
-      <Avatar
-        className={styles.avatar}
-        photoUrl={photo_url}
-        size="lg"
-      />
+      {isLoading ? (
+        <div className={styles.div}>
+          <CircularProgress className={styles.progress} />
+        </div>
+      ) : (
+        <Avatar
+          className={styles.avatar}
+          photoUrl={photo_url}
+          size="lg"
+        />
+      )}
       {isEditMode ? (
         <Input
           className={styles.input}
@@ -87,19 +134,24 @@ export default function BasicInfos(props) {
       ) : (
         <></>
       )}
-      <div className={styles.fullName}>
-        {isEditMode ? (
-          <TextField
-            className={styles.textField}
-            namespace="Name"
-            type="text"
-            label={t('name')}
-            defaultValue={name}
-          />
-        ) : (
-          <Typography variant="h3">{name}</Typography>
-        )}
-      </div>
+      {name ? (
+        <div className={styles.fullName}>
+          {isEditMode ? (
+            <TextField
+              {...name.inputProps}
+              placeholder={t('name')}
+              label={t('name')}
+              error={name.error}
+              className={styles.textField}
+              namespace="Name"
+            />
+          ) : (
+            <Typography variant="h3">{name.value}</Typography>
+          )}
+        </div>
+      ) : (
+        <></>
+      )}
       {isManager ? (
         isEditMode ? (
           <Container className={styles.buttons}>

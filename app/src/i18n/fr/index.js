@@ -53,6 +53,7 @@ export default {
     on_going_events: 'Événements en cours',
     organization: 'Organisation',
     organizations: 'Organisations',
+    organization_not_found: "Cette organisation n'existe pas",
     our_team: 'Notre Équipe',
     password: 'Mot de passe',
     pay: 'Payer',
@@ -67,6 +68,7 @@ export default {
     results: 'Résultats',
     registration: 'Inscription',
     registration_status: 'État des inscriptions',
+    return_home: "Retourner à la page d'accueil",
     roster: 'Alignement',
     settings: 'Paramètres',
     schedule: 'Horaire',
@@ -107,6 +109,7 @@ export default {
     token_expired:
       "Le token n'est plus valide, svp en demander un autre.",
     value_is_required: 'Une valeur est obligatoire.',
+    value_is_too_long: 'La valeur est trop longue',
     wrong_password: 'Mauvais mot de passe. Veuillez réessayer.',
     // DESCRIPTION CARD
     description_card_title:

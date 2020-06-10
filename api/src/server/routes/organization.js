@@ -4,13 +4,9 @@ const queries = require('../../db/queries/organization');
 const router = new Router();
 const BASE_URL = '/api/organization';
 
-router.get(BASE_URL, async ctx => {
-  const { includeDeleted } = ctx.query;
-
+router.get(`${BASE_URL}s`, async ctx => {
   try {
-    const organizations = await queries.getAllOrganizations(
-      includeDeleted,
-    );
+    const organizations = await queries.getAllOrganizations();
     ctx.body = {
       status: 'success',
       data: organizations,
@@ -24,13 +20,13 @@ router.get(BASE_URL, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/:id`, async ctx => {
+router.get(BASE_URL, async ctx => {
   try {
     const organization = await queries.getSingleOrganization(
-      ctx.params.id,
+      ctx.query.id,
     );
 
-    if (organization.length) {
+    if (organization) {
       ctx.body = {
         status: 'success',
         data: organization,
@@ -79,13 +75,12 @@ router.post(BASE_URL, async ctx => {
   }
 });
 
-router.put(`${BASE_URL}/:id`, async ctx => {
+router.put(`${BASE_URL}`, async ctx => {
   try {
     const organization = await queries.updateOrganization(
-      ctx.params.id,
       ctx.request.body,
     );
-    if (organization.length) {
+    if (organization) {
       ctx.status = 200;
       ctx.body = {
         status: 'success',

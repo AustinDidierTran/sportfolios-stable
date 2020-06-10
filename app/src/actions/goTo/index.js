@@ -15,6 +15,7 @@ export const ROUTES = {
   mockEvent: '/mock/Event/:openTab',
   notifications: '/notifications',
   createOrganization: '/organization/create',
+  organizationNotFound: '/organizationNotFound',
   organization: '/organization/:id',
   organizationList: '/organizationList',
   profile: '/profile/:id',
