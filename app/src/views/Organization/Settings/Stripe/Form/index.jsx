@@ -3,13 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { useParams } from 'react-router-dom';
 import Button from '../../../../components/MUI/Button';
-import {
-  CardActions,
-  CardContent,
-  Divider,
-  TextField,
-  Typography,
-} from '../../../../components/MUI';
+import { TextField, Typography } from '../../../../components/MUI';
 import { Paper } from '../../../../components/Custom';
 import styles from './form.module.css';
 import CountrySelect from './CountrySelect';
@@ -91,48 +85,44 @@ export default function ExternalAccountForm(props) {
   return (
     <div className={styles.main}>
       <form onSubmit={formik.handleSubmit}>
-        <Paper className={styles.card}>
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
-              Link bank account
-            </Typography>
-            <CountrySelect formik={formik} />
-            <CurrencySelect formik={formik} />
-            <TextField
-              namespace="accountHolderName"
-              formik={formik}
-              type="accountHolderName"
-              label="Account Holder Name"
-              fullWidth
-            />
-            <TextField
-              namespace="routingNumber"
-              formik={formik}
-              type="routingNumber"
-              label="Routing Number"
-              fullWidth
-            />
-            <TextField
-              namespace="accountNumber"
-              formik={formik}
-              type="accountNumber"
-              label="Account Number"
-              fullWidth
-            />
-          </CardContent>
-          <CardActions>
-            <Button
-              size="small"
-              color="primary"
-              variant="contained"
-              className={styles.button}
-              type="submit"
-            >
-              SUBMIT
-            </Button>
-          </CardActions>
-          <Divider />
-        </Paper>
+        <div className={styles.content}>
+          <Typography gutterBottom variant="h5" component="h2">
+            Link bank account
+          </Typography>
+          <CountrySelect formik={formik} />
+          <CurrencySelect formik={formik} />
+          <TextField
+            namespace="accountHolderName"
+            formik={formik}
+            type="accountHolderName"
+            label="Account Holder Name"
+            fullWidth
+          />
+          <TextField
+            namespace="routingNumber"
+            formik={formik}
+            type="routingNumber"
+            label="Routing Number"
+            fullWidth
+          />
+          <TextField
+            namespace="accountNumber"
+            formik={formik}
+            type="accountNumber"
+            label="Account Number"
+            fullWidth
+          />
+        </div>
+        <div className={styles.actions}>
+          <Button
+            size="small"
+            color="primary"
+            variant="contained"
+            type="submit"
+          >
+            SUBMIT
+          </Button>
+        </div>
       </form>
     </div>
   );

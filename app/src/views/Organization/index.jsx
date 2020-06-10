@@ -21,7 +21,7 @@ export const TABS_ENUM = {
   SHOP: 'shop',
   SETTINGS: 'settings',
 };
-// http://localhost:3000/organization/7a9a635-5d63-4f04-b063-a2d323d4f63e
+
 export default function Organization(props) {
   const { t } = useTranslation();
 

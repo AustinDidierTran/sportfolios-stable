@@ -183,10 +183,6 @@ export default function App() {
                 path={ROUTES.organization}
                 component={Organization}
               />
-              <Route
-                path={ROUTES.organizationSettings}
-                component={OrganizationSettings}
-              />
               <Route exact path={ROUTES.signup} component={Signup} />
               <Route
                 exact

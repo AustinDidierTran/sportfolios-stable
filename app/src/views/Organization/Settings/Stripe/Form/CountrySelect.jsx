@@ -27,7 +27,7 @@ export default function CountrySelect(props) {
     return (
       <React.Fragment>
         <span>{countryToFlag(option.code)}</span>
-        {option.label} ({option.code}) +{option.phone}
+        {option.label} ({option.code})
       </React.Fragment>
     );
   };
