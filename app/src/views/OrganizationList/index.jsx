@@ -38,7 +38,7 @@ export default function OrganizationList(props) {
         items={organizations.map(org => ({
           value: org.name,
           onClick: () => goTo(ROUTES.organization, { id: org.id }),
-          iconComponent: <Avatar photoUrl={org.photoUrl} />,
+          iconComponent: <Avatar photoUrl={org.photo_url} />,
         }))}
       />
     </Paper>
