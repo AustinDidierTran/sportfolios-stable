@@ -1,12 +1,10 @@
 import React from 'react';
 import Stripe from './Stripe';
 import ManageRoles from './ManageRoles';
-import { AccountLink } from '../../../utils/stripe/ExternalAccount';
-import { Typography, Container } from '../../../components/MUI';
 import { useParams } from 'react-router-dom';
 import styles from './Settings.module.css';
 
-export default function OrganizationSettings(props) {
+export default function OrganizationSettings() {
   const { id } = useParams();
 
   return (

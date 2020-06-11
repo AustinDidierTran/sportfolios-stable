@@ -1,15 +1,11 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { ACTION_ENUM, Store, SCREENSIZE_ENUM } from '../../../Store';
-import APP_ROLES from '../../App/appRoles';
+import { Store, SCREENSIZE_ENUM } from '../../../Store';
 import logo from '../../../img/logo.png';
 
 import {
   AppBar,
   IconButton,
-  Menu,
-  MenuItem,
   Toolbar,
   Typography,
 } from '../../../components/MUI';
@@ -21,7 +17,7 @@ import NotificationModule from './NotificationModule';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Settings from '@material-ui/icons/Settings';
 
-import { formatRoute, ROUTES, goTo } from '../../../actions/goTo';
+import { ROUTES, goTo } from '../../../actions/goTo';
 
 import styles from './LoggedIn.module.css';
 
@@ -29,28 +25,10 @@ import useStyles from './useStyles';
 
 export default function LoggedIn() {
   const classes = useStyles();
-  const { t } = useTranslation();
   const {
     state: { userInfo, screenSize },
-    dispatch,
   } = useContext(Store);
 
-  const isAdmin =
-    userInfo && userInfo.app_role === APP_ROLES.APP_ADMIN;
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const isMenuOpen = Boolean(anchorEl);
-
-  const handleProfileMenuOpen = event => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const menuId = 'primary-search-account-menu';
   return screenSize !== SCREENSIZE_ENUM.xs ? (
     <div className={classes.grow}>
       <AppBar position="static" style={{ position: 'fixed', top: 0 }}>

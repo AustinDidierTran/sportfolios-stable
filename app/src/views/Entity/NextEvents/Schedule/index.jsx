@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { goTo, ROUTES } from '../../../../actions/goTo';
 
 import styles from './Schedule.module.css';
 
 import { Container, Button } from '../../../../components/MUI';
 // import { TABS_ENUM } from '../../../Event';
 
-export default function Schedule(props) {
+export default function Schedule() {
   const { t } = useTranslation();
 
   // const handleClick = () => {

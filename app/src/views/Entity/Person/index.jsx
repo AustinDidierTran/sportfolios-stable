@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { Tab, Tabs } from '../../../components/MUI';
 import { Container, Paper } from '../../../components/Custom';
 import { Store } from '../../../Store';

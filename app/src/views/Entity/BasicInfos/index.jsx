@@ -66,7 +66,7 @@ export default function BasicInfos(props) {
 
       promises.push(onNameChange());
 
-      const res = await Promise.all(promises);
+      await Promise.all(promises);
 
       setEditMode(false);
 

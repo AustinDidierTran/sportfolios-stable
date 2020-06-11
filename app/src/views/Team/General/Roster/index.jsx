@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
   List,
@@ -10,7 +10,7 @@ import { Paper } from '../../../../components/Custom';
 import styles from './Roster.module.css';
 import { useTranslation } from 'react-i18next';
 
-export default function Roster(props) {
+export default function Roster() {
   const { t } = useTranslation();
 
   const categories = [

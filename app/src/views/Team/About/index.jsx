@@ -10,7 +10,7 @@ import {
 } from '../../../components/MUI';
 import { Paper } from '../../../components/Custom';
 
-export default function About(props) {
+export default function About() {
   const { t } = useTranslation();
 
   const description = {

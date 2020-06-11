@@ -1,5 +1,4 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import api from '../../../../actions/api';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import NotificationList from './NotificationList';

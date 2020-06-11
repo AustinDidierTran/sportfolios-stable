@@ -7,11 +7,10 @@ import {
   List,
   Paper,
 } from '../../../../../components/Custom';
-import CardHeader from '@material-ui/core/CardHeader';
 import api from '../../../../../actions/api';
 import { goTo, ROUTES } from '../../../../../actions/goTo';
 
-export default function Organizations(props) {
+export default function Organizations() {
   const { t } = useTranslation();
 
   const [organizations, setOrganizations] = useState([]);

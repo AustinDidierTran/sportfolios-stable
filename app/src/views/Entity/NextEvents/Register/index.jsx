@@ -4,14 +4,9 @@ import { useTranslation } from 'react-i18next';
 import styles from './Register.module.css';
 
 import { Container, Button } from '../../../../components/MUI';
-// import { TABS_ENUM } from '../../../Event';
 
-export default function Register(props) {
+export default function Register() {
   const { t } = useTranslation();
-
-  // const handleClick = () => {
-  //   goTo(ROUTES.mockEvent, { openTab: TABS_ENUM.REGISTER });
-  // };
 
   return (
     <Container className={styles.container}>

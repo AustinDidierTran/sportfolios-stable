@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { Typography } from '../../../components/MUI';
 import styles from './Game.module.css';

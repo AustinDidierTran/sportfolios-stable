@@ -18,8 +18,7 @@ import { Paper } from '../../../components/Custom';
 import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
-export default function SignupCard(props) {
-  const { setCard } = props;
+export default function SignupCard() {
   const { t } = useTranslation();
 
   const validate = values => {

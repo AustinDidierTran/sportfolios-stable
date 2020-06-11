@@ -54,7 +54,7 @@ export default function UserSearch(props) {
         component="nav"
         aria-labelledby="nested-list-subheader"
         className={classes.root}
-        disablePadding={true}
+        disablePadding
         className={styles.list}
       >
         {users.length ? (

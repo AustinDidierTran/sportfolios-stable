@@ -5,7 +5,6 @@ const { ENTITIES_ROLE_ENUM } = require('../../server/enums');
 const {
   getEntity: getEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
-  getAllEntities: getAllEntitiesHelper,
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
 } = require('../helpers/entity');

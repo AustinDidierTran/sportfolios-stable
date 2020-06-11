@@ -22,7 +22,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Ranking(props) {
+export default function Ranking() {
   const { t } = useTranslation();
 
   const classes = useStyles;

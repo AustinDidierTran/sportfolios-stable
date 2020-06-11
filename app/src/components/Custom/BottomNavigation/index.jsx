@@ -18,7 +18,7 @@ const TABS_ENUM = {
   MENU: 'menu',
 };
 
-export default function CustomBottomNavigation(props) {
+export default function CustomBottomNavigation() {
   const { t } = useTranslation();
   const {
     state: { screenSize, userInfo },
