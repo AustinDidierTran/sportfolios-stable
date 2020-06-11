@@ -29,9 +29,34 @@ router.get(BASE_URL, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}s`, async ctx => {
+router.get(`${BASE_URL}/all`, async ctx => {
   try {
     const entity = await queries.getAllEntities();
+
+    if (entity) {
+      ctx.body = {
+        status: 'success',
+        data: entity,
+      };
+    } else {
+      ctx.status = 404;
+      ctx.body = {
+        status: 'error',
+        message: 'That record does not exist.',
+      };
+    }
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/roles`, async ctx => {
+  try {
+    const entity = await queries.getAllRolesEntity(ctx.query.id);
 
     if (entity) {
       ctx.body = {
