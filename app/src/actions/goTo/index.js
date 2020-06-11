@@ -29,6 +29,10 @@ export const formatRoute = (route, params = {}, queryParams = {}) => {
     return route;
   }
 
+  if (!route) {
+    console.error('Route is undefined');
+  }
+
   const withParams = Object.keys(params).reduce(
     (prev, curr) => prev.replace(`:${curr}`, params[curr]),
     route,
