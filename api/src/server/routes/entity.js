@@ -84,7 +84,10 @@ router.get(`${BASE_URL}/s3Signature`, async ctx => {
 
 router.put(`${BASE_URL}`, async ctx => {
   try {
-    const entity = await queries.updateEntity(ctx.request.body);
+    const entity = await queries.updateEntity(
+      ctx.request.body,
+      ctx.body.userInfo.id,
+    );
     if (entity) {
       ctx.status = 200;
       ctx.body = {

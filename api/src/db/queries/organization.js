@@ -1,5 +1,7 @@
 const knex = require('../connection');
 
+const { ENTITIES_ROLE_ENUM } = require('../../server/enums');
+
 const {
   getEntity: getEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
@@ -24,15 +26,26 @@ const addOrganization = async (props, user_id) => {
   return addOrganizationHelper(props, user_id);
 };
 
-async function updateOrganization(body) {
+async function updateOrganization(body, user_id) {
   const { id, name, photo_url } = body;
-  if (name) {
-    await updateEntityNameHelper(id, name);
+
+  const [{ role }] = await knex('entities_role')
+    .select(['role'])
+    .where({ entity_id: id, user_id });
+
+  if (
+    [ENTITIES_ROLE_ENUM.ADMIN, ENTITIES_ROLE_ENUM.EDITOR].includes(
+      role,
+    )
+  ) {
+    if (name) {
+      await updateEntityNameHelper(id, name);
+    }
+    if (photo_url) {
+      await updateEntityPhotoHelper(id, photo_url);
+    }
+    return { id, name, photo_url };
   }
-  if (photo_url) {
-    await updateEntityPhotoHelper(id, photo_url);
-  }
-  return { id, name, photo_url };
 }
 
 function deleteOrganization(id) {
