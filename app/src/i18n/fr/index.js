@@ -26,6 +26,7 @@ export default {
     emails: 'Courriels',
     email_confirmed:
       'Un courriel de confirmation a été envoyé à {{email}}. Veuillez regarder vos courriels pour confirmer votre compte.',
+    entity_not_found: "Cette entité n'existe pas",
     event_manager: "Responsable de l'événement",
     events: 'Événements',
     events_that_might_interest_you:
@@ -56,7 +57,6 @@ export default {
     on_going_events: 'Événements en cours',
     organization: 'Organisation',
     organizations: 'Organisations',
-    organization_not_found: "Cette organisation n'existe pas",
     our_team: 'Notre Équipe',
     password: 'Mot de passe',
     pay: 'Payer',

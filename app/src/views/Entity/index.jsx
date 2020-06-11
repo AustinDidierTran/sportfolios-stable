@@ -6,6 +6,7 @@ import api from '../../actions/api';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '../../hooks/queries';
+import { goTo, ROUTES } from '../../actions/goTo';
 
 export const ENTITIES_TYPE_ENUM = {
   PERSON: 1,
@@ -21,6 +22,10 @@ export default function Entity(props) {
 
   const updateBasicInfos = async () => {
     const { data } = await api(`/api/entity?id=${id}`);
+
+    if (!data) {
+      goTo(ROUTES.entityNotFound);
+    }
     setBasicInfos(data);
   };
 

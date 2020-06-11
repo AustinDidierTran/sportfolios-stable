@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { Paper } from '../../../../components/Custom';
-import styles from './ManageRoles.module.css';
 import { useTranslation } from 'react-i18next';
+import api from '../../../../actions/api';
+
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 
 import RosterChip from '../../../Event/Admin/RosterChip';
@@ -22,13 +24,20 @@ const useStyles = makeStyles({
 export default function ManageRoles(props) {
   const { t } = useTranslation();
 
+  const { id } = useParams();
+
+  const [entities, setEntities] = useState([]);
+
   const classes = useStyles;
 
-  const persons = [
-    { name: 'Julien' },
-    { name: 'Alexandre' },
-    { name: 'Didier' },
-  ];
+  const updateEntities = async () => {
+    const res = await api(`/api/entity/roles?id=${id}`);
+    setEntities(res.data);
+  };
+
+  useEffect(() => {
+    updateEntities();
+  }, []);
 
   const StyledTableCell = withStyles(theme => ({
     head: {
@@ -48,6 +57,7 @@ export default function ManageRoles(props) {
       },
     },
   }))(TableRow);
+
   return (
     <Paper className={styles.card}>
       <TableContainer component={Paper}>
@@ -63,7 +73,7 @@ export default function ManageRoles(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {persons.map(team => (
+            {entities.map(team => (
               <StyledTableRow key={team.name}>
                 <StyledTableCell component="th" scope="row">
                   {team.name}
