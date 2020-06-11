@@ -31,8 +31,9 @@ async function updateEntity(body, user_id) {
     .where({ entity_id: id, user_id });
 
   if (
-    role == ENTITIES_ROLE_ENUM.ADMIN ||
-    role == ENTITIES_ROLE_ENUM.EDITOR
+    [ENTITIES_ROLE_ENUM.ADMIN, ENTITIES_ROLE_ENUM.EDITOR].includes(
+      role,
+    )
   ) {
     if (name) {
       await updateEntityNameHelper(id, name);
