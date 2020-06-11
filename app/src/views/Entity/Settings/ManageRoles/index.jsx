@@ -35,8 +35,6 @@ export default function ManageRoles() {
 
   const [role, setRole] = useState(null);
 
-  console.log({ entities });
-
   return (
     <Paper className={styles.card} title={t('admins')}>
       <List disablePadding>
