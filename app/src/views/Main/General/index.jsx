@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import YourEventsCard from './YourEventsCard';
 import YourPayments from './YourPayments';
-import { EVENT_STATUS_ENUM } from '../../Organization/NextEvents';
+import { EVENT_STATUS_ENUM } from '../../Entity/NextEvents';
 import OnGoingEvents from './OnGoingEvents';
 import styles from './General.module.css';
 

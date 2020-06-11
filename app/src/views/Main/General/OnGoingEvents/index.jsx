@@ -4,9 +4,9 @@ import { goTo, ROUTES } from '../../../../actions/goTo';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import styles from './OnGoingEvents.module.css';
-import Register from '../../../Organization/NextEvents/Register';
-import Results from '../../../Organization/NextEvents/Results';
-import Schedule from '../../../Organization/NextEvents/Schedule';
+import Register from '../../../Entity/NextEvents/Register';
+import Results from '../../../Entity/NextEvents/Results';
+import Schedule from '../../../Entity/NextEvents/Schedule';
 import { Avatar, Paper } from '../../../../components/Custom';
 import {
   Typography,
@@ -16,7 +16,7 @@ import {
 } from '../../../../components/MUI';
 import { List } from '../../../../components/Custom';
 import history from '../../../../stores/history';
-import { EVENT_STATUS_ENUM } from '../../../Organization/NextEvents';
+import { EVENT_STATUS_ENUM } from '../../../Entity/NextEvents';
 
 export default function OnGoingEvents(props) {
   const { t } = useTranslation();

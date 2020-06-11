@@ -2,23 +2,23 @@ import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './Teams.module.css';
-import { Avatar, Paper } from '../../../../components/Custom';
+import { Avatar, Paper } from '../../../../../components/Custom';
 import {
   TextField,
   List,
   ListItem,
-} from '../../../../components/MUI';
+} from '../../../../../components/MUI';
 
-import history from '../../../../stores/history';
+import history from '../../../../../stores/history';
 
-import { getInitialsFromName } from '../../../../utils/stringFormats';
+import { getInitialsFromName } from '../../../../../utils/stringFormats';
 
 import CardHeader from '@material-ui/core/CardHeader';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 export default function Teams(props) {
   const { t } = useTranslation();
-  const { isSelf, teams } = props;
+  const { teams } = props;
 
   return (
     <Paper className={styles.card} title={t('teams')}>

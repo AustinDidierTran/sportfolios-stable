@@ -6,8 +6,8 @@ import {
   Typography,
   IconButton,
   Container,
-} from '../../../../components/MUI';
-import { Button, Paper } from '../../../../components/Custom';
+} from '../../../../../components/MUI';
+import { Button, Paper } from '../../../../../components/Custom';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -103,24 +103,7 @@ export default function Funding(props) {
             {buttonLabel}
           </Button>
         </div>
-
-        {/* <IconButton
-          className={clsx(styles.expand, {
-            [styles.expandOpen]: expanded,
-          })}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          label="show more"
-        >
-          <ExpandMoreIcon />
-        </IconButton> */}
       </Container>
-      {/* 
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph>Description complète</Typography>
-        </CardContent>
-      </Collapse> */}
     </Paper>
   );
 }
