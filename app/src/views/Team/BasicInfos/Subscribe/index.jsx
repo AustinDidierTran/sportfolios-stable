@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './Subscribe.module.css';
 
-import { Container, Button } from '../../../../components/MUI';
+import { Button } from '../../../../components/MUI';
 
-export default function Subscribe(props) {
+export default function Subscribe() {
   const { t } = useTranslation();
 
   const [isSubscribed, setIsSubscribed] = useState(false);

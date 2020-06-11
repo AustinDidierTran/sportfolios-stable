@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 
 import { Container, Typography, List } from '../../../components/MUI';
@@ -8,7 +8,7 @@ import { Paper } from '../../../components/Custom';
 import styles from './Infos.module.css';
 import { useTranslation } from 'react-i18next';
 
-export default function Infos(props) {
+export default function Infos() {
   const { t } = useTranslation();
 
   const infos = {

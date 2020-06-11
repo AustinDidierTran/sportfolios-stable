@@ -18,7 +18,7 @@ const addExternalAccount = async (body, user_id, ip) => {
   return createExternalAccount(body, user_id, ip);
 };
 
-const getStripeAccount = async (entity_id, ip) => {
+const getStripeAccount = async entity_id => {
   const accountLink = await getStripeAccountId(entity_id);
 
   return accountLink;

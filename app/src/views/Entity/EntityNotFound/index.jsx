@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { ROUTES, goTo } from '../../../actions/goTo';
 
@@ -13,7 +13,7 @@ import {
   CardContent,
 } from '../../../components/MUI';
 
-export default function EntityNotFound(props) {
+export default function EntityNotFound() {
   const { t } = useTranslation();
 
   const handleClick = () => {

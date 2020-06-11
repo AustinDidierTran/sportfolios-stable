@@ -8,7 +8,7 @@ import { Store, ACTION_ENUM } from '../../Store';
 import { Paper } from '../../components/Custom';
 import { Typography } from '@material-ui/core';
 
-export default function Menu(props) {
+export default function Menu() {
   const { dispatch } = useContext(Store);
 
   const { t } = useTranslation();

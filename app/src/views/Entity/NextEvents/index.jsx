@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { goTo, ROUTES } from '../../../actions/goTo';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import styles from './NextEvents.module.css';
 import Register from './Register';
 import Results from './Results';
@@ -12,7 +10,6 @@ import {
   Typography,
   ListItem,
   ListItemIcon,
-  Container,
 } from '../../../components/MUI';
 import { List } from '../../../components/Custom';
 import history from '../../../stores/history';
@@ -23,7 +20,7 @@ export const EVENT_STATUS_ENUM = {
   REGISTRATION: 'registration',
 };
 
-export default function NextEvents(props) {
+export default function NextEvents() {
   const { t } = useTranslation();
 
   const events = [

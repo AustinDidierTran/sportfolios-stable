@@ -1,4 +1,4 @@
-import React, { useMemo, useContext, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -16,7 +16,6 @@ export default function FollowNotification(props) {
 
   const {
     closeNotificationModule,
-    created_at,
     first_name,
     follower,
     last_name,

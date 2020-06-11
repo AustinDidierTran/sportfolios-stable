@@ -5,7 +5,7 @@ import styles from './Results.module.css';
 
 import { Container, Button } from '../../../../components/MUI';
 
-export default function Results(props) {
+export default function Results() {
   const { t } = useTranslation();
 
   return (

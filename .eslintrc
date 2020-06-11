@@ -5,13 +5,21 @@
     "node": true,
     "mocha": true
   },
-  "plugins": ["react"],
+  "plugins": ["react", "unused-imports"],
   "rules": {
     "new-cap": 0,
     "strict": 0,
     "no-underscore-dangle": 0,
     "no-use-before-define": 0,
     "eol-last": 0,
+    "no-unused-vars": [
+      "error",
+      {
+        "vars": "all",
+        "args": "after-used",
+        "ignoreRestSiblings": false
+      }
+    ],
     "quotes": [
       2,
       "single",

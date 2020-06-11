@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './Teams.module.css';
@@ -13,7 +13,6 @@ import history from '../../../../../stores/history';
 
 import { getInitialsFromName } from '../../../../../utils/stringFormats';
 
-import CardHeader from '@material-ui/core/CardHeader';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 export default function Teams(props) {

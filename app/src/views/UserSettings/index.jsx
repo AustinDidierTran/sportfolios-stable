@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { useTranslation } from 'react-i18next';
-
 import styles from './UserSettings.module.css';
 
 import BasicInfo from './BasicInfo';

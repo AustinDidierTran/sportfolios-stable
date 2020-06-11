@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import Container from '@material-ui/core/Container';
-import styles from './Container.module.css';
 
 export default function CustomContainer(props) {
   const [gutters, setGutters] = useState(false);

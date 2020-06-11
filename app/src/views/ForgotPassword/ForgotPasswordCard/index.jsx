@@ -1,11 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
 import styles from './ForgotPasswordCard.module.css';
 
-import { Store } from '../../../Store';
 import Button from '../../../components/MUI/Button';
 import {
   CardActions,

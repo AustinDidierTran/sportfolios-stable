@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import {
   List,
@@ -10,7 +10,7 @@ import { Avatar, Paper } from '../../../../components/Custom';
 import styles from './Ranking.module.css';
 import { useTranslation } from 'react-i18next';
 
-export default function Ranking(props) {
+export default function Ranking() {
   const { t } = useTranslation();
 
   const categories = [

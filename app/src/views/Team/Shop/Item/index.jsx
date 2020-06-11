@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import styles from './Item.module.css';
 import { useTranslation } from 'react-i18next';
 
-import { Typography, Container } from '../../../../components/MUI';
+import { Typography } from '../../../../components/MUI';
 import { Button, Paper } from '../../../../components/Custom';
 
 import { makeStyles } from '@material-ui/core/styles';

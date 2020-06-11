@@ -4,7 +4,6 @@ import { useFormik } from 'formik';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import api from '../../../../actions/api';
 import { ROUTES, goTo } from '../../../../actions/goTo';
-import { useParams } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';
 
@@ -22,7 +21,7 @@ import {
   CardContent,
 } from '../../../../components/MUI';
 
-export default function CreateOrganization(props) {
+export default function CreateOrganization() {
   const { t } = useTranslation();
 
   const validate = values => {

@@ -11,7 +11,7 @@ import NotificationFactory from '../../../../components/Custom/NotificationFacto
 import styles from './NotificationModule.module.css';
 
 export default function NotificationList(props) {
-  const { closeNotificationModule, open, notifications } = props;
+  const { closeNotificationModule, open } = props;
   const { t } = useTranslation();
 
   const testNotifications = [
@@ -47,7 +47,7 @@ export default function NotificationList(props) {
             {t('notifications')}
           </ListSubheader>
         }
-        disablePadding={true}
+        disablePadding
       >
         {testNotifications.map((notification, index) => (
           <NotificationFactory

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { useParams } from 'react-router-dom';
@@ -12,7 +12,7 @@ import CountrySelect from './CountrySelect';
 import CurrencySelect from './CurrencySelect';
 import api from '../../../../../actions/api';
 
-export default function ExternalAccountForm(props) {
+export default function ExternalAccountForm() {
   const { t } = useTranslation();
   const { id } = useParams();
 
@@ -77,7 +77,7 @@ export default function ExternalAccountForm(props) {
         id: id,
       };
       console.log('params', params);
-      const res = await api('/api/stripe/externalAccount', {
+      await api('/api/stripe/externalAccount', {
         method: 'POST',
         body: JSON.stringify(params),
       });

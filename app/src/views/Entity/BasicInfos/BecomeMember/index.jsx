@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './BecomeMember.module.css';
 
-import { Container, Button } from '../../../../components/MUI';
+import { Button } from '../../../../components/MUI';
 
-export default function BecomeMember(props) {
+export default function BecomeMember() {
   const { t } = useTranslation();
 
   const [isMember, setIsMember] = useState(false);

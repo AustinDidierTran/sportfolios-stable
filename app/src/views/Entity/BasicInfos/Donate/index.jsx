@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './Donate.module.css';
 
-import { IconButton } from '../../../../components/MUI';
 import { Button } from '../../../../components/Custom';
 
-export default function BecomeMember(props) {
+export default function BecomeMember() {
   const { t } = useTranslation();
 
   const handleClick = () => {

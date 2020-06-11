@@ -13,7 +13,6 @@ import { List } from '../../Custom';
 
 import { InputBase, Paper } from '../../MUI';
 import { useEffect } from 'react';
-import { SEARCH_TYPE_ENUM } from '../../../Store';
 import { formatRoute, goTo, ROUTES } from '../../../actions/goTo';
 
 const useStyles = makeStyles(theme => ({
@@ -65,7 +64,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function SearchInput(props) {
-  const { type, searchQuery = '/api/data/search/previous' } = props;
+  const { searchQuery = '/api/data/search/previous' } = props;
 
   const classes = useStyles();
   const [selectedIndex, setSelectedIndex] = useState(-1);
