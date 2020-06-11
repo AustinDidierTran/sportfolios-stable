@@ -16,15 +16,13 @@ import ConfirmationEmailSent from '../ConfirmationEmailSent';
 import ConfirmEmail from '../ConfirmEmail';
 import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
 import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
+import Entity from '../Entity';
 import EventView from '../Event';
 import ForgotPassword from '../ForgotPassword';
-import Organization from '../Organization';
-import OrganizationSettings from '../Organization/Settings';
-import CreateOrganization from '../Organization/Create';
+import CreateOrganization from '../Entity/Organization/Create';
 import OrganizationNotFound from '../OrganizationNotFound';
 import OrganizationList from '../Main/OrganizationList';
 import PasswordRecovery from '../PasswordRecovery';
-import Profile from '../Profile';
 import Search from '../Search';
 import Signup from '../Signup';
 import Team from '../Team';
@@ -33,8 +31,6 @@ import Notifications from '../../views/Notifications';
 import Menu from '../Menu';
 
 // Mocks
-import MockSelfProfile from '../Mocks/Profile/Self';
-import MockOrganization from '../Mocks/Organization';
 import MockEvent from '../Mocks/Event';
 
 // Custom
@@ -158,16 +154,6 @@ export default function App() {
               />
               <Route
                 exact
-                path={ROUTES.mockSelfProfile}
-                component={MockSelfProfile}
-              />
-              <Route
-                exact
-                path={ROUTES.mockOrganization}
-                component={MockOrganization}
-              />
-              <Route
-                exact
                 path={ROUTES.mockEvent}
                 component={MockEvent}
               />
@@ -187,10 +173,6 @@ export default function App() {
                 path={ROUTES.organizationNotFound}
                 component={OrganizationNotFound}
               />
-              <Route
-                path={ROUTES.organization}
-                component={Organization}
-              />
               <Route exact path={ROUTES.signup} component={Signup} />
               <Route
                 exact
@@ -203,16 +185,13 @@ export default function App() {
                 component={Notifications}
               />
               <Route path={ROUTES.team} component={Team} />
-              <PrivateRoute
-                path={ROUTES.profile}
-                component={Profile}
-              />
               <PrivateRoute path={ROUTES.search} component={Search} />
               <PrivateRoute
                 path={ROUTES.userSettings}
                 component={UserSettings}
               />
               <PrivateRoute path={ROUTES.menu} component={Menu} />
+              <PrivateRoute path={ROUTES.entity} component={Entity} />
               <PrivateRoute component={Main} />
             </Switch>
           </div>

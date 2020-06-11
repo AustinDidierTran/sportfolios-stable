@@ -67,8 +67,8 @@ export default function LoggedIn() {
             <IconButton
               color="inherit"
               onClick={() =>
-                goTo(ROUTES.profile, {
-                  id: userInfo && userInfo.user_id,
+                goTo(ROUTES.entity, {
+                  id: userInfo.id,
                 })
               }
             >

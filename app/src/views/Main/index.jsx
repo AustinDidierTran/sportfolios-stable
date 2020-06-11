@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import General from './General';
 import OrganizationList from './OrganizationList';
@@ -13,18 +14,20 @@ const TABS_ENUM = {
 };
 
 export default function Main(props) {
+  const { t } = useTranslation();
+
   const [eventState, setEventState] = useState(TABS_ENUM.GENERAL);
   const states = [
     {
       value: TABS_ENUM.GENERAL,
       component: <General />,
-      label: 'General',
+      label: t('general'),
       icon: 'Folder',
     },
     {
       value: TABS_ENUM.ORGANIZATIONS,
       component: <OrganizationList />,
-      label: 'Organization',
+      label: t('organizations'),
       icon: 'Business',
     },
   ];

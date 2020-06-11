@@ -1,16 +1,14 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Tab, Tabs } from '../../components/MUI';
-import { Container, Paper } from '../../components/Custom';
-import { Store } from '../../Store';
-import styles from './Profile.module.css';
+import { Tab, Tabs } from '../../../components/MUI';
+import { Container, Paper } from '../../../components/Custom';
+import { Store } from '../../../Store';
+import styles from './Person.module.css';
 import BasicInfos from './BasicInfos';
 import General from './General';
-import Shop from './Shop';
-import About from './About';
-import api from '../../actions/api';
+import Shop from '../Shop';
+import About from '../About';
 
 import { useTranslation } from 'react-i18next';
-import { Button } from '@material-ui/core';
 
 export const TABS_ENUM = {
   GENERAL: 'general',
@@ -18,25 +16,11 @@ export const TABS_ENUM = {
   SHOP: 'shop',
 };
 
-export default function Profile(props) {
-  const [basicInfos, setBasicInfos] = useState({});
-  const [accountInfo, setAccountInfo] = useState({});
-  const [accountLink, setAccountLink] = useState({});
+export default function Person(props) {
+  const { basicInfos } = props;
   const { t } = useTranslation();
 
   const [eventState, setEventState] = useState(TABS_ENUM.GENERAL);
-
-  const updateBasicInfos = async () => {
-    const { data } = await api(
-      `/api/profile/userInfo/8317ff33-3b04-49a1-afd3-420202cddf73`,
-    );
-
-    setBasicInfos(data);
-  };
-
-  useEffect(() => {
-    updateBasicInfos();
-  }, []);
 
   const {
     state: { userInfo },
@@ -44,13 +28,7 @@ export default function Profile(props) {
 
   const user_id = userInfo && userInfo.user_id;
 
-  const {
-    match: {
-      params: { id },
-    },
-  } = props;
-
-  const isSelf = id === user_id;
+  const isSelf = basicInfos.id === user_id;
 
   const states = [
     {
@@ -73,20 +51,10 @@ export default function Profile(props) {
     },
   ];
 
-  const onClickStripe = async () => {
-    const res = await api(
-      `/api/stripe/accountLink?id=349ebb1c-0b63-47e0-a42a-13d20407e2ab`,
-    );
-
-    const { data } = res;
-    setAccountLink(data);
-  };
-
   const OpenTab = states.find(s => s.value == eventState).component;
 
   return (
     <Container className={styles.container}>
-      <Button onClick={onClickStripe}>STRIPE</Button>
       <Paper className={styles.card}>
         <Container className={styles.title}>
           <BasicInfos isSelf={isSelf} basicInfos={basicInfos} />

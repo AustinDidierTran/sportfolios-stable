@@ -4,18 +4,18 @@ import moment from 'moment';
 
 import styles from './BasicInfos.module.css';
 
-import { ACTION_ENUM, Store } from '../../../Store';
+import { ACTION_ENUM, Store } from '../../../../Store';
 
-import { Avatar, Button, Input } from '../../../components/Custom';
+import { Avatar, Button, Input } from '../../../../components/Custom';
 import {
   Container,
   Typography,
   TextField,
-} from '../../../components/MUI';
-import { getInitialsFromName } from '../../../utils/stringFormats';
-import api from '../../../actions/api';
-import { useFormInput } from '../../../hooks/forms';
-import { uploadProfilePicture } from '../../../actions/aws';
+} from '../../../../components/MUI';
+import { getInitialsFromName } from '../../../../utils/stringFormats';
+import api from '../../../../actions/api';
+import { useFormInput } from '../../../../hooks/forms';
+import { uploadProfilePicture } from '../../../../actions/aws';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
@@ -25,12 +25,13 @@ export default function BasicInfos(props) {
   const {
     first_name,
     last_name,
+    name,
     birth_date,
     photo_url,
   } = props.basicInfos;
 
   const completeName = `${first_name} ${last_name}`;
-  const initials = getInitialsFromName(completeName);
+  const initials = getInitialsFromName(name);
   const birthDate = useFormInput(birth_date);
 
   const { isSelf } = props;
@@ -144,7 +145,7 @@ export default function BasicInfos(props) {
             />
           </>
         ) : (
-          <Typography variant="h3">{completeName}</Typography>
+          <Typography variant="h3">{name}</Typography>
         )}
       </div>
       {isEditMode ? (

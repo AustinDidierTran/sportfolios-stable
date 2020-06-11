@@ -1,21 +1,21 @@
 import React, { useState, useContext, useEffect } from 'react';
 
-import { Tab, Tabs } from '../../components/MUI';
-import { Container, Paper } from '../../components/Custom';
+import { Tab, Tabs } from '../../../components/MUI';
+import { Container, Paper } from '../../../components/Custom';
 
-import { Store } from '../../Store';
-import api from '../../actions/api';
+import { Store } from '../../../Store';
+import api from '../../../actions/api';
 import styles from './Organization.module.css';
 import { useTranslation } from 'react-i18next';
-import { useParams, useHistory } from 'react-router-dom';
-import { useQuery } from '../../hooks/queries';
+import { useParams } from 'react-router-dom';
+import { useQuery } from '../../../hooks/queries';
 
-import BasicInfos from './BasicInfos';
-import NextEvents from './NextEvents';
-import Shop from './Shop';
-import About from './About';
-import Settings from './Settings';
-import { goTo, ROUTES } from '../../actions/goTo';
+import BasicInfos from '../BasicInfos';
+import NextEvents from '../NextEvents';
+import Shop from '../Shop';
+import About from '../About';
+import Settings from '../Settings';
+import { goTo, ROUTES } from '../../../actions/goTo';
 
 export const TABS_ENUM = {
   GENERAL: 'general',
@@ -24,25 +24,11 @@ export const TABS_ENUM = {
   SETTINGS: 'settings',
 };
 
-export default function Organization(props) {
+export default function Entity(props) {
+  const { basicInfos } = props;
   const { t } = useTranslation();
   const { id } = useParams();
-  const [basicInfos, setBasicInfos] = useState({});
-  const history = useHistory();
   const query = useQuery();
-
-  const updateBasicInfos = async () => {
-    const { data } = await api(`/api/organization?id=${id}`);
-    setBasicInfos(data);
-  };
-
-  useEffect(() => {
-    updateBasicInfos();
-  }, []);
-
-  const {
-    state: { organization },
-  } = useContext(Store);
 
   const isManager = id === id; //Need query to identify users that are managers
 
@@ -80,7 +66,7 @@ export default function Organization(props) {
   const OpenTab = states.find(s => s.value == eventState).component;
 
   const onClick = s => {
-    goTo(ROUTES.organization, { id }, { tab: s.value });
+    goTo(ROUTES.entity, { id }, { tab: s.value });
     setEventState(s.value);
   };
 

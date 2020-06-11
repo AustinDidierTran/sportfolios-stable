@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './OrganizationList.module.css';
@@ -8,7 +8,6 @@ import {
   List,
   Button,
 } from '../../../components/Custom';
-import { Typography } from '../../../components/MUI';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import api from '../../../actions/api';
 
@@ -25,7 +24,9 @@ export default function OrganizationList(props) {
     setOrganizations(data);
   };
 
-  getOrganizations();
+  useEffect(() => {
+    getOrganizations();
+  }, []);
 
   const handleClick = () => {
     history.push(ROUTES.createOrganization);
@@ -42,7 +43,7 @@ export default function OrganizationList(props) {
       <List
         items={organizations.map(org => ({
           value: org.name,
-          onClick: () => goTo(ROUTES.organization, { id: org.id }),
+          onClick: () => goTo(ROUTES.entity, { id: org.id }),
           iconComponent: <Avatar photoUrl={org.photo_url} />,
         }))}
       />
