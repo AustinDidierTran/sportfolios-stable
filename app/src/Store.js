@@ -44,6 +44,11 @@ export const ACTION_ENUM = {
   WINDOW_RESIZE: 'window_resize',
 };
 
+export const SEARCH_TYPE_ENUM = {
+  GENERAL: 1,
+  ADD_ROLES: 2,
+};
+
 function reducer(state, action) {
   switch (action.type) {
     case ACTION_ENUM.LOGIN: {

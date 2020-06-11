@@ -13,7 +13,8 @@ import { List } from '../../Custom';
 
 import { InputBase, Paper } from '../../MUI';
 import { useEffect } from 'react';
-import { goTo, ROUTES } from '../../../actions/goTo';
+import { SEARCH_TYPE_ENUM } from '../../../Store';
+import { formatRoute, goTo, ROUTES } from '../../../actions/goTo';
 
 const useStyles = makeStyles(theme => ({
   search: {
@@ -64,16 +65,20 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function SearchInput(props) {
+  const { type, searchQuery = '/api/data/search/previous' } = props;
+
   const classes = useStyles();
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [previousResults, setPreviousResults] = useState([]);
   const searchValue = useFormInput('');
   const { t } = useTranslation();
 
-  const fetchPreviousResults = async () => {
+  const fetchSuggestions = async () => {
     const {
       data: { search_queries },
-    } = await api('/api/data/search/previous');
+    } = await api(
+      formatRoute(searchQuery, {}, { query: searchValue.value }),
+    );
     setPreviousResults(search_queries);
   };
 
@@ -83,7 +88,7 @@ export default function SearchInput(props) {
   };
 
   useEffect(() => {
-    fetchPreviousResults();
+    fetchSuggestions();
   }, [Boolean(searchValue.value)]);
 
   useEffect(() => {
@@ -91,12 +96,10 @@ export default function SearchInput(props) {
       setSelectedIndex(-1);
     }
   }, [searchValue.value]);
-
   const open = Boolean(searchValue.value);
   const id = useMemo(() => (open ? 'simple-popover' : undefined), [
     open,
   ]);
-
   const listItems = useMemo(
     () =>
       previousResults &&
@@ -109,7 +112,6 @@ export default function SearchInput(props) {
       })),
     [previousResults],
   );
-
   return (
     <div className={classes.search}>
       <div className={classes.searchIcon}>

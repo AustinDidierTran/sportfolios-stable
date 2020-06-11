@@ -19,24 +19,31 @@ function getSingleOrganization(id) {
 async function addOrganization(props, user_id) {
   const { name } = props;
 
-  const [entity] = await knex('entities')
+  const [entity_id] = await knex('entities')
     .insert({ type: ENTITIES_TYPE_ENUM.ORGANIZATION })
     .returning(['id']);
 
+  const [entity_id_admin] = await knex('persons')
+    .select(['id'])
+    .where({ user_id });
+
   await knex('entities_role').insert({
-    entity_id: entity.id,
-    user_id,
+    entity_id: entity_id.id,
+    entity_id_admin: entity_id_admin.id,
     role: ENTITIES_ROLE_ENUM.ADMIN,
   });
 
-  await knex('entities_name').insert({ entity_id: entity.id, name });
+  await knex('entities_name').insert({
+    entity_id: entity_id.id,
+    name,
+  });
 
   await knex('entities_photo').insert({
-    entity_id: entity.id,
+    entity_id: entity_id.id,
   });
 
   const [organization] = await knex('organizations')
-    .insert({ id: entity.id })
+    .insert({ id: entity_id.id })
     .returning(['id']);
 
   return organization;
