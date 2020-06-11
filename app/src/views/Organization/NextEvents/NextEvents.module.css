@@ -9,7 +9,8 @@
 
 .event {
   display: grid !important;
-  grid-template-columns: 3fr 20fr;
+  width: 100%;
+  grid-template-columns: 64px auto;
   grid-template-areas: ' avatar infos';
 }
 

@@ -2,7 +2,7 @@
   display: grid !important;
   grid-template-columns: 1fr;
   grid-template-areas: 'description' 'team' 'contact';
-  row-gap: 8px;
+  row-gap: 16px;
   padding: 0px !important;
 }
 
@@ -13,7 +13,6 @@
 .description {
   grid-area: description;
   text-align: start;
-  padding: 8px;
 }
 .team {
   grid-area: team;

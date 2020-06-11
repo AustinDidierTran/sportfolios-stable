@@ -70,7 +70,7 @@ export default function HorizontalLinearStepper(props) {
   };
 
   return (
-    <Paper className={styles.paper}>
+    <Paper className={styles.paper} title="Stripe">
       <div className={styles.all}>
         <div className={styles.stepper}>
           <Stepper activeStep={activeStep}>

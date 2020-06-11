@@ -83,8 +83,6 @@ export default function Profile(props) {
     const { data } = res;
     setAccountLink(data);
   };
-  console.log('accountInfo', accountInfo);
-  console.log('accountLink', accountLink);
 
   const OpenTab = states.find(s => s.value == eventState).component;
 

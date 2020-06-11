@@ -60,10 +60,7 @@ export default function NextEvents(props) {
   ];
 
   return (
-    <Paper className={styles.card}>
-      <Typography className={styles.title} variant="h3">
-        {t('events')}
-      </Typography>
+    <Paper className={styles.card} title={t('events')}>
       <List
         items={events}
         rowRenderer={(event, index) => (
@@ -72,7 +69,7 @@ export default function NextEvents(props) {
             onClick={() => history.push('/event')}
             key={index}
           >
-            <Container className={styles.event}>
+            <div className={styles.event}>
               <ListItemIcon>
                 <Avatar
                   initials={event.initial}
@@ -80,17 +77,17 @@ export default function NextEvents(props) {
                   className={styles.avatar}
                 />
               </ListItemIcon>
-              <Container className={styles.infos}>
-                <Container className={styles.tournoi}>
+              <div className={styles.infos}>
+                <div className={styles.tournoi}>
                   <Typography className={styles.name} variant="h3">
                     {event.name}
                   </Typography>
                   <Typography className={styles.circuit} variant="h5">
                     {event.circuit}
                   </Typography>
-                </Container>
+                </div>
                 <hr />
-                <Container className={styles.dateregister}>
+                <div className={styles.dateregister}>
                   <Typography className={styles.date} variant="h5">
                     {event.date}
                   </Typography>
@@ -103,50 +100,12 @@ export default function NextEvents(props) {
                   ) : (
                     <></>
                   )}
-                </Container>
-              </Container>
-            </Container>
+                </div>
+              </div>
+            </div>
           </ListItem>
         )}
       />
-      {/* {events.map(event => (
-          <ListItem button onClick={() => history.push('/event')}>
-            <Container className={styles.event}>
-              <ListItemIcon>
-                <Avatar
-                  initials={event.initial}
-                  size="md"
-                  className={styles.avatar}
-                />
-              </ListItemIcon>
-              <Container className={styles.infos}>
-                <Container className={styles.tournoi}>
-                  <Typography className={styles.name} variant="h3">
-                    {event.name}
-                  </Typography>
-                  <Typography className={styles.circuit} variant="h5">
-                    {event.circuit}
-                  </Typography>
-                </Container>
-                <hr />
-                <Container className={styles.dateregister}>
-                  <Typography className={styles.date} variant="h5">
-                    {event.date}
-                  </Typography>
-                  {event.type === EVENT_STATUS_ENUM.REGISTRATION ? (
-                    <Register />
-                  ) : event.type === EVENT_STATUS_ENUM.ONGOING ? (
-                    <Schedule />
-                  ) : eventtype === EVENT_STATUS_ENUM.COMPLETED ? (
-                    <Results />
-                  ) : (
-                    <></>
-                  )}
-                </Container>
-              </Container>
-            </Container>
-          </ListItem>
-        ))} */}
     </Paper>
   );
 }

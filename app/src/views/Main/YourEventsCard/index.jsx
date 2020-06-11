@@ -24,14 +24,7 @@ export default function YourEventsCard(props) {
   const { events } = props;
 
   return (
-    <Paper className={styles.card}>
-      <Typography
-        className={styles.title}
-        variant="h5"
-        color="primary"
-      >
-        {t('your_upcoming_events')}
-      </Typography>
+    <Paper className={styles.card} title={t('your_upcoming_events')}>
       <List
         items={events}
         rowRenderer={(event, index) => (

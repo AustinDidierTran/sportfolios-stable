@@ -1,3 +1,6 @@
+.card {
+  grid-area: roles;
+}
 .title {
   padding: 16px;
 }

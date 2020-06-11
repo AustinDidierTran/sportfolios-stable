@@ -60,7 +60,7 @@ export default function Funding(props) {
   const endIcon = isSelf ? 'Edit' : 'AttachMoney';
 
   return (
-    <Paper className={styles.card}>
+    <Paper className={styles.card} title={t('funding')}>
       <CardHeader title={name} subheader={description} />
       <Container className={styles.container}>
         <div className={styles.bar}>

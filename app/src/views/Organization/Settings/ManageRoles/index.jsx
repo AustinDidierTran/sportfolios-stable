@@ -1,16 +1,11 @@
 import React from 'react';
 
-import { Paper, Button } from '../../../../components/Custom';
-import { Typography } from '../../../../components/MUI';
-import { Store, SCREENSIZE_ENUM } from '../../../../Store';
+import { Paper } from '../../../../components/Custom';
 import styles from './ManageRoles.module.css';
 import { useTranslation } from 'react-i18next';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 
-import PaymentChip from '../../../Event/Admin/PaymentChip';
 import RosterChip from '../../../Event/Admin/RosterChip';
-import Chip from '@material-ui/core/Chip';
-import FaceIcon from '@material-ui/icons/Face';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -55,23 +50,6 @@ export default function ManageRoles(props) {
   }))(TableRow);
   return (
     <Paper className={styles.card}>
-      {/* <Typography variant="h3" className={styles.title}>
-        {t('admins')}
-      </Typography>
-      <Button
-        onClick={() => {}}
-        className={styles.button}
-        endIcon="Add"
-      >
-        {t('add_admin')}
-      </Button>
-      <Button
-        onClick={() => {}}
-        className={styles.button}
-        endIcon="Add"
-      >
-        {t('add_editor')}
-      </Button> */}
       <TableContainer component={Paper}>
         <Table
           className={classes.table}
@@ -79,8 +57,9 @@ export default function ManageRoles(props) {
         >
           <TableHead>
             <TableRow>
-              <StyledTableCell>{t('admins')}</StyledTableCell>
-              <StyledTableCell />
+              <StyledTableCell colSpan={2}>
+                {t('admins')}
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>

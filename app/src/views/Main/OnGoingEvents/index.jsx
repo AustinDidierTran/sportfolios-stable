@@ -24,14 +24,7 @@ export default function OnGoingEvents(props) {
   const { events } = props;
 
   return (
-    <Paper className={styles.card}>
-      <Typography
-        className={styles.title}
-        variant="h5"
-        color="primary"
-      >
-        {t('on_going_events')}
-      </Typography>
+    <Paper className={styles.card} title={t('on_going_events')}>
       <List
         items={events}
         rowRenderer={(event, index) => (

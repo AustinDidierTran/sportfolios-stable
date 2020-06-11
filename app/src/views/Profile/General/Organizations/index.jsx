@@ -20,8 +20,7 @@ export default function Organizations(props) {
   getOrganizations();
 
   return (
-    <Paper className={styles.card}>
-      <CardHeader title={t('organizations')} />
+    <Paper className={styles.card} title={t('organizations')}>
       <List
         items={organizations.map(organization => ({
           value: organization.name,

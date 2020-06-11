@@ -18,14 +18,7 @@ export default function YourPayments(props) {
   const { payments } = props;
 
   return (
-    <Paper className={styles.paper}>
-      <Typography
-        className={styles.title}
-        variant="h3"
-        color="primary"
-      >
-        {t('awaiting_payments')}
-      </Typography>
+    <Paper className={styles.paper} title={t('awaiting_payments')}>
       {payments.map((payment, index) => (
         <Container className={styles.container} key={index}>
           <Typography variant="h5" className={styles.title}>
