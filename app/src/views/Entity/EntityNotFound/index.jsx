@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 
-import { ROUTES, goTo } from '../../actions/goTo';
+import { ROUTES, goTo } from '../../../actions/goTo';
 
 import { useTranslation } from 'react-i18next';
 
-import styles from './OrganizationNotFound.module.css';
+import styles from './EntityNotFound.module.css';
 
-import { Container, Paper, Button } from '../../components/Custom';
+import { Container, Paper, Button } from '../../../components/Custom';
 import {
   Typography,
   CardActions,
   CardContent,
-} from '../../components/MUI';
+} from '../../../components/MUI';
 
-export default function OrganizationNotFound(props) {
+export default function EntityNotFound(props) {
   const { t } = useTranslation();
 
   const handleClick = () => {
@@ -26,7 +26,7 @@ export default function OrganizationNotFound(props) {
         <Paper className={styles.card}>
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
-              {t('organization_not_found')}
+              {t('entity_not_found')}
             </Typography>
           </CardContent>
           <CardActions className={styles.buttons}>
