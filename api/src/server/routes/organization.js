@@ -50,6 +50,7 @@ router.post(BASE_URL, async ctx => {
   try {
     const organizationId = await queries.addOrganization(
       ctx.request.body,
+      ctx.body.userInfo.id,
     );
 
     if (organizationId) {

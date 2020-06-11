@@ -6,6 +6,8 @@ const {
   getAllEntities: getAllEntitiesHelper,
   getEntity: getEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
+  updateEntityName: updateEntityNameHelper,
+  updateEntityPhoto: updateEntityPhotoHelper,
 } = require('../helpers/entity');
 
 async function getEntity(id) {
@@ -18,6 +20,19 @@ async function getAllEntities(id) {
 
 async function getAllTypeEntities(id) {
   return getAllTypeEntitiesHelper(id);
+}
+
+async function updateEntity(body) {
+  const { id, name, photo_url } = body;
+
+  if (name) {
+    await updateEntityNameHelper(id, name);
+  }
+  if (photo_url) {
+    console.log('ALLLO');
+    await updateEntityPhotoHelper(id, photo_url);
+  }
+  return { id, name, photo_url };
 }
 
 async function getS3Signature(userId, { fileType }) {
@@ -36,4 +51,5 @@ module.exports = {
   getAllTypeEntities,
   getEntity,
   getS3Signature,
+  updateEntity,
 };

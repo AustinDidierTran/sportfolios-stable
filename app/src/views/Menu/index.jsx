@@ -18,7 +18,7 @@ export default function Menu(props) {
   const data = [
     {
       name: t('organizations'),
-      route: ROUTES.organization,
+      route: ROUTES.organizationList,
     },
     {
       name: t('settings'),

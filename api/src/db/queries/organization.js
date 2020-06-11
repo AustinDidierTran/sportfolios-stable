@@ -8,6 +8,10 @@ const {
   updateEntityPhoto: updateEntityPhotoHelper,
 } = require('../helpers/entity');
 
+const {
+  addOrganization: addOrganizationHelper,
+} = require('../helpers/organizations');
+
 function getAllOrganizations() {
   return getAllTypeEntitiesHelper(2);
 }
@@ -16,16 +20,8 @@ async function getSingleOrganization(id) {
   return getEntityHelper(id);
 }
 
-const addOrganization = async organizationProps => {
-  const [entity] = await knex('entities')
-    .insert({ type: 2 })
-    .returning(['id']);
-
-  const [organization = {}] = await knex('organizations')
-    .insert({ ...organizationProps, id: entity.id })
-    .returning(['id']);
-
-  return organization.id;
+const addOrganization = async (props, user_id) => {
+  return addOrganizationHelper(props, user_id);
 };
 
 async function updateOrganization(body) {

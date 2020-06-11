@@ -28,7 +28,7 @@ const changeEntityURL = async (id, url) => {
     method: 'PUT',
     body: JSON.stringify({
       id,
-      photoUrl: url,
+      photo_url: url,
     }),
   });
 };
