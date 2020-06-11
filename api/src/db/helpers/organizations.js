@@ -1,3 +1,7 @@
+const {
+  ENTITIES_ROLE_ENUM,
+  ENTITIES_TYPE_ENUM,
+} = require('../../server/enums');
 const knex = require('../connection');
 
 function getOrganizationAccess(user_id, organization_id) {
@@ -16,20 +20,19 @@ async function addOrganization(props, user_id) {
   const { name } = props;
 
   const [entity] = await knex('entities')
-    .insert({ type: 2 })
+    .insert({ type: ENTITIES_TYPE_ENUM.ORGANIZATION })
     .returning(['id']);
 
   await knex('entities_role').insert({
     entity_id: entity.id,
     user_id,
-    role: 1,
+    role: ENTITIES_ROLE_ENUM.ADMIN,
   });
 
   await knex('entities_name').insert({ entity_id: entity.id, name });
 
   await knex('entities_photo').insert({
     entity_id: entity.id,
-    photo_url: null,
   });
 
   const [organization] = await knex('organizations')

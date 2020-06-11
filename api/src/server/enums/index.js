@@ -1,0 +1,15 @@
+const ENTITIES_TYPE_ENUM = {
+  PERSON: 1,
+  ORGANIZATION: 2,
+  TEAM: 3,
+};
+
+const ENTITIES_ROLE_ENUM = {
+  ADMIN: 1,
+  EDITOR: 2,
+};
+
+module.exports = {
+  ENTITIES_ROLE_ENUM,
+  ENTITIES_TYPE_ENUM,
+};

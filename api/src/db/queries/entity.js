@@ -24,6 +24,7 @@ async function getAllTypeEntities(id) {
 
 async function updateEntity(body) {
   const { id, name, photo_url } = body;
+
   if (name) {
     await updateEntityNameHelper(id, name);
   }
