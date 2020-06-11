@@ -6,14 +6,30 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Paper } from '../../../../../components/Custom';
 import styles from './Stepper.module.css';
+import api from '../../../../../actions/api';
+import { useParams } from 'react-router-dom';
 
 export default function HorizontalLinearStepper(props) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
   const { steps } = props;
+  const { id } = useParams();
 
   const isStepOptional = step => {
     //None are optional, if not, use this: return step === 1;
+    return false;
+  };
+
+  const isStepDone = async index => {
+    if (index == 0) {
+      const res = await api(
+        `/api/stripe/getStripeAccountId?id=${id}`,
+      );
+      const stripeAccountId = res.data;
+      console.log('stripeAccountId', stripeAccountId);
+      return stripeAccountId ? true : false;
+    }
+
     return false;
   };
 
@@ -62,6 +78,10 @@ export default function HorizontalLinearStepper(props) {
               const { label } = step;
               const stepProps = {};
               const labelProps = {};
+
+              if (isStepDone(index)) {
+                // handleNext();
+              }
 
               if (isStepOptional(index)) {
                 labelProps.optional = (

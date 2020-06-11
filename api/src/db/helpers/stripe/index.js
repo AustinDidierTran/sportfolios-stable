@@ -149,5 +149,6 @@ const createExternalAccount = async (body, user_id, ip) => {
 module.exports = {
   createAccountLink,
   createExternalAccount,
+  getStripeAccountId,
   stripeEnums,
 };

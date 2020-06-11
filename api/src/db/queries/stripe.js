@@ -1,6 +1,7 @@
 const {
   createAccountLink,
   createExternalAccount,
+  getStripeAccountId,
 } = require('../helpers/stripe');
 
 const getAccountLink = async (entity_id, ip) => {
@@ -17,4 +18,14 @@ const addExternalAccount = async (body, user_id, ip) => {
   return createExternalAccount(body, user_id, ip);
 };
 
-module.exports = { getAccountLink, addExternalAccount };
+const getStripeAccount = async (entity_id, ip) => {
+  const accountLink = await getStripeAccountId(entity_id);
+
+  return accountLink;
+};
+
+module.exports = {
+  getAccountLink,
+  addExternalAccount,
+  getStripeAccount,
+};
