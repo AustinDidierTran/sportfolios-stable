@@ -44,9 +44,15 @@ export const ACTION_ENUM = {
   WINDOW_RESIZE: 'window_resize',
 };
 
-export const SEARCH_TYPE_ENUM = {
-  GENERAL: 1,
-  ADD_ROLES: 2,
+export const ENTITIES_TYPE_ENUM = {
+  PERSON: 1,
+  ORGANIZATION: 2,
+  TEAM: 3,
+};
+
+export const ENTITIES_ROLE_ENUM = {
+  ADMIN: 1,
+  EDITOR: 2,
 };
 
 function reducer(state, action) {
