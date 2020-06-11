@@ -30,12 +30,9 @@ export default function Shop(props) {
   };
 
   return (
-    <Paper className={classes.root}>
+    <Paper className={classes.root} title={name}>
       <CardMedia className={classes.media} image={photoUrl} />
       <CardContent className={styles.infos}>
-        <Typography gutterBottom variant="h5" className={styles.name}>
-          {name}
-        </Typography>
         <Typography variant="h5" className={styles.price}>
           {price}
         </Typography>

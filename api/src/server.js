@@ -19,6 +19,7 @@ const notificationRoutes = require('./server/routes/notifications');
 const profileRoutes = require('./server/routes/profile');
 const userRoutes = require('./server/routes/users');
 const mainRoutes = require('./server/routes/main');
+const stripeRoutes = require('./server/routes/stripe');
 const entityRoutes = require('./server/routes/entity');
 
 // Admin routes
@@ -49,6 +50,7 @@ app.use(mainRoutes.routes());
 app.use(notificationRoutes.routes());
 app.use(profileRoutes.routes());
 app.use(entityRoutes.routes());
+app.use(stripeRoutes.routes());
 app.use(userRoutes.routes());
 
 // admin routes

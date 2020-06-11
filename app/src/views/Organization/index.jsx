@@ -7,13 +7,15 @@ import { Store } from '../../Store';
 import api from '../../actions/api';
 import styles from './Organization.module.css';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
+import { useQuery } from '../../hooks/queries';
 
 import BasicInfos from './BasicInfos';
 import NextEvents from './NextEvents';
 import Shop from './Shop';
 import About from './About';
 import Settings from './Settings';
+import { goTo, ROUTES } from '../../actions/goTo';
 
 export const TABS_ENUM = {
   GENERAL: 'general',
@@ -24,10 +26,10 @@ export const TABS_ENUM = {
 
 export default function Organization(props) {
   const { t } = useTranslation();
-
-  const { openTab = TABS_ENUM.GENERAL, id } = useParams();
-
+  const { id } = useParams();
   const [basicInfos, setBasicInfos] = useState({});
+  const history = useHistory();
+  const query = useQuery();
 
   const updateBasicInfos = async () => {
     const { data } = await api(`/api/organization?id=${id}`);
@@ -44,7 +46,9 @@ export default function Organization(props) {
 
   const isManager = id === id; //Need query to identify users that are managers
 
-  const [eventState, setEventState] = useState(openTab);
+  const [eventState, setEventState] = useState(
+    query.tab || TABS_ENUM.GENERAL,
+  );
 
   const states = [
     {
@@ -75,6 +79,11 @@ export default function Organization(props) {
 
   const OpenTab = states.find(s => s.value == eventState).component;
 
+  const onClick = s => {
+    goTo(ROUTES.organization, { id }, { tab: s.value });
+    setEventState(s.value);
+  };
+
   return (
     <Container className={styles.container}>
       <Paper className={styles.card}>
@@ -91,7 +100,7 @@ export default function Organization(props) {
           {states.map((s, index) => (
             <Tab
               key={index}
-              onClick={() => setEventState(s.value)}
+              onClick={() => onClick(s)}
               label={s.label}
               icon={s.icon}
             />

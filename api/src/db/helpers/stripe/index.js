@@ -4,6 +4,7 @@
  */
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const { CLIENT_BASE_URL } = require('../../../../../conf');
 
 /* Private arguments */
 
@@ -77,15 +78,14 @@ const createStripeConnectedAccount = async props => {
 
 const createAccountLink = async props => {
   const { entity_id, ip } = props;
-  console.log('id', entity_id);
   const accountId = await getOrCreateStripeConnectedAccountId(
     entity_id,
     ip,
   );
   const params = {
     account: accountId,
-    failure_url: 'http://localhost:3000/profile',
-    success_url: `http://localhost:3000/organization/${entity_id}`,
+    failure_url: `${CLIENT_BASE_URL}/profile`,
+    success_url: `${CLIENT_BASE_URL}/organization/${entity_id}/?tab=settings`,
     type: 'custom_account_verification',
     collect: 'eventually_due',
   };
@@ -150,5 +150,6 @@ const createExternalAccount = async (body, user_id, ip) => {
 module.exports = {
   createAccountLink,
   createExternalAccount,
+  getStripeAccountId,
   stripeEnums,
 };

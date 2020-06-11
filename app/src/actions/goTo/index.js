@@ -27,19 +27,25 @@ export const ROUTES = {
   menu: '/menu',
 };
 
-export const formatRoute = (route, params) => {
+export const formatRoute = (route, params = {}, queryParams = {}) => {
   if (!params) {
     return route;
   }
 
-  const paramKeys = Object.keys(params);
-
-  return paramKeys.reduce(
+  const withParams = Object.keys(params).reduce(
     (prev, curr) => prev.replace(`:${curr}`, params[curr]),
     route,
   );
+
+  return Object.keys(queryParams).reduce(
+    (prev, key, index) =>
+      index === 0
+        ? `${prev}?${key}=${queryParams[key]}`
+        : `${prev}&${key}=${queryParams[key]}`,
+    withParams,
+  );
 };
 
-export const goTo = (route, params) => {
-  history.push(formatRoute(route, params));
+export const goTo = (route, params, queryParams) => {
+  history.push(formatRoute(route, params, queryParams));
 };

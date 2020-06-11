@@ -2,7 +2,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import { Store, SCREENSIZE_ENUM } from '../../../Store';
 
+import styles from './Paper.module.css';
+
 export default function CustomPaper(props) {
+  const { title, children, childrenProps, ...paperProps } = props;
   const {
     state: { screenSize },
   } = useContext(Store);
@@ -17,5 +20,14 @@ export default function CustomPaper(props) {
     }
   }, [screenSize]);
 
-  return <Paper elevation={elevation} {...props} />;
+  return (
+    <Paper elevation={elevation} {...paperProps}>
+      {title ? (
+        <div className={styles.title}>
+          <span>{title}</span>
+        </div>
+      ) : null}
+      <div {...childrenProps}>{children}</div>
+    </Paper>
+  );
 }

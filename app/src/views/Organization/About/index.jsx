@@ -53,26 +53,12 @@ export default function About(props) {
 
   return (
     <Container className={styles.main}>
-      <Paper className={styles.description}>
-        <Typography
-          variant="h4"
-          color="primary"
-          className={styles.title}
-        >
-          {description.title}
-        </Typography>
+      <Paper className={styles.description} title={description.title}>
         <Container className={styles.container}>
           <Typography variant="h6">{description.text}</Typography>
         </Container>
       </Paper>
-      <Paper className={styles.team}>
-        <Typography
-          variant="h4"
-          color="primary"
-          className={styles.title}
-        >
-          {team.title}
-        </Typography>
+      <Paper className={styles.team} title={team.title}>
         <List>
           {team.content.map(text => (
             <ListItem className={styles.listItem}>
@@ -98,14 +84,7 @@ export default function About(props) {
           ))}
         </List>
       </Paper>
-      <Paper className={styles.contact}>
-        <Typography
-          variant="h4"
-          color="primary"
-          className={styles.title}
-        >
-          {contact.title}
-        </Typography>
+      <Paper className={styles.contact} title={contact.title}>
         <List>
           {contact.content.map(text => (
             <ListItem className={styles.listItem}>

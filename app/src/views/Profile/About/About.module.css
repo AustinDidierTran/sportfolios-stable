@@ -6,14 +6,10 @@
   padding: 0px !important;
 }
 
-.title {
-  padding: 8px;
-}
-
 .description {
   grid-area: description;
   text-align: start;
-  padding: 8px;
+  padding: 16px;
 }
 .team {
   grid-area: team;
