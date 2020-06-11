@@ -29,6 +29,7 @@ import Team from '../Team';
 import UserSettings from '../UserSettings';
 import Notifications from '../../views/Notifications';
 import Menu from '../Menu';
+import Stripe from '../../utils/stripe/Payment/index';
 
 // Mocks
 import MockEvent from '../Mocks/Event';
@@ -184,6 +185,7 @@ export default function App() {
                 path={ROUTES.notifications}
                 component={Notifications}
               />
+              <Route exact path={ROUTES.stripe} component={Stripe} />
               <Route path={ROUTES.team} component={Team} />
               <PrivateRoute path={ROUTES.search} component={Search} />
               <PrivateRoute

@@ -1,0 +1,15 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  margin: 16px 16px;
+}
+
+.textfield {
+  flex: 1 1 auto;
+}
+
+.button {
+  flex: 1 1 auto;
+  width: 150px;
+  align-self: center;
+}

@@ -2,6 +2,7 @@ const {
   createAccountLink,
   createExternalAccount,
   getStripeAccountId,
+  createPaymentIntent,
 } = require('../helpers/stripe');
 
 const getAccountLink = async (entity_id, ip) => {
@@ -24,8 +25,14 @@ const getStripeAccount = async entity_id => {
   return accountLink;
 };
 
+const addPaymentIntent = async (body, user_id, ip) => {
+  console.log('addPaymentIntent');
+  return createPaymentIntent(body, user_id, ip);
+};
+
 module.exports = {
   getAccountLink,
   addExternalAccount,
   getStripeAccount,
+  addPaymentIntent,
 };

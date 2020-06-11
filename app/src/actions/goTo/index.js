@@ -18,6 +18,7 @@ export const ROUTES = {
   organizationList: '/organizationList',
   recoveryEmail: '/recoveryEmail/:token',
   search: '/search/:query',
+  stripe: '/stripe',
   signup: '/signup',
   team: '/team',
   userSettings: '/userSettings',

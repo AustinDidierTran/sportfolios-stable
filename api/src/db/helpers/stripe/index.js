@@ -137,9 +137,45 @@ const createExternalAccount = async (body, user_id, ip) => {
   return created;
 };
 
+const createPaymentIntent = async (body, user_id, ip) => {
+  // Create a PaymentIntent:
+  const amount = body.amount;
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: amount,
+    currency: 'cad',
+    //transfer_group: '{ORDER10}',
+    metadata: { integration_check: 'accept_a_payment' },
+  });
+
+  //   // Create a Transfer to the connected account (later):
+  //   const transfer = await stripe.transfers.create({
+  //     amount: 100,
+  //     currency: 'cad',
+  //     destination: 'acct_1Gq1QxH2YSzmxucW',
+  //     transfer_group: '{ORDER10}',
+  //   });
+
+  //   // Create a second Transfer to another connected account (later):
+  //   const secondTransfer = await stripe.transfers.create({
+  //     amount: 100,
+  //     currency: 'cad',
+  //     destination: 'acct_1GrowjKZjxydO8NW',
+  //     transfer_group: '{ORDER10}',
+  //   });
+
+  //   const res = {
+  //     paymentIntent: paymentIntent,
+  //     transfers: [transfer, secondTransfer],
+  //   };
+
+  //   return res;
+  return paymentIntent;
+};
+
 module.exports = {
   createAccountLink,
   createExternalAccount,
   getStripeAccountId,
+  createPaymentIntent,
   stripeEnums,
 };
