@@ -15,6 +15,7 @@ import NextEvents from './NextEvents';
 import Shop from './Shop';
 import About from './About';
 import Settings from './Settings';
+import { goTo, ROUTES } from '../../actions/goTo';
 
 export const TABS_ENUM = {
   GENERAL: 'general',
@@ -79,7 +80,7 @@ export default function Organization(props) {
   const OpenTab = states.find(s => s.value == eventState).component;
 
   const onClick = s => {
-    history.push(`/organization/${id}?tab=${s.value}`);
+    goTo(ROUTES.organization, { id }, { tab: s.value });
     setEventState(s.value);
   };
 
