@@ -17,10 +17,10 @@ import ConfirmEmail from '../ConfirmEmail';
 import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
 import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
 import Entity from '../Entity';
+import EntityNotFound from '../Entity/EntityNotFound';
 import EventView from '../Event';
 import ForgotPassword from '../ForgotPassword';
 import CreateOrganization from '../Entity/Organization/Create';
-import OrganizationNotFound from '../OrganizationNotFound';
 import OrganizationList from '../Main/OrganizationList';
 import PasswordRecovery from '../PasswordRecovery';
 import Search from '../Search';
@@ -170,8 +170,8 @@ export default function App() {
               />
               <Route
                 exact
-                path={ROUTES.organizationNotFound}
-                component={OrganizationNotFound}
+                path={ROUTES.entityNotFound}
+                component={EntityNotFound}
               />
               <Route exact path={ROUTES.signup} component={Signup} />
               <Route

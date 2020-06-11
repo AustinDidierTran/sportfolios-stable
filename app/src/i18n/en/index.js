@@ -26,6 +26,7 @@ export default {
     emails: 'Emails',
     email_confirmed:
       'An email has just been sent to {{email}}. Please, go look at your inbox to confirm your email.',
+    entity_not_found: 'Entity not found',
     event_manager: 'Event Manager',
     events: 'Events',
     events_that_might_interest_you: 'Events that might interest you',
@@ -54,7 +55,6 @@ export default {
     on_going_events: 'On Going Events',
     organization: 'Organization',
     organizations: 'Organizations',
-    organization_not_found: 'Organization not found',
     our_team: 'Our Team',
     password: 'Password',
     pay: 'Pay',

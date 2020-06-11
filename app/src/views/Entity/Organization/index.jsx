@@ -3,8 +3,6 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Tab, Tabs } from '../../../components/MUI';
 import { Container, Paper } from '../../../components/Custom';
 
-import { Store } from '../../../Store';
-import api from '../../../actions/api';
 import styles from './Organization.module.css';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
