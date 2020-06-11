@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
@@ -13,7 +13,7 @@ import { Paper } from '../../../components/Custom';
 import styles from './Schedule.module.css';
 import { useTranslation } from 'react-i18next';
 
-export default function Schedule(props) {
+export default function Schedule() {
   const { t } = useTranslation();
 
   const poolPlay = {

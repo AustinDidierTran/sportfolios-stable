@@ -1,8 +1,4 @@
-const awsv4 = require('aws-signature-v4');
-
 const aws = require('aws-sdk');
-
-let keys;
 
 try {
   keys = require('./keys/aws-keys.json');

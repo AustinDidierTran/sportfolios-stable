@@ -1,7 +1,7 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import styles from './Follow.module.css';
-import { Avatar, Icon, Paper } from '../../../components/Custom';
+import { Avatar, Paper } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { getInitialsFromName } from '../../../utils/stringFormats';
 import history from '../../../stores/history';

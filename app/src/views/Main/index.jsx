@@ -13,7 +13,7 @@ const TABS_ENUM = {
   ORGANIZATIONS: 'organizations',
 };
 
-export default function Main(props) {
+export default function Main() {
   const { t } = useTranslation();
 
   const [eventState, setEventState] = useState(TABS_ENUM.GENERAL);

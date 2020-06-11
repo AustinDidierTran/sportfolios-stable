@@ -33,8 +33,4 @@ i18n.use(LanguageDetector).init({
   },
 });
 
-const changeLanguage = language => {
-  i18n.changeLanguage(language);
-};
-
 export default i18n;

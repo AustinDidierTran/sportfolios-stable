@@ -13,7 +13,7 @@ import api from '../../../actions/api';
 
 import history from '../../../stores/history';
 
-export default function OrganizationList(props) {
+export default function OrganizationList() {
   const { t } = useTranslation();
 
   const [organizations, setOrganizations] = useState([]);

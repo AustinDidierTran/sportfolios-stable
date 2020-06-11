@@ -15,7 +15,7 @@ import { Store } from '../../../Store';
 import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
-export default function ChangePassword(props) {
+export default function ChangePassword() {
   const {
     state: { authToken },
   } = useContext(Store);

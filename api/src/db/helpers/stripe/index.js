@@ -110,16 +110,6 @@ const createExternalAccount = async (body, user_id, ip) => {
       account_number: body.account_number,
     },
   };
-  const tempParams = {
-    bank_account: {
-      country: 'US',
-      currency: 'usd',
-      account_holder_name: 'Jenny Rosen',
-      account_holder_type: 'individual',
-      routing_number: '110000000',
-      account_number: '000123456789',
-    },
-  };
   stripe.tokens.create(params, async (err, token) => {
     if (token) {
       console.log('Account Token Created', token.id);

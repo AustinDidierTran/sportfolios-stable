@@ -21,7 +21,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ManageRoles(props) {
+export default function ManageRoles() {
   const { t } = useTranslation();
 
   const { id } = useParams();

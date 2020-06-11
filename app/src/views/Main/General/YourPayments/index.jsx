@@ -1,12 +1,9 @@
 import React from 'react';
 
-import { goTo, ROUTES } from '../../../../actions/goTo';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import styles from './YourPayments.module.css';
 import {
   Typography,
-  ListItem,
   Button,
   Container,
 } from '../../../../components/MUI';

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import styles from './Shop.module.css';
 
 import { Container } from '../../../components/MUI';
 import Item from './Item';
 
-export default function Shop(props) {
+export default function Shop() {
   const items = [
     {
       name: 'Disque Blanc',

@@ -1,36 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './Funding.module.css';
-import {
-  Typography,
-  IconButton,
-  Container,
-} from '../../../../../components/MUI';
+import { Typography, Container } from '../../../../../components/MUI';
 import { Button, Paper } from '../../../../../components/Custom';
 
 import LinearProgress from '@material-ui/core/LinearProgress';
 import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
-import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
 
 export default function Funding(props) {
   const { isSelf, description, name, goal, reach } = props;
   const { t } = useTranslation();
 
-  const [editMode, setEditMode] = useState(false);
-
-  const [expanded, setExpanded] = useState(false);
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded);
-  };
-
   const onEdit = () => {
-    setEditMode(true);
+    alert('Edit');
   };
 
   const onFunding = () => {

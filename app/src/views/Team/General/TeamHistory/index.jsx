@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './TeamHistory.module.css';
@@ -12,9 +12,8 @@ import { Paper } from '../../../../components/Custom';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import EmojiEvents from '@material-ui/icons/EmojiEvents';
-import { FormHelperText } from '@material-ui/core';
 
-export default function AthleteHistory(props) {
+export default function AthleteHistory() {
   const { t } = useTranslation();
 
   const data = [

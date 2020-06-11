@@ -1,8 +1,6 @@
 import React from 'react';
 
-import { goTo, ROUTES } from '../../../../actions/goTo';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import styles from './YourEventsCard.module.css';
 import Register from '../../../Entity/NextEvents/Register';
 import Results from '../../../Entity/NextEvents/Results';

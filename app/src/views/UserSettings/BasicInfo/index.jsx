@@ -71,7 +71,7 @@ export default function BasicInfo() {
   });
 
   const setBasicInfoValues = async () => {
-    const { status, data } = await api('/api/user/userInfo');
+    const { data } = await api('/api/user/userInfo');
 
     formik.setValues({
       firstName: data.first_name,

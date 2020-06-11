@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 const { CLIENT_BASE_URL } = require('../../../../conf');
-const fs = require('fs');
 
 let key;
 

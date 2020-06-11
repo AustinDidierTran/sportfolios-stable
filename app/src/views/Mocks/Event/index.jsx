@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 
-import {
-  Container,
-  Typography,
-  Button,
-} from '../../../components/MUI';
+import { Container, Typography } from '../../../components/MUI';
 import { Paper } from '../../../components/Custom';
 
 import Tabs from '@material-ui/core/Tabs';
@@ -70,7 +66,7 @@ export default function Event(props) {
             className={styles.tabs}
             centered
           >
-            {states.map((s, index) => (
+            {states.map(s => (
               <Tab
                 label={s.label}
                 onClick={() => setEventState(s.value)}
