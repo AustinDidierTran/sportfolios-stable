@@ -79,6 +79,7 @@ router.put(`${BASE_URL}`, async ctx => {
   try {
     const organization = await queries.updateOrganization(
       ctx.request.body,
+      ctx.body.userInfo.id,
     );
     if (organization) {
       ctx.status = 200;

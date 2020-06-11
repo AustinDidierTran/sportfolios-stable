@@ -1,4 +1,5 @@
 const knex = require('../connection');
+const { ENTITIES_ROLE_ENUM } = require('../../server/enums');
 const moment = require('moment');
 const { signS3Request } = require('../../server/utils/aws');
 
@@ -22,17 +23,26 @@ async function getAllTypeEntities(id) {
   return getAllTypeEntitiesHelper(id);
 }
 
-async function updateEntity(body) {
+async function updateEntity(body, user_id) {
   const { id, name, photo_url } = body;
 
-  if (name) {
-    await updateEntityNameHelper(id, name);
+  const [{ role }] = await knex('entities_role')
+    .select(['role'])
+    .where({ entity_id: id, user_id });
+
+  if (
+    role == ENTITIES_ROLE_ENUM.ADMIN ||
+    role == ENTITIES_ROLE_ENUM.EDITOR
+  ) {
+    if (name) {
+      await updateEntityNameHelper(id, name);
+    }
+    if (photo_url) {
+      console.log('ALLLO');
+      await updateEntityPhotoHelper(id, photo_url);
+    }
+    return { id, name, photo_url };
   }
-  if (photo_url) {
-    console.log('ALLLO');
-    await updateEntityPhotoHelper(id, photo_url);
-  }
-  return { id, name, photo_url };
 }
 
 async function getS3Signature(userId, { fileType }) {
