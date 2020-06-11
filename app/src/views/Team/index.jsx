@@ -67,7 +67,7 @@ export default function Team(props) {
       value: TABS_ENUM.SHOP,
       component: Shop,
       label: t('shop'),
-      icon: 'ShoppingCart',
+      icon: 'Store',
     },
   ];
 

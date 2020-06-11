@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Tab from '@material-ui/core/Tab';
 import { Icon } from '../../Custom';
 
-import ShoppingCart from '@material-ui/icons/ShoppingCart';
-
 export default function CustomTab(props) {
   const { icon, label, onClick } = props;
   const [displayText, setDisplayText] = useState(false);

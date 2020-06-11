@@ -1,30 +1,30 @@
 import React from 'react';
 
-import { goTo, ROUTES } from '../../../actions/goTo';
+import { goTo, ROUTES } from '../../../../actions/goTo';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import styles from './YourEventsCard.module.css';
-import Register from '../../Organization/NextEvents/Register';
-import Results from '../../Organization/NextEvents/Results';
-import Schedule from '../../Organization/NextEvents/Schedule';
-import { Avatar, Paper } from '../../../components/Custom';
+import styles from './OnGoingEvents.module.css';
+import Register from '../../../Organization/NextEvents/Register';
+import Results from '../../../Organization/NextEvents/Results';
+import Schedule from '../../../Organization/NextEvents/Schedule';
+import { Avatar, Paper } from '../../../../components/Custom';
 import {
   Typography,
   ListItem,
   ListItemIcon,
   Container,
-} from '../../../components/MUI';
-import { List } from '../../../components/Custom';
-import history from '../../../stores/history';
-import { EVENT_STATUS_ENUM } from '../../Organization/NextEvents';
+} from '../../../../components/MUI';
+import { List } from '../../../../components/Custom';
+import history from '../../../../stores/history';
+import { EVENT_STATUS_ENUM } from '../../../Organization/NextEvents';
 
-export default function YourEventsCard(props) {
+export default function OnGoingEvents(props) {
   const { t } = useTranslation();
 
   const { events } = props;
 
   return (
-    <Paper className={styles.card} title={t('your_upcoming_events')}>
+    <Paper className={styles.card} title={t('on_going_events')}>
       <List
         items={events}
         rowRenderer={(event, index) => (

@@ -4,6 +4,7 @@ import Add from '@material-ui/icons/Add';
 import AddAPhoto from '@material-ui/icons/AddAPhoto';
 import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import AttachMoney from '@material-ui/icons/AttachMoney';
+import Business from '@material-ui/icons/Business';
 import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
 import Delete from '@material-ui/icons/Delete';
@@ -23,6 +24,7 @@ import RemoveShoppingCart from '@material-ui/icons/RemoveShoppingCart';
 import Search from '@material-ui/icons/Search';
 import Settings from '@material-ui/icons/Settings';
 import ShoppingCart from '@material-ui/icons/ShoppingCart';
+import Store from '@material-ui/icons/Store';
 import Menu from '@material-ui/icons/Menu';
 
 const icons = {
@@ -30,6 +32,7 @@ const icons = {
   AddAPhoto,
   AddShoppingCart,
   AttachMoney,
+  Business,
   Check,
   Close,
   Delete,
@@ -49,6 +52,7 @@ const icons = {
   Search,
   Settings,
   ShoppingCart,
+  Store,
   Menu,
 };
 

@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-import { Avatar, Paper } from '../../../components/Custom';
+import { Avatar, Paper } from '../../../../components/Custom';
 
 import {
   List,
@@ -24,8 +24,8 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-} from '../../../components/MUI';
-import { goTo, ROUTES } from '../../../actions/goTo';
+} from '../../../../components/MUI';
+import { goTo, ROUTES } from '../../../../actions/goTo';
 
 export default function FollowingUsersCard(props) {
   const { t } = useTranslation();

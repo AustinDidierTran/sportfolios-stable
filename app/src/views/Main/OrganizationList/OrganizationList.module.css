@@ -1,6 +1,8 @@
 .card {
+  padding-top: 16px;
   text-align: center;
   margin-bottom: 16px !important;
+  width: 100%;
 }
 
 .title {

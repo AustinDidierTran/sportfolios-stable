@@ -8,8 +8,6 @@ import General from './General';
 import Shop from './Shop';
 import About from './About';
 import api from '../../actions/api';
-import { CLIENT_BASE_URL } from '../../../../conf';
-import { Link } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';
 import { Button } from '@material-ui/core';
@@ -71,7 +69,7 @@ export default function Profile(props) {
       value: TABS_ENUM.SHOP,
       component: <Shop />,
       label: t('shop'),
-      icon: 'ShoppingCart',
+      icon: 'Store',
     },
   ];
 

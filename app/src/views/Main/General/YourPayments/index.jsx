@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { goTo, ROUTES } from '../../../actions/goTo';
+import { goTo, ROUTES } from '../../../../actions/goTo';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import styles from './YourPayments.module.css';
@@ -9,8 +9,8 @@ import {
   ListItem,
   Button,
   Container,
-} from '../../../components/MUI';
-import { Paper } from '../../../components/Custom';
+} from '../../../../components/MUI';
+import { Paper } from '../../../../components/Custom';
 
 export default function YourPayments(props) {
   const { t } = useTranslation();

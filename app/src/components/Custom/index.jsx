@@ -8,4 +8,5 @@ export { default as IconButton } from './IconButton';
 export { default as Input } from './Input';
 export { default as List } from './List';
 export { default as SearchInput } from './SearchInput';
+export { default as Stepper } from './Stepper';
 export { default as Table } from './Table';
