@@ -22,7 +22,7 @@ import Organization from '../Organization';
 import OrganizationSettings from '../Organization/Settings';
 import CreateOrganization from '../Organization/Create';
 import OrganizationNotFound from '../OrganizationNotFound';
-import OrganizationList from '../OrganizationList';
+import OrganizationList from '../Main/OrganizationList';
 import PasswordRecovery from '../PasswordRecovery';
 import Profile from '../Profile';
 import Search from '../Search';

@@ -1,101 +1,52 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useState } from 'react';
+
+import General from './General';
+import OrganizationList from './OrganizationList';
+import { Container, Tab, Tabs } from '../../components/MUI';
 
 import styles from './Main.module.css';
+import { Paper } from '../../components/Custom';
 
-import { Container } from '../../components/Custom';
+const TABS_ENUM = {
+  GENERAL: 'general',
+  ORGANIZATIONS: 'organizations',
+};
 
-import { useAllMainInformations } from '../../actions/api/helpers';
-
-import { useTranslation } from 'react-i18next';
-import FollowingUsersCard from './FollowingUsersCard/index';
-import YourEventsCard from './YourEventsCard';
-import EventsOfInterest from './EventsOfInterest';
-import YourPayments from './YourPayments';
-import { EVENT_STATUS_ENUM } from '../Organization/NextEvents';
-import OnGoingEvents from './OnGoingEvents';
-
-export default function Main() {
-  const { users } = useAllMainInformations();
-
-  const { t } = useTranslation();
-
-  const yourEvents = [
+export default function Main(props) {
+  const [eventState, setEventState] = useState(TABS_ENUM.GENERAL);
+  const states = [
     {
-      name: 'Comedy of Errors',
-      initial: 'CE',
-      date: '19 Juin',
-      circuit: 'CQU7',
-      place: 'Montréal',
-      type: EVENT_STATUS_ENUM.ONGOING,
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      value: TABS_ENUM.GENERAL,
+      component: <General />,
+      label: 'General',
+      icon: 'Folder',
     },
     {
-      name: 'Qualification CUC ',
-      initial: 'Q',
-      date: '4 Juillet',
-      circuit: 'CQU7',
-      place: 'Shawinigan',
-      type: EVENT_STATUS_ENUM.ONGOING,
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    },
-    {
-      name: 'Finale Provinciale',
-      initial: 'FP',
-      date: '23 Aout',
-      circuit: 'CQU7',
-      place: 'Laval',
-      type: EVENT_STATUS_ENUM.ONGOING,
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      value: TABS_ENUM.ORGANIZATIONS,
+      component: <OrganizationList />,
+      label: 'Organization',
+      icon: 'Business',
     },
   ];
+  const OpenTab = states.find(s => s.value == eventState).component;
 
-  const eventsOfInterest = [
-    {
-      name: 'Jazz',
-      initial: 'JZ',
-      date: '30 Juin',
-      circuit: 'CQU7',
-      place: 'Montréal',
-      type: EVENT_STATUS_ENUM.REGISTRATION,
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    },
+  return [
+    <Paper>
+      <Tabs
+        indicatorColor="primary"
+        textColor="primary"
+        value={states.findIndex(s => s.value === eventState)}
+      >
+        {states.map((s, index) => (
+          <Tab
+            key={index}
+            label={s.label}
+            icon={s.icon}
+            onClick={() => setEventState(s.value)}
+          />
+        ))}
+      </Tabs>
+    </Paper>,
+    <Container className={styles.container}>{OpenTab}</Container>,
   ];
-
-  const onGoingEvents = [
-    {
-      name: 'FrisbeeFest',
-      initial: 'FF',
-      date: '30 Mai',
-      circuit: 'CQU7',
-      place: 'Trois-Rivières',
-      type: EVENT_STATUS_ENUM.ONGOING,
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    },
-  ];
-
-  const payments = [
-    {
-      title: 'Primavera',
-      subtitle: t('tournament_fee'),
-      price: '30$',
-    },
-    {
-      title: 'Frisbee Fest',
-      subtitle: t('tournament_fee'),
-      price: '25$',
-    },
-  ];
-
-  return (
-    <Container className={styles.container}>
-      <YourPayments payments={payments} />
-      <OnGoingEvents events={onGoingEvents} />
-      <YourEventsCard events={yourEvents} />
-    </Container>
-  );
 }

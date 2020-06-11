@@ -1,0 +1,15 @@
+.main {
+  text-align: center;
+  display: grid !important;
+  grid-template-columns: 1fr;
+  grid-template-areas: 'yourPayments' 'onGoingEvents' 'yourEvents';
+  row-gap: 16px;
+}
+
+@media (min-width: 600px) {
+  .main {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 'yourPayments yourPayments' 'onGoingEvents yourEvents';
+    column-gap: 16px;
+  }
+}

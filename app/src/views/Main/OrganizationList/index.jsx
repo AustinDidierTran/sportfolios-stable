@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './OrganizationList.module.css';
-import { Avatar, Paper, List, Button } from '../../components/Custom';
-import { Typography } from '../../components/MUI';
-import { goTo, ROUTES } from '../../actions/goTo';
-import api from '../../actions/api';
+import {
+  Avatar,
+  Paper,
+  List,
+  Button,
+} from '../../../components/Custom';
+import { Typography } from '../../../components/MUI';
+import { goTo, ROUTES } from '../../../actions/goTo';
+import api from '../../../actions/api';
 
-import history from '../../stores/history';
+import history from '../../../stores/history';
 
 export default function OrganizationList(props) {
   const { t } = useTranslation();
@@ -27,10 +32,10 @@ export default function OrganizationList(props) {
   };
 
   return (
-    <Paper className={styles.card}>
-      <Typography variant="h3" className={styles.title}>
-        {t('organizations')}
-      </Typography>
+    <Paper
+      childrenProps={{ className: styles.card }}
+      title={t('organizations')}
+    >
       <Button onClick={handleClick} className={styles.button}>
         {t('create_organization')}
       </Button>
