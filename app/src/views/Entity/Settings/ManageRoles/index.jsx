@@ -33,7 +33,7 @@ export default function ManageRoles() {
     updateEntities();
   }, []);
 
-  const [role, setRole] = useState(null);
+  const [role] = useState(null);
 
   console.log({ entities });
 
