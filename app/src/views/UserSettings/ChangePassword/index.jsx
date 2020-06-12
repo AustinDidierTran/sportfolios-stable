@@ -1,13 +1,7 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-import {
-  Button,
-  CardContent,
-  TextField,
-  CardActions,
-  Typography,
-} from '../../../components/MUI';
+import { Button, TextField } from '../../../components/MUI';
 import { Paper } from '../../../components/Custom';
 import styles from './ChangePassword.module.css';
 
@@ -84,12 +78,13 @@ export default function ChangePassword() {
   });
 
   return (
-    <Paper className={styles.card}>
+    <Paper
+      className={styles.card}
+      title={t('change_password')}
+      childrenProps={{ className: styles.cardContent }}
+    >
       <form onSubmit={formik.handleSubmit} className={styles.form}>
-        <CardContent className={styles.inputs}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {t('change_password')}
-          </Typography>
+        <div className={styles.inputs}>
           <TextField
             formik={formik}
             namespace="oldPassword"
@@ -111,8 +106,8 @@ export default function ChangePassword() {
             type="password"
             fullWidth
           />
-        </CardContent>
-        <CardActions className={styles.buttons}>
+        </div>
+        <div className={styles.buttons}>
           <Button
             size="small"
             color="primary"
@@ -122,7 +117,7 @@ export default function ChangePassword() {
           >
             {t('change_password')}
           </Button>
-        </CardActions>
+        </div>
       </form>
     </Paper>
   );

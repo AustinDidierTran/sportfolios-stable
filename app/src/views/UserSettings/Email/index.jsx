@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CardContent, Typography } from '../../../components/MUI';
+import { CardContent } from '../../../components/MUI';
 import { Paper } from '../../../components/Custom';
 import styles from './Email.module.css';
 import ConfirmedEmailField from './ConfirmedEmailField';
@@ -29,11 +29,8 @@ export default function Email() {
   );
 
   return (
-    <Paper className={styles.card}>
+    <Paper className={styles.card} title={t('emails')}>
       <CardContent>
-        <Typography gutterBottom variant="h5" component="h2">
-          {t('emails')}
-        </Typography>
         {confirmedEmails.map(email => (
           <ConfirmedEmailField
             email={email}

@@ -8,7 +8,6 @@ import {
   TextField,
   CardActions,
   Select,
-  Typography,
 } from '../../../components/MUI';
 import { Paper } from '../../../components/Custom';
 import styles from './BasicInfo.module.css';
@@ -91,12 +90,9 @@ export default function BasicInfo() {
   }, [formik.values.language]);
 
   return (
-    <Paper className={styles.card}>
+    <Paper className={styles.card} title={t('basic_info')}>
       <form className={styles.form} onSubmit={formik.handleSubmit}>
         <CardContent className={styles.inputs}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {t('basic_info')}
-          </Typography>
           <TextField
             namespace="firstName"
             formik={formik}
