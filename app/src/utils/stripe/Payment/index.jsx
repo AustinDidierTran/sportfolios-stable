@@ -13,11 +13,9 @@ const stripePromise = loadStripe(
 
 const App = () => {
   return (
-    <div>
-      <Elements stripe={stripePromise}>
-        <CheckoutForm />
-      </Elements>
-    </div>
+    <Elements stripe={stripePromise}>
+      <CheckoutForm />
+    </Elements>
   );
 };
 

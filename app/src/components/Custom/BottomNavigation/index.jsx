@@ -29,7 +29,7 @@ export default function CustomBottomNavigation() {
   const routeEnum = {
     [TABS_ENUM.HOME]: [ROUTES.home],
     [TABS_ENUM.PROFILE]: [
-      ROUTES.profile,
+      ROUTES.entity,
       { id: userInfo && userInfo.user_id },
     ],
     [TABS_ENUM.NOTIFICATIONS]: [ROUTES.notifications],

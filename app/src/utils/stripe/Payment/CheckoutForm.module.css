@@ -1,15 +1,20 @@
 .main {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-template-areas: 'name name .' 'amount amount .' 'card card card' '. button .';
+
   margin: 16px 16px;
 }
 
-.textfield {
-  flex: 1 1 auto;
+.name {
+  grid-area: name;
+}
+
+.amount {
+  grid-area: amount;
 }
 
 .button {
-  flex: 1 1 auto;
-  width: 150px;
-  align-self: center;
+  grid-area: button;
 }

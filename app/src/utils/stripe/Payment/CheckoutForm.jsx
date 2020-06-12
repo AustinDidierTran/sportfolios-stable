@@ -63,13 +63,13 @@ export default function CheckoutForm() {
   return (
     <form onSubmit={handleSubmit}>
       <div className={styles.main}>
-        <div className={styles.textfield}>
+        <div className={styles.name}>
           <TextField {...name.inputProps} placeholder="Name" />
         </div>
-        <div className={styles.textfield}>
+        <div className={styles.amount}>
           <TextField {...amount.inputProps} placeholder="Amount" />
         </div>
-        <CardSection />
+        <CardSection className={styles.card} />
         <Button
           disabled={!stripe}
           className={styles.button}

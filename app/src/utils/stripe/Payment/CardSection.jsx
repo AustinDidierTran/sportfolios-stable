@@ -22,7 +22,7 @@ const CARD_ELEMENT_OPTIONS = {
 
 function CardSection() {
   return (
-    <div className={styles.main}>
+    <div className={styles.card}>
       <CardElement
         className={styles.StripeElement}
         options={CARD_ELEMENT_OPTIONS}

@@ -55,7 +55,7 @@ export default function FollowNotification(props) {
       });
     }
     closeNotificationModule();
-    goTo(ROUTES.profile, { id: follower });
+    goTo(ROUTES.entity, { id: follower });
   };
 
   return (
