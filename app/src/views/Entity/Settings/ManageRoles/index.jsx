@@ -33,17 +33,33 @@ export default function ManageRoles() {
     updateEntities();
   }, []);
 
-  const [role] = useState(null);
+  const updateRole = async (entity_id_admin, role) => {
+    await api(`/api/entity/role`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        entity_id: id,
+        entity_id_admin,
+        role,
+      }),
+    });
+  };
+
+  const handleChange = async (event, entity_id_admin) => {
+    await updateRole(entity_id_admin, event.target.value);
+    await updateEntities();
+  };
 
   return (
-    <Paper className={styles.card} title={t('admins')}>
-      <List disablePadding>
-        {entities.map(entity => (
+    <Paper title={t('admins')}>
+      <List disablePadding className={styles.list}>
+        {entities.map((entity, index) => [
           <ListItem
+            key={`l${index}`}
             button
             onClick={() =>
               goTo(ROUTES.entity, { id: entity.entity_id_admin })
             }
+            className={styles.item}
           >
             <ListItemIcon>
               <Avatar photoUrl={entity.photo_url} />
@@ -51,21 +67,25 @@ export default function ManageRoles() {
             <Typography className={styles.textField}>
               {entity.name}
             </Typography>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={role}
-            >
-              <MenuItem value={ENTITIES_ROLE_ENUM.ADMIN}>
-                Admin
-              </MenuItem>
-              <MenuItem value={ENTITIES_ROLE_ENUM.EDITOR}>
-                Editor
-              </MenuItem>
-              <MenuItem value={null}>None</MenuItem>
-            </Select>
-          </ListItem>
-        ))}
+          </ListItem>,
+          <Select
+            key={`s${index}`}
+            value={entity.role}
+            labelId="Role"
+            onChange={e => handleChange(e, entity.entity_id_admin)}
+            className={styles.select}
+          >
+            <MenuItem value={ENTITIES_ROLE_ENUM.ADMIN}>
+              Admin
+            </MenuItem>
+            <MenuItem value={ENTITIES_ROLE_ENUM.EDITOR}>
+              {t('editor')}
+            </MenuItem>
+            <MenuItem value={ENTITIES_ROLE_ENUM.VIEWER}>
+              {t('viewer')}
+            </MenuItem>
+          </Select>,
+        ])}
       </List>
     </Paper>
   );

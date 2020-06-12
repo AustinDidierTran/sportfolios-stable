@@ -6,10 +6,14 @@ const {
   getAllEntities: getAllEntitiesHelper,
   getEntity: getEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
+  getAllRolesEntity: getAllRolesEntityHelper,
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
   getUsersAuthorization: getUsersAuthorizationHelper,
+  updateEntityRole: updateEntityRoleHelper,
+  addEntityRole: addEntityRoleHelper,
+  updateEntity: updateEntityHelper,
 } = require('../helpers/entity');
 
 async function getEntity(id, user_id) {
@@ -61,12 +65,31 @@ async function getS3Signature(userId, { fileType }) {
 
   return { code: 200, data };
 }
+
+async function updateEntityRole(body) {
+  const { entity_id, entity_id_admin, role } = body;
+  return updateEntityRoleHelper(entity_id, entity_id_admin, role);
+}
+
+async function updateEntity(body, user_id) {
+  const { id, name, photo_url } = body;
+
+  return await updateEntityHelper(id, name, photo_url, user_id);
+}
+
+async function addEntityRole(body) {
+  const { entity_id, entity_id_admin, role } = body;
+  await addEntityRoleHelper(entity_id, entity_id_admin, role);
+}
+
 module.exports = {
   addEntity,
+  getEntity,
   getAllEntities,
   getAllTypeEntities,
-  getEntity,
+  getAllRolesEntity,
   getS3Signature,
   updateEntity,
-  getAllRolesEntity,
+  updateEntityRole,
+  addEntityRole,
 };

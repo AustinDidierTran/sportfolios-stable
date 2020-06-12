@@ -1,4 +1,5 @@
 const knex = require('../connection');
+const { ENTITIES_ROLE_ENUM } = require('../../server/enums');
 
 const {
   ENTITIES_ROLE_ENUM,
@@ -112,7 +113,7 @@ async function getAllEntities(params) {
 
 async function getAllTypeEntities(type) {
   return knex('entities')
-    .select('id', 'type', 'name', 'surname', 'photo_url')
+    .select('id', 'type', 'name', 'photo_url')
     .leftJoin(
       'entities_name',
       'entities.id',
@@ -129,8 +130,8 @@ async function getAllTypeEntities(type) {
 }
 
 async function getAllRolesEntity(entity_id) {
-  return await knex('entities_role')
-    .select('entity_id_admin', 'role', 'name', 'surname', 'photo_url')
+  return knex('entities_role')
+    .select('entity_id_admin', 'role', 'name', 'photo_url')
     .leftJoin(
       'entities_name',
       'entities_role.entity_id_admin',
@@ -148,7 +149,7 @@ async function getAllRolesEntity(entity_id) {
 
 async function getEntity(id, user_id) {
   const [entity] = await knex('entities')
-    .select('id', 'type', 'name', 'surname', 'photo_url')
+    .select('id', 'type', 'name', 'photo_url')
     .leftJoin(
       'entities_name',
       'entities.id',
@@ -191,50 +192,63 @@ async function getEntity(id, user_id) {
   return { ...entity, role };
 }
 
-async function updateEntityName(entity_id, name, surname) {
-  const update = {};
-  if (name) {
-    update.name = name;
+async function updateEntity(id, name, photo_url, user_id) {
+  const [{ role } = {}] = await knex('entities_role')
+    .select(['role'])
+    .where({ entity_id: id, user_id });
+
+  if (
+    [ENTITIES_ROLE_ENUM.ADMIN, ENTITIES_ROLE_ENUM.EDITOR].includes(
+      role,
+    )
+  ) {
+    if (name) {
+      await updateEntityNameHelper(id, name);
+    }
+    if (photo_url) {
+      await updateEntityPhotoHelper(id, photo_url);
+    }
+    return { id, name, photo_url };
   }
-  if (surname) {
-    update.surname = surname;
-  }
-  return await knex('entities_name')
-    .update(update)
+}
+
+async function updateEntityRole(entity_id, entity_id_admin, role) {
+  const [entity] = await knex('entities_role')
+    .update({ role })
+    .where({ entity_id, entity_id_admin })
+    .returning(['role']);
+  return entity;
+}
+
+async function updateEntityName(entity_id, name) {
+  return knex('entities_name')
+    .update({ name })
     .where({ entity_id })
-    .returning(['entity_id', 'name', 'surname']);
+    .returning(['entity_id', 'name']);
 }
 
 async function updateEntityPhoto(entity_id, photo_url) {
-  return await knex('entities_photo')
+  return knex('entities_photo')
     .update({ photo_url })
     .where({ entity_id })
     .returning(['entity_id', 'photo_url']);
 }
 
-async function getUsersAuthorization(id) {
-  const res = await knex('user_entity_role')
-    .select(['user_id'])
-    .leftJoin(
-      'entities_role',
-      'user_entity_role.entity_id',
-      '=',
-      'entities_role.entity_id_admin',
-    )
-    .where('entities_role.entity_id', id);
-
-  const userId = res.map(res => res.user_id);
-
-  return userId;
+async function addEntityRole(entity_id, entity_id_admin, role) {
+  return knex('entities_role')
+    .insert({ entity_id, entity_id_admin, role })
+    .returning(['entity_id', 'entity_id_admin', 'role']);
 }
 
 module.exports = {
   addEntity,
+  getEntity,
   getAllEntities,
   getAllTypeEntities,
-  getEntity,
+  getAllRolesEntity,
+  updateEntity,
   updateEntityName,
   updateEntityPhoto,
-  getAllRolesEntity,
-  getUsersAuthorization,
+  updateEntityRole,
+  addEntityRole,
 };

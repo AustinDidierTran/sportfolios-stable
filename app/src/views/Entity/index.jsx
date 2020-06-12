@@ -28,7 +28,7 @@ export default function Entity() {
 
   useEffect(() => {
     updateBasicInfos();
-  }, []);
+  }, [id]);
 
   return basicInfos ? (
     basicInfos.type === ENTITIES_TYPE_ENUM.PERSON ? (

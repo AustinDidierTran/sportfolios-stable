@@ -53,6 +53,7 @@ export const ENTITIES_TYPE_ENUM = {
 export const ENTITIES_ROLE_ENUM = {
   ADMIN: 1,
   EDITOR: 2,
+  VIEWER: 3,
 };
 
 function reducer(state, action) {

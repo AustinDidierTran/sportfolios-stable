@@ -167,4 +167,54 @@ router.put(`${BASE_URL}`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/role`, async ctx => {
+  try {
+    const entity = await queries.updateEntityRole(ctx.request.body);
+    if (entity) {
+      ctx.status = 200;
+      ctx.body = {
+        status: 'success',
+        data: entity,
+      };
+    } else {
+      ctx.status = 404;
+      ctx.body = {
+        status: 'error',
+        message: 'That entity does not exist.',
+      };
+    }
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/role`, async ctx => {
+  try {
+    const entity = await queries.addEntityRole(ctx.request.body);
+    if (entity) {
+      ctx.status = 201;
+      ctx.body = {
+        status: 'success',
+        data: entity,
+      };
+    } else {
+      ctx.status = 404;
+      ctx.body = {
+        status: 'error',
+        message: 'Something went wrong',
+      };
+    }
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
 module.exports = router;
