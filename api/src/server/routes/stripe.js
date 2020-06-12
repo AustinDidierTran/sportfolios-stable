@@ -45,8 +45,28 @@ router.post(`${BASE_URL}/externalAccount`, async ctx => {
 
 router.get(`${BASE_URL}/getStripeAccountId`, async ctx => {
   try {
-    const data = await queries.getStripeAccount(
+    const data = await queries.getAccountLink(
       ctx.query.id,
+      ctx.request.ip,
+    );
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/paymentIntent`, async ctx => {
+  try {
+    const data = await queries.addPaymentIntent(
+      ctx.request.body,
+      ctx.body.userInfo.id,
       ctx.request.ip,
     );
     ctx.body = {

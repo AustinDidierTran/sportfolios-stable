@@ -62,7 +62,7 @@ export default function UserSearch(props) {
             <ListItem
               button
               onClick={() =>
-                goTo(ROUTES.profile, { id: user.user_id })
+                goTo(ROUTES.entity, { id: user.user_id })
               }
               key={fullName(user)}
             >

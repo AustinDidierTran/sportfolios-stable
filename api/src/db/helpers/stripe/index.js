@@ -85,7 +85,7 @@ const createAccountLink = async props => {
   const params = {
     account: accountId,
     failure_url: `${CLIENT_BASE_URL}/profile`,
-    success_url: `${CLIENT_BASE_URL}/organization/${entity_id}/?tab=settings`,
+    success_url: `${CLIENT_BASE_URL}/${entity_id}?tab=settings`,
     type: 'custom_account_verification',
     collect: 'eventually_due',
   };
@@ -137,9 +137,23 @@ const createExternalAccount = async (body, user_id, ip) => {
   return created;
 };
 
+const createPaymentIntent = async (body, user_id, ip) => {
+  // Create a PaymentIntent:
+  const amount = body.amount;
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: amount,
+    currency: 'cad',
+    //transfer_group: '{ORDER10}',
+    metadata: { integration_check: 'accept_a_payment' },
+  });
+
+  return paymentIntent;
+};
+
 module.exports = {
   createAccountLink,
   createExternalAccount,
   getStripeAccountId,
+  createPaymentIntent,
   stripeEnums,
 };
