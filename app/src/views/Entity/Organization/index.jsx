@@ -28,7 +28,9 @@ export default function Organization(props) {
   const { id } = useParams();
   const query = useQuery();
 
-  const isManager = id === id; //Need query to identify users that are managers
+  const [isEditor, setIsEditor] = useState(1);
+
+  //setIsEditor(1); //Need query to identify users that are managers
 
   const [eventState, setEventState] = useState(
     query.tab || TABS_ENUM.GENERAL,
@@ -72,7 +74,7 @@ export default function Organization(props) {
     <Container className={styles.container}>
       <Paper className={styles.card}>
         <Container className={styles.title}>
-          <BasicInfos basicInfos={basicInfos} isManager={isManager} />
+          <BasicInfos basicInfos={basicInfos} isEditor={isEditor} />
         </Container>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}

@@ -29,7 +29,7 @@ export default function BasicInfos(props) {
     },
   } = props;
 
-  const { isManager } = props;
+  const { isEditor } = props;
 
   const [photo_url, setPhoto_url] = useState(initialPhoto_url);
 
@@ -152,7 +152,7 @@ export default function BasicInfos(props) {
       ) : (
         <></>
       )}
-      {isManager ? (
+      {isEditor ? (
         isEditMode ? (
           <Container className={styles.buttons}>
             <Button
