@@ -26,7 +26,6 @@ const getStripeAccount = async entity_id => {
 };
 
 const addPaymentIntent = async (body, user_id, ip) => {
-  console.log('addPaymentIntent');
   return createPaymentIntent(body, user_id, ip);
 };
 

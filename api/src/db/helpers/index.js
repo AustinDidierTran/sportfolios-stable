@@ -216,8 +216,6 @@ const validateEmailIsUnique = async email => {
 const sendNewConfirmationEmailAllIncluded = async email => {
   const confirmationEmailToken = generateToken();
 
-  console.log('confirmationEmailToken', confirmationEmailToken);
-
   await createConfirmationEmailToken({
     email,
     token: confirmationEmailToken,

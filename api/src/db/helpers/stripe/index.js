@@ -139,7 +139,7 @@ const createExternalAccount = async (body, user_id, ip) => {
   return created;
 };
 
-const createPaymentIntent = async (body, user_id, ip) => {
+const createPaymentIntent = async (body /* user_id, ip */) => {
   // Create a PaymentIntent:
   const amount = body.amount;
   const paymentIntent = await stripe.paymentIntents.create({
