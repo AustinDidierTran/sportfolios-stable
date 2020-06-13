@@ -13,6 +13,8 @@ import api from '../../../actions/api';
 
 import history from '../../../stores/history';
 
+import { ENTITIES_TYPE_ENUM } from '../../../../../common/enums';
+
 export default function OrganizationList() {
   const { t } = useTranslation();
 
@@ -45,6 +47,7 @@ export default function OrganizationList() {
           value: org.name,
           onClick: () => goTo(ROUTES.entity, { id: org.id }),
           iconComponent: <Avatar photoUrl={org.photo_url} />,
+          type: ENTITIES_TYPE_ENUM.ORGANIZATION,
         }))}
       />
     </Paper>

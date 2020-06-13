@@ -61,9 +61,7 @@ export default function UserSearch(props) {
           users.map(user => (
             <ListItem
               button
-              onClick={() =>
-                goTo(ROUTES.entity, { id: user.user_id })
-              }
+              onClick={() => goTo(ROUTES.entity, { id: user.id })}
               key={fullName(user)}
             >
               <ListItemIcon className={styles.icon}>

@@ -6,6 +6,7 @@ let key;
 try {
   key = require('./keys/google-keys.json');
 } catch (e) {
+  /* eslint-disable-next-line */
   console.log(
     `There is an error, keys are probably simply not configured: ${e}`,
   );
@@ -16,6 +17,7 @@ const YOUR_EMAIL_ADDRESS = 'info@sportfolios.app';
 // Do not export this function. Create your own who uses it, then export this one
 async function sendMail({ email, subject, text }) {
   if (!key) {
+    /* eslint-disable-next-line */
     console.log(
       `Google keys are not configured, aborting mail fire. Here was the email content: \n\n ${text}`,
     );
@@ -41,6 +43,7 @@ async function sendMail({ email, subject, text }) {
       text,
     });
   } catch (err) {
+    /* eslint-disable-next-line */
     console.error(err);
   }
 }

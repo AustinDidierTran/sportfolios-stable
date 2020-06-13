@@ -8,7 +8,6 @@ export default function CurrencySelect(props) {
   const { formik } = props;
 
   const onChange = (...args) => {
-    console.log(args);
     const newValue = args[1].code;
     formik.setFieldValue('currency', newValue);
   };

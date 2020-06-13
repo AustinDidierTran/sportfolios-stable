@@ -58,11 +58,8 @@ export default function ForgotPassword() {
   return (
     <div className={styles.main}>
       <form onSubmit={formik.handleSubmit}>
-        <Paper className={styles.card}>
+        <Paper className={styles.card} title={t('forgot_password')}>
           <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
-              {t('forgot_password')}
-            </Typography>
             <TextField
               namespace="email"
               formik={formik}

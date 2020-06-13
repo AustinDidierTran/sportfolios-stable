@@ -31,6 +31,7 @@ export const formatRoute = (route, params = {}, queryParams = {}) => {
   }
 
   if (!route) {
+    /* eslint-disable-next-line */
     console.error('Route is undefined');
   }
 

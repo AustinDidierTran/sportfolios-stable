@@ -26,9 +26,9 @@ export default function Person(props) {
     state: { userInfo },
   } = useContext(Store);
 
-  const user_id = userInfo && userInfo.user_id;
+  const personId = userInfo && userInfo.id;
 
-  const isSelf = basicInfos.id === user_id;
+  const isSelf = basicInfos.id === personId;
 
   const states = [
     {

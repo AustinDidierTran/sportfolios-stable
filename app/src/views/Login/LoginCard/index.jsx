@@ -104,12 +104,9 @@ export default function LoginCard() {
   });
 
   return (
-    <Paper className={styles.card}>
+    <Paper className={styles.card} title={t('login')}>
       <form onSubmit={formik.handleSubmit}>
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            {t('login')}
-          </Typography>
           <TextField
             namespace="email"
             formik={formik}

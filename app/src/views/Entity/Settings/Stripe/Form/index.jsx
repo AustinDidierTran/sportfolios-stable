@@ -76,7 +76,6 @@ export default function ExternalAccountForm() {
         account_number: accountNumber,
         id: id,
       };
-      console.log('params', params);
       await api('/api/stripe/externalAccount', {
         method: 'POST',
         body: JSON.stringify(params),

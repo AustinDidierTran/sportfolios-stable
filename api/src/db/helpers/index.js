@@ -1,6 +1,7 @@
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
+const { ENTITIES_TYPE_ENUM } = require('../../../../common/enums');
 
 const {
   sendConfirmationEmail,
@@ -28,10 +29,24 @@ const createUserEmail = async ({ user_id, email }) => {
 };
 
 const createUserInfo = async ({ user_id, first_name, last_name }) => {
-  await knex('persons').insert({
+  const [id] = await knex('entities')
+    .insert({
+      type: ENTITIES_TYPE_ENUM.PERSON,
+    })
+    .returning('id');
+
+  await knex('persons')
+    .insert({
+      id,
+      first_name,
+      last_name,
+    })
+    .returning('id');
+
+  return knex('user_entity_role').insert({
     user_id,
-    first_name,
-    last_name,
+    entity_id: id,
+    role: 1,
   });
 };
 
@@ -64,9 +79,11 @@ const generateToken = () => {
 };
 
 const getBasicUserInfoFromId = async user_id => {
-  const basicUserInfo = await knex('persons')
-    .select('*')
-    .where({ user_id });
+  const { rows: basicUserInfo } = await knex.raw(
+    `SELECT p.id, p.first_name, p.last_name, p.birth_date, p.language, p.created_at, uer.role FROM persons AS p
+    LEFT JOIN user_entity_role AS uer ON uer.entity_id = p.id
+    WHERE user_id = '${user_id}'`,
+  );
 
   const app_role = await knex('user_app_role')
     .select(['app_role'])
@@ -198,6 +215,8 @@ const validateEmailIsUnique = async email => {
 
 const sendNewConfirmationEmailAllIncluded = async email => {
   const confirmationEmailToken = generateToken();
+
+  console.log('confirmationEmailToken', confirmationEmailToken);
 
   await createConfirmationEmailToken({
     email,

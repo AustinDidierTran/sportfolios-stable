@@ -25,6 +25,11 @@ const {
 } = require('../helpers');
 
 const signup = async ({ firstName, lastName, email, password }) => {
+  console.log('firstName', firstName);
+  console.log('lastName', lastName);
+  console.log('email', email);
+  console.log('password', password);
+
   // Validate email is not already taken
   const isUnique = await validateEmailIsUnique(email);
 
@@ -40,7 +45,11 @@ const signup = async ({ firstName, lastName, email, password }) => {
 
   const user = await createUser(hashedPassword);
 
+  console.log('creating user email');
+
   await createUserEmail({ user_id: user.id, email });
+
+  console.log('creating user info');
 
   await createUserInfo({
     user_id: user.id,
@@ -48,10 +57,14 @@ const signup = async ({ firstName, lastName, email, password }) => {
     last_name: lastName,
   });
 
+  console.log('creating confirmation email token');
+
   await createConfirmationEmailToken({
     email,
     token: confirmationEmailToken,
   });
+
+  console.log('sending confirmation email');
 
   // Send confirmation email with link
   await sendConfirmationEmail({
@@ -65,6 +78,7 @@ const signup = async ({ firstName, lastName, email, password }) => {
 const login = async ({ email, password }) => {
   // Validate account with this email exists
   const user_id = await getUserIdFromEmail(email);
+
   if (!user_id) {
     return { status: 404 };
   }
@@ -81,6 +95,7 @@ const login = async ({ email, password }) => {
   }
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
+
   if (isSame) {
     const token = generateToken();
     await knex('user_token').insert({

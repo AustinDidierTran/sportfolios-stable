@@ -11,6 +11,7 @@ app.get('*', function(req, res) {
   res.sendFile(path.join(DIST_DIR, 'index.html'));
 });
 
+/* eslint-disable-next-line */
 console.log(`Running production build on port ${PORT}`);
 
 app.listen(PORT);

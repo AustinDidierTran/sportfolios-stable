@@ -25,9 +25,7 @@ export default function HorizontalLinearStepper(props) {
       const res = await api(
         `/api/stripe/getStripeAccountId?id=${id}`,
       );
-      const stripeAccountId = res.data;
-      console.log('stripeAccountId', stripeAccountId);
-      return stripeAccountId ? true : false;
+      return Boolean(res.data);
     }
 
     return false;

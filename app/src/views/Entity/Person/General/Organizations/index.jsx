@@ -21,8 +21,6 @@ export default function Organizations() {
   };
 
   useEffect(() => {
-    console.log('insideUseEffect');
-
     getOrganizations();
   }, []);
 

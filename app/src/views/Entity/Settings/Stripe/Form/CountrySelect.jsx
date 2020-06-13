@@ -18,7 +18,6 @@ export default function CountrySelect(props) {
   const { formik } = props;
 
   const onChange = (...args) => {
-    console.log(args);
     const newValue = args[1].code;
     formik.setFieldValue('country', newValue);
   };

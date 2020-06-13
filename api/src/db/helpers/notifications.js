@@ -1,28 +1,28 @@
 const knex = require('../connection');
 
-const createFollowNotification = async (user_id, target) => {
+const createFollowNotification = async (sender_id, target_id) => {
   return knex('notification_follow').insert({
-    user_id: target,
-    follower: user_id,
+    sender_id,
+    target_id,
   });
 };
 
-const deleteFollowNotification = async (user_id, target) => {
+const deleteFollowNotification = async (sender_id, target_id) => {
   return knex('notification_follow')
-    .where({ user_id: target, follower: user_id })
+    .where({ sender_id, target_id })
     .del();
 };
 
-const seeFollowNotifications = async (user_id, follower) => {
+const seeFollowNotifications = async (sender_id, target_id) => {
   return knex('notification_follow')
     .update({ seen_at: new Date() })
-    .where({ user_id, follower });
+    .where({ sender_id, target_id });
 };
 
 const getAllNotifications = async user_id => {
   const followNotifications = await knex
     .select(
-      'nf.follower',
+      'nf.sender_id',
       'nf.seen_at',
       'nf.created_at',
       'p.photo_url',
@@ -31,7 +31,7 @@ const getAllNotifications = async user_id => {
     )
     .from('notification_follow AS nf')
     .leftJoin('persons AS p', 'nf.follower', '=', 'p.persons')
-    .where('nf.user_id', user_id)
+    .where('nf.target_id', user_id)
     .orderBy('created_at', 'desc');
   return [
     ...followNotifications.map(n => ({ ...n, type: 'follow' })),

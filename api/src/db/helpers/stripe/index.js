@@ -112,7 +112,6 @@ const createExternalAccount = async (body, user_id, ip) => {
   };
   stripe.tokens.create(params, async (err, token) => {
     if (token) {
-      console.log('Account Token Created', token.id);
       await stripe.accounts.createExternalAccount(
         accountId,
         {
@@ -120,17 +119,20 @@ const createExternalAccount = async (body, user_id, ip) => {
         },
         async (err, account) => {
           if (account) {
-            console.log('External Account Created', account.id);
+            /* eslint-disable-next-line */
+            console.error('External Account Created', account.id);
           }
           if (err) {
-            console.log('ERROR: External Account NOT Created');
+            /* eslint-disable-next-line */
+            console.error('ERROR: External Account NOT Created');
             created = 0;
           }
         },
       );
     }
     if (err) {
-      console.log('ERROR: Account Token NOT Created');
+      /* eslint-disable-next-line */
+      console.error('ERROR: Account Token NOT Created');
       created = 0;
     }
   });
