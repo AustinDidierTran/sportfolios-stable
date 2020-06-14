@@ -10,16 +10,16 @@ const addQueryToRecentSearches = async (user_id, search_query) => {
 };
 
 const getUsersFromQuery = async query => {
-  return knex('persons')
-    .select('id', 'first_name', 'last_name', 'photo_url')
+  return knex('entities_name')
+    .select('id', 'name', 'surname', 'photo_url')
     .leftJoin(
       'entities_photo',
-      'persons.id',
+      'entities_name.id',
       '=',
       'entities_photo.entity_id',
     )
-    .where('persons.first_name', 'ILIKE', `%${query}%`)
-    .orWhere('persons.last_name', 'ILIKE', `%${query}%`);
+    .where('persons.name', 'ILIKE', `%${query}%`)
+    .orWhere('persons.surname', 'ILIKE', `%${query}%`);
 };
 
 const getPreviousSearchQueriesFromId = async user_id => {

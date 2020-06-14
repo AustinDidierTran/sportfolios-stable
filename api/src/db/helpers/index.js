@@ -35,11 +35,11 @@ const createUserInfo = async ({ user_id, first_name, last_name }) => {
     })
     .returning('id');
 
-  await knex('persons')
+  await knex('entities_name')
     .insert({
       id,
-      first_name,
-      last_name,
+      name: first_name,
+      surname: last_name,
     })
     .returning('id');
 
@@ -80,22 +80,26 @@ const generateToken = () => {
 
 const getBasicUserInfoFromId = async user_id => {
   const { rows: basicUserInfo } = await knex.raw(
-    `SELECT p.id, p.first_name, p.last_name, p.birth_date, p.language, p.created_at, uer.role FROM persons AS p
+    `SELECT p.id, en.name, en.surname, edb.birth_date, uer.role FROM persons AS p
+    LEFT JOIN entities_name AS en ON en.entity_id = p.id
+    LEFT JOIN entities_birth_date AS edb ON edb.entity_id = p.id
     LEFT JOIN user_entity_role AS uer ON uer.entity_id = p.id
     WHERE user_id = '${user_id}'`,
   );
 
-  const app_role = await knex('user_app_role')
+  const [{ app_role }] = await knex('user_app_role')
     .select(['app_role'])
     .where({ user_id });
+
+  const [{ language }] = await knex('users')
+    .select('language')
+    .where({ id: user_id });
 
   if (!basicUserInfo || !basicUserInfo.length) {
     return null;
   }
 
-  return app_role.length
-    ? { ...basicUserInfo[0], app_role: app_role[0].app_role }
-    : basicUserInfo[0];
+  return { ...basicUserInfo[0], app_role, language };
 };
 
 const getEmailsFromUserId = async user_id => {
@@ -168,25 +172,15 @@ const setRecoveryTokenToUsed = async token => {
 
 const updateBasicUserInfoFromUserId = async ({
   user_id,
-  firstName,
   language,
-  lastName,
 }) => {
   const update = {};
-
-  if (firstName) {
-    update.first_name = firstName;
-  }
 
   if (language) {
     update.language = language;
   }
 
-  if (lastName) {
-    update.last_name = lastName;
-  }
-
-  await knex('persons')
+  await knex('users')
     .update(update)
     .where({ user_id });
 };

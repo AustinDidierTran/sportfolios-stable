@@ -34,7 +34,9 @@ export default function BasicInfos(props) {
     photo_url,
   } = props.basicInfos;
 
-  const initials = getInitialsFromName(name);
+  const completeName = `${first_name} ${last_name}`;
+
+  const initials = getInitialsFromName(name || completeName);
   const birthDate = useFormInput(birth_date);
 
   const { isSelf } = props;
