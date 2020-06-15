@@ -35,8 +35,6 @@ export default function CheckoutForm() {
       method: 'POST',
       body: JSON.stringify({ id: id, amount: amount.value }),
     });
-    console.log('paymentIntent', paymentIntent);
-    console.log('clientSecret', paymentIntent.data.client_secret);
     const secret = paymentIntent.data.client_secret;
 
     const res = await stripe.confirmCardPayment(secret, {
@@ -50,11 +48,14 @@ export default function CheckoutForm() {
 
     if (res.error) {
       // Show error to your customer (e.g., insufficient funds)
+      /* eslint-disable-next-line */
       console.log(res.error.message);
     } else {
       // The payment has been processed!
+      /* eslint-disable-next-line */
       console.log('payment processed');
       if (res.paymentIntent.status === 'succeeded') {
+        /* eslint-disable-next-line */
         console.log('res', res);
       }
     }

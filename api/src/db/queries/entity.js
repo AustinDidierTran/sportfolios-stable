@@ -1,5 +1,5 @@
 const knex = require('../connection');
-const { ENTITIES_ROLE_ENUM } = require('../../server/enums');
+const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
 const moment = require('moment');
 const { signS3Request } = require('../../server/utils/aws');
 

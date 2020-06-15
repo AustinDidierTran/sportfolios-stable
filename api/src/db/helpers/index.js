@@ -1,6 +1,7 @@
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
+const { ENTITIES_TYPE_ENUM } = require('../../../../common/enums');
 
 const {
   sendConfirmationEmail,
@@ -28,10 +29,24 @@ const createUserEmail = async ({ user_id, email }) => {
 };
 
 const createUserInfo = async ({ user_id, first_name, last_name }) => {
-  await knex('persons').insert({
+  const [id] = await knex('entities')
+    .insert({
+      type: ENTITIES_TYPE_ENUM.PERSON,
+    })
+    .returning('id');
+
+  await knex('entities_name')
+    .insert({
+      id,
+      name: first_name,
+      surname: last_name,
+    })
+    .returning('id');
+
+  return knex('user_entity_role').insert({
     user_id,
-    first_name,
-    last_name,
+    entity_id: id,
+    role: 1,
   });
 };
 
@@ -64,21 +79,27 @@ const generateToken = () => {
 };
 
 const getBasicUserInfoFromId = async user_id => {
-  const basicUserInfo = await knex('persons')
-    .select('*')
-    .where({ user_id });
+  const { rows: basicUserInfo } = await knex.raw(
+    `SELECT p.id, en.name, en.surname, edb.birth_date, uer.role FROM persons AS p
+    LEFT JOIN entities_name AS en ON en.entity_id = p.id
+    LEFT JOIN entities_birth_date AS edb ON edb.entity_id = p.id
+    LEFT JOIN user_entity_role AS uer ON uer.entity_id = p.id
+    WHERE user_id = '${user_id}'`,
+  );
 
-  const app_role = await knex('user_app_role')
+  const [{ app_role }] = await knex('user_app_role')
     .select(['app_role'])
     .where({ user_id });
+
+  const [{ language }] = await knex('users')
+    .select('language')
+    .where({ id: user_id });
 
   if (!basicUserInfo || !basicUserInfo.length) {
     return null;
   }
 
-  return app_role.length
-    ? { ...basicUserInfo[0], app_role: app_role[0].app_role }
-    : basicUserInfo[0];
+  return { ...basicUserInfo[0], app_role, language };
 };
 
 const getEmailsFromUserId = async user_id => {
@@ -151,25 +172,15 @@ const setRecoveryTokenToUsed = async token => {
 
 const updateBasicUserInfoFromUserId = async ({
   user_id,
-  firstName,
   language,
-  lastName,
 }) => {
   const update = {};
-
-  if (firstName) {
-    update.first_name = firstName;
-  }
 
   if (language) {
     update.language = language;
   }
 
-  if (lastName) {
-    update.last_name = lastName;
-  }
-
-  await knex('persons')
+  await knex('users')
     .update(update)
     .where({ user_id });
 };

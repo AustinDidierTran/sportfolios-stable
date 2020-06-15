@@ -58,6 +58,7 @@ app.use(adminOnly);
 app.use(adminRoutes.routes());
 
 const server = app.listen(PORT, () => {
+  /* eslint-disable-next-line */
   console.log(`Server listening on port: ${PORT}`);
 });
 

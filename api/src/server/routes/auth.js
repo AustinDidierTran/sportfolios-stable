@@ -102,8 +102,6 @@ router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
       };
     }
   } catch (err) {
-    console.log('err', err);
-
     ctx.status = 400;
     ctx.body = {
       status: 'error',

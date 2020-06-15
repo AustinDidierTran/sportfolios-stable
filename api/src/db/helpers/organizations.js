@@ -1,7 +1,7 @@
 const {
   ENTITIES_ROLE_ENUM,
   ENTITIES_TYPE_ENUM,
-} = require('../../server/enums');
+} = require('../../../../common/enums');
 const knex = require('../connection');
 
 function getOrganizationAccess(user_id, organization_id) {

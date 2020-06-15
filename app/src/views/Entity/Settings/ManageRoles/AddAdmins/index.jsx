@@ -8,7 +8,6 @@ import styles from './AddAdmins.module.css';
 import api from '../../../../../actions/api';
 
 export default function AddAdmins(props) {
-  console.log({ props });
   const {
     match: {
       params: { query },

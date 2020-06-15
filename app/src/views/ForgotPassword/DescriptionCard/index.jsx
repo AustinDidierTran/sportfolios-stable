@@ -11,11 +11,11 @@ export default function DescriptionCard() {
   const { t } = useTranslation();
 
   return (
-    <Paper className={styles.description}>
+    <Paper
+      className={styles.description}
+      title={t('description_card_title')}
+    >
       <CardContent>
-        <Typography gutterBottom variant="h5" component="h2">
-          {t('description_card_title')}
-        </Typography>
         <Typography gutterBottom variant="h6" component="h2">
           {t('description_card_first_point')}
         </Typography>

@@ -38,9 +38,7 @@ export default function BasicInfo() {
 
   const formik = useFormik({
     initialValues: {
-      firstName: '',
       language: '',
-      lastName: '',
       address: '',
       phoneNumber: '',
     },
@@ -48,15 +46,13 @@ export default function BasicInfo() {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
-      const { firstName, language, lastName } = values;
+      const { language } = values;
 
       const res = await api(`/api/user/changeBasicUserInfo`, {
         method: 'POST',
         body: JSON.stringify({
           authToken,
-          firstName,
           language,
-          lastName,
         }),
       });
 
@@ -64,7 +60,7 @@ export default function BasicInfo() {
         // Token is expired, redirect
         goTo(ROUTES.login);
       } else if (res.status >= 400) {
-        formik.setFieldError('lastName', t('something_went_wrong'));
+        formik.setFieldError('address', t('something_went_wrong'));
       }
     },
   });
@@ -73,9 +69,7 @@ export default function BasicInfo() {
     const { data } = await api('/api/user/userInfo');
 
     formik.setValues({
-      firstName: data.first_name,
       language: data.language,
-      lastName: data.last_name,
     });
   };
 
@@ -93,20 +87,6 @@ export default function BasicInfo() {
     <Paper className={styles.card} title={t('basic_info')}>
       <form className={styles.form} onSubmit={formik.handleSubmit}>
         <CardContent className={styles.inputs}>
-          <TextField
-            namespace="firstName"
-            formik={formik}
-            type="text"
-            label={t('first_name')}
-            fullWidth
-          />
-          <TextField
-            namespace="lastName"
-            formik={formik}
-            type="text"
-            label={t('last_name')}
-            fullWidth
-          />
           <TextField
             namespace="address"
             formik={formik}

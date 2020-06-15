@@ -65,6 +65,7 @@ const signup = async ({ firstName, lastName, email, password }) => {
 const login = async ({ email, password }) => {
   // Validate account with this email exists
   const user_id = await getUserIdFromEmail(email);
+
   if (!user_id) {
     return { status: 404 };
   }
@@ -81,6 +82,7 @@ const login = async ({ email, password }) => {
   }
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
+
   if (isSame) {
     const token = generateToken();
     await knex('user_token').insert({

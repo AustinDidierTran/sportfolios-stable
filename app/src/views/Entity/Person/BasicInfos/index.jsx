@@ -19,18 +19,24 @@ import { uploadProfilePicture } from '../../../../actions/aws';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
-  const { dispatch } = useContext(Store);
+  const {
+    state: { userInfo },
+    dispatch,
+  } = useContext(Store);
   const [isEditMode, setEditMode] = useState(false);
 
   const {
     first_name,
+    id,
     last_name,
     name,
     birth_date,
     photo_url,
   } = props.basicInfos;
 
-  const initials = getInitialsFromName(name);
+  const completeName = `${first_name} ${last_name}`;
+
+  const initials = getInitialsFromName(name || completeName);
   const birthDate = useFormInput(birth_date);
 
   const { isSelf } = props;
@@ -106,6 +112,13 @@ export default function BasicInfos(props) {
   const [isFollowing, setIsFollowing] = useState(false);
 
   const onFollow = async () => {
+    await api('/api/followers/follow', {
+      method: 'POST',
+      body: JSON.stringify({
+        senderId: userInfo.id,
+        targetId: id,
+      }),
+    });
     setIsFollowing(true);
   };
 

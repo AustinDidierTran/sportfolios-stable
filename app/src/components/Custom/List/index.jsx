@@ -2,14 +2,10 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import {
-  List,
-  ListItem,
-  ListSubheader,
-  ListItemIcon,
-  ListItemText,
-} from '../../MUI';
-import { Icon } from '..';
+import { List, ListSubheader } from '../../MUI';
+import DefaultItem from './DefaultItem';
+
+import { ENTITIES_TYPE_ENUM } from '../../../../../common/enums';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,24 +22,13 @@ export default function CustomList(props) {
   const { title, items, ref, rowRenderer, selectedIndex } = props;
   const classes = useStyles();
 
-  const defaultRowRenderer = (item, index) => (
-    <ListItem
-      button
-      onClick={item.onClick}
-      selected={selectedIndex === index}
-      key={`${item.value}${index}`}
-      style={{ width: '100%' }}
-    >
-      {item.iconComponent ? (
-        <ListItemIcon>{item.iconComponent}</ListItemIcon>
-      ) : (
-        <ListItemIcon>
-          <Icon icon={item.icon} />
-        </ListItemIcon>
-      )}
-      <ListItemText primary={item.value} />
-    </ListItem>
-  );
+  const defaultRowRenderer = (item, index) => {
+    return item.type === ENTITIES_TYPE_ENUM.ORGANIZATION ? (
+      <DefaultItem {...item} selected={selectedIndex === index} />
+    ) : (
+      <DefaultItem {...item} selected={selectedIndex === index} />
+    );
+  };
 
   return (
     <List

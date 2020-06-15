@@ -82,12 +82,9 @@ export default function SignupCard() {
   });
 
   return (
-    <Paper className={styles.signup}>
+    <Paper className={styles.signup} title={t('signup')}>
       <form onSubmit={formik.handleSubmit}>
         <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            {t('signup')}
-          </Typography>
           <TextField
             namespace="firstName"
             formik={formik}
