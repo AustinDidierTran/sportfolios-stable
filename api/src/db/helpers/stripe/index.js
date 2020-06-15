@@ -157,8 +157,8 @@ const createPaymentIntent = async (body /* user_id, ip */) => {
 };
 
 const createCustomer = async (body, userId) => {
-  //Create Payment Method
-  if (getCustomerId(userId)) {
+  // Create Payment Method
+  if (await getCustomerId(userId)) {
     /* eslint-disable-next-line */
     console.log('Customer already exists');
   } else {
@@ -191,11 +191,11 @@ const createCustomer = async (body, userId) => {
 };
 
 const getCustomerId = async userId => {
-  const customerId = await knex
+  const [{ customer_id } = {}] = await knex
     .select('customer_id')
     .from('stripe_customer')
     .where('user_id', userId);
-  return customerId[0].customer_id;
+  return customer_id;
 };
 
 const createInvoiceItem = async (body, userId) => {
