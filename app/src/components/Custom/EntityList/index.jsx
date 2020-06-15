@@ -50,6 +50,13 @@ export default function EntityList(props) {
         buttonLabel: t('create_team'),
       };
     }
+    if (type === ENTITIES_TYPE_ENUM.PERSON) {
+      return {
+        route: ROUTES.createPerson,
+        title: t('people'),
+        buttonLabel: t('create_person'),
+      };
+    }
   }, [type]);
 
   const handleClick = () => {

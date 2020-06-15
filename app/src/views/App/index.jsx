@@ -14,6 +14,7 @@ import ConfirmEmail from '../ConfirmEmail';
 import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
 import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
 import CreateOrganization from '../Entity/Organization/Create';
+import CreatePerson from '../Entity/Person/Create';
 import CreateTeam from '../Entity/Team/Create';
 import Entity from '../Entity';
 import EntityNotFound from '../Entity/EntityNotFound';
@@ -164,6 +165,11 @@ export default function App() {
                 exact
                 path={ROUTES.organizationList}
                 component={OrganizationList}
+              />
+              <Route
+                exact
+                path={ROUTES.createPerson}
+                component={CreatePerson}
               />
               <Route
                 exact

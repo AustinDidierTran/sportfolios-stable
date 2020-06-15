@@ -6,7 +6,10 @@ const BASE_URL = '/api/entity';
 
 router.get(BASE_URL, async ctx => {
   try {
-    const entity = await queries.getEntity(ctx.query.id);
+    const entity = await queries.getEntity(
+      ctx.query.id,
+      ctx.body.userInfo.id,
+    );
 
     if (entity) {
       ctx.body = {

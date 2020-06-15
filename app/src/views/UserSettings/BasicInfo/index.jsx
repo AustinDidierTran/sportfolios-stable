@@ -5,7 +5,6 @@ import { useFormik } from 'formik';
 import {
   Button,
   CardContent,
-  TextField,
   CardActions,
   Select,
 } from '../../../components/MUI';
@@ -87,20 +86,6 @@ export default function BasicInfo() {
     <Paper className={styles.card} title={t('basic_info')}>
       <form className={styles.form} onSubmit={formik.handleSubmit}>
         <CardContent className={styles.inputs}>
-          <TextField
-            namespace="address"
-            formik={formik}
-            type="text"
-            label={t('address')}
-            fullWidth
-          />
-          <TextField
-            namespace="phoneNumber"
-            formik={formik}
-            type="text"
-            label={t('phone_number')}
-            fullWidth
-          />
           <Select
             formik={formik}
             label={t('select_language')}

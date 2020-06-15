@@ -6,7 +6,7 @@ const {
 } = require('../../../../common/enums');
 
 const addEntity = async (body, user_id) => {
-  const { name, type } = body;
+  const { name, surname, type } = body;
 
   const [{ id: entity_id } = {}] = await knex('entities')
     .insert({ type })
@@ -15,6 +15,7 @@ const addEntity = async (body, user_id) => {
   await knex('entities_name').insert({
     entity_id,
     name,
+    surname,
   });
 
   await knex('entities_photo').insert({
@@ -145,7 +146,7 @@ async function getAllRolesEntity(entity_id) {
     .where('entities_role.entity_id', entity_id);
 }
 
-async function getEntity(id) {
+async function getEntity(id, user_id) {
   const [entity] = await knex('entities')
     .select('id', 'type', 'name', 'surname', 'photo_url')
     .leftJoin(
@@ -161,7 +162,33 @@ async function getEntity(id) {
       'entities_photo.entity_id',
     )
     .where({ id });
-  return entity;
+
+  let role;
+
+  if (entity.type === ENTITIES_TYPE_ENUM.PERSON) {
+    const [row] = await knex('user_entity_role')
+      .select('role')
+      .where({
+        entity_id: id,
+        user_id,
+      });
+
+    role = row.role;
+  } else {
+    const [row] = await knex('entities_role')
+      .select('role')
+      .leftJoin(
+        'user_entity_role',
+        'entities_role.entity_id_admin',
+        '=',
+        'user_entity_role.entity_id',
+      )
+      .where('entities_role.entity_id', id)
+      .andWhere('user_entity_role.user_id', user_id);
+    role = row.role;
+  }
+
+  return { ...entity, role };
 }
 
 async function updateEntityName(entity_id, name, surname) {

@@ -33,6 +33,11 @@ export default function EntityCreate(props) {
         title: t('create_team'),
       };
     }
+    if (type === ENTITIES_TYPE_ENUM.PERSON) {
+      return {
+        title: t('create_person'),
+      };
+    }
   }, [type]);
 
   const validate = values => {
@@ -51,13 +56,14 @@ export default function EntityCreate(props) {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
-      const { name } = values;
+      const { name, surname } = values;
       setIsLoading(true);
       try {
         const res = await api('/api/entity', {
           method: 'POST',
           body: JSON.stringify({
             name,
+            surname,
             type,
           }),
         });
@@ -98,6 +104,16 @@ export default function EntityCreate(props) {
                     fullWidth
                     disabled
                   />
+                  {type === ENTITIES_TYPE_ENUM.PERSON ? (
+                    <TextField
+                      namespace="surname"
+                      label={t('surname')}
+                      fullWidth
+                      disabled
+                    />
+                  ) : (
+                    <></>
+                  )}
                 </CardContent>
                 <div className={styles.div}>
                   <CircularProgress className={styles.progress} />
@@ -120,6 +136,17 @@ export default function EntityCreate(props) {
                     type="name"
                     fullWidth
                   />
+                  {type === ENTITIES_TYPE_ENUM.PERSON ? (
+                    <TextField
+                      namespace="surname"
+                      label={t('surname')}
+                      formik={formik}
+                      type="name"
+                      fullWidth
+                    />
+                  ) : (
+                    <></>
+                  )}
                 </CardContent>
                 <CardActions className={styles.buttons}>
                   <Button
