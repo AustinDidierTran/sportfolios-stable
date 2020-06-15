@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 DROP TABLE followers;
 
 CREATE TABLE relationship_requests (

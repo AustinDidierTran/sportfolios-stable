@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 ALTER TABLE users
     ADD COLUMN email VARCHAR(320),
     ADD COLUMN confirmation_email_token VARCHAR(255),

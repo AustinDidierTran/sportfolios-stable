@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 ALTER TABLE persons 
 ADD COLUMN photo_url VARCHAR(255);
 

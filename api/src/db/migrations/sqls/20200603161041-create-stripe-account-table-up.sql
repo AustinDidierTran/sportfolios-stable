@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 CREATE TABLE stripe_accounts
 (
     entity_id UUID REFERENCES entities(id),

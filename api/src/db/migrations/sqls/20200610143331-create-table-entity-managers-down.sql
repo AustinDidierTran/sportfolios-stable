@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 CREATE TABLE organization_managers(
   organization_id UUID REFERENCES organizations(id) NOT NULL,
   user_id UUID REFERENCES users(id) NOT NULL,

@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 CREATE TABLE user_to_association (
   user_id UUID REFERENCES users(id) NOT NULL,
   association_id UUID REFERENCES associations(id) NOT NULL,

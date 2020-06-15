@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 ALTER TABLE user_email
     ADD COLUMN confirmation_email_token VARCHAR(255);
 

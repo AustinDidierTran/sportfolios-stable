@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 CREATE TABLE entities_role(
   entity_id UUID REFERENCES entities(id) NOT NULL,
   user_id UUID REFERENCES users(id) NOT NULL,
