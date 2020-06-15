@@ -17,7 +17,7 @@ function getSingleOrganization(id) {
 }
 
 async function addOrganization(body, user_id) {
-  const { name } = body;
+  const { name, surname } = body;
 
   const [entity_id] = await knex('entities')
     .insert({ type: ENTITIES_TYPE_ENUM.ORGANIZATION })
@@ -42,6 +42,7 @@ async function addOrganization(body, user_id) {
   await knex('entities_name').insert({
     entity_id: entity_id.id,
     name,
+    surname,
   });
 
   await knex('entities_photo').insert({
