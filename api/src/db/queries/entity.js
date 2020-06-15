@@ -1,9 +1,8 @@
-const knex = require('../connection');
-const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
 const moment = require('moment');
 const { signS3Request } = require('../../server/utils/aws');
 
 const {
+  addEntity: addEntityHelper,
   getAllEntities: getAllEntitiesHelper,
   getEntity: getEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
@@ -17,8 +16,8 @@ async function getEntity(id) {
   return getEntityHelper(id);
 }
 
-async function getAllEntities() {
-  return getAllEntitiesHelper();
+async function getAllEntities(params) {
+  return getAllEntitiesHelper(params);
 }
 
 async function getAllTypeEntities(type) {
@@ -28,6 +27,10 @@ async function getAllTypeEntities(type) {
 async function getAllRolesEntity(id) {
   return getAllRolesEntityHelper(id);
 }
+
+const addEntity = async (body, user_id) => {
+  return addEntityHelper(body, user_id);
+};
 
 async function updateEntity(body, user_id) {
   const { id, name, surname, photo_url } = body;
@@ -59,6 +62,7 @@ async function getS3Signature(userId, { fileType }) {
   return { code: 200, data };
 }
 module.exports = {
+  addEntity,
   getAllEntities,
   getAllTypeEntities,
   getEntity,

@@ -16,8 +16,8 @@ function getSingleOrganization(id) {
     .where({ id, deleted_at: null });
 }
 
-async function addOrganization(props, user_id) {
-  const { name } = props;
+async function addOrganization(body, user_id) {
+  const { name } = body;
 
   const [entity_id] = await knex('entities')
     .insert({ type: ENTITIES_TYPE_ENUM.ORGANIZATION })

@@ -20,6 +20,7 @@ export default {
     competitive_member: 'Membre Compétitif',
     contact_us: 'Contactez-nous',
     create_organization: 'Créer une organisation',
+    create_team: 'Créer une équipe',
     donate: 'Faites un don',
     done: 'Terminé',
     email: 'Courriel',

@@ -9,27 +9,28 @@ import teal from '@material-ui/core/colors/teal';
 import { Router, Switch, Route } from 'react-router-dom';
 
 import AdminPanel from '../AdminPanel';
-import Header from '../Header';
-import Login from '../Login';
-import Main from '../Main';
 import ConfirmationEmailSent from '../ConfirmationEmailSent';
 import ConfirmEmail from '../ConfirmEmail';
 import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
 import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
+import CreateOrganization from '../Entity/Organization/Create';
+import CreateTeam from '../Entity/Team/Create';
 import Entity from '../Entity';
 import EntityNotFound from '../Entity/EntityNotFound';
 import EventView from '../Event';
 import ForgotPassword from '../ForgotPassword';
-import CreateOrganization from '../Entity/Organization/Create';
+import Header from '../Header';
+import Login from '../Login';
+import Main from '../Main';
+import Menu from '../Menu';
+import Notifications from '../../views/Notifications';
 import OrganizationList from '../Main/OrganizationList';
 import PasswordRecovery from '../PasswordRecovery';
 import Search from '../Search';
 import Signup from '../Signup';
+import Stripe from '../../utils/stripe/Payment/index';
 import Team from '../Team';
 import UserSettings from '../UserSettings';
-import Notifications from '../../views/Notifications';
-import Menu from '../Menu';
-import Stripe from '../../utils/stripe/Payment/index';
 
 // Mocks
 import MockEvent from '../Mocks/Event';
@@ -163,6 +164,11 @@ export default function App() {
                 exact
                 path={ROUTES.organizationList}
                 component={OrganizationList}
+              />
+              <Route
+                exact
+                path={ROUTES.createTeam}
+                component={CreateTeam}
               />
               <Route
                 exact

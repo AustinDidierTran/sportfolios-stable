@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Tab, Tabs } from '../../../components/MUI';
 import { Container, Paper } from '../../../components/Custom';
 
-import styles from './Organization.module.css';
+import styles from './Team.module.css';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '../../../hooks/queries';
@@ -22,8 +22,9 @@ export const TABS_ENUM = {
   SETTINGS: 'settings',
 };
 
-export default function Organization(props) {
+export default function Team(props) {
   const { basicInfos } = props;
+
   const { t } = useTranslation();
   const { id } = useParams();
   const query = useQuery();

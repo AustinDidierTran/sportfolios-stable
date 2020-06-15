@@ -5,6 +5,7 @@ import Person from './Person';
 import api from '../../actions/api';
 import { useParams } from 'react-router-dom';
 import { goTo, ROUTES } from '../../actions/goTo';
+import Team from './Team';
 
 export const ENTITIES_TYPE_ENUM = {
   PERSON: 1,
@@ -18,9 +19,12 @@ export default function Entity() {
   const updateBasicInfos = async () => {
     const { data } = await api(`/api/entity?id=${id}`);
 
+    console.log('data', data);
+
     if (!data) {
       goTo(ROUTES.entityNotFound);
     }
+
     setBasicInfos(data);
   };
 
@@ -33,6 +37,8 @@ export default function Entity() {
       <Person basicInfos={basicInfos} />
     ) : basicInfos.type === ENTITIES_TYPE_ENUM.ORGANIZATION ? (
       <Organization basicInfos={basicInfos} />
+    ) : basicInfos.type === ENTITIES_TYPE_ENUM.TEAM ? (
+      <Team basicInfos={basicInfos} />
     ) : (
       <></>
     )

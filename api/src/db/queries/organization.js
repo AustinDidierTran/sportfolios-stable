@@ -1,6 +1,9 @@
 const knex = require('../connection');
 
-const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
+const {
+  ENTITIES_ROLE_ENUM,
+  ENTITIES_TYPE_ENUM,
+} = require('../../../../common/enums');
 
 const {
   getEntity: getEntityHelper,
@@ -15,15 +18,15 @@ const {
 } = require('../helpers/organizations');
 
 function getAllOrganizations() {
-  return getAllTypeEntitiesHelper(2);
+  return getAllTypeEntitiesHelper(ENTITIES_TYPE_ENUM.ORGANIZATION);
 }
 
 async function getSingleOrganization(id) {
   return getEntityHelper(id);
 }
 
-const addOrganization = async (props, user_id) => {
-  return addOrganizationHelper(props, user_id);
+const addOrganization = async (body, user_id) => {
+  return addOrganizationHelper(body, user_id);
 };
 
 async function updateOrganization(body, user_id) {
