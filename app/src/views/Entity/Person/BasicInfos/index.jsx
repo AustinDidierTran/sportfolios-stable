@@ -94,7 +94,7 @@ export default function BasicInfos(props) {
   };
 
   const onImgUpload = async () => {
-    const photoUrl = await uploadEntityPicture(img);
+    const photoUrl = await uploadEntityPicture(id, img);
 
     if (photoUrl) {
       dispatch({
