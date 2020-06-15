@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Organization from './Organization';
 import Person from './Person';
 import api from '../../actions/api';
-import { useParams } from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 import { goTo, ROUTES } from '../../actions/goTo';
 import Team from './Team';
 
@@ -18,8 +18,6 @@ export default function Entity() {
 
   const updateBasicInfos = async () => {
     const { data } = await api(`/api/entity?id=${id}`);
-
-    console.log('data', data);
 
     if (!data) {
       goTo(ROUTES.entityNotFound);
@@ -40,7 +38,7 @@ export default function Entity() {
     ) : basicInfos.type === ENTITIES_TYPE_ENUM.TEAM ? (
       <Team basicInfos={basicInfos} />
     ) : (
-      <></>
+      <Redirect to={ROUTES.entityNotFound} />
     )
   ) : (
     <></>

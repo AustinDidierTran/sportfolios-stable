@@ -10,7 +10,6 @@ const checkAuth = require('./server/middleware/check-auth');
 const adminOnly = require('./server/middleware/admin-only');
 
 // Unprotected routes
-const organizationRoutes = require('./server/routes/organization');
 const dataRoutes = require('./server/routes/data');
 const devRoutes = require('./server/routes/dev');
 const authRoutes = require('./server/routes/auth');
@@ -40,7 +39,6 @@ app.use(authRoutes.routes());
 
 // private routes
 app.use(checkAuth);
-app.use(organizationRoutes.routes());
 app.use(dataRoutes.routes());
 if (process.env.NODE_ENV === 'development') {
   app.use(devRoutes.routes());

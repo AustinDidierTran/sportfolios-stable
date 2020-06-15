@@ -81,6 +81,7 @@ export default {
     send_new_confirmation_email: 'Send new confirmation email',
     send_password_recovery_email: 'Send password recovery email',
     signup: 'Signup',
+    something_went_wrong: 'Something went wrong.',
     subscribe: 'Subscribe',
     subscribed: 'Subscribed',
     shop: 'Shop',

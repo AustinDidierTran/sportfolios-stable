@@ -9,13 +9,16 @@ import {
 } from '../../../../../components/Custom';
 import api from '../../../../../actions/api';
 import { goTo, ROUTES } from '../../../../../actions/goTo';
+import { ENTITIES_TYPE_ENUM } from '../../..';
 
 export default function Organizations() {
   const { t } = useTranslation();
 
   const [organizations, setOrganizations] = useState([]);
   const getOrganizations = async () => {
-    const { data } = await api(`/api/organizations`);
+    const { data } = await api(
+      `/api/entity/all?type=${ENTITIES_TYPE_ENUM.ORGANIZATION}`,
+    );
 
     setOrganizations(data);
   };

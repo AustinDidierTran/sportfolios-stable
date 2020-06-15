@@ -35,7 +35,7 @@ const addEntity = async (body, user_id) => {
 async function updateEntity(body, user_id) {
   const { id, name, surname, photo_url } = body;
 
-  const userId = getUsersAuthorizationHelper(id);
+  const userId = await getUsersAuthorizationHelper(id);
 
   const isAuthorized = userId.includes(user_id);
 

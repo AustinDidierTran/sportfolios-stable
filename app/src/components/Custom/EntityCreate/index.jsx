@@ -23,9 +23,6 @@ export default function EntityCreate(props) {
   const { t } = useTranslation();
 
   const entityObject = useMemo(() => {
-    console.log('type', type);
-    console.log('ENTITIES_TYPE_ENUM', ENTITIES_TYPE_ENUM);
-
     if (type === ENTITIES_TYPE_ENUM.ORGANIZATION) {
       return {
         title: t('create_organization'),
@@ -68,7 +65,7 @@ export default function EntityCreate(props) {
         setIsLoading(false);
       } catch (err) {
         setIsLoading(false);
-        console.log(err);
+        formik.setFieldError('name', t('something_went_wrong'));
         throw err;
       }
     },

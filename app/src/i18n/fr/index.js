@@ -87,6 +87,7 @@ export default {
     signup: "S'enregistrer",
     tournament_fee: 'Frais de tournoi',
     shop: 'Boutique',
+    something_went_wrong: 'Une erreur est survenue.',
     subscribe: "S'abonner",
     subscribed: 'Abonné',
     team: 'Équipe',

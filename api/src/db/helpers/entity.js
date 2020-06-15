@@ -7,13 +7,10 @@ const {
 
 const addEntity = async (body, user_id) => {
   const { name, type } = body;
-  console.log('name', name);
-  console.log('type', type);
 
   const [{ id: entity_id } = {}] = await knex('entities')
     .insert({ type })
     .returning(['id']);
-  console.log('entity_id', entity_id);
 
   await knex('entities_name').insert({
     entity_id,
@@ -50,7 +47,6 @@ const addEntity = async (body, user_id) => {
       const [organization] = await knex('organizations')
         .insert({ id: entity_id })
         .returning(['id']);
-      console.log('organization', organization);
 
       return organization;
     }
@@ -58,8 +54,6 @@ const addEntity = async (body, user_id) => {
       const [team] = await knex('teams')
         .insert({ id: entity_id })
         .returning(['id']);
-
-      console.log('team', team);
 
       return team;
     }
@@ -73,8 +67,6 @@ const addEntity = async (body, user_id) => {
     const [person] = await knex('persons')
       .insert({ id: entity_id })
       .returning(['id']);
-
-    console.log('person', person);
 
     return person;
   }
