@@ -166,7 +166,7 @@ async function getEntity(id, user_id) {
   let role;
 
   if (entity.type === ENTITIES_TYPE_ENUM.PERSON) {
-    const [row] = await knex('user_entity_role')
+    const [row = {}] = await knex('user_entity_role')
       .select('role')
       .where({
         entity_id: id,
@@ -175,7 +175,7 @@ async function getEntity(id, user_id) {
 
     role = row.role;
   } else {
-    const [row] = await knex('entities_role')
+    const [row = {}] = await knex('entities_role')
       .select('entities_role.role')
       .leftJoin(
         'user_entity_role',
@@ -220,7 +220,21 @@ async function addEntityRole(entity_id, entity_id_admin, role) {
 }
 
 async function getUsersAuthorization(id) {
-  const res = await knex('user_entity_role')
+  const [{ type } = {}] = await knex('entities')
+    .select('type')
+    .where({ id });
+
+  if (!type) {
+    return null;
+  }
+
+  if (type === ENTITIES_TYPE_ENUM.PERSON) {
+    return knex('user_entity_role')
+      .select(['user_id', 'role'])
+      .where({ entity_id: id });
+  }
+
+  return knex('user_entity_role')
     .select(['user_id', 'entities_role.role'])
     .leftJoin(
       'entities_role',
@@ -229,8 +243,6 @@ async function getUsersAuthorization(id) {
       'entities_role.entity_id_admin',
     )
     .where('entities_role.entity_id', id);
-
-  return res;
 }
 
 module.exports = {
