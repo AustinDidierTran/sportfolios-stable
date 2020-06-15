@@ -35,8 +35,6 @@ export default function Organization(props) {
     query.tab || TABS_ENUM.GENERAL,
   );
 
-  const isEditor = true;
-
   const states = [
     {
       value: TABS_ENUM.GENERAL,
@@ -75,7 +73,7 @@ export default function Organization(props) {
     <Container className={styles.container}>
       <Paper className={styles.card}>
         <Container className={styles.title}>
-          <BasicInfos basicInfos={basicInfos} isEditor={isEditor} />
+          <BasicInfos basicInfos={basicInfos} />
         </Container>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}

@@ -176,7 +176,7 @@ async function getEntity(id, user_id) {
     role = row.role;
   } else {
     const [row] = await knex('entities_role')
-      .select('role')
+      .select('entities_role.role')
       .leftJoin(
         'user_entity_role',
         'entities_role.entity_id_admin',

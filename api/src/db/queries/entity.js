@@ -39,9 +39,10 @@ async function updateEntity(body, user_id) {
 
   const res = await getUsersAuthorizationHelper(id);
 
-  const isAuthorized = res.findIndex(r => r.user_id === user_id);
+  const isAuthorized =
+    res.findIndex(r => r.user_id === user_id) !== -1;
 
-  if (isAuthorized !== -1) {
+  if (isAuthorized) {
     if (name || surname) {
       await updateEntityNameHelper(id, name, surname);
     }
