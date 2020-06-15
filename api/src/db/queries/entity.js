@@ -10,6 +10,7 @@ const {
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
+  getUsersAuthorization: getUsersAuthorizationHelper,
 } = require('../helpers/entity');
 
 async function getEntity(id) {
@@ -29,24 +30,20 @@ async function getAllRolesEntity(id) {
 }
 
 async function updateEntity(body, user_id) {
-  const { id, name, photo_url } = body;
+  const { id, name, surname, photo_url } = body;
 
-  const [{ role }] = await knex('entities_role')
-    .select(['role'])
-    .where({ entity_id: id, user_id });
+  const userId = getUsersAuthorizationHelper(id);
 
-  if (
-    [ENTITIES_ROLE_ENUM.ADMIN, ENTITIES_ROLE_ENUM.EDITOR].includes(
-      role,
-    )
-  ) {
-    if (name) {
-      await updateEntityNameHelper(id, name);
+  const isAuthorized = userId.includes(user_id);
+
+  if (isAuthorized) {
+    if (name || surname) {
+      await updateEntityNameHelper(id, name, surname);
     }
     if (photo_url) {
       await updateEntityPhotoHelper(id, photo_url);
     }
-    return { id, name, photo_url };
+    return { id, name, surname, photo_url };
   }
 }
 

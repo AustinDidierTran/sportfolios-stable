@@ -75,7 +75,7 @@ export default function BasicInfos(props) {
   };
 
   const onNameChange = async () => {
-    const res = await api(`/api/organization`, {
+    const res = await api(`/api/entity`, {
       method: 'PUT',
       body: JSON.stringify({
         id,

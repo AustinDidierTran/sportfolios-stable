@@ -19,7 +19,7 @@ async function getAllEntities() {
 
 async function getAllTypeEntities(type) {
   return knex('entities')
-    .select('id', 'type', 'name', 'photo_url')
+    .select('id', 'type', 'name', 'surname', 'photo_url')
     .leftJoin(
       'entities_name',
       'entities.id',
@@ -37,7 +37,7 @@ async function getAllTypeEntities(type) {
 
 async function getAllRolesEntity(entity_id) {
   return await knex('entities_role')
-    .select('entity_id_admin', 'role', 'name', 'photo_url')
+    .select('entity_id_admin', 'role', 'name', 'surname', 'photo_url')
     .leftJoin(
       'entities_name',
       'entities_role.entity_id_admin',
@@ -55,7 +55,7 @@ async function getAllRolesEntity(entity_id) {
 
 async function getEntity(id) {
   const [entity] = await knex('entities')
-    .select('id', 'type', 'name', 'photo_url')
+    .select('id', 'type', 'name', 'surname', 'photo_url')
     .leftJoin(
       'entities_name',
       'entities.id',
@@ -72,11 +72,18 @@ async function getEntity(id) {
   return entity;
 }
 
-async function updateEntityName(entity_id, name) {
+async function updateEntityName(entity_id, name, surname) {
+  const update = {};
+  if (name) {
+    update.name = name;
+  }
+  if (surname) {
+    update.surname = surname;
+  }
   return await knex('entities_name')
-    .update({ name })
+    .update(update)
     .where({ entity_id })
-    .returning(['entity_id', 'name']);
+    .returning(['entity_id', 'name', 'surname']);
 }
 
 async function updateEntityPhoto(entity_id, photo_url) {
@@ -86,6 +93,22 @@ async function updateEntityPhoto(entity_id, photo_url) {
     .returning(['entity_id', 'photo_url']);
 }
 
+async function getUsersAuthorization(id) {
+  const res = await knex('user_entity_role')
+    .select(['user_id'])
+    .leftJoin(
+      'entities_role',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_role.entity_id_admin',
+    )
+    .where('entities_role.entity_id', id);
+
+  const userId = res.map(res => res.user_id);
+
+  return userId;
+}
+
 module.exports = {
   getAllEntities,
   getAllTypeEntities,
@@ -93,4 +116,5 @@ module.exports = {
   updateEntityName,
   updateEntityPhoto,
   getAllRolesEntity,
+  getUsersAuthorization,
 };
