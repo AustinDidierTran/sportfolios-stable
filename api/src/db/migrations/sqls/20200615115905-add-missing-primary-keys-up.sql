@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 ALTER TABLE entities_photo
   ADD CONSTRAINT entities_photo_pkey PRIMARY KEY (entity_id);
 

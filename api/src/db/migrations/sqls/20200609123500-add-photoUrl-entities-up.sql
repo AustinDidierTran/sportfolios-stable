@@ -1,5 +1,3 @@
-/* Replace with your SQL commands */
-
 CREATE TABLE entities_photo(
   entity_id UUID REFERENCES entities(id) NOT NULL,
   photo_url VARCHAR (255)

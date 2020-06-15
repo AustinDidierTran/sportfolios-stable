@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 CREATE TABLE entities (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   type INTEGER

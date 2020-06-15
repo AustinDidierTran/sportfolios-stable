@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 ALTER TABLE entities_name
   ADD COLUMN surname VARCHAR(255),
   ADD CONSTRAINT entities_name_pkey PRIMARY KEY (entity_id);

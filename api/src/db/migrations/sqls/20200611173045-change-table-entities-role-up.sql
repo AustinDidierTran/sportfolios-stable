@@ -1,5 +1,3 @@
-/* Replace with your SQL commands */
-
 DELETE FROM entities_role;
 
 ALTER TABLE entities_role

@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 ALTER TABLE organizations
   ADD COLUMN created_at timestamp DEFAULT now(),
   ADD COLUMN deleted_at timestamp;

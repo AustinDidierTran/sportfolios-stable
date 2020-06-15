@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 DROP TABLE event_rosters;
 
 DROP TABLE division_ranking;

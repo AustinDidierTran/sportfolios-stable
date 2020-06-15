@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 ALTER TABLE phase_link
   DROP CONSTRAINT phase_link_ufinal,
   DROP CONSTRAINT phase_link_pkey;

@@ -1,11 +1,9 @@
-/* Replace with your SQL commands */
 CREATE TABLE events (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   start_date TIMESTAMP NOT NULL,
   end_date TIMESTAMP NOT NULL
 );
-
 
 CREATE TABLE event_rosters (
   roster_id UUID REFERENCES team_rosters(id)  NOT NULL,
