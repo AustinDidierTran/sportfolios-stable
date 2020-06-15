@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Paper, Avatar } from '../../../../components/Custom';
+import { Paper, Avatar, Select } from '../../../../components/Custom';
 import {
   Typography,
   List,
   ListItem,
 } from '../../../../components/MUI';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 
 import { ENTITIES_ROLE_ENUM } from '../../../../Store';
 import { useTranslation } from 'react-i18next';
@@ -49,6 +47,12 @@ export default function ManageRoles() {
     await updateEntities();
   };
 
+  const items = [
+    { display: 'Admin', value: ENTITIES_ROLE_ENUM.ADMIN },
+    { display: t('editor'), value: ENTITIES_ROLE_ENUM.EDITOR },
+    { display: t('viewer'), value: ENTITIES_ROLE_ENUM.VIEWER },
+  ];
+
   return (
     <Paper title={t('admins')}>
       <List disablePadding className={styles.list}>
@@ -74,17 +78,8 @@ export default function ManageRoles() {
             labelId="Role"
             onChange={e => handleChange(e, entity.entity_id_admin)}
             className={styles.select}
-          >
-            <MenuItem value={ENTITIES_ROLE_ENUM.ADMIN}>
-              Admin
-            </MenuItem>
-            <MenuItem value={ENTITIES_ROLE_ENUM.EDITOR}>
-              {t('editor')}
-            </MenuItem>
-            <MenuItem value={ENTITIES_ROLE_ENUM.VIEWER}>
-              {t('viewer')}
-            </MenuItem>
-          </Select>,
+            options={items}
+          />,
         ])}
       </List>
     </Paper>

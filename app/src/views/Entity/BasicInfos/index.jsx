@@ -27,9 +27,8 @@ export default function BasicInfos(props) {
       name: initialName,
       photo_url: initialPhoto_url,
     },
+    isEditor: { isEditor },
   } = props;
-
-  const { isEditor } = props;
 
   const [photo_url, setPhoto_url] = useState(initialPhoto_url);
 

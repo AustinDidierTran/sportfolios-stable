@@ -3,17 +3,15 @@ const { signS3Request } = require('../../server/utils/aws');
 
 const {
   addEntity: addEntityHelper,
+  addEntityRole: addEntityRoleHelper,
   getAllEntities: getAllEntitiesHelper,
-  getEntity: getEntityHelper,
-  getAllTypeEntities: getAllTypeEntitiesHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
+  getAllTypeEntities: getAllTypeEntitiesHelper,
+  getEntity: getEntityHelper,
+  getUsersAuthorization: getUsersAuthorizationHelper,
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
-  getAllRolesEntity: getAllRolesEntityHelper,
-  getUsersAuthorization: getUsersAuthorizationHelper,
   updateEntityRole: updateEntityRoleHelper,
-  addEntityRole: addEntityRoleHelper,
-  updateEntity: updateEntityHelper,
 } = require('../helpers/entity');
 
 async function getEntity(id, user_id) {
@@ -39,11 +37,11 @@ const addEntity = async (body, user_id) => {
 async function updateEntity(body, user_id) {
   const { id, name, surname, photo_url } = body;
 
-  const userId = await getUsersAuthorizationHelper(id);
+  const res = await getUsersAuthorizationHelper(id);
 
-  const isAuthorized = userId.includes(user_id);
+  const isAuthorized = res.findIndex(r => r.user_id === user_id);
 
-  if (isAuthorized) {
+  if (isAuthorized !== -1) {
     if (name || surname) {
       await updateEntityNameHelper(id, name, surname);
     }
@@ -51,6 +49,8 @@ async function updateEntity(body, user_id) {
       await updateEntityPhotoHelper(id, photo_url);
     }
     return { id, name, surname, photo_url };
+  } else {
+    throw 'Acces denied';
   }
 }
 
@@ -71,12 +71,6 @@ async function updateEntityRole(body) {
   return updateEntityRoleHelper(entity_id, entity_id_admin, role);
 }
 
-async function updateEntity(body, user_id) {
-  const { id, name, photo_url } = body;
-
-  return await updateEntityHelper(id, name, photo_url, user_id);
-}
-
 async function addEntityRole(body) {
   const { entity_id, entity_id_admin, role } = body;
   await addEntityRoleHelper(entity_id, entity_id_admin, role);
@@ -85,11 +79,12 @@ async function addEntityRole(body) {
 module.exports = {
   addEntity,
   getEntity,
+  addEntityRole,
   getAllEntities,
-  getAllTypeEntities,
   getAllRolesEntity,
+  getAllTypeEntities,
+  getEntity,
   getS3Signature,
   updateEntity,
   updateEntityRole,
-  addEntityRole,
 };
