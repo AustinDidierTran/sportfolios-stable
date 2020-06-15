@@ -15,6 +15,7 @@ import Folder from '@material-ui/icons/Folder';
 import Home from '@material-ui/icons/Home';
 import Info from '@material-ui/icons/Info';
 import Lock from '@material-ui/icons/Lock';
+import Menu from '@material-ui/icons/Menu';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 import Notifications from '@material-ui/icons/Notifications';
 import Person from '@material-ui/icons/Person';
@@ -24,8 +25,8 @@ import RemoveShoppingCart from '@material-ui/icons/RemoveShoppingCart';
 import Search from '@material-ui/icons/Search';
 import Settings from '@material-ui/icons/Settings';
 import ShoppingCart from '@material-ui/icons/ShoppingCart';
+import SportsKabaddi from '@material-ui/icons/SportsKabaddi';
 import Store from '@material-ui/icons/Store';
-import Menu from '@material-ui/icons/Menu';
 
 const icons = {
   Add,
@@ -52,6 +53,7 @@ const icons = {
   Search,
   Settings,
   ShoppingCart,
+  SportsKabaddi,
   Store,
   Menu,
 };

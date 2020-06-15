@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import General from './General';
 import OrganizationList from './OrganizationList';
+import TeamList from './TeamList';
 import { Container, Tab, Tabs } from '../../components/MUI';
 
 import styles from './Main.module.css';
@@ -11,6 +12,7 @@ import { Paper } from '../../components/Custom';
 const TABS_ENUM = {
   GENERAL: 'general',
   ORGANIZATIONS: 'organizations',
+  TEAMS: 'teams',
 };
 
 export default function Main() {
@@ -29,6 +31,12 @@ export default function Main() {
       component: <OrganizationList />,
       label: t('organizations'),
       icon: 'Business',
+    },
+    {
+      value: TABS_ENUM.TEAMS,
+      component: <TeamList />,
+      label: t('teams'),
+      icon: 'SportsKabaddi',
     },
   ];
   const OpenTab = states.find(s => s.value == eventState).component;

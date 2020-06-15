@@ -15,7 +15,7 @@ import {
 import { getInitialsFromName } from '../../../../utils/stringFormats';
 import api from '../../../../actions/api';
 import { useFormInput } from '../../../../hooks/forms';
-import { uploadProfilePicture } from '../../../../actions/aws';
+import { uploadEntityPicture } from '../../../../actions/aws';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
@@ -90,7 +90,7 @@ export default function BasicInfos(props) {
   };
 
   const onImgUpload = async () => {
-    const photoUrl = await uploadProfilePicture(img);
+    const photoUrl = await uploadEntityPicture(img);
 
     if (photoUrl) {
       dispatch({

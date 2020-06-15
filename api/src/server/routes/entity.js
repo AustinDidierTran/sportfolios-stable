@@ -31,7 +31,7 @@ router.get(BASE_URL, async ctx => {
 
 router.get(`${BASE_URL}/all`, async ctx => {
   try {
-    const entity = await queries.getAllEntities();
+    const entity = await queries.getAllEntities(ctx.query);
 
     if (entity) {
       ctx.body = {
@@ -43,6 +43,35 @@ router.get(`${BASE_URL}/all`, async ctx => {
       ctx.body = {
         status: 'error',
         message: 'That record does not exist.',
+      };
+    }
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
+router.post(BASE_URL, async ctx => {
+  try {
+    const entityId = await queries.addEntity(
+      ctx.request.body,
+      ctx.body.userInfo.id,
+    );
+
+    if (entityId) {
+      ctx.status = 201;
+      ctx.body = {
+        status: 'success',
+        data: entityId,
+      };
+    } else {
+      ctx.status = 400;
+      ctx.body = {
+        status: 'error',
+        message: 'Something went wrong',
       };
     }
   } catch (err) {
