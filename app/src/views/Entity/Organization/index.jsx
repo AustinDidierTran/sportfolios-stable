@@ -1,6 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
-
-import { Store } from '../../../Store';
+import React, { useState } from 'react';
 
 import { Tab, Tabs } from '../../../components/MUI';
 import { Container, Paper } from '../../../components/Custom';
@@ -9,7 +7,6 @@ import styles from './Organization.module.css';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '../../../hooks/queries';
-import api from '../../../actions/api';
 
 import BasicInfos from '../BasicInfos';
 import NextEvents from '../NextEvents';
