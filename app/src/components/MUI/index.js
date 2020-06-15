@@ -18,7 +18,6 @@ export { default as Menu } from './Menu';
 export { default as MenuItem } from './MenuItem';
 export { default as Paper } from './Paper';
 export { default as Popover } from './Popover';
-export { default as Select } from './Select';
 export { default as Table } from './Table';
 export { default as Tab } from './Tab';
 export { default as TableBody } from './TableBody';

@@ -6,7 +6,7 @@ export default {
     added_to_cart: 'Ajouté au panier',
     add_admin: 'Ajouter admin',
     add_editor: 'Ajouter éditeur',
-    admin: 'Administrateur',
+    admin: 'Admin',
     admins: 'Administrateurs',
     adress: 'Addresse',
     app_role: 'App Role',
@@ -24,6 +24,7 @@ export default {
     create_team: 'Créer une équipe',
     donate: 'Faites un don',
     done: 'Terminé',
+    editor: 'Éditeur',
     email: 'Courriel',
     emails: 'Courriels',
     email_confirmed:
@@ -95,6 +96,7 @@ export default {
     team: 'Équipe',
     team_history: "Historique de l'équipe",
     teams: 'Équipes',
+    viewer: 'Visiteur',
     your_upcoming_events: 'Vos prochains événements',
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',

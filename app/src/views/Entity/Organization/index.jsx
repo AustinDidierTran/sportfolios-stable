@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+
+import { Store } from '../../../Store';
 
 import { Tab, Tabs } from '../../../components/MUI';
 import { Container, Paper } from '../../../components/Custom';
@@ -7,6 +9,7 @@ import styles from './Organization.module.css';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '../../../hooks/queries';
+import api from '../../../actions/api';
 
 import BasicInfos from '../BasicInfos';
 import NextEvents from '../NextEvents';
@@ -27,8 +30,6 @@ export default function Organization(props) {
   const { t } = useTranslation();
   const { id } = useParams();
   const query = useQuery();
-
-  const isManager = id === id; //Need query to identify users that are managers
 
   const [eventState, setEventState] = useState(
     query.tab || TABS_ENUM.GENERAL,
@@ -72,7 +73,7 @@ export default function Organization(props) {
     <Container className={styles.container}>
       <Paper className={styles.card}>
         <Container className={styles.title}>
-          <BasicInfos basicInfos={basicInfos} isManager={isManager} />
+          <BasicInfos basicInfos={basicInfos} />
         </Container>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}

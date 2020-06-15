@@ -6,9 +6,8 @@ import {
   Button,
   CardContent,
   CardActions,
-  Select,
 } from '../../../components/MUI';
-import { Paper } from '../../../components/Custom';
+import { Paper, Select } from '../../../components/Custom';
 import styles from './BasicInfo.module.css';
 
 import api from '../../../actions/api';

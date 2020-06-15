@@ -78,7 +78,7 @@ async function getAllEntities(params) {
 
   if (type) {
     return knex('entities')
-      .select('id', 'type', 'name', 'photo_url')
+      .select('id', 'type', 'name', 'surname', 'photo_url')
       .leftJoin(
         'entities_name',
         'entities.id',
@@ -95,7 +95,7 @@ async function getAllEntities(params) {
   }
 
   return knex('entities')
-    .select('id', 'type', 'name', 'photo_url')
+    .select('id', 'type', 'name', 'surname', 'photo_url')
     .leftJoin(
       'entities_name',
       'entities.id',
@@ -129,7 +129,7 @@ async function getAllTypeEntities(type) {
 }
 
 async function getAllRolesEntity(entity_id) {
-  return await knex('entities_role')
+  return knex('entities_role')
     .select('entity_id_admin', 'role', 'name', 'surname', 'photo_url')
     .leftJoin(
       'entities_name',
@@ -176,7 +176,7 @@ async function getEntity(id, user_id) {
     role = row.role;
   } else {
     const [row] = await knex('entities_role')
-      .select('role')
+      .select('entities_role.role')
       .leftJoin(
         'user_entity_role',
         'entities_role.entity_id_admin',
@@ -191,30 +191,37 @@ async function getEntity(id, user_id) {
   return { ...entity, role };
 }
 
+async function updateEntityRole(entity_id, entity_id_admin, role) {
+  const [entity] = await knex('entities_role')
+    .update({ role })
+    .where({ entity_id, entity_id_admin })
+    .returning(['role']);
+  return entity;
+}
+
 async function updateEntityName(entity_id, name, surname) {
-  const update = {};
-  if (name) {
-    update.name = name;
-  }
-  if (surname) {
-    update.surname = surname;
-  }
-  return await knex('entities_name')
-    .update(update)
+  return knex('entities_name')
+    .update({ name, surname })
     .where({ entity_id })
     .returning(['entity_id', 'name', 'surname']);
 }
 
 async function updateEntityPhoto(entity_id, photo_url) {
-  return await knex('entities_photo')
+  return knex('entities_photo')
     .update({ photo_url })
     .where({ entity_id })
     .returning(['entity_id', 'photo_url']);
 }
 
+async function addEntityRole(entity_id, entity_id_admin, role) {
+  return knex('entities_role')
+    .insert({ entity_id, entity_id_admin, role })
+    .returning(['entity_id', 'entity_id_admin', 'role']);
+}
+
 async function getUsersAuthorization(id) {
   const res = await knex('user_entity_role')
-    .select(['user_id'])
+    .select(['user_id', 'entities_role.role'])
     .leftJoin(
       'entities_role',
       'user_entity_role.entity_id',
@@ -223,18 +230,18 @@ async function getUsersAuthorization(id) {
     )
     .where('entities_role.entity_id', id);
 
-  const userId = res.map(res => res.user_id);
-
-  return userId;
+  return res;
 }
 
 module.exports = {
   addEntity,
+  getEntity,
   getAllEntities,
   getAllTypeEntities,
-  getEntity,
+  getAllRolesEntity,
   updateEntityName,
   updateEntityPhoto,
-  getAllRolesEntity,
+  updateEntityRole,
+  addEntityRole,
   getUsersAuthorization,
 };

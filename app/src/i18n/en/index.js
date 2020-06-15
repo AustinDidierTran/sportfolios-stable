@@ -24,6 +24,7 @@ export default {
     create_team: 'Create Team',
     donate: 'Donate',
     done: 'Done',
+    editor: 'Editor',
     email: 'Email',
     emails: 'Emails',
     email_confirmed:
@@ -91,6 +92,7 @@ export default {
     team: 'Teams',
     team_history: 'Team History',
     teams: 'Teams',
+    viewer: 'Viewer',
     your_upcoming_events: 'Your Upcoming Events',
     // Validation
     confirm_new_password: 'Confirm New Password',
