@@ -25,6 +25,10 @@ export default {
     donate: 'Donate',
     done: 'Done',
     editor: 'Editor',
+<<<<<<< HEAD
+=======
+    elite_member: 'Elite Member',
+>>>>>>> WIP Front End
     email: 'Email',
     emails: 'Emails',
     email_confirmed:
@@ -68,6 +72,7 @@ export default {
     phone_number: 'Phone Number',
     people: 'People',
     ranking: 'Ranking',
+    recreational_member: 'Recreational Membership',
     registration_status: 'Registration Status',
     register: 'Register',
     registered: 'Registered',
