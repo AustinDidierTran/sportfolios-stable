@@ -25,6 +25,10 @@ export default {
     donate: 'Faites un don',
     done: 'Terminé',
     editor: 'Éditeur',
+<<<<<<< HEAD
+=======
+    elite_member: 'Membre élite',
+>>>>>>> WIP Front End
     email: 'Courriel',
     emails: 'Courriels',
     email_confirmed:
@@ -70,6 +74,7 @@ export default {
     pre_ranking: 'Préclassement',
     phone_number: 'Numéro de téléphone',
     ranking: 'Classement',
+    recreational_member: 'Membre récréatif',
     register: "S'inscrire",
     registered: 'inscrit',
     results: 'Résultats',

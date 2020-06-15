@@ -39,6 +39,11 @@ export default function BasicInfos(props) {
     ENTITIES_ROLE_ENUM.EDITOR,
   ].includes(role);
 
+  const isEditor = [
+    ENTITIES_ROLE_ENUM.ADMIN,
+    ENTITIES_ROLE_ENUM.EDITOR,
+  ].includes(role);
+
   const [photo_url, setPhoto_url] = useState(initialPhoto_url);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -154,7 +159,9 @@ export default function BasicInfos(props) {
               namespace="Name"
             />
           ) : (
-            <Typography variant="h3">{name.value}</Typography>
+            <Typography variant="h3" className={styles.title}>
+              {name.value}
+            </Typography>
           )}
         </div>
       ) : (
@@ -164,7 +171,7 @@ export default function BasicInfos(props) {
         isEditMode ? (
           <Container className={styles.buttons}>
             <Button
-              className={styles.save}
+              className={styles.button1}
               endIcon="Check"
               onClick={onSave}
               style={{ marginRight: '8px' }}
@@ -172,7 +179,7 @@ export default function BasicInfos(props) {
               {t('save')}
             </Button>
             <Button
-              className={styles.cancel}
+              className={styles.button2}
               endIcon="Close"
               onClick={onCancel}
               style={{ marginLeft: '8px' }}
@@ -195,10 +202,10 @@ export default function BasicInfos(props) {
           </Container>
         )
       ) : (
-        <>
-          <BecomeMember className={styles.button} />
-          <Donate className={styles.button} />
-        </>
+        <div className={styles.buttons}>
+          <BecomeMember className={styles.button1} />
+          <Donate className={styles.button2} />
+        </div>
       )}
     </Container>
   );

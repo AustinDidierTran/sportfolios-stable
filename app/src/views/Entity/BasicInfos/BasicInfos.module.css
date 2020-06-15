@@ -13,17 +13,21 @@
 .edit {
   padding-top: 8px;
 }
+
+.title {
+  padding: 8px;
+}
 @media (min-width: 768px) {
   .buttons {
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-areas: '. save cancel .';
+    grid-template-areas: '. button1 button2 .';
   }
-  .cancel {
-    grid-area: cancel;
+  .button1 {
+    grid-area: button1;
   }
 
-  .save {
-    grid-area: save;
+  .button2 {
+    grid-area: button2;
   }
   .textField {
     width: 50% !important;

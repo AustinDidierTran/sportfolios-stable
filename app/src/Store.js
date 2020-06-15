@@ -56,6 +56,12 @@ export const ENTITIES_ROLE_ENUM = {
   VIEWER: 3,
 };
 
+export const MEMBERSHIP_TYPE_ENUM = {
+  RECREATIONAL: 1,
+  COMPETITIVE: 2,
+  ELITE: 3,
+};
+
 function reducer(state, action) {
   switch (action.type) {
     case ACTION_ENUM.LOGIN: {
