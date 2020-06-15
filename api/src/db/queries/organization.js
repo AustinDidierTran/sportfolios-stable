@@ -26,24 +26,30 @@ const addOrganization = async (props, user_id) => {
 };
 
 async function updateOrganization(body, user_id) {
-  const { id, name, photo_url } = body;
+  const { id, name, surname, photo_url } = body;
 
-  const [{ role }] = await knex('entities_role')
-    .select(['role'])
-    .where({ entity_id: id, user_id });
-
-  if (
-    [ENTITIES_ROLE_ENUM.ADMIN, ENTITIES_ROLE_ENUM.EDITOR].includes(
-      role,
+  const res = await knex('user_entity_role')
+    .select(['user_id'])
+    .leftJoin(
+      'entities_role',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_role.entity_id_admin',
     )
-  ) {
-    if (name) {
-      await updateEntityNameHelper(id, name);
+    .where('entities_role.entity_id', id);
+
+  const userId = res.map(res => res.user_id);
+
+  const isAuthorized = userId.includes(user_id);
+
+  if (isAuthorized) {
+    if (name || surname) {
+      await updateEntityNameHelper(id, name, surname);
     }
     if (photo_url) {
       await updateEntityPhotoHelper(id, photo_url);
     }
-    return { id, name, photo_url };
+    return { id, name, surname, photo_url };
   }
 }
 

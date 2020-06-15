@@ -48,5 +48,7 @@ export async function uploadEntityPicture(id, img) {
 
   await changeEntityURL(id, data.url);
 
+  console.log(data.url);
+
   return data.url;
 }
