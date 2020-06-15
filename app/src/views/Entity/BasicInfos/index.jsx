@@ -39,11 +39,6 @@ export default function BasicInfos(props) {
     ENTITIES_ROLE_ENUM.EDITOR,
   ].includes(role);
 
-  const isEditor = [
-    ENTITIES_ROLE_ENUM.ADMIN,
-    ENTITIES_ROLE_ENUM.EDITOR,
-  ].includes(role);
-
   const [photo_url, setPhoto_url] = useState(initialPhoto_url);
 
   const [isLoading, setIsLoading] = useState(false);
