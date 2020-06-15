@@ -7,6 +7,7 @@ export const ROUTES = {
   confirmEmailFailure: '/ConfirmEmailFailure',
   confirmEmailSuccess: '/confirmEmailSuccess',
   createOrganization: '/organization/create',
+  createPerson: '/person/create',
   createTeam: '/team/create',
   entity: '/:id',
   entityNotFound: '/entityNotFound',

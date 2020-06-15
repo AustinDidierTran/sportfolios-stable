@@ -1,6 +1,7 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
+import { ENTITIES_ROLE_ENUM } from '../../../../../../common/enums';
 
 import styles from './BasicInfos.module.css';
 
@@ -26,20 +27,23 @@ export default function BasicInfos(props) {
   const [isEditMode, setEditMode] = useState(false);
 
   const {
-    first_name,
     id,
-    last_name,
-    name,
+    name: nameProp,
+    surname: surnameProp,
     birth_date,
     photo_url,
+    role,
   } = props.basicInfos;
 
-  const completeName = `${first_name} ${last_name}`;
+  const completeName = useMemo(
+    () => (surnameProp ? `${nameProp} ${surnameProp}` : nameProp),
+    [nameProp, surnameProp],
+  );
 
-  const initials = getInitialsFromName(name || completeName);
+  const initials = getInitialsFromName(completeName);
   const birthDate = useFormInput(birth_date);
-
-  const { isSelf } = props;
+  const name = useFormInput(nameProp);
+  const surname = useFormInput(surnameProp);
 
   const onSave = async () => {
     const promises = [];
@@ -142,22 +146,20 @@ export default function BasicInfos(props) {
         {isEditMode ? (
           <>
             <TextField
-              namespace="firstName"
+              namespace="name"
               type="text"
-              label={t('first_name')}
-              value={first_name}
-              onChange={onFirstNameChange}
+              label={t('name')}
+              {...name.inputProps}
             />
             <TextField
-              namespace="lastName"
+              namespace="surname"
               type="text"
-              label={t('last_name')}
-              value={last_name}
-              onChange={onLastNameChange}
+              label={t('surname')}
+              {...surname.inputProps}
             />
           </>
         ) : (
-          <Typography variant="h3">{name}</Typography>
+          <Typography variant="h3">{completeName}</Typography>
         )}
       </div>
       {isEditMode ? (
@@ -173,7 +175,7 @@ export default function BasicInfos(props) {
       ) : (
         <></>
       )}
-      {isSelf ? (
+      {role === ENTITIES_ROLE_ENUM.ADMIN ? (
         isEditMode ? (
           <>
             <Button

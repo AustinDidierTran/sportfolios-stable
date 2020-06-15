@@ -12,8 +12,8 @@ const {
   getUsersAuthorization: getUsersAuthorizationHelper,
 } = require('../helpers/entity');
 
-async function getEntity(id) {
-  return getEntityHelper(id);
+async function getEntity(id, user_id) {
+  return getEntityHelper(id, user_id);
 }
 
 async function getAllEntities(params) {
