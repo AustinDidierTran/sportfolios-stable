@@ -25,10 +25,7 @@ export default {
     donate: 'Faites un don',
     done: 'Terminé',
     editor: 'Éditeur',
-<<<<<<< HEAD
-=======
     elite_member: 'Membre élite',
->>>>>>> WIP Front End
     email: 'Courriel',
     emails: 'Courriels',
     email_confirmed:

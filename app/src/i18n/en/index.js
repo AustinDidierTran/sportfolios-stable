@@ -25,10 +25,7 @@ export default {
     donate: 'Donate',
     done: 'Done',
     editor: 'Editor',
-<<<<<<< HEAD
-=======
     elite_member: 'Elite Member',
->>>>>>> WIP Front End
     email: 'Email',
     emails: 'Emails',
     email_confirmed:
