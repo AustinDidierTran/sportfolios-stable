@@ -82,4 +82,61 @@ router.post(`${BASE_URL}/paymentIntent`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/createCustomer`, async ctx => {
+  try {
+    const data = await queries.addCustomer(
+      ctx.request.body,
+      ctx.body.userInfo.id,
+    );
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/createInvoiceItem`, async ctx => {
+  try {
+    const data = await queries.addInvoiceItem(
+      ctx.request.body,
+      ctx.body.userInfo.id,
+    );
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/payInvoice`, async ctx => {
+  try {
+    const data = await queries.addInvoice(
+      ctx.request.body,
+      ctx.body.userInfo.id,
+    );
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
 module.exports = router;
