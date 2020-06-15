@@ -7,6 +7,7 @@ const {
   getAllTypeEntities: getAllTypeEntitiesHelper,
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
+  getUsersAuthorization: getUsersAuthorizationHelper,
 } = require('../helpers/entity');
 
 const {
@@ -28,17 +29,7 @@ const addOrganization = async (props, user_id) => {
 async function updateOrganization(body, user_id) {
   const { id, name, surname, photo_url } = body;
 
-  const res = await knex('user_entity_role')
-    .select(['user_id'])
-    .leftJoin(
-      'entities_role',
-      'user_entity_role.entity_id',
-      '=',
-      'entities_role.entity_id_admin',
-    )
-    .where('entities_role.entity_id', id);
-
-  const userId = res.map(res => res.user_id);
+  const userId = getUsersAuthorizationHelper(id);
 
   const isAuthorized = userId.includes(user_id);
 

@@ -86,6 +86,22 @@ async function updateEntityPhoto(entity_id, photo_url) {
     .returning(['entity_id', 'photo_url']);
 }
 
+async function getUsersAuthorization(id) {
+  const res = await knex('user_entity_role')
+    .select(['user_id'])
+    .leftJoin(
+      'entities_role',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_role.entity_id_admin',
+    )
+    .where('entities_role.entity_id', id);
+
+  const userId = res.map(res => res.user_id);
+
+  return userId;
+}
+
 module.exports = {
   getAllEntities,
   getAllTypeEntities,
@@ -93,4 +109,5 @@ module.exports = {
   updateEntityName,
   updateEntityPhoto,
   getAllRolesEntity,
+  getUsersAuthorization,
 };
