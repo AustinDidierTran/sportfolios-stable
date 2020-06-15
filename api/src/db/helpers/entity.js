@@ -73,8 +73,15 @@ async function getEntity(id) {
 }
 
 async function updateEntityName(entity_id, name, surname) {
+  const update = {};
+  if (name) {
+    update.name = name;
+  }
+  if (surname) {
+    update.surname = surname;
+  }
   return await knex('entities_name')
-    .update({ name, surname })
+    .update(update)
     .where({ entity_id })
     .returning(['entity_id', 'name', 'surname']);
 }
