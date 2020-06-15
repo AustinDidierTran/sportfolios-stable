@@ -48,7 +48,7 @@ export default function ManageRoles() {
   };
 
   const items = [
-    { display: 'Admin', value: ENTITIES_ROLE_ENUM.ADMIN },
+    { display: t('Admin'), value: ENTITIES_ROLE_ENUM.ADMIN },
     { display: t('editor'), value: ENTITIES_ROLE_ENUM.EDITOR },
     { display: t('viewer'), value: ENTITIES_ROLE_ENUM.VIEWER },
   ];

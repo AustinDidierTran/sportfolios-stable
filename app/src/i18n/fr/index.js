@@ -6,7 +6,7 @@ export default {
     added_to_cart: 'Ajouté au panier',
     add_admin: 'Ajouter admin',
     add_editor: 'Ajouter éditeur',
-    admin: 'Administrateur',
+    admin: 'Admin',
     admins: 'Administrateurs',
     adress: 'Addresse',
     app_role: 'App Role',
