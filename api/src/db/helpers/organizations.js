@@ -25,7 +25,13 @@ async function addOrganization(props, user_id) {
 
   const [entity_id_admin] = await knex('persons')
     .select(['id'])
-    .where({ user_id });
+    .leftJoin(
+      'user_entity_role',
+      'user_entity_role.entity_id',
+      '=',
+      'persons.id',
+    )
+    .where('user_entity_role.user_id', user_id);
 
   await knex('entities_role').insert({
     entity_id: entity_id.id,

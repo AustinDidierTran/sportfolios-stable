@@ -87,11 +87,11 @@ const getBasicUserInfoFromId = async user_id => {
     WHERE user_id = '${user_id}'`,
   );
 
-  const [{ app_role }] = await knex('user_app_role')
+  const [{ app_role } = {}] = await knex('user_app_role')
     .select(['app_role'])
     .where({ user_id });
 
-  const [{ language }] = await knex('users')
+  const [{ language } = {}] = await knex('users')
     .select('language')
     .where({ id: user_id });
 
