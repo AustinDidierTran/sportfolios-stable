@@ -5,6 +5,15 @@ const BUSINESS_TYPE_ENUM = {
   NON_PROFIT: 'non_profit',
 };
 
+const INVOICE_STATUS_ENUM = {
+  DRAFT: 'draft',
+  DELETED: 'deleted',
+  OPEN: 'open',
+  PAID: 'paid',
+  UNCOLLECTIBLE: 'uncollectible',
+  VOID: 'void',
+};
+
 const TEST_EXTERNAL_ACCOUNT = {
   CA: {
     PAYOUT_SUCCEED: {
@@ -52,4 +61,8 @@ const TEST_EXTERNAL_ACCOUNT = {
   },
 };
 
-module.exports = { BUSINESS_TYPE_ENUM, TEST_EXTERNAL_ACCOUNT };
+module.exports = {
+  BUSINESS_TYPE_ENUM,
+  INVOICE_STATUS_ENUM,
+  TEST_EXTERNAL_ACCOUNT,
+};
