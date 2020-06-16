@@ -1,7 +1,10 @@
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
 const uuid = require('uuid');
-const { ENTITIES_TYPE_ENUM } = require('../../../../common/enums');
+const {
+  ENTITIES_ROLE_ENUM,
+  ENTITIES_TYPE_ENUM,
+} = require('../../../../common/enums');
 
 const {
   sendConfirmationEmail,
@@ -13,40 +16,44 @@ const confirmEmail = async ({ email }) => {
     .where({ email });
 };
 
-const createUser = async password => {
-  const userArray = await knex('users')
-    .insert({ password })
-    .returning(['id']);
+const createUserComplete = async body => {
+  const { password, email, name, surname } = body;
 
-  return userArray[0];
-};
+  await knex.transaction(async trx => {
+    // Create user
+    const [user_id] = await knex('users')
+      .insert({ password })
+      .returning('id')
+      .transacting(trx);
 
-const createUserEmail = async ({ user_id, email }) => {
-  await knex('user_email').insert({
-    user_id,
-    email,
-  });
-};
+    // Create user email
+    await knex('user_email')
+      .insert({ user_id, email })
+      .transacting(trx);
 
-const createUserInfo = async ({ user_id, first_name, last_name }) => {
-  const [id] = await knex('entities')
-    .insert({
-      type: ENTITIES_TYPE_ENUM.PERSON,
-    })
-    .returning('id');
+    // Create user info
+    const [entity_id] = await knex('entities')
+      .insert({
+        type: ENTITIES_TYPE_ENUM.PERSON,
+      })
+      .returning('id')
+      .transacting(trx);
 
-  await knex('entities_name')
-    .insert({
-      id,
-      name: first_name,
-      surname: last_name,
-    })
-    .returning('id');
+    await knex('entities_name')
+      .insert({
+        entity_id,
+        name,
+        surname,
+      })
+      .transacting(trx);
 
-  return knex('user_entity_role').insert({
-    user_id,
-    entity_id: id,
-    role: 1,
+    await knex('user_entity_role')
+      .insert({
+        user_id,
+        entity_id,
+        role: ENTITIES_ROLE_ENUM.ADMIN,
+      })
+      .transacting(trx);
   });
 };
 
@@ -223,9 +230,7 @@ const sendNewConfirmationEmailAllIncluded = async email => {
 
 module.exports = {
   confirmEmail,
-  createUser,
-  createUserEmail,
-  createUserInfo,
+  createUserComplete,
   createConfirmationEmailToken,
   createRecoveryEmailToken,
   generateHashedPassword,
