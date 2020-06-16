@@ -4,7 +4,6 @@ const {
   ENTITIES_ROLE_ENUM,
   ENTITIES_TYPE_ENUM,
 } = require('../../../../common/enums');
-const { where } = require('../connection');
 
 const addEntity = async (body, user_id) => {
   const { name, surname, type } = body;

@@ -5,11 +5,7 @@ import styles from './BasicInfos.module.css';
 import BecomeMember from './BecomeMember';
 import Donate from './Donate';
 import { uploadEntityPicture } from '../../../actions/aws';
-import {
-  ACTION_ENUM,
-  ENTITIES_ROLE_ENUM,
-  Store,
-} from '../../../Store';
+import { ACTION_ENUM, Store } from '../../../Store';
 import { useFormInput } from '../../../hooks/forms';
 import api from '../../../actions/api';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -30,7 +26,7 @@ export default function BasicInfos(props) {
       id,
       name: initialName,
       photo_url: initialPhoto_url,
-      role,
+      //role,
     },
   } = props;
 

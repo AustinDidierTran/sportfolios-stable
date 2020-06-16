@@ -3,12 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './BecomeMember.module.css';
 
-import {
-  MEMBERSHIP_TYPE_ENUM,
-  ENTITIES_TYPE_ENUM,
-} from '../../../../Store';
+import { MEMBERSHIP_TYPE_ENUM } from '../../../../Store';
 import { Select, Button } from '../../../../components/Custom';
-import { Container } from '../../../../components/MUI';
 import api from '../../../../actions/api';
 import Fade from '@material-ui/core/Fade';
 import Menu from '@material-ui/core/Menu';
@@ -63,7 +59,6 @@ export default function BecomeMember() {
   };
 
   const handleChange = async event => {
-    //console.log({ event });
     // await updateMembership(event.target.value);
     setIsMember(true);
   };
