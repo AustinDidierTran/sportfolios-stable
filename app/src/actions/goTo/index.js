@@ -15,6 +15,7 @@ export const ROUTES = {
   forgotPassword: '/forgotPassword',
   home: '/',
   login: '/login',
+  memberships: '/memberships/:id',
   menu: '/menu',
   mockEvent: '/mock/Event/:openTab',
   notifications: '/notifications',

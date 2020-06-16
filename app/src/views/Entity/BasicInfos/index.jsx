@@ -195,7 +195,10 @@ export default function BasicInfos(props) {
         )
       ) : (
         <div className={styles.visitor}>
-          <BecomeMember className={styles.becomeMember} />
+          <BecomeMember
+            className={styles.becomeMember}
+            entity_id={id}
+          />
           <Donate className={styles.donate} />
         </div>
       )}

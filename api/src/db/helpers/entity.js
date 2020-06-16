@@ -246,15 +246,16 @@ async function getUsersAuthorization(id) {
 }
 
 async function addMember(member_type, organization_id, person_id) {
-  const [{ res } = {}] = await knex('memberships').insert({
-    member_type,
-    organization_id,
-    person_id,
-    expiration_date: knex.raw('date_add(?, INTERVAL ? year)', [
-      knex.fn.now(),
-      1,
-    ]),
-  });
+  const [res] = await knex('memberships')
+    .insert({
+      member_type,
+      organization_id,
+      person_id,
+      expiration_date: new Date(
+        new Date().setFullYear(new Date().getFullYear() + 1),
+      ),
+    })
+    .returning('*');
   return res;
 }
 

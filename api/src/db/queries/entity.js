@@ -85,6 +85,7 @@ async function addMember(body) {
     organization_id,
     person_id,
   );
+  console.log({ res });
   return res;
 }
 
