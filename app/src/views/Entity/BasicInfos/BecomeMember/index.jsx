@@ -51,7 +51,6 @@ export default function BecomeMember() {
       setOpenMemberships(true);
     } else {
       setOpenPersons(true);
-      console.log('allo');
     }
   };
 
@@ -64,7 +63,7 @@ export default function BecomeMember() {
   };
 
   const handleChange = async event => {
-    console.log({ event });
+    //console.log({ event });
     // await updateMembership(event.target.value);
     setIsMember(true);
   };

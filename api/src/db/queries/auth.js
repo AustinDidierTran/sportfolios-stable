@@ -84,7 +84,6 @@ const login = async ({ email, password }) => {
 
   if (isSame) {
     const token = generateToken();
-    console.log(token);
     await knex('user_token').insert({
       user_id: user_id,
       token_id: token,
