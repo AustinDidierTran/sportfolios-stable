@@ -4,6 +4,7 @@ const { signS3Request } = require('../../server/utils/aws');
 const {
   addEntity: addEntityHelper,
   addEntityRole: addEntityRoleHelper,
+  addMember: addMemberHelper,
   getAllEntities: getAllEntitiesHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
@@ -77,8 +78,19 @@ async function addEntityRole(body) {
   await addEntityRoleHelper(entity_id, entity_id_admin, role);
 }
 
+async function addMember(body) {
+  const { member_type, organization_id, person_id } = body;
+  const res = await addMemberHelper(
+    member_type,
+    organization_id,
+    person_id,
+  );
+  return res;
+}
+
 module.exports = {
   addEntity,
+  addMember,
   getEntity,
   addEntityRole,
   getAllEntities,

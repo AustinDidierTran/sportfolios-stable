@@ -4,6 +4,7 @@ const {
   ENTITIES_ROLE_ENUM,
   ENTITIES_TYPE_ENUM,
 } = require('../../../../common/enums');
+const { where } = require('../connection');
 
 const addEntity = async (body, user_id) => {
   const { name, surname, type } = body;
@@ -245,8 +246,22 @@ async function getUsersAuthorization(id) {
     .where('entities_role.entity_id', id);
 }
 
+async function addMember(member_type, organization_id, person_id) {
+  const [{ res } = {}] = await knex('memberships').insert({
+    member_type,
+    organization_id,
+    person_id,
+    expiration_date: knex.raw('date_add(?, INTERVAL ? year)', [
+      knex.fn.now(),
+      1,
+    ]),
+  });
+  return res;
+}
+
 module.exports = {
   addEntity,
+  addMember,
   getEntity,
   getAllEntities,
   getAllTypeEntities,

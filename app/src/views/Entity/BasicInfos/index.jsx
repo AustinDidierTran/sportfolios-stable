@@ -34,10 +34,11 @@ export default function BasicInfos(props) {
     },
   } = props;
 
-  const isEditor = [
-    ENTITIES_ROLE_ENUM.ADMIN,
-    ENTITIES_ROLE_ENUM.EDITOR,
-  ].includes(role);
+  const isEditor = false; //TO BE CHANGED
+  // [
+  //   ENTITIES_ROLE_ENUM.ADMIN,
+  //   ENTITIES_ROLE_ENUM.EDITOR,
+  // ].includes(role);
 
   const [photo_url, setPhoto_url] = useState(initialPhoto_url);
 
@@ -164,9 +165,9 @@ export default function BasicInfos(props) {
       )}
       {isEditor ? (
         isEditMode ? (
-          <Container className={styles.buttons}>
+          <div className={styles.editor}>
             <Button
-              className={styles.button1}
+              className={styles.save}
               endIcon="Check"
               onClick={onSave}
               style={{ marginRight: '8px' }}
@@ -174,7 +175,7 @@ export default function BasicInfos(props) {
               {t('save')}
             </Button>
             <Button
-              className={styles.button2}
+              className={styles.cancel}
               endIcon="Close"
               onClick={onCancel}
               style={{ marginLeft: '8px' }}
@@ -182,7 +183,7 @@ export default function BasicInfos(props) {
             >
               {t('cancel')}
             </Button>
-          </Container>
+          </div>
         ) : (
           <Container className={styles.edit}>
             <Button
@@ -197,9 +198,9 @@ export default function BasicInfos(props) {
           </Container>
         )
       ) : (
-        <div className={styles.buttons}>
-          <BecomeMember className={styles.button1} />
-          <Donate className={styles.button2} />
+        <div className={styles.visitor}>
+          <BecomeMember className={styles.becomeMember} />
+          <Donate className={styles.donate} />
         </div>
       )}
     </Container>

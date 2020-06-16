@@ -7,12 +7,13 @@ import {
   MEMBERSHIP_TYPE_ENUM,
   ENTITIES_TYPE_ENUM,
 } from '../../../../Store';
-import { Select } from '../../../../components/Custom';
+import { Select, Button } from '../../../../components/Custom';
+import { Container } from '../../../../components/MUI';
 import api from '../../../../actions/api';
 import Fade from '@material-ui/core/Fade';
-import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import { useParams } from 'react-router-dom';
 
 export default function BecomeMember() {
   const { t } = useTranslation();
@@ -38,14 +39,28 @@ export default function BecomeMember() {
     MEMBERSHIP_TYPE_ENUM.ELITE,
   );
 
-  const [open, setOpen] = useState(false);
+  const { entity_id } = useParams();
+
+  const [openMemberships, setOpenMemberships] = useState(false);
+  const [openPersons, setOpenPersons] = useState(false);
 
   const handleClick = () => {
-    setOpen(true);
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    const persons = userInfo.persons;
+    if (persons.length < 2) {
+      setOpenMemberships(true);
+    } else {
+      setOpenPersons(true);
+      console.log('allo');
+    }
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseMemberships = () => {
+    setOpenMemberships(false);
+  };
+
+  const handleClosePersons = () => {
+    setOpenPersons(false);
   };
 
   const handleChange = async event => {
@@ -54,23 +69,22 @@ export default function BecomeMember() {
     setIsMember(true);
   };
 
-  const handleClickMenu = async (event, type) => {
-    console.log({ event });
-    console.log({ type });
+  const handleClickMenuMemberships = async (event, type) => {
+    // await addMembership(type);
+
     handleClose();
     setIsMember(true);
-
-    // await addMembership(type);
   };
 
-  const addMembership = async type => {
-    const res = await api('/api/entity/addMember', {
-      //TODO
+  const handleClickMenuPersons = async (event, person_id) => {};
+
+  const addMembership = async (type, other_user_id) => {
+    const res = await api('/api/entity/member', {
       method: 'POST',
       body: JSON.stringify({
-        person_id,
-        type,
-        entity_id,
+        member_type: type,
+        organization_id: entity_id,
+        other_user_id,
       }),
     });
     setMembership(res);
@@ -93,33 +107,50 @@ export default function BecomeMember() {
     <Select
       value={membership}
       labelId="Role"
-      onChange={e => handleChange(e)}
+      onChange={handleChange}
       options={items}
+      style={{ marginTop: '0px' }}
     />
   ) : (
-    <div>
+    <>
       <Button
-        aria-controls="fade-menu"
-        aria-haspopup="true"
         onClick={handleClick}
         color="primary"
         variant="contained"
+        className={styles.becomeMember}
       >
         {t('become_member')}
       </Button>
       <Menu
         id="fade-menu"
         keepMounted
-        open={open}
-        onClose={handleClose}
+        open={openMemberships}
+        onClose={handleCloseMemberships}
         TransitionComponent={Fade}
       >
         {items.map(item => (
-          <MenuItem onClick={e => handleClickMenu(e, item.value)}>
+          <MenuItem
+            onClick={e => handleClickMenuMemberships(e, item.value)}
+          >
             {item.display}
           </MenuItem>
         ))}
       </Menu>
-    </div>
+      <Menu
+        id="fade-menu"
+        keepMounted
+        open={openPersons}
+        onClose={handleClosePersons}
+        TransitionComponent={Fade}
+      >
+        {persons.map(persons => (
+          <MenuItem
+            onClick={e => handleClickMenuPersons(e, persons.id)}
+          >
+            {person.name}
+          </MenuItem>
+        ))}
+      </Menu>
+    </>
   );
 }
