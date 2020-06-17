@@ -1,0 +1,23 @@
+.buttons {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  padding: 8px;
+}
+.select {
+  margin: 16px;
+}
+
+@media (min-width: 768px) {
+  .buttons {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-areas: '. becomeMember cancel .';
+  }
+
+  .becomeMember {
+    grid-area: becomeMember;
+  }
+
+  .cancel {
+    grid-area: cancel;
+  }
+}

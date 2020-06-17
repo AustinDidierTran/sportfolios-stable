@@ -17,8 +17,8 @@ export default function BecomeMember() {
       variant="contained"
       color="primary"
       onClick={handleClick}
-      className={styles.button}
       endIcon="AttachMoney"
+      className={styles.donate}
     >
       {t('donate')}
     </Button>

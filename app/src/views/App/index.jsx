@@ -23,6 +23,7 @@ import ForgotPassword from '../ForgotPassword';
 import Header from '../Header';
 import Login from '../Login';
 import Main from '../Main';
+import Memberships from '../Memberships';
 import Menu from '../Menu';
 import Notifications from '../../views/Notifications';
 import OrganizationList from '../Main/OrganizationList';
@@ -191,6 +192,11 @@ export default function App() {
                 exact
                 path={ROUTES.confirmationEmailSent}
                 component={ConfirmationEmailSent}
+              />
+              <Route
+                exact
+                path={ROUTES.memberships}
+                component={Memberships}
               />
               <Route
                 exact

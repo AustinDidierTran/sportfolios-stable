@@ -260,8 +260,23 @@ async function getUsersAuthorization(id) {
     .where('entities_role.entity_id', id);
 }
 
+async function addMember(member_type, organization_id, person_id) {
+  const [res] = await knex('memberships')
+    .insert({
+      member_type,
+      organization_id,
+      person_id,
+      expiration_date: new Date(
+        new Date().setFullYear(new Date().getFullYear() + 1),
+      ),
+    })
+    .returning('*');
+  return res;
+}
+
 module.exports = {
   addEntity,
+  addMember,
   getEntity,
   getAllEntities,
   getAllTypeEntities,

@@ -6,18 +6,35 @@
   padding: 8px !important;
 }
 
-.buttons {
+.editor {
   display: grid !important;
   grid-template-columns: 1fr 1fr;
 }
+
+.visitor {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 8px;
+}
+
 .edit {
   padding-top: 8px;
 }
+
+.title {
+  padding: 8px;
+}
 @media (min-width: 768px) {
-  .buttons {
+  .editor {
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-areas: '. save cancel .';
   }
+
+  .visitor {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-areas: '. becomeMember donate .';
+  }
+
   .cancel {
     grid-area: cancel;
   }
@@ -25,6 +42,15 @@
   .save {
     grid-area: save;
   }
+
+  .becomeMember {
+    grid-area: becomeMember;
+  }
+
+  .donate {
+    grid-area: donate;
+  }
+
   .textField {
     width: 50% !important;
   }

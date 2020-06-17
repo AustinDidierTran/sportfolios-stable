@@ -5,11 +5,7 @@ import styles from './BasicInfos.module.css';
 import BecomeMember from './BecomeMember';
 import Donate from './Donate';
 import { uploadEntityPicture } from '../../../actions/aws';
-import {
-  ACTION_ENUM,
-  ENTITIES_ROLE_ENUM,
-  Store,
-} from '../../../Store';
+import { ACTION_ENUM, Store } from '../../../Store';
 import { useFormInput } from '../../../hooks/forms';
 import api from '../../../actions/api';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -30,14 +26,15 @@ export default function BasicInfos(props) {
       id,
       name: initialName,
       photo_url: initialPhoto_url,
-      role,
+      //role,
     },
   } = props;
 
-  const isEditor = [
-    ENTITIES_ROLE_ENUM.ADMIN,
-    ENTITIES_ROLE_ENUM.EDITOR,
-  ].includes(role);
+  const isEditor = false; //TO BE CHANGED
+  // [
+  //   ENTITIES_ROLE_ENUM.ADMIN,
+  //   ENTITIES_ROLE_ENUM.EDITOR,
+  // ].includes(role);
 
   const [photo_url, setPhoto_url] = useState(initialPhoto_url);
 
@@ -154,7 +151,9 @@ export default function BasicInfos(props) {
               namespace="Name"
             />
           ) : (
-            <Typography variant="h3">{name.value}</Typography>
+            <Typography variant="h3" className={styles.title}>
+              {name.value}
+            </Typography>
           )}
         </div>
       ) : (
@@ -162,7 +161,7 @@ export default function BasicInfos(props) {
       )}
       {isEditor ? (
         isEditMode ? (
-          <Container className={styles.buttons}>
+          <div className={styles.editor}>
             <Button
               className={styles.save}
               endIcon="Check"
@@ -180,7 +179,7 @@ export default function BasicInfos(props) {
             >
               {t('cancel')}
             </Button>
-          </Container>
+          </div>
         ) : (
           <Container className={styles.edit}>
             <Button
@@ -195,10 +194,13 @@ export default function BasicInfos(props) {
           </Container>
         )
       ) : (
-        <>
-          <BecomeMember className={styles.button} />
-          <Donate className={styles.button} />
-        </>
+        <div className={styles.visitor}>
+          <BecomeMember
+            className={styles.becomeMember}
+            entity_id={id}
+          />
+          <Donate className={styles.donate} />
+        </div>
       )}
     </Container>
   );
