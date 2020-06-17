@@ -9,6 +9,8 @@ const {
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
   getEntity: getEntityHelper,
+  getMember: getMemberHelper,
+  getMemberships: getMembershipsHelper,
   getUsersAuthorization: getUsersAuthorizationHelper,
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
@@ -29,6 +31,12 @@ async function getAllTypeEntities(type) {
 
 async function getAllRolesEntity(id) {
   return getAllRolesEntityHelper(id);
+}
+async function getMember(person_id, member_type, organization_id) {
+  return getMemberHelper(person_id, member_type, organization_id);
+}
+async function getMemberships(entity_id) {
+  return getMembershipsHelper(entity_id);
 }
 
 const addEntity = async (body, user_id) => {
@@ -85,7 +93,6 @@ async function addMember(body) {
     organization_id,
     person_id,
   );
-  console.log({ res });
   return res;
 }
 
@@ -98,6 +105,8 @@ module.exports = {
   getAllRolesEntity,
   getAllTypeEntities,
   getEntity,
+  getMember,
+  getMemberships,
   getS3Signature,
   updateEntity,
   updateEntityRole,

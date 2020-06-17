@@ -2,8 +2,6 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './BasicInfos.module.css';
-import BecomeMember from './BecomeMember';
-import Donate from './Donate';
 import { uploadEntityPicture } from '../../../actions/aws';
 import { ACTION_ENUM, Store } from '../../../Store';
 import { useFormInput } from '../../../hooks/forms';
@@ -194,13 +192,7 @@ export default function BasicInfos(props) {
           </Container>
         )
       ) : (
-        <div className={styles.visitor}>
-          <BecomeMember
-            className={styles.becomeMember}
-            entity_id={id}
-          />
-          <Donate className={styles.donate} />
-        </div>
+        <></>
       )}
     </Container>
   );
