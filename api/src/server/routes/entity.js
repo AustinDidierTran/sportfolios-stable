@@ -57,24 +57,20 @@ router.get(`${BASE_URL}/all`, async ctx => {
   }
 });
 
-router.post(BASE_URL, async ctx => {
+router.get(`${BASE_URL}/roles`, async ctx => {
   try {
-    const entityId = await queries.addEntity(
-      ctx.request.body,
-      ctx.body.userInfo.id,
-    );
+    const entity = await queries.getAllRolesEntity(ctx.query.id);
 
-    if (entityId) {
-      ctx.status = 201;
+    if (entity) {
       ctx.body = {
         status: 'success',
-        data: entityId,
+        data: entity,
       };
     } else {
-      ctx.status = 400;
+      ctx.status = 404;
       ctx.body = {
         status: 'error',
-        message: 'Something went wrong',
+        message: 'That record does not exist.',
       };
     }
   } catch (err) {
@@ -86,9 +82,33 @@ router.post(BASE_URL, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/roles`, async ctx => {
+router.get(`${BASE_URL}/member`, async ctx => {
   try {
-    const entity = await queries.getAllRolesEntity(ctx.query.id);
+    const entity = await queries.getMember(ctx.request.body);
+
+    if (entity) {
+      ctx.body = {
+        status: 'success',
+        data: entity,
+      };
+    } else {
+      ctx.status = 404;
+      ctx.body = {
+        status: 'error',
+        message: 'That record does not exist.',
+      };
+    }
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+router.get(`${BASE_URL}/memberships`, async ctx => {
+  try {
+    const entity = await queries.getMemberships(ctx.query.id);
 
     if (entity) {
       ctx.body = {
@@ -181,6 +201,35 @@ router.put(`${BASE_URL}/role`, async ctx => {
       ctx.body = {
         status: 'error',
         message: 'That entity does not exist.',
+      };
+    }
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
+router.post(BASE_URL, async ctx => {
+  try {
+    const entityId = await queries.addEntity(
+      ctx.request.body,
+      ctx.body.userInfo.id,
+    );
+
+    if (entityId) {
+      ctx.status = 201;
+      ctx.body = {
+        status: 'success',
+        data: entityId,
+      };
+    } else {
+      ctx.status = 400;
+      ctx.body = {
+        status: 'error',
+        message: 'Something went wrong',
       };
     }
   } catch (err) {

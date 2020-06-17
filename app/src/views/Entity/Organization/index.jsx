@@ -89,7 +89,7 @@ export default function Organization(props) {
           ))}
         </Tabs>
       </Paper>
-      <OpenTab />
+      <OpenTab basicInfos={basicInfos} />
     </Container>
   );
 }

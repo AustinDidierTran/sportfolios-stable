@@ -206,6 +206,19 @@ async function getEntity(id, user_id) {
   return { ...entity, role };
 }
 
+async function getMember(person_id, member_type, organization_id) {
+  const [member] = await knex('memberships')
+    .select('*')
+    .where({ person_id, member_type, organization_id });
+  return member;
+}
+
+async function getMemberships(entity_id) {
+  return await knex('entity_memberships')
+    .select('*')
+    .where({ entity_id });
+}
+
 async function updateEntityRole(entity_id, entity_id_admin, role) {
   const [entity] = await knex('entities_role')
     .update({ role })
@@ -281,6 +294,8 @@ module.exports = {
   getAllEntities,
   getAllTypeEntities,
   getAllRolesEntity,
+  getMember,
+  getMemberships,
   updateEntityName,
   updateEntityPhoto,
   updateEntityRole,

@@ -9,7 +9,15 @@ const ENTITIES_ROLE_ENUM = {
   EDITOR: 2,
 };
 
+const LIST_ROW_TYPE_ENUM = {
+  PERSON: 1,
+  ORGANIZATION: 2,
+  TEAM: 3,
+  MEMBERSHIP: 4,
+};
+
 module.exports = {
   ENTITIES_ROLE_ENUM,
   ENTITIES_TYPE_ENUM,
+  LIST_ROW_TYPE_ENUM,
 };

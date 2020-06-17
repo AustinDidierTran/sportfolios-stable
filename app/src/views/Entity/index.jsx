@@ -6,12 +6,8 @@ import api from '../../actions/api';
 import { Redirect, useParams } from 'react-router-dom';
 import { goTo, ROUTES } from '../../actions/goTo';
 import Team from './Team';
+import { ENTITIES_TYPE_ENUM } from '../../../../common/enums';
 
-export const ENTITIES_TYPE_ENUM = {
-  PERSON: 1,
-  ORGANIZATION: 2,
-  TEAM: 3,
-};
 export default function Entity() {
   const { id } = useParams();
   const [basicInfos, setBasicInfos] = useState(null);

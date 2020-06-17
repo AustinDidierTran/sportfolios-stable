@@ -5,8 +5,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { List, ListSubheader } from '../../MUI';
 import DefaultItem from './DefaultItem';
 import PersonItem from './PersonItem';
+import MembershipItem from './MembershipItem';
 
-import { ENTITIES_TYPE_ENUM } from '../../../../../common/enums';
+import { LIST_ROW_TYPE_ENUM } from '../../../../../common/enums';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,14 +25,22 @@ export default function CustomList(props) {
   const classes = useStyles();
 
   const defaultRowRenderer = (item, index) => {
-    if (item.type === ENTITIES_TYPE_ENUM.ORGANIZATION) {
+    if (item.type === LIST_ROW_TYPE_ENUM.ORGANIZATION) {
       return (
         <DefaultItem {...item} selected={selectedIndex === index} />
       );
     }
-    if (item.type === ENTITIES_TYPE_ENUM.PERSON) {
+    if (item.type === LIST_ROW_TYPE_ENUM.PERSON) {
       return (
         <PersonItem {...item} selected={selectedIndex === index} />
+      );
+    }
+    if (item.type === LIST_ROW_TYPE_ENUM.MEMBERSHIP) {
+      return (
+        <MembershipItem
+          {...item}
+          selected={selectedIndex === index}
+        />
       );
     }
     return (

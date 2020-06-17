@@ -1,18 +1,33 @@
 import React from 'react';
 import Stripe from './Stripe';
 import ManageRoles from './ManageRoles';
+import Memberships from './Memberships';
 import { useParams } from 'react-router-dom';
+import { ENTITIES_ROLE_ENUM } from '../../../Store';
 import styles from './Settings.module.css';
 
-export default function OrganizationSettings() {
+export default function OrganizationSettings(props) {
   const { id } = useParams();
+
+  const { basicInfos } = props;
+
+  const { role } = basicInfos;
+
+  const isEditor = [
+    ENTITIES_ROLE_ENUM.ADMIN,
+    ENTITIES_ROLE_ENUM.EDITOR,
+  ].includes(!role); //! TO BE REMOVED
 
   return (
     <div className={styles.main}>
-      <Stripe id={id} />
-      <ManageRoles />
+      {isEditor ? (
+        <>
+          <Stripe id={id} />
+          <ManageRoles />
+        </>
+      ) : (
+        <Memberships basicInfos={basicInfos} />
+      )}
     </div>
   );
 }
-
-// http://localhost:3000/organization/e7a9a635-5d63-4f04-b063-a2d323d4f63e/settings
