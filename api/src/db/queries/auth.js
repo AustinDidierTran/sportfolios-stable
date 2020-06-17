@@ -6,9 +6,7 @@ const {
 } = require('../../server/utils/nodeMailer');
 const {
   confirmEmail: confirmEmailHelper,
-  createUser,
-  createUserEmail,
-  createUserInfo,
+  createUserComplete,
   createConfirmationEmailToken,
   createRecoveryEmailToken,
   generateHashedPassword,
@@ -38,14 +36,11 @@ const signup = async ({ firstName, lastName, email, password }) => {
 
   const confirmationEmailToken = generateToken();
 
-  const user = await createUser(hashedPassword);
-
-  await createUserEmail({ user_id: user.id, email });
-
-  await createUserInfo({
-    user_id: user.id,
-    first_name: firstName,
-    last_name: lastName,
+  await createUserComplete({
+    password: hashedPassword,
+    email,
+    name: firstName,
+    surname: lastName,
   });
 
   await createConfirmationEmailToken({

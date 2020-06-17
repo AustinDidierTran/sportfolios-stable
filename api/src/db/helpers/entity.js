@@ -8,69 +8,84 @@ const {
 const addEntity = async (body, user_id) => {
   const { name, surname, type } = body;
 
-  const [{ id: entity_id } = {}] = await knex('entities')
-    .insert({ type })
-    .returning(['id']);
+  return knex.transaction(async trx => {
+    const [{ id: entity_id } = {}] = await knex('entities')
+      .insert({ type })
+      .returning(['id'])
+      .transacting(trx);
 
-  await knex('entities_name').insert({
-    entity_id,
-    name,
-    surname,
-  });
+    await knex('entities_name')
+      .insert({
+        entity_id,
+        name,
+        surname,
+      })
+      .transacting(trx);
 
-  await knex('entities_photo').insert({
-    entity_id,
-  });
+    await knex('entities_photo')
+      .insert({
+        entity_id,
+      })
+      .transacting(trx);
 
-  if (
-    [
-      ENTITIES_TYPE_ENUM.TEAM,
-      ENTITIES_TYPE_ENUM.ORGANIZATION,
-    ].includes(type)
-  ) {
-    const [{ id: entity_id_admin } = {}] = await knex('persons')
-      .select(['id'])
-      .leftJoin(
-        'user_entity_role',
-        'user_entity_role.entity_id',
-        '=',
-        'persons.id',
-      )
-      .where('user_entity_role.user_id', user_id);
+    if (
+      [
+        ENTITIES_TYPE_ENUM.TEAM,
+        ENTITIES_TYPE_ENUM.ORGANIZATION,
+      ].includes(type)
+    ) {
+      const [{ id: entity_id_admin } = {}] = await knex('persons')
+        .select(['id'])
+        .leftJoin(
+          'user_entity_role',
+          'user_entity_role.entity_id',
+          '=',
+          'persons.id',
+        )
+        .where('user_entity_role.user_id', user_id)
+        .transacting(trx);
 
-    await knex('entities_role').insert({
-      entity_id,
-      entity_id_admin,
-      role: ENTITIES_ROLE_ENUM.ADMIN,
-    });
+      await knex('entities_role')
+        .insert({
+          entity_id,
+          entity_id_admin,
+          role: ENTITIES_ROLE_ENUM.ADMIN,
+        })
+        .transacting(trx);
 
-    if (type === ENTITIES_TYPE_ENUM.ORGANIZATION) {
-      const [organization] = await knex('organizations')
+      if (type === ENTITIES_TYPE_ENUM.ORGANIZATION) {
+        const [organization] = await knex('organizations')
+          .insert({ id: entity_id })
+          .returning(['id'])
+          .transacting(trx);
+
+        return organization;
+      }
+      if (type === ENTITIES_TYPE_ENUM.TEAM) {
+        const [team] = await knex('teams')
+          .insert({ id: entity_id })
+          .returning(['id'])
+          .transacting(trx);
+
+        return team;
+      }
+    } else if (ENTITIES_TYPE_ENUM.PERSON === type) {
+      await knex('user_entity_role')
+        .insert({
+          user_id,
+          entity_id,
+          role: ENTITIES_ROLE_ENUM.ADMIN,
+        })
+        .transacting(trx);
+
+      const [person] = await knex('persons')
         .insert({ id: entity_id })
-        .returning(['id']);
+        .returning(['id'])
+        .transacting(trx);
 
-      return organization;
+      return person;
     }
-    if (type === ENTITIES_TYPE_ENUM.TEAM) {
-      const [team] = await knex('teams')
-        .insert({ id: entity_id })
-        .returning(['id']);
-
-      return team;
-    }
-  } else if (ENTITIES_TYPE_ENUM.PERSON === type) {
-    await knex('user_entity_role').insert({
-      user_id,
-      entity_id,
-      role: ENTITIES_ROLE_ENUM.ADMIN,
-    });
-
-    const [person] = await knex('persons')
-      .insert({ id: entity_id })
-      .returning(['id']);
-
-    return person;
-  }
+  });
 };
 
 async function getAllEntities(params) {
