@@ -206,11 +206,20 @@ async function getEntity(id, user_id) {
   return { ...entity, role };
 }
 
-async function getMember(person_id, member_type, organization_id) {
-  const [member] = await knex('memberships')
+async function getMembers(personsString, organization_id) {
+  const persons = personsString.split(',');
+  const members = await knex('memberships')
     .select('*')
-    .where({ person_id, member_type, organization_id });
-  return member;
+    .rightJoin('persons', 'persons.id', '=', 'memberships.person_id')
+    .whereIn('persons.id', persons)
+    .andWhere({ organization_id });
+  return members.map(m => ({
+    organizationId: m.organization_id,
+    personId: m.person_id,
+    memberType: m.member_type,
+    expirationDate: m.expiration_date,
+    id: m.id,
+  }));
 }
 
 async function getMemberships(entity_id) {
@@ -294,7 +303,7 @@ module.exports = {
   getAllEntities,
   getAllTypeEntities,
   getAllRolesEntity,
-  getMember,
+  getMembers,
   getMemberships,
   updateEntityName,
   updateEntityPhoto,

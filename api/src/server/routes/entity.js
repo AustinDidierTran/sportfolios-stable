@@ -82,9 +82,12 @@ router.get(`${BASE_URL}/roles`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/member`, async ctx => {
+router.get(`${BASE_URL}/members`, async ctx => {
   try {
-    const entity = await queries.getMember(ctx.request.body);
+    const entity = await queries.getMembers(
+      ctx.query.personsId,
+      ctx.query.id,
+    );
 
     if (entity) {
       ctx.body = {
@@ -106,6 +109,7 @@ router.get(`${BASE_URL}/member`, async ctx => {
     };
   }
 });
+
 router.get(`${BASE_URL}/memberships`, async ctx => {
   try {
     const entity = await queries.getMemberships(ctx.query.id);

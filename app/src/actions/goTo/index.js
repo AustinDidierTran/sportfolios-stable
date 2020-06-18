@@ -28,7 +28,11 @@ export const ROUTES = {
   userSettings: '/userSettings',
 };
 
-export const formatRoute = (route, params = {}, queryParams = {}) => {
+export const formatRoute = (route, params, queryParams) => {
+  if (!params && !queryParams) {
+    return route;
+  }
+
   if (!route) {
     /* eslint-disable-next-line */
     console.error('Route is undefined');
@@ -40,6 +44,10 @@ export const formatRoute = (route, params = {}, queryParams = {}) => {
         route,
       )
     : route;
+
+  if (!queryParams) {
+    return withParams;
+  }
 
   return Object.keys(queryParams).reduce(
     (prev, key, index) =>
