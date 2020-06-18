@@ -17,6 +17,7 @@ export default function CustomAutocomplete(props) {
     onChange,
     optionsRoute,
     type,
+    ...otherProps
   } = props;
 
   const options = useApiRoute(optionsRoute, { defaultValue: [] });
@@ -69,7 +70,7 @@ export default function CustomAutocomplete(props) {
           />
         );
       }}
-      {...props}
+      {...otherProps}
       onChange={handleChange}
     />
   );
