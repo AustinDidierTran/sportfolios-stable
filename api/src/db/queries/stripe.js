@@ -9,6 +9,8 @@ const {
   createPaymentMethod,
   addPaymentMethodCustomer,
   removePaymentMethodCustomer,
+  addProduct,
+  addPrice,
 } = require('../helpers/stripe');
 
 const getAccountLink = async (entity_id, ip) => {
@@ -40,6 +42,14 @@ const addInvoice = async (body, user_id) => {
   return invoicePayment(body, user_id);
 };
 
+const finalizeInvoice = async (body, user_id) => {
+  return finalizeInvoiceFromInvoiceId(body, user_id);
+};
+
+const payInvoice = async (body, user_id) => {
+  return payInvoiceFromInvoiceId(body, user_id);
+};
+
 const paymentMethod = async (body, user_id) => {
   return createPaymentMethod(body, user_id);
 };
@@ -50,6 +60,14 @@ const attachPaymentMethod = async (body, user_id) => {
 
 const detachPaymentMethod = async (body, user_id) => {
   return removePaymentMethodCustomer(body, user_id);
+};
+
+const createProduct = async (body, user_id) => {
+  return addProduct(body, user_id);
+};
+
+const createPrice = async (body, user_id) => {
+  return addPrice(body, user_id);
 };
 
 module.exports = {
@@ -63,4 +81,8 @@ module.exports = {
   paymentMethod,
   attachPaymentMethod,
   detachPaymentMethod,
+  createProduct,
+  createPrice,
+  finalizeInvoice,
+  payInvoice,
 };

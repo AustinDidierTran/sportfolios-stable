@@ -1,13 +1,10 @@
-const {
-  BUSINESS_TYPE_ENUM,
-  TEST_EXTERNAL_ACCOUNT,
-} = require('./enums');
 const { CLIENT_BASE_URL } = require('../../../../../conf');
 const stripeFactories = require('./factories');
 const { accountParamsFactory } = stripeFactories;
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const knex = require('../../connection');
-
+const stripeEnums = require('./enums');
+const { BUSINESS_TYPE_ENUM, TEST_EXTERNAL_ACCOUNT } = stripeEnums;
 const getStripeAccountId = async senderId => {
   const data = await knex
     .select('account_id')
@@ -85,7 +82,7 @@ const createAccountLink = async props => {
 };
 
 const createExternalAccount = async (body, user_id, ip) => {
-  var created = 1;
+  let returnCode = { status: 200 };
   const organizationId = body.id;
   const accountId = await getOrCreateStripeConnectedAccountId(
     organizationId,
@@ -101,33 +98,30 @@ const createExternalAccount = async (body, user_id, ip) => {
       account_number: body.account_number,
     },
   };
-  stripe.tokens.create(params, async (err, token) => {
+  try {
+    const token = await stripe.tokens.create(params);
     if (token) {
-      await stripe.accounts.createExternalAccount(
+      const account = await stripe.accounts.createExternalAccount(
         accountId,
         {
           external_account: token.id,
         },
-        async (err, account) => {
-          if (account) {
-            /* eslint-disable-next-line */
-            console.error('External Account Created', account.id);
-          }
-          if (err) {
-            /* eslint-disable-next-line */
-            console.error('ERROR: External Account NOT Created');
-            created = 0;
-          }
-        },
       );
+
+      if (account) {
+        /* eslint-disable-next-line */
+        console.log('External Account Created', account.id);
+        return { status: 200, data: account.id };
+      }
     }
-    if (err) {
+  } catch (error) {
+    if (error) {
       /* eslint-disable-next-line */
-      console.error('ERROR: Account Token NOT Created');
-      created = 0;
+      console.error('ERROR: Account Token NOT CREATED');
+      returnCode = { status: 403, error };
+      return returnCode;
     }
-  });
-  return created;
+  }
 };
 
 module.exports = {

@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Shop(props) {
+export default function Item(props) {
   const { t } = useTranslation();
 
   const { name, price, photoUrl, description } = props;

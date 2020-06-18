@@ -26,6 +26,7 @@ export const ROUTES = {
   stripe: '/stripe',
   team: '/team',
   userSettings: '/userSettings',
+  cart: '/cart/:id',
 };
 
 export const formatRoute = (route, params, queryParams) => {

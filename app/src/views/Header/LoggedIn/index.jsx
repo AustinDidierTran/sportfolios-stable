@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Store, SCREENSIZE_ENUM } from '../../../Store';
 import logo from '../../../img/logo.png';
+import CartIcon from '../../../components/Custom/Cart';
 
 import {
   AppBar,
@@ -65,16 +66,18 @@ export default function LoggedIn() {
     </div>
   ) : (
     <div className={classes.grow}>
-      <AppBar position="static" style={{ position: 'fixed', top: 0 }}>
-        <Toolbar
-          style={{ display: 'flex', justifyContent: 'space-between' }}
-        >
-          <Link to={ROUTES.home} style={{ marginRight: '16px' }}>
+      <AppBar position="static" className={styles.appBar}>
+        <Toolbar className="toolBar">
+          <Link to={ROUTES.home} className={styles.link}>
             <img src={logo} />
           </Link>
-
-          <div style={{ flex: '1 0 100px' }}>
-            <SearchInput apiRoute="/api/data/search/previous" />
+          <div className={styles.right}>
+            <div className={styles.search}>
+              <SearchInput apiRoute="/api/data/search/previous" />
+            </div>
+            <div className={styles.cart}>
+              <CartIcon id={userInfo.id} />
+            </div>
           </div>
         </Toolbar>
       </AppBar>

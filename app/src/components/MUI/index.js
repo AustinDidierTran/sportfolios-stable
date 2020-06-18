@@ -28,3 +28,4 @@ export { default as Tabs } from './Tabs';
 export { default as TextField } from './TextField';
 export { default as Toolbar } from './Toolbar';
 export { default as Typography } from './Typography';
+export { default as ShoppingCartOutlined } from './ShoppingCartOutlined';

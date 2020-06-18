@@ -2,24 +2,6 @@ import React from 'react';
 import { Button } from '../../../components/MUI';
 import api from '../../../actions/api';
 
-// const cart = {
-//   items: [item, item, item],
-//   subscription: 'fsdfs'
-// };
-
-// const item = {
-//   id: 'uuid',
-//   store_id: 'uuid'
-//   label: 'Frisbee',
-//   price: 20,
-//   invoice_item: {
-//     amount: '2000',
-//     currency: 'cad',
-//     description: 'frisbee',
-//     metadata: {},
-//   },
-// };
-
 const customerParams = {
   customer: {
     address: {
@@ -103,12 +85,29 @@ const invoiceParams = {
   },
 };
 
-// const finalizeInvoiceParams = {
-//   invoice_id: 'in_1GuPXPJPddOlmWPIMpmZKLyJ',
-// };
-// const payInvoiceParams = {
-//   invoice_id: 'in_1GuPXPJPddOlmWPIMpmZKLyJ',
-// };
+const finalizeInvoiceParams = {
+  invoice_id: 'in_1GuPXPJPddOlmWPIMpmZKLyJ',
+};
+const payInvoiceParams = {
+  invoice_id: 'in_1GuPXPJPddOlmWPIMpmZKLyJ',
+};
+
+const productParams = {
+  product: {
+    name: 'frisbee123',
+    description: '200g',
+    active: true,
+  },
+};
+
+const priceParams = {
+  price: {
+    product: 'prod_HU4tjs0WukpYcM', //example (first of the db)
+    currency: 'cad',
+    unit_amount: '3000',
+    active: true,
+  },
+};
 
 export default function Customer() {
   const createCustomer = async () => {
@@ -129,8 +128,8 @@ export default function Customer() {
     console.log(res);
   };
 
-  const payInvoice = async () => {
-    const res = await api('/api/stripe/payInvoice', {
+  const payInvoice2 = async () => {
+    const res = await api('/api/stripe/payInvoice2', {
       method: 'POST',
       body: JSON.stringify(invoiceParams),
     });
@@ -165,24 +164,42 @@ export default function Customer() {
     console.log(res);
   };
 
-  // const finalizeInvoice = async () => {
-  //   const res = await api('/api/stripe/finalizeInvoice', {
-  //     method: 'POST',
-  //     body: JSON.stringify(finalizeInvoiceParams),
-  //   });
-  //   console.log(res);
-  // };
+  const finalizeInvoice = async () => {
+    const res = await api('/api/stripe/finalizeInvoice', {
+      method: 'POST',
+      body: JSON.stringify(finalizeInvoiceParams),
+    });
+    console.log(res);
+  };
 
-  // const payInvoice2 = async () => {
-  //   const res = await api('/api/stripe/payInvoice2', {
-  //     method: 'POST',
-  //     body: JSON.stringify(payInvoiceParams),
-  //   });
-  //   console.log(res);
-  // };
+  const payInvoice = async () => {
+    const res = await api('/api/stripe/payInvoice', {
+      method: 'POST',
+      body: JSON.stringify(payInvoiceParams),
+    });
+    console.log(res);
+  };
+
+  const createProduct = async () => {
+    const res = await api('/api/stripe/createProduct', {
+      method: 'POST',
+      body: JSON.stringify(productParams),
+    });
+    console.log(res);
+  };
+
+  const createPrice = async () => {
+    const res = await api('/api/stripe/createPrice', {
+      method: 'POST',
+      body: JSON.stringify(priceParams),
+    });
+    console.log(res);
+  };
 
   return (
     <div>
+      <Button onClick={createProduct}>Create Product</Button>
+      <Button onClick={createPrice}>Create Price (item)</Button>
       <Button onClick={createCustomer}>Customer</Button>
       <Button onClick={createPaymentMethod}>
         Create Payment Method
@@ -194,7 +211,9 @@ export default function Customer() {
         Detach Payment Method from customer
       </Button>
       <Button onClick={createInvoiceItem}>Invoice Item 20$</Button>
-      <Button onClick={payInvoice}>Pay invoice</Button>
+      <Button onClick={payInvoice2}>Pay invoice (automated)</Button>
+      <Button onClick={finalizeInvoice}>Finalize Invoice</Button>
+      <Button onClick={payInvoice}>Pay Invoice</Button>
     </div>
   );
 }

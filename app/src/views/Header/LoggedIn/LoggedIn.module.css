@@ -7,3 +7,37 @@
     display: flex;
   }
 }
+
+.appBar {
+  position: fixed;
+  top: 0;
+}
+
+.toolBar {
+  display: flex;
+  justify-content: space-between;
+}
+
+.link {
+  margin-right: 16px;
+}
+
+.right {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+
+  flex: 1 1 auto;
+}
+
+.search {
+  flex: 1 1 auto;
+}
+
+.cart {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  margin-left: 16px;
+}

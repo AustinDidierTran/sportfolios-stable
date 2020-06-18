@@ -20,6 +20,7 @@ const userRoutes = require('./server/routes/users');
 const mainRoutes = require('./server/routes/main');
 const stripeRoutes = require('./server/routes/stripe');
 const entityRoutes = require('./server/routes/entity');
+const shopRoutes = require('./server/routes/shop');
 
 // Admin routes
 const adminRoutes = require('./server/routes/admin');
@@ -50,6 +51,7 @@ app.use(profileRoutes.routes());
 app.use(entityRoutes.routes());
 app.use(stripeRoutes.routes());
 app.use(userRoutes.routes());
+app.use(shopRoutes.routes());
 
 // admin routes
 app.use(adminOnly);

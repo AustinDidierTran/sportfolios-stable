@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { useParams } from 'react-router-dom';
@@ -15,6 +15,7 @@ import api from '../../../../../actions/api';
 export default function ExternalAccountForm() {
   const { t } = useTranslation();
   const { id } = useParams();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isANumber = number => isNaN(Number(number));
 
@@ -57,27 +58,34 @@ export default function ExternalAccountForm() {
     validateOnChange: false,
     validateOnBlur: true,
     onSubmit: async values => {
-      const {
-        country,
-        currency,
-        accountHolderName,
-        accountNumber,
-        routingNumber,
-      } = values;
+      try {
+        setIsSubmitting(true);
+        const {
+          country,
+          currency,
+          accountHolderName,
+          accountNumber,
+          routingNumber,
+        } = values;
 
-      const params = {
-        country: country,
-        currency: currency,
-        account_holder_name: accountHolderName,
-        account_holder_type: 'individual',
-        routing_number: routingNumber,
-        account_number: accountNumber,
-        id: id,
-      };
-      await api('/api/stripe/externalAccount', {
-        method: 'POST',
-        body: JSON.stringify(params),
-      });
+        const params = {
+          country: country,
+          currency: currency,
+          account_holder_name: accountHolderName,
+          account_holder_type: 'individual',
+          routing_number: routingNumber,
+          account_number: accountNumber,
+          id: id,
+        };
+        await api('/api/stripe/externalAccount', {
+          method: 'POST',
+          body: JSON.stringify(params),
+        });
+        setIsSubmitting(false);
+      } catch (err) {
+        setIsSubmitting(false);
+        throw err;
+      }
     },
   });
 
@@ -118,6 +126,7 @@ export default function ExternalAccountForm() {
             color="primary"
             variant="contained"
             type="submit"
+            disabled={isSubmitting}
           >
             SUBMIT
           </Button>
