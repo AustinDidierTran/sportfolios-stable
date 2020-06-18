@@ -11,7 +11,10 @@ import {
 import { goTo, ROUTES } from '../../../actions/goTo';
 import api from '../../../actions/api';
 
-import { ENTITIES_TYPE_ENUM } from '../../../../../common/enums';
+import {
+  ENTITIES_TYPE_ENUM,
+  LIST_ROW_TYPE_ENUM,
+} from '../../../../../common/enums';
 import { useMemo } from 'react';
 
 export default function EntityList(props) {
@@ -41,6 +44,7 @@ export default function EntityList(props) {
         route: ROUTES.createOrganization,
         title: t('organizations'),
         buttonLabel: t('create_organization'),
+        type: LIST_ROW_TYPE_ENUM.ORGANIZATION,
       };
     }
     if (type === ENTITIES_TYPE_ENUM.TEAM) {
@@ -48,6 +52,7 @@ export default function EntityList(props) {
         route: ROUTES.createTeam,
         title: t('teams'),
         buttonLabel: t('create_team'),
+        type: LIST_ROW_TYPE_ENUM.TEAM,
       };
     }
     if (type === ENTITIES_TYPE_ENUM.PERSON) {
@@ -55,6 +60,7 @@ export default function EntityList(props) {
         route: ROUTES.createPerson,
         title: t('people'),
         buttonLabel: t('create_person'),
+        type: LIST_ROW_TYPE_ENUM.PERSON,
       };
     }
   }, [type]);
@@ -77,10 +83,10 @@ export default function EntityList(props) {
       </Button>
       <List
         items={entities.map(entity => ({
-          value: entity.name,
+          name: entity.name,
           onClick: () => goTo(ROUTES.entity, { id: entity.id }),
           iconComponent: <Avatar photoUrl={entity.photo_url} />,
-          type,
+          type: entity.type,
         }))}
       />
     </Paper>

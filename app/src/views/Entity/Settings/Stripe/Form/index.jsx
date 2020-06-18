@@ -36,18 +36,16 @@ export default function ExternalAccountForm() {
     }
     if (!accountHolderName) {
       errors.accountHolderName = t('value_is_required');
-    } else if (typeof accountHolderName != 'string') {
-      errors.accountHolderName = 'A NAME DOESNT INCLUDE NUMBERS';
     }
     if (!routingNumber) {
       errors.routingNumber = t('value_is_required');
     } else if (isANumber(routingNumber)) {
-      errors.routingNumber = 'ONLY NUMBERS';
+      errors.routingNumber = t('value_must_be_numeric');
     }
     if (!accountNumber) {
       errors.accountNumber = t('value_is_required');
     } else if (isANumber(accountNumber)) {
-      errors.accountNumber = 'ONLY NUMBERS';
+      errors.accountNumber = t('value_must_be_numeric');
     }
 
     return errors;

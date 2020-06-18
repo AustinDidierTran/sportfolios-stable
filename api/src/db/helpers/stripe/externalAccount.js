@@ -1,4 +1,7 @@
-const { BUSINESS_TYPE_ENUM, TEST_EXTERNAL_ACCOUNT } = stripeEnums;
+const {
+  BUSINESS_TYPE_ENUM,
+  TEST_EXTERNAL_ACCOUNT,
+} = require('./enums');
 const { CLIENT_BASE_URL } = require('../../../../../conf');
 const stripeFactories = require('./factories');
 const { accountParamsFactory } = stripeFactories;

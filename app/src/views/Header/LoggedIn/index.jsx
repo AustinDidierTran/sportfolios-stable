@@ -39,7 +39,7 @@ export default function LoggedIn() {
               Sportfolios
             </Link>
           </Typography>
-          <SearchInput />
+          <SearchInput apiRoute="/api/data/search/previous" />
           <div className={classes.grow} />
           <div className={styles.sectionDesktop}>
             <IconButton
@@ -74,7 +74,7 @@ export default function LoggedIn() {
           </Link>
 
           <div style={{ flex: '1 0 100px' }}>
-            <SearchInput />
+            <SearchInput apiRoute="/api/data/search/previous" />
           </div>
         </Toolbar>
       </AppBar>
