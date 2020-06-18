@@ -139,4 +139,61 @@ router.post(`${BASE_URL}/payInvoice`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/paymentMethod`, async ctx => {
+  try {
+    const data = await queries.paymentMethod(
+      ctx.request.body,
+      ctx.body.userInfo.id,
+    );
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/attachPaymentMethod`, async ctx => {
+  try {
+    const data = await queries.attachPaymentMethod(
+      ctx.request.body,
+      ctx.body.userInfo.id,
+    );
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/detachPaymentMethod`, async ctx => {
+  try {
+    const data = await queries.detachPaymentMethod(
+      ctx.request.body,
+      ctx.body.userInfo.id,
+    );
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
 module.exports = router;
