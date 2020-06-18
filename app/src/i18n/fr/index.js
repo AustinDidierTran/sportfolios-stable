@@ -19,9 +19,11 @@ export default {
     change_password: 'Changer votre mot de passe',
     competitive_member: 'Membre compétitif',
     contact_us: 'Contactez-nous',
+    country: 'Pays',
     create_organization: 'Créer une organisation',
     create_person: 'Créer une personne',
     create_team: 'Créer une équipe',
+    currency: 'Devise',
     donate: 'Faites un don',
     done: 'Terminé',
     editor: 'Éditeur',
@@ -67,6 +69,7 @@ export default {
     password: 'Mot de passe',
     pay: 'Payer',
     payments: 'Paiements',
+    person: 'Person',
     persons: 'Personnes',
     players: 'Joueurs',
     private: 'Privée',
@@ -125,6 +128,8 @@ export default {
     token_expired:
       "Le token n'est plus valide, svp en demander un autre.",
     value_is_required: 'Une valeur est obligatoire.',
+    value_must_be_numeric: 'La valeur doit être numérique.',
+
     value_is_too_long: 'La valeur est trop longue',
     wrong_password: 'Mauvais mot de passe. Veuillez réessayer.',
     // DESCRIPTION CARD

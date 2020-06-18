@@ -1,3 +1,4 @@
+export { default as Autocomplete } from './Autocomplete';
 export { default as Avatar } from './Avatar';
 export { default as BottomNavigation } from './BottomNavigation';
 export { default as Button } from './Button';

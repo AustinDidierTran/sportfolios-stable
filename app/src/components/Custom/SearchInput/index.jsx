@@ -1,19 +1,18 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
-
+import { Autocomplete } from '../../Custom';
+import {
+  goBack,
+  goTo,
+  goToAndReplace,
+  ROUTES,
+} from '../../../actions/goTo';
+import { useApiRoute } from '../../../hooks/queries';
+import { useLocation } from 'react-router-dom';
 import SearchIcon from '@material-ui/icons/Search';
-
-import api from '../../../actions/api';
-
-import { useFormInput } from '../../../hooks/forms';
-
-import { List } from '../../Custom';
-
-import { InputBase, Paper } from '../../MUI';
-import { useEffect } from 'react';
-import { formatRoute, goTo, ROUTES } from '../../../actions/goTo';
+import { InputBase } from '../../MUI';
 
 const useStyles = makeStyles(theme => ({
   search: {
@@ -64,108 +63,71 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function SearchInput(props) {
-  const { searchQuery = '/api/data/search/previous' } = props;
-
-  const classes = useStyles();
-  const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [previousResults, setPreviousResults] = useState([]);
-  const searchValue = useFormInput('');
   const { t } = useTranslation();
+  const classes = useStyles();
+  const { searchQuery = '/api/data/search/previous' } = props;
+  const location = useLocation();
 
-  const fetchSuggestions = async () => {
-    const {
-      data: { search_queries },
-    } = await api(
-      formatRoute(searchQuery, {}, { query: searchValue.value }),
-    );
-    setPreviousResults(search_queries);
-  };
+  const apiRes = useApiRoute(searchQuery);
 
-  const goToSearch = query => {
-    goTo(ROUTES.search, { query });
-    searchValue.reset();
-  };
+  const [query, setQuery] = useState('');
 
-  useEffect(() => {
-    fetchSuggestions();
-  }, [Boolean(searchValue.value)]);
-
-  useEffect(() => {
-    if (searchValue.value) {
-      setSelectedIndex(-1);
+  const options = useMemo(() => {
+    if (apiRes) {
+      return apiRes.map(ar => ({ value: ar, display: ar }));
     }
-  }, [searchValue.value]);
-  const open = Boolean(searchValue.value);
-  const id = useMemo(() => (open ? 'simple-popover' : undefined), [
-    open,
-  ]);
-  const listItems = useMemo(
-    () =>
-      previousResults &&
-      previousResults.map(r => ({
-        icon: 'Search',
-        value: r,
-        onClick: () => {
-          goToSearch(r);
-        },
-      })),
-    [previousResults],
-  );
+    return [];
+  }, [apiRes]);
+
+  useEffect(() => {
+    if (location.pathname === ROUTES.search) {
+      if (query) {
+        goToAndReplace(ROUTES.search, null, { query });
+      } else {
+        goBack();
+      }
+    } else {
+      if (query) {
+        goTo(ROUTES.search, null, { query });
+      } else {
+        goTo(ROUTES.home);
+      }
+    }
+  }, [query]);
+
+  const onChange = event => {
+    setQuery(event.target.value);
+  };
+
   return (
-    <div className={classes.search}>
-      <div className={classes.searchIcon}>
-        <SearchIcon />
-      </div>
-      <InputBase
-        aria-describedby={id}
-        label={t('search')}
-        classes={{
+    <Autocomplete
+      options={options}
+      onChange={onChange}
+      inputProps={{
+        classes: {
           root: classes.inputRoot,
           input: classes.inputInput,
-        }}
-        inputProps={{
-          'aria-label': 'search',
-          onKeyUp: e => {
-            // On enter
-            if (e.keyCode === 13) {
-              if (selectedIndex > -1) {
-                goToSearch(previousResults[selectedIndex]);
-              } else {
-                goToSearch(searchValue.value);
-              }
-            }
-
-            // On arrow down
-            else if (e.keyCode === 40) {
-              setSelectedIndex(
-                Math.min(
-                  (previousResults && previousResults.length - 1) ||
-                    -1,
-                  selectedIndex + 1,
-                ),
-              );
-            }
-
-            // on arrow up
-            else if (e.keyCode === 38) {
-              setSelectedIndex(Math.max(-1, selectedIndex - 1));
-            }
-          },
-        }}
-        {...searchValue.inputProps}
-      />
-      <Paper
-        className={classes.paper}
-        style={{
-          display: open ? 'block' : 'none',
-        }}
-      >
-        <List
-          title={t('recent_search_results')}
-          items={listItems}
-          selectedIndex={selectedIndex}
-        />
-      </Paper>
-    </div>
+        },
+      }}
+      renderInput={params => {
+        return (
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              inputProps={params.InputProps}
+              {...params}
+              onChange={onChange}
+              label={t('search')}
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+            />
+          </div>
+        );
+      }}
+    />
   );
 }

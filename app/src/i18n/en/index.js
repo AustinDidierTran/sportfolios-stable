@@ -19,9 +19,11 @@ export default {
     change_password: 'Change password',
     competitive_member: 'Competitive Member',
     contact_us: 'Contact us',
+    country: 'Country',
     create_organization: 'Create Organization',
     create_person: 'Create Person',
     create_team: 'Create Team',
+    currency: 'Currency',
     donate: 'Donate',
     done: 'Done',
     editor: 'Editor',
@@ -65,6 +67,7 @@ export default {
     password: 'Password',
     pay: 'Pay',
     payments: 'Payments',
+    person: 'Person',
     persons: 'Persons',
     players: 'Players',
     pre_ranking: 'Pre-ranking',
@@ -121,6 +124,8 @@ export default {
     token_expired:
       'Token is no longer valid, please request a new one.',
     value_is_required: 'Value is required.',
+    value_must_be_numeric: 'Value must be a number.',
+
     value_is_too_long: 'Value is too long.',
     wrong_password: 'Wrong password. Please try again',
     invalid_date: 'Invalid date. It should follow: yyyy-mm-dd',

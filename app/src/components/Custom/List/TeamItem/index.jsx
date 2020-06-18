@@ -1,29 +1,16 @@
 import React, { useMemo } from 'react';
 
 import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
-import { Avatar } from '../../../Custom';
+import { Avatar } from '../..';
 import { getInitialsFromName } from '../../../../utils/stringFormats/index';
 import { useTranslation } from 'react-i18next';
 
-export default function PersonItem(props) {
+export default function TeamItem(props) {
   const { t } = useTranslation();
 
-  const {
-    onClick = () => {},
-    selected,
-    photo_url,
-    name,
-    surname,
-  } = props;
+  const { onClick = () => {}, selected, photo_url, name } = props;
 
-  const completeName = useMemo(
-    () => (surname ? `${name} ${surname}` : name),
-    [name, surname],
-  );
-
-  const initials = useMemo(() => getInitialsFromName(completeName), [
-    completeName,
-  ]);
+  const initials = useMemo(() => getInitialsFromName(name), [name]);
 
   return (
     <ListItem
@@ -36,8 +23,8 @@ export default function PersonItem(props) {
         <Avatar photoUrl={photo_url} initials={initials}></Avatar>
       </ListItemIcon>
       <ListItemText
-        primary={completeName}
-        secondary={t('person')}
+        primary={name}
+        secondary={t('team')}
       ></ListItemText>
     </ListItem>
   );
