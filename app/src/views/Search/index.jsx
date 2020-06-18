@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 
 import { Container } from '../../components/Custom';
 
-import UserSearch from './UserSearch/index';
+import EntitySearch from './EntitySearch/index';
 
 import styles from './Search.module.css';
 import api from '../../actions/api';
 import { useQuery } from '../../hooks/queries';
 import { CircularProgress } from '@material-ui/core';
+import { formatRoute } from '../../actions/goTo';
 
 export default function Search() {
   const { query } = useQuery();
@@ -17,10 +18,12 @@ export default function Search() {
   const [timeoutRef, setTimeoutRef] = useState(null);
   const asyncFetchResult = async () => {
     const {
-      data: { users },
-    } = await api(`/api/data/search/global?query=${query}`);
+      data: { persons: pRes },
+    } = await api(
+      formatRoute('/api/data/search/global', null, { query }),
+    );
 
-    setPersons(users);
+    setPersons(pRes);
 
     setTimeoutRef(null);
     setIsLoading(false);
@@ -43,7 +46,7 @@ export default function Search() {
       {isLoading ? (
         <CircularProgress />
       ) : (
-        <UserSearch query={query} persons={persons} />
+        <EntitySearch query={query} persons={persons} />
       )}
     </Container>
   );

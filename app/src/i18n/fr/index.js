@@ -89,6 +89,7 @@ export default {
     settings: 'Paramètres',
     schedule: 'Horaire',
     score_type: 'Type de pointage',
+    search_results: 'Résultats de recherche pour {{query}}',
     search: 'Rechercher...',
     save_basic_info: 'Sauvegarder informations',
     select_language: 'Sélectionner votre langue',

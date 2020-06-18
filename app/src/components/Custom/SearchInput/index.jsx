@@ -2,13 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { Autocomplete, Icon } from '../../Custom';
-import {
-  goBack,
-  goTo,
-  goToAndReplace,
-  ROUTES,
-} from '../../../actions/goTo';
-import { useApiRoute } from '../../../hooks/queries';
+import { goTo, goToAndReplace, ROUTES } from '../../../actions/goTo';
+import { useApiRoute, useQuery } from '../../../hooks/queries';
 import { useLocation } from 'react-router-dom';
 import { InputAdornment } from '@material-ui/core';
 
@@ -33,10 +28,11 @@ export default function SearchInput(props) {
   const classes = useStyles();
   const { searchQuery = '/api/data/search/previous' } = props;
   const location = useLocation();
+  const { query: queryQuery } = useQuery();
 
   const apiRes = useApiRoute(searchQuery);
 
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(queryQuery);
 
   const options = useMemo(() => {
     if (apiRes) {
@@ -47,11 +43,7 @@ export default function SearchInput(props) {
 
   useEffect(() => {
     if (location.pathname === ROUTES.search) {
-      if (query) {
-        goToAndReplace(ROUTES.search, null, { query });
-      } else {
-        goBack();
-      }
+      goToAndReplace(ROUTES.search, null, { query });
     } else {
       if (query) {
         goTo(ROUTES.search, null, { query });

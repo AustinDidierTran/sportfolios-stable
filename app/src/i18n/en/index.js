@@ -88,6 +88,7 @@ export default {
     settings: 'Settings',
     schedule: 'Schedule',
     search: 'Search...',
+    search_results: 'Search results for {{query}}',
     save_basic_info: 'Save new basic infos',
     score_type: 'Score Type',
     select_language: 'Select Language',

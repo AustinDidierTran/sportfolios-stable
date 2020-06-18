@@ -9,7 +9,7 @@ const addQueryToRecentSearches = async (user_id, search_query) => {
     .returning('*');
 };
 
-const getUsersFromQuery = async query => {
+const getPersonsFromQuery = async query => {
   return knex('persons')
     .select(
       'id',
@@ -38,10 +38,16 @@ const getPreviousSearchQueriesFromId = async user_id => {
     .select(knex.raw('array_agg(search_query) AS search_queries'))
     .from(
       knex
-        .select('search_query')
+        .select(
+          knex.raw(
+            'search_query, max(previous_search_queries.created_at) AS created_at',
+          ),
+        )
+
         .from('previous_search_queries')
         .where({ user_id })
-        .orderBy('previous_search_queries.created_at', 'desc')
+        .groupBy('search_query')
+        .orderBy('created_at', 'desc')
         .limit(10)
         .as('subQuery'),
     );
@@ -52,5 +58,5 @@ const getPreviousSearchQueriesFromId = async user_id => {
 module.exports = {
   addQueryToRecentSearches,
   getPreviousSearchQueriesFromId,
-  getUsersFromQuery,
+  getPersonsFromQuery,
 };
