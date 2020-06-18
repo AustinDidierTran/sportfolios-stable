@@ -51,7 +51,11 @@ export default function MembershipItem(props) {
           <Button
             className={styles.button}
             onClick={() => {
-              goTo(ROUTES.memberships, entity_id);
+              goTo(ROUTES.memberships, null, {
+                entity_id,
+                person_id,
+                membership_type,
+              });
             }}
           >
             {t('renew_membership')}

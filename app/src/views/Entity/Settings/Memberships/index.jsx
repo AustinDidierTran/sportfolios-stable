@@ -7,7 +7,7 @@ import React, {
 
 import moment from 'moment';
 import { List, Paper } from '../../../../components/Custom';
-import { MEMBERSHIP_TYPE_ENUM } from '../../../../Store';
+import { getMembershipName } from '../../../../utils/stringFormats';
 import { LIST_ROW_TYPE_ENUM } from '../../../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 import api from '../../../../actions/api';
@@ -53,8 +53,17 @@ export default function Memberships(props) {
   };
 
   const getMemberships = async () => {
-    const res = await api(`/api/entity/memberships?id=${id}`);
-    setMemberships(res.data);
+    const res = await api(`/api/entity/memberships/?id=${id}`);
+
+    const arr = [];
+    const data = [];
+    res.data.forEach(r => {
+      if (!arr.includes(r.membership_type)) {
+        arr.push(r.membership_type);
+        data.push(r);
+      }
+    });
+    setMemberships(data);
   };
 
   const getMembers = async () => {
@@ -82,16 +91,6 @@ export default function Memberships(props) {
     }
   };
 
-  const getName = type => {
-    if (type === MEMBERSHIP_TYPE_ENUM.RECREATIONAL) {
-      return t('recreational_member');
-    } else if (type === MEMBERSHIP_TYPE_ENUM.COMPETITIVE) {
-      return t('competitive_member');
-    } else {
-      return t('elite_member');
-    }
-  };
-
   const allItems = useMemo(() => {
     if (!persons.length || !memberships.length || !members.length) {
       return [];
@@ -104,7 +103,7 @@ export default function Memberships(props) {
             person.entity_id,
             membership.membership_type,
           ),
-          name: getName(membership.membership_type),
+          name: t(getMembershipName(membership.membership_type)),
           membership_type: membership.membership_type,
           expirationDate: getExpirationDate(
             person.entity_id,

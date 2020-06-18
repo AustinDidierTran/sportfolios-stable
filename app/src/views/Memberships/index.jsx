@@ -1,60 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Memberships.module.css';
 import { useTranslation } from 'react-i18next';
-import { MEMBERSHIP_TYPE_ENUM } from '../../Store';
+import { getMembershipName } from '../../utils/stringFormats';
 
-import { Paper, Select, Button } from '../../components/Custom';
+import { Paper, Button, List } from '../../components/Custom';
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
-import { useParams } from 'react-router-dom';
+import { useQuery } from '../../hooks/queries';
 
 export default function Memberships() {
   const { t } = useTranslation();
 
-  const { id } = useParams();
+  const { entity_id, person_id, membership_type } = useQuery();
 
-  const items = [
-    {
-      value: MEMBERSHIP_TYPE_ENUM.RECREATIONAL,
-      display: t('recreational_member'),
-    },
-    {
-      value: MEMBERSHIP_TYPE_ENUM.COMPETITIVE,
-      display: t('competitive_member'),
-    },
-    { value: MEMBERSHIP_TYPE_ENUM.ELITE, display: t('elite_member') },
-  ];
-
-  const [membership, setMembership] = useState();
-
-  const [person, setPerson] = useState();
-
-  const [persons, setPersons] = useState();
+  const [options, setOptions] = useState([]);
+  const [entity, setEntity] = useState([]);
+  const [person, setPerson] = useState([]);
+  // const [option, setOption] = useState([]);
 
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-    setPersons(
-      userInfo.persons.map(person => ({
-        ...person,
-        display: `${person.name} ${person.surname}`,
-        value: person.entity_id,
-      })),
-    );
+    getPerson();
   }, []);
 
-  const personChange = event => {
-    setPerson(event.target.value);
-  };
-  const membershipChange = event => {
-    setMembership(event.target.value);
+  const getPerson = async () => {
+    const res = await api(`/api/entity/?id=${person_id}`);
+    const arr = [];
+    arr.push(res.data);
+    setPerson(arr);
   };
 
+  useEffect(() => {
+    getEntity();
+  }, []);
+
+  const getEntity = async () => {
+    const res = await api(`/api/entity/?id=${entity_id}`);
+    const arr = [];
+    arr.push(res.data);
+    setEntity(arr);
+  };
+
+  useEffect(() => {
+    getOptions();
+  }, []);
+
+  const getOptions = async () => {
+    const res = await api(`/api/entity/memberships/?id=${entity_id}`);
+    setOptions(res.data);
+  };
+
+  // const optionChange = event => {
+  //   setOption(event.target.value);
+  // };
+
   const onClick = async () => {
-    if (!person) {
-    }
-    if (!membership) {
-    }
-    await addMembership(membership, person, id);
+    await addMembership(membership_type, person_id, entity_id);
   };
 
   const addMembership = async (type, person_id, organization_id) => {
@@ -73,20 +73,17 @@ export default function Memberships() {
     history.back();
   };
 
+  console.log({ options });
+
   return (
-    <Paper title={t('memberships')}>
-      <Select
-        className={styles.select}
-        label={t('persons')}
-        onChange={personChange}
-        options={persons}
-      />
-      <Select
-        className={styles.select}
-        label={t('memberships')}
-        onChange={membershipChange}
-        options={items}
-      />
+    <>
+      <Paper title={t('member')} />
+      <List items={person} />
+      <Paper title={t('organization')} />
+      <List items={entity} />
+      <Paper title={t(getMembershipName(membership_type))} />
+      <h1>ALL OPTIONS</h1>
+      {/* <List items={options} /> */}
       <div className={styles.buttons}>
         <Button className={styles.becomeMember} onClick={onClick}>
           {t('become_member')}
@@ -101,6 +98,6 @@ export default function Memberships() {
           {t('cancel')}
         </Button>
       </div>
-    </Paper>
+    </>
   );
 }
