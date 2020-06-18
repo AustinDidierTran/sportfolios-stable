@@ -106,6 +106,7 @@ export default {
     team: 'Équipe',
     team_history: "Historique de l'équipe",
     teams: 'Équipes',
+    unsupported_language: 'Langue non supportée',
     valid_until: "Valide jusqu'au",
     viewer: 'Visiteur',
     your_upcoming_events: 'Vos prochains événements',

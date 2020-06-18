@@ -16,6 +16,12 @@ const confirmEmail = async ({ email }) => {
     .where({ email });
 };
 
+const createUserEmail = async body => {
+  const { user_id, email } = body;
+
+  await knex('user_email').insert({ user_id, email });
+};
+
 const createUserComplete = async body => {
   const { password, email, name, surname } = body;
 
@@ -221,7 +227,7 @@ const updateBasicUserInfoFromUserId = async ({
 
   await knex('users')
     .update(update)
-    .where({ user_id });
+    .where({ id: user_id });
 };
 
 const updatePasswordFromUserId = async ({ hashedPassword, id }) => {
@@ -262,6 +268,7 @@ const sendNewConfirmationEmailAllIncluded = async email => {
 
 module.exports = {
   confirmEmail,
+  createUserEmail,
   createUserComplete,
   createConfirmationEmailToken,
   createRecoveryEmailToken,

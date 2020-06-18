@@ -54,7 +54,7 @@ export default function ChangePassword() {
     validate,
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: async values => {
+    onSubmit: async (values, { resetForm }) => {
       const { oldPassword, newPassword } = values;
       const res = await api('/api/user/changePassword', {
         method: 'POST',
@@ -65,12 +65,12 @@ export default function ChangePassword() {
         }),
       });
 
-      if (res.status === 402) {
+      if (res.status < 300) {
+        resetForm();
+      } else if (res.status === 402) {
         // Token is expired, redirect
         goTo(ROUTES.login);
-      }
-
-      if (res.status === 403) {
+      } else if (res.status === 403) {
         // old password doesn't match
         formik.setFieldError('oldPassword', t('wrong_password'));
       }

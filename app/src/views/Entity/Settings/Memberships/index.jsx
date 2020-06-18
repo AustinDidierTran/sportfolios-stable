@@ -53,7 +53,7 @@ export default function Memberships(props) {
   };
 
   const getMemberships = async () => {
-    const res = await api(`/api/entity/memberships/?id=${id}`);
+    const res = await api(`/api/entity/memberships?id=${id}`);
     setMemberships(res.data);
   };
 

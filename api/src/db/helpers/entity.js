@@ -92,7 +92,7 @@ async function getAllEntities(params) {
   const { type } = params;
 
   if (type) {
-    return knex('entities')
+    const entities = await knex('entities')
       .select('id', 'type', 'name', 'surname', 'photo_url')
       .leftJoin(
         'entities_name',
@@ -106,10 +106,19 @@ async function getAllEntities(params) {
         '=',
         'entities_photo.entity_id',
       )
+      .whereNull('deleted_at')
       .where({ type });
+
+    return entities.map(e => ({
+      id: e.id,
+      name: e.name,
+      photoUrl: e.photo_url,
+      surname: e.surname,
+      type,
+    }));
   }
 
-  return knex('entities')
+  const entities = await knex('entities')
     .select('id', 'type', 'name', 'surname', 'photo_url')
     .leftJoin(
       'entities_name',
@@ -123,6 +132,14 @@ async function getAllEntities(params) {
       '=',
       'entities_photo.entity_id',
     );
+
+  return entities.map(e => ({
+    id: e.id,
+    name: e.name,
+    photoUrl: e.photo_url,
+    surname: e.surname,
+    type: e.type,
+  }));
 }
 
 async function getAllTypeEntities(type) {
@@ -140,6 +157,7 @@ async function getAllTypeEntities(type) {
       '=',
       'entities_photo.entity_id',
     )
+    .whereNull('deleted_at')
     .where({ type });
 }
 
@@ -176,7 +194,8 @@ async function getEntity(id, user_id) {
       '=',
       'entities_photo.entity_id',
     )
-    .where({ id });
+    .whereNull('deleted_at')
+    .andWhere({ id });
 
   let role;
 

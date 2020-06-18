@@ -103,6 +103,7 @@ export default {
     team: 'Teams',
     team_history: 'Team History',
     teams: 'Teams',
+    unsupported_language: 'Unsupported language',
     valid_until: 'Valid until',
     viewer: 'Viewer',
     your_upcoming_events: 'Your Upcoming Events',

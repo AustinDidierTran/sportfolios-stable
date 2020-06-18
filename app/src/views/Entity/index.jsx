@@ -18,7 +18,6 @@ export default function Entity() {
     if (!data) {
       goTo(ROUTES.entityNotFound);
     }
-
     setBasicInfos(data);
   };
 

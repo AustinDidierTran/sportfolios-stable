@@ -8,7 +8,6 @@ import {
   Paper,
 } from '../../../../../components/Custom';
 import api from '../../../../../actions/api';
-import { goTo, ROUTES } from '../../../../../actions/goTo';
 import { ENTITIES_TYPE_ENUM } from '../../..';
 
 export default function Organizations() {
@@ -31,8 +30,8 @@ export default function Organizations() {
     <Paper className={styles.card} title={t('organizations')}>
       <List
         items={organizations.map(organization => ({
+          id: organization.id,
           value: organization.name,
-          onClick: () => goTo(ROUTES.entity, { id: organization.id }),
           iconComponent: <Avatar photoUrl={organization.photoUrl} />,
         }))}
       />

@@ -42,13 +42,11 @@ export default function SearchInput(props) {
   }, [apiRes]);
 
   useEffect(() => {
-    if (location.pathname === ROUTES.search) {
-      goToAndReplace(ROUTES.search, null, { query });
-    } else {
-      if (query) {
-        goTo(ROUTES.search, null, { query });
+    if (query) {
+      if (location.pathname === ROUTES.search) {
+        goToAndReplace(ROUTES.search, null, { query });
       } else {
-        goTo(ROUTES.home);
+        goTo(ROUTES.search, null, { query });
       }
     }
   }, [query]);

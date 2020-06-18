@@ -92,7 +92,7 @@ export default function Team(props) {
           ))}
         </Tabs>
       </Paper>
-      <OpenTab />
+      <OpenTab basicInfos={basicInfos} />
     </Container>
   );
 }

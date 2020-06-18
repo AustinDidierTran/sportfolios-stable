@@ -116,6 +116,7 @@ export default function Customer() {
       method: 'POST',
       body: JSON.stringify(customerParams),
     });
+    /* eslint-disable-next-line */
     console.log(res);
   };
 
@@ -124,6 +125,7 @@ export default function Customer() {
       method: 'POST',
       body: JSON.stringify(invoiceItemParams),
     });
+    /* eslint-disable-next-line */
     console.log(res);
   };
 
@@ -132,6 +134,7 @@ export default function Customer() {
       method: 'POST',
       body: JSON.stringify(invoiceParams),
     });
+    /* eslint-disable-next-line */
     console.log(res);
   };
 
@@ -140,6 +143,7 @@ export default function Customer() {
       method: 'POST',
       body: JSON.stringify(paymentMethodParams),
     });
+    /* eslint-disable-next-line */
     console.log(res);
   };
 
@@ -148,6 +152,7 @@ export default function Customer() {
       method: 'POST',
       body: JSON.stringify(attachPaymentMethodParams),
     });
+    /* eslint-disable-next-line */
     console.log(res);
   };
 
@@ -156,6 +161,7 @@ export default function Customer() {
       method: 'POST',
       body: JSON.stringify(detachPaymentMethodParams),
     });
+    /* eslint-disable-next-line */
     console.log(res);
   };
 

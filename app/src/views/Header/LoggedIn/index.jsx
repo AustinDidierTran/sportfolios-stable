@@ -46,7 +46,7 @@ export default function LoggedIn() {
               color="inherit"
               onClick={() =>
                 goTo(ROUTES.entity, {
-                  id: userInfo.id,
+                  id: userInfo.persons[0].entity_id,
                 })
               }
             >

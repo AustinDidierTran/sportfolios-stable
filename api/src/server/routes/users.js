@@ -8,7 +8,7 @@ const BASE_URL = '/api/user';
 router.post(`${BASE_URL}/addEmail`, async ctx => {
   try {
     const code = await queries.addEmail(
-      ctx.body.userInfo.user_id,
+      ctx.body.userInfo.id,
       ctx.request.body,
     );
 
@@ -42,7 +42,7 @@ router.post(`${BASE_URL}/addEmail`, async ctx => {
 router.post(`${BASE_URL}/changePassword`, async ctx => {
   try {
     const code = await queries.changePassword(
-      ctx.body.userInfo.user_id,
+      ctx.body.userInfo.id,
       ctx.request.body,
     );
 

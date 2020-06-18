@@ -77,7 +77,6 @@ export default function Organization(props) {
           indicatorColor="primary"
           textColor="primary"
           className={styles.tabs}
-          // centered
         >
           {states.map((s, index) => (
             <Tab

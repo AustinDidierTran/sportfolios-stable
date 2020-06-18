@@ -1,22 +1,25 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Stripe from './Stripe';
 import ManageRoles from './ManageRoles';
 import Memberships from './Memberships';
 import { useParams } from 'react-router-dom';
-import { ENTITIES_ROLE_ENUM } from '../../../Store';
+import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 import styles from './Settings.module.css';
 
-export default function OrganizationSettings(props) {
+export default function EntitySettings(props) {
   const { id } = useParams();
 
   const { basicInfos } = props;
 
-  const { role } = basicInfos;
+  const { role = ENTITIES_ROLE_ENUM.VIEWER } = basicInfos;
 
-  const isEditor = [
-    ENTITIES_ROLE_ENUM.ADMIN,
-    ENTITIES_ROLE_ENUM.EDITOR,
-  ].includes(!role); //! TO BE REMOVED
+  const isEditor = useMemo(
+    () =>
+      [ENTITIES_ROLE_ENUM.ADMIN, ENTITIES_ROLE_ENUM.EDITOR].includes(
+        role,
+      ),
+    [role],
+  );
 
   return (
     <div className={styles.main}>

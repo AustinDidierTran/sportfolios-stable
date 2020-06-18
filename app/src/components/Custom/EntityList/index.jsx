@@ -2,12 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import styles from './EntityList.module.css';
-import {
-  Avatar,
-  Paper,
-  List,
-  Button,
-} from '../../../components/Custom';
+import { Paper, List, Button } from '../../../components/Custom';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import api from '../../../actions/api';
 
@@ -83,10 +78,10 @@ export default function EntityList(props) {
       </Button>
       <List
         items={entities.map(entity => ({
+          id: entity.id,
           name: entity.name,
-          onClick: () => goTo(ROUTES.entity, { id: entity.id }),
-          iconComponent: <Avatar photoUrl={entity.photo_url} />,
-          type: entity.type,
+          photoUrl: entity.photoUrl,
+          type: Number(entity.type),
         }))}
       />
     </Paper>

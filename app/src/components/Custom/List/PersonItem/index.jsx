@@ -4,17 +4,13 @@ import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
 import { Avatar } from '../../../Custom';
 import { getInitialsFromName } from '../../../../utils/stringFormats/index';
 import { useTranslation } from 'react-i18next';
+import { goTo, ROUTES } from '../../../../actions/goTo';
+import { useCallback } from 'react';
 
 export default function PersonItem(props) {
   const { t } = useTranslation();
 
-  const {
-    onClick = () => {},
-    selected,
-    photo_url,
-    name,
-    surname,
-  } = props;
+  const { id, onClick, selected, photo_url, name, surname } = props;
 
   const completeName = useMemo(
     () => (surname ? `${name} ${surname}` : name),
@@ -25,10 +21,18 @@ export default function PersonItem(props) {
     completeName,
   ]);
 
+  const handleClick = useCallback(() => {
+    if (onClick) {
+      onClick();
+    } else {
+      goTo(ROUTES.entity, { id });
+    }
+  }, [id, onClick]);
+
   return (
     <ListItem
       button
-      onClick={onClick}
+      onClick={handleClick}
       selected={selected}
       style={{ width: '100%' }}
     >
