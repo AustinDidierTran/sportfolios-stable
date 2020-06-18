@@ -59,7 +59,12 @@ export default function CustomAutocomplete(props) {
             fullWidth
             inputProps={{
               ...params.inputProps,
+              classes: inputProps.classes,
               autoComplete: 'new-password',
+            }}
+            InputProps={{
+              ...params.InputProps,
+              ...inputProps.InputProps,
             }}
           />
         );
