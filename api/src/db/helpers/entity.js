@@ -308,11 +308,13 @@ async function updateEntityPhoto(entity_id, photo_url) {
 }
 
 async function addEntityRole(entity_id, entity_id_admin, role) {
-  return knex('entities_role').insert({
-    entity_id,
-    entity_id_admin,
-    role,
-  });
+  return knex('entities_role')
+    .insert({
+      entity_id,
+      entity_id_admin,
+      role,
+    })
+    .returning(['role']);
 }
 
 async function getUsersAuthorization(id) {
@@ -355,6 +357,12 @@ async function addMember(member_type, organization_id, person_id) {
   return res;
 }
 
+async function removeEntityRole(entity_id, entity_id_admin) {
+  return await knex('entities_role')
+    .where({ entity_id, entity_id_admin })
+    .del();
+}
+
 module.exports = {
   addEntity,
   addMember,
@@ -370,4 +378,5 @@ module.exports = {
   updateEntityRole,
   addEntityRole,
   getUsersAuthorization,
+  removeEntityRole,
 };

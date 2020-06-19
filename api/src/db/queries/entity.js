@@ -1,5 +1,6 @@
 const moment = require('moment');
 const { signS3Request } = require('../../server/utils/aws');
+const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
 
 const {
   addEntity: addEntityHelper,
@@ -16,6 +17,7 @@ const {
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
   updateEntityRole: updateEntityRoleHelper,
+  removeEntityRole: removeEntityRoleHelper,
 } = require('../helpers/entity');
 
 async function getEntity(id, user_id) {
@@ -81,12 +83,16 @@ async function getS3Signature(userId, { fileType }) {
 
 async function updateEntityRole(body) {
   const { entity_id, entity_id_admin, role } = body;
-  return updateEntityRoleHelper(entity_id, entity_id_admin, role);
+  if (role === ENTITIES_ROLE_ENUM.VIEWER) {
+    return removeEntityRoleHelper(entity_id, entity_id_admin);
+  } else {
+    return updateEntityRoleHelper(entity_id, entity_id_admin, role);
+  }
 }
 
 async function addEntityRole(body) {
   const { entity_id, entity_id_admin, role } = body;
-  await addEntityRoleHelper(entity_id, entity_id_admin, role);
+  return await addEntityRoleHelper(entity_id, entity_id_admin, role);
 }
 
 async function addMember(body) {

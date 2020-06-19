@@ -2,10 +2,10 @@ export default {
   translations: {
     about: 'About',
     actions: 'Actions',
+    add_editor: 'Add editor',
     add_to_cart: 'Add to cart',
     added_to_cart: 'Added to cart',
     add_admin: 'Add Admin',
-    add_editor: 'Add Editor',
     admin: 'Admin',
     admins: 'Admins',
     adress: 'Address',

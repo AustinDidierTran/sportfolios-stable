@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function SearchInput(props) {
   const classes = useStyles();
-  const { searchQuery = '/api/data/search/previous' } = props;
+  const { searchQuery = '/api/data/search/previous', type } = props;
   const location = useLocation();
   const { query: queryQuery } = useQuery();
 
@@ -44,9 +44,9 @@ export default function SearchInput(props) {
   useEffect(() => {
     if (query) {
       if (location.pathname === ROUTES.search) {
-        goToAndReplace(ROUTES.search, null, { query });
+        goToAndReplace(ROUTES.search, null, { query, type });
       } else {
-        goTo(ROUTES.search, null, { query });
+        goTo(ROUTES.search, null, { query, type });
       }
     }
   }, [query]);

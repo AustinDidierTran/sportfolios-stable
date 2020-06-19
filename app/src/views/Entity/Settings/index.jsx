@@ -22,17 +22,28 @@ export default function EntitySettings(props) {
     [role],
   );
 
+  const isAdmin = useMemo(() => ENTITIES_ROLE_ENUM.ADMIN === role, [
+    role,
+  ]);
+
   return (
     <div className={styles.main}>
       {isEditor ? (
         <>
           <Stripe id={id} />
-          <ManageRoles />
-          <DeleteEntityCard
-            id={id}
-            type={basicInfos.type}
-            name={basicInfos.name}
-          />
+
+          {isAdmin ? (
+            <>
+              <ManageRoles role={role} />
+              <DeleteEntityCard
+                id={id}
+                type={basicInfos.type}
+                name={basicInfos.name}
+              />
+            </>
+          ) : (
+            <></>
+          )}
         </>
       ) : (
         <Memberships basicInfos={basicInfos} />

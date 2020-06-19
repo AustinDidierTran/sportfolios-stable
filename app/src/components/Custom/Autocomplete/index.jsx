@@ -25,7 +25,7 @@ export default function CustomAutocomplete(props) {
   });
 
   const handleChange = (...args) => {
-    const [, { value }] = args;
+    const [, { value } = {}] = args;
 
     if (!formik && !onChange) {
       /* eslint-disable-next-line */

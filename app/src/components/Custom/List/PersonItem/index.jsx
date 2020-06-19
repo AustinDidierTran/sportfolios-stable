@@ -23,7 +23,7 @@ export default function PersonItem(props) {
 
   const handleClick = useCallback(() => {
     if (onClick) {
-      onClick();
+      onClick(id);
     } else {
       goTo(ROUTES.entity, { id });
     }

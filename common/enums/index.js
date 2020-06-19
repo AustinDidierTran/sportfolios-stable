@@ -7,6 +7,7 @@ const ENTITIES_TYPE_ENUM = {
 const ENTITIES_ROLE_ENUM = {
   ADMIN: 1,
   EDITOR: 2,
+  VIEWER: 3,
 };
 
 const LIST_ROW_TYPE_ENUM = {

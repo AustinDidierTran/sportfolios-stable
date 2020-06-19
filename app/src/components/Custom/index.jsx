@@ -10,6 +10,7 @@ export { default as Input } from './Input';
 export { default as List } from './List';
 export { default as Paper } from './Paper';
 export { default as SearchInput } from './SearchInput';
+export { default as SearchList } from './SearchList';
 export { default as Select } from './Select';
 export { default as Stepper } from './Stepper';
 export { default as Table } from './Table';

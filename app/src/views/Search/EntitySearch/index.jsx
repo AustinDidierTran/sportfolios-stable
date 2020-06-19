@@ -7,20 +7,17 @@ import { Paper } from '../../../components/Custom';
 
 import { List } from '../../../components/Custom';
 
-import { LIST_ROW_TYPE_ENUM } from '../../../../../common/enums';
-
 export default function EntitySearch(props) {
   const { t } = useTranslation();
 
-  const { query, persons } = props;
+  const { query, entities } = props;
 
   const items = useMemo(
     () =>
-      persons.map(person => ({
-        ...person,
-        type: LIST_ROW_TYPE_ENUM.PERSON,
+      entities.map(entity => ({
+        ...entity,
       })),
-    [persons],
+    [entities],
   );
 
   return (

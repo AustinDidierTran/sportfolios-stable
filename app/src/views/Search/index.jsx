@@ -10,20 +10,20 @@ import { useQuery } from '../../hooks/queries';
 import { CircularProgress } from '@material-ui/core';
 import { formatRoute } from '../../actions/goTo';
 
-export default function Search() {
+export default function Search(props) {
   const { query } = useQuery();
 
+  const { type } = props;
+
   const [isLoading, setIsLoading] = useState(false);
-  const [persons, setPersons] = useState([]);
+  const [entities, setEntities] = useState([]);
   const [timeoutRef, setTimeoutRef] = useState(null);
   const asyncFetchResult = async () => {
-    const {
-      data: { persons: pRes },
-    } = await api(
-      formatRoute('/api/data/search/global', null, { query }),
+    const res = await api(
+      formatRoute('/api/data/search/global', null, { query, type }),
     );
 
-    setPersons(pRes);
+    setEntities(res.data.entities);
 
     setTimeoutRef(null);
     setIsLoading(false);
@@ -46,7 +46,7 @@ export default function Search() {
       {isLoading ? (
         <CircularProgress />
       ) : (
-        <EntitySearch query={query} persons={persons} />
+        <EntitySearch query={query} entities={entities} />
       )}
     </Container>
   );

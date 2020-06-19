@@ -5,6 +5,7 @@ const router = new Router();
 const BASE_URL = '/api/data';
 
 router.get(`${BASE_URL}/search/global`, async ctx => {
+<<<<<<< HEAD
   const { query } = ctx.query;
   const previousSearchQueries = await queries.globalSearch(
     ctx.body.userInfo.id,
@@ -14,6 +15,25 @@ router.get(`${BASE_URL}/search/global`, async ctx => {
     status: 'success',
     data: previousSearchQueries,
   };
+=======
+  try {
+    const previousSearchQueries = await queries.globalSearch(
+      ctx.body.userInfo.id,
+      ctx.query.query,
+      ctx.query.type,
+    );
+    ctx.body = {
+      status: 'success',
+      data: previousSearchQueries,
+    };
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+>>>>>>> Add admin search bar
 });
 
 router.get(`${BASE_URL}/search/previous`, async ctx => {

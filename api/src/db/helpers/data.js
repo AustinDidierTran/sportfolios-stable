@@ -9,6 +9,31 @@ const addQueryToRecentSearches = async (user_id, search_query) => {
     .returning('*');
 };
 
+const getEntitiesFromQuery = async query => {
+  return knex('entities')
+    .select(
+      'id',
+      'type',
+      'entities_name.name',
+      'entities_name.surname',
+      'entities_photo.photo_url',
+    )
+    .leftJoin(
+      'entities_photo',
+      'entities.id',
+      '=',
+      'entities_photo.entity_id',
+    )
+    .leftJoin(
+      'entities_name',
+      'entities.id',
+      '=',
+      'entities_name.entity_id',
+    )
+    .where('entities_name.name', 'ILIKE', `%${query}%`)
+    .orWhere('entities_name.surname', 'ILIKE', `%${query}%`);
+};
+
 const getPersonsFromQuery = async query => {
   return knex('persons')
     .select(
@@ -26,6 +51,54 @@ const getPersonsFromQuery = async query => {
     .leftJoin(
       'entities_name',
       'persons.id',
+      '=',
+      'entities_name.entity_id',
+    )
+    .where('entities_name.name', 'ILIKE', `%${query}%`)
+    .orWhere('entities_name.surname', 'ILIKE', `%${query}%`);
+};
+
+const getTeamsFromQuery = async query => {
+  return knex('teams')
+    .select(
+      'id',
+      'entities_name.name',
+      'entities_name.surname',
+      'entities_photo.photo_url',
+    )
+    .leftJoin(
+      'entities_photo',
+      'teams.id',
+      '=',
+      'entities_photo.entity_id',
+    )
+    .leftJoin(
+      'entities_name',
+      'teams.id',
+      '=',
+      'entities_name.entity_id',
+    )
+    .where('entities_name.name', 'ILIKE', `%${query}%`)
+    .orWhere('entities_name.surname', 'ILIKE', `%${query}%`);
+};
+
+const getOrganizationsFromQuery = async query => {
+  return knex('organizations')
+    .select(
+      'id',
+      'entities_name.name',
+      'entities_name.surname',
+      'entities_photo.photo_url',
+    )
+    .leftJoin(
+      'entities_photo',
+      'organizations.id',
+      '=',
+      'entities_photo.entity_id',
+    )
+    .leftJoin(
+      'entities_name',
+      'organizations.id',
       '=',
       'entities_name.entity_id',
     )
@@ -57,6 +130,9 @@ const getPreviousSearchQueriesFromId = async user_id => {
 
 module.exports = {
   addQueryToRecentSearches,
-  getPreviousSearchQueriesFromId,
+  getEntitiesFromQuery,
+  getOrganizationsFromQuery,
   getPersonsFromQuery,
+  getPreviousSearchQueriesFromId,
+  getTeamsFromQuery,
 };
