@@ -39,7 +39,4 @@ ADD CONSTRAINT teams_id_fkey FOREIGN KEY (id) REFERENCES entities(id);
 
 
 ALTER TABLE entities
-ALTER COLUMN type SET NOT NULL
-DROP CONSTRAINT entities_name_pkey;
-
-
+  ALTER COLUMN type SET NOT NULL;

@@ -8,7 +8,12 @@ const globalSearch = async (user_id, query) => {
   await addQueryToRecentSearches(user_id, query);
   const persons = await getPersonsFromQuery(query);
   return {
-    persons,
+    persons: persons.map(p => ({
+      id: p.id,
+      name: p.name,
+      surname: p.surname,
+      photoUrl: p.photo_url,
+    })),
   };
 };
 

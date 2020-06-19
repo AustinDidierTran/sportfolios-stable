@@ -22,9 +22,8 @@ export default function Shop() {
   //const isSelf = true;
 
   const fetchShopItems = async () => {
-    const res = await api(`/api/shop/getItems?id=${id}`);
-    const itemsdb = res.data;
-    setItems(itemsdb);
+    const { data = [] } = await api(`/api/shop/getItems?id=${id}`);
+    setItems(data);
   };
 
   useEffect(() => {

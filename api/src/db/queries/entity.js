@@ -46,7 +46,7 @@ const addEntity = async (body, user_id) => {
 };
 
 async function updateEntity(body, user_id) {
-  const { id, name, surname, photo_url } = body;
+  const { id, name, surname, photoUrl } = body;
 
   const res = await getUsersAuthorizationHelper(id);
 
@@ -57,10 +57,10 @@ async function updateEntity(body, user_id) {
     if (name || surname) {
       await updateEntityNameHelper(id, name, surname);
     }
-    if (photo_url) {
-      await updateEntityPhotoHelper(id, photo_url);
+    if (photoUrl) {
+      await updateEntityPhotoHelper(id, photoUrl);
     }
-    return { id, name, surname, photo_url };
+    return { id, name, surname, photoUrl };
   } else {
     throw 'Acces denied';
   }

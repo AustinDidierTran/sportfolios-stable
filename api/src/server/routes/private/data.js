@@ -1,17 +1,19 @@
 const Router = require('koa-router');
-const queries = require('../../db/queries/notifications');
+const queries = require('../../../db/queries/data');
 
 const router = new Router();
-const BASE_URL = '/api/notifications';
+const BASE_URL = '/api/data';
 
-router.post(`${BASE_URL}/follow/see`, async ctx => {
+router.get(`${BASE_URL}/search/global`, async ctx => {
   try {
-    await queries.seeFollowNotification(
+    const { query } = ctx.query;
+    const previousSearchQueries = await queries.globalSearch(
       ctx.body.userInfo.id,
-      ctx.request.body.follower,
+      query,
     );
     ctx.body = {
       status: 'success',
+      data: previousSearchQueries,
     };
   } catch (err) {
     ctx.status = 400;
@@ -22,14 +24,14 @@ router.post(`${BASE_URL}/follow/see`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/all`, async ctx => {
+router.get(`${BASE_URL}/search/previous`, async ctx => {
   try {
-    const notifications = await queries.getAllNotifications(
+    const previousSearchQueries = await queries.getPreviousSearchQueries(
       ctx.body.userInfo.id,
     );
     ctx.body = {
       status: 'success',
-      data: notifications,
+      data: previousSearchQueries,
     };
   } catch (err) {
     ctx.status = 400;

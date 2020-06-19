@@ -1,5 +1,5 @@
 const Router = require('koa-router');
-const queries = require('../../db/queries/entity');
+const queries = require('../../../db/queries/entity');
 
 const router = new Router();
 const BASE_URL = '/api/entity';

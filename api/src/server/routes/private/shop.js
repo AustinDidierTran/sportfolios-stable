@@ -1,18 +1,18 @@
 const Router = require('koa-router');
-const queries = require('../../db/queries/main');
+const queries = require('../../../db/queries/shop');
 
 const router = new Router();
-const BASE_URL = '/api/data/main';
+const BASE_URL = '/api/shop';
 
-router.get(`${BASE_URL}/all`, async ctx => {
+router.get(`${BASE_URL}/getItems`, async ctx => {
   try {
-    const followingUser = await queries.getAllMainInformations(
+    const data = await queries.getItems(
+      ctx.query.id,
       ctx.body.userInfo.id,
     );
-
     ctx.body = {
       status: 'success',
-      data: followingUser,
+      data,
     };
   } catch (err) {
     ctx.status = 400;

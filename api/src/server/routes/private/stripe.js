@@ -1,5 +1,5 @@
 const Router = require('koa-router');
-const queries = require('../../db/queries/stripe');
+const queries = require('../../../db/queries/stripe');
 
 const router = new Router();
 const BASE_URL = '/api/stripe';

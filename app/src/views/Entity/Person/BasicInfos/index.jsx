@@ -1,6 +1,5 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
 import { ENTITIES_ROLE_ENUM } from '../../../../../../common/enums';
 
 import styles from './BasicInfos.module.css';
@@ -30,8 +29,7 @@ export default function BasicInfos(props) {
     id,
     name: nameProp,
     surname: surnameProp,
-    birth_date,
-    photo_url,
+    photoUrl,
     role,
   } = props.basicInfos;
 
@@ -41,19 +39,17 @@ export default function BasicInfos(props) {
   );
 
   const initials = getInitialsFromName(completeName);
-  const birthDate = useFormInput(birth_date);
   const name = useFormInput(nameProp);
   const surname = useFormInput(surnameProp);
 
   const onSave = async () => {
     const promises = [];
 
-    if (img) {
-      promises.push(onImgUpload());
+    if (name.hasChanged()) {
     }
 
-    if (birthDate.hasChanged) {
-      promises.push(onBirthDateChange());
+    if (img) {
+      promises.push(onImgUpload());
     }
 
     const res = await Promise.all(promises);
@@ -61,28 +57,14 @@ export default function BasicInfos(props) {
     const resErrors = res.filter(r => r.status !== 200);
 
     if (!resErrors.length) {
-      birthDate.setCurrentAsDefault();
       setEditMode(false);
     } else {
       // handle errors
-      resErrors.forEach(r => {
-        if (r.data.key === 'birthDate') {
-          if (r.status === 402) {
-            // Date is in the future
-            birthDate.setError(t('date_in_future'));
-          }
-          if (r.status === 403) {
-            // Date is invalid
-            birthDate.setError(t('invalid_date'));
-          }
-        }
-      });
     }
   };
 
   const onCancel = async () => {
     setEditMode(false);
-    birthDate.reset();
   };
 
   const onEdit = async () => setEditMode(true);
@@ -106,13 +88,6 @@ export default function BasicInfos(props) {
     return { status: 404 };
   };
 
-  const onBirthDateChange = async () => {
-    return api('/api/profile/birthDate', {
-      method: 'PUT',
-      body: JSON.stringify({ birthDate: birthDate.value }),
-    });
-  };
-
   const [isFollowing, setIsFollowing] = useState(false);
 
   const onFollow = async () => {
@@ -132,7 +107,7 @@ export default function BasicInfos(props) {
 
   return (
     <Container className={styles.card}>
-      <Avatar initials={initials} photoUrl={photo_url} size="lg" />
+      <Avatar initials={initials} photoUrl={photoUrl} size="lg" />
       {isEditMode ? (
         <Input
           type="file"
@@ -162,19 +137,6 @@ export default function BasicInfos(props) {
           <Typography variant="h3">{completeName}</Typography>
         )}
       </div>
-      {isEditMode ? (
-        <Input type="date" {...birthDate.inputProps} />
-      ) : birth_date ? (
-        <TextField
-          disabled
-          value={t('birth_date_format', {
-            age: moment().diff(moment(birth_date), 'years'),
-            date: moment(birth_date),
-          })}
-        />
-      ) : (
-        <></>
-      )}
       {role === ENTITIES_ROLE_ENUM.ADMIN ? (
         isEditMode ? (
           <>

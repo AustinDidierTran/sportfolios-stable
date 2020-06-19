@@ -143,7 +143,7 @@ async function getAllEntities(params) {
 }
 
 async function getAllTypeEntities(type) {
-  return knex('entities')
+  const entities = await knex('entities')
     .select('id', 'type', 'name', 'surname', 'photo_url')
     .leftJoin(
       'entities_name',
@@ -159,10 +159,16 @@ async function getAllTypeEntities(type) {
     )
     .whereNull('deleted_at')
     .where({ type });
+
+  return entities.map(e => {
+    const { photo_url: photoUrl, ...otherProps } = e;
+
+    return { ...otherProps, photoUrl };
+  });
 }
 
 async function getAllRolesEntity(entity_id) {
-  return knex('entities_role')
+  const entities_role = await knex('entities_role')
     .select('entity_id_admin', 'role', 'name', 'surname', 'photo_url')
     .leftJoin(
       'entities_name',
@@ -177,6 +183,12 @@ async function getAllRolesEntity(entity_id) {
       'entities_photo.entity_id',
     )
     .where('entities_role.entity_id', entity_id);
+
+  return entities_role.map(e => {
+    const { photo_url: photoUrl, ...otherProps } = e;
+
+    return { ...otherProps, photoUrl };
+  });
 }
 
 async function getEntity(id, user_id) {
@@ -222,7 +234,14 @@ async function getEntity(id, user_id) {
     role = row.role;
   }
 
-  return { ...entity, role };
+  return {
+    id: entity.id,
+    type: entity.type,
+    name: entity.name,
+    surname: entity.surname,
+    photoUrl: entity.photo_url,
+    role,
+  };
 }
 
 async function getMembers(personsString, organization_id) {
@@ -258,21 +277,21 @@ async function updateEntityRole(entity_id, entity_id_admin, role) {
 async function updateEntityName(entity_id, name, surname) {
   return knex('entities_name')
     .update({ name, surname })
-    .where({ entity_id })
-    .returning(['entity_id', 'name', 'surname']);
+    .where({ entity_id });
 }
 
 async function updateEntityPhoto(entity_id, photo_url) {
   return knex('entities_photo')
     .update({ photo_url })
-    .where({ entity_id })
-    .returning(['entity_id', 'photo_url']);
+    .where({ entity_id });
 }
 
 async function addEntityRole(entity_id, entity_id_admin, role) {
-  return knex('entities_role')
-    .insert({ entity_id, entity_id_admin, role })
-    .returning(['entity_id', 'entity_id_admin', 'role']);
+  return knex('entities_role').insert({
+    entity_id,
+    entity_id_admin,
+    role,
+  });
 }
 
 async function getUsersAuthorization(id) {

@@ -19,7 +19,7 @@ export default function FollowNotification(props) {
     first_name,
     follower,
     last_name,
-    photo_url,
+    photoUrl,
     seen_at,
   } = props;
 
@@ -64,7 +64,7 @@ export default function FollowNotification(props) {
         <Avatar
           className={styles.avatar}
           initials={initials}
-          photoUrl={photo_url}
+          photoUrl={photoUrl}
         />
       </ListItemIcon>
       <ListItemText primary={text} />

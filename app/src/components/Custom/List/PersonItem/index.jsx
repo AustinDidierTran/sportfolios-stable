@@ -10,7 +10,7 @@ import { useCallback } from 'react';
 export default function PersonItem(props) {
   const { t } = useTranslation();
 
-  const { id, onClick, selected, photo_url, name, surname } = props;
+  const { id, onClick, selected, photoUrl, name, surname } = props;
 
   const completeName = useMemo(
     () => (surname ? `${name} ${surname}` : name),
@@ -37,7 +37,7 @@ export default function PersonItem(props) {
       style={{ width: '100%' }}
     >
       <ListItemIcon>
-        <Avatar photoUrl={photo_url} initials={initials}></Avatar>
+        <Avatar photoUrl={photoUrl} initials={initials}></Avatar>
       </ListItemIcon>
       <ListItemText
         primary={completeName}

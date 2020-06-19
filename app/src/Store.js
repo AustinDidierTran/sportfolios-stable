@@ -77,7 +77,7 @@ function reducer(state, action) {
     case ACTION_ENUM.UPDATE_PROFILE_PICTURE: {
       const newUserInfo = {
         ...state.userInfo,
-        photo_url: action.payload,
+        photoUrl: action.payload,
       };
       localStorage.setItem('userInfo', JSON.stringify(newUserInfo));
       return { ...state, userInfo: newUserInfo };
@@ -85,7 +85,7 @@ function reducer(state, action) {
     case ACTION_ENUM.UPDATE_ORGANIZATION_PROFILE_PICTURE: {
       const newOrganizationInfo = {
         ...state.organization,
-        photo_url: action.payload,
+        photoUrl: action.payload,
       };
       localStorage.setItem(
         'organization',

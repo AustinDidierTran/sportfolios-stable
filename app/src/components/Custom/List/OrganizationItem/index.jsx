@@ -8,7 +8,7 @@ import { goTo, ROUTES } from '../../../../actions/goTo';
 
 export default function OrganizationItem(props) {
   const { t } = useTranslation();
-  const { id, onClick, selected, photo_url, name } = props;
+  const { id, onClick, selected, photoUrl, name } = props;
 
   const initials = useMemo(() => getInitialsFromName(name), [name]);
 
@@ -28,7 +28,7 @@ export default function OrganizationItem(props) {
       style={{ width: '100%' }}
     >
       <ListItemIcon>
-        <Avatar photoUrl={photo_url} initials={initials}></Avatar>
+        <Avatar photoUrl={photoUrl} initials={initials}></Avatar>
       </ListItemIcon>
       <ListItemText
         primary={name}

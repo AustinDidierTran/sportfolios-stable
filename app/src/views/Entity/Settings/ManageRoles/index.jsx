@@ -66,7 +66,7 @@ export default function ManageRoles() {
             className={styles.item}
           >
             <ListItemIcon>
-              <Avatar photoUrl={entity.photo_url} />
+              <Avatar photoUrl={entity.photoUrl} />
             </ListItemIcon>
             <Typography className={styles.textField}>
               {entity.name}

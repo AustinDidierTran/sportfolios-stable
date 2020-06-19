@@ -33,19 +33,19 @@ export default function Person(props) {
   const states = [
     {
       value: TABS_ENUM.GENERAL,
-      component: <General isSelf={isSelf} />,
+      component: General,
       label: t('general'),
       icon: 'Folder',
     },
     {
       value: TABS_ENUM.ABOUT,
-      component: <About />,
+      component: About,
       label: t('about'),
       icon: 'Info',
     },
     {
       value: TABS_ENUM.SHOP,
-      component: <Shop />,
+      component: Shop,
       label: t('shop'),
       icon: 'Store',
     },
@@ -76,7 +76,7 @@ export default function Person(props) {
           ))}
         </Tabs>
       </Paper>
-      {OpenTab}
+      <OpenTab isSelf={isSelf} />
     </Container>
   );
 }

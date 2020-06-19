@@ -1,15 +1,15 @@
 import { API_BASE_URL } from '../../../../conf';
 
-export default async (route, { method, body } = {}) => {
+const api = async (route, { method, body } = {}) => {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
   const authToken = localStorage.getItem('authToken');
-  const headers = authToken
-    ? {
-        'Content-Type': 'application/json',
-        Authorization: authToken,
-      }
-    : {
-        'Content-Type': 'application/json',
-      };
+  if (authToken) {
+    headers.Authorization = authToken;
+  }
+
   if (method === 'POST') {
     const res = await fetch(`${API_BASE_URL}${route}`, {
       method: 'POST',
@@ -36,6 +36,16 @@ export default async (route, { method, body } = {}) => {
     return { data, status };
   }
 
+  if (method === 'DELETE') {
+    const res = await fetch(`${API_BASE_URL}${route}`, {
+      method: 'DELETE',
+    });
+
+    const status = res.status;
+
+    return { status };
+  }
+
   // Then, it is a get
 
   const res = await fetch(`${API_BASE_URL}${route}`, {
@@ -44,4 +54,31 @@ export default async (route, { method, body } = {}) => {
     },
   }).then(res => res.json());
   return res;
+};
+
+export default api;
+
+export const changeEntityName = async (
+  id,
+  { name, surname } = {},
+) => {
+  const bodyJSON = { id };
+
+  if (name) {
+    bodyJSON.name = name;
+  }
+  if (surname) {
+    bodyJSON.surname = surname;
+  }
+
+  return api('/api/entity', {
+    method: 'PUT',
+    body: JSON.stringify(bodyJSON),
+  });
+};
+
+export const deleteEntity = async id => {
+  return api(formatRoute('/api/entity', null, { id }), {
+    method: 'DELETE',
+  });
 };

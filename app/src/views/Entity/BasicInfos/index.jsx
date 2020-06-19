@@ -4,13 +4,15 @@ import React, {
   useEffect,
   useMemo,
 } from 'react';
+import { useFormik } from 'formik';
+
 import { useTranslation } from 'react-i18next';
 
 import styles from './BasicInfos.module.css';
 import { uploadEntityPicture } from '../../../actions/aws';
 import { ACTION_ENUM, Store } from '../../../Store';
 import { useFormInput } from '../../../hooks/forms';
-import api from '../../../actions/api';
+import { changeEntityName } from '../../../actions/api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { Avatar, Input, Button } from '../../../components/Custom';
@@ -30,7 +32,7 @@ export default function BasicInfos(props) {
     basicInfos: {
       id,
       name: initialName,
-      photo_url: initialPhoto_url,
+      photoUrl: initialPhotoUrl,
       role,
     },
   } = props;
@@ -43,7 +45,13 @@ export default function BasicInfos(props) {
     [role],
   );
 
-  const [photo_url, setPhoto_url] = useState(initialPhoto_url);
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+    },
+  });
+
+  const [photoUrl, setPhotoUrl] = useState(initialPhotoUrl);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -58,8 +66,8 @@ export default function BasicInfos(props) {
   }, [initialName]);
 
   useEffect(() => {
-    setPhoto_url(initialPhoto_url);
-  }, [initialPhoto_url]);
+    setPhotoUrl(initialPhotoUrl);
+  }, [initialPhotoUrl]);
 
   const onSave = async () => {
     if (name.value.length < 1) {
@@ -87,13 +95,8 @@ export default function BasicInfos(props) {
   };
 
   const onNameChange = async () => {
-    const res = await api(`/api/entity`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        id,
-        name: name.value,
-      }),
-    });
+    const res = await changeEntityName(id, { name: name.value });
+
     name.changeDefault(res.data.data.name);
   };
 
@@ -113,7 +116,7 @@ export default function BasicInfos(props) {
     const photoUrl = await uploadEntityPicture(id, img);
 
     if (photoUrl) {
-      setPhoto_url(photoUrl);
+      setPhotoUrl(photoUrl);
       dispatch({
         type: ACTION_ENUM.UPDATE_ORGANIZATION_PROFILE_PICTURE,
         payload: photoUrl,
@@ -132,7 +135,7 @@ export default function BasicInfos(props) {
       ) : (
         <Avatar
           className={styles.avatar}
-          photoUrl={photo_url}
+          photoUrl={photoUrl}
           size="lg"
         />
       )}
