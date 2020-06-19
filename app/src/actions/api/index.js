@@ -1,4 +1,5 @@
 import { API_BASE_URL } from '../../../../conf';
+import { formatRoute } from '../goTo';
 
 const api = async (route, { method, body } = {}) => {
   const headers = {
@@ -37,8 +38,11 @@ const api = async (route, { method, body } = {}) => {
   }
 
   if (method === 'DELETE') {
+    console.log('delete');
+
     const res = await fetch(`${API_BASE_URL}${route}`, {
       method: 'DELETE',
+      headers,
     });
 
     const status = res.status;

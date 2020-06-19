@@ -88,6 +88,27 @@ const addEntity = async (body, user_id) => {
   });
 };
 
+const deleteEntity = async (entity_id, user_id) => {
+  const [{ role } = {}] = await knex('user_entity_role')
+    .select('entities_role.role')
+    .leftJoin(
+      'entities_role',
+      'entities_role.entity_id_admin',
+      '=',
+      'user_entity_role.entity_id',
+    )
+    .where('entities_role.entity_id', entity_id)
+    .andWhere('user_entity_role.user_id', user_id);
+
+  if (role !== ENTITIES_ROLE_ENUM.ADMIN) {
+    throw 'Access denied';
+  } else {
+    await knex('entities')
+      .where({ id: entity_id })
+      .del();
+  }
+};
+
 async function getAllEntities(params) {
   const { type } = params;
 
@@ -337,6 +358,7 @@ async function addMember(member_type, organization_id, person_id) {
 module.exports = {
   addEntity,
   addMember,
+  deleteEntity,
   getEntity,
   getAllEntities,
   getAllTypeEntities,

@@ -24,6 +24,8 @@ export default {
     create_person: 'Créer une personne',
     create_team: 'Créer une équipe',
     currency: 'Devise',
+    delete: 'Supprimer',
+    delete_confirmation_text: 'Pour supprimer, écrivez {{name}}',
     donate: 'Faites un don',
     done: 'Terminé',
     editor: 'Éditeur',

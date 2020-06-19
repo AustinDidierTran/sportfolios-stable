@@ -5,6 +5,7 @@ const {
   addEntity: addEntityHelper,
   addEntityRole: addEntityRoleHelper,
   addMember: addMemberHelper,
+  deleteEntity: deleteEntityHelper,
   getAllEntities: getAllEntitiesHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
@@ -98,14 +99,19 @@ async function addMember(body) {
   return res;
 }
 
+const deleteEntity = async (id, user_id) => {
+  return deleteEntityHelper(id, user_id);
+};
+
 module.exports = {
   addEntity,
-  addMember,
-  getEntity,
   addEntityRole,
+  addMember,
+  deleteEntity,
   getAllEntities,
   getAllRolesEntity,
   getAllTypeEntities,
+  getEntity,
   getEntity,
   getMembers,
   getMemberships,

@@ -24,6 +24,8 @@ export default {
     create_person: 'Create Person',
     create_team: 'Create Team',
     currency: 'Currency',
+    delete: 'Delete',
+    delete_confirmation_text: 'To delete, type {{name}}',
     donate: 'Donate',
     done: 'Done',
     editor: 'Editor',

@@ -4,7 +4,6 @@ import React, {
   useEffect,
   useMemo,
 } from 'react';
-import { useFormik } from 'formik';
 
 import { useTranslation } from 'react-i18next';
 
@@ -44,12 +43,6 @@ export default function BasicInfos(props) {
       ),
     [role],
   );
-
-  const formik = useFormik({
-    initialValues: {
-      name: '',
-    },
-  });
 
   const [photoUrl, setPhotoUrl] = useState(initialPhotoUrl);
 

@@ -1,31 +1,57 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { Paper, Button } from '../../Custom';
 import { TextField } from '../../MUI';
 import { useFormInput } from '../../../hooks/forms';
+import { deleteEntity } from '../../../actions/api';
+import { goTo, ROUTES } from '../../../actions/goTo';
+
+import styles from './DeleteEntityCard.module.css';
+import { useTranslation } from 'react-i18next';
 
 export default function DeleteEntityCard(props) {
-  const { id, name, type, ...otherProps } = props;
+  const { t } = useTranslation();
+  const { id, name, ...otherProps } = props;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validator = useFormInput('');
 
-  const handleClick = () => {
-    const isValidated = validator.value === name;
+  const isValid = useMemo(() => validator.value === name, [
+    validator.value,
+    name,
+  ]);
 
-    if (!isValidated) {
+  const handleClick = async () => {
+    setIsSubmitting(true);
+    if (!isValid) {
       validator.setError(`To delete, enter ${name}`);
+      setIsSubmitting(false);
     } else {
+      await deleteEntity(id);
+      setIsSubmitting(false);
+      goTo(ROUTES.organizationList);
     }
   };
 
   return (
-    <Paper title="DeleteEntityCard" {...otherProps}>
+    <Paper
+      title={t('delete')}
+      childrenProps={{ className: styles.paper }}
+      {...otherProps}
+    >
       <TextField
-        helperText={`To delete, enter ${name}`}
+        className={styles.textfield}
+        helperText={t('delete_confirmation_text', { name })}
         {...validator.inputProps}
       />
-      <Button color="secondary" onClick={handleClick}>
-        Delete Entity
+
+      <Button
+        className={styles.button}
+        color="secondary"
+        onClick={handleClick}
+        disabled={isSubmitting || !isValid}
+      >
+        {t('delete')}
       </Button>
     </Paper>
   );
