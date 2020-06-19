@@ -66,7 +66,7 @@ export default function Memberships() {
         organization_id,
       }),
     });
-    goTo(ROUTES.entity, { id });
+    goTo(ROUTES.entity, { id: organization_id });
   };
 
   const onCancel = () => {

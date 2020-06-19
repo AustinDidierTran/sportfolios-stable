@@ -92,7 +92,7 @@ export default function Memberships(props) {
   };
 
   const allItems = useMemo(() => {
-    if (!persons.length || !memberships.length || !members.length) {
+    if (!persons.length || !memberships.length) {
       return [];
     }
     return persons.map(person =>
@@ -120,6 +120,7 @@ export default function Memberships(props) {
   const personsItems = allItems.map(items =>
     items.map(it => (it = it[0])),
   );
+
   return (
     <Paper title={t('memberships')}>
       {personsItems.map(items => (
