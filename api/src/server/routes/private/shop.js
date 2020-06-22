@@ -15,4 +15,26 @@ router.get(`${BASE_URL}/getItems`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/getCartItems`, async ctx => {
+  const data = await queries.getCart(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
+router.get(`${BASE_URL}/addCartItem`, async ctx => {
+  const data = await queries.addToCart(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 module.exports = router;

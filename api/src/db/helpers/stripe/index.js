@@ -289,7 +289,7 @@ const addProduct = async body => {
 };
 
 const addPrice = async (body /*userId*/) => {
-  const { stripe_price, entity_id } = body;
+  const { stripe_price, entity_id, photo_url } = body;
   try {
     const price = await stripe.prices.create(stripe_price);
 
@@ -305,6 +305,7 @@ const addPrice = async (body /*userId*/) => {
     await knex('store_items').insert({
       entity_id: entity_id,
       stripe_price_id: price.id,
+      photo_url: photo_url,
     });
     return price;
   } catch (err) {

@@ -1,50 +1,102 @@
-import React from 'react';
-import { Button } from '../../../../components/MUI';
-import api from '../../../../actions/api';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useFormInput } from '../../../../hooks/forms';
+import { useContext } from 'react';
 
-export default function CreateItem() {
+import styles from './CreateItem.module.css';
+import { Store } from '../../../../Store';
+
+import { TextField } from '../../../../components/MUI';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import { Button, Paper, Input } from '../../../../components/Custom';
+import { createItem, onImgUpload } from './utils';
+
+export default function CreateItem(props) {
   const { id } = useParams();
-  const createProduct = async params => {
-    const res = await api('/api/stripe/createProduct', {
-      method: 'POST',
-      body: JSON.stringify(params),
-    });
-    const product_id = res.data.id;
-    return product_id;
+  const { fetchItems } = props;
+  const { dispatch } = useContext(Store);
+
+  const [isCreating, setIsCreating] = useState(false);
+  const [img, setImg] = useState(null);
+  const [photoUrl, setPhotoUrl] = useState(null);
+
+  const name = useFormInput('');
+  const amount = useFormInput('');
+  const description = useFormInput('');
+
+  const onImgChange = async ([file]) => {
+    setImg(file);
   };
 
-  const createPrice = async params => {
-    const res = await api('/api/stripe/createPrice', {
-      method: 'POST',
-      body: JSON.stringify(params),
-    });
-    const price_id = res.data.id;
-    return price_id;
+  const onUpload = async () => {
+    const res = await onImgUpload(id, img, dispatch);
+    setPhotoUrl(res.photoUrl);
   };
 
-  const createItem = async () => {
-    const productParams = {
-      stripe_product: {
-        name: 'frisbee123',
-        description: '200g',
-        active: true,
-      },
-      entity_id: id,
-    };
-    const product = await createProduct(productParams);
-    const priceParams = {
-      stripe_price: {
-        product: product,
-        currency: 'cad',
-        unit_amount: '3000',
-        active: true,
-      },
-      entity_id: id,
-    };
-    const price = await createPrice(priceParams);
-    /* eslint-disable-next-line */
-    console.log(`${product} ${price}`);
+  const reset = () => {
+    setIsCreating(!isCreating);
   };
-  return <Button onClick={createItem}>Add new Product</Button>;
+
+  const addToStore = async () => {
+    await createItem({
+      name: name.value,
+      description: description.value,
+      amount: amount.value,
+      photo_url: photoUrl,
+      entity_id: id,
+    });
+    setIsCreating(!isCreating);
+    name.reset();
+    amount.reset();
+    description.reset();
+    fetchItems();
+  };
+  return !isCreating ? (
+    <Button onClick={reset}>Add new Product</Button>
+  ) : (
+    <Paper>
+      {photoUrl ? (
+        <>
+          <CardMedia className={styles.media} image={photoUrl} />
+          <Button onClick={() => setPhotoUrl(null)}>CHANGE</Button>
+        </>
+      ) : (
+        <div className={styles.media}>
+          <Input type="file" onChange={onImgChange} />
+          <Button onClick={onUpload}>UPLOAD</Button>
+        </div>
+      )}
+      <CardContent className={styles.infos}>
+        <TextField
+          {...name.inputProps}
+          placeholder="Name"
+          className={styles.name}
+        />
+        <TextField
+          {...amount.inputProps}
+          placeholder="0.00$"
+          className={styles.price}
+        />
+        <TextField
+          {...description.inputProps}
+          placeholder="description"
+          className={styles.description}
+        />
+
+        <Button
+          size="small"
+          color="default"
+          endIcon="Store"
+          onClick={addToStore}
+          className={styles.cart}
+        >
+          AJOUTER
+        </Button>
+        <Button onClick={reset} className={styles.cancel}>
+          CANCEL
+        </Button>
+      </CardContent>
+    </Paper>
+  );
 }

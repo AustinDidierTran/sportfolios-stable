@@ -1,25 +1,27 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import styles from './Shop.module.css';
 
 import { Container } from '../../../components/MUI';
 import Item from './Item';
 import CreateItem from './CreateItem';
-import { Store } from '../../../Store';
 import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
+import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 
-export default function Shop() {
+export default function Shop(props) {
   const [items, setItems] = useState([]);
   const { id } = useParams();
-  const {
-    state: {
-      userInfo: { id: user_id },
-    },
-  } = useContext(Store);
+  const { basicInfos } = props;
+  const role = basicInfos.role;
 
-  const isSelf = id === user_id;
-  //const isSelf = true;
+  const isEditor = useMemo(
+    () =>
+      [ENTITIES_ROLE_ENUM.ADMIN, ENTITIES_ROLE_ENUM.EDITOR].includes(
+        role,
+      ),
+    [role],
+  );
 
   const fetchShopItems = async () => {
     const { data = [] } = await api(`/api/shop/getItems?id=${id}`);
@@ -33,13 +35,15 @@ export default function Shop() {
   return (
     <Container className={styles.items}>
       <div>
-        {isSelf ? <CreateItem /> : null}
+        {isEditor ? <CreateItem fetchItems={fetchShopItems} /> : null}
         {items.map(item => (
           <Item
-            name={item.name}
-            price={item.price}
-            photoUrl={item.photoUrl}
+            name={item.label}
+            price={item.amount / 100}
+            photoUrl={item.photo_url}
             description={item.description}
+            stripe_price_id={item.stripe_price_id}
+            entity_id={item.entity_id}
           />
         ))}
       </div>

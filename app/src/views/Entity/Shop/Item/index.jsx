@@ -9,6 +9,9 @@ import { Button, Paper } from '../../../../components/Custom';
 import { makeStyles } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import { useParams } from 'react-router-dom';
+import { useContext } from 'react';
+import { Store } from '../../../../Store';
 
 const useStyles = makeStyles({
   media: {
@@ -18,15 +21,39 @@ const useStyles = makeStyles({
 
 export default function Item(props) {
   const { t } = useTranslation();
-
-  const { name, price, photoUrl, description } = props;
-
+  const { id } = useParams();
+  const { dispatch } = useContext(Store);
+  const {
+    name,
+    price,
+    photoUrl,
+    description,
+    stripe_price_id,
+  } = props;
   const classes = useStyles();
-
   const [inCart, setInCart] = useState(false);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     setInCart(!inCart);
+
+    const cartParams = {
+      cart: {
+        stripe_price_id: stripe_price_id,
+        entity_id: id,
+      },
+    };
+    const res = await api('/api/shop/addCartItem', {
+      method: 'POST',
+      body: JSON.stringify(cartParams),
+    });
+    const cartItems = res.data;
+    /* eslint-disable-next-line */
+    console.log(res);
+
+    dispatch({
+      type: ACTION_ENUM.ADD_CART_ITEM,
+      payload: cartItems,
+    });
   };
 
   return (

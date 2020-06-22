@@ -50,3 +50,19 @@ export async function uploadEntityPicture(id, img) {
 
   return data.url;
 }
+
+export async function uploadPicture(id, img) {
+  if (!img) {
+    throw 'Please select an image';
+  }
+
+  if (img.size > MAX_IMG_SIZE) {
+    throw 'Image is too big';
+  }
+
+  const { data } = await getSignature(id, img.type);
+
+  await uploadToS3(img, data.signedRequest);
+
+  return data.url;
+}

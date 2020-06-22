@@ -10,6 +10,7 @@ const getShopItems = async entity_id => {
       'stripe_product.description',
       'stripe_price.amount',
       'stripe_price.active',
+      'store_items.photo_url',
     )
     .leftJoin(
       'stripe_price',
@@ -28,4 +29,38 @@ const getShopItems = async entity_id => {
   return res;
 };
 
-module.exports = { getShopItems };
+const getCartItems = async () => {
+  // const res = await knex('cart_items')
+  //   .select(
+  //     'cart_items.entity_id',
+  //     'cart_items.stripe_price_id',
+  //     'stripe_price.stripe_product_id',
+  //     'stripe_product.label',
+  //     'stripe_product.description',
+  //     'stripe_price.amount',
+  //     'stripe_price.active',
+  //     'store_items.photo_url',
+  //   )
+  //   .leftJoin(
+  //     'stripe_price',
+  //     'stripe_price.stripe_price_id',
+  //     '=',
+  //     'cart_items.stripe_price_id',
+  //   )
+  //   .leftJoin(
+  //     'stripe_product',
+  //     'stripe_product.stripe_product_id',
+  //     '=',
+  //     'stripe_price.stripe_product_id',
+  //   )
+  //   .where('cart_items.entity_id', entity_id);
+  // return res;
+  //TODO: Finish the function
+};
+
+const addCartItem = async () => {
+  //TODO: Add cart items to db
+  return 1;
+};
+
+module.exports = { getShopItems, getCartItems, addCartItem };

@@ -39,6 +39,7 @@ export const BREAKPOINTS = [
 const initialState = {
   authToken: handleLocalAuthToken(localAuthToken),
   screenSize: SCREENSIZE_ENUM.xs,
+  cart: [],
   userInfo:
     (localUserInfo &&
       localUserInfo !== 'undefined' &&
@@ -51,6 +52,8 @@ export const ACTION_ENUM = {
   LOGIN: 'login',
   LOGOUT: 'logout',
   UPDATE_PROFILE_PICTURE: 'update_profile_picture',
+  UPDATE_STORE_ITEM_PICTURE: 'update_store_item_picture',
+  ADD_CART_ITEM: 'add_cart_item',
   UPDATE_ORGANIZATION_PROFILE_PICTURE:
     'update_organization_profile_picture',
   UPDATE_USER_INFO: 'update_user_info',
@@ -119,6 +122,9 @@ function reducer(state, action) {
       ) || { breakpoint: SCREENSIZE_ENUM.xs, value: 0 };
 
       return { ...state, screenSize: found.breakpoint };
+    }
+    case ACTION_ENUM.ADD_CART_ITEM: {
+      return { ...state, cart: action.payload };
     }
 
     default:
