@@ -30,7 +30,12 @@ export default function CustomBottomNavigation() {
     [TABS_ENUM.HOME]: [ROUTES.home],
     [TABS_ENUM.PROFILE]: [
       ROUTES.entity,
-      { id: userInfo.persons[0].entity_id },
+      {
+        id:
+          userInfo &&
+          userInfo.persons &&
+          userInfo.persons[0].entity_id,
+      },
     ],
     [TABS_ENUM.NOTIFICATIONS]: [ROUTES.notifications],
     [TABS_ENUM.MENU]: [ROUTES.menu],
@@ -44,7 +49,9 @@ export default function CustomBottomNavigation() {
   const [displayNav, setDisplayNav] = useState(false);
 
   useEffect(() => {
-    setDisplayNav(screenSize === SCREENSIZE_ENUM.xs);
+    setDisplayNav(
+      screenSize === SCREENSIZE_ENUM.xs && Boolean(userInfo),
+    );
   }, [screenSize]);
 
   return displayNav ? (

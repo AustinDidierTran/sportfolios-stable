@@ -14,7 +14,7 @@ import {
 } from '../../../../components/MUI';
 import { getInitialsFromName } from '../../../../utils/stringFormats';
 /* eslint-disable-next-line */
-import api from '../../../../actions/api';
+import api, { changeEntityName } from '../../../../actions/api';
 import { useFormInput } from '../../../../hooks/forms';
 import { uploadEntityPicture } from '../../../../actions/aws';
 
@@ -35,19 +35,30 @@ export default function BasicInfos(props) {
     role,
   } = props.basicInfos;
 
-  const completeName = useMemo(
-    () => (surnameProp ? `${nameProp} ${surnameProp}` : nameProp),
-    [nameProp, surnameProp],
-  );
-
   const initials = getInitialsFromName(completeName);
   const name = useFormInput(nameProp);
   const surname = useFormInput(surnameProp);
+  const completeName = useMemo(
+    () =>
+      surname.value ? `${name.value} ${surname.value}` : name.value,
+    [name.value, surname.value],
+  );
+  const onNameChange = async () => {
+    const res = await changeEntityName(id, {
+      name: name.value,
+      surname: surname.value,
+    });
+    name.changeDefault(res.data.name);
+    surname.changeDefault(res.data.surname);
+
+    return res;
+  };
 
   const onSave = async () => {
     const promises = [];
 
-    if (name.hasChanged()) {
+    if (name.hasChanged || surname.hasChanged) {
+      promises.push(onNameChange());
     }
 
     if (img) {

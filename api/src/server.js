@@ -8,6 +8,7 @@ const { CLIENT_BASE_URL } = require('../../conf');
 // Middlewares
 const checkAuth = require('./server/middleware/check-auth');
 const adminOnly = require('./server/middleware/admin-only');
+const errorHandler = require('./server/middleware/error-handler');
 
 const publicRoutes = require('./server/routes/public');
 const privateRoutes = require('./server/routes/private');
@@ -21,6 +22,7 @@ const corsOptions = {
   origin: CLIENT_BASE_URL,
 };
 
+app.use(errorHandler);
 app.use(cors(corsOptions));
 app.use(bodyParser());
 

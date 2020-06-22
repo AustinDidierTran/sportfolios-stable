@@ -7,7 +7,8 @@ const api = async (route, { method, body } = {}) => {
   };
 
   const authToken = localStorage.getItem('authToken');
-  if (authToken) {
+
+  if (authToken && authToken !== 'null') {
     headers.Authorization = authToken;
   }
 
@@ -30,9 +31,13 @@ const api = async (route, { method, body } = {}) => {
       body,
     });
 
+    console.log('res', res);
+
     const status = res.status;
 
-    const data = await res.json();
+    const { data } = await res.json();
+
+    console.log('data', data);
 
     return { data, status };
   }

@@ -9,6 +9,17 @@ export const Store = React.createContext();
 const localAuthToken = localStorage.getItem('authToken');
 const localUserInfo = localStorage.getItem('userInfo');
 
+const handleLocalAuthToken = token => {
+  if (token === 'null') {
+    return;
+  }
+  if (token === 'undefined') {
+    return;
+  }
+
+  return token;
+};
+
 export const SCREENSIZE_ENUM = {
   xs: 'xs',
   sm: 'sm',
@@ -26,7 +37,7 @@ export const BREAKPOINTS = [
 ].sort((a, b) => b.value - a.value);
 
 const initialState = {
-  authToken: localAuthToken,
+  authToken: handleLocalAuthToken(localAuthToken),
   screenSize: SCREENSIZE_ENUM.xs,
   userInfo:
     (localUserInfo &&
@@ -127,7 +138,9 @@ export function StoreProvider(props) {
   };
 
   useEffect(() => {
-    const authToken = localStorage.getItem('authToken');
+    const authToken = handleLocalAuthToken(
+      localStorage.getItem('authToken'),
+    );
 
     if (!authToken) {
       dispatch({
