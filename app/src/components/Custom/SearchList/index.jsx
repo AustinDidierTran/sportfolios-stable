@@ -1,12 +1,15 @@
 import React, { useMemo } from 'react';
 
-import { List } from '../../Custom';
+import { List, Icon } from '../../Custom';
 import { TextField } from '../../MUI';
 import { formatRoute } from '../../../actions/goTo';
 import { useApiRoute } from '../../../hooks/queries';
 import { useFormInput } from '../../../hooks/forms';
+import { InputAdornment } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 export default function SearchList(props) {
+  const { t } = useTranslation();
   const { type, onClick } = props;
 
   const query = useFormInput('');
@@ -30,7 +33,18 @@ export default function SearchList(props) {
 
   return (
     <>
-      <TextField {...query.inputProps}></TextField>
+      <TextField
+        {...query.inputProps}
+        variant="outlined"
+        label={t('add_editor')}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Icon icon="Search" />
+            </InputAdornment>
+          ),
+        }}
+      />
       <List items={options}></List>
     </>
   );

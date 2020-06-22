@@ -57,9 +57,14 @@ export default function BasicInfos(props) {
   const onSave = async () => {
     const promises = [];
 
+<<<<<<< HEAD
     if (name.hasChanged || surname.hasChanged) {
       promises.push(onNameChange());
     }
+=======
+    // if (name.hasChanged()) {
+    // }
+>>>>>>> Changed UI Admins
 
     if (img) {
       promises.push(onImgUpload());
