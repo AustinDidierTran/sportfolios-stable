@@ -22,6 +22,7 @@ const GLOBAL_ENUM = {
   ORGANIZATION: 2,
   TEAM: 3,
   MEMBERSHIP: 4,
+  CART_ITEM: 5,
 };
 
 module.exports = {

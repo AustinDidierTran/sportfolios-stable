@@ -1,5 +1,5 @@
 import React from 'react';
 
-export default function TabShop() {
+export default function TabSettings() {
   return <></>;
 }

@@ -20,7 +20,9 @@ export default function CustomAutocomplete(props) {
     ...otherProps
   } = props;
 
-  const options = useApiRoute(optionsRoute, { defaultValue: [] });
+  const { response: options } = useApiRoute(optionsRoute, {
+    defaultValue: [],
+  });
 
   const handleChange = (...args) => {
     const [, { value }] = args;

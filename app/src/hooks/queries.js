@@ -23,12 +23,20 @@ export const useQuery = () => {
 
 export const useApiRoute = (route, options = {}) => {
   const { defaultValue } = options;
+  const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState(defaultValue);
 
   const updateResponse = async () => {
-    const { data } = await api(route, options);
+    setIsLoading(true);
+    try {
+      const { data } = await api(route, options);
 
-    setResponse(data);
+      setResponse(data);
+      setIsLoading(false);
+    } catch (err) {
+      setIsLoading(false);
+      throw err;
+    }
   };
 
   useEffect(() => {
@@ -37,5 +45,5 @@ export const useApiRoute = (route, options = {}) => {
     }
   }, [route]);
 
-  return response;
+  return { response, isLoading };
 };

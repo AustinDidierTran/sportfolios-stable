@@ -3,7 +3,6 @@ import General from './General';
 import Settings from './Settings';
 import Shop from './Shop';
 import { useTranslation } from 'react-i18next';
-import { ENTITIES_ROLE_ENUM } from '../Store';
 
 export const TABS_ENUM = {
   ABOUT: 'about',
@@ -14,7 +13,7 @@ export const TABS_ENUM = {
 
 export default function Tabs(props) {
   const { t } = useTranslation();
-  const { list, role } = props;
+  const { list } = props;
 
   return list.map(l => {
     if (l === TABS_ENUM.ABOUT) {
@@ -42,9 +41,6 @@ export default function Tabs(props) {
       };
     }
     if (l === TABS_ENUM.SHOP) {
-      if (role !== ENTITIES_ROLE_ENUM.ADMIN) {
-        return null;
-      }
       return {
         value: TABS_ENUM.SHOP,
         component: Shop,

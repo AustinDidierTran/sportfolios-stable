@@ -30,7 +30,7 @@ export default function SearchInput(props) {
   const location = useLocation();
   const { query: queryQuery } = useQuery();
 
-  const apiRes = useApiRoute(searchQuery);
+  const { response: apiRes } = useApiRoute(searchQuery);
 
   const [query, setQuery] = useState(queryQuery);
 

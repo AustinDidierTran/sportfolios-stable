@@ -26,19 +26,19 @@ const getAllNotifications = async user_id => {
       'nf.seen_at',
       'nf.created_at',
       'ep.photo_url',
-      'en.first_name',
-      'en.last_name',
+      'en.name',
+      'en.surname',
     )
     .from('notification_follow AS nf')
     .leftJoin(
       'entities_name AS en',
-      'nf.follower',
+      'nf.sender_id',
       '=',
       'en.entity_id',
     )
     .leftJoin(
       'entities_photo AS ep',
-      'nf.follower',
+      'nf.sender_id',
       '=',
       'ep.entity_id',
     )

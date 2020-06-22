@@ -9,7 +9,7 @@ import PersonItem from './PersonItem';
 import TeamItem from './TeamItem';
 import MembershipItem from './MembershipItem';
 
-import { LIST_ROW_TYPE_ENUM } from '../../../../../common/enums';
+import { GLOBAL_ENUM } from '../../../../../common/enums';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,7 +28,7 @@ export default function CustomList(props) {
   const classes = useStyles();
 
   const defaultRowRenderer = (item, index) => {
-    if (item.type === LIST_ROW_TYPE_ENUM.ORGANIZATION) {
+    if (item.type === GLOBAL_ENUM.ORGANIZATION) {
       return (
         <OrganizationItem
           {...item}
@@ -36,23 +36,25 @@ export default function CustomList(props) {
         />
       );
     }
-    if (item.type === LIST_ROW_TYPE_ENUM.PERSON) {
+    if (item.type === GLOBAL_ENUM.PERSON) {
       return (
         <PersonItem {...item} selected={selectedIndex === index} />
       );
     }
-    if (item.type === LIST_ROW_TYPE_ENUM.TEAM) {
+    if (item.type === GLOBAL_ENUM.TEAM) {
       return (
         <TeamItem {...item} selected={selectedIndex === index} />
       );
     }
-    if (item.type === LIST_ROW_TYPE_ENUM.MEMBERSHIP) {
+    if (item.type === GLOBAL_ENUM.MEMBERSHIP) {
       return (
         <MembershipItem
           {...item}
           selected={selectedIndex === index}
         />
       );
+    }
+    if (item.type === GLOBAL_ENUM.CART_ITEM) {
     }
     return (
       <DefaultItem {...item} selected={selectedIndex === index} />
