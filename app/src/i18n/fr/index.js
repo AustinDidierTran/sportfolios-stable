@@ -41,6 +41,7 @@ export default {
       'Événements qui pourrait vous intéresser',
     expiration_date: "Date d'expiration",
     first_name: 'Prénom',
+    fixed_date: 'Date fixe',
     forgot_password: 'Mot de passe oublié?',
     funding: 'Financement',
     funding_goal: 'Objectif: {{goal}}$',
@@ -52,6 +53,7 @@ export default {
     home: 'Accueil',
     infos: 'Infos',
     last_name: 'Nom de famille',
+    length: 'Durée',
     login: 'Connexion',
     logout: 'Déconnexion',
     menu: 'Menu',
@@ -171,5 +173,9 @@ export default {
     follow: "S'abonner",
     following: 'Abonné(e)',
     follow_notification_text: " s'est abonné à vous.",
+    //Length
+    one_month: 'Un mois',
+    six_month: 'Six mois',
+    one_year: 'Un an',
   },
 };

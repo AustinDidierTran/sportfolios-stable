@@ -40,6 +40,7 @@ export default {
     events_that_might_interest_you: 'Events that might interest you',
     expiration_date: 'Expiration Date',
     first_name: 'First Name',
+    fixed_date: 'Fixed Date',
     forgot_password: 'Forgot Password?',
     funding: 'Funding',
     funding_goal: 'Goal: {{goal}}$',
@@ -50,6 +51,7 @@ export default {
     home: 'Home',
     infos: 'Infos',
     last_name: 'Last Name',
+    length: 'Length',
     login: 'Login',
     logout: 'Log out',
     menu: 'Menu',
@@ -168,5 +170,9 @@ export default {
     follow: 'Follow',
     following: 'Following',
     follow_notification_text: ' is now following you.',
+    //Length
+    one_month: 'One Month',
+    six_month: 'Six Month',
+    one_year: 'One Year',
   },
 };

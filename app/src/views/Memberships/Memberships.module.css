@@ -1,23 +1,18 @@
-.buttons {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr;
-  padding: 8px;
-}
 .select {
   margin: 16px;
 }
-
-@media (min-width: 768px) {
+.buttons {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-areas: 'cancel';
+}
+.cancel {
+  grid-area: cancel;
+  margin: 8px !important;
+}
+@media (min-width: 600px) {
   .buttons {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-areas: '. becomeMember cancel .';
-  }
-
-  .becomeMember {
-    grid-area: becomeMember;
-  }
-
-  .cancel {
-    grid-area: cancel;
+    grid-template-columns: 2fr 1fr 2fr;
+    grid-template-areas: '. cancel .';
   }
 }

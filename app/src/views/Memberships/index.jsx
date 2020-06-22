@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Memberships.module.css';
 import { useTranslation } from 'react-i18next';
-import { getMembershipName } from '../../utils/stringFormats';
 
 import { Paper, Button, List } from '../../components/Custom';
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { useQuery } from '../../hooks/queries';
+import { LIST_ROW_TYPE_ENUM } from '../../../../common/enums';
+import { TABS_ENUM } from '../Entity/Organization';
 
 export default function Memberships() {
   const { t } = useTranslation();
 
-  const { entity_id, person_id, membership_type } = useQuery();
+  const {
+    entity_id,
+    person_id,
+    membership_type: memberTypeProps,
+  } = useQuery();
+
+  const membership_type = Number(memberTypeProps);
 
   const [options, setOptions] = useState([]);
   const [entity, setEntity] = useState([]);
   const [person, setPerson] = useState([]);
-  // const [option, setOption] = useState([]);
 
   useEffect(() => {
     getPerson();
@@ -46,15 +52,27 @@ export default function Memberships() {
 
   const getOptions = async () => {
     const res = await api(`/api/entity/memberships/?id=${entity_id}`);
-    setOptions(res.data);
+    const options = res.data.filter(r => {
+      r.type = LIST_ROW_TYPE_ENUM.MEMBERSHIP_DETAIL;
+      r.handleClick = handleClick;
+      return membership_type === r.membership_type;
+    });
+    console.log('allo');
+    setOptions(options);
   };
 
-  // const optionChange = event => {
-  //   setOption(event.target.value);
-  // };
-
-  const onClick = async () => {
-    await addMembership(membership_type, person_id, entity_id);
+  const handleClick = async index => {
+    console.log({ options });
+    await addMembership(
+      options[index].membership_type,
+      options[index].person_id,
+      options[index].entity_id,
+    );
+    goTo(
+      ROUTES.entity,
+      { id: entity_id },
+      { tab: TABS_ENUM.SETTINGS },
+    );
   };
 
   const addMembership = async (type, person_id, organization_id) => {
@@ -66,14 +84,11 @@ export default function Memberships() {
         organization_id,
       }),
     });
-    goTo(ROUTES.entity, { id: organization_id });
   };
 
   const onCancel = () => {
     history.back();
   };
-
-  console.log({ options });
 
   return (
     <>
@@ -81,18 +96,13 @@ export default function Memberships() {
       <List items={person} />
       <Paper title={t('organization')} />
       <List items={entity} />
-      <Paper title={t(getMembershipName(membership_type))} />
-      <h1>ALL OPTIONS</h1>
-      {/* <List items={options} /> */}
+      <Paper title={t('membership')} />
+      <List items={options} />
       <div className={styles.buttons}>
-        <Button className={styles.becomeMember} onClick={onClick}>
-          {t('become_member')}
-        </Button>
         <Button
           className={styles.cancel}
           endIcon="Close"
           onClick={onCancel}
-          style={{ marginLeft: '8px' }}
           color="secondary"
         >
           {t('cancel')}

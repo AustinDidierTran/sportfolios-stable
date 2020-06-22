@@ -8,6 +8,7 @@ import OrganizationItem from './OrganizationItem';
 import PersonItem from './PersonItem';
 import TeamItem from './TeamItem';
 import MembershipItem from './MembershipItem';
+import MembershipDetailItem from './MembershipDetailItem';
 
 import { GLOBAL_ENUM } from '../../../../../common/enums';
 
@@ -55,6 +56,15 @@ export default function CustomList(props) {
       );
     }
     if (item.type === GLOBAL_ENUM.CART_ITEM) {
+    }
+    if (item.type === GLOBAL_ENUM.MEMBERSHIP_DETAIL) {
+      return (
+        <MembershipDetailItem
+          {...item}
+          selected={selectedIndex === index}
+          index={index}
+        />
+      );
     }
     return (
       <DefaultItem {...item} selected={selectedIndex === index} />

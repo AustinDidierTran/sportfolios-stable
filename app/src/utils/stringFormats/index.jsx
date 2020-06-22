@@ -1,4 +1,5 @@
 import { MEMBERSHIP_TYPE_ENUM } from '../../Store';
+import { MEMBERSHIP_LENGTH_ENUM } from '../../../../common/enums';
 
 export function getInitialsFromName(completeName) {
   return (
@@ -23,5 +24,29 @@ export function getMembershipName(type) {
     return 'elite_member';
   } else {
     return '';
+  }
+}
+
+export function getMembershipLength(type) {
+  if (type === MEMBERSHIP_LENGTH_ENUM.ONE_MONTH) {
+    return 1;
+  }
+  if (type === MEMBERSHIP_LENGTH_ENUM.SIX_MONTH) {
+    return 6;
+  }
+  if (type === MEMBERSHIP_LENGTH_ENUM.ONE_YEAR) {
+    return 1;
+  }
+}
+
+export function getMembershipUnit(type) {
+  if (type === MEMBERSHIP_LENGTH_ENUM.ONE_MONTH) {
+    return 'M';
+  }
+  if (type === MEMBERSHIP_LENGTH_ENUM.SIX_MONTH) {
+    return 'M';
+  }
+  if (type === MEMBERSHIP_LENGTH_ENUM.ONE_YEAR) {
+    return 'y';
   }
 }
