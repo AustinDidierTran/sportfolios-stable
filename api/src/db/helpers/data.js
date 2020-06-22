@@ -55,7 +55,8 @@ const getPersonsFromQuery = async query => {
       'entities_name.entity_id',
     )
     .where('entities_name.name', 'ILIKE', `%${query}%`)
-    .orWhere('entities_name.surname', 'ILIKE', `%${query}%`);
+    .orWhere('entities_name.surname', 'ILIKE', `%${query}%`)
+    .limit(10);
 };
 
 const getTeamsFromQuery = async query => {

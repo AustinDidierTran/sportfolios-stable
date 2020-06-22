@@ -45,7 +45,11 @@ export default function SearchList(props) {
           ),
         }}
       />
-      <List items={options}></List>
+      {query.value.length === 0 ? (
+        <></>
+      ) : (
+        <List items={options}></List>
+      )}
     </>
   );
 }
