@@ -3,7 +3,10 @@ import api from '../../../../actions/api';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import NotificationList from './NotificationList';
 
+import { OptimizelyFeature } from '@optimizely/react-sdk';
+
 import styles from './NotificationModule.module.css';
+import { FEATURE_FLAGS } from '../../../../../../common/flags';
 
 import { Badge, IconButton } from '../../../../components/MUI';
 import { useEffect } from 'react';
@@ -51,28 +54,36 @@ export default function NotificationModule() {
   }, []);
 
   return (
-    <div className={styles.root} ref={node}>
-      <IconButton
-        aria-label={`show ${unreadNotificationsCount} new notifications`}
-        color="inherit"
-        onClick={toggleNotification}
-      >
-        {unreadNotificationsCount ? (
-          <Badge
-            badgeContent={unreadNotificationsCount}
-            color="secondary"
-          >
-            <NotificationsIcon />
-          </Badge>
+    <OptimizelyFeature feature={FEATURE_FLAGS.NOTIFICATIONS}>
+      {enabled =>
+        enabled ? (
+          <div className={styles.root} ref={node}>
+            <IconButton
+              aria-label={`show ${unreadNotificationsCount} new notifications`}
+              color="inherit"
+              onClick={toggleNotification}
+            >
+              {unreadNotificationsCount ? (
+                <Badge
+                  badgeContent={unreadNotificationsCount}
+                  color="secondary"
+                >
+                  <NotificationsIcon />
+                </Badge>
+              ) : (
+                <NotificationsIcon />
+              )}
+            </IconButton>
+            <NotificationList
+              closeNotificationModule={closeNotificationModule}
+              open={open}
+              notifications={notifications}
+            />
+          </div>
         ) : (
-          <NotificationsIcon />
-        )}
-      </IconButton>
-      <NotificationList
-        closeNotificationModule={closeNotificationModule}
-        open={open}
-        notifications={notifications}
-      />
-    </div>
+          <></>
+        )
+      }
+    </OptimizelyFeature>
   );
 }

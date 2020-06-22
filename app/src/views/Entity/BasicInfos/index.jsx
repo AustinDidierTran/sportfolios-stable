@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useContext,
-  useEffect,
-  useMemo,
-} from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -11,6 +6,7 @@ import styles from './BasicInfos.module.css';
 import { uploadEntityPicture } from '../../../actions/aws';
 import { ACTION_ENUM, Store } from '../../../Store';
 import { useFormInput } from '../../../hooks/forms';
+import { useEditor } from '../../../hooks/roles';
 import { changeEntityName } from '../../../actions/api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -21,7 +17,6 @@ import {
   TextField,
   Container,
 } from '../../../components/MUI';
-import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
@@ -36,13 +31,7 @@ export default function BasicInfos(props) {
     },
   } = props;
 
-  const isEditor = useMemo(
-    () =>
-      [ENTITIES_ROLE_ENUM.ADMIN, ENTITIES_ROLE_ENUM.EDITOR].includes(
-        role,
-      ),
-    [role],
-  );
+  const isEditor = useEditor(role);
 
   const [photoUrl, setPhotoUrl] = useState(initialPhotoUrl);
 
