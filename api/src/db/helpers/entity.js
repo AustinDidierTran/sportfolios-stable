@@ -343,15 +343,33 @@ async function getUsersAuthorization(id) {
     .where('entities_role.entity_id', id);
 }
 
-async function addMember(member_type, organization_id, person_id) {
+async function addMember(
+  member_type,
+  organization_id,
+  person_id,
+  expiration_date,
+) {
   const [res] = await knex('memberships')
     .insert({
       member_type,
       organization_id,
       person_id,
-      expiration_date: new Date(
-        new Date().setFullYear(new Date().getFullYear() + 1),
-      ),
+      expiration_date,
+    })
+    .returning('*');
+  return res;
+}
+
+async function updateMember(
+  member_type,
+  organization_id,
+  person_id,
+  expiration_date,
+) {
+  const [res] = await knex('memberships')
+    .where({ member_type, organization_id, person_id })
+    .update({
+      expiration_date,
     })
     .returning('*');
   return res;
@@ -376,6 +394,7 @@ module.exports = {
   updateEntityName,
   updateEntityPhoto,
   updateEntityRole,
+  updateMember,
   addEntityRole,
   getUsersAuthorization,
   removeEntityRole,

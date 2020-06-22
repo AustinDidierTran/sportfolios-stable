@@ -55,6 +55,7 @@ export default function MembershipItem(props) {
                 entity_id,
                 person_id,
                 membership_type,
+                isMember,
               });
             }}
           >

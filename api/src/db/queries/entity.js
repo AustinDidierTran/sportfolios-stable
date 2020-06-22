@@ -17,6 +17,7 @@ const {
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
   updateEntityRole: updateEntityRoleHelper,
+  updateMember: updateMemberHelper,
   removeEntityRole: removeEntityRoleHelper,
 } = require('../helpers/entity');
 
@@ -95,12 +96,34 @@ async function addEntityRole(body) {
   return await addEntityRoleHelper(entity_id, entity_id_admin, role);
 }
 
+async function updateMember(body) {
+  const {
+    member_type,
+    organization_id,
+    person_id,
+    expiration_date,
+  } = body;
+  const res = await updateMemberHelper(
+    member_type,
+    organization_id,
+    person_id,
+    expiration_date,
+  );
+  return res;
+}
+
 async function addMember(body) {
-  const { member_type, organization_id, person_id } = body;
+  const {
+    member_type,
+    organization_id,
+    person_id,
+    expiration_date,
+  } = body;
   const res = await addMemberHelper(
     member_type,
     organization_id,
     person_id,
+    expiration_date,
   );
   return res;
 }
@@ -124,4 +147,5 @@ module.exports = {
   getS3Signature,
   updateEntity,
   updateEntityRole,
+  updateMember,
 };

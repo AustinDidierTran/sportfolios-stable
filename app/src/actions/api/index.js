@@ -31,13 +31,9 @@ const api = async (route, { method, body } = {}) => {
       body,
     });
 
-    console.log('res', res);
-
     const status = res.status;
 
     const { data } = await res.json();
-
-    console.log('data', data);
 
     return { data, status };
   }

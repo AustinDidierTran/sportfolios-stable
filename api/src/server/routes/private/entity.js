@@ -152,6 +152,23 @@ router.put(`${BASE_URL}/role`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/member`, async ctx => {
+  const entity = await queries.updateMember(ctx.request.body);
+  if (entity) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.post(BASE_URL, async ctx => {
   const entityId = await queries.addEntity(
     ctx.request.body,

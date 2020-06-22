@@ -20,8 +20,9 @@ export default function MembershipDetailItem(props) {
     length,
     fixed_date,
     membership_type,
-    handleClick,
-    index,
+    clickBecomeMember,
+    clickRenewMember,
+    isMember,
   } = props;
 
   const name = getMembershipName(membership_type);
@@ -37,7 +38,7 @@ export default function MembershipDetailItem(props) {
   };
 
   return (
-    <ListItem style={{ width: '100%' }}>
+    <ListItem style={{ width: '100%' }} className={styles.main}>
       {window.innerWidth < 600 ? (
         <ListItemText
           secondaryTypographyProps={{ color: 'primary' }}
@@ -62,12 +63,21 @@ export default function MembershipDetailItem(props) {
         primary={`${price}$`}
         secondary={t('price')}
       ></ListItemText>
-      <Button
-        className={styles.button}
-        onClick={() => handleClick(index)}
-      >
-        {t('become_member')}
-      </Button>
+      {isMember ? (
+        <Button
+          className={styles.button}
+          onClick={() => clickRenewMember()}
+        >
+          {t('renew_membership')}
+        </Button>
+      ) : (
+        <Button
+          className={styles.button}
+          onClick={() => clickBecomeMember()}
+        >
+          {t('become_member')}
+        </Button>
+      )}
     </ListItem>
   );
 }

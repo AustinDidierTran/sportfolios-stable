@@ -8,6 +8,11 @@ import { goTo, ROUTES } from '../../actions/goTo';
 import { useQuery } from '../../hooks/queries';
 import { LIST_ROW_TYPE_ENUM } from '../../../../common/enums';
 import { TABS_ENUM } from '../Entity/Organization';
+import moment from 'moment';
+import {
+  getMembershipLength,
+  getMembershipUnit,
+} from '../../utils/stringFormats';
 
 export default function Memberships() {
   const { t } = useTranslation();
@@ -16,6 +21,7 @@ export default function Memberships() {
     entity_id,
     person_id,
     membership_type: memberTypeProps,
+    isMember,
   } = useQuery();
 
   const membership_type = Number(memberTypeProps);
@@ -54,19 +60,52 @@ export default function Memberships() {
     const res = await api(`/api/entity/memberships/?id=${entity_id}`);
     const options = res.data.filter(r => {
       r.type = LIST_ROW_TYPE_ENUM.MEMBERSHIP_DETAIL;
-      r.handleClick = handleClick;
+      r.clickBecomeMember = () =>
+        clickBecomeMember(
+          r.membership_type,
+          person_id,
+          r.entity_id,
+          r.length,
+          r.fixed_date,
+        );
+      r.clickRenewMember = () =>
+        clickRenewMember(
+          r.membership_type,
+          person_id,
+          r.entity_id,
+          r.length,
+          r.fixed_date,
+        );
+      r.isMember = isMember;
       return membership_type === r.membership_type;
     });
-    console.log('allo');
     setOptions(options);
   };
 
-  const handleClick = async index => {
-    console.log({ options });
+  const getExpirationDate = (length, fixed_date) => {
+    if (length !== -1) {
+      return moment().add(
+        getMembershipLength(length),
+        getMembershipUnit(length),
+      );
+    } else {
+      return moment(fixed_date);
+    }
+  };
+
+  const clickBecomeMember = async (
+    membership_type,
+    person_id,
+    entity_id,
+    length,
+    fixed_date,
+  ) => {
+    const expiration_date = getExpirationDate(length, fixed_date);
     await addMembership(
-      options[index].membership_type,
-      options[index].person_id,
-      options[index].entity_id,
+      membership_type,
+      person_id,
+      entity_id,
+      expiration_date,
     );
     goTo(
       ROUTES.entity,
@@ -75,13 +114,57 @@ export default function Memberships() {
     );
   };
 
-  const addMembership = async (type, person_id, organization_id) => {
+  const clickRenewMember = async (
+    membership_type,
+    person_id,
+    entity_id,
+    length,
+    fixed_date,
+  ) => {
+    const expiration_date = getExpirationDate(length, fixed_date);
+    await updateMembership(
+      membership_type,
+      person_id,
+      entity_id,
+      expiration_date,
+    );
+    goTo(
+      ROUTES.entity,
+      { id: entity_id },
+      { tab: TABS_ENUM.SETTINGS },
+    );
+  };
+
+  const addMembership = async (
+    type,
+    person_id,
+    organization_id,
+    expiration_date,
+  ) => {
     await api('/api/entity/member', {
       method: 'POST',
       body: JSON.stringify({
         member_type: type,
         person_id,
         organization_id,
+        expiration_date,
+      }),
+    });
+  };
+
+  const updateMembership = async (
+    type,
+    person_id,
+    organization_id,
+    expiration_date,
+  ) => {
+    await api('/api/entity/member', {
+      method: 'PUT',
+      body: JSON.stringify({
+        member_type: type,
+        person_id,
+        organization_id,
+        expiration_date,
       }),
     });
   };

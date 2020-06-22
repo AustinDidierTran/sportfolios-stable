@@ -22,7 +22,7 @@ export default function SearchList(props) {
       }),
     [query, type],
   );
-  const response = useApiRoute(optionsRoute, {
+  const { response } = useApiRoute(optionsRoute, {
     defaultValue: { entities: [] },
   });
 

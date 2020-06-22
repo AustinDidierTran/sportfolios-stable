@@ -154,7 +154,7 @@ export function StoreProvider(props) {
       },
     });
 
-    const { data } = res.json();
+    const { data } = await res.json();
 
     if (!data) {
       dispatch({
