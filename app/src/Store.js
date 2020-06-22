@@ -29,9 +29,11 @@ const initialState = {
   authToken: localAuthToken,
   screenSize: SCREENSIZE_ENUM.xs,
   userInfo:
-    localUserInfo &&
-    localUserInfo !== 'undefined' &&
-    JSON.parse(localUserInfo),
+    (localUserInfo &&
+      localUserInfo !== 'undefined' &&
+      localUserInfo !== 'null' &&
+      JSON.parse(localUserInfo)) ||
+    {},
 };
 
 export const ACTION_ENUM = {

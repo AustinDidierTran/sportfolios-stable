@@ -24,7 +24,7 @@ export default function BasicInfo() {
     const errors = {};
 
     const supportedLanguages = ['fr', 'en'];
-    if (supportedLanguages.includes(values.language)) {
+    if (!supportedLanguages.includes(values.language)) {
       errors.language = t('unsupported_language');
     }
 

@@ -1,7 +1,6 @@
 const knex = require('../connection');
 
 const getShopItems = async entity_id => {
-  console.log(entity_id);
   const res = await knex('store_items')
     .select(
       'store_items.entity_id',

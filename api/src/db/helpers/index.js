@@ -92,12 +92,6 @@ const generateToken = () => {
 };
 
 const getBasicUserInfoFromId = async user_id => {
-  const { rows: basicUserInfo } = await knex.raw(
-    `SELECT uer.role FROM persons AS p
-    LEFT JOIN user_entity_role AS uer ON uer.entity_id = p.id
-    WHERE user_id = '${user_id}'`,
-  );
-
   const [{ app_role } = {}] = await knex('user_app_role')
     .select(['app_role'])
     .where({ user_id });
@@ -134,12 +128,7 @@ const getBasicUserInfoFromId = async user_id => {
     .where('entities.type', ENTITIES_TYPE_ENUM.PERSON)
     .andWhere({ user_id });
 
-  if (!basicUserInfo || !basicUserInfo.length) {
-    return null;
-  }
-
   return {
-    ...basicUserInfo[0],
     persons,
     app_role,
     language,

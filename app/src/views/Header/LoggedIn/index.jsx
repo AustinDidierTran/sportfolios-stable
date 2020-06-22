@@ -27,7 +27,7 @@ import useStyles from './useStyles';
 export default function LoggedIn() {
   const classes = useStyles();
   const {
-    state: { userInfo, screenSize },
+    state: { userInfo = {}, screenSize },
   } = useContext(Store);
 
   return screenSize !== SCREENSIZE_ENUM.xs ? (
@@ -76,7 +76,7 @@ export default function LoggedIn() {
               <SearchInput apiRoute="/api/data/search/previous" />
             </div>
             <div className={styles.cart}>
-              <CartIcon id={userInfo.id} />
+              <CartIcon id={userInfo.user_id} />
             </div>
           </div>
         </Toolbar>

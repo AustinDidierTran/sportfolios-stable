@@ -13,6 +13,7 @@ import {
   TextField,
 } from '../../../../components/MUI';
 import { getInitialsFromName } from '../../../../utils/stringFormats';
+/* eslint-disable-next-line */
 import api from '../../../../actions/api';
 import { useFormInput } from '../../../../hooks/forms';
 import { uploadEntityPicture } from '../../../../actions/aws';
@@ -20,6 +21,7 @@ import { uploadEntityPicture } from '../../../../actions/aws';
 export default function BasicInfos(props) {
   const { t } = useTranslation();
   const {
+    /* eslint-disable-next-line */
     state: { userInfo },
     dispatch,
   } = useContext(Store);
@@ -88,22 +90,23 @@ export default function BasicInfos(props) {
     return { status: 404 };
   };
 
+  /* eslint-disable-next-line */
   const [isFollowing, setIsFollowing] = useState(false);
 
-  const onFollow = async () => {
-    await api('/api/followers/follow', {
-      method: 'POST',
-      body: JSON.stringify({
-        senderId: userInfo.id,
-        targetId: id,
-      }),
-    });
-    setIsFollowing(true);
-  };
+  // const onFollow = async () => {
+  //   await api('/api/followers/follow', {
+  //     method: 'POST',
+  //     body: JSON.stringify({
+  //       senderId: userInfo.id,
+  //       targetId: id,
+  //     }),
+  //   });
+  //   setIsFollowing(true);
+  // };
 
-  const onUnfollow = async () => {
-    setIsFollowing(false);
-  };
+  // const onUnfollow = async () => {
+  //   setIsFollowing(false);
+  // };
 
   return (
     <Container className={styles.card}>
@@ -161,13 +164,17 @@ export default function BasicInfos(props) {
             {t('edit')}
           </Button>
         )
-      ) : isFollowing ? (
-        <Button onClick={onUnfollow} variant="outlined">
-          {t('following')}
-        </Button>
       ) : (
-        <Button onClick={onFollow}>{t('follow')}</Button>
-      )}
+        <></>
+      )
+      // isFollowing ? (
+      //   <Button onClick={onUnfollow} variant="outlined">
+      //     {t('following')}
+      //   </Button>
+      // ) : (
+      //   <Button onClick={onFollow}>{t('follow')}</Button>
+      // )
+      }
     </Container>
   );
 }

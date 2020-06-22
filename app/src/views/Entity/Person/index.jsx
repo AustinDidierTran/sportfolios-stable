@@ -1,24 +1,14 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { Tab, Tabs } from '../../../components/MUI';
 import { Container, Paper } from '../../../components/Custom';
 import { Store } from '../../../Store';
 import styles from './Person.module.css';
 import BasicInfos from './BasicInfos';
-import General from './General';
-import Shop from '../Shop';
-import About from '../About';
-
-import { useTranslation } from 'react-i18next';
-
-export const TABS_ENUM = {
-  GENERAL: 'general',
-  ABOUT: 'about',
-  SHOP: 'shop',
-};
+import TabsGenerator, { TABS_ENUM } from '../../../tabs';
+import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 
 export default function Person(props) {
   const { basicInfos } = props;
-  const { t } = useTranslation();
 
   const [eventState, setEventState] = useState(TABS_ENUM.GENERAL);
 
@@ -30,28 +20,20 @@ export default function Person(props) {
 
   const isSelf = basicInfos.id === personId;
 
-  const states = [
-    {
-      value: TABS_ENUM.GENERAL,
-      component: General,
-      label: t('general'),
-      icon: 'Folder',
-    },
-    {
-      value: TABS_ENUM.ABOUT,
-      component: About,
-      label: t('about'),
-      icon: 'Info',
-    },
-    {
-      value: TABS_ENUM.SHOP,
-      component: Shop,
-      label: t('shop'),
-      icon: 'Store',
-    },
-  ];
+  const states = TabsGenerator({
+    list: [
+      TABS_ENUM.GENERAL,
+      TABS_ENUM.ABOUT,
+      // TABS_ENUM.SHOP,
+      TABS_ENUM.SETTINGS,
+    ],
+    role: isSelf ? ENTITIES_ROLE_ENUM.ADMIN : null,
+  });
 
-  const OpenTab = states.find(s => s.value == eventState).component;
+  const OpenTab = useMemo(
+    () => states.find(s => s.value == eventState).component,
+    [eventState, states],
+  );
 
   return (
     <Container className={styles.container}>
