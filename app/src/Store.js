@@ -137,7 +137,7 @@ export function StoreProvider(props) {
     });
   };
 
-  useEffect(() => {
+  const init = async () => {
     const authToken = handleLocalAuthToken(
       localStorage.getItem('authToken'),
     );
@@ -148,28 +148,32 @@ export function StoreProvider(props) {
       });
     }
 
-    fetch(`${API_BASE_URL}/api/user/userInfo`, {
+    const res = await fetch(`${API_BASE_URL}/api/user/userInfo`, {
       headers: {
         Authorization: authToken,
       },
-    })
-      .then(res => res.json())
-      .then(({ data }) => {
-        if (!data) {
-          dispatch({
-            type: ACTION_ENUM.LOGOUT,
-          });
-        } else {
-          dispatch({
-            type: ACTION_ENUM.UPDATE_USER_INFO,
-            payload: data,
-          });
+    });
 
-          if (data.language) {
-            i18n.changeLanguage(data.language);
-          }
-        }
+    const { data } = res.json();
+
+    if (!data) {
+      dispatch({
+        type: ACTION_ENUM.LOGOUT,
       });
+    } else {
+      dispatch({
+        type: ACTION_ENUM.UPDATE_USER_INFO,
+        payload: data,
+      });
+
+      if (data.language) {
+        i18n.changeLanguage(data.language);
+      }
+    }
+  };
+
+  useEffect(() => {
+    init();
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => {
