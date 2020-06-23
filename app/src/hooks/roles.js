@@ -11,3 +11,11 @@ export const useEditor = role => {
   );
   return isEditor;
 };
+
+export const useAdmin = role => {
+  const isAdmin = useMemo(() => ENTITIES_ROLE_ENUM.ADMIN === role, [
+    role,
+  ]);
+
+  return isAdmin;
+};

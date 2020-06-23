@@ -17,16 +17,13 @@ export default function EntitySettings(props) {
 
   const isEditor = useEditor(role);
 
-  const isAdmin = useMemo(() => ENTITIES_ROLE_ENUM.ADMIN === role, [
-    role,
-  ]);
+  const isAdmin = useAdmin(role);
 
   return (
     <div className={styles.main}>
       {isEditor ? (
         <>
           <Stripe id={id} />
-
           {isAdmin ? (
             <>
               <ManageRoles role={role} />

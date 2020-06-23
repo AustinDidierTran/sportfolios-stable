@@ -85,7 +85,7 @@ function reducer(state, action) {
       localStorage.removeItem('authToken');
       localStorage.removeItem('userInfo');
       goTo(ROUTES.login);
-      return { ...state, authToken: null };
+      return { ...state, authToken: null, userInfo: {} };
     }
     case ACTION_ENUM.UPDATE_PROFILE_PICTURE: {
       const newUserInfo = {
@@ -146,28 +146,28 @@ export function StoreProvider(props) {
       dispatch({
         type: ACTION_ENUM.LOGOUT,
       });
-    }
-
-    const res = await fetch(`${API_BASE_URL}/api/user/userInfo`, {
-      headers: {
-        Authorization: authToken,
-      },
-    });
-
-    const { data } = await res.json();
-
-    if (!data) {
-      dispatch({
-        type: ACTION_ENUM.LOGOUT,
-      });
     } else {
-      dispatch({
-        type: ACTION_ENUM.UPDATE_USER_INFO,
-        payload: data,
+      const res = await fetch(`${API_BASE_URL}/api/user/userInfo`, {
+        headers: {
+          Authorization: authToken,
+        },
       });
 
-      if (data.language) {
-        i18n.changeLanguage(data.language);
+      const { data } = await res.json();
+
+      if (!data) {
+        dispatch({
+          type: ACTION_ENUM.LOGOUT,
+        });
+      } else {
+        dispatch({
+          type: ACTION_ENUM.UPDATE_USER_INFO,
+          payload: data,
+        });
+
+        if (data.language) {
+          i18n.changeLanguage(data.language);
+        }
       }
     }
   };
