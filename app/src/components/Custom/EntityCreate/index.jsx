@@ -35,7 +35,7 @@ export default function EntityCreate() {
     [type],
   );
 
-  const { response: owner } = useApiRoute(
+  const { response: creator } = useApiRoute(
     formatRoute('/api/entity', null, { id }),
   );
 
@@ -64,6 +64,7 @@ export default function EntityCreate() {
             name,
             surname,
             type,
+            creator: id,
           }),
         });
         goTo(ROUTES.entity, { id: res.data.id });
@@ -87,48 +88,33 @@ export default function EntityCreate() {
       <div className={styles.main}>
         <form onSubmit={formik.handleSubmit}>
           <Paper className={styles.card} title={entityObject.title}>
-            <CreatedBy {...owner} />
-            {isLoading ? (
-              <>
-                <CardContent>
-                  <TextField
-                    namespace="name"
-                    label={t('name')}
-                    fullWidth
-                    disabled
-                  />
-                  <TextField
-                    hidden={type !== GLOBAL_ENUM.PERSON}
-                    namespace="surname"
-                    label={t('surname')}
-                    fullWidth
-                    disabled
-                  />
-                </CardContent>
+            <CreatedBy {...creator} />
+            <CardContent>
+              <TextField
+                namespace="name"
+                label={t('name')}
+                formik={formik}
+                type="name"
+                fullWidth
+                disabled={isLoading}
+              />
+              <TextField
+                hidden={Number(type) !== GLOBAL_ENUM.PERSON}
+                namespace="surname"
+                label={t('surname')}
+                formik={formik}
+                type="name"
+                fullWidth
+                disabled={isLoading}
+              />
+            </CardContent>
+            <CardActions className={styles.buttons}>
+              {isLoading ? (
                 <div className={styles.div}>
                   <CircularProgress className={styles.progress} />
                 </div>
-              </>
-            ) : (
-              <>
-                <CardContent>
-                  <TextField
-                    namespace="name"
-                    label={t('name')}
-                    formik={formik}
-                    type="name"
-                    fullWidth
-                  />
-                  <TextField
-                    hidden={type !== GLOBAL_ENUM.PERSON}
-                    namespace="surname"
-                    label={t('surname')}
-                    formik={formik}
-                    type="name"
-                    fullWidth
-                  />
-                </CardContent>
-                <CardActions className={styles.buttons}>
+              ) : (
+                <>
                   <Button
                     size="small"
                     color="primary"
@@ -149,9 +135,9 @@ export default function EntityCreate() {
                   >
                     {t('cancel')}
                   </Button>
-                </CardActions>
-              </>
-            )}
+                </>
+              )}
+            </CardActions>
           </Paper>
         </form>
       </div>

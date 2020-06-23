@@ -52,8 +52,6 @@ export default function EntityList(props) {
     [],
   );
 
-  console.log('type', type);
-
   const entityObject = useMemo(() => entityDictionary[type] || {}, [
     entityDictionary,
     type,
