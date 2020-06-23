@@ -1,44 +1,43 @@
 import React, { useMemo, useState } from 'react';
 import { useFormik } from 'formik';
+import CreatedBy from './CreatedBy';
 
 import CircularProgress from '@material-ui/core/CircularProgress';
 import api from '../../../actions/api';
-import { ROUTES, goTo } from '../../../actions/goTo';
+import { ROUTES, goTo, formatRoute } from '../../../actions/goTo';
 
 import { useTranslation } from 'react-i18next';
 
 import styles from './Create.module.css';
 
-import { Container, Paper, Button } from '../../Custom';
-import {
-  TextField,
-  Typography,
-  CardActions,
-  CardContent,
-} from '../../MUI';
-import { ENTITIES_TYPE_ENUM } from '../../../../../common/enums';
+import { Paper, Button, Container } from '../../Custom';
+import { TextField, CardActions, CardContent } from '../../MUI';
+import { GLOBAL_ENUM } from '../../../../../common/enums';
+import { useQuery, useApiRoute } from '../../../hooks/queries';
 
-export default function EntityCreate(props) {
-  const { type } = props;
+export default function EntityCreate() {
+  const { id, type } = useQuery();
+
   const { t } = useTranslation();
 
-  const entityObject = useMemo(() => {
-    if (type === ENTITIES_TYPE_ENUM.ORGANIZATION) {
-      return {
-        title: t('create_organization'),
-      };
-    }
-    if (type === ENTITIES_TYPE_ENUM.TEAM) {
-      return {
-        title: t('create_team'),
-      };
-    }
-    if (type === ENTITIES_TYPE_ENUM.PERSON) {
-      return {
-        title: t('create_person'),
-      };
-    }
-  }, [type]);
+  const titleDictionary = useMemo(
+    () => ({
+      [GLOBAL_ENUM.ORGANIZATION]: t('create_organization'),
+      [GLOBAL_ENUM.TEAM]: t('create_team'),
+      [GLOBAL_ENUM.PERSON]: t('create_person'),
+      [GLOBAL_ENUM.EVENT]: t('create_event'),
+    }),
+    [],
+  );
+
+  const entityObject = useMemo(
+    () => ({ title: titleDictionary[type] }),
+    [type],
+  );
+
+  const { response: owner } = useApiRoute(
+    formatRoute('/api/entity', null, { id }),
+  );
 
   const validate = values => {
     const errors = {};
@@ -84,36 +83,27 @@ export default function EntityCreate(props) {
   };
 
   return (
-    <div className={styles.main}>
-      <form onSubmit={formik.handleSubmit}>
-        <Container>
-          <Paper className={styles.card}>
+    <Container>
+      <div className={styles.main}>
+        <form onSubmit={formik.handleSubmit}>
+          <Paper className={styles.card} title={entityObject.title}>
+            <CreatedBy {...owner} />
             {isLoading ? (
               <>
                 <CardContent>
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="h2"
-                  >
-                    {entityObject.title}
-                  </Typography>
                   <TextField
                     namespace="name"
                     label={t('name')}
                     fullWidth
                     disabled
                   />
-                  {type === ENTITIES_TYPE_ENUM.PERSON ? (
-                    <TextField
-                      namespace="surname"
-                      label={t('surname')}
-                      fullWidth
-                      disabled
-                    />
-                  ) : (
-                    <></>
-                  )}
+                  <TextField
+                    hidden={type !== GLOBAL_ENUM.PERSON}
+                    namespace="surname"
+                    label={t('surname')}
+                    fullWidth
+                    disabled
+                  />
                 </CardContent>
                 <div className={styles.div}>
                   <CircularProgress className={styles.progress} />
@@ -122,13 +112,6 @@ export default function EntityCreate(props) {
             ) : (
               <>
                 <CardContent>
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="h2"
-                  >
-                    {entityObject.title}
-                  </Typography>
                   <TextField
                     namespace="name"
                     label={t('name')}
@@ -136,17 +119,14 @@ export default function EntityCreate(props) {
                     type="name"
                     fullWidth
                   />
-                  {type === ENTITIES_TYPE_ENUM.PERSON ? (
-                    <TextField
-                      namespace="surname"
-                      label={t('surname')}
-                      formik={formik}
-                      type="name"
-                      fullWidth
-                    />
-                  ) : (
-                    <></>
-                  )}
+                  <TextField
+                    hidden={type !== GLOBAL_ENUM.PERSON}
+                    namespace="surname"
+                    label={t('surname')}
+                    formik={formik}
+                    type="name"
+                    fullWidth
+                  />
                 </CardContent>
                 <CardActions className={styles.buttons}>
                   <Button
@@ -173,8 +153,8 @@ export default function EntityCreate(props) {
               </>
             )}
           </Paper>
-        </Container>
-      </form>
-    </div>
+        </form>
+      </div>
+    </Container>
   );
 }

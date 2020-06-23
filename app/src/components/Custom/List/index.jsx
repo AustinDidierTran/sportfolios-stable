@@ -3,14 +3,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { List, ListSubheader } from '../../MUI';
-import DefaultItem from './DefaultItem';
-import OrganizationItem from './OrganizationItem';
-import PersonItem from './PersonItem';
-import TeamItem from './TeamItem';
-import MembershipItem from './MembershipItem';
-import MembershipDetailItem from './MembershipDetailItem';
-
-import { GLOBAL_ENUM } from '../../../../../common/enums';
+import ItemFactory from './ItemFactory';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -23,52 +16,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+export { default as ItemFactory } from './ItemFactory';
+
 export default function CustomList(props) {
   const { title, items, ref, rowRenderer, selectedIndex } = props;
 
   const classes = useStyles();
 
   const defaultRowRenderer = (item, index) => {
-    if (item.type === GLOBAL_ENUM.ORGANIZATION) {
-      return (
-        <OrganizationItem
-          {...item}
-          selected={selectedIndex === index}
-        />
-      );
-    }
-    if (item.type === GLOBAL_ENUM.PERSON) {
-      return (
-        <PersonItem {...item} selected={selectedIndex === index} />
-      );
-    }
-    if (item.type === GLOBAL_ENUM.TEAM) {
-      return (
-        <TeamItem {...item} selected={selectedIndex === index} />
-      );
-    }
-    if (item.type === GLOBAL_ENUM.MEMBERSHIP) {
-      return (
-        <MembershipItem
-          {...item}
-          selected={selectedIndex === index}
-        />
-      );
-    }
-    if (item.type === GLOBAL_ENUM.CART_ITEM) {
-    }
-    if (item.type === GLOBAL_ENUM.MEMBERSHIP_DETAIL) {
-      return (
-        <MembershipDetailItem
-          {...item}
-          selected={selectedIndex === index}
-          index={index}
-        />
-      );
-    }
-    return (
-      <DefaultItem {...item} selected={selectedIndex === index} />
-    );
+    const Item = ItemFactory({ type: item.type });
+
+    return <Item {...item} selected={selectedIndex === index} />;
   };
 
   return (

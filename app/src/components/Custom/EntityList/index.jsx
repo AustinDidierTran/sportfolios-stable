@@ -6,10 +6,7 @@ import { Paper, List, Button } from '../../../components/Custom';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import api from '../../../actions/api';
 
-import {
-  ENTITIES_TYPE_ENUM,
-  LIST_ROW_TYPE_ENUM,
-} from '../../../../../common/enums';
+import { GLOBAL_ENUM } from '../../../../../common/enums';
 import { useMemo } from 'react';
 
 export default function EntityList(props) {
@@ -33,35 +30,37 @@ export default function EntityList(props) {
     getEntities();
   }, [type]);
 
-  const entityObject = useMemo(() => {
-    if (type === ENTITIES_TYPE_ENUM.ORGANIZATION) {
-      return {
-        route: ROUTES.createOrganization,
+  const entityDictionary = useMemo(
+    () => ({
+      [GLOBAL_ENUM.ORGANIZATION]: {
         title: t('organizations'),
         buttonLabel: t('create_organization'),
-        type: LIST_ROW_TYPE_ENUM.ORGANIZATION,
-      };
-    }
-    if (type === ENTITIES_TYPE_ENUM.TEAM) {
-      return {
-        route: ROUTES.createTeam,
+      },
+      [GLOBAL_ENUM.TEAM]: {
         title: t('teams'),
         buttonLabel: t('create_team'),
-        type: LIST_ROW_TYPE_ENUM.TEAM,
-      };
-    }
-    if (type === ENTITIES_TYPE_ENUM.PERSON) {
-      return {
-        route: ROUTES.createPerson,
+      },
+      [GLOBAL_ENUM.PERSON]: {
         title: t('people'),
         buttonLabel: t('create_person'),
-        type: LIST_ROW_TYPE_ENUM.PERSON,
-      };
-    }
-  }, [type]);
+      },
+      [GLOBAL_ENUM.EVENT]: {
+        title: t('event'),
+        buttonLabel: t('create_event'),
+      },
+    }),
+    [],
+  );
+
+  console.log('type', type);
+
+  const entityObject = useMemo(() => entityDictionary[type] || {}, [
+    entityDictionary,
+    type,
+  ]);
 
   const handleClick = () => {
-    goTo(entityObject.route);
+    goTo(ROUTES.create, null, { type });
   };
 
   return (
