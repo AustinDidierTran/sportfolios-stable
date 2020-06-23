@@ -29,9 +29,12 @@ const GLOBAL_ENUM = {
   PERSON: 1,
   ORGANIZATION: 2,
   TEAM: 3,
-  MEMBERSHIP: 4,
-  MEMBERSHIP_DETAIL: 5,
-  CART_ITEM: 6,
+  EVENT: 4,
+  // All numbers under 20 are reserved for potentiel entities
+  MEMBERSHIP: 20,
+  MEMBERSHIP_DETAIL: 21,
+  CART_ITEM: 22,
+  EVENT_CREATOR: 23,
 };
 
 module.exports = {

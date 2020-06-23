@@ -1,0 +1,4 @@
+ALTER TABLE events
+  ALTER COLUMN start_date DROP NOT NULL,
+  ALTER COLUMN end_date DROP NOT NULL,
+  ADD CONSTRAINT events_fkey FOREIGN KEY (id) REFERENCES entities(id);

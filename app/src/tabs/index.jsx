@@ -1,4 +1,5 @@
 import About from './About';
+import Events from './Events';
 import General from './General';
 import Settings from './Settings';
 import Shop from './Shop';
@@ -6,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 export const TABS_ENUM = {
   ABOUT: 'about',
+  EVENTS: 'events',
   GENERAL: 'general',
   SHOP: 'shop',
   SETTINGS: 'settings',
@@ -22,6 +24,14 @@ export default function Tabs(props) {
         component: About,
         label: t('about'),
         icon: 'Info',
+      };
+    }
+    if (l === TABS_ENUM.EVENTS) {
+      return {
+        value: TABS_ENUM.EVENTS,
+        component: Events,
+        label: t('events'),
+        icon: 'Event',
       };
     }
     if (l === TABS_ENUM.GENERAL) {

@@ -7,7 +7,7 @@ import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { useQuery } from '../../hooks/queries';
 import { LIST_ROW_TYPE_ENUM } from '../../../../common/enums';
-import { TABS_ENUM } from '../Entity/Organization';
+import { TABS_ENUM } from '../../tabs';
 import moment from 'moment';
 import {
   getMembershipLength,

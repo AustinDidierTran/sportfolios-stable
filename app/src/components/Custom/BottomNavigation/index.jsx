@@ -13,7 +13,6 @@ import { useTranslation } from 'react-i18next';
 
 import { ROUTES, goTo } from '../../../actions/goTo';
 import { Store, SCREENSIZE_ENUM } from '../../../Store';
-import { useEffect } from 'react';
 
 const TABS_ENUM = {
   HOME: 'home',
@@ -56,10 +55,6 @@ export default function CustomBottomNavigation() {
       Boolean(userInfo && userInfo.user_id),
     [screenSize, userInfo && userInfo.user_id],
   );
-
-  useEffect(() => {
-    console.log('userInfo', userInfo);
-  }, [userInfo, userInfo && userInfo.user_id]);
 
   return displayNav ? (
     <BottomNavigation
