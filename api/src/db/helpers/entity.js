@@ -2,11 +2,11 @@ const knex = require('../connection');
 
 const {
   ENTITIES_ROLE_ENUM,
-  ENTITIES_TYPE_ENUM,
+  GLOBAL_ENUM,
 } = require('../../../../common/enums');
 
 const addEntity = async (body, user_id) => {
-  const { name, surname, type } = body;
+  const { name, creator, surname, type } = body;
 
   return knex.transaction(async trx => {
     const [{ id: entity_id } = {}] = await knex('entities')
@@ -28,62 +28,80 @@ const addEntity = async (body, user_id) => {
       })
       .transacting(trx);
 
-    if (
-      [
-        ENTITIES_TYPE_ENUM.TEAM,
-        ENTITIES_TYPE_ENUM.ORGANIZATION,
-      ].includes(type)
-    ) {
-      const [{ id: entity_id_admin } = {}] = await knex('persons')
-        .select(['id'])
-        .leftJoin(
-          'user_entity_role',
-          'user_entity_role.entity_id',
-          '=',
-          'persons.id',
-        )
-        .where('user_entity_role.user_id', user_id)
-        .transacting(trx);
+    switch (Number(type)) {
+      case GLOBAL_ENUM.TEAM:
+      case GLOBAL_ENUM.ORGANIZATION: {
+        const [{ id: entity_id_admin } = {}] = await knex('persons')
+          .select(['id'])
+          .leftJoin(
+            'user_entity_role',
+            'user_entity_role.entity_id',
+            '=',
+            'persons.id',
+          )
+          .where('user_entity_role.user_id', user_id)
+          .transacting(trx);
 
-      await knex('entities_role')
-        .insert({
-          entity_id,
-          entity_id_admin,
-          role: ENTITIES_ROLE_ENUM.ADMIN,
-        })
-        .transacting(trx);
+        await knex('entities_role')
+          .insert({
+            entity_id,
+            entity_id_admin,
+            role: ENTITIES_ROLE_ENUM.ADMIN,
+          })
+          .transacting(trx);
 
-      if (type === ENTITIES_TYPE_ENUM.ORGANIZATION) {
-        const [organization] = await knex('organizations')
+        if (type === GLOBAL_ENUM.ORGANIZATION) {
+          const [organization] = await knex('organizations')
+            .insert({ id: entity_id })
+            .returning(['id'])
+            .transacting(trx);
+
+          return organization;
+        }
+
+        if (type === GLOBAL_ENUM.TEAM) {
+          const [team] = await knex('teams')
+            .insert({ id: entity_id })
+            .returning(['id'])
+            .transacting(trx);
+
+          return team;
+        }
+      }
+      case GLOBAL_ENUM.PERSON: {
+        await knex('user_entity_role')
+          .insert({
+            user_id,
+            entity_id,
+            role: ENTITIES_ROLE_ENUM.ADMIN,
+          })
+          .transacting(trx);
+
+        const [person] = await knex('persons')
           .insert({ id: entity_id })
           .returning(['id'])
           .transacting(trx);
 
-        return organization;
+        return person;
       }
-      if (type === ENTITIES_TYPE_ENUM.TEAM) {
-        const [team] = await knex('teams')
+      case GLOBAL_ENUM.EVENT: {
+        const insertObj = {
+          entity_id,
+          role: ENTITIES_ROLE_ENUM.ADMIN,
+          entity_id_admin: creator,
+        };
+
+        await knex('entities_role')
+          .insert(insertObj)
+          .transacting(trx);
+
+        const [event] = await knex('events')
           .insert({ id: entity_id })
           .returning(['id'])
           .transacting(trx);
 
-        return team;
+        return event;
       }
-    } else if (ENTITIES_TYPE_ENUM.PERSON === type) {
-      await knex('user_entity_role')
-        .insert({
-          user_id,
-          entity_id,
-          role: ENTITIES_ROLE_ENUM.ADMIN,
-        })
-        .transacting(trx);
-
-      const [person] = await knex('persons')
-        .insert({ id: entity_id })
-        .returning(['id'])
-        .transacting(trx);
-
-      return person;
     }
   });
 };
@@ -232,7 +250,7 @@ async function getEntity(id, user_id) {
 
   let role;
 
-  if (entity.type === ENTITIES_TYPE_ENUM.PERSON) {
+  if (entity.type === GLOBAL_ENUM.PERSON) {
     const [row = {}] = await knex('user_entity_role')
       .select('role')
       .where({
@@ -326,7 +344,7 @@ async function getUsersAuthorization(id) {
     return null;
   }
 
-  if (type === ENTITIES_TYPE_ENUM.PERSON) {
+  if (type === GLOBAL_ENUM.PERSON) {
     return knex('user_entity_role')
       .select(['user_id', 'role'])
       .where({ entity_id: id });

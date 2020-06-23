@@ -18,7 +18,7 @@ export default function NotificationModule() {
   const node = useRef();
 
   const handleClick = e => {
-    if (!node.current.contains(e.target)) {
+    if (!node || !node.current || !node.current.contains(e.target)) {
       setOpen(false);
     }
   };

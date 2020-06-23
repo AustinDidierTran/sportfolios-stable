@@ -10,8 +10,6 @@ export default function Events(props) {
   const { t } = useTranslation();
   const { basicInfos } = props;
 
-  console.log('basicInfos', basicInfos);
-
   const handleClick = () => {
     goTo(ROUTES.create, null, {
       type: GLOBAL_ENUM.EVENT,
