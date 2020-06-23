@@ -22,6 +22,7 @@ export default function SearchList(props) {
       }),
     [query, type],
   );
+
   const { response } = useApiRoute(optionsRoute, {
     defaultValue: { entities: [] },
   });
@@ -37,6 +38,7 @@ export default function SearchList(props) {
         {...query.inputProps}
         variant="outlined"
         label={t('add_editor')}
+        style={{ margin: '8px' }}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

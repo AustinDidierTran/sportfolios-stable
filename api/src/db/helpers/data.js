@@ -135,5 +135,9 @@ module.exports = {
   getOrganizationsFromQuery,
   getPersonsFromQuery,
   getPreviousSearchQueriesFromId,
+  getEntitiesFromQuery,
+  getOrganizationsFromQuery,
+  getPersonsFromQuery,
+  getPreviousSearchQueriesFromId,
   getTeamsFromQuery,
 };

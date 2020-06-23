@@ -1,12 +1,11 @@
+const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
 const moment = require('moment');
 const { signS3Request } = require('../../server/utils/aws');
-const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
 
 const {
   addEntity: addEntityHelper,
   addEntityRole: addEntityRoleHelper,
   addMember: addMemberHelper,
-  deleteEntity: deleteEntityHelper,
   getAllEntities: getAllEntitiesHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
@@ -14,11 +13,11 @@ const {
   getMembers: getMembersHelper,
   getMemberships: getMembershipsHelper,
   getUsersAuthorization: getUsersAuthorizationHelper,
+  removeEntityRole: removeEntityRoleHelper,
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
   updateEntityRole: updateEntityRoleHelper,
   updateMember: updateMemberHelper,
-  removeEntityRole: removeEntityRoleHelper,
 } = require('../helpers/entity');
 
 async function getEntity(id, user_id) {

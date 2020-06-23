@@ -54,6 +54,8 @@ export default {
     length: 'Length',
     login: 'Login',
     logout: 'Log out',
+    member: 'Member',
+    membership: 'Membership',
     menu: 'Menu',
     member: 'Member',
     membership: 'Membership',
