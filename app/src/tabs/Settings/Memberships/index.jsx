@@ -6,13 +6,13 @@ import React, {
 } from 'react';
 
 import moment from 'moment';
-import { List, Paper } from '../../../../components/Custom';
-import { getMembershipName } from '../../../../utils/stringFormats';
-import { LIST_ROW_TYPE_ENUM } from '../../../../../../common/enums';
+import { List, Paper } from '../../../components/Custom';
+import { getMembershipName } from '../../../utils/stringFormats';
+import { LIST_ROW_TYPE_ENUM } from '../../../../../common/enums';
 import { useTranslation } from 'react-i18next';
-import api from '../../../../actions/api';
-import { Store } from '../../../../Store';
-import { formatRoute } from '../../../../actions/goTo';
+import api from '../../../actions/api';
+import { Store } from '../../../Store';
+import { formatRoute } from '../../../actions/goTo';
 
 export default function Memberships(props) {
   const { t } = useTranslation();

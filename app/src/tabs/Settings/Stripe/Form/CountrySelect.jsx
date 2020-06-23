@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Autocomplete } from '../../../../../components/Custom';
+import { Autocomplete } from '../../../../components/Custom';
 
 // ISO 3166-1 alpha-2
 // ⚠️ No support for IE 11

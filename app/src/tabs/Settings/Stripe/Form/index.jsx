@@ -6,11 +6,11 @@ import {
   TextField,
   Typography,
   Button,
-} from '../../../../../components/MUI';
+} from '../../../../components/MUI';
 import styles from './form.module.css';
 import CountrySelect from './CountrySelect';
 import CurrencySelect from './CurrencySelect';
-import api from '../../../../../actions/api';
+import api from '../../../../actions/api';
 
 export default function ExternalAccountForm() {
   const { t } = useTranslation();

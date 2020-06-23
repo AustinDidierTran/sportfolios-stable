@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 import React, { useMemo } from 'react';
-import { Autocomplete } from '../../../../../components/Custom';
+import { Autocomplete } from '../../../../components/Custom';
 const currencies = require('currency-codes/data');
 
 export default function CurrencySelect(props) {

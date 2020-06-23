@@ -1,19 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Paper, Avatar, Select } from '../../../../components/Custom';
-import {
-  Typography,
-  List,
-  ListItem,
-} from '../../../../components/MUI';
+import { Paper, Avatar, Select } from '../../../components/Custom';
+import { Typography, List, ListItem } from '../../../components/MUI';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 
-import { ENTITIES_ROLE_ENUM } from '../../../../Store';
+import { ENTITIES_ROLE_ENUM } from '../../../Store';
 import { useTranslation } from 'react-i18next';
-import api from '../../../../actions/api';
+import api from '../../../actions/api';
 import styles from './ManageRoles.module.css';
-import { goTo, ROUTES } from '../../../../actions/goTo';
+import { goTo, ROUTES } from '../../../actions/goTo';
 import AddAdmins from './AddAdmins';
 
 export default function ManageRoles() {

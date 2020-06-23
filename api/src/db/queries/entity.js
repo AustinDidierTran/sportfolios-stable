@@ -6,6 +6,8 @@ const {
   addEntity: addEntityHelper,
   addEntityRole: addEntityRoleHelper,
   addMember: addMemberHelper,
+  deleteEntity: deleteEntityHelper,
+  deleteEntityMembership: deleteEntityMembershipHelper,
   getAllEntities: getAllEntitiesHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
@@ -127,15 +129,27 @@ async function addMember(body) {
   return res;
 }
 
-const deleteEntity = async (id, user_id) => {
+async function deleteEntity(id, user_id) {
   return deleteEntityHelper(id, user_id);
-};
+}
+
+async function deleteEntityMembership(query) {
+  const { entity_id, membership_type, length, fixed_date } = query;
+
+  return deleteEntityMembershipHelper(
+    entity_id,
+    membership_type,
+    length,
+    fixed_date,
+  );
+}
 
 module.exports = {
   addEntity,
   addEntityRole,
   addMember,
   deleteEntity,
+  deleteEntityMembership,
   getAllEntities,
   getAllRolesEntity,
   getAllTypeEntities,

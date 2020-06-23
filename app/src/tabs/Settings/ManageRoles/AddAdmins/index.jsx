@@ -1,11 +1,8 @@
 import React from 'react';
 
-import {
-  Container,
-  SearchList,
-} from '../../../../../components/Custom';
+import { Container, SearchList } from '../../../../components/Custom';
 
-import { GLOBAL_ENUM } from '../../../../../../../common/enums';
+import { GLOBAL_ENUM } from '../../../../../../common/enums';
 
 export default function AddAdmins(props) {
   const { onClick } = props;

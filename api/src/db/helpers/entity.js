@@ -1,4 +1,5 @@
 const knex = require('../connection');
+const moment = require('moment');
 
 const {
   ENTITIES_ROLE_ENUM,
@@ -104,27 +105,6 @@ const addEntity = async (body, user_id) => {
       }
     }
   });
-};
-
-const deleteEntity = async (entity_id, user_id) => {
-  const [{ role } = {}] = await knex('user_entity_role')
-    .select('entities_role.role')
-    .leftJoin(
-      'entities_role',
-      'entities_role.entity_id_admin',
-      '=',
-      'user_entity_role.entity_id',
-    )
-    .where('entities_role.entity_id', entity_id)
-    .andWhere('user_entity_role.user_id', user_id);
-
-  if (role !== ENTITIES_ROLE_ENUM.ADMIN) {
-    throw 'Access denied';
-  } else {
-    await knex('entities')
-      .where({ id: entity_id })
-      .del();
-  }
 };
 
 async function getAllEntities(params) {
@@ -399,11 +379,57 @@ async function removeEntityRole(entity_id, entity_id_admin) {
     .del();
 }
 
+const deleteEntity = async (entity_id, user_id) => {
+  const [{ role } = {}] = await knex('user_entity_role')
+    .select('entities_role.role')
+    .leftJoin(
+      'entities_role',
+      'entities_role.entity_id_admin',
+      '=',
+      'user_entity_role.entity_id',
+    )
+    .where('entities_role.entity_id', entity_id)
+    .andWhere('user_entity_role.user_id', user_id);
+
+  if (role !== ENTITIES_ROLE_ENUM.ADMIN) {
+    throw 'Access denied';
+  } else {
+    await knex('entities')
+      .where({ id: entity_id })
+      .del();
+  }
+};
+
+const deleteEntityMembership = async (
+  entity_id,
+  membership_type_props,
+  length_props,
+  fixed_date,
+) => {
+  const membership_type = Number(membership_type_props);
+  const length = Number(length_props);
+  const minDate = moment(fixed_date).subtract(1, 'hour');
+  const maxDate = moment(fixed_date).add(1, 'hour');
+
+  await knex('entity_memberships')
+    .where(
+      {
+        entity_id,
+        membership_type,
+        length,
+      },
+      ('fixed_date', '>=', minDate),
+      ('fixed_date', '<', maxDate),
+    )
+    .del();
+};
+
 module.exports = {
   addEntity,
   addEntityRole,
   addMember,
   deleteEntity,
+  deleteEntityMembership,
   getAllEntities,
   getAllRolesEntity,
   getAllTypeEntities,

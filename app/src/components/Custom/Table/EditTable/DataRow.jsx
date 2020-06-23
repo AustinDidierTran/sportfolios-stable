@@ -11,7 +11,7 @@ import IconButton from '../../IconButton';
 import { useEffect } from 'react';
 
 export default function DataRow(props) {
-  const { datum, headers, onEdit, validationSchema } = props;
+  const { datum, headers, onEdit, onDelete, index } = props;
   const [isEditMode, setEditMode] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
 
@@ -69,10 +69,6 @@ export default function DataRow(props) {
     setEditMode(false);
   };
 
-  const onDelete = () => {
-    // Deleting...
-  };
-
   const onEditMode = () => {
     setEditMode(true);
   };
@@ -127,7 +123,9 @@ export default function DataRow(props) {
         <IconButton icon="Edit" onClick={onEditMode} tooltip="Edit" />
         <IconButton
           icon="Delete"
-          onClick={onDelete}
+          onClick={() => {
+            onDelete(index);
+          }}
           tooltip="Delete"
         />
       </TableCell>
