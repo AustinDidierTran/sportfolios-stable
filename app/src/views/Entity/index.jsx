@@ -1,14 +1,22 @@
 import React from 'react';
 
+import { CircularProgress } from '@material-ui/core';
+import { formatRoute } from '../../actions/goTo';
+import { GLOBAL_ENUM } from '../../../../common/enums';
+import { useApiRoute } from '../../hooks/queries';
+import { useParams } from 'react-router-dom';
+import EntityNotFound from './EntityNotFound';
+import Event from './Event';
 import Organization from './Organization';
 import Person from './Person';
-import { useParams } from 'react-router-dom';
 import Team from './Team';
-import { GLOBAL_ENUM } from '../../../../common/enums';
-import EntityNotFound from './EntityNotFound';
-import { formatRoute } from '../../actions/goTo';
-import { CircularProgress } from '@material-ui/core';
-import { useApiRoute } from '../../hooks/queries';
+
+const EntityMap = {
+  [GLOBAL_ENUM.PERSON]: Person,
+  [GLOBAL_ENUM.ORGANIZATION]: Organization,
+  [GLOBAL_ENUM.TEAM]: Team,
+  [GLOBAL_ENUM.EVENT]: Event,
+};
 
 export default function Entity() {
   const { id } = useParams();
@@ -16,7 +24,7 @@ export default function Entity() {
   const { response: basicInfos, isLoading } = useApiRoute(
     formatRoute('/api/entity', null, { id }),
     {
-      defaultValue: { data: {} },
+      defaultValue: {},
     },
   );
 
@@ -28,16 +36,11 @@ export default function Entity() {
     return <EntityNotFound />;
   }
 
-  switch (Number(basicInfos.type)) {
-    case GLOBAL_ENUM.PERSON:
-      return <Person basicInfos={basicInfos} />;
-    case GLOBAL_ENUM.ORGANIZATION:
-      return <Organization basicInfos={basicInfos} />;
-    case GLOBAL_ENUM.TEAM:
-      return <Team basicInfos={basicInfos} />;
-    case GLOBAL_ENUM.EVENT:
-      return <Team basicInfos={basicInfos} />;
+  const EntityObject = EntityMap[basicInfos.type];
+
+  if (!EntityObject) {
+    return <EntityNotFound />;
   }
 
-  return <EntityNotFound />;
+  return <EntityObject basicInfos={basicInfos} />;
 }
