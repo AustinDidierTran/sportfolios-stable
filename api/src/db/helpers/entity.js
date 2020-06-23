@@ -320,7 +320,7 @@ async function addEntityRole(entity_id, entity_id_admin, role) {
 async function getUsersAuthorization(id) {
   const [{ type } = {}] = await knex('entities')
     .select('type')
-    .where({ id });
+    .where('entities_role.entity_id', id);
 
   if (!type) {
     return null;
@@ -383,19 +383,19 @@ async function removeEntityRole(entity_id, entity_id_admin) {
 
 module.exports = {
   addEntity,
+  addEntityRole,
   addMember,
   deleteEntity,
-  getEntity,
   getAllEntities,
-  getAllTypeEntities,
   getAllRolesEntity,
+  getAllTypeEntities,
+  getEntity,
   getMembers,
   getMemberships,
+  getUsersAuthorization,
+  removeEntityRole,
   updateEntityName,
   updateEntityPhoto,
   updateEntityRole,
   updateMember,
-  addEntityRole,
-  getUsersAuthorization,
-  removeEntityRole,
 };

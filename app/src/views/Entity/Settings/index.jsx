@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 import styles from './Settings.module.css';
 import { DeleteEntityCard } from '../../../components/Cards';
-import { useEditor } from '../../../hooks/roles';
+import { useAdmin, useEditor } from '../../../hooks/roles';
 
 export default function EntitySettings(props) {
   const { id } = useParams();

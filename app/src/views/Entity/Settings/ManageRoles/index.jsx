@@ -58,11 +58,6 @@ export default function ManageRoles() {
     }
   };
 
-  const handleChange = async (event, entity_id_admin) => {
-    await updateRole(entity_id_admin, event.target.value);
-    await updateEntities();
-  };
-
   const onClick = async id => {
     await api(`/api/entity/role`, {
       method: 'POST',
@@ -72,6 +67,11 @@ export default function ManageRoles() {
         entity_id,
       }),
     });
+    await updateEntities();
+  };
+
+  const handleChange = async (event, entity_id_admin) => {
+    await updateRole(entity_id_admin, event.target.value);
     await updateEntities();
   };
 
