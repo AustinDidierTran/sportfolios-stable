@@ -1,18 +1,45 @@
 import React from 'react';
 import Stripe from './Stripe';
 import ManageRoles from './ManageRoles';
+import Memberships from './Memberships';
 import { useParams } from 'react-router-dom';
+import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 import styles from './Settings.module.css';
+import { DeleteEntityCard } from '../../../components/Cards';
+import { useEditor } from '../../../hooks/roles';
 
-export default function OrganizationSettings() {
+export default function EntitySettings(props) {
   const { id } = useParams();
+
+  const { basicInfos } = props;
+
+  const { role = ENTITIES_ROLE_ENUM.VIEWER } = basicInfos;
+
+  const isEditor = useEditor(role);
+
+  const isAdmin = useAdmin(role);
 
   return (
     <div className={styles.main}>
-      <Stripe id={id} />
-      <ManageRoles />
+      {isEditor ? (
+        <>
+          <Stripe id={id} />
+          {isAdmin ? (
+            <>
+              <ManageRoles role={role} />
+              <DeleteEntityCard
+                id={id}
+                type={basicInfos.type}
+                name={basicInfos.name}
+              />
+            </>
+          ) : (
+            <></>
+          )}
+        </>
+      ) : (
+        <Memberships basicInfos={basicInfos} />
+      )}
     </div>
   );
 }
-
-// http://localhost:3000/organization/e7a9a635-5d63-4f04-b063-a2d323d4f63e/settings

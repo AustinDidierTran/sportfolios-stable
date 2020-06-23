@@ -1,6 +1,5 @@
-import React from 'react';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import React, { useMemo } from 'react';
+import { Autocomplete } from '../../../../../components/Custom';
 
 // ISO 3166-1 alpha-2
 // ⚠️ No support for IE 11
@@ -17,42 +16,31 @@ function countryToFlag(isoCode) {
 export default function CountrySelect(props) {
   const { formik } = props;
 
-  const onChange = (...args) => {
-    const newValue = args[1].code;
-    formik.setFieldValue('country', newValue);
-  };
-
   const content = option => {
     return (
       <React.Fragment>
-        <span>{countryToFlag(option.code)}</span>
-        {option.label} ({option.code})
+        <span>{countryToFlag(option.value)}</span>
+        {option.display} ({option.value})
       </React.Fragment>
     );
   };
 
+  const options = useMemo(
+    () =>
+      countries.map(country => ({
+        value: country.code,
+        display: country.label,
+      })),
+    [countries],
+  );
+
   return (
     <Autocomplete
-      id="country-select-demo"
-      onChange={onChange}
-      options={countries}
-      autoHighlight
-      getOptionLabel={option => option.label}
+      options={options}
+      formik={formik}
+      type="country"
+      namespace="country"
       renderOption={content}
-      renderInput={params => (
-        <TextField
-          {...params}
-          namespace="country"
-          formik={formik}
-          type="country"
-          label="Country"
-          fullWidth
-          inputProps={{
-            ...params.inputProps,
-            autoComplete: 'new-password', // disable autocomplete and autofill
-          }}
-        />
-      )}
     />
   );
 }

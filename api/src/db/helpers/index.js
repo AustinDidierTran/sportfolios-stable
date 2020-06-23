@@ -16,6 +16,12 @@ const confirmEmail = async ({ email }) => {
     .where({ email });
 };
 
+const createUserEmail = async body => {
+  const { user_id, email } = body;
+
+  await knex('user_email').insert({ user_id, email });
+};
+
 const createUserComplete = async body => {
   const { password, email, name, surname } = body;
 
@@ -86,14 +92,6 @@ const generateToken = () => {
 };
 
 const getBasicUserInfoFromId = async user_id => {
-  const { rows: basicUserInfo } = await knex.raw(
-    `SELECT p.id, en.name, en.surname, edb.birth_date, uer.role FROM persons AS p
-    LEFT JOIN entities_name AS en ON en.entity_id = p.id
-    LEFT JOIN entities_birth_date AS edb ON edb.entity_id = p.id
-    LEFT JOIN user_entity_role AS uer ON uer.entity_id = p.id
-    WHERE user_id = '${user_id}'`,
-  );
-
   const [{ app_role } = {}] = await knex('user_app_role')
     .select(['app_role'])
     .where({ user_id });
@@ -102,11 +100,40 @@ const getBasicUserInfoFromId = async user_id => {
     .select('language')
     .where({ id: user_id });
 
-  if (!basicUserInfo || !basicUserInfo.length) {
-    return null;
-  }
+  const persons = await knex('user_entity_role')
+    .select(
+      'user_entity_role.entity_id',
+      'name',
+      'surname',
+      'photo_url',
+    )
+    .leftJoin(
+      'entities',
+      'user_entity_role.entity_id',
+      '=',
+      'entities.id',
+    )
+    .leftJoin(
+      'entities_name',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_name.entity_id',
+    )
+    .leftJoin(
+      'entities_photo',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_photo.entity_id',
+    )
+    .where('entities.type', ENTITIES_TYPE_ENUM.PERSON)
+    .andWhere({ user_id });
 
-  return { ...basicUserInfo[0], app_role, language };
+  return {
+    persons,
+    app_role,
+    language,
+    user_id,
+  };
 };
 
 const getEmailsFromUserId = async user_id => {
@@ -189,7 +216,7 @@ const updateBasicUserInfoFromUserId = async ({
 
   await knex('users')
     .update(update)
-    .where({ user_id });
+    .where({ id: user_id });
 };
 
 const updatePasswordFromUserId = async ({ hashedPassword, id }) => {
@@ -230,6 +257,7 @@ const sendNewConfirmationEmailAllIncluded = async email => {
 
 module.exports = {
   confirmEmail,
+  createUserEmail,
   createUserComplete,
   createConfirmationEmailToken,
   createRecoveryEmailToken,

@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Store, SCREENSIZE_ENUM } from '../../../Store';
 import logo from '../../../img/logo.png';
+import CartIcon from '../../../components/Custom/Cart';
 
 import {
   AppBar,
@@ -26,7 +27,7 @@ import useStyles from './useStyles';
 export default function LoggedIn() {
   const classes = useStyles();
   const {
-    state: { userInfo, screenSize },
+    state: { userInfo = {}, screenSize },
   } = useContext(Store);
 
   return screenSize !== SCREENSIZE_ENUM.xs ? (
@@ -39,14 +40,14 @@ export default function LoggedIn() {
               Sportfolios
             </Link>
           </Typography>
-          <SearchInput />
+          <SearchInput apiRoute="/api/data/search/previous" />
           <div className={classes.grow} />
           <div className={styles.sectionDesktop}>
             <IconButton
               color="inherit"
               onClick={() =>
                 goTo(ROUTES.entity, {
-                  id: userInfo.id,
+                  id: userInfo.persons[0].entity_id,
                 })
               }
             >
@@ -65,16 +66,18 @@ export default function LoggedIn() {
     </div>
   ) : (
     <div className={classes.grow}>
-      <AppBar position="static" style={{ position: 'fixed', top: 0 }}>
-        <Toolbar
-          style={{ display: 'flex', justifyContent: 'space-between' }}
-        >
-          <Link to={ROUTES.home} style={{ marginRight: '16px' }}>
+      <AppBar position="static" className={styles.appBar}>
+        <Toolbar className="toolBar">
+          <Link to={ROUTES.home} className={styles.link}>
             <img src={logo} />
           </Link>
-
-          <div style={{ flex: '1 0 100px' }}>
-            <SearchInput />
+          <div className={styles.right}>
+            <div className={styles.search}>
+              <SearchInput apiRoute="/api/data/search/previous" />
+            </div>
+            <div className={styles.cart}>
+              <CartIcon id={userInfo.user_id} />
+            </div>
           </div>
         </Toolbar>
       </AppBar>

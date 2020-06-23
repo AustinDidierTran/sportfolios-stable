@@ -7,6 +7,11 @@ CREATE TABLE associations (
   name VARCHAR(255) NOT NULL, 
 deleted_at TIMESTAMP);
 
+CREATE RULE delete_association AS ON DELETE TO associations
+DO INSTEAD
+(UPDATE associations SET deleted_at = now() WHERE associations.id = old.id;
+)
+
 CREATE TABLE user_to_association (
   user_id UUID REFERENCES users(id) NOT NULL,
   association_id UUID REFERENCES associations(id) NOT NULL,

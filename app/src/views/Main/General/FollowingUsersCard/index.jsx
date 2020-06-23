@@ -69,7 +69,7 @@ export default function FollowingUsersCard(props) {
                 <Avatar
                   initials={initials(user)}
                   className={styles.avatar}
-                  photoUrl={user.photo_url}
+                  photoUrl={user.photoUrl}
                   size="md"
                 />
               </ListItemIcon>

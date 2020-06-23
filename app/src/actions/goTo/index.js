@@ -15,20 +15,22 @@ export const ROUTES = {
   forgotPassword: '/forgotPassword',
   home: '/',
   login: '/login',
+  memberships: '/memberships',
   menu: '/menu',
   mockEvent: '/mock/Event/:openTab',
   notifications: '/notifications',
   organizationList: '/organizationList',
   recoveryEmail: '/recoveryEmail/:token',
-  search: '/search/:query',
+  search: '/search',
   signup: '/signup',
   stripe: '/stripe',
   team: '/team',
   userSettings: '/userSettings',
+  cart: '/cart/:id',
 };
 
-export const formatRoute = (route, params = {}, queryParams = {}) => {
-  if (!params) {
+export const formatRoute = (route, params, queryParams) => {
+  if (!params && !queryParams) {
     return route;
   }
 
@@ -37,10 +39,16 @@ export const formatRoute = (route, params = {}, queryParams = {}) => {
     console.error('Route is undefined');
   }
 
-  const withParams = Object.keys(params).reduce(
-    (prev, curr) => prev.replace(`:${curr}`, params[curr]),
-    route,
-  );
+  const withParams = params
+    ? Object.keys(params).reduce(
+        (prev, curr) => prev.replace(`:${curr}`, params[curr]),
+        route,
+      )
+    : route;
+
+  if (!queryParams) {
+    return withParams;
+  }
 
   return Object.keys(queryParams).reduce(
     (prev, key, index) =>
@@ -53,4 +61,16 @@ export const formatRoute = (route, params = {}, queryParams = {}) => {
 
 export const goTo = (route, params, queryParams) => {
   history.push(formatRoute(route, params, queryParams));
+};
+
+export const goToAndReplace = (route, params, queryParams) => {
+  history.replace(formatRoute(route, params, queryParams));
+};
+
+export const goBack = () => {
+  if (history.length) {
+    history.goBack();
+  } else {
+    history.push(ROUTES.home);
+  }
 };

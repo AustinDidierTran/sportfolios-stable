@@ -1,20 +1,17 @@
 import React, { useState, useContext, useEffect } from 'react';
+
 import { useTranslation } from 'react-i18next';
 
 import styles from './BasicInfos.module.css';
-import BecomeMember from './BecomeMember';
-import Donate from './Donate';
 import { uploadEntityPicture } from '../../../actions/aws';
-import {
-  ACTION_ENUM,
-  ENTITIES_ROLE_ENUM,
-  Store,
-} from '../../../Store';
+import { ACTION_ENUM, Store } from '../../../Store';
 import { useFormInput } from '../../../hooks/forms';
-import api from '../../../actions/api';
+import { useEditor } from '../../../hooks/roles';
+import { changeEntityName } from '../../../actions/api';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { Avatar, Input, Button } from '../../../components/Custom';
+
 import {
   Typography,
   TextField,
@@ -29,17 +26,14 @@ export default function BasicInfos(props) {
     basicInfos: {
       id,
       name: initialName,
-      photo_url: initialPhoto_url,
+      photoUrl: initialPhotoUrl,
       role,
     },
   } = props;
 
-  const isEditor = [
-    ENTITIES_ROLE_ENUM.ADMIN,
-    ENTITIES_ROLE_ENUM.EDITOR,
-  ].includes(role);
+  const isEditor = useEditor(role);
 
-  const [photo_url, setPhoto_url] = useState(initialPhoto_url);
+  const [photoUrl, setPhotoUrl] = useState(initialPhotoUrl);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -54,8 +48,8 @@ export default function BasicInfos(props) {
   }, [initialName]);
 
   useEffect(() => {
-    setPhoto_url(initialPhoto_url);
-  }, [initialPhoto_url]);
+    setPhotoUrl(initialPhotoUrl);
+  }, [initialPhotoUrl]);
 
   const onSave = async () => {
     if (name.value.length < 1) {
@@ -83,13 +77,8 @@ export default function BasicInfos(props) {
   };
 
   const onNameChange = async () => {
-    const res = await api(`/api/entity`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        id,
-        name: name.value,
-      }),
-    });
+    const res = await changeEntityName(id, { name: name.value });
+
     name.changeDefault(res.data.data.name);
   };
 
@@ -109,7 +98,7 @@ export default function BasicInfos(props) {
     const photoUrl = await uploadEntityPicture(id, img);
 
     if (photoUrl) {
-      setPhoto_url(photoUrl);
+      setPhotoUrl(photoUrl);
       dispatch({
         type: ACTION_ENUM.UPDATE_ORGANIZATION_PROFILE_PICTURE,
         payload: photoUrl,
@@ -128,7 +117,7 @@ export default function BasicInfos(props) {
       ) : (
         <Avatar
           className={styles.avatar}
-          photoUrl={photo_url}
+          photoUrl={photoUrl}
           size="lg"
         />
       )}
@@ -154,7 +143,9 @@ export default function BasicInfos(props) {
               namespace="Name"
             />
           ) : (
-            <Typography variant="h3">{name.value}</Typography>
+            <Typography variant="h3" className={styles.title}>
+              {name.value}
+            </Typography>
           )}
         </div>
       ) : (
@@ -162,7 +153,7 @@ export default function BasicInfos(props) {
       )}
       {isEditor ? (
         isEditMode ? (
-          <Container className={styles.buttons}>
+          <div className={styles.editor}>
             <Button
               className={styles.save}
               endIcon="Check"
@@ -180,7 +171,7 @@ export default function BasicInfos(props) {
             >
               {t('cancel')}
             </Button>
-          </Container>
+          </div>
         ) : (
           <Container className={styles.edit}>
             <Button
@@ -195,10 +186,7 @@ export default function BasicInfos(props) {
           </Container>
         )
       ) : (
-        <>
-          <BecomeMember className={styles.button} />
-          <Donate className={styles.button} />
-        </>
+        <></>
       )}
     </Container>
   );

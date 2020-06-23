@@ -1,45 +1,48 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 import styles from './Shop.module.css';
 
 import { Container } from '../../../components/MUI';
 import Item from './Item';
+import CreateItem from './CreateItem';
+import { Store } from '../../../Store';
+import { useParams } from 'react-router-dom';
+import api from '../../../actions/api';
 
 export default function Shop() {
-  const items = [
-    {
-      name: 'Disque Blanc',
-      price: '12$',
-      photoUrl:
-        'https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200527-zk1u9-9dba1457-42ae-4c37-be4e-b05f7acfd11d',
-      description: 'Disque officiel 175g de couleur blanche',
+  const [items, setItems] = useState([]);
+  const { id } = useParams();
+  const {
+    state: {
+      userInfo: { id: user_id },
     },
-    {
-      name: 'Disque Blanc',
-      price: '12$',
-      photoUrl:
-        'https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200527-zk1u9-9dba1457-42ae-4c37-be4e-b05f7acfd11d',
-      description: 'Disque officiel 175g de couleur blanche',
-    },
-    {
-      name: 'Disque Blanc',
-      price: '12$',
-      photoUrl:
-        'https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200527-zk1u9-9dba1457-42ae-4c37-be4e-b05f7acfd11d',
-      description: 'Disque officiel 175g de couleur blanche',
-    },
-  ];
+  } = useContext(Store);
+
+  const isSelf = id === user_id;
+  //const isSelf = true;
+
+  const fetchShopItems = async () => {
+    const { data = [] } = await api(`/api/shop/getItems?id=${id}`);
+    setItems(data);
+  };
+
+  useEffect(() => {
+    fetchShopItems();
+  }, [id]);
 
   return (
     <Container className={styles.items}>
-      {items.map(item => (
-        <Item
-          name={item.name}
-          price={item.price}
-          photoUrl={item.photoUrl}
-          description={item.description}
-        />
-      ))}
+      <div>
+        {isSelf ? <CreateItem /> : null}
+        {items.map(item => (
+          <Item
+            name={item.name}
+            price={item.price}
+            photoUrl={item.photoUrl}
+            description={item.description}
+          />
+        ))}
+      </div>
     </Container>
   );
 }

@@ -1,36 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import { Container } from '../../../../../components/Custom';
+import {
+  Container,
+  SearchList,
+} from '../../../../../components/Custom';
 
-import UserSearch from '../../../../Search/UserSearch/index';
-
-import styles from './AddAdmins.module.css';
-import api from '../../../../../actions/api';
+import { GLOBAL_ENUM } from '../../../../../../../common/enums';
 
 export default function AddAdmins(props) {
-  const {
-    match: {
-      params: { query },
-    },
-  } = props;
-
-  const [users, setUsers] = useState([]);
-
-  const fetchSearchResults = async () => {
-    const {
-      data: { users: oUsers },
-    } = await api(`/api/data/search/global?query=${query}`);
-
-    setUsers(oUsers);
-  };
-
-  useEffect(() => {
-    fetchSearchResults();
-  }, [query]);
+  const { onClick } = props;
 
   return (
-    <Container className={styles.container}>
-      <UserSearch query={query} users={users} />
+    <Container>
+      <hr></hr>
+      <SearchList type={GLOBAL_ENUM.PERSON} onClick={onClick} />
     </Container>
   );
 }

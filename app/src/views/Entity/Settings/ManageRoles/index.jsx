@@ -14,16 +14,22 @@ import { useTranslation } from 'react-i18next';
 import api from '../../../../actions/api';
 import styles from './ManageRoles.module.css';
 import { goTo, ROUTES } from '../../../../actions/goTo';
+import AddAdmins from './AddAdmins';
 
 export default function ManageRoles() {
   const { t } = useTranslation();
 
-  const { id } = useParams();
+  const { id: entity_id } = useParams();
 
   const [entities, setEntities] = useState([]);
 
   const updateEntities = async () => {
-    const res = await api(`/api/entity/roles?id=${id}`);
+    const res = await api(`/api/entity/roles?id=${entity_id}`);
+    res.data.forEach((r, index) => {
+      if (r.role === ENTITIES_ROLE_ENUM.VIEWER) {
+        res.data.splice(index, 1);
+      }
+    });
     setEntities(res.data);
   };
 
@@ -32,14 +38,24 @@ export default function ManageRoles() {
   }, []);
 
   const updateRole = async (entity_id_admin, role) => {
-    await api(`/api/entity/role`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        entity_id: id,
-        entity_id_admin,
-        role,
-      }),
+    const arr = entities.filter(e => {
+      return e.role === ENTITIES_ROLE_ENUM.ADMIN;
     });
+    if (
+      arr.length < 2 &&
+      arr[0].entity_id_admin === entity_id_admin
+    ) {
+      throw 'Last Admin';
+    } else {
+      await api(`/api/entity/role`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          entity_id,
+          entity_id_admin,
+          role,
+        }),
+      });
+    }
   };
 
   const handleChange = async (event, entity_id_admin) => {
@@ -47,16 +63,28 @@ export default function ManageRoles() {
     await updateEntities();
   };
 
+  const onClick = async id => {
+    await api(`/api/entity/role`, {
+      method: 'POST',
+      body: JSON.stringify({
+        entity_id_admin: id,
+        role: ENTITIES_ROLE_ENUM.EDITOR,
+        entity_id,
+      }),
+    });
+    await updateEntities();
+  };
+
   const items = [
-    { display: t('Admin'), value: ENTITIES_ROLE_ENUM.ADMIN },
+    { display: t('admin'), value: ENTITIES_ROLE_ENUM.ADMIN },
     { display: t('editor'), value: ENTITIES_ROLE_ENUM.EDITOR },
-    { display: t('viewer'), value: ENTITIES_ROLE_ENUM.VIEWER },
+    { display: t('none'), value: ENTITIES_ROLE_ENUM.VIEWER },
   ];
 
   return (
     <Paper title={t('admins')}>
-      <List disablePadding className={styles.list}>
-        {entities.map((entity, index) => [
+      {entities.map((entity, index) => [
+        <List disablePadding className={styles.list}>
           <ListItem
             key={`l${index}`}
             button
@@ -66,12 +94,12 @@ export default function ManageRoles() {
             className={styles.item}
           >
             <ListItemIcon>
-              <Avatar photoUrl={entity.photo_url} />
+              <Avatar photoUrl={entity.photoUrl} />
             </ListItemIcon>
             <Typography className={styles.textField}>
-              {entity.name}
+              {entity.name} {entity.surname}
             </Typography>
-          </ListItem>,
+          </ListItem>
           <Select
             key={`s${index}`}
             value={entity.role}
@@ -79,9 +107,10 @@ export default function ManageRoles() {
             onChange={e => handleChange(e, entity.entity_id_admin)}
             className={styles.select}
             options={items}
-          />,
-        ])}
-      </List>
+          />
+        </List>,
+      ])}
+      <AddAdmins onClick={onClick} />
     </Paper>
   );
 }

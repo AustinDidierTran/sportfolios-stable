@@ -1,6 +1,5 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
 import { ENTITIES_ROLE_ENUM } from '../../../../../../common/enums';
 
 import styles from './BasicInfos.module.css';
@@ -14,13 +13,15 @@ import {
   TextField,
 } from '../../../../components/MUI';
 import { getInitialsFromName } from '../../../../utils/stringFormats';
-import api from '../../../../actions/api';
+/* eslint-disable-next-line */
+import api, { changeEntityName } from '../../../../actions/api';
 import { useFormInput } from '../../../../hooks/forms';
 import { uploadEntityPicture } from '../../../../actions/aws';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
   const {
+    /* eslint-disable-next-line */
     state: { userInfo },
     dispatch,
   } = useContext(Store);
@@ -30,30 +31,38 @@ export default function BasicInfos(props) {
     id,
     name: nameProp,
     surname: surnameProp,
-    birth_date,
-    photo_url,
+    photoUrl,
     role,
   } = props.basicInfos;
 
-  const completeName = useMemo(
-    () => (surnameProp ? `${nameProp} ${surnameProp}` : nameProp),
-    [nameProp, surnameProp],
-  );
-
   const initials = getInitialsFromName(completeName);
-  const birthDate = useFormInput(birth_date);
   const name = useFormInput(nameProp);
   const surname = useFormInput(surnameProp);
+  const completeName = useMemo(
+    () =>
+      surname.value ? `${name.value} ${surname.value}` : name.value,
+    [name.value, surname.value],
+  );
+  const onNameChange = async () => {
+    const res = await changeEntityName(id, {
+      name: name.value,
+      surname: surname.value,
+    });
+    name.changeDefault(res.data.name);
+    surname.changeDefault(res.data.surname);
+
+    return res;
+  };
 
   const onSave = async () => {
     const promises = [];
 
-    if (img) {
-      promises.push(onImgUpload());
+    if (name.hasChanged || surname.hasChanged) {
+      promises.push(onNameChange());
     }
 
-    if (birthDate.hasChanged) {
-      promises.push(onBirthDateChange());
+    if (img) {
+      promises.push(onImgUpload());
     }
 
     const res = await Promise.all(promises);
@@ -61,28 +70,14 @@ export default function BasicInfos(props) {
     const resErrors = res.filter(r => r.status !== 200);
 
     if (!resErrors.length) {
-      birthDate.setCurrentAsDefault();
       setEditMode(false);
     } else {
       // handle errors
-      resErrors.forEach(r => {
-        if (r.data.key === 'birthDate') {
-          if (r.status === 402) {
-            // Date is in the future
-            birthDate.setError(t('date_in_future'));
-          }
-          if (r.status === 403) {
-            // Date is invalid
-            birthDate.setError(t('invalid_date'));
-          }
-        }
-      });
     }
   };
 
   const onCancel = async () => {
     setEditMode(false);
-    birthDate.reset();
   };
 
   const onEdit = async () => setEditMode(true);
@@ -106,33 +101,27 @@ export default function BasicInfos(props) {
     return { status: 404 };
   };
 
-  const onBirthDateChange = async () => {
-    return api('/api/profile/birthDate', {
-      method: 'PUT',
-      body: JSON.stringify({ birthDate: birthDate.value }),
-    });
-  };
-
+  /* eslint-disable-next-line */
   const [isFollowing, setIsFollowing] = useState(false);
 
-  const onFollow = async () => {
-    await api('/api/followers/follow', {
-      method: 'POST',
-      body: JSON.stringify({
-        senderId: userInfo.id,
-        targetId: id,
-      }),
-    });
-    setIsFollowing(true);
-  };
+  // const onFollow = async () => {
+  //   await api('/api/followers/follow', {
+  //     method: 'POST',
+  //     body: JSON.stringify({
+  //       senderId: userInfo.id,
+  //       targetId: id,
+  //     }),
+  //   });
+  //   setIsFollowing(true);
+  // };
 
-  const onUnfollow = async () => {
-    setIsFollowing(false);
-  };
+  // const onUnfollow = async () => {
+  //   setIsFollowing(false);
+  // };
 
   return (
     <Container className={styles.card}>
-      <Avatar initials={initials} photoUrl={photo_url} size="lg" />
+      <Avatar initials={initials} photoUrl={photoUrl} size="lg" />
       {isEditMode ? (
         <Input
           type="file"
@@ -162,19 +151,6 @@ export default function BasicInfos(props) {
           <Typography variant="h3">{completeName}</Typography>
         )}
       </div>
-      {isEditMode ? (
-        <Input type="date" {...birthDate.inputProps} />
-      ) : birth_date ? (
-        <TextField
-          disabled
-          value={t('birth_date_format', {
-            age: moment().diff(moment(birth_date), 'years'),
-            date: moment(birth_date),
-          })}
-        />
-      ) : (
-        <></>
-      )}
       {role === ENTITIES_ROLE_ENUM.ADMIN ? (
         isEditMode ? (
           <>
@@ -199,13 +175,17 @@ export default function BasicInfos(props) {
             {t('edit')}
           </Button>
         )
-      ) : isFollowing ? (
-        <Button onClick={onUnfollow} variant="outlined">
-          {t('following')}
-        </Button>
       ) : (
-        <Button onClick={onFollow}>{t('follow')}</Button>
-      )}
+        <></>
+      )
+      // isFollowing ? (
+      //   <Button onClick={onUnfollow} variant="outlined">
+      //     {t('following')}
+      //   </Button>
+      // ) : (
+      //   <Button onClick={onFollow}>{t('follow')}</Button>
+      // )
+      }
     </Container>
   );
 }

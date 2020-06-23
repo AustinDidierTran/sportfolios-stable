@@ -16,7 +16,7 @@ import {
   CardActions,
   CardContent,
 } from '../../MUI';
-import { ENTITIES_TYPE_ENUM } from '../../../views/Entity';
+import { ENTITIES_TYPE_ENUM } from '../../../../../common/enums';
 
 export default function EntityCreate(props) {
   const { type } = props;

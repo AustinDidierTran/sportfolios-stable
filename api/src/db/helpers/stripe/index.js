@@ -2,146 +2,22 @@
  * Useful references
  * Testing account numbers: https://stripe.com/docs/connect/testing#account-numbers
  */
-
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { CLIENT_BASE_URL } = require('../../../../../conf');
-
-/* Private arguments */
-
 const stripeEnums = require('./enums');
-const {
-  BUSINESS_TYPE_ENUM,
-  INVOICE_STATUS_ENUM,
-  TEST_EXTERNAL_ACCOUNT,
-} = stripeEnums;
-
-const stripeFactories = require('./factories');
-const { accountParamsFactory } = stripeFactories;
-
+const { INVOICE_STATUS_ENUM } = stripeEnums;
 const knex = require('../../connection');
-
-/* Public arguments */
-const getStripeAccountId = async senderId => {
-  const data = await knex
-    .select('account_id')
-    .where('entity_id', senderId)
-    .from('stripe_accounts');
-  return (data.length && data[0].account_id) || null;
-};
-
-const getOrCreateStripeConnectedAccountId = async (entity_id, ip) => {
-  let accountId = await getStripeAccountId(entity_id);
-  if (!accountId) {
-    const account = await createStripeConnectedAccount({ ip }); // must return accountId
-    accountId = account.id;
-    // Should store account inside DB
-    await knex('stripe_accounts').insert({
-      entity_id,
-      account_id: accountId,
-    });
-  }
-
-  return accountId;
-};
-
-// REF: https://stripe.com/docs/api/accounts/create?lang=node
-const createStripeConnectedAccount = async props => {
-  const {
-    business_type = BUSINESS_TYPE_ENUM.INDIVIDUAL,
-    city,
-    country,
-    dob,
-    email,
-    first_name,
-    ip,
-    last_name,
-    line1,
-    postal_code,
-    state,
-  } = props;
-
-  const params = accountParamsFactory({
-    business_type,
-    city,
-    country,
-    dob,
-    email,
-    external_account: TEST_EXTERNAL_ACCOUNT.PAYOUT_SUCCEED,
-    first_name,
-    ip,
-    last_name,
-    line1,
-    postal_code,
-    state,
-  });
-
-  const account = await stripe.account.create(params);
-
-  return account;
-};
-
-const createAccountLink = async props => {
-  const { entity_id, ip } = props;
-  const accountId = await getOrCreateStripeConnectedAccountId(
-    entity_id,
-    ip,
-  );
-  const params = {
-    account: accountId,
-    failure_url: `${CLIENT_BASE_URL}/profile`,
-    success_url: `${CLIENT_BASE_URL}/${entity_id}?tab=settings`,
-    type: 'custom_account_verification',
-    collect: 'eventually_due',
-  };
-
-  return stripe.accountLinks.create(params);
-};
-
-const createExternalAccount = async (body, user_id, ip) => {
-  var created = 1;
-  const organizationId = body.id;
-  const accountId = await getOrCreateStripeConnectedAccountId(
-    organizationId,
-    ip,
-  );
-  const params = {
-    bank_account: {
-      country: body.country,
-      currency: body.currency,
-      account_holder_name: body.account_holder_name,
-      account_holder_type: 'company',
-      routing_number: body.routing_number,
-      account_number: body.account_number,
-    },
-  };
-  stripe.tokens.create(params, async (err, token) => {
-    if (token) {
-      await stripe.accounts.createExternalAccount(
-        accountId,
-        {
-          external_account: token.id,
-        },
-        async (err, account) => {
-          if (account) {
-            /* eslint-disable-next-line */
-            console.error('External Account Created', account.id);
-          }
-          if (err) {
-            /* eslint-disable-next-line */
-            console.error('ERROR: External Account NOT Created');
-            created = 0;
-          }
-        },
-      );
-    }
-    if (err) {
-      /* eslint-disable-next-line */
-      console.error('ERROR: Account Token NOT Created');
-      created = 0;
-    }
-  });
-  return created;
-};
+const {
+  getCustomerId,
+  getOrCreateCustomer,
+  createPaymentMethod,
+  addPaymentMethodCustomer,
+  removePaymentMethodCustomer,
+} = require('./customer');
+const {
+  createExternalAccount,
+  createAccountLink,
+  getStripeAccountId,
+} = require('./externalAccount');
 
 const createPaymentIntent = async (body /* user_id, ip */) => {
   // Create a PaymentIntent:
@@ -156,53 +32,11 @@ const createPaymentIntent = async (body /* user_id, ip */) => {
   return paymentIntent;
 };
 
-const createCustomer = async (body, userId) => {
-  // Create Payment Method
-  if (await getCustomerId(userId)) {
-    /* eslint-disable-next-line */
-    console.log('Customer already exists');
-  } else {
-    stripe.paymentMethods.create(
-      body.infos.payment_method,
-      async function(err, paymentMethod) {
-        if (paymentMethod) {
-          //Create a Customer
-          return stripe.customers.create(
-            {
-              ...body.infos.customer,
-              payment_method: paymentMethod.id,
-            },
-            async function(err, customer) {
-              //Add customer to db
-              if (customer) {
-                await knex('stripe_customer').insert({
-                  user_id: userId,
-                  customer_id: customer.id,
-                });
-              }
-            },
-          );
-        }
-      },
-    );
-  }
-
-  return 1;
-};
-
-const getCustomerId = async userId => {
-  const [{ customer_id } = {}] = await knex
-    .select('customer_id')
-    .from('stripe_customer')
-    .where('user_id', userId);
-  return customer_id;
-};
-
 const createInvoiceItem = async (body, userId) => {
+  const { invoice_item } = body;
   const customerId = await getCustomerId(userId);
-
   stripe.invoiceItems.create(
-    { ...body.infos, customer: customerId },
+    { ...invoice_item, customer: customerId },
     async function(err, invoiceItem) {
       if (invoiceItem) {
         /* eslint-disable-next-line */
@@ -222,7 +56,7 @@ const createInvoiceItem = async (body, userId) => {
   return 1;
 };
 
-const getInvoiceItem = async userId => {
+const getInvoiceItemId = async userId => {
   const invoiceItemId = await knex
     .select('invoice_item_id')
     .from('stripe_invoice_item')
@@ -267,9 +101,10 @@ const getInvoiceStatus = async invoiceId => {
 };
 
 const createInvoice = async (body, userId) => {
+  const { invoice } = body;
   const customerId = await getCustomerId(userId);
   stripe.invoices.create(
-    { ...body.infos, customer: customerId },
+    { ...invoice, customer: customerId },
     async function(err, invoice) {
       if (invoice) {
         /* eslint-disable-next-line */
@@ -335,6 +170,31 @@ const finalizeInvoice = async invoiceId => {
   });
 };
 
+const finalizeInvoiceFromInvoiceId = async (body /*userId*/) => {
+  const { invoice_id } = body;
+  const invoiceStatus = await getInvoiceStatus(invoice_id);
+  if (invoiceStatus == INVOICE_STATUS_ENUM.DRAFT) {
+    stripe.invoices.finalizeInvoice(invoice_id, async function(
+      err,
+      invoice,
+    ) {
+      if (invoice) {
+        updateInvoiceStatus(invoice_id, invoice.status);
+        /* eslint-disable-next-line */
+        console.log(
+          'Invoice finalized, updated status:',
+          invoice.status,
+        );
+      }
+      if (err) {
+        /* eslint-disable-next-line */
+        console.log('finalizeInvoice error');
+        //console.log(err);
+      }
+    });
+  }
+};
+
 const payInvoice = async invoiceId => {
   stripe.invoices.pay(invoiceId, async function(err, invoice) {
     if (invoice) {
@@ -348,6 +208,30 @@ const payInvoice = async invoiceId => {
       //console.log(err);
     }
   });
+};
+
+const payInvoiceFromInvoiceId = async (body /*userId*/) => {
+  const { invoice_id } = body;
+  const invoiceStatus = await getInvoiceStatus(invoiceId);
+  if (invoiceStatus == INVOICE_STATUS_ENUM.OPEN) {
+    stripe.invoices.pay(invoice_id, async function(err, invoice) {
+      if (invoice) {
+        /* eslint-disable-next-line */
+        console.log('invoice paid, update status:', invoice.status);
+        updateInvoiceStatus(invoiceId, invoice.status);
+      }
+      if (err) {
+        /* eslint-disable-next-line */
+        console.log('payInvoice error');
+        //console.log(err);
+      }
+    });
+  } else {
+    /* eslint-disable-next-line */
+    console.log(
+      `Invoice cant be paid, status is not open, status: ${invoiceStatus} `,
+    );
+  }
 };
 
 const invoicePayment = async (body, userId) => {
@@ -384,14 +268,67 @@ const invoicePayment = async (body, userId) => {
   return 1;
 };
 
+const addProduct = async body => {
+  const { stripe_product } = body;
+  try {
+    const product = await stripe.products.create(stripe_product);
+    /* eslint-disable-next-line */
+    console.log(`Product created, ${product.id}`);
+    await knex('stripe_product').insert({
+      stripe_product_id: product.id,
+      label: product.name,
+      description: product.description,
+      active: product.active,
+    });
+    return product;
+  } catch (err) {
+    /* eslint-disable-next-line */
+    console.log('addProduct error', err);
+    throw err;
+  }
+};
+
+const addPrice = async (body /*userId*/) => {
+  const { stripe_price, entity_id } = body;
+  try {
+    const price = await stripe.prices.create(stripe_price);
+
+    /* eslint-disable-next-line */
+    console.log(`Price created, ${price.id}`);
+    await knex('stripe_price').insert({
+      stripe_price_id: price.id,
+      stripe_product_id: price.product,
+      amount: price.unit_amount,
+      active: price.active,
+      start_date: new Date(price.created * 1000),
+    });
+    await knex('store_items').insert({
+      entity_id: entity_id,
+      stripe_price_id: price.id,
+    });
+    return price;
+  } catch (err) {
+    /* eslint-disable-next-line */
+    console.error('addPrice error', err);
+    throw err;
+  }
+};
+
 module.exports = {
   createAccountLink,
   createExternalAccount,
   getStripeAccountId,
   createPaymentIntent,
-  createCustomer,
+  getOrCreateCustomer,
   createInvoiceItem,
   invoicePayment,
-  getInvoiceItem,
+  getInvoiceItemId,
+  createPaymentMethod,
+  addPaymentMethodCustomer,
+  removePaymentMethodCustomer,
+  payInvoiceFromInvoiceId,
+  finalizeInvoiceFromInvoiceId,
+  addProduct,
+  addPrice,
   stripeEnums,
 };

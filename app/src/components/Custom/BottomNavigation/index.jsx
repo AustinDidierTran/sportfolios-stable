@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
@@ -6,10 +6,14 @@ import styles from './BottomNavigation.module.css';
 import { Icon } from '../../Custom';
 import { Badge } from '../../MUI';
 
+import { OptimizelyFeature } from '@optimizely/react-sdk';
+import { FEATURE_FLAGS } from '../../../../../common/flags';
+
 import { useTranslation } from 'react-i18next';
 
 import { ROUTES, goTo } from '../../../actions/goTo';
 import { Store, SCREENSIZE_ENUM } from '../../../Store';
+import { useEffect } from 'react';
 
 const TABS_ENUM = {
   HOME: 'home',
@@ -30,7 +34,12 @@ export default function CustomBottomNavigation() {
     [TABS_ENUM.HOME]: [ROUTES.home],
     [TABS_ENUM.PROFILE]: [
       ROUTES.entity,
-      { id: userInfo && userInfo.id },
+      {
+        id:
+          userInfo &&
+          userInfo.persons &&
+          userInfo.persons[0].entity_id,
+      },
     ],
     [TABS_ENUM.NOTIFICATIONS]: [ROUTES.notifications],
     [TABS_ENUM.MENU]: [ROUTES.menu],
@@ -41,11 +50,16 @@ export default function CustomBottomNavigation() {
     goTo(...routeEnum[newValue]);
   };
 
-  const [displayNav, setDisplayNav] = useState(false);
+  const displayNav = useMemo(
+    () =>
+      screenSize === SCREENSIZE_ENUM.xs &&
+      Boolean(userInfo && userInfo.user_id),
+    [screenSize, userInfo && userInfo.user_id],
+  );
 
   useEffect(() => {
-    setDisplayNav(screenSize === SCREENSIZE_ENUM.xs);
-  }, [screenSize]);
+    console.log('userInfo', userInfo);
+  }, [userInfo, userInfo && userInfo.user_id]);
 
   return displayNav ? (
     <BottomNavigation
@@ -63,15 +77,23 @@ export default function CustomBottomNavigation() {
         value={TABS_ENUM.PROFILE}
         icon={<Icon icon="Person" />}
       />
-      <BottomNavigationAction
-        label={t('notifications')}
-        value={TABS_ENUM.NOTIFICATIONS}
-        icon={
-          <Badge badgeContent="2" color="secondary">
-            <Icon icon="Notifications" />
-          </Badge>
+      <OptimizelyFeature feature={FEATURE_FLAGS.NOTIFICATIONS}>
+        {enabled =>
+          enabled ? (
+            <BottomNavigationAction
+              label={t('notifications')}
+              value={TABS_ENUM.NOTIFICATIONS}
+              icon={
+                <Badge badgeContent="2" color="secondary">
+                  <Icon icon="Notifications" />
+                </Badge>
+              }
+            />
+          ) : (
+            <></>
+          )
         }
-      />
+      </OptimizelyFeature>
       <BottomNavigationAction
         label={t('menu')}
         value={TABS_ENUM.MENU}

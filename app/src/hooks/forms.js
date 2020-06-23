@@ -6,7 +6,11 @@ export const useFormInput = initialValue => {
   const [value, setValue] = useState(initialValue);
 
   const handleChange = e => {
-    setValue(e.target.value);
+    if (e.target) {
+      setValue(e.target.value);
+    } else {
+      setValue(e);
+    }
   };
 
   // Public Attributes

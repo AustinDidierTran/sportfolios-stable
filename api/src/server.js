@@ -8,20 +8,11 @@ const { CLIENT_BASE_URL } = require('../../conf');
 // Middlewares
 const checkAuth = require('./server/middleware/check-auth');
 const adminOnly = require('./server/middleware/admin-only');
+const errorHandler = require('./server/middleware/error-handler');
 
-// Unprotected routes
-const dataRoutes = require('./server/routes/data');
-const devRoutes = require('./server/routes/dev');
-const authRoutes = require('./server/routes/auth');
-const followerRoutes = require('./server/routes/followers');
-const notificationRoutes = require('./server/routes/notifications');
-const profileRoutes = require('./server/routes/profile');
-const userRoutes = require('./server/routes/users');
-const mainRoutes = require('./server/routes/main');
-const stripeRoutes = require('./server/routes/stripe');
-const entityRoutes = require('./server/routes/entity');
-
-// Admin routes
+const publicRoutes = require('./server/routes/public');
+const privateRoutes = require('./server/routes/private');
+const protectedRoutes = require('./server/routes/protected');
 const adminRoutes = require('./server/routes/admin');
 
 const app = new Koa();
@@ -31,29 +22,23 @@ const corsOptions = {
   origin: CLIENT_BASE_URL,
 };
 
+app.use(errorHandler);
 app.use(cors(corsOptions));
 app.use(bodyParser());
 
 // public routes
-app.use(authRoutes.routes());
+publicRoutes.forEach(route => app.use(route.routes()));
 
 // private routes
 app.use(checkAuth);
-app.use(dataRoutes.routes());
-if (process.env.NODE_ENV === 'development') {
-  app.use(devRoutes.routes());
-}
-app.use(followerRoutes.routes());
-app.use(mainRoutes.routes());
-app.use(notificationRoutes.routes());
-app.use(profileRoutes.routes());
-app.use(entityRoutes.routes());
-app.use(stripeRoutes.routes());
-app.use(userRoutes.routes());
+privateRoutes.forEach(route => app.use(route.routes()));
+
+// TODO: Protect these routes
+protectedRoutes.forEach(route => app.use(route.routes()));
 
 // admin routes
 app.use(adminOnly);
-app.use(adminRoutes.routes());
+adminRoutes.forEach(route => app.use(route.routes()));
 
 const server = app.listen(PORT, () => {
   /* eslint-disable-next-line */

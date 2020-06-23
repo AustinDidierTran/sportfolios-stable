@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import api from '../actions/api';
 
 const paramsToObject = entries => {
   let result = {};
@@ -17,4 +19,31 @@ export const useQuery = () => {
   const params = paramsToObject(entries);
 
   return params;
+};
+
+export const useApiRoute = (route, options = {}) => {
+  const { defaultValue } = options;
+  const [isLoading, setIsLoading] = useState(false);
+  const [response, setResponse] = useState(defaultValue);
+
+  const updateResponse = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await api(route, options);
+
+      setResponse(data);
+      setIsLoading(false);
+    } catch (err) {
+      setIsLoading(false);
+      throw err;
+    }
+  };
+
+  useEffect(() => {
+    if (route) {
+      updateResponse();
+    }
+  }, [route]);
+
+  return { response, isLoading };
 };

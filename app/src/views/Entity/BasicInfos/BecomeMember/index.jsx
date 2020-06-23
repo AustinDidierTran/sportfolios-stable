@@ -1,35 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { goTo, ROUTES } from '../../../../actions/goTo';
+import { Button } from '../../../../components/Custom';
 
 import styles from './BecomeMember.module.css';
 
-import { Button } from '../../../../components/MUI';
-
-export default function BecomeMember() {
+export default function BecomeMember(props) {
   const { t } = useTranslation();
 
-  const [isMember, setIsMember] = useState(false);
+  const { entity_id } = props;
 
   const handleClick = () => {
-    setIsMember(!isMember);
+    goTo(ROUTES.memberships, { id: entity_id });
   };
 
-  return isMember ? (
+  return (
     <Button
-      variant="contained"
       onClick={handleClick}
-      className={styles.button}
-    >
-      {t('competitive_member')}
-    </Button>
-  ) : (
-    <Button
-      variant="contained"
       color="primary"
-      onClick={handleClick}
-      className={styles.button}
+      variant="contained"
+      className={styles.becomeMember}
     >
-      {t('become_member')}
+      {t('memberships')}
     </Button>
   );
 }

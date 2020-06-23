@@ -23,12 +23,9 @@ export default function BasicInfo() {
   const validate = values => {
     const errors = {};
 
-    if (!values.firstName) {
-      errors.firstName = t('value_is_required');
-    }
-
-    if (!values.lastName) {
-      errors.lastName = t('value_is_required');
+    const supportedLanguages = ['fr', 'en'];
+    if (!supportedLanguages.includes(values.language)) {
+      errors.language = t('unsupported_language');
     }
 
     return errors;

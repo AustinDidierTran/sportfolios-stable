@@ -9,6 +9,17 @@ export const Store = React.createContext();
 const localAuthToken = localStorage.getItem('authToken');
 const localUserInfo = localStorage.getItem('userInfo');
 
+const handleLocalAuthToken = token => {
+  if (token === 'null') {
+    return;
+  }
+  if (token === 'undefined') {
+    return;
+  }
+
+  return token;
+};
+
 export const SCREENSIZE_ENUM = {
   xs: 'xs',
   sm: 'sm',
@@ -26,12 +37,14 @@ export const BREAKPOINTS = [
 ].sort((a, b) => b.value - a.value);
 
 const initialState = {
-  authToken: localAuthToken,
+  authToken: handleLocalAuthToken(localAuthToken),
   screenSize: SCREENSIZE_ENUM.xs,
   userInfo:
-    localUserInfo &&
-    localUserInfo !== 'undefined' &&
-    JSON.parse(localUserInfo),
+    (localUserInfo &&
+      localUserInfo !== 'undefined' &&
+      localUserInfo !== 'null' &&
+      JSON.parse(localUserInfo)) ||
+    {},
 };
 
 export const ACTION_ENUM = {
@@ -56,6 +69,12 @@ export const ENTITIES_ROLE_ENUM = {
   VIEWER: 3,
 };
 
+export const MEMBERSHIP_TYPE_ENUM = {
+  RECREATIONAL: 1,
+  COMPETITIVE: 2,
+  ELITE: 3,
+};
+
 function reducer(state, action) {
   switch (action.type) {
     case ACTION_ENUM.LOGIN: {
@@ -66,12 +85,12 @@ function reducer(state, action) {
       localStorage.removeItem('authToken');
       localStorage.removeItem('userInfo');
       goTo(ROUTES.login);
-      return { ...state, authToken: null };
+      return { ...state, authToken: null, userInfo: {} };
     }
     case ACTION_ENUM.UPDATE_PROFILE_PICTURE: {
       const newUserInfo = {
         ...state.userInfo,
-        photo_url: action.payload,
+        photoUrl: action.payload,
       };
       localStorage.setItem('userInfo', JSON.stringify(newUserInfo));
       return { ...state, userInfo: newUserInfo };
@@ -79,7 +98,7 @@ function reducer(state, action) {
     case ACTION_ENUM.UPDATE_ORGANIZATION_PROFILE_PICTURE: {
       const newOrganizationInfo = {
         ...state.organization,
-        photo_url: action.payload,
+        photoUrl: action.payload,
       };
       localStorage.setItem(
         'organization',
@@ -118,37 +137,43 @@ export function StoreProvider(props) {
     });
   };
 
-  useEffect(() => {
-    const authToken = localStorage.getItem('authToken');
+  const init = async () => {
+    const authToken = handleLocalAuthToken(
+      localStorage.getItem('authToken'),
+    );
 
     if (!authToken) {
       dispatch({
         type: ACTION_ENUM.LOGOUT,
       });
-    }
-
-    fetch(`${API_BASE_URL}/api/user/userInfo`, {
-      headers: {
-        Authorization: authToken,
-      },
-    })
-      .then(res => res.json())
-      .then(({ data }) => {
-        if (!data) {
-          dispatch({
-            type: ACTION_ENUM.LOGOUT,
-          });
-        } else {
-          dispatch({
-            type: ACTION_ENUM.UPDATE_USER_INFO,
-            payload: data,
-          });
-
-          if (data.language) {
-            i18n.changeLanguage(data.language);
-          }
-        }
+    } else {
+      const res = await fetch(`${API_BASE_URL}/api/user/userInfo`, {
+        headers: {
+          Authorization: authToken,
+        },
       });
+
+      const { data } = await res.json();
+
+      if (!data) {
+        dispatch({
+          type: ACTION_ENUM.LOGOUT,
+        });
+      } else {
+        dispatch({
+          type: ACTION_ENUM.UPDATE_USER_INFO,
+          payload: data,
+        });
+
+        if (data.language) {
+          i18n.changeLanguage(data.language);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    init();
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => {
