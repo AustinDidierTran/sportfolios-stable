@@ -7,21 +7,22 @@ import {
   TableHead,
   TableRow,
   Typography,
-} from '../../../MUI';
+} from '../../../../components/MUI';
 
 import CreateRow from './CreateRow';
 import DataRow from './DataRow';
 
-export default function EditTable(props) {
+export default function MembershipTable(props) {
   const { t } = useTranslation();
   const {
+    onDelete,
+    onAdd,
     allowCreate,
     data,
     headers,
     onCreate,
     onEdit,
     title,
-    validationSchema,
   } = props;
 
   return (
@@ -33,18 +34,23 @@ export default function EditTable(props) {
         <TableHead>
           <TableRow>
             {headers.map((h, index) => (
-              <TableCell key={index}>{h.display}</TableCell>
+              <TableCell key={index}>
+                {h.display === 'MM/DD' || h.display === t('length')
+                  ? t('expiration_date')
+                  : h.display}
+              </TableCell>
             ))}
             <TableCell>{t('actions')}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map(d => (
+          {data.map((d, index) => (
             <DataRow
               datum={d}
+              onDelete={onDelete}
+              index={index}
               headers={headers}
               onEdit={onEdit}
-              validationSchema={validationSchema}
               key={d.id}
             />
           ))}
@@ -52,7 +58,7 @@ export default function EditTable(props) {
             allowCreate={allowCreate}
             headers={headers}
             onCreate={onCreate}
-            validationSchema={validationSchema}
+            onAdd={onAdd}
           />
         </TableBody>
       </Table>

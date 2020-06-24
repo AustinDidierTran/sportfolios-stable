@@ -2,12 +2,11 @@ import React from 'react';
 
 import Input from '../../Input';
 import { TableCell } from '../../../MUI';
-import { Select } from '../../../Custom';
 
 export default function CellRenderer(props) {
   const {
     error,
-    header: { display, value, type = 'text', items },
+    header: { display, value, type = 'text' },
     index,
     ...values
   } = props;
@@ -22,17 +21,6 @@ export default function CellRenderer(props) {
             error={error}
             type="number"
             {...values.inputProps}
-          />
-        </TableCell>
-      );
-    case 'select':
-      return (
-        <TableCell key={index}>
-          <Select
-            label={display}
-            namespace={value}
-            options={items}
-            value={value}
           />
         </TableCell>
       );

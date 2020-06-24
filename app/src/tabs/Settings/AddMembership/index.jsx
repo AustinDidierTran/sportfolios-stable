@@ -1,18 +1,27 @@
 import React, { useEffect, useState } from 'react';
 
-import moment from 'moment';
-import { Paper, Table } from '../../../components/Custom';
+import { Paper } from '../../../components/Custom';
+import MembershipTable from './MembershipTable';
+
 import {
   getMembershipName,
   getMembershipType,
-  getMembershipLength,
-  getMembershipUnit,
+  getExpirationDate,
 } from '../../../utils/stringFormats';
-import { MEMBERSHIP_TYPE_ENUM } from '../../../../../common/enums';
+import {
+  MEMBERSHIP_TYPE_ENUM,
+  MEMBERSHIP_LENGTH_ENUM,
+} from '../../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export default function AddMembership() {
   const { t } = useTranslation();
@@ -21,6 +30,7 @@ export default function AddMembership() {
 
   const [memberships, setMemberships] = useState([]);
   const [data, setData] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     getMemberships();
@@ -34,7 +44,7 @@ export default function AddMembership() {
         (data[index] = [
           t(getMembershipName(r.membership_type)),
           t(getMembershipType(r.length)),
-          expirationDate(r.length, r.fixed_date),
+          getExpirationDate(r.length, r.fixed_date),
           r.price,
         ]),
     );
@@ -42,13 +52,33 @@ export default function AddMembership() {
     setData(data);
   };
 
-  const expirationDate = (length, fixed_date) => {
-    if (length !== -1) {
-      return moment()
-        .add(getMembershipLength(length), getMembershipUnit(length))
-        .format('LL');
+  const onAdd = async values => {
+    const membership_type = values[0].value;
+    let length;
+    let fixed_date;
+    if (values[1].value === 2) {
+      length = -1;
+      fixed_date = values[2].value;
     } else {
-      return moment(fixed_date).format('LL');
+      length = values[2].value;
+      fixed_date = '01/01';
+    }
+    const price = values[3].value;
+    const res = await api(`/api/entity/membership`, {
+      method: 'POST',
+      body: JSON.stringify({
+        entity_id: id,
+        membership_type,
+        length,
+        fixed_date,
+        price,
+      }),
+    });
+    if (res.status === 400) {
+      setOpen(true);
+      return;
+    } else {
+      getMemberships();
     }
   };
 
@@ -67,22 +97,36 @@ export default function AddMembership() {
     getMemberships();
   };
 
+  const [disabled, setDisabled] = useState(true);
+  const [fixedDate, setFixedDate] = useState(true);
+
+  const onChangeType = event => {
+    if (event.target.value === 1) {
+      setFixedDate(false);
+      setDisabled(false);
+    } else {
+      setFixedDate(true);
+      setDisabled(false);
+    }
+  };
+
   const headers = [
     {
       display: t('membership'),
       value: 0,
       type: 'select',
+      onChange: () => {},
       items: [
         {
-          display: t('recreational_membership'),
+          display: t('recreational'),
           value: MEMBERSHIP_TYPE_ENUM.RECREATIONAL,
         },
         {
-          display: t('competitive_membership'),
+          display: t('competitive'),
           value: MEMBERSHIP_TYPE_ENUM.COMPETITIVE,
         },
         {
-          display: t('elite_membership'),
+          display: t('elite'),
           value: MEMBERSHIP_TYPE_ENUM.ELITE,
         },
       ],
@@ -91,24 +135,69 @@ export default function AddMembership() {
       display: t('Type'),
       value: 1,
       type: 'select',
+      onChange: onChangeType,
       items: [
         { display: t('length'), value: 1 },
         { display: t('fixed_date'), value: 2 },
       ],
     },
-    { display: t('expiration_date'), value: 2 },
-    { display: t('price'), value: 3 },
+    fixedDate
+      ? {
+          display: 'MM/DD',
+          type: 'moment',
+          disabled,
+          value: 2,
+        }
+      : {
+          display: t('length'),
+          type: 'select',
+          onChange: () => {},
+          disabled,
+          value: 2,
+          items: [
+            {
+              display: t('one_month'),
+              value: MEMBERSHIP_LENGTH_ENUM.ONE_MONTH,
+            },
+            {
+              display: t('six_month'),
+              value: MEMBERSHIP_LENGTH_ENUM.SIX_MONTH,
+            },
+            {
+              display: t('one_year'),
+              value: MEMBERSHIP_LENGTH_ENUM.ONE_YEAR,
+            },
+          ],
+        },
+
+    { display: t('price'), type: 'number', value: 3 },
   ];
 
   return (
     <Paper title={t('add_membership')}>
-      <Table
+      <MembershipTable
         mode="edit"
-        allowCreate={true}
         headers={headers}
         data={data}
         onDelete={onDelete}
-      ></Table>
+        onAdd={onAdd}
+      ></MembershipTable>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={() => {
+          setOpen(false);
+        }}
+      >
+        <Alert
+          onClose={() => {
+            setOpen(false);
+          }}
+          severity="error"
+        >
+          {t('membership_exist')}
+        </Alert>
+      </Snackbar>
     </Paper>
   );
 }

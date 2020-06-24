@@ -1,5 +1,4 @@
 const knex = require('../connection');
-const moment = require('moment');
 
 const {
   ENTITIES_ROLE_ENUM,
@@ -358,6 +357,25 @@ async function addMember(
   return res;
 }
 
+async function addMembership(
+  entity_id,
+  membership_type,
+  length,
+  fixed_date,
+  price,
+) {
+  const [res] = await knex('entity_memberships')
+    .insert({
+      entity_id,
+      membership_type,
+      length,
+      fixed_date,
+      price,
+    })
+    .returning('*');
+  return res;
+}
+
 async function updateMember(
   member_type,
   organization_id,
@@ -408,19 +426,14 @@ const deleteEntityMembership = async (
 ) => {
   const membership_type = Number(membership_type_props);
   const length = Number(length_props);
-  const minDate = moment(fixed_date).subtract(1, 'hour');
-  const maxDate = moment(fixed_date).add(1, 'hour');
 
   await knex('entity_memberships')
-    .where(
-      {
-        entity_id,
-        membership_type,
-        length,
-      },
-      ('fixed_date', '>=', minDate),
-      ('fixed_date', '<', maxDate),
-    )
+    .where({
+      entity_id,
+      membership_type,
+      length,
+      fixed_date,
+    })
     .del();
 };
 
@@ -428,6 +441,7 @@ module.exports = {
   addEntity,
   addEntityRole,
   addMember,
+  addMembership,
   deleteEntity,
   deleteEntityMembership,
   getAllEntities,

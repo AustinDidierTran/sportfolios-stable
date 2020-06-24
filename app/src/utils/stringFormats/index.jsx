@@ -1,5 +1,9 @@
-import { MEMBERSHIP_TYPE_ENUM } from '../../Store';
-import { MEMBERSHIP_LENGTH_ENUM } from '../../../../common/enums';
+import {
+  MEMBERSHIP_LENGTH_ENUM,
+  MEMBERSHIP_TYPE_ENUM,
+} from '../../../../common/enums';
+
+import moment from 'moment';
 
 export function getInitialsFromName(completeName) {
   return (
@@ -55,5 +59,25 @@ export function getMembershipUnit(type) {
   }
   if (type === MEMBERSHIP_LENGTH_ENUM.ONE_YEAR) {
     return 'y';
+  }
+}
+
+export function getExpirationDate(length, fixed_date) {
+  if (length !== -1) {
+    return moment()
+      .add(getMembershipLength(length), getMembershipUnit(length))
+      .format('LL');
+  } else {
+    if (
+      moment(fixed_date).set('year', moment().get('year')) < moment()
+    ) {
+      return moment(fixed_date)
+        .set('year', moment().get('year') + 1)
+        .format('LL');
+    } else {
+      return moment(fixed_date)
+        .set('year', moment().get('year'))
+        .format('LL');
+    }
   }
 }

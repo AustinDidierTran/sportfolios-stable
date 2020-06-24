@@ -119,6 +119,7 @@ export default {
     email_password_no_match:
       'Email and password do not match. Please try again.',
     invalid_email: 'Invalid email address.',
+    invalid_input: 'Invalid input',
     new_password: 'New Password',
     old_password: 'Old password',
     password_length:
@@ -174,13 +175,17 @@ export default {
     //MEMBERSHIP
     add_membership: 'Add membership',
     become_member: 'Become Member',
+    competitive: 'Competitive',
     competitive_member: 'Competitive Member',
     competitive_membership: 'Competitive Membership',
+    elite: 'Elite',
     elite_member: 'Elite Member',
     elite_membership: 'Elite Membership',
     member: 'Member',
     membership: 'Membership',
+    membership_exist: 'Membership Exist',
     memberships: 'Memberships',
+    recreational: 'Recreational',
     recreational_member: 'Recreational Member',
     recreational_membership: 'Recreational Membership',
     renew_membership: 'Renew Membership',
