@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Paper, Stepper } from '../../../../../components/Custom';
+import { Paper, Stepper } from '../../../../components/Custom';
 
 export default function StripeStepper(props) {
   return (

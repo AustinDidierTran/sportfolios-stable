@@ -26,6 +26,13 @@ export function getMembershipName(type) {
     return '';
   }
 }
+export function getMembershipType(type) {
+  if (type === -1) {
+    return 'fixed_date';
+  } else {
+    return 'length';
+  }
+}
 
 export function getMembershipLength(type) {
   if (type === MEMBERSHIP_LENGTH_ENUM.ONE_MONTH) {
