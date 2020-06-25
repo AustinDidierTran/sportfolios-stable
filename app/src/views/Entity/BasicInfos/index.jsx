@@ -66,7 +66,9 @@ export default function BasicInfos(props) {
         promises.push(onImgUpload());
       }
 
-      promises.push(onNameChange());
+      if (name.hasChanged) {
+        promises.push(onNameChange());
+      }
 
       await Promise.all(promises);
 

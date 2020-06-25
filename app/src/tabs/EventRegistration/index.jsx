@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Paper, StepperWithHooks } from '../../components/Custom';
 import PaymentOptionSelect from './PaymentOptionSelect';
 import TeamSelect from './TeamSelect';
@@ -7,6 +7,10 @@ import { useStepper } from '../../hooks/forms';
 export default function EventRegistration() {
   const [team, setTeam] = useState();
   const [paymentOption, setPaymentOption] = useState();
+  const paymentOptions = useMemo(
+    () => [{ value: '1', display: 'Prix régulier (80$)' }],
+    [],
+  );
   const stepHook = useStepper();
   const onTeamSelect = (e, t) => {
     setTeam(t);
@@ -29,6 +33,7 @@ export default function EventRegistration() {
         <PaymentOptionSelect
           onClick={onPaymentOptionSelect}
           paymentOption={paymentOption}
+          paymentOptions={paymentOptions}
         />
       ),
     },
