@@ -252,11 +252,20 @@ async function getEntity(id, user_id) {
   };
 }
 const findRole = async (entity_id, lookedFor, role, cpt) => {
+  console.log('cpt', cpt);
+
   if (cpt > 5) {
     return role;
   }
   const entities = await knex('entities_role')
     .select('*')
+    .leftJoin(
+      'entities',
+      'entities.id',
+      '=',
+      'entities_role.entity_id',
+    )
+    .whereNull('entities.deleted_at')
     .where({ entity_id });
 
   const roles = await Promise.all(
@@ -281,6 +290,13 @@ const findRole = async (entity_id, lookedFor, role, cpt) => {
 async function getEntityRole(entity_id, user_id) {
   const entities = await knex('user_entity_role')
     .select('*')
+    .leftJoin(
+      'entities',
+      'entities.id',
+      '=',
+      'user_entity_role.entity_id',
+    )
+    .whereNull('entities.deleted_at')
     .where({ user_id });
 
   const roles = await Promise.all(
