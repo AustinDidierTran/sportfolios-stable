@@ -81,7 +81,7 @@ router.post(`${BASE_URL}/createInvoiceItem`, async ctx => {
   };
 });
 
-router.post(`${BASE_URL}/payInvoice2`, async ctx => {
+router.post(`${BASE_URL}/createInvoice`, async ctx => {
   const data = await queries.addInvoice(
     ctx.request.body,
     ctx.body.userInfo.id,
@@ -93,7 +93,7 @@ router.post(`${BASE_URL}/payInvoice2`, async ctx => {
 });
 
 router.post(`${BASE_URL}/finalizeInvoice`, async ctx => {
-  const data = await queries.finalizeInvoice(
+  const data = await queries.finalizeInvoice2(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
@@ -104,7 +104,7 @@ router.post(`${BASE_URL}/finalizeInvoice`, async ctx => {
 });
 
 router.post(`${BASE_URL}/payInvoice`, async ctx => {
-  const data = await queries.payInvoice(
+  const data = await queries.payInvoice2(
     ctx.request.body,
     ctx.body.userInfo.id,
   );

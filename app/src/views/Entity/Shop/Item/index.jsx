@@ -11,13 +11,23 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { useParams } from 'react-router-dom';
 import { useContext } from 'react';
-import { Store } from '../../../../Store';
+import { Store, ACTION_ENUM } from '../../../../Store';
+import api from '../../../../actions/api';
 
 const useStyles = makeStyles({
   media: {
     height: 300,
   },
 });
+
+const addCartItem = async params => {
+  const res = await api('/api/shop/addCartItem', {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+  const newCart = res.data;
+  return newCart;
+};
 
 export default function Item(props) {
   const { t } = useTranslation();
@@ -34,28 +44,20 @@ export default function Item(props) {
   const [inCart, setInCart] = useState(false);
 
   const handleClick = async () => {
-    setInCart(!inCart);
-
-    const cartParams = {
-      cart: {
+    if (!inCart) {
+      const cartParams = {
         stripe_price_id: stripe_price_id,
         entity_id: id,
-      },
-    };
-    const res = await api('/api/shop/addCartItem', {
-      method: 'POST',
-      body: JSON.stringify(cartParams),
-    });
-    const cartItems = res.data;
-    /* eslint-disable-next-line */
-    console.log(res);
+      };
+      const newCart = addCartItem(cartParams);
 
-    dispatch({
-      type: ACTION_ENUM.ADD_CART_ITEM,
-      payload: cartItems,
-    });
+      dispatch({
+        type: ACTION_ENUM.UPDATE_CART,
+        payload: newCart,
+      });
+    }
+    setInCart(!inCart);
   };
-
   return (
     <Paper className={classes.root}>
       <CardMedia className={classes.media} image={photoUrl} />

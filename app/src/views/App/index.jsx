@@ -32,6 +32,7 @@ import Signup from '../Signup';
 import Stripe from '../../utils/stripe/Payment/index';
 import UserSettings from '../UserSettings';
 import Cart from '../Cart';
+import Checkout from '../Checkout';
 
 // Mocks
 import MockEvent from '../Mocks/Event';
@@ -138,6 +139,11 @@ export default function App() {
                   component={Notifications}
                 />
                 <Route exact path={ROUTES.cart} component={Cart} />
+                <Route
+                  exact
+                  path={ROUTES.checkout}
+                  component={Checkout}
+                />
                 <Route
                   exact
                   path={ROUTES.stripe}

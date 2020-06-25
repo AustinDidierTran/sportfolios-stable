@@ -59,7 +59,7 @@ const createPaymentMethod = async (body, userId) => {
   ) {
     if (paymentMethod) {
       /* eslint-disable-next-line */
-      console.log('Created Payment Method', paymentMethod);
+      console.log('Created Payment Method', paymentMethod.id);
       await knex('stripe_payment_method').insert({
         user_id: userId,
         payment_method_id: paymentMethod.id,

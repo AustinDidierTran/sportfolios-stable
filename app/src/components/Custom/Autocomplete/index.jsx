@@ -12,7 +12,7 @@ export default function CustomAutocomplete(props) {
   const { t } = useTranslation();
   const {
     formik,
-    inputProps,
+    inputProps = {},
     namespace,
     onChange,
     optionsRoute,

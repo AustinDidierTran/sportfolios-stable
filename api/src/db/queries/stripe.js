@@ -5,7 +5,9 @@ const {
   getOrCreateCustomer,
   createAccountLink,
   createInvoiceItem,
-  invoicePayment,
+  createInvoice,
+  finalizeInvoice,
+  payInvoice,
   createPaymentMethod,
   addPaymentMethodCustomer,
   removePaymentMethodCustomer,
@@ -39,15 +41,15 @@ const addInvoiceItem = async (body, user_id) => {
 };
 
 const addInvoice = async (body, user_id) => {
-  return invoicePayment(body, user_id);
+  return createInvoice(body, user_id);
 };
 
-const finalizeInvoice = async (body, user_id) => {
-  return finalizeInvoiceFromInvoiceId(body, user_id);
+const finalizeInvoice2 = async (body, user_id) => {
+  return finalizeInvoice(body, user_id);
 };
 
-const payInvoice = async (body, user_id) => {
-  return payInvoiceFromInvoiceId(body, user_id);
+const payInvoice2 = async (body, user_id) => {
+  return payInvoice(body, user_id);
 };
 
 const paymentMethod = async (body, user_id) => {
@@ -83,6 +85,6 @@ module.exports = {
   detachPaymentMethod,
   createProduct,
   createPrice,
-  finalizeInvoice,
-  payInvoice,
+  finalizeInvoice2,
+  payInvoice2,
 };

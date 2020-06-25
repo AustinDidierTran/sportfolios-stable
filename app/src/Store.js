@@ -3,6 +3,7 @@ import { goTo, ROUTES } from './actions/goTo';
 
 import { API_BASE_URL } from '../../conf';
 import i18n from './i18n';
+import api from './actions/api';
 
 export const Store = React.createContext();
 
@@ -53,7 +54,7 @@ export const ACTION_ENUM = {
   LOGOUT: 'logout',
   UPDATE_PROFILE_PICTURE: 'update_profile_picture',
   UPDATE_STORE_ITEM_PICTURE: 'update_store_item_picture',
-  ADD_CART_ITEM: 'add_cart_item',
+  UPDATE_CART: 'update_cart',
   UPDATE_ORGANIZATION_PROFILE_PICTURE:
     'update_organization_profile_picture',
   UPDATE_USER_INFO: 'update_user_info',
@@ -123,7 +124,7 @@ function reducer(state, action) {
 
       return { ...state, screenSize: found.breakpoint };
     }
-    case ACTION_ENUM.ADD_CART_ITEM: {
+    case ACTION_ENUM.UPDATE_CART: {
       return { ...state, cart: action.payload };
     }
 
@@ -175,6 +176,14 @@ export function StoreProvider(props) {
           i18n.changeLanguage(data.language);
         }
       }
+    }
+
+    const res2 = await api('/api/shop/getCartItems');
+    if (res2 && res2.data) {
+      dispatch({
+        type: ACTION_ENUM.UPDATE_CART,
+        payload: res2.data,
+      });
     }
   };
 
