@@ -70,9 +70,9 @@ export const ENTITIES_ROLE_ENUM = {
 };
 
 export const MEMBERSHIP_TYPE_ENUM = {
-  RECREATIONAL: 1,
+  ELITE: 1,
   COMPETITIVE: 2,
-  ELITE: 3,
+  RECREATIONAL: 3,
 };
 
 function reducer(state, action) {

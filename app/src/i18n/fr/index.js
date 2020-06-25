@@ -66,6 +66,7 @@ export default {
     no_notifications: 'Pas de notifications',
     no_notifications_message: 'Revenez plus tard.',
     on_going_events: 'Événements en cours',
+    only_available_on_desktop: 'Seulement disponible sur ordinateur',
     options: 'Options',
     organization: 'Organisation',
     organizations: 'Organisations',
@@ -122,6 +123,7 @@ export default {
     email_password_no_match:
       'Erreur du courriel ou du mot de passe. Svp, réessayez.',
     invalid_email: 'Courriel invalid.',
+    invalid_input: 'Valeur incorrect',
     new_password: 'Nouveau mot de passe',
     old_password: 'Ancien mot de passe',
     password_length:
@@ -177,13 +179,17 @@ export default {
     //MEMBERSHIP
     add_membership: 'Ajouter un membership',
     become_member: 'Devenir membre',
+    competitive: 'Compétitif',
     competitive_membership: 'Membership Compétitif',
     competitive_member: 'Membre compétitif',
+    elite: 'Élite',
     elite_member: 'Membre élite',
     elite_membership: 'Membership Élite',
     member: 'Membre',
     membership: 'Membership',
+    membership_exist: 'Membership Existant',
     memberships: 'Memberships',
+    recreational: 'Récréatif',
     recreational_member: 'Membre récréatif',
     recreational_membership: 'Membership Récréatif',
     renew_membership: 'Renouveler',

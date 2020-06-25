@@ -7,10 +7,8 @@ import { useTranslation } from 'react-i18next';
 import styles from './MembershipDetailItem.module.css';
 import {
   getMembershipName,
-  getMembershipLength,
-  getMembershipUnit,
+  getExpirationDate,
 } from '../../../../utils/stringFormats';
-import moment from 'moment';
 
 export default function MembershipDetailItem(props) {
   const { t } = useTranslation();
@@ -28,13 +26,7 @@ export default function MembershipDetailItem(props) {
   const name = getMembershipName(membership_type);
 
   const expirationDate = () => {
-    if (length !== -1) {
-      return moment()
-        .add(getMembershipLength(length), getMembershipUnit(length))
-        .format('LL');
-    } else {
-      return moment(fixed_date).format('LL');
-    }
+    return getExpirationDate(length, fixed_date);
   };
 
   return (
