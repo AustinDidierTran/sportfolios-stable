@@ -30,7 +30,6 @@ import PasswordRecovery from '../PasswordRecovery';
 import Search from '../Search';
 import Signup from '../Signup';
 import Stripe from '../../utils/stripe/Payment/index';
-import Team from '../Team';
 import UserSettings from '../UserSettings';
 import Cart from '../Cart';
 
@@ -144,7 +143,6 @@ export default function App() {
                   path={ROUTES.stripe}
                   component={Stripe}
                 />
-                <Route path={ROUTES.team} component={Team} />
                 <PrivateRoute
                   path={ROUTES.search}
                   component={Search}
