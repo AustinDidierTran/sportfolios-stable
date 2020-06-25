@@ -1,7 +1,6 @@
 const {
   createExternalAccount,
   getStripeAccountId,
-  createPaymentIntent,
   getOrCreateCustomer,
   createAccountLink,
   createInvoiceItem,
@@ -26,10 +25,6 @@ const addExternalAccount = async (body, user_id, ip) => {
 
 const getStripeAccount = async entity_id => {
   return getStripeAccountId(entity_id);
-};
-
-const addPaymentIntent = async (body, user_id, ip) => {
-  return createPaymentIntent(body, user_id, ip);
 };
 
 const addCustomer = async (body, user_id) => {
@@ -76,7 +71,6 @@ module.exports = {
   getAccountLink,
   addExternalAccount,
   getStripeAccount,
-  addPaymentIntent,
   addCustomer,
   addInvoiceItem,
   addInvoice,

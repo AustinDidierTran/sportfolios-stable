@@ -36,29 +36,6 @@ router.post(`${BASE_URL}/externalAccount`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/getStripeAccountId`, async ctx => {
-  const data = await queries.getAccountLink(
-    ctx.query.id,
-    ctx.request.ip,
-  );
-  ctx.body = {
-    status: 'success',
-    data,
-  };
-});
-
-router.post(`${BASE_URL}/paymentIntent`, async ctx => {
-  const data = await queries.addPaymentIntent(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-    ctx.request.ip,
-  );
-  ctx.body = {
-    status: 'success',
-    data,
-  };
-});
-
 router.post(`${BASE_URL}/createCustomer`, async ctx => {
   const data = await queries.addCustomer(
     ctx.request.body,

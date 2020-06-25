@@ -13,7 +13,7 @@ import {
   Typography,
   Button,
 } from '../../../components/MUI';
-import CountrySelect from '../../Entity/Settings/Stripe/Form/CountrySelect';
+import CountrySelect from '../../../tabs/Settings/Stripe/Form/CountrySelect';
 
 export async function createCustomer(params) {
   const res = await api('/api/stripe/createCustomer', {
