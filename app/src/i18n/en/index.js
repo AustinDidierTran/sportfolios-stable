@@ -64,6 +64,7 @@ export default {
     no_notifications: 'No Notifications',
     no_notifications_message: 'Come back later.',
     on_going_events: 'On Going Events',
+    only_available_on_desktop: 'Only available on desktop',
     options: 'Options',
     organization: 'Organization',
     organizations: 'Organizations',

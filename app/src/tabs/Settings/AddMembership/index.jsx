@@ -18,6 +18,7 @@ import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import { Typography } from '@material-ui/core';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -175,29 +176,35 @@ export default function AddMembership() {
 
   return (
     <Paper title={t('add_membership')}>
-      <MembershipTable
-        mode="edit"
-        headers={headers}
-        data={data}
-        onDelete={onDelete}
-        onAdd={onAdd}
-      ></MembershipTable>
-      <Snackbar
-        open={open}
-        autoHideDuration={6000}
-        onClose={() => {
-          setOpen(false);
-        }}
-      >
-        <Alert
-          onClose={() => {
-            setOpen(false);
-          }}
-          severity="error"
-        >
-          {t('membership_exist')}
-        </Alert>
-      </Snackbar>
+      {window.innerWidth < 600 ? (
+        <Typography>{t('only_available_on_desktop')}</Typography>
+      ) : (
+        <>
+          <MembershipTable
+            mode="edit"
+            headers={headers}
+            data={data}
+            onDelete={onDelete}
+            onAdd={onAdd}
+          ></MembershipTable>
+          <Snackbar
+            open={open}
+            autoHideDuration={6000}
+            onClose={() => {
+              setOpen(false);
+            }}
+          >
+            <Alert
+              onClose={() => {
+                setOpen(false);
+              }}
+              severity="error"
+            >
+              {t('membership_exist')}
+            </Alert>
+          </Snackbar>
+        </>
+      )}
     </Paper>
   );
 }
