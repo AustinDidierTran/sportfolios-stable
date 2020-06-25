@@ -6,7 +6,7 @@ import { Paper, Button, List } from '../../components/Custom';
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { useQuery } from '../../hooks/queries';
-import { LIST_ROW_TYPE_ENUM } from '../../../../common/enums';
+import { GLOBAL_ENUM } from '../../../../common/enums';
 import { TABS_ENUM } from '../../tabs';
 import moment from 'moment';
 import {
@@ -59,7 +59,7 @@ export default function Memberships() {
   const getOptions = async () => {
     const res = await api(`/api/entity/memberships/?id=${entity_id}`);
     const options = res.data.filter(r => {
-      r.type = LIST_ROW_TYPE_ENUM.MEMBERSHIP_DETAIL;
+      r.type = GLOBAL_ENUM.MEMBERSHIP_DETAIL;
       r.clickBecomeMember = () =>
         clickBecomeMember(
           r.membership_type,

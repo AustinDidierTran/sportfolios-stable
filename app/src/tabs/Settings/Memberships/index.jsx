@@ -8,7 +8,7 @@ import React, {
 import moment from 'moment';
 import { List, Paper } from '../../../components/Custom';
 import { getMembershipName } from '../../../utils/stringFormats';
-import { LIST_ROW_TYPE_ENUM } from '../../../../../common/enums';
+import { GLOBAL_ENUM } from '../../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
 import { Store } from '../../../Store';
@@ -98,7 +98,7 @@ export default function Memberships(props) {
     return persons.map(person =>
       memberships.map(membership => [
         {
-          type: LIST_ROW_TYPE_ENUM.MEMBERSHIP,
+          type: GLOBAL_ENUM.MEMBERSHIP,
           isMember: isMember(
             person.entity_id,
             membership.membership_type,
