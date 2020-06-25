@@ -122,6 +122,7 @@ export default {
       'Email and password do not match. Please try again.',
     invalid_email: 'Invalid email address.',
     invalid_input: 'Invalid input',
+    name_is_required: 'Name is required',
     new_password: 'New Password',
     old_password: 'Old password',
     password_length:

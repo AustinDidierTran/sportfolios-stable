@@ -127,6 +127,7 @@ export default {
       'Erreur du courriel ou du mot de passe. Svp, réessayez.',
     invalid_email: 'Courriel invalid.',
     invalid_input: 'Valeur incorrect',
+    name_is_required: 'Nom obligatoire',
     new_password: 'Nouveau mot de passe',
     old_password: 'Ancien mot de passe',
     password_length:

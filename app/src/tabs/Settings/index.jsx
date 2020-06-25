@@ -25,10 +25,10 @@ export default function EntitySettings(props) {
       {isEditor ? (
         <>
           <Stripe id={id} />
+          <AddMembership />
           {isAdmin ? (
             <>
               <ManageRoles role={role} />
-              <AddMembership />
               <DeleteEntityCard
                 id={id}
                 type={basicInfos.type}
