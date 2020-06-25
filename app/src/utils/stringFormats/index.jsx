@@ -1,6 +1,7 @@
 import {
   MEMBERSHIP_LENGTH_ENUM,
   MEMBERSHIP_TYPE_ENUM,
+  GLOBAL_ENUM,
 } from '../../../../common/enums';
 
 import moment from 'moment';
@@ -17,6 +18,20 @@ export function getInitialsFromName(completeName) {
       )
       .toUpperCase()
   );
+}
+
+export function getEntityTypeName(type) {
+  if (type === GLOBAL_ENUM.PERSON) {
+    return 'person';
+  } else if (type === GLOBAL_ENUM.TEAM) {
+    return 'team';
+  } else if (type === GLOBAL_ENUM.ORGANIZATION) {
+    return 'organization';
+  } else if (type === GLOBAL_ENUM.EVENT) {
+    return 'event';
+  } else {
+    return '';
+  }
 }
 
 export function getMembershipName(type) {
