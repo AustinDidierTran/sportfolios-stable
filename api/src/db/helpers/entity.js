@@ -252,8 +252,6 @@ async function getEntity(id, user_id) {
   };
 }
 const findRole = async (entity_id, lookedFor, role, cpt) => {
-  console.log('cpt', cpt);
-
   if (cpt > 5) {
     return role;
   }
@@ -310,32 +308,6 @@ async function getEntityRole(entity_id, user_id) {
   );
 
   return Math.min(...roles);
-}
-
-async function getUsersAuthorization(id) {
-  const [{ type } = {}] = await knex('entities')
-    .select('type')
-    .where('entities_role.entity_id', id);
-
-  if (!type) {
-    return null;
-  }
-
-  if (type === GLOBAL_ENUM.PERSON) {
-    return knex('user_entity_role')
-      .select(['user_id', 'role'])
-      .where({ entity_id: id });
-  }
-
-  return knex('user_entity_role')
-    .select(['user_id', 'entities_role.role'])
-    .leftJoin(
-      'entities_role',
-      'user_entity_role.entity_id',
-      '=',
-      'entities_role.entity_id_admin',
-    )
-    .where('entities_role.entity_id', id);
 }
 
 async function getMembers(personsString, organization_id) {
@@ -498,9 +470,9 @@ module.exports = {
   getAllRolesEntity,
   getAllTypeEntities,
   getEntity,
+  getEntityRole,
   getMembers,
   getMemberships,
-  getUsersAuthorization,
   removeEntityRole,
   updateEntityName,
   updateEntityPhoto,

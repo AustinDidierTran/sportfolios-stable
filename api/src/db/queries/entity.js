@@ -13,9 +13,9 @@ const {
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
   getEntity: getEntityHelper,
+  getEntityRole,
   getMembers: getMembersHelper,
   getMemberships: getMembershipsHelper,
-  getUsersAuthorization: getUsersAuthorizationHelper,
   removeEntityRole: removeEntityRoleHelper,
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
@@ -54,12 +54,9 @@ const addEntity = async (body, user_id) => {
 async function updateEntity(body, user_id) {
   const { id, name, surname, photoUrl } = body;
 
-  const res = await getUsersAuthorizationHelper(id);
+  const role = await getEntityRole(id, user_id);
 
-  const isAuthorized =
-    res.findIndex(r => r.user_id === user_id) !== -1;
-
-  if (isAuthorized) {
+  if (role <= ENTITIES_ROLE_ENUM.EDITOR) {
     if (name || surname) {
       await updateEntityNameHelper(id, name, surname);
     }
