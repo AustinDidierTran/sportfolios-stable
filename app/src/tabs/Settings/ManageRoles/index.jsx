@@ -54,7 +54,7 @@ export default function ManageRoles() {
     }
   };
 
-  const onClick = async id => {
+  const onClick = async (e, { id }) => {
     await api(`/api/entity/role`, {
       method: 'POST',
       body: JSON.stringify({
@@ -106,6 +106,7 @@ export default function ManageRoles() {
           />
         </List>,
       ])}
+      <hr />
       <AddAdmins onClick={onClick} />
     </Paper>
   );

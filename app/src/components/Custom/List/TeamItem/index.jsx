@@ -9,17 +9,20 @@ import { goTo, ROUTES } from '../../../../actions/goTo';
 export default function TeamItem(props) {
   const { t } = useTranslation();
 
-  const { id, onClick, selected, photoUrl, name } = props;
+  const { id, secondary, onClick, selected, photoUrl, name } = props;
 
   const initials = useMemo(() => getInitialsFromName(name), [name]);
 
-  const handleClick = useCallback(() => {
-    if (onClick) {
-      onClick();
-    } else {
-      goTo(ROUTES.entity, { id });
-    }
-  }, [id, onClick]);
+  const handleClick = useCallback(
+    e => {
+      if (onClick) {
+        onClick(e, { id, name });
+      } else {
+        goTo(ROUTES.entity, { id });
+      }
+    },
+    [id, onClick],
+  );
 
   return (
     <ListItem
@@ -33,7 +36,7 @@ export default function TeamItem(props) {
       </ListItemIcon>
       <ListItemText
         primary={name}
-        secondary={t('team')}
+        secondary={secondary || t('team')}
       ></ListItemText>
     </ListItem>
   );

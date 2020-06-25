@@ -35,6 +35,7 @@ export default {
       'Un courriel de confirmation a été envoyé à {{email}}. Veuillez regarder vos courriels pour confirmer votre compte.',
     entity_not_found: "Cette entité n'existe pas",
     event_manager: "Responsable de l'événement",
+    event_registration: 'Inscription à un événement',
     events: 'Événements',
     event_creator: "Créateur d'événement",
     events_that_might_interest_you:
@@ -72,6 +73,7 @@ export default {
     our_team: 'Notre Équipe',
     password: 'Mot de passe',
     pay: 'Payer',
+    payment_option: 'Option de paiement',
     payments: 'Paiements',
     person: 'Person',
     persons: 'Personnes',
@@ -93,6 +95,7 @@ export default {
     score_type: 'Type de pointage',
     search_results: 'Résultats de recherche pour {{query}}',
     search: 'Rechercher...',
+    select_team: 'Sélectionner une équipe',
     save_basic_info: 'Sauvegarder informations',
     select_language: 'Sélectionner votre langue',
     send_new_confirmation_email:
