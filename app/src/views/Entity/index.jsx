@@ -41,6 +41,5 @@ export default function Entity() {
   if (!EntityObject) {
     return <EntityNotFound />;
   }
-
   return <EntityObject basicInfos={basicInfos} />;
 }

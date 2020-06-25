@@ -187,7 +187,14 @@ async function getAllTypeEntities(type) {
 
 async function getAllRolesEntity(entity_id) {
   const entities_role = await knex('entities_role')
-    .select('entity_id_admin', 'role', 'name', 'surname', 'photo_url')
+    .select(
+      'entity_id_admin',
+      'role',
+      'name',
+      'surname',
+      'photo_url',
+      'type',
+    )
     .leftJoin(
       'entities_name',
       'entities_role.entity_id_admin',
@@ -199,6 +206,12 @@ async function getAllRolesEntity(entity_id) {
       'entities_role.entity_id_admin',
       '=',
       'entities_photo.entity_id',
+    )
+    .leftJoin(
+      'entities',
+      'entities_role.entity_id_admin',
+      '=',
+      'entities.id',
     )
     .where('entities_role.entity_id', entity_id);
 
@@ -227,31 +240,31 @@ async function getEntity(id, user_id) {
     .whereNull('deleted_at')
     .andWhere({ id });
 
-  let role;
+  const role = getEntityRole(id, user_id);
+  // let role;
 
-  if (entity.type === GLOBAL_ENUM.PERSON) {
-    const [row = {}] = await knex('user_entity_role')
-      .select('role')
-      .where({
-        entity_id: id,
-        user_id,
-      });
+  // if (entity.type === GLOBAL_ENUM.PERSON) {
+  //   const [row = {}] = await knex('user_entity_role')
+  //     .select('role')
+  //     .where({
+  //       entity_id: id,
+  //       user_id,
+  //     });
 
-    role = row.role;
-  } else {
-    const [row = {}] = await knex('entities_role')
-      .select('entities_role.role')
-      .leftJoin(
-        'user_entity_role',
-        'entities_role.entity_id_admin',
-        '=',
-        'user_entity_role.entity_id',
-      )
-      .where('entities_role.entity_id', id)
-      .andWhere('user_entity_role.user_id', user_id);
-    role = row.role;
-  }
-
+  //   role = row.role;
+  // } else {
+  //   const [row = {}] = await knex('entities_role')
+  //     .select('entities_role.role')
+  //     .leftJoin(
+  //       'user_entity_role',
+  //       'entities_role.entity_id_admin',
+  //       '=',
+  //       'user_entity_role.entity_id',
+  //     )
+  //     .where('entities_role.entity_id', id)
+  //     .andWhere('user_entity_role.user_id', user_id);
+  //   role = row.role;
+  // }
   return {
     id: entity.id,
     type: entity.type,
@@ -260,6 +273,68 @@ async function getEntity(id, user_id) {
     photoUrl: entity.photo_url,
     role,
   };
+}
+const findRole = async (entity_id, lookedFor, role, cpt) => {
+  if (cpt > 5) {
+    return role;
+  }
+  const entities = await knex('entities_role')
+    .select('*')
+    .where({ entity_id });
+
+  entities.map(entity => {
+    const maxRole = Math.max(entity.role, role);
+    if ((entity.entity_id = lookedFor)) {
+      return maxRole;
+    } else {
+      return findRole(
+        entity.entity_id_admin,
+        lookedFor,
+        maxRole,
+        cpt + 1,
+      );
+    }
+  });
+};
+
+async function getEntityRole(entity_id, user_id) {
+  const entities = await knex('user_entity_role')
+    .select('*')
+    .where({ user_id });
+
+  entities.map(async entity => {
+    if (entity.entity_id === entity_id) {
+      return entity.role;
+    } else {
+      return findRole(entity.entity_id, entity_id, entity.role, 0);
+    }
+  });
+}
+
+async function getUsersAuthorization(id) {
+  const [{ type } = {}] = await knex('entities')
+    .select('type')
+    .where('entities_role.entity_id', id);
+
+  if (!type) {
+    return null;
+  }
+
+  if (type === GLOBAL_ENUM.PERSON) {
+    return knex('user_entity_role')
+      .select(['user_id', 'role'])
+      .where({ entity_id: id });
+  }
+
+  return knex('user_entity_role')
+    .select(['user_id', 'entities_role.role'])
+    .leftJoin(
+      'entities_role',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_role.entity_id_admin',
+    )
+    .where('entities_role.entity_id', id);
 }
 
 async function getMembers(personsString, organization_id) {
@@ -312,32 +387,6 @@ async function addEntityRole(entity_id, entity_id_admin, role) {
       role,
     })
     .returning(['role']);
-}
-
-async function getUsersAuthorization(id) {
-  const [{ type } = {}] = await knex('entities')
-    .select('type')
-    .where('entities_role.entity_id', id);
-
-  if (!type) {
-    return null;
-  }
-
-  if (type === GLOBAL_ENUM.PERSON) {
-    return knex('user_entity_role')
-      .select(['user_id', 'role'])
-      .where({ entity_id: id });
-  }
-
-  return knex('user_entity_role')
-    .select(['user_id', 'entities_role.role'])
-    .leftJoin(
-      'entities_role',
-      'user_entity_role.entity_id',
-      '=',
-      'entities_role.entity_id_admin',
-    )
-    .where('entities_role.entity_id', id);
 }
 
 async function addMember(

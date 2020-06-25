@@ -2,9 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Paper, Avatar, Select } from '../../../components/Custom';
-import { Typography, List, ListItem } from '../../../components/MUI';
+import {
+  List,
+  ListItem,
+  ListItemText,
+} from '../../../components/MUI';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 
+import { getEntityTypeName } from '../../../utils/stringFormats';
 import { ENTITIES_ROLE_ENUM } from '../../../Store';
 import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
@@ -92,9 +97,17 @@ export default function ManageRoles() {
             <ListItemIcon>
               <Avatar photoUrl={entity.photoUrl} />
             </ListItemIcon>
-            <Typography className={styles.textField}>
-              {entity.name} {entity.surname}
-            </Typography>
+            {entity.surname ? (
+              <ListItemText
+                primary={`${entity.name} ${entity.surname}`}
+                secondary={t(getEntityTypeName(entity.type))}
+              ></ListItemText>
+            ) : (
+              <ListItemText
+                primary={`${entity.name}`}
+                secondary={t(getEntityTypeName(entity.type))}
+              ></ListItemText>
+            )}
           </ListItem>
           <Select
             key={`s${index}`}
