@@ -1,4 +1,5 @@
 import About from './About';
+import EventRegistration from './EventRegistration';
 import Events from './Events';
 import General from './General';
 import Settings from './Settings';
@@ -7,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 export const TABS_ENUM = {
   ABOUT: 'about',
+  EVENT_REGISTRATION: 'event registration',
   EVENTS: 'events',
   GENERAL: 'general',
   SHOP: 'shop',
@@ -24,6 +26,14 @@ export default function Tabs(props) {
         component: About,
         label: t('about'),
         icon: 'Info',
+      };
+    }
+    if (l === TABS_ENUM.EVENT_REGISTRATION) {
+      return {
+        value: TABS_ENUM.EVENT_REGISTRATION,
+        component: EventRegistration,
+        label: t('event_registration'),
+        icon: 'SupervisedUserCircle',
       };
     }
     if (l === TABS_ENUM.EVENTS) {

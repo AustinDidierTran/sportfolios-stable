@@ -6,7 +6,7 @@ import { getInitialsFromName } from '../../../../utils/stringFormats/index';
 import { useTranslation } from 'react-i18next';
 import { goTo, ROUTES } from '../../../../actions/goTo';
 
-export default function TeamItem(props) {
+export default function EventItem(props) {
   const { t } = useTranslation();
 
   const { id, onClick, selected, photoUrl, name } = props;

@@ -6,11 +6,9 @@ import { formatRoute } from '../../../actions/goTo';
 import { useApiRoute } from '../../../hooks/queries';
 import { useFormInput } from '../../../hooks/forms';
 import { InputAdornment } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
 
 export default function SearchList(props) {
-  const { t } = useTranslation();
-  const { type, onClick } = props;
+  const { label, onClick, type } = props;
 
   const query = useFormInput('');
 
@@ -37,7 +35,7 @@ export default function SearchList(props) {
       <TextField
         {...query.inputProps}
         variant="outlined"
-        label={t('add_editor')}
+        label={label}
         style={{ margin: '8px' }}
         InputProps={{
           startAdornment: (

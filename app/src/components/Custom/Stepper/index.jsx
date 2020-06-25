@@ -8,7 +8,7 @@ import styles from './Stepper.module.css';
 import api from '../../../actions/api';
 import { useParams } from 'react-router-dom';
 
-export default function HorizontalLinearStepper(props) {
+export default function CustomStepper(props) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
   const { steps } = props;

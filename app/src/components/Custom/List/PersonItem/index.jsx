@@ -21,13 +21,16 @@ export default function PersonItem(props) {
     completeName,
   ]);
 
-  const handleClick = useCallback(() => {
-    if (onClick) {
-      onClick(id);
-    } else {
-      goTo(ROUTES.entity, { id });
-    }
-  }, [id, onClick]);
+  const handleClick = useCallback(
+    e => {
+      if (onClick) {
+        onClick(e, { id, name, surname });
+      } else {
+        goTo(ROUTES.entity, { id });
+      }
+    },
+    [id, onClick],
+  );
 
   return (
     <ListItem

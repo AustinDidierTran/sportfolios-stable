@@ -35,6 +35,7 @@ export default {
       'An email has just been sent to {{email}}. Please, go look at your inbox to confirm your email.',
     entity_not_found: 'Entity not found',
     event_manager: 'Event Manager',
+    event_registration: 'Event Registration',
     event_creator: 'Event Creator',
     events: 'Events',
     events_that_might_interest_you: 'Events that might interest you',
@@ -126,6 +127,7 @@ export default {
     password_length:
       'Password must be within 8 and 16 characters long.',
     password_must_match: 'Passwords must match',
+    select_team: 'Select team',
     something_went_wrong: 'Something went wrong, please try again',
     token_expired:
       'Token is no longer valid, please request a new one.',
@@ -150,6 +152,7 @@ export default {
     users_table_title: 'Users List',
     // Page names
     admin_panel: 'Admin Panel',
+    payment_option: 'Payment option',
     profile: 'Profile',
     user_settings: 'User Settings',
     // Buttons

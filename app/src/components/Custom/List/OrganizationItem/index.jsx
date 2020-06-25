@@ -12,13 +12,16 @@ export default function OrganizationItem(props) {
 
   const initials = useMemo(() => getInitialsFromName(name), [name]);
 
-  const handleClick = useCallback(() => {
-    if (onClick) {
-      onClick();
-    } else {
-      goTo(ROUTES.entity, { id });
-    }
-  }, [id, onClick]);
+  const handleClick = useCallback(
+    e => {
+      if (onClick) {
+        onClick(e, { id, name });
+      } else {
+        goTo(ROUTES.entity, { id });
+      }
+    },
+    [id, onClick],
+  );
 
   return (
     <ListItem

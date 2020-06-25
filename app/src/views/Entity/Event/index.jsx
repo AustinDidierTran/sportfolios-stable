@@ -1,66 +1,35 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { Tab, Tabs } from '../../../components/MUI';
 import { Container, Paper } from '../../../components/Custom';
 
 import styles from './Event.module.css';
-import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '../../../hooks/queries';
 
 import BasicInfos from '../BasicInfos';
-import NextEvents from '../NextEvents';
-import Shop from '../Shop';
-import About from '../About';
-import Settings from '../Settings';
-import { goTo, ROUTES } from '../../../actions/goTo';
 
-export const TABS_ENUM = {
-  GENERAL: 'general',
-  ABOUT: 'about',
-  SHOP: 'shop',
-  SETTINGS: 'settings',
-};
+import { goTo, ROUTES } from '../../../actions/goTo';
+import TabsGenerator, { TABS_ENUM } from '../../../tabs';
 
 export default function Event(props) {
   const { basicInfos } = props;
 
-  const { t } = useTranslation();
   const { id } = useParams();
   const query = useQuery();
 
   const [eventState, setEventState] = useState(
-    query.tab || TABS_ENUM.GENERAL,
+    query.tab || TABS_ENUM.EVENT_REGISTRATION,
   );
 
-  const states = [
-    {
-      value: TABS_ENUM.GENERAL,
-      component: NextEvents,
-      label: t('general'),
-      icon: 'Folder',
-    },
-    {
-      value: TABS_ENUM.ABOUT,
-      component: About,
-      label: t('about'),
-      icon: 'Info',
-    },
-    {
-      value: TABS_ENUM.SHOP,
-      component: Shop,
-      label: t('shop'),
-      icon: 'Store',
-    },
-    {
-      value: TABS_ENUM.SETTINGS,
-      component: Settings,
-      label: t('settings'),
-      icon: 'Settings',
-    },
-  ];
+  const states = TabsGenerator({
+    list: [TABS_ENUM.EVENT_REGISTRATION, TABS_ENUM.SETTINGS],
+  });
 
-  const OpenTab = states.find(s => s.value == eventState).component;
+  const OpenTab = useMemo(
+    () => states.find(s => s.value == eventState).component,
+    [eventState, states],
+  );
 
   const onClick = s => {
     goTo(ROUTES.entity, { id }, { tab: s.value });
