@@ -7,8 +7,8 @@ import IconButton from '../../../../components/Custom/IconButton';
 
 // Buttons
 import CellRenderer from './CellRenderer';
-
 import { useTranslation } from 'react-i18next';
+import { validateDate } from '../../../../utils/stringFormats';
 
 export default function CreateRow(props) {
   const { headers, onAdd } = props;
@@ -44,29 +44,13 @@ export default function CreateRow(props) {
           isValid = false;
         }
       }
+
       if (h.display === 'MM/DD') {
-        const days = [31, 28, 31, 30, 31, 30, 31, 30, 31, 31, 30, 31];
-        const date = values[h.value].value.split('/');
-        const month = Number(date[0]);
-        const day = Number(date[1]);
-        if (
-          month < 1 ||
-          month > 12 ||
-          isNaN(month) ||
-          month === null
-        ) {
-          values[h.value].setError(t('invalid_input'));
-          isValid = false;
-        } else if (
-          day > days[month - 1] ||
-          day < 1 ||
-          isNaN(day) ||
-          day === null
-        ) {
-          values[h.value].setError(t('invalid_input'));
-          isValid = false;
-        } else {
+        if (validateDate(values[h.value].value)) {
           values[h.value].setError(null);
+        } else {
+          values[h.value].setError(t('invalid_input'));
+          isValid = false;
         }
       }
     });

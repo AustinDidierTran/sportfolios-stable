@@ -81,3 +81,22 @@ export function getExpirationDate(length, fixed_date) {
     }
   }
 }
+
+export function validateDate(dateProps) {
+  //date format: 'MM/DD'
+  const days = [31, 28, 31, 30, 31, 30, 31, 30, 31, 31, 30, 31];
+  const date = dateProps.split('/');
+  const month = Number(date[0]);
+  const day = Number(date[1]);
+  if (month < 1 || month > 12 || isNaN(month) || month === null) {
+    return false;
+  } else if (
+    day > days[month - 1] ||
+    day < 1 ||
+    isNaN(day) ||
+    day === null
+  ) {
+    return false;
+  }
+  return true;
+}
