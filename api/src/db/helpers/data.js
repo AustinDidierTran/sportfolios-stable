@@ -1,4 +1,5 @@
 const knex = require('../connection');
+const { GLOBAL_ENUM } = require('../../../../common/enums');
 
 const addQueryToRecentSearches = async (user_id, search_query) => {
   return knex('previous_search_queries')
@@ -60,27 +61,28 @@ const getPersonsFromQuery = async query => {
 };
 
 const getTeamsFromQuery = async query => {
-  return knex('teams')
+  return knex('entities')
     .select(
-      'id',
+      'entities.id',
       'entities_name.name',
       'entities_name.surname',
       'entities_photo.photo_url',
     )
     .leftJoin(
       'entities_photo',
-      'teams.id',
+      'entities.id',
       '=',
       'entities_photo.entity_id',
     )
     .leftJoin(
       'entities_name',
-      'teams.id',
+      'entities.id',
       '=',
       'entities_name.entity_id',
     )
-    .where('entities_name.name', 'ILIKE', `%${query}%`)
-    .orWhere('entities_name.surname', 'ILIKE', `%${query}%`);
+    .whereNull('entities.deleted_at')
+    .andWhere('entities_name.name', 'ILIKE', `%${query}%`)
+    .andWhere('entities.type', '=', GLOBAL_ENUM.TEAM);
 };
 
 const getOrganizationsFromQuery = async query => {
