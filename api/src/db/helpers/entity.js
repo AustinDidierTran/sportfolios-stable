@@ -240,31 +240,8 @@ async function getEntity(id, user_id) {
     .whereNull('deleted_at')
     .andWhere({ id });
 
-  const role = getEntityRole(id, user_id);
-  // let role;
+  const role = await getEntityRole(id, user_id);
 
-  // if (entity.type === GLOBAL_ENUM.PERSON) {
-  //   const [row = {}] = await knex('user_entity_role')
-  //     .select('role')
-  //     .where({
-  //       entity_id: id,
-  //       user_id,
-  //     });
-
-  //   role = row.role;
-  // } else {
-  //   const [row = {}] = await knex('entities_role')
-  //     .select('entities_role.role')
-  //     .leftJoin(
-  //       'user_entity_role',
-  //       'entities_role.entity_id_admin',
-  //       '=',
-  //       'user_entity_role.entity_id',
-  //     )
-  //     .where('entities_role.entity_id', id)
-  //     .andWhere('user_entity_role.user_id', user_id);
-  //   role = row.role;
-  // }
   return {
     id: entity.id,
     type: entity.type,
@@ -282,19 +259,23 @@ const findRole = async (entity_id, lookedFor, role, cpt) => {
     .select('*')
     .where({ entity_id });
 
-  entities.map(entity => {
-    const maxRole = Math.max(entity.role, role);
-    if ((entity.entity_id = lookedFor)) {
-      return maxRole;
-    } else {
-      return findRole(
-        entity.entity_id_admin,
-        lookedFor,
-        maxRole,
-        cpt + 1,
-      );
-    }
-  });
+  const roles = await Promise.all(
+    entities.map(async entity => {
+      const maxRole = Math.max(entity.role, role);
+      if ((entity.entity_id = lookedFor)) {
+        return maxRole;
+      } else {
+        return findRole(
+          entity.entity_id_admin,
+          lookedFor,
+          maxRole,
+          cpt + 1,
+        );
+      }
+    }),
+  );
+
+  return Math.min(...roles);
 };
 
 async function getEntityRole(entity_id, user_id) {
@@ -302,13 +283,17 @@ async function getEntityRole(entity_id, user_id) {
     .select('*')
     .where({ user_id });
 
-  entities.map(async entity => {
-    if (entity.entity_id === entity_id) {
-      return entity.role;
-    } else {
-      return findRole(entity.entity_id, entity_id, entity.role, 0);
-    }
-  });
+  const roles = await Promise.all(
+    entities.map(async entity => {
+      if (entity.entity_id === entity_id) {
+        return entity.role;
+      } else {
+        return findRole(entity.entity_id, entity_id, entity.role, 0);
+      }
+    }),
+  );
+
+  return Math.min(...roles);
 }
 
 async function getUsersAuthorization(id) {
