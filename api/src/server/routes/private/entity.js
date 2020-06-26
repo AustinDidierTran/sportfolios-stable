@@ -95,6 +95,23 @@ router.get(`${BASE_URL}/memberships`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/options`, async ctx => {
+  const entity = await queries.getOptions(ctx.query.id);
+
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/s3Signature`, async ctx => {
   const { code, data } = await queries.getS3Signature(
     ctx.body.userInfo.id,
@@ -224,6 +241,23 @@ router.post(`${BASE_URL}/member`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/option`, async ctx => {
+  const entity = await queries.addOption(ctx.request.body);
+  if (entity) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/membership`, async ctx => {
   const entity = await queries.addMembership(ctx.request.body);
   if (entity) {
@@ -263,6 +297,15 @@ router.del(BASE_URL, async ctx => {
 
 router.del(`${BASE_URL}/membership`, async ctx => {
   await queries.deleteEntityMembership(ctx.query);
+
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
+router.del(`${BASE_URL}/option`, async ctx => {
+  await queries.deleteOption(ctx.query.id);
 
   ctx.status = 201;
   ctx.body = {

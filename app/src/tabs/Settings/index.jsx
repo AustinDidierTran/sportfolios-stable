@@ -3,6 +3,7 @@ import Stripe from './Stripe';
 import ManageRoles from './ManageRoles';
 import Memberships from './Memberships';
 import AddMembership from './AddMembership';
+import AddOptionsEvent from './AddOptionsEvent';
 import { useParams } from 'react-router-dom';
 import { ENTITIES_ROLE_ENUM } from '../../../../common/enums';
 import styles from './Settings.module.css';
@@ -26,6 +27,7 @@ export default function EntitySettings(props) {
         <>
           <Stripe id={id} />
           <AddMembership />
+          <AddOptionsEvent />
           {isAdmin ? (
             <>
               <ManageRoles role={role} />
