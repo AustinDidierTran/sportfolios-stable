@@ -21,7 +21,7 @@ export default function Shop(props) {
 
   const fetchShopItems = async () => {
     const { data = [] } = await api(
-      formatRoute('/api/shop/getItems?', id),
+      formatRoute('/api/shop/getItems', null, { id }),
     );
     setItems(
       data.map(d => ({
