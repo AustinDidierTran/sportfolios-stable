@@ -96,20 +96,11 @@ router.get(`${BASE_URL}/memberships`, async ctx => {
 });
 
 router.get(`${BASE_URL}/options`, async ctx => {
-  const entity = await queries.getOptions(ctx.query.id);
-
-  if (entity) {
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
+  const option = await queries.getOptions(ctx.query.event_id);
+  ctx.body = {
+    status: 'success',
+    data: option,
+  };
 });
 
 router.get(`${BASE_URL}/s3Signature`, async ctx => {
@@ -242,18 +233,18 @@ router.post(`${BASE_URL}/member`, async ctx => {
 });
 
 router.post(`${BASE_URL}/option`, async ctx => {
-  const entity = await queries.addOption(ctx.request.body);
-  if (entity) {
+  const option = await queries.addOption(ctx.request.body);
+  if (option) {
     ctx.status = 201;
     ctx.body = {
       status: 'success',
-      data: entity,
+      data: option,
     };
   } else {
     ctx.status = 404;
     ctx.body = {
       status: 'error',
-      message: 'Something went wrong',
+      message: 'Could not add this option',
     };
   }
 });

@@ -14,20 +14,26 @@ export default function EventRegistration() {
   const [paymentOptions, setPaymentOptions] = useState([]);
 
   const getOptions = async () => {
-    const res = await api(`/api/entity/options/?id=${id}`);
-    const data = [];
-    res.data.map(d => {
+    const { data } = await api(
+      formatRoute('/api/entity/options', null, { id }),
+    );
+
+    const options = data.reduce((prev, d) => {
       if (
         moment(d.start_time) <= moment() &&
         moment(d.end_time).add(24, 'hours') >= moment()
       ) {
-        data.push({
-          display: `${d.name} ${d.price}$`,
-          value: d.id,
-        });
+        return [
+          ...prev,
+          {
+            display: `${d.name} ${d.price}$`,
+            value: d.id,
+          },
+        ];
       }
-    });
-    setPaymentOptions(data);
+      return prev;
+    }, []);
+    setPaymentOptions(options);
   };
 
   useEffect(() => {

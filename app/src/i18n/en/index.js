@@ -74,6 +74,7 @@ export default {
     password: 'Password',
     pay: 'Pay',
     payments: 'Payments',
+    payment_option_exist: 'Payment option exist',
     person: 'Person',
     persons: 'Persons',
     players: 'Players',
@@ -84,6 +85,8 @@ export default {
     people: 'People',
     ranking: 'Ranking',
     registration_status: 'Registration Status',
+    registration_closes_before_opening:
+      'Registration closes before opening',
     register: 'Register',
     registered: 'Registered',
     results: 'Results',

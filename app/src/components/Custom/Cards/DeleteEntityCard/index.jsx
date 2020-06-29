@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from 'react';
 
-import { Paper, Button } from '../../Custom';
-import { TextField } from '../../MUI';
-import { useFormInput } from '../../../hooks/forms';
-import { deleteEntity } from '../../../actions/api';
-import { goTo, ROUTES } from '../../../actions/goTo';
+import { Paper, Button } from '../..';
+import { TextField } from '../../../MUI';
+import { useFormInput } from '../../../../hooks/forms';
+import { deleteEntity } from '../../../../actions/api';
+import { goTo, ROUTES } from '../../../../actions/goTo';
 
 import styles from './DeleteEntityCard.module.css';
 import { useTranslation } from 'react-i18next';

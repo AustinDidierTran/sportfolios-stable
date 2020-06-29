@@ -1,5 +1,4 @@
 .container {
-  width: 100% !important;
   display: grid !important;
   grid-template-columns: 1fr;
   column-gap: 8px;

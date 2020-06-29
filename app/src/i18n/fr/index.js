@@ -76,6 +76,7 @@ export default {
     password: 'Mot de passe',
     pay: 'Payer',
     payment_option: 'Option de paiement',
+    payment_option_exist: 'Option de paiement existante',
     payments: 'Paiements',
     person: 'Person',
     persons: 'Personnes',
@@ -90,6 +91,8 @@ export default {
     results: 'Résultats',
     registration: 'Inscription',
     registration_open: 'Ouverture inscription',
+    registration_closes_before_opening:
+      "Les inscription ferment avant d'ouvrir",
     registration_close: 'Fermeture inscription',
     registration_status: 'État des inscriptions',
     return_home: "Retourner à la page d'accueil",

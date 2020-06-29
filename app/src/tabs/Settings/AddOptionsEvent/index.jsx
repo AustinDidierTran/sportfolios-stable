@@ -9,8 +9,10 @@ import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import DataCard from './DataCard';
-import CreateCard from './CreateCard';
+import {
+  AddPaymentOptionCard,
+  EventPaymentOptionCard,
+} from '../../../components/Custom/Cards';
 import styles from './AddOptionsEvent.module.css';
 
 function Alert(props) {
@@ -20,20 +22,22 @@ function Alert(props) {
 export default function AddOptionsEvent() {
   const { t } = useTranslation();
 
-  const { id } = useParams();
+  const { id: event_id } = useParams();
 
   const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);
-  const [display, setDislpay] = useState('');
+  const [display, setDisplay] = useState('');
 
   useEffect(() => {
     getOptions();
-  }, [id]);
+  }, [event_id]);
 
   const getOptions = async () => {
-    const res = await api(`/api/entity/options/?id=${id}`);
-    const data = res.data.map(d => Object.values(d));
-    setOptions(data);
+    const { data } = await api(
+      formatRoute('/api/entity/options', null, { event_id }),
+    );
+    const dataOptions = data.map(d => Object.values(d));
+    setOptions(dataOptions);
   };
 
   const onAdd = async values => {
@@ -42,27 +46,26 @@ export default function AddOptionsEvent() {
     const start_time = values[2].value;
     const end_time = values[3].value;
     if (start_time >= end_time) {
-      setDislpay('Registration closes before opening');
+      setDisplay(t('registration_closes_before_opening'));
       setOpen(true);
-    } else {
-      const res = await api(`/api/entity/option`, {
-        method: 'POST',
-        body: JSON.stringify({
-          event_id: id,
-          name,
-          price,
-          end_time,
-          start_time,
-        }),
-      });
-      if (res.status === 400) {
-        setDislpay('payment_option_exist');
-        setOpen(true);
-        return;
-      } else {
-        getOptions();
-      }
+      return;
     }
+    const res = await api(`/api/entity/option`, {
+      method: 'POST',
+      body: JSON.stringify({
+        event_id,
+        name,
+        price,
+        end_time,
+        start_time,
+      }),
+    });
+    if (res.status === 400) {
+      setDisplay(t('payment_option_exist'));
+      setOpen(true);
+      return;
+    }
+    getOptions();
   };
 
   const onDelete = async id => {
@@ -77,9 +80,7 @@ export default function AddOptionsEvent() {
     getOptions();
   };
 
-  const onSave = async () => {};
-
-  const headers = [
+  const fields = [
     {
       display: t('name'),
       value: 0,
@@ -104,16 +105,14 @@ export default function AddOptionsEvent() {
   return (
     <Paper title={t('add_payment_options')}>
       <Container className={styles.container}>
-        {options.map((o, index) => (
-          <DataCard
-            headers={headers}
+        {options.map(o => (
+          <EventPaymentOptionCard
+            fields={fields}
             data={o}
-            onSave={onSave}
-            index={index}
             onDelete={onDelete}
-          ></DataCard>
+          />
         ))}
-        <CreateCard headers={headers} onAdd={onAdd} />
+        <AddPaymentOptionCard fields={fields} onAdd={onAdd} />{' '}
         <Snackbar
           open={open}
           autoHideDuration={6000}

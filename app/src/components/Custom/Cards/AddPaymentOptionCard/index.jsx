@@ -1,22 +1,18 @@
 import React from 'react';
 
-import { useFormInput } from '../../../hooks/forms';
-import { Input, Paper } from '../../../components/Custom';
-import { List, ListItem } from '../../../components/MUI';
-
-import { Button } from '../../../components/Custom';
-
-// Buttons
+import { useFormInput } from '../../../../hooks/forms';
+import { Input, Paper, Button } from '../../../Custom';
+import { List, ListItem } from '../../../MUI';
 import { useTranslation } from 'react-i18next';
 
-export default function CreateCard(props) {
-  const { headers, onAdd } = props;
+export default function AddPaymentOptionCard(props) {
+  const { fields, onAdd } = props;
   const { t } = useTranslation();
 
-  const values = headers.reduce(
-    (prev, h) => ({
+  const values = fields.reduce(
+    (prev, f) => ({
       ...prev,
-      [h.value]: useFormInput(h.initialValue || ''),
+      [f.value]: useFormInput(f.initialValue || ''),
     }),
     {},
   );
@@ -27,6 +23,8 @@ export default function CreateCard(props) {
 
   const handleAdd = async () => {
     let isValid = true;
+    const start_date = values[2].value;
+    const end_date = values[3].value;
     Object.keys(values).forEach(key => {
       if (values[key].value === '' || values[key].value === null) {
         values[key].setError(t('value_is_required'));
@@ -36,10 +34,10 @@ export default function CreateCard(props) {
       }
     });
 
-    headers.map(h => {
-      if (h.display === t('price')) {
-        if (values[h.value].value < 0) {
-          values[h.value].setError(t('invalid_input'));
+    fields.map(f => {
+      if (f.display === t('price')) {
+        if (values[f.value].value < 0) {
+          values[f.value].setError(t('invalid_input'));
           isValid = false;
         }
       }
@@ -47,7 +45,7 @@ export default function CreateCard(props) {
 
     if (isValid) {
       await onAdd(values);
-      if (values[2].value < values[3].value) {
+      if (start_date < end_date) {
         onReset();
       }
     }
@@ -56,15 +54,14 @@ export default function CreateCard(props) {
   return (
     <Paper>
       <List>
-        {headers.map(h => (
+        {fields.map(f => (
           <ListItem>
             <Input
-              helperText={h.helperText}
-              label={h.display}
-              namespace={h.value}
-              type={h.type}
-              disabled={h.disabled}
-              {...values[h.value]}
+              helperText={f.helperText}
+              label={f.display}
+              namespace={f.value}
+              type={f.type}
+              {...values[f.value]}
             />
           </ListItem>
         ))}

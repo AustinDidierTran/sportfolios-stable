@@ -7,6 +7,7 @@ import MembershipItem from './MembershipItem';
 import OrganizationItem from './OrganizationItem';
 import PersonItem from './PersonItem';
 import TeamItem from './TeamItem';
+import PaymentOptionItem from './PaymentOptionItem';
 
 const ItemMap = {
   [GLOBAL_ENUM.EVENT_CREATOR]: EventCreatorItem,
@@ -16,6 +17,7 @@ const ItemMap = {
   [GLOBAL_ENUM.ORGANIZATION]: OrganizationItem,
   [GLOBAL_ENUM.PERSON]: PersonItem,
   [GLOBAL_ENUM.TEAM]: TeamItem,
+  [GLOBAL_ENUM.PAYMENT_OPTION]: PaymentOptionItem,
 };
 
 export default function ItemFactory(props) {
