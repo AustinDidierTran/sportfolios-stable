@@ -8,12 +8,13 @@ import {
 } from '../../../components/MUI';
 import CustomCard from '../../../components/Custom/Card';
 import { Store, ACTION_ENUM } from '../../../Store';
-import { goTo, ROUTES } from '../../../actions/goTo';
+import { formatRoute } from '../../../actions/goTo';
 import api from '../../../actions/api';
 import {
   INVOICE_STATUS_ENUM,
   CARD_TYPE_ENUM,
 } from '../../../../../common/enums';
+import { useTranslation } from 'react-i18next';
 
 const createInvoiceItem = async price => {
   const { data: invoiceItem } = await api(
@@ -58,30 +59,44 @@ const payInvoice = async invoiceId => {
 };
 
 const deleteCartItems = async () => {
-  const { data: cart } = await api('/api/shop/removeCartItems', {
+  const { data: newCart } = await api('/api/shop/removeCartItems', {
     method: 'DELETE',
   });
-  return cart;
+  return newCart;
+};
+
+const getReceipt = async (charge_id, invoice_id) => {
+  const { data: receiptUrl } = await api(
+    formatRoute('/api/stripe/getReceipt', null, {
+      charge_id,
+      invoice_id,
+    }),
+  );
+  return receiptUrl;
+};
+
+const getCartItems = async () => {
+  const { data: cartItems } = await api('/api/shop/getCartItems');
+  return cartItems;
 };
 
 export default function Review() {
+  const { t } = useTranslation();
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
-  const {
-    state: { cart },
-    dispatch,
-  } = useContext(Store);
+  const [receiptUrl, setreceiptUrl] = useState('');
+  const { dispatch } = useContext(Store);
 
   const onCheckout = () => {
     dispatch({
       type: ACTION_ENUM.UPDATE_CART,
       payload: [],
     });
-    goTo(ROUTES.home);
+    //goTo(ROUTES.home);
   };
 
   const onCompleteOrder = async () => {
-    cart.forEach(async item => {
+    await items.forEach(async item => {
       const { data: invoiceItem } = await createInvoiceItem(
         item.stripe_price_id,
       );
@@ -90,14 +105,21 @@ export default function Review() {
     });
     const invoice = await createInvoice();
     /* eslint-disable-next-line */
-    console.log('Created invoice', invoice.id);
+    console.log('Created invoice', invoice);
+
     if (invoice.status == INVOICE_STATUS_ENUM.DRAFT) {
       const finalizedInvoice = await finalizeInvoice(invoice.id);
       if (finalizedInvoice.status == INVOICE_STATUS_ENUM.OPEN) {
         const paidInvoice = await payInvoice(invoice.id);
         if (paidInvoice.status == INVOICE_STATUS_ENUM.PAID) {
           /* eslint-disable-next-line */
-          console.log('INVOICE IS PAID', paidInvoice.id);
+          console.log('INVOICE IS PAID', paidInvoice);
+
+          const receiptUrl = await getReceipt(paidInvoice.charge);
+          setreceiptUrl(receiptUrl);
+          /* eslint-disable-next-line */
+          console.log('Receipt url: ', receiptUrl);
+
           const newCart = await deleteCartItems();
           /* eslint-disable-next-line */
           console.log('Updated cart: ', newCart);
@@ -107,24 +129,43 @@ export default function Review() {
     onCheckout();
   };
 
-  useEffect(() => {
+  const onReceiptUrl = async () => {
+    window.location.href = receiptUrl;
+  };
+
+  const fetchCartItems = async () => {
+    const newCart = await getCartItems();
     setItems(
-      cart.map(d => ({
-        ...d,
-        type: CARD_TYPE_ENUM.INVOICE,
-      })),
+      newCart.length
+        ? newCart.map(d => ({
+            ...d,
+            type: CARD_TYPE_ENUM.INVOICE,
+          }))
+        : [],
     );
+  };
+
+  const getTotal = () => {
     let total = 0;
-    cart.forEach(item => (total += item.amount / 100));
+    items.forEach(item => (total += item.amount / 100));
     setTotal(total);
-  }, [cart]);
+  };
+
+  useEffect(() => {
+    fetchCartItems();
+    getTotal();
+  }, []);
+
+  if (receiptUrl) {
+    return <Button onClick={onReceiptUrl}>SEE RECEIPT</Button>;
+  }
 
   return (
     <Container className={styles.items}>
       <div className={styles.view}>
         <div className={styles.title}>{t('review')}</div>
         <div className={styles.content}>
-          <CustomCard items={items} />
+          <CustomCard items={items} setItems={setItems} />
         </div>
         <Typography>{`Total: ${total}`}</Typography>
 

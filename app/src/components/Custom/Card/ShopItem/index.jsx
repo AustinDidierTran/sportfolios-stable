@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 });
 
 const addCartItem = async params => {
-  const { data: newCart } = await api('/api/shop/addCartItem', {
+  const { data: newCart = [] } = await api('/api/shop/addCartItem', {
     method: 'POST',
     body: JSON.stringify(params),
   });
@@ -33,12 +33,13 @@ export default function Item(props) {
   const { id } = useParams();
   const { dispatch } = useContext(Store);
   const {
-    name,
-    price,
-    photoUrl,
+    label: name,
+    amount: price,
+    photo_url: photoUrl,
     description,
     stripe_price_id,
   } = props;
+
   const classes = useStyles();
   const [inCart, setInCart] = useState(false);
 
@@ -48,8 +49,7 @@ export default function Item(props) {
         stripe_price_id: stripe_price_id,
         entity_id: id,
       };
-      const newCart = addCartItem(cartParams);
-
+      const newCart = await addCartItem(cartParams);
       dispatch({
         type: ACTION_ENUM.UPDATE_CART,
         payload: newCart,
@@ -65,7 +65,7 @@ export default function Item(props) {
           {name}
         </Typography>
         <Typography variant="h5" className={styles.price}>
-          {price}
+          {price / 100}
         </Typography>
         <Typography
           variant="h6"

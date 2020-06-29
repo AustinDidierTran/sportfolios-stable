@@ -5,6 +5,7 @@ import { formatRoute } from '../../actions/goTo';
 
 import { Container } from '../../components/MUI';
 import CustomCard from '../../components/Custom/Card';
+import { useEditor } from '../../hooks/roles';
 
 import CreateItem from './CreateItem';
 import { useParams } from 'react-router-dom';
@@ -39,7 +40,7 @@ export default function Shop(props) {
     <Container className={styles.items}>
       <div>
         {isEditor ? <CreateItem fetchItems={fetchShopItems} /> : null}
-        <CustomCard items={items} />
+        <CustomCard items={items} setItems={setItems} />
       </div>
     </Container>
   );

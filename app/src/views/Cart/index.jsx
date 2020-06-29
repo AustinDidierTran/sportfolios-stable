@@ -6,33 +6,47 @@ import CustomCard from '../../components/Custom/Card';
 import { Store } from '../../Store';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { CARD_TYPE_ENUM } from '../../../../common/enums';
+import api from '../../actions/api';
 
 export default function Cart() {
   const [items, setItems] = useState([]);
   const {
-    state: { cart, userInfo },
+    state: {
+      userInfo: { user_id: id },
+    },
   } = useContext(Store);
-  const id = userInfo.user_id;
 
   const onCheckout = () => {
     goTo(ROUTES.checkout, { id });
   };
 
-  useEffect(() => {
+  const getCartItems = async () => {
+    const { data: cartItems } = await api('/api/shop/getCartItems');
+    return cartItems;
+  };
+
+  const fetchCartItems = async () => {
+    const newCart = await getCartItems();
     setItems(
-      cart.map(d => ({
-        ...d,
-        type: CARD_TYPE_ENUM.CART,
-      })),
+      newCart.length
+        ? newCart.map(d => ({
+            ...d,
+            type: CARD_TYPE_ENUM.CART,
+          }))
+        : [],
     );
-  }, [cart]);
+  };
+
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
 
   return (
     <Container className={styles.items}>
       <div className={styles.view}>
         <div className={styles.title}>CART</div>
         <div className={styles.content}>
-          <CustomCard items={items} />
+          <CustomCard items={items} setItems={setItems} />
         </div>
 
         <Button onClick={onCheckout} className={styles.button}>

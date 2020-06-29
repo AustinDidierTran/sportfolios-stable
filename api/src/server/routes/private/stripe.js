@@ -157,9 +157,21 @@ router.post(`${BASE_URL}/createPrice`, async ctx => {
   };
 });
 
+//TODO: Link this to a fct (getProduct doesnt exist)
 router.get(`${BASE_URL}/getProductFromPriceId`, async ctx => {
   const data = await queries.getProduct(
     ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
+router.get(`${BASE_URL}/getReceipt`, async ctx => {
+  const data = await queries.getReceipt(
+    ctx.query,
     ctx.body.userInfo.id,
   );
   ctx.body = {

@@ -143,6 +143,7 @@ export default function CustomerForm(props) {
         });
         createCustomer(params);
         setIsSubmitting(false);
+        setNext(true);
       } catch (err) {
         setIsSubmitting(false);
         throw err;
@@ -171,7 +172,9 @@ export default function CustomerForm(props) {
           <Button onClick={onContinue}>
             {t('use_same_and_continue')}
           </Button>
-          <Button>{t('create_new_account')}</Button>
+          <Button>
+            {t('create_new_account')} onClick={setCustomerId('')}
+          </Button>
         </div>
       ) : (
         <form onSubmit={formik.handleSubmit}>

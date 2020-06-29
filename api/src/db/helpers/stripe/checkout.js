@@ -89,9 +89,32 @@ const payInvoice = async (body, userId) => {
   }
 };
 
+const getReceipt = async query => {
+  const { charge_id, invoice_id } = query;
+  const params = charge_id;
+
+  try {
+    const { receipt_url = '' } = await stripe.charges.retrieve(
+      params,
+    );
+
+    await knex('stripe_invoice')
+      .update({ receipt_url: receipt_url })
+      .where({ invoice_id: invoice_id });
+    /* eslint-disable-next-line */
+    console.log('Receipt url:', receipt_url);
+    return receipt_url;
+  } catch (err) {
+    /* eslint-disable-next-line */
+    console.error('GetReceipt error', err);
+    throw err;
+  }
+};
+
 module.exports = {
   createInvoiceItem,
   createInvoice,
   finalizeInvoice,
   payInvoice,
+  getReceipt,
 };
