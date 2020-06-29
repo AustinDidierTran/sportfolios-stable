@@ -14,6 +14,7 @@ import {
   Button,
 } from '../../../components/MUI';
 import CountrySelect from '../../../tabs/Settings/Stripe/Form/CountrySelect';
+import { useCallback } from 'react';
 
 export async function createCustomer(params) {
   const res = await api('/api/stripe/createCustomer', {
@@ -153,71 +154,74 @@ export default function CustomerForm(props) {
     setNext(true);
   };
 
+  const fetchCustomerId = useCallback(async () => {
+    const customerId = await getCustomerId();
+    if (customerId) setCustomerId(customerId);
+  }, [userInfo]);
+
   useEffect(() => {
-    async function fetchData() {
-      const customerId = await getCustomerId();
-      if (customerId) setCustomerId(customerId);
-    }
-    fetchData();
+    fetchCustomerId();
   }, [userInfo]);
 
   return (
     <div className={styles.main}>
       {customerId ? (
         <div>
-          <Typography>Account already exists</Typography>
-          <Button onClick={onContinue}>Use same and continue</Button>
-          <Button>Create new account</Button>
+          <Typography>{t('account_already_exists')}</Typography>
+          <Button onClick={onContinue}>
+            {t('use_same_and_continue')}
+          </Button>
+          <Button>{t('create_new_account')}</Button>
         </div>
       ) : (
         <form onSubmit={formik.handleSubmit}>
           <div className={styles.content}>
             <Typography gutterBottom variant="h5" component="h2">
-              Link bank account
+              {t('personnal_information')}
             </Typography>
             <TextField
               namespace="name"
               formik={formik}
               type="name"
-              label="Name"
+              label={t('name')}
               fullWidth
             />
             <TextField
               namespace="email"
               formik={formik}
               type="email"
-              label="Email"
+              label={t('email')}
               fullWidth
             />
             <TextField
               namespace="phoneNumber"
               formik={formik}
               type="phoneNumber"
-              label="Phone Number"
+              label={t('phone_number')}
               fullWidth
             />
             <Typography gutterBottom variant="h5" component="h2">
-              Address
+              {t('address')}
             </Typography>
             <TextField
               namespace="line1"
               formik={formik}
               type="line1"
-              label="Line 1"
+              label={t('line1')}
               fullWidth
             />
             <TextField
               namespace="line2"
               formik={formik}
               type="line2"
-              label="Line 2"
+              label={t('line2')}
               fullWidth
             />
             <TextField
               namespace="city"
               formik={formik}
               type="city"
-              label="City"
+              label={t('city')}
               fullWidth
             />
             <CountrySelect formik={formik} />
@@ -225,14 +229,14 @@ export default function CustomerForm(props) {
               namespace="state"
               formik={formik}
               type="state"
-              label="State"
+              label={t('state')}
               fullWidth
             />
             <TextField
               namespace="postalCode"
               formik={formik}
               type="postalCode"
-              label="Postal Code"
+              label={t('postal_code')}
               fullWidth
             />
           </div>
@@ -244,7 +248,7 @@ export default function CustomerForm(props) {
               type="submit"
               disabled={isSubmitting}
             >
-              SUBMIT
+              {t('submit')}
             </Button>
           </div>
         </form>

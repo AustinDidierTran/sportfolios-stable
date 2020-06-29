@@ -114,6 +114,17 @@ export default {
     personnal_information: 'Personnal Information',
     payment_method: 'Payment Method',
     review: 'Review & Pay',
+    name: 'Name',
+    email: 'Email',
+    phone_number: 'Phone Number',
+    line1: 'Line 1',
+    line2: 'Line 2',
+    city: 'City',
+    state: 'State',
+    postal_code: 'Postal Code',
+    address: 'Address',
+    account_already_exists: 'Account already exists',
+    complete_order: 'Complete order',
     // Validation
     confirm_new_password: 'Confirm New Password',
     email_already_used:
@@ -163,6 +174,10 @@ export default {
     cancel: 'Cancel',
     edit: 'Edit',
     save: 'Save',
+    submit: 'submit',
+    use_same_and_continue: 'Use same and continue',
+    personnal_information: 'Personnal Information',
+    create_new_account: 'Create new account',
     email_confirm_success: 'Email successfully confirmed!',
     go_to_login: 'Go to login',
     email_confirm_failure:

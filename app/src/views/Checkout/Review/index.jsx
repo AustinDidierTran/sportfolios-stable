@@ -10,14 +10,17 @@ import CustomCard from '../../../components/Custom/Card';
 import { Store, ACTION_ENUM } from '../../../Store';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import api from '../../../actions/api';
-import { INVOICE_STATUS_ENUM } from '../../../../../common/enums';
+import {
+  INVOICE_STATUS_ENUM,
+  CARD_TYPE_ENUM,
+} from '../../../../../common/enums';
 
 const createInvoiceItem = async price => {
   const { data: invoiceItem } = await api(
     '/api/stripe/createInvoiceItem',
     {
       method: 'POST',
-      body: JSON.stringify({ price: price }),
+      body: JSON.stringify({ price }),
     },
   );
   return invoiceItem;
@@ -108,7 +111,7 @@ export default function Review() {
     setItems(
       cart.map(d => ({
         ...d,
-        type: 2,
+        type: CARD_TYPE_ENUM.INVOICE,
       })),
     );
     let total = 0;
@@ -119,14 +122,14 @@ export default function Review() {
   return (
     <Container className={styles.items}>
       <div className={styles.view}>
-        <div className={styles.title}>REVIEW AND PAY</div>
+        <div className={styles.title}>{t('review')}</div>
         <div className={styles.content}>
           <CustomCard items={items} />
         </div>
         <Typography>{`Total: ${total}`}</Typography>
 
         <Button onClick={onCompleteOrder} className={styles.button}>
-          COMPLETE ORDER (PAY)
+          {t('complete_order')}
         </Button>
       </div>
     </Container>

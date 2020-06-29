@@ -1,6 +1,6 @@
-import api from '../../../actions/api';
-import { uploadPicture } from '../../../actions/aws';
-import { ACTION_ENUM } from '../../../Store';
+import api from '../../actions/api';
+import { uploadPicture } from '../../actions/aws';
+import { ACTION_ENUM } from '../../Store';
 
 const createProduct = async params => {
   const {

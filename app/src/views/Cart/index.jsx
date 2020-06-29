@@ -5,6 +5,7 @@ import { Container, Button } from '../../components/MUI';
 import CustomCard from '../../components/Custom/Card';
 import { Store } from '../../Store';
 import { goTo, ROUTES } from '../../actions/goTo';
+import { CARD_TYPE_ENUM } from '../../../../common/enums';
 
 export default function Cart() {
   const [items, setItems] = useState([]);
@@ -21,7 +22,7 @@ export default function Cart() {
     setItems(
       cart.map(d => ({
         ...d,
-        type: 3,
+        type: CARD_TYPE_ENUM.CART,
       })),
     );
   }, [cart]);
