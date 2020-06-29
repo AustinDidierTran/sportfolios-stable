@@ -54,7 +54,6 @@ export default function Tabs(props) {
     }
     if (l === TABS_ENUM.SETTINGS) {
       return {
-        value: TABS_ENUM.SETTINGS,
         component: Settings,
         label: t('settings'),
         icon: 'Settings',

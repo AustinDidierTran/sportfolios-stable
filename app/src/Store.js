@@ -3,6 +3,7 @@ import { goTo, ROUTES } from './actions/goTo';
 
 import { API_BASE_URL } from '../../conf';
 import i18n from './i18n';
+import api from './actions/api';
 
 export const Store = React.createContext();
 
@@ -39,6 +40,7 @@ export const BREAKPOINTS = [
 const initialState = {
   authToken: handleLocalAuthToken(localAuthToken),
   screenSize: SCREENSIZE_ENUM.xs,
+  cart: [],
   userInfo:
     (localUserInfo &&
       localUserInfo !== 'undefined' &&
@@ -51,6 +53,8 @@ export const ACTION_ENUM = {
   LOGIN: 'login',
   LOGOUT: 'logout',
   UPDATE_PROFILE_PICTURE: 'update_profile_picture',
+  UPDATE_STORE_ITEM_PICTURE: 'update_store_item_picture',
+  UPDATE_CART: 'update_cart',
   UPDATE_ORGANIZATION_PROFILE_PICTURE:
     'update_organization_profile_picture',
   UPDATE_USER_INFO: 'update_user_info',
@@ -120,6 +124,9 @@ function reducer(state, action) {
 
       return { ...state, screenSize: found.breakpoint };
     }
+    case ACTION_ENUM.UPDATE_CART: {
+      return { ...state, cart: action.payload };
+    }
 
     default:
       return state;
@@ -169,6 +176,14 @@ export function StoreProvider(props) {
           i18n.changeLanguage(data.language);
         }
       }
+    }
+
+    const res2 = await api('/api/shop/getCartItems');
+    if (res2 && res2.data) {
+      dispatch({
+        type: ACTION_ENUM.UPDATE_CART,
+        payload: res2.data,
+      });
     }
   };
 

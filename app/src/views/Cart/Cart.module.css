@@ -1,0 +1,39 @@
+.items {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  column-gap: 16px;
+  row-gap: 16px;
+  padding: 0px !important;
+}
+
+@media (min-width: 768px) {
+  .items {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 992px) {
+  .items {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+.view {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+.title {
+  flex: 1 1 auto;
+  align-self: center;
+}
+
+.content {
+  flex: 1 1 auto;
+}
+
+.button {
+  flex: 1 1 auto;
+  align-self: center;
+}

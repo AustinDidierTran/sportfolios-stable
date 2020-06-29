@@ -1,11 +1,13 @@
 const {
+  getCustomerId: getCustomerIdHelper,
   createExternalAccount,
   getStripeAccountId,
-  createPaymentIntent,
   getOrCreateCustomer,
   createAccountLink,
   createInvoiceItem,
-  invoicePayment,
+  createInvoice,
+  finalizeInvoice: finalizeInvoiceHelper,
+  payInvoice: payInvoiceHelper,
   createPaymentMethod,
   addPaymentMethodCustomer,
   removePaymentMethodCustomer,
@@ -26,8 +28,8 @@ const getStripeAccount = async entity_id => {
   return getStripeAccountId(entity_id);
 };
 
-const addPaymentIntent = async (body, user_id, ip) => {
-  return createPaymentIntent(body, user_id, ip);
+const getCustomerId = async (body, userId) => {
+  return getCustomerIdHelper(userId);
 };
 
 const addCustomer = async (body, user_id) => {
@@ -39,15 +41,15 @@ const addInvoiceItem = async (body, user_id) => {
 };
 
 const addInvoice = async (body, user_id) => {
-  return invoicePayment(body, user_id);
+  return createInvoice(body, user_id);
 };
 
 const finalizeInvoice = async (body, user_id) => {
-  return finalizeInvoiceFromInvoiceId(body, user_id);
+  return finalizeInvoiceHelper(body, user_id);
 };
 
 const payInvoice = async (body, user_id) => {
-  return payInvoiceFromInvoiceId(body, user_id);
+  return payInvoiceHelper(body, user_id);
 };
 
 const paymentMethod = async (body, user_id) => {
@@ -71,10 +73,10 @@ const createPrice = async (body, user_id) => {
 };
 
 module.exports = {
+  getCustomerId,
   getAccountLink,
   addExternalAccount,
   getStripeAccount,
-  addPaymentIntent,
   addCustomer,
   addInvoiceItem,
   addInvoice,

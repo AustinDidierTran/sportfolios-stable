@@ -36,22 +36,10 @@ router.post(`${BASE_URL}/externalAccount`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/getStripeAccountId`, async ctx => {
-  const data = await queries.getAccountLink(
-    ctx.query.id,
-    ctx.request.ip,
-  );
-  ctx.body = {
-    status: 'success',
-    data,
-  };
-});
-
-router.post(`${BASE_URL}/paymentIntent`, async ctx => {
-  const data = await queries.addPaymentIntent(
+router.get(`${BASE_URL}/getCustomerId`, async ctx => {
+  const data = await queries.getCustomerId(
     ctx.request.body,
     ctx.body.userInfo.id,
-    ctx.request.ip,
   );
   ctx.body = {
     status: 'success',
@@ -81,7 +69,7 @@ router.post(`${BASE_URL}/createInvoiceItem`, async ctx => {
   };
 });
 
-router.post(`${BASE_URL}/payInvoice2`, async ctx => {
+router.post(`${BASE_URL}/createInvoice`, async ctx => {
   const data = await queries.addInvoice(
     ctx.request.body,
     ctx.body.userInfo.id,

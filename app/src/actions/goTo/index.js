@@ -28,6 +28,7 @@ export const ROUTES = {
   team: '/team',
   userSettings: '/userSettings',
   cart: '/cart/:id',
+  checkout: '/checkout/:id',
 };
 
 export const formatRoute = (route, params, queryParams) => {

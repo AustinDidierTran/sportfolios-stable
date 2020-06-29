@@ -1,0 +1,38 @@
+.infos {
+  display: grid !important;
+  grid-template-columns: 8fr 3fr;
+  grid-template-areas: 'name price' 'description description' 'cart cart' 'cancel cancel';
+  padding-bottom: 0px !important;
+}
+
+.name {
+  grid-area: name;
+  justify-self: start;
+}
+
+.price {
+  grid-area: price;
+  justify-self: end;
+}
+
+.description {
+  grid-area: description;
+}
+
+.cart {
+  grid-area: cart;
+  margin: 16px !important;
+}
+
+.cancel {
+  grid-area: cancel;
+  margin: 0 16px !important;
+}
+
+.media {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
