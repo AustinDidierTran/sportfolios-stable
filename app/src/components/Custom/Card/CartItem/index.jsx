@@ -1,17 +1,17 @@
 import React from 'react';
 
 import styles from './Item.module.css';
-// import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
-import { Typography } from '../../../components/MUI';
-import { Button, Paper } from '../../../components/Custom';
+import { Typography } from '../../../MUI';
+import { Button, Paper } from '../..';
 
 import { makeStyles } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { useContext } from 'react';
-import api from '../../../actions/api';
-import { Store, ACTION_ENUM } from '../../../Store';
+import api from '../../../../actions/api';
+import { Store, ACTION_ENUM } from '../../../../Store';
 
 const useStyles = makeStyles({
   media: {
@@ -20,17 +20,15 @@ const useStyles = makeStyles({
 });
 
 const removeCartItem = async params => {
-  const res = await api('/api/shop/removeCartItem', {
-    method: 'POST',
+  const { data: newCart } = await api('/api/shop/removeCartItem', {
+    method: 'DELETE',
     body: JSON.stringify(params),
   });
-  const newCart = res.data;
-
   return newCart;
 };
 
 export default function Item(props) {
-  //const { t } = useTranslation();
+  const { t } = useTranslation();
   const { dispatch } = useContext(Store);
   const {
     name,
@@ -75,7 +73,7 @@ export default function Item(props) {
           onClick={handleClick}
           className={styles.cart}
         >
-          DELETE
+          {t('delete')}
         </Button>
       </CardContent>
     </Paper>

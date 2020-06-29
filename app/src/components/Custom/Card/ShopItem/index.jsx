@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import styles from './Item.module.css';
 import { useTranslation } from 'react-i18next';
 
-import { Typography } from '../../../../components/MUI';
-import { Button, Paper } from '../../../../components/Custom';
+import { Typography } from '../../../MUI';
+import { Button, Paper } from '../..';
 
 import { makeStyles } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';
@@ -21,11 +21,10 @@ const useStyles = makeStyles({
 });
 
 const addCartItem = async params => {
-  const res = await api('/api/shop/addCartItem', {
+  const { data: newCart } = await api('/api/shop/addCartItem', {
     method: 'POST',
     body: JSON.stringify(params),
   });
-  const newCart = res.data;
   return newCart;
 };
 

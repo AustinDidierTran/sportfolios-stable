@@ -36,6 +36,17 @@ router.post(`${BASE_URL}/externalAccount`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/getCustomerId`, async ctx => {
+  const data = await queries.getCustomerId(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 router.post(`${BASE_URL}/createCustomer`, async ctx => {
   const data = await queries.addCustomer(
     ctx.request.body,
@@ -70,7 +81,7 @@ router.post(`${BASE_URL}/createInvoice`, async ctx => {
 });
 
 router.post(`${BASE_URL}/finalizeInvoice`, async ctx => {
-  const data = await queries.finalizeInvoice2(
+  const data = await queries.finalizeInvoice(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
@@ -81,7 +92,7 @@ router.post(`${BASE_URL}/finalizeInvoice`, async ctx => {
 });
 
 router.post(`${BASE_URL}/payInvoice`, async ctx => {
-  const data = await queries.payInvoice2(
+  const data = await queries.payInvoice(
     ctx.request.body,
     ctx.body.userInfo.id,
   );

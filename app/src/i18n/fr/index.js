@@ -116,6 +116,9 @@ export default {
     valid_until: "Valide jusqu'au",
     viewer: 'Visiteur',
     your_upcoming_events: 'Vos prochains événements',
+    personnal_information: 'Information personnelle',
+    payment_method: 'Méthode de paiment',
+    review: 'Passer en revue et payer',
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',
     email_already_used:

@@ -6,26 +6,20 @@ import {
   Button,
   Typography,
 } from '../../../components/MUI';
-import Item from './Item';
+import CustomCard from '../../../components/Custom/Card';
 import { Store, ACTION_ENUM } from '../../../Store';
-import { goTo } from '../../../actions/goTo';
+import { goTo, ROUTES } from '../../../actions/goTo';
 import api from '../../../actions/api';
-
-const INVOICE_STATUS_ENUM = {
-  DRAFT: 'draft',
-  DELETED: 'deleted',
-  OPEN: 'open',
-  PAID: 'paid',
-  UNCOLLECTIBLE: 'uncollectible',
-  VOID: 'void',
-};
+import { INVOICE_STATUS_ENUM } from '../../../../../common/enums';
 
 const createInvoiceItem = async price => {
-  const res = await api('/api/stripe/createInvoiceItem', {
-    method: 'POST',
-    body: JSON.stringify({ price: price }),
-  });
-  const invoiceItem = res.data;
+  const { data: invoiceItem } = await api(
+    '/api/stripe/createInvoiceItem',
+    {
+      method: 'POST',
+      body: JSON.stringify({ price: price }),
+    },
+  );
   return invoiceItem;
 };
 
@@ -34,41 +28,36 @@ const createInvoice = async () => {
     invoice: {
       auto_advance: 'false',
       collection_method: 'charge_automatically',
-      description: 'TESTING INVOICE 123',
       metadata: {},
     },
   };
-  const res = await api('/api/stripe/createInvoice', {
+  const { data: invoice } = await api('/api/stripe/createInvoice', {
     method: 'POST',
     body: JSON.stringify(invoiceParams),
   });
-  const invoice = res.data;
   return invoice;
 };
 
 const finalizeInvoice = async invoiceId => {
-  const res = await api('/api/stripe/finalizeInvoice', {
+  const { data: invoice } = await api('/api/stripe/finalizeInvoice', {
     method: 'POST',
     body: JSON.stringify({ invoice_id: invoiceId }),
   });
-  const invoice = res.data;
   return invoice;
 };
 
 const payInvoice = async invoiceId => {
-  const res = await api('/api/stripe/payInvoice', {
+  const { data: invoice } = await api('/api/stripe/payInvoice', {
     method: 'POST',
     body: JSON.stringify({ invoice_id: invoiceId }),
   });
-  const invoice = res.data;
   return invoice;
 };
 
 const deleteCartItems = async () => {
-  const res = await api('/api/shop/removeCartItems', {
-    method: 'POST',
+  const { data: cart } = await api('/api/shop/removeCartItems', {
+    method: 'DELETE',
   });
-  const cart = res.data;
   return cart;
 };
 
@@ -85,13 +74,14 @@ export default function Review() {
       type: ACTION_ENUM.UPDATE_CART,
       payload: [],
     });
-    goTo('/');
+    goTo(ROUTES.home);
   };
 
   const onCompleteOrder = async () => {
     cart.forEach(async item => {
-      const res = await createInvoiceItem(item.stripe_price_id);
-      const invoiceItem = res.data;
+      const { data: invoiceItem } = await createInvoiceItem(
+        item.stripe_price_id,
+      );
       /* eslint-disable-next-line */
       console.log('Created Invoice Item', invoiceItem);
     });
@@ -99,12 +89,12 @@ export default function Review() {
     /* eslint-disable-next-line */
     console.log('Created invoice', invoice.id);
     if (invoice.status == INVOICE_STATUS_ENUM.DRAFT) {
-      const invoice2 = await finalizeInvoice(invoice.id);
-      if (invoice2.status == INVOICE_STATUS_ENUM.OPEN) {
-        const invoice3 = await payInvoice(invoice.id);
-        if (invoice3.status == INVOICE_STATUS_ENUM.PAID) {
+      const finalizedInvoice = await finalizeInvoice(invoice.id);
+      if (finalizedInvoice.status == INVOICE_STATUS_ENUM.OPEN) {
+        const paidInvoice = await payInvoice(invoice.id);
+        if (paidInvoice.status == INVOICE_STATUS_ENUM.PAID) {
           /* eslint-disable-next-line */
-          console.log('INVOICE IS PAID', invoice3.id);
+          console.log('INVOICE IS PAID', paidInvoice.id);
           const newCart = await deleteCartItems();
           /* eslint-disable-next-line */
           console.log('Updated cart: ', newCart);
@@ -115,8 +105,13 @@ export default function Review() {
   };
 
   useEffect(() => {
-    setItems(cart);
-    var total = 0;
+    setItems(
+      cart.map(d => ({
+        ...d,
+        type: 2,
+      })),
+    );
+    let total = 0;
     cart.forEach(item => (total += item.amount / 100));
     setTotal(total);
   }, [cart]);
@@ -126,16 +121,7 @@ export default function Review() {
       <div className={styles.view}>
         <div className={styles.title}>REVIEW AND PAY</div>
         <div className={styles.content}>
-          {items.map(item => (
-            <Item
-              name={item.label}
-              price={item.amount / 100}
-              photoUrl={item.photo_url}
-              description={item.description}
-              stripe_price_id={item.stripe_price_id}
-              entity_id={item.entity_id}
-            />
-          ))}
+          <CustomCard items={items} />
         </div>
         <Typography>{`Total: ${total}`}</Typography>
 

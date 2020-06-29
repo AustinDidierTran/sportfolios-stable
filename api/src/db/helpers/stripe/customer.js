@@ -2,7 +2,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const knex = require('../../connection');
 
 const getCustomerId = async userId => {
-  const [{ customer_id } = {}] = await knex
+  const [{ customer_id = '' } = {}] = await knex
     .select('customer_id')
     .from('stripe_customer')
     .where('user_id', userId);

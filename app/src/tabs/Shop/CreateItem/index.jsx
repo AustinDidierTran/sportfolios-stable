@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useFormInput } from '../../../../hooks/forms';
+import { useFormInput } from '../../../hooks/forms';
 import { useContext } from 'react';
 
 import styles from './CreateItem.module.css';
-import { Store } from '../../../../Store';
+import { Store } from '../../../Store';
 
-import { TextField } from '../../../../components/MUI';
+import { TextField } from '../../../components/MUI';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import { Button, Paper, Input } from '../../../../components/Custom';
-import { createItem, onImgUpload } from './utils';
+import { Button, Paper, Input } from '../../../components/Custom';
+import { createItem, onImgUpload } from '../../../utils/shop';
 
 export default function CreateItem(props) {
   const { id } = useParams();
@@ -52,9 +52,12 @@ export default function CreateItem(props) {
     description.reset();
     fetchItems();
   };
-  return !isCreating ? (
-    <Button onClick={reset}>Add new Product</Button>
-  ) : (
+
+  if (!isCreating) {
+    return <Button onClick={reset}>Add new Product</Button>;
+  }
+
+  return (
     <Paper>
       {photoUrl ? (
         <>

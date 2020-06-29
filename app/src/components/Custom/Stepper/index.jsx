@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import styles from './Stepper.module.css';
-import { useEffect } from 'react';
 
 export default function CustomStepper(props) {
   const [activeStep, setActiveStep] = React.useState(0);

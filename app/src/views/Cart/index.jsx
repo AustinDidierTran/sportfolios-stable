@@ -2,11 +2,11 @@ import React, { useState, useEffect, useContext } from 'react';
 
 import styles from './Cart.module.css';
 import { Container, Button } from '../../components/MUI';
-import Item from './Item';
+import CustomCard from '../../components/Custom/Card';
 import { Store } from '../../Store';
 import { goTo, ROUTES } from '../../actions/goTo';
 
-export default function Shop() {
+export default function Cart() {
   const [items, setItems] = useState([]);
   const {
     state: { cart, userInfo },
@@ -18,7 +18,12 @@ export default function Shop() {
   };
 
   useEffect(() => {
-    setItems(cart);
+    setItems(
+      cart.map(d => ({
+        ...d,
+        type: 3,
+      })),
+    );
   }, [cart]);
 
   return (
@@ -26,16 +31,7 @@ export default function Shop() {
       <div className={styles.view}>
         <div className={styles.title}>CART</div>
         <div className={styles.content}>
-          {items.map(item => (
-            <Item
-              name={item.label}
-              price={item.amount / 100}
-              photoUrl={item.photo_url}
-              description={item.description}
-              stripe_price_id={item.stripe_price_id}
-              entity_id={item.entity_id}
-            />
-          ))}
+          <CustomCard items={items} />
         </div>
 
         <Button onClick={onCheckout} className={styles.button}>

@@ -37,7 +37,7 @@ router.post(`${BASE_URL}/addCartItem`, async ctx => {
   };
 });
 
-router.post(`${BASE_URL}/removeCartItem`, async ctx => {
+router.delete(`${BASE_URL}/removeCartItem`, async ctx => {
   const data = await queries.deleteCartItem(
     ctx.request.body,
     ctx.body.userInfo.id,
@@ -48,7 +48,7 @@ router.post(`${BASE_URL}/removeCartItem`, async ctx => {
   };
 });
 
-router.post(`${BASE_URL}/removeCartItems`, async ctx => {
+router.delete(`${BASE_URL}/removeCartItems`, async ctx => {
   const data = await queries.deleteCartItems(
     ctx.request.body,
     ctx.body.userInfo.id,

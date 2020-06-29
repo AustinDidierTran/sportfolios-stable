@@ -2,8 +2,8 @@ import React from 'react';
 
 import styles from './Item.module.css';
 
-import { Typography } from '../../../../components/MUI';
-import { Paper } from '../../../../components/Custom';
+import { Typography } from '../../../MUI';
+import { Paper } from '../..';
 
 import { makeStyles } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';

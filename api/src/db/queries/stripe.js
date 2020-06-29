@@ -1,12 +1,13 @@
 const {
+  getCustomerId: getCustomerIdHelper,
   createExternalAccount,
   getStripeAccountId,
   getOrCreateCustomer,
   createAccountLink,
   createInvoiceItem,
   createInvoice,
-  finalizeInvoice,
-  payInvoice,
+  finalizeInvoice: finalizeInvoiceHelper,
+  payInvoice: payInvoiceHelper,
   createPaymentMethod,
   addPaymentMethodCustomer,
   removePaymentMethodCustomer,
@@ -27,6 +28,10 @@ const getStripeAccount = async entity_id => {
   return getStripeAccountId(entity_id);
 };
 
+const getCustomerId = async (body, userId) => {
+  return getCustomerIdHelper(userId);
+};
+
 const addCustomer = async (body, user_id) => {
   return getOrCreateCustomer(body, user_id);
 };
@@ -39,12 +44,12 @@ const addInvoice = async (body, user_id) => {
   return createInvoice(body, user_id);
 };
 
-const finalizeInvoice2 = async (body, user_id) => {
-  return finalizeInvoice(body, user_id);
+const finalizeInvoice = async (body, user_id) => {
+  return finalizeInvoiceHelper(body, user_id);
 };
 
-const payInvoice2 = async (body, user_id) => {
-  return payInvoice(body, user_id);
+const payInvoice = async (body, user_id) => {
+  return payInvoiceHelper(body, user_id);
 };
 
 const paymentMethod = async (body, user_id) => {
@@ -68,6 +73,7 @@ const createPrice = async (body, user_id) => {
 };
 
 module.exports = {
+  getCustomerId,
   getAccountLink,
   addExternalAccount,
   getStripeAccount,
@@ -79,6 +85,6 @@ module.exports = {
   detachPaymentMethod,
   createProduct,
   createPrice,
-  finalizeInvoice2,
-  payInvoice2,
+  finalizeInvoice,
+  payInvoice,
 };

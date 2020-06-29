@@ -30,6 +30,21 @@ const MEMBERSHIP_TYPE_ENUM = {
   RECREATIONAL: 3,
 };
 
+const CARD_TYPE_ENUM = {
+  SHOP: 1,
+  CART: 2,
+  INVOICE: 3,
+};
+
+const INVOICE_STATUS_ENUM = {
+  DRAFT: 'draft',
+  DELETED: 'deleted',
+  OPEN: 'open',
+  PAID: 'paid',
+  UNCOLLECTIBLE: 'uncollectible',
+  VOID: 'void',
+};
+
 // Everything excluding roles
 const GLOBAL_ENUM = {
   PERSON: 1,
@@ -50,4 +65,6 @@ module.exports = {
   LIST_ROW_TYPE_ENUM,
   MEMBERSHIP_LENGTH_ENUM,
   MEMBERSHIP_TYPE_ENUM,
+  CARD_TYPE_ENUM,
+  INVOICE_STATUS_ENUM,
 };

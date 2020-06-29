@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { Container } from '../../components/MUI';
 import styles from './Checkout.module.css';
+import { useTranslation } from 'react-i18next';
 
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
@@ -17,34 +18,33 @@ const stripePromise = loadStripe(
 );
 
 export default function Checkout() {
+  const { t } = useTranslation();
   const [next, setNext] = useState(false);
   const steps = [
     {
-      label: 'Personnal information',
-      content: <PersonnalInformation setNext={e => setNext(e)} />,
+      label: t('personnal_information'),
+      content: <PersonnalInformation setNext={setNext} />,
     },
     {
-      label: 'Payment Method',
+      label: t('payment_method'),
       content: (
         <Elements stripe={stripePromise}>
-          <PaymentMethod setNext={e => setNext(e)} />
+          <PaymentMethod setNext={setNext} />
         </Elements>
       ),
     },
     {
-      label: 'Review & Pay',
+      label: t('review'),
       content: <Review />,
     },
   ];
-
-  useEffect(() => {});
 
   return (
     <Container className={styles.items}>
       <Stepper
         steps={steps}
         next={next}
-        setNext={e => setNext(e)}
+        setNext={setNext}
         showButtons={false}
       />
     </Container>

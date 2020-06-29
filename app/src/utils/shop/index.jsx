@@ -1,22 +1,24 @@
-import api from '../../../../actions/api';
-import { uploadPicture } from '../../../../actions/aws';
-import { ACTION_ENUM } from '../../../../Store';
+import api from '../../../actions/api';
+import { uploadPicture } from '../../../actions/aws';
+import { ACTION_ENUM } from '../../../Store';
 
 const createProduct = async params => {
-  const res = await api('/api/stripe/createProduct', {
+  const {
+    data: { id: product_id },
+  } = await api('/api/stripe/createProduct', {
     method: 'POST',
     body: JSON.stringify(params),
   });
-  const product_id = res.data.id;
   return product_id;
 };
 
 const createPrice = async params => {
-  const res = await api('/api/stripe/createPrice', {
+  const {
+    data: { id: price_id },
+  } = await api('/api/stripe/createPrice', {
     method: 'POST',
     body: JSON.stringify(params),
   });
-  const price_id = res.data.id;
   return price_id;
 };
 

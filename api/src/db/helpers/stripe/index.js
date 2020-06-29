@@ -4,6 +4,7 @@
  */
 
 const {
+  getCustomerId,
   getOrCreateCustomer,
   createPaymentMethod,
   addPaymentMethodCustomer,
@@ -23,6 +24,7 @@ const {
 const { addProduct, addPrice } = require('./shop');
 
 module.exports = {
+  getCustomerId,
   createAccountLink,
   createExternalAccount,
   createInvoice,

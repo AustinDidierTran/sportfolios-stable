@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import styles from './PersonnalInformation.module.css';
 import api from '../../../actions/api';
@@ -24,6 +24,13 @@ export async function createCustomer(params) {
   console.log('createCustomer', res);
 }
 
+export async function getCustomerId() {
+  const res = await api('/api/stripe/getCustomerId');
+  /* eslint-disable-next-line */
+  console.log('createCustomer', res);
+  return res.data;
+}
+
 export default function CustomerForm(props) {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,6 +39,7 @@ export default function CustomerForm(props) {
     dispatch,
   } = useContext(Store);
   const { setNext } = props;
+  const [customerId, setCustomerId] = useState('');
 
   const isANumber = number => isNaN(Number(number));
 
@@ -127,14 +135,13 @@ export default function CustomerForm(props) {
             // ...customer, payment_method: id
           },
         };
-
+        //TODO: Send all params (new userInfo, to DB, AND alter Store.js to fetch userInfo in init())
         dispatch({
           type: ACTION_ENUM.UPDATE_USER_INFO,
           payload: { ...userInfo, ...params },
         });
         createCustomer(params);
         setIsSubmitting(false);
-        setNext(true);
       } catch (err) {
         setIsSubmitting(false);
         throw err;
@@ -142,86 +149,106 @@ export default function CustomerForm(props) {
     },
   });
 
+  const onContinue = () => {
+    setNext(true);
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      const customerId = await getCustomerId();
+      if (customerId) setCustomerId(customerId);
+    }
+    fetchData();
+  }, [userInfo]);
+
   return (
     <div className={styles.main}>
-      <form onSubmit={formik.handleSubmit}>
-        <div className={styles.content}>
-          <Typography gutterBottom variant="h5" component="h2">
-            Link bank account
-          </Typography>
-          <TextField
-            namespace="name"
-            formik={formik}
-            type="name"
-            label="Name"
-            fullWidth
-          />
-          <TextField
-            namespace="email"
-            formik={formik}
-            type="email"
-            label="Email"
-            fullWidth
-          />
-          <TextField
-            namespace="phoneNumber"
-            formik={formik}
-            type="phoneNumber"
-            label="Phone Number"
-            fullWidth
-          />
-          <Typography gutterBottom variant="h5" component="h2">
-            Address
-          </Typography>
-          <TextField
-            namespace="line1"
-            formik={formik}
-            type="line1"
-            label="Line 1"
-            fullWidth
-          />
-          <TextField
-            namespace="line2"
-            formik={formik}
-            type="line2"
-            label="Line 2"
-            fullWidth
-          />
-          <TextField
-            namespace="city"
-            formik={formik}
-            type="city"
-            label="City"
-            fullWidth
-          />
-          <CountrySelect formik={formik} />
-          <TextField
-            namespace="state"
-            formik={formik}
-            type="state"
-            label="State"
-            fullWidth
-          />
-          <TextField
-            namespace="postalCode"
-            formik={formik}
-            type="postalCode"
-            label="Postal Code"
-            fullWidth
-          />
+      {customerId ? (
+        <div>
+          <Typography>Account already exists</Typography>
+          <Button onClick={onContinue}>Use same and continue</Button>
+          <Button>Create new account</Button>
         </div>
-        <div className={styles.actions}>
-          <Button
-            size="small"
-            color="primary"
-            variant="contained"
-            type="submit"
-            disabled={isSubmitting}
-          >
-            SUBMIT
-          </Button>
-        </div>
-      </form>
+      ) : (
+        <form onSubmit={formik.handleSubmit}>
+          <div className={styles.content}>
+            <Typography gutterBottom variant="h5" component="h2">
+              Link bank account
+            </Typography>
+            <TextField
+              namespace="name"
+              formik={formik}
+              type="name"
+              label="Name"
+              fullWidth
+            />
+            <TextField
+              namespace="email"
+              formik={formik}
+              type="email"
+              label="Email"
+              fullWidth
+            />
+            <TextField
+              namespace="phoneNumber"
+              formik={formik}
+              type="phoneNumber"
+              label="Phone Number"
+              fullWidth
+            />
+            <Typography gutterBottom variant="h5" component="h2">
+              Address
+            </Typography>
+            <TextField
+              namespace="line1"
+              formik={formik}
+              type="line1"
+              label="Line 1"
+              fullWidth
+            />
+            <TextField
+              namespace="line2"
+              formik={formik}
+              type="line2"
+              label="Line 2"
+              fullWidth
+            />
+            <TextField
+              namespace="city"
+              formik={formik}
+              type="city"
+              label="City"
+              fullWidth
+            />
+            <CountrySelect formik={formik} />
+            <TextField
+              namespace="state"
+              formik={formik}
+              type="state"
+              label="State"
+              fullWidth
+            />
+            <TextField
+              namespace="postalCode"
+              formik={formik}
+              type="postalCode"
+              label="Postal Code"
+              fullWidth
+            />
+          </div>
+          <div className={styles.actions}>
+            <Button
+              size="small"
+              color="primary"
+              variant="contained"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              SUBMIT
+            </Button>
+          </div>
+        </form>
+      )}
     </div>
   );
 }
