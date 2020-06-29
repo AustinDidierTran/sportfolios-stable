@@ -56,6 +56,7 @@ const GLOBAL_ENUM = {
   MEMBERSHIP_DETAIL: 21,
   CART_ITEM: 22,
   EVENT_CREATOR: 23,
+  PAYMENT_OPTION: 24,
 };
 
 module.exports = {

@@ -6,9 +6,11 @@ const {
   addEntity: addEntityHelper,
   addEntityRole: addEntityRoleHelper,
   addMember: addMemberHelper,
+  addOption: addOptionHelper,
   addMembership: addMembershipHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
+  deleteOption: deleteOptionHelper,
   getAllEntities: getAllEntitiesHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
@@ -16,6 +18,7 @@ const {
   getEntityRole,
   getMembers: getMembersHelper,
   getMemberships: getMembershipsHelper,
+  getOptions: getOptionsHelper,
   removeEntityRole: removeEntityRoleHelper,
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
@@ -45,6 +48,10 @@ async function getMembers(persons, organization_id) {
 
 async function getMemberships(entity_id) {
   return getMembershipsHelper(entity_id);
+}
+
+async function getOptions(event_id) {
+  return getOptionsHelper(event_id);
 }
 
 const addEntity = async (body, user_id) => {
@@ -126,6 +133,17 @@ async function addMember(body) {
   );
   return res;
 }
+async function addOption(body) {
+  const { event_id, name, price, end_time, start_time } = body;
+  const res = await addOptionHelper(
+    event_id,
+    name,
+    price,
+    end_time,
+    start_time,
+  );
+  return res;
+}
 
 async function addMembership(body) {
   const {
@@ -160,19 +178,26 @@ async function deleteEntityMembership(query) {
   );
 }
 
+async function deleteOption(id) {
+  return deleteOptionHelper(id);
+}
+
 module.exports = {
   addEntity,
   addEntityRole,
   addMember,
   addMembership,
+  addOption,
   deleteEntity,
   deleteEntityMembership,
+  deleteOption,
   getAllEntities,
   getAllRolesEntity,
   getAllTypeEntities,
   getEntity,
   getEntity,
   getMembers,
+  getOptions,
   getMemberships,
   getS3Signature,
   updateEntity,

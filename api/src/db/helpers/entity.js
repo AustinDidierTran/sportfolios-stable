@@ -326,6 +326,24 @@ async function getMembers(personsString, organization_id) {
   }));
 }
 
+async function getOptions(event_id) {
+  return await knex('event_payment_options')
+    .select(
+      'event_payment_options.name',
+      'price',
+      'start_time',
+      'end_time',
+      'id',
+    )
+    .leftJoin(
+      'entities_name',
+      'entities_name.entity_id',
+      '=',
+      'event_payment_options.event_id',
+    )
+    .where({ event_id });
+}
+
 async function getMemberships(entity_id) {
   return await knex('entity_memberships')
     .select('*')
@@ -374,6 +392,25 @@ async function addMember(
       organization_id,
       person_id,
       expiration_date,
+    })
+    .returning('*');
+  return res;
+}
+
+async function addOption(
+  event_id,
+  name,
+  price,
+  end_time,
+  start_time,
+) {
+  const [res] = await knex('event_payment_options')
+    .insert({
+      event_id,
+      name,
+      price,
+      end_time,
+      start_time,
     })
     .returning('*');
   return res;
@@ -459,13 +496,23 @@ const deleteEntityMembership = async (
     .del();
 };
 
+const deleteOption = async id => {
+  return await knex('event_payment_options')
+    .where({
+      id,
+    })
+    .del();
+};
+
 module.exports = {
   addEntity,
   addEntityRole,
   addMember,
   addMembership,
+  addOption,
   deleteEntity,
   deleteEntityMembership,
+  deleteOption,
   getAllEntities,
   getAllRolesEntity,
   getAllTypeEntities,
@@ -473,6 +520,7 @@ module.exports = {
   getEntityRole,
   getMembers,
   getMemberships,
+  getOptions,
   removeEntityRole,
   updateEntityName,
   updateEntityPhoto,
