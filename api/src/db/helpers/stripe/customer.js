@@ -1,5 +1,9 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const knex = require('../../connection');
+const {
+  stripeErrorLogger,
+  stripeLogger,
+} = require('../../../server/utils/logger');
 
 const getCustomerId = async userId => {
   const [{ customer_id = '' } = {}] = await knex
@@ -21,8 +25,7 @@ const createCustomer = async (body, userId) => {
         });
       }
       if (err) {
-        /* eslint-disable-next-line */
-        console.log('Error when creating customer');
+        stripeErrorLogger('Error when creating customer');
       }
     },
   );
@@ -33,12 +36,10 @@ const createCustomer = async (body, userId) => {
 const getOrCreateCustomer = async (body, userId) => {
   // Create Payment Method
   if (await getCustomerId(userId)) {
-    /* eslint-disable-next-line */
-    console.log('Customer already exists');
+    stripeLogger('Customer already exists');
     return getCustomerId(userId);
   } else {
-    /* eslint-disable-next-line */
-    console.log('Creating customer ...');
+    stripeLogger('Creating customer ...');
     return await createCustomer(body, userId);
   }
 };
@@ -58,16 +59,14 @@ const createPaymentMethod = async (body, userId) => {
     paymentMethod,
   ) {
     if (paymentMethod) {
-      /* eslint-disable-next-line */
-      console.log('Created Payment Method', paymentMethod.id);
+      stripeLogger('Created Payment Method', paymentMethod.id);
       await knex('stripe_payment_method').insert({
         user_id: userId,
         payment_method_id: paymentMethod.id,
       });
     }
     if (err) {
-      /* eslint-disable-next-line */
-      console.log('Error when creating payment method');
+      stripeErrorLogger('Error when creating payment method');
     }
   });
 
@@ -83,14 +82,12 @@ const addPaymentMethodCustomer = async (body, userId) => {
     { customer: customerId },
     async function(err, paymentMethod) {
       if (paymentMethod) {
-        /* eslint-disable-next-line */
-        console.log(
+        stripeLogger(
           `PaymentMethod successfully attached to customer ${customerId}`,
         );
       }
       if (err) {
-        /* eslint-disable-next-line */
-        console.log(
+        stripeErrorLogger(
           `Error when attaching payment method to customer ${customerId}`,
         );
       }
@@ -107,14 +104,12 @@ const removePaymentMethodCustomer = async body => {
     paymentMethod,
   ) {
     if (paymentMethod) {
-      /* eslint-disable-next-line */
-      console.log(
+      stripeLogger(
         `PaymentMethod successfully detached from customer`,
       );
     }
     if (err) {
-      /* eslint-disable-next-line */
-      console.log(`Error failed to detach from customer`);
+      stripeErrorLogger(`Error failed to detach from customer`);
     }
   });
 };
