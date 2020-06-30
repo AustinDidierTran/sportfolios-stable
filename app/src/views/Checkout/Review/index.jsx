@@ -134,14 +134,7 @@ export default function Review() {
 
   const fetchCartItems = async () => {
     const newCart = await getCartItems();
-    setItems(
-      newCart.length
-        ? newCart.map(d => ({
-            ...d,
-            type: CARD_TYPE_ENUM.INVOICE,
-          }))
-        : [],
-    );
+    setItems(newCart);
   };
 
   const getTotal = () => {
@@ -166,7 +159,14 @@ export default function Review() {
       <div className={styles.view}>
         <div className={styles.title}>{t('review')}</div>
         <div className={styles.content}>
-          <CustomCard items={items} setItems={setItems} />
+          {items.map(item => {
+            return (
+              <CustomCard
+                items={{ ...item, setItems }}
+                type={CARD_TYPE_ENUM.INVOICE}
+              />
+            );
+          })}
         </div>
         <Typography>{`Total: ${total}`}</Typography>
 

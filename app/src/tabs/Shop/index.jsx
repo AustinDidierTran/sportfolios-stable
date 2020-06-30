@@ -24,12 +24,7 @@ export default function Shop(props) {
     const { data = [] } = await api(
       formatRoute('/api/shop/getItems', null, { id }),
     );
-    setItems(
-      data.map(d => ({
-        ...d,
-        type: CARD_TYPE_ENUM.SHOP,
-      })),
-    );
+    setItems(data);
   };
 
   useEffect(() => {
@@ -40,7 +35,14 @@ export default function Shop(props) {
     <Container className={styles.items}>
       <div>
         {isEditor ? <CreateItem fetchItems={fetchShopItems} /> : null}
-        <CustomCard items={items} setItems={setItems} />
+        {items.map(item => {
+          return (
+            <CustomCard
+              items={{ ...item, setItems }}
+              type={CARD_TYPE_ENUM.SHOP}
+            />
+          );
+        })}
       </div>
     </Container>
   );
