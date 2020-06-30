@@ -9,9 +9,9 @@ export default function PaymentOptionSelect(props) {
   const paymentOption = useFormInput('');
 
   const onChange = useCallback(
-    e => {
+    (e, value) => {
       paymentOption.onChange(e);
-      onClick(e);
+      onClick(e, value);
     },
     [onClick, paymentOption],
   );
@@ -20,7 +20,7 @@ export default function PaymentOptionSelect(props) {
     <RadioGroup
       namespace="paymentOptions"
       options={paymentOptions}
-      title={t('payment_option')}
+      title={t('payment_options')}
       {...paymentOption.inputProps}
       onChange={onChange}
     />

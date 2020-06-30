@@ -75,6 +75,7 @@ export default {
     pay: 'Pay',
     payments: 'Payments',
     payment_option_exist: 'Payment option exist',
+    payment_options: 'Payment options',
     person: 'Person',
     persons: 'Persons',
     players: 'Players',

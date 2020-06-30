@@ -133,7 +133,7 @@ async function addMember(body) {
   );
   return res;
 }
-async function addOption(body) {
+async function addOption(body, user_id) {
   const { event_id, name, price, end_time, start_time } = body;
   const res = await addOptionHelper(
     event_id,
@@ -141,6 +141,7 @@ async function addOption(body) {
     price,
     end_time,
     start_time,
+    user_id,
   );
   return res;
 }

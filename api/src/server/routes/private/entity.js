@@ -233,7 +233,10 @@ router.post(`${BASE_URL}/member`, async ctx => {
 });
 
 router.post(`${BASE_URL}/option`, async ctx => {
-  const option = await queries.addOption(ctx.request.body);
+  const option = await queries.addOption(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (option) {
     ctx.status = 201;
     ctx.body = {
