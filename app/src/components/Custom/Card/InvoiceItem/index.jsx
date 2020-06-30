@@ -16,7 +16,12 @@ const useStyles = makeStyles({
 });
 
 export default function Item(props) {
-  const { name, price, photoUrl, description } = props;
+  const {
+    label: name,
+    amount: price,
+    photo_url: photoUrl,
+    description,
+  } = props;
   const classes = useStyles();
 
   return (
@@ -27,7 +32,7 @@ export default function Item(props) {
           {name}
         </Typography>
         <Typography variant="h5" className={styles.price}>
-          {price}
+          {price / 100}
         </Typography>
         <Typography
           variant="h6"

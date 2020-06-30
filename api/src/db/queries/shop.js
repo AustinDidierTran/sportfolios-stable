@@ -19,13 +19,13 @@ const addToCart = async (body, user_id) => {
   return getCartItems(user_id);
 };
 
-const deleteCartItem = async (body, user_id) => {
-  await removeCartItem(body, user_id);
+const deleteCartItem = async (query, user_id) => {
+  await removeCartItem(query, user_id);
   return getCartItems(user_id);
 };
 
-const deleteCartItems = async (body, user_id) => {
-  await removeCartItems(body, user_id);
+const deleteCartItems = async (query, user_id) => {
+  await removeCartItems(query, user_id);
   return getCartItems(user_id);
 };
 

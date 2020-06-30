@@ -39,7 +39,7 @@ router.post(`${BASE_URL}/addCartItem`, async ctx => {
 
 router.delete(`${BASE_URL}/removeCartItem`, async ctx => {
   const data = await queries.deleteCartItem(
-    ctx.request.body,
+    ctx.query,
     ctx.body.userInfo.id,
   );
   ctx.body = {
@@ -50,7 +50,7 @@ router.delete(`${BASE_URL}/removeCartItem`, async ctx => {
 
 router.delete(`${BASE_URL}/removeCartItems`, async ctx => {
   const data = await queries.deleteCartItems(
-    ctx.request.body,
+    ctx.query,
     ctx.body.userInfo.id,
   );
   ctx.body = {

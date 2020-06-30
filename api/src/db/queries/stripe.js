@@ -13,6 +13,7 @@ const {
   removePaymentMethodCustomer,
   addProduct,
   addPrice,
+  getReceipt: getReceiptHelper,
 } = require('../helpers/stripe');
 
 const getAccountLink = async (entity_id, ip) => {
@@ -72,6 +73,10 @@ const createPrice = async (body, user_id) => {
   return addPrice(body, user_id);
 };
 
+const getReceipt = async (query, user_id) => {
+  return getReceiptHelper(query, user_id);
+};
+
 module.exports = {
   getCustomerId,
   getAccountLink,
@@ -87,4 +92,5 @@ module.exports = {
   createPrice,
   finalizeInvoice,
   payInvoice,
+  getReceipt,
 };

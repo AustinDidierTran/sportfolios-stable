@@ -20,6 +20,7 @@ const {
   createInvoice,
   finalizeInvoice,
   payInvoice,
+  getReceipt,
 } = require('./checkout');
 const { addProduct, addPrice } = require('./shop');
 
@@ -38,4 +39,5 @@ module.exports = {
   addProduct,
   addPrice,
   payInvoice,
+  getReceipt,
 };
