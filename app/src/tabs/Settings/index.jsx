@@ -5,9 +5,12 @@ import Memberships from './Memberships';
 import AddMembership from './AddMembership';
 import AddOptionsEvent from './AddOptionsEvent';
 import { useParams } from 'react-router-dom';
-import { ENTITIES_ROLE_ENUM } from '../../../../common/enums';
+import {
+  ENTITIES_ROLE_ENUM,
+  CARD_TYPE_ENUM,
+} from '../../../../common/enums';
 import styles from './Settings.module.css';
-import { DeleteEntityCard } from '../../components/Cards';
+import { Card } from '../../components/Custom';
 import { useAdmin, useEditor } from '../../hooks/roles';
 
 export default function EntitySettings(props) {
@@ -31,10 +34,9 @@ export default function EntitySettings(props) {
           {isAdmin ? (
             <>
               <ManageRoles role={role} />
-              <DeleteEntityCard
-                id={id}
-                type={basicInfos.type}
-                name={basicInfos.name}
+              <Card
+                items={{ id, name: basicInfos.name }}
+                type={CARD_TYPE_ENUM.DELETE_ENTITY}
               />
             </>
           ) : (

@@ -2,6 +2,7 @@ export { default as Autocomplete } from './Autocomplete';
 export { default as Avatar } from './Avatar';
 export { default as BottomNavigation } from './BottomNavigation';
 export { default as Button } from './Button';
+export { default as Card } from './Card';
 export { default as Container } from './Container';
 export { default as EntityList } from './EntityList';
 export { default as Icon } from './Icon';

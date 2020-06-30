@@ -4,15 +4,15 @@ import { Button, Paper, List } from '../../../Custom';
 import { useTranslation } from 'react-i18next';
 import { GLOBAL_ENUM } from '../../../../../../common/enums';
 
-export default function EventPaymentOptionCard(props) {
-  const { data, fields, onDelete } = props;
+export default function EventPaymentOption(props) {
+  const { option, fields, onDelete } = props;
   const { t } = useTranslation();
 
-  const paymentOptionId = data[4];
+  const paymentOptionId = option[4];
 
   const items = fields.map(f => ({
     display: f.display,
-    value: data[f.value],
+    value: option[f.value],
     helperText: f.helperText,
     type: GLOBAL_ENUM.PAYMENT_OPTION,
   }));

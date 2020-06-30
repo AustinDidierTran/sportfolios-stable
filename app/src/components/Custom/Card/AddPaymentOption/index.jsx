@@ -5,7 +5,7 @@ import { Input, Paper, Button } from '../../../Custom';
 import { List, ListItem } from '../../../MUI';
 import { useTranslation } from 'react-i18next';
 
-export default function AddPaymentOptionCard(props) {
+export default function AddPaymentOption(props) {
   const { fields, onAdd } = props;
   const { t } = useTranslation();
 

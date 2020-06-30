@@ -6,16 +6,17 @@ import { useStepper } from '../../hooks/forms';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import moment from 'moment';
+import { formatRoute } from '../../actions/goTo';
 
 export default function EventRegistration() {
-  const { id } = useParams();
+  const { id: event_id } = useParams();
   const [team, setTeam] = useState();
   const [paymentOption, setPaymentOption] = useState();
   const [paymentOptions, setPaymentOptions] = useState([]);
 
   const getOptions = async () => {
     const { data } = await api(
-      formatRoute('/api/entity/options', null, { id }),
+      formatRoute('/api/entity/options', null, { event_id }),
     );
 
     const options = data.reduce((prev, d) => {
@@ -38,7 +39,7 @@ export default function EventRegistration() {
 
   useEffect(() => {
     getOptions();
-  }, [id]);
+  }, [event_id]);
 
   const stepHook = useStepper();
   const onTeamSelect = (e, t) => {
