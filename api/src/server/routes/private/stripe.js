@@ -180,4 +180,15 @@ router.get(`${BASE_URL}/getReceipt`, async ctx => {
   };
 });
 
+router.post(`${BASE_URL}/checkout`, async ctx => {
+  const data = await queries.checkout(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 module.exports = router;

@@ -111,10 +111,51 @@ const getReceipt = async query => {
   }
 };
 
+const checkout = async (body, userId) => {
+  const { prices = [] } = body;
+  const invoiceParams = {
+    invoice: {
+      auto_advance: 'false',
+      collection_method: 'charge_automatically',
+      metadata: {},
+    },
+  };
+
+  try {
+    await Promise.all(
+      prices.map(async item => {
+        const { id: invoiceItemId } = await createInvoiceItem(
+          { price: item.price },
+          userId,
+        );
+        return invoiceItemId;
+      }),
+    );
+
+    const { id: invoice_id } = await createInvoice(
+      { invoiceParams },
+      userId,
+    );
+
+    await finalizeInvoice({ invoice_id }, userId);
+
+    const paidInvoice = await payInvoice({ invoice_id }, userId);
+
+    const charge_id = await paidInvoice.charge;
+
+    return getReceipt({ charge_id, invoice_id });
+  } catch (err) {
+    /* eslint-disable-next-line */
+    console.error('CreateInvoice error', err);
+    throw err;
+  }
+};
+
 module.exports = {
   createInvoiceItem,
   createInvoice,
   finalizeInvoice,
   payInvoice,
   getReceipt,
+  checkout,
 };
