@@ -27,7 +27,7 @@ export default function Cart() {
 
   const fetchCartItems = async () => {
     const newCart = await getCartItems();
-    setItems(newCart.length ? newCart : []);
+    setItems(newCart);
   };
 
   useEffect(() => {

@@ -54,7 +54,7 @@ export default function Item(props) {
   const handleClick = async () => {
     await removeCartItem(stripe_price_id);
     const newCart = await getCartItems();
-    setItems(newCart.length ? newCart : []);
+    setItems(newCart);
     dispatch({
       type: ACTION_ENUM.UPDATE_CART,
       payload: newCart,

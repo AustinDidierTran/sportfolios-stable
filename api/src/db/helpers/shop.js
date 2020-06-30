@@ -63,7 +63,7 @@ const getCartItems = async user_id => {
       .where('cart_items.user_id', user_id);
     /* eslint-disable-next-line */
     console.log('CartItems', cartItems);
-    return cartItems;
+    return cartItems || [];
   } catch (err) {
     /* eslint-disable-next-line */
     console.error('removeCartItem error', err);

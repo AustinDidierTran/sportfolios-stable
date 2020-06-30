@@ -134,7 +134,7 @@ export default function Review() {
 
   const fetchCartItems = async () => {
     const newCart = await getCartItems();
-    setItems(newCart.length ? newCart : []);
+    setItems(newCart);
   };
 
   const getTotal = () => {
