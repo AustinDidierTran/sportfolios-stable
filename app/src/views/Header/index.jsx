@@ -11,5 +11,8 @@ export default function Header() {
 
   const isAuthenticated = Boolean(authToken);
 
-  return isAuthenticated ? <LoggedIn /> : <LoggedOut />;
+  if (isAuthenticated) {
+    return <LoggedIn />;
+  }
+  return <LoggedOut />;
 }

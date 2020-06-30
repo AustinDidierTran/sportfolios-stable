@@ -30,41 +30,47 @@ export default function LoggedIn() {
     state: { userInfo = {}, screenSize },
   } = useContext(Store);
 
-  return screenSize !== SCREENSIZE_ENUM.xs ? (
-    <div className={classes.grow}>
-      <AppBar position="static" style={{ position: 'fixed', top: 0 }}>
-        <Toolbar>
-          <Typography className={classes.title} variant="h6" noWrap>
-            <Link to={'/'} className={classes.titleLink}>
-              {' '}
-              Sportfolios
-            </Link>
-          </Typography>
-          <SearchInput apiRoute="/api/data/search/previous" />
-          <div className={classes.grow} />
-          <div className={styles.sectionDesktop}>
-            <IconButton
-              color="inherit"
-              onClick={() =>
-                goTo(ROUTES.entity, {
-                  id: userInfo.persons[0].entity_id,
-                })
-              }
-            >
-              <AccountCircle />
-            </IconButton>
-            <NotificationModule />
-            <IconButton
-              color="inherit"
-              onClick={() => goTo(ROUTES.userSettings)}
-            >
-              <Settings />
-            </IconButton>
-          </div>
-        </Toolbar>
-      </AppBar>
-    </div>
-  ) : (
+  if (screenSize !== SCREENSIZE_ENUM.xs) {
+    return (
+      <div className={classes.grow}>
+        <AppBar
+          position="static"
+          style={{ position: 'fixed', top: 0 }}
+        >
+          <Toolbar>
+            <Typography className={classes.title} variant="h6" noWrap>
+              <Link to={'/'} className={classes.titleLink}>
+                {' '}
+                Sportfolios
+              </Link>
+            </Typography>
+            <SearchInput apiRoute="/api/data/search/previous" />
+            <div className={classes.grow} />
+            <div className={styles.sectionDesktop}>
+              <IconButton
+                color="inherit"
+                onClick={() =>
+                  goTo(ROUTES.entity, {
+                    id: userInfo.persons[0].entity_id,
+                  })
+                }
+              >
+                <AccountCircle />
+              </IconButton>
+              <NotificationModule />
+              <IconButton
+                color="inherit"
+                onClick={() => goTo(ROUTES.userSettings)}
+              >
+                <Settings />
+              </IconButton>
+            </div>
+          </Toolbar>
+        </AppBar>
+      </div>
+    );
+  }
+  return (
     <div className={classes.grow}>
       <AppBar position="static" className={styles.appBar}>
         <Toolbar className="toolBar">
