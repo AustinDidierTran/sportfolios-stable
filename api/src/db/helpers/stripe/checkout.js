@@ -99,8 +99,8 @@ const getReceipt = async query => {
     );
 
     await knex('stripe_invoice')
-      .update({ receipt_url: receipt_url })
-      .where({ invoice_id: invoice_id });
+      .update({ receipt_url })
+      .where({ invoice_id });
     /* eslint-disable-next-line */
     console.log('Receipt url:', receipt_url);
     return receipt_url;

@@ -172,8 +172,8 @@ export default function CustomerForm(props) {
           <Button onClick={onContinue}>
             {t('use_same_and_continue')}
           </Button>
-          <Button>
-            {t('create_new_account')} onClick={setCustomerId('')}
+          <Button onClick={() => setCustomerId('')}>
+            {t('create_new_account')}
           </Button>
         </div>
       ) : (

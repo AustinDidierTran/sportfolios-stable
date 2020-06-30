@@ -65,11 +65,11 @@ const deleteCartItems = async () => {
   return newCart;
 };
 
-const getReceipt = async (charge_id, invoice_id) => {
+const getReceipt = async (chargeId, invoiceId) => {
   const { data: receiptUrl } = await api(
     formatRoute('/api/stripe/getReceipt', null, {
-      charge_id,
-      invoice_id,
+      charge_id: chargeId,
+      invoice_id: invoiceId,
     }),
   );
   return receiptUrl;
@@ -84,7 +84,7 @@ export default function Review() {
   const { t } = useTranslation();
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
-  const [receiptUrl, setreceiptUrl] = useState('');
+  const [receiptUrl, setReceiptUrl] = useState('');
   const { dispatch } = useContext(Store);
 
   const onCheckout = () => {
@@ -92,7 +92,6 @@ export default function Review() {
       type: ACTION_ENUM.UPDATE_CART,
       payload: [],
     });
-    //goTo(ROUTES.home);
   };
 
   const onCompleteOrder = async () => {
@@ -116,7 +115,7 @@ export default function Review() {
           console.log('INVOICE IS PAID', paidInvoice);
 
           const receiptUrl = await getReceipt(paidInvoice.charge);
-          setreceiptUrl(receiptUrl);
+          setReceiptUrl(receiptUrl);
           /* eslint-disable-next-line */
           console.log('Receipt url: ', receiptUrl);
 
@@ -146,8 +145,10 @@ export default function Review() {
   };
 
   const getTotal = () => {
-    let total = 0;
-    items.forEach(item => (total += item.amount / 100));
+    const total = items.reduce(
+      (prevTotal, item => (prevTotal += item.amount / 100)),
+      0,
+    );
     setTotal(total);
   };
 
@@ -157,7 +158,7 @@ export default function Review() {
   }, []);
 
   if (receiptUrl) {
-    return <Button onClick={onReceiptUrl}>SEE RECEIPT</Button>;
+    return <Button onClick={onReceiptUrl}>{t('see_receipt')}</Button>;
   }
 
   return (

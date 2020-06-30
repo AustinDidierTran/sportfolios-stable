@@ -101,7 +101,7 @@ const removeCartItem = async (query, user_id) => {
 const removeCartItems = async (query, user_id) => {
   try {
     await knex('cart_items')
-      .where({ user_id: user_id })
+      .where({ user_id })
       .del();
     /* eslint-disable-next-line */
     console.log('Removed all cart items');

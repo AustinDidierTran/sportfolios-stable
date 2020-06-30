@@ -131,6 +131,7 @@ export default {
     address: 'Address',
     account_already_exists: 'Account already exists',
     complete_order: 'Complete order',
+    see_receipt: 'See Receipt',
     // Validation
     confirm_new_password: 'Confirm New Password',
     email_already_used:
