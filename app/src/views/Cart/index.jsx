@@ -27,14 +27,7 @@ export default function Cart() {
 
   const fetchCartItems = async () => {
     const newCart = await getCartItems();
-    setItems(
-      newCart.length
-        ? newCart.map(d => ({
-            ...d,
-            type: CARD_TYPE_ENUM.CART,
-          }))
-        : [],
-    );
+    setItems(newCart.length ? newCart : []);
   };
 
   useEffect(() => {
@@ -46,7 +39,14 @@ export default function Cart() {
       <div className={styles.view}>
         <div className={styles.title}>CART</div>
         <div className={styles.content}>
-          <CustomCard items={items} setItems={setItems} />
+          {items.map(item => {
+            return (
+              <CustomCard
+                items={{ ...item, setItems }}
+                type={CARD_TYPE_ENUM.CART}
+              />
+            );
+          })}
         </div>
 
         <Button onClick={onCheckout} className={styles.button}>

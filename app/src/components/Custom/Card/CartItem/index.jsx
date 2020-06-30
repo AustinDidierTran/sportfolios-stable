@@ -13,7 +13,6 @@ import { useContext } from 'react';
 import api from '../../../../actions/api';
 import { Store, ACTION_ENUM } from '../../../../Store';
 import { formatRoute } from '../../../../actions/goTo';
-import { CARD_TYPE_ENUM } from '../../../../../../common/enums';
 
 const useStyles = makeStyles({
   media: {
@@ -55,14 +54,7 @@ export default function Item(props) {
   const handleClick = async () => {
     await removeCartItem(stripe_price_id);
     const newCart = await getCartItems();
-    setItems(
-      newCart.length
-        ? newCart.map(d => ({
-            ...d,
-            type: CARD_TYPE_ENUM.CART,
-          }))
-        : [],
-    );
+    setItems(newCart.length ? newCart : []);
     dispatch({
       type: ACTION_ENUM.UPDATE_CART,
       payload: newCart,
