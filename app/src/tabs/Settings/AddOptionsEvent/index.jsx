@@ -47,6 +47,7 @@ export default function AddOptionsEvent() {
       setOpen(true);
       return;
     }
+
     const res = await api(`/api/entity/option`, {
       method: 'POST',
       body: JSON.stringify({

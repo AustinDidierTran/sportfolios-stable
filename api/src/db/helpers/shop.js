@@ -73,8 +73,8 @@ const addCartItem = async (body, user_id) => {
   const { stripe_price_id } = body;
 
   await knex('cart_items').insert({
-    stripe_price_id: stripe_price_id,
-    user_id: user_id,
+    stripe_price_id,
+    user_id,
   });
 
   return stripe_price_id;
