@@ -61,12 +61,10 @@ const getCartItems = async user_id => {
         'stripe_price.stripe_price_id',
       )
       .where('cart_items.user_id', user_id);
-    /* eslint-disable-next-line */
-    console.log('CartItems', cartItems);
     return cartItems || [];
   } catch (err) {
     /* eslint-disable-next-line */
-    console.error('removeCartItem error', err);
+    console.error('GetCartItems error', err);
     throw err;
   }
 };

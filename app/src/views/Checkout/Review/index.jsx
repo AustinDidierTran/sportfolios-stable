@@ -8,55 +8,9 @@ import {
 } from '../../../components/MUI';
 import CustomCard from '../../../components/Custom/Card';
 import { Store, ACTION_ENUM } from '../../../Store';
-import { formatRoute } from '../../../actions/goTo';
 import api from '../../../actions/api';
-import {
-  INVOICE_STATUS_ENUM,
-  CARD_TYPE_ENUM,
-} from '../../../../../common/enums';
+import { CARD_TYPE_ENUM } from '../../../../../common/enums';
 import { useTranslation } from 'react-i18next';
-
-const createInvoiceItem = async price => {
-  const { data: invoiceItem } = await api(
-    '/api/stripe/createInvoiceItem',
-    {
-      method: 'POST',
-      body: JSON.stringify({ price }),
-    },
-  );
-  return invoiceItem;
-};
-
-const createInvoice = async () => {
-  const invoiceParams = {
-    invoice: {
-      auto_advance: 'false',
-      collection_method: 'charge_automatically',
-      metadata: {},
-    },
-  };
-  const { data: invoice } = await api('/api/stripe/createInvoice', {
-    method: 'POST',
-    body: JSON.stringify(invoiceParams),
-  });
-  return invoice;
-};
-
-const finalizeInvoice = async invoiceId => {
-  const { data: invoice } = await api('/api/stripe/finalizeInvoice', {
-    method: 'POST',
-    body: JSON.stringify({ invoice_id: invoiceId }),
-  });
-  return invoice;
-};
-
-const payInvoice = async invoiceId => {
-  const { data: invoice } = await api('/api/stripe/payInvoice', {
-    method: 'POST',
-    body: JSON.stringify({ invoice_id: invoiceId }),
-  });
-  return invoice;
-};
 
 const deleteCartItems = async () => {
   const { data: newCart } = await api('/api/shop/removeCartItems', {
@@ -65,13 +19,11 @@ const deleteCartItems = async () => {
   return newCart;
 };
 
-const getReceipt = async (chargeId, invoiceId) => {
-  const { data: receiptUrl } = await api(
-    formatRoute('/api/stripe/getReceipt', null, {
-      charge_id: chargeId,
-      invoice_id: invoiceId,
-    }),
-  );
+const checkout = async prices => {
+  const { data: receiptUrl } = await api('/api/stripe/checkout', {
+    method: 'POST',
+    body: JSON.stringify({ prices }),
+  });
   return receiptUrl;
 };
 
@@ -87,7 +39,9 @@ export default function Review() {
   const [receiptUrl, setReceiptUrl] = useState('');
   const { dispatch } = useContext(Store);
 
-  const onCheckout = () => {
+  const onCheckout = async () => {
+    await deleteCartItems();
+    setItems([]);
     dispatch({
       type: ACTION_ENUM.UPDATE_CART,
       payload: [],
@@ -95,37 +49,12 @@ export default function Review() {
   };
 
   const onCompleteOrder = async () => {
-    await items.forEach(async item => {
-      const { data: invoiceItem } = await createInvoiceItem(
-        item.stripe_price_id,
-      );
-      /* eslint-disable-next-line */
-      console.log('Created Invoice Item', invoiceItem);
+    const prices = items.map(item => {
+      return { price: item.stripe_price_id };
     });
-    const invoice = await createInvoice();
-    /* eslint-disable-next-line */
-    console.log('Created invoice', invoice);
-
-    if (invoice.status == INVOICE_STATUS_ENUM.DRAFT) {
-      const finalizedInvoice = await finalizeInvoice(invoice.id);
-      if (finalizedInvoice.status == INVOICE_STATUS_ENUM.OPEN) {
-        const paidInvoice = await payInvoice(invoice.id);
-        if (paidInvoice.status == INVOICE_STATUS_ENUM.PAID) {
-          /* eslint-disable-next-line */
-          console.log('INVOICE IS PAID', paidInvoice);
-
-          const receiptUrl = await getReceipt(paidInvoice.charge);
-          setReceiptUrl(receiptUrl);
-          /* eslint-disable-next-line */
-          console.log('Receipt url: ', receiptUrl);
-
-          const newCart = await deleteCartItems();
-          /* eslint-disable-next-line */
-          console.log('Updated cart: ', newCart);
-        }
-      }
-    }
-    onCheckout();
+    const receipt = await checkout(prices);
+    setReceiptUrl(receipt);
+    await onCheckout();
   };
 
   const onReceiptUrl = async () => {
@@ -139,7 +68,7 @@ export default function Review() {
 
   const getTotal = () => {
     const total = items.reduce(
-      (prevTotal, item => (prevTotal += item.amount / 100)),
+      (prevTotal, item) => (prevTotal += item.amount / 100),
       0,
     );
     setTotal(total);
