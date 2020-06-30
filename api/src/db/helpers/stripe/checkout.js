@@ -143,9 +143,7 @@ const checkout = async (body, userId) => {
 
     const charge_id = await paidInvoice.charge;
 
-    const receiptUrl = getReceipt({ charge_id, invoice_id });
-
-    return receiptUrl;
+    return getReceipt({ charge_id, invoice_id });
   } catch (err) {
     /* eslint-disable-next-line */
     console.error('CreateInvoice error', err);
