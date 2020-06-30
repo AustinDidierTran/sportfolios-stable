@@ -1,3 +1,6 @@
 module.exports = {
-  FEATURE_FLAGS: { NOTIFICATIONS: 'notifications' },
+  FEATURE_FLAGS: {
+    CHILD_ACCOUNTS: 'child_accounts',
+    NOTIFICATIONS: 'notifications',
+  },
 };
