@@ -39,9 +39,9 @@ const addPrice = async body => {
       start_date: new Date(price.created * 1000),
     });
     await knex('store_items').insert({
-      entity_id: entity_id,
+      entity_id,
       stripe_price_id: price.id,
-      photo_url: photo_url,
+      photo_url,
     });
 
     stripeLogger(`Price created, ${price.id}`);

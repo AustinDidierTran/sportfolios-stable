@@ -39,7 +39,7 @@ export default function AddOptionsEvent() {
 
   const onAdd = async values => {
     const name = values[0].value;
-    const price = Number(values[1].value);
+    const price = Number(values[1].value) * 100;
     const start_time = values[2].value;
     const end_time = values[3].value;
     if (start_time >= end_time) {
@@ -47,6 +47,7 @@ export default function AddOptionsEvent() {
       setOpen(true);
       return;
     }
+
     const res = await api(`/api/entity/option`, {
       method: 'POST',
       body: JSON.stringify({

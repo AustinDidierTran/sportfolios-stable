@@ -4,6 +4,7 @@ const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
 } = require('../../../../common/enums');
+const { addProduct, addPrice } = require('./stripe/shop');
 
 const addEntity = async (body, user_id) => {
   const { name, creator, surname, type } = body;
@@ -403,9 +404,30 @@ async function addOption(
   price,
   end_time,
   start_time,
+  user_id,
 ) {
+  const entity = await getEntity(event_id, user_id);
+
+  const stripe_product = {
+    name,
+    active: true,
+    description: entity.name,
+  };
+  const product = await addProduct({ stripe_product });
+  const stripe_price = {
+    currency: 'cad',
+    unit_amount: price,
+    active: true,
+    product: product.id,
+  };
+  const price_stripe = await addPrice({
+    stripe_price,
+    entity_id: event_id,
+    photo_url: entity.photoUrl,
+  });
   const [res] = await knex('event_payment_options')
     .insert({
+      id: price_stripe.id,
       event_id,
       name,
       price,
