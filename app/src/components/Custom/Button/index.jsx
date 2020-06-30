@@ -15,6 +15,10 @@ export default function CustomButton(props) {
       color="primary"
       variant="contained"
       {...props}
+      style={{
+        color: 'white',
+        ...props.style,
+      }}
       endIcon={endIcon}
     />
   );

@@ -1,7 +1,5 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
-import teal from '@material-ui/core/colors/teal';
-
 const theme = createMuiTheme({
   breakpoints: {
     values: {
@@ -13,7 +11,19 @@ const theme = createMuiTheme({
     },
   },
   palette: {
-    primary: teal,
+    // primary: teal,
+    primary: {
+      main: '#18B393',
+      light: '#fff',
+      dark: '#fff',
+      constrastText: '#fff',
+    },
+    secondary: {
+      light: '#ff7961',
+      main: '#f44336',
+      dark: '#ba000d',
+      contrastText: '#f00',
+    },
   },
 });
 
