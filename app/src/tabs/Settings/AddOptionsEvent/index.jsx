@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Paper } from '../../../components/Custom';
+import { Paper, Card } from '../../../components/Custom';
 import { Container } from '../../../components/MUI';
 
 import { useTranslation } from 'react-i18next';
@@ -9,11 +9,8 @@ import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import {
-  AddPaymentOptionCard,
-  EventPaymentOptionCard,
-} from '../../../components/Custom/Cards';
 import styles from './AddOptionsEvent.module.css';
+import { CARD_TYPE_ENUM } from '../../../../../common/enums';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -105,14 +102,16 @@ export default function AddOptionsEvent() {
   return (
     <Paper title={t('add_payment_options')}>
       <Container className={styles.container}>
-        {options.map(o => (
-          <EventPaymentOptionCard
-            fields={fields}
-            data={o}
-            onDelete={onDelete}
+        {options.map(option => (
+          <Card
+            type={CARD_TYPE_ENUM.EVENT_PAYMENT_OPTION}
+            items={{ fields, option, onDelete }}
           />
         ))}
-        <AddPaymentOptionCard fields={fields} onAdd={onAdd} />{' '}
+        <Card
+          items={{ fields, onAdd }}
+          type={CARD_TYPE_ENUM.ADD_PAYMENT_OPTION}
+        />
         <Snackbar
           open={open}
           autoHideDuration={6000}

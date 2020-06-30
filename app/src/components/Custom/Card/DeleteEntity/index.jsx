@@ -6,10 +6,10 @@ import { useFormInput } from '../../../../hooks/forms';
 import { deleteEntity } from '../../../../actions/api';
 import { goTo, ROUTES } from '../../../../actions/goTo';
 
-import styles from './DeleteEntityCard.module.css';
+import styles from './DeleteEntity.module.css';
 import { useTranslation } from 'react-i18next';
 
-export default function DeleteEntityCard(props) {
+export default function DeleteEntity(props) {
   const { t } = useTranslation();
   const { id, name, ...otherProps } = props;
   const [isSubmitting, setIsSubmitting] = useState(false);

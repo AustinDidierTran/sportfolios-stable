@@ -3,11 +3,17 @@ import Shop from './ShopItem';
 import Cart from './CartItem';
 import Invoice from './InvoiceItem';
 import Default from './DefaultCard';
+import AddPaymentOption from './AddPaymentOption';
+import DeleteEntity from './DeleteEntity';
+import EventPaymentOption from './EventPaymentOption';
 
 const CardMap = {
   [CARD_TYPE_ENUM.SHOP]: Shop,
   [CARD_TYPE_ENUM.CART]: Cart,
   [CARD_TYPE_ENUM.INVOICE]: Invoice,
+  [CARD_TYPE_ENUM.ADD_PAYMENT_OPTION]: AddPaymentOption,
+  [CARD_TYPE_ENUM.DELETE_ENTITY]: DeleteEntity,
+  [CARD_TYPE_ENUM.EVENT_PAYMENT_OPTION]: EventPaymentOption,
 };
 
 export default function CardFactory(props) {
