@@ -7,7 +7,6 @@ import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { useQuery } from '../../hooks/queries';
 import { GLOBAL_ENUM } from '../../../../common/enums';
-import { TABS_ENUM } from '../../tabs';
 import moment from 'moment';
 import {
   getMembershipLength,
@@ -67,6 +66,7 @@ export default function Memberships() {
           r.entity_id,
           r.length,
           r.fixed_date,
+          r.stripe_price_id,
         );
       r.clickRenewMember = () =>
         clickRenewMember(
@@ -75,6 +75,7 @@ export default function Memberships() {
           r.entity_id,
           r.length,
           r.fixed_date,
+          r.stripe_price_id,
         );
       r.isMember = isMember;
       return membership_type === r.membership_type;
@@ -99,6 +100,7 @@ export default function Memberships() {
     entity_id,
     length,
     fixed_date,
+    stripe_price_id,
   ) => {
     const expiration_date = getExpirationDate(length, fixed_date);
     await addMembership(
@@ -106,11 +108,7 @@ export default function Memberships() {
       person_id,
       entity_id,
       expiration_date,
-    );
-    goTo(
-      ROUTES.entity,
-      { id: entity_id },
-      { tab: TABS_ENUM.SETTINGS },
+      stripe_price_id,
     );
   };
 
@@ -120,6 +118,7 @@ export default function Memberships() {
     entity_id,
     length,
     fixed_date,
+    stripe_price_id,
   ) => {
     const expiration_date = getExpirationDate(length, fixed_date);
     await updateMembership(
@@ -127,11 +126,7 @@ export default function Memberships() {
       person_id,
       entity_id,
       expiration_date,
-    );
-    goTo(
-      ROUTES.entity,
-      { id: entity_id },
-      { tab: TABS_ENUM.SETTINGS },
+      stripe_price_id,
     );
   };
 
@@ -140,6 +135,7 @@ export default function Memberships() {
     person_id,
     organization_id,
     expiration_date,
+    stripe_price_id,
   ) => {
     await api('/api/entity/member', {
       method: 'POST',
@@ -150,6 +146,15 @@ export default function Memberships() {
         expiration_date,
       }),
     });
+    await api('/api/shop/addCartItem', {
+      method: 'POST',
+      body: JSON.stringify({
+        stripe_price_id,
+      }),
+    });
+    goTo(ROUTES.cart, {
+      id: person_id,
+    });
   };
 
   const updateMembership = async (
@@ -157,6 +162,7 @@ export default function Memberships() {
     person_id,
     organization_id,
     expiration_date,
+    stripe_price_id,
   ) => {
     await api('/api/entity/member', {
       method: 'PUT',
@@ -166,6 +172,15 @@ export default function Memberships() {
         organization_id,
         expiration_date,
       }),
+    });
+    await api('/api/shop/addCartItem', {
+      method: 'POST',
+      body: JSON.stringify({
+        stripe_price_id,
+      }),
+    });
+    goTo(ROUTES.cart, {
+      id: person_id,
     });
   };
 

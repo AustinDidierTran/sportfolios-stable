@@ -64,7 +64,7 @@ export default function AddMembership() {
       length = values[2].value;
       fixed_date = '01/01';
     }
-    const price = values[3].value;
+    const price = values[3].value * 100;
     const res = await api(`/api/entity/membership`, {
       method: 'POST',
       body: JSON.stringify({

@@ -146,7 +146,7 @@ async function addOption(body, user_id) {
   return res;
 }
 
-async function addMembership(body) {
+async function addMembership(body, user_id) {
   const {
     entity_id,
     membership_type,
@@ -160,6 +160,7 @@ async function addMembership(body) {
     length,
     fixed_date,
     price,
+    user_id,
   );
   return res;
 }

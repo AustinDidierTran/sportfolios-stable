@@ -1,5 +1,7 @@
 const knex = require('../connection');
 
+const { getMembershipName } = require('../../../../common/functions');
+
 const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
@@ -444,9 +446,31 @@ async function addMembership(
   length,
   fixed_date,
   price,
+  user_id,
 ) {
+  const entity = await getEntity(entity_id, user_id);
+
+  const stripe_product = {
+    name: getMembershipName(membership_type),
+    active: true,
+    description: entity.name,
+  };
+  const product = await addProduct({ stripe_product });
+  const stripe_price = {
+    currency: 'cad',
+    unit_amount: price,
+    active: true,
+    product: product.id,
+  };
+  const price_stripe = await addPrice({
+    stripe_price,
+    entity_id,
+    photo_url: entity.photoUrl,
+  });
+
   const [res] = await knex('entity_memberships')
     .insert({
+      stripe_price_id: price_stripe.id,
       entity_id,
       membership_type,
       length,
