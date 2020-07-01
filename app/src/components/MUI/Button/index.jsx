@@ -31,8 +31,6 @@ export default function CustomButton(props) {
     variant: 'contained',
   };
 
-  console.log('props', props);
-
   return (
     <Button
       className={clsx(props.className, classes.card)}
