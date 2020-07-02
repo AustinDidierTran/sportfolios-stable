@@ -16,7 +16,7 @@ import { GLOBAL_ENUM } from '../../../../../common/enums';
 import { useQuery, useApiRoute } from '../../../hooks/queries';
 
 export default function EntityCreate() {
-  const { id, type } = useQuery();
+  const { id, type, route } = useQuery();
 
   const { t } = useTranslation();
 
@@ -67,8 +67,13 @@ export default function EntityCreate() {
             creator: id,
           }),
         });
-        goTo(ROUTES.entity, { id: res.data.id });
-        setIsLoading(false);
+        if (route) {
+          goTo(ROUTES.entity, { id: route }, { teamId: res.data.id });
+          setIsLoading(false);
+        } else {
+          goTo(ROUTES.entity, { id: res.data.id });
+          setIsLoading(false);
+        }
       } catch (err) {
         setIsLoading(false);
         formik.setFieldError('name', t('something_went_wrong'));
