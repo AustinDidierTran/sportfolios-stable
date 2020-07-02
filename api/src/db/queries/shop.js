@@ -3,9 +3,11 @@ const {
   getShopItems,
   getCartItems,
   addCartItem,
+  updateCartItems: updateCartItemsHelper,
   removeCartItemInstance: removeCartItemInstanceHelper,
   removeAllInstancesFromCart: removeAllInstancesFromCartHelper,
   clearCart: clearCartHelper,
+  getCartItemsOrdered: getCartItemsOrderedHelper,
 } = require('../helpers/shop');
 
 const getItem = async (stripe_price_id, user_id) => {
@@ -20,8 +22,17 @@ const getCart = async (entity_id, user_id) => {
   return getCartItems(user_id);
 };
 
+const getCartItemsOrdered = async (entity_id, user_id) => {
+  return getCartItemsOrderedHelper(user_id);
+};
+
 const addToCart = async (body, user_id) => {
   await addCartItem(body, user_id);
+  return getCartItems(user_id);
+};
+
+const updateCartItems = async (body, user_id) => {
+  await updateCartItemsHelper(body, user_id);
   return getCartItems(user_id);
 };
 
@@ -44,7 +55,9 @@ module.exports = {
   getItem,
   getItems,
   getCart,
+  getCartItemsOrdered,
   addToCart,
+  updateCartItems,
   removeCartItemInstance,
   removeAllInstancesFromCart,
   clearCart,

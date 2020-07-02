@@ -108,6 +108,37 @@ const getCartItems = async user_id => {
   }
 };
 
+const groupBy = (list, keyGetter) => {
+  const map = new Map();
+  list.forEach(item => {
+    const key = keyGetter(item);
+    const collection = map.get(key);
+    if (!collection) {
+      map.set(key, [item]);
+    } else {
+      collection.push(item);
+    }
+  });
+  return map;
+};
+
+const groupedCart = cart => {
+  const grouped = groupBy(cart, item => item.stripe_price_id);
+  const keys = Array.from(grouped.keys());
+  const groupedItems = keys.map(key => {
+    return {
+      ...cart.find(e => e.stripe_price_id == key),
+      nbInCart: grouped.get(key).length,
+    };
+  });
+  return groupedItems;
+};
+
+const getCartItemsOrdered = async user_id => {
+  const cart = await getCartItems(user_id);
+  return groupedCart(cart);
+};
+
 const addCartItem = async (body, user_id) => {
   const { stripe_price_id } = body;
 
@@ -117,6 +148,35 @@ const addCartItem = async (body, user_id) => {
   });
 
   return stripe_price_id;
+};
+
+const updateCartItems = async (body, user_id) => {
+  const { stripe_price_id, nb_in_cart: new_nb } = body;
+
+  const curr_cart = await getCartItems(user_id);
+  const curr_cart_ordered = await getCartItemsOrdered(user_id);
+  const prev_nb = curr_cart_ordered.find(
+    e => e.stripe_price_id == stripe_price_id,
+  ).nbInCart;
+  const diff = new_nb - prev_nb;
+
+  if (diff > 0) {
+    for (let i = 0; i < diff; i++) {
+      await addCartItem({ stripe_price_id }, user_id);
+    }
+  } else if (diff < 0) {
+    var deletedIds = [];
+    for (let i = 0; i < -diff; i++) {
+      const cart_instance_id = curr_cart.find(
+        e =>
+          e.stripe_price_id == stripe_price_id &&
+          !deletedIds.includes(e.id),
+      ).id;
+
+      await removeCartItemInstance({ cart_instance_id });
+      deletedIds.push(cart_instance_id);
+    }
+  }
 };
 
 const removeCartItemInstance = async query => {
@@ -162,7 +222,9 @@ module.exports = {
   getItem,
   getShopItems,
   getCartItems,
+  getCartItemsOrdered,
   addCartItem,
+  updateCartItems,
   removeCartItemInstance,
   removeAllInstancesFromCart,
   clearCart,

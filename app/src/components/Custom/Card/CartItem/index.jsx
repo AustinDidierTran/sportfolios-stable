@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import styles from './CartItem.module.css';
 
@@ -7,19 +7,17 @@ import { Paper } from '../..';
 
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-import { useContext } from 'react';
 import api from '../../../../actions/api';
 import { Store, ACTION_ENUM } from '../../../../Store';
 import { formatRoute } from '../../../../actions/goTo';
-import { useState } from 'react';
 import { useFormInput } from '../../../../hooks/forms';
 
 const addCartItem = async params => {
-  const { data: newCart = [] } = await api('/api/shop/addCartItem', {
+  await api('/api/shop/addCartItem', {
     method: 'POST',
     body: JSON.stringify(params),
   });
-  return newCart;
+  return getCartItems();
 };
 
 const removeCartItemInstance = async cartInstanceId => {
@@ -31,18 +29,26 @@ const removeCartItemInstance = async cartInstanceId => {
       method: 'DELETE',
     },
   );
+  return getCartItems();
+};
 
+const updateCartItems = async params => {
+  await api('/api/shop/updateCartItems', {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
   return getCartItems();
 };
 
 const getCartItems = async () => {
-  const { data: cartItems } = await api('/api/shop/getCartItems');
+  const { data: cartItems } = await api(
+    '/api/shop/getCartItemsOrdered',
+  );
   return cartItems;
 };
 
 export default function Item(props) {
   const { dispatch } = useContext(Store);
-  const [deletedIds, setDeletedIds] = useState([]);
   const {
     label: name,
     amount: price,
@@ -51,9 +57,9 @@ export default function Item(props) {
     stripe_price_id: stripePriceId,
     id,
     setItems,
-    nbrInCart,
+    nbInCart,
   } = props;
-  const amount = useFormInput(nbrInCart);
+  const amount = useFormInput(nbInCart);
 
   const dispatchCart = newCart => {
     dispatch({
@@ -69,16 +75,27 @@ export default function Item(props) {
     });
     setItems(newCart);
     dispatchCart(newCart);
-    amount.setValue(oldValue => oldValue + 1);
   };
 
   const removeItem = async () => {
     const newCart = await removeCartItemInstance(id);
     setItems(newCart);
     dispatchCart(newCart);
-    setDeletedIds([...deletedIds, id]);
-    amount.setValue(oldValue => Math.max(0, oldValue - 1));
   };
+
+  const onNbBlur = async e => {
+    const newNbInCart = e.target.value;
+    const newCart = await updateCartItems({
+      stripe_price_id: stripePriceId,
+      nb_in_cart: newNbInCart,
+    });
+    setItems(newCart);
+    dispatchCart(newCart);
+  };
+
+  useEffect(() => {
+    amount.changeDefault(nbInCart);
+  }, [nbInCart]);
 
   return (
     <Paper>
@@ -110,6 +127,7 @@ export default function Item(props) {
           <div className={styles.cartButtonChildren}>
             <TextField
               {...amount.inputProps}
+              onBlur={onNbBlur}
               inputProps={{
                 min: 0,
                 style: { textAlign: 'center' },

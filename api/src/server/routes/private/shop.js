@@ -37,8 +37,30 @@ router.get(`${BASE_URL}/getCartItems`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/getCartItemsOrdered`, async ctx => {
+  const data = await queries.getCartItemsOrdered(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 router.post(`${BASE_URL}/addCartItem`, async ctx => {
   const data = await queries.addToCart(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
+router.post(`${BASE_URL}/updateCartItems`, async ctx => {
+  const data = await queries.updateCartItems(
     ctx.request.body,
     ctx.body.userInfo.id,
   );

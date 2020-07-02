@@ -50,8 +50,18 @@ const removeCartItemInstance = async cartInstanceId => {
 };
 
 const getCartItems = async () => {
-  const { data: cartItems } = await api('/api/shop/getCartItems');
+  const { data: cartItems } = await api(
+    '/api/shop/getCartItemsOrdered',
+  );
   return cartItems;
+};
+
+const updateCartItems = async params => {
+  await api('/api/shop/updateCartItems', {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+  return getCartItems();
 };
 
 export default function ShopDetails() {
@@ -60,6 +70,7 @@ export default function ShopDetails() {
   const { dispatch } = useContext(Store);
   const [item, setItem] = useState({});
   const [cart, setCart] = useState([]);
+  const [displayed, setDisplayed] = useState(true);
   const [deletedIds, setDeletedIds] = useState([]);
   const amount = useFormInput(0);
   const {
@@ -92,6 +103,7 @@ export default function ShopDetails() {
     setCart(newCart);
     dispatchCart(newCart);
     amount.setValue(oldValue => oldValue + 1);
+    setDisplayed(false);
   };
 
   const removeItem = async () => {
@@ -104,6 +116,9 @@ export default function ShopDetails() {
     setCart(newCart);
     dispatchCart(newCart);
     setDeletedIds([...deletedIds, itemToDelete.id]);
+    if (amount.value == 1) {
+      setDisplayed(true);
+    }
     amount.setValue(oldValue => Math.max(0, oldValue - 1));
   };
 
@@ -112,6 +127,17 @@ export default function ShopDetails() {
     setCart(newCart);
     dispatchCart(newCart);
     amount.setValue(0);
+    setDisplayed(true);
+  };
+
+  const onNbBlur = async e => {
+    const newNbInCart = e.target.value;
+    const newCart = await updateCartItems({
+      stripe_price_id: stripePriceId,
+      nb_in_cart: newNbInCart,
+    });
+    setItems(newCart);
+    dispatchCart(newCart);
   };
 
   const fetchItem = async () => {
@@ -143,7 +169,7 @@ export default function ShopDetails() {
         >
           {description}
         </Typography>
-        {amount.value > 0 ? (
+        {!displayed ? (
           <div className={styles.cartButton}>
             <Button
               size="small"
@@ -165,6 +191,7 @@ export default function ShopDetails() {
             <div className={styles.cartButtonChildren}>
               <TextField
                 {...amount.inputProps}
+                onBlur={onNbBlur}
                 inputProps={{
                   min: 0,
                   style: { textAlign: 'center' },
