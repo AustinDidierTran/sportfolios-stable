@@ -29,7 +29,7 @@ export default function DataRow(props) {
     <TableRow>
       {headers.map((h, index) => (
         <>
-          {h.display === 'Price' ? (
+          {h.value === 3 ? (
             <TableCell key={index}>{`${datum[h.value] /
               100}$`}</TableCell>
           ) : (

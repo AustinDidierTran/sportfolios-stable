@@ -95,92 +95,92 @@ export default function Memberships() {
   };
 
   const clickBecomeMember = async (
-    membership_type,
-    person_id,
-    entity_id,
+    membershipType,
+    personId,
+    entityId,
     length,
-    fixed_date,
-    stripe_price_id,
+    fixedDate,
+    stripePriceId,
   ) => {
-    const expiration_date = getExpirationDate(length, fixed_date);
+    const expirationDate = getExpirationDate(length, fixedDate);
     await addMembership(
-      membership_type,
-      person_id,
-      entity_id,
-      expiration_date,
-      stripe_price_id,
+      membershipType,
+      personId,
+      entityId,
+      expirationDate,
+      stripePriceId,
     );
   };
 
   const clickRenewMember = async (
-    membership_type,
-    person_id,
-    entity_id,
+    membershipType,
+    personId,
+    entityId,
     length,
-    fixed_date,
-    stripe_price_id,
+    fixedDate,
+    stripePriceId,
   ) => {
-    const expiration_date = getExpirationDate(length, fixed_date);
+    const expirationDate = getExpirationDate(length, fixedDate);
     await updateMembership(
-      membership_type,
-      person_id,
-      entity_id,
-      expiration_date,
-      stripe_price_id,
+      membershipType,
+      personId,
+      entityId,
+      expirationDate,
+      stripePriceId,
     );
   };
 
   const addMembership = async (
-    type,
-    person_id,
-    organization_id,
-    expiration_date,
-    stripe_price_id,
+    membershipType,
+    personId,
+    entityId,
+    expirationDate,
+    stripePriceId,
   ) => {
     await api('/api/entity/member', {
       method: 'POST',
       body: JSON.stringify({
-        member_type: type,
-        person_id,
-        organization_id,
-        expiration_date,
+        member_type: Number(membershipType),
+        person_id: personId,
+        organization_id: entityId,
+        expiration_date: expirationDate,
       }),
     });
     await api('/api/shop/addCartItem', {
       method: 'POST',
       body: JSON.stringify({
-        stripe_price_id,
+        stripe_price_id: stripePriceId,
       }),
     });
     goTo(ROUTES.cart, {
-      id: person_id,
+      id: personId,
     });
   };
 
   const updateMembership = async (
-    type,
-    person_id,
-    organization_id,
-    expiration_date,
-    stripe_price_id,
+    membershipType,
+    personId,
+    entityId,
+    expirationDate,
+    stripePriceId,
   ) => {
     await api('/api/entity/member', {
       method: 'PUT',
       body: JSON.stringify({
-        member_type: type,
-        person_id,
-        organization_id,
-        expiration_date,
+        member_type: Number(membershipType),
+        person_id: personId,
+        organization_id: entityId,
+        expiration_date: expirationDate,
       }),
     });
     await api('/api/shop/addCartItem', {
       method: 'POST',
       body: JSON.stringify({
-        stripe_price_id,
+        stripe_price_id: stripePriceId,
       }),
     });
     goTo(ROUTES.cart, {
-      id: person_id,
+      id: personId,
     });
   };
 
