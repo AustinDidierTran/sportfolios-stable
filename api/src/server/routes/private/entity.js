@@ -253,7 +253,10 @@ router.post(`${BASE_URL}/option`, async ctx => {
 });
 
 router.post(`${BASE_URL}/membership`, async ctx => {
-  const entity = await queries.addMembership(ctx.request.body);
+  const entity = await queries.addMembership(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (entity) {
     ctx.status = 201;
     ctx.body = {

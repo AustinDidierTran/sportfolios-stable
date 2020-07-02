@@ -25,11 +25,17 @@ export default function DataRow(props) {
       values[key].changeDefault(datum[key]),
     );
   }, [datum]);
-
   return (
     <TableRow>
       {headers.map((h, index) => (
-        <TableCell key={index}>{datum[h.value]}</TableCell>
+        <>
+          {h.value === 3 ? (
+            <TableCell key={index}>{`${datum[h.value] /
+              100}$`}</TableCell>
+          ) : (
+            <TableCell key={index}>{datum[h.value]}</TableCell>
+          )}
+        </>
       ))}
       <TableCell>
         <IconButton

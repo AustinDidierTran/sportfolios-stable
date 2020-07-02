@@ -7,7 +7,6 @@ import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { useQuery } from '../../hooks/queries';
 import { GLOBAL_ENUM } from '../../../../common/enums';
-import { TABS_ENUM } from '../../tabs';
 import moment from 'moment';
 import {
   getMembershipLength,
@@ -67,6 +66,7 @@ export default function Memberships() {
           r.entity_id,
           r.length,
           r.fixed_date,
+          r.stripe_price_id,
         );
       r.clickRenewMember = () =>
         clickRenewMember(
@@ -75,6 +75,7 @@ export default function Memberships() {
           r.entity_id,
           r.length,
           r.fixed_date,
+          r.stripe_price_id,
         );
       r.isMember = isMember;
       return membership_type === r.membership_type;
@@ -94,78 +95,92 @@ export default function Memberships() {
   };
 
   const clickBecomeMember = async (
-    membership_type,
-    person_id,
-    entity_id,
+    membershipType,
+    personId,
+    entityId,
     length,
-    fixed_date,
+    fixedDate,
+    stripePriceId,
   ) => {
-    const expiration_date = getExpirationDate(length, fixed_date);
+    const expirationDate = getExpirationDate(length, fixedDate);
     await addMembership(
-      membership_type,
-      person_id,
-      entity_id,
-      expiration_date,
-    );
-    goTo(
-      ROUTES.entity,
-      { id: entity_id },
-      { tab: TABS_ENUM.SETTINGS },
+      membershipType,
+      personId,
+      entityId,
+      expirationDate,
+      stripePriceId,
     );
   };
 
   const clickRenewMember = async (
-    membership_type,
-    person_id,
-    entity_id,
+    membershipType,
+    personId,
+    entityId,
     length,
-    fixed_date,
+    fixedDate,
+    stripePriceId,
   ) => {
-    const expiration_date = getExpirationDate(length, fixed_date);
+    const expirationDate = getExpirationDate(length, fixedDate);
     await updateMembership(
-      membership_type,
-      person_id,
-      entity_id,
-      expiration_date,
-    );
-    goTo(
-      ROUTES.entity,
-      { id: entity_id },
-      { tab: TABS_ENUM.SETTINGS },
+      membershipType,
+      personId,
+      entityId,
+      expirationDate,
+      stripePriceId,
     );
   };
 
   const addMembership = async (
-    type,
-    person_id,
-    organization_id,
-    expiration_date,
+    membershipType,
+    personId,
+    entityId,
+    expirationDate,
+    stripePriceId,
   ) => {
     await api('/api/entity/member', {
       method: 'POST',
       body: JSON.stringify({
-        member_type: type,
-        person_id,
-        organization_id,
-        expiration_date,
+        member_type: Number(membershipType),
+        person_id: personId,
+        organization_id: entityId,
+        expiration_date: expirationDate,
       }),
+    });
+    await api('/api/shop/addCartItem', {
+      method: 'POST',
+      body: JSON.stringify({
+        stripe_price_id: stripePriceId,
+      }),
+    });
+    goTo(ROUTES.cart, {
+      id: personId,
     });
   };
 
   const updateMembership = async (
-    type,
-    person_id,
-    organization_id,
-    expiration_date,
+    membershipType,
+    personId,
+    entityId,
+    expirationDate,
+    stripePriceId,
   ) => {
     await api('/api/entity/member', {
       method: 'PUT',
       body: JSON.stringify({
-        member_type: type,
-        person_id,
-        organization_id,
-        expiration_date,
+        member_type: Number(membershipType),
+        person_id: personId,
+        organization_id: entityId,
+        expiration_date: expirationDate,
       }),
+    });
+    await api('/api/shop/addCartItem', {
+      method: 'POST',
+      body: JSON.stringify({
+        stripe_price_id: stripePriceId,
+      }),
+    });
+    goTo(ROUTES.cart, {
+      id: personId,
     });
   };
 
