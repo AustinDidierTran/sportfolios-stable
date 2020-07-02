@@ -13,7 +13,7 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import styles from './Admin.module.css';
+import styles from './TeamRegistered.module.css';
 import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles({
