@@ -1,10 +1,6 @@
 import React from 'react';
 import { GLOBAL_ENUM } from '../../../../common/enums';
-import {
-  SearchList,
-  Button,
-  Container,
-} from '../../components/Custom';
+import { SearchList, Button } from '../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../hooks/forms';
 import TeamItem from '../../components/Custom/List/TeamItem';
@@ -16,9 +12,13 @@ export default function TeamSelect(props) {
   const { onClick, team } = props;
   const query = useFormInput('');
 
+  const onCreate = () => {
+    goTo(ROUTES.create, null, { type: GLOBAL_ENUM.TEAM });
+  };
+
   if (team) {
     return (
-      <Container className={styles.main}>
+      <div className={styles.main}>
         <TeamItem
           {...team}
           secondary="Selected Team"
@@ -37,18 +37,16 @@ export default function TeamSelect(props) {
           variant="contained"
           endIcon="Add"
           style={{ margin: '8px' }}
-          onClick={() => {
-            goTo(ROUTES.create, null, { type: 3 });
-          }}
+          onClick={onCreate}
         >
           {t('create_team')}
         </Button>
-      </Container>
+      </div>
     );
   }
 
   return (
-    <Container className={styles.main}>
+    <div className={styles.main}>
       <SearchList
         className={styles.item}
         clearOnSelect={false}
@@ -63,12 +61,10 @@ export default function TeamSelect(props) {
         variant="contained"
         endIcon="Add"
         style={{ margin: '8px' }}
-        onClick={() => {
-          goTo(ROUTES.create, null, { type: 3 });
-        }}
+        onClick={onCreate}
       >
         {t('create_team')}
       </Button>
-    </Container>
+    </div>
   );
 }
