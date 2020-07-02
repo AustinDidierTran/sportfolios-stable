@@ -53,7 +53,7 @@ const addEntity = async (body, user_id) => {
           })
           .transacting(trx);
 
-        if (type === GLOBAL_ENUM.ORGANIZATION) {
+        if (Number(type) === GLOBAL_ENUM.ORGANIZATION) {
           const [organization] = await knex('organizations')
             .insert({ id: entity_id })
             .returning(['id'])
@@ -62,7 +62,7 @@ const addEntity = async (body, user_id) => {
           return organization;
         }
 
-        if (type === GLOBAL_ENUM.TEAM) {
+        if (Number(type) === GLOBAL_ENUM.TEAM) {
           const [team] = await knex('teams')
             .insert({ id: entity_id })
             .returning(['id'])

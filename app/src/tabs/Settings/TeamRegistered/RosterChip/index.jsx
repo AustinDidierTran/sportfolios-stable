@@ -23,10 +23,16 @@ export default function RosterChips(props) {
   return (
     <div className={classes.root}>
       {state ? (
-        <Chip label="Conforme" icon={<FaceIcon />} color="primary" />
+        <Chip
+          label="Conforme"
+          variant="outlined"
+          icon={<FaceIcon />}
+          color="primary"
+        />
       ) : (
         <Chip
           label="Non-Conforme"
+          variant="outlined"
           icon={<FaceIcon />}
           color="secondary"
         />

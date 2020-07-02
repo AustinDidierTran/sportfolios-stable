@@ -26,11 +26,17 @@ export default function PaymentChips(props) {
           label={state}
           icon={<AttachMoney />}
           color="secondary"
+          variant="outlined"
         />
       ) : mobile ? (
         <></>
       ) : (
-        <Chip label={state} icon={<AttachMoney />} color="primary" />
+        <Chip
+          label={state}
+          icon={<AttachMoney />}
+          color="primary"
+          variant="outlined"
+        />
       )}
     </div>
   );

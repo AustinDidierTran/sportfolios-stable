@@ -4,7 +4,6 @@ import { Button, Typography, Tab, Tabs } from '../../components/MUI';
 import { Container, Paper } from '../../components/Custom';
 
 import styles from './Event.module.css';
-import Admin from './Admin';
 import Infos from './Infos';
 import Ranking from './Ranking';
 import Schedule from './Schedule';
@@ -14,7 +13,6 @@ export const TABS_ENUM = {
   SCHEDULE: 'schedule',
   RANKING: 'ranking',
   INFOS: 'infos',
-  ADMIN: 'admin',
 };
 
 export default function Event(props) {
@@ -52,12 +50,6 @@ export default function Event(props) {
       component: Infos,
       label: t('infos'),
       icon: 'Info',
-    },
-    {
-      value: TABS_ENUM.ADMIN,
-      component: Admin,
-      label: t('admin'),
-      icon: 'Lock',
     },
   ];
   const OpenTab = states.find(s => s.value == eventState).component;
