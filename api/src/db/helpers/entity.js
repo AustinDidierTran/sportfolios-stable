@@ -415,6 +415,7 @@ async function addOption(
     active: true,
     description: entity.name,
   };
+    
   const product = await addProduct({ stripeProduct });
   const stripePrice = {
     currency: 'cad',
@@ -422,7 +423,8 @@ async function addOption(
     active: true,
     product: product.id,
   };
-  const priceStripe = await addPrice({
+
+    const priceStripe = await addPrice({
     stripePrice,
     entity_id: event_id,
     photo_url: entity.photoUrl,

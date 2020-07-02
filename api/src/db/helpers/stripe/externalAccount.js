@@ -5,6 +5,11 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const knex = require('../../connection');
 const stripeEnums = require('./enums');
 const { BUSINESS_TYPE_ENUM, TEST_EXTERNAL_ACCOUNT } = stripeEnums;
+const {
+  stripeErrorLogger,
+  stripeLogger,
+} = require('../../../server/utils/logger');
+
 const getStripeAccountId = async senderId => {
   const data = await knex
     .select('account_id')
@@ -109,15 +114,13 @@ const createExternalAccount = async (body, user_id, ip) => {
       );
 
       if (account) {
-        /* eslint-disable-next-line */
-        console.log('External Account Created', account.id);
+        stripeLogger('External Account Created', account.id);
         return { status: 200, data: account.id };
       }
     }
   } catch (error) {
     if (error) {
-      /* eslint-disable-next-line */
-      console.error('ERROR: Account Token NOT CREATED');
+      stripeErrorLogger('ERROR: Account Token NOT CREATED');
       returnCode = { status: 403, error };
       return returnCode;
     }

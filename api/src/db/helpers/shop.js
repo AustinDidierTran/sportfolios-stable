@@ -1,4 +1,8 @@
 const knex = require('../connection');
+const {
+  stripeErrorLogger,
+  stripeLogger,
+} = require('../../server/utils/logger');
 
 const getShopItems = async entity_id => {
   const res = await knex('store_items')
@@ -61,10 +65,10 @@ const getCartItems = async user_id => {
         'stripe_price.stripe_price_id',
       )
       .where('cart_items.user_id', user_id);
+    stripeLogger('CartItems', cartItems);
     return cartItems || [];
   } catch (err) {
-    /* eslint-disable-next-line */
-    console.error('GetCartItems error', err);
+    stripeErrorLogger('GetCartItem error', err);
     throw err;
   }
 };
@@ -87,11 +91,9 @@ const removeCartItem = async (query, user_id) => {
     await knex('cart_items')
       .where({ user_id: user_id, stripe_price_id: stripe_price_id })
       .del();
-    /* eslint-disable-next-line */
-    console.log('Removed Item:');
+    stripeLogger('Removed Item:');
   } catch (err) {
-    /* eslint-disable-next-line */
-    console.error('removeCartItem error', err);
+    stripeErrorLogger('removeCartItem error', err);
     throw err;
   }
 };
@@ -101,11 +103,9 @@ const removeCartItems = async (query, user_id) => {
     await knex('cart_items')
       .where({ user_id })
       .del();
-    /* eslint-disable-next-line */
-    console.log('Removed all cart items');
+    stripeLogger('Removed all cart items');
   } catch (err) {
-    /* eslint-disable-next-line */
-    console.error('removeCartItems error', err);
+    stripeErrorLogger('removeCartItems error', err);
     throw err;
   }
 };
