@@ -5,6 +5,7 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import styles from './Stepper.module.css';
+import { useTranslation } from 'react-i18next';
 
 export default function CustomStepperWithHooks(props) {
   const {
@@ -16,6 +17,7 @@ export default function CustomStepperWithHooks(props) {
     finish,
     steps,
   } = props;
+  const { t } = useTranslation();
 
   return (
     <div className={styles.all}>
@@ -38,10 +40,10 @@ export default function CustomStepperWithHooks(props) {
         {activeStep === steps.length ? (
           <div>
             <Typography className={styles.instructions}>
-              All steps completed - you&apos;re finished
+              {t('all_steps_completed')}
             </Typography>
             <Button onClick={handleReset} className={styles.button}>
-              Reset
+              {t('Reset')}
             </Button>
           </div>
         ) : (
@@ -57,7 +59,7 @@ export default function CustomStepperWithHooks(props) {
                   variant="contained"
                   color="primary"
                 >
-                  Back
+                  {t('Back')}
                 </Button>
               </div>
               {finish && activeStep === steps.length - 1 ? (
@@ -68,7 +70,7 @@ export default function CustomStepperWithHooks(props) {
                     onClick={finish}
                     disabled={!completed.has(activeStep)}
                   >
-                    Finish
+                    {t('Finish')}
                   </Button>
                 </div>
               ) : (
@@ -80,8 +82,8 @@ export default function CustomStepperWithHooks(props) {
                     disabled={!completed.has(activeStep)}
                   >
                     {activeStep === steps.length - 1
-                      ? 'Finish'
-                      : 'Next'}
+                      ? t('Finish')
+                      : t('Next')}
                   </Button>
                 </div>
               )}
