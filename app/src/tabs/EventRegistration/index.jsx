@@ -6,7 +6,7 @@ import { useStepper } from '../../hooks/forms';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import moment from 'moment';
-import { formatRoute } from '../../actions/goTo';
+import { formatRoute, ROUTES, goTo } from '../../actions/goTo';
 
 export default function EventRegistration() {
   const { id: event_id } = useParams();
@@ -45,11 +45,21 @@ export default function EventRegistration() {
   const onTeamSelect = (e, t) => {
     setTeam(t);
     stepHook.handleCompleted(0);
-    stepHook.handleNext();
   };
 
   const onPaymentOptionSelect = (e, paymentOptionProp) => {
-    setPaymentOption(paymentOptionProp), stepHook.handleCompleted(1);
+    setPaymentOption(paymentOptionProp);
+    stepHook.handleCompleted(1);
+  };
+
+  const finish = async () => {
+    await api('/api/shop/addCartItem', {
+      method: 'POST',
+      body: JSON.stringify({ stripe_price_id: paymentOption }),
+    });
+    goTo(ROUTES.cart, {
+      id: JSON.parse(localStorage.getItem('userInfo')).persons[0],
+    });
   };
 
   const steps = [
@@ -71,7 +81,11 @@ export default function EventRegistration() {
 
   return (
     <Paper title="Event registration">
-      <StepperWithHooks steps={steps} {...stepHook.stepperProps} />
+      <StepperWithHooks
+        steps={steps}
+        finish={finish}
+        {...stepHook.stepperProps}
+      />
     </Paper>
   );
 }

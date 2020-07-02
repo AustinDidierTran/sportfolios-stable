@@ -12,6 +12,8 @@ export default function CustomStepperWithHooks(props) {
     completed,
     handleBack,
     handleNext,
+    handleReset,
+    finish,
     steps,
   } = props;
 
@@ -58,18 +60,31 @@ export default function CustomStepperWithHooks(props) {
                   Back
                 </Button>
               </div>
-              <div className={styles.button}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleNext}
-                  disabled={!completed.has(activeStep)}
-                >
-                  {activeStep === steps.length - 1
-                    ? 'Finish'
-                    : 'Next'}
-                </Button>
-              </div>
+              {finish && activeStep === steps.length - 1 ? (
+                <div className={styles.button}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={finish}
+                    disabled={!completed.has(activeStep)}
+                  >
+                    Finish
+                  </Button>
+                </div>
+              ) : (
+                <div className={styles.button}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleNext}
+                    disabled={!completed.has(activeStep)}
+                  >
+                    {activeStep === steps.length - 1
+                      ? 'Finish'
+                      : 'Next'}
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -76,6 +76,7 @@ export default {
     password: 'Mot de passe',
     pay: 'Payer',
     payment_option: 'Option de paiement',
+    payment_options: 'Options de paiements',
     payment_option_exist: 'Option de paiement existante',
     payments: 'Paiements',
     person: 'Person',
