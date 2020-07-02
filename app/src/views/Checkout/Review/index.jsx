@@ -13,7 +13,7 @@ import { CARD_TYPE_ENUM } from '../../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 
 const deleteCartItems = async () => {
-  const { data: newCart } = await api('/api/shop/removeCartItems', {
+  const { data: newCart } = await api('/api/shop/clearCart', {
     method: 'DELETE',
   });
   return newCart;

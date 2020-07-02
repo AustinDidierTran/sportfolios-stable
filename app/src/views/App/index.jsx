@@ -33,6 +33,7 @@ import Stripe from '../../utils/stripe/Payment/index';
 import UserSettings from '../UserSettings';
 import Cart from '../Cart';
 import Checkout from '../Checkout';
+import ShopDetails from '../ShopDetails';
 
 // Mocks
 import MockEvent from '../Mocks/Event';
@@ -148,6 +149,11 @@ export default function App() {
                   exact
                   path={ROUTES.stripe}
                   component={Stripe}
+                />
+                <Route
+                  exact
+                  path={ROUTES.shopDetails}
+                  component={ShopDetails}
                 />
                 <PrivateRoute
                   path={ROUTES.search}

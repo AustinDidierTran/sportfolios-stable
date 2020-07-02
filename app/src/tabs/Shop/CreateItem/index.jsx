@@ -54,7 +54,15 @@ export default function CreateItem(props) {
   };
 
   if (!isCreating) {
-    return <Button onClick={reset}>Add new Product</Button>;
+    return (
+      <Button
+        size="large"
+        className={styles.newProduct}
+        onClick={reset}
+      >
+        Add new Product
+      </Button>
+    );
   }
 
   return (

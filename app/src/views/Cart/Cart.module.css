@@ -4,6 +4,7 @@
   column-gap: 16px;
   row-gap: 16px;
   padding: 0px !important;
+  position: relative;
 }
 
 @media (min-width: 768px) {
@@ -22,6 +23,8 @@
   display: flex;
   flex-direction: column;
   align-content: center;
+  height: calc(100vh - 120px);
+  justify-content: space-between;
 }
 
 .title {
@@ -32,8 +35,13 @@
 .content {
   flex: 1 1 auto;
 }
+.spacer {
+  flex: 1 0 80px;
+}
 
 .button {
-  flex: 1 1 auto;
-  align-self: center;
+  position: fixed !important;
+  bottom: calc(56px + 8px);
+  left: 8px;
+  width: calc(100vw - 16px);
 }

@@ -4,6 +4,17 @@ const queries = require('../../../db/queries/shop');
 const router = new Router();
 const BASE_URL = '/api/shop';
 
+router.get(`${BASE_URL}/getItem`, async ctx => {
+  const data = await queries.getItem(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 router.get(`${BASE_URL}/getItems`, async ctx => {
   const data = await queries.getItems(
     ctx.query.id,
@@ -37,8 +48,8 @@ router.post(`${BASE_URL}/addCartItem`, async ctx => {
   };
 });
 
-router.delete(`${BASE_URL}/removeCartItem`, async ctx => {
-  const data = await queries.deleteCartItem(
+router.delete(`${BASE_URL}/removeAllInstancesFromCart`, async ctx => {
+  const data = await queries.removeAllInstancesFromCart(
     ctx.query,
     ctx.body.userInfo.id,
   );
@@ -48,8 +59,19 @@ router.delete(`${BASE_URL}/removeCartItem`, async ctx => {
   };
 });
 
-router.delete(`${BASE_URL}/removeCartItems`, async ctx => {
-  const data = await queries.deleteCartItems(
+router.delete(`${BASE_URL}/removeCartItemInstance`, async ctx => {
+  const data = await queries.removeCartItemInstance(
+    ctx.query,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
+router.delete(`${BASE_URL}/clearCart`, async ctx => {
+  const data = await queries.clearCart(
     ctx.query,
     ctx.body.userInfo.id,
   );

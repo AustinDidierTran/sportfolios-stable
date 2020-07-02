@@ -1,10 +1,16 @@
 const {
+  getItem: getItemHelper,
   getShopItems,
   getCartItems,
   addCartItem,
-  removeCartItem,
-  removeCartItems,
+  removeCartItemInstance: removeCartItemInstanceHelper,
+  removeAllInstancesFromCart: removeAllInstancesFromCartHelper,
+  clearCart: clearCartHelper,
 } = require('../helpers/shop');
+
+const getItem = async (stripe_price_id, user_id) => {
+  return getItemHelper(stripe_price_id, user_id);
+};
 
 const getItems = async (entity_id, user_id) => {
   return getShopItems(entity_id, user_id);
@@ -19,20 +25,27 @@ const addToCart = async (body, user_id) => {
   return getCartItems(user_id);
 };
 
-const deleteCartItem = async (query, user_id) => {
-  await removeCartItem(query, user_id);
+const removeCartItemInstance = async (query, user_id) => {
+  await removeCartItemInstanceHelper(query, user_id);
   return getCartItems(user_id);
 };
 
-const deleteCartItems = async (query, user_id) => {
-  await removeCartItems(query, user_id);
+const removeAllInstancesFromCart = async (query, user_id) => {
+  await removeAllInstancesFromCartHelper(query, user_id);
+  return getCartItems(user_id);
+};
+
+const clearCart = async (query, user_id) => {
+  await clearCartHelper(query, user_id);
   return getCartItems(user_id);
 };
 
 module.exports = {
+  getItem,
   getItems,
   getCart,
   addToCart,
-  deleteCartItem,
-  deleteCartItems,
+  removeCartItemInstance,
+  removeAllInstancesFromCart,
+  clearCart,
 };
