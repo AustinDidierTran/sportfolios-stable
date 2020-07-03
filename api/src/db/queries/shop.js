@@ -1,7 +1,6 @@
 const {
   getItem: getItemHelper,
   getShopItems,
-  getCartItems,
   addCartItem,
   updateCartItems: updateCartItemsHelper,
   removeCartItemInstance: removeCartItemInstanceHelper,
@@ -19,7 +18,7 @@ const getItems = async (entity_id, user_id) => {
 };
 
 const getCart = async (entity_id, user_id) => {
-  return getCartItems(user_id);
+  return getCartItemsOrdered(user_id);
 };
 
 const getCartItemsOrdered = async (entity_id, user_id) => {
@@ -28,27 +27,22 @@ const getCartItemsOrdered = async (entity_id, user_id) => {
 
 const addToCart = async (body, user_id) => {
   await addCartItem(body, user_id);
-  return getCartItems(user_id);
 };
 
 const updateCartItems = async (body, user_id) => {
   await updateCartItemsHelper(body, user_id);
-  return getCartItems(user_id);
 };
 
 const removeCartItemInstance = async (query, user_id) => {
   await removeCartItemInstanceHelper(query, user_id);
-  return getCartItems(user_id);
 };
 
 const removeAllInstancesFromCart = async (query, user_id) => {
   await removeAllInstancesFromCartHelper(query, user_id);
-  return getCartItems(user_id);
 };
 
 const clearCart = async (query, user_id) => {
   await clearCartHelper(query, user_id);
-  return getCartItems(user_id);
 };
 
 module.exports = {
