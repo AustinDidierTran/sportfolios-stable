@@ -58,6 +58,7 @@ export default function Memberships() {
   const getOptions = async () => {
     const res = await api(`/api/entity/memberships/?id=${entity_id}`);
     const options = res.data.filter(r => {
+      r.price = r.price / 100;
       r.type = GLOBAL_ENUM.MEMBERSHIP_DETAIL;
       r.clickBecomeMember = () =>
         clickBecomeMember(
@@ -137,15 +138,6 @@ export default function Memberships() {
     expirationDate,
     stripePriceId,
   ) => {
-    await api('/api/entity/member', {
-      method: 'POST',
-      body: JSON.stringify({
-        member_type: Number(membershipType),
-        person_id: personId,
-        organization_id: entityId,
-        expiration_date: expirationDate,
-      }),
-    });
     await api('/api/shop/addCartItem', {
       method: 'POST',
       body: JSON.stringify({

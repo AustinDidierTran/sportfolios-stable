@@ -353,6 +353,18 @@ async function getMemberships(entity_id) {
     .where({ entity_id });
 }
 
+async function getRegistered(team_id, event_id) {
+  const rosters = await knex('team_rosters')
+    .select('id')
+    .where({ team_id });
+  const rosters_id = rosters.map(roster => roster.id);
+
+  return await knex('event_rosters')
+    .select('*')
+    .where({ event_id })
+    .whereIn('roster_id', rosters_id);
+}
+
 async function updateEntityRole(entity_id, entity_id_admin, role) {
   const [entity] = await knex('entities_role')
     .update({ role })
@@ -371,6 +383,16 @@ async function updateEntityPhoto(entity_id, photo_url) {
   return knex('entities_photo')
     .update({ photo_url })
     .where({ entity_id });
+}
+async function updateRegistration(
+  roster_id,
+  event_id,
+  invoice_id,
+  status,
+) {
+  return knex('event_rosters')
+    .update({ status })
+    .where({ roster_id, event_id, invoice_id });
 }
 
 async function addEntityRole(entity_id, entity_id_admin, role) {
@@ -465,7 +487,7 @@ async function addMembership(
     unit_amount: price,
     active: true,
     product: product.id,
-    metadata: { type: GLOBAL_ENUM.MEMBERSHIP, id: event_id },
+    metadata: { type: GLOBAL_ENUM.MEMBERSHIP, id: entity_id },
   };
   const priceStripe = await addPrice({
     stripe_price,
@@ -481,6 +503,22 @@ async function addMembership(
       length,
       fixed_date,
       price,
+    })
+    .returning('*');
+  return res;
+}
+
+async function addTeamToEvent(team_id, event_id, invoice_id, status) {
+  const [roster] = await knex('team_rosters')
+    .insert({ team_id })
+    .returning('*');
+
+  const [res] = await knex('event_rosters')
+    .insert({
+      roster_id: roster.id,
+      event_id,
+      invoice_id,
+      status,
     })
     .returning('*');
   return res;
@@ -561,6 +599,7 @@ module.exports = {
   addMember,
   addMembership,
   addOption,
+  addTeamToEvent,
   deleteEntity,
   deleteEntityMembership,
   deleteOption,
@@ -571,10 +610,12 @@ module.exports = {
   getEntityRole,
   getMembers,
   getMemberships,
+  getRegistered,
   getOptions,
   removeEntityRole,
   updateEntityName,
   updateEntityPhoto,
   updateEntityRole,
   updateMember,
+  updateRegistration,
 };

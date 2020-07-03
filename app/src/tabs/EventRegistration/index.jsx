@@ -7,12 +7,21 @@ import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import moment from 'moment';
 import { formatRoute, ROUTES, goTo } from '../../actions/goTo';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import { useTranslation } from 'react-i18next';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export default function EventRegistration() {
+  const { t } = useTranslation();
   const { id: event_id } = useParams();
   const [team, setTeam] = useState();
   const [paymentOption, setPaymentOption] = useState();
   const [paymentOptions, setPaymentOptions] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const getOptions = async () => {
     const { data } = await api(
@@ -42,9 +51,19 @@ export default function EventRegistration() {
   }, [event_id]);
 
   const stepHook = useStepper();
-  const onTeamSelect = (e, t) => {
-    setTeam(t);
-    stepHook.handleCompleted(0);
+  const onTeamSelect = async (e, t) => {
+    const { data } = await api(
+      formatRoute('/api/entity/registered', null, {
+        team_id: t.id,
+        event_id,
+      }),
+    );
+    if (data.length < 1) {
+      setTeam(t);
+      stepHook.handleCompleted(0);
+    } else {
+      setOpen(true);
+    }
   };
 
   const onPaymentOptionSelect = (e, paymentOptionProp) => {
@@ -86,6 +105,22 @@ export default function EventRegistration() {
         finish={finish}
         {...stepHook.stepperProps}
       />
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={() => {
+          setOpen(false);
+        }}
+      >
+        <Alert
+          onClose={() => {
+            setOpen(false);
+          }}
+          severity="error"
+        >
+          {t('team_already_registered')}
+        </Alert>
+      </Snackbar>
     </Paper>
   );
 }

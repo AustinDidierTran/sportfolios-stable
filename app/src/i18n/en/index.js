@@ -117,6 +117,7 @@ export default {
     shop: 'Shop',
     tournament_fee: 'Tournament Fee',
     team: 'Teams',
+    team_already_registered: 'Team already registered',
     team_history: 'Team History',
     teams: 'Teams',
     unsupported_language: 'Unsupported language',
