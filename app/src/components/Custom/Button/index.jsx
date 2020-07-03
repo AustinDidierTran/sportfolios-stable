@@ -11,7 +11,7 @@ export default function CustomButton(props) {
   );
   return (
     <Button
-      size="small"
+      size={props.size || 'small'}
       color="primary"
       variant="contained"
       {...props}

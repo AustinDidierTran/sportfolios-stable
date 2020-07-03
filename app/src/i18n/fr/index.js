@@ -191,6 +191,7 @@ export default {
     edit: 'Modifier',
     save: 'Sauvegarder',
     submit: 'Soumettre',
+    checkout: 'Procéder',
     use_same_and_continue: 'Utiliser le même et continuer',
     personnal_information: 'Informations personnelles',
     create_new_account: 'Créer un nouveau compte',

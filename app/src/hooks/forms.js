@@ -44,6 +44,7 @@ export const useFormInput = initialValue => {
     reset,
     setCurrentAsDefault,
     setError,
+    setValue,
   };
 };
 
