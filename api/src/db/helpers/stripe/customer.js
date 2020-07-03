@@ -74,27 +74,30 @@ const createPaymentMethod = async (body, userId) => {
 };
 
 const addPaymentMethodCustomer = async (body, userId) => {
-  const { payment_method_id } = body;
+  const { payment_method_id: paymentMethodId } = body;
+
   const customerId = await getCustomerId(userId);
 
-  stripe.paymentMethods.attach(
-    payment_method_id,
-    { customer: customerId },
-    async function(err, paymentMethod) {
-      if (paymentMethod) {
-        stripeLogger(
-          `PaymentMethod successfully attached to customer ${customerId}`,
-        );
-      }
-      if (err) {
-        stripeErrorLogger(
-          `Error when attaching payment method to customer ${customerId}`,
-        );
-      }
-    },
-  );
+  const setupIntentParams = {
+    confirm: true,
+    customer: customerId,
+    payment_method: paymentMethodId,
+    payment_method_types: ['card'],
+    metadata: {},
+  };
 
-  return getCustomerId(userId);
+  try {
+    await stripe.setupIntents.create(setupIntentParams);
+    await stripe.customers.update(customerId, {
+      invoice_settings: { default_payment_method: paymentMethodId },
+    });
+    stripeLogger(`Payment method attached`);
+
+    return getCustomerId(userId);
+  } catch (err) {
+    stripeErrorLogger('AttachPaymentMethod error', err);
+    throw err;
+  }
 };
 
 const removePaymentMethodCustomer = async body => {

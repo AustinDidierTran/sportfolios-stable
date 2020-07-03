@@ -71,7 +71,7 @@ export default function Item(props) {
   const addItem = async () => {
     const newCart = await addCartItem({
       stripe_price_id: stripePriceId,
-      entity_id: id,
+      metadata: { buyer_entity_id: 'Buyer_id_hihi' },
     });
     setItems(newCart);
     dispatchCart(newCart);

@@ -140,24 +140,18 @@ const getCartItemsOrdered = async user_id => {
 };
 
 const addCartItem = async (body, user_id) => {
-  const { stripe_price_id } = body;
-
-  const [price] = await knex('stripe_price')
-    .select('*')
-    .where({ stripe_price_id });
-  const metadata = price.metadata;
+  const { stripe_price_id, metadata } = body;
 
   await knex('cart_items').insert({
     stripe_price_id,
     user_id,
     metadata,
   });
-
   return stripe_price_id;
 };
 
 const updateCartItems = async (body, user_id) => {
-  const { stripe_price_id, nb_in_cart: new_nb } = body;
+  const { stripe_price_id, nb_in_cart: new_nb, metadata } = body;
 
   const curr_cart = await getCartItems(user_id);
   const curr_cart_ordered = await getCartItemsOrdered(user_id);
@@ -168,7 +162,7 @@ const updateCartItems = async (body, user_id) => {
 
   if (diff > 0) {
     for (let i = 0; i < diff; i++) {
-      await addCartItem({ stripe_price_id }, user_id);
+      await addCartItem({ stripe_price_id, metadata }, user_id);
     }
   } else if (diff < 0) {
     var deletedIds = [];

@@ -110,6 +110,27 @@ const getReceipt = async query => {
   }
 };
 
+const getMetadata = async stripe_price_id => {
+  const [stripe_price] = await knex('stripe_price')
+    .select('*')
+    .where({ stripe_price_id });
+
+  const [stripe_product] = await knex('stripe_product')
+    .select('*')
+    .where({ stripe_product_id: stripe_price.stripe_product_id });
+
+  const [cart_item] = await knex('cart_items')
+    .select('*')
+    .where({ stripe_price_id });
+
+  const metadata = {
+    ...cart_item.metadata,
+    ...stripe_price.metadata,
+    ...stripe_product.metadata,
+  };
+  return metadata;
+};
+
 const checkout = async (body, userId) => {
   const { prices = [] } = body;
   const invoiceParams = {
@@ -123,23 +144,21 @@ const checkout = async (body, userId) => {
   try {
     await Promise.all(
       prices.map(async item => {
-        const { id: invoiceItemId } = await createInvoiceItem(
-          { price: item.price },
+        const stripe_price_id = item.price;
+        const metadata = await getMetadata(stripe_price_id);
+        const invoiceItem = await createInvoiceItem(
+          { price: stripe_price_id, metadata },
           userId,
         );
-        return invoiceItemId;
+        return invoiceItem.id;
       }),
     );
 
-    const { id: invoice_id } = await createInvoice(
-      { invoiceParams },
-      userId,
-    );
-
+    const invoice = await createInvoice({ invoiceParams }, userId);
+    await stripe.customers.retrieve(invoice.customer);
+    const invoice_id = invoice.id;
     await finalizeInvoice({ invoice_id }, userId);
-
     const paidInvoice = await payInvoice({ invoice_id }, userId);
-
     const charge_id = await paidInvoice.charge;
 
     return getReceipt({ charge_id, invoice_id });

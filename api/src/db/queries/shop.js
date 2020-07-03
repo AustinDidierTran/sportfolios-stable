@@ -6,6 +6,7 @@ const {
   removeCartItemInstance: removeCartItemInstanceHelper,
   removeAllInstancesFromCart: removeAllInstancesFromCartHelper,
   clearCart: clearCartHelper,
+  getCartItems,
   getCartItemsOrdered: getCartItemsOrderedHelper,
 } = require('../helpers/shop');
 
@@ -18,7 +19,7 @@ const getItems = async (entity_id, user_id) => {
 };
 
 const getCart = async (entity_id, user_id) => {
-  return getCartItemsOrdered(user_id);
+  return getCartItems(user_id);
 };
 
 const getCartItemsOrdered = async (entity_id, user_id) => {
