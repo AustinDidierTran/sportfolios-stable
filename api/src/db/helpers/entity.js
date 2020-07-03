@@ -410,22 +410,23 @@ async function addOption(
 ) {
   const entity = await getEntity(event_id, user_id);
 
-  const stripeProduct = {
+  const stripe_product = {
     name,
     active: true,
     description: entity.name,
+    metadata: { type: GLOBAL_ENUM.EVENT, id: event_id },
   };
-    
-  const product = await addProduct({ stripeProduct });
-  const stripePrice = {
+
+  const product = await addProduct({ stripe_product });
+  const stripe_price = {
     currency: 'cad',
     unit_amount: price,
     active: true,
     product: product.id,
+    metadata: { type: GLOBAL_ENUM.EVENT, id: event_id },
   };
-
-    const priceStripe = await addPrice({
-    stripePrice,
+  const priceStripe = await addPrice({
+    stripe_price,
     entity_id: event_id,
     photo_url: entity.photoUrl,
   });
@@ -452,20 +453,22 @@ async function addMembership(
 ) {
   const entity = await getEntity(entity_id, user_id);
 
-  const stripeProduct = {
+  const stripe_product = {
     name: getMembershipName(membership_type),
     active: true,
     description: entity.name,
+    metadata: { type: GLOBAL_ENUM.MEMBERSHIP, id: entity_id },
   };
-  const product = await addProduct({ stripeProduct });
-  const stripePrice = {
+  const product = await addProduct({ stripe_product });
+  const stripe_price = {
     currency: 'cad',
     unit_amount: price,
     active: true,
     product: product.id,
+    metadata: { type: GLOBAL_ENUM.MEMBERSHIP, id: event_id },
   };
   const priceStripe = await addPrice({
-    stripePrice,
+    stripe_price,
     entity_id,
     photo_url: entity.photoUrl,
   });

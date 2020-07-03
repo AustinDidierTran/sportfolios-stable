@@ -76,9 +76,15 @@ const getCartItems = async user_id => {
 const addCartItem = async (body, user_id) => {
   const { stripe_price_id } = body;
 
+  const [price] = await knex('stripe_price')
+    .select('*')
+    .where({ stripe_price_id });
+  const metadata = price.metadata;
+
   await knex('cart_items').insert({
     stripe_price_id,
     user_id,
+    metadata,
   });
 
   return stripe_price_id;

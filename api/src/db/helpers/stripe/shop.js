@@ -15,6 +15,7 @@ const addProduct = async body => {
       label: product.name,
       description: product.description,
       active: product.active,
+      metadata: product.metadata,
     });
 
     stripeLogger(`Product created, ${product.id}`);
@@ -37,6 +38,7 @@ const addPrice = async body => {
       amount: price.unit_amount,
       active: price.active,
       start_date: new Date(price.created * 1000),
+      metadata: price.metadata,
     });
     await knex('store_items').insert({
       entity_id,
