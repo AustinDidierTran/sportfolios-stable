@@ -10,40 +10,40 @@ const {
   getCartItemsOrdered: getCartItemsOrderedHelper,
 } = require('../helpers/shop');
 
-const getItem = async (stripe_price_id, user_id) => {
-  return getItemHelper(stripe_price_id, user_id);
+const getItem = async (stripePriceId, userId) => {
+  return getItemHelper(stripePriceId, userId);
 };
 
-const getItems = async (entity_id, user_id) => {
-  return getShopItems(entity_id, user_id);
+const getItems = async (entityId, userId) => {
+  return getShopItems(entityId, userId);
 };
 
-const getCart = async (entity_id, user_id) => {
-  return getCartItems(user_id);
+const getCart = async (entityId, userId) => {
+  return getCartItems(userId);
 };
 
-const getCartItemsOrdered = async (entity_id, user_id) => {
-  return getCartItemsOrderedHelper(user_id);
+const getCartItemsOrdered = async (entityId, userId) => {
+  return getCartItemsOrderedHelper(userId);
 };
 
-const addToCart = async (body, user_id) => {
-  await addCartItem(body, user_id);
+const addToCart = async (body, userId) => {
+  await addCartItem(body, userId);
 };
 
-const updateCartItems = async (body, user_id) => {
-  await updateCartItemsHelper(body, user_id);
+const updateCartItems = async (body, userId) => {
+  await updateCartItemsHelper(body, userId);
 };
 
-const removeCartItemInstance = async (query, user_id) => {
-  await removeCartItemInstanceHelper(query, user_id);
+const removeCartItemInstance = async (query, userId) => {
+  await removeCartItemInstanceHelper(query, userId);
 };
 
-const removeAllInstancesFromCart = async (query, user_id) => {
-  await removeAllInstancesFromCartHelper(query, user_id);
+const removeAllInstancesFromCart = async (query, userId) => {
+  await removeAllInstancesFromCartHelper(query, userId);
 };
 
-const clearCart = async (query, user_id) => {
-  await clearCartHelper(query, user_id);
+const clearCart = async (query, userId) => {
+  await clearCartHelper(query, userId);
 };
 
 module.exports = {

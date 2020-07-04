@@ -74,7 +74,7 @@ export default function EventRegistration() {
   const finish = async () => {
     await api('/api/shop/addCartItem', {
       method: 'POST',
-      body: JSON.stringify({ stripe_price_id: paymentOption }),
+      body: JSON.stringify({ stripePriceId: paymentOption }),
     });
     goTo(ROUTES.cart, {
       id: JSON.parse(localStorage.getItem('userInfo')).persons[0],

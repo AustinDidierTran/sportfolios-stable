@@ -4,7 +4,7 @@ const {
   stripeLogger,
 } = require('../../server/utils/logger');
 
-const getItem = async stripe_price_id => {
+const getItem = async stripePriceId => {
   try {
     const res = await knex('stripe_price')
       .select(
@@ -29,7 +29,7 @@ const getItem = async stripe_price_id => {
         '=',
         'stripe_price.stripe_product_id',
       )
-      .where('stripe_price.stripe_price_id', stripe_price_id);
+      .where('stripe_price.stripe_price_id', stripePriceId);
     return res;
   } catch (err) {
     /* eslint-disable-next-line */
@@ -38,7 +38,7 @@ const getItem = async stripe_price_id => {
   }
 };
 
-const getShopItems = async entity_id => {
+const getShopItems = async entityId => {
   const res = await knex('store_items')
     .select(
       'store_items.entity_id',
@@ -62,12 +62,21 @@ const getShopItems = async entity_id => {
       '=',
       'stripe_price.stripe_product_id',
     )
-    .where('store_items.entity_id', entity_id);
+    .where('store_items.entity_id', entityId);
 
-  return res;
+  return res.map(i => ({
+    active: i.active,
+    amount: i.amount,
+    description: i.description,
+    entityId: i.entity_id,
+    label: i.label,
+    photoUrl: i.photoUrl,
+    stripePriceId: i.stripe_price_id,
+    stripeProductId: i.stripe_product_id,
+  }));
 };
 
-const getCartItems = async user_id => {
+const getCartItems = async userId => {
   try {
     const cartItems = await knex('cart_items')
       .select(
@@ -99,9 +108,21 @@ const getCartItems = async user_id => {
         '=',
         'stripe_price.stripe_price_id',
       )
-      .where('cart_items.user_id', user_id);
+      .where('cart_items.user_id', userId);
     stripeLogger('CartItems', cartItems);
-    return cartItems || [];
+    return (
+      cartItems.map(i => ({
+        active: i.active,
+        amount: i.amount,
+        description: i.description,
+        id: i.id,
+        label: i.label,
+        photoUrl: i.photo_url,
+        stripePriceId: i.stripe_price_id,
+        stripeProductId: i.stripe_product_id,
+        userId: i.user_id,
+      })) || []
+    );
   } catch (err) {
     stripeErrorLogger('GetCartItem error', err);
     throw err;
@@ -123,68 +144,70 @@ const groupBy = (list, keyGetter) => {
 };
 
 const groupedCart = cart => {
-  const grouped = groupBy(cart, item => item.stripe_price_id);
+  const grouped = groupBy(cart, item => item.stripePriceId);
   const keys = Array.from(grouped.keys());
   const groupedItems = keys.map(key => {
     return {
-      ...cart.find(e => e.stripe_price_id == key),
+      ...cart.find(e => e.stripePriceId == key),
       nbInCart: grouped.get(key).length,
     };
   });
   return groupedItems;
 };
 
-const getCartItemsOrdered = async user_id => {
-  const cart = await getCartItems(user_id);
+const getCartItemsOrdered = async userId => {
+  const cart = await getCartItems(userId);
   return groupedCart(cart);
 };
 
-const addCartItem = async (body, user_id) => {
-  const { stripe_price_id, metadata } = body;
+const addCartItem = async (body, userId) => {
+  const { stripePriceId, metadata } = body;
 
   await knex('cart_items').insert({
-    stripe_price_id,
-    user_id,
+    stripe_price_id: stripePriceId,
+    userId,
     metadata,
   });
-  return stripe_price_id;
+  return stripePriceId;
 };
 
-const updateCartItems = async (body, user_id) => {
-  const { stripe_price_id, nb_in_cart: new_nb, metadata } = body;
+const updateCartItems = async (body, userId) => {
+  const { stripePriceId, nbInCart: newNb, metadata } = body;
 
-  const curr_cart = await getCartItems(user_id);
-  const curr_cart_ordered = await getCartItemsOrdered(user_id);
-  const prev_nb = curr_cart_ordered.find(
-    e => e.stripe_price_id == stripe_price_id,
+  const currCart = await getCartItems(userId);
+  const currCartOrdered = await getCartItemsOrdered(userId);
+  const prevNb = currCartOrdered.find(
+    e => e.stripePriceId == stripePriceId,
   ).nbInCart;
-  const diff = new_nb - prev_nb;
+  const diff = newNb - prevNb;
 
   if (diff > 0) {
     for (let i = 0; i < diff; i++) {
-      await addCartItem({ stripe_price_id, metadata }, user_id);
+      await addCartItem({ stripePriceId, metadata }, userId);
     }
   } else if (diff < 0) {
     var deletedIds = [];
     for (let i = 0; i < -diff; i++) {
-      const cart_instance_id = curr_cart.find(
+      const cartInstanceId = currCart.find(
         e =>
-          e.stripe_price_id == stripe_price_id &&
+          e.stripePriceId == stripePriceId &&
           !deletedIds.includes(e.id),
       ).id;
 
-      await removeCartItemInstance({ cart_instance_id });
-      deletedIds.push(cart_instance_id);
+      await removeCartItemInstance({
+        cartInstanceId,
+      });
+      deletedIds.push(cartInstanceId);
     }
   }
 };
 
 const removeCartItemInstance = async query => {
-  const { cart_instance_id } = query;
+  const { cartInstanceId } = query;
 
   try {
     await knex('cart_items')
-      .where({ id: cart_instance_id })
+      .where({ id: cartInstanceId })
       .del();
   } catch (err) {
     /* eslint-disable-next-line */
@@ -194,11 +217,11 @@ const removeCartItemInstance = async query => {
 };
 
 const removeAllInstancesFromCart = async query => {
-  const { stripe_price_id } = query;
+  const { stripePriceId } = query;
 
   try {
     await knex('cart_items')
-      .where({ stripe_price_id: stripe_price_id })
+      .where({ stripe_price_id: stripePriceId })
       .del();
   } catch (err) {
     /* eslint-disable-next-line */
@@ -207,10 +230,10 @@ const removeAllInstancesFromCart = async query => {
   }
 };
 
-const clearCart = async (query, user_id) => {
+const clearCart = async (query, userId) => {
   try {
     await knex('cart_items')
-      .where({ user_id })
+      .where({ user_id: userId })
       .del();
   } catch (err) {
     stripeErrorLogger('removeCartItems error', err);

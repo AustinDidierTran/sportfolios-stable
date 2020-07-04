@@ -43,7 +43,7 @@ const addEntity = async (body, userId) => {
             'entities.id',
           )
           .where('user_entity_role.user_id', userId)
-          .andWhere('entities.type', 1)
+          .andWhere('entities.type', GLOBAL_ENUM.PERSON)
           .transacting(trx);
 
         await knex('entities_role')

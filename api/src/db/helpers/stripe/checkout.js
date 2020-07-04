@@ -51,8 +51,8 @@ const createInvoice = async (body, userId) => {
 };
 
 const finalizeInvoice = async (body, userId) => {
-  const { invoice_id } = body;
-  const params = invoice_id;
+  const { invoiceId } = body;
+  const params = invoiceId;
 
   try {
     const invoice = await stripe.invoices.finalizeInvoice(params);
@@ -90,20 +90,20 @@ const payInvoice = async (body, userId) => {
 };
 
 const getReceipt = async query => {
-  const { charge_id, invoice_id } = query;
-  const params = charge_id;
+  const { chargeId, invoiceId } = query;
+  const params = chargeId;
 
   try {
-    const { receipt_url = '' } = await stripe.charges.retrieve(
-      params,
-    );
+    const {
+      receipt_url: receiptUrl = '',
+    } = await stripe.charges.retrieve(params);
 
     await knex('stripe_invoice')
-      .update({ receipt_url })
-      .where({ invoice_id });
+      .update({ receipt_url: receiptUrl })
+      .where({ invoice_id: invoiceId });
 
-    stripeLogger('Receipt url:', receipt_url);
-    return receipt_url;
+    stripeLogger('Receipt url:', receiptUrl);
+    return receiptUrl;
   } catch (err) {
     stripeErrorLogger('GetReceipt error', err);
     throw err;
@@ -144,10 +144,10 @@ const checkout = async (body, userId) => {
   try {
     await Promise.all(
       prices.map(async item => {
-        const stripe_price_id = item.price;
-        const metadata = await getMetadata(stripe_price_id);
+        const stripePriceId = item.price;
+        const metadata = await getMetadata(stripePriceId);
         const invoiceItem = await createInvoiceItem(
-          { price: stripe_price_id, metadata },
+          { price: stripePriceId, metadata },
           userId,
         );
         return invoiceItem.id;
@@ -156,12 +156,12 @@ const checkout = async (body, userId) => {
 
     const invoice = await createInvoice({ invoiceParams }, userId);
     await stripe.customers.retrieve(invoice.customer);
-    const invoice_id = invoice.id;
-    await finalizeInvoice({ invoice_id }, userId);
-    const paidInvoice = await payInvoice({ invoice_id }, userId);
-    const charge_id = await paidInvoice.charge;
+    const invoiceId = invoice.id;
+    await finalizeInvoice({ invoiceId }, userId);
+    const paidInvoice = await payInvoice({ invoiceId }, userId);
+    const chargeId = await paidInvoice.charge;
 
-    return getReceipt({ charge_id, invoice_id });
+    return getReceipt({ chargeId, invoiceId });
   } catch (err) {
     stripeErrorLogger('CreateInvoice error', err);
     throw err;

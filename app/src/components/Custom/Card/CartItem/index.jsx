@@ -23,7 +23,7 @@ const addCartItem = async params => {
 const removeCartItemInstance = async cartInstanceId => {
   await api(
     formatRoute('/api/shop/removeCartItemInstance', null, {
-      cart_instance_id: cartInstanceId,
+      cartInstanceId,
     }),
     {
       method: 'DELETE',
@@ -70,7 +70,7 @@ export default function Item(props) {
 
   const addItem = async () => {
     const newCart = await addCartItem({
-      stripe_price_id: stripePriceId,
+      stripePriceId,
       metadata: { buyer_entity_id: 'Buyer_id_hihi' },
     });
     setItems(newCart);
