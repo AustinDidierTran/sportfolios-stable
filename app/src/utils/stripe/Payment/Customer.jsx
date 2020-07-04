@@ -86,10 +86,10 @@ const invoiceParams = {
 };
 
 const finalizeInvoiceParams = {
-  invoice_id: 'in_1GuPXPJPddOlmWPIMpmZKLyJ',
+  invoiceId: 'in_1GuPXPJPddOlmWPIMpmZKLyJ',
 };
 const payInvoiceParams = {
-  invoice_id: 'in_1GuPXPJPddOlmWPIMpmZKLyJ',
+  invoiceId: 'in_1GuPXPJPddOlmWPIMpmZKLyJ',
 };
 
 const productParams = {

@@ -39,7 +39,7 @@ const removeAllInstancesFromCart = async stripePriceId => {
 const removeCartItemInstance = async cartInstanceId => {
   await api(
     formatRoute('/api/shop/removeCartItemInstance', null, {
-      cart_instance_id: cartInstanceId,
+      cartInstanceId,
     }),
     {
       method: 'DELETE',
@@ -66,7 +66,7 @@ const updateCartItems = async params => {
 
 export default function ShopDetails() {
   const { t } = useTranslation();
-  const { id, stripeId: stripePriceId } = useParams();
+  const { stripeId: stripePriceId } = useParams();
   const { dispatch } = useContext(Store);
   const [item, setItem] = useState({});
   const [cart, setCart] = useState([]);
@@ -97,8 +97,8 @@ export default function ShopDetails() {
 
   const addItem = async () => {
     const newCart = await addCartItem({
-      stripe_price_id: stripePriceId,
-      entity_id: id,
+      stripePriceId,
+      metadata: { test: 'Testing123' },
     });
     setCart(newCart);
     dispatchCart(newCart);
@@ -135,6 +135,7 @@ export default function ShopDetails() {
     const newCart = await updateCartItems({
       stripe_price_id: stripePriceId,
       nb_in_cart: newNbInCart,
+      metadata: { test: 'Testing123' },
     });
     setItems(newCart);
     dispatchCart(newCart);

@@ -82,7 +82,6 @@ export default function Review() {
   if (receiptUrl) {
     return <Button onClick={onReceiptUrl}>{t('see_receipt')}</Button>;
   }
-
   return (
     <Container className={styles.items}>
       <div className={styles.view}>

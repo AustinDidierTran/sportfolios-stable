@@ -9,7 +9,7 @@ export const addMembership = async (personId, stripePriceId) => {
   await api('/api/shop/addCartItem', {
     method: 'POST',
     body: JSON.stringify({
-      stripe_price_id: stripePriceId,
+      stripePriceId,
     }),
   });
   goTo(ROUTES.cart, {
@@ -50,7 +50,7 @@ export const updateMembership = async (
   await api('/api/shop/addCartItem', {
     method: 'POST',
     body: JSON.stringify({
-      stripe_price_id: stripePriceId,
+      stripePriceId,
     }),
   });
   goTo(ROUTES.cart, {

@@ -1,3 +1,6 @@
 /* Replace with your SQL commands */
 ALTER TABLE entity_memberships
-ALTER COLUMN fixed_date TYPE VARCHAR(255);
+DROP COLUMN fixed_date
+,
+ADD COLUMN fixed_date VARCHAR
+(255);

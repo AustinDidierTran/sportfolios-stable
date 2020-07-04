@@ -34,15 +34,16 @@ const addEntity = async (body, userId) => {
     switch (Number(type)) {
       case GLOBAL_ENUM.TEAM:
       case GLOBAL_ENUM.ORGANIZATION: {
-        const [{ id: entityIdAdmin } = {}] = await knex('persons')
-          .select(['id'])
+        const [{ id: entityIdAdmin } = {}] = await knex('entities')
+          .select('id')
           .leftJoin(
             'user_entity_role',
             'user_entity_role.entity_id',
             '=',
-            'persons.id',
+            'entities.id',
           )
           .where('user_entity_role.user_id', userId)
+          .andWhere('entities.type', GLOBAL_ENUM.PERSON)
           .transacting(trx);
 
         await knex('entities_role')
@@ -267,7 +268,7 @@ const findRole = async (entityId, lookedFor, role, cpt) => {
       'entities_role.entity_id',
     )
     .whereNull('entities.deleted_at')
-    .where({ entity_id: entityId });
+    .where({ entity_id_admin: entityId });
 
   const roles = await Promise.all(
     entities.map(async entity => {

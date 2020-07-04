@@ -23,14 +23,20 @@ const createPrice = async params => {
 };
 
 const createItem = async params => {
-  const { name, description, amount, photo_url, entity_id } = params;
+  const {
+    name,
+    description,
+    amount,
+    photo_url: photoUrl,
+    entity_id: entityId,
+  } = params;
   const productParams = {
     stripe_product: {
       name: name,
       description: description,
       active: true,
+      metadata: { seller_entity_id: entityId },
     },
-    entity_id: entity_id,
   };
 
   const product = await createProduct(productParams);
@@ -42,8 +48,8 @@ const createItem = async params => {
       unit_amount: (+amount * 100).toString(),
       active: true,
     },
-    entity_id: entity_id,
-    photo_url: photo_url,
+    entity_id: entityId,
+    photo_url: photoUrl,
   };
 
   const price = await createPrice(priceParams);
