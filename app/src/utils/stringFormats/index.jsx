@@ -6,7 +6,7 @@ import {
 
 import moment from 'moment';
 
-export function getInitialsFromName(completeName) {
+export const getInitialsFromName = completeName => {
   return (
     completeName &&
     completeName
@@ -18,9 +18,9 @@ export function getInitialsFromName(completeName) {
       )
       .toUpperCase()
   );
-}
+};
 
-export function getEntityTypeName(type) {
+export const getEntityTypeName = type => {
   if (type === GLOBAL_ENUM.PERSON) {
     return 'person';
   } else if (type === GLOBAL_ENUM.TEAM) {
@@ -32,9 +32,9 @@ export function getEntityTypeName(type) {
   } else {
     return '';
   }
-}
+};
 
-export function getMembershipName(type) {
+export const getMembershipName = type => {
   if (type === MEMBERSHIP_TYPE_ENUM.RECREATIONAL) {
     return 'recreational_member';
   } else if (type === MEMBERSHIP_TYPE_ENUM.COMPETITIVE) {
@@ -44,16 +44,16 @@ export function getMembershipName(type) {
   } else {
     return '';
   }
-}
-export function getMembershipType(type) {
+};
+export const getMembershipType = type => {
   if (type === -1) {
     return 'fixed_date';
   } else {
     return 'length';
   }
-}
+};
 
-export function getMembershipLength(type) {
+export const getMembershipLength = type => {
   if (type === MEMBERSHIP_LENGTH_ENUM.ONE_MONTH) {
     return 1;
   }
@@ -63,9 +63,9 @@ export function getMembershipLength(type) {
   if (type === MEMBERSHIP_LENGTH_ENUM.ONE_YEAR) {
     return 1;
   }
-}
+};
 
-export function getMembershipUnit(type) {
+export const getMembershipUnit = type => {
   if (type === MEMBERSHIP_LENGTH_ENUM.ONE_MONTH) {
     return 'M';
   }
@@ -75,9 +75,9 @@ export function getMembershipUnit(type) {
   if (type === MEMBERSHIP_LENGTH_ENUM.ONE_YEAR) {
     return 'y';
   }
-}
+};
 
-export function getExpirationDate(length, fixed_date) {
+export const getExpirationDate = (length, fixed_date) => {
   if (length !== -1) {
     return moment()
       .add(getMembershipLength(length), getMembershipUnit(length))
@@ -95,9 +95,11 @@ export function getExpirationDate(length, fixed_date) {
         .format('LL');
     }
   }
-}
+};
 
-export function validateDate(dateProps) {
+export const formatPrice = price => `${price / 100}$`;
+
+export const validateDate = dateProps => {
   //date format: 'MM/DD'
   const days = [31, 28, 31, 30, 31, 30, 31, 30, 31, 31, 30, 31];
   const date = dateProps.split('/');
@@ -114,4 +116,4 @@ export function validateDate(dateProps) {
     return false;
   }
   return true;
-}
+};

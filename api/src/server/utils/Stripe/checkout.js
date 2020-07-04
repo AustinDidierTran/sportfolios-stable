@@ -1,45 +1,36 @@
-import api from '../../../../../app/src/actions/api';
+const {
+  addMember,
+  addTeamToEvent,
+  updateRegistration,
+} = require('../../../db/queries/entity');
 
 const INVOICE_CREATED_ENUM = {
   EVENT: async (metadata, stripe) => {
     const { team_id, event_id } = metadata;
     const { invoice_id, status } = stripe;
-    await api('/api/entity/register', {
-      method: 'POST',
-      body: JSON.stringify({
-        team_id,
-        event_id,
-        invoice_id,
-        status,
-      }),
+
+    await addTeamToEvent({
+      team_id,
+      event_id,
+      invoice_id,
+      status,
     });
   },
   STORE: () => {},
   MEMBERSHIPS: async () => {
-    await api('/api/entity/member', {
-      method: 'POST',
-      body: JSON.stringify({
-        member_type: Number(membershipType),
-        person_id: personId,
-        organization_id: entityId,
-        expiration_date: expirationDate,
-      }),
-    });
+    await addMember(
+      Number(membershipType),
+      entityId,
+      personId,
+      expirationDate,
+    );
   },
 };
 const INVOICE_PAID_ENUM = {
   EVENT: async (metadata, stripe) => {
-    const { roster_id, event_id } = metadata;
-    const { invoice_id, status } = stripe;
-    await api('/api/entity/updateRegistration', {
-      method: 'PUT',
-      body: JSON.stringify({
-        roster_id,
-        event_id,
-        invoice_id,
-        status,
-      }),
-    });
+    const { roster_id: rosterId, event_id: eventId } = metadata;
+    const { invoice_id: invoiceId, status } = stripe;
+    await updateRegistration(rosterId, eventId, invoiceId, status);
   },
   STORE: () => {},
   MEMBERSHIPS: () => {},

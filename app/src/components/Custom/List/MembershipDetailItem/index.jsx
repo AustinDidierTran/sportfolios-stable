@@ -6,21 +6,24 @@ import { Button } from '../../../Custom';
 import { useTranslation } from 'react-i18next';
 import styles from './MembershipDetailItem.module.css';
 import {
-  getMembershipName,
+  addMembership,
   getExpirationDate,
-} from '../../../../utils/stringFormats';
+} from '../../../../utils/memberships';
+import { updateMembership } from '../../../../utils/memberships';
+import { formatPrice } from '../../../../utils/stringFormats';
 
 export default function MembershipDetailItem(props) {
   const { t } = useTranslation();
 
   const {
-    price,
-    length,
-    fixed_date,
-    membership_type,
-    clickBecomeMember,
-    clickRenewMember,
+    entityId,
+    fixedDate,
     isMember,
+    length,
+    membershipType,
+    personId,
+    price,
+    stripePriceId,
   } = props;
 
   const name = getMembershipName(membership_type);
@@ -28,6 +31,21 @@ export default function MembershipDetailItem(props) {
   const expirationDate = () => {
     return getExpirationDate(length, fixed_date);
   };
+
+  const clickBecomeMember = useCallback(async () => {
+    await addMembership(personId, stripePriceId);
+  }, [personId, stripePriceId]);
+
+  const clickRenewMember = useCallback(async () => {
+    const expirationDate = getExpirationDate(length, fixedDate);
+    await updateMembership(
+      membershipType,
+      personId,
+      entityId,
+      expirationDate,
+      stripePriceId,
+    );
+  });
 
   return (
     <ListItem style={{ width: '100%' }} className={styles.main}>
@@ -52,7 +70,7 @@ export default function MembershipDetailItem(props) {
       <ListItemText
         className={styles.price}
         secondaryTypographyProps={{ color: 'primary' }}
-        primary={`${price}$`}
+        primary={formatPrice(price)}
         secondary={t('price')}
       ></ListItemText>
       {isMember ? (
