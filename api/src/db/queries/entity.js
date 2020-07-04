@@ -7,6 +7,7 @@ const {
   addEntityRole: addEntityRoleHelper,
   addMember: addMemberHelper,
   addOption: addOptionHelper,
+  addTeamToEvent: addTeamToEventHelper,
   addMembership: addMembershipHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
@@ -18,12 +19,14 @@ const {
   getEntityRole,
   getMembers: getMembersHelper,
   getMemberships: getMembershipsHelper,
+  getRegistered: getRegisteredHelper,
   getOptions: getOptionsHelper,
   removeEntityRole: removeEntityRoleHelper,
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
   updateEntityRole: updateEntityRoleHelper,
   updateMember: updateMemberHelper,
+  updateRegistration: updateRegistrationHelper,
 } = require('../helpers/entity');
 
 async function getEntity(id, user_id) {
@@ -48,6 +51,15 @@ async function getMembers(persons, organization_id) {
 
 async function getMemberships(entity_id) {
   return getMembershipsHelper(entity_id);
+}
+
+async function getRegistered(team_id, event_id) {
+  return getRegisteredHelper(team_id, event_id);
+}
+
+async function addTeamToEvent(body) {
+  const { team_id, event_id, invoice_id, status } = body;
+  return addTeamToEventHelper(team_id, event_id, invoice_id, status);
 }
 
 async function getOptions(event_id) {
@@ -95,6 +107,17 @@ async function updateEntityRole(body) {
   } else {
     return updateEntityRoleHelper(entity_id, entity_id_admin, role);
   }
+}
+
+async function updateRegistration(body) {
+  const { roster_id, event_id, invoice_id, status } = body;
+
+  return updateRegistrationHelper(
+    roster_id,
+    event_id,
+    invoice_id,
+    status,
+  );
 }
 
 async function addEntityRole(body) {
@@ -191,6 +214,7 @@ module.exports = {
   addMember,
   addMembership,
   addOption,
+  addTeamToEvent,
   deleteEntity,
   deleteEntityMembership,
   deleteOption,
@@ -202,8 +226,10 @@ module.exports = {
   getMembers,
   getOptions,
   getMemberships,
+  getRegistered,
   getS3Signature,
   updateEntity,
   updateEntityRole,
   updateMember,
+  updateRegistration,
 };

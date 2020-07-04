@@ -122,6 +122,7 @@ export default {
     subscribe: "S'abonner",
     subscribed: 'Abonné',
     team: 'Équipe',
+    team_already_registered: 'Équipe déjà inscrite',
     team_history: "Historique de l'équipe",
     teams: 'Équipes',
     unsupported_language: 'Langue non supportée',

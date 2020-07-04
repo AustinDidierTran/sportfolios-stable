@@ -6,9 +6,9 @@ const {
 } = require('../../../server/utils/logger');
 
 const addProduct = async body => {
-  const { stripe_product } = body;
+  const { stripeProduct } = body;
   try {
-    const product = await stripe.products.create(stripe_product);
+    const product = await stripe.products.create(stripeProduct);
 
     await knex('stripe_product').insert({
       stripe_product_id: product.id,
