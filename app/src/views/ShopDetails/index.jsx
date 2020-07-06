@@ -67,7 +67,10 @@ const updateCartItems = async params => {
 export default function ShopDetails() {
   const { t } = useTranslation();
   const { stripeId: stripePriceId } = useParams();
-  const { dispatch } = useContext(Store);
+  const {
+    dispatch,
+    state: { userInfo },
+  } = useContext(Store);
   const [item, setItem] = useState({});
   const [cart, setCart] = useState([]);
   const [displayed, setDisplayed] = useState(true);
@@ -93,7 +96,7 @@ export default function ShopDetails() {
   const addItem = async () => {
     const newCart = await addCartItem({
       stripePriceId,
-      metadata: { test: 'Testing123' },
+      metadata: { buyer_entity_id: userInfo.persons[0].entity_id },
     });
     setCart(newCart);
     dispatchCart(newCart);
@@ -130,7 +133,7 @@ export default function ShopDetails() {
     const newCart = await updateCartItems({
       stripePriceId: stripePriceId,
       nbInCart: newNbInCart,
-      metadata: { test: 'Testing123' },
+      metadata: { buyer_entity_id: userInfo.persons[0].entity_id },
     });
     setCart(newCart);
     dispatchCart(newCart);

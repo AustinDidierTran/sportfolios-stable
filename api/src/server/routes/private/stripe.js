@@ -15,6 +15,17 @@ router.get(`${BASE_URL}/accountLink`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/getStripeAccountId`, async ctx => {
+  const data = await queries.getStripeAccount(
+    ctx.query.id,
+    ctx.request.ip,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 router.post(`${BASE_URL}/externalAccount`, async ctx => {
   const { data, status, error } = await queries.addExternalAccount(
     ctx.request.body,

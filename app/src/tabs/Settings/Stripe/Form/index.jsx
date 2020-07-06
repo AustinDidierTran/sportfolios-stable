@@ -12,10 +12,11 @@ import CountrySelect from './CountrySelect';
 import CurrencySelect from './CurrencySelect';
 import api from '../../../../actions/api';
 
-export default function ExternalAccountForm() {
+export default function ExternalAccountForm(props) {
   const { t } = useTranslation();
   const { id } = useParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { setNext } = props;
 
   const isANumber = number => isNaN(Number(number));
 
@@ -82,6 +83,7 @@ export default function ExternalAccountForm() {
           body: JSON.stringify(params),
         });
         setIsSubmitting(false);
+        setNext(true);
       } catch (err) {
         setIsSubmitting(false);
         throw err;

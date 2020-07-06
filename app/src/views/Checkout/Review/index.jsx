@@ -50,7 +50,7 @@ export default function Review() {
 
   const onCompleteOrder = async () => {
     const prices = items.map(item => {
-      return { price: item.stripe_price_id };
+      return { price: item.stripePriceId };
     });
     const receipt = await checkout(prices);
     setReceiptUrl(receipt);
