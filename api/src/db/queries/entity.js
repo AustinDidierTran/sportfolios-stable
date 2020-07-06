@@ -20,6 +20,7 @@ const {
   getMembers: getMembersHelper,
   getMemberships: getMembershipsHelper,
   getRegistered: getRegisteredHelper,
+  getAllRegistered: getAllRegisteredHelper,
   getOptions: getOptionsHelper,
   removeEntityRole: removeEntityRoleHelper,
   updateEntityName: updateEntityNameHelper,
@@ -55,6 +56,10 @@ async function getMemberships(entity_id) {
 
 async function getRegistered(team_id, event_id) {
   return getRegisteredHelper(team_id, event_id);
+}
+
+async function getAllRegistered(eventId, userId) {
+  return getAllRegisteredHelper(eventId, userId);
 }
 
 async function addTeamToEvent(body) {
@@ -227,6 +232,7 @@ module.exports = {
   getOptions,
   getMemberships,
   getRegistered,
+  getAllRegistered,
   getS3Signature,
   updateEntity,
   updateEntityRole,

@@ -115,6 +115,26 @@ router.get(`${BASE_URL}/registered`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/allTeamsRegistered`, async ctx => {
+  const entity = await queries.getAllRegistered(
+    ctx.query.eventId,
+    ctx.body.userInfo.id,
+  );
+
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/options`, async ctx => {
   const option = await queries.getOptions(ctx.query.event_id);
   ctx.body = {

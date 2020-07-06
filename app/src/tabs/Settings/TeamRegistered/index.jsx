@@ -15,6 +15,9 @@ import TableRow from '@material-ui/core/TableRow';
 
 import styles from './TeamRegistered.module.css';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+import api from '../../../actions/api';
+import { formatRoute } from '../../../actions/goTo';
 
 const useStyles = makeStyles({
   table: {
@@ -22,10 +25,13 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Ranking() {
+export default function TeamRegistered() {
   const { t } = useTranslation();
+  const { id: eventId } = useParams();
 
   const classes = useStyles;
+
+  const [teams, setTeams] = useState([]);
 
   const {
     state: { screenSize },
@@ -43,44 +49,57 @@ export default function Ranking() {
     }
   }, [screenSize]);
 
-  const teams = [
-    {
-      name: 'Sherbrooke Gentlemens Club',
-      captain: 'Vincent Sasseville',
-      rosterIsValid: true,
-      paymentDue: 0,
-    },
-    {
-      name: 'Manic',
-      captain: 'Elliot Heloir',
-      rosterIsValid: true,
-      paymentDue: 300,
-    },
-    {
-      name: 'Magma',
-      captain: 'Cedric Aubut-Boucher',
-      rosterIsValid: false,
-      paymentDue: 0,
-    },
-    {
-      name: 'Mesa',
-      captain: 'Christian Painchaud',
-      rosterIsValid: false,
-      paymentDue: 345,
-    },
-    {
-      name: 'Quake',
-      captain: 'Francis Vallée',
-      rosterIsValid: true,
-      paymentDue: 245,
-    },
-    {
-      name: 'Quartz',
-      captain: 'Joseph Genest',
-      rosterIsValid: true,
-      paymentDue: 0,
-    },
-  ];
+  const getTeams = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/allTeamsRegistered', null, {
+        eventId,
+      }),
+    );
+    setTeams(data);
+  };
+
+  useEffect(() => {
+    getTeams();
+  }, [eventId]);
+
+  // const teams = [
+  //   {
+  //     name: 'Sherbrooke Gentlemens Club',
+  //     captain: 'Vincent Sasseville',
+  //     rosterIsValid: true,
+  //     paymentDue: 0,
+  //   },
+  //   {
+  //     name: 'Manic',
+  //     captain: 'Elliot Heloir',
+  //     rosterIsValid: true,
+  //     paymentDue: 300,
+  //   },
+  //   {
+  //     name: 'Magma',
+  //     captain: 'Cedric Aubut-Boucher',
+  //     rosterIsValid: false,
+  //     paymentDue: 0,
+  //   },
+  //   {
+  //     name: 'Mesa',
+  //     captain: 'Christian Painchaud',
+  //     rosterIsValid: false,
+  //     paymentDue: 345,
+  //   },
+  //   {
+  //     name: 'Quake',
+  //     captain: 'Francis Vallée',
+  //     rosterIsValid: true,
+  //     paymentDue: 245,
+  //   },
+  //   {
+  //     name: 'Quartz',
+  //     captain: 'Joseph Genest',
+  //     rosterIsValid: true,
+  //     paymentDue: 0,
+  //   },
+  // ];
   const numberOfTeams = {
     title: t('registration_status'),
     description: '6/16 inscrits',
@@ -129,30 +148,29 @@ export default function Ranking() {
                   {numberOfTeams.description}
                 </StyledTableCell>
               ) : (
-                <StyledTableCell />
+                <></> //<StyledTableCell />
               )}
               {isMobile ? <></> : <StyledTableCell />}
-              <StyledTableCell />
             </TableRow>
           </TableHead>
           <TableHead>
             <TableRow>
-              <StyledTableCell>Nom de l'équipe</StyledTableCell>
-              <StyledTableCell align="center">
-                Nom du capitaine
-              </StyledTableCell>
+              <StyledTableCell>{t('team')}</StyledTableCell>
               {isMobile ? (
-                <StyledTableCell align="center">État</StyledTableCell>
-              ) : (
                 <StyledTableCell align="center">
-                  Alignement
+                  {t('state')}
                 </StyledTableCell>
+              ) : (
+                <></>
+                // <StyledTableCell align="center">
+                //   {t('roster')}
+                // </StyledTableCell>
               )}
               {isMobile ? (
                 <></>
               ) : (
                 <StyledTableCell align="center">
-                  Solde
+                  {t('status')}
                 </StyledTableCell>
               )}
             </TableRow>
@@ -163,9 +181,6 @@ export default function Ranking() {
                 <StyledTableCell component="th" scope="row">
                   {team.name}
                 </StyledTableCell>
-                <StyledTableCell align="center">
-                  {team.captain}
-                </StyledTableCell>
                 {isMobile ? (
                   <StyledTableCell align="center">
                     <PaymentChip
@@ -175,16 +190,17 @@ export default function Ranking() {
                     <RosterChip state={team.rosterIsValid} />
                   </StyledTableCell>
                 ) : (
-                  <StyledTableCell align="center">
-                    <RosterChip state={team.rosterIsValid} />
-                  </StyledTableCell>
+                  <></>
+                  // <StyledTableCell align="center">
+                  //   <RosterChip state={team.rosterIsValid} />
+                  // </StyledTableCell>
                 )}
                 {isMobile ? (
                   <></>
                 ) : (
                   <StyledTableCell align="center">
                     <PaymentChip
-                      state={team.paymentDue}
+                      state={team.status}
                       mobile={isMobile}
                     />
                   </StyledTableCell>

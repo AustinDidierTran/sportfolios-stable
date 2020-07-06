@@ -67,6 +67,7 @@ export default {
     next: 'Next',
     no_account_signup: "Don't have an account? Signup!",
     notifications: 'Notifications',
+    not_paid: 'Not paid',
     no_notifications: 'No Notifications',
     no_notifications_message: 'Come back later.',
     on_going_events: 'On Going Events',

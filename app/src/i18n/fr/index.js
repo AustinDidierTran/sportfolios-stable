@@ -69,6 +69,7 @@ export default {
     new_team: 'Nouvelle Équipe',
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
     notifications: 'Notifications',
+    not_paid: 'Paiement dû',
     no_notifications: 'Pas de notifications',
     no_notifications_message: 'Revenez plus tard.',
     on_going_events: 'Événements en cours',

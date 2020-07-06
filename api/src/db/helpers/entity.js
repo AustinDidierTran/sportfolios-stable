@@ -359,11 +359,32 @@ async function getRegistered(teamId, eventId) {
     .select('id')
     .where({ team_id: teamId });
   const rostersId = rosters.map(roster => roster.id);
-
   return await knex('event_rosters')
     .select('*')
     .where({ event_id: eventId })
     .whereIn('roster_id', rostersId);
+}
+
+async function getAllRegistered(eventId, userId) {
+  const teams = await knex('event_rosters')
+    .select('*')
+    .where({ event_id: eventId });
+
+  const props = await Promise.all(
+    teams.map(async t => {
+      const entity = await getEntity(t.team_id, userId);
+      return {
+        name: entity.name,
+        surname: entity.surname,
+        photoUrl: entity.photoUrl,
+        rosterId: t.roster_id,
+        teamId: t.team_id,
+        invoiceId: t.invoice_id,
+        status: t.status,
+      };
+    }),
+  );
+  return props;
 }
 
 async function updateEntityRole(entityId, entityIdAdmin, role) {
@@ -520,6 +541,7 @@ async function addTeamToEvent(teamId, eventId, invoiceId, status) {
   const [res] = await knex('event_rosters')
     .insert({
       roster_id: roster.id,
+      team_id: teamId,
       event_id: eventId,
       invoice_id: invoiceId,
       status,
@@ -619,6 +641,7 @@ module.exports = {
   getMembers,
   getMemberships,
   getRegistered,
+  getAllRegistered,
   getOptions,
   removeEntityRole,
   updateEntityName,

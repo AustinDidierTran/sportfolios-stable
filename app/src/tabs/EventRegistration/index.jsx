@@ -10,6 +10,7 @@ import { formatRoute, ROUTES, goTo } from '../../actions/goTo';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useTranslation } from 'react-i18next';
+import { INVOICE_STATUS_ENUM } from '../../../../common/enums';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -52,15 +53,15 @@ export default function EventRegistration() {
 
   const stepHook = useStepper();
 
-  const onTeamSelect = async (e, t) => {
+  const onTeamSelect = async (e, team) => {
     const { data } = await api(
       formatRoute('/api/entity/registered', null, {
-        team_id: t.id,
+        team_id: team.id,
         event_id,
       }),
     );
     if (data.length < 1) {
-      setTeam(t);
+      setTeam(team);
       stepHook.handleCompleted(0);
     } else {
       setOpen(true);
@@ -78,6 +79,15 @@ export default function EventRegistration() {
       body: JSON.stringify({
         stripePriceId: paymentOption,
         metadata: team,
+      }),
+    });
+    await api('/api/entity/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        team_id: team.id,
+        event_id,
+        invoice_id: null,
+        status: INVOICE_STATUS_ENUM.OPEN,
       }),
     });
     goTo(ROUTES.cart);

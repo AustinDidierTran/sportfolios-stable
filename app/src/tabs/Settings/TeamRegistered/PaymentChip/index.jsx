@@ -2,6 +2,8 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import AttachMoney from '@material-ui/icons/AttachMoney';
+import { INVOICE_STATUS_ENUM } from '../../../../../../common/enums';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -16,25 +18,26 @@ const useStyles = makeStyles(theme => ({
 
 export default function PaymentChips(props) {
   const classes = useStyles();
+  const { t } = useTranslation();
 
-  const { state, mobile } = props;
+  const { status, mobile } = props;
 
   return (
     <div className={classes.root}>
-      {state > 0 ? (
+      {status === INVOICE_STATUS_ENUM.PAID ? (
         <Chip
-          label={state}
+          label={t('paid')}
           icon={<AttachMoney />}
-          color="secondary"
+          color="primary"
           variant="outlined"
         />
       ) : mobile ? (
         <></>
       ) : (
         <Chip
-          label={state}
+          label={t('not_paid')}
           icon={<AttachMoney />}
-          color="primary"
+          color="secondary"
           variant="outlined"
         />
       )}
