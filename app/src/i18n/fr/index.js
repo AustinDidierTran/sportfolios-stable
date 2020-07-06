@@ -37,8 +37,11 @@ export default {
     email_confirmed:
       'Un courriel de confirmation a été envoyé à {{email}}. Veuillez regarder vos courriels pour confirmer votre compte.',
     entity_not_found: "Cette entité n'existe pas",
+    event_end: "Fin de l'événement",
     event_manager: "Responsable de l'événement",
     event_registration: 'Inscription à un événement',
+    event_settings: "Paramètre de l'événement",
+    event_start: "Début de l'événement",
     events: 'Événements',
     event_creator: "Créateur d'événement",
     events_that_might_interest_you:
@@ -61,6 +64,7 @@ export default {
     length: 'Durée',
     login: 'Connexion',
     logout: 'Déconnexion',
+    maximum_spots: 'Nombre de places',
     menu: 'Menu',
     name: 'Nom',
     next: 'Prochain',

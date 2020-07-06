@@ -387,11 +387,36 @@ async function getAllRegistered(eventId, userId) {
   return props;
 }
 
+async function getEvent(eventId) {
+  const [res] = await knex('events')
+    .select('*')
+    .where({ id: eventId });
+  return res;
+}
+
 async function updateEntityRole(entityId, entityIdAdmin, role) {
   const [entity] = await knex('entities_role')
     .update({ role })
     .where({ entity_id: entityId, entity_id_admin: entityIdAdmin })
     .returning(['role']);
+  return entity;
+}
+
+async function updateEvent(
+  eventId,
+  maximumSpots,
+  eventStart,
+  eventEnd,
+) {
+  const maximum_spots = Number(maximumSpots);
+  const [entity] = await knex('events')
+    .update({
+      maximum_spots,
+      start_date: eventStart,
+      end_date: eventEnd,
+    })
+    .where({ id: eventId })
+    .returning('*');
   return entity;
 }
 
@@ -642,11 +667,13 @@ module.exports = {
   getMemberships,
   getRegistered,
   getAllRegistered,
+  getEvent,
   getOptions,
   removeEntityRole,
   updateEntityName,
   updateEntityPhoto,
   updateEntityRole,
+  updateEvent,
   updateMember,
   updateRegistration,
 };

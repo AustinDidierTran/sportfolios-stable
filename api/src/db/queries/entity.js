@@ -21,11 +21,13 @@ const {
   getMemberships: getMembershipsHelper,
   getRegistered: getRegisteredHelper,
   getAllRegistered: getAllRegisteredHelper,
+  getEvent: getEventHelper,
   getOptions: getOptionsHelper,
   removeEntityRole: removeEntityRoleHelper,
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
   updateEntityRole: updateEntityRoleHelper,
+  updateEvent: updateEventHelper,
   updateMember: updateMemberHelper,
   updateRegistration: updateRegistrationHelper,
 } = require('../helpers/entity');
@@ -60,6 +62,20 @@ async function getRegistered(team_id, event_id) {
 
 async function getAllRegistered(eventId, userId) {
   return getAllRegisteredHelper(eventId, userId);
+}
+
+async function getEvent(eventId) {
+  return getEventHelper(eventId);
+}
+
+async function updateEvent(body) {
+  const { eventId, maximumSpots, eventStart, eventEnd } = body;
+  return updateEventHelper(
+    eventId,
+    maximumSpots,
+    eventStart,
+    eventEnd,
+  );
 }
 
 async function addTeamToEvent(body) {
@@ -233,9 +249,11 @@ module.exports = {
   getMemberships,
   getRegistered,
   getAllRegistered,
+  getEvent,
   getS3Signature,
   updateEntity,
   updateEntityRole,
+  updateEvent,
   updateMember,
   updateRegistration,
 };

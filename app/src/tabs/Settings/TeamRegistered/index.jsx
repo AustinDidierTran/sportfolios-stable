@@ -1,9 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Paper } from '../../../components/MUI';
-import { Store, SCREENSIZE_ENUM } from '../../../Store';
 import PaymentChip from './PaymentChip';
-import RosterChip from './RosterChip';
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -33,22 +31,6 @@ export default function TeamRegistered() {
 
   const [teams, setTeams] = useState([]);
 
-  const {
-    state: { screenSize },
-  } = useContext(Store);
-
-  const [isMobile, setIsMobile] = useState(
-    screenSize === SCREENSIZE_ENUM.xs,
-  );
-
-  useEffect(() => {
-    if (screenSize === SCREENSIZE_ENUM.xs) {
-      setIsMobile(true);
-    } else {
-      setIsMobile(false);
-    }
-  }, [screenSize]);
-
   const getTeams = async () => {
     const { data } = await api(
       formatRoute('/api/entity/allTeamsRegistered', null, {
@@ -62,47 +44,9 @@ export default function TeamRegistered() {
     getTeams();
   }, [eventId]);
 
-  // const teams = [
-  //   {
-  //     name: 'Sherbrooke Gentlemens Club',
-  //     captain: 'Vincent Sasseville',
-  //     rosterIsValid: true,
-  //     paymentDue: 0,
-  //   },
-  //   {
-  //     name: 'Manic',
-  //     captain: 'Elliot Heloir',
-  //     rosterIsValid: true,
-  //     paymentDue: 300,
-  //   },
-  //   {
-  //     name: 'Magma',
-  //     captain: 'Cedric Aubut-Boucher',
-  //     rosterIsValid: false,
-  //     paymentDue: 0,
-  //   },
-  //   {
-  //     name: 'Mesa',
-  //     captain: 'Christian Painchaud',
-  //     rosterIsValid: false,
-  //     paymentDue: 345,
-  //   },
-  //   {
-  //     name: 'Quake',
-  //     captain: 'Francis Vallée',
-  //     rosterIsValid: true,
-  //     paymentDue: 245,
-  //   },
-  //   {
-  //     name: 'Quartz',
-  //     captain: 'Joseph Genest',
-  //     rosterIsValid: true,
-  //     paymentDue: 0,
-  //   },
-  // ];
   const numberOfTeams = {
-    title: t('registration_status'),
-    description: '6/16 inscrits',
+    registered: teams.length,
+    maximumSpots: '16',
   };
 
   const StyledTableCell = withStyles(theme => ({
@@ -133,46 +77,21 @@ export default function TeamRegistered() {
         >
           <TableHead>
             <TableRow>
-              {isMobile ? (
-                <StyledTableCell>
-                  {numberOfTeams.title}:
-                </StyledTableCell>
-              ) : (
-                <StyledTableCell>
-                  {numberOfTeams.title}:&nbsp;
-                  {numberOfTeams.description}
-                </StyledTableCell>
-              )}
-              {isMobile ? (
-                <StyledTableCell>
-                  {numberOfTeams.description}
-                </StyledTableCell>
-              ) : (
-                <></> //<StyledTableCell />
-              )}
-              {isMobile ? <></> : <StyledTableCell />}
+              <StyledTableCell>
+                {t('registration_status')}:&nbsp;
+                {numberOfTeams.registered}/
+                {numberOfTeams.maximumSpots}&nbsp;
+                {t('registered')}
+              </StyledTableCell>
+              <StyledTableCell />
             </TableRow>
           </TableHead>
           <TableHead>
             <TableRow>
               <StyledTableCell>{t('team')}</StyledTableCell>
-              {isMobile ? (
-                <StyledTableCell align="center">
-                  {t('state')}
-                </StyledTableCell>
-              ) : (
-                <></>
-                // <StyledTableCell align="center">
-                //   {t('roster')}
-                // </StyledTableCell>
-              )}
-              {isMobile ? (
-                <></>
-              ) : (
-                <StyledTableCell align="center">
-                  {t('status')}
-                </StyledTableCell>
-              )}
+              <StyledTableCell align="center">
+                {t('status')}
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -181,30 +100,9 @@ export default function TeamRegistered() {
                 <StyledTableCell component="th" scope="row">
                   {team.name}
                 </StyledTableCell>
-                {isMobile ? (
-                  <StyledTableCell align="center">
-                    <PaymentChip
-                      state={team.paymentDue}
-                      mobile={isMobile}
-                    />
-                    <RosterChip state={team.rosterIsValid} />
-                  </StyledTableCell>
-                ) : (
-                  <></>
-                  // <StyledTableCell align="center">
-                  //   <RosterChip state={team.rosterIsValid} />
-                  // </StyledTableCell>
-                )}
-                {isMobile ? (
-                  <></>
-                ) : (
-                  <StyledTableCell align="center">
-                    <PaymentChip
-                      state={team.status}
-                      mobile={isMobile}
-                    />
-                  </StyledTableCell>
-                )}
+                <StyledTableCell align="center">
+                  <PaymentChip status={team.status} />
+                </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>

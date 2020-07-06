@@ -111,7 +111,7 @@ export default function AddOptionsEvent() {
         ))}
         <Card
           items={{ fields, onAdd }}
-          type={CARD_TYPE_ENUM.ADD_PAYMENT_OPTION}
+          type={CARD_TYPE_ENUM.EVENT_SETTINGS}
         />
         <Snackbar
           open={open}
