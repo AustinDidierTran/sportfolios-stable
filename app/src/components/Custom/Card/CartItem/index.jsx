@@ -54,7 +54,7 @@ export default function Item(props) {
     amount: price,
     photo_url: photoUrl,
     description,
-    stripe_price_id: stripePriceId,
+    stripePriceId,
     id,
     setItems,
     nbInCart,
