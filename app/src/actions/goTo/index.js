@@ -6,6 +6,8 @@ export const ROUTES = {
   confirmEmail: '/confirmEmail/:token',
   confirmEmailFailure: '/ConfirmEmailFailure',
   confirmEmailSuccess: '/confirmEmailSuccess',
+  cart: '/cart/:id',
+  checkout: '/checkout/:id',
   create: '/create',
   createOrganization: '/organization/create',
   createPerson: '/person/create',
@@ -23,13 +25,11 @@ export const ROUTES = {
   organizationList: '/organizationList',
   recoveryEmail: '/recoveryEmail/:token',
   search: '/search',
+  shopDetails: '/shopDetails/:id/:stripeId',
   signup: '/signup',
   stripe: '/stripe',
   team: '/team',
   userSettings: '/userSettings',
-  cart: '/cart/:id',
-  checkout: '/checkout/:id',
-  shopDetails: '/shopDetails/:id/:stripeId',
 };
 
 export const formatRoute = (route, params, queryParams) => {

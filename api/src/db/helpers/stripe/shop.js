@@ -28,9 +28,9 @@ const addProduct = async body => {
 };
 
 const addPrice = async body => {
-  const { stripe_price, entity_id, photo_url } = body;
+  const { stripePrice, entityId, photoUrl } = body;
   try {
-    const price = await stripe.prices.create(stripe_price);
+    const price = await stripe.prices.create(stripePrice);
 
     await knex('stripe_price').insert({
       stripe_price_id: price.id,
@@ -41,9 +41,9 @@ const addPrice = async body => {
       metadata: price.metadata,
     });
     await knex('store_items').insert({
-      entity_id,
+      entity_id: entityId,
       stripe_price_id: price.id,
-      photo_url,
+      photo_url: photoUrl,
     });
 
     stripeLogger(`Price created, ${price.id}`);

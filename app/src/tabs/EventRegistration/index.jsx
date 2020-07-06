@@ -51,6 +51,7 @@ export default function EventRegistration() {
   }, [event_id]);
 
   const stepHook = useStepper();
+
   const onTeamSelect = async (e, t) => {
     const { data } = await api(
       formatRoute('/api/entity/registered', null, {
@@ -74,11 +75,12 @@ export default function EventRegistration() {
   const finish = async () => {
     await api('/api/shop/addCartItem', {
       method: 'POST',
-      body: JSON.stringify({ stripePriceId: paymentOption }),
+      body: JSON.stringify({
+        stripePriceId: paymentOption,
+        metadata: team,
+      }),
     });
-    goTo(ROUTES.cart, {
-      id: JSON.parse(localStorage.getItem('userInfo')).persons[0],
-    });
+    goTo(ROUTES.cart);
   };
 
   const steps = [
