@@ -428,10 +428,10 @@ async function addMember(
 }
 
 async function addOption(
-  endTime,
   eventId,
   name,
   price,
+  endTime,
   startTime,
   userId,
 ) {
@@ -443,7 +443,6 @@ async function addOption(
     description: entity.name,
     metadata: { type: GLOBAL_ENUM.EVENT, id: eventId },
   };
-
   const product = await addProduct({ stripeProduct });
   const stripePrice = {
     currency: 'cad',
