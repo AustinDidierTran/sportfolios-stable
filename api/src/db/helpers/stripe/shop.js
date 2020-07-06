@@ -55,7 +55,26 @@ const addPrice = async body => {
   }
 };
 
+const createItem = async body => {
+  const { stripeProduct, stripePrice, entityId, photoUrl } = body;
+  try {
+    const product = await addProduct({ stripeProduct });
+
+    const price = await addPrice({
+      stripePrice: { ...stripePrice, product: product.id },
+      entityId,
+      photoUrl,
+    });
+
+    return price;
+  } catch (err) {
+    stripeErrorLogger('CreateItem error', err);
+    throw err;
+  }
+};
+
 module.exports = {
   addProduct,
   addPrice,
+  createItem,
 };

@@ -13,6 +13,7 @@ const {
   removePaymentMethodCustomer,
   addProduct,
   addPrice,
+  createItem: createItemHelper,
   getReceipt: getReceiptHelper,
   checkout: checkoutHelper,
 } = require('../helpers/stripe');
@@ -74,6 +75,10 @@ const createPrice = async (body, user_id) => {
   return addPrice(body, user_id);
 };
 
+const createItem = async (body, userId) => {
+  return createItemHelper(body, userId);
+};
+
 const getReceipt = async (query, user_id) => {
   return getReceiptHelper(query, user_id);
 };
@@ -95,6 +100,7 @@ module.exports = {
   detachPaymentMethod,
   createProduct,
   createPrice,
+  createItem,
   finalizeInvoice,
   payInvoice,
   getReceipt,

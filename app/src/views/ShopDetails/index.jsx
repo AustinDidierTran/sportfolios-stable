@@ -73,12 +73,7 @@ export default function ShopDetails() {
   const [displayed, setDisplayed] = useState(true);
   const [deletedIds, setDeletedIds] = useState([]);
   const amount = useFormInput(0);
-  const {
-    label: name,
-    amount: price,
-    photo_url: photoUrl,
-    description,
-  } = item;
+  const { label: name, amount: price, photoUrl, description } = item;
 
   const dispatchCart = newCart => {
     dispatch({
@@ -133,11 +128,11 @@ export default function ShopDetails() {
   const onNbBlur = async e => {
     const newNbInCart = e.target.value;
     const newCart = await updateCartItems({
-      stripe_price_id: stripePriceId,
-      nb_in_cart: newNbInCart,
+      stripePriceId: stripePriceId,
+      nbInCart: newNbInCart,
       metadata: { test: 'Testing123' },
     });
-    setItems(newCart);
+    setCart(newCart);
     dispatchCart(newCart);
   };
 

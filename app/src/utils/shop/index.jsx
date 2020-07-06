@@ -23,38 +23,30 @@ const createPrice = async params => {
 };
 
 const createItem = async params => {
-  const {
-    name,
-    description,
-    amount,
-    photo_url: photoUrl,
-    entity_id: entityId,
-  } = params;
-  const productParams = {
-    stripe_product: {
+  const { name, description, amount, photoUrl, entityId } = params;
+
+  const itemParams = {
+    stripeProduct: {
       name: name,
       description: description,
       active: true,
       metadata: { seller_entity_id: entityId },
     },
-  };
-
-  const product = await createProduct(productParams);
-
-  const priceParams = {
-    stripe_price: {
-      product: product,
+    stripePrice: {
       currency: 'cad',
       unit_amount: (+amount * 100).toString(),
       active: true,
     },
-    entity_id: entityId,
-    photo_url: photoUrl,
+    entityId,
+    photoUrl,
   };
 
-  const price = await createPrice(priceParams);
-  /* eslint-disable-next-line */
-  console.log(`${product} ${price}`);
+  const { data: item } = await api('/api/stripe/createItem', {
+    method: 'POST',
+    body: JSON.stringify(itemParams),
+  });
+
+  return item;
 };
 
 const onImgUpload = async (id, img, dispatch) => {

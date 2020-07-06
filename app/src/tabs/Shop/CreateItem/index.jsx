@@ -43,8 +43,8 @@ export default function CreateItem(props) {
       name: name.value,
       description: description.value,
       amount: amount.value,
-      photo_url: photoUrl,
-      entity_id: id,
+      photoUrl,
+      entityId: id,
     });
     setIsCreating(!isCreating);
     name.reset();

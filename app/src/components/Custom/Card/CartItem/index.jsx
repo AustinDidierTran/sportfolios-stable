@@ -52,7 +52,7 @@ export default function Item(props) {
   const {
     label: name,
     amount: price,
-    photo_url: photoUrl,
+    photoUrl,
     description,
     stripePriceId,
     id,
@@ -86,8 +86,8 @@ export default function Item(props) {
   const onNbBlur = async e => {
     const newNbInCart = e.target.value;
     const newCart = await updateCartItems({
-      stripe_price_id: stripePriceId,
-      nb_in_cart: newNbInCart,
+      stripePriceId: stripePriceId,
+      nbInCart: newNbInCart,
     });
     setItems(newCart);
     dispatchCart(newCart);
