@@ -11,6 +11,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useTranslation } from 'react-i18next';
 import { INVOICE_STATUS_ENUM } from '../../../../common/enums';
+import { formatPrice } from '../../utils/stringFormats';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -37,7 +38,7 @@ export default function EventRegistration() {
         return [
           ...prev,
           {
-            display: `${d.name} ${d.price / 100}$`,
+            display: `${d.name} ${formatPrice(d.price)}$`,
             value: d.id,
           },
         ];

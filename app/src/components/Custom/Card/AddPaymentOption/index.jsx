@@ -25,6 +25,7 @@ export default function AddPaymentOption(props) {
     let isValid = true;
     const start_date = values[2].value;
     const end_date = values[3].value;
+    const price = values[4].value * 100;
     Object.keys(values).forEach(key => {
       if (values[key].value === '' || values[key].value === null) {
         values[key].setError(t('value_is_required'));
@@ -36,7 +37,7 @@ export default function AddPaymentOption(props) {
 
     fields.map(f => {
       if (f.display === t('price')) {
-        if (values[f.value].value < 0) {
+        if (price.value < 0) {
           values[f.value].setError(t('invalid_input'));
           isValid = false;
         }
