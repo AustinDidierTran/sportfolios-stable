@@ -37,7 +37,7 @@ export default function EventRegistration() {
         return [
           ...prev,
           {
-            display: `${d.name} ${d.price}$`,
+            display: `${d.name} ${d.price / 100}$`,
             value: d.id,
           },
         ];

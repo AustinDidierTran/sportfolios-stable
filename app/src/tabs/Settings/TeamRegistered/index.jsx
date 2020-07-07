@@ -30,6 +30,7 @@ export default function TeamRegistered() {
   const classes = useStyles;
 
   const [teams, setTeams] = useState([]);
+  const [maximumSpots, setMaximumSpots] = useState();
 
   const getTeams = async () => {
     const { data } = await api(
@@ -44,10 +45,18 @@ export default function TeamRegistered() {
     getTeams();
   }, [eventId]);
 
-  const numberOfTeams = {
-    registered: teams.length,
-    maximumSpots: '16',
+  const getMaximumSpots = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/event', null, {
+        eventId,
+      }),
+    );
+    setMaximumSpots(data.maximum_spots);
   };
+
+  useEffect(() => {
+    getMaximumSpots();
+  }, [teams]);
 
   const StyledTableCell = withStyles(theme => ({
     head: {
@@ -79,8 +88,7 @@ export default function TeamRegistered() {
             <TableRow>
               <StyledTableCell>
                 {t('registration_status')}:&nbsp;
-                {numberOfTeams.registered}/
-                {numberOfTeams.maximumSpots}&nbsp;
+                {teams.length}/{maximumSpots}&nbsp;
                 {t('registered')}
               </StyledTableCell>
               <StyledTableCell />

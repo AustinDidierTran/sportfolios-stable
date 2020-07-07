@@ -10,16 +10,13 @@ export default function EventSettings(props) {
   const { t } = useTranslation();
 
   const values = fields.reduce(
-    (prev, f) => ({
-      ...prev,
-      [f.value]: useFormInput(f.initialValue),
-    }),
-    {},
+    (prev, f) => [...prev, useFormInput(f.initialValue)],
+    [],
   );
 
   useEffect(() => {
-    fields.forEach(f => {
-      values[f.value].changeDefault(f.initialValue);
+    fields.forEach((f, index) => {
+      values[index].changeDefault(f.initialValue);
     });
   }, [fields]);
 
@@ -40,10 +37,10 @@ export default function EventSettings(props) {
       }
     });
 
-    fields.map(f => {
+    fields.map((f, index) => {
       if (f.display === t('maximum_spots')) {
-        if (values[f.value].value < 0) {
-          values[f.value].setError(t('invalid_input'));
+        if (values[index].value < 0) {
+          values[index].setError(t('invalid_input'));
           isValid = false;
         }
       }
@@ -60,21 +57,20 @@ export default function EventSettings(props) {
   return (
     <Paper>
       <List>
-        {fields.map(f => (
+        {fields.map((f, index) => (
           <ListItem>
             <Input
               helperText={f.helperText}
               label={f.display}
-              namespace={f.value}
               type={f.type}
-              {...values[f.value]}
+              {...values[index]}
             />
           </ListItem>
         ))}
         <Button
           size="small"
           variant="contained"
-          endIcon="Add"
+          endIcon="Check"
           style={{ margin: '8px' }}
           onClick={handleSave}
         >

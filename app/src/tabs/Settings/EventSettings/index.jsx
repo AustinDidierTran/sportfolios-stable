@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { CARD_TYPE_ENUM } from '../../../../../common/enums';
+import moment from 'moment';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -38,29 +39,28 @@ export default function EventSettings() {
 
   const fields = [
     {
-      display: t('maximum_spots'),
+      helperText: t('maximum_spots'),
       type: 'number',
-      value: 0,
       initialValue: infos.maximum_spots,
     },
     {
       helperText: t('event_start'),
       type: 'date',
-      value: 1,
-      initialValue: infos.start_date,
+      initialValue: moment(infos.start_date).format('YYYY-MM-DD'),
     },
     {
       helperText: t('event_end'),
       type: 'date',
-      value: 2,
-      initialValue: infos.end_date,
+      initialValue: moment(infos.end_date).format('YYYY-MM-DD'),
     },
   ];
 
   const onSave = async values => {
-    const maximumSpots = values[0].value;
-    const eventStart = values[1].value;
-    const eventEnd = values[2].value;
+    const [
+      { value: maximumSpots },
+      { value: eventStart },
+      { value: eventEnd },
+    ] = values;
     await api(`/api/entity/updateEvent`, {
       method: 'PUT',
       body: JSON.stringify({

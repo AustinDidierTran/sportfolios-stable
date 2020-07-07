@@ -39,7 +39,7 @@ export default function AddOptionsEvent() {
 
   const onAdd = async values => {
     const name = values[0].value;
-    const price = Number(values[1].value);
+    const price = Number(values[1].value) * 100;
     const start_time = values[2].value;
     const end_time = values[3].value;
     if (start_time >= end_time) {
@@ -111,7 +111,7 @@ export default function AddOptionsEvent() {
         ))}
         <Card
           items={{ fields, onAdd }}
-          type={CARD_TYPE_ENUM.EVENT_SETTINGS}
+          type={CARD_TYPE_ENUM.ADD_PAYMENT_OPTION}
         />
         <Snackbar
           open={open}
