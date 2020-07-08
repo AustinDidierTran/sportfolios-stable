@@ -29,100 +29,95 @@ export default function EntitySettings(props) {
 
   switch (type) {
     case GLOBAL_ENUM.TEAM:
-      return (
-        <div className={styles.main}>
-          {isEditor ? (
-            <>
-              <Stripe id={id} />
-              {isAdmin ? (
-                <>
-                  <ManageRoles role={role} />
-                  <Card
-                    items={{ id, name: basicInfos.name }}
-                    type={CARD_TYPE_ENUM.DELETE_ENTITY}
-                  />
-                </>
-              ) : (
-                <></>
-              )}
-            </>
-          ) : (
-            <></>
-          )}
-        </div>
-      );
+      if (isAdmin) {
+        return (
+          <div className={styles.main}>
+            <Stripe id={id} />
+            <ManageRoles role={role} />
+            <Card
+              items={{ id, name: basicInfos.name }}
+              type={CARD_TYPE_ENUM.DELETE_ENTITY}
+            />
+          </div>
+        );
+      } else if (isEditor) {
+        return (
+          <div className={styles.main}>
+            <Stripe id={id} />
+          </div>
+        );
+      } else {
+        return <></>;
+      }
     case GLOBAL_ENUM.EVENT:
-      return (
-        <div className={styles.main}>
-          {isEditor ? (
-            <>
-              <AddOptionsEvent />
-              <TeamRegistered />
-              <EventSettings />
-              {isAdmin ? (
-                <>
-                  <ManageRoles role={role} />
-                  <Card
-                    items={{ id, name: basicInfos.name }}
-                    type={CARD_TYPE_ENUM.DELETE_ENTITY}
-                  />
-                </>
-              ) : (
-                <></>
-              )}
-            </>
-          ) : (
-            <></>
-          )}
-        </div>
-      );
+      if (isAdmin) {
+        return (
+          <div className={styles.main}>
+            <AddOptionsEvent />
+            <TeamRegistered />
+            <EventSettings />
+            <ManageRoles role={role} />
+            <Card
+              items={{ id, name: basicInfos.name }}
+              type={CARD_TYPE_ENUM.DELETE_ENTITY}
+            />
+          </div>
+        );
+      } else if (isEditor) {
+        return (
+          <div className={styles.main}>
+            <AddOptionsEvent />
+            <TeamRegistered />
+            <EventSettings />{' '}
+          </div>
+        );
+      } else {
+        return <></>;
+      }
     case GLOBAL_ENUM.ORGANIZATION:
-      return (
-        <div className={styles.main}>
-          {isEditor ? (
-            <>
-              <Stripe id={id} />
-              <AddMembership />
-              {isAdmin ? (
-                <>
-                  <ManageRoles role={role} />
-                  <Card
-                    items={{ id, name: basicInfos.name }}
-                    type={CARD_TYPE_ENUM.DELETE_ENTITY}
-                  />
-                </>
-              ) : (
-                <></>
-              )}
-            </>
-          ) : (
-            <Memberships basicInfos={basicInfos} />
-          )}
-        </div>
-      );
+      if (isAdmin) {
+        return (
+          <div className={styles.main}>
+            <Stripe id={id} />
+            <AddMembership />
+            <ManageRoles role={role} />
+            <Card
+              items={{ id, name: basicInfos.name }}
+              type={CARD_TYPE_ENUM.DELETE_ENTITY}
+            />
+          </div>
+        );
+      } else if (isEditor) {
+        return (
+          <div className={styles.main}>
+            <Stripe id={id} />
+            <AddMembership />
+          </div>
+        );
+      } else {
+        return <Memberships basicInfos={basicInfos} />;
+      }
     case GLOBAL_ENUM.PERSON:
-      return (
-        <div className={styles.main}>
-          {isEditor ? (
-            <>
-              <Stripe id={id} />
-              {isAdmin ? (
-                <>
-                  <ManageRoles role={role} />
-                  <Card
-                    items={{ id, name: basicInfos.name }}
-                    type={CARD_TYPE_ENUM.DELETE_ENTITY}
-                  />
-                </>
-              ) : (
-                <></>
-              )}
-            </>
-          ) : (
-            <></>
-          )}
-        </div>
-      );
+      if (isAdmin) {
+        return (
+          <div className={styles.main}>
+            <Stripe id={id} />
+            <ManageRoles role={role} />
+            <Card
+              items={{ id, name: basicInfos.name }}
+              type={CARD_TYPE_ENUM.DELETE_ENTITY}
+            />
+          </div>
+        );
+      } else if (isEditor) {
+        return (
+          <div className={styles.main}>
+            <Stripe id={id} />
+          </div>
+        );
+      } else {
+        return <></>;
+      }
     default:
       throw 'type not defined';
   }
