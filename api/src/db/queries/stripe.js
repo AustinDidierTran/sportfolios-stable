@@ -6,6 +6,7 @@ const {
   createAccountLink,
   createInvoiceItem,
   createInvoice,
+  createRefund: createRefundHelper,
   finalizeInvoice: finalizeInvoiceHelper,
   payInvoice: payInvoiceHelper,
   createPaymentMethod,
@@ -87,6 +88,10 @@ const checkout = async (body, user_id) => {
   return checkoutHelper(body, user_id);
 };
 
+const createRefund = async (body, user_id) => {
+  return createRefundHelper(body, user_id);
+};
+
 module.exports = {
   getCustomerId,
   getAccountLink,
@@ -95,6 +100,7 @@ module.exports = {
   addCustomer,
   addInvoiceItem,
   addInvoice,
+  createRefund,
   paymentMethod,
   attachPaymentMethod,
   detachPaymentMethod,

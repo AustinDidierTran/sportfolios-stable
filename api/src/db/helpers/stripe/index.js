@@ -22,6 +22,7 @@ const {
   payInvoice,
   getReceipt,
   checkout,
+  createRefund,
 } = require('./checkout');
 const { addProduct, addPrice, createItem } = require('./shop');
 
@@ -33,6 +34,7 @@ module.exports = {
   checkout,
   createAccountLink,
   createExternalAccount,
+  createRefund,
   createInvoice,
   createInvoiceItem,
   createPaymentMethod,

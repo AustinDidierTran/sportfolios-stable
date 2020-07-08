@@ -213,4 +213,15 @@ router.post(`${BASE_URL}/checkout`, async ctx => {
   };
 });
 
+router.post(`${BASE_URL}/createRefund`, async ctx => {
+  const data = await queries.createRefund(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 module.exports = router;

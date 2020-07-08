@@ -27,6 +27,14 @@ const checkout = async prices => {
   return receiptUrl;
 };
 
+const refunded = async params => {
+  const { data: receiptUrl } = await api('/api/stripe/createRefund', {
+    method: 'POST',
+    body: JSON.stringify({ ...params }),
+  });
+  return receiptUrl;
+};
+
 const getCartItems = async () => {
   const { data: cartItems } = await api('/api/shop/getCartItems');
   return cartItems;
@@ -37,6 +45,8 @@ export default function Review() {
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [receiptUrl, setReceiptUrl] = useState('');
+  const [invoice, setInvoice] = useState({});
+  const [transfers, setTransfers] = useState([]);
   const { dispatch } = useContext(Store);
 
   const onCheckout = async () => {
@@ -52,13 +62,25 @@ export default function Review() {
     const prices = items.map(item => {
       return { price: item.stripePriceId };
     });
-    const receipt = await checkout(prices);
+    const { invoice, receipt, transfers } = await checkout(prices);
+
+    setInvoice(invoice);
     setReceiptUrl(receipt);
+    setTransfers(transfers);
+
     await onCheckout();
   };
 
   const onReceiptUrl = async () => {
     window.location.href = receiptUrl;
+  };
+
+  const onRefund = async () => {
+    const refund = await refunded({
+      invoiceId: invoice.id,
+      prices: ['price_1H1zYSJPddOlmWPIGM0S0IoN'],
+    });
+    console.log('refund', refund);
   };
 
   const fetchCartItems = async () => {
@@ -80,7 +102,12 @@ export default function Review() {
   }, []);
 
   if (receiptUrl) {
-    return <Button onClick={onReceiptUrl}>{t('see_receipt')}</Button>;
+    return (
+      <div>
+        <Button onClick={onReceiptUrl}>{t('see_receipt')}</Button>
+        <Button onClick={onRefund}>REFUND</Button>
+      </div>
+    );
   }
   return (
     <Container className={styles.items}>
