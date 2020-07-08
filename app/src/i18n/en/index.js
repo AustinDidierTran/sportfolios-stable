@@ -123,6 +123,8 @@ export default {
     subscribe: 'Subscribe',
     subscribed: 'Subscribed',
     shop: 'Shop',
+    error_start_date_before_end:
+      'Start date should be before end date.',
     tournament_fee: 'Tournament Fee',
     team: 'Teams',
     team_already_registered: 'Team already registered',

@@ -149,6 +149,8 @@ export default {
     state: 'Province',
     postal_code: 'Code postal',
     address: 'Adresse',
+    error_start_date_before_end:
+      'La date de départ devrait être avant la date de fin.',
     account_already_exists: 'Le compte existe déjà',
     complete_order: 'Compléter la commande',
     see_receipt: 'Voir le reçu',

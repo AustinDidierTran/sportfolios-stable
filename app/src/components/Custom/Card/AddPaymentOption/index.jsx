@@ -10,22 +10,19 @@ export default function AddPaymentOption(props) {
   const { t } = useTranslation();
 
   const values = fields.reduce(
-    (prev, f) => ({
-      ...prev,
-      [f.value]: useFormInput(f.initialValue || ''),
-    }),
-    {},
+    (prev, f) => [...prev, useFormInput(f.initialValue || '')],
+    [],
   );
 
   const onReset = () => {
     Object.keys(values).forEach(key => values[key].reset());
   };
 
-  const handleAdd = async () => {
+  const validate = () => {
     let isValid = true;
     const price = values[1].value * 100;
-    const start_date = values[2].value;
-    const end_date = values[3].value;
+    const startDate = values[2].value;
+    const endDate = values[3].value;
     Object.keys(values).forEach(key => {
       if (values[key].value === '' || values[key].value === null) {
         values[key].setError(t('value_is_required'));
@@ -44,11 +41,19 @@ export default function AddPaymentOption(props) {
       }
     });
 
+    if (startDate > endDate) {
+      values[2].setError(t(''));
+      isValid = false;
+    }
+    return isValid;
+  };
+
+  const handleAdd = async () => {
+    const isValid = validate();
+
     if (isValid) {
       await onAdd(values);
-      if (start_date < end_date) {
-        onReset();
-      }
+      onReset();
     }
   };
 

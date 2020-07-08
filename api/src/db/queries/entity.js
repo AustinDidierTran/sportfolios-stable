@@ -83,8 +83,8 @@ async function addTeamToEvent(body) {
   return addTeamToEventHelper(team_id, event_id, invoice_id, status);
 }
 
-async function getOptions(event_id) {
-  return getOptionsHelper(event_id);
+async function getOptions(eventId) {
+  return getOptionsHelper(eventId);
 }
 
 const addEntity = async (body, user_id) => {
@@ -179,13 +179,13 @@ async function addMember(body) {
 }
 
 async function addOption(body, userId) {
-  const { event_id, name, price, end_time, start_time } = body;
+  const { eventId, name, price, endTime, startTime } = body;
   const res = await addOptionHelper(
-    event_id,
+    eventId,
     name,
     price,
-    end_time,
-    start_time,
+    endTime,
+    startTime,
     userId,
   );
   return res;

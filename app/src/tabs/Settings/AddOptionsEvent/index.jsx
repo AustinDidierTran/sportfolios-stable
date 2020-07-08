@@ -19,7 +19,7 @@ function Alert(props) {
 export default function AddOptionsEvent() {
   const { t } = useTranslation();
 
-  const { id: event_id } = useParams();
+  const { id: eventId } = useParams();
 
   const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);
@@ -27,11 +27,11 @@ export default function AddOptionsEvent() {
 
   useEffect(() => {
     getOptions();
-  }, [event_id]);
+  }, [eventId]);
 
   const getOptions = async () => {
     const { data } = await api(
-      formatRoute('/api/entity/options', null, { event_id }),
+      formatRoute('/api/entity/options', null, { eventId }),
     );
     const dataOptions = data.map(d => Object.values(d));
     setOptions(dataOptions);
@@ -39,10 +39,10 @@ export default function AddOptionsEvent() {
 
   const onAdd = async values => {
     const name = values[0].value;
-    const price = Number(values[1].value);
-    const start_time = values[2].value;
-    const end_time = values[3].value;
-    if (start_time >= end_time) {
+    const price = Number(values[1].value) * 100;
+    const startTime = values[2].value;
+    const endTime = values[3].value;
+    if (startTime >= endTime) {
       setDisplay(t('registration_closes_before_opening'));
       setOpen(true);
       return;
@@ -51,11 +51,11 @@ export default function AddOptionsEvent() {
     const res = await api(`/api/entity/option`, {
       method: 'POST',
       body: JSON.stringify({
-        event_id,
+        eventId,
         name,
         price,
-        end_time,
-        start_time,
+        endTime,
+        startTime,
       }),
     });
     if (res.status === 400) {
