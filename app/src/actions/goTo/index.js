@@ -1,4 +1,5 @@
 import history from '../../stores/history';
+import { getFormattedMailTo } from '../../utils/stringFormats';
 
 export const ROUTES = {
   adminPanel: '/adminPanel',
@@ -76,4 +77,12 @@ export const goBack = () => {
   } else {
     history.push(ROUTES.home);
   }
+};
+
+export const mailTo = (emailsFormatted, subject, message) => {
+  document.location.href = getFormattedMailTo(
+    emailsFormatted,
+    subject,
+    message,
+  );
 };

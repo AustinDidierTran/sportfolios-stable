@@ -117,3 +117,29 @@ export const validateDate = dateProps => {
   }
   return true;
 };
+
+export const getFormattedMailTo = (
+  emailsFormatted,
+  subject,
+  message,
+) => {
+  if (emailsFormatted) {
+    if (subject) {
+      if (message) {
+        return (
+          `mailto:${emailsFormatted}?subject=` +
+          encodeURIComponent(subject) +
+          `&body=` +
+          encodeURIComponent(message)
+        );
+      } else {
+        return (
+          `mailto:${emailsFormatted}?subject=` +
+          encodeURIComponent(subject)
+        );
+      }
+    } else {
+      return `mailto:${emailsFormatted}`;
+    }
+  }
+};
