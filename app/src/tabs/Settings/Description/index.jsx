@@ -5,7 +5,6 @@ import { Typography } from '../../../components/MUI';
 
 import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
-// import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import styles from './Description.module.css';
@@ -24,10 +23,6 @@ export default function Description() {
   useEffect(() => {
     getDescription();
   }, [eventId]);
-
-  useEffect(() => {
-    console.log({ text });
-  }, [text]);
 
   const getDescription = async () => {
     const { data } = await api(
@@ -71,7 +66,7 @@ export default function Description() {
         <TextareaAutosize
           className={styles.textareaEdit}
           placeholder="Description"
-          value={text}
+          defaultValue={text}
           onChange={onChange}
         />
         <Button
