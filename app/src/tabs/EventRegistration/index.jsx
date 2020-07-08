@@ -38,7 +38,7 @@ export default function EventRegistration() {
         return [
           ...prev,
           {
-            display: `${d.name} ${formatPrice(d.price)}$`,
+            display: `${d.name} ${formatPrice(d.price)}`,
             value: d.id,
           },
         ];

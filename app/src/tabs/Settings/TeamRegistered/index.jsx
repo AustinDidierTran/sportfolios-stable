@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
-import { Paper } from '../../../components/MUI';
+import { Paper, MailToButton } from '../../../components/Custom';
 import PaymentChip from './PaymentChip';
 
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -17,17 +17,9 @@ import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 700,
-  },
-});
-
 export default function TeamRegistered() {
   const { t } = useTranslation();
   const { id: eventId } = useParams();
-
-  const classes = useStyles;
 
   const [teams, setTeams] = useState([]);
   const [maximumSpots, setMaximumSpots] = useState();
@@ -65,7 +57,7 @@ export default function TeamRegistered() {
     },
     body: {
       fontSize: 14,
-      minWidth: 25,
+      maxWidth: 55,
     },
   }))(TableCell);
 
@@ -80,10 +72,7 @@ export default function TeamRegistered() {
   return (
     <Paper className={styles.paper}>
       <TableContainer component={Paper}>
-        <Table
-          className={classes.table}
-          aria-label="customized table"
-        >
+        <Table>
           <TableHead>
             <TableRow>
               <StyledTableCell>
@@ -92,6 +81,7 @@ export default function TeamRegistered() {
                 {t('registered')}
               </StyledTableCell>
               <StyledTableCell />
+              <StyledTableCell />
             </TableRow>
           </TableHead>
           <TableHead>
@@ -99,6 +89,9 @@ export default function TeamRegistered() {
               <StyledTableCell>{t('team')}</StyledTableCell>
               <StyledTableCell align="center">
                 {t('status')}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                {t('contact')}
               </StyledTableCell>
             </TableRow>
           </TableHead>
@@ -110,6 +103,9 @@ export default function TeamRegistered() {
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <PaymentChip status={team.status} />
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  <MailToButton emails={team.emails} />
                 </StyledTableCell>
               </StyledTableRow>
             ))}

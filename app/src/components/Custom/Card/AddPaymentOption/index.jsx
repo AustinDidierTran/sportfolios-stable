@@ -23,9 +23,9 @@ export default function AddPaymentOption(props) {
 
   const handleAdd = async () => {
     let isValid = true;
+    const price = values[1].value * 100;
     const start_date = values[2].value;
     const end_date = values[3].value;
-    const price = values[4].value * 100;
     Object.keys(values).forEach(key => {
       if (values[key].value === '' || values[key].value === null) {
         values[key].setError(t('value_is_required'));

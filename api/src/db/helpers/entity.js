@@ -373,6 +373,7 @@ async function getAllRegistered(eventId, userId) {
   const props = await Promise.all(
     teams.map(async t => {
       const entity = await getEntity(t.team_id, userId);
+      const emails = await getEmailsEntity(t.team_id);
       return {
         name: entity.name,
         surname: entity.surname,
@@ -381,10 +382,30 @@ async function getAllRegistered(eventId, userId) {
         teamId: t.team_id,
         invoiceId: t.invoice_id,
         status: t.status,
+        emails,
       };
     }),
   );
   return props;
+}
+
+async function getEmailsEntity(entity_id) {
+  const emails = await knex('entities_role')
+    .select('email')
+    .leftJoin(
+      'user_entity_role',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_role.entity_id_admin',
+    )
+    .leftJoin(
+      'user_email',
+      'user_email.user_id',
+      '=',
+      'user_entity_role.user_id',
+    )
+    .where('entities_role.entity_id', entity_id);
+  return emails;
 }
 
 async function getEvent(eventId) {

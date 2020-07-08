@@ -17,6 +17,7 @@ import Flag from '@material-ui/icons/Flag';
 import Home from '@material-ui/icons/Home';
 import Info from '@material-ui/icons/Info';
 import Lock from '@material-ui/icons/Lock';
+import Mail from '@material-ui/icons/Mail';
 import Menu from '@material-ui/icons/Menu';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 import Notifications from '@material-ui/icons/Notifications';
@@ -49,6 +50,7 @@ const icons = {
   Home,
   Info,
   Lock,
+  Mail,
   Menu,
   NavigateNext,
   Notifications,
