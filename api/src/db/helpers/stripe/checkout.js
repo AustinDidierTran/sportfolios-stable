@@ -108,7 +108,7 @@ const createTransfer = async (params, invoiceItemId) => {
   }
 };
 
-const createTransfers = async (invoice, userId) => {
+const createTransfers = async invoice => {
   try {
     const transfers = await Promise.all(
       invoice.lines.data.map(async (item, index) => {

@@ -50,6 +50,7 @@ export default function Review() {
   const { dispatch } = useContext(Store);
 
   const onCheckout = async () => {
+    console.log('transfers', transfers);
     await deleteCartItems();
     setItems([]);
     dispatch({
@@ -67,7 +68,6 @@ export default function Review() {
     setInvoice(invoice);
     setReceiptUrl(receipt);
     setTransfers(transfers);
-
     await onCheckout();
   };
 
