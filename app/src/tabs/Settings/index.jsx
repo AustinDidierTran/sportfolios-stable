@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 import {
   ENTITIES_ROLE_ENUM,
   CARD_TYPE_ENUM,
+  GLOBAL_ENUM,
 } from '../../../../common/enums';
 import styles from './Settings.module.css';
 import { Card } from '../../components/Custom';
@@ -20,36 +21,109 @@ export default function EntitySettings(props) {
 
   const { basicInfos } = props;
 
-  const { role = ENTITIES_ROLE_ENUM.VIEWER } = basicInfos;
+  const { role = ENTITIES_ROLE_ENUM.VIEWER, type } = basicInfos;
 
   const isEditor = useEditor(role);
 
   const isAdmin = useAdmin(role);
 
-  return (
-    <div className={styles.main}>
-      {isEditor ? (
-        <>
-          <Stripe id={id} />
-          <AddMembership />
-          <AddOptionsEvent />
-          <TeamRegistered />
-          <EventSettings />
-          {isAdmin ? (
+  switch (type) {
+    case GLOBAL_ENUM.TEAM:
+      return (
+        <div className={styles.main}>
+          {isEditor ? (
             <>
-              <ManageRoles role={role} />
-              <Card
-                items={{ id, name: basicInfos.name }}
-                type={CARD_TYPE_ENUM.DELETE_ENTITY}
-              />
+              <Stripe id={id} />
+              {isAdmin ? (
+                <>
+                  <ManageRoles role={role} />
+                  <Card
+                    items={{ id, name: basicInfos.name }}
+                    type={CARD_TYPE_ENUM.DELETE_ENTITY}
+                  />
+                </>
+              ) : (
+                <></>
+              )}
             </>
           ) : (
             <></>
           )}
-        </>
-      ) : (
-        <Memberships basicInfos={basicInfos} />
-      )}
-    </div>
-  );
+        </div>
+      );
+    case GLOBAL_ENUM.EVENT:
+      return (
+        <div className={styles.main}>
+          {isEditor ? (
+            <>
+              <AddOptionsEvent />
+              <TeamRegistered />
+              <EventSettings />
+              {isAdmin ? (
+                <>
+                  <ManageRoles role={role} />
+                  <Card
+                    items={{ id, name: basicInfos.name }}
+                    type={CARD_TYPE_ENUM.DELETE_ENTITY}
+                  />
+                </>
+              ) : (
+                <></>
+              )}
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
+      );
+    case GLOBAL_ENUM.ORGANIZATION:
+      return (
+        <div className={styles.main}>
+          {isEditor ? (
+            <>
+              <Stripe id={id} />
+              <AddMembership />
+              {isAdmin ? (
+                <>
+                  <ManageRoles role={role} />
+                  <Card
+                    items={{ id, name: basicInfos.name }}
+                    type={CARD_TYPE_ENUM.DELETE_ENTITY}
+                  />
+                </>
+              ) : (
+                <></>
+              )}
+            </>
+          ) : (
+            <Memberships basicInfos={basicInfos} />
+          )}
+        </div>
+      );
+    case GLOBAL_ENUM.PERSON:
+      return (
+        <div className={styles.main}>
+          {isEditor ? (
+            <>
+              <Stripe id={id} />
+              {isAdmin ? (
+                <>
+                  <ManageRoles role={role} />
+                  <Card
+                    items={{ id, name: basicInfos.name }}
+                    type={CARD_TYPE_ENUM.DELETE_ENTITY}
+                  />
+                </>
+              ) : (
+                <></>
+              )}
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
+      );
+    default:
+      throw 'type not defined';
+  }
 }
