@@ -70,6 +70,7 @@ export default function EventSettings() {
         eventEnd,
       }),
     });
+    setOpen(true);
     getInfos();
   };
 
@@ -90,9 +91,9 @@ export default function EventSettings() {
           onClose={() => {
             setOpen(false);
           }}
-          severity="error"
+          severity="success"
         >
-          {'heille'}
+          {t('informations_saved')}
         </Alert>
       </Snackbar>
     </Paper>

@@ -1,0 +1,21 @@
+.textarea {
+  width: 90%;
+  margin: 8px !important;
+  resize: none;
+  outline: none;
+  font-family: 'Helvetica';
+  font-size: 16px;
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: hidden;
+}
+
+.textareaEdit {
+  width: 90%;
+  margin: 8px !important;
+  resize: vertical;
+  outline: none;
+  font-family: 'Helvetica';
+  font-size: 16px;
+}

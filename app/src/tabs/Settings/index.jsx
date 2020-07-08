@@ -15,6 +15,7 @@ import {
 import styles from './Settings.module.css';
 import { Card } from '../../components/Custom';
 import { useAdmin, useEditor } from '../../hooks/roles';
+import Description from './Description';
 
 export default function EntitySettings(props) {
   const { id } = useParams();
@@ -55,6 +56,7 @@ export default function EntitySettings(props) {
       if (isAdmin) {
         return (
           <div className={styles.main}>
+            <Description />
             <AddOptionsEvent />
             <TeamRegistered />
             <EventSettings />
@@ -66,18 +68,17 @@ export default function EntitySettings(props) {
           </div>
         );
       }
-
       if (isEditor) {
         return (
           <div className={styles.main}>
+            <Description />
             <AddOptionsEvent />
             <TeamRegistered />
-            <EventSettings />{' '}
+            <EventSettings />
           </div>
         );
       }
       return <></>;
-
     case GLOBAL_ENUM.ORGANIZATION:
       if (isAdmin) {
         return (
