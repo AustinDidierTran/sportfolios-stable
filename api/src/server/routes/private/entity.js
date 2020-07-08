@@ -115,6 +115,43 @@ router.get(`${BASE_URL}/registered`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/allTeamsRegistered`, async ctx => {
+  const entity = await queries.getAllRegistered(
+    ctx.query.eventId,
+    ctx.body.userInfo.id,
+  );
+
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/event`, async ctx => {
+  const entity = await queries.getEvent(ctx.query.eventId);
+
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/options`, async ctx => {
   const option = await queries.getOptions(ctx.query.event_id);
   ctx.body = {
@@ -199,6 +236,23 @@ router.put(`${BASE_URL}/member`, async ctx => {
 
 router.put(`${BASE_URL}/updateRegistration`, async ctx => {
   const entity = await queries.updateRegistration(ctx.request.body);
+  if (entity) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/updateEvent`, async ctx => {
+  const entity = await queries.updateEvent(ctx.request.body);
   if (entity) {
     ctx.status = 200;
     ctx.body = {

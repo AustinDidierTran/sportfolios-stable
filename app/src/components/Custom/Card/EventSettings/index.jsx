@@ -1,31 +1,33 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useFormInput } from '../../../../hooks/forms';
 import { Input, Paper, Button } from '../../../Custom';
 import { List, ListItem } from '../../../MUI';
 import { useTranslation } from 'react-i18next';
 
-export default function AddPaymentOption(props) {
-  const { fields, onAdd } = props;
+export default function EventSettings(props) {
+  const { fields, onSave } = props;
   const { t } = useTranslation();
 
   const values = fields.reduce(
-    (prev, f) => ({
-      ...prev,
-      [f.value]: useFormInput(f.initialValue || ''),
-    }),
-    {},
+    (prev, f) => [...prev, useFormInput(f.initialValue)],
+    [],
   );
+
+  useEffect(() => {
+    fields.forEach((f, index) => {
+      values[index].changeDefault(f.initialValue);
+    });
+  }, [fields]);
 
   const onReset = () => {
     Object.keys(values).forEach(key => values[key].reset());
   };
 
-  const handleAdd = async () => {
+  const handleSave = async () => {
     let isValid = true;
-    const start_date = values[2].value;
-    const end_date = values[3].value;
-    const price = values[4].value * 100;
+    const start_date = values[1].value;
+    const end_date = values[2].value;
     Object.keys(values).forEach(key => {
       if (values[key].value === '' || values[key].value === null) {
         values[key].setError(t('value_is_required'));
@@ -35,17 +37,17 @@ export default function AddPaymentOption(props) {
       }
     });
 
-    fields.map(f => {
-      if (f.display === t('price')) {
-        if (price.value < 0) {
-          values[f.value].setError(t('invalid_input'));
+    fields.map((f, index) => {
+      if (f.display === t('maximum_spots')) {
+        if (values[index].value < 0) {
+          values[index].setError(t('invalid_input'));
           isValid = false;
         }
       }
     });
 
     if (isValid) {
-      await onAdd(values);
+      await onSave(values);
       if (start_date < end_date) {
         onReset();
       }
@@ -55,25 +57,24 @@ export default function AddPaymentOption(props) {
   return (
     <Paper>
       <List>
-        {fields.map(f => (
+        {fields.map((f, index) => (
           <ListItem>
             <Input
               helperText={f.helperText}
               label={f.display}
-              namespace={f.value}
               type={f.type}
-              {...values[f.value]}
+              {...values[index]}
             />
           </ListItem>
         ))}
         <Button
           size="small"
           variant="contained"
-          endIcon="Add"
+          endIcon="Check"
           style={{ margin: '8px' }}
-          onClick={handleAdd}
+          onClick={handleSave}
         >
-          {t('add')}
+          {t('save')}
         </Button>
       </List>
     </Paper>

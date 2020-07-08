@@ -5,6 +5,7 @@ import Memberships from './Memberships';
 import AddMembership from './AddMembership';
 import AddOptionsEvent from './AddOptionsEvent';
 import TeamRegistered from './TeamRegistered';
+import EventSettings from './EventSettings';
 import { useParams } from 'react-router-dom';
 import {
   ENTITIES_ROLE_ENUM,
@@ -33,6 +34,7 @@ export default function EntitySettings(props) {
           <AddMembership />
           <AddOptionsEvent />
           <TeamRegistered />
+          <EventSettings />
           {isAdmin ? (
             <>
               <ManageRoles role={role} />

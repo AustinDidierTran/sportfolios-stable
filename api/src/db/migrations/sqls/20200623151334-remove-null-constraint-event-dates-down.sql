@@ -1,4 +1,2 @@
 ALTER TABLE events
-  ALTER COLUMN start_date SET NOT NULL,
-  ALTER COLUMN end_date SET NOT NULL,
   DROP CONSTRAINT events_fkey;
