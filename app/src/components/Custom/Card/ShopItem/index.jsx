@@ -14,13 +14,13 @@ export default function Item(props) {
   const {
     label: name,
     amount: price,
-    photo_url: photoUrl,
+    photoUrl,
     description,
-    stripe_price_id,
+    stripePriceId,
   } = props;
 
   const onPaperClick = () => {
-    goTo(ROUTES.shopDetails, { id, stripeId: stripe_price_id });
+    goTo(ROUTES.shopDetails, { id, stripePriceId });
   };
 
   return (

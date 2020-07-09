@@ -66,19 +66,17 @@ const updateCartItems = async params => {
 
 export default function ShopDetails() {
   const { t } = useTranslation();
-  const { stripeId: stripePriceId } = useParams();
-  const { dispatch } = useContext(Store);
+  const { stripePriceId } = useParams();
+  const {
+    dispatch,
+    state: { userInfo },
+  } = useContext(Store);
   const [item, setItem] = useState({});
   const [cart, setCart] = useState([]);
   const [displayed, setDisplayed] = useState(true);
   const [deletedIds, setDeletedIds] = useState([]);
   const amount = useFormInput(0);
-  const {
-    label: name,
-    amount: price,
-    photo_url: photoUrl,
-    description,
-  } = item;
+  const { label: name, amount: price, photoUrl, description } = item;
 
   const dispatchCart = newCart => {
     dispatch({
@@ -98,7 +96,7 @@ export default function ShopDetails() {
   const addItem = async () => {
     const newCart = await addCartItem({
       stripePriceId,
-      metadata: { test: 'Testing123' },
+      metadata: { buyer_entity_id: userInfo.persons[0].entity_id },
     });
     setCart(newCart);
     dispatchCart(newCart);
@@ -133,11 +131,11 @@ export default function ShopDetails() {
   const onNbBlur = async e => {
     const newNbInCart = e.target.value;
     const newCart = await updateCartItems({
-      stripe_price_id: stripePriceId,
-      nb_in_cart: newNbInCart,
-      metadata: { test: 'Testing123' },
+      stripePriceId: stripePriceId,
+      nbInCart: newNbInCart,
+      metadata: { buyer_entity_id: userInfo.persons[0].entity_id },
     });
-    setItems(newCart);
+    setCart(newCart);
     dispatchCart(newCart);
   };
 

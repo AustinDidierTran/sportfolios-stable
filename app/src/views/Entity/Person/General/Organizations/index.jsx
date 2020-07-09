@@ -8,7 +8,7 @@ import {
   Paper,
 } from '../../../../../components/Custom';
 import api from '../../../../../actions/api';
-import { ENTITIES_TYPE_ENUM } from '../../..';
+import { GLOBAL_ENUM } from '../../../../../../../common/enums';
 
 export default function Organizations() {
   const { t } = useTranslation();
@@ -16,7 +16,7 @@ export default function Organizations() {
   const [organizations, setOrganizations] = useState([]);
   const getOrganizations = async () => {
     const { data } = await api(
-      `/api/entity/all?type=${ENTITIES_TYPE_ENUM.ORGANIZATION}`,
+      `/api/entity/all?type=${GLOBAL_ENUM.ORGANIZATION}`,
     );
 
     setOrganizations(data);

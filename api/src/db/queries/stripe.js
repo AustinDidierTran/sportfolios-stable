@@ -6,6 +6,7 @@ const {
   createAccountLink,
   createInvoiceItem,
   createInvoice,
+  createRefund: createRefundHelper,
   finalizeInvoice: finalizeInvoiceHelper,
   payInvoice: payInvoiceHelper,
   createPaymentMethod,
@@ -13,6 +14,7 @@ const {
   removePaymentMethodCustomer,
   addProduct,
   addPrice,
+  createItem: createItemHelper,
   getReceipt: getReceiptHelper,
   checkout: checkoutHelper,
 } = require('../helpers/stripe');
@@ -74,12 +76,20 @@ const createPrice = async (body, user_id) => {
   return addPrice(body, user_id);
 };
 
+const createItem = async (body, userId) => {
+  return createItemHelper(body, userId);
+};
+
 const getReceipt = async (query, user_id) => {
   return getReceiptHelper(query, user_id);
 };
 
 const checkout = async (body, user_id) => {
   return checkoutHelper(body, user_id);
+};
+
+const createRefund = async (body, user_id) => {
+  return createRefundHelper(body, user_id);
 };
 
 module.exports = {
@@ -90,11 +100,13 @@ module.exports = {
   addCustomer,
   addInvoiceItem,
   addInvoice,
+  createRefund,
   paymentMethod,
   attachPaymentMethod,
   detachPaymentMethod,
   createProduct,
   createPrice,
+  createItem,
   finalizeInvoice,
   payInvoice,
   getReceipt,

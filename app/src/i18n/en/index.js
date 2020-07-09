@@ -55,6 +55,7 @@ export default {
     funding_goal: 'Goal: {{goal}}$',
     general: 'General',
     general_informations: 'General informations',
+    generate_account_link: 'Generate Account Link',
     goal: 'Goal',
     have_an_account_signin: 'Already have an account? Sign in!',
     home: 'Home',
@@ -98,6 +99,7 @@ export default {
     phone_number: 'Phone Number',
     people: 'People',
     ranking: 'Ranking',
+    refund: 'Refund',
     registration_status: 'Registration Status',
     registration_closes_before_opening:
       'Registration closes before opening',

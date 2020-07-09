@@ -5,11 +5,12 @@ const {
   stripeErrorLogger,
   stripeLogger,
 } = require('../../../server/utils/logger');
+const { STRIPE_STATUS_ENUM } = require('../../../../../common/enums');
 
 const createInvoiceItem = async (body, userId) => {
-  const { price } = body;
+  const { price, metadata } = body;
   const customerId = await getCustomerId(userId);
-  const params = { price, customer: customerId };
+  const params = { price, customer: customerId, metadata };
 
   try {
     const invoiceItem = await stripe.invoiceItems.create(params);
@@ -18,6 +19,7 @@ const createInvoiceItem = async (body, userId) => {
       user_id: userId,
       invoice_item_id: invoiceItem.id,
       stripe_price_id: invoiceItem.price.id,
+      metadata: invoiceItem.metadata,
     });
 
     stripeLogger(`InvoiceItem created, ${invoiceItem.id}`);
@@ -71,8 +73,8 @@ const finalizeInvoice = async (body, userId) => {
 };
 
 const payInvoice = async (body, userId) => {
-  const { invoice_id } = body;
-  const params = invoice_id;
+  const { invoiceId } = body;
+  const params = invoiceId;
 
   try {
     const invoice = await stripe.invoices.pay(params);
@@ -85,6 +87,130 @@ const payInvoice = async (body, userId) => {
     return invoice;
   } catch (err) {
     stripeErrorLogger('CreateInvoice error', err);
+    throw err;
+  }
+};
+
+const createTransfer = async (params, invoiceItemId) => {
+  try {
+    const transfer = await stripe.transfers.create(params);
+
+    await knex('stripe_transfer').insert({
+      invoice_item_id: invoiceItemId,
+      transfer_id: transfer.id,
+      status: transfer.reversed
+        ? STRIPE_STATUS_ENUM.DONE
+        : STRIPE_STATUS_ENUM.NOT_DONE,
+    });
+
+    stripeLogger('Transfer successful', transfer.id);
+    return transfer;
+  } catch (err) {
+    stripeErrorLogger('transfer error', err);
+    throw err;
+  }
+};
+
+const createTransfers = async invoice => {
+  try {
+    const transfers = await Promise.all(
+      invoice.lines.data.map(async (item, index) => {
+        const {
+          amount,
+          currency,
+          invoice_item: invoiceItemId,
+        } = item;
+
+        const [invoiceItem] = await knex('stripe_invoice_item')
+          .select('*')
+          .where({ invoice_item_id: invoiceItemId });
+
+        const [externalAccount] = await knex('stripe_accounts')
+          .select('*')
+          .where({
+            entity_id: invoiceItem.metadata.seller_entity_id,
+          });
+
+        const transfer = await createTransfer(
+          {
+            amount,
+            currency,
+            destination: externalAccount.account_id,
+            description: externalAccount.account_id,
+            source_transaction: invoice.charge,
+            metadata: {
+              account_id: externalAccount.account_id,
+              entity_id: externalAccount.entity_id,
+            },
+          },
+          invoiceItemId,
+        );
+        /* eslint-disable-next-line */
+        console.log(`Transfer ${index}`, transfer);
+        return transfer;
+      }),
+    );
+
+    stripeLogger('Transfer All');
+    return transfers;
+  } catch (err) {
+    stripeErrorLogger('transfer error', err);
+    throw err;
+  }
+};
+
+const createRefund = async body => {
+  const { invoiceId, prices, reason } = body;
+
+  try {
+    const invoice = await stripe.invoices.retrieve(invoiceId);
+    const charge = invoice.charge;
+
+    const refunds = await Promise.all(
+      prices.map(async stripePriceId => {
+        const invoiceItem = invoice.lines.data.find(
+          e => e.price.id == stripePriceId,
+        );
+        const amount = invoiceItem.amount;
+
+        const params = {
+          charge,
+          amount,
+          reason,
+          refund_application_fee: true,
+          reverse_transfer: true,
+        };
+        const refund = await stripe.refunds.create(params);
+
+        await knex('stripe_refund').insert({
+          invoice_id: invoice.id,
+          refund_id: refund.id,
+          amount,
+        });
+
+        const [transfer] = await knex('stripe_transfer')
+          .select('*')
+          .where({
+            invoice_item_id: invoiceItem.metadata.seller_entity_id,
+          });
+        const transferId = transfer.transfer_id;
+
+        const reversedTransfer = await stripe.transfers.createReversal(
+          transferId,
+          { amount, refund_application_fee: true },
+        );
+
+        return { refund, reversedTransfer };
+      }),
+    );
+
+    //TODO: Set stripe_invoice.status to refunded
+    //TODO: Set hook for Jul to update infos.
+
+    stripeLogger('Refunds successful', refunds);
+    return refunds;
+  } catch (err) {
+    stripeErrorLogger('Refunds error', err);
     throw err;
   }
 };
@@ -110,23 +236,23 @@ const getReceipt = async query => {
   }
 };
 
-const getMetadata = async stripe_price_id => {
-  const [stripe_price] = await knex('stripe_price')
+const getMetadata = async stripePriceId => {
+  const [stripePrice] = await knex('stripe_price')
     .select('*')
-    .where({ stripe_price_id });
+    .where({ stripe_price_id: stripePriceId });
 
-  const [stripe_product] = await knex('stripe_product')
+  const [stripeProduct] = await knex('stripe_product')
     .select('*')
-    .where({ stripe_product_id: stripe_price.stripe_product_id });
+    .where({ stripe_product_id: stripePrice.stripe_product_id });
 
-  const [cart_item] = await knex('cart_items')
+  const [cartItem] = await knex('cart_items')
     .select('*')
-    .where({ stripe_price_id });
+    .where({ stripe_price_id: stripePriceId });
 
   const metadata = {
-    ...cart_item.metadata,
-    ...stripe_price.metadata,
-    ...stripe_product.metadata,
+    ...cartItem.metadata,
+    ...stripePrice.metadata,
+    ...stripeProduct.metadata,
   };
   return metadata;
 };
@@ -160,8 +286,12 @@ const checkout = async (body, userId) => {
     await finalizeInvoice({ invoiceId }, userId);
     const paidInvoice = await payInvoice({ invoiceId }, userId);
     const chargeId = await paidInvoice.charge;
+    const receipt = getReceipt({ chargeId, invoiceId });
+    const transfers = await createTransfers(paidInvoice, userId);
+    /* eslint-disable-next-line */
+    console.log('transfers', transfers);
 
-    return getReceipt({ chargeId, invoiceId });
+    return { invoice: paidInvoice, receipt, transfers };
   } catch (err) {
     stripeErrorLogger('CreateInvoice error', err);
     throw err;
@@ -175,4 +305,5 @@ module.exports = {
   payInvoice,
   getReceipt,
   checkout,
+  createRefund,
 };

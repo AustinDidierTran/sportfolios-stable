@@ -15,6 +15,17 @@ router.get(`${BASE_URL}/accountLink`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/getStripeAccountId`, async ctx => {
+  const data = await queries.getStripeAccount(
+    ctx.query.id,
+    ctx.request.ip,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 router.post(`${BASE_URL}/externalAccount`, async ctx => {
   const { data, status, error } = await queries.addExternalAccount(
     ctx.request.body,
@@ -157,6 +168,17 @@ router.post(`${BASE_URL}/createPrice`, async ctx => {
   };
 });
 
+router.post(`${BASE_URL}/createItem`, async ctx => {
+  const data = await queries.createItem(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 //TODO: Link this to a fct (getProduct doesnt exist)
 router.get(`${BASE_URL}/getProductFromPriceId`, async ctx => {
   const data = await queries.getProduct(
@@ -182,6 +204,17 @@ router.get(`${BASE_URL}/getReceipt`, async ctx => {
 
 router.post(`${BASE_URL}/checkout`, async ctx => {
   const data = await queries.checkout(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
+router.post(`${BASE_URL}/createRefund`, async ctx => {
+  const data = await queries.createRefund(
     ctx.request.body,
     ctx.body.userInfo.id,
   );

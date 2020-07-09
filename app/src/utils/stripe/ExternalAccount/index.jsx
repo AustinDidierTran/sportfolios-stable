@@ -1,20 +1,37 @@
 import React from 'react';
 import { Button } from '../../../components/MUI';
 import api from '../../../actions/api';
+import { useEffect } from 'react';
+import { formatRoute } from '../../../actions/goTo';
 
 export default function AccountLink(props) {
-  const { disabled } = props;
+  const { disabled, setNext, id } = props;
+  const { t } = useTranslation();
 
   const onClick = async () => {
-    const { id } = props;
-    const res = await api(`/api/stripe/accountLink?id=${id}`);
-    const { data } = res;
+    const { data } = await api(
+      formatRoute('/api/stripe/accountLink', null, { id }),
+    );
+    setNext(true);
     window.location.href = data.url;
   };
 
+  const fetchAccount = async () => {
+    const account = await api(
+      formatRoute('/api/stripe/getStripeAccountId', null, { id }),
+    );
+    if (account) {
+      setNext(true);
+    }
+  };
+
+  useEffect(() => {
+    fetchAccount();
+  }, []);
+
   return (
     <Button disabled={disabled} onClick={onClick}>
-      Generate Account Link
+      {t('generate_account_link')}
     </Button>
   );
 }

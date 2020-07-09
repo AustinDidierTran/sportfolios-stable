@@ -8,39 +8,29 @@ import {
 } from '../../../components/MUI';
 import CustomCard from '../../../components/Custom/Card';
 import { Store, ACTION_ENUM } from '../../../Store';
-import api from '../../../actions/api';
 import { CARD_TYPE_ENUM } from '../../../../../common/enums';
 import { useTranslation } from 'react-i18next';
-
-const deleteCartItems = async () => {
-  const { data: newCart } = await api('/api/shop/clearCart', {
-    method: 'DELETE',
-  });
-  return newCart;
-};
-
-const checkout = async prices => {
-  const { data: receiptUrl } = await api('/api/stripe/checkout', {
-    method: 'POST',
-    body: JSON.stringify({ prices }),
-  });
-  return receiptUrl;
-};
-
-const getCartItems = async () => {
-  const { data: cartItems } = await api('/api/shop/getCartItems');
-  return cartItems;
-};
+import {
+  checkout,
+  clearCart,
+  createRefund,
+  getCartItems,
+} from '../../../utils/stripe';
+import { formatPrice } from '../../../utils/stringFormats';
 
 export default function Review() {
   const { t } = useTranslation();
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [receiptUrl, setReceiptUrl] = useState('');
+  const [invoice, setInvoice] = useState({});
+  const [transfers, setTransfers] = useState([]);
   const { dispatch } = useContext(Store);
 
   const onCheckout = async () => {
-    await deleteCartItems();
+    /* eslint-disable-next-line */
+    console.log('transfers', transfers);
+    await clearCart();
     setItems([]);
     dispatch({
       type: ACTION_ENUM.UPDATE_CART,
@@ -50,15 +40,27 @@ export default function Review() {
 
   const onCompleteOrder = async () => {
     const prices = items.map(item => {
-      return { price: item.stripe_price_id };
+      return { price: item.stripePriceId };
     });
-    const receipt = await checkout(prices);
+    const { invoice, receipt, transfers } = await checkout(prices);
+
+    setInvoice(invoice);
     setReceiptUrl(receipt);
+    setTransfers(transfers);
     await onCheckout();
   };
 
   const onReceiptUrl = async () => {
     window.location.href = receiptUrl;
+  };
+
+  const onRefund = async () => {
+    const refund = await createRefund({
+      invoiceId: invoice.id,
+      prices: ['price_1H1zYSJPddOlmWPIGM0S0IoN'],
+    });
+    /* eslint-disable-next-line */
+    console.log('refund', refund);
   };
 
   const fetchCartItems = async () => {
@@ -68,7 +70,7 @@ export default function Review() {
 
   const getTotal = () => {
     const total = items.reduce(
-      (prevTotal, item) => (prevTotal += item.amount / 100),
+      (prevTotal, item) => (prevTotal += item.amount),
       0,
     );
     setTotal(total);
@@ -80,7 +82,12 @@ export default function Review() {
   }, []);
 
   if (receiptUrl) {
-    return <Button onClick={onReceiptUrl}>{t('see_receipt')}</Button>;
+    return (
+      <div>
+        <Button onClick={onReceiptUrl}>{t('see_receipt')}</Button>
+        <Button onClick={onRefund}>{t('refund')}</Button>
+      </div>
+    );
   }
   return (
     <Container className={styles.items}>
@@ -96,7 +103,7 @@ export default function Review() {
             );
           })}
         </div>
-        <Typography>{`Total: ${total}`}</Typography>
+        <Typography>{`Total: ${formatPrice(total)}`}</Typography>
 
         <Button onClick={onCompleteOrder} className={styles.button}>
           {t('complete_order')}

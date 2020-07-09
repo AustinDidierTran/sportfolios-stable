@@ -12,12 +12,13 @@ import CountrySelect from './CountrySelect';
 import CurrencySelect from './CurrencySelect';
 import api from '../../../../actions/api';
 
-export default function ExternalAccountForm() {
+export default function ExternalAccountForm(props) {
   const { t } = useTranslation();
   const { id } = useParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { setNext } = props;
 
-  const isANumber = number => isNaN(Number(number));
+  const isANumber = number => !isNaN(Number(number));
 
   const validate = values => {
     const errors = {};
@@ -40,12 +41,12 @@ export default function ExternalAccountForm() {
     }
     if (!routingNumber) {
       errors.routingNumber = t('value_is_required');
-    } else if (isANumber(routingNumber)) {
+    } else if (!isANumber(routingNumber)) {
       errors.routingNumber = t('value_must_be_numeric');
     }
     if (!accountNumber) {
       errors.accountNumber = t('value_is_required');
-    } else if (isANumber(accountNumber)) {
+    } else if (!isANumber(accountNumber)) {
       errors.accountNumber = t('value_must_be_numeric');
     }
 
@@ -82,6 +83,7 @@ export default function ExternalAccountForm() {
           body: JSON.stringify(params),
         });
         setIsSubmitting(false);
+        setNext(true);
       } catch (err) {
         setIsSubmitting(false);
         throw err;

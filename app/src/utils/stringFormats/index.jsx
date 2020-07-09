@@ -3,8 +3,10 @@ import {
   MEMBERSHIP_TYPE_ENUM,
   GLOBAL_ENUM,
 } from '../../../../common/enums';
+import _ from 'lodash';
 
 import moment from 'moment';
+import { formatRoute } from '../../actions/goTo';
 
 export const getInitialsFromName = completeName => {
   return (
@@ -97,7 +99,7 @@ export const getExpirationDate = (length, fixed_date) => {
   }
 };
 
-export const formatPrice = price => `${price / 100}$`;
+export const formatPrice = price => `${price / 100} CAD`;
 
 export const validateDate = dateProps => {
   //date format: 'MM/DD'
@@ -118,28 +120,30 @@ export const validateDate = dateProps => {
   return true;
 };
 
-export const getFormattedMailTo = (
-  emailsFormatted,
-  subject,
-  message,
-) => {
-  if (emailsFormatted) {
-    if (subject) {
-      if (message) {
-        return (
-          `mailto:${emailsFormatted}?subject=` +
-          encodeURIComponent(subject) +
-          `&body=` +
-          encodeURIComponent(message)
-        );
-      } else {
-        return (
-          `mailto:${emailsFormatted}?subject=` +
-          encodeURIComponent(subject)
-        );
-      }
-    } else {
-      return `mailto:${emailsFormatted}`;
-    }
+export const getFormattedMailTo = (emails, subject, body) => {
+  if (!emails) {
+    throw 'No email is provided';
   }
+
+  if (!_.isArray(emails)) {
+    throw 'Emails should be an array';
+  }
+
+  if (!emails.length) {
+    throw 'No email is provided';
+  }
+
+  const formattedEmails = emails.join(', ');
+
+  const queryParams = {};
+
+  if (subject) {
+    queryParams.subject = encodeURIComponent(subject);
+  }
+
+  if (body) {
+    queryParams.body = encodeURIComponent(body);
+  }
+
+  return formatRoute(`mailTo:${formattedEmails}`, null, queryParams);
 };

@@ -30,7 +30,19 @@ const getItem = async stripePriceId => {
         'stripe_price.stripe_product_id',
       )
       .where('stripe_price.stripe_price_id', stripePriceId);
-    return res;
+
+    return (
+      res.map(i => ({
+        active: i.active,
+        amount: i.amount,
+        description: i.description,
+        entityId: i.entity_id,
+        label: i.label,
+        photoUrl: i.photo_url,
+        stripePriceId: i.stripe_price_id,
+        stripeProductId: i.stripe_product_id,
+      })) || []
+    );
   } catch (err) {
     /* eslint-disable-next-line */
     console.error('GetItem error', err);
@@ -70,7 +82,7 @@ const getShopItems = async entityId => {
     description: i.description,
     entityId: i.entity_id,
     label: i.label,
-    photoUrl: i.photoUrl,
+    photoUrl: i.photo_url,
     stripePriceId: i.stripe_price_id,
     stripeProductId: i.stripe_product_id,
   }));
@@ -83,6 +95,7 @@ const getCartItems = async userId => {
         'cart_items.stripe_price_id',
         'cart_items.metadata',
         'cart_items.user_id',
+        'cart_items.id',
         'stripe_price.stripe_price_id',
         'stripe_price.stripe_product_id',
         'stripe_product.label',
