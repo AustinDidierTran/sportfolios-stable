@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Paper, Button } from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
 
 import { useTranslation } from 'react-i18next';
+import api from '../../../actions/api';
+// import { formatRoute } from '../../../actions/goTo';
+import { useParams } from 'react-router-dom';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import styles from './Description.module.css';
 
 export default function Description() {
   const { t } = useTranslation();
+
+  const { id: eventId } = useParams();
 
   const [edit, setEdit] = useState(false);
 
@@ -16,11 +21,38 @@ export default function Description() {
 
   const [temp, setTemp] = useState('');
 
+  useEffect(() => {
+    getDescription();
+  }, [eventId]);
+
+  useEffect(() => {
+    console.log({ text });
+  }, [text]);
+
+  const getDescription = async () => {
+    const { data } = await api(
+      `/api/entity/generalInfos?entityId=${eventId}`,
+    );
+    if (data.description) {
+      setText(decodeURIComponent(data.description));
+    } else {
+      setText(data.description);
+    }
+  };
+
+  const updateDescription = async description => {
+    await api('/api/entity/updateGeneralInfos', {
+      method: 'PUT',
+      body: JSON.stringify({ description, entityId: eventId }),
+    });
+    getDescription();
+  };
+
   const onEdit = () => {
     setEdit(true);
   };
   const onSave = () => {
-    setText(temp);
+    updateDescription(temp);
     setEdit(false);
   };
 
@@ -29,10 +61,8 @@ export default function Description() {
   };
 
   const onChange = () => {
-    // TODO: Encode and decode value with the following code
-    // const encoded = encodeURIComponent(event.target.value);
-    // const decoded = decodeURIComponent(encoded);
-    setTemp(event.target.value);
+    const encoded = encodeURIComponent(event.target.value);
+    setTemp(encoded);
   };
 
   if (edit) {
@@ -41,7 +71,7 @@ export default function Description() {
         <TextareaAutosize
           className={styles.textareaEdit}
           placeholder="Description"
-          defaultValue={text}
+          value={text}
           onChange={onChange}
         />
         <Button
@@ -66,14 +96,13 @@ export default function Description() {
       </Paper>
     );
   }
-
   if (text) {
     return (
       <Paper title="Description">
         <TextareaAutosize
           className={styles.textarea}
           placeholder="Description"
-          defaultValue={text}
+          value={text}
           disabled
         />
         <Button

@@ -152,6 +152,23 @@ router.get(`${BASE_URL}/event`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/generalInfos`, async ctx => {
+  const entity = await queries.getGeneralInfos(ctx.query.entityId);
+
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/options`, async ctx => {
   const option = await queries.getOptions(ctx.query.eventId);
   ctx.body = {
@@ -253,6 +270,23 @@ router.put(`${BASE_URL}/updateRegistration`, async ctx => {
 
 router.put(`${BASE_URL}/updateEvent`, async ctx => {
   const entity = await queries.updateEvent(ctx.request.body);
+  if (entity) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/updateGeneralInfos`, async ctx => {
+  const entity = await queries.updateGeneralInfos(ctx.request.body);
   if (entity) {
     ctx.status = 200;
     ctx.body = {
