@@ -60,7 +60,7 @@ export default {
     have_an_account_signin:
       'Vous avez déjà un compte? Connectez-vous!',
     home: 'Accueil',
-    informations_saved: 'Informations sauvegarder',
+    informations_saved: 'Informations sauvegardées',
     infos: 'Infos',
     last_name: 'Nom de famille',
     length: 'Durée',
