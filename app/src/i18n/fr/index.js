@@ -60,6 +60,7 @@ export default {
     have_an_account_signin:
       'Vous avez déjà un compte? Connectez-vous!',
     home: 'Accueil',
+    informations_saved: 'Informations sauvegardées',
     infos: 'Infos',
     last_name: 'Nom de famille',
     length: 'Durée',
@@ -74,6 +75,7 @@ export default {
     new_organization: 'Nouvelle Organisation',
     new_team: 'Nouvelle Équipe',
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
+    no_description: 'Aucune description',
     notifications: 'Notifications',
     not_paid: 'Paiement dû',
     no_notifications: 'Pas de notifications',
