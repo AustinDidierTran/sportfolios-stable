@@ -40,15 +40,17 @@ export default function EntitySettings(props) {
             />
           </div>
         );
-      } else if (isEditor) {
+      }
+
+      if (isEditor) {
         return (
           <div className={styles.main}>
             <Stripe id={id} />
           </div>
         );
-      } else {
-        return <></>;
       }
+      return <></>;
+
     case GLOBAL_ENUM.EVENT:
       if (isAdmin) {
         return (
@@ -63,7 +65,9 @@ export default function EntitySettings(props) {
             />
           </div>
         );
-      } else if (isEditor) {
+      }
+
+      if (isEditor) {
         return (
           <div className={styles.main}>
             <AddOptionsEvent />
@@ -71,9 +75,9 @@ export default function EntitySettings(props) {
             <EventSettings />{' '}
           </div>
         );
-      } else {
-        return <></>;
       }
+      return <></>;
+
     case GLOBAL_ENUM.ORGANIZATION:
       if (isAdmin) {
         return (
@@ -87,16 +91,17 @@ export default function EntitySettings(props) {
             />
           </div>
         );
-      } else if (isEditor) {
+      }
+      if (isEditor) {
         return (
           <div className={styles.main}>
             <Stripe id={id} />
             <AddMembership />
           </div>
         );
-      } else {
-        return <Memberships basicInfos={basicInfos} />;
       }
+      return <Memberships basicInfos={basicInfos} />;
+
     case GLOBAL_ENUM.PERSON:
       if (isAdmin) {
         return (
@@ -109,15 +114,15 @@ export default function EntitySettings(props) {
             />
           </div>
         );
-      } else if (isEditor) {
+      }
+      if (isEditor) {
         return (
           <div className={styles.main}>
             <Stripe id={id} />
           </div>
         );
-      } else {
-        return <></>;
       }
+      return <></>;
     default:
       throw 'type not defined';
   }
