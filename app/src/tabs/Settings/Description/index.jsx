@@ -4,6 +4,7 @@ import { Paper, Button } from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
 
 import { useTranslation } from 'react-i18next';
+import { formatRoute } from '../../../actions/goTo';
 import api from '../../../actions/api';
 import { useParams } from 'react-router-dom';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
@@ -26,19 +27,25 @@ export default function Description() {
 
   const getDescription = async () => {
     const { data } = await api(
-      `/api/entity/generalInfos?entityId=${eventId}`,
+      formatRoute('/api/entity/generalInfos', null, {
+        entityId: eventId,
+      }),
     );
     if (data.description) {
       setText(decodeURIComponent(data.description));
     } else {
-      setText(data.description);
+      setText(null);
     }
   };
 
-  const updateDescription = async description => {
+  const updateDescription = async temp => {
+    const encoded = encodeURIComponent(temp);
     await api('/api/entity/updateGeneralInfos', {
       method: 'PUT',
-      body: JSON.stringify({ description, entityId: eventId }),
+      body: JSON.stringify({
+        description: encoded,
+        entityId: eventId,
+      }),
     });
     getDescription();
   };
@@ -56,8 +63,7 @@ export default function Description() {
   };
 
   const onChange = () => {
-    const encoded = encodeURIComponent(event.target.value);
-    setTemp(encoded);
+    setTemp(event.target.value);
   };
 
   if (edit) {
