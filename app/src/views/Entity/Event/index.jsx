@@ -19,11 +19,15 @@ export default function Event(props) {
   const query = useQuery();
 
   const [eventState, setEventState] = useState(
-    query.tab || TABS_ENUM.EVENT_REGISTRATION,
+    query.tab || TABS_ENUM.EVENT_INFO,
   );
 
   const states = TabsGenerator({
-    list: [TABS_ENUM.EVENT_REGISTRATION, TABS_ENUM.SETTINGS],
+    list: [
+      TABS_ENUM.EVENT_INFO,
+      TABS_ENUM.EVENT_REGISTRATION,
+      TABS_ENUM.SETTINGS,
+    ],
   });
 
   const OpenTab = useMemo(

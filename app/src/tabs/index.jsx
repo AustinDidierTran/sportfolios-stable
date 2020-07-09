@@ -1,4 +1,5 @@
 import About from './About';
+import EventInfo from './EventInfo';
 import EventRegistration from './EventRegistration';
 import Events from './Events';
 import General from './General';
@@ -8,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 export const TABS_ENUM = {
   ABOUT: 'about',
+  EVENT_INFO: 'event info',
   EVENT_REGISTRATION: 'event registration',
   EVENTS: 'events',
   GENERAL: 'general',
@@ -25,6 +27,14 @@ export default function Tabs(props) {
         value: TABS_ENUM.ABOUT,
         component: About,
         label: t('about'),
+        icon: 'Info',
+      };
+    }
+    if (l === TABS_ENUM.EVENT_INFO) {
+      return {
+        value: TABS_ENUM.EVENT_INFO,
+        component: EventInfo,
+        label: t('info'),
         icon: 'Info',
       };
     }

@@ -153,7 +153,7 @@ router.get(`${BASE_URL}/event`, async ctx => {
 });
 
 router.get(`${BASE_URL}/options`, async ctx => {
-  const option = await queries.getOptions(ctx.query.event_id);
+  const option = await queries.getOptions(ctx.query.eventId);
   ctx.body = {
     status: 'success',
     data: option,
