@@ -48,6 +48,7 @@ export default {
     events_that_might_interest_you:
       'Événements qui pourrait vous intéresser',
     expiration_date: "Date d'expiration",
+    feature_coming_soon: 'Fonctionnalité à venir!',
     finish: 'Finir',
     first_name: 'Prénom',
     fixed_date: 'Date fixe',
@@ -93,7 +94,7 @@ export default {
     payment_option_exist: 'Option de paiement existante',
     payments: 'Paiements',
     person: 'Person',
-    persons: 'Personnes',
+    people: 'Personnes',
     players: 'Joueurs',
     private: 'Privée',
     pre_ranking: 'Préclassement',
