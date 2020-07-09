@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 import {
   ENTITIES_ROLE_ENUM,
   CARD_TYPE_ENUM,
+  GLOBAL_ENUM,
 } from '../../../../common/enums';
 import styles from './Settings.module.css';
 import { Card } from '../../components/Custom';
@@ -20,36 +21,109 @@ export default function EntitySettings(props) {
 
   const { basicInfos } = props;
 
-  const { role = ENTITIES_ROLE_ENUM.VIEWER } = basicInfos;
+  const { role = ENTITIES_ROLE_ENUM.VIEWER, type } = basicInfos;
 
   const isEditor = useEditor(role);
 
   const isAdmin = useAdmin(role);
 
-  return (
-    <div className={styles.main}>
-      {isEditor ? (
-        <>
-          <Stripe id={id} />
-          <AddMembership />
-          <AddOptionsEvent />
-          <TeamRegistered />
-          <EventSettings />
-          {isAdmin ? (
-            <>
-              <ManageRoles role={role} />
-              <Card
-                items={{ id, name: basicInfos.name }}
-                type={CARD_TYPE_ENUM.DELETE_ENTITY}
-              />
-            </>
-          ) : (
-            <></>
-          )}
-        </>
-      ) : (
-        <Memberships basicInfos={basicInfos} />
-      )}
-    </div>
-  );
+  switch (type) {
+    case GLOBAL_ENUM.TEAM:
+      if (isAdmin) {
+        return (
+          <div className={styles.main}>
+            <Stripe id={id} />
+            <ManageRoles role={role} />
+            <Card
+              items={{ id, name: basicInfos.name }}
+              type={CARD_TYPE_ENUM.DELETE_ENTITY}
+            />
+          </div>
+        );
+      }
+
+      if (isEditor) {
+        return (
+          <div className={styles.main}>
+            <Stripe id={id} />
+          </div>
+        );
+      }
+      return <></>;
+
+    case GLOBAL_ENUM.EVENT:
+      if (isAdmin) {
+        return (
+          <div className={styles.main}>
+            <AddOptionsEvent />
+            <TeamRegistered />
+            <EventSettings />
+            <ManageRoles role={role} />
+            <Card
+              items={{ id, name: basicInfos.name }}
+              type={CARD_TYPE_ENUM.DELETE_ENTITY}
+            />
+          </div>
+        );
+      }
+
+      if (isEditor) {
+        return (
+          <div className={styles.main}>
+            <AddOptionsEvent />
+            <TeamRegistered />
+            <EventSettings />{' '}
+          </div>
+        );
+      }
+      return <></>;
+
+    case GLOBAL_ENUM.ORGANIZATION:
+      if (isAdmin) {
+        return (
+          <div className={styles.main}>
+            <Stripe id={id} />
+            <AddMembership />
+            <ManageRoles role={role} />
+            <Card
+              items={{ id, name: basicInfos.name }}
+              type={CARD_TYPE_ENUM.DELETE_ENTITY}
+            />
+          </div>
+        );
+      }
+      if (isEditor) {
+        return (
+          <div className={styles.main}>
+            <Stripe id={id} />
+            <AddMembership />
+          </div>
+        );
+      }
+      return <Memberships basicInfos={basicInfos} />;
+
+    case GLOBAL_ENUM.PERSON:
+      if (isAdmin) {
+        return (
+          <div className={styles.main}>
+            <Stripe id={id} />
+            <ManageRoles role={role} />
+            <Card
+              items={{ id, name: basicInfos.name }}
+              type={CARD_TYPE_ENUM.DELETE_ENTITY}
+            />
+          </div>
+        );
+      }
+      if (isEditor) {
+        return (
+          <div className={styles.main}>
+            <Stripe id={id} />
+          </div>
+        );
+      }
+      return <></>;
+    default:
+      throw 'type not defined';
+  }
 }
