@@ -47,6 +47,7 @@ export default {
     events: 'Events',
     events_that_might_interest_you: 'Events that might interest you',
     expiration_date: 'Expiration Date',
+    feature_coming_soon: 'Feature coming soon!',
     finish: 'Finish',
     first_name: 'First Name',
     fixed_date: 'Fixed Date',

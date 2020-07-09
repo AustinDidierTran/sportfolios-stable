@@ -3,6 +3,7 @@ import { Button } from '../../../components/MUI';
 import api from '../../../actions/api';
 import { useEffect } from 'react';
 import { formatRoute } from '../../../actions/goTo';
+import { useTranslation } from 'react-i18next';
 
 export default function AccountLink(props) {
   const { disabled, setNext, id } = props;
