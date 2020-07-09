@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Paper, Button } from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
 
 import { useTranslation } from 'react-i18next';
+import { formatRoute } from '../../../actions/goTo';
+import api from '../../../actions/api';
+import { useParams } from 'react-router-dom';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import styles from './Description.module.css';
 
 export default function Description() {
   const { t } = useTranslation();
+
+  const { id: eventId } = useParams();
 
   const [edit, setEdit] = useState(false);
 
@@ -16,11 +21,40 @@ export default function Description() {
 
   const [temp, setTemp] = useState('');
 
+  useEffect(() => {
+    getDescription();
+  }, [eventId]);
+
+  const getDescription = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/generalInfos', null, {
+        entityId: eventId,
+      }),
+    );
+    if (data.description) {
+      setText(decodeURIComponent(data.description));
+    } else {
+      setText(null);
+    }
+  };
+
+  const updateDescription = async temp => {
+    const encoded = encodeURIComponent(temp);
+    await api('/api/entity/updateGeneralInfos', {
+      method: 'PUT',
+      body: JSON.stringify({
+        description: encoded,
+        entityId: eventId,
+      }),
+    });
+    getDescription();
+  };
+
   const onEdit = () => {
     setEdit(true);
   };
   const onSave = () => {
-    setText(temp);
+    updateDescription(temp);
     setEdit(false);
   };
 
@@ -29,9 +63,6 @@ export default function Description() {
   };
 
   const onChange = () => {
-    // TODO: Encode and decode value with the following code
-    // const encoded = encodeURIComponent(event.target.value);
-    // const decoded = decodeURIComponent(encoded);
     setTemp(event.target.value);
   };
 
@@ -66,14 +97,13 @@ export default function Description() {
       </Paper>
     );
   }
-
   if (text) {
     return (
       <Paper title="Description">
         <TextareaAutosize
           className={styles.textarea}
           placeholder="Description"
-          defaultValue={text}
+          value={text}
           disabled
         />
         <Button

@@ -31,6 +31,12 @@ const addEntity = async (body, userId) => {
       })
       .transacting(trx);
 
+    await knex('entities_general_infos')
+      .insert({
+        entity_id: entityId,
+      })
+      .transacting(trx);
+
     switch (Number(type)) {
       case GLOBAL_ENUM.TEAM:
       case GLOBAL_ENUM.ORGANIZATION: {
@@ -415,6 +421,13 @@ async function getEvent(eventId) {
   return res;
 }
 
+async function getGeneralInfos(entityId) {
+  const [res] = await knex('entities_general_infos')
+    .select('*')
+    .where({ entity_id: entityId });
+  return res;
+}
+
 async function updateEntityRole(entityId, entityIdAdmin, role) {
   const [entity] = await knex('entities_role')
     .update({ role })
@@ -437,6 +450,16 @@ async function updateEvent(
       end_date: eventEnd,
     })
     .where({ id: eventId })
+    .returning('*');
+  return entity;
+}
+
+async function updateGeneralInfos(entityId, description) {
+  const [entity] = await knex('entities_general_infos')
+    .update({
+      description,
+    })
+    .where({ entity_id: entityId })
     .returning('*');
   return entity;
 }
@@ -689,12 +712,14 @@ module.exports = {
   getRegistered,
   getAllRegistered,
   getEvent,
+  getGeneralInfos,
   getOptions,
   removeEntityRole,
   updateEntityName,
   updateEntityPhoto,
   updateEntityRole,
   updateEvent,
+  updateGeneralInfos,
   updateMember,
   updateRegistration,
 };
