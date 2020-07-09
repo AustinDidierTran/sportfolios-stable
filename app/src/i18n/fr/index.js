@@ -149,12 +149,14 @@ export default {
     line2: 'Ligne 2',
     city: 'Ville',
     state: 'Province',
+    refund: 'Remboursement',
     postal_code: 'Code postal',
     address: 'Adresse',
     error_start_date_before_end:
       'La date de départ devrait être avant la date de fin.',
     account_already_exists: 'Le compte existe déjà',
     complete_order: 'Compléter la commande',
+    generate_account_link: 'Générer le lien du compte',
     see_receipt: 'Voir le reçu',
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',

@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const uuid = require('uuid');
 const {
   ENTITIES_ROLE_ENUM,
-  ENTITIES_TYPE_ENUM,
+  GLOBAL_ENUM,
 } = require('../../../../common/enums');
 
 const {
@@ -40,7 +40,7 @@ const createUserComplete = async body => {
     // Create user info
     const [entity_id] = await knex('entities')
       .insert({
-        type: ENTITIES_TYPE_ENUM.PERSON,
+        type: GLOBAL_ENUM.PERSON,
       })
       .returning('id')
       .transacting(trx);
@@ -125,7 +125,7 @@ const getBasicUserInfoFromId = async user_id => {
       '=',
       'entities_photo.entity_id',
     )
-    .where('entities.type', ENTITIES_TYPE_ENUM.PERSON)
+    .where('entities.type', GLOBAL_ENUM.PERSON)
     .andWhere({ user_id });
 
   return {

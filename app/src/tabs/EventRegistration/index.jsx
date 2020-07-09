@@ -19,7 +19,7 @@ function Alert(props) {
 
 export default function EventRegistration() {
   const { t } = useTranslation();
-  const { id: event_id } = useParams();
+  const { id: eventId } = useParams();
   const [team, setTeam] = useState();
   const [paymentOption, setPaymentOption] = useState();
   const [paymentOptions, setPaymentOptions] = useState([]);
@@ -27,30 +27,32 @@ export default function EventRegistration() {
 
   const getOptions = async () => {
     const { data } = await api(
-      formatRoute('/api/entity/options', null, { event_id }),
+      formatRoute('/api/entity/options', null, { eventId }),
     );
 
-    const options = data.reduce((prev, d) => {
-      if (
-        moment(d.start_time) <= moment() &&
-        moment(d.end_time).add(24, 'hours') >= moment()
-      ) {
-        return [
+    const options = data
+      .filter(
+        d =>
+          moment(d.start_time) <= moment() &&
+          moment(d.end_time).add(24, 'hours') >= moment(),
+      )
+      .reduce(
+        (prev, d) => [
           ...prev,
           {
             display: `${d.name} ${formatPrice(d.price)}`,
             value: d.id,
           },
-        ];
-      }
-      return prev;
-    }, []);
+        ],
+        [],
+      );
+
     setPaymentOptions(options);
   };
 
   useEffect(() => {
     getOptions();
-  }, [event_id]);
+  }, [eventId]);
 
   const stepHook = useStepper();
 
@@ -58,7 +60,7 @@ export default function EventRegistration() {
     const { data } = await api(
       formatRoute('/api/entity/registered', null, {
         team_id: team.id,
-        event_id,
+        event_id: eventId,
       }),
     );
     if (data.length < 1) {
@@ -86,7 +88,7 @@ export default function EventRegistration() {
       method: 'POST',
       body: JSON.stringify({
         team_id: team.id,
-        event_id,
+        event_id: eventId,
         invoice_id: null,
         status: INVOICE_STATUS_ENUM.OPEN,
       }),

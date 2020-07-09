@@ -86,7 +86,7 @@ export default function Item(props) {
   const onNbBlur = async e => {
     const newNbInCart = e.target.value;
     const newCart = await updateCartItems({
-      stripePriceId: stripePriceId,
+      stripePriceId,
       nbInCart: newNbInCart,
     });
     setItems(newCart);

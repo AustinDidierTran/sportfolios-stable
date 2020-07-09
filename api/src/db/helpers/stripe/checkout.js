@@ -5,6 +5,7 @@ const {
   stripeErrorLogger,
   stripeLogger,
 } = require('../../../server/utils/logger');
+const { STRIPE_STATUS_ENUM } = require('../../../../../common/enums');
 
 const createInvoiceItem = async (body, userId) => {
   const { price, metadata } = body;
@@ -97,7 +98,9 @@ const createTransfer = async (params, invoiceItemId) => {
     await knex('stripe_transfer').insert({
       invoice_item_id: invoiceItemId,
       transfer_id: transfer.id,
-      status: transfer.reversed ? 'done' : 'not done',
+      status: transfer.reversed
+        ? STRIPE_STATUS_ENUM.DONE
+        : STRIPE_STATUS_ENUM.NOT_DONE,
     });
 
     stripeLogger('Transfer successful', transfer.id);

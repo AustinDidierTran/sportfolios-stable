@@ -20,7 +20,7 @@ export default function Item(props) {
   } = props;
 
   const onPaperClick = () => {
-    goTo(ROUTES.shopDetails, { id, stripeId: stripePriceId });
+    goTo(ROUTES.shopDetails, { id, stripePriceId });
   };
 
   return (

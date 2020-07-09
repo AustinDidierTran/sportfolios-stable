@@ -66,7 +66,7 @@ const updateCartItems = async params => {
 
 export default function ShopDetails() {
   const { t } = useTranslation();
-  const { stripeId: stripePriceId } = useParams();
+  const { stripePriceId } = useParams();
   const {
     dispatch,
     state: { userInfo },

@@ -8,37 +8,15 @@ import {
 } from '../../../components/MUI';
 import CustomCard from '../../../components/Custom/Card';
 import { Store, ACTION_ENUM } from '../../../Store';
-import api from '../../../actions/api';
 import { CARD_TYPE_ENUM } from '../../../../../common/enums';
 import { useTranslation } from 'react-i18next';
-
-const deleteCartItems = async () => {
-  const { data: newCart } = await api('/api/shop/clearCart', {
-    method: 'DELETE',
-  });
-  return newCart;
-};
-
-const checkout = async prices => {
-  const { data: receiptUrl } = await api('/api/stripe/checkout', {
-    method: 'POST',
-    body: JSON.stringify({ prices }),
-  });
-  return receiptUrl;
-};
-
-const refunded = async params => {
-  const { data: receiptUrl } = await api('/api/stripe/createRefund', {
-    method: 'POST',
-    body: JSON.stringify({ ...params }),
-  });
-  return receiptUrl;
-};
-
-const getCartItems = async () => {
-  const { data: cartItems } = await api('/api/shop/getCartItems');
-  return cartItems;
-};
+import {
+  checkout,
+  clearCart,
+  createRefund,
+  getCartItems,
+} from '../../../utils/stripe';
+import { formatPrice } from '../../../utils/stringFormats';
 
 export default function Review() {
   const { t } = useTranslation();
@@ -50,8 +28,9 @@ export default function Review() {
   const { dispatch } = useContext(Store);
 
   const onCheckout = async () => {
+    /* eslint-disable-next-line */
     console.log('transfers', transfers);
-    await deleteCartItems();
+    await clearCart();
     setItems([]);
     dispatch({
       type: ACTION_ENUM.UPDATE_CART,
@@ -76,10 +55,11 @@ export default function Review() {
   };
 
   const onRefund = async () => {
-    const refund = await refunded({
+    const refund = await createRefund({
       invoiceId: invoice.id,
       prices: ['price_1H1zYSJPddOlmWPIGM0S0IoN'],
     });
+    /* eslint-disable-next-line */
     console.log('refund', refund);
   };
 
@@ -90,7 +70,7 @@ export default function Review() {
 
   const getTotal = () => {
     const total = items.reduce(
-      (prevTotal, item) => (prevTotal += item.amount / 100),
+      (prevTotal, item) => (prevTotal += item.amount),
       0,
     );
     setTotal(total);
@@ -105,7 +85,7 @@ export default function Review() {
     return (
       <div>
         <Button onClick={onReceiptUrl}>{t('see_receipt')}</Button>
-        <Button onClick={onRefund}>REFUND</Button>
+        <Button onClick={onRefund}>{t('refund')}</Button>
       </div>
     );
   }
@@ -123,7 +103,7 @@ export default function Review() {
             );
           })}
         </div>
-        <Typography>{`Total: ${total}`}</Typography>
+        <Typography>{`Total: ${formatPrice(total)}`}</Typography>
 
         <Button onClick={onCompleteOrder} className={styles.button}>
           {t('complete_order')}
