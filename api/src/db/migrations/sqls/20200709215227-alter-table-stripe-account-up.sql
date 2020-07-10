@@ -5,4 +5,4 @@ ADD COLUMN last4 VARCHAR
 (255);
 
 ALTER TABLE stripe_customer
-  ADD COLUMN informations JSON NOT NULL;
+  ADD COLUMN informations JSON;

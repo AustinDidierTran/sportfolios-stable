@@ -143,11 +143,7 @@ export function StoreProvider(props) {
       localStorage.getItem('authToken'),
     );
 
-    if (!authToken) {
-      dispatch({
-        type: ACTION_ENUM.LOGOUT,
-      });
-    } else {
+    if (authToken) {
       const res = await fetch(`${API_BASE_URL}/api/user/userInfo`, {
         headers: {
           Authorization: authToken,
@@ -156,11 +152,7 @@ export function StoreProvider(props) {
 
       const { data } = await res.json();
 
-      if (!data) {
-        dispatch({
-          type: ACTION_ENUM.LOGOUT,
-        });
-      } else {
+      if (data) {
         dispatch({
           type: ACTION_ENUM.UPDATE_USER_INFO,
           payload: data,

@@ -153,6 +153,7 @@ export default function App() {
                   path={ROUTES.shopDetails}
                   component={ShopDetails}
                 />
+                <Route path={ROUTES.entity} component={Entity} />
                 <PrivateRoute
                   path={ROUTES.search}
                   component={Search}
@@ -162,10 +163,6 @@ export default function App() {
                   component={UserSettings}
                 />
                 <PrivateRoute path={ROUTES.menu} component={Menu} />
-                <PrivateRoute
-                  path={ROUTES.entity}
-                  component={Entity}
-                />
                 <PrivateRoute component={Main} />
               </Switch>
             </div>

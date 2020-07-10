@@ -296,6 +296,9 @@ const findRole = async (entityId, lookedFor, role, cpt) => {
 };
 
 async function getEntityRole(entityId, userId) {
+  if (!userId) {
+    return ENTITIES_ROLE_ENUM.VIEWER;
+  }
   const entities = await knex('user_entity_role')
     .select('*')
     .leftJoin(

@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { GLOBAL_ENUM } from '../../../../../common/enums';
-import { SearchList, List } from '../../../components/Custom';
+import { Icon, SearchList, List } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../../hooks/forms';
 import styles from './Roster.module.css';
 import { TextField, Typography } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
 
 export default function Roster(props) {
   const { t } = useTranslation();
@@ -39,19 +38,15 @@ export default function Roster(props) {
 
   const onDelete = body => {
     const { id, person_id } = body;
-    if (person_id) {
-      setRoster(oldRoster => {
-        const newRoster = oldRoster.filter(
-          r => r.person_id !== person_id,
-        );
-        return newRoster;
-      });
-    } else {
-      setRoster(oldRoster => {
-        const newRoster = oldRoster.filter(r => r.id !== id);
-        return newRoster;
-      });
-    }
+    setRoster(oldRoster => {
+      if (id) {
+        return oldRoster.filter(r => r.id !== id);
+      }
+      if (person_id) {
+        return oldRoster.filter(r => r.person_id !== person_id);
+      }
+      return oldRoster;
+    });
   };
 
   const validate = () => {
@@ -116,7 +111,7 @@ export default function Roster(props) {
         color="primary"
         component="span"
       >
-        <AddIcon />
+        <Icon icon="Add" />
       </IconButton>
       <hr />
       <Typography style={{ marginTop: '16px' }}>

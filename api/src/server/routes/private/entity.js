@@ -4,26 +4,6 @@ const queries = require('../../../db/queries/entity');
 const router = new Router();
 const BASE_URL = '/api/entity';
 
-router.get(BASE_URL, async ctx => {
-  const entity = await queries.getEntity(
-    ctx.query.id,
-    ctx.body.userInfo.id,
-  );
-
-  if (entity) {
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
-});
-
 router.get(`${BASE_URL}/all`, async ctx => {
   const entity = await queries.getAllEntities(ctx.query);
 
