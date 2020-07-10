@@ -218,10 +218,9 @@ const updateCartItems = async (body, userId) => {
 
 const removeCartItemInstance = async query => {
   const { cartInstanceId } = query;
-
   try {
     await knex('cart_items')
-      .where({ stripe_price_id: cartInstanceId })
+      .where({ id: cartInstanceId })
       .del();
   } catch (err) {
     /* eslint-disable-next-line */

@@ -10,16 +10,35 @@ const {
   stripeLogger,
 } = require('../../../server/utils/logger');
 
-const getStripeAccountId = async senderId => {
-  const data = await knex
-    .select('account_id')
+const getStripeAccount = async senderId => {
+  const [account = {}] = await knex('stripe_accounts')
+    .select('*')
+    .where({ entity_id: senderId });
+  return account;
+};
+
+const hasStripeAccount = async senderId => {
+  const account = await getStripeAccount(senderId);
+  return Boolean(account.account_id);
+};
+
+const hasStripeBankAccount = async senderId => {
+  const account = await getStripeAccount(senderId);
+  return Boolean(account.bank_account_id);
+};
+
+const getStripeBankAccountId = async senderId => {
+  const [{ account_id: accountId } = {}] = await knex
+    .select('bank_account_id')
     .where('entity_id', senderId)
     .from('stripe_accounts');
-  return (data.length && data[0].account_id) || null;
+  return accountId;
 };
 
 const getOrCreateStripeConnectedAccountId = async (entity_id, ip) => {
-  let accountId = await getStripeAccountId(entity_id);
+  let account = await getStripeAccount(entity_id);
+  let accountId = account.account_id;
+
   if (!accountId) {
     const account = await createStripeConnectedAccount({ ip }); // must return accountId
     accountId = account.id;
@@ -105,19 +124,22 @@ const createExternalAccount = async (body, user_id, ip) => {
   };
   try {
     const token = await stripe.tokens.create(params);
-    if (token) {
-      const account = await stripe.accounts.createExternalAccount(
-        accountId,
-        {
-          external_account: token.id,
-        },
-      );
+    const account = await stripe.accounts.createExternalAccount(
+      accountId,
+      {
+        external_account: token.id,
+      },
+    );
 
-      if (account) {
-        stripeLogger('External Account Created', account.id);
-        return { status: 200, data: account.id };
-      }
-    }
+    await knex('stripe_accounts')
+      .update({
+        bank_account_id: account.id,
+        last4: account.last4,
+      })
+      .where({ account_id: account.account });
+
+    stripeLogger('External Account Created', account.id);
+    return { status: 200, data: account.id };
   } catch (error) {
     if (error) {
       stripeErrorLogger('ERROR: Account Token NOT CREATED');
@@ -132,5 +154,8 @@ module.exports = {
   createAccountLink,
   createStripeConnectedAccount,
   getOrCreateStripeConnectedAccountId,
-  getStripeAccountId,
+  hasStripeAccount,
+  hasStripeBankAccount,
+  getStripeAccount,
+  getStripeBankAccountId,
 };

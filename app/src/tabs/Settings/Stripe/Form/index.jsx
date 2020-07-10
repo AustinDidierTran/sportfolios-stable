@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { useParams } from 'react-router-dom';
@@ -11,6 +11,7 @@ import styles from './form.module.css';
 import CountrySelect from './CountrySelect';
 import CurrencySelect from './CurrencySelect';
 import api from '../../../../actions/api';
+import { formatRoute } from '../../../../actions/goTo';
 
 export default function ExternalAccountForm(props) {
   const { t } = useTranslation();
@@ -78,18 +79,36 @@ export default function ExternalAccountForm(props) {
           account_number: accountNumber,
           id: id,
         };
-        await api('/api/stripe/externalAccount', {
+        const res = await api('/api/stripe/externalAccount', {
           method: 'POST',
           body: JSON.stringify(params),
         });
-        setIsSubmitting(false);
-        setNext(true);
+
+        if (res.status === 403) {
+          // There has been an error with Stripe, handle it
+        } else {
+          setIsSubmitting(false);
+          setNext(true);
+        }
       } catch (err) {
         setIsSubmitting(false);
         throw err;
       }
     },
   });
+
+  const fetchAccount = async () => {
+    const { data: hasStripeBankAccount } = await api(
+      formatRoute('/api/stripe/hasStripeBankAccount', null, { id }),
+    );
+    if (hasStripeBankAccount) {
+      setNext(true);
+    }
+  };
+
+  useEffect(() => {
+    fetchAccount();
+  }, []);
 
   return (
     <div className={styles.main}>

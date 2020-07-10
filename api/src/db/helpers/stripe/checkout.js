@@ -114,7 +114,7 @@ const createTransfer = async (params, invoiceItemId) => {
 const createTransfers = async invoice => {
   try {
     const transfers = await Promise.all(
-      invoice.lines.data.map(async (item, index) => {
+      invoice.lines.data.map(async item => {
         const {
           amount,
           currency,
@@ -145,8 +145,6 @@ const createTransfers = async invoice => {
           },
           invoiceItemId,
         );
-        /* eslint-disable-next-line */
-        console.log(`Transfer ${index}`, transfer);
         return transfer;
       }),
     );
@@ -220,9 +218,8 @@ const getReceipt = async query => {
   const params = chargeId;
 
   try {
-    const {
-      receipt_url: receiptUrl = '',
-    } = await stripe.charges.retrieve(params);
+    const charge = await stripe.charges.retrieve(params);
+    const receiptUrl = charge.receipt_url;
 
     await knex('stripe_invoice')
       .update({ receipt_url: receiptUrl })
@@ -286,12 +283,11 @@ const checkout = async (body, userId) => {
     await finalizeInvoice({ invoiceId }, userId);
     const paidInvoice = await payInvoice({ invoiceId }, userId);
     const chargeId = await paidInvoice.charge;
-    const receipt = getReceipt({ chargeId, invoiceId });
+    const receiptUrl = await getReceipt({ chargeId, invoiceId });
     const transfers = await createTransfers(paidInvoice, userId);
     /* eslint-disable-next-line */
-    console.log('transfers', transfers);
 
-    return { invoice: paidInvoice, receipt, transfers };
+    return { invoice: paidInvoice, receipt: receiptUrl, transfers };
   } catch (err) {
     stripeErrorLogger('CreateInvoice error', err);
     throw err;
