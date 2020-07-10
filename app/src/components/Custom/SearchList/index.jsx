@@ -8,13 +8,14 @@ import { useFormInput } from '../../../hooks/forms';
 import { InputAdornment } from '@material-ui/core';
 
 export default function SearchList(props) {
-  const { label, onClick, type } = props;
+  const { blackList, label, onClick, type } = props;
 
   const query = useFormInput('');
 
   const optionsRoute = useMemo(
     () =>
       formatRoute('/api/data/search/global', null, {
+        blackList: JSON.stringify(blackList),
         query: query.value,
         type,
       }),

@@ -81,8 +81,8 @@ const addEntity = async (body, userId) => {
       case GLOBAL_ENUM.PERSON: {
         await knex('user_entity_role')
           .insert({
-            userId,
-            entityId,
+            user_id: userId,
+            entity_id: entityId,
             role: ENTITIES_ROLE_ENUM.ADMIN,
           })
           .transacting(trx);
@@ -619,6 +619,19 @@ async function addTeamToEvent(teamId, eventId, invoiceId, status) {
   return res;
 }
 
+async function addRoster(rosterId, roster) {
+  const res = roster.map(async person => {
+    await knex('team_players')
+      .insert({
+        roster_id: rosterId,
+        person_id: person.person_id,
+        name: person.name,
+      })
+      .returning('*');
+  });
+  return res;
+}
+
 async function updateMember(
   memberType,
   organizationId,
@@ -698,6 +711,7 @@ module.exports = {
   addMember,
   addMembership,
   addOption,
+  addRoster,
   addTeamToEvent,
   deleteEntity,
   deleteEntityMembership,

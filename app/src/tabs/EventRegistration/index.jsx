@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Paper, StepperWithHooks } from '../../components/Custom';
 import PaymentOptionSelect from './PaymentOptionSelect';
 import TeamSelect from './TeamSelect';
+import Roster from './Roster/index';
 import { useStepper } from '../../hooks/forms';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
@@ -23,6 +24,7 @@ export default function EventRegistration() {
   const [team, setTeam] = useState();
   const [paymentOption, setPaymentOption] = useState();
   const [paymentOptions, setPaymentOptions] = useState([]);
+  const [roster, setRoster] = useState([]);
   const [open, setOpen] = useState(false);
 
   const getOptions = async () => {
@@ -71,9 +73,14 @@ export default function EventRegistration() {
     }
   };
 
+  const onRosterSelect = (e, roster) => {
+    setRoster(roster);
+    stepHook.handleCompleted(1);
+  };
+
   const onPaymentOptionSelect = (e, paymentOptionProp) => {
     setPaymentOption(paymentOptionProp);
-    stepHook.handleCompleted(1);
+    stepHook.handleCompleted(2);
   };
 
   const finish = async () => {
@@ -81,10 +88,10 @@ export default function EventRegistration() {
       method: 'POST',
       body: JSON.stringify({
         stripePriceId: paymentOption,
-        metadata: team,
+        metadata: { sellerId: eventId, buyerId: team.id, team },
       }),
     });
-    await api('/api/entity/register', {
+    const { data } = await api('/api/entity/register', {
       method: 'POST',
       body: JSON.stringify({
         team_id: team.id,
@@ -93,16 +100,28 @@ export default function EventRegistration() {
         status: INVOICE_STATUS_ENUM.OPEN,
       }),
     });
+
+    await api('/api/entity/roster', {
+      method: 'POST',
+      body: JSON.stringify({
+        rosterId: data.roster_id,
+        roster,
+      }),
+    });
     goTo(ROUTES.cart);
   };
 
   const steps = [
     {
-      label: 'Team select',
+      label: t('team_select'),
       content: <TeamSelect onClick={onTeamSelect} team={team} />,
     },
     {
-      label: 'Payment options',
+      label: t('roster'),
+      content: <Roster onClick={onRosterSelect} roster={roster} />,
+    },
+    {
+      label: t('payment_options'),
       content: (
         <PaymentOptionSelect
           onClick={onPaymentOptionSelect}

@@ -10,6 +10,7 @@ router.get(`${BASE_URL}/search/global`, async ctx => {
       ctx.body.userInfo.id,
       ctx.query.query,
       ctx.query.type,
+      ctx.query.blackList,
     );
     ctx.body = {
       status: 'success',

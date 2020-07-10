@@ -24,8 +24,6 @@ export default function TeamSelect(props) {
   }, [teamId]);
 
   const getTeam = async () => {
-    console.log('teamId', teamId);
-
     const { data } = await api(`/api/entity?id=${teamId}`);
     setSelectedTeam(data);
     onClick(null, data);
