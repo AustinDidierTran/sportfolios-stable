@@ -63,8 +63,7 @@ const getPersonsFromQuery = async (query, blackList) => {
     return persons;
   }
   const parsed = JSON.parse(blackList);
-  const mapped = parsed.map(p => p.person_id);
-  return persons.filter(p => !mapped.includes(p.id));
+  return persons.filter(p => !parsed.includes(p.id));
 };
 
 const getTeamsFromQuery = async query => {

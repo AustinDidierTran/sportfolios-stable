@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { GLOBAL_ENUM } from '../../../../../common/enums';
 import { SearchList, List } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
@@ -11,16 +11,19 @@ import AddIcon from '@material-ui/icons/Add';
 export default function Roster(props) {
   const { t } = useTranslation();
   const query = useFormInput('');
-  const { onClick } = props;
+  const { onClick, roster, setRoster } = props;
 
-  const [roster, setRoster] = useState([]);
   const [nameTemp, setNameTemp] = useState('');
-  const [blackList, setBlackList] = useState([]);
   const [error, setError] = useState(false);
 
+  //to allow user to go to next step without roster
   useEffect(() => {
     onClick(null, roster);
   }, [roster]);
+
+  const blackList = useMemo(() => roster.map(r => r.person_id), [
+    roster,
+  ]);
 
   const addExistingPerson = (e, person) => {
     setRoster(oldRoster => [
@@ -30,12 +33,6 @@ export default function Roster(props) {
         type: GLOBAL_ENUM.ROSTER_ITEM,
         name: person.name,
         onDelete,
-      },
-    ]);
-    setBlackList(oldBlackList => [
-      ...oldBlackList,
-      {
-        person_id: person.id,
       },
     ]);
   };
@@ -48,12 +45,6 @@ export default function Roster(props) {
           r => r.person_id !== person_id,
         );
         return newRoster;
-      });
-      setBlackList(oldBlackList => {
-        const newBlackList = oldBlackList.filter(
-          r => r.person_id !== person_id,
-        );
-        return newBlackList;
       });
     } else {
       setRoster(oldRoster => {

@@ -620,15 +620,17 @@ async function addTeamToEvent(teamId, eventId, invoiceId, status) {
 }
 
 async function addRoster(rosterId, roster) {
-  const res = roster.map(async person => {
-    await knex('team_players')
-      .insert({
-        roster_id: rosterId,
-        person_id: person.person_id,
-        name: person.name,
-      })
-      .returning('*');
-  });
+  const res = await Promise.all(
+    roster.map(async person => {
+      await knex('team_players')
+        .insert({
+          roster_id: rosterId,
+          person_id: person.person_id,
+          name: person.name,
+        })
+        .returning('*');
+    }),
+  );
   return res;
 }
 

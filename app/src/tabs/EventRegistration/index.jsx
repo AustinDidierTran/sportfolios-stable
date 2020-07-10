@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Paper, StepperWithHooks } from '../../components/Custom';
 import PaymentOptionSelect from './PaymentOptionSelect';
 import TeamSelect from './TeamSelect';
-import Roster from './Roster/index';
+import Roster from './Roster';
 import { useStepper } from '../../hooks/forms';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
@@ -118,7 +118,13 @@ export default function EventRegistration() {
     },
     {
       label: t('roster'),
-      content: <Roster onClick={onRosterSelect} roster={roster} />,
+      content: (
+        <Roster
+          onClick={onRosterSelect}
+          roster={roster}
+          setRoster={setRoster}
+        />
+      ),
     },
     {
       label: t('payment_options'),
