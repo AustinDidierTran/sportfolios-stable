@@ -10,17 +10,27 @@ const {
   stripeLogger,
 } = require('../../../server/utils/logger');
 
-const getStripeAccountId = async senderId => {
+const getStripeAccount = async senderId => {
+  console.log('entity', senderId);
+  const [account = {}] = await knex('stripe_accounts')
+    .select('*')
+    .where({ entity_id: senderId });
+  console.log('getAccount', account);
+  return account;
+};
+
+const getStripeBankAccountId = async senderId => {
   const data = await knex
-    .select('account_id')
+    .select('bank_account_id')
     .where('entity_id', senderId)
     .from('stripe_accounts');
   return (data.length && data[0].account_id) || null;
 };
 
 const getOrCreateStripeConnectedAccountId = async (entity_id, ip) => {
-  let accountId = await getStripeAccountId(entity_id);
-  if (!accountId) {
+  let account = await getStripeAccount(entity_id);
+
+  if (!account.account_id) {
     const account = await createStripeConnectedAccount({ ip }); // must return accountId
     accountId = account.id;
     // Should store account inside DB
@@ -105,19 +115,22 @@ const createExternalAccount = async (body, user_id, ip) => {
   };
   try {
     const token = await stripe.tokens.create(params);
-    if (token) {
-      const account = await stripe.accounts.createExternalAccount(
-        accountId,
-        {
-          external_account: token.id,
-        },
-      );
+    const account = await stripe.accounts.createExternalAccount(
+      accountId,
+      {
+        external_account: token.id,
+      },
+    );
 
-      if (account) {
-        stripeLogger('External Account Created', account.id);
-        return { status: 200, data: account.id };
-      }
-    }
+    await knex('stripe_accounts')
+      .update({
+        bank_account_id: account.id,
+        last4: account.last4,
+      })
+      .where({ account_id: account.account });
+
+    stripeLogger('External Account Created', account.id);
+    return { status: 200, data: account.id };
   } catch (error) {
     if (error) {
       stripeErrorLogger('ERROR: Account Token NOT CREATED');
@@ -132,5 +145,6 @@ module.exports = {
   createAccountLink,
   createStripeConnectedAccount,
   getOrCreateStripeConnectedAccountId,
-  getStripeAccountId,
+  getStripeAccount,
+  getStripeBankAccountId,
 };

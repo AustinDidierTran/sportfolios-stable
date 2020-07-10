@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button } from '../../../components/MUI';
 import api from '../../../actions/api';
-import { useEffect } from 'react';
 import { formatRoute } from '../../../actions/goTo';
 import { useTranslation } from 'react-i18next';
 
@@ -18,10 +17,10 @@ export default function AccountLink(props) {
   };
 
   const fetchAccount = async () => {
-    const account = await api(
-      formatRoute('/api/stripe/getStripeAccountId', null, { id }),
+    const { data: account } = await api(
+      formatRoute('/api/stripe/getStripeAccount', null, { id }),
     );
-    if (account) {
+    if (account.account_id) {
       setNext(true);
     }
   };

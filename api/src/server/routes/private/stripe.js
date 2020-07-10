@@ -15,7 +15,7 @@ router.get(`${BASE_URL}/accountLink`, async ctx => {
   };
 });
 
-router.get(`${BASE_URL}/getStripeAccountId`, async ctx => {
+router.get(`${BASE_URL}/getStripeAccount`, async ctx => {
   const data = await queries.getStripeAccount(
     ctx.query.id,
     ctx.request.ip,
@@ -49,6 +49,17 @@ router.post(`${BASE_URL}/externalAccount`, async ctx => {
 
 router.get(`${BASE_URL}/getCustomerId`, async ctx => {
   const data = await queries.getCustomerId(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
+router.get(`${BASE_URL}/getCustomer`, async ctx => {
+  const data = await queries.getCustomer(
     ctx.request.body,
     ctx.body.userInfo.id,
   );

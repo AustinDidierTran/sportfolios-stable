@@ -1,7 +1,8 @@
 const {
   getCustomerId: getCustomerIdHelper,
+  getCustomer: getCustomerHelper,
   createExternalAccount,
-  getStripeAccountId,
+  getStripeAccount: getStripeAccountHelper,
   getOrCreateCustomer,
   createAccountLink,
   createInvoiceItem,
@@ -29,11 +30,15 @@ const addExternalAccount = async (body, user_id, ip) => {
 };
 
 const getStripeAccount = async entity_id => {
-  return getStripeAccountId(entity_id);
+  return getStripeAccountHelper(entity_id);
 };
 
 const getCustomerId = async (body, userId) => {
   return getCustomerIdHelper(userId);
+};
+
+const getCustomer = async (body, userId) => {
+  return getCustomerHelper(userId);
 };
 
 const addCustomer = async (body, user_id) => {
@@ -94,6 +99,7 @@ const createRefund = async (body, user_id) => {
 
 module.exports = {
   getCustomerId,
+  getCustomer,
   getAccountLink,
   addExternalAccount,
   getStripeAccount,

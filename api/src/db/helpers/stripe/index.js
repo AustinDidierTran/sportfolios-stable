@@ -5,6 +5,7 @@
 
 const {
   getCustomerId,
+  getCustomer,
   getOrCreateCustomer,
   createPaymentMethod,
   addPaymentMethodCustomer,
@@ -13,7 +14,8 @@ const {
 const {
   createExternalAccount,
   createAccountLink,
-  getStripeAccountId,
+  getStripeAccount,
+  getStripeBankAccountId,
 } = require('./externalAccount');
 const {
   createInvoiceItem,
@@ -40,9 +42,11 @@ module.exports = {
   createPaymentMethod,
   finalizeInvoice,
   getCustomerId,
+  getCustomer,
   getOrCreateCustomer,
   getReceipt,
-  getStripeAccountId,
+  getStripeAccount,
+  getStripeBankAccountId,
   payInvoice,
   removePaymentMethodCustomer,
 };

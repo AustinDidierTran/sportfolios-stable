@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { useParams } from 'react-router-dom';
@@ -11,6 +11,7 @@ import styles from './form.module.css';
 import CountrySelect from './CountrySelect';
 import CurrencySelect from './CurrencySelect';
 import api from '../../../../actions/api';
+import { formatRoute } from '../../../../actions/goTo';
 
 export default function ExternalAccountForm(props) {
   const { t } = useTranslation();
@@ -90,6 +91,19 @@ export default function ExternalAccountForm(props) {
       }
     },
   });
+
+  const fetchAccount = async () => {
+    const { data: account } = await api(
+      formatRoute('/api/stripe/getStripeAccount', null, { id }),
+    );
+    if (account.bank_account_id) {
+      setNext(true);
+    }
+  };
+
+  useEffect(() => {
+    fetchAccount();
+  }, []);
 
   return (
     <div className={styles.main}>

@@ -14,22 +14,19 @@ import {
   Button,
 } from '../../../components/MUI';
 import CountrySelect from '../../../tabs/Settings/Stripe/Form/CountrySelect';
-import { useCallback } from 'react';
+
+export async function getCustomer() {
+  const { data } = await api('/api/stripe/getCustomer');
+  return data;
+}
 
 export async function createCustomer(params) {
-  const res = await api('/api/stripe/createCustomer', {
+  const { data } = await api('/api/stripe/createCustomer', {
     method: 'POST',
     body: JSON.stringify(params),
   });
   /* eslint-disable-next-line */
-  console.log('createCustomer', res);
-}
-
-export async function getCustomerId() {
-  const res = await api('/api/stripe/getCustomerId');
-  /* eslint-disable-next-line */
-  console.log('createCustomer', res);
-  return res.data;
+  return data;
 }
 
 export default function CustomerForm(props) {
@@ -40,7 +37,6 @@ export default function CustomerForm(props) {
     dispatch,
   } = useContext(Store);
   const { setNext } = props;
-  const [customerId, setCustomerId] = useState('');
 
   const isANumber = number => isNaN(Number(number));
 
@@ -151,111 +147,95 @@ export default function CustomerForm(props) {
     },
   });
 
-  const onContinue = () => {
-    setNext(true);
+  const fetchCustomerId = async () => {
+    const customer = await getCustomer();
+    if (customer.customer_id) setNext(true);
   };
-
-  const fetchCustomerId = useCallback(async () => {
-    const customerId = await getCustomerId();
-    if (customerId) setCustomerId(customerId);
-  }, [userInfo]);
 
   useEffect(() => {
     fetchCustomerId();
-  }, [userInfo]);
+  }, []);
 
   return (
     <div className={styles.main}>
-      {customerId ? (
-        <div>
-          <Typography>{t('account_already_exists')}</Typography>
-          <Button onClick={onContinue}>
-            {t('use_same_and_continue')}
-          </Button>
-          <Button onClick={() => setCustomerId('')}>
-            {t('create_new_account')}
+      <form onSubmit={formik.handleSubmit}>
+        <div className={styles.content}>
+          <Typography gutterBottom variant="h5" component="h2">
+            {t('personnal_information')}
+          </Typography>
+          <TextField
+            namespace="name"
+            formik={formik}
+            type="name"
+            label={t('name')}
+            fullWidth
+          />
+          <TextField
+            namespace="email"
+            formik={formik}
+            type="email"
+            label={t('email')}
+            fullWidth
+          />
+          <TextField
+            namespace="phoneNumber"
+            formik={formik}
+            type="phoneNumber"
+            label={t('phone_number')}
+            fullWidth
+          />
+          <Typography gutterBottom variant="h5" component="h2">
+            {t('address')}
+          </Typography>
+          <TextField
+            namespace="line1"
+            formik={formik}
+            type="line1"
+            label={t('line1')}
+            fullWidth
+          />
+          <TextField
+            namespace="line2"
+            formik={formik}
+            type="line2"
+            label={t('line2')}
+            fullWidth
+          />
+          <TextField
+            namespace="city"
+            formik={formik}
+            type="city"
+            label={t('city')}
+            fullWidth
+          />
+          <CountrySelect formik={formik} />
+          <TextField
+            namespace="state"
+            formik={formik}
+            type="state"
+            label={t('state')}
+            fullWidth
+          />
+          <TextField
+            namespace="postalCode"
+            formik={formik}
+            type="postalCode"
+            label={t('postal_code')}
+            fullWidth
+          />
+        </div>
+        <div className={styles.actions}>
+          <Button
+            size="small"
+            color="primary"
+            variant="contained"
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {t('submit')}
           </Button>
         </div>
-      ) : (
-        <form onSubmit={formik.handleSubmit}>
-          <div className={styles.content}>
-            <Typography gutterBottom variant="h5" component="h2">
-              {t('personnal_information')}
-            </Typography>
-            <TextField
-              namespace="name"
-              formik={formik}
-              type="name"
-              label={t('name')}
-              fullWidth
-            />
-            <TextField
-              namespace="email"
-              formik={formik}
-              type="email"
-              label={t('email')}
-              fullWidth
-            />
-            <TextField
-              namespace="phoneNumber"
-              formik={formik}
-              type="phoneNumber"
-              label={t('phone_number')}
-              fullWidth
-            />
-            <Typography gutterBottom variant="h5" component="h2">
-              {t('address')}
-            </Typography>
-            <TextField
-              namespace="line1"
-              formik={formik}
-              type="line1"
-              label={t('line1')}
-              fullWidth
-            />
-            <TextField
-              namespace="line2"
-              formik={formik}
-              type="line2"
-              label={t('line2')}
-              fullWidth
-            />
-            <TextField
-              namespace="city"
-              formik={formik}
-              type="city"
-              label={t('city')}
-              fullWidth
-            />
-            <CountrySelect formik={formik} />
-            <TextField
-              namespace="state"
-              formik={formik}
-              type="state"
-              label={t('state')}
-              fullWidth
-            />
-            <TextField
-              namespace="postalCode"
-              formik={formik}
-              type="postalCode"
-              label={t('postal_code')}
-              fullWidth
-            />
-          </div>
-          <div className={styles.actions}>
-            <Button
-              size="small"
-              color="primary"
-              variant="contained"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {t('submit')}
-            </Button>
-          </div>
-        </form>
-      )}
+      </form>
     </div>
   );
 }

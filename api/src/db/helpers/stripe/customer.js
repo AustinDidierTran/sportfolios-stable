@@ -13,6 +13,13 @@ const getCustomerId = async userId => {
   return customer_id;
 };
 
+const getCustomer = async userId => {
+  const [customer] = await knex('stripe_customer')
+    .select('*')
+    .where({ user_id: userId });
+  return customer;
+};
+
 const createCustomer = async (body, userId) => {
   const { customer } = body;
   stripe.customers.create(
@@ -22,6 +29,7 @@ const createCustomer = async (body, userId) => {
         await knex('stripe_customer').insert({
           user_id: userId,
           customer_id: customer.id,
+          informations: customer,
         });
       }
       if (err) {
@@ -93,6 +101,11 @@ const addPaymentMethodCustomer = async (body, userId) => {
     });
     stripeLogger(`Payment method attached`);
 
+    const customer = await stripe.customers.retrieve(customerId);
+    await knex('stripe_customer')
+      .update({ informations: customer })
+      .where({ user_id: userId });
+
     return getCustomerId(userId);
   } catch (err) {
     stripeErrorLogger('AttachPaymentMethod error', err);
@@ -119,6 +132,7 @@ const removePaymentMethodCustomer = async body => {
 
 module.exports = {
   getCustomerId,
+  getCustomer,
   createCustomer,
   getOrCreateCustomer,
   getPaymentMethodId,

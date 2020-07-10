@@ -107,7 +107,7 @@ export default function ShopDetails() {
   const removeItem = async () => {
     const itemToDelete = cart.find(
       item =>
-        item.stripe_price_id == stripePriceId &&
+        item.stripePriceId == stripePriceId &&
         !deletedIds.includes(item.id),
     );
     const newCart = await removeCartItemInstance(itemToDelete.id);

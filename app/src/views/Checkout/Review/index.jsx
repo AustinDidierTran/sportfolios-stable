@@ -42,8 +42,8 @@ export default function Review() {
     const prices = items.map(item => {
       return { price: item.stripePriceId };
     });
-    const { invoice, receipt, transfers } = await checkout(prices);
-
+    const data = await checkout(prices);
+    const { invoice, receipt, transfers } = data;
     setInvoice(invoice);
     setReceiptUrl(receipt);
     setTransfers(transfers);

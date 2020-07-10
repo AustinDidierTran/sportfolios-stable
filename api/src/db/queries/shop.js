@@ -28,18 +28,22 @@ const getCartItemsOrdered = async (entityId, userId) => {
 
 const addToCart = async (body, userId) => {
   await addCartItem(body, userId);
+  return getCartItems(userId);
 };
 
 const updateCartItems = async (body, userId) => {
   await updateCartItemsHelper(body, userId);
+  return getCartItems(userId);
 };
 
 const removeCartItemInstance = async (query, userId) => {
   await removeCartItemInstanceHelper(query, userId);
+  return getCartItems(userId);
 };
 
 const removeAllInstancesFromCart = async (query, userId) => {
   await removeAllInstancesFromCartHelper(query, userId);
+  return getCartItems(userId);
 };
 
 const clearCart = async (query, userId) => {

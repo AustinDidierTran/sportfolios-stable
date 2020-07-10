@@ -9,7 +9,7 @@ export const checkout = async prices => {
 };
 
 export const clearCart = async () => {
-  const { data: newCart } = await api('api/shop/clearCart', {
+  const { data: newCart } = await api('/api/shop/clearCart', {
     method: 'DELETE',
   });
 
