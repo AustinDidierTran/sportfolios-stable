@@ -16,17 +16,17 @@ export default function AccountLink(props) {
     window.location.href = data.url;
   };
 
-  const fetchAccount = async () => {
-    const { data: account } = await api(
-      formatRoute('/api/stripe/getStripeAccount', null, { id }),
+  const verifyAccount = async () => {
+    const { data: hasStripeAccount } = await api(
+      formatRoute('/api/stripe/hasStripeAccount', null, { id }),
     );
-    if (account.account_id) {
+    if (hasStripeAccount) {
       setNext(true);
     }
   };
 
   useEffect(() => {
-    fetchAccount();
+    verifyAccount();
   }, []);
 
   return (

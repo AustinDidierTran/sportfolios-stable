@@ -3,50 +3,14 @@
  * Testing account numbers: https://stripe.com/docs/connect/testing#account-numbers
  */
 
-const {
-  getCustomerId,
-  getCustomer,
-  getOrCreateCustomer,
-  createPaymentMethod,
-  addPaymentMethodCustomer,
-  removePaymentMethodCustomer,
-} = require('./customer');
-const {
-  createExternalAccount,
-  createAccountLink,
-  getStripeAccount,
-  getStripeBankAccountId,
-} = require('./externalAccount');
-const {
-  createInvoiceItem,
-  createInvoice,
-  finalizeInvoice,
-  payInvoice,
-  getReceipt,
-  checkout,
-  createRefund,
-} = require('./checkout');
-const { addProduct, addPrice, createItem } = require('./shop');
+const checkoutHelpers = require('./checkout');
+const customerHelpers = require('./customer');
+const externalAccountHelpers = require('./externalAccount');
+const shopHelpers = require('./shop');
 
 module.exports = {
-  addPaymentMethodCustomer,
-  addPrice,
-  addProduct,
-  createItem,
-  checkout,
-  createAccountLink,
-  createExternalAccount,
-  createRefund,
-  createInvoice,
-  createInvoiceItem,
-  createPaymentMethod,
-  finalizeInvoice,
-  getCustomerId,
-  getCustomer,
-  getOrCreateCustomer,
-  getReceipt,
-  getStripeAccount,
-  getStripeBankAccountId,
-  payInvoice,
-  removePaymentMethodCustomer,
+  ...checkoutHelpers,
+  ...customerHelpers,
+  ...externalAccountHelpers,
+  ...shopHelpers,
 };

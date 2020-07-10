@@ -1,36 +1,45 @@
 const {
-  getCustomerId: getCustomerIdHelper,
-  getCustomer: getCustomerHelper,
-  createExternalAccount,
-  getStripeAccount: getStripeAccountHelper,
-  getOrCreateCustomer,
+  addPaymentMethodCustomer,
+  addPrice,
+  addProduct,
+  checkout: checkoutHelper,
   createAccountLink,
-  createInvoiceItem,
+  createExternalAccount,
   createInvoice,
+  createInvoiceItem,
+  createItem: createItemHelper,
+  createPaymentMethod,
   createRefund: createRefundHelper,
   finalizeInvoice: finalizeInvoiceHelper,
-  payInvoice: payInvoiceHelper,
-  createPaymentMethod,
-  addPaymentMethodCustomer,
-  removePaymentMethodCustomer,
-  addProduct,
-  addPrice,
-  createItem: createItemHelper,
+  getCustomer: getCustomerHelper,
+  getCustomerId: getCustomerIdHelper,
+  getOrCreateCustomer,
   getReceipt: getReceiptHelper,
-  checkout: checkoutHelper,
+  getStripeAccount: getStripeAccountHelper,
+  hasStripeAccount: hasStripeAccountHelper,
+  hasStripeBankAccount: hasStripeBankAccountHelper,
+  payInvoice: payInvoiceHelper,
+  removePaymentMethodCustomer,
 } = require('../helpers/stripe');
 
 const getAccountLink = async (entity_id, ip) => {
   return createAccountLink({ entity_id, ip });
 };
 
-const addExternalAccount = async (body, user_id, ip) => {
+const addExternalAccount = async (body, userId, ip) => {
   //TODO: Add verification on authorizations ( isAdmin ?)
-  return createExternalAccount(body, user_id, ip);
+  return createExternalAccount(body, userId, ip);
 };
 
-const getStripeAccount = async entity_id => {
-  return getStripeAccountHelper(entity_id);
+const getStripeAccount = async entityId => {
+  return getStripeAccountHelper(entityId);
+};
+
+const hasStripeAccount = async entityId => {
+  return hasStripeAccountHelper(entityId);
+};
+const hasStripeBankAccount = async entityId => {
+  return hasStripeBankAccountHelper(entityId);
 };
 
 const getCustomerId = async (body, userId) => {
@@ -41,80 +50,82 @@ const getCustomer = async (body, userId) => {
   return getCustomerHelper(userId);
 };
 
-const addCustomer = async (body, user_id) => {
-  return getOrCreateCustomer(body, user_id);
+const addCustomer = async (body, userId) => {
+  return getOrCreateCustomer(body, userId);
 };
 
-const addInvoiceItem = async (body, user_id) => {
-  return createInvoiceItem(body, user_id);
+const addInvoiceItem = async (body, userId) => {
+  return createInvoiceItem(body, userId);
 };
 
-const addInvoice = async (body, user_id) => {
-  return createInvoice(body, user_id);
+const addInvoice = async (body, userId) => {
+  return createInvoice(body, userId);
 };
 
-const finalizeInvoice = async (body, user_id) => {
-  return finalizeInvoiceHelper(body, user_id);
+const finalizeInvoice = async (body, userId) => {
+  return finalizeInvoiceHelper(body, userId);
 };
 
-const payInvoice = async (body, user_id) => {
-  return payInvoiceHelper(body, user_id);
+const payInvoice = async (body, userId) => {
+  return payInvoiceHelper(body, userId);
 };
 
-const paymentMethod = async (body, user_id) => {
-  return createPaymentMethod(body, user_id);
+const paymentMethod = async (body, userId) => {
+  return createPaymentMethod(body, userId);
 };
 
-const attachPaymentMethod = async (body, user_id) => {
-  return addPaymentMethodCustomer(body, user_id);
+const attachPaymentMethod = async (body, userId) => {
+  return addPaymentMethodCustomer(body, userId);
 };
 
-const detachPaymentMethod = async (body, user_id) => {
-  return removePaymentMethodCustomer(body, user_id);
+const detachPaymentMethod = async (body, userId) => {
+  return removePaymentMethodCustomer(body, userId);
 };
 
-const createProduct = async (body, user_id) => {
-  return addProduct(body, user_id);
+const createProduct = async (body, userId) => {
+  return addProduct(body, userId);
 };
 
-const createPrice = async (body, user_id) => {
-  return addPrice(body, user_id);
+const createPrice = async (body, userId) => {
+  return addPrice(body, userId);
 };
 
 const createItem = async (body, userId) => {
   return createItemHelper(body, userId);
 };
 
-const getReceipt = async (query, user_id) => {
-  return getReceiptHelper(query, user_id);
+const getReceipt = async (query, userId) => {
+  return getReceiptHelper(query, userId);
 };
 
-const checkout = async (body, user_id) => {
-  return checkoutHelper(body, user_id);
+const checkout = async (body, userId) => {
+  return checkoutHelper(body, userId);
 };
 
-const createRefund = async (body, user_id) => {
-  return createRefundHelper(body, user_id);
+const createRefund = async (body, userId) => {
+  return createRefundHelper(body, userId);
 };
 
 module.exports = {
-  getCustomerId,
-  getCustomer,
-  getAccountLink,
-  addExternalAccount,
-  getStripeAccount,
   addCustomer,
-  addInvoiceItem,
+  addExternalAccount,
   addInvoice,
-  createRefund,
-  paymentMethod,
+  addInvoiceItem,
   attachPaymentMethod,
-  detachPaymentMethod,
-  createProduct,
-  createPrice,
-  createItem,
-  finalizeInvoice,
-  payInvoice,
-  getReceipt,
   checkout,
+  createItem,
+  createPrice,
+  createProduct,
+  createRefund,
+  detachPaymentMethod,
+  finalizeInvoice,
+  getAccountLink,
+  getCustomer,
+  getCustomerId,
+  getReceipt,
+  getStripeAccount,
+  hasStripeAccount,
+  hasStripeBankAccount,
+  payInvoice,
+  paymentMethod,
 };

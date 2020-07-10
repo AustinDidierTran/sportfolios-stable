@@ -149,7 +149,9 @@ export default function CustomerForm(props) {
 
   const fetchCustomerId = async () => {
     const customer = await getCustomer();
-    if (customer.customer_id) setNext(true);
+    if (customer.customer_id) {
+      setNext(true);
+    }
   };
 
   useEffect(() => {

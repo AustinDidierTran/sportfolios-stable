@@ -83,7 +83,9 @@ export default function CheckoutForm(props) {
     const paymentMethod =
       newCustomer.informations.invoice_settings
         .default_payment_method;
-    if (paymentMethod) setNext(true);
+    if (paymentMethod) {
+      setNext(true);
+    }
     setCustomer(newCustomer);
   };
 

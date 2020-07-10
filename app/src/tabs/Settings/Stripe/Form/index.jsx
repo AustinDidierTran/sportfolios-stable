@@ -79,12 +79,17 @@ export default function ExternalAccountForm(props) {
           account_number: accountNumber,
           id: id,
         };
-        await api('/api/stripe/externalAccount', {
+        const res = await api('/api/stripe/externalAccount', {
           method: 'POST',
           body: JSON.stringify(params),
         });
-        setIsSubmitting(false);
-        setNext(true);
+
+        if (res.status === 403) {
+          // There has been an error with Stripe, handle it
+        } else {
+          setIsSubmitting(false);
+          setNext(true);
+        }
       } catch (err) {
         setIsSubmitting(false);
         throw err;
@@ -93,10 +98,10 @@ export default function ExternalAccountForm(props) {
   });
 
   const fetchAccount = async () => {
-    const { data: account } = await api(
-      formatRoute('/api/stripe/getStripeAccount', null, { id }),
+    const { data: hasStripeBankAccount } = await api(
+      formatRoute('/api/stripe/hasStripeBankAccount', null, { id }),
     );
-    if (account.bank_account_id) {
+    if (hasStripeBankAccount) {
       setNext(true);
     }
   };

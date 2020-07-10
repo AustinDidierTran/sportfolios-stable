@@ -16,10 +16,22 @@ router.get(`${BASE_URL}/accountLink`, async ctx => {
 });
 
 router.get(`${BASE_URL}/getStripeAccount`, async ctx => {
-  const data = await queries.getStripeAccount(
-    ctx.query.id,
-    ctx.request.ip,
-  );
+  const data = await queries.getStripeAccount(ctx.query.id);
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
+router.get(`${BASE_URL}/hasStripeAccount`, async ctx => {
+  const data = await queries.hasStripeAccount(ctx.query.id);
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+router.get(`${BASE_URL}/hasStripeBankAccount`, async ctx => {
+  const data = await queries.hasStripeBankAccount(ctx.query.id);
   ctx.body = {
     status: 'success',
     data,

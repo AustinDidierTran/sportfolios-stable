@@ -11,26 +11,35 @@ const {
 } = require('../../../server/utils/logger');
 
 const getStripeAccount = async senderId => {
-  console.log('entity', senderId);
   const [account = {}] = await knex('stripe_accounts')
     .select('*')
     .where({ entity_id: senderId });
-  console.log('getAccount', account);
   return account;
 };
 
+const hasStripeAccount = async senderId => {
+  const account = await getStripeAccount(senderId);
+  return Boolean(account.account_id);
+};
+
+const hasStripeBankAccount = async senderId => {
+  const account = await getStripeAccount(senderId);
+  return Boolean(account.bank_account_id);
+};
+
 const getStripeBankAccountId = async senderId => {
-  const data = await knex
+  const [{ account_id: accountId } = {}] = await knex
     .select('bank_account_id')
     .where('entity_id', senderId)
     .from('stripe_accounts');
-  return (data.length && data[0].account_id) || null;
+  return accountId;
 };
 
 const getOrCreateStripeConnectedAccountId = async (entity_id, ip) => {
   let account = await getStripeAccount(entity_id);
+  let accountId = account.account_id;
 
-  if (!account.account_id) {
+  if (!accountId) {
     const account = await createStripeConnectedAccount({ ip }); // must return accountId
     accountId = account.id;
     // Should store account inside DB
@@ -145,6 +154,8 @@ module.exports = {
   createAccountLink,
   createStripeConnectedAccount,
   getOrCreateStripeConnectedAccountId,
+  hasStripeAccount,
+  hasStripeBankAccount,
   getStripeAccount,
   getStripeBankAccountId,
 };
