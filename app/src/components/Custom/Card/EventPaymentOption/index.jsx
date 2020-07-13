@@ -3,6 +3,7 @@ import React from 'react';
 import { Button, Paper, List } from '../../../Custom';
 import { useTranslation } from 'react-i18next';
 import { GLOBAL_ENUM } from '../../../../../../common/enums';
+import styles from './EventPaymentOption.module.css';
 
 export default function EventPaymentOption(props) {
   const { option, fields, onDelete } = props;
@@ -25,10 +26,11 @@ export default function EventPaymentOption(props) {
         variant="contained"
         color="secondary"
         endIcon="Delete"
-        style={{ margin: '8px' }}
+        style={{ margin: '8px', width: '90%' }}
         onClick={() => {
           onDelete(paymentOptionId);
         }}
+        className={styles.delete}
       >
         {t('delete')}
       </Button>
