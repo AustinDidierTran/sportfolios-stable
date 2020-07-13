@@ -89,7 +89,7 @@ export default function EventRegistration() {
   const finish = async () => {
     //Check if teams is accepted here
 
-    const status = REGISTRATION_STATUS_ENUM.PENDING;
+    const status = REGISTRATION_STATUS_ENUM.ACCEPTED;
 
     if (
       status === REGISTRATION_STATUS_ENUM.PENDING ||
