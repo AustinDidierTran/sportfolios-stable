@@ -605,7 +605,13 @@ async function addMembership(
   return res;
 }
 
-async function addTeamToEvent(teamId, eventId, invoiceId, status) {
+async function addTeamToEvent(
+  teamId,
+  eventId,
+  invoiceId,
+  status,
+  registration_status,
+) {
   const [roster] = await knex('team_rosters')
     .insert({ team_id: teamId })
     .returning('*');
@@ -617,6 +623,7 @@ async function addTeamToEvent(teamId, eventId, invoiceId, status) {
       event_id: eventId,
       invoice_id: invoiceId,
       status,
+      registration_status,
     })
     .returning('*');
   return res;

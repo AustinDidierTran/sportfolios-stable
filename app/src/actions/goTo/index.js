@@ -25,6 +25,7 @@ export const ROUTES = {
   notifications: '/notifications',
   organizationList: '/organizationList',
   recoveryEmail: '/recoveryEmail/:token',
+  registrationStatus: '/registrationStatus/:status',
   search: '/search',
   shopDetails: '/shopDetails/:id/:stripePriceId',
   signup: '/signup',

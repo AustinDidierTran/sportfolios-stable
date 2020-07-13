@@ -26,6 +26,7 @@ import Menu from '../Menu';
 import Notifications from '../../views/Notifications';
 import OrganizationList from '../Main/OrganizationList';
 import PasswordRecovery from '../PasswordRecovery';
+import RegistrationStatus from '../RegistrationStatus';
 import Search from '../Search';
 import Signup from '../Signup';
 import Stripe from '../../utils/stripe/Payment/index';
@@ -121,6 +122,11 @@ export default function App() {
                   exact
                   path={ROUTES.signup}
                   component={Signup}
+                />
+                <Route
+                  exact
+                  path={ROUTES.registrationStatus}
+                  component={RegistrationStatus}
                 />
                 <Route
                   exact
