@@ -22,6 +22,7 @@ module.exports = async (ctx, next) => {
   }
 
   if (expires_at < new Date()) {
+    ctx.body.userInfo = { error: 'token expired' };
     return next();
   }
 

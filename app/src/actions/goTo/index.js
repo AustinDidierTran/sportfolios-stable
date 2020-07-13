@@ -16,6 +16,7 @@ export const ROUTES = {
   entity: '/:id',
   entityNotFound: '/entityNotFound',
   event: '/event',
+  eventRegistration: '/eventRegistration/:id',
   forgotPassword: '/forgotPassword',
   home: '/',
   login: '/login',

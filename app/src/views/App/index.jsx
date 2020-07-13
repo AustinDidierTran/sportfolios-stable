@@ -12,11 +12,12 @@ import {
 import AdminPanel from '../AdminPanel';
 import ConfirmationEmailSent from '../ConfirmationEmailSent';
 import ConfirmEmail from '../ConfirmEmail';
+import Entity from '../Entity';
 import EntityCreate from '../../components/Custom/EntityCreate';
+import EntityNotFound from '../Entity/EntityNotFound';
+import EventRegistration from '../EventRegistration';
 import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
 import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
-import Entity from '../Entity';
-import EntityNotFound from '../Entity/EntityNotFound';
 import ForgotPassword from '../ForgotPassword';
 import Header from '../Header';
 import Login from '../Login';
@@ -130,6 +131,11 @@ export default function App() {
                 />
                 <Route
                   exact
+                  path={ROUTES.eventRegistration}
+                  component={EventRegistration}
+                />
+                <Route
+                  exact
                   path={ROUTES.confirmationEmailSent}
                   component={ConfirmationEmailSent}
                 />
@@ -159,7 +165,6 @@ export default function App() {
                   path={ROUTES.shopDetails}
                   component={ShopDetails}
                 />
-                <Route path={ROUTES.entity} component={Entity} />
                 <PrivateRoute
                   path={ROUTES.search}
                   component={Search}
@@ -169,6 +174,7 @@ export default function App() {
                   component={UserSettings}
                 />
                 <PrivateRoute path={ROUTES.menu} component={Menu} />
+                <Route path={ROUTES.entity} component={Entity} />
                 <PrivateRoute component={Main} />
               </Switch>
             </div>

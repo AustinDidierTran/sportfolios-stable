@@ -62,7 +62,7 @@ export default function RegistrationStatus() {
   }
 
   return (
-    <Paper title={t('acceptation')}>
+    <Paper title={t('acceptation')} style={{ textAlign: 'center' }}>
       <Typography style={{ margin: '8px' }}>
         {values.message}
       </Typography>

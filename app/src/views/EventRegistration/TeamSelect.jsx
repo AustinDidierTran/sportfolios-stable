@@ -6,15 +6,13 @@ import { useFormInput } from '../../hooks/forms';
 import TeamItem from '../../components/Custom/List/TeamItem';
 import { ROUTES, goTo } from '../../actions/goTo';
 import styles from './TeamSelect.module.css';
-import { useParams } from 'react-router-dom';
 import { useQuery } from '../../hooks/queries';
 import api from '../../actions/api';
 
 export default function TeamSelect(props) {
   const { t } = useTranslation();
-  const { onClick, team } = props;
+  const { onClick, team, eventId } = props;
   const query = useFormInput('');
-  const { id } = useParams();
   const { teamId } = useQuery();
 
   const [selectedTeam, setSelectedTeam] = useState();
@@ -30,7 +28,10 @@ export default function TeamSelect(props) {
   };
 
   const onCreate = () => {
-    goTo(ROUTES.create, null, { type: GLOBAL_ENUM.TEAM, route: id });
+    goTo(ROUTES.create, null, {
+      type: GLOBAL_ENUM.TEAM,
+      route: eventId,
+    });
   };
 
   if (team || selectedTeam) {

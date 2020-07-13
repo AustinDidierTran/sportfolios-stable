@@ -130,7 +130,13 @@ export default function EventRegistration() {
   const steps = [
     {
       label: t('team_select'),
-      content: <TeamSelect onClick={onTeamSelect} team={team} />,
+      content: (
+        <TeamSelect
+          onClick={onTeamSelect}
+          team={team}
+          eventId={eventId}
+        />
+      ),
     },
     {
       label: t('roster'),
@@ -155,7 +161,7 @@ export default function EventRegistration() {
   ];
 
   return (
-    <Paper title="Event registration">
+    <Paper title="Event registration" style={{ textAlign: 'center' }}>
       <StepperWithHooks
         steps={steps}
         finish={finish}
