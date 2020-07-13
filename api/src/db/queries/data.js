@@ -9,11 +9,11 @@ const {
   getTeamsFromQuery,
 } = require('../helpers/data');
 
-const globalSearch = async (user_id, query, typeProps) => {
+const globalSearch = async (user_id, query, typeProps, blackList) => {
   const type = Number(typeProps);
   let entities;
   if (type === GLOBAL_ENUM.PERSON) {
-    const res = await getPersonsFromQuery(query);
+    const res = await getPersonsFromQuery(query, blackList);
     entities = res.map(r => ({ ...r, type }));
   } else if (type === GLOBAL_ENUM.ORGANIZATION) {
     const res = await getOrganizationsFromQuery(query);

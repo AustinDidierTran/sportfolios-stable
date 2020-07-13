@@ -35,8 +35,8 @@ const getEntitiesFromQuery = async query => {
     .orWhere('entities_name.surname', 'ILIKE', `%${query}%`);
 };
 
-const getPersonsFromQuery = async query => {
-  return knex('persons')
+const getPersonsFromQuery = async (query, blackList) => {
+  const persons = await knex('persons')
     .select(
       'id',
       'entities_name.name',
@@ -58,6 +58,12 @@ const getPersonsFromQuery = async query => {
     .where('entities_name.name', 'ILIKE', `%${query}%`)
     .orWhere('entities_name.surname', 'ILIKE', `%${query}%`)
     .limit(10);
+
+  if (!blackList || blackList === undefined) {
+    return persons;
+  }
+  const parsed = JSON.parse(blackList);
+  return persons.filter(p => !parsed.includes(p.id));
 };
 
 const getTeamsFromQuery = async query => {

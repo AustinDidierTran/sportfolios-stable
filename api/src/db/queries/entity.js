@@ -7,8 +7,10 @@ const {
   addEntityRole: addEntityRoleHelper,
   addMember: addMemberHelper,
   addOption: addOptionHelper,
+  addRoster: addRosterHelper,
   addTeamToEvent: addTeamToEventHelper,
   addMembership: addMembershipHelper,
+  getEntityRole: getEntityRoleHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
   deleteOption: deleteOptionHelper,
@@ -16,7 +18,6 @@ const {
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
   getEntity: getEntityHelper,
-  getEntityRole,
   getMembers: getMembersHelper,
   getMemberships: getMembershipsHelper,
   getRegistered: getRegisteredHelper,
@@ -105,7 +106,7 @@ const addEntity = async (body, user_id) => {
 async function updateEntity(body, user_id) {
   const { id, name, surname, photoUrl } = body;
 
-  const role = await getEntityRole(id, user_id);
+  const role = await getEntityRoleHelper(id, user_id);
 
   if (role <= ENTITIES_ROLE_ENUM.EDITOR) {
     if (name || surname) {
@@ -202,6 +203,12 @@ async function addOption(body, userId) {
   return res;
 }
 
+async function addRoster(body) {
+  const { rosterId, roster } = body;
+  const res = await addRosterHelper(rosterId, roster);
+  return res;
+}
+
 async function addMembership(body, userId) {
   const {
     entity_id,
@@ -247,6 +254,7 @@ module.exports = {
   addMembership,
   addOption,
   addTeamToEvent,
+  addRoster,
   deleteEntity,
   deleteEntityMembership,
   deleteOption,
