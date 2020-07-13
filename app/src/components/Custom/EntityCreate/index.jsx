@@ -68,7 +68,15 @@ export default function EntityCreate() {
           }),
         });
         if (route) {
-          goTo(ROUTES.entity, { id: route }, { teamId: res.data.id });
+          goTo(
+            ROUTES.eventRegistration,
+            {
+              id: route,
+            },
+            {
+              teamId: res.data.id,
+            },
+          );
           setIsLoading(false);
         } else {
           goTo(ROUTES.entity, { id: res.data.id });
