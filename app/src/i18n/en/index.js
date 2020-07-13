@@ -2,6 +2,7 @@ export default {
   translations: {
     about: 'About',
     actions: 'Actions',
+    acceptation: 'Acceptation',
     add_editor: 'Add editor',
     add_payment_options: 'Add payment options',
     add_to_cart: 'Add to cart',

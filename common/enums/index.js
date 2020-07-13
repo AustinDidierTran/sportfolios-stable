@@ -43,6 +43,12 @@ const INVOICE_STATUS_ENUM = {
   VOID: 'void',
 };
 
+const REGISTRATION_STATUS_ENUM = {
+  ACCEPTED: 'accepted',
+  PENDING: 'pending',
+  REFUSED: 'refused',
+};
+
 // Everything excluding roles
 const GLOBAL_ENUM = {
   PERSON: 1,
@@ -68,6 +74,7 @@ const STRIPE_STATUS_ENUM = {
 };
 
 module.exports = {
+  REGISTRATION_STATUS_ENUM,
   CARD_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,

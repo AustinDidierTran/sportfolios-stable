@@ -2,6 +2,7 @@ export default {
   translations: {
     about: 'À propos',
     actions: 'Actions',
+    acceptation: 'Acceptation',
     add_admin: 'Ajouter admin',
     add_editor: 'Ajouter éditeur',
     add_payment_options: 'Ajouter des options',

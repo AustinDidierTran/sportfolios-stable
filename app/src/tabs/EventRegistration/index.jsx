@@ -11,7 +11,10 @@ import { formatRoute, ROUTES, goTo } from '../../actions/goTo';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useTranslation } from 'react-i18next';
-import { INVOICE_STATUS_ENUM } from '../../../../common/enums';
+import {
+  INVOICE_STATUS_ENUM,
+  REGISTRATION_STATUS_ENUM,
+} from '../../../../common/enums';
 import { formatPrice } from '../../utils/stringFormats';
 
 function Alert(props) {
@@ -84,31 +87,44 @@ export default function EventRegistration() {
   };
 
   const finish = async () => {
-    await api('/api/shop/addCartItem', {
-      method: 'POST',
-      body: JSON.stringify({
-        stripePriceId: paymentOption,
-        metadata: { sellerId: eventId, buyerId: team.id, team },
-      }),
-    });
-    const { data } = await api('/api/entity/register', {
-      method: 'POST',
-      body: JSON.stringify({
-        team_id: team.id,
-        event_id: eventId,
-        invoice_id: null,
-        status: INVOICE_STATUS_ENUM.OPEN,
-      }),
-    });
+    //Check if teams is accepted here
 
-    await api('/api/entity/roster', {
-      method: 'POST',
-      body: JSON.stringify({
-        rosterId: data.roster_id,
-        roster,
-      }),
-    });
-    goTo(ROUTES.cart);
+    const status = REGISTRATION_STATUS_ENUM.PENDING;
+
+    if (
+      status === REGISTRATION_STATUS_ENUM.PENDING ||
+      status === REGISTRATION_STATUS_ENUM.ACCEPTED
+    ) {
+      const { data } = await api('/api/entity/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          team_id: team.id,
+          event_id: eventId,
+          invoice_id: null,
+          status: INVOICE_STATUS_ENUM.OPEN,
+          registration_status: status,
+        }),
+      });
+
+      await api('/api/entity/roster', {
+        method: 'POST',
+        body: JSON.stringify({
+          rosterId: data.roster_id,
+          roster,
+        }),
+      });
+    }
+
+    if (status === REGISTRATION_STATUS_ENUM.ACCEPTED) {
+      await api('/api/shop/addCartItem', {
+        method: 'POST',
+        body: JSON.stringify({
+          stripePriceId: paymentOption,
+          metadata: { sellerId: eventId, buyerId: team.id, team },
+        }),
+      });
+    }
+    goTo(ROUTES.registrationStatus, { status });
   };
 
   const steps = [

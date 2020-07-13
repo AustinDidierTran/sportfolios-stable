@@ -91,8 +91,20 @@ async function updateGeneralInfos(body) {
 }
 
 async function addTeamToEvent(body) {
-  const { team_id, event_id, invoice_id, status } = body;
-  return addTeamToEventHelper(team_id, event_id, invoice_id, status);
+  const {
+    team_id,
+    event_id,
+    invoice_id,
+    status,
+    registration_status,
+  } = body;
+  return addTeamToEventHelper(
+    team_id,
+    event_id,
+    invoice_id,
+    status,
+    registration_status,
+  );
 }
 
 async function getOptions(eventId) {

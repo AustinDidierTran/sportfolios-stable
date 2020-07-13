@@ -1,0 +1,10 @@
+.container {
+  justify-content: center !important;
+  justify-items: center !important;
+}
+
+.button {
+  display: inherit;
+  align-items: inherit;
+  justify-content: inherit;
+}
