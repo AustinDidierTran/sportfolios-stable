@@ -23,7 +23,7 @@ export const useQuery = () => {
 
 export const useApiRoute = (route, options = {}) => {
   const { defaultValue } = options;
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [response, setResponse] = useState(defaultValue);
 
   const updateResponse = async () => {

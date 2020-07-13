@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 
+import { Icon } from '../../../Custom';
 import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
 import { Avatar } from '../..';
 import { getInitialsFromName } from '../../../../utils/stringFormats/index';
 import { useTranslation } from 'react-i18next';
 import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
 
 export default function RosterItem(props) {
   const { t } = useTranslation();
@@ -39,7 +39,7 @@ export default function RosterItem(props) {
         secondary={secondary || t('person')}
       ></ListItemText>
       <IconButton edge="end" onClick={handleDelete}>
-        <DeleteIcon />
+        <Icon icon="Delete" />
       </IconButton>
     </ListItem>
   );

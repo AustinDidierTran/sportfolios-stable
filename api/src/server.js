@@ -6,6 +6,7 @@ const cors = require('@koa/cors');
 const { CLIENT_BASE_URL } = require('../../conf');
 
 // Middlewares
+const getUserInfo = require('./server/middleware/user-info');
 const checkAuth = require('./server/middleware/check-auth');
 const adminOnly = require('./server/middleware/admin-only');
 const errorHandler = require('./server/middleware/error-handler');
@@ -25,6 +26,7 @@ const corsOptions = {
 app.use(errorHandler);
 app.use(cors(corsOptions));
 app.use(bodyParser());
+app.use(getUserInfo);
 
 // public routes
 publicRoutes.forEach(route => app.use(route.routes()));

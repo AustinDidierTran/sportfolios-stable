@@ -6,6 +6,7 @@ import General from './General';
 import Settings from './Settings';
 import Shop from './Shop';
 import { useTranslation } from 'react-i18next';
+import { ENTITIES_ROLE_ENUM } from '../Store';
 
 export const TABS_ENUM = {
   ABOUT: 'about',
@@ -19,64 +20,88 @@ export const TABS_ENUM = {
 
 export default function Tabs(props) {
   const { t } = useTranslation();
-  const { list } = props;
+  const { list, role } = props;
 
-  return list.map(l => {
+  return list.reduce((prev, l) => {
     if (l === TABS_ENUM.ABOUT) {
-      return {
-        value: TABS_ENUM.ABOUT,
-        component: About,
-        label: t('about'),
-        icon: 'Info',
-      };
+      return [
+        ...prev,
+        {
+          value: TABS_ENUM.ABOUT,
+          component: About,
+          label: t('about'),
+          icon: 'Info',
+        },
+      ];
     }
     if (l === TABS_ENUM.EVENT_INFO) {
-      return {
-        value: TABS_ENUM.EVENT_INFO,
-        component: EventInfo,
-        label: t('info'),
-        icon: 'Info',
-      };
+      return [
+        ...prev,
+        {
+          value: TABS_ENUM.EVENT_INFO,
+          component: EventInfo,
+          label: t('info'),
+          icon: 'Info',
+        },
+      ];
     }
     if (l === TABS_ENUM.EVENT_REGISTRATION) {
-      return {
-        value: TABS_ENUM.EVENT_REGISTRATION,
-        component: EventRegistration,
-        label: t('event_registration'),
-        icon: 'SupervisedUserCircle',
-      };
+      return [
+        ...prev,
+        {
+          value: TABS_ENUM.EVENT_REGISTRATION,
+          component: EventRegistration,
+          label: t('event_registration'),
+          icon: 'SupervisedUserCircle',
+        },
+      ];
     }
     if (l === TABS_ENUM.EVENTS) {
-      return {
-        value: TABS_ENUM.EVENTS,
-        component: Events,
-        label: t('events'),
-        icon: 'Event',
-      };
+      return [
+        ...prev,
+        {
+          value: TABS_ENUM.EVENTS,
+          component: Events,
+          label: t('events'),
+          icon: 'Event',
+        },
+      ];
     }
     if (l === TABS_ENUM.GENERAL) {
-      return {
-        value: TABS_ENUM.GENERAL,
-        component: General,
-        label: t('general'),
-        icon: 'Folder',
-      };
+      return [
+        ...prev,
+        {
+          value: TABS_ENUM.GENERAL,
+          component: General,
+          label: t('general'),
+          icon: 'Folder',
+        },
+      ];
     }
     if (l === TABS_ENUM.SETTINGS) {
-      return {
-        component: Settings,
-        label: t('settings'),
-        icon: 'Settings',
-        value: TABS_ENUM.SETTINGS,
-      };
+      if (role === ENTITIES_ROLE_ENUM.VIEWER) {
+        return prev;
+      }
+      return [
+        ...prev,
+        {
+          component: Settings,
+          label: t('settings'),
+          icon: 'Settings',
+          value: TABS_ENUM.SETTINGS,
+        },
+      ];
     }
     if (l === TABS_ENUM.SHOP) {
-      return {
-        value: TABS_ENUM.SHOP,
-        component: Shop,
-        label: t('shop'),
-        icon: 'Store',
-      };
+      return [
+        ...prev,
+        {
+          value: TABS_ENUM.SHOP,
+          component: Shop,
+          label: t('shop'),
+          icon: 'Store',
+        },
+      ];
     }
-  });
+  }, []);
 }
