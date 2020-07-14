@@ -1,13 +1,15 @@
+const { ERROR_ENUM } = require('../../../../common/errors');
+
 module.exports = async (ctx, next) => {
   if (
     ctx.body &&
     ctx.body.userInfo &&
-    ctx.body.userInfo.error === 'token expired'
+    ctx.body.userInfo.error === ERROR_ENUM.TOKEN_EXPIRED
   ) {
-    throw 'token expired';
+    throw new Error(ERROR_ENUM.TOKEN_EXPIRED);
   }
   if (!ctx.body || !ctx.body.userInfo || !ctx.body.userInfo.id) {
-    throw 'Access denied';
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
   return next();

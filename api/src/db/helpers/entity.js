@@ -7,6 +7,7 @@ const {
   GLOBAL_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
+const { ERROR_ENUM } = require('../../../../common/errors');
 
 const addEntity = async (body, userId) => {
   const { name, creator, surname, type } = body;
@@ -682,7 +683,7 @@ const deleteEntity = async (entityId, userId) => {
     .andWhere('user_entity_role.user_id', userId);
 
   if (role !== ENTITIES_ROLE_ENUM.ADMIN) {
-    throw 'Access denied';
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   } else {
     await knex('entities')
       .where({ id: entity_id })

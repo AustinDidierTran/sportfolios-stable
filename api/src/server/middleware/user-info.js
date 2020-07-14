@@ -1,4 +1,5 @@
 const knex = require('../../db/connection');
+const { ERROR_ENUM } = require('../../../../common/errors');
 
 module.exports = async (ctx, next) => {
   const token = ctx.headers['authorization'];
@@ -22,7 +23,10 @@ module.exports = async (ctx, next) => {
   }
 
   if (expires_at < new Date()) {
-    ctx.body.userInfo = { error: 'token expired' };
+    if (!ctx.body) {
+      ctx.body = {};
+    }
+    ctx.body.userInfo = { error: ERROR_ENUM.TOKEN_EXPIRED };
     return next();
   }
 
