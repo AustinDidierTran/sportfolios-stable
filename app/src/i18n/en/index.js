@@ -42,6 +42,7 @@ export default {
     email_confirmed:
       'An email has just been sent to {{email}}. Please, go look at your inbox to confirm your email.',
     entity_not_found: 'Entity not found',
+    event_is_full: 'Event is full, no place available',
     event_manager: 'Event Manager',
     event_registration: 'Event Registration',
     event_settings: 'Event settings',
@@ -115,7 +116,9 @@ export default {
     registered: 'Registered',
     results: 'Results',
     registration: 'Registration',
+    registrations_ended: 'Registrations ended',
     registration_open: 'Registration open',
+    registrations_open_on: 'Registrations open on',
     registration_close: 'Registration close',
     reset: 'Reset',
     return_home: 'Return home',
