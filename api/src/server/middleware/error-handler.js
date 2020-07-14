@@ -1,24 +1,22 @@
+const { errors } = require('../../../../common/errors');
+
 module.exports = async (ctx, next) => {
   try {
     await next();
-  } catch (err) {
-    if (err === 'token expired') {
-      ctx.status = 413;
+  } catch ({ message }) {
+    const error = errors[message] || errors[ERROR_ENUM.ERROR_OCCURED];
+
+    if (process.env.NODE_ENV !== 'development') {
+      ctx.status = error.code;
       ctx.body = {
         status: 'error',
-        message:
-          process.env.NODE_ENV === 'development'
-            ? err.message || 'Sorry, an error has occured'
-            : 'Sorry, an error has occured',
+        message: errors[ERROR_ENUM.ERROR_OCCURED].message,
       };
     } else {
-      ctx.status = 400;
+      ctx.status = error.code;
       ctx.body = {
         status: 'error',
-        message:
-          process.env.NODE_ENV === 'development'
-            ? err.message || 'Sorry, an error has occured'
-            : 'Sorry, an error has occured',
+        message: error.message,
       };
     }
   }

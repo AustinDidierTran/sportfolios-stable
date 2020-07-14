@@ -4,6 +4,7 @@ import { goTo, ROUTES } from './actions/goTo';
 import { API_BASE_URL } from '../../conf';
 import i18n from './i18n';
 import api from './actions/api';
+import { errors, ERROR_ENUM } from '../../common/errors';
 
 export const Store = React.createContext();
 
@@ -50,6 +51,7 @@ const initialState = {
 };
 
 export const ACTION_ENUM = {
+  CLEAR_USER_INFO: 'clear_user_info',
   LOGIN: 'login',
   LOGOUT: 'logout',
   UPDATE_PROFILE_PICTURE: 'update_profile_picture',
@@ -104,6 +106,11 @@ function reducer(state, action) {
       );
       return { ...state, organization: newOrganizationInfo };
     }
+    case ACTION_ENUM.CLEAR_USER_INFO: {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userInfo');
+      return { ...state, authToken: null, userInfo: {} };
+    }
     case ACTION_ENUM.UPDATE_USER_INFO: {
       localStorage.setItem(
         'userInfo',
@@ -149,6 +156,13 @@ export function StoreProvider(props) {
           Authorization: authToken,
         },
       });
+
+      if (res.status === errors[ERROR_ENUM.TOKEN_EXPIRED].code) {
+        dispatch({
+          type: ACTION_ENUM.CLEAR_USER_INFO,
+        });
+        return;
+      }
 
       const { data } = await res.json();
 
