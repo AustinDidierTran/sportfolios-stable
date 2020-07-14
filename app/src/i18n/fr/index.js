@@ -112,7 +112,9 @@ export default {
     registered: 'inscrit',
     results: 'Résultats',
     registration: 'Inscription',
+    registrations_ended: 'Inscriptions terminées le',
     registration_open: 'Ouverture inscription',
+    registrations_open_on: 'Les inscriptions ouvrent le',
     registration_closes_before_opening:
       "Les inscription ferment avant d'ouvrir",
     registration_close: 'Fermeture inscription',
