@@ -1,4 +1,9 @@
-import React, { useState, useContext, useMemo } from 'react';
+import React, {
+  useState,
+  useContext,
+  useMemo,
+  useEffect,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { ENTITIES_ROLE_ENUM } from '../../../../../../common/enums';
 
@@ -31,9 +36,15 @@ export default function BasicInfos(props) {
     id,
     name: nameProp,
     surname: surnameProp,
-    photoUrl,
+    photoUrl: initialPhotoUrl,
     role,
   } = props.basicInfos;
+
+  const [photoUrl, setPhotoUrl] = useState(initialPhotoUrl);
+
+  useEffect(() => {
+    setPhotoUrl(initialPhotoUrl);
+  }, [initialPhotoUrl]);
 
   const initials = getInitialsFromName(completeName);
   const name = useFormInput(nameProp);
@@ -90,8 +101,9 @@ export default function BasicInfos(props) {
 
   const onImgUpload = async () => {
     const photoUrl = await uploadEntityPicture(id, img);
-
     if (photoUrl) {
+      setPhotoUrl(photoUrl);
+
       dispatch({
         type: ACTION_ENUM.UPDATE_PROFILE_PICTURE,
         payload: photoUrl,
