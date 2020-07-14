@@ -96,19 +96,29 @@ export default function TeamRegistered() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {teams.map(team => (
-              <StyledTableRow key={team.name}>
-                <StyledTableCell component="th" scope="row">
-                  {team.name}
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <PaymentChip status={team.status} />
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <MailToButton emails={team.emails} />
+            {teams.length > 0 ? (
+              <>
+                {teams.map(team => (
+                  <StyledTableRow key={team.name}>
+                    <StyledTableCell component="th" scope="row">
+                      {team.name}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <PaymentChip status={team.status} />
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      <MailToButton emails={team.emails} />
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </>
+            ) : (
+              <StyledTableRow align="center">
+                <StyledTableCell>
+                  {t('no_teams_registered')}
                 </StyledTableCell>
               </StyledTableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </TableContainer>

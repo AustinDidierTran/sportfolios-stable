@@ -88,6 +88,7 @@ export default {
     no_notifications: 'Pas de notifications',
     no_notifications_message: 'Revenez plus tard.',
     no_roster: 'Aucun alignement',
+    no_teams_registered: 'Aucune équipes inscrites',
     on_going_events: 'Événements en cours',
     only_available_on_desktop: 'Seulement disponible sur ordinateur',
     options: 'Options',
