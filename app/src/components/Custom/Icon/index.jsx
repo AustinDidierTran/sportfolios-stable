@@ -31,6 +31,12 @@ import ShoppingCart from '@material-ui/icons/ShoppingCart';
 import SportsKabaddi from '@material-ui/icons/SportsKabaddi';
 import Store from '@material-ui/icons/Store';
 import SupervisedUserCircle from '@material-ui/icons/SupervisedUserCircle';
+import SaveIcon from '@material-ui/icons/Save';
+import PrintIcon from '@material-ui/icons/Print';
+import ShareIcon from '@material-ui/icons/Share';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import EditIcon from '@material-ui/icons/Edit';
+import PeopleIcon from '@material-ui/icons/People';
 
 const icons = {
   Add,
@@ -56,6 +62,7 @@ const icons = {
   Notifications,
   Person,
   PersonAdd,
+  PeopleIcon,
   Publish,
   RemoveShoppingCart,
   Search,
@@ -64,6 +71,11 @@ const icons = {
   SportsKabaddi,
   Store,
   SupervisedUserCircle,
+  SaveIcon,
+  PrintIcon,
+  ShareIcon,
+  FavoriteIcon,
+  EditIcon,
 };
 
 export default function CustomIcon(props) {
