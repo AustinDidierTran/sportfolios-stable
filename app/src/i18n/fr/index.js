@@ -42,6 +42,7 @@ export default {
     email_confirmed:
       'Un courriel de confirmation a été envoyé à {{email}}. Veuillez regarder vos courriels pour confirmer votre compte.',
     entity_not_found: "Cette entité n'existe pas",
+    event_is_full: "l'événements est plein, aucune place disponible",
     event_end: "Fin de l'événement",
     event_manager: "Responsable de l'événement",
     event_registration: 'Inscription à un événement',

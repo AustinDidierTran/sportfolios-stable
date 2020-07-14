@@ -61,6 +61,10 @@ export default function EventSettings() {
       { value: eventStart },
       { value: eventEnd },
     ] = values;
+    if (maximumSpots < 0) {
+      values[0].setError(true);
+      return;
+    }
     await api(`/api/entity/updateEvent`, {
       method: 'PUT',
       body: JSON.stringify({

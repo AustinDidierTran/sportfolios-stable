@@ -42,6 +42,7 @@ export default {
     email_confirmed:
       'An email has just been sent to {{email}}. Please, go look at your inbox to confirm your email.',
     entity_not_found: 'Entity not found',
+    event_is_full: 'Event is full, no place available',
     event_manager: 'Event Manager',
     event_registration: 'Event Registration',
     event_settings: 'Event settings',
