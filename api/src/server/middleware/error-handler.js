@@ -1,4 +1,4 @@
-const { errors } = require('../../../../common/errors');
+const { errors, ERROR_ENUM } = require('../../../../common/errors');
 
 module.exports = async (ctx, next) => {
   try {
