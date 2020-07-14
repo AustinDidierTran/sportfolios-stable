@@ -11,6 +11,7 @@ export { default as IconButton } from './IconButton';
 export { default as Input } from './Input';
 export { default as List } from './List';
 export { default as MailToButton } from './MailToButton';
+export { default as MessageAndButton } from './MessageAndButton';
 export { default as Paper } from './Paper';
 export { default as RadioGroup } from './RadioGroup';
 export { default as SearchInput } from './SearchInput';

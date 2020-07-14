@@ -1,10 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Typography } from '../../components/MUI';
-
-import styles from './RegistrationStatus.module.css';
-import { Paper, Button } from '../../components/Custom';
+import { MessageAndButton } from '../../components/Custom';
 import { REGISTRATION_STATUS_ENUM } from '../../../../common/enums';
 import { useParams } from 'react-router-dom';
 import { goTo, ROUTES } from '../../actions/goTo';
@@ -62,22 +59,12 @@ export default function RegistrationStatus() {
   }
 
   return (
-    <Paper title={t('acceptation')} style={{ textAlign: 'center' }}>
-      <Typography style={{ margin: '8px' }}>
-        {values.message}
-      </Typography>
-      <Button
-        classname={styles.button}
-        size="small"
-        variant="contained"
-        endIcon={values.endIcon}
-        style={{
-          margin: '8px',
-        }}
-        onClick={values.onClick}
-      >
-        {values.button}
-      </Button>
-    </Paper>
+    <MessageAndButton
+      button={values.button}
+      onClick={values.onClick}
+      endIcon={values.endIcon}
+      message={values.message}
+      title={t('acceptation')}
+    />
   );
 }
