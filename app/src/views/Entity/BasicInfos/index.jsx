@@ -81,7 +81,7 @@ export default function BasicInfos(props) {
   const onNameChange = async () => {
     const res = await changeEntityName(id, { name: name.value });
 
-    name.changeDefault(res.data.data.name);
+    name.changeDefault(res.data.name);
   };
 
   const onCancel = async () => {
