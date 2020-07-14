@@ -96,10 +96,28 @@ const addEntity = async (body, userId) => {
         return person;
       }
       case GLOBAL_ENUM.EVENT: {
+        let entity_id_admin;
+        if (creator) {
+          entity_id_admin = creator;
+        } else {
+          const [{ id: entityIdAdmin } = {}] = await knex('entities')
+            .select('id')
+            .leftJoin(
+              'user_entity_role',
+              'user_entity_role.entity_id',
+              '=',
+              'entities.id',
+            )
+            .where('user_entity_role.user_id', userId)
+            .andWhere('entities.type', GLOBAL_ENUM.PERSON)
+            .transacting(trx);
+
+          entity_id_admin = entityIdAdmin;
+        }
         const insertObj = {
           entity_id: entityId,
           role: ENTITIES_ROLE_ENUM.ADMIN,
-          entity_id_admin: creator,
+          entity_id_admin,
         };
 
         await knex('entities_role')
@@ -110,7 +128,6 @@ const addEntity = async (body, userId) => {
           .insert({ id: entityId })
           .returning(['id'])
           .transacting(trx);
-
         return event;
       }
     }
