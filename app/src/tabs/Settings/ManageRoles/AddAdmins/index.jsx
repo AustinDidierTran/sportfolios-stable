@@ -7,7 +7,7 @@ import { useFormInput } from '../../../../hooks/forms';
 
 export default function AddAdmins(props) {
   const { t } = useTranslation();
-  const { onClick } = props;
+  const { onClick, blackList } = props;
   const query = useFormInput('');
 
   return (
@@ -15,6 +15,7 @@ export default function AddAdmins(props) {
       label={t('add_editor')}
       query={query}
       onClick={onClick}
+      blackList={blackList}
     />
   );
 }

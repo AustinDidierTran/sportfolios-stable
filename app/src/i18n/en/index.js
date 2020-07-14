@@ -80,6 +80,7 @@ export default {
     new_organization: 'New organization',
     new_team: 'New team',
     next: 'Next',
+    none: 'None',
     no_account_signup: "Don't have an account? Signup!",
     no_description: 'No Description',
     notifications: 'Notifications',

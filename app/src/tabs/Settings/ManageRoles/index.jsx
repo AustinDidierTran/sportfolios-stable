@@ -16,6 +16,7 @@ import api from '../../../actions/api';
 import styles from './ManageRoles.module.css';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import AddAdmins from './AddAdmins';
+import { getInitialsFromName } from '../../../utils/stringFormats';
 
 export default function ManageRoles() {
   const { t } = useTranslation();
@@ -23,6 +24,7 @@ export default function ManageRoles() {
   const { id: entity_id } = useParams();
 
   const [entities, setEntities] = useState([]);
+  const [blackList, setBlackList] = useState([]);
 
   const updateEntities = async () => {
     const res = await api(`/api/entity/roles?id=${entity_id}`);
@@ -37,6 +39,15 @@ export default function ManageRoles() {
   useEffect(() => {
     updateEntities();
   }, []);
+
+  useEffect(() => {
+    getBlackList();
+  }, [entities]);
+
+  const getBlackList = () => {
+    const res = entities.map(entity => entity.entity_id_admin);
+    setBlackList(res);
+  };
 
   const updateRole = async (entity_id_admin, role) => {
     const arr = entities.filter(e => {
@@ -76,12 +87,15 @@ export default function ManageRoles() {
     await updateEntities();
   };
 
+  const getInitials = (name, surname) => {
+    return getInitialsFromName(surname ? `${name} ${surname}` : name);
+  };
+
   const items = [
     { display: t('admin'), value: ENTITIES_ROLE_ENUM.ADMIN },
     { display: t('editor'), value: ENTITIES_ROLE_ENUM.EDITOR },
     { display: t('none'), value: ENTITIES_ROLE_ENUM.VIEWER },
   ];
-
   return (
     <Paper title={t('admins')}>
       {entities.map((entity, index) => [
@@ -95,7 +109,10 @@ export default function ManageRoles() {
             className={styles.item}
           >
             <ListItemIcon>
-              <Avatar photoUrl={entity.photoUrl} />
+              <Avatar
+                photoUrl={entity.photoUrl}
+                initials={getInitials(entity.name, entity.surname)}
+              />
             </ListItemIcon>
             {entity.surname ? (
               <ListItemText
@@ -120,7 +137,7 @@ export default function ManageRoles() {
         </List>,
       ])}
       <hr />
-      <AddAdmins onClick={onClick} />
+      <AddAdmins onClick={onClick} blackList={blackList} />
     </Paper>
   );
 }

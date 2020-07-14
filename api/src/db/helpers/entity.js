@@ -512,13 +512,14 @@ async function updateRegistration(
 }
 
 async function addEntityRole(entityId, entityIdAdmin, role) {
-  return knex('entities_role')
+  const [res] = await knex('entities_role')
     .insert({
-      entityId,
-      entityIdAdmin,
+      entity_id: entityId,
+      entity_id_admin: entityIdAdmin,
       role,
     })
-    .returning(['role']);
+    .returning('role');
+  return res;
 }
 
 async function addMember(

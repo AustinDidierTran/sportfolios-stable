@@ -81,6 +81,7 @@ export default {
     new_email: 'Nouveau courriel',
     new_organization: 'Nouvelle Organisation',
     new_team: 'Nouvelle Équipe',
+    none: 'Aucun',
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
     no_description: 'Aucune description',
     notifications: 'Notifications',
