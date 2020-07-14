@@ -11,6 +11,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import styles from './AddOptionsEvent.module.css';
 import { CARD_TYPE_ENUM } from '../../../../../common/enums';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -23,6 +24,7 @@ export default function AddOptionsEvent() {
 
   const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [display, setDisplay] = useState('');
 
   useEffect(() => {
@@ -35,9 +37,11 @@ export default function AddOptionsEvent() {
     );
     const dataOptions = data.map(d => Object.values(d));
     setOptions(dataOptions);
+    setIsLoading(false);
   };
 
   const onAdd = async values => {
+    setIsLoading(true);
     const name = values[0].value;
     const price = Number(values[1].value) * 100;
     const startTime = values[2].value;
@@ -45,6 +49,7 @@ export default function AddOptionsEvent() {
     if (startTime >= endTime) {
       setDisplay(t('registration_closes_before_opening'));
       setOpen(true);
+      setIsLoading(false);
       return;
     }
 
@@ -61,6 +66,7 @@ export default function AddOptionsEvent() {
     if (res.status === 400) {
       setDisplay(t('payment_option_exist'));
       setOpen(true);
+      setIsLoading(false);
       return;
     }
     getOptions();
@@ -109,10 +115,17 @@ export default function AddOptionsEvent() {
             items={{ fields, option, onDelete }}
           />
         ))}
-        <Card
-          items={{ fields, onAdd }}
-          type={CARD_TYPE_ENUM.ADD_PAYMENT_OPTION}
-        />
+        {isLoading ? (
+          <div className={styles.card}>
+            <CircularProgress className={styles.progress} />
+          </div>
+        ) : (
+          <Card
+            items={{ fields, onAdd }}
+            type={CARD_TYPE_ENUM.ADD_PAYMENT_OPTION}
+          />
+        )}
+
         <Snackbar
           open={open}
           autoHideDuration={6000}
