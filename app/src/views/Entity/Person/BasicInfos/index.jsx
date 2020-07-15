@@ -165,8 +165,9 @@ export default function BasicInfos(props) {
       </div>
       {role === ENTITIES_ROLE_ENUM.ADMIN ? (
         isEditMode ? (
-          <>
+          <div className={styles.editor}>
             <Button
+              className={styles.save}
               endIcon="Check"
               onClick={onSave}
               style={{ marginRight: '8px' }}
@@ -174,6 +175,7 @@ export default function BasicInfos(props) {
               {t('save')}
             </Button>
             <Button
+              className={styles.cancel}
               endIcon="Close"
               onClick={onCancel}
               style={{ marginLeft: '8px' }}
@@ -181,7 +183,7 @@ export default function BasicInfos(props) {
             >
               {t('cancel')}
             </Button>
-          </>
+          </div>
         ) : (
           <Button onClick={onEdit} endIcon="Edit">
             {t('edit')}
