@@ -136,6 +136,16 @@ router.post(`${BASE_URL}/payInvoice`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/paymentMethods`, async ctx => {
+  console.log(1);
+  const data = await queries.getPaymentMethods(ctx.body.userInfo.id);
+
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 router.post(`${BASE_URL}/paymentMethod`, async ctx => {
   const data = await queries.paymentMethod(
     ctx.request.body,

@@ -52,6 +52,15 @@ const getOrCreateCustomer = async (body, userId) => {
   }
 };
 
+const getPaymentMethods = async userId => {
+  const paymentMethods = await knex('stripe_payment_method').where(
+    'user_id',
+    userId,
+  );
+
+  return paymentMethods;
+};
+
 const getPaymentMethodId = async userId => {
   const [{ payment_method_id } = {}] = await knex
     .select('payment_method_id')
@@ -131,12 +140,13 @@ const removePaymentMethodCustomer = async body => {
 };
 
 module.exports = {
-  getCustomerId,
-  getCustomer,
+  addPaymentMethodCustomer,
   createCustomer,
+  createPaymentMethod,
+  getCustomer,
+  getCustomerId,
   getOrCreateCustomer,
   getPaymentMethodId,
-  createPaymentMethod,
-  addPaymentMethodCustomer,
+  getPaymentMethods,
   removePaymentMethodCustomer,
 };

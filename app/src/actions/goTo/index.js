@@ -2,6 +2,7 @@ import history from '../../stores/history';
 import { getFormattedMailTo } from '../../utils/stringFormats';
 
 export const ROUTES = {
+  addPaymentMethod: '/addPaymentMethod',
   adminPanel: '/adminPanel',
   confirmationEmailSent: '/confirmationEmailSent/:email',
   confirmEmail: '/confirmEmail/:token',

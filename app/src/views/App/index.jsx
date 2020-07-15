@@ -9,6 +9,7 @@ import {
   OptimizelyProvider,
 } from '@optimizely/react-sdk';
 
+import AddPaymentMethod from '../AddPaymentMethod';
 import AdminPanel from '../AdminPanel';
 import ConfirmationEmailSent from '../ConfirmationEmailSent';
 import ConfirmEmail from '../ConfirmEmail';
@@ -77,6 +78,10 @@ export default function App() {
                 <AdminRoute
                   path={ROUTES.adminPanel}
                   component={AdminPanel}
+                />
+                <Route
+                  path={ROUTES.addPaymentMethod}
+                  component={AddPaymentMethod}
                 />
                 <Route
                   path={ROUTES.confirmEmail}

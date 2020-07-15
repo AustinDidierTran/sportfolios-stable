@@ -19,6 +19,7 @@ const {
   hasStripeAccount: hasStripeAccountHelper,
   hasStripeBankAccount: hasStripeBankAccountHelper,
   payInvoice: payInvoiceHelper,
+  getPaymentMethods: getPaymentMethodsHelper,
   removePaymentMethodCustomer,
 } = require('../helpers/stripe');
 
@@ -40,6 +41,11 @@ const hasStripeAccount = async entityId => {
 };
 const hasStripeBankAccount = async entityId => {
   return hasStripeBankAccountHelper(entityId);
+};
+
+const getPaymentMethods = async userId => {
+  console.log(2);
+  return getPaymentMethodsHelper(userId);
 };
 
 const getCustomerId = async (body, userId) => {
@@ -122,6 +128,7 @@ module.exports = {
   getAccountLink,
   getCustomer,
   getCustomerId,
+  getPaymentMethods,
   getReceipt,
   getStripeAccount,
   hasStripeAccount,
