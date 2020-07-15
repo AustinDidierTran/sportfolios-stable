@@ -4,6 +4,7 @@ import { SearchList } from '../../../../components/Custom';
 
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../../../hooks/forms';
+import { GLOBAL_ENUM } from '../../../../../../common/enums';
 
 export default function AddAdmins(props) {
   const { t } = useTranslation();
@@ -16,6 +17,7 @@ export default function AddAdmins(props) {
       query={query}
       onClick={onClick}
       blackList={blackList}
+      typeRejected={GLOBAL_ENUM.EVENT}
     />
   );
 }
