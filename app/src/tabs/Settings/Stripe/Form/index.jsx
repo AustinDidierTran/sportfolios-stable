@@ -108,14 +108,11 @@ export default function ExternalAccountForm(props) {
 
         if (res.status === 403) {
           // There has been an error with Stripe, handle it
-
-          console.log('res', res);
         } else {
           setIsSubmitting(false);
           setNext(true);
         }
       } catch (err) {
-        console.log(err);
         setIsSubmitting(false);
         throw err;
       }

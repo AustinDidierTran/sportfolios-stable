@@ -1,19 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useFormInput } from '../../../../hooks/forms';
 import { Input, Paper, Button } from '../../../Custom';
 import { List, ListItem } from '../../../MUI';
 import { useTranslation } from 'react-i18next';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import api from '../../../../actions/api';
+import { useParams } from 'react-router-dom';
 
 export default function AddPaymentOption(props) {
-  const { fields, onAdd } = props;
+  const { fields, onAdd: onAddProps } = props;
   const { t } = useTranslation();
+  const { id: eventId } = useParams();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const values = fields.reduce(
     (prev, f) => [...prev, useFormInput(f.initialValue || '')],
     [],
   );
-
   const onReset = () => {
     Object.keys(values).forEach(key => values[key].reset());
   };
@@ -48,6 +53,34 @@ export default function AddPaymentOption(props) {
     return isValid;
   };
 
+  const onAdd = async values => {
+    setIsLoading(true);
+    const name = values[0].value;
+    const price = Number(values[1].value) * 100;
+    const startTime = values[2].value;
+    const endTime = values[3].value;
+    if (startTime >= endTime) {
+      setDisplay(t('registration_closes_before_opening'));
+      setOpen(true);
+      setIsLoading(false);
+      return;
+    }
+
+    const res = await api(`/api/entity/option`, {
+      method: 'POST',
+      body: JSON.stringify({
+        eventId,
+        name,
+        price,
+        endTime,
+        startTime,
+      }),
+    });
+
+    onAddProps(res.status);
+    setIsLoading(false);
+  };
+
   const handleAdd = async () => {
     const isValid = validate();
 
@@ -56,6 +89,14 @@ export default function AddPaymentOption(props) {
       onReset();
     }
   };
+
+  if (isLoading) {
+    return (
+      <Paper>
+        <CircularProgress />
+      </Paper>
+    );
+  }
 
   return (
     <Paper>

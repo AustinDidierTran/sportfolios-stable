@@ -1,8 +1,5 @@
 const knex = require('../connection');
-const {
-  stripeErrorLogger,
-  stripeLogger,
-} = require('../../server/utils/logger');
+const { stripeErrorLogger } = require('../../server/utils/logger');
 
 const getItem = async stripePriceId => {
   try {
@@ -98,6 +95,7 @@ const getCartItems = async userId => {
         'cart_items.id',
         'stripe_price.stripe_price_id',
         'stripe_price.stripe_product_id',
+        'stripe_price.metadata AS stripe_price_metadata',
         'stripe_product.label',
         'stripe_product.description',
         'stripe_price.amount',
@@ -123,7 +121,6 @@ const getCartItems = async userId => {
         'stripe_price.stripe_price_id',
       )
       .where('cart_items.user_id', userId);
-    stripeLogger('CartItems', cartItems);
     return (
       cartItems.map(i => ({
         active: i.active,
@@ -131,8 +128,10 @@ const getCartItems = async userId => {
         description: i.description,
         id: i.id,
         label: i.label,
+        metadata: i.metadata,
         photoUrl: i.photo_url,
         stripePriceId: i.stripe_price_id,
+        stripePriceMetadata: i.stripe_price_metadata,
         stripeProductId: i.stripe_product_id,
         userId: i.user_id,
       })) || []

@@ -22,12 +22,9 @@ export const getInitialsFromName = completeName => {
   );
 };
 
-export const formatDate = (moment, format) => {
+export const formatDate = (moment, format = 'LL') => {
   moment.locale(localStorage.getItem('i18nextLng'));
-  if (format) {
-    return moment.format(format);
-  }
-  return moment.format('LL');
+  return moment.format(format);
 };
 
 export const getEntityTypeName = type => {

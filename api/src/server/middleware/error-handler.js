@@ -6,8 +6,6 @@ module.exports = async (ctx, next) => {
   } catch ({ message }) {
     const error = errors[message] || errors[ERROR_ENUM.ERROR_OCCURED];
 
-    console.log({ error });
-
     if (process.env.NODE_ENV !== 'development') {
       ctx.status = error.code;
       ctx.body = {

@@ -24,7 +24,7 @@ export default function AddOptionsEvent() {
 
   const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [display, setDisplay] = useState('');
 
   useEffect(() => {
@@ -40,30 +40,8 @@ export default function AddOptionsEvent() {
     setIsLoading(false);
   };
 
-  const onAdd = async values => {
-    setIsLoading(true);
-    const name = values[0].value;
-    const price = Number(values[1].value) * 100;
-    const startTime = values[2].value;
-    const endTime = values[3].value;
-    if (startTime >= endTime) {
-      setDisplay(t('registration_closes_before_opening'));
-      setOpen(true);
-      setIsLoading(false);
-      return;
-    }
-
-    const res = await api(`/api/entity/option`, {
-      method: 'POST',
-      body: JSON.stringify({
-        eventId,
-        name,
-        price,
-        endTime,
-        startTime,
-      }),
-    });
-    if (res.status === 400) {
+  const onAdd = async status => {
+    if (status === 400) {
       setDisplay(t('payment_option_exist'));
       setOpen(true);
       setIsLoading(false);
@@ -106,6 +84,14 @@ export default function AddOptionsEvent() {
     },
   ];
 
+  if (isLoading) {
+    return (
+      <Paper title={t('add_payment_options')}>
+        <CircularProgress />
+      </Paper>
+    );
+  }
+
   return (
     <Paper title={t('add_payment_options')}>
       <Container className={styles.container}>
@@ -115,16 +101,10 @@ export default function AddOptionsEvent() {
             items={{ fields, option, onDelete }}
           />
         ))}
-        {isLoading ? (
-          <div className={styles.card}>
-            <CircularProgress className={styles.progress} />
-          </div>
-        ) : (
-          <Card
-            items={{ fields, onAdd }}
-            type={CARD_TYPE_ENUM.ADD_PAYMENT_OPTION}
-          />
-        )}
+        <Card
+          items={{ fields, onAdd }}
+          type={CARD_TYPE_ENUM.ADD_PAYMENT_OPTION}
+        />
 
         <Snackbar
           open={open}
