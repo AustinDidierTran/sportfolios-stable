@@ -72,9 +72,10 @@ export default function TabEventInfo() {
       }),
     );
     if (!data.maximum_spots) {
-      return false;
+      setIsFull(false);
+    } else {
+      setIsFull(teams.length >= data.maximum_spots);
     }
-    setIsFull(teams.length >= data.maximum_spots);
   };
 
   if (options.length < 1) {

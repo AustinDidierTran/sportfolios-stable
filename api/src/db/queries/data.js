@@ -12,6 +12,7 @@ const {
 const globalSearch = async (user_id, query, typeProps, blackList) => {
   const type = Number(typeProps);
   let entities;
+
   if (type === GLOBAL_ENUM.PERSON) {
     const res = await getPersonsFromQuery(query, blackList);
     entities = res.map(r => ({ ...r, type }));
