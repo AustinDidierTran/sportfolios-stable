@@ -17,6 +17,7 @@ import styles from './ManageRoles.module.css';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import AddAdmins from './AddAdmins';
 import { getInitialsFromName } from '../../../utils/stringFormats';
+import { GLOBAL_ENUM } from '../../../../../common/enums';
 
 export default function ManageRoles() {
   const { t } = useTranslation();
@@ -24,6 +25,16 @@ export default function ManageRoles() {
   const { id: entity_id } = useParams();
 
   const [entities, setEntities] = useState([]);
+  const [entity, setEntity] = useState([]);
+
+  const getEntity = async () => {
+    const res = await api(`/api/entity?id=${entity_id}`);
+    setEntity(res.data);
+  };
+
+  useEffect(() => {
+    getEntity();
+  }, [entity_id]);
 
   const updateEntities = async () => {
     const res = await api(`/api/entity/roles?id=${entity_id}`);
@@ -45,9 +56,21 @@ export default function ManageRoles() {
   );
 
   const updateRole = async (entity_id_admin, role) => {
+    if ((entity.type = GLOBAL_ENUM.PERSON)) {
+      await api(`/api/entity/role`, {
+        method: 'PUT',
+        body: JSON.stringify({
+          entity_id,
+          entity_id_admin,
+          role,
+        }),
+      });
+      return;
+    }
     const arr = entities.filter(
       e => e.role === ENTITIES_ROLE_ENUM.ADMIN,
     );
+
     if (
       arr.length < 2 &&
       arr[0].entity_id_admin === entity_id_admin
