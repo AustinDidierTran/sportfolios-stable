@@ -112,6 +112,7 @@ export default {
     ranking: 'Ranking',
     refund: 'Refund',
     registration_status: 'Registration Status',
+    registrations_closed_for_now: 'Registrations are closed for now',
     registration_closes_before_opening:
       'Registration closes before opening',
     register: 'Register',
