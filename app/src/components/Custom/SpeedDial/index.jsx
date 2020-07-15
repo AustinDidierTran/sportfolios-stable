@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Backdrop from '@material-ui/core/Backdrop';
 import SpeedDial from '@material-ui/lab/SpeedDial';
@@ -6,10 +6,11 @@ import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import { useLocation } from 'react-router-dom';
 
-import { GLOBAL_ENUM, VIEW_ENUM } from '../../../../common/enums';
-import { goTo, ROUTES } from '../../actions/goTo';
+import { GLOBAL_ENUM, VIEW_ENUM } from '../../../../../common/enums';
+import { goTo, ROUTES } from '../../../actions/goTo';
 
-import { Icon } from '../../components/Custom';
+import { Icon } from '..';
+import { useMemo } from 'react';
 
 const useStyles = makeStyles(theme => ({
   speedDial: {
@@ -27,18 +28,16 @@ const useStyles = makeStyles(theme => ({
 export default function SpeedDialTooltipOpen() {
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [actions, setActions] = useState([]);
 
   const classes = useStyles();
   const location = useLocation();
 
-  const getActions = () => {
-    var acts = [];
-
+  const actions = useMemo(() => {
     const path = location.pathname.split('/')[1] || '';
     switch (path) {
       case VIEW_ENUM.CART:
-        acts = [
+        setHidden(false);
+        return [
           {
             icon: 'PeopleIcon',
             name: 'CART',
@@ -48,11 +47,9 @@ export default function SpeedDialTooltipOpen() {
             },
           },
         ];
-        setHidden(false);
-        break;
-
       case VIEW_ENUM.MENU:
-        acts = [
+        setHidden(false);
+        return [
           {
             icon: 'Business',
             name: 'MENU',
@@ -62,15 +59,14 @@ export default function SpeedDialTooltipOpen() {
             },
           },
         ];
-        setHidden(false);
         break;
 
       case VIEW_ENUM.ORGANIZATION_LIST:
         setHidden(true);
-        break;
-
+        return [];
       default:
-        acts = [
+        setHidden(false);
+        return [
           {
             icon: 'Event',
             name: 'Event',
@@ -98,14 +94,7 @@ export default function SpeedDialTooltipOpen() {
             },
           },
         ];
-        setHidden(false);
-        break;
     }
-    setActions(acts);
-  };
-
-  useEffect(() => {
-    getActions();
   }, [location]);
 
   return (
