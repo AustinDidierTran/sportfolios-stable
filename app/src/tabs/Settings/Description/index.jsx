@@ -33,6 +33,7 @@ export default function Description() {
     );
     if (data.description) {
       setText(decodeURIComponent(data.description));
+      setTemp(decodeURIComponent(data.description));
     } else {
       setText(null);
     }
@@ -75,25 +76,29 @@ export default function Description() {
           defaultValue={text}
           onChange={onChange}
         />
-        <Button
-          size="small"
-          variant="contained"
-          endIcon="Check"
-          style={{ margin: '8px' }}
-          onClick={onSave}
-        >
-          {t('save')}
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="secondary"
-          endIcon="Close"
-          style={{ margin: '8px' }}
-          onClick={onCancel}
-        >
-          {t('cancel')}
-        </Button>
+        <div className={styles.buttons}>
+          <Button
+            className={styles.save}
+            size="small"
+            variant="contained"
+            endIcon="Check"
+            style={{ margin: '8px' }}
+            onClick={onSave}
+          >
+            {t('save')}
+          </Button>
+          <Button
+            className={styles.cancel}
+            size="small"
+            variant="contained"
+            color="secondary"
+            endIcon="Close"
+            style={{ margin: '8px' }}
+            onClick={onCancel}
+          >
+            {t('cancel')}
+          </Button>
+        </div>
       </Paper>
     );
   }
