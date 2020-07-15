@@ -12,6 +12,7 @@ import CountrySelect from './CountrySelect';
 import CurrencySelect from './CurrencySelect';
 import api from '../../../../actions/api';
 import { formatRoute } from '../../../../actions/goTo';
+import { hasXDigits } from '../../../../utils/validators';
 
 export default function ExternalAccountForm(props) {
   const { t } = useTranslation();
@@ -27,7 +28,8 @@ export default function ExternalAccountForm(props) {
       country,
       currency,
       accountHolderName,
-      routingNumber,
+      transitNumber,
+      institutionNumber,
       accountNumber,
     } = values;
 
@@ -40,22 +42,41 @@ export default function ExternalAccountForm(props) {
     if (!accountHolderName) {
       errors.accountHolderName = t('value_is_required');
     }
-    if (!routingNumber) {
-      errors.routingNumber = t('value_is_required');
-    } else if (!isANumber(routingNumber)) {
-      errors.routingNumber = t('value_must_be_numeric');
+
+    if (!isANumber(transitNumber)) {
+      errors.transitNumber = t('value_must_be_numeric');
+    } else if (hasXDigits(transitNumber, 5)) {
+      errors.transitNumber = t('value_must_have_x_digits', {
+        digits: 5,
+      });
     }
+
+    if (!isANumber(institutionNumber)) {
+      errors.institutionNumber = t('value_must_be_numeric');
+    } else if (hasXDigits(institutionNumber, 5)) {
+      errors.institutionNumber = t('value_must_have_x_digits', {
+        digits: 5,
+      });
+    }
+
     if (!accountNumber) {
       errors.accountNumber = t('value_is_required');
     } else if (!isANumber(accountNumber)) {
       errors.accountNumber = t('value_must_be_numeric');
+    } else if (hasXDigits(accountNumber, 7)) {
+      errors.transitNumber = t('value_must_have_x_digits', {
+        digits: 7,
+      });
     }
 
     return errors;
   };
 
   const formik = useFormik({
-    initialValues: {},
+    initialValues: {
+      country: 'CA',
+      currency: 'CAD',
+    },
     validate,
     validateOnChange: false,
     validateOnBlur: true,
@@ -67,17 +88,18 @@ export default function ExternalAccountForm(props) {
           currency,
           accountHolderName,
           accountNumber,
-          routingNumber,
+          transitNumber,
+          institutionNumber,
         } = values;
 
         const params = {
           country: country,
           currency: currency,
-          account_holder_name: accountHolderName,
-          account_holder_type: 'individual',
-          routing_number: routingNumber,
-          account_number: accountNumber,
-          id: id,
+          accountHolderName: accountHolderName,
+          transitNumber,
+          institutionNumber,
+          accountNumber,
+          id,
         };
         const res = await api('/api/stripe/externalAccount', {
           method: 'POST',
@@ -86,11 +108,14 @@ export default function ExternalAccountForm(props) {
 
         if (res.status === 403) {
           // There has been an error with Stripe, handle it
+
+          console.log('res', res);
         } else {
           setIsSubmitting(false);
           setNext(true);
         }
       } catch (err) {
+        console.log(err);
         setIsSubmitting(false);
         throw err;
       }
@@ -127,17 +152,24 @@ export default function ExternalAccountForm(props) {
             fullWidth
           />
           <TextField
-            namespace="routingNumber"
+            namespace="transitNumber"
             formik={formik}
-            type="routingNumber"
-            label="Routing Number"
+            type="number"
+            label={t('transit_number')}
+            fullWidth
+          />
+          <TextField
+            namespace="institutionNumber"
+            formik={formik}
+            type="number"
+            label={t('institution_number')}
             fullWidth
           />
           <TextField
             namespace="accountNumber"
             formik={formik}
             type="accountNumber"
-            label="Account Number"
+            label={t('account_number')}
             fullWidth
           />
         </div>

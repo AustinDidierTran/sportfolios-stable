@@ -5,10 +5,10 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const knex = require('../../connection');
 const stripeEnums = require('./enums');
 const { BUSINESS_TYPE_ENUM, TEST_EXTERNAL_ACCOUNT } = stripeEnums;
+const { stripeLogger } = require('../../../server/utils/logger');
 const {
-  stripeErrorLogger,
-  stripeLogger,
-} = require('../../../server/utils/logger');
+  fillWithZeros,
+} = require('../../../../../common/utils/stringFormat');
 
 const getStripeAccount = async senderId => {
   const [account = {}] = await knex('stripe_accounts')
@@ -105,48 +105,56 @@ const createAccountLink = async props => {
   return stripe.accountLinks.create(params);
 };
 
-const createExternalAccount = async (body, user_id, ip) => {
-  let returnCode = { status: 200 };
-  const organizationId = body.id;
+const createExternalAccount = async (body, ip) => {
+  const {
+    accountHolderName,
+    id,
+    country,
+    currency,
+    transitNumber,
+    institutionNumber,
+    accountNumber,
+  } = body;
+
+  const organizationId = id;
   const accountId = await getOrCreateStripeConnectedAccountId(
     organizationId,
     ip,
   );
+
+  const routingNumber = `${fillWithZeros(
+    transitNumber,
+    5,
+  )}-${fillWithZeros(institutionNumber, 3)}`;
+
   const params = {
     bank_account: {
-      country: body.country,
-      currency: body.currency,
-      account_holder_name: body.account_holder_name,
+      country: country,
+      currency: currency,
+      account_holder_name: accountHolderName,
       account_holder_type: 'company',
-      routing_number: body.routing_number,
-      account_number: body.account_number,
+      routing_number: routingNumber,
+      account_number: accountNumber,
     },
   };
-  try {
-    const token = await stripe.tokens.create(params);
-    const account = await stripe.accounts.createExternalAccount(
-      accountId,
-      {
-        external_account: token.id,
-      },
-    );
+  let token;
+  token = await stripe.tokens.create(params);
+  const account = await stripe.accounts.createExternalAccount(
+    accountId,
+    {
+      external_account: token.id,
+    },
+  );
 
-    await knex('stripe_accounts')
-      .update({
-        bank_account_id: account.id,
-        last4: account.last4,
-      })
-      .where({ account_id: account.account });
+  await knex('stripe_accounts')
+    .update({
+      bank_account_id: account.id,
+      last4: account.last4,
+    })
+    .where({ account_id: account.account });
 
-    stripeLogger('External Account Created', account.id);
-    return { status: 200, data: account.id };
-  } catch (error) {
-    if (error) {
-      stripeErrorLogger('ERROR: Account Token NOT CREATED');
-      returnCode = { status: 403, error };
-      return returnCode;
-    }
-  }
+  stripeLogger('External Account Created', account.id);
+  return { status: 200, data: account.id };
 };
 
 module.exports = {
