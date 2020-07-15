@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Paper, Avatar, Select } from '../../../components/Custom';
@@ -16,6 +16,7 @@ import api from '../../../actions/api';
 import styles from './ManageRoles.module.css';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import AddAdmins from './AddAdmins';
+import { getInitialsFromName } from '../../../utils/stringFormats';
 
 export default function ManageRoles() {
   const { t } = useTranslation();
@@ -38,10 +39,15 @@ export default function ManageRoles() {
     updateEntities();
   }, []);
 
+  const blackList = useMemo(
+    () => entities.map(entity => entity.entity_id_admin),
+    [entities],
+  );
+
   const updateRole = async (entity_id_admin, role) => {
-    const arr = entities.filter(e => {
-      return e.role === ENTITIES_ROLE_ENUM.ADMIN;
-    });
+    const arr = entities.filter(
+      e => e.role === ENTITIES_ROLE_ENUM.ADMIN,
+    );
     if (
       arr.length < 2 &&
       arr[0].entity_id_admin === entity_id_admin
@@ -81,7 +87,6 @@ export default function ManageRoles() {
     { display: t('editor'), value: ENTITIES_ROLE_ENUM.EDITOR },
     { display: t('none'), value: ENTITIES_ROLE_ENUM.VIEWER },
   ];
-
   return (
     <Paper title={t('admins')}>
       {entities.map((entity, index) => [
@@ -95,7 +100,14 @@ export default function ManageRoles() {
             className={styles.item}
           >
             <ListItemIcon>
-              <Avatar photoUrl={entity.photoUrl} />
+              <Avatar
+                photoUrl={entity.photoUrl}
+                initials={getInitialsFromName(
+                  entity.surname
+                    ? `${entity.name} ${entity.surname}`
+                    : entity.name,
+                )}
+              />
             </ListItemIcon>
             {entity.surname ? (
               <ListItemText
@@ -120,7 +132,7 @@ export default function ManageRoles() {
         </List>,
       ])}
       <hr />
-      <AddAdmins onClick={onClick} />
+      <AddAdmins onClick={onClick} blackList={blackList} />
     </Paper>
   );
 }

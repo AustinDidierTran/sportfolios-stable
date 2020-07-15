@@ -75,11 +75,19 @@ export default function TeamRegistered() {
         <Table>
           <TableHead>
             <TableRow>
-              <StyledTableCell>
-                {t('registration_status')}:&nbsp;
-                {teams.length}/{maximumSpots}&nbsp;
-                {t('registered')}
-              </StyledTableCell>
+              {maximumSpots ? (
+                <StyledTableCell>
+                  {t('registration_status')}:&nbsp;
+                  {teams.length}/{maximumSpots}&nbsp;
+                  {t('registered')}
+                </StyledTableCell>
+              ) : (
+                <StyledTableCell>
+                  {t('registration_status')}:&nbsp;
+                  {teams.length}&nbsp;
+                  {t('registered')}
+                </StyledTableCell>
+              )}
               <StyledTableCell />
               <StyledTableCell />
             </TableRow>

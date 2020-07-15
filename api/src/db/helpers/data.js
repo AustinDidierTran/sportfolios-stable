@@ -10,8 +10,8 @@ const addQueryToRecentSearches = async (user_id, search_query) => {
     .returning('*');
 };
 
-const getEntitiesFromQuery = async query => {
-  return knex('entities')
+const getEntitiesFromQuery = async (query, blackList) => {
+  const entities = await knex('entities')
     .select(
       'id',
       'type',
@@ -32,7 +32,15 @@ const getEntitiesFromQuery = async query => {
       'entities_name.entity_id',
     )
     .where('entities_name.name', 'ILIKE', `%${query}%`)
-    .orWhere('entities_name.surname', 'ILIKE', `%${query}%`);
+    .orWhere('entities_name.surname', 'ILIKE', `%${query}%`)
+    .limit(10);
+
+  if (!blackList || blackList === undefined) {
+    return entities;
+  }
+
+  const parsed = JSON.parse(blackList);
+  return entities.filter(e => !parsed.includes(e.id));
 };
 
 const getPersonsFromQuery = async (query, blackList) => {

@@ -8,7 +8,13 @@ import { useFormInput } from '../../../hooks/forms';
 import { InputAdornment } from '@material-ui/core';
 
 export default function SearchList(props) {
-  const { blackList, label, onClick, type } = props;
+  const {
+    blackList,
+    label,
+    onClick,
+    type,
+    rejectedTypes = [],
+  } = props;
 
   const query = useFormInput('');
 
@@ -27,7 +33,10 @@ export default function SearchList(props) {
   });
 
   const options = useMemo(
-    () => response.entities.map(e => ({ ...e, onClick })),
+    () =>
+      response.entities
+        .filter(entity => !rejectedTypes.includes(entity.type))
+        .map(e => ({ ...e, onClick })),
     [response],
   );
 
