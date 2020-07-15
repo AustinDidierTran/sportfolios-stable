@@ -49,7 +49,9 @@ export default function Description() {
 
   return (
     <Paper title="Description">
-      <Typography>{t('no_description')}</Typography>
+      <Typography style={{ margin: '8px' }}>
+        {t('no_description')}
+      </Typography>
     </Paper>
   );
 }
