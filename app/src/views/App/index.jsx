@@ -49,7 +49,7 @@ import PrivateRoute from './PrivateRoute';
 import { ROUTES } from '../../actions/goTo';
 import { Store } from '../../Store';
 import conf from '../../../../conf';
-import SpeedDial from '../../utils/SpeedDial';
+import { SpeedDial } from '../../components/Custom';
 export default function App() {
   const {
     state: {
