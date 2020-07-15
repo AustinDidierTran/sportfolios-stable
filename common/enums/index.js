@@ -49,6 +49,13 @@ const REGISTRATION_STATUS_ENUM = {
   REFUSED: 'refused',
 };
 
+const VIEW_ENUM = {
+  MENU: 'menu',
+  HOME: '',
+  CART: 'cart',
+  ORGANIZATION_LIST: 'organizationList',
+};
+
 // Everything excluding roles
 const GLOBAL_ENUM = {
   PERSON: 1,
@@ -84,4 +91,5 @@ module.exports = {
   MEMBERSHIP_LENGTH_ENUM,
   MEMBERSHIP_TYPE_ENUM,
   STRIPE_STATUS_ENUM,
+  VIEW_ENUM,
 };
