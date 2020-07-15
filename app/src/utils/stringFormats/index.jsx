@@ -22,6 +22,11 @@ export const getInitialsFromName = completeName => {
   );
 };
 
+export const formatDate = moment => {
+  moment.locale(localStorage.getItem('i18nextLng'));
+  return moment.format('LL');
+};
+
 export const getEntityTypeName = type => {
   if (type === GLOBAL_ENUM.PERSON) {
     return 'person';
@@ -81,20 +86,23 @@ export const getMembershipUnit = type => {
 
 export const getExpirationDate = (length, fixed_date) => {
   if (length !== -1) {
-    return moment()
-      .add(getMembershipLength(length), getMembershipUnit(length))
-      .format('LL');
+    return formatDate(
+      moment().add(
+        getMembershipLength(length),
+        getMembershipUnit(length),
+      ),
+    );
   } else {
     if (
       moment(fixed_date).set('year', moment().get('year')) < moment()
     ) {
-      return moment(fixed_date)
-        .set('year', moment().get('year') + 1)
-        .format('LL');
+      return formatDate(
+        moment(fixed_date).set('year', moment().get('year') + 1),
+      );
     } else {
-      return moment(fixed_date)
-        .set('year', moment().get('year'))
-        .format('LL');
+      return formatDate(
+        moment(fixed_date).set('year', moment().get('year')),
+      );
     }
   }
 };

@@ -5,6 +5,7 @@ import { Typography } from '../../components/MUI';
 import { useTranslation } from 'react-i18next';
 import Description from './Description';
 import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
+import { formatDate } from '../../utils/stringFormats';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import moment from 'moment';
@@ -48,12 +49,12 @@ export default function TabEventInfo() {
     const startsDate = options.map(option =>
       moment(option.start_time),
     );
-    return moment.min(startsDate).format('LL');
+    return formatDate(moment.min(startsDate));
   }, [options]);
 
   const getRegistrationEnd = useMemo(() => {
     const endsDate = options.map(option => moment(option.end_time));
-    return moment.max(endsDate).format('LL');
+    return formatDate(moment.max(endsDate));
   }, [options]);
 
   useEffect(() => {
@@ -80,8 +81,7 @@ export default function TabEventInfo() {
         <p>These are tournament informations</p>
         <Description />
         <Typography>
-          {t('registrations_open_on')} &nbsp;
-          {getRegistrationStart}
+          {t('registrations_open_on')}&nbsp;{getRegistrationStart}
         </Typography>
       </Paper>
     );

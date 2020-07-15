@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './MembershipItem.module.css';
 import { goTo, ROUTES } from '../../../../actions/goTo';
 import { grey } from '@material-ui/core/colors';
+import { formatDate } from '../../../../utils/stringFormats';
 
 export default function MembershipItem(props) {
   const { t } = useTranslation();
@@ -35,7 +36,7 @@ export default function MembershipItem(props) {
               secondary={
                 <div>
                   <div>{t('valid_until')}:</div>
-                  <div>{expirationDate.format('LL')}</div>
+                  <div>{formatDate(expirationDate)}</div>
                 </div>
               }
             ></ListItemText>
@@ -44,7 +45,7 @@ export default function MembershipItem(props) {
               secondaryTypographyProps={{ color: 'primary' }}
               primary={name}
               secondary={`${t('valid_until')}:
-              ${expirationDate.format('LL')}`}
+              ${formatDate(expirationDate)}`}
             ></ListItemText>
           )}
 
