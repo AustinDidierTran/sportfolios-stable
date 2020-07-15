@@ -631,21 +631,25 @@ async function addTeamToEvent(
   status,
   registration_status,
 ) {
-  const [roster] = await knex('team_rosters')
-    .insert({ team_id: teamId })
-    .returning('*');
+  return knex.transaction(async trx => {
+    const [roster] = await knex('team_rosters')
+      .insert({ team_id: teamId })
+      .returning('*')
+      .transacting(trx);
 
-  const [res] = await knex('event_rosters')
-    .insert({
-      roster_id: roster.id,
-      team_id: teamId,
-      event_id: eventId,
-      invoice_id: invoiceId,
-      status,
-      registration_status,
-    })
-    .returning('*');
-  return res;
+    const [res] = await knex('event_rosters')
+      .insert({
+        roster_id: roster.id,
+        team_id: teamId,
+        event_id: eventId,
+        invoice_id: invoiceId,
+        status,
+        registration_status,
+      })
+      .returning('*')
+      .transacting(trx);
+    return res;
+  });
 }
 
 async function addRoster(rosterId, roster) {

@@ -1,6 +1,6 @@
 const { LOGGER_ENUM } = require('../../../../common/enums');
 
-const enabledEnums = [LOGGER_ENUM];
+const enabledEnums = [LOGGER_ENUM.STRIPE];
 
 const logger = (category, messages = [], type) => {
   if (enabledEnums.includes(category)) {

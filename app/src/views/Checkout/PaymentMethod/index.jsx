@@ -49,6 +49,7 @@ export default function CheckoutForm(props) {
     const { token } = await stripe.createToken(
       elements.getElement(CardElement),
     );
+
     const { address, email, phone } = customer.informations;
     const paymentMethodParams = {
       payment_method: {
