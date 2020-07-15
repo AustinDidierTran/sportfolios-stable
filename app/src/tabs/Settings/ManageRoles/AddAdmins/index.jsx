@@ -17,7 +17,7 @@ export default function AddAdmins(props) {
       query={query}
       onClick={onClick}
       blackList={blackList}
-      typeRejected={GLOBAL_ENUM.EVENT}
+      rejectedTypes={[GLOBAL_ENUM.EVENT]}
     />
   );
 }

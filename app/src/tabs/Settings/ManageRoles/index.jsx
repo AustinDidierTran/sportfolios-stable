@@ -39,14 +39,15 @@ export default function ManageRoles() {
     updateEntities();
   }, []);
 
-  const blackList = useMemo(() => {
-    return entities.map(entity => entity.entity_id_admin);
-  }, [entities]);
+  const blackList = useMemo(
+    () => entities.map(entity => entity.entity_id_admin),
+    [entities],
+  );
 
   const updateRole = async (entity_id_admin, role) => {
-    const arr = entities.filter(e => {
-      return e.role === ENTITIES_ROLE_ENUM.ADMIN;
-    });
+    const arr = entities.filter(
+      e => e.role === ENTITIES_ROLE_ENUM.ADMIN,
+    );
     if (
       arr.length < 2 &&
       arr[0].entity_id_admin === entity_id_admin
