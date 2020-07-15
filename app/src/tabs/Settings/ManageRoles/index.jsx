@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { Paper, Avatar, Select } from '../../../components/Custom';
@@ -24,7 +24,6 @@ export default function ManageRoles() {
   const { id: entity_id } = useParams();
 
   const [entities, setEntities] = useState([]);
-  const [blackList, setBlackList] = useState([]);
 
   const updateEntities = async () => {
     const res = await api(`/api/entity/roles?id=${entity_id}`);
@@ -40,14 +39,9 @@ export default function ManageRoles() {
     updateEntities();
   }, []);
 
-  useEffect(() => {
-    getBlackList();
+  const blackList = useMemo(() => {
+    return entities.map(entity => entity.entity_id_admin);
   }, [entities]);
-
-  const getBlackList = () => {
-    const res = entities.map(entity => entity.entity_id_admin);
-    setBlackList(res);
-  };
 
   const updateRole = async (entity_id_admin, role) => {
     const arr = entities.filter(e => {
@@ -87,10 +81,6 @@ export default function ManageRoles() {
     await updateEntities();
   };
 
-  const getInitials = (name, surname) => {
-    return getInitialsFromName(surname ? `${name} ${surname}` : name);
-  };
-
   const items = [
     { display: t('admin'), value: ENTITIES_ROLE_ENUM.ADMIN },
     { display: t('editor'), value: ENTITIES_ROLE_ENUM.EDITOR },
@@ -111,7 +101,11 @@ export default function ManageRoles() {
             <ListItemIcon>
               <Avatar
                 photoUrl={entity.photoUrl}
-                initials={getInitials(entity.name, entity.surname)}
+                initials={getInitialsFromName(
+                  entity.surname
+                    ? `${entity.name} ${entity.surname}`
+                    : entity.name,
+                )}
               />
             </ListItemIcon>
             {entity.surname ? (
