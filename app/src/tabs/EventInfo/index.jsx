@@ -72,15 +72,32 @@ export default function TabEventInfo() {
         eventId: id,
       }),
     );
-    setIsFull(teams.length >= data.maximum_spots);
+    if (!data.maximum_spots) {
+      setIsFull(false);
+    } else {
+      setIsFull(teams.length >= data.maximum_spots);
+    }
   };
+
+  if (options.length < 1) {
+    return (
+      <Paper title={t('info')}>
+        <p>These are tournament informations</p>
+        <Description />
+        <Typography style={{ margin: '16px' }}>
+          {t('registrations_closed_for_now')}
+        </Typography>
+      </Paper>
+    );
+  }
 
   if (isEarly) {
     return (
       <Paper title={t('info')}>
         <p>These are tournament informations</p>
         <Description />
-        <Typography>
+
+        <Typography style={{ margin: '16px' }}>
           {t('registrations_open_on')}&nbsp;{getRegistrationStart}
         </Typography>
       </Paper>
@@ -92,7 +109,7 @@ export default function TabEventInfo() {
       <Paper title={t('info')}>
         <p>These are tournament informations</p>
         <Description />
-        <Typography>
+        <Typography style={{ margin: '16px' }}>
           {t('registrations_ended')}&nbsp;{getRegistrationEnd}
         </Typography>
       </Paper>
@@ -104,7 +121,9 @@ export default function TabEventInfo() {
       <Paper title={t('info')}>
         <p>These are tournament informations</p>
         <Description />
-        <Typography>{t('event_is_full')}</Typography>
+        <Typography style={{ margin: '16px' }}>
+          {t('event_is_full')}
+        </Typography>
       </Paper>
     );
   }
@@ -117,7 +136,7 @@ export default function TabEventInfo() {
         size="small"
         variant="contained"
         endIcon="SupervisedUserCircle"
-        style={{ margin: '8px' }}
+        style={{ margin: '16px' }}
         onClick={goToRegistration}
       >
         {t('register')}

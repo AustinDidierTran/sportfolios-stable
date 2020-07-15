@@ -17,6 +17,7 @@ export { default as RadioGroup } from './RadioGroup';
 export { default as SearchInput } from './SearchInput';
 export { default as SearchList } from './SearchList';
 export { default as Select } from './Select';
+export { default as SpeedDial } from './SpeedDial';
 export { default as Stepper } from './Stepper';
 export { default as StepperWithHooks } from './StepperWithHooks';
 export { default as Table } from './Table';

@@ -22,6 +22,7 @@ export default {
     basic_info: 'Information générales',
     birth_date: 'Date de naissance',
     birth_date_format: '{{date, LL}} ({{age}} ans)',
+    canadian_dollar: 'Dollar Canadien',
     change_password: 'Changer votre mot de passe',
     contact_us: 'Contactez-nous',
     contact: 'Contact',
@@ -81,6 +82,7 @@ export default {
     new_email: 'Nouveau courriel',
     new_organization: 'Nouvelle Organisation',
     new_team: 'Nouvelle Équipe',
+    none: 'Aucun',
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
     no_description: 'Aucune description',
     notifications: 'Notifications',
@@ -117,6 +119,7 @@ export default {
     registrations_ended: 'Inscriptions terminées le',
     registration_open: 'Ouverture inscription',
     registrations_open_on: 'Les inscriptions ouvrent le',
+    registrations_closed_for_now: 'Inscriptions fermées',
     registration_closes_before_opening:
       "Les inscription ferment avant d'ouvrir",
     registration_close: 'Fermeture inscription',
@@ -187,6 +190,9 @@ export default {
     name_is_required: 'Nom obligatoire',
     new_password: 'Nouveau mot de passe',
     old_password: 'Ancien mot de passe',
+    account_number: 'Numéro de compte',
+    institution_number: "Numéro d'institution",
+    transit_number: 'Numéro de transit',
     password_length:
       'Votre mot de passe doit contenir entre 8 et 16 caractères',
     password_must_match: 'Vos mots de passes doivent être identique',
@@ -195,6 +201,9 @@ export default {
     token_expired:
       "Le token n'est plus valide, svp en demander un autre.",
     value_is_required: 'Une valeur est obligatoire.',
+    value_must_have_x_digits:
+      'La valeur doit avoir {{digits}} chiffres.',
+
     value_must_be_numeric: 'La valeur doit être numérique.',
 
     value_is_too_long: 'La valeur est trop longue',

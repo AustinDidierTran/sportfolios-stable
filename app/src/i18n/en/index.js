@@ -16,6 +16,7 @@ export default {
     adress: 'Address',
     all_steps_completed: 'All Steps Completed',
     app_role: 'App Role',
+    canadian_dollar: 'Canadian Dollar',
     athlete_history: 'Athlete history',
     awaiting_payments: 'Awaiting payments',
     back: 'Back',
@@ -80,6 +81,7 @@ export default {
     new_organization: 'New organization',
     new_team: 'New team',
     next: 'Next',
+    none: 'None',
     no_account_signup: "Don't have an account? Signup!",
     no_description: 'No Description',
     notifications: 'Notifications',
@@ -111,6 +113,7 @@ export default {
     ranking: 'Ranking',
     refund: 'Refund',
     registration_status: 'Registration Status',
+    registrations_closed_for_now: 'Registrations are closed for now',
     registration_closes_before_opening:
       'Registration closes before opening',
     register: 'Register',
@@ -189,7 +192,12 @@ export default {
     something_went_wrong: 'Something went wrong, please try again',
     token_expired:
       'Token is no longer valid, please request a new one.',
+    account_number: 'Account number',
+    institution_number: 'Institution number',
+    transit_number: 'Transit number',
     value_is_required: 'Value is required.',
+    value_must_have_x_digits: 'Value must have {{digits}} digits.',
+
     value_must_be_numeric: 'Value must be a number.',
 
     value_is_too_long: 'Value is too long.',

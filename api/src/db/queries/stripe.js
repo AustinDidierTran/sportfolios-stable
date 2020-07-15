@@ -26,9 +26,9 @@ const getAccountLink = async (entity_id, ip) => {
   return createAccountLink({ entity_id, ip });
 };
 
-const addExternalAccount = async (body, userId, ip) => {
+const addExternalAccount = async (body, ip) => {
   //TODO: Add verification on authorizations ( isAdmin ?)
-  return createExternalAccount(body, userId, ip);
+  return createExternalAccount(body, ip);
 };
 
 const getStripeAccount = async entityId => {
