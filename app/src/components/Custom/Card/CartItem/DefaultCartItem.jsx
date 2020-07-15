@@ -11,6 +11,10 @@ import api from '../../../../actions/api';
 import { Store, ACTION_ENUM } from '../../../../Store';
 import { formatRoute } from '../../../../actions/goTo';
 import { useFormInput } from '../../../../hooks/forms';
+import { formatPrice } from '../../../../utils/stringFormats';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 const addCartItem = async params => {
   await api('/api/shop/addCartItem', {
@@ -104,8 +108,8 @@ export default function DefaultCartItem(props) {
         <Typography gutterBottom variant="h5" className={styles.name}>
           {name}
         </Typography>
-        <Typography variant="h5" className={styles.price}>
-          {price / 100}
+        <Typography variant="h6" className={styles.price}>
+          {formatPrice(price)}
         </Typography>
         <Typography
           variant="h6"
@@ -115,34 +119,29 @@ export default function DefaultCartItem(props) {
         >
           {description}
         </Typography>
-        <div className={styles.cartButton}>
-          <div className={styles.cartButtonChildren}>
-            <button
-              onClick={removeItem}
-              className={styles.cartButtonChildren}
-            >
-              -
-            </button>
-          </div>
-          <div className={styles.cartButtonChildren}>
-            <TextField
-              {...amount.inputProps}
-              onBlur={onNbBlur}
-              inputProps={{
-                min: 0,
-                style: { textAlign: 'center' },
-              }}
-            />
-          </div>
-          <div className={styles.cartButtonChildren}>
-            <button
-              onClick={addItem}
-              className={styles.cartButtonChildren}
-            >
-              +
-            </button>
-          </div>
-        </div>
+        <IconButton
+          color="primary"
+          onClick={removeItem}
+          className={styles.minus}
+        >
+          <RemoveIcon />
+        </IconButton>
+        <TextField
+          className={styles.quantity}
+          {...amount.inputProps}
+          onBlur={onNbBlur}
+          inputProps={{
+            min: 0,
+            style: { textAlign: 'center' },
+          }}
+        />
+        <IconButton
+          color="primary"
+          onClick={addItem}
+          className={styles.plus}
+        >
+          <AddIcon />
+        </IconButton>
       </CardContent>
     </Paper>
   );

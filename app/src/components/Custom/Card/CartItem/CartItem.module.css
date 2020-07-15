@@ -1,11 +1,9 @@
 .infos {
   display: grid !important;
-  grid-template-columns: 8fr 2fr;
-  grid-template-areas: 'name price' 'description description' 'cart cart';
-  padding-bottom: 16px !important;
-  border-bottom: 1px solid rgb(207, 207, 207);
-
-  margin-bottom: 8px;
+  grid-template-columns: 2fr 1fr 2fr 1fr 2fr;
+  grid-template-areas: 'name name name price price' 'description description description description description' '. minus quantity plus .' '. button button button .';
+  padding-bottom: 0px !important;
+  padding-top: 0px !important;
 }
 
 .name {
@@ -22,12 +20,6 @@
   grid-area: description;
 }
 
-.cart {
-  grid-area: cart;
-  margin: 16px !important;
-  display: flex;
-}
-
 .cartButton {
   grid-area: cart;
   flex: 1 1 auto;
@@ -37,10 +29,19 @@
   width: 100%;
 }
 
-.cartButtonChildren {
-  flex: 1 1 0;
-  height: fit-content;
-  width: fit-content;
+.minus {
+  grid-area: minus;
+}
+
+.plus {
+  grid-area: plus;
+}
+
+.quantity {
+  grid-area: quantity;
+}
+.button {
+  grid-area: button;
 }
 
 .media {
