@@ -28,6 +28,7 @@ import RemoveShoppingCart from '@material-ui/icons/RemoveShoppingCart';
 import Search from '@material-ui/icons/Search';
 import Settings from '@material-ui/icons/Settings';
 import ShoppingCart from '@material-ui/icons/ShoppingCart';
+import ShoppingCartOutlined from '@material-ui/icons/ShoppingCartOutlined';
 import SportsKabaddi from '@material-ui/icons/SportsKabaddi';
 import Store from '@material-ui/icons/Store';
 import SupervisedUserCircle from '@material-ui/icons/SupervisedUserCircle';
@@ -37,6 +38,7 @@ import ShareIcon from '@material-ui/icons/Share';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import EditIcon from '@material-ui/icons/Edit';
 import PeopleIcon from '@material-ui/icons/People';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
 const icons = {
   Add,
@@ -68,6 +70,7 @@ const icons = {
   Search,
   Settings,
   ShoppingCart,
+  ShoppingCartOutlined,
   SportsKabaddi,
   Store,
   SupervisedUserCircle,
@@ -76,6 +79,7 @@ const icons = {
   ShareIcon,
   FavoriteIcon,
   EditIcon,
+  AccountCircle,
 };
 
 export default function CustomIcon(props) {

@@ -1,16 +1,16 @@
 import React from 'react';
-import { ShoppingCartOutlined } from '../../MUI';
 import { goTo, ROUTES } from '../../../actions/goTo';
+import { Icon, IconButton } from '..';
 
 export default function CartIcon(props) {
   const { id } = props;
-  const onClick = () => {
-    goTo(ROUTES.cart, { id });
-  };
 
   return (
-    <div onClick={onClick}>
-      <ShoppingCartOutlined />
-    </div>
+    <IconButton
+      color="inherit"
+      onClick={() => goTo(ROUTES.entity, { id })}
+    >
+      <Icon icon="ShoppingCartOutlined" />
+    </IconButton>
   );
 }

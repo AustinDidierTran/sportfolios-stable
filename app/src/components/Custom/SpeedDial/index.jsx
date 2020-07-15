@@ -36,7 +36,7 @@ export default function SpeedDialTooltipOpen() {
     const path = location.pathname.split('/')[1] || '';
     switch (path) {
       case VIEW_ENUM.CART:
-        setHidden(false);
+        setHidden(true);
         return [
           {
             icon: 'PeopleIcon',
@@ -48,7 +48,7 @@ export default function SpeedDialTooltipOpen() {
           },
         ];
       case VIEW_ENUM.MENU:
-        setHidden(false);
+        setHidden(true);
         return [
           {
             icon: 'Business',
@@ -61,10 +61,7 @@ export default function SpeedDialTooltipOpen() {
         ];
         break;
 
-      case VIEW_ENUM.ORGANIZATION_LIST:
-        setHidden(true);
-        return [];
-      default:
+      case VIEW_ENUM.HOME:
         setHidden(false);
         return [
           {
@@ -94,6 +91,13 @@ export default function SpeedDialTooltipOpen() {
             },
           },
         ];
+
+      case VIEW_ENUM.ORGANIZATION_LIST:
+        setHidden(true);
+        return [];
+      default:
+        setHidden(true);
+        return [];
     }
   }, [location]);
 
