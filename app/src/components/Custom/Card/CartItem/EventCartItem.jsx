@@ -3,10 +3,9 @@ import React, { useContext } from 'react';
 import styles from './CartItem.module.css';
 
 import { Typography } from '../../../MUI';
-import { Paper, Button } from '../..';
+import { Paper, Button, CardMedia } from '../..';
 
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import { formatPrice } from '../../../../utils/stringFormats';
 import { useTranslation } from 'react-i18next';
 import api from '../../../../actions/api';
@@ -62,16 +61,7 @@ export default function EventCartItem(props) {
 
   return (
     <Paper>
-      {photoUrl ? (
-        <CardMedia className={styles.media} image={photoUrl} />
-      ) : (
-        <CardMedia
-          className={styles.media}
-          image={
-            'https://sportfolios-images.s3.amazonaws.com/development/images/entity/20200715-olixr-8317ff33-3b04-49a1-afd3-420202cddf73'
-          }
-        />
-      )}
+      <CardMedia className={styles.media} photoUrl={photoUrl} />
       <CardContent className={styles.infos}>
         <Typography gutterBottom variant="h5" className={styles.name}>
           {teamName}
