@@ -4,6 +4,7 @@ import styles from './Shop.module.css';
 import { formatRoute } from '../../actions/goTo';
 
 import { Container } from '../../components/MUI';
+import { FeatureContainer } from '../../components/Custom';
 import CustomCard from '../../components/Custom/Card';
 import { useEditor } from '../../hooks/roles';
 
@@ -11,6 +12,7 @@ import CreateItem from './CreateItem';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import { CARD_TYPE_ENUM } from '../../../../common/enums';
+import { FEATURE_FLAGS } from '../../../../common/flags';
 
 export default function Shop(props) {
   const [items, setItems] = useState([]);
@@ -33,17 +35,25 @@ export default function Shop(props) {
 
   return (
     <Container className={styles.items}>
-      <div>
-        {isEditor ? <CreateItem fetchItems={fetchShopItems} /> : null}
-        {items.map(item => {
-          return (
-            <CustomCard
-              items={{ ...item, setItems }}
-              type={CARD_TYPE_ENUM.SHOP}
-            />
-          );
-        })}
-      </div>
+      <FeatureContainer
+        className={styles.feature}
+        feature={FEATURE_FLAGS.SHOP}
+        options={{ displayComingSoon: true }}
+      >
+        <div>
+          {isEditor ? (
+            <CreateItem fetchItems={fetchShopItems} />
+          ) : null}
+          {items.map(item => {
+            return (
+              <CustomCard
+                items={{ ...item, setItems }}
+                type={CARD_TYPE_ENUM.SHOP}
+              />
+            );
+          })}
+        </div>
+      </FeatureContainer>
     </Container>
   );
 }
