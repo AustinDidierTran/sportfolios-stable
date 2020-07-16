@@ -8,14 +8,16 @@ import Review from './Review';
 import Stepper from './Stepper';
 import { useState } from 'react';
 import ChoosePaymentMethod from './ChoosePaymentMethod';
+import { useFormInput } from '../../hooks/forms';
 
 export default function Checkout() {
   const { t } = useTranslation();
   const [next, setNext] = useState(false);
+  const paymentMethod = useFormInput();
   const steps = [
     {
       label: t('payment_method'),
-      content: <ChoosePaymentMethod />,
+      content: <ChoosePaymentMethod paymentMethod={paymentMethod} />,
     },
     {
       label: t('review'),
@@ -29,7 +31,7 @@ export default function Checkout() {
         steps={steps}
         next={next}
         setNext={setNext}
-        showButtons={false}
+        showButtons={true}
       />
     </Container>
   );

@@ -24,6 +24,7 @@ export default {
     basic_info: 'Basic Info',
     birth_date_format: '{{date, LL}} ({{age}} years old)',
     birth_date: 'Birth date',
+    card_ending_with: 'Card ending with {{last4}}',
     change_password: 'Change password',
     contact_us: 'Contact us',
     contact: 'Contact',
@@ -35,6 +36,8 @@ export default {
     created_by: 'Created by {{name}}',
     currency: 'Currency',
     delete: 'Delete',
+    select_payment_method: 'Select payment method',
+
     delete_confirmation_text: 'To delete, type {{name}}',
     donate: 'Donate',
     done: 'Done',
