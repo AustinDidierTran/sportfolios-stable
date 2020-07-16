@@ -15,7 +15,11 @@ export default function CustomIconButton(props) {
 
   return (
     <Tooltip title={tooltip}>
-      <IconButton size={size} onClick={onClick}>
+      <IconButton
+        style={{ color: '#fff' }}
+        size={size}
+        onClick={onClick}
+      >
         <Icon icon={icon} />
       </IconButton>
     </Tooltip>

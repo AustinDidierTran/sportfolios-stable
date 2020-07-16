@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Container, Paper } from '../../components/Custom';
+import { Container } from '../../components/Custom';
 import styles from './ConfirmationEmailSent.module.css';
 
 export default function ConfirmationEmailSent(props) {
@@ -15,15 +15,9 @@ export default function ConfirmationEmailSent(props) {
   return (
     <div className={styles.main}>
       <Container>
-        <Paper
-          style={{
-            width: '100%',
-            paddingLeft: '16px',
-            marginTop: '32px',
-          }}
-        >
+        <div className={styles.container}>
           <p>{t('email_confirmed', { email })}</p>
-        </Paper>
+        </div>
       </Container>
     </div>
   );

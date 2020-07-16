@@ -108,7 +108,7 @@ export default function SpeedDialTooltipOpen() {
         ariaLabel="SpeedDial"
         className={classes.speedDial}
         hidden={hidden}
-        icon={<SpeedDialIcon />}
+        icon={<SpeedDialIcon style={{ color: '#fff' }} />}
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}
         open={open}
