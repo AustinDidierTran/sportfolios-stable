@@ -3,12 +3,13 @@ const {
   addPrice,
   addProduct,
   checkout: checkoutHelper,
+  createCustomer,
   createAccountLink,
   createExternalAccount,
   createInvoice,
   createInvoiceItem,
   createItem: createItemHelper,
-  createPaymentMethod,
+  createPaymentMethod: createPaymentMethodHelper,
   createRefund: createRefundHelper,
   finalizeInvoice: finalizeInvoiceHelper,
   getCustomer: getCustomerHelper,
@@ -19,6 +20,7 @@ const {
   hasStripeAccount: hasStripeAccountHelper,
   hasStripeBankAccount: hasStripeBankAccountHelper,
   payInvoice: payInvoiceHelper,
+  getPaymentMethods: getPaymentMethodsHelper,
   removePaymentMethodCustomer,
 } = require('../helpers/stripe');
 
@@ -40,6 +42,10 @@ const hasStripeAccount = async entityId => {
 };
 const hasStripeBankAccount = async entityId => {
   return hasStripeBankAccountHelper(entityId);
+};
+
+const getPaymentMethods = async userId => {
+  return getPaymentMethodsHelper(userId);
 };
 
 const getCustomerId = async (body, userId) => {
@@ -70,8 +76,19 @@ const payInvoice = async (body, userId) => {
   return payInvoiceHelper(body, userId);
 };
 
-const paymentMethod = async (body, userId) => {
-  return createPaymentMethod(body, userId);
+const createPaymentMethod = async (body, userId) => {
+  const paymentMethodId = await createPaymentMethodHelper(
+    body,
+    userId,
+  );
+
+  const customerId = await createCustomer(
+    body,
+    userId,
+    paymentMethodId,
+  );
+
+  return customerId;
 };
 
 const attachPaymentMethod = async (body, userId) => {
@@ -122,10 +139,11 @@ module.exports = {
   getAccountLink,
   getCustomer,
   getCustomerId,
+  getPaymentMethods,
   getReceipt,
   getStripeAccount,
   hasStripeAccount,
   hasStripeBankAccount,
   payInvoice,
-  paymentMethod,
+  createPaymentMethod,
 };

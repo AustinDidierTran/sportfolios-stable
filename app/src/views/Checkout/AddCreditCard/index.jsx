@@ -9,7 +9,7 @@ import { Button } from '../../../components/MUI';
 import api from '../../../actions/api';
 import { useFormInput } from '../../../hooks/forms';
 import { TextField } from '@material-ui/core';
-import styles from './PaymentMethod.module.css';
+import styles from './AddCreditCard.module.css';
 import CardSection from '../../../utils/stripe/Payment/CardSection';
 
 export async function getCustomer() {

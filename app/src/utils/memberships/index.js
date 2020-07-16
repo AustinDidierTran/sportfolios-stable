@@ -12,9 +12,7 @@ export const addMembership = async (personId, stripePriceId) => {
       stripePriceId,
     }),
   });
-  goTo(ROUTES.cart, {
-    id: personId,
-  });
+  goTo(ROUTES.cart);
 };
 
 export const getMemberships = async entityId => {
@@ -53,9 +51,7 @@ export const updateMembership = async (
       stripePriceId,
     }),
   });
-  goTo(ROUTES.cart, {
-    id: personId,
-  });
+  goTo(ROUTES.cart);
 };
 
 export const getExpirationDate = (length, fixedDate) => {

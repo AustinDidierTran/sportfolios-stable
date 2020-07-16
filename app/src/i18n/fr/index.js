@@ -5,6 +5,8 @@ export default {
     acceptation: 'Acceptation',
     add_admin: 'Ajouter admin',
     add_editor: 'Ajouter éditeur',
+    add_payment_method: 'Ajouter une option de paiement',
+
     add_payment_options: 'Ajouter des options',
     add_to_cart: 'Ajouter au panier',
     add_existing_person: 'Ajouter une personne existante',
@@ -23,6 +25,8 @@ export default {
     birth_date: 'Date de naissance',
     birth_date_format: '{{date, LL}} ({{age}} ans)',
     canadian_dollar: 'Dollar Canadien',
+    card_ending_with: 'Carte finissant avec {{last4}}',
+
     change_password: 'Changer votre mot de passe',
     contact_us: 'Contactez-nous',
     contact: 'Contact',
@@ -83,6 +87,8 @@ export default {
     new_organization: 'Nouvelle Organisation',
     new_team: 'Nouvelle Équipe',
     none: 'Aucun',
+    no_payment_method:
+      "Il n'y a actuellement aucune méthode de paiement",
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
     no_description: 'Aucune description',
     notifications: 'Notifications',
@@ -147,9 +153,10 @@ export default {
     viewer: 'Visiteur',
     your_upcoming_events: 'Vos prochains événements',
     personnal_information: 'Information personnelle',
-    payment_method: 'Méthode de paiment',
+    payment_method: 'Méthode de paiement',
     review: 'Passer en revue et payer',
     name: 'Nom',
+    select_payment_method: 'Sélectionner une méthode de paiement',
     email: 'Courriel',
     phone_number: 'Numéro de téléphone',
     line1: 'Ligne 1',

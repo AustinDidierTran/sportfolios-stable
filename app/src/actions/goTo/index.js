@@ -2,13 +2,14 @@ import history from '../../stores/history';
 import { getFormattedMailTo } from '../../utils/stringFormats';
 
 export const ROUTES = {
+  addPaymentMethod: '/addPaymentMethod',
   adminPanel: '/adminPanel',
   confirmationEmailSent: '/confirmationEmailSent/:email',
   confirmEmail: '/confirmEmail/:token',
   confirmEmailFailure: '/ConfirmEmailFailure',
   confirmEmailSuccess: '/confirmEmailSuccess',
-  cart: '/cart/:id',
-  checkout: '/checkout/:id',
+  cart: '/cart',
+  checkout: '/checkout',
   create: '/create',
   createOrganization: '/organization/create',
   createPerson: '/person/create',

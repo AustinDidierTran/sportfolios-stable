@@ -14,6 +14,19 @@ const INVOICE_STATUS_ENUM = {
   VOID: 'void',
 };
 
+const PAYMENT_METHOD_TYPE_ENUM = {
+  AU_BECS_DEBIT: 'au_becs_debit',
+  BACS_DEBIT: 'bacs_debit',
+  BANCONTACT: 'bancontact',
+  CARD: 'card',
+  EPS: 'eps',
+  FPX: 'fpx',
+  GIROPAY: 'giropay',
+  IDEAL: 'ideal',
+  P24: 'p24',
+  SEPA_DEBIT: 'sepa_debit',
+};
+
 const TEST_EXTERNAL_ACCOUNT = {
   CA: {
     PAYOUT_SUCCEED: {
@@ -64,5 +77,6 @@ const TEST_EXTERNAL_ACCOUNT = {
 module.exports = {
   BUSINESS_TYPE_ENUM,
   INVOICE_STATUS_ENUM,
+  PAYMENT_METHOD_TYPE_ENUM,
   TEST_EXTERNAL_ACCOUNT,
 };
