@@ -79,7 +79,7 @@ export default function BasicInfo() {
   }, [formik.values.language]);
 
   return (
-    <Paper className={styles.card} title={t('basic_info')}>
+    <Paper className={styles.card}>
       <form className={styles.form} onSubmit={formik.handleSubmit}>
         <CardContent className={styles.inputs}>
           <Select
@@ -99,6 +99,7 @@ export default function BasicInfo() {
             variant="contained"
             className={styles.button}
             type="submit"
+            style={{ color: '#fff' }}
           >
             {t('save_basic_info')}
           </Button>

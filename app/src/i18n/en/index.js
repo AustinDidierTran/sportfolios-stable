@@ -198,6 +198,7 @@ export default {
     wrong_password: 'Wrong password. Please try again',
     invalid_date: 'Invalid date. It should follow: yyyy-mm-dd',
     date_in_future: 'Date is in the future',
+    or: 'OR',
     // DESCRIPTION CARD
     description_card_title: 'Improve your amateur sport experience.',
     description_card_first_point:
@@ -235,6 +236,8 @@ export default {
     follow: 'Follow',
     following: 'Following',
     follow_notification_text: ' is now following you.',
+    learn_more: 'Learn More',
+    close: 'Close',
 
     //LENGTH
     one_month: 'One Month',

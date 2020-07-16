@@ -80,7 +80,6 @@ export default function ChangePassword() {
   return (
     <Paper
       className={styles.card}
-      title={t('change_password')}
       childrenProps={{ className: styles.cardContent }}
     >
       <form onSubmit={formik.handleSubmit} className={styles.form}>
@@ -114,6 +113,7 @@ export default function ChangePassword() {
             variant="contained"
             className={styles.button}
             type="submit"
+            style={{ color: '#fff' }}
           >
             {t('change_password')}
           </Button>

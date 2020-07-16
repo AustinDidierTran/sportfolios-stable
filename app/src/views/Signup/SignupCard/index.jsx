@@ -82,7 +82,7 @@ export default function SignupCard() {
   });
 
   return (
-    <Paper className={styles.signup} title={t('signup')}>
+    <Paper className={styles.signup}>
       <form onSubmit={formik.handleSubmit}>
         <CardContent>
           <TextField
@@ -121,14 +121,24 @@ export default function SignupCard() {
             variant="contained"
             className={styles.button}
             type="submit"
+            style={{ color: '#fff' }}
           >
             {t('signup')}
           </Button>
         </CardActions>
         <Divider />
         <CardActions className={styles.linksContainer}>
-          <Link to={ROUTES.login}>
-            <Typography>{t('have_an_account_signin')}</Typography>
+          <Link
+            style={{
+              textDecoration: 'none',
+              color: 'grey',
+              margin: '0 auto',
+            }}
+            to={ROUTES.forgotPassword}
+          >
+            <Typography style={{ fontSize: 12 }}>
+              {t('have_an_account_signin')}
+            </Typography>
           </Link>
         </CardActions>
       </form>

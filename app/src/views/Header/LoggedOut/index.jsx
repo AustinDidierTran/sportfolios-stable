@@ -53,7 +53,12 @@ export default function LoggedOut() {
     <div className={classes.grow}>
       <AppBar position="static">
         <Toolbar>
-          <Typography className={classes.title} variant="h6" noWrap>
+          <Typography
+            className={classes.title}
+            style={{ fontSize: '1.5rem' }}
+            variant="h6"
+            noWrap
+          >
             <Link to={'/'} className={classes.titleLink}>
               {' '}
               Sportfolios

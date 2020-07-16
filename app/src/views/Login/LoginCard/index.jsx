@@ -97,14 +97,14 @@ export default function LoginCard() {
             payload: userInfo,
           });
 
-          goTo(ROUTES.userSettings);
+          goTo(ROUTES.home);
         }
       }
     },
   });
 
   return (
-    <Paper className={styles.card} title={t('login')}>
+    <Paper className={styles.card}>
       <form onSubmit={formik.handleSubmit}>
         <CardContent>
           <TextField
@@ -129,17 +129,24 @@ export default function LoginCard() {
             variant="contained"
             className={styles.button}
             type="submit"
+            style={{ color: '#fff' }}
           >
             {t('login')}
           </Button>
         </CardActions>
         <Divider />
         <CardActions className={styles.linksContainer}>
-          <Link to={ROUTES.forgotPassword}>
-            <Typography>{t('forgot_password')}</Typography>
-          </Link>
-          <Link to={ROUTES.signup}>
-            <Typography>{t('no_account_signup')}</Typography>
+          <Link
+            style={{
+              textDecoration: 'none',
+              color: 'grey',
+              margin: '0 auto',
+            }}
+            to={ROUTES.forgotPassword}
+          >
+            <Typography style={{ fontSize: 12 }}>
+              {t('forgot_password')}
+            </Typography>
           </Link>
         </CardActions>
       </form>
