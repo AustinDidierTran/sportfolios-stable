@@ -41,3 +41,29 @@
   justify-content: center;
   margin-left: 16px;
 }
+
+.container {
+  display: grid;
+  width: 100vw;
+  grid-template-columns: 50px 1fr 50px;
+  grid-template-areas: 'item1 item2 item3';
+}
+
+.item1 {
+  grid-area: item1;
+  justify-self: center;
+  align-self: center;
+}
+
+.item2 {
+  grid-area: item2;
+  justify-self: center;
+  align-self: center;
+  width: 90%;
+}
+
+.item3 {
+  grid-area: item3;
+  justify-self: center;
+  align-self: center;
+}

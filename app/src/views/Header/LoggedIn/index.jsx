@@ -1,27 +1,14 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Store, SCREENSIZE_ENUM } from '../../../Store';
+import { ROUTES, goTo } from '../../../actions/goTo';
 import logo from '../../../img/logo.png';
-import CartIcon from '../../../components/Custom/Cart';
 
-import {
-  AppBar,
-  IconButton,
-  Toolbar,
-  Typography,
-} from '../../../components/MUI';
-
-import { SearchInput } from '../../../components/Custom';
+import { AppBar, Toolbar, Typography } from '../../../components/MUI';
+import { SearchInput, IconButton } from '../../../components/Custom';
 import NotificationModule from './NotificationModule';
 
-// Material ui icons
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import Settings from '@material-ui/icons/Settings';
-
-import { ROUTES, goTo } from '../../../actions/goTo';
-
 import styles from './LoggedIn.module.css';
-
 import useStyles from './useStyles';
 
 export default function LoggedIn() {
@@ -47,23 +34,30 @@ export default function LoggedIn() {
             <SearchInput apiRoute="/api/data/search/previous" />
             <div className={classes.grow} />
             <div className={styles.sectionDesktop}>
+              <NotificationModule />
               <IconButton
                 color="inherit"
+                icon="Settings"
+                onClick={() => goTo(ROUTES.userSettings)}
+              />
+              <IconButton
+                color="inherit"
+                icon="AccountCircle"
                 onClick={() =>
                   goTo(ROUTES.entity, {
                     id: userInfo.persons[0].entity_id,
                   })
                 }
-              >
-                <AccountCircle />
-              </IconButton>
-              <NotificationModule />
+              />
               <IconButton
                 color="inherit"
-                onClick={() => goTo(ROUTES.userSettings)}
-              >
-                <Settings />
-              </IconButton>
+                icon="ShoppingCartOutlined"
+                onClick={() =>
+                  goTo(ROUTES.cart, {
+                    id: userInfo.persons[0].entity_id,
+                  })
+                }
+              />
             </div>
           </Toolbar>
         </AppBar>
@@ -74,15 +68,25 @@ export default function LoggedIn() {
     <div className={classes.grow}>
       <AppBar position="static" className={styles.appBar}>
         <Toolbar className="toolBar">
-          <Link to={ROUTES.home} className={styles.link}>
-            <img src={logo} />
-          </Link>
-          <div className={styles.right}>
-            <div className={styles.search}>
+          <div className={styles.container}>
+            <div className={styles.item1}>
+              <Link to={ROUTES.home} className={styles.link}>
+                <img src={logo} />
+              </Link>
+            </div>
+            <div className={styles.item2}>
               <SearchInput apiRoute="/api/data/search/previous" />
             </div>
-            <div className={styles.cart}>
-              <CartIcon id={userInfo.user_id} />
+            <div className={styles.item3}>
+              <IconButton
+                color="inherit"
+                icon="ShoppingCartOutlined"
+                onClick={() =>
+                  goTo(ROUTES.cart, {
+                    id: userInfo.user_id,
+                  })
+                }
+              />
             </div>
           </div>
         </Toolbar>
