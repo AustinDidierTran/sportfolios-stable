@@ -4,7 +4,6 @@ import styles from './Login.module.css';
 
 import { Container } from '../../components/Custom';
 import LoginCard from './LoginCard';
-//import DescriptionCard from './DescriptionCard';
 import SignupCard from './SignupCard';
 import { Typography } from '../../components/MUI';
 import logo from '../../img/bigLogo.png';
