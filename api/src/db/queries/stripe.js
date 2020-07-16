@@ -3,12 +3,13 @@ const {
   addPrice,
   addProduct,
   checkout: checkoutHelper,
+  createCustomer,
   createAccountLink,
   createExternalAccount,
   createInvoice,
   createInvoiceItem,
   createItem: createItemHelper,
-  createPaymentMethod,
+  createPaymentMethod: createPaymentMethodHelper,
   createRefund: createRefundHelper,
   finalizeInvoice: finalizeInvoiceHelper,
   getCustomer: getCustomerHelper,
@@ -44,7 +45,6 @@ const hasStripeBankAccount = async entityId => {
 };
 
 const getPaymentMethods = async userId => {
-  console.log(2);
   return getPaymentMethodsHelper(userId);
 };
 
@@ -76,8 +76,19 @@ const payInvoice = async (body, userId) => {
   return payInvoiceHelper(body, userId);
 };
 
-const paymentMethod = async (body, userId) => {
-  return createPaymentMethod(body, userId);
+const createPaymentMethod = async (body, userId) => {
+  const paymentMethodId = await createPaymentMethodHelper(
+    body,
+    userId,
+  );
+
+  const customerId = await createCustomer(
+    body,
+    userId,
+    paymentMethodId,
+  );
+
+  return customerId;
 };
 
 const attachPaymentMethod = async (body, userId) => {
@@ -134,5 +145,5 @@ module.exports = {
   hasStripeAccount,
   hasStripeBankAccount,
   payInvoice,
-  paymentMethod,
+  createPaymentMethod,
 };

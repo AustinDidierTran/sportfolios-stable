@@ -5,6 +5,8 @@ export default {
     acceptation: 'Acceptation',
     add_admin: 'Ajouter admin',
     add_editor: 'Ajouter éditeur',
+    add_payment_method: 'Ajouter une option de paiement',
+
     add_payment_options: 'Ajouter des options',
     add_to_cart: 'Ajouter au panier',
     add_existing_person: 'Ajouter une personne existante',
@@ -83,6 +85,8 @@ export default {
     new_organization: 'Nouvelle Organisation',
     new_team: 'Nouvelle Équipe',
     none: 'Aucun',
+    no_payment_method:
+      "Il n'y a actuellement aucune méthode de paiement",
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
     no_description: 'Aucune description',
     notifications: 'Notifications',

@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import styles from './Cart.module.css';
 import api from '../../actions/api';
 
-import { Store } from '../../Store';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { CARD_TYPE_ENUM } from '../../../../common/enums';
 import { useTranslation } from 'react-i18next';
@@ -21,15 +20,10 @@ const getCartItems = async () => {
 
 export default function Cart() {
   const { t } = useTranslation();
-  const {
-    state: {
-      userInfo: { user_id: id },
-    },
-  } = useContext(Store);
   const [items, setItems] = useState([]);
 
   const onCheckout = () => {
-    goTo(ROUTES.checkout, { id });
+    goTo(ROUTES.checkout);
   };
 
   const fetchItems = async () => {

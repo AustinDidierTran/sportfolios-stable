@@ -4,6 +4,8 @@ const {
   stripeErrorLogger,
   stripeLogger,
 } = require('../../../server/utils/logger');
+const { ERROR_ENUM } = require('../../../../../common/errors');
+const { PAYMENT_METHOD_TYPE_ENUM } = require('./enums');
 
 const getCustomerId = async userId => {
   const [{ customer_id = '' } = {}] = await knex
@@ -20,25 +22,40 @@ const getCustomer = async userId => {
   return customer;
 };
 
-const createCustomer = async (body, userId) => {
-  const { customer } = body;
-  stripe.customers.create(
-    { ...customer, metadata: { user_id: userId } },
-    async function(err, customer) {
-      if (customer) {
-        await knex('stripe_customer').insert({
-          user_id: userId,
-          customer_id: customer.id,
-          informations: customer,
-        });
-      }
-      if (err) {
-        stripeErrorLogger('Error when creating customer');
-      }
+const createCustomer = async (body, userId, paymentMethodId) => {
+  const params = {
+    address: {
+      line1: body.line1,
+      line2: body.line2,
+      city: body.city,
+      country: body.country,
+      postal_code: body.postalCode,
+      state: body.state,
     },
-  );
+    email: body.email,
+    name: body.name,
+    metadata: { user_id: userId },
+    payment_method: paymentMethodId,
+    phone: body.phoneNumber,
+  };
 
-  return getCustomerId(userId);
+  const customer = await stripe.customers.create(params);
+
+  if (!customer) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  try {
+    await knex('stripe_customer').insert({
+      user_id: userId,
+      customer_id: customer.id,
+      informations: customer,
+    });
+  } catch (err) {
+    stripeErrorLogger(
+      `Customer with id ${customer.id} already exists, taking it back`,
+    );
+  }
+  return customer.id;
 };
 
 const getOrCreateCustomer = async (body, userId) => {
@@ -70,24 +87,40 @@ const getPaymentMethodId = async userId => {
 };
 
 const createPaymentMethod = async (body, userId) => {
-  const { payment_method } = body;
-  stripe.paymentMethods.create(payment_method, async function(
-    err,
-    paymentMethod,
-  ) {
-    if (paymentMethod) {
-      stripeLogger('Created Payment Method', paymentMethod.id);
-      await knex('stripe_payment_method').insert({
-        user_id: userId,
-        payment_method_id: paymentMethod.id,
-      });
-    }
-    if (err) {
-      stripeErrorLogger('Error when creating payment method');
-    }
+  const { stripeToken } = body;
+
+  const params = {
+    type: PAYMENT_METHOD_TYPE_ENUM.CARD,
+    billing_details: {
+      address: {
+        city: body.city,
+        country: body.country,
+        line1: body.line1,
+        line2: body.line2,
+        postal_code: body.postalCode,
+        state: body.state,
+      },
+      email: body.email,
+      name: body.name,
+      phone: body.phone,
+    },
+    card: { token: stripeToken.id },
+  };
+
+  const paymentMethod = await stripe.paymentMethods.create(params);
+
+  if (!paymentMethod) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  stripeLogger('Created Payment Method', paymentMethod.id);
+  await knex('stripe_payment_method').insert({
+    user_id: userId,
+    payment_method_id: paymentMethod.id,
+    last4: paymentMethod.card.last4,
   });
 
-  return getPaymentMethodId(userId);
+  return paymentMethod.id;
 };
 
 const addPaymentMethodCustomer = async (body, userId) => {

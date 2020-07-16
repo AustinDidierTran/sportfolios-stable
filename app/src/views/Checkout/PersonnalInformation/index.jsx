@@ -64,6 +64,7 @@ export default function CustomerForm(props) {
     } else if (isANumber(phoneNumber)) {
       errors.phoneNumber = t('value_must_be_numeric');
     }
+
     if (!line1) {
       errors.line1 = t('value_is_required');
     }

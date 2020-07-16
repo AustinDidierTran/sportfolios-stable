@@ -9,7 +9,7 @@ export const ROUTES = {
   confirmEmailFailure: '/ConfirmEmailFailure',
   confirmEmailSuccess: '/confirmEmailSuccess',
   cart: '/cart/:id',
-  checkout: '/checkout/:id',
+  checkout: '/checkout',
   create: '/create',
   createOrganization: '/organization/create',
   createPerson: '/person/create',

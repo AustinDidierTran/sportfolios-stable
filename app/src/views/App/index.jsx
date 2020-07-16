@@ -51,6 +51,12 @@ import { ROUTES } from '../../actions/goTo';
 import { Store } from '../../Store';
 import conf from '../../../../conf';
 import { SpeedDial } from '../../components/Custom';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+const stripePromise = loadStripe(
+  'pk_test_qd1ulz9FxZA3aj2OcBfjqqro00G1K5WrTb',
+);
+
 export default function App() {
   const {
     state: {
@@ -67,127 +73,133 @@ export default function App() {
         id: user_id,
       }}
     >
-      <ThemeProvider theme={theme}>
-        <Router history={history}>
-          <div className={styles.app}>
-            <div className={styles.header}>
-              <Header />
+      <Elements stripe={stripePromise}>
+        <ThemeProvider theme={theme}>
+          <Router history={history}>
+            <div className={styles.app}>
+              <div className={styles.header}>
+                <Header />
+              </div>
+              <div className={styles.main}>
+                <Switch>
+                  <AdminRoute
+                    path={ROUTES.adminPanel}
+                    component={AdminPanel}
+                  />
+                  <Route
+                    path={ROUTES.addPaymentMethod}
+                    component={AddPaymentMethod}
+                  />
+                  <Route
+                    path={ROUTES.confirmEmail}
+                    component={ConfirmEmail}
+                  />
+                  <Route
+                    path={ROUTES.confirmEmailFailure}
+                    component={ConfirmEmailFailure}
+                  />
+                  <Route
+                    path={ROUTES.confirmEmailSuccess}
+                    component={ConfirmEmailSuccess}
+                  />
+                  <Route
+                    path={ROUTES.forgotPassword}
+                    component={ForgotPassword}
+                  />
+                  <Route
+                    path={ROUTES.recoveryEmail}
+                    component={PasswordRecovery}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.mockEvent}
+                    component={MockEvent}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.login}
+                    component={Login}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.organizationList}
+                    component={OrganizationList}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.create}
+                    component={EntityCreate}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.entityNotFound}
+                    component={EntityNotFound}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.signup}
+                    component={Signup}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.registrationStatus}
+                    component={RegistrationStatus}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.eventRegistration}
+                    component={EventRegistration}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.confirmationEmailSent}
+                    component={ConfirmationEmailSent}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.memberships}
+                    component={Memberships}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.notifications}
+                    component={Notifications}
+                  />
+                  <Route exact path={ROUTES.cart} component={Cart} />
+                  <Route
+                    exact
+                    path={ROUTES.checkout}
+                    component={Checkout}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.stripe}
+                    component={Stripe}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.shopDetails}
+                    component={ShopDetails}
+                  />
+                  <PrivateRoute
+                    path={ROUTES.search}
+                    component={Search}
+                  />
+                  <PrivateRoute
+                    path={ROUTES.userSettings}
+                    component={UserSettings}
+                  />
+                  <PrivateRoute path={ROUTES.menu} component={Menu} />
+                  <Route path={ROUTES.entity} component={Entity} />
+                  <PrivateRoute component={Main} />
+                </Switch>
+              </div>
+              <SpeedDial />
+              <BottomNavigation />
             </div>
-            <div className={styles.main}>
-              <Switch>
-                <AdminRoute
-                  path={ROUTES.adminPanel}
-                  component={AdminPanel}
-                />
-                <Route
-                  path={ROUTES.addPaymentMethod}
-                  component={AddPaymentMethod}
-                />
-                <Route
-                  path={ROUTES.confirmEmail}
-                  component={ConfirmEmail}
-                />
-                <Route
-                  path={ROUTES.confirmEmailFailure}
-                  component={ConfirmEmailFailure}
-                />
-                <Route
-                  path={ROUTES.confirmEmailSuccess}
-                  component={ConfirmEmailSuccess}
-                />
-                <Route
-                  path={ROUTES.forgotPassword}
-                  component={ForgotPassword}
-                />
-                <Route
-                  path={ROUTES.recoveryEmail}
-                  component={PasswordRecovery}
-                />
-                <Route
-                  exact
-                  path={ROUTES.mockEvent}
-                  component={MockEvent}
-                />
-                <Route exact path={ROUTES.login} component={Login} />
-                <Route
-                  exact
-                  path={ROUTES.organizationList}
-                  component={OrganizationList}
-                />
-                <Route
-                  exact
-                  path={ROUTES.create}
-                  component={EntityCreate}
-                />
-                <Route
-                  exact
-                  path={ROUTES.entityNotFound}
-                  component={EntityNotFound}
-                />
-                <Route
-                  exact
-                  path={ROUTES.signup}
-                  component={Signup}
-                />
-                <Route
-                  exact
-                  path={ROUTES.registrationStatus}
-                  component={RegistrationStatus}
-                />
-                <Route
-                  exact
-                  path={ROUTES.eventRegistration}
-                  component={EventRegistration}
-                />
-                <Route
-                  exact
-                  path={ROUTES.confirmationEmailSent}
-                  component={ConfirmationEmailSent}
-                />
-                <Route
-                  exact
-                  path={ROUTES.memberships}
-                  component={Memberships}
-                />
-                <Route
-                  exact
-                  path={ROUTES.notifications}
-                  component={Notifications}
-                />
-                <Route exact path={ROUTES.cart} component={Cart} />
-                <Route
-                  exact
-                  path={ROUTES.checkout}
-                  component={Checkout}
-                />
-                <Route
-                  exact
-                  path={ROUTES.stripe}
-                  component={Stripe}
-                />
-                <Route
-                  exact
-                  path={ROUTES.shopDetails}
-                  component={ShopDetails}
-                />
-                <PrivateRoute
-                  path={ROUTES.search}
-                  component={Search}
-                />
-                <PrivateRoute
-                  path={ROUTES.userSettings}
-                  component={UserSettings}
-                />
-                <PrivateRoute path={ROUTES.menu} component={Menu} />
-                <Route path={ROUTES.entity} component={Entity} />
-                <PrivateRoute component={Main} />
-              </Switch>
-            </div>
-            <SpeedDial />
-            <BottomNavigation />
-          </div>
-        </Router>
-      </ThemeProvider>
+          </Router>
+        </ThemeProvider>
+      </Elements>
     </OptimizelyProvider>
   );
 }
