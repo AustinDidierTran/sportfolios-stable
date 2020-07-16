@@ -8,8 +8,10 @@ import LoginCard from './LoginCard';
 import SignupCard from './SignupCard';
 import { Typography } from '../../components/MUI';
 import logo from '../../img/bigLogo.png';
+import { useTranslation } from 'react-i18next';
 
 export default function Login() {
+  const { t } = useTranslation();
   return (
     <div className={styles.main}>
       <Container className={styles.container}>
@@ -19,7 +21,7 @@ export default function Login() {
 
         <LoginCard />
         <div className={styles.or}>
-          <Typography style={{ fontSize: 12 }}>OR</Typography>
+          <Typography style={{ fontSize: 12 }}>{t('or')}</Typography>
         </div>
 
         <SignupCard />

@@ -208,6 +208,7 @@ export default {
 
     value_is_too_long: 'La valeur est trop longue',
     wrong_password: 'Mauvais mot de passe. Veuillez réessayer.',
+    or: 'OU',
     // DESCRIPTION CARD
     description_card_title:
       'Améliorer votre expérience de sport amateur',
@@ -245,6 +246,8 @@ export default {
     follow: "S'abonner",
     following: 'Abonné(e)',
     follow_notification_text: " s'est abonné à vous.",
+    learn_more: 'En apprendre plus',
+    close: 'Fermer',
 
     //LENGTH
     one_month: 'Un mois',

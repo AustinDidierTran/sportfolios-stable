@@ -20,7 +20,7 @@ export default function DescriptionCard() {
   };
 
   if (!isPressed) {
-    return <Button onClick={onPressed}>Learn More</Button>;
+    return <Button onClick={onPressed}>{t('learn_more')}</Button>;
   }
   return (
     <Paper
@@ -40,7 +40,7 @@ export default function DescriptionCard() {
       </CardContent>
       <div className={styles.buttonDiv}>
         <Button className={styles.button} onClick={onPressed}>
-          Close
+          {t('close')}
         </Button>
       </div>
     </Paper>

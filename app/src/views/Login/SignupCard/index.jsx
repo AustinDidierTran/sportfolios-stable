@@ -4,8 +4,10 @@ import styles from './SignupCard.module.css';
 import { Button } from '../../../components/MUI';
 
 import { goTo, ROUTES } from '../../../actions/goTo';
+import { useTranslation } from 'react-i18next';
 
 export default function SignupCard() {
+  const { t } = useTranslation();
   return (
     <Button
       variant="outlined"
@@ -14,7 +16,7 @@ export default function SignupCard() {
       className={styles.button}
       style={{ borderWidth: '2px' }}
     >
-      SIGNUP
+      {t('signup')}
     </Button>
   );
 }
