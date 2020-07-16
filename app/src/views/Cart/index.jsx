@@ -7,7 +7,11 @@ import { goTo, ROUTES } from '../../actions/goTo';
 import { CARD_TYPE_ENUM } from '../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 
-import { Paper, Button } from '../../components/Custom';
+import {
+  Paper,
+  Button,
+  MessageAndButton,
+} from '../../components/Custom';
 
 import CustomCard from '../../components/Custom/Card';
 
@@ -35,33 +39,39 @@ export default function Cart() {
     fetchItems();
   }, []);
 
+  if (items.length < 1) {
+    return (
+      <MessageAndButton
+        button={t('home')}
+        onClick={() => {
+          goTo(ROUTES.home);
+        }}
+        endIcon="Home"
+        message={t('cart_empty_go_shop')}
+      ></MessageAndButton>
+    );
+  }
+
   return (
     <Paper>
       <div className={styles.items}>
         {items.map(item => {
-          return (
-            <CustomCard
-              items={{ ...item, setItems }}
-              type={CARD_TYPE_ENUM.CART}
-              className={styles.card}
-            />
-          );
+          <CustomCard
+            items={{ ...item, setItems }}
+            type={CARD_TYPE_ENUM.CART}
+            className={styles.card}
+          />;
         })}
       </div>
-
-      {items.length ? (
-        <Button
-          size="small"
-          variant="contained"
-          className={styles.button}
-          endIcon="Check"
-          onClick={onCheckout}
-        >
-          {t('checkout')}
-        </Button>
-      ) : (
-        <></>
-      )}
+      <Button
+        size="small"
+        variant="contained"
+        className={styles.button}
+        endIcon="Check"
+        onClick={onCheckout}
+      >
+        {t('checkout')}
+      </Button>
     </Paper>
   );
 }
