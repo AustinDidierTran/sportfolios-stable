@@ -86,7 +86,7 @@ export default function EventSettings() {
       />
       <Snackbar
         open={open}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={() => {
           setOpen(false);
         }}

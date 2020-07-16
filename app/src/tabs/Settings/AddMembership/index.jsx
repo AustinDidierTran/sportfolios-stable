@@ -189,7 +189,7 @@ export default function AddMembership() {
           ></MembershipTable>
           <Snackbar
             open={open}
-            autoHideDuration={6000}
+            autoHideDuration={3000}
             onClose={() => {
               setOpen(false);
             }}
