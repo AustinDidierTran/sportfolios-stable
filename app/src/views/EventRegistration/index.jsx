@@ -39,7 +39,7 @@ export default function EventRegistration() {
       .filter(
         d =>
           moment(d.start_time) <= moment() &&
-          moment(d.end_time).add(24, 'hours') >= moment(),
+          moment(d.end_time) >= moment(),
       )
       .reduce(
         (prev, d) => [

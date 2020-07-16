@@ -12,6 +12,7 @@ import moment from 'moment';
 export default function PaymentOptionItem(props) {
   const { t } = useTranslation();
   const { display, value, helperText } = props;
+  const format = 'LLL';
 
   return (
     <ListItem>
@@ -34,7 +35,7 @@ export default function PaymentOptionItem(props) {
       ) : (
         <ListItemText
           style={{ margin: '0px' }}
-          primary={formatDate(moment(value))}
+          primary={formatDate(moment(value), format)}
           secondary={helperText}
         ></ListItemText>
       )}

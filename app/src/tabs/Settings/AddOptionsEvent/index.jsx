@@ -7,15 +7,11 @@ import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+
 import styles from './AddOptionsEvent.module.css';
 import { CARD_TYPE_ENUM } from '../../../../../common/enums';
+import moment from 'moment';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 export default function AddOptionsEvent() {
   const { t } = useTranslation();
@@ -23,9 +19,8 @@ export default function AddOptionsEvent() {
   const { id: eventId } = useParams();
 
   const [options, setOptions] = useState([]);
-  const [open, setOpen] = useState(false);
+
   const [isLoading, setIsLoading] = useState(true);
-  const [display, setDisplay] = useState('');
 
   useEffect(() => {
     getOptions();
@@ -61,7 +56,6 @@ export default function AddOptionsEvent() {
     );
     getOptions();
   };
-
   const fields = [
     {
       display: t('name'),
@@ -73,14 +67,27 @@ export default function AddOptionsEvent() {
       type: 'number',
     },
     {
-      helperText: t('registration_open'),
+      helperText: t('registration_open_date'),
       type: 'date',
       value: 2,
+      initialValue: moment().format('YYYY-MM-DD'),
     },
     {
-      helperText: t('registration_close'),
-      type: 'date',
+      helperText: t('registration_open_time'),
+      type: 'time',
       value: 3,
+      initialValue: '00:00',
+    },
+    {
+      helperText: t('registration_close_date'),
+      type: 'date',
+      value: 4,
+    },
+    {
+      helperText: t('registration_close_time'),
+      type: 'time',
+      value: 5,
+      initialValue: '23:59',
     },
   ];
 
@@ -105,23 +112,6 @@ export default function AddOptionsEvent() {
           items={{ fields, onAdd }}
           type={CARD_TYPE_ENUM.ADD_PAYMENT_OPTION}
         />
-
-        <Snackbar
-          open={open}
-          autoHideDuration={6000}
-          onClose={() => {
-            setOpen(false);
-          }}
-        >
-          <Alert
-            onClose={() => {
-              setOpen(false);
-            }}
-            severity="error"
-          >
-            {display}
-          </Alert>
-        </Snackbar>
       </Container>
     </Paper>
   );

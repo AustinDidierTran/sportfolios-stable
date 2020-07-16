@@ -7,6 +7,13 @@ import { useTranslation } from 'react-i18next';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import api from '../../../../actions/api';
 import { useParams } from 'react-router-dom';
+import moment from 'moment';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 export default function AddPaymentOption(props) {
   const { fields, onAdd: onAddProps } = props;
@@ -14,6 +21,8 @@ export default function AddPaymentOption(props) {
   const { id: eventId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [display, setDisplay] = useState('');
 
   const values = fields.reduce(
     (prev, f) => [...prev, useFormInput(f.initialValue || '')],
@@ -25,9 +34,14 @@ export default function AddPaymentOption(props) {
 
   const validate = () => {
     let isValid = true;
-    const price = values[1].value * 100;
+    const price = Number(values[1].value) * 100;
     const startDate = values[2].value;
-    const endDate = values[3].value;
+    const startTime = values[3].value;
+    const endDate = values[4].value;
+    const endTime = values[5].value;
+
+    const start = moment(`${startDate} ${startTime}`);
+    const end = moment(`${endDate} ${endTime}`);
     Object.keys(values).forEach(key => {
       if (values[key].value === '' || values[key].value === null) {
         values[key].setError(t('value_is_required'));
@@ -46,8 +60,10 @@ export default function AddPaymentOption(props) {
       }
     });
 
-    if (startDate > endDate) {
-      values[2].setError(t(''));
+    if (start >= end) {
+      setDisplay(t('registration_closes_before_opening'));
+      setOpen(true);
+      setIsLoading(false);
       isValid = false;
     }
     return isValid;
@@ -57,14 +73,12 @@ export default function AddPaymentOption(props) {
     setIsLoading(true);
     const name = values[0].value;
     const price = Number(values[1].value) * 100;
-    const startTime = values[2].value;
-    const endTime = values[3].value;
-    if (startTime >= endTime) {
-      setDisplay(t('registration_closes_before_opening'));
-      setOpen(true);
-      setIsLoading(false);
-      return;
-    }
+    const startDate = values[2].value;
+    const startTime = values[3].value;
+    const endDate = values[4].value;
+    const endTime = values[5].value;
+    const start = `${startDate} ${startTime}`;
+    const end = `${endDate} ${endTime}`;
 
     const res = await api(`/api/entity/option`, {
       method: 'POST',
@@ -72,8 +86,8 @@ export default function AddPaymentOption(props) {
         eventId,
         name,
         price,
-        endTime,
-        startTime,
+        endTime: end,
+        startTime: start,
       }),
     });
 
@@ -97,12 +111,13 @@ export default function AddPaymentOption(props) {
       </Paper>
     );
   }
-
   return (
     <Paper>
       <List>
         {fields.map(f => (
-          <ListItem>
+          <ListItem
+            style={{ paddingTop: '8px', paddingBottom: '0px' }}
+          >
             <Input
               helperText={f.helperText}
               label={f.display}
@@ -122,6 +137,22 @@ export default function AddPaymentOption(props) {
           {t('add')}
         </Button>
       </List>
+      <Snackbar
+        open={open}
+        autoHideDuration={6000}
+        onClose={() => {
+          setOpen(false);
+        }}
+      >
+        <Alert
+          onClose={() => {
+            setOpen(false);
+          }}
+          severity="error"
+        >
+          {display}
+        </Alert>
+      </Snackbar>
     </Paper>
   );
 }
