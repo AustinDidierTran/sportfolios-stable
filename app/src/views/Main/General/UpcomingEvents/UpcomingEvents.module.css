@@ -1,0 +1,6 @@
+.card {
+  grid-area: event;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}

@@ -270,6 +270,23 @@ async function getEntity(id, userId) {
 
   const role = await getEntityRole(id, userId);
 
+  if (entity.type == GLOBAL_ENUM.EVENT) {
+    const event = await getEvent(id);
+    const infos = await getGeneralInfos(id);
+    return {
+      id: entity.id,
+      type: entity.type,
+      name: entity.name,
+      surname: entity.surname,
+      photoUrl: entity.photo_url,
+      role,
+      maximumSpots: event.maximum_spots,
+      startDate: event.start_date,
+      endDate: event.end_date,
+      description: decodeURIComponent(infos.description),
+    };
+  }
+
   return {
     id: entity.id,
     type: entity.type,
