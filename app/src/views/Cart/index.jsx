@@ -8,7 +8,7 @@ import { goTo, ROUTES } from '../../actions/goTo';
 import { CARD_TYPE_ENUM } from '../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 
-import { Container, Button } from '../../components/MUI';
+import { Paper, Button } from '../../components/Custom';
 
 import CustomCard from '../../components/Custom/Card';
 
@@ -42,27 +42,32 @@ export default function Cart() {
   }, []);
 
   return (
-    <div>
-      <Container className={styles.items}>
-        <div className={styles.view}>
-          <div className={styles.content}>
-            {items.map(item => {
-              return (
-                <CustomCard
-                  items={{ ...item, setItems }}
-                  type={CARD_TYPE_ENUM.CART}
-                />
-              );
-            })}
-          </div>
-          <div className={styles.spacer}></div>
-        </div>
-      </Container>
+    <Paper>
+      <div className={styles.items}>
+        {items.map(item => {
+          return (
+            <CustomCard
+              items={{ ...item, setItems }}
+              type={CARD_TYPE_ENUM.CART}
+              className={styles.card}
+            />
+          );
+        })}
+      </div>
+
       {items.length ? (
-        <Button onClick={onCheckout} className={styles.button}>
+        <Button
+          size="small"
+          variant="contained"
+          className={styles.button}
+          endIcon="Check"
+          onClick={onCheckout}
+        >
           {t('checkout')}
         </Button>
-      ) : null}
-    </div>
+      ) : (
+        <></>
+      )}
+    </Paper>
   );
 }
