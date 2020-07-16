@@ -8,7 +8,7 @@ export const ROUTES = {
   confirmEmail: '/confirmEmail/:token',
   confirmEmailFailure: '/ConfirmEmailFailure',
   confirmEmailSuccess: '/confirmEmailSuccess',
-  cart: '/cart/:id',
+  cart: '/cart',
   checkout: '/checkout',
   create: '/create',
   createOrganization: '/organization/create',

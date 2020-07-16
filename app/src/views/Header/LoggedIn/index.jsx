@@ -52,11 +52,7 @@ export default function LoggedIn() {
               <IconButton
                 color="inherit"
                 icon="ShoppingCartOutlined"
-                onClick={() =>
-                  goTo(ROUTES.cart, {
-                    id: userInfo.persons[0].entity_id,
-                  })
-                }
+                onClick={() => goTo(ROUTES.cart)}
               />
             </div>
           </Toolbar>
@@ -81,11 +77,7 @@ export default function LoggedIn() {
               <IconButton
                 color="inherit"
                 icon="ShoppingCartOutlined"
-                onClick={() =>
-                  goTo(ROUTES.cart, {
-                    id: userInfo.user_id,
-                  })
-                }
+                onClick={() => goTo(ROUTES.cart)}
               />
             </div>
           </div>

@@ -18,7 +18,7 @@ const getEntity = async entityId => {
 
 export default function Header() {
   const {
-    state: { authToken, userInfo = {} },
+    state: { authToken },
   } = useContext(Store);
   const isAuthenticated = Boolean(authToken);
   const location = useLocation();
@@ -59,11 +59,7 @@ export default function Header() {
               <IconButton
                 color="inherit"
                 icon="ShoppingCartOutlined"
-                onClick={() =>
-                  goTo(ROUTES.cart, {
-                    id: userInfo.user_id,
-                  })
-                }
+                onClick={() => goTo(ROUTES.cart)}
               />
             )}
           />
@@ -81,11 +77,7 @@ export default function Header() {
               <IconButton
                 color="inherit"
                 icon="ShoppingCartOutlined"
-                onClick={() =>
-                  goTo(ROUTES.cart, {
-                    id: userInfo.user_id,
-                  })
-                }
+                onClick={() => goTo(ROUTES.cart)}
               />
             )}
           />
@@ -103,11 +95,7 @@ export default function Header() {
               <IconButton
                 color="inherit"
                 icon="ShoppingCartOutlined"
-                onClick={() =>
-                  goTo(ROUTES.cart, {
-                    id: userInfo.user_id,
-                  })
-                }
+                onClick={() => goTo(ROUTES.cart)}
               />
             )}
           />
@@ -125,11 +113,7 @@ export default function Header() {
               <IconButton
                 color="inherit"
                 icon="ShoppingCartOutlined"
-                onClick={() =>
-                  goTo(ROUTES.cart, {
-                    id: userInfo.user_id,
-                  })
-                }
+                onClick={() => goTo(ROUTES.cart)}
               />
             )}
           />
@@ -147,11 +131,7 @@ export default function Header() {
               <IconButton
                 color="inherit"
                 icon="ShoppingCartOutlined"
-                onClick={() =>
-                  goTo(ROUTES.cart, {
-                    id: userInfo.user_id,
-                  })
-                }
+                onClick={() => goTo(ROUTES.cart)}
               />
             )}
           />
@@ -169,11 +149,7 @@ export default function Header() {
               <IconButton
                 color="inherit"
                 icon="ShoppingCartOutlined"
-                onClick={() =>
-                  goTo(ROUTES.cart, {
-                    id: userInfo.user_id,
-                  })
-                }
+                onClick={() => goTo(ROUTES.cart)}
               />
             )}
           />

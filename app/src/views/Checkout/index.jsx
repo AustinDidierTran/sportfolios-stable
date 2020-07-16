@@ -31,7 +31,7 @@ export default function Checkout() {
         steps={steps}
         next={next}
         setNext={setNext}
-        showButtons={true}
+        showButtons
       />
     </Container>
   );

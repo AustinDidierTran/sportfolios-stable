@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 
-import { TextField, Typography, Button } from '../../components/MUI';
+import {
+  TextField,
+  Typography,
+  Button,
+  Container,
+} from '../../components/MUI';
+
+import { Paper } from '../../components/Custom';
 import CountrySelect from '../../tabs/Settings/Stripe/Form/CountrySelect';
 import CardSection from '../../utils/stripe/Payment/CardSection';
 
@@ -99,75 +106,79 @@ export default function AddPaymentMethod() {
   });
 
   return (
-    <div className={styles.main}>
-      <form onSubmit={formik.handleSubmit}>
-        <div className={styles.content}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {t('personnal_information')}
-          </Typography>
-          <TextField
-            namespace="name"
-            formik={formik}
-            type="name"
-            label={t('name')}
-            fullWidth
-          />
-          <TextField
-            namespace="email"
-            formik={formik}
-            type="email"
-            label={t('email')}
-            fullWidth
-          />
-          <TextField
-            namespace="phoneNumber"
-            formik={formik}
-            type="phoneNumber"
-            label={t('phone_number')}
-            fullWidth
-          />
-          <Typography gutterBottom variant="h5" component="h2">
-            {t('address')}
-          </Typography>
-          <TextField
-            namespace="line1"
-            formik={formik}
-            type="line1"
-            label={t('line1')}
-            fullWidth
-          />
-          <TextField
-            namespace="line2"
-            formik={formik}
-            type="line2"
-            label={t('line2')}
-            fullWidth
-          />
-          <TextField
-            namespace="city"
-            formik={formik}
-            type="city"
-            label={t('city')}
-            fullWidth
-          />
-          <CountrySelect formik={formik} />
-          <TextField
-            namespace="state"
-            formik={formik}
-            type="state"
-            label={t('state')}
-            fullWidth
-          />
-          <TextField
-            namespace="postalCode"
-            formik={formik}
-            type="postalCode"
-            label={t('postal_code')}
-            fullWidth
-          />
-          <CardSection />
-        </div>
-        <div className={styles.actions}>
+    <Container className={styles.main}>
+      <Paper>
+        <form onSubmit={formik.handleSubmit}>
+          <div className={styles.content}>
+            <Typography gutterBottom variant="h5" component="h2">
+              {t('personnal_information')}
+            </Typography>
+            <TextField
+              namespace="name"
+              formik={formik}
+              type="name"
+              label={t('name')}
+              fullWidth
+            />
+            <TextField
+              namespace="email"
+              formik={formik}
+              type="email"
+              label={t('email')}
+              fullWidth
+            />
+            <TextField
+              namespace="phoneNumber"
+              formik={formik}
+              type="phoneNumber"
+              label={t('phone_number')}
+              fullWidth
+            />
+            <br />
+            <br />
+            <Typography gutterBottom variant="h5" component="h2">
+              {t('address')}
+            </Typography>
+            <TextField
+              namespace="line1"
+              formik={formik}
+              type="line1"
+              label={t('line1')}
+              fullWidth
+            />
+            <TextField
+              namespace="line2"
+              formik={formik}
+              type="line2"
+              label={t('line2')}
+              fullWidth
+            />
+            <TextField
+              namespace="city"
+              formik={formik}
+              type="city"
+              label={t('city')}
+              fullWidth
+            />
+            <CountrySelect formik={formik} />
+            <TextField
+              namespace="state"
+              formik={formik}
+              type="state"
+              label={t('state')}
+              fullWidth
+            />
+            <TextField
+              namespace="postalCode"
+              formik={formik}
+              type="postalCode"
+              label={t('postal_code')}
+              fullWidth
+            />
+            <br />
+            <br />
+            <CardSection />
+          </div>
           <Button
             size="small"
             color="primary"
@@ -177,8 +188,10 @@ export default function AddPaymentMethod() {
           >
             {t('submit')}
           </Button>
-        </div>
-      </form>
-    </div>
+          <br />
+          <br />
+        </form>
+      </Paper>
+    </Container>
   );
 }
