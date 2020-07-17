@@ -34,6 +34,7 @@ import SportsKabaddi from '@material-ui/icons/SportsKabaddi';
 import Store from '@material-ui/icons/Store';
 import SupervisedUserCircle from '@material-ui/icons/SupervisedUserCircle';
 import SaveIcon from '@material-ui/icons/Save';
+import Undo from '@material-ui/icons/Undo';
 import PrintIcon from '@material-ui/icons/Print';
 import ShareIcon from '@material-ui/icons/Share';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -77,6 +78,7 @@ const icons = {
   Store,
   SupervisedUserCircle,
   SaveIcon,
+  Undo,
   PrintIcon,
   ShareIcon,
   FavoriteIcon,

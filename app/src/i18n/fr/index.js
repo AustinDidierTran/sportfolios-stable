@@ -37,6 +37,7 @@ export default {
     create_organization: 'Créer une organisation',
     create_person: 'Créer une personne',
     create_team: 'Créer une équipe',
+    create_new_team: 'Créer une nouvelle équipe',
     created_by: 'Créé par {{name}}',
     currency: 'Devise',
     delete: 'Supprimer',
@@ -48,6 +49,7 @@ export default {
     emails: 'Courriels',
     email_confirmed:
       'Un courriel de confirmation a été envoyé à {{email}}. Veuillez regarder vos courriels pour confirmer votre compte.',
+    enter_team_name: "Entrée votre nom d'équipe",
     entity_not_found: "Cette entité n'existe pas",
     event_is_full: "l'événements est plein, aucune place disponible",
     event_end: "Fin de l'événement",

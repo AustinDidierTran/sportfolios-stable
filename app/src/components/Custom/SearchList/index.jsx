@@ -6,6 +6,8 @@ import { formatRoute } from '../../../actions/goTo';
 import { useApiRoute } from '../../../hooks/queries';
 import { useFormInput } from '../../../hooks/forms';
 import { InputAdornment } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
+import { GLOBAL_ENUM } from '../../../../../common/enums';
 
 export default function SearchList(props) {
   const {
@@ -14,8 +16,10 @@ export default function SearchList(props) {
     onClick,
     type,
     rejectedTypes = [],
+    allowCreate,
   } = props;
 
+  const { t } = useTranslation();
   const query = useFormInput('');
 
   const optionsRoute = useMemo(
@@ -32,13 +36,24 @@ export default function SearchList(props) {
     defaultValue: { entities: [] },
   });
 
-  const options = useMemo(
-    () =>
-      response.entities
-        .filter(entity => !rejectedTypes.includes(entity.type))
-        .map(e => ({ ...e, onClick })),
-    [response],
-  );
+  const options = useMemo(() => {
+    if (allowCreate) {
+      return [
+        {
+          name: query.value,
+          type: GLOBAL_ENUM.TEAM,
+          secondary: t('create_new_team'),
+          onClick,
+        },
+        ...response.entities
+          .filter(entity => !rejectedTypes.includes(entity.type))
+          .map(e => ({ ...e, onClick })),
+      ];
+    }
+    return response.entities
+      .filter(entity => !rejectedTypes.includes(entity.type))
+      .map(e => ({ ...e, onClick }));
+  }, [response]);
 
   return (
     <>

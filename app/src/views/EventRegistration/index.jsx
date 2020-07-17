@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import {
   INVOICE_STATUS_ENUM,
   REGISTRATION_STATUS_ENUM,
+  GLOBAL_ENUM,
 } from '../../../../common/enums';
 import { formatPrice } from '../../utils/stringFormats';
 
@@ -62,17 +63,22 @@ export default function EventRegistration() {
   const stepHook = useStepper();
 
   const onTeamSelect = async (e, team) => {
-    const { data } = await api(
-      formatRoute('/api/entity/registered', null, {
-        team_id: team.id,
-        event_id: eventId,
-      }),
-    );
-    if (data.length < 1) {
+    if (team.id) {
+      const { data } = await api(
+        formatRoute('/api/entity/registered', null, {
+          team_id: team.id,
+          event_id: eventId,
+        }),
+      );
+      if (data.length < 1) {
+        setTeam(team);
+        stepHook.handleCompleted(0);
+      } else {
+        setOpen(true);
+      }
+    } else {
       setTeam(team);
       stepHook.handleCompleted(0);
-    } else {
-      setOpen(true);
     }
   };
 
@@ -87,6 +93,16 @@ export default function EventRegistration() {
   };
 
   const finish = async () => {
+    if (!team.id) {
+      const tempTeam = await api('/api/entity', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: team.name,
+          type: GLOBAL_ENUM.TEAM,
+        }),
+      });
+      team.id = tempTeam.data.id;
+    }
     //Check if teams is accepted here
 
     const status = REGISTRATION_STATUS_ENUM.ACCEPTED;

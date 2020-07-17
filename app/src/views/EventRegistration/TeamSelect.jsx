@@ -4,37 +4,24 @@ import { SearchList, Button } from '../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../hooks/forms';
 import TeamItem from '../../components/Custom/List/TeamItem';
-import { ROUTES, goTo } from '../../actions/goTo';
 import styles from './TeamSelect.module.css';
-import { useQuery } from '../../hooks/queries';
-import api from '../../actions/api';
 
 export default function TeamSelect(props) {
   const { t } = useTranslation();
-  const { onClick, team, eventId } = props;
+  const { onClick, team } = props;
   const query = useFormInput('');
-  const { teamId } = useQuery();
 
-  const [selectedTeam, setSelectedTeam] = useState();
+  const [selectedTeam, setSelectedTeam] = useState(team);
 
   useEffect(() => {
-    getTeam();
-  }, [teamId]);
+    setSelectedTeam(team);
+  }, [team]);
 
-  const getTeam = async () => {
-    const { data } = await api(`/api/entity?id=${teamId}`);
-    setSelectedTeam(data);
-    onClick(null, data);
+  const onChange = () => {
+    setSelectedTeam(null);
   };
 
-  const onCreate = () => {
-    goTo(ROUTES.create, null, {
-      type: GLOBAL_ENUM.TEAM,
-      route: eventId,
-    });
-  };
-
-  if (team || selectedTeam) {
+  if (selectedTeam) {
     return (
       <div className={styles.main}>
         {team ? (
@@ -50,23 +37,15 @@ export default function TeamSelect(props) {
             className={styles.main}
           />
         )}
-        <SearchList
-          className={styles.item}
-          clearOnSelect={false}
-          label={t('select_team')}
-          type={GLOBAL_ENUM.TEAM}
-          onClick={onClick}
-          query={query}
-        />
         <Button
           className={styles.item}
           size="small"
           variant="contained"
-          endIcon="Add"
+          endIcon="Undo"
           style={{ margin: '8px' }}
-          onClick={onCreate}
+          onClick={onChange}
         >
-          {t('create_team')}
+          {t('change_team')}
         </Button>
       </div>
     );
@@ -77,21 +56,12 @@ export default function TeamSelect(props) {
       <SearchList
         className={styles.item}
         clearOnSelect={false}
-        label={t('select_team')}
+        label={t('enter_team_name')}
         type={GLOBAL_ENUM.TEAM}
         onClick={onClick}
         query={query}
+        allowCreate
       />
-      <Button
-        className={styles.item}
-        size="small"
-        variant="contained"
-        endIcon="Add"
-        style={{ margin: '8px' }}
-        onClick={onCreate}
-      >
-        {t('create_team')}
-      </Button>
     </div>
   );
 }

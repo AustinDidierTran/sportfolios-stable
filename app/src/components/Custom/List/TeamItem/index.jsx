@@ -21,7 +21,7 @@ export default function TeamItem(props) {
         goTo(ROUTES.entity, { id });
       }
     },
-    [id, onClick],
+    [id, onClick, name],
   );
 
   return (
