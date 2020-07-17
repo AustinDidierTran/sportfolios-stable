@@ -87,6 +87,10 @@ export default function UpcomingEvents(props) {
     getData();
   }, []);
 
+  if (!event) {
+    return <></>;
+  }
+
   return (
     <Card
       className={

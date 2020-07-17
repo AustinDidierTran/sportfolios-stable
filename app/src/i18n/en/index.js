@@ -16,7 +16,7 @@ export default {
     admins: 'Admins',
     adress: 'Address',
     all_steps_completed: 'All Steps Completed',
-    amount_to_pay: 'Amount to pay',
+    amount_to_pay: 'Amount to pay {{amount}}',
     app_role: 'App Role',
     canadian_dollar: 'Canadian Dollar',
     athlete_history: 'Athlete history',

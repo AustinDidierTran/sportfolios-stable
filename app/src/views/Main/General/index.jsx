@@ -30,9 +30,9 @@ export default function General() {
 
   return (
     <div className={styles.general}>
-      {events.map(e => {
-        return <UpcomingEvents eventId={e.id} />;
-      })}
+      {events.map(e => (
+        <UpcomingEvents eventId={e.id} />
+      ))}
     </div>
   );
 }
