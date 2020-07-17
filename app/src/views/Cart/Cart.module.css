@@ -1,31 +1,25 @@
 .items {
-  display: grid !important;
-  grid-template-columns: 1fr;
-  column-gap: 16px;
-  row-gap: 16px;
-  padding: 8px !important;
-  position: relative;
+  display: flex;
+  justify-content: stretch;
+  flex-direction: column;
 }
 
-.card {
-  margin: 16px !important;
-}
-
-@media (min-width: 768px) {
-  .items {
-    grid-template-columns: 1fr 1fr;
-    padding: 0px !important;
-  }
-}
-
-@media (min-width: 992px) {
-  .items {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
+.item {
+  flex: 1 1 auto;
+  width: 100vw;
 }
 
 .button {
   left: 8px;
   width: calc(100vw - 32px);
   margin: 8px !important;
+}
+
+@media (min-width: 768px) {
+  .items {
+    flex-direction: row;
+  }
+  .item {
+    margin: 8px;
+  }
 }
