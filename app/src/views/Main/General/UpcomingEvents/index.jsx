@@ -53,8 +53,6 @@ const useStyles = makeStyles(theme => ({
   avatar: {},
 }));
 
-const eventId = 'c470298d-3754-4bb8-a2de-387457c4f750';
-
 const getEvent = async eventId => {
   const { data } = await api(
     formatRoute('/api/entity/eventInfos', null, {
@@ -66,7 +64,7 @@ const getEvent = async eventId => {
 
 const flag = false;
 
-export default function RecipeReviewCard() {
+export default function UpcomingEvents(props) {
   const { t } = useTranslation();
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
@@ -74,6 +72,7 @@ export default function RecipeReviewCard() {
   const {
     state: { screenSize },
   } = useContext(Store);
+  const { eventId } = props;
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -132,7 +131,8 @@ export default function RecipeReviewCard() {
           component="p"
           align="left"
         >
-          {decodeURIComponent(event.quickDescription) ||
+          {(event.quickDescription &&
+            decodeURIComponent(event.quickDescription)) ||
             '5v5 mixte, format À Bout de Soufle'}
         </Typography>
         <Typography

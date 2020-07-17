@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Backdrop from '@material-ui/core/Backdrop';
 import SpeedDial from '@material-ui/lab/SpeedDial';
@@ -11,12 +11,19 @@ import { goTo, ROUTES } from '../../../actions/goTo';
 
 import { Icon } from '..';
 import { useMemo } from 'react';
+import { Store, SCREENSIZE_ENUM } from '../../../Store';
 
 const useStyles = makeStyles(theme => ({
   speedDial: {
     position: 'absolute',
     bottom: '80px',
     right: theme.spacing(2),
+    zIndex: theme.zIndex.drawer + 2,
+  },
+  speedDial2: {
+    position: 'absolute',
+    bottom: '40px',
+    right: '40px',
     zIndex: theme.zIndex.drawer + 2,
   },
   backdrop: {
@@ -28,6 +35,9 @@ const useStyles = makeStyles(theme => ({
 export default function SpeedDialTooltipOpen() {
   const [open, setOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const {
+    state: { screenSize },
+  } = useContext(Store);
 
   const classes = useStyles();
   const location = useLocation();
@@ -107,6 +117,11 @@ export default function SpeedDialTooltipOpen() {
       <SpeedDial
         ariaLabel="SpeedDial"
         className={classes.speedDial}
+        className={
+          screenSize == SCREENSIZE_ENUM.xs
+            ? classes.speedDial
+            : classes.speedDial2
+        }
         hidden={hidden}
         icon={<SpeedDialIcon style={{ color: '#fff' }} />}
         onClose={() => setOpen(false)}
