@@ -25,6 +25,7 @@ export const ROUTES = {
   menu: '/menu',
   mockEvent: '/mock/Event/:openTab',
   notifications: '/notifications',
+  orderProcessed: '/orderProcessed',
   organizationList: '/organizationList',
   recoveryEmail: '/recoveryEmail/:token',
   registrationStatus: '/registrationStatus/:status',

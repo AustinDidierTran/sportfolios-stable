@@ -26,6 +26,7 @@ import Main from '../Main';
 import Memberships from '../Memberships';
 import Menu from '../Menu';
 import Notifications from '../../views/Notifications';
+import OrderProcessed from '../OrderProcessed';
 import OrganizationList from '../Main/OrganizationList';
 import PasswordRecovery from '../PasswordRecovery';
 import RegistrationStatus from '../RegistrationStatus';
@@ -119,6 +120,11 @@ export default function App() {
                     exact
                     path={ROUTES.login}
                     component={Login}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.orderProcessed}
+                    component={OrderProcessed}
                   />
                   <Route
                     exact
