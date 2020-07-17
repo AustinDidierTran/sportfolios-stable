@@ -25,6 +25,7 @@ export default {
     birth_date_format: '{{date, LL}} ({{age}} years old)',
     birth_date: 'Birth date',
     card_ending_with: 'Card ending with {{last4}}',
+    cart_empty_go_shop: "Your cart is empty, it's time to shop!",
     change_password: 'Change password',
     contact_us: 'Contact us',
     contact: 'Contact',
