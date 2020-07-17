@@ -64,7 +64,7 @@ const getEvent = async eventId => {
 
 const flag = false;
 
-export default function RecipeReviewCard(props) {
+export default function UpcomingEvents(props) {
   const { t } = useTranslation();
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
