@@ -2,7 +2,9 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatPrice } from '../../utils/stringFormats';
 
-import { MessageAndButton } from '../../components/Custom';
+import { Paper, Button } from '../../components/Custom';
+import { Typography } from '../../components/MUI';
+import { goTo, ROUTES } from '../../actions/goTo';
 
 export default function OrderProcessed() {
   const { t } = useTranslation();
@@ -15,25 +17,36 @@ export default function OrderProcessed() {
   const totalFormatted = formatPrice(total);
 
   const lastDigits = 3886;
+  const cardNumber = '**** **** **** ' + lastDigits;
 
-  const values = {
-    message:
-      'Order processed! \n' +
-      `Your total is ${totalFormatted}` +
-      '\n' +
-      `paid with this credit card **** **** **** ${lastDigits}`,
-    onClick: goToReceipt,
-    button: t('receipt'),
-    endIcon: 'Receipt',
-  };
+  const onClick = goToReceipt;
+  const button = t('receipt');
+  const endIcon = 'Receipt';
 
   return (
-    <MessageAndButton
-      button={values.button}
-      onClick={values.onClick}
-      endIcon={values.endIcon}
-      message={values.message}
-      title={t('Order processed')}
-    />
+    <Paper style={{ textAlign: 'center' }}>
+      <Typography style={{ margin: '8px' }}>
+        {t('order_processed')}
+        <br />
+        {t('your_total_is')}
+        &nbsp;
+        {totalFormatted}
+        <br />
+        {t('you_paid_with')}
+        &nbsp;
+        {cardNumber}
+      </Typography>
+      <Button
+        size="small"
+        variant="contained"
+        endIcon={endIcon}
+        style={{
+          margin: '8px',
+        }}
+        onClick={onClick}
+      >
+        {button}
+      </Button>
+    </Paper>
   );
 }
