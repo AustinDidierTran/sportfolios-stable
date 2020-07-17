@@ -131,7 +131,8 @@ export default function RecipeReviewCard(props) {
           component="p"
           align="left"
         >
-          {decodeURIComponent(event.quickDescription) ||
+          {(event.quickDescription &&
+            decodeURIComponent(event.quickDescription)) ||
             '5v5 mixte, format À Bout de Soufle'}
         </Typography>
         <Typography
