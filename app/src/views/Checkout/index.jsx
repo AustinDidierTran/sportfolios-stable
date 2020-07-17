@@ -27,7 +27,7 @@ export default function Checkout() {
     <Container className={styles.items}>
       <Paper className={styles.paper}>
         <Typography variant="h5">
-          Montant à payer: {formatPrice(response)}
+          {t('amount_to_pay')}: {formatPrice(response)}
         </Typography>
         <ChoosePaymentMethod paymentMethod={paymentMethod} />
       </Paper>

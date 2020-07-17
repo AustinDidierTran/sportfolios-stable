@@ -17,6 +17,7 @@ export default {
     admins: 'Administrateurs',
     adress: 'Addresse',
     all_steps_completed: 'Tous les étapes sont complétées',
+    amount_to_pay: 'Montant à payer',
     app_role: 'App Role',
     awaiting_payments: 'Paiements en attentes',
     athlete_history: "Historique de l'athlète",
