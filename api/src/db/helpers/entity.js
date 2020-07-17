@@ -306,7 +306,7 @@ async function eventInfos(id, userId) {
     maximumSpots: event.maximum_spots,
     startDate: event.start_date,
     endDate: event.end_date,
-    description: decodeURIComponent(infos.description),
+    description: infos.description,
     creator: {
       id: creator.id,
       type: creator.type,

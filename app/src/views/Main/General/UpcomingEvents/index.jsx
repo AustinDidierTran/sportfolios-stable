@@ -132,7 +132,7 @@ export default function RecipeReviewCard() {
           component="p"
           align="left"
         >
-          {event.quickDescription ||
+          {decodeURIComponent(event.quickDescription) ||
             '5v5 mixte, format À Bout de Soufle'}
         </Typography>
         <Typography
@@ -179,7 +179,9 @@ export default function RecipeReviewCard() {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography paragraph>{event.description || ''}</Typography>
+          <Typography paragraph>
+            {decodeURIComponent(event.description) || ''}
+          </Typography>
         </CardContent>
       </Collapse>
     </Card>
