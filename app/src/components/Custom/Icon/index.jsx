@@ -24,6 +24,7 @@ import Notifications from '@material-ui/icons/Notifications';
 import Person from '@material-ui/icons/Person';
 import PersonAdd from '@material-ui/icons/PersonAdd';
 import Publish from '@material-ui/icons/Publish';
+import Receipt from '@material-ui/icons/Receipt';
 import RemoveShoppingCart from '@material-ui/icons/RemoveShoppingCart';
 import Search from '@material-ui/icons/Search';
 import Settings from '@material-ui/icons/Settings';
@@ -66,6 +67,7 @@ const icons = {
   PersonAdd,
   PeopleIcon,
   Publish,
+  Receipt,
   RemoveShoppingCart,
   Search,
   Settings,
