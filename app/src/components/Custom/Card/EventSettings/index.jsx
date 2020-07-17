@@ -4,6 +4,7 @@ import { useFormInput } from '../../../../hooks/forms';
 import { Input, Paper, Button } from '../../../Custom';
 import { List, ListItem } from '../../../MUI';
 import { useTranslation } from 'react-i18next';
+import styles from './EventSettings.module.css';
 
 export default function EventSettings(props) {
   const { fields, onSave } = props;
@@ -55,7 +56,7 @@ export default function EventSettings(props) {
   };
 
   return (
-    <Paper>
+    <Paper className={styles.paper}>
       <List>
         {fields.map((f, index) => (
           <ListItem>
@@ -68,6 +69,7 @@ export default function EventSettings(props) {
           </ListItem>
         ))}
         <Button
+          className={styles.save}
           size="small"
           variant="contained"
           endIcon="Check"
