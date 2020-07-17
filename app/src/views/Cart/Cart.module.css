@@ -11,14 +11,14 @@
 
 .button {
   left: 8px;
-  width: calc(100vw - 32px);
+  width: calc(100% - 32px);
   margin: 8px !important;
 }
 
 @media (min-width: 768px) {
   .items {
     flex-direction: row;
-    width: 100vw;
+    width: 100%;
     flex-wrap: wrap;
   }
   .item {
