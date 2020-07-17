@@ -56,7 +56,7 @@ export default function ManageRoles() {
   );
 
   const updateRole = async (entity_id_admin, role) => {
-    if ((entity.type = GLOBAL_ENUM.PERSON)) {
+    if (entity.type === GLOBAL_ENUM.PERSON) {
       await api(`/api/entity/role`, {
         method: 'PUT',
         body: JSON.stringify({
@@ -110,48 +110,80 @@ export default function ManageRoles() {
     { display: t('editor'), value: ENTITIES_ROLE_ENUM.EDITOR },
     { display: t('none'), value: ENTITIES_ROLE_ENUM.VIEWER },
   ];
+
+  const eventItems = [
+    { display: t('editor'), value: ENTITIES_ROLE_ENUM.EDITOR },
+    { display: t('none'), value: ENTITIES_ROLE_ENUM.VIEWER },
+  ];
+
   return (
     <Paper title={t('admins')}>
-      {entities.map((entity, index) => [
+      {entities.map((e, index) => [
         <List disablePadding className={styles.list}>
           <ListItem
             key={`l${index}`}
             button
             onClick={() =>
-              goTo(ROUTES.entity, { id: entity.entity_id_admin })
+              goTo(ROUTES.entity, { id: e.entity_id_admin })
             }
             className={styles.item}
           >
             <ListItemIcon>
               <Avatar
-                photoUrl={entity.photoUrl}
+                photoUrl={e.photoUrl}
                 initials={getInitialsFromName(
-                  entity.surname
-                    ? `${entity.name} ${entity.surname}`
-                    : entity.name,
+                  e.surname ? `${e.name} ${e.surname}` : e.name,
                 )}
               />
             </ListItemIcon>
-            {entity.surname ? (
+            {e.surname ? (
               <ListItemText
-                primary={`${entity.name} ${entity.surname}`}
-                secondary={t(getEntityTypeName(entity.type))}
+                primary={`${e.name} ${e.surname}`}
+                secondary={t(getEntityTypeName(e.type))}
               ></ListItemText>
             ) : (
               <ListItemText
-                primary={`${entity.name}`}
-                secondary={t(getEntityTypeName(entity.type))}
+                primary={`${e.name}`}
+                secondary={t(getEntityTypeName(e.type))}
               ></ListItemText>
             )}
           </ListItem>
-          <Select
-            key={`s${index}`}
-            value={entity.role}
-            labelId="Role"
-            onChange={e => handleChange(e, entity.entity_id_admin)}
-            className={styles.select}
-            options={items}
-          />
+          {entity.type === GLOBAL_ENUM.EVENT ? (
+            <>
+              {e.role === ENTITIES_ROLE_ENUM.ADMIN ? (
+                <Select
+                  key={`s${index}`}
+                  value={e.role}
+                  labelId="Role"
+                  disabled
+                  className={styles.select}
+                  options={items}
+                />
+              ) : (
+                <Select
+                  key={`s${index}`}
+                  value={e.role}
+                  labelId="Role"
+                  onChange={event =>
+                    handleChange(event, e.entity_id_admin)
+                  }
+                  className={styles.select}
+                  options={eventItems}
+                />
+              )}
+            </>
+          ) : (
+            <Select
+              key={`s${index}`}
+              value={e.role}
+              labelId="Role"
+              onChange={event =>
+                handleChange(event, e.entity_id_admin)
+              }
+              className={styles.select}
+              options={items}
+            />
+          )}
         </List>,
       ])}
       <hr />
