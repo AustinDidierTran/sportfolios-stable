@@ -33,6 +33,7 @@ const {
   updateGeneralInfos: updateGeneralInfosHelper,
   updateMember: updateMemberHelper,
   updateRegistration: updateRegistrationHelper,
+  eventInfos: eventInfosHelper,
 } = require('../helpers/entity');
 
 async function getEntity(id, user_id) {
@@ -53,6 +54,10 @@ async function getAllRolesEntity(id) {
 
 async function getMembers(persons, organization_id) {
   return getMembersHelper(persons, organization_id);
+}
+
+async function eventInfos(id, user_id) {
+  return eventInfosHelper(id, user_id);
 }
 
 async function getMemberships(entity_id) {
@@ -289,4 +294,5 @@ module.exports = {
   updateGeneralInfos,
   updateMember,
   updateRegistration,
+  eventInfos,
 };

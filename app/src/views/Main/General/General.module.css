@@ -5,4 +5,5 @@
   grid-template-columns: 1fr;
   grid-template-areas: 'event';
   row-gap: 16px;
+  margin: 64px auto;
 }

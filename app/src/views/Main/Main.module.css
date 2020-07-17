@@ -1,5 +1,4 @@
 .container {
-  margin-top: 32px;
   display: grid !important;
   grid-template-areas: 'general';
   grid-template-columns: 1fr;
@@ -9,12 +8,12 @@
 
 @media (min-width: 768px) {
   .container {
-    margin-top: 64px;
     display: grid !important;
     grid-template-areas: 'general';
     grid-template-columns: 1fr;
     column-gap: 8px;
     row-gap: 8px;
-    width: 500px !important;
+
+    width: 700px !important;
   }
 }

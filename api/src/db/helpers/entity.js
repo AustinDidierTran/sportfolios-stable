@@ -270,23 +270,6 @@ async function getEntity(id, userId) {
 
   const role = await getEntityRole(id, userId);
 
-  if (entity.type == GLOBAL_ENUM.EVENT) {
-    const event = await getEvent(id);
-    const infos = await getGeneralInfos(id);
-    return {
-      id: entity.id,
-      type: entity.type,
-      name: entity.name,
-      surname: entity.surname,
-      photoUrl: entity.photo_url,
-      role,
-      maximumSpots: event.maximum_spots,
-      startDate: event.start_date,
-      endDate: event.end_date,
-      description: decodeURIComponent(infos.description),
-    };
-  }
-
   return {
     id: entity.id,
     type: entity.type,
@@ -296,6 +279,44 @@ async function getEntity(id, userId) {
     role,
   };
 }
+
+async function getCreator(id) {
+  const [creator] = await knex('entities_role')
+    .select('*')
+    .where({ entity_id: id, role: 1 });
+
+  const data = await getEntity(creator.entity_id_admin);
+  return data;
+}
+
+async function eventInfos(id, userId) {
+  const entity = await getEntity(id);
+  const role = await getEntityRole(id, userId);
+  const event = await getEvent(id);
+  const infos = await getGeneralInfos(id);
+  const creator = await getCreator(id);
+
+  return {
+    id: entity.id,
+    type: entity.type,
+    name: entity.name,
+    surname: entity.surname,
+    photoUrl: entity.photoUrl,
+    role,
+    maximumSpots: event.maximum_spots,
+    startDate: event.start_date,
+    endDate: event.end_date,
+    description: decodeURIComponent(infos.description),
+    creator: {
+      id: creator.id,
+      type: creator.type,
+      name: creator.name,
+      surname: creator.surname,
+      photoUrl: creator.photoUrl,
+    },
+  };
+}
+
 const findRole = async (entityId, lookedFor, role, cpt) => {
   if (cpt > 5) {
     return role;
@@ -788,4 +809,5 @@ module.exports = {
   updateGeneralInfos,
   updateMember,
   updateRegistration,
+  eventInfos,
 };
