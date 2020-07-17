@@ -7,6 +7,7 @@ const {
   removeAllInstancesFromCart: removeAllInstancesFromCartHelper,
   clearCart: clearCartHelper,
   getCartItems,
+  getCartTotal: getCartTotalHelper,
   getCartItemsOrdered: getCartItemsOrderedHelper,
 } = require('../helpers/shop');
 
@@ -18,8 +19,12 @@ const getItems = async (entityId, userId) => {
   return getShopItems(entityId, userId);
 };
 
-const getCart = async (entityId, userId) => {
+const getCart = async userId => {
   return getCartItems(userId);
+};
+
+const getCartTotal = async userId => {
+  return getCartTotalHelper(userId);
 };
 
 const getCartItemsOrdered = async (entityId, userId) => {
@@ -55,6 +60,7 @@ module.exports = {
   getItems,
   getCart,
   getCartItemsOrdered,
+  getCartTotal,
   addToCart,
   updateCartItems,
   removeCartItemInstance,

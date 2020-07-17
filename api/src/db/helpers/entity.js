@@ -591,6 +591,8 @@ async function addOption(
     name,
     active: true,
     description: entity.name,
+
+    // TODO: Add entity seller id
     metadata: { type: GLOBAL_ENUM.EVENT, id: eventId },
   };
   const product = await addProduct({ stripeProduct });

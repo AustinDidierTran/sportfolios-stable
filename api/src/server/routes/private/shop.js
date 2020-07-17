@@ -26,11 +26,17 @@ router.get(`${BASE_URL}/getItems`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/cartTotal`, async ctx => {
+  const data = await queries.getCartTotal(ctx.body.userInfo.id);
+
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 router.get(`${BASE_URL}/getCartItems`, async ctx => {
-  const data = await queries.getCart(
-    ctx.query.id,
-    ctx.body.userInfo.id,
-  );
+  const data = await queries.getCart(ctx.body.userInfo.id);
   ctx.body = {
     status: 'success',
     data,

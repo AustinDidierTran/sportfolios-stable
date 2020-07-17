@@ -1,38 +1,36 @@
 import React from 'react';
 
-import { Container } from '../../components/MUI';
+import { Container, Typography } from '../../components/MUI';
 import styles from './Checkout.module.css';
-import { useTranslation } from 'react-i18next';
 
-import Review from './Review';
-import Stepper from './Stepper';
-import { useState } from 'react';
 import ChoosePaymentMethod from './ChoosePaymentMethod';
 import { useFormInput } from '../../hooks/forms';
+import { useApiRoute } from '../../hooks/queries';
+import { formatPrice } from '../../utils/stringFormats';
+import { CircularProgress } from '@material-ui/core';
+import { Paper } from '../../components/Custom';
 
 export default function Checkout() {
-  const { t } = useTranslation();
-  const [next, setNext] = useState(false);
   const paymentMethod = useFormInput();
-  const steps = [
-    {
-      label: t('payment_method'),
-      content: <ChoosePaymentMethod paymentMethod={paymentMethod} />,
-    },
-    {
-      label: t('review'),
-      content: <Review />,
-    },
-  ];
+
+  const { isLoading, response } = useApiRoute('/api/shop/cartTotal');
+
+  if (isLoading) {
+    return (
+      <Container className={styles.items}>
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container className={styles.items}>
-      <Stepper
-        steps={steps}
-        next={next}
-        setNext={setNext}
-        showButtons
-      />
+      <Paper className={styles.paper}>
+        <Typography variant="h5">
+          {t('amount_to_pay')}: {formatPrice(response)}
+        </Typography>
+        <ChoosePaymentMethod paymentMethod={paymentMethod} />
+      </Paper>
     </Container>
   );
 }

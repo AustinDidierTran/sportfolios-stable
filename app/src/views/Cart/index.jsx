@@ -8,7 +8,7 @@ import { CARD_TYPE_ENUM } from '../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 
 import {
-  Paper,
+  Container,
   Button,
   MessageAndButton,
   Card,
@@ -52,7 +52,7 @@ export default function Cart() {
   }
 
   return (
-    <Paper>
+    <Container>
       <div className={styles.items}>
         {items.map(item => (
           <div className={styles.item}>
@@ -63,6 +63,7 @@ export default function Cart() {
           </div>
         ))}
       </div>
+
       <Button
         size="small"
         variant="contained"
@@ -72,6 +73,6 @@ export default function Cart() {
       >
         {t('checkout')}
       </Button>
-    </Paper>
+    </Container>
   );
 }
