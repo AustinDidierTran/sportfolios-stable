@@ -10,7 +10,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { CARD_TYPE_ENUM } from '../../../../../common/enums';
 import moment from 'moment';
-
+import styles from './EventSettings.module.css';
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -79,7 +79,7 @@ export default function EventSettings() {
   };
 
   return (
-    <Paper title={t('event_settings')}>
+    <Paper title={t('event_settings')} className={styles.paper}>
       <Card
         items={{ fields, onSave }}
         type={CARD_TYPE_ENUM.EVENT_SETTINGS}
