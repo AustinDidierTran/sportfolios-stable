@@ -1,13 +1,18 @@
 .items {
-  display: grid !important;
-  grid-template-columns: 1fr;
-  column-gap: 16px;
-  row-gap: 16px;
-  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
-.card {
-  margin: 16px !important;
+.item {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.button {
+  left: 8px;
+  width: calc(100% - 32px);
+  margin: 8px !important;
 }
 
 .button {
@@ -18,16 +23,19 @@
 
 @media (min-width: 768px) {
   .items {
-    grid-template-columns: 1fr 1fr;
+    flex-direction: row;
+    width: 100%;
+    flex-wrap: wrap;
   }
-
-  .button {
-    border-radius: unset;
+  .item {
+    flex: 0 0 calc(50% - 32px);
+    margin: 8px;
+    width: calc(50% - 32px);
   }
 }
-
 @media (min-width: 992px) {
-  .items {
-    grid-template-columns: 1fr 1fr 1fr;
+  .item {
+    flex: 0 0 calc(33% - 32px);
+    width: calc(33% - 32px);
   }
 }

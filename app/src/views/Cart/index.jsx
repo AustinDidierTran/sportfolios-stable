@@ -11,9 +11,8 @@ import {
   Container,
   Button,
   MessageAndButton,
+  Card,
 } from '../../components/Custom';
-
-import CustomCard from '../../components/Custom/Card';
 
 const getCartItems = async () => {
   const { data: cartItems } = await api(
@@ -56,11 +55,12 @@ export default function Cart() {
     <Container>
       <div className={styles.items}>
         {items.map(item => (
-          <CustomCard
-            items={{ ...item, setItems }}
-            type={CARD_TYPE_ENUM.CART}
-            className={styles.card}
-          />
+          <div className={styles.item}>
+            <Card
+              items={{ ...item, setItems }}
+              type={CARD_TYPE_ENUM.CART}
+            />
+          </div>
         ))}
       </div>
 
