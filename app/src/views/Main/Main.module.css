@@ -1,6 +1,19 @@
 .container {
-  margin-top: 16px;
-  text-align: center;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  display: grid !important;
+  grid-template-areas: 'general';
+  grid-template-columns: 1fr;
+  column-gap: 8px;
+  row-gap: 8px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    display: grid !important;
+    grid-template-areas: 'general';
+    grid-template-columns: 1fr;
+    column-gap: 8px;
+    row-gap: 8px;
+
+    width: 700px !important;
+  }
 }
