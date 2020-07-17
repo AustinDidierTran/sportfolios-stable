@@ -3,7 +3,6 @@
   grid-template-columns: 1fr;
   column-gap: 16px;
   row-gap: 16px;
-  padding: 8px !important;
   position: relative;
 }
 
@@ -11,10 +10,19 @@
   margin: 16px !important;
 }
 
+.button {
+  width: calc(100% - 16px);
+  margin-top: 16px !important;
+  margin-left: 8px !important;
+}
+
 @media (min-width: 768px) {
   .items {
     grid-template-columns: 1fr 1fr;
-    padding: 0px !important;
+  }
+
+  .button {
+    border-radius: unset;
   }
 }
 
@@ -22,10 +30,4 @@
   .items {
     grid-template-columns: 1fr 1fr 1fr;
   }
-}
-
-.button {
-  left: 8px;
-  width: calc(100vw - 32px);
-  margin: 8px !important;
 }

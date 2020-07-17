@@ -7,14 +7,31 @@ const {
 } = require('../../../server/utils/logger');
 const { STRIPE_STATUS_ENUM } = require('../../../../../common/enums');
 
+const formatMetadata = metadata =>
+  Object.keys(metadata).reduce((prev, curr) => {
+    const currentValue = metadata[curr];
+    if (typeof currentValue === 'string') {
+      return {
+        ...prev,
+        [curr]: currentValue,
+      };
+    }
+    return {
+      ...prev,
+      [curr]: JSON.stringify(currentValue),
+    };
+  }, {});
+
 const createInvoiceItem = async (body, userId) => {
   const { price, metadata } = body;
   const customerId = await getCustomerId(userId);
-  const params = { price, customer: customerId, metadata };
-
+  const params = {
+    price,
+    customer: customerId,
+    metadata: formatMetadata(metadata),
+  };
   try {
     const invoiceItem = await stripe.invoiceItems.create(params);
-
     await knex('stripe_invoice_item').insert({
       user_id: userId,
       invoice_item_id: invoiceItem.id,
@@ -73,11 +90,14 @@ const finalizeInvoice = async (body, userId) => {
 };
 
 const payInvoice = async (body, userId) => {
-  const { invoiceId } = body;
-  const params = invoiceId;
+  const { invoiceId, paymentMethodId } = body;
+
+  const params = {
+    payment_method: paymentMethodId,
+  };
 
   try {
-    const invoice = await stripe.invoices.pay(params);
+    const invoice = await stripe.invoices.pay(invoiceId, params);
 
     await knex('stripe_invoice')
       .update({ status: invoice.status })
@@ -145,6 +165,7 @@ const createTransfers = async invoice => {
           },
           invoiceItemId,
         );
+
         return transfer;
       }),
     );
@@ -255,7 +276,7 @@ const getMetadata = async stripePriceId => {
 };
 
 const checkout = async (body, userId) => {
-  const { prices = [] } = body;
+  const { paymentMethodId } = body;
   const invoiceParams = {
     invoice: {
       auto_advance: 'false',
@@ -264,10 +285,12 @@ const checkout = async (body, userId) => {
     },
   };
 
+  const prices = await knex('cart_items').where({ user_id: userId });
+
   try {
     await Promise.all(
-      prices.map(async item => {
-        const stripePriceId = item.price;
+      prices.map(async price => {
+        const stripePriceId = price.stripe_price_id;
         const metadata = await getMetadata(stripePriceId);
         const invoiceItem = await createInvoiceItem(
           { price: stripePriceId, metadata },
@@ -281,12 +304,14 @@ const checkout = async (body, userId) => {
     await stripe.customers.retrieve(invoice.customer);
     const invoiceId = invoice.id;
     await finalizeInvoice({ invoiceId }, userId);
-    const paidInvoice = await payInvoice({ invoiceId }, userId);
+    const paidInvoice = await payInvoice(
+      { invoiceId, paymentMethodId },
+      userId,
+    );
     const chargeId = await paidInvoice.charge;
     const receiptUrl = await getReceipt({ chargeId, invoiceId });
     const transfers = await createTransfers(paidInvoice, userId);
     /* eslint-disable-next-line */
-
     return { invoice: paidInvoice, receipt: receiptUrl, transfers };
   } catch (err) {
     stripeErrorLogger('CreateInvoice error', err);

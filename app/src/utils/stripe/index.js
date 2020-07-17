@@ -1,9 +1,9 @@
 import api from '../../actions/api';
 
-export const checkout = async prices => {
+export const checkout = async paymentMethodId => {
   const { data: receiptUrl } = await api('/api/stripe/checkout', {
     method: 'POST',
-    body: JSON.stringify({ prices }),
+    body: JSON.stringify({ paymentMethodId }),
   });
   return receiptUrl;
 };

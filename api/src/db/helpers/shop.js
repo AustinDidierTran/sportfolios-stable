@@ -142,6 +142,21 @@ const getCartItems = async userId => {
   }
 };
 
+const getCartTotal = async userId => {
+  const [{ total }] = await knex('cart_items')
+    .select(knex.raw('sum(stripe_price.amount) AS total'))
+    .leftJoin(
+      'stripe_price',
+      'cart_items.stripe_price_id',
+      '=',
+      'stripe_price.stripe_price_id',
+    )
+    .where('cart_items.user_id', userId)
+    .groupBy('cart_items.user_id');
+
+  return total;
+};
+
 const groupBy = (list, keyGetter) => {
   const map = new Map();
   list.forEach(item => {
@@ -254,6 +269,7 @@ const clearCart = async (query, userId) => {
 };
 
 module.exports = {
+  getCartTotal,
   getItem,
   getShopItems,
   getCartItems,
