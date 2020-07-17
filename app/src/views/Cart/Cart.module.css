@@ -1,6 +1,6 @@
 .items {
   display: flex;
-  justify-content: stretch;
+  justify-content: center;
   flex-direction: column;
 }
 
@@ -18,8 +18,18 @@
 @media (min-width: 768px) {
   .items {
     flex-direction: row;
+    width: 100vw;
+    flex-wrap: wrap;
   }
   .item {
+    flex: 0 0 calc(50vw - 32px);
     margin: 8px;
+    width: calc(50vw - 32px);
+  }
+}
+@media (min-width: 992px) {
+  .item {
+    flex: 0 0 calc(33vw - 32px);
+    width: calc(33vw - 32px);
   }
 }
