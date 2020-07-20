@@ -74,8 +74,8 @@ const getPersonsFromQuery = async (query, blackList) => {
   return persons.filter(p => !parsed.includes(p.id));
 };
 
-const getTeamsFromQuery = async query => {
-  return knex('entities')
+const getTeamsFromQuery = async (query, blackList) => {
+  const teams = await knex('entities')
     .select(
       'entities.id',
       'entities_name.name',
@@ -97,6 +97,12 @@ const getTeamsFromQuery = async query => {
     .whereNull('entities.deleted_at')
     .andWhere('entities_name.name', 'ILIKE', `%${query}%`)
     .andWhere('entities.type', '=', GLOBAL_ENUM.TEAM);
+
+  if (!blackList || blackList === undefined) {
+    return teams;
+  }
+  const parsed = JSON.parse(blackList);
+  return teams.filter(t => !parsed.includes(t.id));
 };
 
 const getOrganizationsFromQuery = async query => {

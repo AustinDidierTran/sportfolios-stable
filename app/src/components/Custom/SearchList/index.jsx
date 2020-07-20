@@ -23,15 +23,20 @@ export default function SearchList(props) {
   const { t } = useTranslation();
   const query = useFormInput('');
 
-  const optionsRoute = useMemo(
-    () =>
-      formatRoute('/api/data/search/global', null, {
+  const optionsRoute = useMemo(() => {
+    if (blackList.length < 1) {
+      return formatRoute('/api/data/search/global', null, {
+        query: query.value,
+        type,
+      });
+    } else {
+      return formatRoute('/api/data/search/global', null, {
         blackList: JSON.stringify(blackList),
         query: query.value,
         type,
-      }),
-    [query, type],
-  );
+      });
+    }
+  }, [query, type]);
 
   const { response } = useApiRoute(optionsRoute, {
     defaultValue: { entities: [] },
