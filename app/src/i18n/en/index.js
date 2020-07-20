@@ -4,6 +4,7 @@ export default {
     actions: 'Actions',
     acceptation: 'Acceptation',
     add_editor: 'Add editor',
+    add_new_person: 'Add new person',
     add_payment_method: 'Add payment method',
     add_payment_options: 'Add payment options',
     add_to_cart: 'Add to cart',
@@ -49,6 +50,7 @@ export default {
     emails: 'Emails',
     email_confirmed:
       'An email has just been sent to {{email}}. Please, go look at your inbox to confirm your email.',
+    enter_person_name: 'Enter person name',
     entity_not_found: 'Entity not found',
     event_is_full: 'Event is full, no place available',
     event_manager: 'Event Manager',

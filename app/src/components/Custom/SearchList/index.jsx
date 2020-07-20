@@ -17,59 +17,100 @@ export default function SearchList(props) {
     type,
     rejectedTypes = [],
     allowCreate,
+    withoutIcon,
   } = props;
 
   const { t } = useTranslation();
   const query = useFormInput('');
 
-  const optionsRoute = useMemo(
-    () =>
-      formatRoute('/api/data/search/global', null, {
+  const optionsRoute = useMemo(() => {
+    if (blackList.length < 1) {
+      return formatRoute('/api/data/search/global', null, {
+        query: query.value,
+        type,
+      });
+    } else {
+      return formatRoute('/api/data/search/global', null, {
         blackList: JSON.stringify(blackList),
         query: query.value,
         type,
-      }),
-    [query, type],
-  );
+      });
+    }
+  }, [query, type]);
 
   const { response } = useApiRoute(optionsRoute, {
     defaultValue: { entities: [] },
   });
 
+  const handleClick = (...args) => {
+    onClick(...args);
+    query.reset();
+  };
+
   const options = useMemo(() => {
     if (allowCreate) {
+      let secondary = '';
+      if (type === GLOBAL_ENUM.TEAM) {
+        secondary = t('create_new_team');
+      }
+      if (type === GLOBAL_ENUM.PERSON) {
+        secondary = t('add_new_person');
+      }
       return [
         {
           name: query.value,
-          type: GLOBAL_ENUM.TEAM,
-          secondary: t('create_new_team'),
-          onClick,
+          type,
+          secondary,
+          onClick: (...args) => {
+            handleClick(...args);
+          },
+          icon: 'Add',
+          inverseColor: true,
         },
         ...response.entities
           .filter(entity => !rejectedTypes.includes(entity.type))
-          .map(e => ({ ...e, onClick })),
+          .map(e => ({
+            ...e,
+            onClick: (...args) => {
+              handleClick(...args);
+            },
+          })),
       ];
     }
     return response.entities
       .filter(entity => !rejectedTypes.includes(entity.type))
-      .map(e => ({ ...e, onClick }));
+      .map(e => ({
+        ...e,
+        onClick: (...args) => {
+          handleClick(...args);
+        },
+      }));
   }, [response]);
 
   return (
     <>
-      <TextField
-        {...query.inputProps}
-        variant="outlined"
-        label={label}
-        style={{ margin: '8px' }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Icon icon="Search" />
-            </InputAdornment>
-          ),
-        }}
-      />
+      {withoutIcon ? (
+        <TextField
+          {...query.inputProps}
+          variant="outlined"
+          label={label}
+          style={{ width: '90%' }}
+        />
+      ) : (
+        <TextField
+          {...query.inputProps}
+          variant="outlined"
+          label={label}
+          style={{ margin: '8px' }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Icon icon="Search" />
+              </InputAdornment>
+            ),
+          }}
+        />
+      )}
       {query.value.length === 0 ? (
         <></>
       ) : (

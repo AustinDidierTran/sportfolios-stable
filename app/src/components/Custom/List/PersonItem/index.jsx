@@ -6,11 +6,22 @@ import { getInitialsFromName } from '../../../../utils/stringFormats/index';
 import { useTranslation } from 'react-i18next';
 import { goTo, ROUTES } from '../../../../actions/goTo';
 import { useCallback } from 'react';
+import styles from './PersonItem.module.css';
 
 export default function PersonItem(props) {
   const { t } = useTranslation();
 
-  const { id, onClick, selected, photoUrl, name, surname } = props;
+  const {
+    id,
+    onClick,
+    selected,
+    photoUrl,
+    name,
+    surname,
+    secondary,
+    icon,
+    inverseColor,
+  } = props;
 
   const completeName = useMemo(
     () => (surname ? `${name} ${surname}` : name),
@@ -40,11 +51,24 @@ export default function PersonItem(props) {
       style={{ width: '100%' }}
     >
       <ListItemIcon>
-        <Avatar photoUrl={photoUrl} initials={initials}></Avatar>
+        {inverseColor ? (
+          <Avatar
+            className={styles.avatar}
+            photoUrl={photoUrl}
+            icon={icon}
+            initials={initials}
+          ></Avatar>
+        ) : (
+          <Avatar
+            photoUrl={photoUrl}
+            icon={icon}
+            initials={initials}
+          ></Avatar>
+        )}
       </ListItemIcon>
       <ListItemText
         primary={completeName}
-        secondary={t('person')}
+        secondary={secondary || t('person')}
       ></ListItemText>
     </ListItem>
   );
