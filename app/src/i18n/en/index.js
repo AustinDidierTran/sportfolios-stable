@@ -35,6 +35,7 @@ export default {
     create_organization: 'Create Organization',
     create_person: 'Create Person',
     create_team: 'Create Team',
+    create_new_team: 'Create new team',
     created_by: 'Created by {{name}}',
     currency: 'Currency',
     delete: 'Delete',

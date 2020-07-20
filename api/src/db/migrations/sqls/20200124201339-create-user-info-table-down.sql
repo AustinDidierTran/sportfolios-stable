@@ -10,8 +10,5 @@ UPDATE users
   FROM user_info) AS subquery
   WHERE users.id = subquery.user_id;
 
-ALTER TABLE users
-  ALTER COLUMN first_name SET NOT NULL,
-  ALTER COLUMN last_name SET NOT NULL;
 
 DROP TABLE user_info;

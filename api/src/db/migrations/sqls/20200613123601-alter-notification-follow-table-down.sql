@@ -6,6 +6,8 @@ UPDATE persons
   FROM (SELECT * 
   FROM user_entity_role) AS subquery
   where persons.id = subquery.entity_id;
+  
+  DELETE FROM persons WHERE user_id IS NULL;
 
 ALTER TABLE persons
   ALTER COLUMN user_id SET NOT NULL;
