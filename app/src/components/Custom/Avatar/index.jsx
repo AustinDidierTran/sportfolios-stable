@@ -1,12 +1,13 @@
 import React from 'react';
 
 import { Avatar } from '../../MUI';
+import { Icon } from '../../Custom';
 import clsx from 'clsx';
 
 import styles from './Avatar.module.css';
 
 export default function CustomAvatar(props) {
-  const { initials, photoUrl, ...otherProps } = props;
+  const { initials, photoUrl, icon, ...otherProps } = props;
 
   let className = clsx(styles.avatar, props.className);
   if (props.size === 'sm') {
@@ -17,16 +18,28 @@ export default function CustomAvatar(props) {
     className = clsx(styles.lg, styles.avatar, props.className);
   }
 
-  return photoUrl ? (
-    <Avatar
-      {...otherProps}
-      className={className}
-      src={photoUrl}
-      alt={initials}
-    >
-      {initials}
-    </Avatar>
-  ) : (
+  if (photoUrl) {
+    return (
+      <Avatar
+        {...otherProps}
+        className={className}
+        src={photoUrl}
+        alt={initials}
+      >
+        {initials}
+      </Avatar>
+    );
+  }
+
+  if (icon) {
+    return (
+      <Avatar {...otherProps} className={className} alt={initials}>
+        <Icon icon={icon}></Icon>
+      </Avatar>
+    );
+  }
+
+  return (
     <Avatar {...otherProps} className={className}>
       {initials}
     </Avatar>

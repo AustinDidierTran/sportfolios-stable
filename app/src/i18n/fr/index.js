@@ -5,8 +5,8 @@ export default {
     acceptation: 'Acceptation',
     add_admin: 'Ajouter admin',
     add_editor: 'Ajouter éditeur',
+    add_new_person: 'Ajouter une nouvelle personne',
     add_payment_method: 'Ajouter une option de paiement',
-
     add_payment_options: 'Ajouter des options',
     add_to_cart: 'Ajouter au panier',
     add_existing_person: 'Ajouter une personne existante',
@@ -49,6 +49,7 @@ export default {
     emails: 'Courriels',
     email_confirmed:
       'Un courriel de confirmation a été envoyé à {{email}}. Veuillez regarder vos courriels pour confirmer votre compte.',
+    enter_person_name: 'Entrée le nom du joueur',
     enter_team_name: "Entrée votre nom d'équipe",
     entity_not_found: "Cette entité n'existe pas",
     event_is_full: "l'événements est plein, aucune place disponible",

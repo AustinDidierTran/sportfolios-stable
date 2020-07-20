@@ -1,19 +1,15 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { GLOBAL_ENUM } from '../../../../../common/enums';
-import { Icon, SearchList, List } from '../../../components/Custom';
+import { SearchList, List } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../../hooks/forms';
 import styles from './Roster.module.css';
-import { TextField, Typography } from '@material-ui/core';
-import IconButton from '@material-ui/core/IconButton';
+import { Typography } from '@material-ui/core';
 
 export default function Roster(props) {
   const { t } = useTranslation();
   const query = useFormInput('');
   const { onClick, roster, setRoster } = props;
-
-  const [nameTemp, setNameTemp] = useState('');
-  const [error, setError] = useState(false);
 
   //to allow user to go to next step without roster
   useEffect(() => {
@@ -24,16 +20,35 @@ export default function Roster(props) {
     roster,
   ]);
 
-  const addExistingPerson = (e, person) => {
-    setRoster(oldRoster => [
-      ...oldRoster,
-      {
-        person_id: person.id,
-        type: GLOBAL_ENUM.ROSTER_ITEM,
-        name: person.name,
-        onDelete,
-      },
-    ]);
+  const addPerson = (e, person) => {
+    if (person.id) {
+      setRoster(oldRoster => [
+        ...oldRoster,
+        {
+          person_id: person.id,
+          type: GLOBAL_ENUM.ROSTER_ITEM,
+          name: person.name,
+          onDelete,
+        },
+      ]);
+    } else {
+      const ids = roster.map(p => {
+        if (p.id) {
+          return p.id;
+        }
+        return 0;
+      });
+      const newId = Math.max(...ids, 0) + 1;
+      setRoster(oldRoster => [
+        ...oldRoster,
+        {
+          id: newId,
+          type: GLOBAL_ENUM.ROSTER_ITEM,
+          name: person.name,
+          onDelete,
+        },
+      ]);
+    }
   };
 
   const onDelete = body => {
@@ -49,70 +64,19 @@ export default function Roster(props) {
     });
   };
 
-  const validate = () => {
-    if (nameTemp === '') {
-      setError(true);
-      return false;
-    }
-    return true;
-  };
-
-  const addPerson = async () => {
-    if (!validate()) {
-      return;
-    }
-
-    const ids = roster.map(p => {
-      if (p.id) {
-        return p.id;
-      }
-      return 0;
-    });
-    const newId = Math.max(...ids, 0) + 1;
-    setRoster(oldRoster => [
-      ...oldRoster,
-      {
-        id: newId,
-        type: GLOBAL_ENUM.ROSTER_ITEM,
-        name: nameTemp,
-        onDelete,
-      },
-    ]);
-    setNameTemp('');
-  };
-
-  const onChange = () => {
-    setNameTemp(event.target.value);
-    setError(false);
-  };
-
   return (
     <div className={styles.main}>
-      <Typography>{t('add_existing_person')}</Typography>
       <SearchList
         className={styles.item}
         clearOnSelect={false}
-        label={t('add_person')}
+        label={t('enter_person_name')}
         type={GLOBAL_ENUM.PERSON}
-        onClick={addExistingPerson}
+        onClick={addPerson}
         query={query}
         blackList={blackList}
+        allowCreate
+        withoutIcon
       />
-      <div className={styles.separator}>{t('or')}</div>
-      <Typography>{t('add_non_existing_person')}</Typography>
-      <TextField
-        label={t('full_name')}
-        onChange={onChange}
-        value={nameTemp}
-        error={error}
-      />
-      <IconButton
-        onClick={addPerson}
-        color="primary"
-        component="span"
-      >
-        <Icon icon="Add" />
-      </IconButton>
       <hr />
       <Typography style={{ marginTop: '16px' }}>
         {t('roster')}

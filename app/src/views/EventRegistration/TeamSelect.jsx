@@ -61,6 +61,7 @@ export default function TeamSelect(props) {
         onClick={onClick}
         query={query}
         allowCreate
+        withoutIcon
       />
     </div>
   );

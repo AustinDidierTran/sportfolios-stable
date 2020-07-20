@@ -22,7 +22,7 @@ export default function CustomStepperWithHooks(props) {
   return (
     <div className={styles.all}>
       <div className={styles.stepper}>
-        <Stepper activeStep={activeStep}>
+        <Stepper activeStep={activeStep} alternativeLabel>
           {steps.map(step => {
             const { label } = step;
             const stepProps = {};

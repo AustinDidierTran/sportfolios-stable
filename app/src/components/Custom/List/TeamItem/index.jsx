@@ -5,11 +5,21 @@ import { Avatar } from '../..';
 import { getInitialsFromName } from '../../../../utils/stringFormats/index';
 import { useTranslation } from 'react-i18next';
 import { goTo, ROUTES } from '../../../../actions/goTo';
+import styles from './TeamItem.module.css';
 
 export default function TeamItem(props) {
   const { t } = useTranslation();
 
-  const { id, secondary, onClick, selected, photoUrl, name } = props;
+  const {
+    id,
+    secondary,
+    onClick,
+    selected,
+    photoUrl,
+    name,
+    icon,
+    inverseColor,
+  } = props;
 
   const initials = useMemo(() => getInitialsFromName(name), [name]);
 
@@ -32,7 +42,20 @@ export default function TeamItem(props) {
       style={{ width: '100%' }}
     >
       <ListItemIcon>
-        <Avatar photoUrl={photoUrl} initials={initials}></Avatar>
+        {inverseColor ? (
+          <Avatar
+            className={styles.avatar}
+            photoUrl={photoUrl}
+            icon={icon}
+            initials={initials}
+          ></Avatar>
+        ) : (
+          <Avatar
+            photoUrl={photoUrl}
+            icon={icon}
+            initials={initials}
+          ></Avatar>
+        )}
       </ListItemIcon>
       <ListItemText
         primary={name}
