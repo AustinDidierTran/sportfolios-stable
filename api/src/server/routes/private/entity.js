@@ -78,25 +78,6 @@ router.get(`${BASE_URL}/members`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/eventInfos`, async ctx => {
-  const userId =
-    ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
-  const entity = await queries.eventInfos(ctx.query.id, userId);
-
-  if (entity) {
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
-});
-
 router.get(`${BASE_URL}/memberships`, async ctx => {
   const entity = await queries.getMemberships(ctx.query.id);
 
@@ -118,26 +99,6 @@ router.get(`${BASE_URL}/registered`, async ctx => {
   const entity = await queries.getRegistered(
     ctx.query.team_id,
     ctx.query.event_id,
-  );
-
-  if (entity) {
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
-});
-
-router.get(`${BASE_URL}/allTeamsRegistered`, async ctx => {
-  const entity = await queries.getAllRegistered(
-    ctx.query.eventId,
-    ctx.body.userInfo.id,
   );
 
   if (entity) {
@@ -186,14 +147,6 @@ router.get(`${BASE_URL}/generalInfos`, async ctx => {
       message: 'That record does not exist.',
     };
   }
-});
-
-router.get(`${BASE_URL}/options`, async ctx => {
-  const option = await queries.getOptions(ctx.query.eventId);
-  ctx.body = {
-    status: 'success',
-    data: option,
-  };
 });
 
 router.get(`${BASE_URL}/s3Signature`, async ctx => {
