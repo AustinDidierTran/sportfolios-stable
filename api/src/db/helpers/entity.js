@@ -541,10 +541,9 @@ async function updateRegistration(
   status,
 ) {
   return knex('event_rosters')
-    .update({ status })
+    .update({ invoice_id: invoiceId, status })
     .where({
       event_id: eventId,
-      invoice_id: invoiceId,
       roster_id: rosterId,
     });
 }

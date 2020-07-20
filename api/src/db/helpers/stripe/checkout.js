@@ -11,6 +11,9 @@ const {
   GLOBAL_ENUM,
 } = require('../../../../../common/enums');
 const { clearCart } = require('../shop');
+const {
+  INVOICE_PAID_ENUM,
+} = require('../../../server/utils/Stripe/checkout');
 
 const formatMetadata = metadata =>
   Object.keys(metadata).reduce((prev, curr) => {
@@ -317,15 +320,15 @@ const checkout = async (body, userId) => {
   const prices = await knex('cart_items').where({ user_id: userId });
 
   try {
-    await Promise.all(
+    const metadatas = await Promise.all(
       prices.map(async price => {
         const stripePriceId = price.stripe_price_id;
         const metadata = await getMetadata(stripePriceId);
-        const invoiceItem = await createInvoiceItem(
+        await createInvoiceItem(
           { price: stripePriceId, metadata },
           userId,
         );
-        return invoiceItem.id;
+        return metadata;
       }),
     );
 
@@ -337,9 +340,22 @@ const checkout = async (body, userId) => {
       { invoiceId, paymentMethodId },
       userId,
     );
+
     const chargeId = await paidInvoice.charge;
     const receiptUrl = await getReceipt({ chargeId, invoiceId });
     const transfers = await createTransfers(paidInvoice, userId);
+
+    await Promise.all(
+      metadatas.map(async metadata => {
+        if (Number(metadata.type) === 4) {
+          await INVOICE_PAID_ENUM.EVENT(
+            { rosterId: metadata.rosterId, eventId: metadata.id },
+            { id: paidInvoice.id, status: paidInvoice.status },
+          );
+        }
+      }),
+    );
+
     await clearCart(userId);
     /* eslint-disable-next-line */
     return { invoice: paidInvoice, receiptUrl, transfers };
