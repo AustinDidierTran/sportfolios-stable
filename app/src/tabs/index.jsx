@@ -66,18 +66,23 @@ export default function Tabs(props) {
       ];
     }
     if (l === TABS_ENUM.SETTINGS) {
-      if (role === ENTITIES_ROLE_ENUM.VIEWER) {
-        return prev;
+      if (
+        [
+          ENTITIES_ROLE_ENUM.ADMIN,
+          ENTITIES_ROLE_ENUM.EDITOR,
+        ].includes(role)
+      ) {
+        return [
+          ...prev,
+          {
+            component: Settings,
+            label: t('settings'),
+            icon: 'Settings',
+            value: TABS_ENUM.SETTINGS,
+          },
+        ];
       }
-      return [
-        ...prev,
-        {
-          component: Settings,
-          label: t('settings'),
-          icon: 'Settings',
-          value: TABS_ENUM.SETTINGS,
-        },
-      ];
+      return prev;
     }
     if (l === TABS_ENUM.SHOP) {
       return [

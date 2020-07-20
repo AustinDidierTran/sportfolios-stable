@@ -57,8 +57,8 @@ export default function EntitySettings(props) {
         return (
           <div className={styles.main}>
             <Description />
-            <AddOptionsEvent />
             <EventSettings />
+            <AddOptionsEvent />
             <TeamRegistered />
             <ManageRoles role={role} />
             <Card

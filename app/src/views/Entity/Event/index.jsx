@@ -21,6 +21,7 @@ export default function Event(props) {
 
   const states = TabsGenerator({
     list: [TABS_ENUM.EVENT_INFO, TABS_ENUM.SETTINGS],
+    role: basicInfos.role,
   });
 
   const OpenTab = useMemo(

@@ -7,11 +7,11 @@ const {
 const { ERROR_ENUM } = require('../../../../../common/errors');
 const { PAYMENT_METHOD_TYPE_ENUM } = require('./enums');
 
-const getCustomerId = async userId => {
+const getCustomerId = async paymentId => {
   const [{ customer_id = '' } = {}] = await knex
     .select('customer_id')
     .from('stripe_customer')
-    .where('user_id', userId);
+    .where('payment_method_id', paymentId);
   return customer_id;
 };
 
@@ -22,7 +22,8 @@ const getCustomer = async userId => {
   return customer;
 };
 
-const createCustomer = async (body, userId, paymentMethodId) => {
+const createCustomer = async (body, userId, paymentMethod) => {
+  const { id: paymentMethodId, last4 } = paymentMethod;
   const params = {
     address: {
       line1: body.line1,
@@ -49,6 +50,8 @@ const createCustomer = async (body, userId, paymentMethodId) => {
       user_id: userId,
       customer_id: customer.id,
       informations: customer,
+      payment_method_id: paymentMethodId,
+      last4,
     });
   } catch (err) {
     stripeErrorLogger(
@@ -70,7 +73,7 @@ const getOrCreateCustomer = async (body, userId) => {
 };
 
 const getPaymentMethods = async userId => {
-  const paymentMethods = await knex('stripe_payment_method').where(
+  const paymentMethods = await knex('stripe_customer').where(
     'user_id',
     userId,
   );
@@ -81,12 +84,12 @@ const getPaymentMethods = async userId => {
 const getPaymentMethodId = async userId => {
   const [{ payment_method_id } = {}] = await knex
     .select('payment_method_id')
-    .from('stripe_payment_method')
+    .from('stripe_customer')
     .where('user_id', userId);
   return payment_method_id;
 };
 
-const createPaymentMethod = async (body, userId) => {
+const createPaymentMethod = async body => {
   const { stripeToken } = body;
 
   const params = {
@@ -114,13 +117,7 @@ const createPaymentMethod = async (body, userId) => {
   }
 
   stripeLogger('Created Payment Method', paymentMethod.id);
-  await knex('stripe_payment_method').insert({
-    user_id: userId,
-    payment_method_id: paymentMethod.id,
-    last4: paymentMethod.card.last4,
-  });
-
-  return paymentMethod.id;
+  return { id: paymentMethod.id, last4: paymentMethod.card.last4 };
 };
 
 const addPaymentMethodCustomer = async (body, userId) => {
