@@ -8,13 +8,15 @@ export default function MessageAndButton(props) {
 
   return (
     <Paper title={title} style={{ textAlign: 'center' }}>
-      <Typography style={{ margin: '8px' }}>{message}</Typography>
+      <Typography style={{ marginTop: '16px', padding: '16px' }}>
+        {message}
+      </Typography>
       <Button
         size="small"
         variant="contained"
         endIcon={endIcon}
         style={{
-          margin: '8px',
+          marginBottom: '16px',
         }}
         onClick={onClick}
       >

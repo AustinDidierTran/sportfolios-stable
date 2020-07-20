@@ -74,6 +74,7 @@ export default {
     general: 'Général',
     general_informations: 'Informations générales',
     goal: 'Objectif',
+    go_back_to_login: 'Retourner à la connexion',
     have_an_account_signin:
       'Vous avez déjà un compte? Connectez-vous!',
     home: 'Accueil',
@@ -290,5 +291,11 @@ export default {
     registrations_closed_for_now: 'Inscriptions fermées',
     registrations_ended: 'Inscriptions terminées le',
     registrations_open_on: 'Les inscriptions ouvrent le',
+    registration_accepted:
+      "Félicitation! Vous avez été accepté à l'événement, vous pouvez aller à votre panier pour payer votre inscription!",
+    registration_pending:
+      'Votre inscription est en attente, vous allez reçevoir un courriel pour vous avertir lorsque votre demande sera traitée ',
+    registration_refused:
+      "Désolé, votre équipe n'est pas éligible pour cet événement vous avez été refusé",
   },
 };

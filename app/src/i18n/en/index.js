@@ -74,6 +74,7 @@ export default {
     general_informations: 'General informations',
     generate_account_link: 'Generate Account Link',
     goal: 'Goal',
+    go_back_to_login: 'Go back to login',
     have_an_account_signin: 'Already have an account? Sign in!',
     home: 'Home',
     infos: 'Infos',
@@ -284,5 +285,11 @@ export default {
     registrations_closed_for_now: 'Registrations are closed for now',
     registrations_ended: 'Registrations ended',
     registrations_open_on: 'Registrations open on',
+    registration_accepted:
+      'Congratulation! You have been accepted to the event you can now go to your cart to pay the registration for your team!',
+    registration_pending:
+      'Your acceptation is currently pending, you will receive an email when the event will adress your registration',
+    registration_refused:
+      'Sorry, your team is not elligible for this event your registration has been refused',
   },
 };

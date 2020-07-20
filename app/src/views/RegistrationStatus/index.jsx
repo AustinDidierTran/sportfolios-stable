@@ -24,8 +24,7 @@ export default function RegistrationStatus() {
   switch (status) {
     case REGISTRATION_STATUS_ENUM.ACCEPTED:
       values = {
-        message:
-          'Congratulation you have been accepted to the event you can now go to your cart to pay the registration for your team!',
+        message: t('registration_accepted'),
         onClick: goToCart,
         button: t('cart'),
         endIcon: 'ShoppingCart',
@@ -33,8 +32,7 @@ export default function RegistrationStatus() {
       break;
     case REGISTRATION_STATUS_ENUM.PENDING:
       values = {
-        message:
-          'Your acceptation is currently pending, you will receive an email when the event will accept your registration',
+        message: t('registration_pending'),
         onClick: returnHome,
         button: t('Home'),
         endIcon: 'Home',
@@ -42,8 +40,7 @@ export default function RegistrationStatus() {
       break;
     case REGISTRATION_STATUS_ENUM.REFUSED:
       values = {
-        message:
-          'Sorry, your team is not elligible for this event your registration has been refused',
+        message: t('registration_refused'),
         onClick: returnHome,
         button: t('Home'),
         endIcon: 'Home',
@@ -64,7 +61,6 @@ export default function RegistrationStatus() {
       onClick={values.onClick}
       endIcon={values.endIcon}
       message={values.message}
-      title={t('acceptation')}
     />
   );
 }
