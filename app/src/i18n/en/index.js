@@ -53,6 +53,7 @@ export default {
       'An email has just been sent to {{email}}. Please, go look at your inbox to confirm your email.',
     enter_person_name: 'Enter person name',
     enter_player_name: 'Enter player name',
+    enter_team_name: 'Enter team name',
     entity_not_found: 'Entity not found',
     event_is_full: 'Event is full, no place available',
     event_manager: 'Event Manager',
