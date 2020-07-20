@@ -4,17 +4,18 @@ import styles from './Signup.module.css';
 
 import { Container } from '../../components/Custom';
 import SignupCard from './SignupCard';
-// import DescriptionCard from './DescriptionCard';
 import logo from '../../img/bigLogo.png';
+import { useQuery } from '../../hooks/queries';
 
 export default function Signup() {
+  const { successRoute } = useQuery();
   return (
     <div className={styles.main}>
       <Container className={styles.container}>
         <div className={styles.logo}>
           <img className={styles.img} src={logo} />
         </div>
-        <SignupCard />
+        <SignupCard successRoute={successRoute} />
       </Container>
     </div>
   );

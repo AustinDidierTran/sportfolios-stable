@@ -123,7 +123,7 @@ export default function TabEventInfo() {
         eventId: id,
       }),
     );
-    if (!data.maximum_spots) {
+    if (!data && !data.maximum_spots) {
       setIsFull(false);
     } else {
       setIsFull(teams.length >= data.maximum_spots);
