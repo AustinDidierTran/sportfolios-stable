@@ -1,0 +1,56 @@
+.paper {
+  margin-top: -16px !important;
+  position: relative;
+}
+
+.media {
+  height: 300px;
+}
+
+.buttonDiv {
+  position: fixed;
+  display: flex;
+  bottom: 50px;
+  width: 100vw;
+  align-content: center;
+  justify-content: center;
+}
+
+.buttonDiv1 {
+  position: fixed;
+  display: flex;
+  bottom: 0px;
+  width: 100vw;
+  align-content: center;
+  justify-content: center;
+}
+
+.button {
+  flex: 1 1 auto;
+}
+
+.typo {
+  margin: 8px auto;
+}
+
+@media (min-width: 768px) {
+  .typo {
+    width: 700px;
+  }
+}
+
+@media (min-width: 768px) {
+  .media {
+    height: 400px;
+  }
+  .paper {
+    width: 700px;
+    margin: 0 auto;
+  }
+  .buttonDiv {
+    bottom: 0px;
+  }
+  .button {
+    flex: 0 0 375px;
+  }
+}

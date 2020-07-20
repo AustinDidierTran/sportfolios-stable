@@ -58,7 +58,7 @@ export default function ForgotPassword() {
   return (
     <div className={styles.main}>
       <form onSubmit={formik.handleSubmit}>
-        <Paper className={styles.card} title={t('forgot_password')}>
+        <Paper className={styles.card}>
           <CardContent>
             <TextField
               namespace="email"
@@ -75,17 +75,38 @@ export default function ForgotPassword() {
               variant="contained"
               className={styles.button}
               type="submit"
+              style={{ color: '#fff' }}
             >
               {t('send_password_recovery_email')}
             </Button>
           </CardActions>
           <Divider />
           <CardActions className={styles.linksContainer}>
-            <Link to={ROUTES.login}>
-              <Typography>{t('have_an_account_signin')}</Typography>
+            <Link
+              to={ROUTES.login}
+              style={{
+                textDecoration: 'none',
+                textAlign: 'center',
+                color: 'grey',
+                margin: '0 16px',
+              }}
+            >
+              <Typography style={{ fontSize: 12 }}>
+                {t('have_an_account_signin')}
+              </Typography>
             </Link>
-            <Link to={ROUTES.signup}>
-              <Typography>{t('no_account_signup')}</Typography>
+            <Link
+              to={ROUTES.signup}
+              style={{
+                textDecoration: 'none',
+                textAlign: 'center',
+                color: 'grey',
+                margin: '0 16px',
+              }}
+            >
+              <Typography style={{ fontSize: 12 }}>
+                {t('no_account_signup')}
+              </Typography>
             </Link>
           </CardActions>
         </Paper>

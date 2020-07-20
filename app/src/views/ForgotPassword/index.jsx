@@ -9,7 +9,7 @@ import { Container } from '../../components/Custom';
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import ForgotPasswordCard from './ForgotPasswordCard';
-import DescriptionCard from './DescriptionCard';
+import logo from '../../img/bigLogo.png';
 
 export default function Login() {
   const { dispatch } = useContext(Store);
@@ -89,7 +89,9 @@ export default function Login() {
   return (
     <div className={styles.main}>
       <Container className={styles.container}>
-        <DescriptionCard />
+        <div className={styles.logo}>
+          <img className={styles.img} src={logo} />
+        </div>
         <ForgotPasswordCard />
       </Container>
     </div>

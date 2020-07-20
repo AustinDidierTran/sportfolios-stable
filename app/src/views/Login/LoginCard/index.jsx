@@ -18,9 +18,10 @@ import { Paper } from '../../../components/Custom';
 import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
-export default function LoginCard() {
+export default function LoginCard(props) {
   const { dispatch } = useContext(Store);
   const { t } = useTranslation();
+  const { successRoute } = props;
 
   const validate = values => {
     const errors = {};
@@ -97,7 +98,11 @@ export default function LoginCard() {
             payload: userInfo,
           });
 
-          goTo(ROUTES.home);
+          if (successRoute) {
+            goTo(successRoute);
+          } else {
+            goTo(ROUTES.home);
+          }
         }
       }
     },

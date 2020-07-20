@@ -4,39 +4,21 @@ import { Paper } from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
 
 import { useTranslation } from 'react-i18next';
-import { formatRoute } from '../../../actions/goTo';
-import api from '../../../actions/api';
-import { useParams } from 'react-router-dom';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import styles from './Description.module.css';
 
-export default function Description() {
+export default function Description(props) {
   const { t } = useTranslation();
-
-  const { id: eventId } = useParams();
-
   const [text, setText] = useState('');
+  const { description } = props;
 
   useEffect(() => {
-    getDescription();
-  }, [eventId]);
+    setText(decodeURIComponent(description));
+  }, [props]);
 
-  const getDescription = async () => {
-    const { data } = await api(
-      formatRoute('/api/entity/generalInfos', null, {
-        entityId: eventId,
-      }),
-    );
-    if (data.description) {
-      setText(decodeURIComponent(data.description));
-    } else {
-      setText(null);
-    }
-  };
-
-  if (text) {
+  if (text && text != 'null') {
     return (
-      <Paper title="Description">
+      <Paper style={{ marginTop: 8 }} className={styles.paper}>
         <TextareaAutosize
           className={styles.textarea}
           placeholder="Description"
@@ -48,7 +30,7 @@ export default function Description() {
   }
 
   return (
-    <Paper title="Description">
+    <Paper className={styles.paper}>
       <Typography style={{ margin: '8px' }}>
         {t('no_description')}
       </Typography>

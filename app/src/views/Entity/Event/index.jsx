@@ -7,14 +7,11 @@ import styles from './Event.module.css';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '../../../hooks/queries';
 
-import BasicInfos from '../BasicInfos';
-
 import { goTo, ROUTES } from '../../../actions/goTo';
 import TabsGenerator, { TABS_ENUM } from '../../../tabs';
 
 export default function Event(props) {
   const { basicInfos } = props;
-
   const { id } = useParams();
   const query = useQuery();
 
@@ -36,12 +33,18 @@ export default function Event(props) {
     setEventState(s.value);
   };
 
+  if (states.length == 1) {
+    return (
+      <Container className={styles.container}>
+        <Paper className={styles.card}></Paper>
+        <OpenTab basicInfos={basicInfos} />
+      </Container>
+    );
+  }
+
   return (
     <Container className={styles.container}>
       <Paper className={styles.card}>
-        <Container className={styles.title}>
-          <BasicInfos basicInfos={basicInfos} />
-        </Container>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}
           indicatorColor="primary"

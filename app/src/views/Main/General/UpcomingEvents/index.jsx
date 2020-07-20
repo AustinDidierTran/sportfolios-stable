@@ -108,11 +108,9 @@ export default function UpcomingEvents(props) {
           ></Avatar>
         }
         action={
-          flag ? (
-            <IconButton aria-label="settings">
-              <MoreVertIcon style={flag ? {} : { color: '#fff' }} />
-            </IconButton>
-          ) : null
+          <IconButton aria-label="settings">
+            <MoreVertIcon style={flag ? {} : { color: '#fff' }} />
+          </IconButton>
         }
         title={event.name || ''}
         subheader={
@@ -120,6 +118,7 @@ export default function UpcomingEvents(props) {
         }
       />
       <CardMedia
+        onClick={() => goTo(ROUTES.entity, { id: eventId })}
         className={
           screenSize == SCREENSIZE_ENUM.xs
             ? classes.media
