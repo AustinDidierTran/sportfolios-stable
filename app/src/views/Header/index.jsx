@@ -31,7 +31,7 @@ export default function Header() {
     if (['cart', 'menu', 'organizationList'].includes(pth)) {
       setPath(pth);
     } else {
-      if (pth) {
+      if (pth && isAuthenticated) {
         const ent = await getEntity(pth);
         setPath(ent.type);
         setEntity(ent);

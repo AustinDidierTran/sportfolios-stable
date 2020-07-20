@@ -48,12 +48,20 @@ async function sendMail({ email, subject, text }) {
   }
 }
 
-async function sendConfirmationEmail({ email, token }) {
-  await sendMail({
-    email,
-    subject: 'Confirm your email address.',
-    text: `To confirm your email, please click on the following link: ${CLIENT_BASE_URL}/confirmEmail/${token}.`,
-  });
+async function sendConfirmationEmail({ email, token, successRoute }) {
+  if (successRoute) {
+    await sendMail({
+      email,
+      subject: 'Confirm your email address.',
+      text: `To confirm your email, please click on the following link: ${CLIENT_BASE_URL}/confirmEmail/${token}?successRoute=${successRoute} `,
+    });
+  } else {
+    await sendMail({
+      email,
+      subject: 'Confirm your email address.',
+      text: `To confirm your email, please click on the following link: ${CLIENT_BASE_URL}/confirmEmail/${token}.`,
+    });
+  }
 }
 
 async function sendRecoveryEmail({ email, token }) {

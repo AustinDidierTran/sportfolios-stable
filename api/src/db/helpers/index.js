@@ -241,7 +241,10 @@ const validateEmailIsUnique = async email => {
   return !users.length;
 };
 
-const sendNewConfirmationEmailAllIncluded = async email => {
+const sendNewConfirmationEmailAllIncluded = async (
+  email,
+  successRoute,
+) => {
   const confirmationEmailToken = generateToken();
 
   await createConfirmationEmailToken({
@@ -252,6 +255,7 @@ const sendNewConfirmationEmailAllIncluded = async email => {
   await sendConfirmationEmail({
     email,
     token: confirmationEmailToken,
+    successRoute,
   });
 };
 

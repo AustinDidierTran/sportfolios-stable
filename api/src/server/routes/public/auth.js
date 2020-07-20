@@ -44,15 +44,17 @@ router.post(`${BASE_URL}/login`, async ctx => {
 
 // Confirm email
 router.post(`${BASE_URL}/confirmEmail`, async ctx => {
-  const code = await queries.confirmEmail(ctx.request.body);
+  const res = await queries.confirmEmail(ctx.request.body);
+  const { status, token, userInfo } = res;
 
-  if (code === 200) {
+  if (status === 200) {
     ctx.status = 200;
     ctx.body = {
       status: 'success',
+      data: { token, userInfo },
     };
   } else {
-    ctx.status = code;
+    ctx.status = status;
     ctx.body = {
       status: 'error',
     };

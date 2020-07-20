@@ -18,8 +18,9 @@ import { Paper } from '../../../components/Custom';
 import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
-export default function SignupCard() {
+export default function SignupCard(props) {
   const { t } = useTranslation();
+  const { successRoute } = props;
 
   const validate = values => {
     const errors = {};
@@ -68,6 +69,7 @@ export default function SignupCard() {
           lastName,
           email,
           password,
+          successRoute,
         }),
       });
 

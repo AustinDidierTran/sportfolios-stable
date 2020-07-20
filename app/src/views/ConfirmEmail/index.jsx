@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { Container } from '../../components/Custom';
 import styles from './ConfirmEmail.module.css';
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
+import { useQuery } from '../../hooks/queries';
+import { Store, ACTION_ENUM } from '../../Store';
 
 export default function ConfirmEmail(props) {
   const {
@@ -11,6 +13,8 @@ export default function ConfirmEmail(props) {
       params: { token },
     },
   } = props;
+  const { successRoute } = useQuery();
+  const { dispatch } = useContext(Store);
 
   const confirmEmail = async () => {
     const res = await api('/api/auth/confirmEmail', {
@@ -19,10 +23,24 @@ export default function ConfirmEmail(props) {
         token,
       }),
     });
+    const { token: authToken, userInfo } = res.data;
 
     if (res.status < 300) {
       // Success!
-      goTo(ROUTES.confirmEmailSuccess);
+      dispatch({
+        type: ACTION_ENUM.LOGIN,
+        payload: authToken,
+      });
+      dispatch({
+        type: ACTION_ENUM.UPDATE_USER_INFO,
+        payload: userInfo,
+      });
+
+      if (successRoute) {
+        goTo(successRoute);
+      } else {
+        goTo(ROUTES.home);
+      }
     } else {
       // Failure...
       goTo(ROUTES.confirmEmailFailure);

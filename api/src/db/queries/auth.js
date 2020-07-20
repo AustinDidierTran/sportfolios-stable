@@ -22,7 +22,13 @@ const {
   validateEmailIsUnique,
 } = require('../helpers');
 
-const signup = async ({ firstName, lastName, email, password }) => {
+const signup = async ({
+  firstName,
+  lastName,
+  email,
+  password,
+  successRoute,
+}) => {
   // Validate email is not already taken
   const isUnique = await validateEmailIsUnique(email);
 
@@ -52,6 +58,7 @@ const signup = async ({ firstName, lastName, email, password }) => {
   await sendConfirmationEmail({
     email,
     token: confirmationEmailToken,
+    successRoute,
   });
 
   return { code: 200 };
@@ -103,7 +110,18 @@ const confirmEmail = async ({ token }) => {
 
   await confirmEmailHelper({ email });
 
-  return 200;
+  const authToken = generateToken();
+  const user_id = await getUserIdFromEmail(email);
+
+  await knex('user_token').insert({
+    user_id: user_id,
+    token_id: authToken,
+    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  });
+
+  const userInfo = await getBasicUserInfoFromId(user_id);
+
+  return { status: 200, token: authToken, userInfo };
 };
 
 const recoveryEmail = async ({ email }) => {
@@ -138,7 +156,7 @@ const recoverPassword = async ({ token, password }) => {
   return 200;
 };
 
-const resendConfirmationEmail = async ({ email }) => {
+const resendConfirmationEmail = async ({ email, successRoute }) => {
   const isEmailConfirmed = await validateEmailIsConfirmed(email);
 
   if (isEmailConfirmed) {
@@ -149,7 +167,7 @@ const resendConfirmationEmail = async ({ email }) => {
 
   await createConfirmationEmailToken({ email, token });
 
-  await sendConfirmationEmail({ email, token });
+  await sendConfirmationEmail({ email, token, successRoute });
 
   return 200;
 };
