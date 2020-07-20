@@ -18,6 +18,7 @@ export default function SearchList(props) {
     rejectedTypes = [],
     allowCreate,
     withoutIcon,
+    secondary,
   } = props;
 
   const { t } = useTranslation();
@@ -49,18 +50,18 @@ export default function SearchList(props) {
 
   const options = useMemo(() => {
     if (allowCreate) {
-      let secondary = '';
+      let uniqueSecondary = '';
       if (type === GLOBAL_ENUM.TEAM) {
-        secondary = t('create_new_team');
+        uniqueSecondary = t('create_new_team');
       }
       if (type === GLOBAL_ENUM.PERSON) {
-        secondary = t('add_new_person');
+        uniqueSecondary = t('add_new_player');
       }
       return [
         {
           name: query.value,
           type,
-          secondary,
+          secondary: uniqueSecondary,
           onClick: (...args) => {
             handleClick(...args);
           },
@@ -71,6 +72,7 @@ export default function SearchList(props) {
           .filter(entity => !rejectedTypes.includes(entity.type))
           .map(e => ({
             ...e,
+            secondary,
             onClick: (...args) => {
               handleClick(...args);
             },
@@ -81,6 +83,7 @@ export default function SearchList(props) {
       .filter(entity => !rejectedTypes.includes(entity.type))
       .map(e => ({
         ...e,
+        secondary,
         onClick: (...args) => {
           handleClick(...args);
         },
@@ -93,8 +96,9 @@ export default function SearchList(props) {
         <TextField
           {...query.inputProps}
           variant="outlined"
+          size="small"
           label={label}
-          style={{ width: '90%' }}
+          style={{ width: '100%' }}
         />
       ) : (
         <TextField
@@ -102,6 +106,7 @@ export default function SearchList(props) {
           variant="outlined"
           label={label}
           style={{ margin: '8px' }}
+          size="small"
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">

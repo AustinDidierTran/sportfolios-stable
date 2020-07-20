@@ -5,6 +5,7 @@ export default {
     acceptation: 'Acceptation',
     add_editor: 'Add editor',
     add_new_person: 'Add new person',
+    add_new_player: 'Add new player',
     add_payment_method: 'Add payment method',
     add_payment_options: 'Add payment options',
     add_to_cart: 'Add to cart',
@@ -51,6 +52,8 @@ export default {
     email_confirmed:
       'An email has just been sent to {{email}}. Please, go look at your inbox to confirm your email.',
     enter_person_name: 'Enter person name',
+    enter_player_name: 'Enter player name',
+    enter_team_name: 'Enter team name',
     entity_not_found: 'Entity not found',
     event_is_full: 'Event is full, no place available',
     event_manager: 'Event Manager',
@@ -74,6 +77,7 @@ export default {
     general_informations: 'General informations',
     generate_account_link: 'Generate Account Link',
     goal: 'Goal',
+    go_back_to_login: 'Go back to login',
     have_an_account_signin: 'Already have an account? Sign in!',
     home: 'Home',
     infos: 'Infos',
@@ -115,6 +119,7 @@ export default {
     payment_options: 'Payment options',
     person: 'Person',
     persons: 'Persons',
+    player: 'Player',
     players: 'Players',
     pre_ranking: 'Pre-ranking',
     price: 'Price',
@@ -284,5 +289,11 @@ export default {
     registrations_closed_for_now: 'Registrations are closed for now',
     registrations_ended: 'Registrations ended',
     registrations_open_on: 'Registrations open on',
+    registration_accepted:
+      'Congratulation! You have been accepted to the event you can now go to your cart to pay the registration for your team!',
+    registration_pending:
+      'Your acceptation is currently pending, you will receive an email when the event will adress your registration',
+    registration_refused:
+      'Sorry, your team is not elligible for this event your registration has been refused',
   },
 };

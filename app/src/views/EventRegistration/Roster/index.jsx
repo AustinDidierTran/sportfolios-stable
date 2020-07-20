@@ -28,6 +28,7 @@ export default function Roster(props) {
           person_id: person.id,
           type: GLOBAL_ENUM.ROSTER_ITEM,
           name: person.name,
+          secondary: t('player'),
           onDelete,
         },
       ]);
@@ -45,6 +46,7 @@ export default function Roster(props) {
           id: newId,
           type: GLOBAL_ENUM.ROSTER_ITEM,
           name: person.name,
+          secondary: t('player'),
           onDelete,
         },
       ]);
@@ -69,11 +71,12 @@ export default function Roster(props) {
       <SearchList
         className={styles.item}
         clearOnSelect={false}
-        label={t('enter_person_name')}
+        label={t('enter_player_name')}
         type={GLOBAL_ENUM.PERSON}
         onClick={addPerson}
         query={query}
         blackList={blackList}
+        secondary={t('player')}
         allowCreate
         withoutIcon
       />

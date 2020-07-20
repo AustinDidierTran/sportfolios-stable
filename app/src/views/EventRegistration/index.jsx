@@ -182,7 +182,7 @@ export default function EventRegistration() {
   ];
 
   return (
-    <Paper title="Event registration" style={{ textAlign: 'center' }}>
+    <Paper style={{ textAlign: 'center' }}>
       <StepperWithHooks
         steps={steps}
         finish={finish}
