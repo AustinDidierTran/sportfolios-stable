@@ -5,7 +5,11 @@ const {
   stripeErrorLogger,
   stripeLogger,
 } = require('../../../server/utils/logger');
-const { STRIPE_STATUS_ENUM } = require('../../../../../common/enums');
+const { getCreator } = require('../entity');
+const {
+  STRIPE_STATUS_ENUM,
+  GLOBAL_ENUM,
+} = require('../../../../../common/enums');
 const { clearCart } = require('../shop');
 
 const formatMetadata = metadata =>
@@ -132,6 +136,30 @@ const createTransfer = async (params, invoiceItemId) => {
   }
 };
 
+const getExternalAccount = async entityId => {
+  const [entity] = await knex('entities').where({ id: entityId });
+
+  if (Number(entity.type) === GLOBAL_ENUM.EVENT) {
+    const creator = await getCreator(entityId);
+
+    const [externalAccount] = await knex('stripe_accounts')
+      .select('*')
+      .where({
+        entity_id: creator.id,
+      });
+
+    return externalAccount;
+  }
+
+  const [externalAccount] = await knex('stripe_accounts')
+    .select('*')
+    .where({
+      entity_id: entityId,
+    });
+
+  return externalAccount;
+};
+
 const createTransfers = async invoice => {
   try {
     const transfers = await Promise.all(
@@ -141,20 +169,20 @@ const createTransfers = async invoice => {
           currency,
           invoice_item: invoiceItemId,
         } = item;
-
         const [invoiceItem] = await knex('stripe_invoice_item')
           .select('*')
           .where({ invoice_item_id: invoiceItemId });
 
-        const [externalAccount] = await knex('stripe_accounts')
-          .select('*')
-          .where({
-            entity_id: invoiceItem.metadata.seller_entity_id,
-          });
+        const externalAccount = await getExternalAccount(
+          invoiceItem.metadata.sellerId,
+        );
+
+        const stripeFees = amount * 0.029 + 30;
+        const transferedAmount = amount - stripeFees;
 
         const transfer = await createTransfer(
           {
-            amount,
+            amount: transferedAmount,
             currency,
             destination: externalAccount.account_id,
             description: externalAccount.account_id,
@@ -278,6 +306,7 @@ const getMetadata = async stripePriceId => {
 
 const checkout = async (body, userId) => {
   const { paymentMethodId } = body;
+
   const invoiceParams = {
     invoice: {
       auto_advance: 'false',
@@ -285,7 +314,6 @@ const checkout = async (body, userId) => {
       metadata: {},
     },
   };
-
   const prices = await knex('cart_items').where({ user_id: userId });
 
   try {

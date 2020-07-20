@@ -794,6 +794,7 @@ module.exports = {
   getAllEntities,
   getAllRolesEntity,
   getAllTypeEntities,
+  getCreator,
   getEntity,
   getEntityRole,
   getMembers,
