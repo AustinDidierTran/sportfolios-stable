@@ -129,17 +129,22 @@ export default function EventRegistration() {
           roster,
         }),
       });
+      if (status === REGISTRATION_STATUS_ENUM.ACCEPTED) {
+        await api('/api/shop/addCartItem', {
+          method: 'POST',
+          body: JSON.stringify({
+            stripePriceId: paymentOption,
+            metadata: {
+              sellerId: eventId,
+              buyerId: team.id,
+              rosterId: data.roster_id,
+              team,
+            },
+          }),
+        });
+      }
     }
 
-    if (status === REGISTRATION_STATUS_ENUM.ACCEPTED) {
-      await api('/api/shop/addCartItem', {
-        method: 'POST',
-        body: JSON.stringify({
-          stripePriceId: paymentOption,
-          metadata: { sellerId: eventId, buyerId: team.id, team },
-        }),
-      });
-    }
     goTo(ROUTES.registrationStatus, { status });
   };
 

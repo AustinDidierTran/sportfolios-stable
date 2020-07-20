@@ -21,12 +21,18 @@ const INVOICE_CREATED_ENUM = {
 };
 const INVOICE_PAID_ENUM = {
   EVENT: async (metadata, stripe) => {
-    const { roster_id: rosterId, event_id: eventId } = metadata;
-    const { invoice_id: invoiceId, status } = stripe;
-    await updateRegistration(rosterId, eventId, invoiceId, status);
+    const { rosterId, eventId } = metadata;
+    const { id: invoiceId, status } = stripe;
+
+    await updateRegistration({
+      rosterId,
+      eventId,
+      invoiceId,
+      status,
+    });
   },
   STORE: () => {},
   MEMBERSHIPS: () => {},
 };
 
-export { INVOICE_CREATED_ENUM, INVOICE_PAID_ENUM };
+module.exports = { INVOICE_CREATED_ENUM, INVOICE_PAID_ENUM };
