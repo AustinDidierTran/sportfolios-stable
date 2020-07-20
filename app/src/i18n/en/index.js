@@ -5,6 +5,7 @@ export default {
     acceptation: 'Acceptation',
     add_editor: 'Add editor',
     add_new_person: 'Add new person',
+    add_new_player: 'Add new player',
     add_payment_method: 'Add payment method',
     add_payment_options: 'Add payment options',
     add_to_cart: 'Add to cart',
@@ -51,6 +52,7 @@ export default {
     email_confirmed:
       'An email has just been sent to {{email}}. Please, go look at your inbox to confirm your email.',
     enter_person_name: 'Enter person name',
+    enter_player_name: 'Enter player name',
     entity_not_found: 'Entity not found',
     event_is_full: 'Event is full, no place available',
     event_manager: 'Event Manager',
@@ -116,6 +118,7 @@ export default {
     payment_options: 'Payment options',
     person: 'Person',
     persons: 'Persons',
+    player: 'Player',
     players: 'Players',
     pre_ranking: 'Pre-ranking',
     price: 'Price',
