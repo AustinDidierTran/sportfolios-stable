@@ -181,7 +181,7 @@ export default function TabEventInfo() {
           >
             {(event.quickDescription &&
               decodeURIComponent(event.quickDescription)) ||
-              '5v5 mixte, format À Bout de Soufle'}
+              '5v5 mixte sous la formule à bout de souffle!'}
           </Typography>
           <Typography
             variant="body2"
