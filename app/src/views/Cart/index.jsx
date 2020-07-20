@@ -40,14 +40,16 @@ export default function Cart() {
 
   if (items.length < 1) {
     return (
-      <MessageAndButton
-        button={t('home')}
-        onClick={() => {
-          goTo(ROUTES.home);
-        }}
-        endIcon="Home"
-        message={t('cart_empty_go_shop')}
-      ></MessageAndButton>
+      <Container>
+        <MessageAndButton
+          button={t('home')}
+          onClick={() => {
+            goTo(ROUTES.home);
+          }}
+          endIcon="Home"
+          message={t('cart_empty_go_shop')}
+        ></MessageAndButton>
+      </Container>
     );
   }
 

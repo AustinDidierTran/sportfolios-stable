@@ -257,7 +257,7 @@ const removeAllInstancesFromCart = async query => {
   }
 };
 
-const clearCart = async (query, userId) => {
+const clearCart = async userId => {
   try {
     await knex('cart_items')
       .where({ user_id: userId })

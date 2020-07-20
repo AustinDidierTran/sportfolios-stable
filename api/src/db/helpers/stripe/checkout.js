@@ -6,6 +6,7 @@ const {
   stripeLogger,
 } = require('../../../server/utils/logger');
 const { STRIPE_STATUS_ENUM } = require('../../../../../common/enums');
+const { clearCart } = require('../shop');
 
 const formatMetadata = metadata =>
   Object.keys(metadata).reduce((prev, curr) => {
@@ -311,8 +312,9 @@ const checkout = async (body, userId) => {
     const chargeId = await paidInvoice.charge;
     const receiptUrl = await getReceipt({ chargeId, invoiceId });
     const transfers = await createTransfers(paidInvoice, userId);
+    await clearCart(userId);
     /* eslint-disable-next-line */
-    return { invoice: paidInvoice, receipt: receiptUrl, transfers };
+    return { invoice: paidInvoice, receiptUrl, transfers };
   } catch (err) {
     stripeErrorLogger('CreateInvoice error', err);
     throw err;

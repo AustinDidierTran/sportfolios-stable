@@ -17,6 +17,7 @@ export default function ChoosePaymentMethod(props) {
     const pms = data.map(d => ({
       display: t('card_ending_with', { last4: d.last4 }),
       value: d.payment_method_id,
+      last4: d.last4,
     }));
     setPaymentMethods(pms);
     setIsLoading(false);
@@ -32,7 +33,23 @@ export default function ChoosePaymentMethod(props) {
   );
 
   const pay = async () => {
-    await checkout(paymentMethod.value);
+    const {
+      data: {
+        invoice: { amount_paid: amountPaid },
+        receiptUrl,
+      },
+      status,
+    } = await checkout(paymentMethod.value);
+
+    if (status === 200) {
+      goTo(ROUTES.orderProcessed, null, {
+        paid: amountPaid,
+        last4: paymentMethods.find(
+          p => p.value === paymentMethod.value,
+        ).last4,
+        receiptUrl,
+      });
+    }
   };
 
   if (isLoading) {
