@@ -102,7 +102,7 @@ export default function CustomStepper(props) {
               All steps completed - you&apos;re finished
             </Typography>
             <Button onClick={handleReset} className={styles.button}>
-              Reset
+              {t('reset')}
             </Button>
           </div>
         ) : (
@@ -119,7 +119,7 @@ export default function CustomStepper(props) {
                     variant="contained"
                     color="primary"
                   >
-                    Back
+                    {t('back')}
                   </Button>
                 </div>
 
@@ -130,7 +130,7 @@ export default function CustomStepper(props) {
                       color="primary"
                       onClick={handleSkip}
                     >
-                      Skip
+                      {t('skip')}
                     </Button>
                   </div>
                 )}
@@ -141,8 +141,8 @@ export default function CustomStepper(props) {
                     onClick={handleNext}
                   >
                     {activeStep === steps.length - 1
-                      ? 'Finish'
-                      : 'Next'}
+                      ? t('finish')
+                      : t('next')}
                   </Button>
                 </div>
               </div>
