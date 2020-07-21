@@ -31,8 +31,8 @@ const formatMetadata = metadata =>
   }, {});
 
 const createInvoiceItem = async (body, userId) => {
-  const { price, metadata } = body;
-  const customerId = await getCustomerId(userId);
+  const { price, metadata, paymentMethodId } = body;
+  const customerId = await getCustomerId(paymentMethodId);
   const params = {
     price,
     customer: customerId,
@@ -56,8 +56,8 @@ const createInvoiceItem = async (body, userId) => {
 };
 
 const createInvoice = async (body, userId) => {
-  const { invoice } = body;
-  const customerId = await getCustomerId(userId);
+  const { invoice, paymentMethodId } = body;
+  const customerId = await getCustomerId(paymentMethodId);
   const params = { ...invoice, customer: customerId };
 
   try {
@@ -318,21 +318,23 @@ const checkout = async (body, userId) => {
     },
   };
   const prices = await knex('cart_items').where({ user_id: userId });
-
   try {
     const metadatas = await Promise.all(
       prices.map(async price => {
         const stripePriceId = price.stripe_price_id;
         const metadata = await getMetadata(stripePriceId);
         await createInvoiceItem(
-          { price: stripePriceId, metadata },
+          { price: stripePriceId, metadata, paymentMethodId },
           userId,
         );
         return metadata;
       }),
     );
 
-    const invoice = await createInvoice({ invoiceParams }, userId);
+    const invoice = await createInvoice(
+      { invoiceParams, paymentMethodId },
+      userId,
+    );
     await stripe.customers.retrieve(invoice.customer);
     const invoiceId = invoice.id;
     await finalizeInvoice({ invoiceId }, userId);
