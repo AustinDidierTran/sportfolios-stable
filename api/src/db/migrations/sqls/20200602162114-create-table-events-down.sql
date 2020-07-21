@@ -16,4 +16,4 @@ DROP TABLE divisions;
 
 DROP TABLE events;
 
-DROP TABLE entities;
+DROP TABLE entities CASCADE;

@@ -112,6 +112,7 @@ export default {
     organization: 'Organization',
     organizations: 'Organizations',
     our_team: 'Our Team',
+    paid: 'Paid',
     password: 'Password',
     pay: 'Pay',
     payments: 'Payments',
