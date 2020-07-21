@@ -21,6 +21,7 @@ import {
 } from '@stripe/react-stripe-js';
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
+import { openSnackBar } from '../App/SnackBar';
 
 export default function AddPaymentMethod() {
   const stripe = useStripe();
@@ -87,6 +88,10 @@ export default function AddPaymentMethod() {
 
       const params = { ...values, stripeToken };
       try {
+        openSnackBar({
+          message: t('payment_method_added'),
+          severity: 'success',
+        });
         const res = await api('/api/stripe/paymentMethod', {
           method: 'POST',
           body: JSON.stringify(params),
