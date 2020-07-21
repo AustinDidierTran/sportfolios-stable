@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 import { Paper } from '../../../components/Custom';
 import MembershipTable from './MembershipTable';
@@ -17,9 +17,11 @@ import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
 import { Typography } from '@material-ui/core';
+import { Store, ACTION_ENUM } from '../../../Store';
 
 export default function AddMembership() {
   const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
 
   const { id } = useParams();
 
@@ -69,11 +71,11 @@ export default function AddMembership() {
       }),
     });
     if (res.status === 400) {
-      openSnackBar({
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
         message: t('membership_exist'),
         severity: 'error',
       });
-      setOpen(true);
       return;
     } else {
       getMemberships();

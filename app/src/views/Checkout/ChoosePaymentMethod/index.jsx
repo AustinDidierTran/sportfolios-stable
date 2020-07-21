@@ -10,7 +10,7 @@ export default function ChoosePaymentMethod(props) {
   const { paymentMethod } = props;
   const { t } = useTranslation();
   const [paymentMethods, setPaymentMethods] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getPaymentMethods = async () => {
     const { data } = await api('/api/stripe/paymentMethods');
@@ -20,7 +20,6 @@ export default function ChoosePaymentMethod(props) {
       last4: d.last4,
     }));
     setPaymentMethods(pms);
-    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -33,6 +32,7 @@ export default function ChoosePaymentMethod(props) {
   );
 
   const pay = async () => {
+    setIsLoading(true);
     const {
       data: {
         invoice: { amount_paid: amountPaid },
@@ -50,6 +50,7 @@ export default function ChoosePaymentMethod(props) {
         receiptUrl,
       });
     }
+    setIsLoading(false);
   };
 
   if (isLoading) {

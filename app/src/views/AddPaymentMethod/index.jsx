@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useFormik } from 'formik';
 
 import {
@@ -21,13 +21,16 @@ import {
 } from '@stripe/react-stripe-js';
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
-import { openSnackBar } from '../App/SnackBar';
+import { Store, ACTION_ENUM } from '../../Store';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default function AddPaymentMethod() {
+  const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
   const stripe = useStripe();
   const elements = useElements();
-  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const isANumber = number => isNaN(Number(number));
 
@@ -88,10 +91,7 @@ export default function AddPaymentMethod() {
 
       const params = { ...values, stripeToken };
       try {
-        openSnackBar({
-          message: t('payment_method_added'),
-          severity: 'success',
-        });
+        setIsLoading(true);
         const res = await api('/api/stripe/paymentMethod', {
           method: 'POST',
           body: JSON.stringify(params),
@@ -100,16 +100,30 @@ export default function AddPaymentMethod() {
         // onsubmit
 
         if (res.status === 200) {
+          setIsLoading(false);
+          dispatch({
+            type: ACTION_ENUM.SNACK_BAR,
+            message: t('payment_method_added'),
+            severity: 'success',
+          });
           goTo(ROUTES.checkout);
         }
 
         setIsSubmitting(false);
+        setIsLoading(false);
       } catch (err) {
+        setIsLoading(false);
         setIsSubmitting(false);
       }
     },
   });
-
+  if (isLoading) {
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <CircularProgress />
+      </div>
+    );
+  }
   return (
     <Container className={styles.main}>
       <Paper>

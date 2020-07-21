@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import { useEffect } from 'react';
+import { Store } from '../../../Store';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-export default function SnackBar(props) {
-  const { message, severity } = props;
+export default function SnackBar() {
+  const {
+    state: { message, severity },
+  } = useContext(Store);
 
   const [open, setOpen] = useState(false);
 
@@ -36,7 +38,4 @@ export default function SnackBar(props) {
       </Alert>
     </Snackbar>
   );
-}
-export function openSnackBar(props) {
-  SnackBar(props);
 }

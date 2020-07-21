@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
   Paper,
   StepperWithHooks,
@@ -21,9 +21,7 @@ import {
 import { formatPrice } from '../../utils/stringFormats';
 import styles from './EventRegistration.module.css';
 import { Typography } from '../../components/MUI';
-import { useContext } from 'react';
-import { Store, SCREENSIZE_ENUM } from '../../Store';
-import { openSnackBar } from '../App/SnackBar';
+import { Store, SCREENSIZE_ENUM, ACTION_ENUM } from '../../Store';
 
 const getEvent = async eventId => {
   const { data } = await api(
@@ -36,6 +34,7 @@ const getEvent = async eventId => {
 
 export default function EventRegistration() {
   const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
   const { id: eventId } = useParams();
   const [team, setTeam] = useState();
   const [paymentOption, setPaymentOption] = useState();
@@ -89,7 +88,8 @@ export default function EventRegistration() {
         setTeam(team);
         stepHook.handleCompleted(0);
       } else {
-        openSnackBar({
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
           message: t('team_already_registered'),
           severity: 'error',
         });
