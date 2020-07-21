@@ -22,25 +22,44 @@ export default function PaymentChips(props) {
 
   const { status, mobile } = props;
 
-  return (
-    <div className={classes.root}>
-      {status === INVOICE_STATUS_ENUM.PAID ? (
+  if (status === INVOICE_STATUS_ENUM.PAID) {
+    return (
+      <div className={classes.root}>
         <Chip
           label={t('paid')}
           icon={<AttachMoney />}
           color="primary"
           variant="outlined"
         />
-      ) : mobile ? (
-        <></>
-      ) : (
+      </div>
+    );
+  }
+
+  if (status === INVOICE_STATUS_ENUM.REFUNDED) {
+    return (
+      <div className={classes.root}>
         <Chip
-          label={t('not_paid')}
+          label={t('refunded')}
           icon={<AttachMoney />}
           color="secondary"
           variant="outlined"
         />
-      )}
+      </div>
+    );
+  }
+
+  if (mobile) {
+    return <></>;
+  }
+
+  return (
+    <div className={classes.root}>
+      <Chip
+        label={t('not_paid')}
+        icon={<AttachMoney />}
+        color="secondary"
+        variant="outlined"
+      />
     </div>
   );
 }

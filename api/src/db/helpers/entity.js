@@ -445,7 +445,7 @@ async function getAllRegistered(eventId, userId) {
         photoUrl: entity.photoUrl,
         rosterId: t.roster_id,
         teamId: t.team_id,
-        invoiceId: t.invoice_id,
+        invoiceItemId: t.invoice_item_id,
         status: t.status,
         emails,
       };
@@ -537,11 +537,14 @@ async function updateEntityPhoto(entityId, photo_url) {
 async function updateRegistration(
   rosterId,
   eventId,
-  invoiceId,
+  invoiceItemId,
   status,
 ) {
   return knex('event_rosters')
-    .update({ invoice_id: invoiceId, status })
+    .update({
+      invoice_item_id: invoiceItemId,
+      status,
+    })
     .where({
       event_id: eventId,
       roster_id: rosterId,
@@ -666,7 +669,7 @@ async function addMembership(
 async function addTeamToEvent(
   teamId,
   eventId,
-  invoiceId,
+  invoiceItemId,
   status,
   registration_status,
 ) {
@@ -681,7 +684,7 @@ async function addTeamToEvent(
         roster_id: roster.id,
         team_id: teamId,
         event_id: eventId,
-        invoice_id: invoiceId,
+        invoice_item_id: invoiceItemId,
         status,
         registration_status,
       })

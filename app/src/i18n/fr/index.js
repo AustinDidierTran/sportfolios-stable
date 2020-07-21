@@ -129,6 +129,8 @@ export default {
     price: 'Prix',
     phone_number: 'Numéro de téléphone',
     ranking: 'Classement',
+    refunded: 'Remboursé',
+
     results: 'Résultats',
     reset: 'Réinitialiser',
     return_home: "Retourner à la page d'accueil",
