@@ -1,13 +1,11 @@
+.paper {
+  margin-top: -16px !important;
+}
+
 .infos {
   display: grid !important;
   grid-template-columns: 2fr 1fr 2fr 1fr 2fr;
   grid-template-areas: 'name name name price price' 'description description description description description' '. minus quantity plus .' '. button button button .';
-  padding-bottom: 0px !important;
-  padding-top: 0px !important;
-}
-
-.paper {
-  height: 332px !important;
 }
 
 .name {
@@ -60,9 +58,9 @@
 
 @media (min-width: 600px) {
   .paper {
-    height: 400px !important;
+    margin-top: 0px !important;
   }
   .media {
-    height: 300px;
+    height: 400px;
   }
 }

@@ -34,7 +34,7 @@ export default function Event(props) {
     setEventState(s.value);
   };
 
-  if (states.length == 2) {
+  if (states.length == 1) {
     return (
       <Container className={styles.container}>
         <div className={styles.event}>
