@@ -16,10 +16,6 @@
   bottom: 50px;
   width: 100%;
   justify-content: center;
-  background-image: linear-gradient(
-    rgba(0, 0, 0, 0),
-    rgba(0, 0, 0, 0.5)
-  );
 }
 
 .buttonDiv1 {
