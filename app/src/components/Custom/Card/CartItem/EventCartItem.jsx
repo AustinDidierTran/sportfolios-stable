@@ -20,7 +20,7 @@ export default function EventCartItem(props) {
   } = props;
 
   return (
-    <Paper>
+    <Paper className={styles.paper}>
       <CardMedia className={styles.media} photoUrl={photoUrl} />
       <CardContent className={styles.infos}>
         <Typography gutterBottom variant="h5" className={styles.name}>

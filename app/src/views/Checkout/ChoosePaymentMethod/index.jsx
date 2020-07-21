@@ -63,7 +63,7 @@ export default function ChoosePaymentMethod(props) {
   if (!paymentMethods.length) {
     return (
       <div style={{ textAlign: 'center' }}>
-        <p>{t('no_payment_methods')}</p>
+        <p>{t('no_payment_method')}</p>
         <Button
           style={{ textAlign: 'center' }}
           onClick={() => goTo(ROUTES.addPaymentMethod)}

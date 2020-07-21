@@ -65,7 +65,9 @@ export default function Cart() {
           </div>
         ))}
       </div>
-
+      <br />
+      <br />
+      <br />
       <Button
         size="small"
         variant="contained"
