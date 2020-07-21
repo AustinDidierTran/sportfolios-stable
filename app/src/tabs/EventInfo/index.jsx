@@ -17,6 +17,7 @@ import moment from 'moment';
 import styles from './EventInfo.module.css';
 import { CardContent } from '@material-ui/core';
 import { Store } from '../../Store';
+import { openSnackBar } from '../../views/App/SnackBar';
 
 const getEvent = async eventId => {
   const { data } = await api(
@@ -38,6 +39,7 @@ export default function TabEventInfo() {
   const [options, setOptions] = useState([]);
   const [isFull, setIsFull] = useState(false);
   const [event, setEvent] = useState({});
+  const [canRegister, setCanRegister] = useState(false);
 
   const goToRegistration = () => {
     if (isAuthenticated) {
@@ -45,6 +47,10 @@ export default function TabEventInfo() {
     } else {
       goTo(ROUTES.login, null, {
         successRoute: `/eventRegistration/${id}`,
+      });
+      openSnackBar({
+        message: t('you_need_to_create_an_account'),
+        severity: 'infos',
       });
     }
   };
@@ -123,7 +129,7 @@ export default function TabEventInfo() {
         eventId: id,
       }),
     );
-    if (!data && !data.maximum_spots) {
+    if (!data || !data.maximum_spots) {
       setIsFull(false);
     } else {
       setIsFull(teams.length >= data.maximum_spots);
@@ -131,13 +137,21 @@ export default function TabEventInfo() {
   };
 
   const Problems = () => {
-    if (isFull) {
+    if (options.length < 1) {
+      return (
+        <Paper className={styles.typo}>
+          <Typography>{t('registrations_closed_for_now')}</Typography>
+        </Paper>
+      );
+    } else if (isFull) {
+      setCanRegister(false);
       return (
         <Paper className={styles.typo}>
           <Typography>{t('event_is_full')}</Typography>
         </Paper>
       );
     } else if (isLate) {
+      setCanRegister(false);
       return (
         <Paper className={styles.typo}>
           <Typography>
@@ -146,6 +160,7 @@ export default function TabEventInfo() {
         </Paper>
       );
     } else if (isEarly) {
+      setCanRegister(false);
       return (
         <Paper className={styles.typo}>
           <Typography>
@@ -153,13 +168,8 @@ export default function TabEventInfo() {
           </Typography>
         </Paper>
       );
-    } else if (options.length < 1) {
-      return (
-        <Paper className={styles.typo}>
-          <Typography>{t('registrations_closed_for_now')}</Typography>
-        </Paper>
-      );
     } else {
+      setCanRegister(true);
       return null;
     }
   };
@@ -170,7 +180,6 @@ export default function TabEventInfo() {
         <CardMedia
           onClick={() => goTo(ROUTES.entity, { id })}
           photoUrl={event.photoUrl || ''}
-          title="Paella dish"
           className={styles.media}
         />
         <CardContent>
@@ -201,21 +210,22 @@ export default function TabEventInfo() {
       </Paper>
       <Problems />
       <Description description={event.description} />
-      <div
-        className={
-          isAuthenticated ? styles.buttonDiv : styles.buttonDiv1
-        }
-      >
-        <Button
-          size="small"
-          variant="contained"
-          endIcon="SupervisedUserCircle"
-          style={{ margin: '16px' }}
-          onClick={goToRegistration}
-          className={styles.button}
-        >
-          {t('register')}
-        </Button>
+      <div className={styles.buttonDiv}>
+        {canRegister ? (
+          <Button
+            size="small"
+            variant="contained"
+            endIcon="SupervisedUserCircle"
+            style={{ margin: '16px' }}
+            onClick={goToRegistration}
+            className={styles.button}
+            hidden
+          >
+            {t('register')}
+          </Button>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

@@ -2,18 +2,13 @@ import React, { useState } from 'react';
 
 import { useFormInput } from '../../../../hooks/forms';
 import { Input, Paper, Button } from '../../../Custom';
+import { openSnackBar } from '../../../../views/App/SnackBar';
 import { List, ListItem } from '../../../MUI';
 import { useTranslation } from 'react-i18next';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import api from '../../../../actions/api';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 export default function AddPaymentOption(props) {
   const { fields, onAdd: onAddProps } = props;
@@ -21,8 +16,6 @@ export default function AddPaymentOption(props) {
   const { id: eventId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [display, setDisplay] = useState('');
 
   const values = fields.reduce(
     (prev, f) => [...prev, useFormInput(f.initialValue || '')],
@@ -61,8 +54,10 @@ export default function AddPaymentOption(props) {
     });
 
     if (start >= end) {
-      setDisplay(t('registration_closes_before_opening'));
-      setOpen(true);
+      openSnackBar({
+        message: t('registration_closes_before_opening'),
+        severity: 'error',
+      });
       setIsLoading(false);
       isValid = false;
     }
@@ -137,22 +132,6 @@ export default function AddPaymentOption(props) {
           {t('add')}
         </Button>
       </List>
-      <Snackbar
-        open={open}
-        autoHideDuration={3000}
-        onClose={() => {
-          setOpen(false);
-        }}
-      >
-        <Alert
-          onClose={() => {
-            setOpen(false);
-          }}
-          severity="error"
-        >
-          {display}
-        </Alert>
-      </Snackbar>
     </Paper>
   );
 }

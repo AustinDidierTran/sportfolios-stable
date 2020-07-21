@@ -34,12 +34,6 @@
 }
 
 @media (min-width: 768px) {
-  .typo {
-    width: 700px;
-  }
-}
-
-@media (min-width: 768px) {
   .media {
     border-radius: 4px 4px 0 0;
     height: 400px;

@@ -52,6 +52,7 @@ import { ROUTES } from '../../actions/goTo';
 import { Store } from '../../Store';
 import conf from '../../../../conf';
 import { SpeedDial } from '../../components/Custom';
+import SnackBar from './SnackBar/index';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 const stripePromise = loadStripe(
@@ -201,6 +202,7 @@ export default function App() {
                 </Switch>
               </div>
               <SpeedDial />
+              <SnackBar />
               <BottomNavigation />
             </div>
           </Router>

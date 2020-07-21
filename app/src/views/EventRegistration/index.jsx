@@ -8,8 +8,6 @@ import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import moment from 'moment';
 import { formatRoute, ROUTES, goTo } from '../../actions/goTo';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 import { useTranslation } from 'react-i18next';
 import {
   INVOICE_STATUS_ENUM,
@@ -17,10 +15,7 @@ import {
   GLOBAL_ENUM,
 } from '../../../../common/enums';
 import { formatPrice } from '../../utils/stringFormats';
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import { openSnackBar } from '../App/SnackBar';
 
 export default function EventRegistration() {
   const { t } = useTranslation();
@@ -29,7 +24,6 @@ export default function EventRegistration() {
   const [paymentOption, setPaymentOption] = useState();
   const [paymentOptions, setPaymentOptions] = useState([]);
   const [roster, setRoster] = useState([]);
-  const [open, setOpen] = useState(false);
 
   const getOptions = async () => {
     const { data } = await api(
@@ -74,7 +68,10 @@ export default function EventRegistration() {
         setTeam(team);
         stepHook.handleCompleted(0);
       } else {
-        setOpen(true);
+        openSnackBar({
+          message: t('team_already_registered'),
+          severity: 'error',
+        });
       }
     } else {
       setTeam(team);
@@ -188,22 +185,6 @@ export default function EventRegistration() {
         finish={finish}
         {...stepHook.stepperProps}
       />
-      <Snackbar
-        open={open}
-        autoHideDuration={3000}
-        onClose={() => {
-          setOpen(false);
-        }}
-      >
-        <Alert
-          onClose={() => {
-            setOpen(false);
-          }}
-          severity="error"
-        >
-          {t('team_already_registered')}
-        </Alert>
-      </Snackbar>
     </Paper>
   );
 }
