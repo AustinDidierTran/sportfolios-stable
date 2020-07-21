@@ -7,8 +7,10 @@ import styles from './Main.module.css';
 
 export default function Main() {
   return (
-    <Container className={styles.container}>
-      <General />
+    <Container>
+      <div className={styles.main}>
+        <General />
+      </div>
     </Container>
   );
 }

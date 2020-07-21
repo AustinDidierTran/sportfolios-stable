@@ -125,7 +125,6 @@ export default function UpcomingEvents(props) {
             : classes.media2
         }
         photoUrl={event.photoUrl || ''}
-        title="Paella dish"
       />
       <CardContent>
         <Typography

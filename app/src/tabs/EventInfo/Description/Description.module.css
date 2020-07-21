@@ -1,6 +1,7 @@
 .textarea {
   width: calc(100% - 32px);
   margin: 8px !important;
+  margin-bottom: 64px !important;
   resize: none;
   outline: none;
   font-family: 'Helvetica';

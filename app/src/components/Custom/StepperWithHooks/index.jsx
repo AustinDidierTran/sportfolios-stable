@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import styles from './Stepper.module.css';
 import { useTranslation } from 'react-i18next';
+import { ContainerBottomFixed } from '../../Custom';
 
 export default function CustomStepperWithHooks(props) {
   const {
@@ -51,43 +52,55 @@ export default function CustomStepperWithHooks(props) {
             <div className={styles.content}>
               {steps[activeStep].content}
             </div>
-            <div className={styles.buttons}>
-              <div className={styles.button}>
-                <Button
-                  disabled={activeStep === 0}
-                  onClick={handleBack}
-                  variant="contained"
-                  color="primary"
-                >
-                  {t('Back')}
-                </Button>
+            <ContainerBottomFixed>
+              <div className={styles.buttons}>
+                <div className={styles.button}>
+                  <Button
+                    disabled={activeStep === 0}
+                    onClick={handleBack}
+                    variant="contained"
+                    color="primary"
+                  >
+                    {t('Back')}
+                  </Button>
+                </div>
+                {finish && activeStep === steps.length - 1 ? (
+                  <div className={styles.button}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={finish}
+                      disabled={!completed.has(activeStep)}
+                      style={
+                        completed.has(activeStep)
+                          ? { color: 'white' }
+                          : {}
+                      }
+                    >
+                      {t('Finish')}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className={styles.button}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleNext}
+                      disabled={!completed.has(activeStep)}
+                      style={
+                        completed.has(activeStep)
+                          ? { color: 'white' }
+                          : {}
+                      }
+                    >
+                      {activeStep === steps.length - 1
+                        ? t('Finish')
+                        : t('Next')}
+                    </Button>
+                  </div>
+                )}
               </div>
-              {finish && activeStep === steps.length - 1 ? (
-                <div className={styles.button}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={finish}
-                    disabled={!completed.has(activeStep)}
-                  >
-                    {t('Finish')}
-                  </Button>
-                </div>
-              ) : (
-                <div className={styles.button}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleNext}
-                    disabled={!completed.has(activeStep)}
-                  >
-                    {activeStep === steps.length - 1
-                      ? t('Finish')
-                      : t('Next')}
-                  </Button>
-                </div>
-              )}
-            </div>
+            </ContainerBottomFixed>
           </div>
         )}
       </div>

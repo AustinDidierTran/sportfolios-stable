@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Paper, StepperWithHooks } from '../../components/Custom';
+import {
+  Paper,
+  StepperWithHooks,
+  CardMedia,
+} from '../../components/Custom';
 import PaymentOptionSelect from './PaymentOptionSelect';
 import TeamSelect from './TeamSelect';
 import Roster from './Roster';
@@ -17,10 +21,23 @@ import {
   GLOBAL_ENUM,
 } from '../../../../common/enums';
 import { formatPrice } from '../../utils/stringFormats';
+import styles from './EventRegistration.module.css';
+import { Typography } from '../../components/MUI';
+import { useContext } from 'react';
+import { Store, SCREENSIZE_ENUM } from '../../Store';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
+
+const getEvent = async eventId => {
+  const { data } = await api(
+    formatRoute('/api/entity/eventInfos', null, {
+      id: eventId,
+    }),
+  );
+  return data;
+};
 
 export default function EventRegistration() {
   const { t } = useTranslation();
@@ -30,6 +47,10 @@ export default function EventRegistration() {
   const [paymentOptions, setPaymentOptions] = useState([]);
   const [roster, setRoster] = useState([]);
   const [open, setOpen] = useState(false);
+  const [event, setEvent] = useState({});
+  const {
+    state: { screenSize },
+  } = useContext(Store);
 
   const getOptions = async () => {
     const { data } = await api(
@@ -181,29 +202,49 @@ export default function EventRegistration() {
     },
   ];
 
+  const getData = async () => {
+    const event = await getEvent(eventId);
+    setEvent(event);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
   return (
-    <Paper style={{ textAlign: 'center' }}>
-      <StepperWithHooks
-        steps={steps}
-        finish={finish}
-        {...stepHook.stepperProps}
-      />
-      <Snackbar
-        open={open}
-        autoHideDuration={3000}
-        onClose={() => {
-          setOpen(false);
-        }}
-      >
-        <Alert
+    <div style={{ marginTop: -4 }}>
+      <Paper className={styles.paper}>
+        <CardMedia
+          onClick={() => goTo(ROUTES.entity, { id })}
+          photoUrl={event.photoUrl || ''}
+          className={styles.media}
+        />
+        {screenSize == SCREENSIZE_ENUM.xs ? null : (
+          <div className={styles.typo}>
+            <Typography>{event.name || ''}</Typography>
+          </div>
+        )}
+        <StepperWithHooks
+          steps={steps}
+          finish={finish}
+          {...stepHook.stepperProps}
+        />
+        <Snackbar
+          open={open}
+          autoHideDuration={3000}
           onClose={() => {
             setOpen(false);
           }}
-          severity="error"
         >
-          {t('team_already_registered')}
-        </Alert>
-      </Snackbar>
-    </Paper>
+          <Alert
+            onClose={() => {
+              setOpen(false);
+            }}
+            severity="error"
+          >
+            {t('team_already_registered')}
+          </Alert>
+        </Snackbar>
+      </Paper>
+    </div>
   );
 }

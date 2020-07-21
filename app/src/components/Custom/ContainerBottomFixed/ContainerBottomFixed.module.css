@@ -1,0 +1,16 @@
+.container {
+  position: fixed;
+  bottom: 58px;
+  width: 100%;
+}
+
+.content {
+  margin: 8px auto;
+}
+
+@media (min-width: 768px) {
+  .container {
+    bottom: 10px;
+    width: 700px;
+  }
+}
