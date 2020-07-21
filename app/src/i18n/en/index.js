@@ -128,6 +128,7 @@ export default {
     people: 'People',
     ranking: 'Ranking',
     refund: 'Refund',
+    refunded: 'Refunded',
     results: 'Results',
     reset: 'Reset',
     return_home: 'Return home',

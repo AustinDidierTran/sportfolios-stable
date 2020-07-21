@@ -10,6 +10,7 @@ const INVOICE_STATUS_ENUM = {
   DELETED: 'deleted',
   OPEN: 'open',
   PAID: 'paid',
+  REFUNDED: 'refunded',
   UNCOLLECTIBLE: 'uncollectible',
   VOID: 'void',
 };

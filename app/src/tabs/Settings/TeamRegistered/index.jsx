@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
+import RefundButton from '../../../components/Custom/RefundButton';
 
 export default function TeamRegistered() {
   const { t } = useTranslation();
@@ -99,7 +100,7 @@ export default function TeamRegistered() {
                 {t('status')}
               </StyledTableCell>
               <StyledTableCell align="center">
-                {t('contact')}
+                {t('actions')}
               </StyledTableCell>
             </TableRow>
           </TableHead>
@@ -116,6 +117,9 @@ export default function TeamRegistered() {
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <MailToButton emails={team.emails} />
+                      <RefundButton
+                        invoiceItemId={team.invoiceItemId}
+                      />
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}

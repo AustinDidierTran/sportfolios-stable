@@ -2,12 +2,20 @@ const {
   addMember,
   updateRegistration,
 } = require('../../../db/queries/entity');
+const {
+  INVOICE_STATUS_ENUM,
+} = require('../../../../../common/enums');
 
 const INVOICE_CREATED_ENUM = {
   EVENT: async (metadata, stripe) => {
     const { roster_id: rosterId, event_id: eventId } = metadata;
-    const { invoice_id: invoiceId, status } = stripe;
-    await updateRegistration(rosterId, eventId, invoiceId, status);
+    const { invoiceItemId, status } = stripe;
+    await updateRegistration(
+      rosterId,
+      eventId,
+      invoiceItemId,
+      status,
+    );
   },
   STORE: () => {},
   MEMBERSHIPS: async () => {
@@ -22,12 +30,12 @@ const INVOICE_CREATED_ENUM = {
 const INVOICE_PAID_ENUM = {
   EVENT: async (metadata, stripe) => {
     const { rosterId, eventId } = metadata;
-    const { id: invoiceId, status } = stripe;
+    const { status, invoiceItemId } = stripe;
 
     await updateRegistration({
       rosterId,
       eventId,
-      invoiceId,
+      invoiceItemId,
       status,
     });
   },
@@ -35,4 +43,21 @@ const INVOICE_PAID_ENUM = {
   MEMBERSHIPS: () => {},
 };
 
-module.exports = { INVOICE_CREATED_ENUM, INVOICE_PAID_ENUM };
+const INVOICE_REFUND_ENUM = {
+  EVENT: async (metadata, stripe) => {
+    const { rosterId, eventId } = metadata;
+    const { invoiceItemId } = stripe;
+    await updateRegistration({
+      rosterId,
+      eventId,
+      invoiceItemId,
+      status: INVOICE_STATUS_ENUM.REFUNDED,
+    });
+  },
+};
+
+module.exports = {
+  INVOICE_CREATED_ENUM,
+  INVOICE_PAID_ENUM,
+  INVOICE_REFUND_ENUM,
+};

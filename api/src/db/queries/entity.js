@@ -160,12 +160,12 @@ async function updateEntityRole(body) {
 }
 
 async function updateRegistration(body) {
-  const { rosterId, eventId, invoiceId, status } = body;
+  const { rosterId, eventId, invoiceItemId, status } = body;
 
   return updateRegistrationHelper(
     rosterId,
     eventId,
-    invoiceId,
+    invoiceItemId,
     status,
   );
 }
