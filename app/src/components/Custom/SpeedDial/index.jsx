@@ -72,7 +72,7 @@ export default function SpeedDialTooltipOpen() {
         break;
 
       case VIEW_ENUM.HOME:
-        setHidden(false);
+        setHidden(true);
         return [
           {
             icon: 'Event',
