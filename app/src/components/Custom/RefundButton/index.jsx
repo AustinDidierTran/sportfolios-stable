@@ -19,6 +19,7 @@ export default function RefundButton(props) {
       icon="MoneyOff"
       tooltip={t('refund')}
       onClick={onClick}
+      style={{ color: '#18b393' }}
     />
   );
 }
