@@ -111,6 +111,7 @@ export default {
     organization: 'Organization',
     organizations: 'Organizations',
     our_team: 'Our Team',
+    paid: 'Paid',
     password: 'Password',
     pay: 'Pay',
     payment_method_added: 'Payment method added',

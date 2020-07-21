@@ -22,12 +22,14 @@ import {
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { openSnackBar } from '../App/SnackBar';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default function AddPaymentMethod() {
   const stripe = useStripe();
   const elements = useElements();
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const isANumber = number => isNaN(Number(number));
 
@@ -88,10 +90,6 @@ export default function AddPaymentMethod() {
 
       const params = { ...values, stripeToken };
       try {
-        openSnackBar({
-          message: t('payment_method_added'),
-          severity: 'success',
-        });
         const res = await api('/api/stripe/paymentMethod', {
           method: 'POST',
           body: JSON.stringify(params),
@@ -100,7 +98,12 @@ export default function AddPaymentMethod() {
         // onsubmit
 
         if (res.status === 200) {
+          setIsLoading(false);
           goTo(ROUTES.checkout);
+          openSnackBar({
+            message: t('payment_method_added'),
+            severity: 'success',
+          });
         }
 
         setIsSubmitting(false);
@@ -110,6 +113,15 @@ export default function AddPaymentMethod() {
     },
   });
 
+  if (isLoading) {
+    return (
+      <Container className={styles.main}>
+        <Paper>
+          <CircularProgress />
+        </Paper>
+      </Container>
+    );
+  }
   return (
     <Container className={styles.main}>
       <Paper>
