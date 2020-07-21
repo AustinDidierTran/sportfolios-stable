@@ -113,6 +113,7 @@ export default {
     organization: 'Organisation',
     organizations: 'Organisations',
     our_team: 'Notre Équipe',
+    paid: 'Payé',
     password: 'Mot de passe',
     pay: 'Payer',
     payment_option: 'Option de paiement',
