@@ -42,7 +42,6 @@ export default {
     currency: 'Currency',
     delete: 'Delete',
     select_payment_method: 'Select payment method',
-
     delete_confirmation_text: 'To delete, type {{name}}',
     donate: 'Donate',
     done: 'Done',
@@ -112,9 +111,9 @@ export default {
     organization: 'Organization',
     organizations: 'Organizations',
     our_team: 'Our Team',
-    paid: 'Paid',
     password: 'Password',
     pay: 'Pay',
+    payment_method_added: 'Payment method added',
     payments: 'Payments',
     payment_option_exist: 'Payment option exist',
     payment_options: 'Payment options',
@@ -161,6 +160,8 @@ export default {
     unsupported_language: 'Unsupported language',
     valid_until: 'Valid until',
     viewer: 'Viewer',
+    you_need_to_create_an_account:
+      'You need to create your account first!',
     you_paid_with: 'You paid with',
     your_upcoming_events: 'Your Upcoming Events',
     your_total_is: 'Your total is',

@@ -116,6 +116,7 @@ export default {
     paid: 'Payé',
     password: 'Mot de passe',
     pay: 'Payer',
+    payment_method_added: 'Option de paiement ajoutée',
     payment_option: 'Option de paiement',
     payment_options: 'Options de paiements',
     payment_option_exist: 'Option de paiement existante',
@@ -162,6 +163,8 @@ export default {
     unsupported_language: 'Langue non supportée',
     valid_until: "Valide jusqu'au",
     viewer: 'Visiteur',
+    you_need_to_create_an_account:
+      "ieVous devez créer votre compte d'abord",
     you_paid_with: 'Vous avez payé avec',
     your_total_is: 'Votre total est de',
     your_upcoming_events: 'Vos prochains événements',

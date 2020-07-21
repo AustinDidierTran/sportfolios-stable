@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
 import { Paper, Card } from '../../../components/Custom';
+import { openSnackBar } from '../../../views/App/SnackBar';
 
 import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 import { CARD_TYPE_ENUM } from '../../../../../common/enums';
 import moment from 'moment';
 import styles from './EventSettings.module.css';
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 export default function EventSettings() {
   const { t } = useTranslation();
-
-  const [open, setOpen] = useState(false);
 
   const { id: eventId } = useParams();
 
@@ -74,7 +68,10 @@ export default function EventSettings() {
         eventEnd,
       }),
     });
-    setOpen(true);
+    openSnackBar({
+      message: t('informations_saved'),
+      severity: 'success',
+    });
     getInfos();
   };
 
@@ -84,22 +81,6 @@ export default function EventSettings() {
         items={{ fields, onSave }}
         type={CARD_TYPE_ENUM.EVENT_SETTINGS}
       />
-      <Snackbar
-        open={open}
-        autoHideDuration={3000}
-        onClose={() => {
-          setOpen(false);
-        }}
-      >
-        <Alert
-          onClose={() => {
-            setOpen(false);
-          }}
-          severity="success"
-        >
-          {t('informations_saved')}
-        </Alert>
-      </Snackbar>
     </Paper>
   );
 }

@@ -16,13 +16,7 @@ import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 import { Typography } from '@material-ui/core';
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 export default function AddMembership() {
   const { t } = useTranslation();
@@ -31,7 +25,6 @@ export default function AddMembership() {
 
   const [memberships, setMemberships] = useState([]);
   const [data, setData] = useState([]);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     getMemberships();
@@ -76,6 +69,10 @@ export default function AddMembership() {
       }),
     });
     if (res.status === 400) {
+      openSnackBar({
+        message: t('membership_exist'),
+        severity: 'error',
+      });
       setOpen(true);
       return;
     } else {
@@ -187,22 +184,6 @@ export default function AddMembership() {
             onDelete={onDelete}
             onAdd={onAdd}
           ></MembershipTable>
-          <Snackbar
-            open={open}
-            autoHideDuration={3000}
-            onClose={() => {
-              setOpen(false);
-            }}
-          >
-            <Alert
-              onClose={() => {
-                setOpen(false);
-              }}
-              severity="error"
-            >
-              {t('membership_exist')}
-            </Alert>
-          </Snackbar>
         </>
       )}
     </Paper>
