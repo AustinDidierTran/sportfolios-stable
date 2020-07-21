@@ -165,12 +165,11 @@ export default function TabEventInfo() {
   };
 
   return (
-    <div>
+    <div className={styles.event}>
       <Paper className={styles.paper}>
         <CardMedia
           onClick={() => goTo(ROUTES.entity, { id })}
           photoUrl={event.photoUrl || ''}
-          title="Paella dish"
           className={styles.media}
         />
         <CardContent>

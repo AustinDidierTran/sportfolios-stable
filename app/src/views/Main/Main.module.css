@@ -1,19 +1,14 @@
-.container {
+.main {
   display: grid !important;
   grid-template-areas: 'general';
   grid-template-columns: 1fr;
   column-gap: 8px;
   row-gap: 8px;
+  margin: 0 auto;
 }
 
 @media (min-width: 768px) {
-  .container {
-    display: grid !important;
-    grid-template-areas: 'general';
-    grid-template-columns: 1fr;
-    column-gap: 8px;
-    row-gap: 8px;
-
+  .main {
     width: 700px !important;
   }
 }

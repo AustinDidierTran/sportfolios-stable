@@ -30,6 +30,11 @@ export default function Header() {
 
     if (['cart', 'menu', 'organizationList'].includes(pth)) {
       setPath(pth);
+    } else if (['eventRegistration'].includes(pth)) {
+      const id = location.pathname.split('/')[2] || '';
+      const ent = await getEntity(id);
+      setPath(ent.type);
+      setEntity(ent);
     } else {
       if (pth && isAuthenticated) {
         const ent = await getEntity(pth);
