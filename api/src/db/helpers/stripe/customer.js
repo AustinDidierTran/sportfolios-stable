@@ -77,7 +77,6 @@ const getPaymentMethods = async userId => {
     'user_id',
     userId,
   );
-
   return paymentMethods;
 };
 

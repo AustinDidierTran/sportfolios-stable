@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 import { Paper, Card } from '../../../components/Custom';
-import { openSnackBar } from '../../../views/App/SnackBar';
 
 import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
@@ -10,9 +9,11 @@ import { useParams } from 'react-router-dom';
 import { CARD_TYPE_ENUM } from '../../../../../common/enums';
 import moment from 'moment';
 import styles from './EventSettings.module.css';
+import { Store, ACTION_ENUM } from '../../../Store';
 
 export default function EventSettings() {
   const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
 
   const { id: eventId } = useParams();
 
@@ -68,7 +69,8 @@ export default function EventSettings() {
         eventEnd,
       }),
     });
-    openSnackBar({
+    dispatch({
+      type: ACTION_ENUM.SNACK_BAR,
       message: t('informations_saved'),
       severity: 'success',
     });
