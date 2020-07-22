@@ -27,6 +27,33 @@ export const formatDate = (moment, format = 'LL') => {
   return moment.format(format);
 };
 
+export const formatIntervalDate = (start, end) => {
+  let word = 'to';
+  if (localStorage.getItem('i18nextLng') === 'fr') {
+    word = 'au';
+  }
+
+  if (!start.isValid() || !end.isValid() || !start || !end) {
+    return '';
+  }
+
+  if (start.format('YYYY-MM-DD') === end.format('YYYY-MM-DD')) {
+    return formatDate(start);
+  }
+
+  if (start.year() != end.year()) {
+    return `${formatDate(start)} ${word} ${formatDate(end)} `;
+  }
+  if (start.month() != end.month()) {
+    return `${formatDate(start).split(' ')[0]} ${
+      formatDate(start).split(' ')[1]
+    } ${word} ${formatDate(end)} `;
+  }
+  return `${formatDate(start).split(' ')[0]} ${word} ${formatDate(
+    end,
+  )} `;
+};
+
 export const getEntityTypeName = type => {
   if (type === GLOBAL_ENUM.PERSON) {
     return 'person';
