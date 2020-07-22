@@ -27,7 +27,15 @@ export default function Header() {
   const fetchData = async () => {
     const pth = location.pathname.split('/')[1] || '';
 
-    if (['cart', 'menu', 'organizationList'].includes(pth)) {
+    if (
+      [
+        'cart',
+        'menu',
+        'organizationList',
+        'addPaymentMethod',
+        'checkout',
+      ].includes(pth)
+    ) {
       setPath(pth);
     } else if (['eventRegistration'].includes(pth)) {
       const id = location.pathname.split('/')[2] || '';
@@ -63,12 +71,36 @@ export default function Header() {
           />
         );
 
+      case 'addPaymentMethod':
+        return (
+          <Default
+            Item1={() => (
+              <Typography style={{ fontSize: '24px' }}>
+                {'Checkout'}
+              </Typography>
+            )}
+            Item4={() => <CartIcon />}
+          />
+        );
+
       case 'menu':
         return (
           <Default
             Item1={() => (
               <Typography style={{ fontSize: '24px' }}>
                 {'Menu'}
+              </Typography>
+            )}
+            Item4={() => <CartIcon />}
+          />
+        );
+
+      case 'checkout':
+        return (
+          <Default
+            Item1={() => (
+              <Typography style={{ fontSize: '24px' }}>
+                {'Checkout'}
               </Typography>
             )}
             Item4={() => <CartIcon />}

@@ -7,6 +7,7 @@ import { CircularProgress } from '@material-ui/core';
 import { checkout } from '../../../utils/stripe';
 import styles from './ChoosePaymentMethod.module.css';
 import logo from '../../../img/bigLogo.png';
+import { Typography } from '../../../components/MUI';
 
 export default function ChoosePaymentMethod(props) {
   const { paymentMethod } = props;
@@ -22,6 +23,7 @@ export default function ChoosePaymentMethod(props) {
       last4: d.last4,
     }));
     setPaymentMethods(pms);
+    if (paymentMethod) paymentMethod.changeDefault(pms[0].value);
   };
 
   useEffect(() => {
@@ -80,6 +82,10 @@ export default function ChoosePaymentMethod(props) {
     );
   }
 
+  if (!paymentMethod.value) {
+    return <></>;
+  }
+
   return (
     <div style={{ paddingBottom: 16, textAlign: 'center' }}>
       <RadioGroup
@@ -90,13 +96,20 @@ export default function ChoosePaymentMethod(props) {
       />
       <br />
       <Button
-        style={{ textAlign: 'center' }}
+        style={{
+          textAlign: 'center',
+          backgroundColor: paymentMethods.length
+            ? 'lightGrey'
+            : 'primary',
+        }}
         onClick={() => goTo(ROUTES.addPaymentMethod)}
       >
         {t('add_payment_method')}
       </Button>
-      <br />
-      <br />
+
+      <div style={{ color: 'gray', margin: '8px auto' }}>
+        <Typography style={{ fontSize: 12 }}>{t('or')}</Typography>
+      </div>
       <Button disabled={paymentDisabled} onClick={pay}>
         Payer
       </Button>
