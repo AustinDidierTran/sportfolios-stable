@@ -15,7 +15,7 @@ import { formatRoute, goTo, ROUTES } from '../../../../actions/goTo';
 import api from '../../../../actions/api';
 import CardMedia from '../../../../components/Custom/CardMedia';
 import moment from 'moment';
-import { formatDate } from '../../../../utils/stringFormats';
+import { formatIntervalDate } from '../../../../utils/stringFormats';
 import { Button, Avatar } from '../../../../components/Custom';
 import { useContext } from 'react';
 import { Store, SCREENSIZE_ENUM } from '../../../../Store';
@@ -143,11 +143,10 @@ export default function UpcomingEvents(props) {
           component="p"
           align="left"
         >
-          {event.startDate && event.endDate
-            ? `${
-                formatDate(moment(event.startDate)).split(' ')[0]
-              } au ${formatDate(moment(event.endDate))} `
-            : ''}
+          {formatIntervalDate(
+            moment(event.startDate),
+            moment(event.endDate),
+          )}
         </Typography>
         <Typography
           variant="body2"

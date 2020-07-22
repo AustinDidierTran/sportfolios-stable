@@ -10,7 +10,10 @@ import { Typography } from '../../components/MUI';
 import { useTranslation } from 'react-i18next';
 import Description from './Description';
 import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
-import { formatDate } from '../../utils/stringFormats';
+import {
+  formatIntervalDate,
+  formatDate,
+} from '../../utils/stringFormats';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import moment from 'moment';
@@ -34,7 +37,6 @@ export default function TabEventInfo() {
   const {
     state: { authToken },
   } = useContext(Store);
-  const lang = localStorage.getItem('i18nextLng');
   const isAuthenticated = Boolean(authToken);
   const [options, setOptions] = useState([]);
   const [isFull, setIsFull] = useState(false);
@@ -105,18 +107,10 @@ export default function TabEventInfo() {
   }, []);
 
   const getDate = () => {
-    if (event.startDate && event.endDate) {
-      if (lang == 'fr') {
-        return `${
-          formatDate(moment(event.startDate)).split(' ')[0]
-        } au ${formatDate(moment(event.endDate))} `;
-      } else {
-        return `${
-          formatDate(moment(event.startDate)).split(',')[0]
-        } to ${formatDate(moment(event.endDate))} `;
-      }
-    }
-    return '';
+    return formatIntervalDate(
+      moment(event.startDate),
+      moment(event.endDate),
+    );
   };
 
   const getIsFull = async () => {
