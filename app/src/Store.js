@@ -117,6 +117,7 @@ function reducer(state, action) {
         ...state,
         message: action.message,
         severity: action.severity,
+        time: Date.now(),
       };
     }
     case ACTION_ENUM.UPDATE_USER_INFO: {
