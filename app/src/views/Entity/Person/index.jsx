@@ -11,7 +11,7 @@ export default function Person(props) {
   const [eventState, setEventState] = useState(TABS_ENUM.ABOUT);
 
   const states = TabsGenerator({
-    list: [TABS_ENUM.ABOUT, TABS_ENUM.SETTINGS],
+    list: [TABS_ENUM.ABOUT],
     role: basicInfos.role,
   });
 
