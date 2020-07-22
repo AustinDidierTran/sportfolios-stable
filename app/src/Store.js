@@ -54,6 +54,7 @@ export const ACTION_ENUM = {
   CLEAR_USER_INFO: 'clear_user_info',
   LOGIN: 'login',
   LOGOUT: 'logout',
+  SNACK_BAR: 'snack_bar',
   UPDATE_PROFILE_PICTURE: 'update_profile_picture',
   UPDATE_STORE_ITEM_PICTURE: 'update_store_item_picture',
   UPDATE_CART: 'update_cart',
@@ -111,6 +112,14 @@ function reducer(state, action) {
       localStorage.removeItem('userInfo');
       return { ...state, authToken: null, userInfo: {} };
     }
+    case ACTION_ENUM.SNACK_BAR: {
+      return {
+        ...state,
+        message: action.message,
+        severity: action.severity,
+        time: Date.now(),
+      };
+    }
     case ACTION_ENUM.UPDATE_USER_INFO: {
       localStorage.setItem(
         'userInfo',
@@ -128,7 +137,6 @@ function reducer(state, action) {
     case ACTION_ENUM.UPDATE_CART: {
       return { ...state, cart: action.payload };
     }
-
     default:
       return state;
   }

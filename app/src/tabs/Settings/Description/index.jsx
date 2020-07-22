@@ -133,6 +133,7 @@ export default function Description() {
         endIcon="Edit"
         style={{ margin: '8px' }}
         onClick={onEdit}
+        className={styles.button}
       >
         {t('edit')}
       </Button>

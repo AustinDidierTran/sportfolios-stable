@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import { useFormInput } from '../../../../hooks/forms';
 import { Input, Paper, Button } from '../../../Custom';
-import { openSnackBar } from '../../../../views/App/SnackBar';
 import { List, ListItem } from '../../../MUI';
 import { useTranslation } from 'react-i18next';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import api from '../../../../actions/api';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
+import { Store, ACTION_ENUM } from '../../../../Store';
 
 export default function AddPaymentOption(props) {
   const { fields, onAdd: onAddProps } = props;
   const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
   const { id: eventId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +55,8 @@ export default function AddPaymentOption(props) {
     });
 
     if (start >= end) {
-      openSnackBar({
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
         message: t('registration_closes_before_opening'),
         severity: 'error',
       });
