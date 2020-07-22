@@ -1,8 +1,7 @@
 .paper {
   position: relative;
   text-align: center;
-  height: calc(100vh - 110px);
-  padding-bottom: 64px !important;
+  padding-bottom: 160px !important;
 }
 
 .media {
@@ -47,13 +46,12 @@
 @media (min-width: 768px) {
   .media {
     border-radius: 4px 4px 0 0;
-    height: 400px;
+    height: 300px;
   }
   .paper {
     width: 700px;
     margin-top: 4px !important;
     margin: 0 auto;
-    height: calc(100vh - 64px);
   }
   .buttonDiv {
     bottom: 0px;
