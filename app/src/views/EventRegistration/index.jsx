@@ -24,6 +24,7 @@ import { Typography } from '../../components/MUI';
 import { useContext } from 'react';
 import { Store, SCREENSIZE_ENUM } from '../../Store';
 import { openSnackBar } from '../App/SnackBar';
+import { Container } from '@material-ui/core';
 
 const getEvent = async eventId => {
   const { data } = await api(
@@ -220,11 +221,13 @@ export default function EventRegistration() {
             <Typography>{event.name || ''}</Typography>
           </div>
         )}
-        <StepperWithHooks
-          steps={steps}
-          finish={finish}
-          {...stepHook.stepperProps}
-        />
+        <Container>
+          <StepperWithHooks
+            steps={steps}
+            finish={finish}
+            {...stepHook.stepperProps}
+          />
+        </Container>
       </Paper>
     </div>
   );
