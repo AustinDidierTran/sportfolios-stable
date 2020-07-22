@@ -19,7 +19,6 @@ import {
   GLOBAL_ENUM,
 } from '../../../../common/enums';
 import { formatPrice } from '../../utils/stringFormats';
-import { openSnackBar } from '../App/SnackBar';
 import styles from './EventRegistration.module.css';
 import { Typography } from '../../components/MUI';
 import { useContext } from 'react';
