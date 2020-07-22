@@ -23,7 +23,7 @@ export default function ChoosePaymentMethod(props) {
       last4: d.last4,
     }));
     setPaymentMethods(pms);
-    paymentMethod.changeDefault(pms[0].value);
+    if (paymentMethod) paymentMethod.changeDefault(pms[0].value);
   };
 
   useEffect(() => {
