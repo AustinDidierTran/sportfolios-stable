@@ -60,7 +60,7 @@ export default function ChoosePaymentMethod(props) {
   if (isLoading) {
     return (
       <div style={{ textAlign: 'center' }}>
-        <CircularProgress />
+        <CircularProgress style={{ marginTop: '32px' }} />
       </div>
     );
   }

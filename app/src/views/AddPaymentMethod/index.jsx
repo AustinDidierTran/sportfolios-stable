@@ -97,7 +97,6 @@ export default function AddPaymentMethod() {
           body: JSON.stringify(params),
         });
         setIsSubmitting(true);
-        // onsubmit
 
         if (res.status === 200) {
           setIsLoading(false);
@@ -119,7 +118,7 @@ export default function AddPaymentMethod() {
   });
   if (isLoading) {
     return (
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center', margin: '32px' }}>
         <CircularProgress />
       </div>
     );

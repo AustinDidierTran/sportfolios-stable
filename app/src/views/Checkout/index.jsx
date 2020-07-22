@@ -19,9 +19,9 @@ export default function Checkout() {
 
   if (isLoading) {
     return (
-      <Container className={styles.items}>
-        <CircularProgress />
-      </Container>
+      <div style={{ textAlign: 'center' }}>
+        <CircularProgress style={{ marginTop: '32px' }} />
+      </div>
     );
   }
 

@@ -9,6 +9,7 @@ import api from '../../../../actions/api';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import { Store, ACTION_ENUM } from '../../../../Store';
+import styles from './AddPaymentOption.module.css';
 
 export default function AddPaymentOption(props) {
   const { fields, onAdd: onAddProps } = props;
@@ -27,6 +28,8 @@ export default function AddPaymentOption(props) {
   };
 
   const validate = () => {
+    setIsLoading(true);
+
     let isValid = true;
     const price = Number(values[1].value) * 100;
     const startDate = values[2].value;
@@ -60,9 +63,9 @@ export default function AddPaymentOption(props) {
         message: t('registration_closes_before_opening'),
         severity: 'error',
       });
-      setIsLoading(false);
       isValid = false;
     }
+    setIsLoading(false);
     return isValid;
   };
 
@@ -103,8 +106,8 @@ export default function AddPaymentOption(props) {
 
   if (isLoading) {
     return (
-      <Paper>
-        <CircularProgress />
+      <Paper style={{ textAlign: 'center' }}>
+        <CircularProgress style={{ margin: '16px' }} />
       </Paper>
     );
   }
@@ -130,6 +133,7 @@ export default function AddPaymentOption(props) {
           endIcon="Add"
           style={{ margin: '8px' }}
           onClick={handleAdd}
+          className={styles.button}
         >
           {t('add')}
         </Button>

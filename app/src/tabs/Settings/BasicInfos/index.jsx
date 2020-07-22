@@ -115,21 +115,23 @@ export default function BasicInfos(props) {
     return { status: 404 };
   };
 
+  if (isLoading) {
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <CircularProgress style={{ marginTop: '32px' }} />
+      </div>
+    );
+  }
+
   return (
     <Paper title={name.value}>
       <Container className={styles.paper}>
-        {isLoading ? (
-          <div className={styles.div}>
-            <CircularProgress className={styles.progress} />
-          </div>
-        ) : (
-          <Avatar
-            className={styles.avatar}
-            photoUrl={photoUrl}
-            variant="square"
-            size="lg"
-          />
-        )}
+        <Avatar
+          className={styles.avatar}
+          photoUrl={photoUrl}
+          variant="square"
+          size="lg"
+        />
         {isEditMode ? (
           <Input
             className={styles.input}

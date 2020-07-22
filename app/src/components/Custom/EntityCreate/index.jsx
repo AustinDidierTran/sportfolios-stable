@@ -96,6 +96,14 @@ export default function EntityCreate() {
     history.back();
   };
 
+  if (isLoading) {
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <CircularProgress style={{ marginTop: '32px' }} />
+      </div>
+    );
+  }
+
   return (
     <Container>
       <div className={styles.main}>
@@ -122,34 +130,28 @@ export default function EntityCreate() {
               />
             </CardContent>
             <CardActions className={styles.buttons}>
-              {isLoading ? (
-                <div className={styles.div}>
-                  <CircularProgress className={styles.progress} />
-                </div>
-              ) : (
-                <>
-                  <Button
-                    size="small"
-                    color="primary"
-                    variant="contained"
-                    className={styles.button}
-                    type="submit"
-                    endIcon="Check"
-                  >
-                    {t('done')}
-                  </Button>
-                  <Button
-                    size="small"
-                    color="secondary"
-                    variant="contained"
-                    className={styles.button}
-                    endIcon="Close"
-                    onClick={handleCancel}
-                  >
-                    {t('cancel')}
-                  </Button>
-                </>
-              )}
+              <>
+                <Button
+                  size="small"
+                  color="primary"
+                  variant="contained"
+                  className={styles.button}
+                  type="submit"
+                  endIcon="Check"
+                >
+                  {t('done')}
+                </Button>
+                <Button
+                  size="small"
+                  color="secondary"
+                  variant="contained"
+                  className={styles.button}
+                  endIcon="Close"
+                  onClick={handleCancel}
+                >
+                  {t('cancel')}
+                </Button>
+              </>
             </CardActions>
           </Paper>
         </form>

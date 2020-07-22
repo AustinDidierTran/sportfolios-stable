@@ -1,17 +1,6 @@
 .buttons {
   justify-content: center;
 }
-.div {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-areas: 'progress';
-}
-
-.progress {
-  grid-area: progress;
-  padding: 32px;
-  justify-self: center !important;
-}
 
 .main {
   margin-top: 24px;

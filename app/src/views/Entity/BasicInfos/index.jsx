@@ -113,8 +113,8 @@ export default function BasicInfos(props) {
   return (
     <Container className={styles.paper}>
       {isLoading ? (
-        <div className={styles.div}>
-          <CircularProgress className={styles.progress} />
+        <div style={{ textAlign: 'center' }}>
+          <CircularProgress style={{ marginTop: '32px' }} />
         </div>
       ) : (
         <Avatar
