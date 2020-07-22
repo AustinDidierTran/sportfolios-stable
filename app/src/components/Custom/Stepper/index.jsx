@@ -5,10 +5,12 @@ import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import styles from './Stepper.module.css';
+import { useTranslation } from 'react-i18next';
 
 export default function CustomStepper(props) {
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
+  const { t } = useTranslation();
   const { steps, next, setNext, showButtons } = props;
 
   const isStepOptional = step => {
