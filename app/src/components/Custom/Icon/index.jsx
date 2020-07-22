@@ -19,6 +19,7 @@ import Info from '@material-ui/icons/Info';
 import Lock from '@material-ui/icons/Lock';
 import Mail from '@material-ui/icons/Mail';
 import Menu from '@material-ui/icons/Menu';
+import MoneyOff from '@material-ui/icons/MoneyOff';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 import Notifications from '@material-ui/icons/Notifications';
 import Person from '@material-ui/icons/Person';
@@ -62,6 +63,7 @@ const icons = {
   Lock,
   Mail,
   Menu,
+  MoneyOff,
   NavigateNext,
   Notifications,
   Person,

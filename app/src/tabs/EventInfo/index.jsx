@@ -175,7 +175,7 @@ export default function TabEventInfo() {
   };
 
   return (
-    <div>
+    <div className={styles.event}>
       <Paper className={styles.paper}>
         <CardMedia
           onClick={() => goTo(ROUTES.entity, { id })}

@@ -10,6 +10,7 @@ import NotificationModule from './NotificationModule';
 
 import styles from './LoggedIn.module.css';
 import useStyles from './useStyles';
+import CartIcon from '../../Cart/CartIcon';
 
 export default function LoggedIn() {
   const classes = useStyles();
@@ -49,11 +50,7 @@ export default function LoggedIn() {
                   })
                 }
               />
-              <IconButton
-                color="inherit"
-                icon="ShoppingCartOutlined"
-                onClick={() => goTo(ROUTES.cart)}
-              />
+              <CartIcon />
             </div>
           </Toolbar>
         </AppBar>
@@ -74,11 +71,7 @@ export default function LoggedIn() {
               <SearchInput apiRoute="/api/data/search/previous" />
             </div>
             <div className={styles.item3}>
-              <IconButton
-                color="inherit"
-                icon="ShoppingCartOutlined"
-                onClick={() => goTo(ROUTES.cart)}
-              />
+              <CartIcon />
             </div>
           </div>
         </Toolbar>

@@ -13,6 +13,7 @@ const {
 const { clearCart } = require('../shop');
 const {
   INVOICE_PAID_ENUM,
+  INVOICE_REFUND_ENUM,
 } = require('../../../server/utils/Stripe/checkout');
 
 const formatMetadata = metadata =>
@@ -211,59 +212,49 @@ const createTransfers = async invoice => {
 };
 
 const createRefund = async body => {
-  const { invoiceId, prices, reason } = body;
+  const { invoiceItemId } = body;
+  const invoiceItem = await stripe.invoiceItems.retrieve(
+    invoiceItemId,
+  );
 
-  try {
-    const invoice = await stripe.invoices.retrieve(invoiceId);
-    const charge = invoice.charge;
+  const invoice = await stripe.invoices.retrieve(invoiceItem.invoice);
 
-    const refunds = await Promise.all(
-      prices.map(async stripePriceId => {
-        const invoiceItem = invoice.lines.data.find(
-          e => e.price.id == stripePriceId,
-        );
-        const amount = invoiceItem.amount;
+  const amount = invoiceItem.amount;
+  const charge = invoice.charge;
 
-        const params = {
-          charge,
-          amount,
-          reason,
-          refund_application_fee: true,
-          reverse_transfer: true,
-        };
-        const refund = await stripe.refunds.create(params);
+  const params = {
+    charge,
+    amount,
+  };
 
-        await knex('stripe_refund').insert({
-          invoice_id: invoice.id,
-          refund_id: refund.id,
-          amount,
-        });
+  const refund = await stripe.refunds.create(params);
 
-        const [transfer] = await knex('stripe_transfer')
-          .select('*')
-          .where({
-            invoice_item_id: invoiceItem.metadata.seller_entity_id,
-          });
-        const transferId = transfer.transfer_id;
+  await knex('stripe_refund').insert({
+    invoice_item_id: invoiceItemId,
+    refund_id: refund.id,
+    amount,
+  });
 
-        const reversedTransfer = await stripe.transfers.createReversal(
-          transferId,
-          { amount, refund_application_fee: true },
-        );
+  const [{ transfer_id: transferId }] = await knex('stripe_transfer')
+    .select('*')
+    .where({
+      invoice_item_id: invoiceItemId,
+    });
 
-        return { refund, reversedTransfer };
-      }),
-    );
+  const reversedTransfer = await stripe.transfers.createReversal(
+    transferId,
+    { refund_application_fee: true },
+  );
 
-    //TODO: Set stripe_invoice.status to refunded
-    //TODO: Set hook for Jul to update infos.
+  INVOICE_REFUND_ENUM.EVENT(
+    {
+      rosterId: invoiceItem.metadata.rosterId,
+      eventId: invoiceItem.metadata.id,
+    },
+    { invoiceItemId },
+  );
 
-    stripeLogger('Refunds successful', refunds);
-    return refunds;
-  } catch (err) {
-    stripeErrorLogger('Refunds error', err);
-    throw err;
-  }
+  return { refund, reversedTransfer };
 };
 
 const getReceipt = async query => {
@@ -319,15 +310,15 @@ const checkout = async (body, userId) => {
   };
   const prices = await knex('cart_items').where({ user_id: userId });
   try {
-    const metadatas = await Promise.all(
+    const invoicesAndMetadatas = await Promise.all(
       prices.map(async price => {
         const stripePriceId = price.stripe_price_id;
         const metadata = await getMetadata(stripePriceId);
-        await createInvoiceItem(
+        const invoiceItem = await createInvoiceItem(
           { price: stripePriceId, metadata, paymentMethodId },
           userId,
         );
-        return metadata;
+        return { invoiceItem, metadata };
       }),
     );
 
@@ -348,11 +339,14 @@ const checkout = async (body, userId) => {
     const transfers = await createTransfers(paidInvoice, userId);
 
     await Promise.all(
-      metadatas.map(async metadata => {
+      invoicesAndMetadatas.map(async ({ invoiceItem, metadata }) => {
         if (Number(metadata.type) === 4) {
           await INVOICE_PAID_ENUM.EVENT(
             { rosterId: metadata.rosterId, eventId: metadata.id },
-            { id: paidInvoice.id, status: paidInvoice.status },
+            {
+              status: paidInvoice.status,
+              invoiceItemId: invoiceItem.id,
+            },
           );
         }
       }),

@@ -12,6 +12,7 @@ import {
   Button,
   MessageAndButton,
   Card,
+  ContainerBottomFixed,
 } from '../../components/Custom';
 
 const getCartItems = async () => {
@@ -55,28 +56,26 @@ export default function Cart() {
 
   return (
     <Container>
-      <div className={styles.items}>
-        {items.map(item => (
-          <div className={styles.item}>
+      <div className={styles.main}>
+        <div className={styles.general}>
+          {items.map(item => (
             <Card
               items={{ ...item, setItems }}
               type={CARD_TYPE_ENUM.CART}
             />
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-      <br />
-      <br />
-      <br />
-      <Button
-        size="small"
-        variant="contained"
-        className={styles.button}
-        endIcon="Check"
-        onClick={onCheckout}
-      >
-        {t('checkout')}
-      </Button>
+      <ContainerBottomFixed>
+        <Button
+          size="small"
+          variant="contained"
+          endIcon="Check"
+          onClick={onCheckout}
+        >
+          {t('checkout')}
+        </Button>
+      </ContainerBottomFixed>
     </Container>
   );
 }

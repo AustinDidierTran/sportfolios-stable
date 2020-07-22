@@ -6,10 +6,9 @@ import Default from './Default';
 import LoggedOut from './LoggedOut';
 import { useLocation } from 'react-router-dom';
 import { Typography } from '../../components/MUI';
-import { IconButton } from '../../components/Custom';
-import { goTo, ROUTES } from '../../actions/goTo';
 import api from '../../actions/api';
 import { GLOBAL_ENUM } from '../../../../common/enums';
+import CartIcon from '../Cart/CartIcon';
 
 const getEntity = async entityId => {
   const { data } = await api(`/api/entity?id=${entityId}`);
@@ -30,6 +29,11 @@ export default function Header() {
 
     if (['cart', 'menu', 'organizationList'].includes(pth)) {
       setPath(pth);
+    } else if (['eventRegistration'].includes(pth)) {
+      const id = location.pathname.split('/')[2] || '';
+      const ent = await getEntity(id);
+      setPath(ent.type);
+      setEntity(ent);
     } else {
       if (pth && isAuthenticated) {
         const ent = await getEntity(pth);
@@ -55,13 +59,7 @@ export default function Header() {
                 {'Cart'}
               </Typography>
             )}
-            Item4={() => (
-              <IconButton
-                color="inherit"
-                icon="ShoppingCartOutlined"
-                onClick={() => goTo(ROUTES.cart)}
-              />
-            )}
+            Item4={() => <CartIcon />}
           />
         );
 
@@ -73,13 +71,7 @@ export default function Header() {
                 {'Menu'}
               </Typography>
             )}
-            Item4={() => (
-              <IconButton
-                color="inherit"
-                icon="ShoppingCartOutlined"
-                onClick={() => goTo(ROUTES.cart)}
-              />
-            )}
+            Item4={() => <CartIcon />}
           />
         );
 
@@ -91,13 +83,7 @@ export default function Header() {
                 {entity.name}
               </Typography>
             )}
-            Item4={() => (
-              <IconButton
-                color="inherit"
-                icon="ShoppingCartOutlined"
-                onClick={() => goTo(ROUTES.cart)}
-              />
-            )}
+            Item4={() => <CartIcon />}
           />
         );
 
@@ -109,13 +95,7 @@ export default function Header() {
                 {entity.name}
               </Typography>
             )}
-            Item4={() => (
-              <IconButton
-                color="inherit"
-                icon="ShoppingCartOutlined"
-                onClick={() => goTo(ROUTES.cart)}
-              />
-            )}
+            Item4={() => <CartIcon />}
           />
         );
 
@@ -127,13 +107,7 @@ export default function Header() {
                 {entity.name}
               </Typography>
             )}
-            Item4={() => (
-              <IconButton
-                color="inherit"
-                icon="ShoppingCartOutlined"
-                onClick={() => goTo(ROUTES.cart)}
-              />
-            )}
+            Item4={() => <CartIcon />}
           />
         );
 
@@ -145,13 +119,7 @@ export default function Header() {
                 {entity.name}
               </Typography>
             )}
-            Item4={() => (
-              <IconButton
-                color="inherit"
-                icon="ShoppingCartOutlined"
-                onClick={() => goTo(ROUTES.cart)}
-              />
-            )}
+            Item4={() => <CartIcon />}
           />
         );
 

@@ -28,7 +28,9 @@ export default function DefaultHeader(props) {
   const It2 = () => {
     return (
       <div className={styles.item2}>
-        <Item2 />
+        <div className={styles.center}>
+          <Item2 />
+        </div>
       </div>
     );
   };

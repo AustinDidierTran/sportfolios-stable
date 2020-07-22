@@ -37,33 +37,36 @@ export default function Event(props) {
   if (states.length == 1) {
     return (
       <Container className={styles.container}>
-        <Paper className={styles.card}></Paper>
-        <OpenTab basicInfos={basicInfos} />
+        <div className={styles.event}>
+          <OpenTab basicInfos={basicInfos} />
+        </div>
       </Container>
     );
   }
 
   return (
     <Container className={styles.container}>
-      <Paper className={styles.card}>
-        <Tabs
-          value={states.findIndex(s => s.value === eventState)}
-          indicatorColor="primary"
-          textColor="primary"
-          className={styles.tabs}
-          // centered
-        >
-          {states.map((s, index) => (
-            <Tab
-              key={index}
-              onClick={() => onClick(s)}
-              label={s.label}
-              icon={s.icon}
-            />
-          ))}
-        </Tabs>
-      </Paper>
-      <OpenTab basicInfos={basicInfos} />
+      <div className={styles.event}>
+        <Paper className={styles.card}>
+          <Tabs
+            value={states.findIndex(s => s.value === eventState)}
+            indicatorColor="primary"
+            textColor="primary"
+            className={styles.tabs}
+            // centered
+          >
+            {states.map((s, index) => (
+              <Tab
+                key={index}
+                onClick={() => onClick(s)}
+                label={s.label}
+                icon={s.icon}
+              />
+            ))}
+          </Tabs>
+        </Paper>
+        <OpenTab basicInfos={basicInfos} />
+      </div>
     </Container>
   );
 }

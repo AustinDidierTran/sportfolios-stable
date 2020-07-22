@@ -3,8 +3,18 @@
 }
 .card {
   text-align: center !important;
-  margin-bottom: 16px;
 }
 .title {
   padding: 16px !important;
+}
+
+.event {
+  margin: auto;
+}
+
+@media (min-width: 768px) {
+  .event {
+    width: 700px !important;
+    margin-bottom: -64px;
+  }
 }
