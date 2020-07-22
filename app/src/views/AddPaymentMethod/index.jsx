@@ -22,6 +22,7 @@ import {
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { Store, ACTION_ENUM } from '../../Store';
+import { openSnackBar } from '../App/SnackBar';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default function AddPaymentMethod() {
