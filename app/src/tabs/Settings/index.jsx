@@ -111,10 +111,6 @@ export default function EntitySettings(props) {
           <div className={styles.main}>
             <Stripe id={id} />
             <ManageRoles role={role} />
-            <Card
-              items={{ id, name: basicInfos.name }}
-              type={CARD_TYPE_ENUM.DELETE_ENTITY}
-            />
           </div>
         );
       }
