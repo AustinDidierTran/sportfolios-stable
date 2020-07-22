@@ -31,7 +31,6 @@ import OrganizationList from '../Main/OrganizationList';
 import PasswordRecovery from '../PasswordRecovery';
 import RegistrationStatus from '../RegistrationStatus';
 import Search from '../Search';
-import Signup from '../Signup';
 import Stripe from '../../utils/stripe/Payment/index';
 import UserSettings from '../UserSettings';
 import Cart from '../Cart';
@@ -63,8 +62,10 @@ export default function App() {
   const {
     state: {
       userInfo: { user_id },
+      authToken,
     },
   } = useContext(Store);
+  const isAuthenticated = Boolean(authToken);
 
   const optimizely = createInstance(conf.optimizely);
 
@@ -82,7 +83,11 @@ export default function App() {
               <div className={styles.header}>
                 <Header />
               </div>
-              <div className={styles.main}>
+              <div
+                className={
+                  isAuthenticated ? styles.main : styles.main1
+                }
+              >
                 <Switch>
                   <AdminRoute
                     path={ROUTES.adminPanel}
@@ -141,11 +146,6 @@ export default function App() {
                     exact
                     path={ROUTES.entityNotFound}
                     component={EntityNotFound}
-                  />
-                  <Route
-                    exact
-                    path={ROUTES.signup}
-                    component={Signup}
                   />
                   <Route
                     exact

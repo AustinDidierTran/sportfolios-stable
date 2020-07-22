@@ -1,5 +1,6 @@
 .event {
   width: 100%;
+  margin-bottom: 0 !important;
 }
 
 .paper {
@@ -45,6 +46,11 @@
     margin: 0 auto;
   }
   .buttonDiv {
+    bottom: 0px;
+    width: 700px;
+  }
+
+  .buttonDiv1 {
     bottom: 0px;
     width: 700px;
   }

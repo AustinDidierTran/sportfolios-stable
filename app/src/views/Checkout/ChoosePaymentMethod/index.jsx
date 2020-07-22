@@ -5,6 +5,8 @@ import { goTo, ROUTES } from '../../../actions/goTo';
 import { useTranslation } from 'react-i18next';
 import { CircularProgress } from '@material-ui/core';
 import { checkout } from '../../../utils/stripe';
+import styles from './ChoosePaymentMethod.module.css';
+import logo from '../../../img/bigLogo.png';
 
 export default function ChoosePaymentMethod(props) {
   const { paymentMethod } = props;
@@ -64,6 +66,9 @@ export default function ChoosePaymentMethod(props) {
   if (!paymentMethods.length) {
     return (
       <div style={{ textAlign: 'center' }}>
+        <div className={styles.logo}>
+          <img className={styles.img} src={logo} />
+        </div>
         <p>{t('no_payment_method')}</p>
         <Button
           style={{ textAlign: 'center' }}

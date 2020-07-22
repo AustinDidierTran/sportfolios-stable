@@ -51,6 +51,7 @@ export default function ForgotPassword() {
       if (res.status === 404) {
         // Email not found
         formik.setFieldError('email', t('email_not_found'));
+        formik.setStatus({ state: 'signup' });
       }
     },
   });
@@ -96,7 +97,7 @@ export default function ForgotPassword() {
               </Typography>
             </Link>
             <Link
-              to={ROUTES.signup}
+              to={ROUTES.login}
               style={{
                 textDecoration: 'none',
                 textAlign: 'center',
