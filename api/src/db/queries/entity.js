@@ -1,4 +1,5 @@
 const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
+const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
 const { signS3Request } = require('../../server/utils/aws');
 
@@ -35,6 +36,11 @@ const {
   updateRegistration: updateRegistrationHelper,
   eventInfos: eventInfosHelper,
 } = require('../helpers/entity');
+
+async function isAllowed(entityId, userId, acceptationRole) {
+  const role = await getEntityRoleHelper(entityId, userId);
+  return role <= acceptationRole;
+}
 
 async function getEntity(id, user_id) {
   return getEntityHelper(id, user_id);
@@ -76,22 +82,29 @@ async function getEvent(eventId) {
   return getEventHelper(eventId);
 }
 
-async function getGeneralInfos(entityId) {
-  return getGeneralInfosHelper(entityId);
+async function getGeneralInfos(entityId, userId) {
+  return getGeneralInfosHelper(entityId, userId);
 }
 
-async function updateEvent(body) {
+async function updateEvent(body, userId) {
   const { eventId, maximumSpots, eventStart, eventEnd } = body;
+  if (!isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
   return updateEventHelper(
     eventId,
     maximumSpots,
     eventStart,
     eventEnd,
+    userId,
   );
 }
 
-async function updateGeneralInfos(body) {
+async function updateGeneralInfos(body, userId) {
   const { entityId, description } = body;
+  if (!isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
   return updateGeneralInfosHelper(entityId, description);
 }
 
@@ -120,22 +133,19 @@ const addEntity = async (body, user_id) => {
   return addEntityHelper(body, user_id);
 };
 
-async function updateEntity(body, user_id) {
+async function updateEntity(body, userId) {
   const { id, name, surname, photoUrl } = body;
 
-  const role = await getEntityRoleHelper(id, user_id);
-
-  if (role <= ENTITIES_ROLE_ENUM.EDITOR) {
-    if (name || surname) {
-      await updateEntityNameHelper(id, name, surname);
-    }
-    if (photoUrl) {
-      await updateEntityPhotoHelper(id, photoUrl);
-    }
-    return { id, name, surname, photoUrl };
-  } else {
-    throw 'Acces denied';
+  if (!isAllowed(id, userId)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
+  if (name || surname) {
+    await updateEntityNameHelper(id, name, surname);
+  }
+  if (photoUrl) {
+    await updateEntityPhotoHelper(id, photoUrl);
+  }
+  return { id, name, surname, photoUrl };
 }
 
 async function getS3Signature(userId, { fileType }) {
@@ -150,18 +160,28 @@ async function getS3Signature(userId, { fileType }) {
   return { code: 200, data };
 }
 
-async function updateEntityRole(body) {
+async function updateEntityRole(body, userId) {
   const { entity_id, entity_id_admin, role } = body;
+  if (!isAllowed(entity_id, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
   if (role === ENTITIES_ROLE_ENUM.VIEWER) {
-    return removeEntityRoleHelper(entity_id, entity_id_admin);
+    return removeEntityRoleHelper(entity_id, entity_id_admin, userId);
   } else {
-    return updateEntityRoleHelper(entity_id, entity_id_admin, role);
+    return updateEntityRoleHelper(
+      entity_id,
+      entity_id_admin,
+      role,
+      userId,
+    );
   }
 }
 
-async function updateRegistration(body) {
+async function updateRegistration(body, userId) {
   const { rosterId, eventId, invoiceItemId, status } = body;
-
+  if (!isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
   return updateRegistrationHelper(
     rosterId,
     eventId,
@@ -170,8 +190,11 @@ async function updateRegistration(body) {
   );
 }
 
-async function addEntityRole(body) {
+async function addEntityRole(body, userId) {
   const { entity_id, entity_id_admin, role } = body;
+  if (!isAllowed(entity_id, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
   return await addEntityRoleHelper(entity_id, entity_id_admin, role);
 }
 
@@ -209,6 +232,9 @@ async function addMember(body) {
 
 async function addOption(body, userId) {
   const { eventId, name, price, endTime, startTime } = body;
+  if (!isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
   const res = await addOptionHelper(
     eventId,
     name,

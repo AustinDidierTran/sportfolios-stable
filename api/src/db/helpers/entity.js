@@ -319,7 +319,7 @@ async function eventInfos(id, userId) {
 
 const findRole = async (entityId, lookedFor, role, cpt) => {
   if (cpt > 5) {
-    return role;
+    return ENTITIES_ROLE_ENUM.VIEWER;
   }
   const entities = await knex('entities_role')
     .select('*')
@@ -348,7 +348,7 @@ const findRole = async (entityId, lookedFor, role, cpt) => {
     }),
   );
 
-  return Math.min(...roles);
+  return Math.min(...roles, ENTITIES_ROLE_ENUM.VIEWER);
 };
 
 async function getEntityRole(entityId, userId) {

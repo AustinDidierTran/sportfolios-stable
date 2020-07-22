@@ -190,7 +190,10 @@ router.put(`${BASE_URL}`, async ctx => {
 });
 
 router.put(`${BASE_URL}/role`, async ctx => {
-  const entity = await queries.updateEntityRole(ctx.request.body);
+  const entity = await queries.updateEntityRole(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (entity) {
     ctx.status = 200;
     ctx.body = {
@@ -207,7 +210,10 @@ router.put(`${BASE_URL}/role`, async ctx => {
 });
 
 router.put(`${BASE_URL}/member`, async ctx => {
-  const entity = await queries.updateMember(ctx.request.body);
+  const entity = await queries.updateMember(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (entity) {
     ctx.status = 200;
     ctx.body = {
@@ -224,7 +230,10 @@ router.put(`${BASE_URL}/member`, async ctx => {
 });
 
 router.put(`${BASE_URL}/updateRegistration`, async ctx => {
-  const entity = await queries.updateRegistration(ctx.request.body);
+  const entity = await queries.updateRegistration(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (entity) {
     ctx.status = 200;
     ctx.body = {
@@ -241,7 +250,10 @@ router.put(`${BASE_URL}/updateRegistration`, async ctx => {
 });
 
 router.put(`${BASE_URL}/updateEvent`, async ctx => {
-  const entity = await queries.updateEvent(ctx.request.body);
+  const entity = await queries.updateEvent(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (entity) {
     ctx.status = 200;
     ctx.body = {
@@ -258,7 +270,10 @@ router.put(`${BASE_URL}/updateEvent`, async ctx => {
 });
 
 router.put(`${BASE_URL}/updateGeneralInfos`, async ctx => {
-  const entity = await queries.updateGeneralInfos(ctx.request.body);
+  const entity = await queries.updateGeneralInfos(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (entity) {
     ctx.status = 200;
     ctx.body = {
@@ -296,7 +311,10 @@ router.post(BASE_URL, async ctx => {
 });
 
 router.post(`${BASE_URL}/role`, async ctx => {
-  const entity = await queries.addEntityRole(ctx.request.body);
+  const entity = await queries.addEntityRole(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (entity) {
     ctx.status = 201;
     ctx.body = {
