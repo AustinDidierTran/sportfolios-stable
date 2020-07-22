@@ -1,2 +1,2 @@
-ALTER TABLE stripe_payment_method
-  DROP COLUMN last4;
+-- ALTER TABLE stripe_payment_method
+--   DROP COLUMN last4;

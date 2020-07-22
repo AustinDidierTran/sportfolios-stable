@@ -6,6 +6,7 @@ import AddMembership from './AddMembership';
 import AddOptionsEvent from './AddOptionsEvent';
 import TeamRegistered from './TeamRegistered';
 import EventSettings from './EventSettings';
+import BasicInfos from './BasicInfos';
 import { useParams } from 'react-router-dom';
 import {
   ENTITIES_ROLE_ENUM,
@@ -56,6 +57,7 @@ export default function EntitySettings(props) {
       if (isAdmin) {
         return (
           <div className={styles.main}>
+            <BasicInfos basicInfos={basicInfos} />
             <Description />
             <EventSettings />
             <AddOptionsEvent />
