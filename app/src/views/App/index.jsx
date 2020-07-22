@@ -31,7 +31,6 @@ import OrganizationList from '../Main/OrganizationList';
 import PasswordRecovery from '../PasswordRecovery';
 import RegistrationStatus from '../RegistrationStatus';
 import Search from '../Search';
-import Signup from '../Signup';
 import Stripe from '../../utils/stripe/Payment/index';
 import UserSettings from '../UserSettings';
 import Cart from '../Cart';
@@ -147,11 +146,6 @@ export default function App() {
                     exact
                     path={ROUTES.entityNotFound}
                     component={EntityNotFound}
-                  />
-                  <Route
-                    exact
-                    path={ROUTES.signup}
-                    component={Signup}
                   />
                   <Route
                     exact

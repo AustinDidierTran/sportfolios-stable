@@ -23,29 +23,52 @@ export default function Login() {
 
   const validate = values => {
     const errors = {};
-    if (!values.email) {
-      errors.email = t('value_is_required');
-    } else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
-    ) {
-      errors.email = t('invalid_email');
-    }
+    if (formik.status.state === 'signup') {
+      if (!values.email) {
+        errors.email = t('value_is_required');
+      } else if (
+        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(
+          values.email,
+        )
+      ) {
+        errors.email = t('invalid_email');
+      }
 
-    if (!values.firstName) {
-      errors.firstName = t('value_is_required');
-    }
+      if (!values.firstName) {
+        errors.firstName = t('value_is_required');
+      }
 
-    if (!values.lastName) {
-      errors.lastName = t('value_is_required');
-    }
+      if (!values.lastName) {
+        errors.lastName = t('value_is_required');
+      }
 
-    if (!values.password) {
-      errors.password = t('value_is_required');
-    } else if (
-      values.password.length < 8 ||
-      values.password.length > 16
-    ) {
-      errors.password = t('password_length');
+      if (!values.password) {
+        errors.password = t('value_is_required');
+      } else if (
+        values.password.length < 8 ||
+        values.password.length > 16
+      ) {
+        errors.password = t('password_length');
+      }
+    } else {
+      if (!values.email) {
+        errors.email = t('value_is_required');
+      } else if (
+        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(
+          values.email,
+        )
+      ) {
+        errors.email = t('invalid_email');
+      }
+
+      if (!values.password) {
+        errors.password = t('value_is_required');
+      } else if (
+        values.password.length < 8 ||
+        values.password.length > 16
+      ) {
+        errors.password = t('password_length');
+      }
     }
 
     return errors;
@@ -61,9 +84,31 @@ export default function Login() {
     },
     validate,
     validateOnChange: false,
-    validateOnBlur: false,
+    validateOnBlur: true,
     onSubmit: async values => {
-      if (values.state === 'signup') {
+      if (formik.status.state === 'signup') {
+        const { firstName, lastName, email, password } = values;
+
+        const res = await api('/api/auth/signup', {
+          method: 'POST',
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            email,
+            password,
+            successRoute,
+          }),
+        });
+        if (res.status === 403) {
+          formik.setFieldError('email', t('email_already_used'));
+        } else if (res.status >= 400) {
+          formik.setFieldError(
+            'firstName',
+            t('something_went_wrong'),
+          );
+        } else {
+          goTo(ROUTES.confirmationEmailSent, { email });
+        }
       } else {
         const { email, password } = values;
         const res = await api('/api/auth/login', {
@@ -91,6 +136,7 @@ export default function Login() {
           );
         } else if (res.status === 404) {
           formik.setFieldError('email', t('email_not_found'));
+          formik.setStatus({ state: 'signup' });
         } else {
           let { data } = res;
 

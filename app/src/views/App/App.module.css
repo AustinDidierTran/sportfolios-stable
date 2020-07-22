@@ -17,6 +17,7 @@ body {
   flex: 1;
   overflow-y: scroll;
   height: 100%;
+  padding-bottom: 56px;
 }
 
 .main1 {
@@ -37,5 +38,6 @@ body {
   }
   .main {
     max-height: calc(100vh - 56px);
+    padding-bottom: 0px;
   }
 }

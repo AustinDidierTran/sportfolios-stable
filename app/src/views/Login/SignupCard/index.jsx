@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import styles from './SignupCard.module.css';
@@ -13,7 +12,6 @@ import {
   Typography,
 } from '../../../components/MUI';
 import { Paper } from '../../../components/Custom';
-import { ROUTES } from '../../../actions/goTo';
 
 export default function SignupCard(props) {
   const { t } = useTranslation();
@@ -66,18 +64,21 @@ export default function SignupCard(props) {
         </CardActions>
         <Divider />
         <CardActions className={styles.linksContainer}>
-          <Link
-            style={{
-              textDecoration: 'none',
-              color: 'grey',
-              margin: '0 auto',
-            }}
-            to={ROUTES.forgotPassword}
+          <div
+            className={styles.typo}
+            onClick={() => formik.setStatus({ state: 'login' })}
           >
-            <Typography style={{ fontSize: 12 }}>
+            <Typography
+              style={{
+                textDecoration: 'none',
+                color: 'grey',
+                margin: '0 auto',
+                fontSize: 12,
+              }}
+            >
               {t('have_an_account_signin')}
             </Typography>
-          </Link>
+          </div>
         </CardActions>
       </form>
     </Paper>
