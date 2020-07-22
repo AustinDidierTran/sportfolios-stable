@@ -19,11 +19,8 @@ import {
   GLOBAL_ENUM,
 } from '../../../../common/enums';
 import { formatPrice } from '../../utils/stringFormats';
-import { openSnackBar } from '../App/SnackBar';
 import styles from './EventRegistration.module.css';
 import { Typography } from '../../components/MUI';
-import { useContext } from 'react';
-import { openSnackBar } from '../App/SnackBar';
 import { Container } from '@material-ui/core';
 import { Store, SCREENSIZE_ENUM, ACTION_ENUM } from '../../Store';
 

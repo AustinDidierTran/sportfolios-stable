@@ -36,6 +36,15 @@ const {
   eventInfos: eventInfosHelper,
 } = require('../helpers/entity');
 
+async function isAllowed(entityId, userId, acceptationRole) {
+  const role = await getEntityRoleHelper(entityId, userId);
+  if (role <= acceptationRole) {
+    return true;
+  }
+  return false;
+  ß;
+}
+
 async function getEntity(id, user_id) {
   return getEntityHelper(id, user_id);
 }
@@ -76,23 +85,30 @@ async function getEvent(eventId) {
   return getEventHelper(eventId);
 }
 
-async function getGeneralInfos(entityId) {
-  return getGeneralInfosHelper(entityId);
+async function getGeneralInfos(entityId, userId) {
+  return getGeneralInfosHelper(entityId, userId);
 }
 
-async function updateEvent(body) {
+async function updateEvent(body, userId) {
   const { eventId, maximumSpots, eventStart, eventEnd } = body;
-  return updateEventHelper(
-    eventId,
-    maximumSpots,
-    eventStart,
-    eventEnd,
-  );
+  if (isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+    return updateEventHelper(
+      eventId,
+      maximumSpots,
+      eventStart,
+      eventEnd,
+      userId,
+    );
+  }
+  throw 'Acces denied';
 }
 
-async function updateGeneralInfos(body) {
+async function updateGeneralInfos(body, userId) {
   const { entityId, description } = body;
-  return updateGeneralInfosHelper(entityId, description);
+  if (isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+    return updateGeneralInfosHelper(entityId, description);
+  }
+  throw 'Acces denied';
 }
 
 async function addTeamToEvent(body) {
@@ -120,12 +136,10 @@ const addEntity = async (body, user_id) => {
   return addEntityHelper(body, user_id);
 };
 
-async function updateEntity(body, user_id) {
+async function updateEntity(body, userId) {
   const { id, name, surname, photoUrl } = body;
 
-  const role = await getEntityRoleHelper(id, user_id);
-
-  if (role <= ENTITIES_ROLE_ENUM.EDITOR) {
+  if (isAllowed(id, userId)) {
     if (name || surname) {
       await updateEntityNameHelper(id, name, surname);
     }
@@ -133,9 +147,8 @@ async function updateEntity(body, user_id) {
       await updateEntityPhotoHelper(id, photoUrl);
     }
     return { id, name, surname, photoUrl };
-  } else {
-    throw 'Acces denied';
   }
+  throw 'Acces denied';
 }
 
 async function getS3Signature(userId, { fileType }) {
@@ -150,29 +163,50 @@ async function getS3Signature(userId, { fileType }) {
   return { code: 200, data };
 }
 
-async function updateEntityRole(body) {
+async function updateEntityRole(body, userId) {
   const { entity_id, entity_id_admin, role } = body;
-  if (role === ENTITIES_ROLE_ENUM.VIEWER) {
-    return removeEntityRoleHelper(entity_id, entity_id_admin);
-  } else {
-    return updateEntityRoleHelper(entity_id, entity_id_admin, role);
+  if (isAllowed(entity_id, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
+    if (role === ENTITIES_ROLE_ENUM.VIEWER) {
+      return removeEntityRoleHelper(
+        entity_id,
+        entity_id_admin,
+        userId,
+      );
+    } else {
+      return updateEntityRoleHelper(
+        entity_id,
+        entity_id_admin,
+        role,
+        userId,
+      );
+    }
   }
+  throw 'Acces denied';
 }
 
-async function updateRegistration(body) {
+async function updateRegistration(body, userId) {
   const { rosterId, eventId, invoiceItemId, status } = body;
-
-  return updateRegistrationHelper(
-    rosterId,
-    eventId,
-    invoiceItemId,
-    status,
-  );
+  if (isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
+    return updateRegistrationHelper(
+      rosterId,
+      eventId,
+      invoiceItemId,
+      status,
+    );
+  }
+  throw 'Acces denied';
 }
 
-async function addEntityRole(body) {
+async function addEntityRole(body, userId) {
   const { entity_id, entity_id_admin, role } = body;
-  return await addEntityRoleHelper(entity_id, entity_id_admin, role);
+  if (isAllowed(entity_id, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
+    return await addEntityRoleHelper(
+      entity_id,
+      entity_id_admin,
+      role,
+    );
+  }
+  throw 'Acces denied';
 }
 
 async function updateMember(body) {
@@ -209,15 +243,18 @@ async function addMember(body) {
 
 async function addOption(body, userId) {
   const { eventId, name, price, endTime, startTime } = body;
-  const res = await addOptionHelper(
-    eventId,
-    name,
-    price,
-    endTime,
-    startTime,
-    userId,
-  );
-  return res;
+  if (isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+    const res = await addOptionHelper(
+      eventId,
+      name,
+      price,
+      endTime,
+      startTime,
+      userId,
+    );
+    return res;
+  }
+  throw 'Access denied';
 }
 
 async function addRoster(body) {
