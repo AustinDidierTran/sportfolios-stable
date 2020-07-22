@@ -13,6 +13,10 @@
   width: 100%;
 }
 
+.buttonSignup {
+  margin: 0 8px !important;
+}
+
 .or {
   color: gray;
   margin: 8px auto;

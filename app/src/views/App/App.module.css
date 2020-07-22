@@ -18,6 +18,12 @@ body {
   overflow-y: scroll;
   height: 100%;
 }
+
+.main1 {
+  flex: 1;
+  overflow-y: scroll;
+  height: 100%;
+}
 .footer {
   height: 56px;
 }

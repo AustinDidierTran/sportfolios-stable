@@ -63,8 +63,10 @@ export default function App() {
   const {
     state: {
       userInfo: { user_id },
+      authToken,
     },
   } = useContext(Store);
+  const isAuthenticated = Boolean(authToken);
 
   const optimizely = createInstance(conf.optimizely);
 
@@ -82,7 +84,11 @@ export default function App() {
               <div className={styles.header}>
                 <Header />
               </div>
-              <div className={styles.main}>
+              <div
+                className={
+                  isAuthenticated ? styles.main : styles.main1
+                }
+              >
                 <Switch>
                   <AdminRoute
                     path={ROUTES.adminPanel}

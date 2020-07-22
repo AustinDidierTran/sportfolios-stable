@@ -184,6 +184,7 @@ export default function TabEventInfo() {
           className={styles.media}
         />
         <CardContent>
+          <Typography>{event.name}</Typography>
           <Typography
             variant="body2"
             color="textSecondary"
@@ -211,7 +212,11 @@ export default function TabEventInfo() {
       </Paper>
       <Problems />
       <Description description={event.description} />
-      <div className={styles.buttonDiv}>
+      <div
+        className={
+          isAuthenticated ? styles.buttonDiv : styles.buttonDiv1
+        }
+      >
         {canRegister ? (
           <Button
             size="small"
