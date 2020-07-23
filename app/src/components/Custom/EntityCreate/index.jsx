@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { useFormik } from 'formik';
 import CreatedBy from './CreatedBy';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import api from '../../../actions/api';
 import { ROUTES, goTo, formatRoute } from '../../../actions/goTo';
 
@@ -14,6 +13,7 @@ import { Paper, Button, Container } from '../../Custom';
 import { TextField, CardActions, CardContent } from '../../MUI';
 import { GLOBAL_ENUM } from '../../../../../common/enums';
 import { useQuery, useApiRoute } from '../../../hooks/queries';
+import LoadingSpinner from '../LoadingSpinner';
 
 export default function EntityCreate() {
   const { id, type, route } = useQuery();
@@ -96,6 +96,10 @@ export default function EntityCreate() {
     history.back();
   };
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <Container>
       <div className={styles.main}>
@@ -122,34 +126,28 @@ export default function EntityCreate() {
               />
             </CardContent>
             <CardActions className={styles.buttons}>
-              {isLoading ? (
-                <div className={styles.div}>
-                  <CircularProgress className={styles.progress} />
-                </div>
-              ) : (
-                <>
-                  <Button
-                    size="small"
-                    color="primary"
-                    variant="contained"
-                    className={styles.button}
-                    type="submit"
-                    endIcon="Check"
-                  >
-                    {t('done')}
-                  </Button>
-                  <Button
-                    size="small"
-                    color="secondary"
-                    variant="contained"
-                    className={styles.button}
-                    endIcon="Close"
-                    onClick={handleCancel}
-                  >
-                    {t('cancel')}
-                  </Button>
-                </>
-              )}
+              <>
+                <Button
+                  size="small"
+                  color="primary"
+                  variant="contained"
+                  className={styles.button}
+                  type="submit"
+                  endIcon="Check"
+                >
+                  {t('done')}
+                </Button>
+                <Button
+                  size="small"
+                  color="secondary"
+                  variant="contained"
+                  className={styles.button}
+                  endIcon="Close"
+                  onClick={handleCancel}
+                >
+                  {t('cancel')}
+                </Button>
+              </>
             </CardActions>
           </Paper>
         </form>

@@ -1,0 +1,11 @@
+.page {
+  position: fixed;
+  left: calc(50vw - 20px);
+  bottom: calc(50vh - 20px);
+}
+
+.component {
+  text-align: center;
+  margin-top: 48px;
+  margin-bottom: 48px;
+}

@@ -11,7 +11,12 @@ import styles from './BasicInfos.module.css';
 
 import { ACTION_ENUM, Store } from '../../../../Store';
 
-import { Avatar, Button, Input } from '../../../../components/Custom';
+import {
+  Avatar,
+  Button,
+  Input,
+  LoadingSpinner,
+} from '../../../../components/Custom';
 import {
   Container,
   Typography,
@@ -31,6 +36,7 @@ export default function BasicInfos(props) {
     dispatch,
   } = useContext(Store);
   const [isEditMode, setEditMode] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     id,
@@ -66,6 +72,7 @@ export default function BasicInfos(props) {
   };
 
   const onSave = async () => {
+    setIsLoading(true);
     const promises = [];
 
     if (name.hasChanged || surname.hasChanged) {
@@ -85,6 +92,7 @@ export default function BasicInfos(props) {
     } else {
       // handle errors
     }
+    setIsLoading(false);
   };
 
   const onCancel = async () => {
@@ -130,6 +138,10 @@ export default function BasicInfos(props) {
   // const onUnfollow = async () => {
   //   setIsFollowing(false);
   // };
+
+  if (isLoading) {
+    return <LoadingSpinner isComponent />;
+  }
 
   return (
     <Container className={styles.card}>

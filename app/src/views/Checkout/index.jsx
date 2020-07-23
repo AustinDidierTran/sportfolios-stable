@@ -7,8 +7,7 @@ import ChoosePaymentMethod from './ChoosePaymentMethod';
 import { useFormInput } from '../../hooks/forms';
 import { useApiRoute } from '../../hooks/queries';
 import { formatPrice } from '../../utils/stringFormats';
-import { CircularProgress } from '@material-ui/core';
-import { Paper } from '../../components/Custom';
+import { Paper, LoadingSpinner } from '../../components/Custom';
 import { useTranslation } from 'react-i18next';
 
 export default function Checkout() {
@@ -18,11 +17,7 @@ export default function Checkout() {
   const { isLoading, response } = useApiRoute('/api/shop/cartTotal');
 
   if (isLoading) {
-    return (
-      <Container className={styles.items}>
-        <CircularProgress />
-      </Container>
-    );
+    return <LoadingSpinner />;
   }
 
   return (

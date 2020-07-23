@@ -22,20 +22,21 @@ export default function EventPaymentOption(props) {
 
   return (
     <Paper>
-      <List items={items}></List>
-      <Button
-        size="small"
-        variant="contained"
-        color="secondary"
-        endIcon="Delete"
-        style={{ margin: '8px', width: '90%' }}
-        onClick={() => {
-          onDelete(paymentOptionId);
-        }}
-        className={styles.delete}
-      >
-        {t('delete')}
-      </Button>
+      <div>
+        <List items={items} />
+        <Button
+          size="small"
+          variant="contained"
+          color="secondary"
+          endIcon="Delete"
+          onClick={() => {
+            onDelete(paymentOptionId);
+          }}
+          className={styles.button}
+        >
+          {t('delete')}
+        </Button>
+      </div>
     </Paper>
   );
 }

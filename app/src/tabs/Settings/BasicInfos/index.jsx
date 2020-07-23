@@ -8,13 +8,13 @@ import { ACTION_ENUM, Store } from '../../../Store';
 import { useFormInput } from '../../../hooks/forms';
 import { useEditor } from '../../../hooks/roles';
 import { changeEntityName } from '../../../actions/api';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {
   Avatar,
   Input,
   Button,
   Paper,
+  LoadingSpinner,
 } from '../../../components/Custom';
 
 import {
@@ -115,21 +115,19 @@ export default function BasicInfos(props) {
     return { status: 404 };
   };
 
+  if (isLoading) {
+    return <LoadingSpinner isComponent />;
+  }
+
   return (
     <Paper title={name.value}>
       <Container className={styles.paper}>
-        {isLoading ? (
-          <div className={styles.div}>
-            <CircularProgress className={styles.progress} />
-          </div>
-        ) : (
-          <Avatar
-            className={styles.avatar}
-            photoUrl={photoUrl}
-            variant="square"
-            size="lg"
-          />
-        )}
+        <Avatar
+          className={styles.avatar}
+          photoUrl={photoUrl}
+          variant="square"
+          size="lg"
+        />
         {isEditMode ? (
           <Input
             className={styles.input}

@@ -6,7 +6,6 @@ import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { CARD_TYPE_ENUM } from '../../../../common/enums';
 import { useTranslation } from 'react-i18next';
-import { CircularProgress } from '@material-ui/core';
 import { useApiRoute } from '../../hooks/queries';
 import { formatPrice } from '../../utils/stringFormats';
 
@@ -16,6 +15,7 @@ import {
   MessageAndButton,
   Card,
   ContainerBottomFixed,
+  LoadingSpinner,
 } from '../../components/Custom';
 import { Typography } from '../../components/MUI';
 
@@ -45,11 +45,7 @@ export default function Cart() {
   }, []);
 
   if (isLoading) {
-    return (
-      <Container className={styles.items}>
-        <CircularProgress />
-      </Container>
-    );
+    return <LoadingSpinner />;
   }
 
   if (items.length < 1) {

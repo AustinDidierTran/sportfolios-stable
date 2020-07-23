@@ -1,9 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import api from '../../../actions/api';
-import { Button, RadioGroup } from '../../../components/Custom';
+import {
+  Button,
+  RadioGroup,
+  LoadingSpinner,
+} from '../../../components/Custom';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import { useTranslation } from 'react-i18next';
-import { CircularProgress } from '@material-ui/core';
 import { checkout } from '../../../utils/stripe';
 import styles from './ChoosePaymentMethod.module.css';
 import logo from '../../../img/bigLogo.png';
@@ -58,11 +61,7 @@ export default function ChoosePaymentMethod(props) {
   };
 
   if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center' }}>
-        <CircularProgress />
-      </div>
-    );
+    return <LoadingSpinner isComponent />;
   }
 
   if (!paymentMethods.length) {
