@@ -72,6 +72,14 @@ export const useStepper = () => {
     });
   };
 
+  const handleNotCompleted = step => {
+    setCompleted(prevCompleted => {
+      const newCompleted = new Set(prevCompleted.values());
+      newCompleted.delete(step);
+      return newCompleted;
+    });
+  };
+
   return {
     stepperProps: {
       activeStep,
@@ -82,6 +90,7 @@ export const useStepper = () => {
     handleBack,
     handleCompleted,
     handleNext,
+    handleNotCompleted,
     handleReset,
   };
 };
