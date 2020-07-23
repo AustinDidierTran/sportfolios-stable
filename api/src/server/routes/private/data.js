@@ -11,6 +11,7 @@ router.get(`${BASE_URL}/search/global`, async ctx => {
       ctx.query.query,
       ctx.query.type,
       ctx.query.blackList,
+      ctx.query.whiteList,
     );
     ctx.body = {
       status: 'success',

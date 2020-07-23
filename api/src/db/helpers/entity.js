@@ -188,6 +188,51 @@ async function getAllEntities(params) {
   }));
 }
 
+async function getAllOwnedEntities(type, userId) {
+  const entities = await knex('entities')
+    .select('id', 'type', 'name', 'surname', 'photo_url', 'role')
+    .leftJoin(
+      'entities_name',
+      'entities.id',
+      '=',
+      'entities_name.entity_id',
+    )
+    .leftJoin(
+      'entities_photo',
+      'entities.id',
+      '=',
+      'entities_photo.entity_id',
+    )
+    .leftJoin(
+      'entities_role',
+      'entities.id',
+      '=',
+      'entities_role.entity_id',
+    )
+    .whereNull('deleted_at')
+    .where({ type });
+
+  const res = await Promise.all(
+    entities.map(async entity => {
+      const role = await getEntityRole(entity.id, userId);
+      return { ...entity, role };
+    }),
+  );
+
+  const res2 = res
+    .filter(({ role }) => {
+      return (
+        role === ENTITIES_ROLE_ENUM.ADMIN ||
+        role === ENTITIES_ROLE_ENUM.EDITOR
+      );
+    })
+    .map(e => {
+      const { photo_url: photoUrl, ...otherProps } = e;
+      return { ...otherProps, photoUrl };
+    });
+  return res2;
+}
+
 async function getAllTypeEntities(type) {
   const entities = await knex('entities')
     .select('id', 'type', 'name', 'surname', 'photo_url')
@@ -335,11 +380,11 @@ const findRole = async (entityId, lookedFor, role, cpt) => {
   const roles = await Promise.all(
     entities.map(async entity => {
       const maxRole = Math.max(entity.role, role);
-      if ((entity.entity_id = lookedFor)) {
+      if (entity.entity_id === lookedFor) {
         return maxRole;
       } else {
         return findRole(
-          entity.entity_id_admin,
+          entity.entity_id,
           lookedFor,
           maxRole,
           cpt + 1,
@@ -836,6 +881,7 @@ module.exports = {
   deleteOption,
   deleteRegistration,
   getAllEntities,
+  getAllOwnedEntities,
   getAllRolesEntity,
   getAllTypeEntities,
   getCreator,

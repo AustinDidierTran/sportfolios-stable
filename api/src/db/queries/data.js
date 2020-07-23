@@ -9,7 +9,13 @@ const {
   getTeamsFromQuery,
 } = require('../helpers/data');
 
-const globalSearch = async (user_id, query, typeProps, blackList) => {
+const globalSearch = async (
+  user_id,
+  query,
+  typeProps,
+  blackList,
+  whiteList,
+) => {
   const type = Number(typeProps);
   let entities;
 
@@ -20,7 +26,7 @@ const globalSearch = async (user_id, query, typeProps, blackList) => {
     const res = await getOrganizationsFromQuery(query);
     entities = res.map(r => ({ ...r, type }));
   } else if (type === GLOBAL_ENUM.TEAM) {
-    const res = await getTeamsFromQuery(query, blackList);
+    const res = await getTeamsFromQuery(query, blackList, whiteList);
     entities = res.map(r => ({ ...r, type }));
   } else {
     await addQueryToRecentSearches(user_id, query);
