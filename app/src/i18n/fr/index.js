@@ -306,5 +306,9 @@ export default {
       'Votre inscription est en attente, vous allez reçevoir un courriel pour vous avertir lorsque votre demande sera traitée ',
     registration_refused:
       "Désolé, votre équipe n'est pas éligible pour cet événement vous avez été refusé",
+
+    //SNACKBAR MESSAGE
+    you_have_no_account_with_this_email_create_one:
+      "Vous n'avez de compte associé avec ce courriel! Créez votre compte!",
   },
 };

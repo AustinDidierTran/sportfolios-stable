@@ -23,7 +23,7 @@ export default function SnackBar() {
   return (
     <Snackbar
       open={open}
-      autoHideDuration={3000}
+      autoHideDuration={5000}
       onClose={() => setOpen(false)}
     >
       <Alert onClose={() => setOpen(false)} severity={severity}>
