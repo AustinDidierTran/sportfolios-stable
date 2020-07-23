@@ -19,12 +19,16 @@ export default function TeamItem(props) {
     name,
     icon,
     inverseColor,
+    notClickable,
   } = props;
 
   const initials = useMemo(() => getInitialsFromName(name), [name]);
 
   const handleClick = useCallback(
     e => {
+      if (notClickable) {
+        return;
+      }
       if (onClick) {
         onClick(e, { id, name });
       } else {

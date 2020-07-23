@@ -9,7 +9,7 @@ function Alert(props) {
 
 export default function SnackBar() {
   const {
-    state: { message, severity, time },
+    state: { message, severity, duration, time },
   } = useContext(Store);
 
   const [open, setOpen] = useState(false);
@@ -23,7 +23,7 @@ export default function SnackBar() {
   return (
     <Snackbar
       open={open}
-      autoHideDuration={5000}
+      autoHideDuration={duration || 5000}
       onClose={() => setOpen(false)}
     >
       <Alert onClose={() => setOpen(false)} severity={severity}>

@@ -7,6 +7,7 @@ export default {
     add_editor: 'Ajouter éditeur',
     add_new_person: 'Ajouter une nouvelle personne',
     add_new_player: 'Ajouter un nouveau joueur',
+    add_player_with_no_account: 'Ajouter un joueur sans compte',
     add_payment_method: 'Ajouter une option de paiement',
     add_payment_options: 'Ajouter des options',
     add_to_cart: 'Ajouter au panier',
@@ -38,7 +39,8 @@ export default {
     create_organization: 'Créer une organisation',
     create_person: 'Créer une personne',
     create_team: 'Créer une équipe',
-    create_new_team: 'Créer une nouvelle équipe',
+    click_to_create_new_team:
+      'Cliquer pour créer votre nouvelle équipe',
     created_by: 'Créé par {{name}}',
     currency: 'Devise',
     delete: 'Supprimer',
@@ -310,5 +312,13 @@ export default {
     //SNACKBAR MESSAGE
     you_have_no_account_with_this_email_create_one:
       "Vous n'avez de compte associé avec ce courriel! Créez votre compte!",
+    team_selected_add_your_roster:
+      'Équipe {{name}} sélectionnée! Ajoutez votre alignement. Entrez le nom des joueurs. Si le joueur à déjà un compte, il apparaîtra sous la barre de recherche.',
+    you_added_no_players_to_your_roster:
+      "Vous n'avez ajouté aucun joueur à votre alignement! Vous pouvez maintenant choisir votre option de paiement.",
+    you_added_one_player_to_your_roster:
+      'Vous avez ajouté un joueur à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
+    you_added_players_to_your_roster:
+      'Vous avez ajouté {{length}} joueurs à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
   },
 };

@@ -117,6 +117,7 @@ function reducer(state, action) {
         ...state,
         message: action.message,
         severity: action.severity,
+        duration: action.duration,
         time: Date.now(),
       };
     }
