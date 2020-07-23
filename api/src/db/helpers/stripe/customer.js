@@ -115,7 +115,12 @@ const createPaymentMethod = async body => {
 
   console.log({ params });
 
-  const paymentMethod = await stripe.paymentMethods.create(params);
+  let paymentMethod;
+  try {
+    paymentMethod = await stripe.paymentMethods.create(params);
+  } catch (err) {
+    console.log({ err });
+  }
 
   console.log({ paymentMethod });
 
