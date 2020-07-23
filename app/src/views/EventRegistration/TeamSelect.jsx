@@ -10,7 +10,7 @@ import { formatRoute } from '../../actions/goTo';
 
 export default function TeamSelect(props) {
   const { t } = useTranslation();
-  const { onClick, team, eventId } = props;
+  const { onClick, team, eventId, onTeamChange } = props;
   const query = useFormInput('');
 
   const [selectedTeam, setSelectedTeam] = useState(team);
@@ -26,6 +26,7 @@ export default function TeamSelect(props) {
 
   const onChange = () => {
     setSelectedTeam(null);
+    onTeamChange();
   };
 
   const getBlackList = async () => {

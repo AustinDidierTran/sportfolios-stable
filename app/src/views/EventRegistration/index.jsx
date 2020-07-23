@@ -101,6 +101,10 @@ export default function EventRegistration() {
     }
   };
 
+  const onTeamChange = () => {
+    stepHook.handleNotCompleted(0);
+  };
+
   const onRosterSelect = (e, roster) => {
     setRoster(roster);
     stepHook.handleCompleted(1);
@@ -173,6 +177,7 @@ export default function EventRegistration() {
       content: (
         <TeamSelect
           onClick={onTeamSelect}
+          onTeamChange={onTeamChange}
           team={team}
           eventId={eventId}
         />
@@ -208,6 +213,7 @@ export default function EventRegistration() {
   useEffect(() => {
     getData();
   }, []);
+
   return (
     <div style={{ marginTop: -4 }}>
       <Paper className={styles.paper}>
