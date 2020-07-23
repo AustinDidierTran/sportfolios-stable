@@ -54,9 +54,7 @@ import { SpeedDial } from '../../components/Custom';
 import SnackBar from './SnackBar/index';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
-const stripePromise = loadStripe(
-  'pk_test_qd1ulz9FxZA3aj2OcBfjqqro00G1K5WrTb',
-);
+const stripePromise = loadStripe(conf.STRIPE.publicKey);
 
 export default function App() {
   const {
