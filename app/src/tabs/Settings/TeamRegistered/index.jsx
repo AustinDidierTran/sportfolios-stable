@@ -16,7 +16,9 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
-import RefundButton from '../../../components/Custom/RefundButton';
+import { useCallback } from 'react';
+import { unregister } from '../../../actions/api/helpers';
+import { IconButton } from '../../../components/Custom';
 
 export default function TeamRegistered() {
   const { t } = useTranslation();
@@ -37,6 +39,18 @@ export default function TeamRegistered() {
   useEffect(() => {
     getTeams();
   }, [eventId]);
+
+  const onUnregisterTeam = useCallback(
+    async rosterId => {
+      const { data } = await unregister({
+        eventId,
+        rosterId,
+      });
+
+      setTeams(data);
+    },
+    [eventId],
+  );
 
   const getMaximumSpots = async () => {
     const { data } = await api(
@@ -117,8 +131,15 @@ export default function TeamRegistered() {
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <MailToButton emails={team.emails} />
-                      <RefundButton
-                        invoiceItemId={team.invoiceItemId}
+                      <IconButton
+                        color="primary"
+                        variant="contained"
+                        icon="MoneyOff"
+                        tooltip={t('unregister')}
+                        onClick={() =>
+                          onUnregisterTeam(team.rosterId)
+                        }
+                        style={{ color: '#18b393' }}
                       />
                     </StyledTableCell>
                   </StyledTableRow>

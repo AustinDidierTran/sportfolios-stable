@@ -310,6 +310,19 @@ router.post(BASE_URL, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/unregister`, async ctx => {
+  const data = await queries.unregister(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  ctx.status = 200;
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 router.post(`${BASE_URL}/role`, async ctx => {
   const entity = await queries.addEntityRole(
     ctx.request.body,

@@ -81,6 +81,10 @@ const STRIPE_STATUS_ENUM = {
   NOT_DONE: 'not done',
 };
 
+const STRIPE_ERROR_ENUM = {
+  CHARGE_ALREADY_REFUNDED: 'charge_already_refunded',
+};
+
 module.exports = {
   REGISTRATION_STATUS_ENUM,
   CARD_TYPE_ENUM,
@@ -91,6 +95,7 @@ module.exports = {
   LOGGER_ENUM,
   MEMBERSHIP_LENGTH_ENUM,
   MEMBERSHIP_TYPE_ENUM,
+  STRIPE_ERROR_ENUM,
   STRIPE_STATUS_ENUM,
   VIEW_ENUM,
 };

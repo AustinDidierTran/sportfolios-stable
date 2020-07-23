@@ -34,3 +34,12 @@ export const createRefund = async ({ invoiceItemId }) => {
 
   return data;
 };
+
+export const unregister = async ({ eventId, rosterId }) => {
+  const data = await api('/api/entity/unregister', {
+    method: 'POST',
+    body: JSON.stringify({ eventId, rosterId }),
+  });
+
+  return data;
+};

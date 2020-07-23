@@ -1,15 +1,15 @@
 import React from 'react';
 
 import { IconButton } from '../../Custom';
-import { createRefund } from '../../../actions/api/helpers';
+import { unregister } from '../../../actions/api/helpers';
 import { useTranslation } from 'react-i18next';
 
-export default function RefundButton(props) {
+export default function UnregisterButton(props) {
   const { t } = useTranslation();
-  const { invoiceItemId } = props;
+  const { eventId, rosterId } = props;
 
   const onClick = () => {
-    createRefund({ invoiceItemId });
+    unregister({ eventId, rosterId });
   };
 
   return (

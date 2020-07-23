@@ -1,10 +1,8 @@
 const {
   addMember,
+  deleteRegistration,
   updateRegistration,
-} = require('../../../db/queries/entity');
-const {
-  INVOICE_STATUS_ENUM,
-} = require('../../../../../common/enums');
+} = require('../../../db/helpers/entity');
 
 const INVOICE_CREATED_ENUM = {
   EVENT: async (metadata, stripe) => {
@@ -31,13 +29,12 @@ const INVOICE_PAID_ENUM = {
   EVENT: async (metadata, stripe) => {
     const { rosterId, eventId } = metadata;
     const { status, invoiceItemId } = stripe;
-
-    await updateRegistration({
+    await updateRegistration(
       rosterId,
       eventId,
       invoiceItemId,
       status,
-    });
+    );
   },
   STORE: () => {},
   MEMBERSHIPS: () => {},
@@ -47,12 +44,7 @@ const INVOICE_REFUND_ENUM = {
   EVENT: async (metadata, stripe) => {
     const { rosterId, eventId } = metadata;
     const { invoiceItemId } = stripe;
-    await updateRegistration({
-      rosterId,
-      eventId,
-      invoiceItemId,
-      status: INVOICE_STATUS_ENUM.REFUNDED,
-    });
+    await deleteRegistration(rosterId, eventId, invoiceItemId);
   },
 };
 

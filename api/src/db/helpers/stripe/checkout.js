@@ -13,7 +13,6 @@ const {
 const { clearCart } = require('../shop');
 const {
   INVOICE_PAID_ENUM,
-  INVOICE_REFUND_ENUM,
 } = require('../../../server/utils/Stripe/checkout');
 
 const formatMetadata = metadata =>
@@ -246,14 +245,6 @@ const createRefund = async body => {
     { refund_application_fee: true },
   );
 
-  INVOICE_REFUND_ENUM.EVENT(
-    {
-      rosterId: invoiceItem.metadata.rosterId,
-      eventId: invoiceItem.metadata.id,
-    },
-    { invoiceItemId },
-  );
-
   return { refund, reversedTransfer };
 };
 
@@ -308,6 +299,7 @@ const checkout = async (body, userId) => {
       metadata: {},
     },
   };
+
   const prices = await knex('cart_items').where({ user_id: userId });
   try {
     const invoicesAndMetadatas = await Promise.all(
@@ -326,6 +318,7 @@ const checkout = async (body, userId) => {
       { invoiceParams, paymentMethodId },
       userId,
     );
+
     await stripe.customers.retrieve(invoice.customer);
     const invoiceId = invoice.id;
     await finalizeInvoice({ invoiceId }, userId);
