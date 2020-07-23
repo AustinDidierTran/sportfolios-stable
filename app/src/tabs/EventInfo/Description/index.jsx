@@ -18,7 +18,7 @@ export default function Description(props) {
 
   if (text && text != 'null') {
     return (
-      <Paper style={{ marginTop: 8 }} className={styles.paper}>
+      <Paper className={styles.paper}>
         <TextareaAutosize
           className={styles.textarea}
           placeholder="Description"
@@ -30,8 +30,8 @@ export default function Description(props) {
   }
 
   return (
-    <Paper className={styles.paper}>
-      <Typography style={{ margin: '8px' }}>
+    <Paper className={styles.noDescription}>
+      <Typography align="center" className={styles.typo}>
         {t('no_description')}
       </Typography>
     </Paper>

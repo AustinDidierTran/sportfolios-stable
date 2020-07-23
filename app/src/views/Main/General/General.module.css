@@ -1,9 +1,5 @@
 .general {
-  grid-area: general;
-  text-align: center;
-  display: grid !important;
-  grid-template-columns: 1fr;
-  grid-template-areas: 'event';
-  row-gap: 16px;
-  margin: 16px auto 64px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }

@@ -30,7 +30,9 @@
 .buttons {
   display: flex;
   flex-direction: row;
+  width: 100%;
   justify-content: center;
+  margin: 8px 0;
 }
 
 .button {

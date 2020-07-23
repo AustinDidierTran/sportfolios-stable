@@ -1,16 +1,12 @@
 import React from 'react';
 
 import General from './General';
-import { Container } from '../../components/MUI';
-
-import styles from './Main.module.css';
+import { IgContainer } from '../../components/Custom';
 
 export default function Main() {
   return (
-    <Container>
-      <div className={styles.main}>
-        <General />
-      </div>
-    </Container>
+    <IgContainer>
+      <General />
+    </IgContainer>
   );
 }

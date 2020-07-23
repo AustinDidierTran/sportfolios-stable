@@ -7,14 +7,9 @@
   justify-content: center;
 }
 
-.content {
-  margin: 8px auto;
-  flex: 1 1 auto;
-}
-
 @media (min-width: 768px) {
   .container {
-    bottom: 10px;
+    bottom: 0px;
     width: 700px;
     left: calc(50vw - 350px);
   }

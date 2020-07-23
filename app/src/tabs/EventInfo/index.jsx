@@ -5,7 +5,12 @@ import React, {
   useContext,
 } from 'react';
 
-import { Paper, Button, CardMedia } from '../../components/Custom';
+import {
+  Paper,
+  Button,
+  CardMedia,
+  ContainerBottomFixed,
+} from '../../components/Custom';
 import { Typography } from '../../components/MUI';
 import { useTranslation } from 'react-i18next';
 import Description from './Description';
@@ -134,22 +139,24 @@ export default function TabEventInfo() {
   const Problems = () => {
     if (options.length < 1) {
       return (
-        <Paper className={styles.typo}>
-          <Typography>{t('registrations_closed_for_now')}</Typography>
+        <Paper className={styles.paper}>
+          <Typography align="center">
+            {t('registrations_closed_for_now')}
+          </Typography>
         </Paper>
       );
     } else if (isFull) {
       setCanRegister(false);
       return (
-        <Paper className={styles.typo}>
-          <Typography>{t('event_is_full')}</Typography>
+        <Paper className={styles.paper}>
+          <Typography align="center">{t('event_is_full')}</Typography>
         </Paper>
       );
     } else if (isLate) {
       setCanRegister(false);
       return (
-        <Paper className={styles.typo}>
-          <Typography>
+        <Paper className={styles.paper}>
+          <Typography align="center">
             {t('registrations_ended')}&nbsp;{getRegistrationEnd}
           </Typography>
         </Paper>
@@ -157,8 +164,8 @@ export default function TabEventInfo() {
     } else if (isEarly) {
       setCanRegister(false);
       return (
-        <Paper className={styles.typo}>
-          <Typography>
+        <Paper className={styles.paper}>
+          <Typography align="center">
             {t('registrations_open_on')}&nbsp;{getRegistrationStart}
           </Typography>
         </Paper>
@@ -170,63 +177,68 @@ export default function TabEventInfo() {
   };
 
   return (
-    <div className={styles.event}>
-      <Paper className={styles.paper}>
-        <CardMedia
-          onClick={() => goTo(ROUTES.entity, { id })}
-          photoUrl={event.photoUrl || ''}
-          className={styles.media}
-        />
-        <CardContent>
-          <Typography>{event.name}</Typography>
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            component="p"
-          >
-            {(event.quickDescription &&
-              decodeURIComponent(event.quickDescription)) ||
-              '5v5 mixte sous la formule à bout de souffle!'}
-          </Typography>
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            component="p"
-          >
-            {getDate()}
-          </Typography>
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            component="p"
-          >
-            {event.location || 'Sherbrooke'}
-          </Typography>
-        </CardContent>
-      </Paper>
-      <Problems />
-      <Description description={event.description} />
-      <div
-        className={
-          isAuthenticated ? styles.buttonDiv : styles.buttonDiv1
-        }
-      >
-        {canRegister ? (
-          <Button
-            size="small"
-            variant="contained"
-            endIcon="SupervisedUserCircle"
-            style={{ margin: '16px' }}
-            onClick={goToRegistration}
-            className={styles.button}
-            hidden
-          >
-            {t('register')}
-          </Button>
-        ) : (
-          <></>
-        )}
+    <div className={canRegister ? styles.event : styles.event1}>
+      <div className={styles.infos}>
+        <Paper className={styles.paper}>
+          <CardMedia
+            onClick={() => goTo(ROUTES.entity, { id })}
+            photoUrl={event.photoUrl || ''}
+            className={styles.media}
+          />
+          <CardContent className={styles.content}>
+            <Typography>{event.name}</Typography>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              component="p"
+            >
+              {(event.quickDescription &&
+                decodeURIComponent(event.quickDescription)) ||
+                '5v5 mixte sous la formule à bout de souffle!'}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              component="p"
+            >
+              {getDate()}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              component="p"
+            >
+              {event.location || 'Sherbrooke'}
+            </Typography>
+          </CardContent>
+        </Paper>
       </div>
+      <div className={styles.problems}>
+        <Problems />
+      </div>
+      <div className={styles.description}>
+        <Description description={event.description} />
+      </div>
+
+      <ContainerBottomFixed>
+        <div className={styles.buttonDiv}>
+          {canRegister ? (
+            <Button
+              size="small"
+              variant="contained"
+              endIcon="SupervisedUserCircle"
+              style={{ margin: '8px' }}
+              onClick={goToRegistration}
+              className={styles.button}
+              hidden
+            >
+              {t('register')}
+            </Button>
+          ) : (
+            <></>
+          )}
+        </div>
+      </ContainerBottomFixed>
     </div>
   );
 }

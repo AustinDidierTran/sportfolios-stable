@@ -1,38 +1,41 @@
-.item {
+.cart {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.defaultCard {
   flex: 1 1 auto;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 4px 0 50px 0;
+}
+
+.typo {
+  flex: 1 1 auto;
+  margin: 8px auto !important;
 }
 
 .button {
-  position: fixed !important;
-  bottom: 48px;
-  width: calc(100% - 32px);
-  margin: 16px !important;
+  flex: 1 1 auto;
 }
 
-.main {
-  display: grid !important;
-  grid-template-areas: 'general';
-  grid-template-columns: 1fr;
-  column-gap: 8px;
-  row-gap: 8px;
-  margin: 0 auto;
-  justify-items: center;
-}
-
-.general {
+.buttonDiv {
+  flex: 1 1 auto;
+  display: flex;
   width: 100%;
-  grid-area: general;
-  text-align: center;
-  display: grid !important;
-  grid-template-columns: 1fr;
-  grid-template-areas: 'cartItem';
-  row-gap: 16px;
-  margin: 16px auto 64px auto;
+  justify-content: center;
 }
 
 @media (min-width: 768px) {
-  .main {
-    width: 700px !important;
+  .button {
+    flex: 0 0 375px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .buttonDiv {
+    max-width: 1232px;
   }
 }
