@@ -180,7 +180,7 @@ const createTransfers = async invoice => {
           invoiceItem.metadata.sellerId,
         );
 
-        const stripeFees = amount * 0.029 + 30;
+        const stripeFees = Math.ceil(amount * 0.029 + 30);
         const transferedAmount = amount - stripeFees;
 
         const transfer = await createTransfer(
