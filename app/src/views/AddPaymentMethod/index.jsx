@@ -8,7 +8,7 @@ import {
   Container,
 } from '../../components/MUI';
 
-import { Paper } from '../../components/Custom';
+import { Paper, LoadingSpinner } from '../../components/Custom';
 import CountrySelect from '../../tabs/Settings/Stripe/Form/CountrySelect';
 import CardSection from '../../utils/stripe/Payment/CardSection';
 
@@ -22,7 +22,6 @@ import {
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { Store, ACTION_ENUM } from '../../Store';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default function AddPaymentMethod() {
   const { t } = useTranslation();
@@ -117,11 +116,7 @@ export default function AddPaymentMethod() {
     },
   });
   if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center', margin: '32px' }}>
-        <CircularProgress />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
   return (
     <Container className={styles.main}>

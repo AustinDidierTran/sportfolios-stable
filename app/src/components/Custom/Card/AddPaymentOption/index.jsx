@@ -4,12 +4,12 @@ import { useFormInput } from '../../../../hooks/forms';
 import { Input, Paper, Button } from '../../../Custom';
 import { List, ListItem } from '../../../MUI';
 import { useTranslation } from 'react-i18next';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import api from '../../../../actions/api';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import { Store, ACTION_ENUM } from '../../../../Store';
 import styles from './AddPaymentOption.module.css';
+import LoadingSpinner from '../../LoadingSpinner';
 
 export default function AddPaymentOption(props) {
   const { fields, onAdd: onAddProps } = props;
@@ -105,11 +105,7 @@ export default function AddPaymentOption(props) {
   };
 
   if (isLoading) {
-    return (
-      <Paper style={{ textAlign: 'center' }}>
-        <CircularProgress style={{ margin: '16px' }} />
-      </Paper>
-    );
+    return <LoadingSpinner isComponent />;
   }
   return (
     <Paper>

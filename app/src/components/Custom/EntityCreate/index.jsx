@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { useFormik } from 'formik';
 import CreatedBy from './CreatedBy';
 
-import CircularProgress from '@material-ui/core/CircularProgress';
 import api from '../../../actions/api';
 import { ROUTES, goTo, formatRoute } from '../../../actions/goTo';
 
@@ -14,6 +13,7 @@ import { Paper, Button, Container } from '../../Custom';
 import { TextField, CardActions, CardContent } from '../../MUI';
 import { GLOBAL_ENUM } from '../../../../../common/enums';
 import { useQuery, useApiRoute } from '../../../hooks/queries';
+import LoadingSpinner from '../LoadingSpinner';
 
 export default function EntityCreate() {
   const { id, type, route } = useQuery();
@@ -97,11 +97,7 @@ export default function EntityCreate() {
   };
 
   if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center' }}>
-        <CircularProgress style={{ marginTop: '32px' }} />
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (

@@ -8,13 +8,13 @@ import { ACTION_ENUM, Store } from '../../../Store';
 import { useFormInput } from '../../../hooks/forms';
 import { useEditor } from '../../../hooks/roles';
 import { changeEntityName } from '../../../actions/api';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 import {
   Avatar,
   Input,
   Button,
   Paper,
+  LoadingSpinner,
 } from '../../../components/Custom';
 
 import {
@@ -116,11 +116,7 @@ export default function BasicInfos(props) {
   };
 
   if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center' }}>
-        <CircularProgress style={{ marginTop: '32px' }} />
-      </div>
-    );
+    return <LoadingSpinner isComponent />;
   }
 
   return (

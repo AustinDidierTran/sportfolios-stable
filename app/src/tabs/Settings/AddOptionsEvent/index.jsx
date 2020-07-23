@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-import { Paper, Card } from '../../../components/Custom';
+import {
+  Paper,
+  Card,
+  LoadingSpinner,
+} from '../../../components/Custom';
 import { Container } from '../../../components/MUI';
 
 import { useTranslation } from 'react-i18next';
@@ -11,7 +15,6 @@ import { useParams } from 'react-router-dom';
 import styles from './AddOptionsEvent.module.css';
 import { CARD_TYPE_ENUM } from '../../../../../common/enums';
 import moment from 'moment';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 export default function AddOptionsEvent() {
   const { t } = useTranslation();
@@ -92,11 +95,7 @@ export default function AddOptionsEvent() {
   ];
 
   if (isLoading) {
-    return (
-      <Paper title={t('add_payment_options')}>
-        <CircularProgress />
-      </Paper>
-    );
+    return <LoadingSpinner />;
   }
 
   return (

@@ -1,10 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Paper, Button } from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
+import LoadingSpinner from '../LoadingSpinner';
 
 export default function MessageAndButton(props) {
   const { button, onClick, endIcon, message, title } = props;
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleClick = () => {
+    setIsLoading(true);
+    onClick();
+    setIsLoading(false);
+  };
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Paper title={title} style={{ textAlign: 'center' }}>
@@ -18,7 +31,7 @@ export default function MessageAndButton(props) {
         style={{
           marginBottom: '16px',
         }}
-        onClick={onClick}
+        onClick={handleClick}
       >
         {button}
       </Button>
