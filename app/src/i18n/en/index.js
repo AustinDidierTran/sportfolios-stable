@@ -5,6 +5,7 @@ export default {
     acceptation: 'Acceptation',
     add_editor: 'Add editor',
     add_new_person: 'Add new person',
+    add_player_with_no_account: 'Add player with no account',
     add_new_player: 'Add new player',
     add_payment_method: 'Add payment method',
     add_payment_options: 'Add payment options',
@@ -30,6 +31,7 @@ export default {
     card_ending_with: 'Card ending with {{last4}}',
     cart_empty_go_shop: "Your cart is empty, it's time to shop!",
     change_password: 'Change password',
+    click_to_create_new_team: 'Click to create your new team',
     contact_us: 'Contact us',
     contact: 'Contact',
     country: 'Country',
@@ -37,7 +39,6 @@ export default {
     create_organization: 'Create Organization',
     create_person: 'Create Person',
     create_team: 'Create Team',
-    create_new_team: 'Create new team',
     created_by: 'Created by {{name}}',
     currency: 'Currency',
     delete: 'Delete',
@@ -302,5 +303,13 @@ export default {
     //SNACKBAR MESSAGE
     you_have_no_account_with_this_email_create_one:
       'You have no account with this email! Create one!',
+    team_selected_add_your_roster:
+      'Team {{name}} selected! Time to add your roster. Enter players name, if player already have an account he will appear below search bar.',
+    you_added_no_players_to_your_roster:
+      'You did not add players to your roster. Choose your payment option.',
+    you_added_one_player_to_your_roster:
+      'You added one player to your roster! Choose your payment option.',
+    you_added_players_to_your_roster:
+      'You added {{length}} players to your roster! Choose your payment option.',
   },
 };

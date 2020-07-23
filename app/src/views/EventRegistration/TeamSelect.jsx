@@ -46,12 +46,14 @@ export default function TeamSelect(props) {
             {...team}
             secondary="Selected Team"
             className={styles.main}
+            notClickable
           />
         ) : (
           <TeamItem
             {...selectedTeam}
             secondary="Selected Team"
             className={styles.main}
+            notClickable
           />
         )}
         <Button

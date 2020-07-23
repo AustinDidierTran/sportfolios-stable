@@ -171,6 +171,36 @@ export default function EventRegistration() {
     goTo(ROUTES.registrationStatus, { status });
   };
 
+  const handleNext = activeStep => {
+    if (activeStep === 0) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('team_selected_add_your_roster', {
+          name: team.name,
+        }),
+        severity: 'success',
+        duration: 30000,
+      });
+    }
+    if (activeStep === 1) {
+      let message = '';
+      const length = roster.length;
+      if (!length) {
+        message = t('you_added_no_players_to_your_roster');
+      } else if (length === 1) {
+        message = t('you_added_one_player_to_your_roster');
+      } else {
+        message = t('you_added_players_to_your_roster', { length });
+      }
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message,
+        severity: 'success',
+        duration: 30000,
+      });
+    }
+  };
+
   const steps = [
     {
       label: t('team_select'),
@@ -190,6 +220,7 @@ export default function EventRegistration() {
           onClick={onRosterSelect}
           roster={roster}
           setRoster={setRoster}
+          team={team}
         />
       ),
     },
@@ -200,6 +231,7 @@ export default function EventRegistration() {
           onClick={onPaymentOptionSelect}
           paymentOption={paymentOption}
           paymentOptions={paymentOptions}
+          roster={roster}
         />
       ),
     },
@@ -231,6 +263,7 @@ export default function EventRegistration() {
           <StepperWithHooks
             steps={steps}
             finish={finish}
+            Next={handleNext}
             {...stepHook.stepperProps}
           />
         </Container>

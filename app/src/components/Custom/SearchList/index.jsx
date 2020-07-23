@@ -52,10 +52,10 @@ export default function SearchList(props) {
     if (allowCreate) {
       let uniqueSecondary = '';
       if (type === GLOBAL_ENUM.TEAM) {
-        uniqueSecondary = t('create_new_team');
+        uniqueSecondary = t('click_to_create_new_team');
       }
       if (type === GLOBAL_ENUM.PERSON) {
-        uniqueSecondary = t('add_new_player');
+        uniqueSecondary = t('add_player_with_no_account');
       }
       return [
         {

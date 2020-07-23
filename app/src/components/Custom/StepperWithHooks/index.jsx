@@ -14,6 +14,7 @@ export default function CustomStepperWithHooks(props) {
     completed,
     handleBack,
     handleNext,
+    Next,
     handleReset,
     finish,
     steps,
@@ -88,7 +89,10 @@ export default function CustomStepperWithHooks(props) {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={handleNext}
+                      onClick={() => {
+                        Next(activeStep);
+                        handleNext();
+                      }}
                       disabled={!completed.has(activeStep)}
                       style={
                         completed.has(activeStep)
