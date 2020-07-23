@@ -1,4 +1,8 @@
-const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
+const {
+  ENTITIES_ROLE_ENUM,
+  INVOICE_STATUS_ENUM,
+  STRIPE_ERROR_ENUM,
+} = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
 const { signS3Request } = require('../../server/utils/aws');
@@ -27,6 +31,8 @@ const {
   getGeneralInfos: getGeneralInfosHelper,
   getOptions: getOptionsHelper,
   removeEntityRole: removeEntityRoleHelper,
+  getRosterInvoiceItem,
+  unregister: unregisterHelper,
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
   updateEntityRole: updateEntityRoleHelper,
@@ -36,6 +42,7 @@ const {
   updateRegistration: updateRegistrationHelper,
   eventInfos: eventInfosHelper,
 } = require('../helpers/entity');
+const { createRefund } = require('../helpers/stripe/checkout');
 
 async function isAllowed(entityId, userId, acceptationRole) {
   const role = await getEntityRoleHelper(entityId, userId);
@@ -252,6 +259,35 @@ async function addRoster(body) {
   return res;
 }
 
+const unregister = async (body, userId) => {
+  const { eventId, rosterId } = body;
+  if (!isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  const { invoiceItemId, status } = await getRosterInvoiceItem({
+    eventId,
+    rosterId,
+  });
+
+  try {
+    if (status === INVOICE_STATUS_ENUM.PAID) {
+      await createRefund({ invoiceItemId });
+    }
+
+    await unregisterHelper({ rosterId, eventId });
+  } catch (err) {
+    if (err.code === STRIPE_ERROR_ENUM.CHARGE_ALREADY_REFUNDED) {
+      // Error is fine, keep unregistering
+      await unregisterHelper({ rosterId, eventId });
+    } else {
+      throw err;
+    }
+  }
+
+  return getAllRegisteredHelper(eventId, userId);
+};
+
 async function addMembership(body, userId) {
   const {
     entity_id,
@@ -314,6 +350,7 @@ module.exports = {
   getEvent,
   getGeneralInfos,
   getS3Signature,
+  unregister,
   updateEntity,
   updateEntityRole,
   updateEvent,

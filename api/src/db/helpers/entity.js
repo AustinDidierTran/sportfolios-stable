@@ -454,6 +454,23 @@ async function getAllRegistered(eventId, userId) {
   return props;
 }
 
+const getRosterInvoiceItem = async body => {
+  const { eventId, rosterId } = body;
+
+  const [{ invoice_item_id: invoiceItemId, status }] = await knex(
+    'event_rosters',
+  )
+    .select(['invoice_item_id', 'status'])
+    .where({ roster_id: rosterId, event_id: eventId });
+
+  return { invoiceItemId, status };
+};
+
+const unregister = async body => {
+  const { rosterId, eventId } = body;
+  await deleteRegistration(rosterId, eventId);
+};
+
 async function getEmailsEntity(entity_id) {
   const emails = await knex('entities_role')
     .select('email')
@@ -534,6 +551,31 @@ async function updateEntityPhoto(entityId, photo_url) {
     .update({ photo_url })
     .where({ entity_id: entityId });
 }
+
+const deleteRegistration = async (rosterId, eventId) => {
+  return knex.transaction(async trx => {
+    await knex('event_rosters')
+      .where({
+        roster_id: rosterId,
+        event_id: eventId,
+      })
+      .del()
+      .transacting(trx);
+
+    await knex('team_players')
+      .where({ roster_id: rosterId })
+      .del()
+      .transacting(trx);
+
+    await knex('team_rosters')
+      .where({
+        id: rosterId,
+      })
+      .del()
+      .transacting(trx);
+  });
+};
+
 async function updateRegistration(
   rosterId,
   eventId,
@@ -729,7 +771,7 @@ async function updateMember(
 }
 
 async function removeEntityRole(entityId, entityIdAdmin) {
-  return await knex('entities_role')
+  return knex('entities_role')
     .where({ entity_id: entityId, entity_id_admin: entityIdAdmin })
     .del();
 }
@@ -792,6 +834,7 @@ module.exports = {
   deleteEntity,
   deleteEntityMembership,
   deleteOption,
+  deleteRegistration,
   getAllEntities,
   getAllRolesEntity,
   getAllTypeEntities,
@@ -806,6 +849,8 @@ module.exports = {
   getGeneralInfos,
   getOptions,
   removeEntityRole,
+  unregister,
+  getRosterInvoiceItem,
   updateEntityName,
   updateEntityPhoto,
   updateEntityRole,
