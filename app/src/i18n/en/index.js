@@ -298,5 +298,9 @@ export default {
       'Your acceptation is currently pending, you will receive an email when the event will adress your registration',
     registration_refused:
       'Sorry, your team is not elligible for this event your registration has been refused',
+
+    //SNACKBAR MESSAGE
+    you_have_no_account_with_this_email_create_one:
+      'You have no account with this email! Create one!',
   },
 };

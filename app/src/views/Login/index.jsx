@@ -135,8 +135,14 @@ export default function Login() {
             t('email_password_no_match'),
           );
         } else if (res.status === 404) {
-          formik.setFieldError('email', t('email_not_found'));
           formik.setStatus({ state: 'signup' });
+          dispatch({
+            type: ACTION_ENUM.SNACK_BAR,
+            message: t(
+              'you_have_no_account_with_this_email_create_one',
+            ),
+            severity: 'info',
+          });
         } else {
           let { data } = res;
 
