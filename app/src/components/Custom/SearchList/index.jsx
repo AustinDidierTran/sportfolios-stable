@@ -12,6 +12,7 @@ import { GLOBAL_ENUM } from '../../../../../common/enums';
 export default function SearchList(props) {
   const {
     blackList,
+    whiteList,
     label,
     onClick,
     type,
@@ -25,18 +26,29 @@ export default function SearchList(props) {
   const query = useFormInput('');
 
   const optionsRoute = useMemo(() => {
-    if (blackList.length < 1) {
-      return formatRoute('/api/data/search/global', null, {
-        query: query.value,
-        type,
-      });
-    } else {
-      return formatRoute('/api/data/search/global', null, {
-        blackList: JSON.stringify(blackList),
-        query: query.value,
-        type,
-      });
+    if (whiteList) {
+      if (whiteList.length > 0) {
+        const res = formatRoute('/api/data/search/global', null, {
+          whiteList: JSON.stringify(whiteList),
+          query: query.value,
+          type,
+        });
+        return res;
+      }
     }
+    if (blackList) {
+      if (blackList.length > 0) {
+        return formatRoute('/api/data/search/global', null, {
+          blackList: JSON.stringify(blackList),
+          query: query.value,
+          type,
+        });
+      }
+    }
+    return formatRoute('/api/data/search/global', null, {
+      query: query.value,
+      type,
+    });
   }, [query, type]);
 
   const { response } = useApiRoute(optionsRoute, {

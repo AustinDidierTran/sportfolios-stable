@@ -14,14 +14,14 @@ export default function TeamSelect(props) {
   const query = useFormInput('');
 
   const [selectedTeam, setSelectedTeam] = useState(team);
-  const [blackList, setBlackList] = useState([]);
+  const [whiteList, setWhiteList] = useState([]);
 
   useEffect(() => {
     setSelectedTeam(team);
   }, [team]);
 
   useEffect(() => {
-    getBlackList();
+    getWhiteList();
   }, [eventId]);
 
   const onChange = () => {
@@ -29,13 +29,28 @@ export default function TeamSelect(props) {
     onTeamChange();
   };
 
-  const getBlackList = async () => {
-    const { data } = await api(
+  const getWhiteList = async () => {
+    const { data: owned } = await api(
+      formatRoute('/api/entity/allOwned', null, {
+        type: GLOBAL_ENUM.TEAM,
+      }),
+    );
+    const { data: registered } = await api(
       formatRoute('/api/entity/allTeamsRegistered', null, {
         eventId,
       }),
     );
-    setBlackList(data.map(d => d.teamId));
+
+    const registeredIds = registered.map(r => r.teamId);
+
+    const isIncluded = id => {
+      return !registeredIds.find(teamId => teamId === id);
+    };
+
+    const entities = owned.filter(o => {
+      return isIncluded(o.id);
+    });
+    setWhiteList(entities.map(e => e.id));
   };
 
   if (selectedTeam) {
@@ -81,7 +96,7 @@ export default function TeamSelect(props) {
         query={query}
         allowCreate
         withoutIcon
-        blackList={blackList}
+        whiteList={whiteList}
       />
     </div>
   );

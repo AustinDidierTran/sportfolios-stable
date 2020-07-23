@@ -16,6 +16,7 @@ const {
   deleteEntityMembership: deleteEntityMembershipHelper,
   deleteOption: deleteOptionHelper,
   getAllEntities: getAllEntitiesHelper,
+  getAllOwnedEntities: getAllOwnedEntitiesHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
   getEntity: getEntityHelper,
@@ -48,6 +49,9 @@ async function getEntity(id, user_id) {
 
 async function getAllEntities(params) {
   return getAllEntitiesHelper(params);
+}
+async function getAllOwnedEntities(type, userId) {
+  return getAllOwnedEntitiesHelper(type, userId);
 }
 
 async function getAllTypeEntities(type) {
@@ -302,6 +306,7 @@ module.exports = {
   deleteEntityMembership,
   deleteOption,
   getAllEntities,
+  getAllOwnedEntities,
   getAllRolesEntity,
   getAllTypeEntities,
   getEntity,
