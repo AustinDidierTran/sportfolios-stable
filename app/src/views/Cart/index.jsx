@@ -10,13 +10,14 @@ import { useApiRoute } from '../../hooks/queries';
 import { formatPrice } from '../../utils/stringFormats';
 
 import {
-  Container,
   Button,
   MessageAndButton,
   Card,
   ContainerBottomFixed,
   LoadingSpinner,
+  IgContainer,
 } from '../../components/Custom';
+import DefaultCard from '../../components/MUI/Card';
 import { Typography } from '../../components/MUI';
 
 const getCartItems = async () => {
@@ -45,12 +46,16 @@ export default function Cart() {
   }, []);
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <IgContainer>
+        <LoadingSpinner />
+      </IgContainer>
+    );
   }
 
   if (items.length < 1) {
     return (
-      <Container>
+      <IgContainer>
         <MessageAndButton
           button={t('home')}
           onClick={() => {
@@ -59,35 +64,42 @@ export default function Cart() {
           endIcon="Home"
           message={t('cart_empty_go_shop')}
         ></MessageAndButton>
-      </Container>
+      </IgContainer>
     );
   }
 
   return (
-    <Container>
-      <div className={styles.main}>
-        <div className={styles.general}>
+    <>
+      <IgContainer>
+        <div className={styles.cart}>
           {items.map(item => (
             <Card
               items={{ ...item, setItems }}
               type={CARD_TYPE_ENUM.CART}
             />
           ))}
-          <Typography variant="h5">
-            {`Total: ${formatPrice(response)}`}
-          </Typography>
+          <DefaultCard className={styles.defaultCard}>
+            <Typography variant="h5" className={styles.typo}>
+              {`Total: ${formatPrice(response)}`}
+            </Typography>
+          </DefaultCard>
         </div>
-      </div>
+      </IgContainer>
+
       <ContainerBottomFixed>
-        <Button
-          size="small"
-          variant="contained"
-          endIcon="Check"
-          onClick={onCheckout}
-        >
-          {t('checkout')}
-        </Button>
+        <div className={styles.buttonDiv}>
+          <Button
+            size="small"
+            variant="contained"
+            endIcon="Check"
+            onClick={onCheckout}
+            style={{ margin: 8 }}
+            className={styles.button}
+          >
+            {t('checkout')}
+          </Button>
+        </div>
       </ContainerBottomFixed>
-    </Container>
+    </>
   );
 }

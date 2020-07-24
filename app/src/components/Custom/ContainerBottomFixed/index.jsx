@@ -1,11 +1,7 @@
 import React from 'react';
 import styles from './ContainerBottomFixed.module.css';
 
-export default function CartIcon(props) {
+export default function ContainerBottomFixed(props) {
   const { children } = props;
-  return (
-    <div className={styles.container}>
-      <div className={styles.content}>{children}</div>
-    </div>
-  );
+  return <div className={styles.container}>{children}</div>;
 }

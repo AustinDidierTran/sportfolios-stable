@@ -24,10 +24,9 @@ import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: 345,
-  },
-  root2: {
-    width: 650,
+    width: '100%',
+    flex: '1 1 auto',
+    margin: '4px auto',
   },
   media: {
     height: 0,
@@ -92,13 +91,7 @@ export default function UpcomingEvents(props) {
   }
 
   return (
-    <Card
-      className={
-        screenSize == SCREENSIZE_ENUM.xs
-          ? classes.root
-          : classes.root2
-      }
-    >
+    <Card className={classes.root}>
       <CardHeader
         avatar={
           <Avatar

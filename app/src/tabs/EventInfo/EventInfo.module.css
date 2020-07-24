@@ -1,10 +1,21 @@
 .event {
-  width: 100%;
-  margin-bottom: 0 !important;
+  display: flex;
+
+  flex-direction: column;
+}
+
+.event1 {
+  display: flex;
+  min-height: calc(100vh - 160px);
+  flex-direction: column;
+}
+
+.content {
+  text-align: center;
 }
 
 .paper {
-  position: relative;
+  margin: 4px 0 !important;
 }
 
 .media {
@@ -12,17 +23,8 @@
 }
 
 .buttonDiv {
-  position: fixed;
+  flex: 1 1 auto;
   display: flex;
-  bottom: 50px;
-  width: 100%;
-  justify-content: center;
-}
-
-.buttonDiv1 {
-  position: fixed;
-  display: flex;
-  bottom: 0px;
   width: 100%;
   justify-content: center;
 }
@@ -31,29 +33,16 @@
   flex: 1 1 auto;
 }
 
-.typo {
-  margin: 8px auto;
-}
-
 @media (min-width: 768px) {
   .media {
     border-radius: 4px 4px 0 0;
     height: 400px;
   }
-  .paper {
-    width: 100%;
-    margin-top: 4px !important;
-    margin: 0 auto;
-  }
-  .buttonDiv {
-    bottom: 0px;
-    width: 700px;
+
+  .event1 {
+    min-height: calc(100vh - 135px);
   }
 
-  .buttonDiv1 {
-    bottom: 0px;
-    width: 700px;
-  }
   .button {
     flex: 0 0 375px;
   }
@@ -63,8 +52,18 @@
   .buttonDiv {
     max-width: 1232px;
   }
+}
 
-  .buttonDiv1 {
-    max-width: 1232px;
-  }
+.infos {
+  flex: 0 1 auto;
+}
+
+.problems {
+  flex: 0 1 auto;
+}
+
+.description {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 }

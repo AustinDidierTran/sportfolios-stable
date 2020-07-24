@@ -3,6 +3,7 @@ import {
   Paper,
   StepperWithHooks,
   CardMedia,
+  IgContainer,
 } from '../../components/Custom';
 import PaymentOptionSelect from './PaymentOptionSelect';
 import TeamSelect from './TeamSelect';
@@ -247,7 +248,7 @@ export default function EventRegistration() {
   }, []);
 
   return (
-    <div style={{ marginTop: -4 }}>
+    <IgContainer>
       <Paper className={styles.paper}>
         <CardMedia
           onClick={() => goTo(ROUTES.entity, { id })}
@@ -268,6 +269,6 @@ export default function EventRegistration() {
           />
         </Container>
       </Paper>
-    </div>
+    </IgContainer>
   );
 }

@@ -1,7 +1,3 @@
-.paper {
-  margin-top: -16px !important;
-}
-
 .infos {
   display: grid !important;
   grid-template-columns: 2fr 1fr 2fr 1fr 2fr;
@@ -56,9 +52,9 @@
   height: 250px;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   .paper {
-    margin-top: 0px !important;
+    margin: 8px 0;
   }
   .media {
     height: 400px;

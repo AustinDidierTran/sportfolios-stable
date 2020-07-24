@@ -1,9 +1,8 @@
 import React, { useMemo, useState } from 'react';
 
 import { Tab, Tabs } from '../../../components/MUI';
-import { Container, Paper } from '../../../components/Custom';
+import { Paper, IgContainer } from '../../../components/Custom';
 
-import styles from './Event.module.css';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '../../../hooks/queries';
 
@@ -36,37 +35,31 @@ export default function Event(props) {
 
   if (states.length == 1) {
     return (
-      <Container className={styles.container}>
-        <div className={styles.event}>
-          <OpenTab basicInfos={basicInfos} />
-        </div>
-      </Container>
+      <IgContainer>
+        <OpenTab basicInfos={basicInfos} />
+      </IgContainer>
     );
   }
 
   return (
-    <Container className={styles.container}>
-      <div className={styles.event}>
-        <Paper className={styles.card}>
-          <Tabs
-            value={states.findIndex(s => s.value === eventState)}
-            indicatorColor="primary"
-            textColor="primary"
-            className={styles.tabs}
-            // centered
-          >
-            {states.map((s, index) => (
-              <Tab
-                key={index}
-                onClick={() => onClick(s)}
-                label={s.label}
-                icon={s.icon}
-              />
-            ))}
-          </Tabs>
-        </Paper>
-        <OpenTab basicInfos={basicInfos} />
-      </div>
-    </Container>
+    <IgContainer>
+      <Paper>
+        <Tabs
+          value={states.findIndex(s => s.value === eventState)}
+          indicatorColor="primary"
+          textColor="primary"
+        >
+          {states.map((s, index) => (
+            <Tab
+              key={index}
+              onClick={() => onClick(s)}
+              label={s.label}
+              icon={s.icon}
+            />
+          ))}
+        </Tabs>
+      </Paper>
+      <OpenTab basicInfos={basicInfos} />
+    </IgContainer>
   );
 }
