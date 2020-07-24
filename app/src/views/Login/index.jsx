@@ -7,7 +7,6 @@ import { Store, ACTION_ENUM } from '../../Store';
 
 import { Container } from '../../components/Custom';
 import { Typography, Button } from '../../components/MUI';
-import logo from '../../img/bigLogo.png';
 
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '../../hooks/queries';
@@ -15,6 +14,7 @@ import { useFormik } from 'formik';
 
 import SignupCard from './SignupCard';
 import LoginCard from './LoginCard';
+import { LOGO_ENUM } from '../../../../common/enums';
 
 export default function Login() {
   const { t } = useTranslation();
@@ -178,7 +178,7 @@ export default function Login() {
       <div className={styles.main}>
         <Container className={styles.container}>
           <div className={styles.logo}>
-            <img className={styles.img} src={logo} />
+            <img className={styles.img} src={LOGO_ENUM.LOGO} />
           </div>
           <SignupCard successRoute={successRoute} formik={formik} />
         </Container>

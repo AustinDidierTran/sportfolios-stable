@@ -9,7 +9,7 @@ import { Container } from '../../components/Custom';
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import ForgotPasswordCard from './ForgotPasswordCard';
-import logo from '../../img/bigLogo.png';
+import { LOGO_ENUM } from '../../../../common/enums';
 
 export default function Login() {
   const { dispatch } = useContext(Store);
@@ -90,7 +90,7 @@ export default function Login() {
     <div className={styles.main}>
       <Container className={styles.container}>
         <div className={styles.logo}>
-          <img className={styles.img} src={logo} />
+          <img className={styles.img} src={LOGO_ENUM.LOGO} />
         </div>
         <ForgotPasswordCard />
       </Container>

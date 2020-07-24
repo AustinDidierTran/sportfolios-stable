@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Store, SCREENSIZE_ENUM } from '../../../Store';
 import { ROUTES, goTo } from '../../../actions/goTo';
-import logo from '../../../img/logo.png';
+import { LOGO_ENUM } from '../../../../../common/enums';
 
 import { AppBar, Toolbar, Typography } from '../../../components/MUI';
 import { SearchInput, IconButton } from '../../../components/Custom';
@@ -64,7 +64,10 @@ export default function LoggedIn() {
           <div className={styles.container}>
             <div className={styles.item1}>
               <Link to={ROUTES.home} className={styles.link}>
-                <img src={logo} />
+                <img
+                  src={LOGO_ENUM.WHITE_ICON_180X180}
+                  className={styles.img}
+                />
               </Link>
             </div>
             <div className={styles.item2}>

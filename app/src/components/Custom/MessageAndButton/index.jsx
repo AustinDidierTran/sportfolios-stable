@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { Paper, Button } from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
 import LoadingSpinner from '../LoadingSpinner';
-import logo from '../../../img/bigLogo.png';
 import styles from './MessageAndButton.module.css';
+import { LOGO_ENUM } from '../../../../../common/enums';
 
 export default function MessageAndButton(props) {
   const { button, onClick, endIcon, message, title } = props;
@@ -24,7 +24,7 @@ export default function MessageAndButton(props) {
   return (
     <Paper title={title} style={{ textAlign: 'center' }}>
       <div className={styles.logo}>
-        <img className={styles.img} src={logo} />
+        <img className={styles.img} src={LOGO_ENUM.LOGO} />
       </div>
       <Typography style={{ paddingBottom: '16px' }}>
         {message}
