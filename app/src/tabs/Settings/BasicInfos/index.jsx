@@ -115,8 +115,55 @@ export default function BasicInfos(props) {
     return { status: 404 };
   };
 
-  if (isLoading) {
-    return <LoadingSpinner isComponent />;
+  if (isEditMode) {
+    return (
+      <Paper style={{ textAlign: 'center' }} title={name.value}>
+        <Container className={styles.paper}>
+          {isLoading ? (
+            <LoadingSpinner isComponent />
+          ) : (
+            <Avatar
+              className={styles.avatar}
+              photoUrl={photoUrl}
+              size="lg"
+            />
+          )}
+          <Input
+            className={styles.input}
+            type="file"
+            onChange={onImgChange}
+            isVisible={isEditMode}
+          />
+          <TextField
+            {...name.inputProps}
+            placeholder={t('name')}
+            label={t('name')}
+            error={name.error}
+            className={styles.textField}
+            namespace="Name"
+          />
+          <div className={styles.editor}>
+            <Button
+              className={styles.save}
+              endIcon="Check"
+              onClick={onSave}
+              style={{ marginRight: '8px' }}
+            >
+              {t('save')}
+            </Button>
+            <Button
+              className={styles.cancel}
+              endIcon="Close"
+              onClick={onCancel}
+              style={{ marginLeft: '8px' }}
+              color="secondary"
+            >
+              {t('cancel')}
+            </Button>
+          </div>
+        </Container>
+      </Paper>
+    );
   }
 
   return (
@@ -128,71 +175,28 @@ export default function BasicInfos(props) {
           variant="square"
           size="lg"
         />
-        {isEditMode ? (
-          <Input
-            className={styles.input}
-            type="file"
-            onChange={onImgChange}
-            isVisible={isEditMode}
-          />
-        ) : (
-          <></>
-        )}
         {name ? (
           <div className={styles.fullName}>
-            {isEditMode ? (
-              <TextField
-                {...name.inputProps}
-                placeholder={t('name')}
-                label={t('name')}
-                error={name.error}
-                className={styles.textField}
-                namespace="Name"
-              />
-            ) : (
-              <Typography variant="h3" className={styles.title}>
-                {name.value}
-              </Typography>
-            )}
+            <Typography variant="h3" className={styles.title}>
+              {name.value}
+            </Typography>
           </div>
         ) : (
           <></>
         )}
         {isEditor ? (
-          isEditMode ? (
-            <div className={styles.editor}>
-              <Button
-                className={styles.save}
-                endIcon="Check"
-                onClick={onSave}
-                style={{ margin: '8px' }}
-              >
-                {t('save')}
-              </Button>
-              <Button
-                className={styles.cancel}
-                endIcon="Close"
-                onClick={onCancel}
-                color="secondary"
-                style={{ margin: '8px' }}
-              >
-                {t('cancel')}
-              </Button>
-            </div>
-          ) : (
-            <Container className={styles.edit}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={styles.button}
-                endIcon="Edit"
-                onClick={onEdit}
-                style={{ margin: '8px' }}
-              >
-                {t('edit')}
-              </Button>
-            </Container>
-          )
+          <Container className={styles.edit}>
+            <Button
+              variant="contained"
+              color="primary"
+              className={styles.button}
+              endIcon="Edit"
+              onClick={onEdit}
+              style={{ margin: '8px' }}
+            >
+              {t('edit')}
+            </Button>
+          </Container>
         ) : (
           <></>
         )}

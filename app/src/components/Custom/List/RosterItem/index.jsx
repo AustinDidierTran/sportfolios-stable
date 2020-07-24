@@ -6,6 +6,7 @@ import { Avatar } from '../..';
 import { getInitialsFromName } from '../../../../utils/stringFormats/index';
 import { useTranslation } from 'react-i18next';
 import IconButton from '@material-ui/core/IconButton';
+import styles from './RosterItem.module.css';
 
 export default function RosterItem(props) {
   const { t } = useTranslation();
@@ -35,6 +36,7 @@ export default function RosterItem(props) {
         <Avatar photoUrl={photoUrl} initials={initials}></Avatar>
       </ListItemIcon>
       <ListItemText
+        className={styles.text}
         primary={name}
         secondary={secondary || t('person')}
       ></ListItemText>

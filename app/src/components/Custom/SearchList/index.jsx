@@ -61,6 +61,11 @@ export default function SearchList(props) {
   };
 
   const options = useMemo(() => {
+    if (query.value.length > 255) {
+      query.setError('value too long');
+      return;
+    }
+    query.setError(null);
     if (allowCreate) {
       let uniqueSecondary = '';
       if (type === GLOBAL_ENUM.TEAM) {

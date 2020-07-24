@@ -19,3 +19,7 @@
   justify-self: center;
   width: 100% !important;
 }
+
+.header {
+  overflow: scroll;
+}

@@ -10,6 +10,10 @@
   flex-direction: column;
 }
 
+.name {
+  overflow: scroll;
+}
+
 .content {
   text-align: center;
 }

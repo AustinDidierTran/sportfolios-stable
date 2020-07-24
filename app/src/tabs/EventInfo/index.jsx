@@ -186,7 +186,9 @@ export default function TabEventInfo() {
             className={styles.media}
           />
           <CardContent className={styles.content}>
-            <Typography>{event.name}</Typography>
+            <Typography className={styles.name}>
+              {event.name}
+            </Typography>
             <Typography
               variant="body2"
               color="textSecondary"

@@ -62,6 +62,7 @@ export default function TeamItem(props) {
         )}
       </ListItemIcon>
       <ListItemText
+        className={styles.text}
         primary={name}
         secondary={secondary || t('team')}
       ></ListItemText>

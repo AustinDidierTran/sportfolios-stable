@@ -67,6 +67,7 @@ export default function PersonItem(props) {
         )}
       </ListItemIcon>
       <ListItemText
+        className={styles.text}
         primary={completeName}
         secondary={secondary || t('person')}
       ></ListItemText>

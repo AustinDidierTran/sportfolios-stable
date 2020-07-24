@@ -1,6 +1,0 @@
-.main {
-  display: grid !important;
-  grid-template-areas: 'stripe' 'roles';
-  grid-template-columns: 1fr;
-  row-gap: 16px;
-}
