@@ -61,11 +61,6 @@ export default function SearchList(props) {
   };
 
   const options = useMemo(() => {
-    if (query.value.length > 255) {
-      query.setError('value too long');
-      return;
-    }
-    query.setError(null);
     if (allowCreate) {
       let uniqueSecondary = '';
       if (type === GLOBAL_ENUM.TEAM) {
@@ -107,11 +102,21 @@ export default function SearchList(props) {
       }));
   }, [response]);
 
+  const handleChange = event => {
+    if (event.length > 64) {
+      query.setError(t('max_length'));
+    } else {
+      query.setError(null);
+      query.onChange(event);
+    }
+  };
+
   return (
     <>
       {withoutIcon ? (
         <TextField
           {...query.inputProps}
+          onChange={handleChange}
           variant="outlined"
           size="small"
           label={label}

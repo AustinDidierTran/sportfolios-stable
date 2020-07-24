@@ -88,6 +88,7 @@ export default {
     logout: 'Log out',
     send_email: 'Send email',
     maximum_spots: 'Maximum spots',
+    max_length: 'Maximum length',
     menu: 'Menu',
     name: 'Name',
     new_email: 'New email',
