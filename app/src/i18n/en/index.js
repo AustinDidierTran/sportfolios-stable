@@ -184,6 +184,10 @@ export default {
     account_already_exists: 'Account already exists',
     complete_order: 'Complete order',
     see_receipt: 'See Receipt',
+    redirect_to_success_route:
+      'You will soon be redirected to the event registration. Click below to be redirected instantly.',
+    redirect_to_home:
+      'You will soon be redirected to the home page. Click below to be redirected instantly.',
     // Validation
     confirm_new_password: 'Confirm New Password',
     email_already_used:
@@ -246,6 +250,7 @@ export default {
     create_new_account: 'Create new account',
     email_confirm_success: 'Email successfully confirmed!',
     go_to_login: 'Go to login',
+    go_to_event: 'Go to event',
     email_confirm_failure:
       'Email confirmation failed. To send a new email, try to login again. By doing so, we will send you a new confirmation email.',
     recent_search_results: 'Recent search results',

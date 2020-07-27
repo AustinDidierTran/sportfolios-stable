@@ -37,9 +37,9 @@ export default function ConfirmEmail(props) {
       });
 
       if (successRoute) {
-        goTo(successRoute);
+        goTo(ROUTES.confirmEmailSuccess, null, { successRoute });
       } else {
-        goTo(ROUTES.home);
+        goTo(ROUTES.confirmEmailSuccess);
       }
     } else {
       // Failure...

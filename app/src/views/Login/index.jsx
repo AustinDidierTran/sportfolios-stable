@@ -163,9 +163,11 @@ export default function Login() {
             });
 
             if (successRoute) {
-              goTo(successRoute);
+              goTo(ROUTES.confirmEmailSuccess, null, {
+                successRoute,
+              });
             } else {
-              goTo(ROUTES.home);
+              goTo(ROUTES.confirmEmailSuccess);
             }
           }
         }
@@ -190,7 +192,7 @@ export default function Login() {
     <div className={styles.main}>
       <Container className={styles.container}>
         <div className={styles.logo}>
-          <img className={styles.img} src={logo} />
+          <img className={styles.img} src={LOGO_ENUM.LOGO} />
         </div>
         <LoginCard formik={formik} />
         <div className={styles.or}>

@@ -1,36 +1,57 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Paper } from '../../components/Custom';
-
 import {
-  CardActions,
-  CardContent,
-  Container,
-  Typography,
-} from '../../components/MUI';
+  IgContainer,
+  MessageAndButton,
+} from '../../components/Custom';
 
-import styles from './ConfirmEmail.module.css';
 import { goTo, ROUTES } from '../../actions/goTo';
+import { useQuery } from '../../hooks/queries';
 
 export default function ConfirmEmailSuccess() {
   const { t } = useTranslation();
+  const { successRoute } = useQuery();
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (successRoute) {
+        goTo(successRoute);
+      } else {
+        goTo(ROUTES.home);
+      }
+    }, 5000);
+  }, []);
+
+  if (successRoute) {
+    return (
+      <IgContainer>
+        <MessageAndButton
+          button={t('go_to_event')}
+          onClick={() => {
+            goTo(successRoute);
+          }}
+          endIcon="Event"
+          message={`${t('email_confirm_success')} ${t(
+            'redirect_to_success_route',
+          )}`}
+        ></MessageAndButton>
+      </IgContainer>
+    );
+  }
 
   return (
-    <Container className={styles.container}>
-      <Paper className={styles.card}>
-        <CardContent>
-          <Typography>{t('email_confirm_success')}</Typography>
-        </CardContent>
-        <CardActions>
-          <Button
-            endIcon="NavigateNext"
-            onClick={() => goTo(ROUTES.login)}
-          >
-            {t('go_to_login')}
-          </Button>
-        </CardActions>
-      </Paper>
-    </Container>
+    <IgContainer>
+      <MessageAndButton
+        button={t('home')}
+        onClick={() => {
+          goTo(ROUTES.home);
+        }}
+        endIcon="Home"
+        message={`${t('email_confirm_success')} ${t(
+          'redirect_to_home',
+        )}`}
+      ></MessageAndButton>
+    </IgContainer>
   );
 }
