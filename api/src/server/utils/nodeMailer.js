@@ -64,6 +64,22 @@ async function sendConfirmationEmail({ email, token, successRoute }) {
   }
 }
 
+async function sendReceiptEmail({ email, receipt }) {
+  await sendMail({
+    email,
+    subject: `Sportfolios order receipt`,
+    text: `To view your receipt, please click on the following link: ${receipt}`,
+  });
+}
+
+async function sendRegistrationEmail({ email, team, entity }) {
+  await sendMail({
+    email,
+    subject: `Sportfolios order receipt`,
+    text: `Your team ${team.name} has been successfully entered in the tournament ${entity.name} and is awaiting payment.`,
+  });
+}
+
 async function sendRecoveryEmail({ email, token }) {
   await sendMail({
     email,
@@ -75,4 +91,6 @@ async function sendRecoveryEmail({ email, token }) {
 module.exports = {
   sendConfirmationEmail,
   sendRecoveryEmail,
+  sendReceiptEmail,
+  sendRegistrationEmail,
 };
