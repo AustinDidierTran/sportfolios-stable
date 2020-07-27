@@ -93,6 +93,7 @@ export default function UpcomingEvents(props) {
   return (
     <Card className={classes.root}>
       <CardHeader
+        className={styles.header}
         avatar={
           <Avatar
             aria-label="recipe"

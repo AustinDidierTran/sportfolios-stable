@@ -2,3 +2,7 @@
   color: #18b393 !important;
   background-color: white !important;
 }
+
+.text {
+  overflow: scroll;
+}

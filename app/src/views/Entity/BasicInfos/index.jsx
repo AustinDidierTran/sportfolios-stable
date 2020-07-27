@@ -14,6 +14,7 @@ import {
   Input,
   Button,
   LoadingSpinner,
+  Paper,
 } from '../../../components/Custom';
 
 import {
@@ -114,49 +115,33 @@ export default function BasicInfos(props) {
     return { status: 404 };
   };
 
-  return (
-    <Container className={styles.paper}>
-      {isLoading ? (
-        <LoadingSpinner isComponent />
-      ) : (
-        <Avatar
-          className={styles.avatar}
-          photoUrl={photoUrl}
-          size="lg"
-        />
-      )}
-      {isEditMode ? (
-        <Input
-          className={styles.input}
-          type="file"
-          onChange={onImgChange}
-          isVisible={isEditMode}
-        />
-      ) : (
-        <></>
-      )}
-      {name ? (
-        <div className={styles.fullName}>
-          {isEditMode ? (
-            <TextField
-              {...name.inputProps}
-              placeholder={t('name')}
-              label={t('name')}
-              error={name.error}
-              className={styles.textField}
-              namespace="Name"
-            />
+  if (isEditMode) {
+    return (
+      <Paper title={name.value}>
+        <Container className={styles.paper}>
+          {isLoading ? (
+            <LoadingSpinner isComponent />
           ) : (
-            <Typography variant="h3" className={styles.title}>
-              {name.value}
-            </Typography>
+            <Avatar
+              className={styles.avatar}
+              photoUrl={photoUrl}
+              size="lg"
+            />
           )}
-        </div>
-      ) : (
-        <></>
-      )}
-      {isEditor ? (
-        isEditMode ? (
+          <Input
+            className={styles.input}
+            type="file"
+            onChange={onImgChange}
+            isVisible={isEditMode}
+          />
+          <TextField
+            {...name.inputProps}
+            placeholder={t('name')}
+            label={t('name')}
+            error={name.error}
+            className={styles.textField}
+            namespace="Name"
+          />
           <div className={styles.editor}>
             <Button
               className={styles.save}
@@ -176,7 +161,30 @@ export default function BasicInfos(props) {
               {t('cancel')}
             </Button>
           </div>
+        </Container>
+      </Paper>
+    );
+  }
+
+  return (
+    <Paper title={name.value}>
+      <Container className={styles.paper}>
+        <Avatar
+          className={styles.avatar}
+          photoUrl={photoUrl}
+          variant="square"
+          size="lg"
+        />
+        {name ? (
+          <div className={styles.fullName}>
+            <Typography variant="h3" className={styles.title}>
+              {name.value}
+            </Typography>
+          </div>
         ) : (
+          <></>
+        )}
+        {isEditor ? (
           <Container className={styles.edit}>
             <Button
               variant="contained"
@@ -184,14 +192,15 @@ export default function BasicInfos(props) {
               className={styles.button}
               endIcon="Edit"
               onClick={onEdit}
+              style={{ margin: '8px' }}
             >
               {t('edit')}
             </Button>
           </Container>
-        )
-      ) : (
-        <></>
-      )}
-    </Container>
+        ) : (
+          <></>
+        )}
+      </Container>
+    </Paper>
   );
 }

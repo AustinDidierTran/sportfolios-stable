@@ -102,11 +102,21 @@ export default function SearchList(props) {
       }));
   }, [response]);
 
+  const handleChange = value => {
+    if (value.length > 64) {
+      query.setError(t('max_length'));
+    } else {
+      query.setError(null);
+      query.onChange(value);
+    }
+  };
+
   return (
     <>
       {withoutIcon ? (
         <TextField
           {...query.inputProps}
+          onChange={handleChange}
           variant="outlined"
           size="small"
           label={label}

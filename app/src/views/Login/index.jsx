@@ -190,7 +190,7 @@ export default function Login() {
     <div className={styles.main}>
       <Container className={styles.container}>
         <div className={styles.logo}>
-          <img className={styles.img} src={logo} />
+          <img className={styles.img} src={LOGO_ENUM.LOGO} />
         </div>
         <LoginCard formik={formik} />
         <div className={styles.or}>

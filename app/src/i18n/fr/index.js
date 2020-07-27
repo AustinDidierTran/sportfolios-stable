@@ -90,6 +90,8 @@ export default {
     logout: 'Déconnexion',
     send_email: 'Envoyer un courriel',
     maximum_spots: 'Nombre de places',
+    max_length: 'Longueur maximum',
+
     menu: 'Menu',
     name: 'Nom',
     next: 'Prochain',

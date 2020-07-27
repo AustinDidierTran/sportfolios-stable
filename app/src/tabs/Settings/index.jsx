@@ -13,8 +13,7 @@ import {
   CARD_TYPE_ENUM,
   GLOBAL_ENUM,
 } from '../../../../common/enums';
-import styles from './Settings.module.css';
-import { Card } from '../../components/Custom';
+import { Card, IgContainer } from '../../components/Custom';
 import { useAdmin, useEditor } from '../../hooks/roles';
 import Description from './Description';
 
@@ -33,22 +32,22 @@ export default function EntitySettings(props) {
     case GLOBAL_ENUM.TEAM:
       if (isAdmin) {
         return (
-          <div className={styles.main}>
+          <IgContainer>
             <Stripe id={id} />
             <ManageRoles role={role} />
             <Card
               items={{ id, name: basicInfos.name }}
               type={CARD_TYPE_ENUM.DELETE_ENTITY}
             />
-          </div>
+          </IgContainer>
         );
       }
 
       if (isEditor) {
         return (
-          <div className={styles.main}>
+          <IgContainer>
             <Stripe id={id} />
-          </div>
+          </IgContainer>
         );
       }
       return <></>;
@@ -56,7 +55,7 @@ export default function EntitySettings(props) {
     case GLOBAL_ENUM.EVENT:
       if (isAdmin) {
         return (
-          <div className={styles.main}>
+          <IgContainer>
             <BasicInfos basicInfos={basicInfos} />
             <Description />
             <EventSettings />
@@ -67,24 +66,24 @@ export default function EntitySettings(props) {
               items={{ id, name: basicInfos.name }}
               type={CARD_TYPE_ENUM.DELETE_ENTITY}
             />
-          </div>
+          </IgContainer>
         );
       }
       if (isEditor) {
         return (
-          <div className={styles.main}>
+          <IgContainer>
             <Description />
             <AddOptionsEvent />
             <TeamRegistered />
             <EventSettings />
-          </div>
+          </IgContainer>
         );
       }
       return <></>;
     case GLOBAL_ENUM.ORGANIZATION:
       if (isAdmin) {
         return (
-          <div className={styles.main}>
+          <IgContainer>
             <Stripe id={id} />
             <AddMembership />
             <ManageRoles role={role} />
@@ -92,15 +91,15 @@ export default function EntitySettings(props) {
               items={{ id, name: basicInfos.name }}
               type={CARD_TYPE_ENUM.DELETE_ENTITY}
             />
-          </div>
+          </IgContainer>
         );
       }
       if (isEditor) {
         return (
-          <div className={styles.main}>
+          <IgContainer>
             <Stripe id={id} />
             <AddMembership />
-          </div>
+          </IgContainer>
         );
       }
       return <Memberships basicInfos={basicInfos} />;
@@ -108,17 +107,17 @@ export default function EntitySettings(props) {
     case GLOBAL_ENUM.PERSON:
       if (isAdmin) {
         return (
-          <div className={styles.main}>
+          <IgContainer>
             <Stripe id={id} />
             <ManageRoles role={role} />
-          </div>
+          </IgContainer>
         );
       }
       if (isEditor) {
         return (
-          <div className={styles.main}>
+          <IgContainer>
             <Stripe id={id} />
-          </div>
+          </IgContainer>
         );
       }
       return <></>;

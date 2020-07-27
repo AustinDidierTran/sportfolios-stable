@@ -6,8 +6,13 @@
 
 .item {
   grid-area: item;
+  overflow: scroll !important;
 }
 
 .select {
   grid-area: select;
+}
+
+.text {
+  width: 100% !important;
 }
