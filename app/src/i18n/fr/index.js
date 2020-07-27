@@ -198,6 +198,8 @@ export default {
     complete_order: 'Compléter la commande',
     generate_account_link: 'Générer le lien du compte',
     see_receipt: 'Voir le reçu',
+    redirect_to_success_route: `Vous serez bientôt redirigez vers l'inscription de l'événement. Cliquez ci-dessous pour être redirigé instantanément`,
+    redirect_to_home: `Vous serez bientôt redirigez vers l'accueil . Cliquez ci-dessous pour être redirigé instantanément`,
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',
     email_already_used:
@@ -259,6 +261,7 @@ export default {
     create_new_account: 'Créer un nouveau compte',
     email_confirm_success: 'Courriel confirmé avec succès!',
     go_to_login: 'Aller vers la connexion',
+    go_to_event: `Aller vers l'événement`,
     email_confirm_failure:
       'La confirmation du courriel a échoué. Veuillez réessayer de vous connecter et suite à cette tentative, nous allons vous renvoyer un nouveau courriel de confirmation.',
     recent_search_results: 'Dernières recherches',
