@@ -109,10 +109,11 @@ export default {
     only_available_on_desktop: 'Only available on desktop',
     options: 'Options',
     or: 'or',
-    order_processed: 'Order processed',
+    order_processed: 'Your order has been successfully processed',
     organization: 'Organization',
     organizations: 'Organizations',
     our_team: 'Our Team',
+    paid_with: 'Paid with',
     password: 'Password',
     pay: 'Pay',
     payment_method_added:
@@ -158,6 +159,8 @@ export default {
     shop: 'Shop',
     error_start_date_before_end:
       'Start date should be before end date.',
+    to_see_your_receipt:
+      'A copy of your receipt has been sent to you by email. You can consult it now on Stripe, our safe payment plateform.',
     tournament_fee: 'Tournament Fee',
     team: 'Teams',
     team_already_registered: 'Team already registered',

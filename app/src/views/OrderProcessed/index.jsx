@@ -2,9 +2,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatPrice } from '../../utils/stringFormats';
 
-import { Paper, Button, Container } from '../../components/Custom';
+import { Paper, Button, IgContainer } from '../../components/Custom';
 import { Typography } from '../../components/MUI';
 import { useQuery } from '../../hooks/queries';
+import styles from './OrderProcessed.module.css';
+import { LOGO_ENUM } from '../../../../common/enums';
 
 export default function OrderProcessed() {
   const { paid, last4, receiptUrl } = useQuery();
@@ -23,18 +25,29 @@ export default function OrderProcessed() {
   const endIcon = 'Receipt';
 
   return (
-    <Container>
+    <IgContainer>
       <Paper style={{ textAlign: 'center' }}>
-        <Typography style={{ margin: '8px' }}>
+        <div className={styles.logo}>
+          <img className={styles.img} src={LOGO_ENUM.LOGO} />
+        </div>
+        <Typography style={{ margin: '8px' }} variant="h5">
           {t('order_processed')}
-          <br />
-          {t('your_total_is')}
-          &nbsp;
+        </Typography>
+        <Typography style={{ margin: '8px' }}>
+          Total:&nbsp;
           {totalFormatted}
-          <br />
-          {t('you_paid_with')}
+        </Typography>
+        <Typography style={{ margin: '8px' }}>
+          {t('paid_with')}
           &nbsp;
           {cardNumber}
+        </Typography>
+        <Typography
+          style={{ margin: '8px' }}
+          color="textSecondary"
+          component="p"
+        >
+          {t('to_see_your_receipt')}
         </Typography>
         <Button
           size="small"
@@ -48,6 +61,6 @@ export default function OrderProcessed() {
           {button}
         </Button>
       </Paper>
-    </Container>
+    </IgContainer>
   );
 }
