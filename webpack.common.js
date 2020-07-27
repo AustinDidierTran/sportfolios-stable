@@ -50,6 +50,7 @@ module.exports = {
     new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
       title: 'Sportfolios',
+      favicon: './favicon.ico',
     }),
   ],
   output: {
