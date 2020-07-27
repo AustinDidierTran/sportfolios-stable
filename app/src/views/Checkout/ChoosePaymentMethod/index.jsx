@@ -9,8 +9,8 @@ import { goTo, ROUTES } from '../../../actions/goTo';
 import { useTranslation } from 'react-i18next';
 import { checkout } from '../../../utils/stripe';
 import styles from './ChoosePaymentMethod.module.css';
-import logo from '../../../img/bigLogo.png';
 import { Typography } from '../../../components/MUI';
+import { LOGO_ENUM } from '../../../../../common/enums';
 
 export default function ChoosePaymentMethod(props) {
   const { paymentMethod } = props;
@@ -68,7 +68,7 @@ export default function ChoosePaymentMethod(props) {
     return (
       <div style={{ textAlign: 'center' }}>
         <div className={styles.logo}>
-          <img className={styles.img} src={logo} />
+          <img className={styles.img} src={LOGO_ENUM.LOGO} />
         </div>
         <p>{t('no_payment_method')}</p>
         <Button

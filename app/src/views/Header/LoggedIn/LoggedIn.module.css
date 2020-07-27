@@ -21,6 +21,10 @@
 .link {
   margin-right: 16px;
 }
+.img {
+  height: 57px;
+  width: 57px;
+}
 
 .right {
   display: flex;

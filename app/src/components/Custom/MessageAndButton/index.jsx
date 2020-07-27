@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 
-import { Paper, Button } from '../../../components/Custom';
+import {
+  Paper,
+  Button,
+  IgContainer,
+} from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
 import LoadingSpinner from '../LoadingSpinner';
+import styles from './MessageAndButton.module.css';
+import { LOGO_ENUM } from '../../../../../common/enums';
 
 export default function MessageAndButton(props) {
-  const { button, onClick, endIcon, message, title } = props;
+  const { button, onClick, endIcon, message, withoutButton } = props;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -20,21 +26,30 @@ export default function MessageAndButton(props) {
   }
 
   return (
-    <Paper title={title} style={{ textAlign: 'center' }}>
-      <Typography style={{ marginTop: '16px', padding: '16px' }}>
-        {message}
-      </Typography>
-      <Button
-        size="small"
-        variant="contained"
-        endIcon={endIcon}
-        style={{
-          marginBottom: '16px',
-        }}
-        onClick={handleClick}
-      >
-        {button}
-      </Button>
-    </Paper>
+    <IgContainer>
+      <Paper style={{ textAlign: 'center', height: '100%' }}>
+        <div className={styles.logo}>
+          <img className={styles.img} src={LOGO_ENUM.LOGO} />
+        </div>
+        <Typography style={{ paddingBottom: '16px' }}>
+          {message}
+        </Typography>
+        {withoutButton ? (
+          <></>
+        ) : (
+          <Button
+            size="small"
+            variant="contained"
+            endIcon={endIcon}
+            style={{
+              marginBottom: '16px',
+            }}
+            onClick={handleClick}
+          >
+            {button}
+          </Button>
+        )}
+      </Paper>
+    </IgContainer>
   );
 }

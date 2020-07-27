@@ -159,6 +159,8 @@ export default {
     team_history: 'Team History',
     team_select: 'Team select',
     teams: 'Teams',
+    this_may_take_a_few_seconds:
+      'This may take a few seconds... The time to stretch a little!',
     unsupported_language: 'Unsupported language',
     valid_until: 'Valid until',
     viewer: 'Viewer',

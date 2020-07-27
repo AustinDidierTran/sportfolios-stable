@@ -164,6 +164,8 @@ export default {
     team_select: "Choix de l'équipe",
     team_history: "Historique de l'équipe",
     teams: 'Équipes',
+    this_may_take_a_few_seconds:
+      'Cette opération peut prendre quelques secondes... Le temps de vous dégourdir!',
     unsupported_language: 'Langue non supportée',
     valid_until: "Valide jusqu'au",
     viewer: 'Visiteur',
