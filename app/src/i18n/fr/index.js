@@ -141,7 +141,7 @@ export default {
     return_home: "Retourner à la page d'accueil",
     roster: 'Alignement',
     roster_doesnt_have_to_be_final_only_for_pre_ranking_purpose:
-      "L'alignement est pour des fins de préclassement, il n'est pas obligatoire d'avoir l'alignement final",
+      "L'alignement aide le responsable du tournoi à classer ses équipes. Vous pouvez entrer votre alignement au meilleur de vos connaissances, mais il n'a pas de besoin d'être final.",
     settings: 'Paramètres',
     schedule: 'Horaire',
     score_type: 'Type de pointage',
@@ -174,9 +174,9 @@ export default {
     valid_until: "Valide jusqu'au",
     viewer: 'Visiteur',
     you_can_always_change_your_team_name_in_your_team_profile:
-      "Vous pouvez toujours changer votre nom d'équipe dans votre profil d'équipe",
+      "Si vous hésitez pour votre nom d'équipe, sachez que vous pouvez le changer plus tard dans votre profil d'équipe.",
     you_need_to_create_an_account:
-      "ßVous devez créer votre compte d'abord",
+      'Avant de procéder, veuillez vous créer un compte.',
     you_paid_with: 'Vous avez payé avec',
     your_total_is: 'Votre total est de',
     your_upcoming_events: 'Vos prochains événements',
@@ -300,7 +300,7 @@ export default {
     register: "S'inscrire",
     registered: 'inscrit',
     registration_can_be_payed_later:
-      'Une fois que vous avez terminé, vous pouvez vous rendre à votre panier quand vous le souhaitez pour payer votre inscription',
+      "Vous n'avez pas à payer tant que vous n'avez pas été officiellement accepté à l'événement. Lorsque vous serez accepté, vous recevrez un courriel afin de compléter le paiement.",
     registration_open_date: 'Date ouverture inscriptions',
     registration_open_time: 'Heure ouverture inscriptions',
     registration_closes_before_opening:
