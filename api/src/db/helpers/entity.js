@@ -441,7 +441,7 @@ async function getMembers(personsString, organizationId) {
 }
 
 async function getOptions(eventId) {
-  return await knex('event_payment_options')
+  const res = await knex('event_payment_options')
     .select(
       'event_payment_options.name',
       'price',
@@ -456,6 +456,12 @@ async function getOptions(eventId) {
       'event_payment_options.event_id',
     )
     .where({ event_id: eventId });
+
+  return res.map(r => ({
+    ...r,
+    start_time: new Date(r.start_time).getTime(),
+    end_time: new Date(r.end_time).getTime(),
+  }));
 }
 
 async function getMemberships(entityId) {
@@ -703,8 +709,8 @@ async function addOption(
       event_id: eventId,
       name,
       price,
-      end_time: endTime,
-      start_time: startTime,
+      end_time: new Date(endTime),
+      start_time: new Date(startTime),
     })
     .returning('*');
   return res;

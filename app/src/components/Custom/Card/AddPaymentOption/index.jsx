@@ -77,8 +77,8 @@ export default function AddPaymentOption(props) {
     const startTime = values[3].value;
     const endDate = values[4].value;
     const endTime = values[5].value;
-    const start = `${startDate} ${startTime}`;
-    const end = `${endDate} ${endTime}`;
+    const start = new Date(`${startDate} ${startTime}`).getTime();
+    const end = new Date(`${endDate} ${endTime}`).getTime();
 
     const res = await api(`/api/entity/option`, {
       method: 'POST',
