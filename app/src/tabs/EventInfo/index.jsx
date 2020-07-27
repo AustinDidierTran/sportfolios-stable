@@ -86,14 +86,14 @@ export default function TabEventInfo() {
     );
   }, [options]);
 
-  const getRegistrationStart = useMemo(() => {
+  const RegistrationStart = useMemo(() => {
     const startsDate = options.map(option =>
       moment(option.start_time),
     );
     return formatDate(moment.min(startsDate));
   }, [options]);
 
-  const getRegistrationEnd = useMemo(() => {
+  const registrationEnd = useMemo(() => {
     const endsDate = options.map(option => moment(option.end_time));
     return formatDate(moment.max(endsDate));
   }, [options]);
@@ -139,40 +139,69 @@ export default function TabEventInfo() {
   const Problems = () => {
     if (options.length < 1) {
       return (
-        <Paper className={styles.paper}>
-          <Typography align="center">
-            {t('registrations_closed_for_now')}
-          </Typography>
-        </Paper>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          component="p"
+        >
+          {t('registrations_closed_for_now')}
+        </Typography>
       );
     } else if (isFull) {
       setCanRegister(false);
       return (
-        <Paper className={styles.paper}>
-          <Typography align="center">{t('event_is_full')}</Typography>
-        </Paper>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          component="p"
+        >
+          {t('event_is_full')}
+        </Typography>
       );
     } else if (isLate) {
       setCanRegister(false);
       return (
-        <Paper className={styles.paper}>
-          <Typography align="center">
-            {t('registrations_ended')}&nbsp;{getRegistrationEnd}
-          </Typography>
-        </Paper>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          component="p"
+        >
+          {t('registrations_ended')}&nbsp;{registrationEnd}
+        </Typography>
       );
     } else if (isEarly) {
       setCanRegister(false);
       return (
-        <Paper className={styles.paper}>
-          <Typography align="center">
-            {t('registrations_open_on')}&nbsp;{getRegistrationStart}
+        <>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            component="p"
+          >
+            {t('registrations_open_on')}&nbsp;{RegistrationStart}
           </Typography>
-        </Paper>
+          <Typography
+            variant="body2"
+            color="textSecondary"
+            component="p"
+          >
+            {t('registrations_ends_on')}&nbsp;
+            {registrationEnd}
+          </Typography>
+        </>
       );
     } else {
       setCanRegister(true);
-      return null;
+      return (
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          component="p"
+        >
+          {t('registrations_ends_on')}&nbsp;
+          {registrationEnd}
+        </Typography>
+      );
     }
   };
 
@@ -212,11 +241,20 @@ export default function TabEventInfo() {
             >
               {event.location || 'Sherbrooke'}
             </Typography>
+            {event.maximumSpots ? (
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                component="p"
+              >
+                {event.maximumSpots} {t('place_available')}
+              </Typography>
+            ) : (
+              <></>
+            )}
+            <Problems />
           </CardContent>
         </Paper>
-      </div>
-      <div className={styles.problems}>
-        <Problems />
       </div>
       <div className={styles.description}>
         <Description description={event.description} />

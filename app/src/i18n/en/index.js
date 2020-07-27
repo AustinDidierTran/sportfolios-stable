@@ -121,6 +121,7 @@ export default {
     payment_options: 'Payment options',
     person: 'Person',
     persons: 'Persons',
+    place_available: 'places available',
     player: 'Player',
     players: 'Players',
     pre_ranking: 'Pre-ranking',
@@ -295,6 +296,7 @@ export default {
     registration: 'Registration',
     registrations_closed_for_now: 'Registrations are closed for now',
     registrations_ended: 'Registrations ended',
+    registrations_ends_on: 'Registrations ends on',
     registrations_open_on: 'Registrations open on',
     registration_accepted:
       'Congratulation! You have been accepted to the event you can now go to your cart to pay the registration for your team!',

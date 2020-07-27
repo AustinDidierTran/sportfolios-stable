@@ -127,6 +127,7 @@ export default {
     payments: 'Paiements',
     person: 'Person',
     people: 'Personnes',
+    places_available: 'places disponibles',
     player: 'Joueur',
     players: 'Joueurs',
     private: 'Privée',
@@ -305,6 +306,7 @@ export default {
     registration: 'Inscription',
     registrations_closed_for_now: 'Inscriptions fermées',
     registrations_ended: 'Inscriptions terminées le',
+    registrations_ends_on: 'Les inscriptions terminent le',
     registrations_open_on: 'Les inscriptions ouvrent le',
     registration_accepted:
       "Félicitation! Vous avez été accepté à l'événement, vous pouvez aller à votre panier pour payer votre inscription!",
