@@ -115,7 +115,8 @@ export default {
     our_team: 'Our Team',
     password: 'Password',
     pay: 'Pay',
-    payment_method_added: 'Payment method added',
+    payment_method_added:
+      'You successfully added a new payment method!',
     payments: 'Payments',
     payment_option_exist: 'Payment option exist',
     payment_options: 'Payment options',

@@ -1,17 +1,14 @@
 import React from 'react';
 
-import { Container, Typography } from '../../components/MUI';
+import { Container } from '../../components/MUI';
 import styles from './Checkout.module.css';
 
 import ChoosePaymentMethod from './ChoosePaymentMethod';
 import { useFormInput } from '../../hooks/forms';
 import { useApiRoute } from '../../hooks/queries';
-import { formatPrice } from '../../utils/stringFormats';
 import { Paper, LoadingSpinner } from '../../components/Custom';
-import { useTranslation } from 'react-i18next';
 
 export default function Checkout() {
-  const { t } = useTranslation();
   const paymentMethod = useFormInput();
 
   const { isLoading, response } = useApiRoute('/api/shop/cartTotal');
@@ -23,10 +20,10 @@ export default function Checkout() {
   return (
     <Container className={styles.items}>
       <Paper className={styles.paper}>
-        <Typography variant="h5">
-          {t('amount_to_pay', { amount: formatPrice(response) })}
-        </Typography>
-        <ChoosePaymentMethod paymentMethod={paymentMethod} />
+        <ChoosePaymentMethod
+          paymentMethod={paymentMethod}
+          response={response}
+        />
       </Paper>
     </Container>
   );
