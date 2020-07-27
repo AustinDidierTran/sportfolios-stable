@@ -49,9 +49,9 @@ export const formatIntervalDate = (start, end) => {
       formatDate(start).split(' ')[1]
     } ${word} ${formatDate(end)} `;
   }
-  return `${formatDate(start).split(' ')[0]} ${word} ${formatDate(
-    end,
-  )} `;
+  return `${formatDate(start).split(' ')[0]} ${
+    formatDate(start).split(' ')[1]
+  } ${word} ${formatDate(end)} `;
 };
 
 export const getEntityTypeName = type => {
