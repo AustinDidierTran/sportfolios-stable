@@ -113,11 +113,12 @@ export default {
     only_available_on_desktop: 'Seulement disponible sur ordinateur',
     options: 'Options',
     or: 'ou',
-    order_processed: 'Commande complété',
+    order_processed: 'Votre commande à été complété avec succès',
     organization: 'Organisation',
     organizations: 'Organisations',
     our_team: 'Notre Équipe',
     paid: 'Payé',
+    paid_with: 'Payé avec',
     password: 'Mot de passe',
     pay: 'Payer',
     payment_method_added: 'Option de paiement ajoutée',
@@ -167,6 +168,8 @@ export default {
     team_select: "Choix de l'équipe",
     team_history: "Historique de l'équipe",
     teams: 'Équipes',
+    to_see_your_receipt:
+      'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
     this_may_take_a_few_seconds:
       'Cette opération peut prendre quelques secondes... Le temps de vous dégourdir!',
     unsupported_language: 'Langue non supportée',
