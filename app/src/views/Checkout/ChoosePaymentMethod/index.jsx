@@ -11,9 +11,10 @@ import { checkout } from '../../../utils/stripe';
 import styles from './ChoosePaymentMethod.module.css';
 import { Typography } from '../../../components/MUI';
 import { LOGO_ENUM } from '../../../../../common/enums';
+import { formatPrice } from '../../../utils/stringFormats';
 
 export default function ChoosePaymentMethod(props) {
-  const { paymentMethod } = props;
+  const { paymentMethod, response } = props;
   const { t } = useTranslation();
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -70,7 +71,17 @@ export default function ChoosePaymentMethod(props) {
         <div className={styles.logo}>
           <img className={styles.img} src={LOGO_ENUM.LOGO} />
         </div>
-        <p>{t('no_payment_method')}</p>
+        <Typography variant="h6">
+          {t('amount_to_pay', { amount: formatPrice(response) })}
+        </Typography>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          component="p"
+          style={{ margin: '8px' }}
+        >
+          {t('no_payment_method')}
+        </Typography>
         <Button
           style={{ textAlign: 'center' }}
           onClick={() => goTo(ROUTES.addPaymentMethod)}
@@ -87,6 +98,12 @@ export default function ChoosePaymentMethod(props) {
 
   return (
     <div style={{ paddingBottom: 16, textAlign: 'center' }}>
+      <div className={styles.logo}>
+        <img className={styles.img} src={LOGO_ENUM.LOGO} />
+      </div>
+      <Typography variant="h6" style={{ marginBottom: '8px' }}>
+        {t('amount_to_pay', { amount: formatPrice(response) })}
+      </Typography>
       <RadioGroup
         namespace="paymentMethod"
         options={paymentMethods}

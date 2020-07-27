@@ -120,7 +120,8 @@ export default {
     paid: 'Payé',
     password: 'Mot de passe',
     pay: 'Payer',
-    payment_method_added: 'Option de paiement ajoutée',
+    payment_method_added:
+      'Vous avez ajouté une nouvelle option de paiement!',
     payment_option: 'Option de paiement',
     payment_options: 'Options de paiements',
     payment_option_exist: 'Option de paiement existante',
