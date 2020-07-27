@@ -140,6 +140,8 @@ export default {
     reset: 'Réinitialiser',
     return_home: "Retourner à la page d'accueil",
     roster: 'Alignement',
+    roster_doesnt_have_to_be_final_only_for_pre_ranking_purpose:
+      "L'alignement est pour des fins de préclassement, il n'est pas obligatoire d'avoir l'alignement final",
     settings: 'Paramètres',
     schedule: 'Horaire',
     score_type: 'Type de pointage',
@@ -171,8 +173,10 @@ export default {
     unsupported_language: 'Langue non supportée',
     valid_until: "Valide jusqu'au",
     viewer: 'Visiteur',
+    you_can_always_change_your_team_name_in_your_team_profile:
+      "Vous pouvez toujours changer votre nom d'équipe dans votre profil d'équipe",
     you_need_to_create_an_account:
-      "ieVous devez créer votre compte d'abord",
+      "ßVous devez créer votre compte d'abord",
     you_paid_with: 'Vous avez payé avec',
     your_total_is: 'Votre total est de',
     your_upcoming_events: 'Vos prochains événements',
@@ -295,6 +299,8 @@ export default {
     //REGISTRATION
     register: "S'inscrire",
     registered: 'inscrit',
+    registration_can_be_payed_later:
+      'Une fois que vous avez terminé, vous pouvez vous rendre à votre panier quand vous le souhaitez pour payer votre inscription',
     registration_open_date: 'Date ouverture inscriptions',
     registration_open_time: 'Heure ouverture inscriptions',
     registration_closes_before_opening:
