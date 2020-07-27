@@ -68,6 +68,16 @@ export default function Roster(props) {
 
   return (
     <div className={styles.main}>
+      <Typography
+        variant="body2"
+        color="textSecondary"
+        component="p"
+        style={{ marginBottom: '8px' }}
+      >
+        {t(
+          'roster_doesnt_have_to_be_final_only_for_pre_ranking_purpose',
+        )}
+      </Typography>
       <SearchList
         className={styles.item}
         clearOnSelect={false}

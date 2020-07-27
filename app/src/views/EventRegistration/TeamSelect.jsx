@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GLOBAL_ENUM } from '../../../../common/enums';
 import { SearchList, Button } from '../../components/Custom';
+import { Typography } from '../../components/MUI';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../hooks/forms';
 import TeamItem from '../../components/Custom/List/TeamItem';
@@ -56,6 +57,16 @@ export default function TeamSelect(props) {
   if (selectedTeam) {
     return (
       <div className={styles.main}>
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          component="p"
+          style={{ marginBottom: '8px' }}
+        >
+          {t(
+            'you_can_always_change_your_team_name_in_your_team_profile',
+          )}
+        </Typography>
         {team ? (
           <TeamItem
             {...team}
@@ -87,6 +98,16 @@ export default function TeamSelect(props) {
 
   return (
     <div className={styles.main}>
+      <Typography
+        variant="body2"
+        color="textSecondary"
+        component="p"
+        style={{ marginBottom: '8px' }}
+      >
+        {t(
+          'you_can_always_change_your_team_name_in_your_team_profile',
+        )}
+      </Typography>
       <SearchList
         className={styles.item}
         clearOnSelect={false}

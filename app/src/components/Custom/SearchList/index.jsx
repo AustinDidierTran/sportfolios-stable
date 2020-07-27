@@ -27,14 +27,12 @@ export default function SearchList(props) {
 
   const optionsRoute = useMemo(() => {
     if (whiteList) {
-      if (whiteList.length > 0) {
-        const res = formatRoute('/api/data/search/global', null, {
-          whiteList: JSON.stringify(whiteList),
-          query: query.value,
-          type,
-        });
-        return res;
-      }
+      const res = formatRoute('/api/data/search/global', null, {
+        whiteList: JSON.stringify(whiteList),
+        query: query.value,
+        type,
+      });
+      return res;
     }
     if (blackList) {
       if (blackList.length > 0) {

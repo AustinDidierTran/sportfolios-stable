@@ -137,6 +137,8 @@ export default {
     reset: 'Reset',
     return_home: 'Return home',
     roster: 'Roster',
+    roster_doesnt_have_to_be_final_only_for_pre_ranking_purpose:
+      "Entering your roster helps the event manager better rank teams for the schedule. Enter it the best you can, even if it's not final.",
     settings: 'Settings',
     schedule: 'Schedule',
     search: 'Search...',
@@ -167,6 +169,8 @@ export default {
     unsupported_language: 'Unsupported language',
     valid_until: 'Valid until',
     viewer: 'Viewer',
+    you_can_always_change_your_team_name_in_your_team_profile:
+      "If you are not sure about your team name, be aware that you can still change it later in your team's profile.",
     you_need_to_create_an_account:
       'You need to create your account first!',
     you_paid_with: 'You paid with',
@@ -292,6 +296,8 @@ export default {
     //REGISTRATION
     register: 'Register',
     registered: 'Registered',
+    registration_can_be_payed_later:
+      'You only have to pay once you are accepted. When you will be, you will receive an email in order to complete your payment.',
     registration_close_date: 'Date registrations close',
     registration_close_time: 'Time registrations close',
     registration_closes_before_opening:
