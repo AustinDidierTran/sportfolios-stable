@@ -102,12 +102,12 @@ export default function SearchList(props) {
       }));
   }, [response]);
 
-  const handleChange = event => {
-    if (event.length > 64) {
+  const handleChange = value => {
+    if (value.length > 64) {
       query.setError(t('max_length'));
     } else {
       query.setError(null);
-      query.onChange(event);
+      query.onChange(value);
     }
   };
 
