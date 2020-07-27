@@ -39,12 +39,7 @@ const createCustomer = async (body, userId, paymentMethod) => {
     payment_method: paymentMethodId,
     phone: body.phoneNumber,
   };
-
-  console.log('Creating customer with params', params);
-
   const customer = await stripe.customers.create(params);
-
-  console.log({ customer });
   if (!customer) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -60,7 +55,6 @@ const createCustomer = async (body, userId, paymentMethod) => {
     stripeErrorLogger(
       `Customer with id ${customer.id} already exists, taking it back`,
     );
-    console.log({ err });
   }
   return customer.id;
 };
@@ -113,22 +107,11 @@ const createPaymentMethod = async body => {
     card: { token: stripeToken.id },
   };
 
-  console.log({ params });
-
-  let paymentMethod;
-  try {
-    paymentMethod = await stripe.paymentMethods.create(params);
-  } catch (err) {
-    console.log({ err });
-  }
-
-  console.log({ paymentMethod });
+  const paymentMethod = await stripe.paymentMethods.create(params);
 
   if (!paymentMethod) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  console.log('Created Payment Method', paymentMethod.id);
 
   stripeLogger('Created Payment Method', paymentMethod.id);
   return { id: paymentMethod.id, last4: paymentMethod.card.last4 };

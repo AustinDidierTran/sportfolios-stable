@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { Tab, Tabs } from '../../../components/MUI';
 import { Paper, IgContainer } from '../../../components/Custom';
@@ -13,6 +13,14 @@ export default function Event(props) {
   const { basicInfos } = props;
   const { id } = useParams();
   const query = useQuery();
+
+  useEffect(() => {
+    document.title = `${basicInfos.name} | Sportfolios`;
+
+    return () => {
+      document.title = 'Sportfolios';
+    };
+  }, [basicInfos.name]);
 
   const [eventState, setEventState] = useState(
     query.tab || TABS_ENUM.EVENT_INFO,

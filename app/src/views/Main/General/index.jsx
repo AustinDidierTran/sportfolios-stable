@@ -13,7 +13,7 @@ const getAllEvents = async () => {
       type: GLOBAL_ENUM.EVENT,
     }),
   );
-  return data;
+  return data || [];
 };
 
 export default function General() {
