@@ -22,6 +22,8 @@ const {
   payInvoice: payInvoiceHelper,
   getPaymentMethods: getPaymentMethodsHelper,
   removePaymentMethodCustomer,
+  sendReceiptEmail: sendReceiptEmailHelper,
+  sendRegistrationEmail: sendRegistrationEmailHelper,
 } = require('../helpers/stripe');
 
 const getAccountLink = async (entity_id, ip) => {
@@ -119,6 +121,14 @@ const checkout = async (body, userId) => {
   return checkoutHelper(body, userId);
 };
 
+const sendReceiptEmail = async (body, userId) => {
+  return sendReceiptEmailHelper(body, userId);
+};
+
+const sendRegistrationEmail = async (body, userId) => {
+  return sendRegistrationEmailHelper(body, userId);
+};
+
 const createRefund = async (body, userId) => {
   return createRefundHelper(body, userId);
 };
@@ -146,4 +156,6 @@ module.exports = {
   hasStripeBankAccount,
   payInvoice,
   createPaymentMethod,
+  sendReceiptEmail,
+  sendRegistrationEmail,
 };

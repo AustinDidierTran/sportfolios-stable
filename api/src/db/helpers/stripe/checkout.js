@@ -14,6 +14,10 @@ const { clearCart } = require('../shop');
 const {
   INVOICE_PAID_ENUM,
 } = require('../../../server/utils/Stripe/checkout');
+const {
+  sendReceiptEmail: sendReceiptEmailHelper,
+} = require('../../../server/utils/nodeMailer');
+const { getEmailsFromUserId } = require('../index');
 
 const formatMetadata = metadata =>
   Object.keys(metadata).reduce((prev, curr) => {
@@ -268,6 +272,14 @@ const getReceipt = async query => {
   }
 };
 
+const sendReceiptEmail = async (body, userId) => {
+  const { receipt } = body;
+  const [person] = await getEmailsFromUserId(userId);
+  const email = person.email;
+
+  return await sendReceiptEmailHelper({ email, receipt });
+};
+
 const getMetadata = async stripePriceId => {
   const [stripePrice] = await knex('stripe_price')
     .select('*')
@@ -330,6 +342,7 @@ const checkout = async (body, userId) => {
     const chargeId = await paidInvoice.charge;
     const receiptUrl = await getReceipt({ chargeId, invoiceId });
     const transfers = await createTransfers(paidInvoice, userId);
+    await sendReceiptEmail({ receipt: receiptUrl }, userId);
 
     await Promise.all(
       invoicesAndMetadatas.map(async ({ invoiceItem, metadata }) => {
@@ -362,4 +375,5 @@ module.exports = {
   getReceipt,
   checkout,
   createRefund,
+  sendReceiptEmail,
 };

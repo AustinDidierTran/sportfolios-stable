@@ -1,5 +1,10 @@
 const knex = require('../connection');
 const { stripeErrorLogger } = require('../../server/utils/logger');
+const {
+  sendRegistrationEmail: sendRegistrationEmailHelper,
+} = require('../../server/utils/nodeMailer');
+const { getEmailsFromUserId } = require('../helpers');
+const { getEntity } = require('./entity');
 
 const getItem = async stripePriceId => {
   try {
@@ -188,14 +193,25 @@ const getCartItemsOrdered = async userId => {
   return groupedCart(cart);
 };
 
+const sendRegistrationEmail = async (body, userId) => {
+  const { team, sellerId } = body;
+  const [person] = await getEmailsFromUserId(userId);
+  const email = person.email;
+  const entity = await getEntity(sellerId, userId);
+
+  return await sendRegistrationEmailHelper({ email, team, entity });
+};
+
 const addCartItem = async (body, userId) => {
   const { stripePriceId, metadata } = body;
+  const { team, sellerId } = metadata;
 
   await knex('cart_items').insert({
     stripe_price_id: stripePriceId,
     user_id: userId,
     metadata,
   });
+  await sendRegistrationEmail({ team, sellerId }, userId);
   return stripePriceId;
 };
 

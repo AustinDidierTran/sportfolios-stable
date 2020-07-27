@@ -33,7 +33,9 @@ export default function Header() {
         'menu',
         'organizationList',
         'addPaymentMethod',
+        'orderProcessed',
         'checkout',
+        'registrationStatus',
       ].includes(pth)
     ) {
       setPath(pth);
@@ -72,6 +74,30 @@ export default function Header() {
         );
 
       case 'addPaymentMethod':
+        return (
+          <Default
+            Item1={() => (
+              <Typography style={{ fontSize: '24px' }}>
+                {'Checkout'}
+              </Typography>
+            )}
+            Item4={() => <CartIcon />}
+          />
+        );
+
+      case 'registrationStatus':
+        return (
+          <Default
+            Item1={() => (
+              <Typography style={{ fontSize: '24px' }}>
+                {'Checkout'}
+              </Typography>
+            )}
+            Item4={() => <CartIcon />}
+          />
+        );
+
+      case 'orderProcessed':
         return (
           <Default
             Item1={() => (

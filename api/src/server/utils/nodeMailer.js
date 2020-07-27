@@ -64,15 +64,33 @@ async function sendConfirmationEmail({ email, token, successRoute }) {
   }
 }
 
+async function sendReceiptEmail({ email, receipt }) {
+  await sendMail({
+    email,
+    subject: `Reçu de commande | Sportfolios`,
+    text: `Pour voir votre reçu, cliquez sur le lien suivant: ${receipt}.`,
+  });
+}
+
+async function sendRegistrationEmail({ email, team, entity }) {
+  await sendMail({
+    email,
+    subject: `Inscription d'équipe | Sportfolios`,
+    text: `Votre équipe ${team.name} a été ajoutée au tournoi ${entity.name} avec succès. Elle est maintenant en attente de paiement.`,
+  });
+}
+
 async function sendRecoveryEmail({ email, token }) {
   await sendMail({
     email,
-    subject: 'Recovery email.',
-    text: `You forgot your password? Here is the link to recover your account: ${CLIENT_BASE_URL}/recoveryEmail/${token}.`,
+    subject: 'Courriel de récupération de compte | Sportfolios',
+    text: `Vous avez oublié votre mot de passe? Voici le lien pour le retrouver: ${CLIENT_BASE_URL}/recoveryEmail/${token}.`,
   });
 }
 
 module.exports = {
   sendConfirmationEmail,
   sendRecoveryEmail,
+  sendReceiptEmail,
+  sendRegistrationEmail,
 };
