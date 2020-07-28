@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatPrice } from '../../utils/stringFormats';
+import {
+  formatPrice,
+  formatPageTitle,
+} from '../../utils/stringFormats';
 
 import { Paper, Button, IgContainer } from '../../components/Custom';
 import { Typography } from '../../components/MUI';
@@ -11,6 +14,10 @@ import { LOGO_ENUM } from '../../../../common/enums';
 export default function OrderProcessed() {
   const { paid, last4, receiptUrl } = useQuery();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    document.title = formatPageTitle(t('order_processed_title'));
+  }, []);
 
   const goToReceipt = () => {
     window.location.href = receiptUrl;

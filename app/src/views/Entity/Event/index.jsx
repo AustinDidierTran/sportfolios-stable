@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { Tab, Tabs } from '../../../components/MUI';
 import { Paper, IgContainer } from '../../../components/Custom';
@@ -8,11 +8,16 @@ import { useQuery } from '../../../hooks/queries';
 
 import { goTo, ROUTES } from '../../../actions/goTo';
 import TabsGenerator, { TABS_ENUM } from '../../../tabs';
+import { formatPageTitle } from '../../../utils/stringFormats';
 
 export default function Event(props) {
   const { basicInfos } = props;
   const { id } = useParams();
   const query = useQuery();
+
+  useEffect(() => {
+    document.title = formatPageTitle(basicInfos.name);
+  }, [basicInfos.name]);
 
   const [eventState, setEventState] = useState(
     query.tab || TABS_ENUM.EVENT_INFO,

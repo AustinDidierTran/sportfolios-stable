@@ -161,41 +161,35 @@ const getEmailFromToken = async ({ token }) => {
 };
 
 const getHashedPasswordFromId = async id => {
-  const response = await knex('users')
+  const [{ password } = {}] = await knex('users')
     .where({ id })
     .returning(['password']);
 
-  if (!response.length) {
-    return null;
-  }
-
-  return response[0].password;
+  return password;
 };
 
 const getUserIdFromEmail = async email => {
-  const response = await knex('user_email')
+  const [{ user_id } = {}] = await knex('user_email')
     .select(['user_id'])
     .where({ email });
 
-  if (!response.length) {
-    return null;
-  }
-
-  return response[0].user_id;
+  return user_id;
 };
 
 const getUserIdFromRecoveryPasswordToken = async token => {
-  const response = await knex('recovery_email_token')
+  const [response] = await knex('recovery_email_token')
     .select(['user_id', 'expires_at', 'used_at'])
     .where({ token });
 
   if (
-    !response.length ||
-    response[0].used_at ||
-    Date.now() > response[0].expires_at
+    !response ||
+    response.used_at ||
+    Date.now() > response.expires_at
   ) {
     return null;
   }
+
+  return response.user_id;
 };
 
 const setRecoveryTokenToUsed = async token => {

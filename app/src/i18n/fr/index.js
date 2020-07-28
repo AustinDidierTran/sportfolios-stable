@@ -29,6 +29,7 @@ export default {
     birth_date_format: '{{date, LL}} ({{age}} ans)',
     canadian_dollar: 'Dollar Canadien',
     card_ending_with: 'Carte finissant avec {{last4}}',
+    cart: 'Panier',
     cart_empty_go_shop:
       "Votre panier est vide! C'est l'heure d'aller faire des achats!",
     change_password: 'Changer votre mot de passe',

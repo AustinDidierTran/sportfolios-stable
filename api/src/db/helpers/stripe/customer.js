@@ -39,7 +39,7 @@ const createCustomer = async (body, userId, paymentMethod) => {
     payment_method: paymentMethodId,
     phone: body.phoneNumber,
   };
-
+  
   const customer = await stripe.customers.create(params);
 
   if (!customer) {
