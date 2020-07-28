@@ -18,6 +18,8 @@ export default {
     admin: 'Admin',
     admins: 'Admins',
     adress: 'Address',
+    cart: 'Cart',
+    checkout: 'Checkout',
     all_steps_completed: 'All Steps Completed',
     amount_to_pay: 'Amount to pay {{amount}}',
     app_role: 'App Role',

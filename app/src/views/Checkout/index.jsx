@@ -8,12 +8,14 @@ import { useFormInput } from '../../hooks/forms';
 import { useApiRoute } from '../../hooks/queries';
 import { formatPageTitle } from '../../utils/stringFormats';
 import { Paper, LoadingSpinner } from '../../components/Custom';
+import { useTranslation } from 'react-i18next';
 
 export default function Checkout() {
+  const { t } = useTranslation();
   const paymentMethod = useFormInput();
 
   useEffect(() => {
-    document.title = formatPageTitle('Checkout');
+    document.title = formatPageTitle(t('checkout'));
   }, []);
 
   const { isLoading, response } = useApiRoute('/api/shop/cartTotal');
