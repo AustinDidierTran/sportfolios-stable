@@ -68,6 +68,13 @@ export const getEntityTypeName = type => {
   }
 };
 
+export const formatPageTitle = title => {
+  if (title) {
+    return `${title} | Sportfolios`;
+  }
+  return 'Sportfolios';
+};
+
 export const getMembershipName = type => {
   if (type === MEMBERSHIP_TYPE_ENUM.RECREATIONAL) {
     return 'recreational_member';

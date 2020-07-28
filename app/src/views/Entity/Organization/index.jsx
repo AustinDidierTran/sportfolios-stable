@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Tab, Tabs } from '../../../components/MUI';
 import { Container, Paper } from '../../../components/Custom';
@@ -10,11 +10,16 @@ import TabsGenerator, { TABS_ENUM } from '../../../tabs';
 
 import BasicInfos from '../BasicInfos';
 import { goTo, ROUTES } from '../../../actions/goTo';
+import { formatPageTitle } from '../../../utils/stringFormats';
 
 export default function Organization(props) {
   const { basicInfos } = props;
   const { id } = useParams();
   const query = useQuery();
+
+  useEffect(() => {
+    document.title = formatPageTitle(basicInfos.name);
+  }, [basicInfos]);
 
   const [eventState, setEventState] = useState(
     query.tab || TABS_ENUM.ABOUT,
