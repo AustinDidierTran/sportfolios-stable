@@ -34,7 +34,7 @@ export default function Cart() {
   const { isLoading, response } = useApiRoute('/api/shop/cartTotal');
 
   useEffect(() => {
-    document.title = formatPageTitle('Cart');
+    document.title = formatPageTitle(t('cart'));
   }, []);
 
   const onCheckout = () => {
