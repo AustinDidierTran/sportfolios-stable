@@ -17,10 +17,6 @@ export default function Menu() {
 
   const data = [
     {
-      name: t('organizations'),
-      route: ROUTES.organizationList,
-    },
-    {
       name: t('settings'),
       route: ROUTES.userSettings,
     },
