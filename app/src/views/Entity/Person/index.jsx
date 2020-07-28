@@ -1,12 +1,17 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Tab, Tabs } from '../../../components/MUI';
 import { Container, Paper } from '../../../components/Custom';
 import styles from './Person.module.css';
 import BasicInfos from './BasicInfos';
 import TabsGenerator, { TABS_ENUM } from '../../../tabs';
+import { formatPageTitle } from '../../../utils/stringFormats';
 
 export default function Person(props) {
   const { basicInfos } = props;
+
+  useEffect(() => {
+    document.title = formatPageTitle(basicInfos.name);
+  }, [basicInfos]);
 
   const [eventState, setEventState] = useState(TABS_ENUM.ABOUT);
 

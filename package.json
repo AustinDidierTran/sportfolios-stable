@@ -103,7 +103,7 @@
     "pg": "^8.0.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-favicon": "0.0.18",
+    "react-favicon": "^0.0.18",
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.3.4",
     "react-router-dom": "^5.1.2",

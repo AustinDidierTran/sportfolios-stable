@@ -7,7 +7,10 @@ import { goTo, ROUTES } from '../../actions/goTo';
 import { CARD_TYPE_ENUM } from '../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 import { useApiRoute } from '../../hooks/queries';
-import { formatPrice } from '../../utils/stringFormats';
+import {
+  formatPrice,
+  formatPageTitle,
+} from '../../utils/stringFormats';
 
 import {
   Button,
@@ -31,6 +34,10 @@ export default function Cart() {
   const { t } = useTranslation();
   const [items, setItems] = useState([]);
   const { isLoading, response } = useApiRoute('/api/shop/cartTotal');
+
+  useEffect(() => {
+    document.title = formatPageTitle('Cart');
+  }, []);
 
   const onCheckout = () => {
     goTo(ROUTES.checkout);

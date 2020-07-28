@@ -8,6 +8,7 @@ import { useQuery } from '../../../hooks/queries';
 
 import { goTo, ROUTES } from '../../../actions/goTo';
 import TabsGenerator, { TABS_ENUM } from '../../../tabs';
+import { formatPageTitle } from '../../../utils/stringFormats';
 
 export default function Event(props) {
   const { basicInfos } = props;
@@ -15,11 +16,7 @@ export default function Event(props) {
   const query = useQuery();
 
   useEffect(() => {
-    document.title = `${basicInfos.name} | Sportfolios`;
-
-    return () => {
-      document.title = 'Sportfolios';
-    };
+    document.title = formatPageTitle(basicInfos.name);
   }, [basicInfos.name]);
 
   const [eventState, setEventState] = useState(
