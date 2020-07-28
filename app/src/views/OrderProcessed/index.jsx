@@ -16,7 +16,7 @@ export default function OrderProcessed() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    document.title = formatPageTitle('Order Processed');
+    document.title = formatPageTitle(t('order_processed_title'));
   }, []);
 
   const goToReceipt = () => {
