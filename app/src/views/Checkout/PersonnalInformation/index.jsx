@@ -164,7 +164,7 @@ export default function CustomerForm(props) {
       <form onSubmit={formik.handleSubmit}>
         <div className={styles.content}>
           <Typography gutterBottom variant="h5" component="h2">
-            {t('personnal_information')}
+            {t('personal_information')}
           </Typography>
           <TextField
             namespace="name"
