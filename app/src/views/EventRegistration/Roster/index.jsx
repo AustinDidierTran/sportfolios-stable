@@ -95,9 +95,13 @@ export default function Roster(props) {
         {t('roster')}
       </Typography>
       {roster.length === 0 ? (
-        <Typography>{t('no_roster')}</Typography>
+        <Typography style={{ marginBottom: '32px' }}>
+          {t('no_roster')}
+        </Typography>
       ) : (
-        <List items={roster} />
+        <div style={{ marginBottom: '16px' }}>
+          <List items={roster} />
+        </div>
       )}
     </div>
   );
