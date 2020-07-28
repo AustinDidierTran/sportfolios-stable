@@ -21,9 +21,7 @@ import DefaultCard from '../../components/MUI/Card';
 import { Typography } from '../../components/MUI';
 
 const getCartItems = async () => {
-  const { data: cartItems } = await api(
-    '/api/shop/getCartItemsOrdered',
-  );
+  const { data: cartItems } = await api('/api/shop/getCartItems');
   return cartItems;
 };
 

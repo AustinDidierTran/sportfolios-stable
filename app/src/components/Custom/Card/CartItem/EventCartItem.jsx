@@ -24,7 +24,7 @@ export default function EventCartItem(props) {
       <CardMedia className={styles.media} photoUrl={photoUrl} />
       <CardContent className={styles.infos}>
         <Typography gutterBottom variant="h5" className={styles.name}>
-          {teamName}
+          {`${description} (${name})`}
         </Typography>
         <Typography variant="h6" className={styles.price}>
           {formatPrice(price)}
@@ -35,7 +35,7 @@ export default function EventCartItem(props) {
           component="p"
           className={styles.description}
         >
-          {`${description} (${name})`}
+          {teamName}
         </Typography>
       </CardContent>
     </Paper>
