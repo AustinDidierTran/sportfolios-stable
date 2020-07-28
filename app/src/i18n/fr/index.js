@@ -129,7 +129,7 @@ export default {
     payments: 'Paiements',
     person: 'Person',
     people: 'Personnes',
-    places_available: 'places disponibles',
+    place_available: 'places disponibles',
     player: 'Joueur',
     players: 'Joueurs',
     private: 'Privée',
@@ -138,7 +138,6 @@ export default {
     phone_number: 'Numéro de téléphone',
     ranking: 'Classement',
     refunded: 'Remboursé',
-
     results: 'Résultats',
     reset: 'Réinitialiser',
     return_home: "Retourner à la page d'accueil",
