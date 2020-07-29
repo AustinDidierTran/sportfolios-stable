@@ -109,6 +109,13 @@ export default function SearchList(props) {
     }
   };
 
+  const onEnter = e => {
+    if (e.key === 'Enter') {
+      onClick(e, options[0]);
+      query.reset();
+    }
+  };
+
   return (
     <>
       {withoutIcon ? (
@@ -119,6 +126,8 @@ export default function SearchList(props) {
           size="small"
           label={label}
           style={{ width: '100%' }}
+          autoFocus
+          onKeyPress={onEnter}
         />
       ) : (
         <TextField
@@ -127,6 +136,8 @@ export default function SearchList(props) {
           label={label}
           style={{ margin: '8px' }}
           size="small"
+          autoFocus
+          onKeyPress={onEnter}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
