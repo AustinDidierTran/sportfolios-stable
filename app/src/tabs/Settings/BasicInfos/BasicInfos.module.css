@@ -25,6 +25,7 @@
   padding: 8px;
   overflow: scroll;
 }
+
 @media (min-width: 768px) {
   .editor {
     grid-template-columns: 1fr 1fr 1fr 1fr;

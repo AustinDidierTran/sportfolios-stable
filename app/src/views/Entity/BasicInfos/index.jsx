@@ -14,7 +14,6 @@ import {
   Input,
   Button,
   LoadingSpinner,
-  Paper,
 } from '../../../components/Custom';
 
 import {
@@ -115,92 +114,92 @@ export default function BasicInfos(props) {
     return { status: 404 };
   };
 
+  if (isLoading) {
+    return <LoadingSpinner isComponent />;
+  }
+
   if (isEditMode) {
     return (
-      <Paper title={name.value}>
-        <Container className={styles.paper}>
-          {isLoading ? (
-            <LoadingSpinner isComponent />
-          ) : (
-            <Avatar
-              className={styles.avatar}
-              photoUrl={photoUrl}
-              size="lg"
-            />
-          )}
+      <Container className={styles.container}>
+        {isLoading ? (
+          <LoadingSpinner isComponent />
+        ) : (
+          <Avatar
+            className={styles.avatar}
+            photoUrl={photoUrl}
+            size="lg"
+          />
+        )}
+        <div className={styles.editor}>
           <Input
             className={styles.input}
             type="file"
             onChange={onImgChange}
             isVisible={isEditMode}
+            className={styles.name}
           />
           <TextField
             {...name.inputProps}
             placeholder={t('name')}
             label={t('name')}
             error={name.error}
-            className={styles.textField}
+            className={styles.input}
             namespace="Name"
           />
-          <div className={styles.editor}>
-            <Button
-              className={styles.save}
-              endIcon="Check"
-              onClick={onSave}
-              style={{ marginRight: '8px' }}
-            >
-              {t('save')}
-            </Button>
-            <Button
-              className={styles.cancel}
-              endIcon="Close"
-              onClick={onCancel}
-              style={{ marginLeft: '8px' }}
-              color="secondary"
-            >
-              {t('cancel')}
-            </Button>
-          </div>
-        </Container>
-      </Paper>
+          <Button
+            className={styles.save}
+            endIcon="Check"
+            onClick={onSave}
+            style={{ marginRight: '8px' }}
+          >
+            {t('save')}
+          </Button>
+          <Button
+            className={styles.cancel}
+            endIcon="Close"
+            onClick={onCancel}
+            style={{ marginLeft: '8px' }}
+            color="secondary"
+          >
+            {t('cancel')}
+          </Button>
+        </div>
+      </Container>
     );
   }
 
   return (
-    <Paper title={name.value}>
-      <Container className={styles.paper}>
-        <Avatar
-          className={styles.avatar}
-          photoUrl={photoUrl}
-          variant="square"
-          size="lg"
-        />
-        {name ? (
-          <div className={styles.fullName}>
-            <Typography variant="h3" className={styles.title}>
-              {name.value}
-            </Typography>
-          </div>
-        ) : (
-          <></>
-        )}
-        {isEditor ? (
-          <Container className={styles.edit}>
-            <Button
-              variant="contained"
-              color="primary"
-              className={styles.button}
-              endIcon="Edit"
-              onClick={onEdit}
-              style={{ margin: '8px' }}
-            >
-              {t('edit')}
-            </Button>
-          </Container>
-        ) : (
-          <></>
-        )}
-      </Container>
-    </Paper>
+    <Container className={styles.paper}>
+      <Avatar
+        className={styles.avatar}
+        photoUrl={photoUrl}
+        size="lg"
+      />
+      {name ? (
+        <div className={styles.name}>
+          <Typography variant="h3" className={styles.title}>
+            {name.value}
+          </Typography>
+        </div>
+      ) : (
+        <></>
+      )}
+      {isEditor ? (
+        <Container className={styles.edit}>
+          <Button
+            variant="contained"
+            color="primary"
+            className={styles.button}
+            endIcon="Edit"
+            onClick={onEdit}
+            style={{ margin: '8px' }}
+          >
+            {t('edit')}
+          </Button>
+        </Container>
+      ) : (
+        <></>
+      )}
+    </Container>
   );
 }
