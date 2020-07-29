@@ -16,7 +16,7 @@ import { useQuery, useApiRoute } from '../../../hooks/queries';
 import LoadingSpinner from '../LoadingSpinner';
 
 export default function EntityCreate() {
-  const { id, type, route } = useQuery();
+  const { id, type } = useQuery();
 
   const { t } = useTranslation();
 
@@ -75,21 +75,8 @@ export default function EntityCreate() {
             creator: id,
           }),
         });
-        if (route) {
-          goTo(
-            ROUTES.eventRegistration,
-            {
-              id: route,
-            },
-            {
-              teamId: res.data.id,
-            },
-          );
-          setIsLoading(false);
-        } else {
-          goTo(ROUTES.entity, { id: res.data.id });
-          setIsLoading(false);
-        }
+        goTo(ROUTES.entity, { id: res.data });
+        setIsLoading(false);
       } catch (err) {
         setIsLoading(false);
         formik.setFieldError('name', t('something_went_wrong'));
