@@ -162,13 +162,7 @@ export default function Login() {
               payload: userInfo,
             });
 
-            if (successRoute) {
-              goTo(ROUTES.confirmEmailSuccess, null, {
-                successRoute,
-              });
-            } else {
-              goTo(ROUTES.confirmEmailSuccess);
-            }
+            goTo(ROUTES.home);
           }
         }
       }

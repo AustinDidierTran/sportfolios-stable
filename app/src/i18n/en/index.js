@@ -24,6 +24,8 @@ export default {
     amount_to_pay: 'Amount to pay {{amount}}',
     app_role: 'App Role',
     canadian_dollar: 'Canadian Dollar',
+    confirmation_email_sent:
+      'Recovery email has been sent successfully. Go look at your email to reset your password.',
     athlete_history: 'Athlete history',
     awaiting_payments: 'Awaiting payments',
     back: 'Back',
@@ -118,6 +120,7 @@ export default {
     our_team: 'Our Team',
     paid_with: 'Paid with',
     password: 'Password',
+    password_reset_message: 'Password has been successfully reset.',
     pay: 'Pay',
     payment_method_added:
       'You successfully added a new payment method!',
@@ -139,6 +142,7 @@ export default {
     refunded: 'Refunded',
     results: 'Results',
     reset: 'Reset',
+    reset_password: 'Reset password',
     return_home: 'Return home',
     roster: 'Roster',
     roster_doesnt_have_to_be_final_only_for_pre_ranking_purpose:
@@ -177,6 +181,8 @@ export default {
     viewer: 'Viewer',
     you_can_always_change_your_team_name_in_your_team_profile:
       "If you are not sure about your team name, be aware that you can still change it later in your team's profile.",
+    you_can_now_change_your_password:
+      'You can now change your password for the account having the email {{email}}',
     you_need_to_create_an_account:
       'You need to create your account first!',
     you_paid_with: 'You paid with',

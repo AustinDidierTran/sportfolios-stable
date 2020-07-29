@@ -84,10 +84,9 @@ async function sendRecoveryEmail({ email, token }) {
   await sendMail({
     email,
     subject: 'Courriel de récupération de compte | Sportfolios',
-    text: `Vous avez oublié votre mot de passe? Voici le lien pour le retrouver: ${CLIENT_BASE_URL}/recoveryEmail/${token}.`,
+    text: `Vous avez oublié votre mot de passe? Voici le lien pour le retrouver: ${CLIENT_BASE_URL}/recoveryEmail?token=${token}&email=${email}.`,
   });
 }
-
 module.exports = {
   sendConfirmationEmail,
   sendRecoveryEmail,

@@ -20,6 +20,7 @@ const {
   updatePasswordFromUserId,
   validateEmailIsConfirmed,
   validateEmailIsUnique,
+  generateAuthToken,
 } = require('../helpers');
 
 const signup = async ({
@@ -85,12 +86,7 @@ const login = async ({ email, password }) => {
   const isSame = bcrypt.compareSync(password, hashedPassword);
 
   if (isSame) {
-    const token = generateToken();
-    await knex('user_token').insert({
-      user_id: user_id,
-      token_id: token,
-      expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    });
+    const token = await generateAuthToken(user_id);
 
     const userInfo = await getBasicUserInfoFromId(user_id);
 
@@ -144,7 +140,7 @@ const recoverPassword = async ({ token, password }) => {
   const userId = await getUserIdFromRecoveryPasswordToken(token);
 
   if (!userId) {
-    return 403;
+    return { code: 403 };
   }
 
   const hashedPassword = await generateHashedPassword(password);
@@ -153,7 +149,11 @@ const recoverPassword = async ({ token, password }) => {
 
   await setRecoveryTokenToUsed(token);
 
-  return 200;
+  const authToken = await generateAuthToken(userId);
+
+  const userInfo = await getBasicUserInfoFromId(userId);
+
+  return { code: 200, authToken, userInfo };
 };
 
 const resendConfirmationEmail = async ({ email, successRoute }) => {
