@@ -6,7 +6,7 @@
 
 .item {
   grid-area: item;
-  overflow: scroll !important;
+  overflow: auto !important;
 }
 
 .select {

@@ -14,11 +14,18 @@ import { TextField, CardActions, CardContent } from '../../MUI';
 import { GLOBAL_ENUM } from '../../../../../common/enums';
 import { useQuery, useApiRoute } from '../../../hooks/queries';
 import LoadingSpinner from '../LoadingSpinner';
+import { useFormInput } from '../../../hooks/forms';
 
 export default function EntityCreate() {
   const { id, type, route } = useQuery();
 
   const { t } = useTranslation();
+
+  const name = useFormInput('');
+  const surname = useFormInput('');
+
+  const [error, setError] = useState(null);
+  const [surnameError, setSurnameError] = useState(null);
 
   const titleDictionary = useMemo(
     () => ({
@@ -56,6 +63,9 @@ export default function EntityCreate() {
     validateOnBlur: false,
     onSubmit: async values => {
       const { name, surname } = values;
+      if (error || surnameError) {
+        return;
+      }
       setIsLoading(true);
       try {
         const res = await api('/api/entity', {
@@ -96,6 +106,24 @@ export default function EntityCreate() {
     history.back();
   };
 
+  const handleChange = value => {
+    if (value.length > 64) {
+      setError(t('max_length'));
+    } else {
+      setError(null);
+      name.onChange(value);
+    }
+  };
+
+  const handleSurnameChange = value => {
+    if (value.length > 64) {
+      setSurnameError(t('max_length'));
+    } else {
+      setSurnameError(null);
+      surname.onChange(value);
+    }
+  };
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -114,6 +142,9 @@ export default function EntityCreate() {
                 type="name"
                 fullWidth
                 disabled={isLoading}
+                onChange={handleChange}
+                error={error}
+                value={name.value}
               />
               <TextField
                 hidden={Number(type) !== GLOBAL_ENUM.PERSON}
@@ -123,6 +154,9 @@ export default function EntityCreate() {
                 type="name"
                 fullWidth
                 disabled={isLoading}
+                onChange={handleSurnameChange}
+                error={surnameError}
+                value={surname.value}
               />
             </CardContent>
             <CardActions className={styles.buttons}>

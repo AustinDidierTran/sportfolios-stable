@@ -3,5 +3,5 @@
   background-color: white !important;
 }
 .text {
-  overflow: scroll;
+  overflow: auto;
 }
