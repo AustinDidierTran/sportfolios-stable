@@ -12,6 +12,12 @@ const { ERROR_ENUM } = require('../../../../common/errors');
 const addEntity = async (body, userId) => {
   const { name, creator, surname, type } = body;
 
+  if (
+    (name && name.length > 64) ||
+    (surname && surname.length > 64)
+  ) {
+    throw ERROR_ENUM.VALUE_IS_INVALID;
+  }
   return knex.transaction(async trx => {
     const [{ id: entityId } = {}] = await knex('entities')
       .insert({ type })

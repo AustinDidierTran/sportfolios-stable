@@ -4,6 +4,7 @@ const ERROR_ENUM = {
   INVALID_TRANSIT_NUMBER:
     'Invalid transit number. The number should be in the format xxxxx-yyy or xxxxxyyy.',
   TOKEN_EXPIRED: 'Token has expired',
+  VALUE_IS_INVALID: 'Value is invalid',
 };
 
 const errors = {
@@ -22,6 +23,10 @@ const errors = {
   [ERROR_ENUM.ERROR_OCCURED]: {
     message: ERROR_ENUM.ERROR_OCCURED,
     code: 404,
+  },
+  [ERROR_ENUM.VALUE_IS_INVALID]: {
+    message: ERROR_ENUM.VALUE_IS_INVALID,
+    code: 405,
   },
 };
 module.exports = { ERROR_ENUM, errors };
