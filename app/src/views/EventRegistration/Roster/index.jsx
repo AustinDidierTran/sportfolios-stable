@@ -27,7 +27,7 @@ export default function Roster(props) {
         {
           person_id: person.id,
           type: GLOBAL_ENUM.ROSTER_ITEM,
-          name: person.name,
+          name: person.completeName,
           secondary: t('player'),
           onDelete,
         },
