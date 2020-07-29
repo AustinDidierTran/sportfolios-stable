@@ -91,6 +91,16 @@ const generateToken = () => {
   return uuid.v1();
 };
 
+const generateAuthToken = async userId => {
+  const token = generateToken();
+  await knex('user_token').insert({
+    user_id: userId,
+    token_id: token,
+    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  });
+  return token;
+};
+
 const getBasicUserInfoFromId = async user_id => {
   const [{ app_role } = {}] = await knex('user_app_role')
     .select(['app_role'])
@@ -179,12 +189,9 @@ const getUserIdFromEmail = async body => {
 };
 
 const getUserIdFromRecoveryPasswordToken = async token => {
-  console.log({ token });
   const [response] = await knex('recovery_email_token')
     .select(['user_id', 'expires_at', 'used_at'])
     .where({ token });
-
-  console.log({ response });
 
   if (
     !response ||
@@ -266,6 +273,7 @@ module.exports = {
   createRecoveryEmailToken,
   generateHashedPassword,
   generateToken,
+  generateAuthToken,
   getBasicUserInfoFromId,
   getEmailFromToken,
   getEmailsFromUserId,
