@@ -17,6 +17,7 @@ import api from '../../actions/api';
 import { useQuery } from '../../hooks/queries';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { Store, ACTION_ENUM } from '../../Store';
+import { LOGO_ENUM } from '../../../../common/enums';
 
 export default function PasswordRecovery() {
   const { dispatch } = useContext(Store);
@@ -79,6 +80,9 @@ export default function PasswordRecovery() {
     <div className={styles.main}>
       <Paper className={styles.card}>
         <form onSubmit={formik.handleSubmit}>
+          <div className={styles.logo}>
+            <img className={styles.img} src={LOGO_ENUM.LOGO} />
+          </div>
           <CardContent>
             <Typography
               variant="body2"

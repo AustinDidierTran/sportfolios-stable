@@ -4,15 +4,24 @@ CREATE TABLE persons(
 );
 INSERT INTO persons(id) SELECT id FROM entities WHERE entities.type=1;
 
+ALTER TABLE persons
+ADD CONSTRAINT persons_id_fkey FOREIGN KEY (id) REFERENCES entities(id);
+
 CREATE TABLE organizations(
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY
 );
 INSERT INTO organizations(id) SELECT id FROM entities WHERE entities.type=2;
 
+ALTER TABLE organizations
+ADD CONSTRAINT organizations_id_fkey FOREIGN KEY (id) REFERENCES entities(id);
+
 CREATE TABLE teams(
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY
 );
 INSERT INTO teams(id) SELECT id FROM entities WHERE entities.type=3;
+
+ALTER TABLE teams
+ADD CONSTRAINT teams_id_fkey FOREIGN KEY (id) REFERENCES entities(id);
 
 ALTER TABLE team_players
   DROP CONSTRAINT team_players_person_id_fkey,

@@ -67,7 +67,7 @@ const signup = async ({
 
 const login = async ({ email, password }) => {
   // Validate account with this email exists
-  const user_id = await getUserIdFromEmail(email);
+  const user_id = await getUserIdFromEmail({ email });
   if (!user_id) {
     return { status: 404 };
   }
@@ -107,7 +107,7 @@ const confirmEmail = async ({ token }) => {
   await confirmEmailHelper({ email });
 
   const authToken = generateToken();
-  const user_id = await getUserIdFromEmail(email);
+  const user_id = await getUserIdFromEmail({ email });
 
   await knex('user_token').insert({
     user_id: user_id,
