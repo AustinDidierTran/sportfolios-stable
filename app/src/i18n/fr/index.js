@@ -115,6 +115,8 @@ export default {
     options: 'Options',
     or: 'ou',
     order_processed: 'Votre commande à été complété avec succès',
+    order_processed_title: 'Commande complété',
+
     organization: 'Organisation',
     organizations: 'Organisations',
     our_team: 'Notre Équipe',
