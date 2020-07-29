@@ -49,7 +49,13 @@ const getEntitiesFromQuery = async (query, blackList) => {
           '=',
           'entities_name.entity_id',
         )
-        .groupBy('id', 'type', 'entities_photo.photo_url')
+        .groupBy(
+          'id',
+          'type',
+          'name',
+          'surname',
+          'entities_photo.photo_url',
+        )
         .as('entities_formatted'),
     )
     .where('complete_name', 'ILIKE', `%${query}%`)
@@ -85,6 +91,8 @@ const getPersonsFromQuery = async (query, blackList) => {
         .select(
           'id',
           'type',
+          'name',
+          'surname',
           'entities_photo.photo_url',
           knex.raw(
             "string_agg(entities_name.name || ' ' || entities_name.surname, ' ') AS complete_name",
@@ -104,10 +112,18 @@ const getPersonsFromQuery = async (query, blackList) => {
           'entities_name.entity_id',
         )
         .where('entities.type', GLOBAL_ENUM.PERSON)
-        .groupBy('id', 'type', 'entities_photo.photo_url')
+        .groupBy(
+          'id',
+          'type',
+          'name',
+          'surname',
+          'entities_photo.photo_url',
+        )
         .as('entities_formatted'),
     )
-    .where('complete_name', 'ILIKE', `%${query}%`);
+    .where('complete_name', 'ILIKE', `%${query}%`)
+    .orWhere('name', 'ILIKE', `%${query}%`)
+    .orWhere('surname', 'ILIKE', `%${query}%`);
 
   if (whiteList) {
     const parsed = JSON.parse(whiteList);
