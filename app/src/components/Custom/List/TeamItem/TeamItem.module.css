@@ -4,5 +4,5 @@
 }
 
 .text {
-  overflow: scroll;
+  overflow: auto;
 }

@@ -41,8 +41,16 @@ export default function EntityCreate() {
 
   const validate = values => {
     const errors = {};
-    if (!values.name) {
+    const { name, surname } = values;
+    if (!name) {
       errors.name = t('name_is_required');
+    } else {
+      if (name.length > 64) {
+        formik.setFieldValue('name', name.slice(0, 64));
+      }
+    }
+    if (surname && surname.length > 64) {
+      formik.setFieldValue('surname', surname.slice(0, 64));
     }
     return errors;
   };
@@ -52,7 +60,7 @@ export default function EntityCreate() {
       name: '',
     },
     validate,
-    validateOnChange: false,
+    validateOnChange: true,
     validateOnBlur: false,
     onSubmit: async values => {
       const { name, surname } = values;

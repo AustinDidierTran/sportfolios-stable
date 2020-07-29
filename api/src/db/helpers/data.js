@@ -44,7 +44,7 @@ const getEntitiesFromQuery = async (query, blackList) => {
 };
 
 const getPersonsFromQuery = async (query, blackList) => {
-  const persons = await knex('persons')
+  const persons = await knex('entities')
     .select(
       'id',
       'entities_name.name',
@@ -53,17 +53,19 @@ const getPersonsFromQuery = async (query, blackList) => {
     )
     .leftJoin(
       'entities_photo',
-      'persons.id',
+      'entities.id',
       '=',
       'entities_photo.entity_id',
     )
     .leftJoin(
       'entities_name',
-      'persons.id',
+      'entities.id',
       '=',
       'entities_name.entity_id',
     )
-    .where('entities_name.name', 'ILIKE', `%${query}%`)
+    .whereNull('entities.deleted_at')
+    .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
+    .andWhere('entities_name.name', 'ILIKE', `%${query}%`)
     .orWhere('entities_name.surname', 'ILIKE', `%${query}%`)
     .limit(10);
 
@@ -110,7 +112,7 @@ const getTeamsFromQuery = async (query, blackList, whiteList) => {
 };
 
 const getOrganizationsFromQuery = async query => {
-  return knex('organizations')
+  return knex('entities')
     .select(
       'id',
       'entities_name.name',
@@ -119,17 +121,19 @@ const getOrganizationsFromQuery = async query => {
     )
     .leftJoin(
       'entities_photo',
-      'organizations.id',
+      'entities.id',
       '=',
       'entities_photo.entity_id',
     )
     .leftJoin(
       'entities_name',
-      'organizations.id',
+      'entities.id',
       '=',
       'entities_name.entity_id',
     )
-    .where('entities_name.name', 'ILIKE', `%${query}%`)
+    .whereNull('entities.deleted_at')
+    .andWhere('entities.type', '=', GLOBAL_ENUM.ORGANIZATION)
+    .andWhere('entities_name.name', 'ILIKE', `%${query}%`)
     .orWhere('entities_name.surname', 'ILIKE', `%${query}%`);
 };
 
