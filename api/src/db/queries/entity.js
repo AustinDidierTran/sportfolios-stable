@@ -135,6 +135,7 @@ async function addTeamToEvent(body, userId) {
     invoice_id,
     status,
     registration_status,
+    paymentOption,
   } = body;
   if (!isAllowed(team_id, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
@@ -160,6 +161,7 @@ async function addTeamToEvent(body, userId) {
     invoice_id,
     status,
     registration_status,
+    paymentOption,
   );
 }
 

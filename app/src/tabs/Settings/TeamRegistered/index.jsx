@@ -105,11 +105,13 @@ export default function TeamRegistered() {
               )}
               <StyledTableCell />
               <StyledTableCell />
+              <StyledTableCell />
             </TableRow>
           </TableHead>
           <TableHead>
             <TableRow>
               <StyledTableCell>{t('team')}</StyledTableCell>
+              <StyledTableCell>{t('captain')}</StyledTableCell>
               <StyledTableCell align="center">
                 {t('status')}
               </StyledTableCell>
@@ -125,6 +127,10 @@ export default function TeamRegistered() {
                   <StyledTableRow key={team.name}>
                     <StyledTableCell component="th" scope="row">
                       {team.name}
+                    </StyledTableCell>
+                    <StyledTableCell component="th" scope="row">
+                      {team.captains[0].name}&nbsp;
+                      {team.captains[0].surname}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <PaymentChip status={team.status} />
