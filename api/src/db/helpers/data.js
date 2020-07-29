@@ -28,6 +28,8 @@ const getEntitiesFromQuery = async (query, blackList) => {
       knex
         .select(
           'id',
+          'name',
+          'surname',
           'type',
           'entities_photo.photo_url',
           knex.raw(
@@ -50,7 +52,9 @@ const getEntitiesFromQuery = async (query, blackList) => {
         .groupBy('id', 'type', 'entities_photo.photo_url')
         .as('entities_formatted'),
     )
-    .where('complete_name', 'ILIKE', `%${query}%`);
+    .where('complete_name', 'ILIKE', `%${query}%`)
+    .orWhere('name', 'ILIKE', `%${query}%`)
+    .orWhere('surname', 'ILIKE', `%${query}%`);
 
   if (!blackList || blackList === undefined) {
     return entities.map(mappingFunction);
