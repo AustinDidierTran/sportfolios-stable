@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
 import { Tab, Tabs } from '../../../components/MUI';
-import { Container, Paper } from '../../../components/Custom';
+import { Paper, IgContainer } from '../../../components/Custom';
 
 import styles from './Organization.module.css';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '../../../hooks/queries';
 import TabsGenerator, { TABS_ENUM } from '../../../tabs';
 
-import BasicInfos from '../BasicInfos';
+import BasicInfos from '../Person/BasicInfos';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import { formatPageTitle } from '../../../utils/stringFormats';
 
@@ -44,11 +44,9 @@ export default function Organization(props) {
   };
 
   return (
-    <Container className={styles.container}>
+    <IgContainer>
       <Paper className={styles.card}>
-        <Container className={styles.title}>
-          <BasicInfos basicInfos={basicInfos} />
-        </Container>
+        <BasicInfos basicInfos={basicInfos} />
         <Tabs
           value={states.findIndex(s => s.value === eventState)}
           indicatorColor="primary"
@@ -66,6 +64,6 @@ export default function Organization(props) {
         </Tabs>
       </Paper>
       <OpenTab basicInfos={basicInfos} />
-    </Container>
+    </IgContainer>
   );
 }
