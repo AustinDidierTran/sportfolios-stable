@@ -39,7 +39,9 @@ const createCustomer = async (body, userId, paymentMethod) => {
     payment_method: paymentMethodId,
     phone: body.phoneNumber,
   };
+  
   const customer = await stripe.customers.create(params);
+
   if (!customer) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -107,7 +109,12 @@ const createPaymentMethod = async body => {
     card: { token: stripeToken.id },
   };
 
-  const paymentMethod = await stripe.paymentMethods.create(params);
+  let paymentMethod;
+  try {
+    paymentMethod = await stripe.paymentMethods.create(params);
+  } catch (err) {
+    stripeErrorLogger('PaymentMethod error', err);
+  }
 
   if (!paymentMethod) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
