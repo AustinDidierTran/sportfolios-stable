@@ -24,6 +24,8 @@ export default {
     amount_to_pay: 'Amount to pay {{amount}}',
     app_role: 'App Role',
     canadian_dollar: 'Canadian Dollar',
+    confirmation_email_sent:
+      'Recovery email has been sent successfully. Go look at your email to reset your password.',
     athlete_history: 'Athlete history',
     awaiting_payments: 'Awaiting payments',
     back: 'Back',

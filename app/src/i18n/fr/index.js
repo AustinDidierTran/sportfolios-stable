@@ -33,6 +33,8 @@ export default {
     cart_empty_go_shop:
       "Votre panier est vide! C'est l'heure d'aller faire des achats!",
     change_password: 'Changer votre mot de passe',
+    confirmation_email_sent:
+      'Le courriel a été envoyé avec succès. Allez dans votre boîte de courriel pour réinitialiser votre mot de passe.',
     contact_us: 'Contactez-nous',
     contact: 'Contact',
     country: 'Pays',

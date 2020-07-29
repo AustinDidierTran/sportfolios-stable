@@ -168,7 +168,9 @@ const getHashedPasswordFromId = async id => {
   return password;
 };
 
-const getUserIdFromEmail = async email => {
+const getUserIdFromEmail = async body => {
+  const { email } = body;
+
   const [{ user_id } = {}] = await knex('user_email')
     .select(['user_id'])
     .where({ email });
@@ -177,9 +179,12 @@ const getUserIdFromEmail = async email => {
 };
 
 const getUserIdFromRecoveryPasswordToken = async token => {
+  console.log({ token });
   const [response] = await knex('recovery_email_token')
     .select(['user_id', 'expires_at', 'used_at'])
     .where({ token });
+
+  console.log({ response });
 
   if (
     !response ||
