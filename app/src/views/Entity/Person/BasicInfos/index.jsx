@@ -172,7 +172,9 @@ export default function BasicInfos(props) {
             />
           </>
         ) : (
-          <Typography variant="h3">{completeName}</Typography>
+          <Typography variant="h3" className={styles.text}>
+            {completeName}
+          </Typography>
         )}
       </div>
       {role === ENTITIES_ROLE_ENUM.ADMIN ? (

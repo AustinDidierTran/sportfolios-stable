@@ -22,6 +22,10 @@
   margin-top: 8px !important;
 }
 
+.text {
+  overflow: auto !important;
+}
+
 .editor {
   display: grid !important;
   grid-template-columns: 1fr 1fr;

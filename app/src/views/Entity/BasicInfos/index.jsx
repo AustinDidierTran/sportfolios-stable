@@ -177,7 +177,7 @@ export default function BasicInfos(props) {
       />
       {name ? (
         <div className={styles.name}>
-          <Typography variant="h3" className={styles.title}>
+          <Typography variant="h3" className={styles.text}>
             {name.value}
           </Typography>
         </div>
