@@ -277,7 +277,7 @@ const sendReceiptEmail = async (body, userId) => {
   const [person] = await getEmailsFromUserId(userId);
   const email = person.email;
 
-  return await sendReceiptEmailHelper({ email, receipt });
+  return sendReceiptEmailHelper({ email, receipt });
 };
 
 const getMetadata = async stripePriceId => {

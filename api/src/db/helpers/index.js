@@ -136,14 +136,14 @@ const getBasicUserInfoFromId = async user_id => {
   };
 };
 
-const getEmailsFromUserId = async user_id => {
+const getEmailsFromUserId = async userId => {
   if (!user_id) {
     return null;
   }
 
   const emails = await knex('user_email')
     .select(['email', 'confirmed_email_at'])
-    .where({ user_id });
+    .where({ user_id: userId });
 
   return emails;
 };

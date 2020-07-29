@@ -5,7 +5,7 @@ import axios from 'axios';
 const MAX_IMG_SIZE = 1024 * 1024 * 100;
 
 const getSignature = async (id, imgType) => {
-  return await api(`/api/entity/s3Signature?fileType=${imgType}`);
+  return api(`/api/entity/s3Signature?fileType=${imgType}`);
 };
 
 const uploadToS3 = async (file, signedRequest) => {

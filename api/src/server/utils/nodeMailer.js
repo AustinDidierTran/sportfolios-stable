@@ -72,11 +72,23 @@ async function sendReceiptEmail({ email, receipt }) {
   });
 }
 
+const sendTeamRegistrationEmailToAdmin = async ({
+  email,
+  team,
+  event,
+}) => {
+  await sendMail({
+    email,
+    subject: 'Nouvelle inscription à votre tournoi | Sportfolios',
+    text: `Une équipe nommée ${team.name} s'est inscrite à votre événement ${event.name} avec succès. Vous pouvez accéder au status de votre événement ici: ${CLIENT_BASE_URL}/${event.id}?tab=settings`,
+  });
+};
+
 async function sendRegistrationEmail({ email, team, entity }) {
   await sendMail({
     email,
     subject: `Inscription d'équipe | Sportfolios`,
-    text: `Votre équipe ${team.name} a été ajoutée au tournoi ${entity.name} avec succès. Elle est maintenant en attente de paiement.`,
+    text: `Votre équipe ${team.name} a été ajoutée au tournoi ${entity.name} avec succès. Elle est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant: ${CLIENT_BASE_URL}/cart`,
   });
 }
 
@@ -93,4 +105,5 @@ module.exports = {
   sendRecoveryEmail,
   sendReceiptEmail,
   sendRegistrationEmail,
+  sendTeamRegistrationEmailToAdmin,
 };

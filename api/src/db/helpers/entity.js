@@ -465,7 +465,7 @@ async function getOptions(eventId) {
 }
 
 async function getMemberships(entityId) {
-  return await knex('entity_memberships')
+  return knex('entity_memberships')
     .select('*')
     .where({ entity_id: entityId });
 }
@@ -475,7 +475,7 @@ async function getRegistered(teamId, eventId) {
     .select('id')
     .where({ team_id: teamId });
   const rostersId = rosters.map(roster => roster.id);
-  return await knex('event_rosters')
+  return knex('event_rosters')
     .select('*')
     .where({ event_id: eventId })
     .whereIn('roster_id', rostersId);
@@ -867,7 +867,7 @@ const deleteEntityMembership = async (
 };
 
 const deleteOption = async id => {
-  return await knex('event_payment_options')
+  return knex('event_payment_options')
     .where({
       id,
     })

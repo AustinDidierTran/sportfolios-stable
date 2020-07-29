@@ -199,7 +199,7 @@ const sendRegistrationEmail = async (body, userId) => {
   const email = person.email;
   const entity = await getEntity(sellerId, userId);
 
-  return await sendRegistrationEmailHelper({ email, team, entity });
+  return sendRegistrationEmailHelper({ email, team, entity });
 };
 
 const addCartItem = async (body, userId) => {

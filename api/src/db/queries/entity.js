@@ -44,6 +44,9 @@ const {
   eventInfos: eventInfosHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
+const {
+  sendTeamRegistrationEmailToAdmin,
+} = require('../../server/utils/nodeMailer');
 
 async function isAllowed(entityId, userId, acceptationRole) {
   const role = await getEntityRoleHelper(entityId, userId);
@@ -119,7 +122,7 @@ async function updateGeneralInfos(body, userId) {
   return updateGeneralInfosHelper(entityId, description);
 }
 
-async function addTeamToEvent(body) {
+async function addTeamToEvent(body, userId) {
   const {
     team_id,
     event_id,
@@ -127,6 +130,24 @@ async function addTeamToEvent(body) {
     status,
     registration_status,
   } = body;
+  if (!isAllowed(team_id, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  // send mail to organization admin
+  // TODO find real event user creator
+  const creatorEmails = ['austindidier@sportfolios.app'];
+
+  const team = await getEntity(team_id, userId);
+
+  const event = await getEntity(event_id, userId);
+
+  await Promise.all(
+    creatorEmails.map(async email => {
+      await sendTeamRegistrationEmailToAdmin({ email, team, event });
+    }),
+  );
+
   return addTeamToEventHelper(
     team_id,
     event_id,
@@ -206,7 +227,7 @@ async function addEntityRole(body, userId) {
   if (!isAllowed(entity_id, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return await addEntityRoleHelper(entity_id, entity_id_admin, role);
+  return addEntityRoleHelper(entity_id, entity_id_admin, role);
 }
 
 async function updateMember(body) {
