@@ -11,69 +11,115 @@ const addQueryToRecentSearches = async (user_id, search_query) => {
 };
 
 const getEntitiesFromQuery = async (query, blackList) => {
-  const entities = await knex('entities')
+  const mappingFunction = e => ({
+    id: e.id,
+    type: e.type,
+    photoUrl: e.photoUrl,
+    completeName: e.complete_name,
+  });
+  const entities = await knex
     .select(
-      'id',
-      'type',
-      'entities_name.name',
-      'entities_name.surname',
-      'entities_photo.photo_url',
+      'entities_formatted.id',
+      'entities_formatted.type',
+      'entities_formatted.photo_url',
+      'entities_formatted.complete_name',
     )
-    .leftJoin(
-      'entities_photo',
-      'entities.id',
-      '=',
-      'entities_photo.entity_id',
+    .from(
+      knex
+        .select(
+          'id',
+          'type',
+          'entities_photo.photo_url',
+          knex.raw(
+            "string_agg(entities_name.name || ' ' || entities_name.surname, ' ') AS complete_name",
+          ),
+        )
+        .from('entities')
+        .leftJoin(
+          'entities_photo',
+          'entities.id',
+          '=',
+          'entities_photo.entity_id',
+        )
+        .leftJoin(
+          'entities_name',
+          'entities.id',
+          '=',
+          'entities_name.entity_id',
+        )
+        .groupBy('id', 'type', 'entities_photo.photo_url')
+        .as('entities_formatted'),
     )
-    .leftJoin(
-      'entities_name',
-      'entities.id',
-      '=',
-      'entities_name.entity_id',
-    )
-    .where('entities_name.name', 'ILIKE', `%${query}%`)
-    .orWhere('entities_name.surname', 'ILIKE', `%${query}%`)
-    .limit(10);
+    .where('complete_name', 'ILIKE', `%${query}%`);
 
   if (!blackList || blackList === undefined) {
-    return entities;
+    return entities.map(mappingFunction);
   }
 
   const parsed = JSON.parse(blackList);
-  return entities.filter(e => !parsed.includes(e.id));
+  return entities
+    .filter(e => !parsed.includes(e.id))
+    .map(mappingFunction);
 };
 
 const getPersonsFromQuery = async (query, blackList) => {
-  const persons = await knex('entities')
+  const mappingFunction = e => ({
+    id: e.id,
+    type: e.type,
+    photoUrl: e.photoUrl,
+    completeName: e.complete_name,
+  });
+  const entities = await knex
     .select(
-      'id',
-      'entities_name.name',
-      'entities_name.surname',
-      'entities_photo.photo_url',
+      'entities_formatted.id',
+      'entities_formatted.type',
+      'entities_formatted.photo_url',
+      'entities_formatted.complete_name',
     )
-    .leftJoin(
-      'entities_photo',
-      'entities.id',
-      '=',
-      'entities_photo.entity_id',
+    .from(
+      knex
+        .select(
+          'id',
+          'type',
+          'entities_photo.photo_url',
+          knex.raw(
+            "string_agg(entities_name.name || ' ' || entities_name.surname, ' ') AS complete_name",
+          ),
+        )
+        .from('entities')
+        .leftJoin(
+          'entities_photo',
+          'entities.id',
+          '=',
+          'entities_photo.entity_id',
+        )
+        .leftJoin(
+          'entities_name',
+          'entities.id',
+          '=',
+          'entities_name.entity_id',
+        )
+        .where('entities.type', GLOBAL_ENUM.PERSON)
+        .groupBy('id', 'type', 'entities_photo.photo_url')
+        .as('entities_formatted'),
     )
-    .leftJoin(
-      'entities_name',
-      'entities.id',
-      '=',
-      'entities_name.entity_id',
-    )
-    .whereNull('entities.deleted_at')
-    .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
-    .andWhere('entities_name.name', 'ILIKE', `%${query}%`)
-    .orWhere('entities_name.surname', 'ILIKE', `%${query}%`)
-    .limit(10);
+    .where('complete_name', 'ILIKE', `%${query}%`);
 
-  if (!blackList || blackList === undefined) {
-    return persons;
+  if (whiteList) {
+    const parsed = JSON.parse(whiteList);
+    return entities
+      .filter(t => parsed.includes(t.id))
+      .map(mappingFunction);
   }
-  const parsed = JSON.parse(blackList);
-  return persons.filter(p => !parsed.includes(p.id));
+
+  if (blackList) {
+    const parsed = JSON.parse(blackList);
+    return entities
+      .filter(e => !parsed.includes(e.id))
+      .map(mappingFunction);
+  }
+
+  return entities.map(mappingFunction);
 };
 
 const getTeamsFromQuery = async (query, blackList, whiteList) => {

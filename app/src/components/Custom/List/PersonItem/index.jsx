@@ -16,17 +16,11 @@ export default function PersonItem(props) {
     onClick,
     selected,
     photoUrl,
-    name,
-    surname,
+    completeName,
     secondary,
     icon,
     inverseColor,
   } = props;
-
-  const completeName = useMemo(
-    () => (surname ? `${name} ${surname}` : name),
-    [name, surname],
-  );
 
   const initials = useMemo(() => getInitialsFromName(completeName), [
     completeName,

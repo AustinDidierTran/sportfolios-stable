@@ -22,6 +22,14 @@ const globalSearch = async (
   if (type === GLOBAL_ENUM.PERSON) {
     const res = await getPersonsFromQuery(query, blackList);
     entities = res.map(r => ({ ...r, type }));
+    return {
+      entities: entities.map(e => ({
+        id: e.id,
+        completeName: e.completeName,
+        photoUrl: e.photoUrl,
+        type: e.type,
+      })),
+    };
   } else if (type === GLOBAL_ENUM.ORGANIZATION) {
     const res = await getOrganizationsFromQuery(query);
     entities = res.map(r => ({ ...r, type }));
@@ -31,6 +39,15 @@ const globalSearch = async (
   } else {
     await addQueryToRecentSearches(user_id, query);
     entities = await getEntitiesFromQuery(query, blackList);
+
+    return {
+      entities: entities.map(e => ({
+        id: e.id,
+        completeName: e.completeName,
+        photoUrl: e.photoUrl,
+        type: e.type,
+      })),
+    };
   }
   return {
     entities: entities.map(e => ({
