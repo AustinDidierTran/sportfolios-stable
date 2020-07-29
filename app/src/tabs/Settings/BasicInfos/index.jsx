@@ -125,6 +125,7 @@ export default function BasicInfos(props) {
             <Avatar
               className={styles.avatar}
               photoUrl={photoUrl}
+              variant="square"
               size="lg"
             />
           )}
