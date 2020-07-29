@@ -24,6 +24,7 @@ import NavigateNext from '@material-ui/icons/NavigateNext';
 import Notifications from '@material-ui/icons/Notifications';
 import Person from '@material-ui/icons/Person';
 import PersonAdd from '@material-ui/icons/PersonAdd';
+import Group from '@material-ui/icons/Group';
 import Publish from '@material-ui/icons/Publish';
 import Receipt from '@material-ui/icons/Receipt';
 import RemoveShoppingCart from '@material-ui/icons/RemoveShoppingCart';
@@ -42,6 +43,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import EditIcon from '@material-ui/icons/Edit';
 import PeopleIcon from '@material-ui/icons/People';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 
 const icons = {
   Add,
@@ -66,6 +68,7 @@ const icons = {
   MoneyOff,
   NavigateNext,
   Notifications,
+  Group,
   Person,
   PersonAdd,
   PeopleIcon,
@@ -86,6 +89,7 @@ const icons = {
   FavoriteIcon,
   EditIcon,
   AccountCircle,
+  KeyboardArrowDown,
 };
 
 export default function CustomIcon(props) {

@@ -109,6 +109,15 @@ export default function SearchList(props) {
     }
   };
 
+  const onEnter = e => {
+    if (e.key === 'Enter') {
+      if (e.target.value) {
+        onClick(e, options[0]);
+        query.reset();
+      }
+    }
+  };
+
   return (
     <>
       {withoutIcon ? (
@@ -118,6 +127,8 @@ export default function SearchList(props) {
           variant="outlined"
           size="small"
           label={label}
+          autoFocus
+          onKeyPress={onEnter}
           style={{ width: '100%' }}
         />
       ) : (
@@ -127,6 +138,8 @@ export default function SearchList(props) {
           label={label}
           style={{ margin: '8px' }}
           size="small"
+          autoFocus
+          onKeyPress={onEnter}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">

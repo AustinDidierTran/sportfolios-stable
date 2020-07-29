@@ -4,12 +4,14 @@ import Events from './Events';
 import General from './General';
 import Settings from './Settings';
 import Shop from './Shop';
+import Rosters from './Rosters';
 import { useTranslation } from 'react-i18next';
 import { ENTITIES_ROLE_ENUM } from '../Store';
 
 export const TABS_ENUM = {
   ABOUT: 'about',
   EVENT_INFO: 'event info',
+  ROSTERS: 'roster',
   EVENTS: 'events',
   GENERAL: 'general',
   SHOP: 'shop',
@@ -40,6 +42,17 @@ export default function Tabs(props) {
           component: EventInfo,
           label: t('info'),
           icon: 'Info',
+        },
+      ];
+    }
+    if (l === TABS_ENUM.ROSTERS) {
+      return [
+        ...prev,
+        {
+          value: TABS_ENUM.ROSTERS,
+          component: Rosters,
+          label: t('general'),
+          icon: 'Group',
         },
       ];
     }
