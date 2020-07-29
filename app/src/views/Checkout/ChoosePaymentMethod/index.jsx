@@ -4,6 +4,7 @@ import {
   Button,
   RadioGroup,
   LoadingSpinner,
+  ContainerBottomFixed,
 } from '../../../components/Custom';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import { useTranslation } from 'react-i18next';
@@ -123,12 +124,15 @@ export default function ChoosePaymentMethod(props) {
         {t('add_payment_method')}
       </Button>
 
-      <div style={{ color: 'gray', margin: '8px auto' }}>
-        <Typography style={{ fontSize: 12 }}>{t('or')}</Typography>
-      </div>
-      <Button disabled={paymentDisabled} onClick={pay}>
-        Payer
-      </Button>
+      <ContainerBottomFixed>
+        <Button
+          disabled={paymentDisabled}
+          onClick={pay}
+          style={{ margin: 8 }}
+        >
+          Payer
+        </Button>
+      </ContainerBottomFixed>
     </div>
   );
 }
