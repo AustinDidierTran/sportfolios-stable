@@ -39,7 +39,7 @@ const createCustomer = async (body, userId, paymentMethod) => {
     payment_method: paymentMethodId,
     phone: body.phoneNumber,
   };
-  
+
   const customer = await stripe.customers.create(params);
 
   if (!customer) {
@@ -68,7 +68,7 @@ const getOrCreateCustomer = async (body, userId) => {
     return getCustomerId(userId);
   } else {
     stripeLogger('Creating customer ...');
-    return await createCustomer(body, userId);
+    return createCustomer(body, userId);
   }
 };
 
