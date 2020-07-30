@@ -75,7 +75,7 @@ export default function EntityCreate() {
             creator: id,
           }),
         });
-        goTo(ROUTES.entity, { id: res.data });
+        goTo(ROUTES.entity, { id: res.data.id });
         setIsLoading(false);
       } catch (err) {
         setIsLoading(false);

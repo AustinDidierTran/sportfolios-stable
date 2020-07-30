@@ -112,7 +112,14 @@ export default function SearchList(props) {
   const onEnter = e => {
     if (e.key === 'Enter') {
       if (e.target.value) {
-        onClick(e, options[0]);
+        const entity = {};
+        entity.id = options[0].id;
+        if (entity.id) {
+          entity.completeName = options[0].completeName;
+        } else {
+          entity.name = options[0].name;
+        }
+        onClick(e, entity);
         query.reset();
       }
     }
