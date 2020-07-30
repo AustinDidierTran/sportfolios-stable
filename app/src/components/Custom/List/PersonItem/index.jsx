@@ -25,13 +25,17 @@ export default function PersonItem(props) {
 
   const initials = useMemo(
     () => getInitialsFromName(completeName || name),
-    [completeName],
+    [completeName, name],
   );
 
   const handleClick = useCallback(
     e => {
       if (onClick) {
-        onClick(e, { id, completeName });
+        if (completeName) {
+          onClick(e, { id, completeName });
+        } else {
+          onClick(e, { id, name });
+        }
       } else {
         goTo(ROUTES.entity, { id });
       }

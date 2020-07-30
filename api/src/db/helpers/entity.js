@@ -67,7 +67,7 @@ const addEntity = async (body, userId) => {
           })
           .transacting(trx);
 
-        return entityId;
+        return { id: entityId };
       }
       case GLOBAL_ENUM.PERSON: {
         await knex('user_entity_role')
