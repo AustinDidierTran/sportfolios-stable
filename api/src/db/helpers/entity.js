@@ -485,18 +485,18 @@ async function getTeamCaptains(teamId, userId) {
   );
   return captains;
 }
-//  // const caps = await knex('event_payment_options')
-//   .select('entity_id_admin')
-//   .where('role', '=', ENTITIES_ROLE_ENUM.ADMIN)
-//   .andWhere('entity_id', '=', teamId);
-// const captainIds = caps.map(c => c.entity_id_admin);
-// const captains = await Promise.all(
-//   captainIds.map(async id => {
-//     return getEntity(id, userId);
-//   }),
-// );
-// return captains;
-// }
+async function getPaymentOption(rosterId) {
+  const [option] = await knex('event_payment_options')
+    .select('id', 'name', 'price')
+    .leftJoin(
+      'event_rosters',
+      'event_rosters.payment_option_id',
+      '=',
+      'event_payment_options.id',
+    )
+    .where('roster_id', '=', rosterId);
+  return option;
+}
 
 async function getAllRegistered(eventId, userId) {
   const teams = await knex('event_rosters')
@@ -509,7 +509,7 @@ async function getAllRegistered(eventId, userId) {
       const emails = await getEmailsEntity(t.team_id);
       const players = await getRoster(t.roster_id);
       const captains = await getTeamCaptains(t.team_id, userId);
-      // const option = await getPaymentOption(t.roster_id, userId);
+      const option = await getPaymentOption(t.roster_id);
       return {
         name: entity.name,
         surname: entity.surname,
@@ -521,10 +521,10 @@ async function getAllRegistered(eventId, userId) {
         emails,
         players,
         captains,
+        option,
       };
     }),
   );
-  console.log({ cap: props.captains });
   return props;
 }
 
