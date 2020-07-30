@@ -67,8 +67,8 @@ const signup = async ({
 
 const login = async ({ email, password }) => {
   // Validate account with this email exists
-  const user_id = await getUserIdFromEmail({ email });
-  if (!user_id) {
+  const userId = await getUserIdFromEmail({ email });
+  if (!userId) {
     return { status: 404 };
   }
 
@@ -78,7 +78,7 @@ const login = async ({ email, password }) => {
     return { status: 401 };
   }
 
-  const hashedPassword = await getHashedPasswordFromId(user_id);
+  const hashedPassword = await getHashedPasswordFromId(userId);
   if (!hashedPassword) {
     return { status: 402 };
   }
@@ -86,9 +86,9 @@ const login = async ({ email, password }) => {
   const isSame = bcrypt.compareSync(password, hashedPassword);
 
   if (isSame) {
-    const token = await generateAuthToken(user_id);
+    const token = await generateAuthToken(userId);
 
-    const userInfo = await getBasicUserInfoFromId(user_id);
+    const userInfo = await getBasicUserInfoFromId(userId);
 
     return { status: 200, token, userInfo };
   } else {
@@ -107,29 +107,29 @@ const confirmEmail = async ({ token }) => {
   await confirmEmailHelper({ email });
 
   const authToken = generateToken();
-  const user_id = await getUserIdFromEmail({ email });
+  const userId = await getUserIdFromEmail({ email });
 
   await knex('user_token').insert({
-    user_id: user_id,
+    user_id: userId,
     token_id: authToken,
     expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   });
 
-  const userInfo = await getBasicUserInfoFromId(user_id);
+  const userInfo = await getBasicUserInfoFromId(userId);
 
   return { status: 200, token: authToken, userInfo };
 };
 
 const recoveryEmail = async ({ email }) => {
-  const user_id = await getUserIdFromEmail({ email });
+  const userId = await getUserIdFromEmail({ email });
 
-  if (!user_id) {
+  if (!userId) {
     return 404;
   }
 
   const token = generateToken();
 
-  await createRecoveryEmailToken({ user_id, token });
+  await createRecoveryEmailToken({ userId, token });
 
   await sendRecoveryEmail({ email, token });
 
