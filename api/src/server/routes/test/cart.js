@@ -6,7 +6,7 @@ const BASE_URL = '/api/test';
 
 router.get(`${BASE_URL}/removeEventCartItem`, async ctx => {
   const res = await helpers.removeEventCartItem({
-    rosterId: 'e1854339-a4cb-4951-8f85-b562510c20b6',
+    rosterId: ctx.body.rosterId,
   });
 
   if (res.code === 200) {
