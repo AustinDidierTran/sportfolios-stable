@@ -33,6 +33,7 @@ const {
   getOptions: getOptionsHelper,
   removeEntityRole: removeEntityRoleHelper,
   getRosterInvoiceItem,
+  removeEventCartItem: removeEventCartItemHelper,
   unregister: unregisterHelper,
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
@@ -276,7 +277,11 @@ const unregister = async (body, userId) => {
 
   try {
     if (status === INVOICE_STATUS_ENUM.PAID) {
+      // Registration paid, refund please
       await createRefund({ invoiceItemId });
+    } else {
+      // Registration is not paid, remove from cart
+      await removeEventCartItemHelper({ rosterId });
     }
 
     await unregisterHelper({ rosterId, eventId });

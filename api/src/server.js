@@ -12,6 +12,7 @@ const adminOnly = require('./server/middleware/admin-only');
 const errorHandler = require('./server/middleware/error-handler');
 
 const publicRoutes = require('./server/routes/public');
+const testRoutes = require('./server/routes/test');
 const privateRoutes = require('./server/routes/private');
 const protectedRoutes = require('./server/routes/protected');
 const adminRoutes = require('./server/routes/admin');
@@ -30,6 +31,10 @@ app.use(getUserInfo);
 
 // public routes
 publicRoutes.forEach(route => app.use(route.routes()));
+
+if (process.env.NODE_ENV === 'development') {
+  testRoutes.forEach(route => app.use(route.routes()));
+}
 
 // private routes
 app.use(checkAuth);
