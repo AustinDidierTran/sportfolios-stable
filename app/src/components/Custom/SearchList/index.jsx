@@ -128,7 +128,6 @@ export default function SearchList(props) {
           size="small"
           label={label}
           autoFocus
-          onKeyPress={onEnter}
           style={{ width: '100%' }}
           autoFocus
           onKeyPress={onEnter}

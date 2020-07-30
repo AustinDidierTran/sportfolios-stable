@@ -501,15 +501,12 @@ async function getRoster(rosterId) {
     .select('*')
     .where({ roster_id: rosterId });
 
-  const props = await Promise.all(
-    roster.map(async player => {
-      return {
-        id: player.id,
-        name: player.name,
-        personId: player.person_id,
-      };
-    }),
-  );
+  const props = roster.map(player => ({
+    id: player.id,
+    name: player.name,
+    personId: player.person_id,
+  }));
+
   return props;
 }
 
