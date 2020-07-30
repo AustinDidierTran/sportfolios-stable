@@ -632,6 +632,26 @@ const deleteRegistration = async (rosterId, eventId) => {
   });
 };
 
+const removeEventCartItem = async ({ rosterId }) => {
+  const res = await knex
+    .select('id')
+    .from(
+      knex
+        .select(knex.raw("id, metadata ->> 'rosterId' AS rosterId"))
+        .from('cart_items')
+        .as('cartItems'),
+    )
+    .where('cartItems.rosterid', rosterId);
+
+  const ids = res.map(r => r.id);
+
+  await knex('cart_items')
+    .whereIn('id', ids)
+    .del();
+
+  return ids;
+};
+
 async function updateRegistration(
   rosterId,
   eventId,
@@ -907,6 +927,7 @@ module.exports = {
   getGeneralInfos,
   getOptions,
   removeEntityRole,
+  removeEventCartItem,
   unregister,
   getRosterInvoiceItem,
   updateEntityName,
