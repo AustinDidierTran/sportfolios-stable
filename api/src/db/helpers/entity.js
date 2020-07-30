@@ -479,6 +479,7 @@ async function getAllRegistered(eventId, userId) {
     teams.map(async t => {
       const entity = await getEntity(t.team_id, userId);
       const emails = await getEmailsEntity(t.team_id);
+      const players = await getRoster(t.roster_id);
       return {
         name: entity.name,
         surname: entity.surname,
@@ -488,9 +489,24 @@ async function getAllRegistered(eventId, userId) {
         invoiceItemId: t.invoice_item_id,
         status: t.status,
         emails,
+        players,
       };
     }),
   );
+  return props;
+}
+
+async function getRoster(rosterId) {
+  const roster = await knex('team_players')
+    .select('*')
+    .where({ roster_id: rosterId });
+
+  const props = roster.map(player => ({
+    id: player.id,
+    name: player.name,
+    personId: player.person_id,
+  }));
+
   return props;
 }
 
@@ -886,6 +902,7 @@ module.exports = {
   getMemberships,
   getRegistered,
   getAllRegistered,
+  getRoster,
   getEvent,
   getGeneralInfos,
   getOptions,

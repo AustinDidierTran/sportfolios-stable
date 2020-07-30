@@ -1,0 +1,19 @@
+.tag {
+  border-radius: 1em;
+  display: flex;
+  flex-direction: row;
+  color: white;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+}
+
+.name {
+  flex: 1 1 auto;
+  justify-self: center;
+  padding: 0 8px;
+}
+
+.icon {
+  flex: 1 1 auto;
+}

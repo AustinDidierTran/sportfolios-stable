@@ -28,6 +28,7 @@ const {
   getMemberships: getMembershipsHelper,
   getRegistered: getRegisteredHelper,
   getAllRegistered: getAllRegisteredHelper,
+  getRoster: getRosterHelper,
   getEvent: getEventHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getOptions: getOptionsHelper,
@@ -90,6 +91,10 @@ async function getRegistered(team_id, event_id) {
 
 async function getAllRegistered(eventId, userId) {
   return getAllRegisteredHelper(eventId, userId);
+}
+
+async function getRoster(rosterId, userId) {
+  return getRosterHelper(rosterId, userId);
 }
 
 async function getEvent(eventId) {
@@ -384,4 +389,5 @@ module.exports = {
   updateMember,
   updateRegistration,
   eventInfos,
+  getRoster,
 };

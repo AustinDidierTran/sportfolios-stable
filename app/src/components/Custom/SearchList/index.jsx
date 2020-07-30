@@ -111,8 +111,10 @@ export default function SearchList(props) {
 
   const onEnter = e => {
     if (e.key === 'Enter') {
-      onClick(e, options[0]);
-      query.reset();
+      if (e.target.value) {
+        onClick(e, options[0]);
+        query.reset();
+      }
     }
   };
 
@@ -125,6 +127,7 @@ export default function SearchList(props) {
           variant="outlined"
           size="small"
           label={label}
+          autoFocus
           style={{ width: '100%' }}
           autoFocus
           onKeyPress={onEnter}

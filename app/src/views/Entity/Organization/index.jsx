@@ -29,8 +29,8 @@ export default function Organization(props) {
     list: [
       TABS_ENUM.EVENTS,
       // TABS_ENUM.GENERAL,
-      TABS_ENUM.ABOUT,
-      TABS_ENUM.SHOP,
+      // TABS_ENUM.ABOUT,
+      // TABS_ENUM.SHOP,
       TABS_ENUM.SETTINGS,
     ],
     role: basicInfos.role,
