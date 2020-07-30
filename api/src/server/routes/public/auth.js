@@ -105,12 +105,15 @@ router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
 
 // Reset password with token
 router.post(`${BASE_URL}/recoverPassword`, async ctx => {
-  const code = await queries.recoverPassword(ctx.request.body);
+  const { code, authToken, userInfo } = await queries.recoverPassword(
+    ctx.request.body,
+  );
 
   if (code === 200) {
     ctx.status = 200;
     ctx.body = {
       status: 'success',
+      data: { authToken, userInfo },
     };
   } else if (code === 403) {
     ctx.status = 403;

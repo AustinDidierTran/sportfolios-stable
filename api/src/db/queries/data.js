@@ -20,27 +20,16 @@ const globalSearch = async (
   let entities;
 
   if (type === GLOBAL_ENUM.PERSON) {
-    const res = await getPersonsFromQuery(query, blackList);
-    entities = res.map(r => ({ ...r, type }));
+    entities = await getPersonsFromQuery(query, blackList);
   } else if (type === GLOBAL_ENUM.ORGANIZATION) {
-    const res = await getOrganizationsFromQuery(query);
-    entities = res.map(r => ({ ...r, type }));
+    entities = await getOrganizationsFromQuery(query);
   } else if (type === GLOBAL_ENUM.TEAM) {
-    const res = await getTeamsFromQuery(query, blackList, whiteList);
-    entities = res.map(r => ({ ...r, type }));
+    entities = await getTeamsFromQuery(query, blackList, whiteList);
   } else {
     await addQueryToRecentSearches(user_id, query);
     entities = await getEntitiesFromQuery(query, blackList);
   }
-  return {
-    entities: entities.map(e => ({
-      id: e.id,
-      name: e.name,
-      surname: e.surname,
-      photoUrl: e.photo_url,
-      type: e.type,
-    })),
-  };
+  return { entities };
 };
 
 const getPreviousSearchQueries = async user_id => {

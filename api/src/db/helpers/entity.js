@@ -67,23 +67,7 @@ const addEntity = async (body, userId) => {
           })
           .transacting(trx);
 
-        if (Number(type) === GLOBAL_ENUM.ORGANIZATION) {
-          const [organization] = await knex('organizations')
-            .insert({ id: entityId })
-            .returning(['id'])
-            .transacting(trx);
-
-          return organization;
-        }
-
-        if (Number(type) === GLOBAL_ENUM.TEAM) {
-          const [team] = await knex('teams')
-            .insert({ id: entityId })
-            .returning(['id'])
-            .transacting(trx);
-
-          return team;
-        }
+        return entityId;
       }
       case GLOBAL_ENUM.PERSON: {
         await knex('user_entity_role')
@@ -93,13 +77,6 @@ const addEntity = async (body, userId) => {
             role: ENTITIES_ROLE_ENUM.ADMIN,
           })
           .transacting(trx);
-
-        const [person] = await knex('persons')
-          .insert({ id: entityId })
-          .returning(['id'])
-          .transacting(trx);
-
-        return person;
       }
       case GLOBAL_ENUM.EVENT: {
         let entity_id_admin;
@@ -434,8 +411,14 @@ async function getMembers(personsString, organizationId) {
   const persons = personsString.split(',');
   const members = await knex('memberships')
     .select('*')
-    .rightJoin('persons', 'persons.id', '=', 'memberships.person_id')
-    .whereIn('persons.id', persons)
+    .rightJoin(
+      'entities',
+      'entities.id',
+      '=',
+      'memberships.person_id',
+    )
+    .whereIn('entities.id', persons)
+    .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
     .andWhere({ organization_id: organizationId });
   return members.map(m => ({
     organizationId: m.organization_id,

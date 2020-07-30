@@ -27,7 +27,7 @@ export const ROUTES = {
   notifications: '/notifications',
   orderProcessed: '/orderProcessed',
   organizationList: '/organizationList',
-  recoveryEmail: '/recoveryEmail/:token',
+  recoveryEmail: '/recoveryEmail',
   registrationStatus: '/registrationStatus/:status',
   search: '/search',
   shopDetails: '/shopDetails/:id/:stripePriceId',

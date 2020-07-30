@@ -33,6 +33,8 @@ export default {
     cart_empty_go_shop:
       "Votre panier est vide! C'est l'heure d'aller faire des achats!",
     change_password: 'Changer votre mot de passe',
+    confirmation_email_sent:
+      'Le courriel a été envoyé avec succès. Allez dans votre boîte de courriel pour réinitialiser votre mot de passe.',
     contact_us: 'Contactez-nous',
     contact: 'Contact',
     country: 'Pays',
@@ -115,12 +117,16 @@ export default {
     options: 'Options',
     or: 'ou',
     order_processed: 'Votre commande à été complété avec succès',
+    order_processed_title: 'Commande complété',
+
     organization: 'Organisation',
     organizations: 'Organisations',
     our_team: 'Notre Équipe',
     paid: 'Payé',
     paid_with: 'Payé avec',
     password: 'Mot de passe',
+    password_reset_message:
+      'Votre mot de passe a été réinitialisé avec succès!',
     pay: 'Payer',
     payment_method_added:
       'Vous avez ajouté une nouvelle option de paiement!',
@@ -141,6 +147,7 @@ export default {
     refunded: 'Remboursé',
     results: 'Résultats',
     reset: 'Réinitialiser',
+    reset_password: 'Réinitialiser le mot de passe',
     return_home: "Retourner à la page d'accueil",
     roster: 'Alignement',
     roster_doesnt_have_to_be_final_only_for_pre_ranking_purpose:
@@ -180,6 +187,8 @@ export default {
     viewer: 'Visiteur',
     you_can_always_change_your_team_name_in_your_team_profile:
       "Si vous hésitez pour votre nom d'équipe, sachez que vous pouvez le changer plus tard dans votre profil d'équipe.",
+    you_can_now_change_your_password:
+      'Vous pouvez maintenant changer votre mot de passe pour le compte ayant le courriel {{email}}',
     you_need_to_create_an_account:
       'Avant de procéder, veuillez vous créer un compte.',
     you_paid_with: 'Vous avez payé avec',

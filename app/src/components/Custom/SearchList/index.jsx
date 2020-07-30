@@ -130,6 +130,8 @@ export default function SearchList(props) {
           autoFocus
           onKeyPress={onEnter}
           style={{ width: '100%' }}
+          autoFocus
+          onKeyPress={onEnter}
         />
       ) : (
         <TextField

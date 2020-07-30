@@ -17,25 +17,21 @@ export default function PersonItem(props) {
     selected,
     photoUrl,
     name,
-    surname,
+    completeName,
     secondary,
     icon,
     inverseColor,
   } = props;
 
-  const completeName = useMemo(
-    () => (surname ? `${name} ${surname}` : name),
-    [name, surname],
+  const initials = useMemo(
+    () => getInitialsFromName(completeName || name),
+    [completeName],
   );
-
-  const initials = useMemo(() => getInitialsFromName(completeName), [
-    completeName,
-  ]);
 
   const handleClick = useCallback(
     e => {
       if (onClick) {
-        onClick(e, { id, name, surname });
+        onClick(e, { id, completeName });
       } else {
         goTo(ROUTES.entity, { id });
       }
@@ -68,7 +64,7 @@ export default function PersonItem(props) {
       </ListItemIcon>
       <ListItemText
         className={styles.text}
-        primary={completeName}
+        primary={completeName || name}
         secondary={secondary || t('person')}
       ></ListItemText>
     </ListItem>

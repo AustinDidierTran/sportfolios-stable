@@ -167,7 +167,11 @@ export default function Login() {
                 successRoute,
               });
             } else {
-              goTo(ROUTES.confirmEmailSuccess);
+              if (formik.status.state === 'signup') {
+                goTo(ROUTES.confirmEmailSuccess);
+              } else {
+                goTo(ROUTES.home);
+              }
             }
           }
         }

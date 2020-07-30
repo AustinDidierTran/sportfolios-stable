@@ -16,8 +16,11 @@ import {
 import { Paper } from '../../../components/Custom';
 import api from '../../../actions/api';
 import { ROUTES } from '../../../actions/goTo';
+import { useContext } from 'react';
+import { Store, ACTION_ENUM } from '../../../Store';
 
 export default function ForgotPassword() {
+  const { dispatch } = useContext(Store);
   const { t } = useTranslation();
 
   const validate = values => {
@@ -52,6 +55,12 @@ export default function ForgotPassword() {
         // Email not found
         formik.setFieldError('email', t('email_not_found'));
         formik.setStatus({ state: 'signup' });
+      }
+      if (res.status === 200) {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: t('confirmation_email_sent'),
+        });
       }
     },
   });
