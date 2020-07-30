@@ -19,6 +19,7 @@ import { formatRoute } from '../../../actions/goTo';
 import { useCallback } from 'react';
 import { unregister } from '../../../actions/api/helpers';
 import { IconButton } from '../../../components/Custom';
+import { formatPrice } from '../../../utils/stringFormats';
 
 export default function TeamRegistered() {
   const { t } = useTranslation();
@@ -105,11 +106,15 @@ export default function TeamRegistered() {
               )}
               <StyledTableCell />
               <StyledTableCell />
+              <StyledTableCell />
+              <StyledTableCell />
             </TableRow>
           </TableHead>
           <TableHead>
             <TableRow>
               <StyledTableCell>{t('team')}</StyledTableCell>
+              <StyledTableCell>{t('captain')}</StyledTableCell>
+              <StyledTableCell>{t('option')}</StyledTableCell>
               <StyledTableCell align="center">
                 {t('status')}
               </StyledTableCell>
@@ -125,6 +130,14 @@ export default function TeamRegistered() {
                   <StyledTableRow key={team.name}>
                     <StyledTableCell component="th" scope="row">
                       {team.name}
+                    </StyledTableCell>
+                    <StyledTableCell component="th" scope="row">
+                      {team.captains[0].name}&nbsp;
+                      {team.captains[0].surname}
+                    </StyledTableCell>
+                    <StyledTableCell component="th" scope="row">
+                      {team.option.name}&nbsp;
+                      {formatPrice(team.option.price)}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <PaymentChip status={team.status} />

@@ -470,6 +470,34 @@ async function getRegistered(teamId, eventId) {
     .whereIn('roster_id', rostersId);
 }
 
+async function getTeamCaptains(teamId, userId) {
+  const caps = await knex('entities_role')
+    .select('entity_id_admin')
+    .where('role', '=', ENTITIES_ROLE_ENUM.ADMIN)
+    .andWhere('entity_id', '=', teamId);
+
+  const captainIds = caps.map(c => c.entity_id_admin);
+
+  const captains = await Promise.all(
+    captainIds.map(async id => {
+      return getEntity(id, userId);
+    }),
+  );
+  return captains;
+}
+async function getPaymentOption(rosterId) {
+  const [option] = await knex('event_payment_options')
+    .select('id', 'name', 'price')
+    .leftJoin(
+      'event_rosters',
+      'event_rosters.payment_option_id',
+      '=',
+      'event_payment_options.id',
+    )
+    .where('roster_id', '=', rosterId);
+  return option;
+}
+
 async function getAllRegistered(eventId, userId) {
   const teams = await knex('event_rosters')
     .select('*')
@@ -480,6 +508,8 @@ async function getAllRegistered(eventId, userId) {
       const entity = await getEntity(t.team_id, userId);
       const emails = await getEmailsEntity(t.team_id);
       const players = await getRoster(t.roster_id);
+      const captains = await getTeamCaptains(t.team_id, userId);
+      const option = await getPaymentOption(t.roster_id);
       return {
         name: entity.name,
         surname: entity.surname,
@@ -490,6 +520,8 @@ async function getAllRegistered(eventId, userId) {
         status: t.status,
         emails,
         players,
+        captains,
+        option,
       };
     }),
   );
@@ -790,6 +822,7 @@ async function addTeamToEvent(
   invoiceItemId,
   status,
   registration_status,
+  paymentOption,
 ) {
   return knex.transaction(async trx => {
     const [roster] = await knex('team_rosters')
@@ -805,6 +838,7 @@ async function addTeamToEvent(
         invoice_item_id: invoiceItemId,
         status,
         registration_status,
+        paymentOption,
       })
       .returning('*')
       .transacting(trx);

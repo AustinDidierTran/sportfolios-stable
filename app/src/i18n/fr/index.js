@@ -28,6 +28,7 @@ export default {
     birth_date: 'Date de naissance',
     birth_date_format: '{{date, LL}} ({{age}} ans)',
     canadian_dollar: 'Dollar Canadien',
+    captain: 'Capitaine',
     card_ending_with: 'Carte finissant avec {{last4}}',
     cart: 'Panier',
     cart_empty_go_shop:
@@ -114,6 +115,7 @@ export default {
     no_teams_registered: 'Aucune équipes inscrites',
     on_going_events: 'Événements en cours',
     only_available_on_desktop: 'Seulement disponible sur ordinateur',
+    option: 'Option',
     options: 'Options',
     or: 'ou',
     order_processed: 'Votre commande à été complété avec succès',

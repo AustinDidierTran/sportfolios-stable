@@ -128,7 +128,6 @@ export default function EventRegistration() {
       team.id = tempTeam.data.id;
     }
     //Check if teams is accepted here
-
     const status = REGISTRATION_STATUS_ENUM.ACCEPTED;
 
     if (
@@ -143,6 +142,7 @@ export default function EventRegistration() {
           invoice_id: null,
           status: INVOICE_STATUS_ENUM.OPEN,
           registration_status: status,
+          paymentOption,
         }),
       });
 
