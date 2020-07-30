@@ -71,9 +71,9 @@ const createConfirmationEmailToken = async ({ email, token }) => {
   });
 };
 
-const createRecoveryEmailToken = async ({ user_id, token }) => {
+const createRecoveryEmailToken = async ({ userId, token }) => {
   await knex('recovery_email_token').insert({
-    user_id,
+    user_id: userId,
     token,
     expires_at: new Date(Date.now() + 60 * 60 * 1000),
   });

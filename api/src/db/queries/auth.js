@@ -61,7 +61,6 @@ const signup = async ({
     token: confirmationEmailToken,
     successRoute,
   });
-
   return { code: 200 };
 };
 

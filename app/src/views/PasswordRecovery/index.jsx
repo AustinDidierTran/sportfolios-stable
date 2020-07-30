@@ -88,7 +88,10 @@ export default function PasswordRecovery() {
               variant="body2"
               color="textSecondary"
               component="p"
-              style={{ marginBottom: '8px' }}
+              style={{
+                marginBottom: '8px',
+                textAlign: 'center',
+              }}
             >
               {t('you_can_now_change_your_password', { email })}
             </Typography>
