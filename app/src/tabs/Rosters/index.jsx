@@ -21,10 +21,14 @@ const getRosters = async eventId => {
 export default function TabRosters() {
   const { id: eventId } = useParams();
   const [rosters, setRosters] = useState([]);
+  const [myRoster, setMyRoster] = useState({});
 
   const getData = async () => {
     const rosters = await getRosters(eventId);
     setRosters(rosters);
+    //TODO: Find which one is my roster
+    const myIndex = 5;
+    setMyRoster({ ...rosters[myIndex], position: myIndex + 1 });
   };
 
   useEffect(() => {
@@ -34,11 +38,7 @@ export default function TabRosters() {
   return (
     <div className={styles.contain}>
       <div className={styles.myRoster}>
-        <MyRoster
-          roster={rosters[5]}
-          position={5 + 1}
-          initialExpanded
-        />
+        <MyRoster roster={myRoster} />
       </div>
       <div className={styles.rosters}>
         <Rosters rosters={rosters} />

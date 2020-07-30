@@ -44,6 +44,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import PeopleIcon from '@material-ui/icons/People';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
+import FiberManualRecord from '@material-ui/icons/FiberManualRecord';
 
 const icons = {
   Add,
@@ -90,12 +92,14 @@ const icons = {
   EditIcon,
   AccountCircle,
   KeyboardArrowDown,
+  KeyboardArrowUp,
+  FiberManualRecord,
 };
 
 export default function CustomIcon(props) {
-  const { icon } = props;
+  const { icon, color = 'primary', onClick } = props;
 
   const Icon = icons[icon];
 
-  return <Icon />;
+  return <Icon style={{ fill: color }} onClick={onClick} />;
 }

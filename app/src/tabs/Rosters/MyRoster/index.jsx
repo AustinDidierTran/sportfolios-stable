@@ -1,14 +1,12 @@
 import React from 'react';
 
-import RosterCard from '../RosterCard';
-import { Typography } from '../../../components/MUI';
+import MyRosterCard from '../MyRosterCard';
 
 export default function MyRoster(props) {
-  const { roster, position } = props;
+  const { roster } = props;
   return (
     <div>
-      <Typography>MY ROSTER</Typography>
-      <RosterCard roster={roster} position={position} />
+      <MyRosterCard roster={roster} />
     </div>
   );
 }
