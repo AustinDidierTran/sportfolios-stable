@@ -162,7 +162,17 @@ export default function Login() {
               payload: userInfo,
             });
 
-            goTo(ROUTES.home);
+            if (successRoute) {
+              goTo(ROUTES.confirmEmailSuccess, null, {
+                successRoute,
+              });
+            } else {
+              if (formik.status.state === 'signup') {
+                goTo(ROUTES.confirmEmailSuccess);
+              } else {
+                goTo(ROUTES.home);
+              }
+            }
           }
         }
       }
