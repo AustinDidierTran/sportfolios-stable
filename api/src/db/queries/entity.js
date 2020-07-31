@@ -2,6 +2,7 @@ const {
   ENTITIES_ROLE_ENUM,
   INVOICE_STATUS_ENUM,
   STRIPE_ERROR_ENUM,
+  REGISTRATION_STATUS_ENUM,
 } = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
@@ -49,7 +50,10 @@ const {
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
   sendTeamRegistrationEmailToAdmin,
+  sendAcceptedRegistrationEmail,
 } = require('../../server/utils/nodeMailer');
+const { addCartItem } = require('../helpers/shop');
+const { getEmailsFromUserId } = require('../helpers');
 
 async function isAllowed(entityId, userId, acceptationRole) {
   const role = await getEntityRoleHelper(entityId, userId);
@@ -133,40 +137,71 @@ async function updateGeneralInfos(body, userId) {
 }
 
 async function addTeamToEvent(body, userId) {
-  const {
-    team_id,
-    event_id,
-    invoice_id,
-    status,
-    registration_status,
-    paymentOption,
-  } = body;
-  if (!isAllowed(team_id, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  const { teamId, eventId, paymentOption, roster, status } = body;
+  if (!isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  // send mail to organization admin
-  // TODO find real event user creator
-  const creatorEmails = ['austindidier@sportfolios.app'];
+  // Reject team if there is already too many registered teams
 
-  const team = await getEntity(team_id, userId);
+  // TODO: Validate status of team
+  const registrationStatus = REGISTRATION_STATUS_ENUM.ACCEPTED;
 
-  const event = await getEntity(event_id, userId);
+  const team = await getEntity(teamId, userId);
 
-  await Promise.all(
-    creatorEmails.map(async email => {
-      await sendTeamRegistrationEmailToAdmin({ email, team, event });
-    }),
-  );
+  const event = await getEntity(eventId, userId);
 
-  return addTeamToEventHelper(
-    team_id,
-    event_id,
-    invoice_id,
+  const rosterId = await addTeamToEventHelper({
+    teamId,
+    eventId,
     status,
-    registration_status,
+    registrationStatus,
     paymentOption,
-  );
+  });
+
+  // Add roster
+  await addRosterHelper(rosterId, roster);
+
+  if (registrationStatus === REGISTRATION_STATUS_ENUM.ACCEPTED) {
+    // Add item to cart
+    await addCartItem(
+      {
+        stripePriceId: paymentOption,
+        metadata: {
+          sellerId: eventId,
+          buyerId: teamId,
+          rosterId,
+          team,
+        },
+      },
+      userId,
+    );
+
+    // send mail to organization admin
+    // TODO find real event user creator
+    const creatorEmails = ['austindidier@sportfolios.app'];
+    creatorEmails.map(async email =>
+      sendTeamRegistrationEmailToAdmin({
+        email,
+        team,
+        event,
+      }),
+    );
+
+    // Send accepted email to team captain
+    const captainEmails = await getEmailsFromUserId(userId);
+
+    captainEmails.map(({ email }) =>
+      sendAcceptedRegistrationEmail({
+        team,
+        event,
+        email,
+      }),
+    );
+  }
+  // Handle other acceptation statuses
+
+  return registrationStatus;
 }
 
 async function getOptions(eventId) {

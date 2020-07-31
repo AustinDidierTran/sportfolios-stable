@@ -16,7 +16,6 @@ import { formatRoute, ROUTES, goTo } from '../../actions/goTo';
 import { useTranslation } from 'react-i18next';
 import {
   INVOICE_STATUS_ENUM,
-  REGISTRATION_STATUS_ENUM,
   GLOBAL_ENUM,
 } from '../../../../common/enums';
 import { formatPrice } from '../../utils/stringFormats';
@@ -128,48 +127,21 @@ export default function EventRegistration() {
       team.id = tempTeam.data.id;
     }
     //Check if teams is accepted here
-    const status = REGISTRATION_STATUS_ENUM.ACCEPTED;
 
-    if (
-      status === REGISTRATION_STATUS_ENUM.PENDING ||
-      status === REGISTRATION_STATUS_ENUM.ACCEPTED
-    ) {
-      const { data } = await api('/api/entity/register', {
-        method: 'POST',
-        body: JSON.stringify({
-          team_id: team.id,
-          event_id: eventId,
-          invoice_id: null,
-          status: INVOICE_STATUS_ENUM.OPEN,
-          registration_status: status,
-          paymentOption,
-        }),
-      });
+    const { status, data } = await api('/api/entity/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        teamId: team.id,
+        eventId: eventId,
+        paymentOption,
+        roster,
+        status: INVOICE_STATUS_ENUM.OPEN,
+      }),
+    });
 
-      await api('/api/entity/roster', {
-        method: 'POST',
-        body: JSON.stringify({
-          rosterId: data.roster_id,
-          roster,
-        }),
-      });
-      if (status === REGISTRATION_STATUS_ENUM.ACCEPTED) {
-        await api('/api/shop/addCartItem', {
-          method: 'POST',
-          body: JSON.stringify({
-            stripePriceId: paymentOption,
-            metadata: {
-              sellerId: eventId,
-              buyerId: team.id,
-              rosterId: data.roster_id,
-              team,
-            },
-          }),
-        });
-      }
+    if (status === 200) {
+      goTo(ROUTES.registrationStatus, { status: data });
     }
-
-    goTo(ROUTES.registrationStatus, { status });
   };
 
   const handleNext = activeStep => {

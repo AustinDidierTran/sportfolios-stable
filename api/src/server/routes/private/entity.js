@@ -421,15 +421,15 @@ router.post(`${BASE_URL}/membership`, async ctx => {
 });
 
 router.post(`${BASE_URL}/register`, async ctx => {
-  const entity = await queries.addTeamToEvent(
+  const acceptationStatus = await queries.addTeamToEvent(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  if (entity) {
-    ctx.status = 201;
+  if (acceptationStatus) {
+    ctx.status = 200;
     ctx.body = {
       status: 'success',
-      data: entity,
+      data: acceptationStatus,
     };
   } else {
     ctx.status = 404;

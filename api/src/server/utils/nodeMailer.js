@@ -84,11 +84,11 @@ const sendTeamRegistrationEmailToAdmin = async ({
   });
 };
 
-async function sendRegistrationEmail({ email, team, entity }) {
+async function sendAcceptedRegistrationEmail({ email, team, event }) {
   await sendMail({
     email,
     subject: `Inscription d'équipe | Sportfolios`,
-    text: `Votre équipe ${team.name} a été ajoutée au tournoi ${entity.name} avec succès. Elle est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant: ${CLIENT_BASE_URL}/cart`,
+    text: `Votre équipe ${team.name} est officiellement acceptée au tournoi ${event.name}. L'organisation est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant: ${CLIENT_BASE_URL}/cart`,
   });
 }
 
@@ -103,6 +103,6 @@ module.exports = {
   sendConfirmationEmail,
   sendRecoveryEmail,
   sendReceiptEmail,
-  sendRegistrationEmail,
+  sendAcceptedRegistrationEmail,
   sendTeamRegistrationEmailToAdmin,
 };
