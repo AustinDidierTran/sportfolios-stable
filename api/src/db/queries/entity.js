@@ -21,6 +21,7 @@ const {
   deleteOption: deleteOptionHelper,
   getAllEntities: getAllEntitiesHelper,
   getAllOwnedEntities: getAllOwnedEntitiesHelper,
+  getOwnedEvents: getOwnedEventsHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
   getEntity: getEntityHelper,
@@ -65,6 +66,10 @@ async function getAllEntities(params) {
 }
 async function getAllOwnedEntities(type, userId) {
   return getAllOwnedEntitiesHelper(type, userId);
+}
+
+async function getOwnedEvents(organizatioId) {
+  return getOwnedEventsHelper(organizatioId);
 }
 
 async function getAllTypeEntities(type) {
@@ -380,6 +385,7 @@ module.exports = {
   deleteOption,
   getAllEntities,
   getAllOwnedEntities,
+  getOwnedEvents,
   getAllRolesEntity,
   getAllTypeEntities,
   getEntity,

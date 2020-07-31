@@ -102,7 +102,7 @@ export default function TabEventInfo() {
 
   useEffect(() => {
     getColor();
-  }, [event]);
+  }, [remainingSpots]);
 
   const getColor = () => {
     if (remainingSpots <= Math.ceil(event.maximumSpots * 0.2)) {
@@ -113,7 +113,9 @@ export default function TabEventInfo() {
   };
 
   useEffect(() => {
-    getRemainingSpots();
+    if (event.maximum_spots) {
+      getRemainingSpots();
+    }
   }, [event]);
 
   const getRemainingSpots = async () => {
