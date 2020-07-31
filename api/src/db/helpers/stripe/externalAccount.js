@@ -9,6 +9,7 @@ const { stripeLogger } = require('../../../server/utils/logger');
 const {
   fillWithZeros,
 } = require('../../../../../common/utils/stringFormat');
+const { getCreator } = require('../entity');
 
 const getStripeAccount = async senderId => {
   const [account = {}] = await knex('stripe_accounts')
@@ -24,6 +25,12 @@ const hasStripeAccount = async senderId => {
 
 const hasStripeBankAccount = async senderId => {
   const account = await getStripeAccount(senderId);
+  return Boolean(account.bank_account_id);
+};
+
+const eventHasBankAccount = async adminId => {
+  const admin = await getCreator(adminId);
+  const account = await getStripeAccount(admin.id);
   return Boolean(account.bank_account_id);
 };
 
@@ -161,6 +168,7 @@ module.exports = {
   createExternalAccount,
   createAccountLink,
   createStripeConnectedAccount,
+  eventHasBankAccount,
   getOrCreateStripeConnectedAccountId,
   hasStripeAccount,
   hasStripeBankAccount,

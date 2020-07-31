@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import {
-  Paper,
-  Card,
-  LoadingSpinner,
-} from '../../../components/Custom';
+import { Paper, Card } from '../../../components/Custom';
 import { Container } from '../../../components/MUI';
 
 import { useTranslation } from 'react-i18next';
@@ -23,8 +19,6 @@ export default function AddOptionsEvent() {
 
   const [options, setOptions] = useState([]);
 
-  const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     getOptions();
   }, [eventId]);
@@ -35,16 +29,9 @@ export default function AddOptionsEvent() {
     );
     const dataOptions = data.map(d => Object.values(d));
     setOptions(dataOptions);
-    setIsLoading(false);
   };
 
-  const onAdd = async status => {
-    if (status === 400) {
-      setDisplay(t('payment_option_exist'));
-      setOpen(true);
-      setIsLoading(false);
-      return;
-    }
+  const onAdd = () => {
     getOptions();
   };
 
@@ -59,6 +46,7 @@ export default function AddOptionsEvent() {
     );
     getOptions();
   };
+
   const fields = [
     {
       display: t('name'),
@@ -93,10 +81,6 @@ export default function AddOptionsEvent() {
       initialValue: '23:59',
     },
   ];
-
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
 
   return (
     <Paper title={t('add_payment_options')}>

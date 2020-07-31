@@ -38,6 +38,14 @@ router.get(`${BASE_URL}/hasStripeBankAccount`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/eventHasBankAccount`, async ctx => {
+  const data = await queries.eventHasBankAccount(ctx.query.id);
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 router.post(`${BASE_URL}/externalAccount`, async ctx => {
   const { data, status, error } = await queries.addExternalAccount(
     ctx.request.body,

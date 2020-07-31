@@ -16,6 +16,8 @@ export default {
     add_person: 'Ajouter une personne',
     added_to_cart: 'Ajouté au panier',
     admin: 'Admin',
+    admin_has_no_bank_account:
+      "Vous ne pouvez pas ajouter une option de paiement car l'administrateur n'a pas de compte banquaire relié à son compte",
     admins: 'Administrateurs',
     adress: 'Addresse',
     all_steps_completed: 'Tous les étapes sont complétées',

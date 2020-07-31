@@ -10,6 +10,7 @@ import moment from 'moment';
 import { Store, ACTION_ENUM } from '../../../../Store';
 import styles from './AddPaymentOption.module.css';
 import LoadingSpinner from '../../LoadingSpinner';
+import { formatRoute } from '../../../../actions/goTo';
 
 export default function AddPaymentOption(props) {
   const { fields, onAdd: onAddProps } = props;
@@ -69,6 +70,15 @@ export default function AddPaymentOption(props) {
     return isValid;
   };
 
+  const hasBankAccount = async () => {
+    const res = await api(
+      formatRoute('/api/stripe/eventHasBankAccount', null, {
+        id: eventId,
+      }),
+    );
+    return res.data;
+  };
+
   const onAdd = async values => {
     setIsLoading(true);
     const name = values[0].value;
@@ -80,6 +90,16 @@ export default function AddPaymentOption(props) {
     const start = new Date(`${startDate} ${startTime}`).getTime();
     const end = new Date(`${endDate} ${endTime}`).getTime();
 
+    if (!(await hasBankAccount())) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('admin_has_no_bank_account'),
+        severity: 'error',
+        length: 10000,
+      });
+      setIsLoading(false);
+      return;
+    }
     const res = await api(`/api/entity/option`, {
       method: 'POST',
       body: JSON.stringify({
@@ -90,8 +110,16 @@ export default function AddPaymentOption(props) {
         startTime: start,
       }),
     });
-
-    onAddProps(res.status);
+    if (res.status === 400) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('payment_option_exist'),
+        severity: 'error',
+      });
+      setIsLoading(false);
+      return;
+    }
+    onAddProps();
     setIsLoading(false);
   };
 
