@@ -8,12 +8,9 @@ import Tag from '../Tag';
 import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
-import {
-  ENTITIES_ROLE_ENUM,
-  REGISTRATION_STATUS_ENUM,
-} from '../../../../../common/enums';
+import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 
-const getEvent = async eventId => {
+const getEntity = async eventId => {
   const { data } = await api(
     formatRoute('/api/entity', null, { id: eventId }),
   );
@@ -22,11 +19,12 @@ const getEvent = async eventId => {
 
 export default function MyRosterCard(props) {
   const { roster } = props;
-  const { position = 0, name = 'Name', players = [] } = roster;
+  const { position, name, players } = roster;
   const { id: eventId } = useParams();
+  const { role, registrationStatus, teamId } = roster;
 
   const [expanded, setExpanded] = useState(true);
-  const [role, setRole] = useState(ENTITIES_ROLE_ENUM.VIEWER);
+
   const [event, setEvent] = useState({});
   const [team, setTeam] = useState({});
 
@@ -34,32 +32,19 @@ export default function MyRosterCard(props) {
     setExpanded(!expanded);
   };
 
-  const onNameClick = () => {
-    //TODO: get entityId of the team from rosterId
-    //goTo(formatRoute(ROUTES.entity, {id: entityId}));
-    console.log('name CLICK');
-  };
-
   const getData = async () => {
-    const event = await getEvent(eventId);
+    const event = await getEntity(eventId);
     setEvent(event);
-    //setRole(event.role);
+    getTeam();
   };
 
-  const getRole = () => {
-    //TODO: Api call to know if you are part of the roster (EventAdmin, RosterAdmin, RosterMember, Viewer)
-    setRole(ENTITIES_ROLE_ENUM.ADMIN);
-  };
-
-  const getTeam = () => {
-    //TODO: Api call to get team info (avatar and teamId)
-    setTeam({ photoUrl: '', initials: 'AL' });
+  const getTeam = async () => {
+    const team = await getEntity(teamId);
+    setTeam(team);
   };
 
   useEffect(() => {
     getData();
-    getRole();
-    getTeam();
   }, []);
 
   if (role == ENTITIES_ROLE_ENUM.ADMIN) {
@@ -84,7 +69,7 @@ export default function MyRosterCard(props) {
               </div>
             </div>
             <div className={styles.pod}>
-              <Tag type={REGISTRATION_STATUS_ENUM.PENDING} />
+              <Tag type={registrationStatus} />
             </div>
             <div className={styles.expand} onClick={onExpand}>
               <Icon
@@ -94,7 +79,7 @@ export default function MyRosterCard(props) {
               />
             </div>
             <div className={styles.expanded} hidden={!expanded}>
-              <Players players={players} isAdmin />
+              <Players players={players} role={role} />
             </div>
           </div>
         </div>

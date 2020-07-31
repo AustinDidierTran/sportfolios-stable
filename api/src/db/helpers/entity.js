@@ -1,7 +1,7 @@
 const knex = require('../connection');
 
 const { getMembershipName } = require('../../../../common/functions');
-
+const { getBasicUserInfoFromId } = require('./index');
 const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
@@ -537,6 +537,11 @@ async function getAllRegistered(eventId, userId) {
       const players = await getRoster(t.roster_id);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.roster_id);
+      const role = await getRole(t.roster_id, userId);
+      const registrationStatus = await getRegistrationStatus(
+        eventId,
+        t.roster_id,
+      );
       return {
         name: entity.name,
         surname: entity.surname,
@@ -549,6 +554,8 @@ async function getAllRegistered(eventId, userId) {
         players,
         captains,
         option,
+        role,
+        registrationStatus,
       };
     }),
   );
@@ -566,6 +573,14 @@ async function getRemainingSpots(eventId) {
   return event.maximum_spots - Number(count);
 }
 
+async function getRegistrationStatus(eventId, rosterId) {
+  const [registration] = await knex('event_rosters')
+    .select('registration_status')
+    .where({ roster_id: rosterId, event_id: eventId });
+
+  return registration.registration_status;
+}
+
 async function getRoster(rosterId) {
   const roster = await knex('team_players')
     .select('*')
@@ -578,6 +593,19 @@ async function getRoster(rosterId) {
   }));
 
   return props;
+}
+
+async function getRole(rosterId, userId) {
+  const basicInfo = await getBasicUserInfoFromId(userId);
+
+  const personId = basicInfo.persons[0].entity_id;
+
+  const [role] = await knex('team_players')
+    .select('*')
+    .where({ roster_id: rosterId, person_id: personId });
+
+  if (!role) return ENTITIES_ROLE_ENUM.VIEWER;
+  return role;
 }
 
 const getRosterInvoiceItem = async body => {

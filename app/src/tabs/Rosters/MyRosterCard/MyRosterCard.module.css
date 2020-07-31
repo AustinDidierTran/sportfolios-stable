@@ -11,9 +11,10 @@
   flex: 1 1 auto;
 
   display: grid;
-  grid-template-columns: 50px 1fr 50px 50px;
+  grid-template-columns: 50px 1fr 75px 50px;
   grid-template-areas: 'position title pod expand' 'expanded expanded expanded expanded';
 
+  align-content: center !important;
   justify-content: center;
 }
 
@@ -59,6 +60,10 @@
 
 .expand {
   grid-area: expand;
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
 }
 
 .expanded {

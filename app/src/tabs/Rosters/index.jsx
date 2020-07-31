@@ -8,6 +8,7 @@ import styles from './Rosters.module.css';
 
 import MyRoster from './MyRoster';
 import Rosters from './Rosters';
+import { ENTITIES_ROLE_ENUM } from '../../Store';
 
 const getRosters = async eventId => {
   const { data } = await api(
@@ -23,12 +24,21 @@ export default function TabRosters() {
   const [rosters, setRosters] = useState([]);
   const [myRoster, setMyRoster] = useState({});
 
+  const getMyRoster = rosters => {
+    //TODO: Now, only roster admins can see this, need to add players too.
+    rosters.forEach((r, index) => {
+      if (r.role == ENTITIES_ROLE_ENUM.ADMIN) {
+        const myRoster = { ...rosters[index], position: index + 1 };
+        setMyRoster(myRoster);
+        return;
+      }
+    });
+  };
+
   const getData = async () => {
     const rosters = await getRosters(eventId);
     setRosters(rosters);
-    //TODO: Find which one is my roster
-    const myIndex = 5;
-    setMyRoster({ ...rosters[myIndex], position: myIndex + 1 });
+    getMyRoster(rosters);
   };
 
   useEffect(() => {
@@ -38,7 +48,7 @@ export default function TabRosters() {
   return (
     <div className={styles.contain}>
       <div className={styles.myRoster}>
-        <MyRoster roster={myRoster} />
+        {myRoster && myRoster.name && <MyRoster roster={myRoster} />}
       </div>
       <div className={styles.rosters}>
         <Rosters rosters={rosters} />

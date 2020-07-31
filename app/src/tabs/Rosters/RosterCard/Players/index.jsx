@@ -4,7 +4,7 @@ import Tag from '../../Tag';
 import { ENTITIES_ROLE_ENUM } from '../../../../Store';
 
 export default function Players(props) {
-  const { players, role = ENTITIES_ROLE_ENUM.VIEWER } = props;
+  const { players, role } = props;
   const [playersUpdated, setPlayersUpdated] = useState([]);
 
   const getData = async () => {
@@ -19,17 +19,16 @@ export default function Players(props) {
     getData();
   }, []);
 
-  if (role == ENTITIES_ROLE_ENUM.ADMIN) {
+  if (role == ENTITIES_ROLE_ENUM.VIEWER) {
     return (
       <div className={styles.card}>
         {playersUpdated &&
-          playersUpdated.map(player => {
+          playersUpdated.map((player, index) => {
             return (
               <div className={styles.player}>
-                <div className={styles.position}>{`#${player.number ||
-                  0}`}</div>
+                <div className={styles.position}>{`${index}`}</div>
                 <div className={styles.name}>
-                  {(player && player.name) || 'MY PLAYER'}
+                  {player && player.name}
                 </div>
                 <div className={styles.pod}>
                   <Tag type={player.status} />
@@ -44,13 +43,11 @@ export default function Players(props) {
   return (
     <div className={styles.card}>
       {playersUpdated &&
-        playersUpdated.map(player => {
+        playersUpdated.map((player, index) => {
           return (
             <div className={styles.player}>
-              <div className={styles.position}>{`#${0}`}</div>
-              <div className={styles.name}>
-                {(player && player.name) || 'MY PLAYER'}
-              </div>
+              <div className={styles.position}>{`${index}`}</div>
+              <div className={styles.name}>{player.name}</div>
             </div>
           );
         })}

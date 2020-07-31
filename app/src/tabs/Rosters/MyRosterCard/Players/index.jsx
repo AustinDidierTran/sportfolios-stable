@@ -1,23 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Players.module.css';
 import Tag from '../../Tag';
+import { ENTITIES_ROLE_ENUM } from '../../../../Store';
 
 export default function Players(props) {
-  const { players, isAdmin } = props;
+  const { players, role } = props;
+  const [playersUpdated, setPlayersUpdated] = useState([]);
 
-  if (isAdmin) {
+  const getData = async () => {
+    const playersUpdated = players.map(p => {
+      //TODO: Api call to know if player has an account
+      return { ...p, status: 'registered' };
+    });
+    setPlayersUpdated(playersUpdated);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  if (role == ENTITIES_ROLE_ENUM.ADMIN) {
     return (
       <div className={styles.card}>
-        {players &&
-          players.map(player => {
+        {playersUpdated &&
+          playersUpdated.map((player, index) => {
             return (
               <div className={styles.player}>
-                <div className={styles.position}>{`#${0}`}</div>
+                <div className={styles.position}>{`${index}`}</div>
                 <div className={styles.name}>
-                  {(player && player.name) || 'MY PLAYER'}
+                  {player && player.name}
                 </div>
                 <div className={styles.pod}>
-                  <Tag type={'registered'} />
+                  <Tag type={player.status} />
                 </div>
               </div>
             );
@@ -28,14 +42,12 @@ export default function Players(props) {
 
   return (
     <div className={styles.card}>
-      {players &&
-        players.map(player => {
+      {playersUpdated &&
+        playersUpdated.map((player, index) => {
           return (
             <div className={styles.player}>
-              <div className={styles.position}>{`#${0}`}</div>
-              <div className={styles.name}>
-                {(player && player.name) || 'MY PLAYER'}
-              </div>
+              <div className={styles.position}>{`${index}`}</div>
+              <div className={styles.name}>{player.name}</div>
             </div>
           );
         })}

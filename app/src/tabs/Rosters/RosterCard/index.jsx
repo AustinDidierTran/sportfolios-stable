@@ -8,14 +8,11 @@ import Tag from '../Tag';
 import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
-import {
-  ENTITIES_ROLE_ENUM,
-  REGISTRATION_STATUS_ENUM,
-} from '../../../../../common/enums';
+import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 
-function isEven(n) {
+const isEven = n => {
   return n % 2 == 0;
-}
+};
 
 const getEvent = async eventId => {
   const { data } = await api(
@@ -31,16 +28,12 @@ export default function RosterCard(props) {
     expandedPosition,
     setExpandedPosition,
   } = props;
-  const { position = 0, name = 'name', players = [] } = roster;
+  const { position, name, players } = roster;
 
   const { id: eventId } = useParams();
   const [expanded, setExpanded] = useState(initialExpanded);
   const [event, setEvent] = useState({});
-  const [role, setRole] = useState(ENTITIES_ROLE_ENUM.VIEWER);
-
-  const [status, setStatus] = useState(
-    REGISTRATION_STATUS_ENUM.PENDING,
-  );
+  const { role, registrationStatus } = roster;
 
   const onExpand = () => {
     setExpandedPosition(oldPosition =>
@@ -48,29 +41,13 @@ export default function RosterCard(props) {
     );
   };
 
-  // const onNameClick = () => {
-  //   //TODO: Redirect to team page.
-  // };
-
   const getData = async () => {
     const event = await getEvent(eventId);
     setEvent(event);
   };
 
-  const getRole = () => {
-    //TODO: Api call to know if you are part of the roster (EventAdmin, RosterAdmin, RosterMember, Viewer)
-    setRole(ENTITIES_ROLE_ENUM.ADMIN);
-  };
-
-  const getStatus = () => {
-    //TODO: Api call to get status of team registration
-    setStatus(REGISTRATION_STATUS_ENUM.ACCEPTED);
-  };
-
   useEffect(() => {
     getData();
-    getRole();
-    getStatus();
   }, []);
 
   useEffect(() => {
@@ -98,7 +75,7 @@ export default function RosterCard(props) {
               <Typography>{name.toUpperCase()}</Typography>
             </div>
             <div className={styles.pod}>
-              <Tag type={status} />
+              <Tag type={registrationStatus} />
             </div>
             <div className={styles.expand} onClick={onExpand}>
               <Icon
