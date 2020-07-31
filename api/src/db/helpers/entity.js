@@ -528,16 +528,15 @@ async function getAllRegistered(eventId, userId) {
   return props;
 }
 async function getRemainingSpots(eventId) {
-  const teams = await knex('event_rosters')
-    .select('team_id')
+  const [{ count }] = await knex('event_rosters')
+    .count('team_id')
     .where({ event_id: eventId });
-
-  const registered = teams.length;
 
   const [event] = await knex('events')
     .select('maximum_spots')
     .where({ id: eventId });
-  return event.maximum_spots - registered;
+
+  return event.maximum_spots - Number(count);
 }
 
 async function getRoster(rosterId) {

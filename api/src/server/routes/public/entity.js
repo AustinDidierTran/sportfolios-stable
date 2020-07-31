@@ -63,12 +63,12 @@ router.get(`${BASE_URL}/allTeamsRegistered`, async ctx => {
 });
 
 router.get(`${BASE_URL}/remainingSpots`, async ctx => {
-  const entity = await queries.getRemainingSpots(ctx.query.id);
+  const remaining = await queries.getRemainingSpots(ctx.query.id);
 
-  if (entity) {
+  if (remaining) {
     ctx.body = {
       status: 'success',
-      data: entity,
+      data: remaining,
     };
   } else {
     ctx.status = 404;
