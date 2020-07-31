@@ -280,7 +280,7 @@ const sendReceiptEmail = async (body, userId) => {
   return sendReceiptEmailHelper({ email, receipt });
 };
 
-const getMetadata = async stripePriceId => {
+const getMetadata = async (stripePriceId, cartItemId) => {
   const [stripePrice] = await knex('stripe_price')
     .select('*')
     .where({ stripe_price_id: stripePriceId });
@@ -291,7 +291,7 @@ const getMetadata = async stripePriceId => {
 
   const [cartItem] = await knex('cart_items')
     .select('*')
-    .where({ stripe_price_id: stripePriceId });
+    .where({ id: cartItemId });
 
   const metadata = {
     ...cartItem.metadata,
@@ -317,7 +317,7 @@ const checkout = async (body, userId) => {
     const invoicesAndMetadatas = await Promise.all(
       prices.map(async price => {
         const stripePriceId = price.stripe_price_id;
-        const metadata = await getMetadata(stripePriceId);
+        const metadata = await getMetadata(stripePriceId, price.id);
         const invoiceItem = await createInvoiceItem(
           { price: stripePriceId, metadata, paymentMethodId },
           userId,
