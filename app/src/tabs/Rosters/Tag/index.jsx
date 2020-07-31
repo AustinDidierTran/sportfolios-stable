@@ -3,6 +3,7 @@ import styles from './Tag.module.css';
 
 import { Icon } from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
+import { TAG_TYPE_ENUM } from '../../../../../common/enums';
 
 export default function Tag(props) {
   const { type } = props;
@@ -13,24 +14,24 @@ export default function Tag(props) {
 
   const selectTag = () => {
     switch (type) {
-      case 'accepted':
+      case TAG_TYPE_ENUM.ACCEPTED:
         setName('accepted');
         setBackgroundColor('#4fc947');
         setColor('#fff');
         break;
 
-      case 'pending':
+      case TAG_TYPE_ENUM.PENDING:
         setName('pending');
         setBackgroundColor('#ffca61');
         setColor('#fff');
         break;
 
-      case 'registered':
+      case TAG_TYPE_ENUM.REGISTERED:
         setBackgroundColor('#4fc947');
         setIcon('FiberManualRecord');
         break;
 
-      case 'unregistered':
+      case TAG_TYPE_ENUM.UNREGISTERED:
         setBackgroundColor('#ff723b');
         setIcon('FiberManualRecord');
         break;
@@ -47,9 +48,11 @@ export default function Tag(props) {
     selectTag();
   }, []);
 
-  return icon ? (
-    <Icon icon={icon} color={backgroundColor} />
-  ) : (
+  if (icon) {
+    return <Icon icon={icon} color={backgroundColor} />;
+  }
+
+  return (
     <div
       className={styles.tag}
       style={{ backgroundColor: backgroundColor }}

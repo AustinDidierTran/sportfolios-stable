@@ -26,6 +26,7 @@ export default function TabRosters() {
 
   const getMyRoster = rosters => {
     //TODO: Now, only roster admins can see this, need to add players too.
+    //TODO: Support for multiple rosters
     rosters.forEach((r, index) => {
       if (r.role == ENTITIES_ROLE_ENUM.ADMIN) {
         const myRoster = { ...rosters[index], position: index + 1 };

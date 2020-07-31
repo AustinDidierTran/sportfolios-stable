@@ -22,6 +22,14 @@ const LIST_ROW_TYPE_ENUM = {
   MEMBERSHIP_DETAIL: 5,
 };
 
+const TAG_TYPE_ENUM = {
+  ACCEPTED: 'accepted',
+  PENDING: 'pending',
+  REGISTERED: 'registered',
+  UNREGISTERED: 'unregistered',
+  DEFAULT: 'default',
+};
+
 const MEMBERSHIP_LENGTH_ENUM = {
   ONE_MONTH: 1,
   SIX_MONTH: 2,
@@ -154,4 +162,5 @@ module.exports = {
   STRIPE_ERROR_ENUM,
   STRIPE_STATUS_ENUM,
   VIEW_ENUM,
+  TAG_TYPE_ENUM,
 };
