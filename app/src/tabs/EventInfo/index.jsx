@@ -47,6 +47,8 @@ export default function TabEventInfo() {
   const [isFull, setIsFull] = useState(false);
   const [event, setEvent] = useState({});
   const [canRegister, setCanRegister] = useState(false);
+  const [remainingSpots, setRemainingSpots] = useState(null);
+  const [color, setColor] = useState('textSecondary');
 
   const goToRegistration = () => {
     if (isAuthenticated) {
@@ -97,6 +99,31 @@ export default function TabEventInfo() {
     const endsDate = options.map(option => moment(option.end_time));
     return formatDate(moment.max(endsDate));
   }, [options]);
+
+  useEffect(() => {
+    getColor();
+  }, [event]);
+
+  const getColor = () => {
+    if (remainingSpots <= Math.ceil(event.maximumSpots * 0.2)) {
+      setColor('secondary');
+    } else {
+      setColor('textSecondary');
+    }
+  };
+
+  useEffect(() => {
+    getRemainingSpots();
+  }, [event]);
+
+  const getRemainingSpots = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/remainingSpots', null, {
+        id,
+      }),
+    );
+    setRemainingSpots(data);
+  };
 
   useEffect(() => {
     getIsFull();
@@ -242,12 +269,9 @@ export default function TabEventInfo() {
               {event.location || 'Sherbrooke'}
             </Typography>
             {event.maximumSpots ? (
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                component="p"
-              >
-                {event.maximumSpots} {t('place_available')}
+              <Typography variant="body2" color={color} component="p">
+                {remainingSpots}&nbsp;
+                {t('places_left')}
               </Typography>
             ) : (
               <></>

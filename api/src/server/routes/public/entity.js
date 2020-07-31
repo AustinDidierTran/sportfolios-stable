@@ -62,6 +62,23 @@ router.get(`${BASE_URL}/allTeamsRegistered`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/remainingSpots`, async ctx => {
+  const remaining = await queries.getRemainingSpots(ctx.query.id);
+
+  if (remaining) {
+    ctx.body = {
+      status: 'success',
+      data: remaining,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/getRoster`, async ctx => {
   const entity = await queries.getRoster(
     ctx.query.rosterId,

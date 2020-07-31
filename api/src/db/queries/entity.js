@@ -28,6 +28,7 @@ const {
   getMemberships: getMembershipsHelper,
   getRegistered: getRegisteredHelper,
   getAllRegistered: getAllRegisteredHelper,
+  getRemainingSpots: getRemainingSpotsHelper,
   getRoster: getRosterHelper,
   getEvent: getEventHelper,
   getGeneralInfos: getGeneralInfosHelper,
@@ -92,6 +93,9 @@ async function getRegistered(team_id, event_id) {
 
 async function getAllRegistered(eventId, userId) {
   return getAllRegisteredHelper(eventId, userId);
+}
+async function getRemainingSpots(eventId) {
+  return getRemainingSpotsHelper(eventId);
 }
 
 async function getRoster(rosterId, userId) {
@@ -385,6 +389,7 @@ module.exports = {
   getMemberships,
   getRegistered,
   getAllRegistered,
+  getRemainingSpots,
   getEvent,
   getGeneralInfos,
   getS3Signature,
