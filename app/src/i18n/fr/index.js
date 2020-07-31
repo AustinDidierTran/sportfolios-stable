@@ -9,7 +9,7 @@ export default {
     add_new_player: 'Ajouter un nouveau joueur',
     add_player_with_no_account: 'Ajouter un joueur sans compte',
     add_payment_method: 'Ajouter une option de paiement',
-    add_payment_options: 'Ajouter des options',
+    add_payment_options: 'Ajouter des options de paiements',
     add_to_cart: 'Ajouter au panier',
     add_existing_person: 'Ajouter une personne existante',
     add_non_existing_person: 'Ajouter une personne non existante',

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Paper, Card } from '../../../components/Custom';
-import { Container } from '../../../components/MUI';
+import { Container, Typography } from '../../../components/MUI';
 
 import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
@@ -18,9 +18,14 @@ export default function AddOptionsEvent() {
   const { id: eventId } = useParams();
 
   const [options, setOptions] = useState([]);
+  const [hasBankAccount, setHasBankAccount] = useState(false);
 
   useEffect(() => {
     getOptions();
+  }, [eventId]);
+
+  useEffect(() => {
+    getHasBankAccount();
   }, [eventId]);
 
   const getOptions = async () => {
@@ -45,6 +50,15 @@ export default function AddOptionsEvent() {
       },
     );
     getOptions();
+  };
+
+  const getHasBankAccount = async () => {
+    const res = await api(
+      formatRoute('/api/stripe/eventHasBankAccount', null, {
+        id: eventId,
+      }),
+    );
+    setHasBankAccount(res.data);
   };
 
   const fields = [
@@ -81,6 +95,16 @@ export default function AddOptionsEvent() {
       initialValue: '23:59',
     },
   ];
+
+  if (!hasBankAccount) {
+    return (
+      <Paper title={t('add_payment_options')}>
+        <Container>
+          <Typography>{t('admin_has_no_bank_account')}</Typography>
+        </Container>
+      </Paper>
+    );
+  }
 
   return (
     <Paper title={t('add_payment_options')}>
