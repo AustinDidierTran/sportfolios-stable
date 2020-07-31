@@ -111,6 +111,8 @@ export default {
     no_notifications: 'No Notifications',
     no_notifications_message: 'Come back later.',
     no_roster: 'No roster',
+    no_remaining_spots:
+      'Sorry, your registration has been refused. Event is now full and there are no available spots left.',
     no_teams_registered: 'No teams registered',
     on_going_events: 'On Going Events',
     only_available_on_desktop: 'Only available on desktop',

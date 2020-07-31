@@ -22,21 +22,17 @@ export default function Organization(props) {
   }, [basicInfos]);
 
   const [eventState, setEventState] = useState(
-    query.tab || TABS_ENUM.ABOUT,
+    query.tab || TABS_ENUM.EVENTS,
   );
 
   const states = TabsGenerator({
-    list: [
-      TABS_ENUM.EVENTS,
-      // TABS_ENUM.GENERAL,
-      // TABS_ENUM.ABOUT,
-      // TABS_ENUM.SHOP,
-      TABS_ENUM.SETTINGS,
-    ],
+    list: [TABS_ENUM.EVENTS, TABS_ENUM.SETTINGS],
     role: basicInfos.role,
   });
 
-  const OpenTab = states.find(s => s.value == eventState).component;
+  const OpenTab =
+    states.find(s => s.value == eventState).component ||
+    states.find(s => s.value === TABS_ENUM.EVENTS).component;
 
   const onClick = s => {
     goTo(ROUTES.entity, { id }, { tab: s.value });

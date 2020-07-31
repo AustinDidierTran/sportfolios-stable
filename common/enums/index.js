@@ -50,6 +50,10 @@ const REGISTRATION_STATUS_ENUM = {
   REFUSED: 'refused',
 };
 
+const REJECTION_ENUM = {
+  NO_REMAINING_SPOTS: 'no_remaining_spots',
+};
+
 const VIEW_ENUM = {
   MENU: 'menu',
   HOME: '',
@@ -125,6 +129,7 @@ const LOGO_ENUM = {
 };
 
 module.exports = {
+  REJECTION_ENUM,
   REGISTRATION_STATUS_ENUM,
   CARD_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,

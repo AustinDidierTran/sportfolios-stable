@@ -2,14 +2,17 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { MessageAndButton } from '../../components/Custom';
-import { REGISTRATION_STATUS_ENUM } from '../../../../common/enums';
-import { useParams } from 'react-router-dom';
+import {
+  REGISTRATION_STATUS_ENUM,
+  REJECTION_ENUM,
+} from '../../../../common/enums';
 import { goTo, ROUTES } from '../../actions/goTo';
+import { useQuery } from '../../hooks/queries';
 
 export default function RegistrationStatus() {
   const { t } = useTranslation();
 
-  const { status } = useParams();
+  const { reason, status } = useQuery();
 
   const goToCart = () => {
     goTo(ROUTES.cart);
@@ -39,12 +42,21 @@ export default function RegistrationStatus() {
       };
       break;
     case REGISTRATION_STATUS_ENUM.REFUSED:
-      values = {
-        message: t('registration_refused'),
-        onClick: returnHome,
-        button: t('Home'),
-        endIcon: 'Home',
-      };
+      if (reason === REJECTION_ENUM.NO_REMAINING_SPOTS) {
+        values = {
+          message: t('no_remaining_spots'),
+          onClick: returnHome,
+          button: t('Home'),
+          endIcon: 'Home',
+        };
+      } else {
+        values = {
+          message: t('registration_refused'),
+          onClick: returnHome,
+          button: t('Home'),
+          endIcon: 'Home',
+        };
+      }
       break;
     default:
       values = {

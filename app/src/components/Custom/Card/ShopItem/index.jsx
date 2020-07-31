@@ -9,7 +9,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import { useParams } from 'react-router-dom';
 import { goTo, ROUTES } from '../../../../actions/goTo';
 
-export default function Item(props) {
+export default function ShopItem(props) {
   const { id } = useParams();
   const {
     label: name,

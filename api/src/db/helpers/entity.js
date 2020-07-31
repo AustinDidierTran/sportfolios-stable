@@ -827,14 +827,14 @@ async function addMembership(
   return res;
 }
 
-async function addTeamToEvent(
-  teamId,
-  eventId,
-  invoiceItemId,
-  status,
-  registration_status,
-  paymentOption,
-) {
+async function addTeamToEvent(body) {
+  const {
+    teamId,
+    eventId,
+    status,
+    registrationStatus,
+    paymentOption,
+  } = body;
   return knex.transaction(async trx => {
     const [roster] = await knex('team_rosters')
       .insert({ team_id: teamId })
@@ -846,30 +846,28 @@ async function addTeamToEvent(
         roster_id: roster.id,
         team_id: teamId,
         event_id: eventId,
-        invoice_item_id: invoiceItemId,
         status,
-        registration_status,
+        registration_status: registrationStatus,
         payment_option_id: paymentOption,
       })
       .returning('*')
       .transacting(trx);
-    return res;
+    return res.roster_id;
   });
 }
 
 async function addRoster(rosterId, roster) {
-  const res = await Promise.all(
-    roster.map(async person => {
-      await knex('team_players')
-        .insert({
-          roster_id: rosterId,
-          person_id: person.person_id,
-          name: person.name,
-        })
-        .returning('*');
-    }),
-  );
-  return res;
+  const players = await knex('team_players')
+    .insert(
+      roster.map(person => ({
+        roster_id: rosterId,
+        person_id: person.person_id,
+        name: person.name,
+      })),
+    )
+    .returning('*');
+
+  return players;
 }
 
 async function updateMember(

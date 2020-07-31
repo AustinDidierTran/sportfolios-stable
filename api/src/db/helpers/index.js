@@ -147,8 +147,8 @@ const getBasicUserInfoFromId = async user_id => {
 };
 
 const getEmailsFromUserId = async userId => {
-  if (!user_id) {
-    return null;
+  if (!userId) {
+    return [];
   }
 
   const emails = await knex('user_email')

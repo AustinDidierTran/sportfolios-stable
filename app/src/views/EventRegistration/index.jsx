@@ -16,7 +16,6 @@ import { formatRoute, ROUTES, goTo } from '../../actions/goTo';
 import { useTranslation } from 'react-i18next';
 import {
   INVOICE_STATUS_ENUM,
-  REGISTRATION_STATUS_ENUM,
   GLOBAL_ENUM,
 } from '../../../../common/enums';
 import { formatPrice } from '../../utils/stringFormats';
@@ -24,6 +23,7 @@ import styles from './EventRegistration.module.css';
 import { Typography } from '../../components/MUI';
 import { Container } from '@material-ui/core';
 import { Store, SCREENSIZE_ENUM, ACTION_ENUM } from '../../Store';
+import { ERROR_ENUM, errors } from '../../../../common/errors';
 
 const getEvent = async eventId => {
   const { data } = await api(
@@ -128,48 +128,30 @@ export default function EventRegistration() {
       team.id = tempTeam.data.id;
     }
     //Check if teams is accepted here
-    const status = REGISTRATION_STATUS_ENUM.ACCEPTED;
 
-    if (
-      status === REGISTRATION_STATUS_ENUM.PENDING ||
-      status === REGISTRATION_STATUS_ENUM.ACCEPTED
+    const { status, data } = await api('/api/entity/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        teamId: team.id,
+        eventId: eventId,
+        paymentOption,
+        roster,
+        status: INVOICE_STATUS_ENUM.OPEN,
+      }),
+    });
+
+    if (status === 200) {
+      goTo(ROUTES.registrationStatus, null, {
+        status: data.status,
+      });
+    } else if (
+      status === errors[ERROR_ENUM.REGISTRATION_ERROR].code
     ) {
-      const { data } = await api('/api/entity/register', {
-        method: 'POST',
-        body: JSON.stringify({
-          team_id: team.id,
-          event_id: eventId,
-          invoice_id: null,
-          status: INVOICE_STATUS_ENUM.OPEN,
-          registration_status: status,
-          paymentOption,
-        }),
+      goTo(ROUTES.registrationStatus, null, {
+        status: data.status,
+        reason: data.reason,
       });
-
-      await api('/api/entity/roster', {
-        method: 'POST',
-        body: JSON.stringify({
-          rosterId: data.roster_id,
-          roster,
-        }),
-      });
-      if (status === REGISTRATION_STATUS_ENUM.ACCEPTED) {
-        await api('/api/shop/addCartItem', {
-          method: 'POST',
-          body: JSON.stringify({
-            stripePriceId: paymentOption,
-            metadata: {
-              sellerId: eventId,
-              buyerId: team.id,
-              rosterId: data.roster_id,
-              team,
-            },
-          }),
-        });
-      }
     }
-
-    goTo(ROUTES.registrationStatus, { status });
   };
 
   const handleNext = activeStep => {

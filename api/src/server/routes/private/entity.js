@@ -1,5 +1,12 @@
 const Router = require('koa-router');
 const queries = require('../../../db/queries/entity');
+const {
+  REGISTRATION_STATUS_ENUM,
+} = require('../../../../../common/enums');
+const {
+  ERROR_ENUM,
+  errors,
+} = require('../../../../../common/errors');
 
 const router = new Router();
 const BASE_URL = '/api/entity';
@@ -421,15 +428,22 @@ router.post(`${BASE_URL}/membership`, async ctx => {
 });
 
 router.post(`${BASE_URL}/register`, async ctx => {
-  const entity = await queries.addTeamToEvent(
+  const { status, reason } = await queries.addTeamToEvent(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  if (entity) {
-    ctx.status = 201;
+
+  if (status === REGISTRATION_STATUS_ENUM.REFUSED) {
+    ctx.status = errors[ERROR_ENUM.REGISTRATION_ERROR].code;
+    ctx.body = {
+      status: 'error',
+      data: { status, reason },
+    };
+  } else if (status) {
+    ctx.status = 200;
     ctx.body = {
       status: 'success',
-      data: entity,
+      data: { status },
     };
   } else {
     ctx.status = 404;
