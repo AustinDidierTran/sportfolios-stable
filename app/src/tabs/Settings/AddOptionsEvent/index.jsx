@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import {
-  Paper,
-  Card,
-  LoadingSpinner,
-} from '../../../components/Custom';
-import { Container } from '../../../components/MUI';
+import { Paper, Card } from '../../../components/Custom';
+import { Container, Typography } from '../../../components/MUI';
 
 import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
@@ -22,11 +18,14 @@ export default function AddOptionsEvent() {
   const { id: eventId } = useParams();
 
   const [options, setOptions] = useState([]);
-
-  const [isLoading, setIsLoading] = useState(true);
+  const [hasBankAccount, setHasBankAccount] = useState(false);
 
   useEffect(() => {
     getOptions();
+  }, [eventId]);
+
+  useEffect(() => {
+    getHasBankAccount();
   }, [eventId]);
 
   const getOptions = async () => {
@@ -35,16 +34,9 @@ export default function AddOptionsEvent() {
     );
     const dataOptions = data.map(d => Object.values(d));
     setOptions(dataOptions);
-    setIsLoading(false);
   };
 
-  const onAdd = async status => {
-    if (status === 400) {
-      setDisplay(t('payment_option_exist'));
-      setOpen(true);
-      setIsLoading(false);
-      return;
-    }
+  const onAdd = () => {
     getOptions();
   };
 
@@ -59,6 +51,16 @@ export default function AddOptionsEvent() {
     );
     getOptions();
   };
+
+  const getHasBankAccount = async () => {
+    const res = await api(
+      formatRoute('/api/stripe/eventHasBankAccount', null, {
+        id: eventId,
+      }),
+    );
+    setHasBankAccount(res.data);
+  };
+
   const fields = [
     {
       display: t('name'),
@@ -94,8 +96,14 @@ export default function AddOptionsEvent() {
     },
   ];
 
-  if (isLoading) {
-    return <LoadingSpinner />;
+  if (!hasBankAccount) {
+    return (
+      <Paper title={t('add_payment_options')}>
+        <Container>
+          <Typography>{t('admin_has_no_bank_account')}</Typography>
+        </Container>
+      </Paper>
+    );
   }
 
   return (

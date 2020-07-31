@@ -56,8 +56,7 @@ export default function AddPaymentOption(props) {
         }
       }
     });
-
-    if (start >= end) {
+    if (start.isAfter(end)) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('registration_closes_before_opening'),
@@ -90,8 +89,16 @@ export default function AddPaymentOption(props) {
         startTime: start,
       }),
     });
-
-    onAddProps(res.status);
+    if (res.status === 400) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('payment_option_exist'),
+        severity: 'error',
+      });
+      setIsLoading(false);
+      return;
+    }
+    onAddProps();
     setIsLoading(false);
   };
 

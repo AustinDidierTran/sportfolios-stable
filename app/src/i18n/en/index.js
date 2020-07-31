@@ -15,6 +15,8 @@ export default {
     add_existing_person: 'Add existing person',
     add_non_existing_person: 'Add non existing person',
     addperson: 'Add person',
+    admin_has_no_bank_account:
+      "You can't create a payment option if admin doesn't have a bank account",
     admin: 'Admin',
     admins: 'Admins',
     adress: 'Address',
