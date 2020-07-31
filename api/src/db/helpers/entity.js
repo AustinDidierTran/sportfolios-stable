@@ -216,6 +216,33 @@ async function getAllOwnedEntities(type, userId) {
   return res2;
 }
 
+async function getOwnedEvents(organizationId) {
+  const events = await knex('entities')
+    .select('id', 'type', 'name', 'photo_url')
+    .leftJoin(
+      'entities_name',
+      'entities.id',
+      '=',
+      'entities_name.entity_id',
+    )
+    .leftJoin(
+      'entities_photo',
+      'entities.id',
+      '=',
+      'entities_photo.entity_id',
+    )
+    .leftJoin(
+      'entities_role',
+      'entities.id',
+      '=',
+      'entities_role.entity_id',
+    )
+    .whereNull('deleted_at')
+    .where('entities_role.entity_id_admin', '=', organizationId)
+    .andWhere('entities_role.role', '=', ENTITIES_ROLE_ENUM.ADMIN)
+    .andWhere('entities.type', '=', GLOBAL_ENUM.EVENT);
+  return events;
+}
 async function getAllTypeEntities(type) {
   const entities = await knex('entities')
     .select('id', 'type', 'name', 'surname', 'photo_url')
@@ -956,6 +983,7 @@ module.exports = {
   deleteRegistration,
   getAllEntities,
   getAllOwnedEntities,
+  getOwnedEvents,
   getAllRolesEntity,
   getAllTypeEntities,
   getCreator,

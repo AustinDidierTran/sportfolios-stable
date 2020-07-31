@@ -4,23 +4,28 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './Events.module.css';
 import { goTo, ROUTES, formatRoute } from '../../actions/goTo';
-import { GLOBAL_ENUM } from '../../../../common/enums';
+import {
+  GLOBAL_ENUM,
+  ENTITIES_ROLE_ENUM,
+} from '../../../../common/enums';
 import UpcomingEvents from '../../views/Main/General/UpcomingEvents';
 import api from '../../actions/api';
-
-const getEntityEvents = async () => {
-  const { data } = await api(
-    formatRoute('/api/entity/allOwned', null, {
-      type: GLOBAL_ENUM.EVENT,
-    }),
-  );
-  return data || [];
-};
+import { useParams } from 'react-router-dom';
 
 export default function Events(props) {
   const { t } = useTranslation();
   const { basicInfos } = props;
   const [events, setEvents] = useState([]);
+  const { id } = useParams();
+
+  const getEntityEvents = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/ownedEvents', null, {
+        organizationId: id,
+      }),
+    );
+    return data || [];
+  };
 
   const handleClick = () => {
     goTo(ROUTES.create, null, {
@@ -38,6 +43,17 @@ export default function Events(props) {
     getData();
   }, []);
 
+  if (basicInfos.role === ENTITIES_ROLE_ENUM.VIEWER) {
+    return (
+      <div className={styles.div}>
+        <div className={styles.general}>
+          {events.map(e => (
+            <UpcomingEvents eventId={e.id} />
+          ))}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className={styles.div}>
       <div className={styles.buttonDiv}>
