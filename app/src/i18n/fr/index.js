@@ -20,6 +20,8 @@ export default {
       "Vous ne pouvez pas ajouter une option de paiement car l'administrateur n'a pas de compte banquaire relié à son compte",
     admins: 'Administrateurs',
     adress: 'Addresse',
+    are_you_sure_you_want_to_unregister_this_team:
+      'Êtes vous sur que vous voulez désinscrire cette équipe et la rembourser si elle à déjà payé?',
     all_steps_completed: 'Tous les étapes sont complétées',
     amount_to_pay: 'Montant à payer {{amount}}',
     app_role: 'App Role',
@@ -104,6 +106,7 @@ export default {
     new_email: 'Nouveau courriel',
     new_organization: 'Nouvelle Organisation',
     new_team: 'Nouvelle Équipe',
+    no: 'non',
     none: 'Aucun',
     no_payment_method:
       "Il n'y a actuellement aucune méthode de paiement",
@@ -191,6 +194,7 @@ export default {
     unsupported_language: 'Langue non supportée',
     valid_until: "Valide jusqu'au",
     viewer: 'Visiteur',
+    yes: 'oui',
     you_can_always_change_your_team_name_in_your_team_profile:
       "Si vous hésitez pour votre nom d'équipe, sachez que vous pouvez le changer plus tard dans votre profil d'équipe.",
     you_can_now_change_your_password:
