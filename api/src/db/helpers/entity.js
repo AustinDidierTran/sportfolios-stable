@@ -527,6 +527,18 @@ async function getAllRegistered(eventId, userId) {
   );
   return props;
 }
+async function getRemainingSpots(eventId) {
+  const teams = await knex('event_rosters')
+    .select('team_id')
+    .where({ event_id: eventId });
+
+  const registered = teams.length;
+
+  const [event] = await knex('events')
+    .select('maximum_spots')
+    .where({ id: eventId });
+  return event.maximum_spots - registered;
+}
 
 async function getRoster(rosterId) {
   const roster = await knex('team_players')
@@ -838,7 +850,7 @@ async function addTeamToEvent(
         invoice_item_id: invoiceItemId,
         status,
         registration_status,
-        paymentOption,
+        payment_option_id: paymentOption,
       })
       .returning('*')
       .transacting(trx);
@@ -956,6 +968,7 @@ module.exports = {
   getMemberships,
   getRegistered,
   getAllRegistered,
+  getRemainingSpots,
   getRoster,
   getEvent,
   getGeneralInfos,

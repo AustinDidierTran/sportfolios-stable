@@ -131,7 +131,7 @@ export default {
     payment_options: 'Payment options',
     person: 'Person',
     persons: 'Persons',
-    place_available: 'places available',
+    places_left: 'places left',
     player: 'Player',
     players: 'Players',
     pre_ranking: 'Pre-ranking',

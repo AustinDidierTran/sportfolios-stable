@@ -138,7 +138,7 @@ export default {
     payments: 'Paiements',
     person: 'Person',
     people: 'Personnes',
-    place_available: 'places disponibles',
+    places_left: 'places restantes',
     player: 'Joueur',
     players: 'Joueurs',
     private: 'Privée',
