@@ -23,6 +23,12 @@ async function sendMail({ email, subject, text }) {
     );
     return;
   }
+
+  const realSubject =
+    process.env.NODE_ENV === 'development'
+      ? `[DEV] | ${subject}`
+      : subject;
+
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
@@ -39,7 +45,7 @@ async function sendMail({ email, subject, text }) {
     await transporter.sendMail({
       from: YOUR_EMAIL_ADDRESS,
       to: email,
-      subject,
+      subject: realSubject,
       text,
     });
   } catch (err) {
