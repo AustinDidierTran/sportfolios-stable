@@ -20,6 +20,8 @@ export default {
     admin: 'Admin',
     admins: 'Admins',
     adress: 'Address',
+    are_you_sure_you_want_to_unregister_this_team:
+      'Are you sure you want to unregister this team and refund the team if the team has already paid?',
     cart: 'Cart',
     checkout: 'Checkout',
     all_steps_completed: 'All Steps Completed',
@@ -102,6 +104,7 @@ export default {
     new_organization: 'New organization',
     new_team: 'New team',
     next: 'Next',
+    no: 'no',
     none: 'None',
     no_payment_method: 'There is currently no payment method',
     no_account_signup: "Don't have an account? Signup!",
@@ -185,6 +188,7 @@ export default {
     unsupported_language: 'Unsupported language',
     valid_until: 'Valid until',
     viewer: 'Viewer',
+    yes: 'yes',
     you_can_always_change_your_team_name_in_your_team_profile:
       "If you are not sure about your team name, be aware that you can still change it later in your team's profile.",
     you_can_now_change_your_password:

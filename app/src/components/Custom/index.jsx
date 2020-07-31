@@ -6,6 +6,7 @@ export { default as Card } from './Card';
 export { default as CardMedia } from './CardMedia';
 export { default as Container } from './Container';
 export { default as ContainerBottomFixed } from './ContainerBottomFixed';
+export { default as Dialog } from './Dialog';
 export { default as EntityList } from './EntityList';
 export { default as FeatureContainer } from './FeatureContainer';
 export { default as Icon } from './Icon';

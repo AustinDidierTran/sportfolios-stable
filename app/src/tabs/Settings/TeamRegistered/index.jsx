@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-import { Paper, MailToButton } from '../../../components/Custom';
+import {
+  Paper,
+  MailToButton,
+  Dialog,
+} from '../../../components/Custom';
 import PaymentChip from './PaymentChip';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -16,7 +20,6 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
-import { useCallback } from 'react';
 import { unregister } from '../../../actions/api/helpers';
 import { IconButton } from '../../../components/Custom';
 import { formatPrice } from '../../../utils/stringFormats';
@@ -27,6 +30,12 @@ export default function TeamRegistered() {
 
   const [teams, setTeams] = useState([]);
   const [maximumSpots, setMaximumSpots] = useState();
+  const [open, setOpen] = useState(false);
+  const [rosterId, setRosterId] = useState(null);
+
+  const onClose = () => {
+    setOpen(false);
+  };
 
   const getTeams = async () => {
     const { data } = await api(
@@ -41,17 +50,19 @@ export default function TeamRegistered() {
     getTeams();
   }, [eventId]);
 
-  const onUnregisterTeam = useCallback(
-    async rosterId => {
-      const { data } = await unregister({
-        eventId,
-        rosterId,
-      });
+  const handleClick = rosterId => {
+    setOpen(true);
+    setRosterId(rosterId);
+  };
 
-      setTeams(data);
-    },
-    [eventId],
-  );
+  const onUnregisterTeam = async () => {
+    const { data } = await unregister({
+      eventId,
+      rosterId,
+    });
+    setTeams(data);
+    setOpen(false);
+  };
 
   const getMaximumSpots = async () => {
     const { data } = await api(
@@ -65,6 +76,17 @@ export default function TeamRegistered() {
   useEffect(() => {
     getMaximumSpots();
   }, [teams]);
+
+  const buttons = [
+    {
+      title: t('yes'),
+      onClick: onUnregisterTeam,
+    },
+    {
+      title: t('no'),
+      onClick: onClose,
+    },
+  ];
 
   const StyledTableCell = withStyles(theme => ({
     head: {
@@ -149,9 +171,7 @@ export default function TeamRegistered() {
                         variant="contained"
                         icon="MoneyOff"
                         tooltip={t('unregister')}
-                        onClick={() =>
-                          onUnregisterTeam(team.rosterId)
-                        }
+                        onClick={() => handleClick(team.rosterId)}
                         style={{ color: '#18b393' }}
                       />
                     </StyledTableCell>
@@ -168,6 +188,14 @@ export default function TeamRegistered() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Dialog
+        description={t(
+          'are_you_sure_you_want_to_unregister_this_team',
+        )}
+        onClose={onClose}
+        open={open}
+        buttons={buttons}
+      ></Dialog>
     </Paper>
   );
 }
