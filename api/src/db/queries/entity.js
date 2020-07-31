@@ -3,6 +3,7 @@ const {
   INVOICE_STATUS_ENUM,
   STRIPE_ERROR_ENUM,
   REGISTRATION_STATUS_ENUM,
+  REJECTION_ENUM,
 } = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
@@ -143,6 +144,13 @@ async function addTeamToEvent(body, userId) {
   }
 
   // Reject team if there is already too many registered teams
+  const remainingSpots = await getRemainingSpotsHelper(eventId);
+
+  if (remainingSpots < 1) {
+    const registrationStatus = REGISTRATION_STATUS_ENUM.REFUSED;
+    const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
+    return { status: registrationStatus, reason };
+  }
 
   // TODO: Validate status of team
   const registrationStatus = REGISTRATION_STATUS_ENUM.ACCEPTED;
@@ -201,7 +209,7 @@ async function addTeamToEvent(body, userId) {
   }
   // Handle other acceptation statuses
 
-  return registrationStatus;
+  return { status: registrationStatus };
 }
 
 async function getOptions(eventId) {

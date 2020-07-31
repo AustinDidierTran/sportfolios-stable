@@ -23,6 +23,7 @@ import styles from './EventRegistration.module.css';
 import { Typography } from '../../components/MUI';
 import { Container } from '@material-ui/core';
 import { Store, SCREENSIZE_ENUM, ACTION_ENUM } from '../../Store';
+import { ERROR_ENUM, errors } from '../../../../common/errors';
 
 const getEvent = async eventId => {
   const { data } = await api(
@@ -140,7 +141,16 @@ export default function EventRegistration() {
     });
 
     if (status === 200) {
-      goTo(ROUTES.registrationStatus, { status: data });
+      goTo(ROUTES.registrationStatus, null, {
+        status: data.status,
+      });
+    } else if (
+      status === errors[ERROR_ENUM.REGISTRATION_ERROR].code
+    ) {
+      goTo(ROUTES.registrationStatus, null, {
+        status: data.status,
+        reason: data.reason,
+      });
     }
   };
 

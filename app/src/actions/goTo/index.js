@@ -28,7 +28,7 @@ export const ROUTES = {
   orderProcessed: '/orderProcessed',
   organizationList: '/organizationList',
   recoveryEmail: '/recoveryEmail',
-  registrationStatus: '/registrationStatus/:status',
+  registrationStatus: '/registrationStatus',
   search: '/search',
   shopDetails: '/shopDetails/:id/:stripePriceId',
   signup: '/signup',
