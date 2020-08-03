@@ -1,6 +1,6 @@
 .infos {
   display: grid !important;
-  grid-template-columns: 8fr 2fr;
+  grid-template-columns: 5fr 2fr;
   grid-template-areas: 'name price' 'description description' 'cart cart';
   padding-bottom: 16px !important;
   border-bottom: 1px solid rgb(207, 207, 207);
@@ -10,6 +10,8 @@
 .name {
   grid-area: name;
   justify-self: start;
+  overflow: auto !important;
+  max-width: 100%;
 }
 
 .price {
@@ -19,6 +21,7 @@
 
 .description {
   grid-area: description;
+  overflow: auto !important;
 }
 
 .cart {
@@ -47,5 +50,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 300px;
+  height: 210px;
+}
+
+@media (min-width: 768px) {
+  .media {
+    height: 400px;
+  }
 }
