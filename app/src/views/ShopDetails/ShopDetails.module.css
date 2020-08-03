@@ -1,7 +1,7 @@
 .infos {
   display: grid !important;
-  grid-template-columns: 1fr 32px;
-  grid-template-areas: 'name price' 'description description' 'cart cart';
+  grid-template-columns: 1fr 128px;
+  grid-template-areas: 'name price' 'description description' 'quantity quantity' 'cart cart';
   padding-bottom: 0px !important;
 }
 
@@ -25,19 +25,14 @@
   display: flex;
 }
 
-.cartButton {
-  grid-area: cart;
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-}
-
 .cartButtonChildren {
   flex: 1 1 0;
   height: fit-content;
   width: fit-content;
+}
+
+.quantity {
+  grid-area: quantity;
 }
 
 .media {
