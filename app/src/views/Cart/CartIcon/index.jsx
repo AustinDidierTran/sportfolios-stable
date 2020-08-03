@@ -6,11 +6,18 @@ import { Badge } from '../../../components/MUI';
 
 export default function CartIcon() {
   const {
-    state: { cart },
+    state: {
+      cart: { items },
+    },
   } = useContext(Store);
 
+  const total =
+    items && items.length
+      ? items.reduce((prev, item) => prev + item.quantity, 0)
+      : null;
+
   return (
-    <Badge badgeContent={cart.length} color="error">
+    <Badge badgeContent={total} color="error">
       <IconButton
         color="inherit"
         icon="ShoppingCartOutlined"

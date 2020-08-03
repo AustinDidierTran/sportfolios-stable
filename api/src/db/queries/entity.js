@@ -56,7 +56,7 @@ const {
   sendTeamRegistrationEmailToAdmin,
   sendAcceptedRegistrationEmail,
 } = require('../../server/utils/nodeMailer');
-const { addCartItem } = require('../helpers/shop');
+const { addEventCartItem } = require('../helpers/shop');
 const { getEmailsFromUserId } = require('../helpers');
 
 async function isAllowed(entityId, userId, acceptationRole) {
@@ -179,7 +179,7 @@ async function addTeamToEvent(body, userId) {
 
   if (registrationStatus === REGISTRATION_STATUS_ENUM.ACCEPTED) {
     // Add item to cart
-    await addCartItem(
+    await addEventCartItem(
       {
         stripePriceId: paymentOption,
         metadata: {

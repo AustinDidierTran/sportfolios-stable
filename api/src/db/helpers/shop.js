@@ -1,5 +1,6 @@
 const knex = require('../connection');
 const { stripeErrorLogger } = require('../../server/utils/logger');
+const { ERROR_ENUM } = require('../../../../common/errors');
 
 const getItem = async stripePriceId => {
   const [item] = await knex('stripe_price')
@@ -89,6 +90,7 @@ const getCartItems = async userId => {
         'cart_items.metadata',
         'cart_items.user_id',
         'cart_items.id',
+        'cart_items.quantity',
         'stripe_price.stripe_price_id',
         'stripe_price.stripe_product_id',
         'stripe_price.metadata AS stripe_price_metadata',
@@ -116,7 +118,8 @@ const getCartItems = async userId => {
         '=',
         'stripe_price.stripe_price_id',
       )
-      .where('cart_items.user_id', userId);
+      .where('cart_items.user_id', userId)
+      .orderBy('cart_items.created_at');
     return (
       cartItems.map(i => ({
         active: i.active,
@@ -125,6 +128,7 @@ const getCartItems = async userId => {
         id: i.id,
         label: i.label,
         metadata: i.metadata,
+        quantity: i.quantity,
         photoUrl: i.photo_url,
         stripePriceId: i.stripe_price_id,
         stripePriceMetadata: i.stripe_price_metadata,
@@ -139,16 +143,20 @@ const getCartItems = async userId => {
 };
 
 const getCartTotal = async userId => {
-  const [{ total }] = await knex('cart_items')
-    .select(knex.raw('sum(stripe_price.amount) AS total'))
+  const items = await knex('cart_items')
+    .select(['stripe_price.amount', 'cart_items.quantity'])
     .leftJoin(
       'stripe_price',
       'cart_items.stripe_price_id',
       '=',
       'stripe_price.stripe_price_id',
     )
-    .where('cart_items.user_id', userId)
-    .groupBy('cart_items.user_id');
+    .where('cart_items.user_id', userId);
+
+  const total = items.reduce(
+    (prev, curr) => prev + curr.amount * curr.quantity,
+    0,
+  );
 
   return total;
 };
@@ -185,46 +193,66 @@ const getCartItemsOrdered = async userId => {
 };
 
 const addCartItem = async (body, userId) => {
-  const { stripePriceId, metadata, quantity = 1 } = body;
-  await knex('cart_items').insert(
-    Array(quantity).fill({
+  const {
+    stripePriceId,
+    metadata,
+    quantity: addedQuantity = 1,
+  } = body;
+
+  const [{ id, quantity } = {}] = await knex('cart_items')
+    .select(['id', 'quantity'])
+    .where({
+      user_id: userId,
+      stripe_price_id: stripePriceId,
+    });
+
+  if (!id) {
+    await knex('cart_items').insert({
       stripe_price_id: stripePriceId,
       user_id: userId,
       metadata,
-    }),
-  );
+      quantity: addedQuantity,
+    });
+  } else {
+    await knex('cart_items')
+      .update({
+        quantity: quantity + addedQuantity,
+      })
+      .where({ id });
+  }
 
   return stripePriceId;
 };
 
+const addEventCartItem = async (body, userId) => {
+  const { stripePriceId, metadata } = body;
+  await knex('cart_items').insert({
+    stripe_price_id: stripePriceId,
+    user_id: userId,
+    metadata,
+  });
+};
+
 const updateCartItems = async (body, userId) => {
-  const { stripePriceId, nbInCart: newNb, metadata } = body;
+  const { cartItemId, quantity } = body;
 
-  const currCart = await getCartItems(userId);
-  const currCartOrdered = await getCartItemsOrdered(userId);
-  const prevNb = currCartOrdered.find(
-    e => e.stripePriceId == stripePriceId,
-  ).nbInCart;
-  const diff = newNb - prevNb;
+  let nbChanged;
 
-  if (diff > 0) {
-    for (let i = 0; i < diff; i++) {
-      await addCartItem({ stripePriceId, metadata }, userId);
-    }
-  } else if (diff < 0) {
-    var deletedIds = [];
-    for (let i = 0; i < -diff; i++) {
-      const cartInstanceId = currCart.find(
-        e =>
-          e.stripePriceId == stripePriceId &&
-          !deletedIds.includes(e.id),
-      ).id;
-
-      await removeCartItemInstance({
-        cartInstanceId,
+  if (quantity < 1) {
+    await knex('cart_items')
+      .where({ id: cartItemId, user_id: userId })
+      .del();
+  } else {
+    nbChanged = await knex('cart_items')
+      .update({ quantity })
+      .where({
+        id: cartItemId,
+        user_id: userId,
       });
-      deletedIds.push(cartInstanceId);
-    }
+  }
+
+  if (nbChanged === 0) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 };
 
@@ -267,14 +295,15 @@ const clearCart = async userId => {
 };
 
 module.exports = {
+  addCartItem,
+  addEventCartItem,
+  clearCart,
+  getCartItems,
+  getCartItemsOrdered,
   getCartTotal,
   getItem,
   getShopItems,
-  getCartItems,
-  getCartItemsOrdered,
-  addCartItem,
-  updateCartItems,
-  removeCartItemInstance,
   removeAllInstancesFromCart,
-  clearCart,
+  removeCartItemInstance,
+  updateCartItems,
 };

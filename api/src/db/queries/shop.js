@@ -20,7 +20,9 @@ const getItems = async (entityId, userId) => {
 };
 
 const getCart = async userId => {
-  return getCartItems(userId);
+  const items = await getCartItems(userId);
+  const total = await getCartTotal(userId);
+  return { items, total };
 };
 
 const getCartTotal = async userId => {
@@ -38,7 +40,10 @@ const addToCart = async (body, userId) => {
 
 const updateCartItems = async (body, userId) => {
   await updateCartItemsHelper(body, userId);
-  return getCartItems(userId);
+
+  const items = await getCartItems(userId);
+  const total = await getCartTotal(userId);
+  return { items, total };
 };
 
 const removeCartItemInstance = async (query, userId) => {
