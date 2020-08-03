@@ -36,6 +36,9 @@ export default function PlayerCard(props) {
       <div className={styles.player}>
         <div className={styles.position}>{}</div>
         <div className={styles.name}>{player && player.name}</div>
+        <div className={styles.pod}>
+          <Tag type={player.status} />
+        </div>
       </div>
     </div>
   );

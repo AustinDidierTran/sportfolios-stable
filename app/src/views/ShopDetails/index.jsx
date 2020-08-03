@@ -7,9 +7,8 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
-import { useFormInput } from '../../hooks/forms';
-import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
-import { Typography, TextField } from '../../components/MUI';
+import { formatRoute } from '../../actions/goTo';
+import { Typography } from '../../components/MUI';
 import {
   Button,
   Paper,
@@ -27,7 +26,7 @@ export default function ShopDetails() {
   const [item, setItem] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const { label: name, amount: price, photoUrl, description } = item;
-  
+
   const fetchItem = async () => {
     const { data } = await api(
       formatRoute('/api/shop/getItem', null, { id: stripePriceId }),

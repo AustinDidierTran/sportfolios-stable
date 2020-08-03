@@ -2,7 +2,10 @@ import React from 'react';
 import styles from './Players.module.css';
 
 import { useTranslation } from 'react-i18next';
-import { GLOBAL_ENUM } from '../../../../../../common/enums';
+import {
+  GLOBAL_ENUM,
+  ROSTER_ROLE_ENUM,
+} from '../../../../../../common/enums';
 import { useFormInput } from '../../../../hooks/forms';
 import uuid from 'uuid';
 
@@ -30,32 +33,51 @@ export default function Players(props) {
     return null;
   }
 
-  return (
-    <div className={styles.card}>
-      <div className={styles.searchList}>
-        <SearchList
-          clearOnSelect={false}
-          label={t('enter_player_name')}
-          type={GLOBAL_ENUM.PERSON}
-          onClick={onPlayerAddToRoster}
-          query={query}
-          secondary={t('player')}
-          allowCreate
-          withoutIcon
-          style={{}}
-        />
+  if (role === ROSTER_ROLE_ENUM.CAPTAIN) {
+    return (
+      <div className={styles.card}>
+        <div className={styles.searchList}>
+          <SearchList
+            clearOnSelect={false}
+            label={t('enter_player_name')}
+            type={GLOBAL_ENUM.PERSON}
+            onClick={onPlayerAddToRoster}
+            query={query}
+            secondary={t('player')}
+            allowCreate
+            withoutIcon
+            style={{}}
+          />
+        </div>
+        <div className={styles.player}>
+          {players.map(player => {
+            return (
+              <PlayerCard
+                player={player}
+                role={role}
+                onDelete={onDelete}
+              />
+            );
+          })}
+        </div>
       </div>
-      <div className={styles.player}>
-        {players.map(player => {
-          return (
-            <PlayerCard
-              player={player}
-              role={role}
-              onDelete={onDelete}
-            />
-          );
-        })}
+    );
+  }
+  if (role === ROSTER_ROLE_ENUM.PLAYER) {
+    return (
+      <div className={styles.card}>
+        <div className={styles.player}>
+          {players.map(player => {
+            return (
+              <PlayerCard
+                player={player}
+                role={role}
+                onDelete={onDelete}
+              />
+            );
+          })}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

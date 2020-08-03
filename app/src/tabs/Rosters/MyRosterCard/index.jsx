@@ -5,7 +5,7 @@ import { Paper, Icon, Avatar } from '../../../components/Custom';
 import Players from './Players';
 import { Typography } from '../../../components/MUI';
 import Tag from '../Tag';
-import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
+import { ROSTER_ROLE_ENUM } from '../../../../../common/enums';
 
 const isEven = n => {
   return n % 2 == 0;
@@ -45,7 +45,10 @@ export default function MyRosterCard(props) {
     }
   }, [expandedPosition]);
 
-  if (role == ENTITIES_ROLE_ENUM.ADMIN) {
+  if (
+    role == ROSTER_ROLE_ENUM.CAPTAIN ||
+    role == ROSTER_ROLE_ENUM.PLAYER
+  ) {
     return (
       <Paper className={styles.paper}>
         <div
