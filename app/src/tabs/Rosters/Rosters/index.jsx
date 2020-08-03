@@ -6,12 +6,16 @@ export default function Rosters(props) {
   const { rosters } = props;
   const [expandedPosition, setExpandedPosition] = useState(0);
 
+  if (!rosters) {
+    return null;
+  }
+
   return (
     <div className={styles.contain}>
-      {rosters.map((roster, index) => {
+      {rosters.map(roster => {
         return (
           <RosterCard
-            roster={{ ...roster, position: index + 1 }}
+            roster={roster}
             expandedPosition={expandedPosition}
             setExpandedPosition={setExpandedPosition}
           />

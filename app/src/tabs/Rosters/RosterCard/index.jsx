@@ -5,34 +5,16 @@ import { Paper, Icon } from '../../../components/Custom';
 import Players from './Players';
 import { Typography } from '../../../components/MUI';
 import Tag from '../Tag';
-import { formatRoute } from '../../../actions/goTo';
-import { useParams } from 'react-router-dom';
-import api from '../../../actions/api';
 import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 
 const isEven = n => {
   return n % 2 == 0;
 };
 
-const getEvent = async eventId => {
-  const { data } = await api(
-    formatRoute('/api/entity', null, { id: eventId }),
-  );
-  return data;
-};
-
 export default function RosterCard(props) {
-  const {
-    roster,
-    initialExpanded,
-    expandedPosition,
-    setExpandedPosition,
-  } = props;
+  const { roster, expandedPosition, setExpandedPosition } = props;
   const { position, name, players } = roster;
-
-  const { id: eventId } = useParams();
-  const [expanded, setExpanded] = useState(initialExpanded);
-  const [event, setEvent] = useState({});
+  const [expanded, setExpanded] = useState(false);
   const { role, registrationStatus } = roster;
 
   const onExpand = () => {
@@ -40,15 +22,6 @@ export default function RosterCard(props) {
       oldPosition === position ? 0 : position,
     );
   };
-
-  const getData = async () => {
-    const event = await getEvent(eventId);
-    setEvent(event);
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   useEffect(() => {
     if (expandedPosition == position) {

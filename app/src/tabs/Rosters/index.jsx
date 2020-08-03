@@ -3,12 +3,12 @@ import React, { useState, useEffect } from 'react';
 import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
 import { useParams } from 'react-router-dom';
+import { ROSTER_ROLE_ENUM } from '../../Store';
 
 import styles from './Rosters.module.css';
 
 import MyRoster from './MyRoster';
 import Rosters from './Rosters';
-import { ENTITIES_ROLE_ENUM } from '../../Store';
 
 const getRosters = async eventId => {
   const { data } = await api(
@@ -19,27 +19,65 @@ const getRosters = async eventId => {
   return data;
 };
 
+const deletePlayerFromRoster = async id => {
+  await api(
+    formatRoute('/api/entity/deletePlayerFromRoster', null, {
+      id,
+    }),
+    {
+      method: 'DELETE',
+    },
+  );
+};
+
+const addPlayerToRoster = async (player, rosterId) => {
+  const { data } = await api(`/api/entity/addPlayerToRoster`, {
+    method: 'POST',
+    body: JSON.stringify({
+      ...player,
+      rosterId,
+    }),
+  });
+  return data;
+};
+
 export default function TabRosters() {
   const { id: eventId } = useParams();
   const [rosters, setRosters] = useState([]);
-  const [myRoster, setMyRoster] = useState({});
+  const [myRosters, setMyRosters] = useState([]);
 
-  const getMyRoster = rosters => {
-    //TODO: Now, only roster admins can see this, need to add players too.
-    //TODO: Support for multiple rosters
-    rosters.forEach((r, index) => {
-      if (r.role == ENTITIES_ROLE_ENUM.ADMIN) {
-        const myRoster = { ...rosters[index], position: index + 1 };
-        setMyRoster(myRoster);
-        return;
-      }
-    });
+  const onDelete = async id => {
+    await deletePlayerFromRoster(id);
+    await getData();
+  };
+
+  const onAdd = async (player, rosterId) => {
+    await addPlayerToRoster(player, rosterId);
+    await getData();
+  };
+
+  const getMyRosters = rosters => {
+    const myRosters = rosters
+      .map((r, index) => {
+        if (
+          r.role == ROSTER_ROLE_ENUM.CAPTAIN ||
+          r.role == ROSTER_ROLE_ENUM.PLAYER
+        ) {
+          return { ...r, position: index + 1 };
+        }
+      })
+      .filter(r => r);
+
+    setMyRosters(myRosters);
   };
 
   const getData = async () => {
     const rosters = await getRosters(eventId);
-    setRosters(rosters);
-    getMyRoster(rosters);
+    const rostersUpdated = rosters.map((roster, index) => {
+      return { ...roster, position: index + 1 };
+    });
+    setRosters(rostersUpdated);
+    getMyRosters(rosters);
   };
 
   useEffect(() => {
@@ -49,7 +87,13 @@ export default function TabRosters() {
   return (
     <div className={styles.contain}>
       <div className={styles.myRoster}>
-        {myRoster && myRoster.name && <MyRoster roster={myRoster} />}
+        {myRosters && myRosters.length && (
+          <MyRoster
+            rosters={myRosters}
+            onDelete={onDelete}
+            onAdd={onAdd}
+          />
+        )}
       </div>
       <div className={styles.rosters}>
         <Rosters rosters={rosters} />

@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import MyRosterCard from '../MyRosterCard';
 
 export default function MyRoster(props) {
-  const { roster } = props;
+  const { rosters, onDelete, onAdd } = props;
+  const [expandedPosition, setExpandedPosition] = useState(1);
+
   return (
     <div>
-      <MyRosterCard roster={roster} />
+      {rosters.map((roster, index) => {
+        return (
+          <MyRosterCard
+            roster={roster}
+            expandedPosition={expandedPosition}
+            setExpandedPosition={setExpandedPosition}
+            onDelete={onDelete}
+            onAdd={onAdd}
+            index={index}
+          />
+        );
+      })}
     </div>
   );
 }

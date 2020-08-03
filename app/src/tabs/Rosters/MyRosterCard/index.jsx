@@ -5,63 +5,63 @@ import { Paper, Icon, Avatar } from '../../../components/Custom';
 import Players from './Players';
 import { Typography } from '../../../components/MUI';
 import Tag from '../Tag';
-import { formatRoute } from '../../../actions/goTo';
-import { useParams } from 'react-router-dom';
-import api from '../../../actions/api';
 import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 
-const getEntity = async eventId => {
-  const { data } = await api(
-    formatRoute('/api/entity', null, { id: eventId }),
-  );
-  return data;
+const isEven = n => {
+  return n % 2 == 0;
 };
 
 export default function MyRosterCard(props) {
-  const { roster } = props;
-  const { position, name, players } = roster;
-  const { id: eventId } = useParams();
-  const { role, registrationStatus, teamId } = roster;
+  const {
+    roster,
+    expandedPosition,
+    setExpandedPosition,
+    onDelete,
+    onAdd,
+    index,
+  } = props;
+  const {
+    position,
+    name,
+    players,
+    rosterId,
+    role,
+    registrationStatus,
+  } = roster;
 
   const [expanded, setExpanded] = useState(true);
 
-  const [event, setEvent] = useState({});
-  const [team, setTeam] = useState({});
-
   const onExpand = () => {
-    setExpanded(!expanded);
-  };
-
-  const getData = async () => {
-    const event = await getEntity(eventId);
-    setEvent(event);
-    getTeam();
-  };
-
-  const getTeam = async () => {
-    const team = await getEntity(teamId);
-    setTeam(team);
+    setExpandedPosition(oldPosition =>
+      oldPosition === position ? 0 : position,
+    );
   };
 
   useEffect(() => {
-    getData();
-  }, []);
+    if (expandedPosition == position) {
+      setExpanded(true);
+    } else {
+      setExpanded(false);
+    }
+  }, [expandedPosition]);
 
   if (role == ENTITIES_ROLE_ENUM.ADMIN) {
     return (
       <Paper className={styles.paper}>
         <div
           className={styles.card}
-          style={{ backgroundColor: '#18B393', color: '#fff' }}
-          onClick={onExpand}
+          style={
+            isEven(index)
+              ? { backgroundColor: '#19bf9d', color: '#fff' }
+              : { backgroundColor: '#18B393', color: '#fff' }
+          }
         >
           <div className={styles.default}>
             <div className={styles.position}>{position}</div>
-            <div className={styles.title}>
+            <div className={styles.title} onClick={onExpand}>
               <Avatar
                 className={styles.avatar}
-                photoUrl={team.photoUrl}
-                initials={team.initials}
+                photoUrl={roster.photoUrl}
                 size="sm"
               />
               <div className={styles.name}>
@@ -79,7 +79,13 @@ export default function MyRosterCard(props) {
               />
             </div>
             <div className={styles.expanded} hidden={!expanded}>
-              <Players players={players} role={role} />
+              <Players
+                players={players}
+                role={role}
+                rosterId={rosterId}
+                onDelete={onDelete}
+                onAdd={onAdd}
+              />
             </div>
           </div>
         </div>

@@ -5,6 +5,8 @@ const { getBasicUserInfoFromId } = require('./index');
 const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
+  ROSTER_ROLE_ENUM,
+  TAG_TYPE_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -537,7 +539,7 @@ async function getAllRegistered(eventId, userId) {
       const players = await getRoster(t.roster_id);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.roster_id);
-      const role = await getRole(t.roster_id, userId);
+      const role = await getRole(captains, t.roster_id, userId);
       const registrationStatus = await getRegistrationStatus(
         eventId,
         t.roster_id,
@@ -586,26 +588,34 @@ async function getRoster(rosterId) {
     .select('*')
     .where({ roster_id: rosterId });
 
+  //TODO: Make a call to know if has created an account or is child account
+  const status = TAG_TYPE_ENUM.REGISTERED;
+
   const props = roster.map(player => ({
     id: player.id,
     name: player.name,
     personId: player.person_id,
+    status: status,
   }));
 
   return props;
 }
 
-async function getRole(rosterId, userId) {
+async function getRole(captains, rosterId, userId) {
   const basicInfo = await getBasicUserInfoFromId(userId);
 
   const personId = basicInfo.persons[0].entity_id;
+
+  if (captains.some(c => c.id === personId)) {
+    return ROSTER_ROLE_ENUM.CAPTAIN;
+  }
 
   const [role] = await knex('team_players')
     .select('*')
     .where({ roster_id: rosterId, person_id: personId });
 
-  if (!role) return ENTITIES_ROLE_ENUM.VIEWER;
-  return role;
+  if (!role) return ROSTER_ROLE_ENUM.VIEWER;
+  return ROSTER_ROLE_ENUM.PLAYER;
 }
 
 const getRosterInvoiceItem = async body => {
@@ -997,6 +1007,32 @@ const deleteOption = async id => {
     .del();
 };
 
+const addPlayerToRoster = async body => {
+  const { personId, name, id, rosterId } = body;
+  //TODO: Make sure userId adding is team Admin
+
+  const player = await knex('team_players')
+    .insert({
+      roster_id: rosterId,
+      person_id: personId,
+      name: name,
+      id: id,
+    })
+    .returning('*');
+  return player;
+};
+
+const deletePlayerFromRoster = async id => {
+  //TODO: Make sure userId deleting is team Admin
+
+  await knex('team_players')
+    .where({
+      id: id,
+    })
+    .del();
+  return null;
+};
+
 module.exports = {
   addEntity,
   addEntityRole,
@@ -1038,4 +1074,6 @@ module.exports = {
   updateMember,
   updateRegistration,
   eventInfos,
+  addPlayerToRoster,
+  deletePlayerFromRoster,
 };

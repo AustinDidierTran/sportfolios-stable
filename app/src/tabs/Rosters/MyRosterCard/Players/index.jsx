@@ -1,56 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styles from './Players.module.css';
-import Tag from '../../Tag';
-import { ENTITIES_ROLE_ENUM } from '../../../../Store';
+
+import { useTranslation } from 'react-i18next';
+import { GLOBAL_ENUM } from '../../../../../../common/enums';
+import { useFormInput } from '../../../../hooks/forms';
+import uuid from 'uuid';
+
+import PlayerCard from './PlayerCard';
+import { SearchList } from '../../../../components/Custom';
 
 export default function Players(props) {
-  const { players, role } = props;
-  const [playersUpdated, setPlayersUpdated] = useState([]);
+  const { t } = useTranslation();
+  const { players, role, rosterId, onDelete, onAdd } = props;
+  const query = useFormInput('');
 
-  const getData = async () => {
-    const playersUpdated = players.map(p => {
-      //TODO: Api call to know if player has an account
-      return { ...p, status: 'registered' };
-    });
-    setPlayersUpdated(playersUpdated);
+  const onPlayerAddToRoster = async (e, person) => {
+    const player = person.id
+      ? {
+          personId: person.id,
+          name: person.completeName,
+          id: uuid.v1(),
+        }
+      : { name: person.name, id: uuid.v1() };
+
+    await onAdd(player, rosterId);
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
-
-  if (role == ENTITIES_ROLE_ENUM.ADMIN) {
-    return (
-      <div className={styles.card}>
-        {playersUpdated &&
-          playersUpdated.map((player, index) => {
-            return (
-              <div className={styles.player}>
-                <div className={styles.position}>{`${index}`}</div>
-                <div className={styles.name}>
-                  {player && player.name}
-                </div>
-                <div className={styles.pod}>
-                  <Tag type={player.status} />
-                </div>
-              </div>
-            );
-          })}
-      </div>
-    );
+  if (!players) {
+    return null;
   }
 
   return (
     <div className={styles.card}>
-      {playersUpdated &&
-        playersUpdated.map((player, index) => {
+      <div className={styles.searchList}>
+        <SearchList
+          clearOnSelect={false}
+          label={t('enter_player_name')}
+          type={GLOBAL_ENUM.PERSON}
+          onClick={onPlayerAddToRoster}
+          query={query}
+          secondary={t('player')}
+          allowCreate
+          withoutIcon
+          style={{}}
+        />
+      </div>
+      <div className={styles.player}>
+        {players.map(player => {
           return (
-            <div className={styles.player}>
-              <div className={styles.position}>{`${index}`}</div>
-              <div className={styles.name}>{player.name}</div>
-            </div>
+            <PlayerCard
+              player={player}
+              role={role}
+              onDelete={onDelete}
+            />
           );
         })}
+      </div>
     </div>
   );
 }

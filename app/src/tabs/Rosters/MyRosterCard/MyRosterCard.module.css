@@ -1,6 +1,3 @@
-.paper {
-}
-
 .card {
   display: flex;
   flex-direction: column;
@@ -64,6 +61,8 @@
   flex-direction: column;
 
   justify-content: center;
+  justify-self: center;
+  width: min-content;
 }
 
 .expanded {

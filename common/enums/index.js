@@ -14,6 +14,12 @@ const SIZES_ENUM = {
   XXL: 'xx-large',
 };
 
+const ROSTER_ROLE_ENUM = {
+  CAPTAIN: 1,
+  PLAYER: 2,
+  VIEWER: 3,
+};
+
 const LIST_ROW_TYPE_ENUM = {
   PERSON: 1,
   ORGANIZATION: 2,
@@ -163,4 +169,5 @@ module.exports = {
   STRIPE_STATUS_ENUM,
   VIEW_ENUM,
   TAG_TYPE_ENUM,
+  ROSTER_ROLE_ENUM,
 };

@@ -70,6 +70,12 @@ export const ENTITIES_ROLE_ENUM = {
   VIEWER: 3,
 };
 
+export const ROSTER_ROLE_ENUM = {
+  CAPTAIN: 1,
+  PLAYER: 2,
+  VIEWER: 3,
+};
+
 export const MEMBERSHIP_TYPE_ENUM = {
   ELITE: 1,
   COMPETITIVE: 2,

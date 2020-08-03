@@ -7,8 +7,6 @@ import Shop from './Shop';
 import Rosters from './Rosters';
 import { useTranslation } from 'react-i18next';
 import { ENTITIES_ROLE_ENUM } from '../Store';
-import { useFeature } from '@optimizely/react-sdk';
-import { FEATURE_FLAGS } from '../../../common/flags';
 
 export const TABS_ENUM = {
   ABOUT: 'about',

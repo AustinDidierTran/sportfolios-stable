@@ -20,6 +20,7 @@ export default function SearchList(props) {
     allowCreate,
     withoutIcon,
     secondary,
+    style,
   } = props;
 
   const { t } = useTranslation();
@@ -135,7 +136,7 @@ export default function SearchList(props) {
           size="small"
           label={label}
           autoFocus
-          style={{ width: '100%' }}
+          style={{ width: '100%', ...style }}
           autoFocus
           onKeyPress={onEnter}
         />
@@ -144,7 +145,7 @@ export default function SearchList(props) {
           {...query.inputProps}
           variant="outlined"
           label={label}
-          style={{ margin: '8px' }}
+          style={{ margin: '8px', ...style }}
           size="small"
           autoFocus
           onKeyPress={onEnter}
