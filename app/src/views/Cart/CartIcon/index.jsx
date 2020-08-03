@@ -11,10 +11,9 @@ export default function CartIcon() {
     },
   } = useContext(Store);
 
-  const total =
-    items && items.length
-      ? items.reduce((prev, item) => prev + item.quantity, 0)
-      : null;
+  const total = Array.isArray(items)
+    ? items.reduce((prev, item) => prev + item.quantity, 0)
+    : null;
 
   return (
     <Badge badgeContent={total} color="error">

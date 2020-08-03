@@ -22,7 +22,7 @@ export default function DefaultCartItem(props) {
     quantity,
   } = props;
 
-  const quantityOptions = Array(101)
+  const quantityOptions = Array(Math.max(101, quantity + 1))
     .fill(0)
     .map((_, index) => ({
       value: index,
