@@ -27,6 +27,7 @@ export const ROUTES = {
   notifications: '/notifications',
   orderProcessed: '/orderProcessed',
   organizationList: '/organizationList',
+  productAddedToCart: '/productAddedToCart',
   recoveryEmail: '/recoveryEmail',
   registrationStatus: '/registrationStatus',
   search: '/search',

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { MessageAndButton } from '../../components/Custom';
+import { MessageAndButtons } from '../../components/Custom';
 import {
   REGISTRATION_STATUS_ENUM,
   REJECTION_ENUM,
@@ -67,12 +67,16 @@ export default function RegistrationStatus() {
       };
   }
 
+  const buttons = [
+    {
+      name: values.button,
+      onClick: values.onClick,
+      endIcon: values.endIcon,
+      color: 'primary',
+    },
+  ];
+
   return (
-    <MessageAndButton
-      button={values.button}
-      onClick={values.onClick}
-      endIcon={values.endIcon}
-      message={values.message}
-    />
+    <MessageAndButtons buttons={buttons} message={values.message} />
   );
 }

@@ -14,7 +14,7 @@ import {
 
 import {
   Button,
-  MessageAndButton,
+  MessageAndButtons,
   Card,
   ContainerBottomFixed,
   LoadingSpinner,
@@ -59,15 +59,21 @@ export default function Cart() {
   }
 
   if (items.length < 1) {
-    return (
-      <MessageAndButton
-        button={t('home')}
-        onClick={() => {
+    const buttons = [
+      {
+        name: t('home'),
+        onClick: () => {
           goTo(ROUTES.home);
-        }}
-        endIcon="Home"
+        },
+        endIcon: 'Home',
+        color: 'primary',
+      },
+    ];
+    return (
+      <MessageAndButtons
+        buttons={buttons}
         message={t('cart_empty_go_shop')}
-      ></MessageAndButton>
+      />
     );
   }
 

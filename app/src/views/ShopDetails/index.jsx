@@ -11,7 +11,7 @@ import { useContext } from 'react';
 import { Store, ACTION_ENUM } from '../../Store';
 import api from '../../actions/api';
 import { useFormInput } from '../../hooks/forms';
-import { formatRoute } from '../../actions/goTo';
+import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
 import { Typography, TextField } from '../../components/MUI';
 import { Button, Paper } from '../../components/Custom';
 import { useEffect } from 'react';
@@ -100,6 +100,11 @@ export default function ShopDetails() {
     });
     setCart(newCart);
     dispatchCart(newCart);
+    goTo(ROUTES.productAddedToCart, null, {
+      name,
+      total: amount.value * price,
+      amount: amount.value,
+    });
     amount.setValue(oldValue => oldValue + 1);
     setDisplayed(false);
   };

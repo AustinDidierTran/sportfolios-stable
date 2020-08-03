@@ -29,6 +29,7 @@ import Notifications from '../../views/Notifications';
 import OrderProcessed from '../OrderProcessed';
 import OrganizationList from '../Main/OrganizationList';
 import PasswordRecovery from '../PasswordRecovery';
+import ProductAddedToCart from '../ProductAddedToCart';
 import RegistrationStatus from '../RegistrationStatus';
 import Search from '../Search';
 import Stripe from '../../utils/stripe/Payment/index';
@@ -129,6 +130,11 @@ export default function App() {
                     exact
                     path={ROUTES.orderProcessed}
                     component={OrderProcessed}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.productAddedToCart}
+                    component={ProductAddedToCart}
                   />
                   <Route
                     exact

@@ -148,6 +148,7 @@ export default {
     players: 'Players',
     pre_ranking: 'Pre-ranking',
     price: 'Price',
+    product_added_to_cart: 'Product added to cart',
     private: 'Private',
     phone_number: 'Phone Number',
     people: 'People',
@@ -213,6 +214,8 @@ export default {
     you_need_to_create_an_account:
       'You need to create your account first!',
     you_paid_with: 'You paid with',
+    your_item_has_been_added_to_cart:
+      'You added {{amount}} {{name}} to your cart for a total of {{total}}$',
     your_upcoming_events: 'Your Upcoming Events',
     your_total_is: 'Your total is',
     payment_method: 'Payment Method',
