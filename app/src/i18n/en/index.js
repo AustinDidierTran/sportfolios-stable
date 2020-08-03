@@ -1,3 +1,5 @@
+import { SIZES_ENUM } from '../../../../common/enums';
+
 export default {
   translations: {
     about: 'About',
@@ -55,6 +57,7 @@ export default {
     delete: 'Delete',
     select_payment_method: 'Select payment method',
     delete_confirmation_text: 'To delete, type {{name}}',
+    description: 'Description',
     donate: 'Donate',
     done: 'Done',
     editor: 'Editor',
@@ -170,6 +173,16 @@ export default {
     send_new_confirmation_email: 'Send new confirmation email',
     send_password_recovery_email: 'Send password recovery email',
     signup: 'Signup',
+    sizes: 'Sizes',
+    sizes_enum: {
+      [SIZES_ENUM.XXS]: 'XX-Small',
+      [SIZES_ENUM.XS]: 'X-Small',
+      [SIZES_ENUM.SM]: 'Small',
+      [SIZES_ENUM.M]: 'Medium',
+      [SIZES_ENUM.L]: 'Large',
+      [SIZES_ENUM.XL]: 'X-Large',
+      [SIZES_ENUM.XXL]: 'XX-Large',
+    },
     something_went_wrong: 'Something went wrong.',
     status: 'Status',
     subscribe: 'Subscribe',

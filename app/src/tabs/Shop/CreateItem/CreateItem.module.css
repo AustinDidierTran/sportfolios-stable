@@ -5,7 +5,7 @@
 .infos {
   display: grid !important;
   grid-template-columns: 8fr 3fr;
-  grid-template-areas: 'name price' 'description description' 'cart cart' 'cancel cancel';
+  grid-template-areas: 'name price' 'description description' 'sizes sizes' 'cart cart' 'cancel cancel';
   padding-bottom: 0px !important;
   padding-top: 0px !important;
   margin-right: 16px !important;
@@ -26,6 +26,10 @@
 
 .description {
   grid-area: description;
+}
+
+.sizes {
+  grid-area: sizes;
 }
 
 .cart {

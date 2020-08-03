@@ -4,6 +4,16 @@ const ENTITIES_ROLE_ENUM = {
   VIEWER: 3,
 };
 
+const SIZES_ENUM = {
+  XXS: 'xx-small',
+  XS: 'x-small',
+  SM: 'small',
+  M: 'medium',
+  L: 'large',
+  XL: 'x-large',
+  XXL: 'xx-large',
+};
+
 const LIST_ROW_TYPE_ENUM = {
   PERSON: 1,
   ORGANIZATION: 2,
@@ -130,6 +140,7 @@ const LOGO_ENUM = {
 
 module.exports = {
   REJECTION_ENUM,
+  SIZES_ENUM,
   REGISTRATION_STATUS_ENUM,
   CARD_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,
