@@ -5,17 +5,34 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
 export default function CustomSelect(props) {
-  const { formik, label, namespace, options } = props;
+  const {
+    className,
+    formik,
+    label,
+    namespace,
+    onChange,
+    options,
+  } = props;
+
+  const handleChange = (event, ...args) => {
+    if (formik) {
+      formik.handleChange(event, ...args);
+    }
+
+    if (onChange) {
+      onChange(event.target.value);
+    }
+  };
 
   return (
-    <FormControl style={{ width: '100%' }}>
+    <FormControl className={className} style={{ width: '100%' }}>
       <InputLabel>{label}</InputLabel>
       <Select
         id={namespace}
         name={namespace}
         value={formik && formik.values[namespace]}
-        onChange={formik && formik.handleChange}
         {...props}
+        onChange={handleChange}
       >
         <MenuItem disabled value="">
           {label}

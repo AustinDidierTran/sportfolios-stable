@@ -6,7 +6,6 @@ import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { CARD_TYPE_ENUM } from '../../../../common/enums';
 import { useTranslation } from 'react-i18next';
-import { useApiRoute } from '../../hooks/queries';
 import {
   formatPrice,
   formatPageTitle,
@@ -22,6 +21,8 @@ import {
 } from '../../components/Custom';
 import DefaultCard from '../../components/MUI/Card';
 import { Typography } from '../../components/MUI';
+import { useContext } from 'react';
+import { Store, ACTION_ENUM } from '../../Store';
 
 const getCartItems = async () => {
   const { data: cartItems } = await api('/api/shop/getCartItems');
@@ -29,9 +30,11 @@ const getCartItems = async () => {
 };
 
 export default function Cart() {
+  const { dispatch } = useContext(Store);
   const { t } = useTranslation();
   const [items, setItems] = useState([]);
-  const { isLoading, response } = useApiRoute('/api/shop/cartTotal');
+  const [total, setTotal] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     document.title = formatPageTitle(t('cart'));
@@ -42,8 +45,15 @@ export default function Cart() {
   };
 
   const fetchItems = async () => {
-    const cartGrouped = await getCartItems();
-    setItems(cartGrouped);
+    const data = await getCartItems();
+    const { items: itemsProp, total: totalProp } = data;
+    setItems(itemsProp);
+    setTotal(totalProp);
+    dispatch({
+      type: ACTION_ENUM.UPDATE_CART,
+      payload: data,
+    });
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -83,13 +93,35 @@ export default function Cart() {
         <div className={styles.cart}>
           {items.map(item => (
             <Card
-              items={{ ...item, setItems }}
+              items={{
+                ...item,
+                updateQuantity: async quantity => {
+                  const { data } = await api(
+                    '/api/shop/updateCartItems',
+                    {
+                      method: 'POST',
+                      body: JSON.stringify({
+                        quantity,
+                        cartItemId: item.id,
+                      }),
+                    },
+                  );
+                  const { items: itemsProp, total: totalProp } = data;
+                  setItems(itemsProp);
+                  setTotal(totalProp);
+                  dispatch({
+                    type: ACTION_ENUM.UPDATE_CART,
+                    payload: data,
+                  });
+                },
+                setItems,
+              }}
               type={CARD_TYPE_ENUM.CART}
             />
           ))}
           <DefaultCard className={styles.defaultCard}>
             <Typography variant="h5" className={styles.typo}>
-              {`Total: ${formatPrice(response)}`}
+              {`Total: ${formatPrice(total)}`}
             </Typography>
           </DefaultCard>
         </div>
