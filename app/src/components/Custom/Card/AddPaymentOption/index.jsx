@@ -71,7 +71,7 @@ export default function AddPaymentOption(props) {
   const onAdd = async values => {
     setIsLoading(true);
     const name = values[0].value;
-    const price = Number(values[1].value) * 100;
+    const price = Math.floor(Number(values[1].value) * 100);
     const startDate = values[2].value;
     const startTime = values[3].value;
     const endDate = values[4].value;

@@ -168,6 +168,7 @@ export default {
     settings: 'Paramètres',
     schedule: 'Horaire',
     score_type: 'Type de pointage',
+    quantity: 'Quantité',
     search_results: 'Résultats de recherche pour {{query}}',
     search: 'Rechercher...',
     select_team: 'Sélectionner une équipe',

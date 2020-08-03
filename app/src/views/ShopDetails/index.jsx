@@ -6,223 +6,133 @@ import { useTranslation } from 'react-i18next';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { useParams } from 'react-router-dom';
-import { useContext } from 'react';
-
-import { Store, ACTION_ENUM } from '../../Store';
 import api from '../../actions/api';
 import { useFormInput } from '../../hooks/forms';
 import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
 import { Typography, TextField } from '../../components/MUI';
-import { Button, Paper } from '../../components/Custom';
+import {
+  Button,
+  Paper,
+  IgContainer,
+  Select,
+} from '../../components/Custom';
 import { useEffect } from 'react';
-
-const addCartItem = async params => {
-  const { data: newCart = [] } = await api('/api/shop/addCartItem', {
-    method: 'POST',
-    body: JSON.stringify(params),
-  });
-  return newCart;
-};
-
-const removeAllInstancesFromCart = async stripePriceId => {
-  await api(
-    formatRoute('/api/shop/removeAllInstancesFromCart', null, {
-      stripe_price_id: stripePriceId,
-    }),
-    {
-      method: 'DELETE',
-    },
-  );
-  return getCartItems();
-};
-
-const removeCartItemInstance = async cartInstanceId => {
-  await api(
-    formatRoute('/api/shop/removeCartItemInstance', null, {
-      cartInstanceId,
-    }),
-    {
-      method: 'DELETE',
-    },
-  );
-
-  return getCartItems();
-};
-
-const getCartItems = async () => {
-  const { data: cartItems } = await api(
-    '/api/shop/getCartItemsOrdered',
-  );
-  return cartItems;
-};
-
-const updateCartItems = async params => {
-  await api('/api/shop/updateCartItems', {
-    method: 'POST',
-    body: JSON.stringify(params),
-  });
-  return getCartItems();
-};
+import { formatPrice } from '../../utils/stringFormats';
+import { useFormik } from 'formik';
+import { CircularProgress } from '@material-ui/core';
 
 export default function ShopDetails() {
   const { t } = useTranslation();
   const { stripePriceId } = useParams();
-  const {
-    dispatch,
-    state: { userInfo },
-  } = useContext(Store);
   const [item, setItem] = useState({});
-  const [cart, setCart] = useState([]);
-  const [displayed, setDisplayed] = useState(true);
-  const [deletedIds, setDeletedIds] = useState([]);
-  const amount = useFormInput(0);
+  const [isLoading, setIsLoading] = useState(true);
   const { label: name, amount: price, photoUrl, description } = item;
-
-  const dispatchCart = newCart => {
-    dispatch({
-      type: ACTION_ENUM.UPDATE_CART,
-      payload: newCart,
-    });
-  };
-
-  const handleClick = async () => {
-    if (amount.value <= 0) {
-      await addItem();
-    } else {
-      await removeAllItems();
-    }
-  };
-
-  const addItem = async () => {
-    const newCart = await addCartItem({
-      stripePriceId,
-      metadata: { buyer_entity_id: userInfo.persons[0].entity_id },
-    });
-    setCart(newCart);
-    dispatchCart(newCart);
-    goTo(ROUTES.productAddedToCart, null, {
-      name,
-      total: amount.value * price,
-      amount: amount.value,
-    });
-    amount.setValue(oldValue => oldValue + 1);
-    setDisplayed(false);
-  };
-
-  const removeItem = async () => {
-    const itemToDelete = cart.find(
-      item =>
-        item.stripePriceId == stripePriceId &&
-        !deletedIds.includes(item.id),
-    );
-    const newCart = await removeCartItemInstance(itemToDelete.id);
-    setCart(newCart);
-    dispatchCart(newCart);
-    setDeletedIds([...deletedIds, itemToDelete.id]);
-    if (amount.value == 1) {
-      setDisplayed(true);
-    }
-    amount.setValue(oldValue => Math.max(0, oldValue - 1));
-  };
-
-  const removeAllItems = async () => {
-    const newCart = await removeAllInstancesFromCart(stripePriceId);
-    setCart(newCart);
-    dispatchCart(newCart);
-    amount.setValue(0);
-    setDisplayed(true);
-  };
-
-  const onNbBlur = async e => {
-    const newNbInCart = e.target.value;
-    const newCart = await updateCartItems({
-      stripePriceId: stripePriceId,
-      nbInCart: newNbInCart,
-      metadata: { buyer_entity_id: userInfo.persons[0].entity_id },
-    });
-    setCart(newCart);
-    dispatchCart(newCart);
-  };
-
+  
   const fetchItem = async () => {
-    const { data = [] } = await api(
+    const { data } = await api(
       formatRoute('/api/shop/getItem', null, { id: stripePriceId }),
     );
-    setItem(data && data[0]);
+    setItem(data);
+    setIsLoading(false);
   };
+
+  const validate = values => {
+    const errors = {};
+    const { quantity } = values;
+
+    if (quantity < 1) {
+      errors.quantity = t('quantity_cant_be_null');
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      quantity: 1,
+    },
+    validate,
+    validateOnChange: false,
+    validateOnBlur: false,
+    onSubmit: async values => {
+      const { quantity } = values;
+
+      /* eslint-disable-next-line */
+      const res = await api('/api/shop/addCartItem', {
+        method: 'POST',
+        body: JSON.stringify({
+          stripePriceId,
+          metadata: {},
+          quantity,
+        }),
+      });
+
+      // TODO: Redirect to page when succesful, otherwise display errors
+    },
+  });
 
   useEffect(() => {
     fetchItem();
   }, [stripePriceId]);
 
+  const quantityOptions = Array(100)
+    .fill(0)
+    .map((a, index) => ({
+      value: index + 1,
+      display: index + 1,
+    }));
+
+  if (isLoading) {
+    return <CircularProgress />;
+  }
+
+  if (!item) {
+    // TODO: Return 404 view
+    return <></>;
+  }
+
   return (
-    <Paper>
-      <CardMedia className={styles.media} image={photoUrl} />
-      <CardContent className={styles.infos}>
-        <Typography gutterBottom variant="h5" className={styles.name}>
-          {name}
-        </Typography>
-        <Typography variant="h5" className={styles.price}>
-          {price / 100}
-        </Typography>
-        <Typography
-          variant="h6"
-          color="textSecondary"
-          component="p"
-          className={styles.description}
-        >
-          {description}
-        </Typography>
-        {!displayed ? (
-          <div className={styles.cartButton}>
-            <Button
-              size="small"
-              color="default"
-              endIcon="RemoveShoppingCart"
-              onClick={handleClick}
-              className={styles.cart}
+    <IgContainer>
+      <form onSubmit={formik.handleSubmit}>
+        <Paper>
+          <CardMedia className={styles.media} image={photoUrl} />
+          <CardContent className={styles.infos}>
+            <Typography
+              gutterBottom
+              variant="h5"
+              className={styles.name}
             >
-              {t('added_to_cart')}
-            </Button>
-            <div className={styles.cartButtonChildren}>
-              <button
-                onClick={removeItem}
-                className={styles.cartButtonChildren}
-              >
-                -
-              </button>
-            </div>
-            <div className={styles.cartButtonChildren}>
-              <TextField
-                {...amount.inputProps}
-                onBlur={onNbBlur}
-                inputProps={{
-                  min: 0,
-                  style: { textAlign: 'center' },
-                }}
+              {name}
+            </Typography>
+            <Typography variant="h5" className={styles.price}>
+              {formatPrice(price)}
+            </Typography>
+            <Typography
+              variant="h6"
+              color="textSecondary"
+              component="p"
+              className={styles.description}
+            >
+              {description}
+            </Typography>
+            <div className={styles.quantity}>
+              <Select
+                label={t('quantity')}
+                formik={formik}
+                namespace="quantity"
+                options={quantityOptions}
               />
             </div>
-            <div className={styles.cartButtonChildren}>
-              <button
-                onClick={addItem}
-                className={styles.cartButtonChildren}
-              >
-                +
-              </button>
-            </div>
-          </div>
-        ) : (
-          <Button
-            size="small"
-            color="primary"
-            endIcon="AddShoppingCart"
-            onClick={handleClick}
-            className={styles.cart}
-          >
-            {t('add_to_cart')}
-          </Button>
-        )}
-      </CardContent>
-    </Paper>
+            <Button
+              type="submit"
+              size="small"
+              color="primary"
+              endIcon="AddShoppingCart"
+              className={styles.cart}
+            >
+              {t('add_to_cart')}
+            </Button>
+          </CardContent>
+        </Paper>
+      </form>
+    </IgContainer>
   );
 }
