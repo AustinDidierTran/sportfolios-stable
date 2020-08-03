@@ -216,7 +216,7 @@ export default {
       'You need to create your account first!',
     you_paid_with: 'You paid with',
     your_item_has_been_added_to_cart:
-      'You added {{amount}} {{name}} to your cart for a total of {{total}}$',
+      'You added {{amount}} {{name}} to your cart for a total of {{total}}.',
     your_upcoming_events: 'Your Upcoming Events',
     your_total_is: 'Your total is',
     payment_method: 'Payment Method',
