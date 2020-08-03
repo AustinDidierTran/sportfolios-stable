@@ -55,6 +55,7 @@ export default {
     currency: 'Devise',
     delete: 'Supprimer',
     delete_confirmation_text: 'Pour supprimer, écrivez {{name}}',
+    description: 'Description',
     donate: 'Faites un don',
     done: 'Terminé',
     editor: 'Éditeur',
@@ -153,6 +154,7 @@ export default {
     private: 'Privée',
     pre_ranking: 'Préclassement',
     price: 'Prix',
+    product_added_to_cart: 'Produit ajouté au panier',
     phone_number: 'Numéro de téléphone',
     ranking: 'Classement',
     refunded: 'Remboursé',
@@ -181,6 +183,7 @@ export default {
     signup: "S'enregistrer",
     tournament_fee: 'Frais de tournoi',
     shop: 'Boutique',
+    sizes: 'Grandeurs',
     something_went_wrong: 'Une erreur est survenue.',
     status: 'Status',
     subscribe: "S'abonner",
@@ -207,6 +210,8 @@ export default {
     you_need_to_create_an_account:
       'Avant de procéder, veuillez vous créer un compte.',
     you_paid_with: 'Vous avez payé avec',
+    your_item_has_been_added_to_cart:
+      'Vous avez ajouté {{amount}} {{name}} à votre panier au prix de {{total}}$ ',
     your_total_is: 'Votre total est de',
     your_upcoming_events: 'Vos prochains événements',
     payment_method: 'Méthode de paiement',

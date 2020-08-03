@@ -23,14 +23,23 @@ const createPrice = async params => {
 };
 
 const createItem = async params => {
-  const { name, description, amount, photoUrl, entityId } = params;
-
+  const {
+    name,
+    description,
+    amount,
+    photoUrl,
+    entityId,
+    sizes,
+  } = params;
   const itemParams = {
     stripeProduct: {
       name: name,
       description: description,
       active: true,
-      metadata: { seller_entity_id: entityId },
+      metadata: {
+        seller_entity_id: entityId,
+        sizes: JSON.stringify(sizes),
+      },
     },
     stripePrice: {
       currency: 'cad',

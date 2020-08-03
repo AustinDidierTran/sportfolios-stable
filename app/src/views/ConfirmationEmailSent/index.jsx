@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { MessageAndButton } from '../../components/Custom';
+import { MessageAndButtons } from '../../components/Custom';
 import styles from './ConfirmationEmailSent.module.css';
 import { goTo, ROUTES } from '../../actions/goTo';
 
@@ -17,12 +17,19 @@ export default function ConfirmationEmailSent(props) {
     goTo(ROUTES.login);
   };
 
+  const buttons = [
+    {
+      name: t('go_back_to_login'),
+      onClick: goToLogin,
+      endIcon: 'Undo',
+      color: 'primary',
+    },
+  ];
+
   return (
     <div className={styles.main}>
-      <MessageAndButton
-        button={t('go_back_to_login')}
-        onClick={goToLogin}
-        endIcon={'Undo'}
+      <MessageAndButtons
+        buttons={buttons}
         message={t('email_confirmed', { email })}
       />
     </div>

@@ -58,7 +58,9 @@ const addPrice = async body => {
 const createItem = async body => {
   const { stripeProduct, stripePrice, entityId, photoUrl } = body;
   try {
-    const product = await addProduct({ stripeProduct });
+    const product = await addProduct({
+      stripeProduct,
+    });
 
     const price = await addPrice({
       stripePrice: { ...stripePrice, product: product.id },

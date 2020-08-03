@@ -13,6 +13,7 @@ import { Button, Paper, Input } from '../../../components/Custom';
 import { createItem, onImgUpload } from '../../../utils/shop';
 import { ERROR_ENUM } from '../../../../../common/errors';
 import { useTranslation } from 'react-i18next';
+import AddSizes from '../AddSizes';
 export default function CreateItem(props) {
   const { id } = useParams();
   const { t } = useTranslation();
@@ -23,10 +24,15 @@ export default function CreateItem(props) {
   const [img, setImg] = useState(null);
   const [photoUrl, setPhotoUrl] = useState(null);
   const [error, setError] = useState(null);
+  const [sizes, setSizes] = useState([]);
 
   const name = useFormInput('');
   const amount = useFormInput('');
   const description = useFormInput('');
+
+  const handleChange = event => {
+    setSizes(event.target.value);
+  };
 
   const onImgChange = async ([file]) => {
     setImg(file);
@@ -86,6 +92,7 @@ export default function CreateItem(props) {
         amount: amount.value,
         photoUrl,
         entityId: id,
+        sizes,
       });
       setIsCreating(!isCreating);
       name.reset();
@@ -153,7 +160,11 @@ export default function CreateItem(props) {
           className={styles.description}
           onChange={validateDescription}
         />
-
+        <AddSizes
+          className={styles.sizes}
+          handleChange={handleChange}
+          sizes={sizes}
+        />
         <Button
           size="small"
           endIcon="Store"

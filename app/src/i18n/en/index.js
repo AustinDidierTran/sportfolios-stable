@@ -1,3 +1,5 @@
+import { SIZES_ENUM } from '../../../../common/enums';
+
 export default {
   translations: {
     about: 'About',
@@ -56,6 +58,7 @@ export default {
     delete: 'Delete',
     select_payment_method: 'Select payment method',
     delete_confirmation_text: 'To delete, type {{name}}',
+    description: 'Description',
     donate: 'Donate',
     done: 'Done',
     editor: 'Editor',
@@ -146,6 +149,7 @@ export default {
     players: 'Players',
     pre_ranking: 'Pre-ranking',
     price: 'Price',
+    product_added_to_cart: 'Product added to cart',
     private: 'Private',
     phone_number: 'Phone Number',
     people: 'People',
@@ -171,6 +175,16 @@ export default {
     send_new_confirmation_email: 'Send new confirmation email',
     send_password_recovery_email: 'Send password recovery email',
     signup: 'Signup',
+    sizes: 'Sizes',
+    sizes_enum: {
+      [SIZES_ENUM.XXS]: 'XX-Small',
+      [SIZES_ENUM.XS]: 'X-Small',
+      [SIZES_ENUM.SM]: 'Small',
+      [SIZES_ENUM.M]: 'Medium',
+      [SIZES_ENUM.L]: 'Large',
+      [SIZES_ENUM.XL]: 'X-Large',
+      [SIZES_ENUM.XXL]: 'XX-Large',
+    },
     something_went_wrong: 'Something went wrong.',
     status: 'Status',
     subscribe: 'Subscribe',
@@ -201,6 +215,8 @@ export default {
     you_need_to_create_an_account:
       'You need to create your account first!',
     you_paid_with: 'You paid with',
+    your_item_has_been_added_to_cart:
+      'You added {{amount}} {{name}} to your cart for a total of {{total}}$',
     your_upcoming_events: 'Your Upcoming Events',
     your_total_is: 'Your total is',
     payment_method: 'Payment Method',

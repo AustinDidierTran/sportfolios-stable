@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { MessageAndButton } from '../../components/Custom';
+import { MessageAndButtons } from '../../components/Custom';
 
 import { goTo, ROUTES } from '../../actions/goTo';
 import { useQuery } from '../../hooks/queries';
@@ -20,31 +20,45 @@ export default function ConfirmEmailSuccess() {
     }, 5000);
   }, []);
 
+  const successButtons = [
+    {
+      name: t('go_to_event'),
+      endIcon: 'Event',
+      onClick: () => {
+        goTo(successRoute);
+      },
+      color: 'primary',
+    },
+  ];
+
+  const buttons = [
+    {
+      name: t('home'),
+      onClick: () => {
+        goTo(ROUTES.home);
+      },
+      endIcon: 'Home',
+      color: 'primary',
+    },
+  ];
+
   if (successRoute) {
     return (
-      <MessageAndButton
-        button={t('go_to_event')}
-        onClick={() => {
-          goTo(successRoute);
-        }}
-        endIcon="Event"
+      <MessageAndButtons
+        buttons={successButtons}
         message={`${t('email_confirm_success')} ${t(
           'redirect_to_success_route',
         )}`}
-      ></MessageAndButton>
+      />
     );
   }
 
   return (
-    <MessageAndButton
-      button={t('home')}
-      onClick={() => {
-        goTo(ROUTES.home);
-      }}
-      endIcon="Home"
+    <MessageAndButtons
+      buttons={buttons}
       message={`${t('email_confirm_success')} ${t(
         'redirect_to_home',
       )}`}
-    ></MessageAndButton>
+    />
   );
 }
