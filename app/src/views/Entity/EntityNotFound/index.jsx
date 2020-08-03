@@ -6,7 +6,11 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './EntityNotFound.module.css';
 
-import { Container, Paper, Button } from '../../../components/Custom';
+import {
+  Paper,
+  Button,
+  IgContainer,
+} from '../../../components/Custom';
 import {
   Typography,
   CardActions,
@@ -22,7 +26,7 @@ export default function EntityNotFound() {
 
   return (
     <div className={styles.main}>
-      <Container>
+      <IgContainer>
         <Paper className={styles.card}>
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
@@ -42,7 +46,7 @@ export default function EntityNotFound() {
             </Button>
           </CardActions>
         </Paper>
-      </Container>
+      </IgContainer>
     </div>
   );
 }

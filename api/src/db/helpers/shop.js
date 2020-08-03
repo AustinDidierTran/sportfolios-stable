@@ -2,49 +2,45 @@ const knex = require('../connection');
 const { stripeErrorLogger } = require('../../server/utils/logger');
 
 const getItem = async stripePriceId => {
-  try {
-    const res = await knex('stripe_price')
-      .select(
-        'store_items.entity_id',
-        'store_items.photo_url',
-        'stripe_price.active',
-        'stripe_price.amount',
-        'stripe_price.stripe_price_id',
-        'stripe_price.stripe_product_id',
-        'stripe_product.description',
-        'stripe_product.label',
-      )
-      .leftJoin(
-        'store_items',
-        'store_items.stripe_price_id',
-        '=',
-        'stripe_price.stripe_price_id',
-      )
-      .leftJoin(
-        'stripe_product',
-        'stripe_product.stripe_product_id',
-        '=',
-        'stripe_price.stripe_product_id',
-      )
-      .where('stripe_price.stripe_price_id', stripePriceId);
+  const [item] = await knex('stripe_price')
+    .select(
+      'store_items.entity_id',
+      'store_items.photo_url',
+      'stripe_price.active',
+      'stripe_price.amount',
+      'stripe_price.stripe_price_id',
+      'stripe_price.stripe_product_id',
+      'stripe_product.description',
+      'stripe_product.label',
+    )
+    .leftJoin(
+      'store_items',
+      'store_items.stripe_price_id',
+      '=',
+      'stripe_price.stripe_price_id',
+    )
+    .leftJoin(
+      'stripe_product',
+      'stripe_product.stripe_product_id',
+      '=',
+      'stripe_price.stripe_product_id',
+    )
+    .where('stripe_price.stripe_price_id', stripePriceId);
 
-    return (
-      res.map(i => ({
-        active: i.active,
-        amount: i.amount,
-        description: i.description,
-        entityId: i.entity_id,
-        label: i.label,
-        photoUrl: i.photo_url,
-        stripePriceId: i.stripe_price_id,
-        stripeProductId: i.stripe_product_id,
-      })) || []
-    );
-  } catch (err) {
-    /* eslint-disable-next-line */
-    console.error('GetItem error', err);
-    throw err;
+  if (!item) {
+    return null;
   }
+
+  return {
+    active: item.active,
+    amount: item.amount,
+    description: item.description,
+    entityId: item.entity_id,
+    label: item.label,
+    photoUrl: item.photo_url,
+    stripePriceId: item.stripe_price_id,
+    stripeProductId: item.stripe_product_id,
+  };
 };
 
 const getShopItems = async entityId => {
@@ -189,12 +185,14 @@ const getCartItemsOrdered = async userId => {
 };
 
 const addCartItem = async (body, userId) => {
-  const { stripePriceId, metadata } = body;
-  await knex('cart_items').insert({
-    stripe_price_id: stripePriceId,
-    user_id: userId,
-    metadata,
-  });
+  const { stripePriceId, metadata, quantity = 1 } = body;
+  await knex('cart_items').insert(
+    Array(quantity).fill({
+      stripe_price_id: stripePriceId,
+      user_id: userId,
+      metadata,
+    }),
+  );
 
   return stripePriceId;
 };

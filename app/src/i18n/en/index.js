@@ -26,6 +26,7 @@ export default {
       'Are you sure you want to unregister this team and refund the team if the team has already paid?',
     cart: 'Cart',
     checkout: 'Checkout',
+    quantity: 'Quantity',
     all_steps_completed: 'All Steps Completed',
     amount_to_pay: 'Amount to pay {{amount}}',
     app_role: 'App Role',

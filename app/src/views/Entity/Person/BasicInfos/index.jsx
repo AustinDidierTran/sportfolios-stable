@@ -205,15 +205,7 @@ export default function BasicInfos(props) {
         )
       ) : (
         <></>
-      )
-      // isFollowing ? (
-      //   <Button onClick={onUnfollow} variant="outlined">
-      //     {t('following')}
-      //   </Button>
-      // ) : (
-      //   <Button onClick={onFollow}>{t('follow')}</Button>
-      // )
-      }
+      )}
     </Container>
   );
 }
