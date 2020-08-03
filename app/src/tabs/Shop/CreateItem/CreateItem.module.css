@@ -1,8 +1,17 @@
+.button {
+  margin-top: -12px !important;
+}
+
 .infos {
   display: grid !important;
   grid-template-columns: 8fr 3fr;
   grid-template-areas: 'name price' 'description description' 'cart cart' 'cancel cancel';
   padding-bottom: 0px !important;
+  padding-top: 0px !important;
+  margin-right: 16px !important;
+  margin-left: 16px !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .name {
@@ -21,12 +30,17 @@
 
 .cart {
   grid-area: cart;
-  margin: 16px !important;
+  margin-top: 8px !important;
 }
 
 .cancel {
   grid-area: cancel;
-  margin: 0 16px !important;
+  margin-top: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+.upload {
+  margin: 8px !important;
 }
 
 .media {
@@ -34,5 +48,11 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 300px;
+  height: 210px;
+}
+
+@media (min-width: 768px) {
+  .media {
+    height: 400px;
+  }
 }

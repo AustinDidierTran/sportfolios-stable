@@ -34,7 +34,7 @@ const createItem = async params => {
     },
     stripePrice: {
       currency: 'cad',
-      unit_amount: (+amount * 100).toString(),
+      unit_amount: Math.floor(+amount * 100).toString(),
       active: true,
     },
     entityId,

@@ -6,6 +6,7 @@ const ERROR_ENUM = {
   REGISTRATION_ERROR: 'There was an error with your registration',
   TOKEN_EXPIRED: 'Token has expired',
   VALUE_IS_INVALID: 'Value is invalid',
+  VALUE_IS_REQUIRED: 'value_is_required',
 };
 
 const errors = {
@@ -28,6 +29,14 @@ const errors = {
   [ERROR_ENUM.VALUE_IS_INVALID]: {
     message: ERROR_ENUM.VALUE_IS_INVALID,
     code: 405,
+  },
+  [ERROR_ENUM.VALUE_IS_REQUIRED]: {
+    message: ERROR_ENUM.VALUE_IS_REQUIRED,
+    code: 406,
+  },
+  [ERROR_ENUM.VALUE_IS_TOO_LONG]: {
+    message: ERROR_ENUM.VALUE_IS_TOO_LONG,
+    code: 406,
   },
   [ERROR_ENUM.REGISTRATION_ERROR]: {
     message: ERROR_ENUM.REGISTRATION_ERROR,

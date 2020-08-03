@@ -8,6 +8,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { useParams } from 'react-router-dom';
 import { goTo, ROUTES } from '../../../../actions/goTo';
+import { formatPrice } from '../../../../utils/stringFormats';
 
 export default function ShopItem(props) {
   const { id } = useParams();
@@ -31,7 +32,7 @@ export default function ShopItem(props) {
           {name}
         </Typography>
         <Typography variant="h5" className={styles.price}>
-          {price / 100}
+          {formatPrice(price)}
         </Typography>
         <Typography
           variant="h6"
