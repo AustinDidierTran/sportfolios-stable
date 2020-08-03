@@ -7,6 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Chip from '@material-ui/core/Chip';
 import { useTranslation } from 'react-i18next';
+import { SIZES_ENUM } from '../../../../../common/enums';
 const useStyles = makeStyles(theme => ({
   formControl: {
     width: '100%',
@@ -34,15 +35,13 @@ const MenuProps = {
   },
 };
 
-const options = ['XXS', 'XS', 'SM', 'M', 'L', 'XL', 'XXL'];
+const options = Object.keys(SIZES_ENUM);
 
 function getStyles(size, sizes, theme) {
-  return {
-    fontWeight:
-      sizes.indexOf(size) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
+  if (sizes.indexOf(size) === -1) {
+    return { fontWeight: theme.typography.fontWeightRegular };
+  }
+  return { fontWeight: theme.typography.fontWeightMedium };
 }
 
 export default function AddSizes(props) {
