@@ -15,9 +15,9 @@ const SIZES_ENUM = {
 };
 
 const ROSTER_ROLE_ENUM = {
-  CAPTAIN: 1,
-  PLAYER: 2,
-  VIEWER: 3,
+  CAPTAIN: 'captain',
+  PLAYER: 'player',
+  VIEWER: 'viewer',
 };
 
 const LIST_ROW_TYPE_ENUM = {

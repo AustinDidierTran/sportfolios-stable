@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
 import { useParams } from 'react-router-dom';
-import { ROSTER_ROLE_ENUM } from '../../Store';
+import { ROSTER_ROLE_ENUM } from '../../../../common/enums';
 
 import styles from './Rosters.module.css';
 
@@ -58,16 +58,14 @@ export default function TabRosters() {
 
   const getMyRosters = rosters => {
     const myRosters = rosters
-      .map((r, index) => {
-        if (
+      .filter(
+        r =>
           r.role == ROSTER_ROLE_ENUM.CAPTAIN ||
-          r.role == ROSTER_ROLE_ENUM.PLAYER
-        ) {
-          return { ...r, position: index + 1 };
-        }
-      })
-      .filter(r => r);
-
+          r.role == ROSTER_ROLE_ENUM.PLAYER,
+      )
+      .map((r, index) => {
+        return { ...r, position: index + 1 };
+      });
     setMyRosters(myRosters);
   };
 
@@ -87,13 +85,11 @@ export default function TabRosters() {
   return (
     <div className={styles.contain}>
       <div className={styles.myRoster}>
-        {myRosters && myRosters.length && (
-          <MyRoster
-            rosters={myRosters}
-            onDelete={onDelete}
-            onAdd={onAdd}
-          />
-        )}
+        <MyRoster
+          rosters={myRosters}
+          onDelete={onDelete}
+          onAdd={onAdd}
+        />
       </div>
       <div className={styles.rosters}>
         <Rosters rosters={rosters} />

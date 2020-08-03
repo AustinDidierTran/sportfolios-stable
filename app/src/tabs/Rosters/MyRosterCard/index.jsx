@@ -38,11 +38,7 @@ export default function MyRosterCard(props) {
   };
 
   useEffect(() => {
-    if (expandedPosition == position) {
-      setExpanded(true);
-    } else {
-      setExpanded(false);
-    }
+    setExpanded(expandedPosition === position);
   }, [expandedPosition]);
 
   if (

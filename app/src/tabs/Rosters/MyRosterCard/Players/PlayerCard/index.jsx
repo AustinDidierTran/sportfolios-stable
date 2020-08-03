@@ -1,8 +1,8 @@
 import React from 'react';
 import styles from './PlayerCard.module.css';
 import Tag from '../../../Tag';
-import { ROSTER_ROLE_ENUM } from '../../../../../Store';
 import { Icon } from '../../../../../components/Custom';
+import { ROSTER_ROLE_ENUM } from '../../../../../../../common/enums';
 
 export default function PlayerCard(props) {
   const { player, role, onDelete } = props;

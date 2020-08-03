@@ -80,4 +80,6 @@ export default function Players(props) {
       </div>
     );
   }
+
+  return null;
 }

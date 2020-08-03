@@ -8,18 +8,20 @@ export default function MyRoster(props) {
 
   return (
     <div>
-      {rosters.map((roster, index) => {
-        return (
-          <MyRosterCard
-            roster={roster}
-            expandedPosition={expandedPosition}
-            setExpandedPosition={setExpandedPosition}
-            onDelete={onDelete}
-            onAdd={onAdd}
-            index={index}
-          />
-        );
-      })}
+      {rosters &&
+        rosters.length &&
+        rosters.map((roster, index) => {
+          return (
+            <MyRosterCard
+              roster={roster}
+              expandedPosition={expandedPosition}
+              setExpandedPosition={setExpandedPosition}
+              onDelete={onDelete}
+              onAdd={onAdd}
+              index={index}
+            />
+          );
+        })}
     </div>
   );
 }

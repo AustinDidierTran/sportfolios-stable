@@ -24,11 +24,7 @@ export default function RosterCard(props) {
   };
 
   useEffect(() => {
-    if (expandedPosition == position) {
-      setExpanded(true);
-    } else {
-      setExpanded(false);
-    }
+    setExpanded(expandedPosition === position);
   }, [expandedPosition]);
 
   if (role == ENTITIES_ROLE_ENUM.ADMIN) {

@@ -416,7 +416,6 @@ async function deleteEntityMembership(query) {
 async function deleteOption(id) {
   return deleteOptionHelper(id);
 }
-deletePlayerFromRoster;
 
 async function addPlayerToRoster(body, userId) {
   return addPlayerToRosterHelper(body, userId);
