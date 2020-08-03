@@ -490,6 +490,26 @@ router.post(`${BASE_URL}/roster`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
+  await queries.addPlayerToRoster(ctx.request.body);
+
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
+router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
+  await queries.deletePlayerFromRoster(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+  ctx.status = 200;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
 router.del(BASE_URL, async ctx => {
   const entity = await queries.deleteEntity(
     ctx.query.id,

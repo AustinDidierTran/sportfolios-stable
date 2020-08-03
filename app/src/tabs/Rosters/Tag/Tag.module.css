@@ -3,9 +3,11 @@
   display: flex;
   flex-direction: row;
   color: white;
-  justify-content: center;
   align-content: center;
-  width: 100%;
+  width: min-content;
+  flex: 1 1 auto;
+  align-self: center;
+  border: 2px solid white;
 }
 
 .name {

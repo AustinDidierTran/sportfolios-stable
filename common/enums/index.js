@@ -14,12 +14,26 @@ const SIZES_ENUM = {
   XXL: 'xx-large',
 };
 
+const ROSTER_ROLE_ENUM = {
+  CAPTAIN: 'captain',
+  PLAYER: 'player',
+  VIEWER: 'viewer',
+};
+
 const LIST_ROW_TYPE_ENUM = {
   PERSON: 1,
   ORGANIZATION: 2,
   TEAM: 3,
   MEMBERSHIP: 4,
   MEMBERSHIP_DETAIL: 5,
+};
+
+const TAG_TYPE_ENUM = {
+  ACCEPTED: 'accepted',
+  PENDING: 'pending',
+  REGISTERED: 'registered',
+  UNREGISTERED: 'unregistered',
+  DEFAULT: 'default',
 };
 
 const MEMBERSHIP_LENGTH_ENUM = {
@@ -154,4 +168,6 @@ module.exports = {
   STRIPE_ERROR_ENUM,
   STRIPE_STATUS_ENUM,
   VIEW_ENUM,
+  TAG_TYPE_ENUM,
+  ROSTER_ROLE_ENUM,
 };

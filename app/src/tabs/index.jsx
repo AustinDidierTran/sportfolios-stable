@@ -21,6 +21,8 @@ export const TABS_ENUM = {
 export default function Tabs(props) {
   const { t } = useTranslation();
   const { list, role } = props;
+  //const [enabled] = useFeature(FEATURE_FLAGS.ROSTER_EDIT);
+  const enabled = true;
 
   return list.reduce((prev, l) => {
     if (l === TABS_ENUM.ABOUT) {
@@ -46,15 +48,18 @@ export default function Tabs(props) {
       ];
     }
     if (l === TABS_ENUM.ROSTERS) {
-      return [
-        ...prev,
-        {
-          value: TABS_ENUM.ROSTERS,
-          component: Rosters,
-          label: t('general'),
-          icon: 'Group',
-        },
-      ];
+      if (enabled) {
+        return [
+          ...prev,
+          {
+            value: TABS_ENUM.ROSTERS,
+            component: Rosters,
+            label: t('general'),
+            icon: 'Group',
+          },
+        ];
+      }
+      return prev;
     }
     if (l === TABS_ENUM.EVENTS) {
       return [

@@ -48,6 +48,8 @@ const {
   updateMember: updateMemberHelper,
   updateRegistration: updateRegistrationHelper,
   eventInfos: eventInfosHelper,
+  addPlayerToRoster: addPlayerToRosterHelper,
+  deletePlayerFromRoster: deletePlayerFromRosterHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -415,6 +417,14 @@ async function deleteOption(id) {
   return deleteOptionHelper(id);
 }
 
+async function addPlayerToRoster(body, userId) {
+  return addPlayerToRosterHelper(body, userId);
+}
+
+async function deletePlayerFromRoster(id, userId) {
+  return deletePlayerFromRosterHelper(id, userId);
+}
+
 module.exports = {
   addEntity,
   addEntityRole,
@@ -451,4 +461,7 @@ module.exports = {
   updateRegistration,
   eventInfos,
   getRoster,
+  addPlayerToRoster,
+  deletePlayerFromRoster,
+  deleteEntityHelper,
 };

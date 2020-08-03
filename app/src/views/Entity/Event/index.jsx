@@ -9,14 +9,11 @@ import { useQuery } from '../../../hooks/queries';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import TabsGenerator, { TABS_ENUM } from '../../../tabs';
 import { formatPageTitle } from '../../../utils/stringFormats';
-import { useFeature } from '@optimizely/react-sdk';
-import { FEATURE_FLAGS } from '../../../../../common/flags';
 
 export default function Event(props) {
   const { basicInfos } = props;
   const { id } = useParams();
   const query = useQuery();
-  const [enabled] = useFeature(FEATURE_FLAGS.ROSTER_EDIT);
 
   useEffect(() => {
     document.title = formatPageTitle(basicInfos.name);
@@ -27,9 +24,12 @@ export default function Event(props) {
   );
 
   const states = TabsGenerator({
-    list: enabled
-      ? [TABS_ENUM.EVENT_INFO, TABS_ENUM.ROSTERS, TABS_ENUM.SETTINGS]
-      : [TABS_ENUM.EVENT_INFO, TABS_ENUM.SETTINGS],
+    list: [
+      TABS_ENUM.EVENT_INFO,
+      TABS_ENUM.ROSTERS,
+      TABS_ENUM.SETTINGS,
+    ],
+
     role: basicInfos.role,
   });
 
