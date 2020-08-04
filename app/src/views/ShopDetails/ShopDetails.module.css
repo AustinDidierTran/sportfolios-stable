@@ -1,7 +1,7 @@
 .infos {
   display: grid !important;
   grid-template-columns: 1fr 128px;
-  grid-template-areas: 'name price' 'description description' 'quantity quantity' 'cart cart';
+  grid-template-areas: 'name price' 'description description' 'sizes sizes' 'quantity quantity' 'cart cart';
   padding-bottom: 0px !important;
 }
 
@@ -13,6 +13,10 @@
 .price {
   grid-area: price;
   justify-self: end;
+}
+
+.sizes {
+  grid-area: sizes;
 }
 
 .description {

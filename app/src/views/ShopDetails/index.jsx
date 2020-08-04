@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 
 import styles from './ShopDetails.module.css';
 import { useTranslation } from 'react-i18next';
@@ -19,7 +19,6 @@ import { useEffect } from 'react';
 import { formatPrice } from '../../utils/stringFormats';
 import { useFormik } from 'formik';
 import { CircularProgress } from '@material-ui/core';
-import { useContext } from 'react';
 import { Store, ACTION_ENUM } from '../../Store';
 
 export default function ShopDetails() {
@@ -28,13 +27,20 @@ export default function ShopDetails() {
   const { stripePriceId } = useParams();
   const [item, setItem] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const { label: name, amount: price, photoUrl, description } = item;
+  const {
+    label: name,
+    amount: price,
+    photoUrl,
+    metadata,
+    description,
+  } = item;
 
   const fetchItem = async () => {
     const { data } = await api(
       formatRoute('/api/shop/getItem', null, { id: stripePriceId }),
     );
     setItem(data);
+
     setIsLoading(false);
   };
 
@@ -55,14 +61,19 @@ export default function ShopDetails() {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
-      const { quantity } = values;
+      const { quantity, size } = values;
+      const metadata = {};
+
+      if (size) {
+        metadata.size = size;
+      }
 
       /* eslint-disable-next-line */
       const res = await api('/api/shop/addCartItem', {
         method: 'POST',
         body: JSON.stringify({
           stripePriceId,
-          metadata: {},
+          metadata,
           quantity,
         }),
       });
@@ -82,6 +93,19 @@ export default function ShopDetails() {
       }
     },
   });
+
+  const sizeOptions = useMemo(() => {
+    if (metadata && metadata.sizes) {
+      const sizes = JSON.parse(metadata.sizes);
+      formik.setFieldValue('size', sizes[0]);
+      return sizes.map(size => ({
+        value: size,
+        display: t(`sizes_enum_${size.toLowerCase()}`),
+      }));
+    }
+
+    return null;
+  }, [metadata]);
 
   useEffect(() => {
     fetchItem();
@@ -127,6 +151,18 @@ export default function ShopDetails() {
             >
               {description}
             </Typography>
+            {sizeOptions ? (
+              <div className={styles.sizes}>
+                <Select
+                  label={t('size')}
+                  formik={formik}
+                  namespace="size"
+                  options={sizeOptions}
+                />
+              </div>
+            ) : (
+              <></>
+            )}
             <div className={styles.quantity}>
               <Select
                 label={t('quantity')}
