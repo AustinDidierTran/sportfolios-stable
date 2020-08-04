@@ -19,38 +19,34 @@ export default function Players(props) {
     getData();
   }, []);
 
+  if (!playersUpdated) {
+    return <></>;
+  }
+
   if (role == ENTITIES_ROLE_ENUM.VIEWER) {
     return (
       <div className={styles.card}>
-        {playersUpdated &&
-          playersUpdated.map((player, index) => {
-            return (
-              <div className={styles.player}>
-                <div className={styles.position}>{`${index}`}</div>
-                <div className={styles.name}>
-                  {player && player.name}
-                </div>
-                <div className={styles.pod}>
-                  <Tag type={player.status} />
-                </div>
-              </div>
-            );
-          })}
+        {playersUpdated.map((player, index) => (
+          <div className={styles.player}>
+            <div className={styles.position}>{`${index}`}</div>
+            <div className={styles.name}>{player && player.name}</div>
+            <div className={styles.pod}>
+              <Tag type={player.status} />
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
 
   return (
     <div className={styles.card}>
-      {playersUpdated &&
-        playersUpdated.map((player, index) => {
-          return (
-            <div className={styles.player}>
-              <div className={styles.position}>{`${index}`}</div>
-              <div className={styles.name}>{player.name}</div>
-            </div>
-          );
-        })}
+      {playersUpdated.map((player, index) => (
+        <div className={styles.player}>
+          <div className={styles.position}>{`${index}`}</div>
+          <div className={styles.name}>{player.name}</div>
+        </div>
+      ))}
     </div>
   );
 }

@@ -221,6 +221,8 @@ export default {
     upload: 'Téléverser',
     valid_until: "Valide jusqu'au",
     viewer: 'Visiteur',
+    accepted: 'Accepté',
+
     yes: 'oui',
     you_can_always_change_your_team_name_in_your_team_profile:
       "Si vous hésitez pour votre nom d'équipe, sachez que vous pouvez le changer plus tard dans votre profil d'équipe.",

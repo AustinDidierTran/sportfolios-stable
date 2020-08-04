@@ -17,7 +17,6 @@
 
 .position {
   grid-area: position;
-
   justify-self: center;
   align-self: center;
 
@@ -46,6 +45,7 @@
 
 .avatar {
   flex: 0 1 auto;
+  margin-right: 16px;
 }
 
 .pod {
@@ -68,7 +68,7 @@
 
 .expanded {
   grid-area: expanded;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 1);
   color: rgba(0, 0, 0, 0.5) !important;
 
   padding-bottom: 8px;
