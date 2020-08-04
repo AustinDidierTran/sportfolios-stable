@@ -13,6 +13,7 @@ const getItem = async stripePriceId => {
       'stripe_price.stripe_product_id',
       'stripe_product.description',
       'stripe_product.label',
+      'stripe_product.metadata',
     )
     .leftJoin(
       'store_items',
@@ -38,6 +39,7 @@ const getItem = async stripePriceId => {
     description: item.description,
     entityId: item.entity_id,
     label: item.label,
+    metadata: item.metadata,
     photoUrl: item.photo_url,
     stripePriceId: item.stripe_price_id,
     stripeProductId: item.stripe_product_id,
@@ -199,12 +201,25 @@ const addCartItem = async (body, userId) => {
     quantity: addedQuantity = 1,
   } = body;
 
-  const [{ id, quantity } = {}] = await knex('cart_items')
-    .select(['id', 'quantity'])
-    .where({
-      user_id: userId,
-      stripe_price_id: stripePriceId,
-    });
+  const { size } = metadata;
+
+  const whereQuery = {
+    user_id: userId,
+    stripe_price_id: stripePriceId,
+  };
+
+  if (size) {
+    whereQuery.size = size;
+  }
+
+  const [{ id, quantity } = {}] = await knex
+    .select(['id', 'quantity', 'size'])
+    .from(
+      knex('cart_items')
+        .select(knex.raw("*, metadata ->> 'size' AS size"))
+        .as('cart_items'),
+    )
+    .where(whereQuery);
 
   if (!id) {
     await knex('cart_items').insert({

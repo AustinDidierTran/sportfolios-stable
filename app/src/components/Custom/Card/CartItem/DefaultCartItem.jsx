@@ -19,8 +19,11 @@ export default function DefaultCartItem(props) {
     photoUrl,
     description,
     updateQuantity,
+    metadata = {},
     quantity,
   } = props;
+
+  const { size } = metadata;
 
   const quantityOptions = Array(Math.max(101, quantity + 1))
     .fill(0)
@@ -46,6 +49,14 @@ export default function DefaultCartItem(props) {
           className={styles.description}
         >
           {description}
+        </Typography>
+        <Typography
+          variant="h6"
+          color="textSecondary"
+          component="p"
+          className={styles.size}
+        >
+          {t('size')}: {size}
         </Typography>
         <Select
           className={styles.quantity}

@@ -1,3 +1,5 @@
+import { SIZES_ENUM } from '../../../../common/enums';
+
 export default {
   translations: {
     about: 'À propos',
@@ -183,7 +185,24 @@ export default {
     signup: "S'enregistrer",
     tournament_fee: 'Frais de tournoi',
     shop: 'Boutique',
+    size: 'Grandeur',
     sizes: 'Grandeurs',
+    sizes_enum: {
+      [SIZES_ENUM.XXS]: 'XX-Small',
+      [SIZES_ENUM.XS]: 'X-Small',
+      [SIZES_ENUM.SM]: 'Small',
+      [SIZES_ENUM.M]: 'Medium',
+      [SIZES_ENUM.L]: 'Large',
+      [SIZES_ENUM.XL]: 'X-Large',
+      [SIZES_ENUM.XXL]: 'XX-Large',
+    },
+    sizes_enum_xxs: 'XX-Small',
+    sizes_enum_xs: 'X-Small',
+    sizes_enum_sm: 'Small',
+    sizes_enum_m: 'Medium',
+    sizes_enum_l: 'Large',
+    sizes_enum_xl: 'X-Large',
+    sizes_enum_xxl: 'XX-Large',
     something_went_wrong: 'Une erreur est survenue.',
     status: 'Status',
     subscribe: "S'abonner",
