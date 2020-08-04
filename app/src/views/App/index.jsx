@@ -66,6 +66,8 @@ const Checkout = loadable(() => import('../Checkout'));
 const Sales = loadable(() => import('../Sales'));
 const ShopDetails = loadable(() => import('../ShopDetails'));
 
+const Sales = loadable(() => import('../Sales'));
+
 // Mocks
 import MockEvent from '../Mocks/Event';
 
