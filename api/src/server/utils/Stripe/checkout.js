@@ -4,6 +4,10 @@ const {
   updateRegistration,
 } = require('../../../db/helpers/entity');
 
+const {
+  addItemToPaidStoreItems,
+} = require('../../../db/helpers/shop');
+
 const INVOICE_CREATED_ENUM = {
   EVENT: async (metadata, stripe) => {
     const { roster_id: rosterId, event_id: eventId } = metadata;
@@ -36,7 +40,9 @@ const INVOICE_PAID_ENUM = {
       status,
     );
   },
-  STORE: () => {},
+  STORE: async body => {
+    await addItemToPaidStoreItems(body);
+  },
   MEMBERSHIPS: () => {},
 };
 

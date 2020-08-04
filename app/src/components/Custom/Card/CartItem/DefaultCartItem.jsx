@@ -62,7 +62,6 @@ export default function DefaultCartItem(props) {
         >
           {description}
         </Typography>
-
         <Select
           className={styles.quantity}
           onChange={updateQuantity}

@@ -35,12 +35,13 @@ const formatMetadata = metadata =>
   }, {});
 
 const createInvoiceItem = async (body, userId) => {
-  const { price, metadata, paymentMethodId } = body;
+  const { price, metadata, paymentMethodId, quantity } = body;
   const customerId = await getCustomerId(paymentMethodId);
   const params = {
     price,
     customer: customerId,
     metadata: formatMetadata(metadata),
+    quantity,
   };
   try {
     const invoiceItem = await stripe.invoiceItems.create(params);
@@ -49,6 +50,10 @@ const createInvoiceItem = async (body, userId) => {
       invoice_item_id: invoiceItem.id,
       stripe_price_id: invoiceItem.price.id,
       metadata: invoiceItem.metadata,
+      seller_entity_id:
+        invoiceItem.metadata.seller_entity_id ||
+        invoiceItem.metadata.sellerId ||
+        invoiceItem.metadata.sellerEntityId,
     });
 
     stripeLogger(`InvoiceItem created, ${invoiceItem.id}`);
@@ -176,12 +181,13 @@ const createTransfers = async invoice => {
           currency,
           invoice_item: invoiceItemId,
         } = item;
+
         const [invoiceItem] = await knex('stripe_invoice_item')
           .select('*')
           .where({ invoice_item_id: invoiceItemId });
 
         const externalAccount = await getExternalAccount(
-          invoiceItem.metadata.sellerId,
+          invoiceItem.seller_entity_id,
         );
 
         const stripeFees = Math.ceil(amount * 0.029 + 30);
@@ -313,13 +319,20 @@ const checkout = async (body, userId) => {
   };
 
   const prices = await knex('cart_items').where({ user_id: userId });
+
   try {
     const invoicesAndMetadatas = await Promise.all(
       prices.map(async price => {
         const stripePriceId = price.stripe_price_id;
+        const quantity = price.quantity;
         const metadata = await getMetadata(stripePriceId, price.id);
         const invoiceItem = await createInvoiceItem(
-          { price: stripePriceId, metadata, paymentMethodId },
+          {
+            price: stripePriceId,
+            metadata,
+            paymentMethodId,
+            quantity,
+          },
           userId,
         );
         return { invoiceItem, metadata };
@@ -342,11 +355,12 @@ const checkout = async (body, userId) => {
     const chargeId = await paidInvoice.charge;
     const receiptUrl = await getReceipt({ chargeId, invoiceId });
     const transfers = await createTransfers(paidInvoice, userId);
+
     await sendReceiptEmail({ receipt: receiptUrl }, userId);
 
     await Promise.all(
       invoicesAndMetadatas.map(async ({ invoiceItem, metadata }) => {
-        if (Number(metadata.type) === 4) {
+        if (Number(metadata.type) === GLOBAL_ENUM.EVENT) {
           await INVOICE_PAID_ENUM.EVENT(
             { rosterId: metadata.rosterId, eventId: metadata.id },
             {
@@ -354,6 +368,19 @@ const checkout = async (body, userId) => {
               invoiceItemId: invoiceItem.id,
             },
           );
+        } else if (Number(metadata.type) === GLOBAL_ENUM.SHOP_ITEM) {
+          await INVOICE_PAID_ENUM.STORE({
+            sellerEntityId: metadata.seller_entity_id,
+            quantity: invoiceItem.quantity,
+            unitAmount: invoiceItem.unit_amount,
+            amount: invoiceItem.amount,
+            stripePriceId: invoiceItem.price.id,
+            buyerUserId: userId,
+            invoiceItemId: invoiceItem.id,
+            metadata: {
+              size: metadata.size,
+            },
+          });
         }
       }),
     );

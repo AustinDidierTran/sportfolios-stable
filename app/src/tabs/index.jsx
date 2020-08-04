@@ -7,6 +7,8 @@ import Shop from './Shop';
 import Rosters from './Rosters';
 import { useTranslation } from 'react-i18next';
 import { ENTITIES_ROLE_ENUM } from '../Store';
+import { useFeature } from '@optimizely/react-sdk';
+import { FEATURE_FLAGS } from '../../../common/flags';
 
 export const TABS_ENUM = {
   ABOUT: 'about',
@@ -21,8 +23,7 @@ export const TABS_ENUM = {
 export default function Tabs(props) {
   const { t } = useTranslation();
   const { list, role } = props;
-  //const [enabled] = useFeature(FEATURE_FLAGS.ROSTER_EDIT);
-  const enabled = true;
+  const [shopIsEnabled] = useFeature(FEATURE_FLAGS.SHOP);
 
   return list.reduce((prev, l) => {
     if (l === TABS_ENUM.ABOUT) {
@@ -48,18 +49,15 @@ export default function Tabs(props) {
       ];
     }
     if (l === TABS_ENUM.ROSTERS) {
-      if (enabled) {
-        return [
-          ...prev,
-          {
-            value: TABS_ENUM.ROSTERS,
-            component: Rosters,
-            label: t('rosters'),
-            icon: 'Group',
-          },
-        ];
-      }
-      return prev;
+      return [
+        ...prev,
+        {
+          value: TABS_ENUM.ROSTERS,
+          component: Rosters,
+          label: t('general'),
+          icon: 'Group',
+        },
+      ];
     }
     if (l === TABS_ENUM.EVENTS) {
       return [
@@ -103,15 +101,19 @@ export default function Tabs(props) {
       return prev;
     }
     if (l === TABS_ENUM.SHOP) {
-      return [
-        ...prev,
-        {
-          value: TABS_ENUM.SHOP,
-          component: Shop,
-          label: t('shop'),
-          icon: 'Store',
-        },
-      ];
+      if (shopIsEnabled) {
+        return [
+          ...prev,
+          {
+            value: TABS_ENUM.SHOP,
+            component: Shop,
+            label: t('shop'),
+            icon: 'Store',
+          },
+        ];
+      }
+
+      return prev;
     }
   }, []);
 }
