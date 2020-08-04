@@ -211,7 +211,7 @@ export default {
       'Avant de procéder, veuillez vous créer un compte.',
     you_paid_with: 'Vous avez payé avec',
     your_item_has_been_added_to_cart:
-      'Vous avez ajouté {{amount}} {{name}} à votre panier au prix de {{total}}$ ',
+      'Vous avez ajouté {{amount}} {{name}} à votre panier pour un total de {{total}}.',
     your_total_is: 'Votre total est de',
     your_upcoming_events: 'Vos prochains événements',
     payment_method: 'Méthode de paiement',

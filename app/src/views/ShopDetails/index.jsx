@@ -7,7 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
-import { formatRoute } from '../../actions/goTo';
+import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
 import { Typography } from '../../components/MUI';
 import {
   Button,
@@ -19,8 +19,11 @@ import { useEffect } from 'react';
 import { formatPrice } from '../../utils/stringFormats';
 import { useFormik } from 'formik';
 import { CircularProgress } from '@material-ui/core';
+import { useContext } from 'react';
+import { Store, ACTION_ENUM } from '../../Store';
 
 export default function ShopDetails() {
+  const { dispatch } = useContext(Store);
   const { t } = useTranslation();
   const { stripePriceId } = useParams();
   const [item, setItem] = useState({});
@@ -64,7 +67,19 @@ export default function ShopDetails() {
         }),
       });
 
-      // TODO: Redirect to page when succesful, otherwise display errors
+      if (res.status === 200) {
+        goTo(ROUTES.productAddedToCart, null, {
+          amount: quantity,
+          name: item.label,
+          total: formatPrice(quantity * item.amount),
+        });
+      } else {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          severity: 'error',
+          message: t('something_went_wrong'),
+        });
+      }
     },
   });
 
