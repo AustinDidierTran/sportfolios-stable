@@ -264,6 +264,7 @@ export default {
     name_is_required: 'Name is required',
     new_password: 'New Password',
     old_password: 'Old password',
+    see_sales: 'See sales',
     password_length:
       'Password must be within 8 and 16 characters long.',
     password_must_match: 'Passwords must match',

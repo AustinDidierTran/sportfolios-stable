@@ -65,6 +65,8 @@ const Cart = loadable(() => import('../Cart'));
 const Checkout = loadable(() => import('../Checkout'));
 const ShopDetails = loadable(() => import('../ShopDetails'));
 
+const Sales = loadable(() => import('../Sales'));
+
 // Mocks
 import MockEvent from '../Mocks/Event';
 
@@ -158,6 +160,7 @@ export default function App() {
                     path={ROUTES.orderProcessed}
                     component={OrderProcessed}
                   />
+                  <Route path={ROUTES.sales} component={Sales} />
                   <Route
                     exact
                     path={ROUTES.scheduleManager}
