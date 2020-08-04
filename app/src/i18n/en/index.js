@@ -296,6 +296,7 @@ export default {
     payment_option: 'Payment option',
     profile: 'Profile',
     user_settings: 'User Settings',
+    rosters: 'Rosters',
     // Buttons
     cancel: 'Cancel',
     edit: 'Edit',

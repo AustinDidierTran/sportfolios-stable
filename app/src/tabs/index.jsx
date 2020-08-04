@@ -54,7 +54,7 @@ export default function Tabs(props) {
           {
             value: TABS_ENUM.ROSTERS,
             component: Rosters,
-            label: t('general'),
+            label: t('rosters'),
             icon: 'Group',
           },
         ];

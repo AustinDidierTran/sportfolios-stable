@@ -304,6 +304,7 @@ export default {
     admin_panel: 'Panneaux des administrateurs',
     profile: 'Profil',
     user_settings: 'Paramètres utilisateur',
+    rosters: 'Alignements',
     // Buttons
     cancel: 'Annuler',
     edit: 'Modifier',
