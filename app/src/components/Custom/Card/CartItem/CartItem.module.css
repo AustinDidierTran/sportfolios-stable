@@ -1,7 +1,7 @@
 .infos {
   display: grid !important;
   grid-template-columns: 2fr 1fr 2fr 1fr 2fr;
-  grid-template-areas: 'name name name price price' 'description description description description description' 'size size size size size' 'quantity quantity quantity quantity quantity' '. button button button .';
+  grid-template-areas: 'name name name price price' 'size size size size size' 'description description description description description' 'quantity quantity quantity quantity quantity' '. button button button .';
 }
 
 .name {
@@ -18,14 +18,18 @@
 
 .description {
   grid-area: description;
+  text-align: left;
 }
 
 .size {
   grid-area: size;
+  text-align: left;
+  margin-bottom: 16px !important;
 }
 
 .quantity {
   grid-area: quantity;
+  margin-top: 24px !important;
 }
 
 .cartButton {

@@ -42,32 +42,37 @@ export default function DefaultCartItem(props) {
         <Typography variant="h6" className={styles.price}>
           {formatPrice(price)}
         </Typography>
+        {size ? (
+          <Typography
+            variant="h6"
+            color="textSecondary"
+            component="p"
+            className={styles.size}
+          >
+            {t('size')}: {size}
+          </Typography>
+        ) : (
+          <></>
+        )}
         <Typography
-          variant="h6"
+          variant="h7"
           color="textSecondary"
           component="p"
           className={styles.description}
         >
           {description}
         </Typography>
-        <Typography
-          variant="h6"
-          color="textSecondary"
-          component="p"
-          className={styles.size}
-        >
-          {t('size')}: {size}
-        </Typography>
+
         <Select
           className={styles.quantity}
           onChange={updateQuantity}
           value={quantity}
           options={quantityOptions}
           label={t('quantity')}
-          inputProps={{
-            min: 0,
-            style: { textAlign: 'center' },
-          }}
+          // inputProps={{
+          //   min: 0,
+          //   style: { textAlign: 'center' },
+          // }}
         />
       </CardContent>
     </Paper>

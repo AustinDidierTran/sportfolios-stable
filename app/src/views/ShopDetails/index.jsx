@@ -69,6 +69,7 @@ export default function ShopDetails() {
       }
 
       /* eslint-disable-next-line */
+      console.log({ stripePriceId, metadata, quantity });
       const res = await api('/api/shop/addCartItem', {
         method: 'POST',
         body: JSON.stringify({
@@ -140,11 +141,11 @@ export default function ShopDetails() {
             >
               {name}
             </Typography>
-            <Typography variant="h5" className={styles.price}>
+            <Typography variant="h6" className={styles.price}>
               {formatPrice(price)}
             </Typography>
             <Typography
-              variant="h6"
+              variant="h7"
               color="textSecondary"
               component="p"
               className={styles.description}
