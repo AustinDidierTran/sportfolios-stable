@@ -367,6 +367,7 @@ export default {
     registrations_ended: 'Registrations ended',
     registrations_ends_on: 'Registrations ends on',
     registrations_open_on: 'Registrations open on',
+    accepted: 'Accepted',
     registration_accepted:
       'Congratulation! You have been accepted to the event you can now go to your cart to pay the registration for your team!',
     registration_pending:
