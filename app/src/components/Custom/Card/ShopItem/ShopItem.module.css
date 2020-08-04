@@ -1,10 +1,12 @@
 .infos {
   display: grid !important;
   grid-template-columns: 5fr 2fr;
-  grid-template-areas: 'name price' 'description description' 'cart cart';
+  grid-template-areas: 'name price' 'description description' 'button button';
   padding-bottom: 16px !important;
   border-bottom: 1px solid rgb(207, 207, 207);
   margin-bottom: 8px;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .name {
@@ -24,21 +26,6 @@
   overflow: auto !important;
 }
 
-.cart {
-  grid-area: cart;
-  margin: 16px !important;
-  display: flex;
-}
-
-.cartButton {
-  grid-area: cart;
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  width: 100%;
-}
-
 .cartButtonChildren {
   flex: 1 1 0;
   height: fit-content;
@@ -51,6 +38,13 @@
   align-items: center;
   justify-content: center;
   height: 210px;
+}
+
+.button {
+  grid-area: button;
+  justify-self: center !important;
+  width: 50%;
+  margin-top: 16px !important;
 }
 
 @media (min-width: 768px) {

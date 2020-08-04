@@ -220,6 +220,14 @@ router.post(`${BASE_URL}/createItem`, async ctx => {
   };
 });
 
+router.del(`${BASE_URL}/deleteItem`, async ctx => {
+  const data = await queries.deleteItem(ctx.query);
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 //TODO: Link this to a fct (getProduct doesnt exist)
 router.get(`${BASE_URL}/getProductFromPriceId`, async ctx => {
   const data = await queries.getProduct(
