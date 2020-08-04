@@ -100,11 +100,11 @@ const deletePrice = async stripePriceId => {
 const deleteItem = async body => {
   const { stripeProductId, stripePriceId } = body;
 
-  const price = await deletePrice(stripePriceId);
+  const numberPriceDeleted = await deletePrice(stripePriceId);
 
-  const product = await deleteProduct(stripeProductId);
+  const numberProductDeleted = await deleteProduct(stripeProductId);
 
-  if (price && product) {
+  if (numberPriceDeleted && numberProductDeleted) {
     return { stripeProductId, stripePriceId };
   }
   return null;
