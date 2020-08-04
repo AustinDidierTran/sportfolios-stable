@@ -31,6 +31,7 @@ import OrganizationList from '../Main/OrganizationList';
 import PasswordRecovery from '../PasswordRecovery';
 import ProductAddedToCart from '../ProductAddedToCart';
 import RegistrationStatus from '../RegistrationStatus';
+import ScheduleManager from '../ScheduleManager';
 import Search from '../Search';
 import Stripe from '../../utils/stripe/Payment/index';
 import UserSettings from '../UserSettings';
@@ -130,6 +131,11 @@ export default function App() {
                     exact
                     path={ROUTES.orderProcessed}
                     component={OrderProcessed}
+                  />
+                  <Route
+                    exact
+                    path={ROUTES.scheduleManager}
+                    component={ScheduleManager}
                   />
                   <Route
                     exact

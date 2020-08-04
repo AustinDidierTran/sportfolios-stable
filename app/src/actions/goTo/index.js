@@ -30,6 +30,7 @@ export const ROUTES = {
   productAddedToCart: '/productAddedToCart',
   recoveryEmail: '/recoveryEmail',
   registrationStatus: '/registrationStatus',
+  scheduleManager: '/scheduleManager',
   search: '/search',
   shopDetails: '/shopDetails/:id/:stripePriceId',
   signup: '/signup',
