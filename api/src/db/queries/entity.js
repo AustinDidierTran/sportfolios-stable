@@ -183,7 +183,7 @@ async function addTeamToEvent(body, userId) {
       {
         stripePriceId: paymentOption,
         metadata: {
-          sellerId: eventId,
+          sellerEntityId: eventId,
           buyerId: teamId,
           rosterId,
           team,

@@ -6,7 +6,7 @@ import BasicInfo from './BasicInfo';
 import ChangePassword from './ChangePassword';
 import Disconnect from './Disconnect';
 import Email from './Email';
-import { Container } from '../../components/Custom';
+import { IgContainer } from '../../components/Custom';
 import { formatPageTitle } from '../../utils/stringFormats';
 import { useTranslation } from 'react-i18next';
 
@@ -18,12 +18,12 @@ export default function UserSettings() {
 
   return (
     <div className={styles.main}>
-      <Container className={styles.container}>
+      <IgContainer className={styles.container}>
         <BasicInfo />
         <ChangePassword />
         <Email />
         <Disconnect />
-      </Container>
+      </IgContainer>
     </div>
   );
 }

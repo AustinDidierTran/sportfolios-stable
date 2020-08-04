@@ -1,6 +1,7 @@
 const knex = require('../connection');
 const { stripeErrorLogger } = require('../../server/utils/logger');
 const { ERROR_ENUM } = require('../../../../common/errors');
+const { GLOBAL_ENUM } = require('../../../../common/enums');
 
 const getItem = async stripePriceId => {
   const [item] = await knex('stripe_price')
@@ -225,7 +226,10 @@ const addCartItem = async (body, userId) => {
     await knex('cart_items').insert({
       stripe_price_id: stripePriceId,
       user_id: userId,
-      metadata,
+      metadata: {
+        type: GLOBAL_ENUM.SHOP_ITEM,
+        ...metadata,
+      },
       quantity: addedQuantity,
     });
   } else {
@@ -271,6 +275,32 @@ const updateCartItems = async (body, userId) => {
   }
 };
 
+const addItemToPaidStoreItems = async query => {
+  const {
+    sellerEntityId,
+    quantity,
+    unitAmount,
+    amount,
+    stripePriceId,
+    buyerUserId,
+    invoiceItemId,
+    metadata,
+  } = query;
+
+  await knex('store_items_paid').insert({
+    seller_entity_id: sellerEntityId,
+    quantity,
+    unit_amount: unitAmount,
+    amount,
+    stripe_price_id: stripePriceId,
+    buyer_user_id: buyerUserId,
+    invoice_item_id: invoiceItemId,
+    metadata: {
+      size: metadata.size,
+    },
+  });
+};
+
 const removeCartItemInstance = async query => {
   const { cartInstanceId } = query;
   try {
@@ -312,6 +342,7 @@ const clearCart = async userId => {
 module.exports = {
   addCartItem,
   addEventCartItem,
+  addItemToPaidStoreItems,
   clearCart,
   getCartItems,
   getCartItemsOrdered,
