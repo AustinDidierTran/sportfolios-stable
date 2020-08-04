@@ -37,6 +37,7 @@ import Stripe from '../../utils/stripe/Payment/index';
 import UserSettings from '../UserSettings';
 import Cart from '../Cart';
 import Checkout from '../Checkout';
+import Sales from '../Sales';
 import ShopDetails from '../ShopDetails';
 
 // Mocks
@@ -132,6 +133,7 @@ export default function App() {
                     path={ROUTES.orderProcessed}
                     component={OrderProcessed}
                   />
+                  <Route path={ROUTES.sales} component={Sales} />
                   <Route
                     exact
                     path={ROUTES.scheduleManager}
