@@ -33,7 +33,7 @@ export default function DefaultCartItem(props) {
     }));
 
   return (
-    <Paper>
+    <Paper className={styles.paper}>
       <CardMedia className={styles.media} image={photoUrl} />
       <CardContent className={styles.infos}>
         <Typography gutterBottom variant="h5" className={styles.name}>

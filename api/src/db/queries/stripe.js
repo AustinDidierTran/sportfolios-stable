@@ -9,6 +9,7 @@ const {
   createInvoice,
   createInvoiceItem,
   createItem: createItemHelper,
+  deleteItem: deleteItemHelper,
   createPaymentMethod: createPaymentMethodHelper,
   createRefund: createRefundHelper,
   eventHasBankAccount: eventHasBankAccountHelper,
@@ -117,6 +118,10 @@ const createItem = async (body, userId) => {
   return createItemHelper(body, userId);
 };
 
+const deleteItem = async body => {
+  return deleteItemHelper(body);
+};
+
 const getReceipt = async (query, userId) => {
   return getReceiptHelper(query, userId);
 };
@@ -145,6 +150,7 @@ module.exports = {
   attachPaymentMethod,
   checkout,
   createItem,
+  deleteItem,
   createPrice,
   createProduct,
   createRefund,

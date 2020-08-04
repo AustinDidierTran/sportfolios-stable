@@ -75,8 +75,44 @@ const createItem = async body => {
   }
 };
 
+const deleteProduct = async stripeProductId => {
+  const numberDeleted = await knex('stripe_product')
+    .where({ stripe_product_id: stripeProductId })
+    .del();
+  return numberDeleted;
+};
+
+const deletePrice = async stripePriceId => {
+  const numberDeleted = await knex('store_items')
+    .where({ stripe_price_id: stripePriceId })
+    .del();
+
+  await knex('cart_items')
+    .where({ stripe_price_id: stripePriceId })
+    .del();
+
+  await knex('stripe_price')
+    .where({ stripe_price_id: stripePriceId })
+    .del();
+  return numberDeleted;
+};
+
+const deleteItem = async body => {
+  const { stripeProductId, stripePriceId } = body;
+
+  const numberPriceDeleted = await deletePrice(stripePriceId);
+
+  const numberProductDeleted = await deleteProduct(stripeProductId);
+
+  if (numberPriceDeleted && numberProductDeleted) {
+    return { stripeProductId, stripePriceId };
+  }
+  return null;
+};
+
 module.exports = {
   addProduct,
   addPrice,
   createItem,
+  deleteItem,
 };

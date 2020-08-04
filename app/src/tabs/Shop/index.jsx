@@ -33,6 +33,10 @@ export default function Shop(props) {
     fetchShopItems();
   }, [id]);
 
+  const update = () => {
+    fetchShopItems();
+  };
+
   return (
     <Container className={styles.items}>
       <FeatureContainer
@@ -47,7 +51,7 @@ export default function Shop(props) {
           {items.map(item => {
             return (
               <CustomCard
-                items={{ ...item, setItems }}
+                items={{ ...item, setItems, isEditor, update }}
                 type={CARD_TYPE_ENUM.SHOP}
               />
             );
