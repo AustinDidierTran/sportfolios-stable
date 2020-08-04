@@ -18,6 +18,8 @@ export default {
     add_existing_person: 'Ajouter une personne existante',
     add_non_existing_person: 'Ajouter une personne non existante',
     add_person: 'Ajouter une personne',
+    add_the_teams_you_want_in_your_tournament:
+      'Ajouter les équipes à votre tournoi',
     added_to_cart: 'Ajouté au panier',
     admin: 'Admin',
     admin_has_no_bank_account:
@@ -122,6 +124,7 @@ export default {
     no_notifications: 'Pas de notifications',
     no_notifications_message: 'Revenez plus tard.',
     no_roster: 'Aucun alignement',
+    no_teams: 'Acune équipe',
     no_teams_registered: 'Aucune équipes inscrites',
     no_remaining_spots:
       "Désolé, votre inscription a été refusé. L'événement est maintenant plein et il n'y a plus de place.",

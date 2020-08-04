@@ -1,9 +1,18 @@
 import React from 'react';
-//import { useTranslation } from 'react-i18next';
 import { IgContainer } from '../../components/Custom';
+import { useTranslation } from 'react-i18next';
+import { Typography } from '@material-ui/core';
+import AddTeams from './AddTeams';
 
 export default function ScheduleManager() {
-  //const { t } = useTranslation();
+  const { t } = useTranslation();
 
-  return <IgContainer> yeah man</IgContainer>;
+  return (
+    <IgContainer>
+      <Typography variant="h4" component="p">
+        {t('Welcome to the tournament')}
+      </Typography>
+      <AddTeams />
+    </IgContainer>
+  );
 }

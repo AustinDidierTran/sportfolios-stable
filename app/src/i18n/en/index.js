@@ -18,7 +18,9 @@ export default {
     add_admin: 'Add Admin',
     add_existing_person: 'Add existing person',
     add_non_existing_person: 'Add non existing person',
-    addperson: 'Add person',
+    add_person: 'Add person',
+    add_the_teams_you_want_in_your_tournament:
+      'Add the teams you want in your tournament',
     admin_has_no_bank_account:
       "You can't create a payment option if admin doesn't have a bank account",
     admin: 'Admin',
@@ -122,6 +124,7 @@ export default {
     no_roster: 'No roster',
     no_remaining_spots:
       'Sorry, your registration has been refused. Event is now full and there are no available spots left.',
+    no_teams: 'No teams',
     no_teams_registered: 'No teams registered',
     on_going_events: 'On Going Events',
     only_available_on_desktop: 'Only available on desktop',
