@@ -46,7 +46,6 @@ export default function Players(props) {
             secondary={t('player')}
             allowCreate
             withoutIcon
-            style={{}}
           />
         </div>
         <div className={styles.player}>
