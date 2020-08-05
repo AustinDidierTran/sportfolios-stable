@@ -3,10 +3,15 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { InjectManifest } = require('workbox-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const ROOT_PATH = path.resolve(__dirname);
 
 module.exports = {
+  devServer: {
+    writeToDisk: true,
+  },
   entry: {
     app: path.resolve(ROOT_PATH, 'app/src/index.jsx'),
   },
@@ -49,8 +54,18 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
-      title: 'Sportfolios',
-      favicon: './favicon.ico',
+      template: path.resolve(ROOT_PATH, 'app/public/index.html'),
+    }),
+    new InjectManifest({
+      maximumFileSizeToCacheInBytes: 5000000,
+      swSrc: path.resolve(
+        __dirname,
+        './service-worker/serviceWorkerWorkbox.js',
+      ),
+      swDest: 'service-worker.js',
+    }),
+    new CopyWebpackPlugin({
+      patterns: [{ from: path.resolve(ROOT_PATH, 'app/public') }],
     }),
   ],
   output: {
