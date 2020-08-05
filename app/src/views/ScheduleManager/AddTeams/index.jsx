@@ -1,46 +1,17 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { GLOBAL_ENUM } from '../../../../../common/enums';
 import { SearchList, List } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../../hooks/forms';
 import styles from './AddTeams.module.css';
 import { Typography } from '@material-ui/core';
-import { goTo, ROUTES } from '../../../actions/goTo';
 
-import uuid from 'uuid';
-
-export default function AddTeams() {
+export default function AddTeams(props) {
   const { t } = useTranslation();
   const query = useFormInput('');
-  const [teams, setTeams] = useState([]);
-
-  useEffect(() => {
-    goTo(ROUTES.scheduleManager, null, {
-      teams: JSON.stringify(teams),
-    });
-  }, [teams]);
+  const { addTeam, teams } = props;
 
   const blackList = useMemo(() => teams.map(t => t.team_id), [teams]);
-
-  const addTeam = (e, team) => {
-    setTeams(oldTeam => [
-      ...oldTeam,
-      {
-        id: team.id || uuid.v1(),
-        type: GLOBAL_ENUM.TEAM,
-        name: team.name,
-        secondary: t('team'),
-        onDelete,
-        notClickable: true,
-      },
-    ]);
-  };
-
-  const onDelete = id => {
-    setTeams(oldTeam => {
-      return oldTeam.filter(r => r.id !== id);
-    });
-  };
 
   return (
     <div className={styles.main}>
