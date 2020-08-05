@@ -9,6 +9,7 @@ import { useQuery } from '../../../hooks/queries';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import TabsGenerator, { TABS_ENUM } from '../../../tabs';
 import { formatPageTitle } from '../../../utils/stringFormats';
+import { Helmet } from 'react-helmet';
 
 export default function Event(props) {
   const { basicInfos } = props;
@@ -51,8 +52,23 @@ export default function Event(props) {
     );
   }
 
+  const ogDescription = useMemo(
+    () =>
+      basicInfos.description
+        ? decodeURIComponent(basicInfos.description)
+        : '',
+    [basicInfos.description],
+  );
+
   return (
     <IgContainer>
+      <Helmet>
+        <meta property="og:title" content={basicInfos.name} />
+        <meta property="og:description" content={ogDescription} />
+        <meta property="og:image" content={basicInfos.photoUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="fr_CA" />
+      </Helmet>
       <Paper>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}
