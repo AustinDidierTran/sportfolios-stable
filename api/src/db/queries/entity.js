@@ -137,11 +137,11 @@ async function updateEvent(body, userId) {
 }
 
 async function updateGeneralInfos(body, userId) {
-  const { entityId, description } = body;
+  const { entityId, ...otherBody } = body;
   if (!isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return updateGeneralInfosHelper(entityId, description);
+  return updateGeneralInfosHelper(entityId, otherBody);
 }
 
 async function addTeamToEvent(body, userId) {

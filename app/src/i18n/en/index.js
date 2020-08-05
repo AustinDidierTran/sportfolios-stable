@@ -14,6 +14,7 @@ export default {
     add_payment_options: 'Add payment options',
     add_new_product: 'Add new product',
     add_to_cart: 'Add to cart',
+    quick_description: 'Short description',
     added_to_cart: 'Added to cart',
     add_admin: 'Add Admin',
     add_existing_person: 'Add existing person',

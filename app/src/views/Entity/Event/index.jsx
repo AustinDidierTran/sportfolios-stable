@@ -52,13 +52,15 @@ export default function Event(props) {
     );
   }
 
-  const ogDescription = useMemo(
-    () =>
-      basicInfos.description
-        ? decodeURIComponent(basicInfos.description)
-        : '',
-    [basicInfos.description],
-  );
+  const ogDescription = useMemo(() => {
+    if (basicInfos.quickDescription) {
+      return decodeURIComponent(basicInfos.quickDescription);
+    }
+    if (basicInfos.description) {
+      return decodeURIComponent(basicInfos.description);
+    }
+    return '';
+  }, [basicInfos]);
 
   return (
     <IgContainer>

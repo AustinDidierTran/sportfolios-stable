@@ -14,6 +14,7 @@ export default {
     add_payment_method: 'Ajouter une option de paiement',
     add_payment_options: 'Ajouter des options de paiements',
     add_new_product: 'Ajouter un nouveau produit',
+    quick_description: 'Description courte',
     add_to_cart: 'Ajouter au panier',
     add_existing_person: 'Ajouter une personne existante',
     add_non_existing_person: 'Ajouter une personne non existante',
