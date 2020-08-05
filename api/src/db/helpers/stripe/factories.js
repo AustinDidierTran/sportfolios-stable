@@ -57,6 +57,8 @@ const accountParamsFactory = params => {
         ip,
       },
     };
+  } else if (business_type === BUSINESS_TYPE_ENUM.NON_PROFIT) {
+    // define non profit
   } else {
     throw 'Unsupported business type';
   }
