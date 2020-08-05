@@ -37,9 +37,7 @@ export default function AddTeams() {
   };
 
   const onDelete = id => {
-    setTeams(oldTeam => {
-      return oldTeam.filter(r => r.id !== id);
-    });
+    setTeams(oldTeam => oldTeam.filter(r => r.id !== id));
   };
 
   return (
