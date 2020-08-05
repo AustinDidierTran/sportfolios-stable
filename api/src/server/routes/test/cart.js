@@ -2,7 +2,7 @@ const Router = require('koa-router');
 const helpers = require('../../../db/helpers/entity');
 
 const router = new Router();
-const BASE_URL = '/api/test';
+const BASE_URL = '/api/test/cart';
 
 router.get(`${BASE_URL}/removeEventCartItem`, async ctx => {
   const res = await helpers.removeEventCartItem({

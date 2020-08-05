@@ -61,8 +61,10 @@ const getOrCreateStripeConnectedAccountId = async (entity_id, ip) => {
 
 // REF: https://stripe.com/docs/api/accounts/create?lang=node
 const createStripeConnectedAccount = async props => {
+  console.log('allo');
+  console.log({ props });
   const {
-    business_type = BUSINESS_TYPE_ENUM.INDIVIDUAL,
+    business_type,
     city,
     country,
     dob,
@@ -90,9 +92,17 @@ const createStripeConnectedAccount = async props => {
     state,
   });
 
-  const account = await stripe.account.create(params);
+  console.log({ params });
 
-  return account;
+  try {
+    const account = await stripe.account.create(params);
+
+    console.log({ account });
+
+    return account;
+  } catch (err) {
+    console.log({ err });
+  }
 };
 
 const createAccountLink = async props => {
