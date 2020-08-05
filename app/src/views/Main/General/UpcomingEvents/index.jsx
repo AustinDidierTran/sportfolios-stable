@@ -13,10 +13,13 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { formatRoute, goTo, ROUTES } from '../../../../actions/goTo';
 import api from '../../../../actions/api';
-import CardMedia from '../../../../components/Custom/CardMedia';
 import moment from 'moment';
 import { formatIntervalDate } from '../../../../utils/stringFormats';
-import { Button, Avatar } from '../../../../components/Custom';
+import {
+  Button,
+  Avatar,
+  ImageCard,
+} from '../../../../components/Custom';
 import { useContext } from 'react';
 import { Store, SCREENSIZE_ENUM } from '../../../../Store';
 import styles from './UpcomingEvents.module.css';
@@ -111,7 +114,7 @@ export default function UpcomingEvents(props) {
           (event.creator && event.creator.name) || 'Sportfolios'
         }
       />
-      <CardMedia
+      <ImageCard
         onClick={() => goTo(ROUTES.entity, { id: eventId })}
         className={
           screenSize == SCREENSIZE_ENUM.xs
