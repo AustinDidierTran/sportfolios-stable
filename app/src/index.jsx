@@ -10,17 +10,22 @@ import '../styles/global.css';
 
 main();
 function main() {
-  const link = document.createElement('link');
-  link.rel = 'stylesheet';
-  link.href =
-    'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap';
-  const meta = document.createElement('meta');
-  meta.name = 'viewport';
-  meta.content = 'width=device-width,initial-scale=1.0';
-  document.head.appendChild(link);
-  document.head.appendChild(meta);
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        .register('/service-worker.js')
+        .then(registration => {
+          console.log('SW registered: ', registration);
+        })
+        .catch(registrationError => {
+          console.log('SW registration failed: ', registrationError);
+        });
+    });
+  }
+
   const app = document.createElement('div');
   document.body.appendChild(app);
+
   ReactDOM.render(
     <StoreProvider>
       <I18nextProvider i18n={i18n}>
