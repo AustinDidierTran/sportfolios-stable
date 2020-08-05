@@ -34,7 +34,6 @@ const ConfirmEmailFailure = loadable(() =>
 const ConfirmEmailSuccess = loadable(() =>
   import('../ConfirmEmail/ConfirmEmailSuccess'),
 );
-const ScheduleManager = loadable(() => import('../ScheduleManager'));
 const ForgotPassword = loadable(() => import('../ForgotPassword'));
 const Header = loadable(() => import('../Header'));
 const Main = loadable(() => import('../Main'));
@@ -56,6 +55,7 @@ const ProductAddedToCart = loadable(() =>
 const RegistrationStatus = loadable(() =>
   import('../RegistrationStatus'),
 );
+const ScheduleManager = loadable(() => import('../ScheduleManager'));
 const Search = loadable(() => import('../Search'));
 const Stripe = loadable(() =>
   import('../../utils/stripe/Payment/index'),
@@ -63,9 +63,8 @@ const Stripe = loadable(() =>
 const UserSettings = loadable(() => import('../UserSettings'));
 const Cart = loadable(() => import('../Cart'));
 const Checkout = loadable(() => import('../Checkout'));
-const ShopDetails = loadable(() => import('../ShopDetails'));
-
 const Sales = loadable(() => import('../Sales'));
+const ShopDetails = loadable(() => import('../ShopDetails'));
 
 // Mocks
 import MockEvent from '../Mocks/Event';
