@@ -1,11 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
-import { Avatar } from '../..';
+import { Avatar, Icon } from '../..';
 import { getInitialsFromName } from '../../../../utils/stringFormats/index';
 import { useTranslation } from 'react-i18next';
 import { goTo, ROUTES } from '../../../../actions/goTo';
 import styles from './TeamItem.module.css';
+import IconButton from '@material-ui/core/IconButton';
 
 export default function TeamItem(props) {
   const { t } = useTranslation();
@@ -20,6 +21,7 @@ export default function TeamItem(props) {
     icon,
     inverseColor,
     notClickable,
+    onDelete,
   } = props;
 
   const initials = useMemo(() => getInitialsFromName(name), [name]);
@@ -66,6 +68,18 @@ export default function TeamItem(props) {
         primary={name}
         secondary={secondary || t('team')}
       ></ListItemText>
+      {onDelete ? (
+        <IconButton
+          edge="end"
+          onClick={() => {
+            onDelete(id);
+          }}
+        >
+          <Icon icon="Delete" />
+        </IconButton>
+      ) : (
+        <></>
+      )}
     </ListItem>
   );
 }
