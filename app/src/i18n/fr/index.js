@@ -176,6 +176,7 @@ export default {
     quantity: 'Quantité',
     search_results: 'Résultats de recherche pour {{query}}',
     search: 'Rechercher...',
+    see_sales: 'Voir les ventes',
     select_team: 'Sélectionner une équipe',
     select_existing_person: 'Sélectionner une personne existante',
     select_person: 'Sélectionner une personne',

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
 import styles from './Shop.module.css';
-import { formatRoute } from '../../actions/goTo';
+import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
 
 import { Container } from '../../components/MUI';
-import { FeatureContainer } from '../../components/Custom';
+import { FeatureContainer, Button } from '../../components/Custom';
 import CustomCard from '../../components/Custom/Card';
 import { useEditor } from '../../hooks/roles';
 
@@ -13,8 +13,10 @@ import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import { CARD_TYPE_ENUM } from '../../../../common/enums';
 import { FEATURE_FLAGS } from '../../../../common/flags';
+import { useTranslation } from 'react-i18next';
 
 export default function Shop(props) {
+  const { t } = useTranslation();
   const [items, setItems] = useState([]);
   const { id } = useParams();
   const {
@@ -37,6 +39,10 @@ export default function Shop(props) {
     fetchShopItems();
   };
 
+  const goToSales = () => {
+    goTo(ROUTES.sales, { id });
+  };
+
   return (
     <Container className={styles.items}>
       <FeatureContainer
@@ -46,7 +52,13 @@ export default function Shop(props) {
       >
         <div>
           {isEditor ? (
-            <CreateItem fetchItems={fetchShopItems} />
+            <>
+              <CreateItem fetchItems={fetchShopItems} />
+              <br />
+              <Button onClick={goToSales}>{t('see_sales')}</Button>
+              <br />
+              <br />
+            </>
           ) : null}
           {items.map(item => {
             return (

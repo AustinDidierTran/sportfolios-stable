@@ -1,6 +1,10 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { Tab, Tabs } from '../../../components/MUI';
-import { Container, Paper } from '../../../components/Custom';
+import {
+  Container,
+  Paper,
+  IgContainer,
+} from '../../../components/Custom';
 import styles from './Person.module.css';
 import BasicInfos from './BasicInfos';
 import TabsGenerator, { TABS_ENUM } from '../../../tabs';
@@ -26,7 +30,7 @@ export default function Person(props) {
   );
 
   return (
-    <Container className={styles.container}>
+    <IgContainer>
       <Paper className={styles.card}>
         <Container className={styles.title}>
           <BasicInfos basicInfos={basicInfos} />
@@ -49,6 +53,6 @@ export default function Person(props) {
         </Tabs>
       </Paper>
       <OpenTab basicInfos={basicInfos} />
-    </Container>
+    </IgContainer>
   );
 }
