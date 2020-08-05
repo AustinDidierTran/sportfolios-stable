@@ -1,65 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import styles from './Tag.module.css';
 
 import { Icon } from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
 import { TAG_TYPE_ENUM } from '../../../../../common/enums';
+import { useTranslation } from 'react-i18next';
 
 export default function Tag(props) {
+  const { t } = useTranslation();
   const { type } = props;
-  const [color, setColor] = useState('#fff');
-  const [backgroundColor, setBackgroundColor] = useState('#cf8f8a');
-  const [name, setName] = useState('tag');
-  const [icon, setIcon] = useState('');
 
-  const selectTag = () => {
+  const selectTag = useMemo(() => {
     switch (type) {
       case TAG_TYPE_ENUM.ACCEPTED:
-        setName('accepted');
-        setBackgroundColor('#4fc947');
-        setColor('#fff');
-        break;
+        return {
+          name: t('accepted'),
+          backgroundColor: '#4fc947',
+          color: '#fff',
+        };
 
       case TAG_TYPE_ENUM.PENDING:
-        setName('pending');
-        setBackgroundColor('#ffca61');
-        setColor('#fff');
-        break;
+        return {
+          name: t('pending'),
+          backgroundColor: '#ffca61',
+          color: '#fff',
+        };
 
       case TAG_TYPE_ENUM.REGISTERED:
-        setBackgroundColor('#4fc947');
-        setIcon('FiberManualRecord');
-        break;
+        return {
+          backgroundColor: '#4fc947',
+          icon: 'FiberManualRecord',
+        };
 
       case TAG_TYPE_ENUM.UNREGISTERED:
-        setBackgroundColor('#ff723b');
-        setIcon('FiberManualRecord');
-        break;
+        return {
+          backgroundColor: '#ff723b',
+          icon: 'FiberManualRecord',
+        };
 
       default:
-        setName('DEFAULT');
-        setBackgroundColor('#cf8f8a');
-        setColor('#fff');
-        break;
+        return {
+          name: t('DEFAULT'),
+          backgroundColor: '#cf8f8a',
+          color: '#fff',
+        };
     }
-  };
+  }, [type]);
 
-  useEffect(() => {
-    selectTag();
-  }, []);
-
-  if (icon) {
-    return <Icon icon={icon} color={backgroundColor} />;
+  if (selectTag.icon) {
+    return (
+      <Icon icon={selectTag.icon} color={selectTag.backgroundColor} />
+    );
   }
 
   return (
     <div
       className={styles.tag}
-      style={{ backgroundColor: backgroundColor }}
+      style={{ backgroundColor: selectTag.backgroundColor }}
     >
       <div className={styles.name}>
-        <Typography style={{ fontSize: 12, color: color }}>
-          {name}
+        <Typography style={{ fontSize: 12, color: selectTag.color }}>
+          {selectTag.name}
         </Typography>
       </div>
     </div>

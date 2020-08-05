@@ -58,14 +58,14 @@ export default function MyRosterCard(props) {
           <div className={styles.default}>
             <div className={styles.position}>{position}</div>
             <div className={styles.title} onClick={onExpand}>
+              <div className={styles.name}>
+                <Typography>{name.toUpperCase()}</Typography>
+              </div>
               <Avatar
                 className={styles.avatar}
                 photoUrl={roster.photoUrl}
                 size="sm"
               />
-              <div className={styles.name}>
-                <Typography>{name.toUpperCase()}</Typography>
-              </div>
             </div>
             <div className={styles.pod}>
               <Tag type={registrationStatus} />
@@ -77,7 +77,23 @@ export default function MyRosterCard(props) {
                 }
               />
             </div>
-            <div className={styles.expanded} hidden={!expanded}>
+            <div
+              className={styles.expanded}
+              hidden={!expanded}
+              style={
+                isEven(index)
+                  ? {
+                      borderBottomColor: '#19bf9d',
+                      borderBottomWidth: '2px',
+                      borderBottomStyle: 'solid',
+                    }
+                  : {
+                      borderBottomColor: '#18B393',
+                      borderBottomWidth: '2px',
+                      borderBottomStyle: 'solid',
+                    }
+              }
+            >
               <Players
                 players={players}
                 role={role}
