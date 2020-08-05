@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 
 import { Paper } from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
@@ -9,12 +9,12 @@ import styles from './Description.module.css';
 
 export default function Description(props) {
   const { t } = useTranslation();
-  const [text, setText] = useState('');
   const { description } = props;
 
-  useEffect(() => {
-    setText(decodeURIComponent(description));
-  }, [props]);
+  const text = useMemo(
+    () => (description ? decodeURIComponent(description) : ''),
+    [description],
+  );
 
   if (text && text != 'null') {
     return (
