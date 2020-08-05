@@ -1,62 +1,43 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { GLOBAL_ENUM } from '../../../../../common/enums';
 import { SearchList, List } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../../hooks/forms';
 import styles from './AddTeams.module.css';
 import { Typography } from '@material-ui/core';
+import { goTo, ROUTES } from '../../../actions/goTo';
+
+import uuid from 'uuid';
 
 export default function AddTeams() {
   const { t } = useTranslation();
   const query = useFormInput('');
   const [teams, setTeams] = useState([]);
 
+  useEffect(() => {
+    goTo(ROUTES.scheduleManager, null, {
+      teams: JSON.stringify(teams),
+    });
+  }, [teams]);
+
   const blackList = useMemo(() => teams.map(t => t.team_id), [teams]);
 
   const addTeam = (e, team) => {
-    if (team.id) {
-      setTeams(oldTeam => [
-        ...oldTeam,
-        {
-          team_id: team.id,
-          type: GLOBAL_ENUM.TEAM,
-          name: team.name,
-          secondary: t('team'),
-          onDelete,
-        },
-      ]);
-    } else {
-      const ids = teams.map(t => {
-        if (t.id) {
-          return t.id;
-        }
-        return 0;
-      });
-      const newId = Math.max(...ids, 0) + 1;
-      setTeams(oldTeam => [
-        ...oldTeam,
-        {
-          id: newId,
-          type: GLOBAL_ENUM.TEAM,
-          name: team.name,
-          secondary: t('team'),
-          onDelete,
-        },
-      ]);
-    }
+    setTeams(oldTeam => [
+      ...oldTeam,
+      {
+        id: team.id || uuid.v1(),
+        type: GLOBAL_ENUM.TEAM,
+        name: team.name,
+        secondary: t('team'),
+        onDelete,
+        notClickable: true,
+      },
+    ]);
   };
 
-  const onDelete = body => {
-    const { id, team_id } = body;
-    setTeams(oldTeam => {
-      if (id) {
-        return oldTeam.filter(r => r.id !== id);
-      }
-      if (person_id) {
-        return oldTeam.filter(r => r.team_id !== team_id);
-      }
-      return oldTeam;
-    });
+  const onDelete = id => {
+    setTeams(oldTeam => oldTeam.filter(r => r.id !== id));
   };
 
   return (

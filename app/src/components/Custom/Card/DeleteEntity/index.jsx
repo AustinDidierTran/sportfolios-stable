@@ -29,7 +29,7 @@ export default function DeleteEntity(props) {
     } else {
       await deleteEntity(id);
       setIsSubmitting(false);
-      goTo(ROUTES.organizationList);
+      goTo(ROUTES.home);
     }
   };
 
