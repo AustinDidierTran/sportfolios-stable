@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
 import { useParams } from 'react-router-dom';
-import { ROSTER_ROLE_ENUM } from '../../../../common/enums';
 
 import styles from './Rosters.module.css';
 

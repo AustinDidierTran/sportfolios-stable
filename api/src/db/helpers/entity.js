@@ -316,6 +316,7 @@ async function getEntity(id, userId) {
       'surname',
       'photo_url',
       'description',
+      'quick_description',
     )
     .leftJoin(
       'entities_name',
@@ -345,6 +346,7 @@ async function getEntity(id, userId) {
     id: entity.id,
     type: entity.type,
     name: entity.name,
+    quickDescription: entity.quick_description,
     surname: entity.surname,
     photoUrl: entity.photo_url,
     role,
@@ -378,6 +380,7 @@ async function eventInfos(id, userId) {
     startDate: event.start_date,
     endDate: event.end_date,
     description: infos.description,
+    quickDescription: infos.quickDescription,
     creator: {
       id: creator.id,
       type: creator.type,
@@ -679,7 +682,11 @@ async function getGeneralInfos(entityId) {
   const [res] = await knex('entities_general_infos')
     .select('*')
     .where({ entity_id: entityId });
-  return res;
+  return {
+    entityId: res.entity_id,
+    description: res.description,
+    quickDescription: res.quick_description,
+  };
 }
 
 async function updateEntityRole(entityId, entityIdAdmin, role) {
@@ -708,11 +715,21 @@ async function updateEvent(
   return entity;
 }
 
-async function updateGeneralInfos(entityId, description) {
+async function updateGeneralInfos(entityId, body) {
+  const { description, quickDescription } = body;
+
+  const updateQuery = {};
+
+  if (description) {
+    updateQuery.description = description;
+  }
+
+  if (quickDescription) {
+    updateQuery.quick_description = quickDescription;
+  }
+
   const [entity] = await knex('entities_general_infos')
-    .update({
-      description,
-    })
+    .update(updateQuery)
     .where({ entity_id: entityId })
     .returning('*');
   return entity;
