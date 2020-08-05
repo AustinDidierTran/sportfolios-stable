@@ -309,7 +309,14 @@ async function getAllRolesEntity(entityId) {
 
 async function getEntity(id, userId) {
   const [entity] = await knex('entities')
-    .select('id', 'type', 'name', 'surname', 'photo_url')
+    .select(
+      'id',
+      'type',
+      'name',
+      'surname',
+      'photo_url',
+      'description',
+    )
     .leftJoin(
       'entities_name',
       'entities.id',
@@ -322,12 +329,19 @@ async function getEntity(id, userId) {
       '=',
       'entities_photo.entity_id',
     )
+    .leftJoin(
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
+      '=',
+      'entities.id',
+    )
     .whereNull('deleted_at')
     .andWhere({ id });
 
   const role = await getEntityRole(id, userId);
 
   return {
+    description: entity.description,
     id: entity.id,
     type: entity.type,
     name: entity.name,
