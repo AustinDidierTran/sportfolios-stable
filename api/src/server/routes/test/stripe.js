@@ -5,16 +5,17 @@ const router = new Router();
 const BASE_URL = '/api/test/stripe';
 
 router.post(`${BASE_URL}/connectedAccount`, async ctx => {
-  console.log('salut');
-  console.log({ ctx: ctx.request.body });
-  const res = await helpers.createStripeConnectedAccount(
+  const account = await helpers.createStripeConnectedAccount(
     ctx.request.body,
   );
+
+  const accountLink = await helpers.createAccountLink2(account.id);
 
   if (res.code === 200) {
     ctx.status = 200;
     ctx.body = {
       status: 'success',
+      data: { accountId: account.id, accountLink },
     };
   } else {
     ctx.status = res.code;
