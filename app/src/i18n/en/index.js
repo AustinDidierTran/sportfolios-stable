@@ -69,6 +69,11 @@ export default {
     emails: 'Emails',
     email_confirmed:
       'An email has just been sent to {{email}}. Please, go look at your inbox to confirm your email.',
+    empty_roster:
+      "This roster is empty. The team captain didn't enter its roster.",
+
+    empty_roster_add_players:
+      'Your roster is empty. Use the search list to add players',
     enter_person_name: 'Enter person name',
     enter_player_name: 'Enter player name',
     enter_team_name: 'Enter team name',

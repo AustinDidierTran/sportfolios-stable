@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import styles from './Players.module.css';
 import Tag from '../../Tag';
 import { ENTITIES_ROLE_ENUM } from '../../../../Store';
+import { Typography } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 export default function Players(props) {
+  const { t } = useTranslation();
   const { players, role } = props;
   const [playersUpdated, setPlayersUpdated] = useState([]);
 
@@ -35,6 +38,14 @@ export default function Players(props) {
             </div>
           </div>
         ))}
+      </div>
+    );
+  }
+
+  if (!playersUpdated.length) {
+    return (
+      <div className={styles.card}>
+        <Typography>{t('empty_roster')}</Typography>
       </div>
     );
   }
