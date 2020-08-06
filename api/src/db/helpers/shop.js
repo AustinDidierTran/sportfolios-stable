@@ -243,6 +243,31 @@ const addCartItem = async (body, userId) => {
   return stripePriceId;
 };
 
+const getPurchases = async userId => {
+  const purchases = await knex('store_items_paid')
+    .select([
+      'stripe_product.label',
+      'stripe_product.description',
+      'store_items_paid.quantity',
+      'store_items_paid.amount',
+      'store_items_paid.metadata',
+    ])
+    .leftJoin(
+      'stripe_price',
+      'store_items_paid.stripe_price_id',
+      '=',
+      'stripe_price.stripe_price_id',
+    )
+    .leftJoin(
+      'stripe_product',
+      'stripe_product.stripe_product_id',
+      '=',
+      'stripe_price.stripe_product_id',
+    )
+    .where('store_items_paid.buyer_user_id', userId);
+  return purchases;
+};
+
 const getSales = async entityId => {
   const sales = await knex('store_items_paid')
     .select([
@@ -381,6 +406,7 @@ module.exports = {
   getCartItemsOrdered,
   getCartTotal,
   getItem,
+  getPurchases,
   getSales,
   getShopItems,
   removeAllInstancesFromCart,

@@ -4,6 +4,29 @@ const queries = require('../../../db/queries/shop');
 const router = new Router();
 const BASE_URL = '/api/shop';
 
+<<<<<<< HEAD
+=======
+router.get(`${BASE_URL}/getItem`, async ctx => {
+  const data = await queries.getItem(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
+router.get(`${BASE_URL}/purchases`, async ctx => {
+  const data = await queries.getPurchases(ctx.body.userInfo.id);
+
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
+>>>>>>> Adding purchases in cart
 router.get(`${BASE_URL}/sales`, async ctx => {
   const data = await queries.getSales(
     ctx.query.id,
