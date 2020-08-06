@@ -11,6 +11,7 @@ import uuid from 'uuid';
 
 import PlayerCard from './PlayerCard';
 import { SearchList } from '../../../../components/Custom';
+import { Typography } from '@material-ui/core';
 
 export default function Players(props) {
   const { t } = useTranslation();
@@ -48,17 +49,19 @@ export default function Players(props) {
             withoutIcon
           />
         </div>
-        <div className={styles.player}>
-          {players.map(player => {
-            return (
+        {players.length ? (
+          <div className={styles.player}>
+            {players.map(player => (
               <PlayerCard
                 player={player}
                 role={role}
                 onDelete={onDelete}
               />
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <Typography>{t('empty_roster_add_players')}</Typography>
+        )}
       </div>
     );
   }
