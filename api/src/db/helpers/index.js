@@ -1,6 +1,6 @@
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
-const uuid = require('uuid');
+const { v1: uuidv1 } = require('uuid');
 const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
@@ -88,7 +88,7 @@ const generateHashedPassword = async password => {
 };
 
 const generateToken = () => {
-  return uuid.v1();
+  return uuidv1();
 };
 
 const generateAuthToken = async userId => {

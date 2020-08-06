@@ -619,6 +619,9 @@ async function getRoster(rosterId) {
 }
 
 async function getRole(captains, rosterId, userId) {
+  if (!userId) {
+    return ROSTER_ROLE_ENUM.VIEWER;
+  }
   const basicInfo = await getBasicUserInfoFromId(userId);
 
   const personId = basicInfo.persons[0].entity_id;
