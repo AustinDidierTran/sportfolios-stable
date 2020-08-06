@@ -29,7 +29,10 @@ const accountParamsFactory = params => {
   } = params;
 
   if (!business_type) {
-    return {};
+    return {
+      requested_capabilities: ['card_payments', 'transfers'],
+      type: 'custom',
+    };
   }
 
   if (business_type === BUSINESS_TYPE_ENUM.INDIVIDUAL) {
