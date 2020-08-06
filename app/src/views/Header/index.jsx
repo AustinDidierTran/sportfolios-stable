@@ -15,6 +15,11 @@ const getEntity = async entityId => {
   return data;
 };
 
+const uuidvalidate = uuid =>
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    uuid,
+  );
+
 export default function Header() {
   const {
     state: { authToken },
@@ -44,14 +49,12 @@ export default function Header() {
       const ent = await getEntity(id);
       setPath(ent.type);
       setEntity(ent);
+    } else if (uuidvalidate(pth)) {
+      const ent = await getEntity(pth);
+      setPath(ent.type);
+      setEntity(ent);
     } else {
-      if (pth && isAuthenticated) {
-        const ent = await getEntity(pth);
-        setPath(ent.type);
-        setEntity(ent);
-      } else {
-        setPath('');
-      }
+      setPath('');
     }
   };
 
