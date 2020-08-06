@@ -1,10 +1,10 @@
 const { CLIENT_BASE_URL } = require('../../../../../conf');
-const stripeFactories = require('./factories');
-const { accountParamsFactory } = stripeFactories;
+// const stripeFactories = require('./factories');
+// const { accountParamsFactory } = stripeFactories;
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const knex = require('../../connection');
-const stripeEnums = require('./enums');
-const { BUSINESS_TYPE_ENUM, TEST_EXTERNAL_ACCOUNT } = stripeEnums;
+// const stripeEnums = require('./enums');
+// const { BUSINESS_TYPE_ENUM, TEST_EXTERNAL_ACCOUNT } = stripeEnums;
 const { stripeLogger } = require('../../../server/utils/logger');
 const {
   fillWithZeros,
@@ -62,37 +62,51 @@ const getOrCreateStripeConnectedAccountId = async (entity_id, ip) => {
 // REF: https://stripe.com/docs/api/accounts/create?lang=node
 const createStripeConnectedAccount = async props => {
   const {
-    business_type = BUSINESS_TYPE_ENUM.INDIVIDUAL,
-    city,
-    country,
-    dob,
-    email,
-    first_name,
-    ip,
-    last_name,
-    line1,
-    postal_code,
-    state,
+    // business_type,
+    // city,
+    // country,
+    // dob,
+    // email,
+    // first_name,
+    // ip,
+    // last_name,
+    // line1,
+    // postal_code,
+    // state,
   } = props;
 
-  const params = accountParamsFactory({
-    business_type,
-    city,
-    country,
-    dob,
-    email,
-    external_account: TEST_EXTERNAL_ACCOUNT.PAYOUT_SUCCEED,
-    first_name,
-    ip,
-    last_name,
-    line1,
-    postal_code,
-    state,
-  });
+  const params = {
+    requested_capabilities: ['card_payments', 'transfers'],
+    type: 'custom',
+  };
+  // If we want to be able to create account from UI, use this factory
+  // const params = accountParamsFactory({
+  //   business_type,
+  //   city,
+  //   country,
+  //   dob,
+  //   email,
+  //   external_account: TEST_EXTERNAL_ACCOUNT.PAYOUT_SUCCEED,
+  //   first_name,
+  //   ip,
+  //   last_name,
+  //   line1,
+  //   postal_code,
+  //   state,
+  // });
 
-  const account = await stripe.account.create(params);
+  return stripe.account.create(params);
+};
 
-  return account;
+const createAccountLink2 = async accountId => {
+  const params = {
+    account: accountId,
+    failure_url: `${CLIENT_BASE_URL}/profile`,
+    success_url: `${CLIENT_BASE_URL}`,
+    type: 'custom_account_verification',
+    collect: 'eventually_due',
+  };
+  return stripe.accountLinks.create(params);
 };
 
 const createAccountLink = async props => {
@@ -167,6 +181,7 @@ const createExternalAccount = async (body, ip) => {
 module.exports = {
   createExternalAccount,
   createAccountLink,
+  createAccountLink2,
   createStripeConnectedAccount,
   eventHasBankAccount,
   getOrCreateStripeConnectedAccountId,

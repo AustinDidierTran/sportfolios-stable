@@ -29,7 +29,10 @@ const accountParamsFactory = params => {
   } = params;
 
   if (!business_type) {
-    return {};
+    return {
+      requested_capabilities: ['card_payments', 'transfers'],
+      type: 'custom',
+    };
   }
 
   if (business_type === BUSINESS_TYPE_ENUM.INDIVIDUAL) {
@@ -57,6 +60,8 @@ const accountParamsFactory = params => {
         ip,
       },
     };
+  } else if (business_type === BUSINESS_TYPE_ENUM.NON_PROFIT) {
+    // define non profit
   } else {
     throw 'Unsupported business type';
   }
