@@ -25,14 +25,20 @@ export default function Organization(props) {
     query.tab || TABS_ENUM.EVENTS,
   );
 
+  const tabsList = [
+    TABS_ENUM.EVENTS,
+    TABS_ENUM.SETTINGS,
+    TABS_ENUM.SHOP,
+  ];
+
   const states = TabsGenerator({
     list: [TABS_ENUM.EVENTS, TABS_ENUM.SETTINGS, TABS_ENUM.SHOP],
     role: basicInfos.role,
   });
 
-  const OpenTab =
-    states.find(s => s.value == eventState).component ||
-    states.find(s => s.value === TABS_ENUM.EVENTS).component;
+  const OpenTab = tabsList.includes(eventState)
+    ? states.find(s => s.value == eventState).component
+    : states.find(s => s.value === TABS_ENUM.EVENTS).component;
 
   const onClick = s => {
     goTo(ROUTES.entity, { id }, { tab: s.value });

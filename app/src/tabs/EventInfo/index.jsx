@@ -8,8 +8,8 @@ import React, {
 import {
   Paper,
   Button,
-  CardMedia,
   ContainerBottomFixed,
+  ImageCard,
 } from '../../components/Custom';
 import { Typography } from '../../components/MUI';
 import { useTranslation } from 'react-i18next';
@@ -113,7 +113,7 @@ export default function TabEventInfo() {
   };
 
   useEffect(() => {
-    if (event.maximum_spots) {
+    if (event.maximumSpots) {
       getRemainingSpots();
     }
   }, [event]);
@@ -238,7 +238,7 @@ export default function TabEventInfo() {
     <div className={canRegister ? styles.event : styles.event1}>
       <div className={styles.infos}>
         <Paper className={styles.paper}>
-          <CardMedia
+          <ImageCard
             onClick={() => goTo(ROUTES.entity, { id })}
             photoUrl={event.photoUrl || ''}
             className={styles.media}
@@ -247,15 +247,17 @@ export default function TabEventInfo() {
             <Typography className={styles.name}>
               {event.name}
             </Typography>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              component="p"
-            >
-              {(event.quickDescription &&
-                decodeURIComponent(event.quickDescription)) ||
-                '5v5 mixte sous la formule à bout de souffle!'}
-            </Typography>
+            {event.quickDescription ? (
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                component="p"
+              >
+                {decodeURIComponent(event.quickDescription)}
+              </Typography>
+            ) : (
+              <></>
+            )}
             <Typography
               variant="body2"
               color="textSecondary"

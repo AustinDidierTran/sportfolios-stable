@@ -15,6 +15,18 @@ router.get(`${BASE_URL}/getItem`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/sales`, async ctx => {
+  const data = await queries.getSales(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 router.get(`${BASE_URL}/getItems`, async ctx => {
   const data = await queries.getItems(
     ctx.query.id,

@@ -17,6 +17,7 @@ import { Card } from '../../components/Custom';
 import { useAdmin, useEditor } from '../../hooks/roles';
 import Description from './Description';
 import styles from './Settings.module.css';
+import QuickDescription from './QuickDescription';
 
 export default function EntitySettings(props) {
   const { id } = useParams();
@@ -58,6 +59,7 @@ export default function EntitySettings(props) {
         return (
           <div className={styles.div}>
             <BasicInfos basicInfos={basicInfos} />
+            <QuickDescription />
             <Description />
             <EventSettings />
             <AddOptionsEvent />

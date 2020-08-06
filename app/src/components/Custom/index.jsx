@@ -12,6 +12,7 @@ export { default as FeatureContainer } from './FeatureContainer';
 export { default as Icon } from './Icon';
 export { default as IconButton } from './IconButton';
 export { default as IgContainer } from './IgContainer';
+export { default as ImageCard } from './ImageCard';
 export { default as Input } from './Input';
 export { default as List } from './List';
 export { default as LoadingSpinner } from './LoadingSpinner';

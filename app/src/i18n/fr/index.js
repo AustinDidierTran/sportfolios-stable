@@ -14,6 +14,7 @@ export default {
     add_payment_method: 'Ajouter une option de paiement',
     add_payment_options: 'Ajouter des options de paiements',
     add_new_product: 'Ajouter un nouveau produit',
+    quick_description: 'Description courte',
     add_to_cart: 'Ajouter au panier',
     add_existing_person: 'Ajouter une personne existante',
     add_non_existing_person: 'Ajouter une personne non existante',
@@ -177,6 +178,7 @@ export default {
     quantity: 'Quantité',
     search_results: 'Résultats de recherche pour {{query}}',
     search: 'Rechercher...',
+    see_sales: 'Voir les ventes',
     select_team: 'Sélectionner une équipe',
     select_existing_person: 'Sélectionner une personne existante',
     select_person: 'Sélectionner une personne',
@@ -226,6 +228,8 @@ export default {
     upload: 'Téléverser',
     valid_until: "Valide jusqu'au",
     viewer: 'Visiteur',
+    accepted: 'Accepté',
+
     yes: 'oui',
     you_can_always_change_your_team_name_in_your_team_profile:
       "Si vous hésitez pour votre nom d'équipe, sachez que vous pouvez le changer plus tard dans votre profil d'équipe.",

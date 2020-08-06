@@ -14,6 +14,7 @@ export default {
     add_payment_options: 'Add payment options',
     add_new_product: 'Add new product',
     add_to_cart: 'Add to cart',
+    quick_description: 'Short description',
     added_to_cart: 'Added to cart',
     add_admin: 'Add Admin',
     add_existing_person: 'Add existing person',
@@ -264,6 +265,7 @@ export default {
     name_is_required: 'Name is required',
     new_password: 'New Password',
     old_password: 'Old password',
+    see_sales: 'See sales',
     password_length:
       'Password must be within 8 and 16 characters long.',
     password_must_match: 'Passwords must match',
@@ -366,6 +368,7 @@ export default {
     registrations_ended: 'Registrations ended',
     registrations_ends_on: 'Registrations ends on',
     registrations_open_on: 'Registrations open on',
+    accepted: 'Accepted',
     registration_accepted:
       'Congratulation! You have been accepted to the event you can now go to your cart to pay the registration for your team!',
     registration_pending:
