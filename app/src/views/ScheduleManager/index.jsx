@@ -4,15 +4,17 @@ import { useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
 import AddTeams from './AddTeams';
 import Games from './Games';
+import Ranking from './Ranking';
 import styles from './ScheduleManager.module.css';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { GLOBAL_ENUM } from '../../../../common/enums';
 import { useQuery } from '../../hooks/queries';
 import uuid from 'uuid';
+import { updateRanking } from './RankingFunctions';
 
 export default function ScheduleManager() {
   const { t } = useTranslation();
-  const { teams, games } = useQuery();
+  const { teams, games, ranking } = useQuery();
 
   const onDelete = id => {
     setTempGames(oldGames =>
@@ -26,9 +28,11 @@ export default function ScheduleManager() {
   };
 
   const save = () => {
+    setTempRanking(updateRanking(tempTeams, tempGames));
     goTo(ROUTES.scheduleManager, null, {
       teams: JSON.stringify(tempTeams),
       games: JSON.stringify(tempGames),
+      ranking: JSON.stringify(tempRanking),
     });
   };
 
@@ -48,23 +52,33 @@ export default function ScheduleManager() {
     }
     return [];
   };
+  const getRanking = () => {
+    if (ranking) {
+      return JSON.parse(ranking);
+    }
+    return [];
+  };
 
   const [tempGames, setTempGames] = useState(getGames());
   const [tempTeams, setTempTeams] = useState(getTeams());
+  const [tempRanking, setTempRanking] = useState(getRanking());
 
   const addTeam = (e, team) => {
-    const games = tempTeams.map(opponent => ({
+    const id = team.id || uuid.v1();
+    const games = tempTeams.map((opponent, index) => ({
       id: uuid.v1(),
       teams: [
         {
-          id: team.id,
+          id,
           name: team.name,
           score: 0,
+          index: tempTeams.length,
         },
         {
           id: opponent.id,
           name: opponent.name,
           score: 0,
+          index,
         },
       ],
     }));
@@ -72,7 +86,7 @@ export default function ScheduleManager() {
     setTempTeams(oldTeam => [
       ...oldTeam,
       {
-        id: team.id || uuid.v1(),
+        id,
         type: GLOBAL_ENUM.TEAM,
         name: team.name,
         secondary: t('team'),
@@ -84,7 +98,6 @@ export default function ScheduleManager() {
 
   const changeScore = (gameIndex, teamIndex, score) => {
     tempGames[gameIndex].teams[teamIndex].score = score;
-    save();
   };
 
   return (
@@ -107,6 +120,11 @@ export default function ScheduleManager() {
           className={styles.games}
           games={tempGames}
           changeScore={changeScore}
+        />
+        <Ranking
+          className={styles.ranking}
+          ranking={tempRanking}
+          games={tempGames}
         />
       </Container>
     </Paper>

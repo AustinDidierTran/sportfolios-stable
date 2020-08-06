@@ -26,6 +26,7 @@ const LIST_ROW_TYPE_ENUM = {
   TEAM: 3,
   MEMBERSHIP: 4,
   MEMBERSHIP_DETAIL: 5,
+  RANKING: 6,
 };
 
 const TAG_TYPE_ENUM = {
