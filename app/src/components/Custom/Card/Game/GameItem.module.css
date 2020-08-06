@@ -1,47 +1,21 @@
 .game {
+  margin-bottom: 16px;
+}
+
+.team {
   display: grid !important;
-  grid-template-columns: 20px 1fr 40px 1fr 20px;
-  grid-template-areas: 'leftTeamScore leftTeam VS rightTeam rightTeamScore';
+  grid-template-columns: 3fr 1fr;
+  grid-template-areas: 'name score';
   column-gap: 4px;
   padding: 8px;
 }
 
-.leftTeam {
-  grid-area: leftTeam;
-  justify-self: end;
-}
-
-.rightTeam {
-  grid-area: rightTeam;
+.name {
+  grid-area: name;
   justify-self: start;
 }
 
-.VS {
-  grid-area: VS;
+.score {
+  grid-area: score;
   justify-self: center;
-  align-self: center;
-}
-
-.leftTeamScore {
-  grid-area: leftTeamScore;
-  justify-self: center;
-  align-self: center;
-}
-
-.rightTeamScore {
-  grid-area: rightTeamScore;
-  justify-self: center;
-  align-self: center;
-}
-
-.matchup {
-  grid-area: matchup;
-  justify-self: center;
-}
-
-@media (min-width: 768px) {
-  .game {
-    grid-template-columns: 20px 1fr 60px 1fr 20px;
-    grid-template-areas: 'leftTeamScore leftTeam VS rightTeam rightTeamScore';
-  }
 }

@@ -1,17 +1,28 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useContext } from 'react';
 import { GLOBAL_ENUM } from '../../../../../common/enums';
-import { SearchList, List } from '../../../components/Custom';
+import { SearchList, List, Button } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../../hooks/forms';
 import styles from './AddTeams.module.css';
 import { Typography } from '@material-ui/core';
+import { Store, ACTION_ENUM } from '../../../Store';
 
 export default function AddTeams(props) {
   const { t } = useTranslation();
   const query = useFormInput('');
-  const { addTeam, teams } = props;
+  const { dispatch } = useContext(Store);
+  const { addTeam, teams, save } = props;
 
   const blackList = useMemo(() => teams.map(t => t.team_id), [teams]);
+
+  const onSave = () => {
+    dispatch({
+      type: ACTION_ENUM.SNACK_BAR,
+      message: t('teams_saved'),
+      severity: 'success',
+    });
+    save();
+  };
 
   return (
     <div className={styles.main}>
@@ -48,6 +59,9 @@ export default function AddTeams(props) {
           <List items={teams} />
         </div>
       )}
+      <Button className={styles.button} onClick={onSave}>
+        {t('save')}
+      </Button>
     </div>
   );
 }

@@ -11,17 +11,12 @@ export default function Games(props) {
 
   return (
     <div className={styles.main}>
-      <Typography
-        variant="body2"
-        color="textSecondary"
-        component="p"
-        style={{ marginBottom: '8px' }}
-      >
+      <Typography style={{ marginBottom: '8px' }}>
         {t('games')}
       </Typography>
-      {games.map(game => (
+      {games.map((game, gameIndex) => (
         <Card
-          items={{ ...game, changeScore }}
+          items={{ ...game, changeScore, gameIndex }}
           type={CARD_TYPE_ENUM.GAME}
         />
       ))}
