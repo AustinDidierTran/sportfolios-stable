@@ -1,46 +1,42 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import styles from './GameItem.module.css';
 
 import { Typography, Card, TextField } from '../../../MUI';
 import { useFormInput } from '../../../../hooks/forms';
+import { useEffect } from 'react';
 
 export default function GameItem(props) {
-  const { id, teams, changeScore } = props;
+  const { teams, changeScore, gameIndex } = props;
 
-  const rightTeamScore = useFormInput(teams[0].score);
-  const leftTeamScore = useFormInput(teams[1].score);
+  const theTeams = teams.map(team => {
+    return { ...team, input: useFormInput(team.score) };
+  });
 
-  const onChange = () => {
-    changeScore(leftTeamScore.value, rightTeamScore.value, id);
+  const saveScore = () => {
+    theTeams.map((team, teamIndex) => {
+      if (team.input.hasChanged) {
+        team.input.setCurrentAsDefault();
+        changeScore(gameIndex, teamIndex, team.input.value);
+      }
+    });
   };
-
-  useEffect(() => onChange(), [
-    leftTeamScore.value,
-    rightTeamScore.value,
-  ]);
+  useEffect(() => saveScore(), [theTeams]);
 
   return (
     <Card className={styles.game}>
-      <TextField
-        className={styles.leftTeamScore}
-        type="number"
-        {...leftTeamScore.inputProps}
-      />
-      <Typography className={styles.leftTeam} variant="h6">
-        {teams[0].name}
-      </Typography>
-      <Typography className={styles.VS} variant="h6">
-        VS
-      </Typography>
-      <Typography className={styles.rightTeam} variant="h6">
-        {teams[1].name}
-      </Typography>
-      <TextField
-        className={styles.rightTeamScore}
-        type="number"
-        {...rightTeamScore.inputProps}
-      />
+      {theTeams.map(team => (
+        <div className={styles.team}>
+          <Typography className={styles.name} variant="h6">
+            {team.name}
+          </Typography>
+          <TextField
+            className={styles.score}
+            type="number"
+            {...team.input.inputProps}
+          />
+        </div>
+      ))}
     </Card>
   );
 }

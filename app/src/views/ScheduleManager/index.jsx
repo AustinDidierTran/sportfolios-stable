@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Button } from '../../components/Custom';
+import React, { useState } from 'react';
+import { Container, Paper } from '../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@material-ui/core';
 import AddTeams from './AddTeams';
@@ -14,8 +14,13 @@ export default function ScheduleManager() {
   const { t } = useTranslation();
   const { teams, games } = useQuery();
 
-  const onDelete = async id => {
-    await setTempTeams(oldTeam => {
+  const onDelete = id => {
+    setTempGames(oldGames =>
+      oldGames.filter(
+        game => !game.teams.map(g => g.id).includes(id),
+      ),
+    );
+    setTempTeams(oldTeam => {
       return oldTeam.filter(r => r.id !== id);
     });
   };
@@ -47,8 +52,24 @@ export default function ScheduleManager() {
   const [tempGames, setTempGames] = useState(getGames());
   const [tempTeams, setTempTeams] = useState(getTeams());
 
-  const addTeam = async (e, team) => {
-    await setTempTeams(oldTeam => [
+  const addTeam = (e, team) => {
+    const games = tempTeams.map(opponent => ({
+      id: uuid.v1(),
+      teams: [
+        {
+          id: team.id,
+          name: team.name,
+          score: 0,
+        },
+        {
+          id: opponent.id,
+          name: opponent.name,
+          score: 0,
+        },
+      ],
+    }));
+    setTempGames(oldGames => [...oldGames, ...games]);
+    setTempTeams(oldTeam => [
       ...oldTeam,
       {
         id: team.id || uuid.v1(),
@@ -61,38 +82,18 @@ export default function ScheduleManager() {
     ]);
   };
 
-  const changeScore = (leftTeamScore, rightTeamScore, id) => {
-    const index = tempGames.findIndex(tempGame => tempGame.id === id);
-    if (index > -1) {
-      tempGames[index].teams[0].score = leftTeamScore;
-      tempGames[index].teams[1].score = rightTeamScore;
-    }
+  const changeScore = (gameIndex, teamIndex, score) => {
+    tempGames[gameIndex].teams[teamIndex].score = score;
     save();
   };
 
-  const createGames = () => {
-    const games = [];
-    tempTeams.forEach((team, teamIndex) => {
-      tempTeams.forEach((opponent, opponentIndex) => {
-        if (teamIndex < opponentIndex) {
-          games.push({
-            id: uuid.v1(),
-            teams: [
-              { id: team.id, name: team.name, score: null },
-              { id: opponent.id, name: opponent.name, score: null },
-            ],
-          });
-        }
-      });
-    });
-    setTempGames(games);
-  };
-
-  useEffect(() => createGames(), [tempTeams]);
-
   return (
-    <>
-      <Typography variant="h4" component="p">
+    <Paper className={styles.main}>
+      <Typography
+        variant="h4"
+        component="p"
+        style={{ marginBottom: '8px' }}
+      >
         {t('Welcome to the tournament')}
       </Typography>
       <Container className={styles.container}>
@@ -100,16 +101,14 @@ export default function ScheduleManager() {
           className={styles.teams}
           addTeam={addTeam}
           teams={tempTeams}
+          save={save}
         />
         <Games
           className={styles.games}
           games={tempGames}
           changeScore={changeScore}
         />
-        <Button className={styles.button} onClick={save}>
-          {t('save')}
-        </Button>
       </Container>
-    </>
+    </Paper>
   );
 }

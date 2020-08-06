@@ -10,7 +10,7 @@
   overflow: auto;
 }
 
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   .title {
     border-radius: 4px 4px 0px 0px;
   }
