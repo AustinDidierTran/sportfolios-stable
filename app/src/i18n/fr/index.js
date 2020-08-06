@@ -91,6 +91,7 @@ export default {
     full_name: 'Nom complet',
     funding: 'Financement',
     funding_goal: 'Objectif: {{goal}}$',
+    games: 'Parties',
     general: 'Général',
     general_informations: 'Informations générales',
     goal: 'Objectif',
@@ -217,6 +218,7 @@ export default {
     team_select: "Choix de l'équipe",
     team_history: "Historique de l'équipe",
     teams: 'Équipes',
+    teams_saved: 'Équipes sauvegardées!',
     to_see_your_receipt:
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
     this_may_take_a_few_seconds:

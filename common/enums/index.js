@@ -49,13 +49,14 @@ const MEMBERSHIP_TYPE_ENUM = {
 };
 
 const CARD_TYPE_ENUM = {
-  SHOP: 1,
-  CART: 2,
-  INVOICE: 3,
-  DELETE_ENTITY: 4,
-  ADD_PAYMENT_OPTION: 5,
-  EVENT_PAYMENT_OPTION: 6,
-  EVENT_SETTINGS: 7,
+  SHOP: 'shop',
+  CART: 'cart',
+  GAME: 'game',
+  INVOICE: 'invoice',
+  DELETE_ENTITY: 'delete entity',
+  ADD_PAYMENT_OPTION: 'add payment option',
+  EVENT_PAYMENT_OPTION: 'event payment option',
+  EVENT_SETTINGS: 'event settings',
 };
 
 const INVOICE_STATUS_ENUM = {

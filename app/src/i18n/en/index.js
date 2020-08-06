@@ -91,6 +91,7 @@ export default {
     full_name: 'Full name',
     funding: 'Funding',
     funding_goal: 'Goal: {{goal}}$',
+    games: 'Games',
     general: 'General',
     general_informations: 'General informations',
     generate_account_link: 'Generate Account Link',
@@ -212,6 +213,7 @@ export default {
     team_history: 'Team History',
     team_select: 'Team select',
     teams: 'Teams',
+    teams_saved: 'Teams saved!',
     this_may_take_a_few_seconds:
       'This may take a few seconds... The time to stretch a little!',
     value_is_required: 'Valeur obligatoire',

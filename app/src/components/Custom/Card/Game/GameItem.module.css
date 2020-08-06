@@ -1,0 +1,21 @@
+.game {
+  margin-bottom: 16px;
+}
+
+.team {
+  display: grid !important;
+  grid-template-columns: 3fr 1fr;
+  grid-template-areas: 'name score';
+  column-gap: 4px;
+  padding: 8px;
+}
+
+.name {
+  grid-area: name;
+  justify-self: start;
+}
+
+.score {
+  grid-area: score;
+  justify-self: center;
+}

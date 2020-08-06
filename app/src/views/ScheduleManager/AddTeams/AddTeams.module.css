@@ -17,10 +17,10 @@
   margin-left: 0.5em;
 }
 
-.main {
-  width: 332px !important;
-  margin: auto !important;
-}
 .list {
+  margin-bottom: 16px !important;
+}
+
+.button {
   margin-bottom: 16px !important;
 }
