@@ -43,9 +43,11 @@ router.get(`${BASE_URL}/eventInfos`, async ctx => {
 });
 
 router.get(`${BASE_URL}/allTeamsRegistered`, async ctx => {
+  const userId =
+    ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
   const entity = await queries.getAllRegistered(
     ctx.query.eventId,
-    ctx.body.userInfo.id,
+    userId,
   );
 
   if (entity) {

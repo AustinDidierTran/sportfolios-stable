@@ -28,6 +28,10 @@ const accountParamsFactory = params => {
     state,
   } = params;
 
+  if (!business_type) {
+    return {};
+  }
+
   if (business_type === BUSINESS_TYPE_ENUM.INDIVIDUAL) {
     return {
       business_type,
