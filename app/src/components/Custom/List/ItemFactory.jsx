@@ -10,6 +10,7 @@ import TeamItem from './TeamItem';
 import PaymentOptionItem from './PaymentOptionItem';
 import RosterItem from './RosterItem';
 import RankingItem from './RankingItem';
+import PurchasesItem from './PurchasesItem';
 
 const ItemMap = {
   [GLOBAL_ENUM.EVENT_CREATOR]: EventCreatorItem,
@@ -22,6 +23,7 @@ const ItemMap = {
   [GLOBAL_ENUM.PAYMENT_OPTION]: PaymentOptionItem,
   [GLOBAL_ENUM.ROSTER_ITEM]: RosterItem,
   [GLOBAL_ENUM.RANKING]: RankingItem,
+  [GLOBAL_ENUM.PURCHASES]: PurchasesItem,
 };
 
 export default function ItemFactory(props) {

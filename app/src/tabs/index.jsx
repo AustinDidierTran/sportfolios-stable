@@ -1,8 +1,10 @@
 import About from './About';
+import Cart from './Cart';
 import EventInfo from './EventInfo';
 import Events from './Events';
 import General from './General';
 import Settings from './Settings';
+import Purchases from './Purchases';
 import Shop from './Shop';
 import Rosters from './Rosters';
 import { useTranslation } from 'react-i18next';
@@ -10,10 +12,12 @@ import { ENTITIES_ROLE_ENUM } from '../Store';
 
 export const TABS_ENUM = {
   ABOUT: 'about',
+  CART: 'cart',
   EVENT_INFO: 'event info',
   ROSTERS: 'roster',
   EVENTS: 'events',
   GENERAL: 'general',
+  PURCHASES: 'purchases',
   SHOP: 'shop',
   SETTINGS: 'settings',
 };
@@ -31,6 +35,28 @@ export default function Tabs(props) {
           component: About,
           label: t('about'),
           icon: 'Info',
+        },
+      ];
+    }
+    if (l === TABS_ENUM.CART) {
+      return [
+        ...prev,
+        {
+          value: TABS_ENUM.CART,
+          component: Cart,
+          label: t('cart'),
+          icon: 'ShoppingCartOutlined',
+        },
+      ];
+    }
+    if (l === TABS_ENUM.PURCHASES) {
+      return [
+        ...prev,
+        {
+          value: TABS_ENUM.PURCHASES,
+          component: Purchases,
+          label: t('purchases'),
+          icon: 'Store',
         },
       ];
     }

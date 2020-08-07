@@ -27,6 +27,26 @@ router.get(`${BASE_URL}/getItems`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/getItem`, async ctx => {
+  const data = await queries.getItem(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
+router.get(`${BASE_URL}/purchases`, async ctx => {
+  const data = await queries.getPurchases(ctx.body.userInfo.id);
+
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 router.get(`${BASE_URL}/cartTotal`, async ctx => {
   const data = await queries.getCartTotal(ctx.body.userInfo.id);
 

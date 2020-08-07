@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import styles from './ShopItem.module.css';
 
@@ -12,9 +12,12 @@ import { useTranslation } from 'react-i18next';
 import api from '../../../../actions/api';
 import ImageCard from '../../ImageCard';
 
+import EditItem from '../../../../tabs/Shop/EditItem';
+
 export default function ShopItem(props) {
   const { id } = useParams();
   const { t } = useTranslation();
+  const [isEditing, setIsEditing] = useState(false);
   const {
     label: name,
     amount: price,
@@ -24,6 +27,7 @@ export default function ShopItem(props) {
     stripeProductId,
     isEditor,
     update,
+    fetchItems,
   } = props;
 
   const onPaperClick = () => {
@@ -43,6 +47,28 @@ export default function ShopItem(props) {
     update();
   };
 
+  const editItem = () => {
+    setIsEditing(!isEditing);
+  };
+
+  if (isEditing) {
+    return (
+      <EditItem
+        item={{
+          name,
+          price,
+          photoUrl,
+          description,
+          stripePriceId,
+          stripeProductId,
+        }}
+        fetchItems={fetchItems}
+        isEditing={isEditing}
+        setIsEditing={s => setIsEditing(s)}
+      />
+    );
+  }
+
   return (
     <Paper className={styles.root}>
       <ImageCard
@@ -58,7 +84,7 @@ export default function ShopItem(props) {
           {formatPrice(price)}
         </Typography>
         <Typography
-          variant="h6"
+          variant="h7"
           color="textSecondary"
           component="p"
           className={styles.description}
@@ -66,14 +92,24 @@ export default function ShopItem(props) {
           {description}
         </Typography>
         {isEditor ? (
-          <Button
-            onClick={deleteItem}
-            endIcon="Delete"
-            color="secondary"
-            className={styles.button}
-          >
-            {t('delete')}
-          </Button>
+          <div className={styles.buttons}>
+            <Button
+              onClick={editItem}
+              endIcon="Settings"
+              color="primary"
+              className={styles.button}
+            >
+              {t('edit')}
+            </Button>
+            <Button
+              onClick={deleteItem}
+              endIcon="Delete"
+              color="secondary"
+              className={styles.button}
+            >
+              {t('delete')}
+            </Button>
+          </div>
         ) : (
           <></>
         )}

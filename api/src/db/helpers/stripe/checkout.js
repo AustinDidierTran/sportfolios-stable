@@ -181,7 +181,6 @@ const createTransfers = async invoice => {
           currency,
           invoice_item: invoiceItemId,
         } = item;
-
         const [invoiceItem] = await knex('stripe_invoice_item')
           .select('*')
           .where({ invoice_item_id: invoiceItemId });

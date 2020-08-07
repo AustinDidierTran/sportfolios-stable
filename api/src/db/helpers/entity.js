@@ -1087,6 +1087,7 @@ module.exports = {
   getCreator,
   getEntity,
   getEntityRole,
+  getEmailsEntity,
   getMembers,
   getMemberships,
   getRegistered,

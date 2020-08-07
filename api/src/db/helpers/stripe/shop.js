@@ -55,6 +55,43 @@ const addPrice = async body => {
   }
 };
 
+const editPrice = async body => {
+  const {
+    stripePrice,
+    entityId,
+    photoUrl,
+    stripePriceIdToUpdate,
+  } = body;
+  try {
+    const price = await stripe.prices.create(stripePrice);
+
+    await knex('stripe_price').insert({
+      stripe_price_id: price.id,
+      stripe_product_id: price.product,
+      amount: price.unit_amount,
+      active: price.active,
+      start_date: new Date(price.created * 1000),
+      metadata: price.metadata,
+    });
+    await knex('store_items')
+      .update({
+        stripe_price_id: price.id,
+        photo_url: photoUrl,
+      })
+      .where({
+        stripe_price_id: stripePriceIdToUpdate,
+        entity_id: entityId,
+      });
+
+    stripeLogger(`Price updated, ${price.id}`);
+
+    return price;
+  } catch (err) {
+    stripeErrorLogger('addPrice error', err);
+    throw err;
+  }
+};
+
 const createItem = async body => {
   const { stripeProduct, stripePrice, entityId, photoUrl } = body;
   try {
@@ -71,6 +108,33 @@ const createItem = async body => {
     return price;
   } catch (err) {
     stripeErrorLogger('CreateItem error', err);
+    throw err;
+  }
+};
+
+const editItem = async body => {
+  const {
+    stripeProduct,
+    stripePrice,
+    entityId,
+    photoUrl,
+    stripePriceIdToUpdate,
+  } = body;
+  try {
+    const product = await addProduct({
+      stripeProduct,
+    });
+
+    const price = await editPrice({
+      stripePrice: { ...stripePrice, product: product.id },
+      entityId,
+      photoUrl,
+      stripePriceIdToUpdate,
+    });
+
+    return price;
+  } catch (err) {
+    stripeErrorLogger('EditItem error', err);
     throw err;
   }
 };
@@ -114,5 +178,6 @@ module.exports = {
   addProduct,
   addPrice,
   createItem,
+  editItem,
   deleteItem,
 };

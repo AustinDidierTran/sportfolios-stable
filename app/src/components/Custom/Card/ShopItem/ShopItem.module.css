@@ -1,7 +1,7 @@
 .infos {
   display: grid !important;
   grid-template-columns: 5fr 2fr;
-  grid-template-areas: 'name price' 'description description' 'button button';
+  grid-template-areas: 'name price' 'description description' 'buttons buttons';
   padding-bottom: 16px !important;
   border-bottom: 1px solid rgb(207, 207, 207);
   margin-bottom: 8px;
@@ -23,7 +23,7 @@
 
 .description {
   grid-area: description;
-  overflow: auto !important;
+  text-align: left;
 }
 
 .cartButtonChildren {
@@ -41,10 +41,18 @@
 }
 
 .button {
-  grid-area: button;
-  justify-self: center !important;
+  flex: 1 1 auto;
   width: 50%;
-  margin-top: 16px !important;
+  margin: 4px auto !important;
+}
+
+.buttons {
+  grid-area: buttons;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  margin: 12px 0 4px 0;
 }
 
 @media (min-width: 768px) {
