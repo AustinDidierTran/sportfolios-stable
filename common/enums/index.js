@@ -5,13 +5,15 @@ const ENTITIES_ROLE_ENUM = {
 };
 
 const SIZES_ENUM = {
-  XXS: 'xx-small',
+  XXXS: '3x-small',
+  XXS: '2x-small',
   XS: 'x-small',
   SM: 'small',
   M: 'medium',
   L: 'large',
   XL: 'x-large',
-  XXL: 'xx-large',
+  XXL: '2x-large',
+  XXXL: '3x-large',
 };
 
 const ROSTER_ROLE_ENUM = {
