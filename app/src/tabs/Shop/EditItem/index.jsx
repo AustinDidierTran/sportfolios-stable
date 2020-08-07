@@ -14,6 +14,7 @@ import { editItem, onImgUpload } from '../../../utils/shop';
 import { ERROR_ENUM } from '../../../../../common/errors';
 import { useTranslation } from 'react-i18next';
 import AddSizes from '../AddSizes';
+import { TextareaAutosize } from '@material-ui/core';
 
 export default function EditItem(props) {
   const { id } = useParams();
@@ -47,14 +48,6 @@ export default function EditItem(props) {
     setIsEditing(!isEditing);
   };
 
-  const validateDescription = value => {
-    if (value.length > 255) {
-      description.reset();
-    } else {
-      description.setValue(value);
-      description.changeDefault(value);
-    }
-  };
   const validateName = value => {
     if (name.value.length > 64) {
       name.reset();
@@ -84,7 +77,7 @@ export default function EditItem(props) {
     if (validate()) {
       await editItem({
         name: name.value,
-        description: description.value,
+        description: encodeURIComponent(description.value),
         amount: amount,
         photoUrl,
         entityId: id,
@@ -147,12 +140,10 @@ export default function EditItem(props) {
         <Typography
           className={styles.price}
         >{`${amount} CAD`}</Typography>
-
-        <TextField
+        <TextareaAutosize
           {...description.inputProps}
-          label={t('description')}
+          placeholder="Description"
           className={styles.description}
-          onChange={validateDescription}
         />
         <AddSizes
           className={styles.sizes}
