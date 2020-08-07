@@ -5,7 +5,6 @@ import styles from './ShopItem.module.css';
 import { Typography } from '../../../MUI';
 import { Paper, Button } from '../..';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import { useParams } from 'react-router-dom';
 import { goTo, ROUTES, formatRoute } from '../../../../actions/goTo';
 import { formatPrice } from '../../../../utils/stringFormats';
