@@ -12,6 +12,7 @@ import Delete from '@material-ui/icons/Delete';
 import Edit from '@material-ui/icons/Edit';
 import EmojiEvents from '@material-ui/icons/EmojiEvents';
 import Event from '@material-ui/icons/Event';
+import ExitToApp from '@material-ui/icons/ExitToApp';
 import Folder from '@material-ui/icons/Folder';
 import Flag from '@material-ui/icons/Flag';
 import Home from '@material-ui/icons/Home';
@@ -60,6 +61,7 @@ const icons = {
   Edit,
   EmojiEvents,
   Event,
+  ExitToApp,
   Flag,
   Folder,
   Home,

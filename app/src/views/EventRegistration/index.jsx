@@ -12,7 +12,12 @@ import { useStepper } from '../../hooks/forms';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import moment from 'moment';
-import { formatRoute, ROUTES, goTo } from '../../actions/goTo';
+import {
+  formatRoute,
+  ROUTES,
+  goTo,
+  goToAndReplace,
+} from '../../actions/goTo';
 import { useTranslation } from 'react-i18next';
 import {
   INVOICE_STATUS_ENUM,
@@ -36,7 +41,6 @@ const getEvent = async eventId => {
 
 export default function EventRegistration() {
   const { t } = useTranslation();
-  const { dispatch } = useContext(Store);
   const { id: eventId } = useParams();
   const [team, setTeam] = useState();
   const [paymentOption, setPaymentOption] = useState();
@@ -44,7 +48,8 @@ export default function EventRegistration() {
   const [roster, setRoster] = useState([]);
   const [event, setEvent] = useState({});
   const {
-    state: { screenSize },
+    state: { authToken, screenSize },
+    dispatch,
   } = useContext(Store);
 
   const getOptions = async () => {
@@ -226,7 +231,19 @@ export default function EventRegistration() {
   };
 
   useEffect(() => {
-    getData();
+    const isAuthenticated = Boolean(authToken);
+    if (isAuthenticated) {
+      getData();
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('you_need_to_create_an_account'),
+        severity: 'info',
+      });
+      goToAndReplace(ROUTES.login, null, {
+        successRoute: `/eventRegistration/${eventId}`,
+      });
+    }
   }, []);
 
   return (

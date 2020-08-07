@@ -252,8 +252,10 @@ export default {
     account_already_exists: 'Account already exists',
     complete_order: 'Complete order',
     see_receipt: 'See Receipt',
-    redirect_to_success_route:
+    redirect_to_event_registration:
       'You will soon be redirected to the event registration. Click below to be redirected instantly.',
+    redirect_to_success_route:
+      'You are now well authenticated. You will soon be redirected to your requested page. Click below to be redirected instantly.',
     redirect_to_home:
       'You will soon be redirected to the home page. Click below to be redirected instantly.',
     // Validation
@@ -321,6 +323,7 @@ export default {
     email_confirm_success: 'Email successfully confirmed!',
     go_to_login: 'Go to login',
     go_to_event: 'Go to event',
+    go_to_page: 'Go to page',
     email_confirm_failure:
       'Email confirmation failed. To send a new email, try to login again. By doing so, we will send you a new confirmation email.',
     recent_search_results: 'Recent search results',

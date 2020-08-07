@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useMemo,
-  useEffect,
-  useContext,
-} from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 import {
   Paper,
@@ -24,7 +19,6 @@ import api from '../../actions/api';
 import moment from 'moment';
 import styles from './EventInfo.module.css';
 import { CardContent } from '@material-ui/core';
-import { Store, ACTION_ENUM } from '../../Store';
 
 const getEvent = async eventId => {
   const { data } = await api(
@@ -37,12 +31,7 @@ const getEvent = async eventId => {
 
 export default function TabEventInfo() {
   const { t } = useTranslation();
-  const { dispatch } = useContext(Store);
   const { id } = useParams();
-  const {
-    state: { authToken },
-  } = useContext(Store);
-  const isAuthenticated = Boolean(authToken);
   const [options, setOptions] = useState([]);
   const [isFull, setIsFull] = useState(false);
   const [event, setEvent] = useState({});
@@ -51,18 +40,7 @@ export default function TabEventInfo() {
   const [color, setColor] = useState('textSecondary');
 
   const goToRegistration = () => {
-    if (isAuthenticated) {
-      goTo(ROUTES.eventRegistration, { id });
-    } else {
-      dispatch({
-        type: ACTION_ENUM.SNACK_BAR,
-        message: t('you_need_to_create_an_account'),
-        severity: 'info',
-      });
-      goTo(ROUTES.login, null, {
-        successRoute: `/eventRegistration/${id}`,
-      });
-    }
+    goTo(ROUTES.eventRegistration, { id });
   };
 
   useEffect(() => {

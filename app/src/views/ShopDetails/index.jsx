@@ -7,7 +7,12 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
-import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
+import {
+  formatRoute,
+  goTo,
+  ROUTES,
+  goToAndReplace,
+} from '../../actions/goTo';
 import { Typography } from '../../components/MUI';
 import {
   Button,
@@ -22,9 +27,12 @@ import { CircularProgress } from '@material-ui/core';
 import { Store, ACTION_ENUM } from '../../Store';
 
 export default function ShopDetails() {
-  const { dispatch } = useContext(Store);
+  const {
+    state: { authToken },
+    dispatch,
+  } = useContext(Store);
   const { t } = useTranslation();
-  const { stripePriceId } = useParams();
+  const { id, stripePriceId } = useParams();
   const [item, setItem] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const {
@@ -61,6 +69,23 @@ export default function ShopDetails() {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
+      const isAuthenticated = Boolean(authToken);
+
+      if (!isAuthenticated) {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: t('you_need_to_create_an_account'),
+          severity: 'info',
+        });
+        goToAndReplace(ROUTES.login, null, {
+          successRoute: formatRoute(ROUTES.shopDetails, {
+            id,
+            stripePriceId,
+          }),
+        });
+        return;
+      }
+
       const { quantity, size } = values;
       const metadata = {};
 
