@@ -7,6 +7,7 @@ export function updateRanking(teams, games) {
     pointFor: 0,
     pointAgainst: 0,
     points: 0,
+    position: team.index,
   }));
 
   games.reduce((ranking, game) => {

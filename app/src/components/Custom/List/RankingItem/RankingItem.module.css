@@ -1,7 +1,34 @@
-.avatar {
-  color: #18b393 !important;
-  background-color: white !important;
+.main {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-areas: 'position name wins loses pointFor pointAgainst diff';
 }
-.text {
-  overflow: auto;
+
+.position {
+  grid-area: position;
+}
+.name {
+  grid-area: name;
+}
+.wins {
+  grid-area: wins;
+}
+.loses {
+  grid-area: loses;
+}
+.pointFor {
+  grid-area: pointFor;
+}
+.pointAgainst {
+  grid-area: pointAgainst;
+}
+.diff {
+  grid-area: diff;
+}
+
+.vertical {
+  border-left: 6px solid black;
+  height: 200px;
+  position: absolute;
+  left: 50%;
 }

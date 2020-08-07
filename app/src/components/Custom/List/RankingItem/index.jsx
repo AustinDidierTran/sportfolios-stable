@@ -1,42 +1,42 @@
 import React from 'react';
 
-import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
-import { Avatar } from '../../../Custom';
-import { useTranslation } from 'react-i18next';
+import { ListItem, ListItemText } from '../../../MUI';
 import styles from './RankingItem.module.css';
 
 export default function RankingItem(props) {
-  const { t } = useTranslation();
-
-  const {
-    id,
-    index,
-    name,
-    wins,
-    loses,
-    pointFor,
-    pointAgainst,
-  } = props;
-  console.log({
-    id,
-    index,
-    name,
-    wins,
-    loses,
-    pointFor,
-    pointAgainst,
-  });
+  const { index, name, wins, loses, pointFor, pointAgainst } = props;
 
   return (
     <ListItem style={{ width: '100%' }}>
-      <ListItemIcon>
-        <Avatar initials={index}></Avatar>
-      </ListItemIcon>
-      <ListItemText
-        className={styles.text}
-        primary={name}
-        secondary={t('person')}
-      ></ListItemText>
+      <div className={styles.main} style={{ width: '100%' }}>
+        <ListItemText className={styles.position} secondary={index} />
+        <ListItemText className={styles.name} primary={name} />
+        <ListItemText
+          className={styles.wins}
+          primary={wins}
+          secondary="W"
+        />
+        <ListItemText
+          className={styles.loses}
+          primary={loses}
+          secondary="L"
+        />
+        <ListItemText
+          className={styles.pointFor}
+          primary={pointFor}
+          secondary="+"
+        />
+        <ListItemText
+          className={styles.pointAgainst}
+          primary={pointAgainst}
+          secondary="-"
+        />
+        <ListItemText
+          className={styles.diff}
+          primary={pointFor - pointAgainst}
+          secondary="+/-"
+        />
+      </div>
     </ListItem>
   );
 }
