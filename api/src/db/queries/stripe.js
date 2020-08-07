@@ -9,6 +9,7 @@ const {
   createInvoice,
   createInvoiceItem,
   createItem: createItemHelper,
+  editItem: editItemHelper,
   deleteItem: deleteItemHelper,
   createPaymentMethod: createPaymentMethodHelper,
   createRefund: createRefundHelper,
@@ -118,6 +119,10 @@ const createItem = async (body, userId) => {
   return createItemHelper(body, userId);
 };
 
+const editItem = async (body, userId) => {
+  return editItemHelper(body, userId);
+};
+
 const deleteItem = async body => {
   return deleteItemHelper(body);
 };
@@ -150,6 +155,7 @@ module.exports = {
   attachPaymentMethod,
   checkout,
   createItem,
+  editItem,
   deleteItem,
   createPrice,
   createProduct,

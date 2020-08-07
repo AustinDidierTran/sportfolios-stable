@@ -58,6 +58,44 @@ const createItem = async params => {
   return item;
 };
 
+const editItem = async params => {
+  const {
+    name,
+    description,
+    amount,
+    photoUrl,
+    entityId,
+    sizes,
+    stripePriceIdToUpdate,
+  } = params;
+  const itemParams = {
+    stripeProduct: {
+      name: name,
+      description: description,
+      active: true,
+      metadata: {
+        seller_entity_id: entityId,
+        sizes: JSON.stringify(sizes),
+      },
+    },
+    stripePrice: {
+      currency: 'cad',
+      unit_amount: Math.floor(+amount * 100).toString(),
+      active: true,
+    },
+    entityId,
+    photoUrl,
+    stripePriceIdToUpdate,
+  };
+
+  const { data: item } = await api('/api/stripe/editItem', {
+    method: 'POST',
+    body: JSON.stringify(itemParams),
+  });
+
+  return item;
+};
+
 const onImgUpload = async (id, img, dispatch) => {
   const photoUrl = await uploadPicture(id, img);
 
@@ -71,4 +109,10 @@ const onImgUpload = async (id, img, dispatch) => {
   return { status: 404, photoUrl: photoUrl };
 };
 
-export { createProduct, createPrice, createItem, onImgUpload };
+export {
+  createProduct,
+  createPrice,
+  createItem,
+  onImgUpload,
+  editItem,
+};
