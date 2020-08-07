@@ -252,6 +252,7 @@ const getPurchases = async userId => {
       'store_items_paid.quantity',
       'store_items_paid.amount',
       'store_items_paid.metadata',
+      'store_items_paid.created_at',
       'store_items_paid.seller_entity_id',
       'store_items.photo_url',
     ])
@@ -278,7 +279,12 @@ const getPurchases = async userId => {
   const res = await Promise.all(
     purchases.map(async p => {
       const email = await getEmailsEntity(p.seller_entity_id);
-      return { ...p, email };
+      return {
+        ...p,
+        photoUrl: p.photo_url,
+        createdAt: p.created_at,
+        email,
+      };
     }),
   );
   return res;

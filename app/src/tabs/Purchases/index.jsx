@@ -8,7 +8,6 @@ export default function PurchasesTab() {
   const { response: purchases, isLoading } = useApiRoute(
     '/api/shop/purchases',
   );
-
   if (isLoading) {
     return (
       <IgContainer>

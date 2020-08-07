@@ -164,6 +164,7 @@ export default {
     private: 'Private',
     phone_number: 'Phone Number',
     people: 'People',
+    purchased_on: 'Purchased on',
     ranking: 'Ranking',
     refund: 'Refund',
     refunded: 'Refunded',
