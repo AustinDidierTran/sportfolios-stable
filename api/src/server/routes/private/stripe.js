@@ -220,6 +220,17 @@ router.post(`${BASE_URL}/createItem`, async ctx => {
   };
 });
 
+router.post(`${BASE_URL}/editItem`, async ctx => {
+  const data = await queries.editItem(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 router.del(`${BASE_URL}/deleteItem`, async ctx => {
   const data = await queries.deleteItem(ctx.query);
   ctx.body = {
