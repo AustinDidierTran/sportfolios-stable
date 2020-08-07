@@ -181,7 +181,7 @@ export default function ShopDetails() {
               value={text}
               disabled
             />
-            {sizeOptions ? (
+            {sizeOptions.length > 0 ? (
               <div className={styles.sizes}>
                 <Select
                   label={t('size')}
