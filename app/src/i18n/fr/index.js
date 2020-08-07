@@ -167,6 +167,7 @@ export default {
     price: 'Prix',
     product_added_to_cart: 'Produit ajouté au panier',
     phone_number: 'Numéro de téléphone',
+    purchased_on: 'Acheté le',
     ranking: 'Classement',
     refunded: 'Remboursé',
     results: 'Résultats',

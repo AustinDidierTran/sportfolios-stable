@@ -12,7 +12,8 @@ export default function PurchasesItem(props) {
   const { t } = useTranslation();
 
   const {
-    photo_url,
+    photoUrl,
+    createdAt,
     label,
     amount,
     metadata,
@@ -23,7 +24,7 @@ export default function PurchasesItem(props) {
   return (
     <ListItem button style={{ width: '100%' }}>
       <ListItemIcon>
-        <Avatar photoUrl={photo_url} variant="square"></Avatar>
+        <Avatar photoUrl={photoUrl} variant="square"></Avatar>
       </ListItemIcon>
       <div className={styles.div}>
         <ListItemText
@@ -43,6 +44,12 @@ export default function PurchasesItem(props) {
         />
         <MailtoButton edge="end" emails={email} />
       </div>
+      <ListItemText
+        className={styles.text}
+        color="textSecondary"
+        primary={`${t('purchased_on')}: ${createdAt}`}
+        secondary={formatPrice(amount)}
+      ></ListItemText>
     </ListItem>
   );
 }
