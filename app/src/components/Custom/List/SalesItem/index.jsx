@@ -1,22 +1,18 @@
-import React from 'react';
-
+import React, { useMemo } from 'react';
 import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
-import { Avatar } from '../../../Custom';
+import { Avatar, MailToButton } from '../../../Custom';
 import { useTranslation } from 'react-i18next';
-import Chip from '@material-ui/core/Chip';
-import styles from './PurchasesItem.module.css';
-import MailtoButton from '../../MailToButton';
+import styles from './SalesItem.module.css';
 import {
   formatPrice,
   formatDate,
 } from '../../../../utils/stringFormats';
 import moment from 'moment';
-
-export default function PurchasesItem(props) {
+export default function SalesItem(props) {
   const { t } = useTranslation();
 
   const {
-    photoUrl,
+    photo_url: photoUrl,
     createdAt,
     label,
     amount,
@@ -24,6 +20,12 @@ export default function PurchasesItem(props) {
     quantity,
     email,
   } = props;
+
+  const emails = useMemo(() => {
+    const mail = [];
+    mail.push({ email });
+    return mail;
+  }, [email]);
 
   return (
     <ListItem button style={{ width: '100%' }}>
@@ -45,17 +47,12 @@ export default function PurchasesItem(props) {
           primary={formatPrice(amount)}
           secondary={`Qt: ${quantity}`}
         ></ListItemText>
-        <MailtoButton
-          edge="end"
-          emails={email}
-          className={styles.mail}
-        />
-        <Chip
-          label={t('ordered')}
-          color="primary"
-          variant="outlined"
-          className={styles.chip}
-        />
+        <ListItemText
+          className={styles.quantity}
+          secondary={`${t('by')}: ${email}`}
+          className={styles.email}
+        ></ListItemText>
+        <MailToButton emails={emails} className={styles.mail} />
         <ListItemText
           className={styles.date}
           secondary={`${t('purchased_on')}: ${formatDate(
