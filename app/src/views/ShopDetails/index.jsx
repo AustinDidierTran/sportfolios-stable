@@ -115,6 +115,7 @@ export default function ShopDetails() {
           amount: quantity,
           name: item.label,
           total: formatPrice(quantity * item.amount),
+          id,
         });
       } else {
         dispatch({
