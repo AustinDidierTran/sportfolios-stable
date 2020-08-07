@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import styles from './CartItem.module.css';
+import styles from './DefaultCartItem.module.css';
 
 import { Select } from '../../../Custom';
 import { Typography } from '../../../MUI';
@@ -10,6 +10,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import { formatPrice } from '../../../../utils/stringFormats';
 import { useTranslation } from 'react-i18next';
+import { TextareaAutosize } from '@material-ui/core';
 
 export default function DefaultCartItem(props) {
   const { t } = useTranslation();
@@ -22,6 +23,10 @@ export default function DefaultCartItem(props) {
     metadata = {},
     quantity,
   } = props;
+
+  const text = useMemo(() => decodeURIComponent(description), [
+    description,
+  ]);
 
   const { size } = metadata;
 
@@ -54,14 +59,12 @@ export default function DefaultCartItem(props) {
         ) : (
           <></>
         )}
-        <Typography
-          variant="h7"
-          color="textSecondary"
-          component="p"
+        <TextareaAutosize
           className={styles.description}
-        >
-          {description}
-        </Typography>
+          placeholder="Description"
+          value={text}
+          disabled
+        />
         <Select
           className={styles.quantity}
           onChange={updateQuantity}
