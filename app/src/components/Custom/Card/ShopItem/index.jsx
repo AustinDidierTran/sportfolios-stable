@@ -13,7 +13,6 @@ import api from '../../../../actions/api';
 import ImageCard from '../../ImageCard';
 
 import EditItem from '../../../../tabs/Shop/EditItem';
-import { TextareaAutosize } from '@material-ui/core';
 
 export default function ShopItem(props) {
   const { id } = useParams();
@@ -89,7 +88,10 @@ export default function ShopItem(props) {
         <Typography variant="h5" className={styles.price}>
           {formatPrice(price)}
         </Typography>
-        <TextareaAutosize
+        <Typography
+          variant="h7"
+          color="textSecondary"
+          component="p"
           className={styles.description}
           placeholder="Description"
           value={text}
