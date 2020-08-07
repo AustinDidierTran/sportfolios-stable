@@ -1,146 +1,48 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-import styles from './Cart.module.css';
-import api from '../../actions/api';
-
+import TabsGenerator, { TABS_ENUM } from '../../tabs';
 import { goTo, ROUTES } from '../../actions/goTo';
-import { CARD_TYPE_ENUM } from '../../../../common/enums';
-import { useTranslation } from 'react-i18next';
-import {
-  formatPrice,
-  formatPageTitle,
-} from '../../utils/stringFormats';
-
-import {
-  Button,
-  MessageAndButtons,
-  Card,
-  ContainerBottomFixed,
-  LoadingSpinner,
-  IgContainer,
-} from '../../components/Custom';
-import DefaultCard from '../../components/MUI/Card';
-import { Typography } from '../../components/MUI';
-import { useContext } from 'react';
-import { Store, ACTION_ENUM } from '../../Store';
-
-const getCartItems = async () => {
-  const { data: cartItems } = await api('/api/shop/getCartItems');
-  return cartItems;
-};
+import { Tab, Tabs } from '../../components/MUI';
+import { Paper } from '../../components/Custom';
+import { useQuery } from '../../hooks/queries';
 
 export default function Cart() {
-  const { dispatch } = useContext(Store);
-  const { t } = useTranslation();
-  const [items, setItems] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const query = useQuery();
+  const [eventState, setEventState] = useState(
+    query.tab || TABS_ENUM.CART,
+  );
 
-  useEffect(() => {
-    document.title = formatPageTitle(t('cart'));
-  }, []);
+  const tabsList = [TABS_ENUM.CART, TABS_ENUM.PURCHASES];
+  const states = TabsGenerator({ list: tabsList });
 
-  const onCheckout = () => {
-    goTo(ROUTES.checkout);
+  const OpenTab = tabsList.includes(eventState)
+    ? states.find(s => s.value == eventState).component
+    : states.find(s => s.value === TABS_ENUM.CART).component;
+
+  const onClick = s => {
+    goTo(ROUTES.cart, null, { tab: s.value });
+    setEventState(s.value);
   };
-
-  const fetchItems = async () => {
-    const data = await getCartItems();
-    const { items: itemsProp, total: totalProp } = data;
-    setItems(itemsProp);
-    setTotal(totalProp);
-    dispatch({
-      type: ACTION_ENUM.UPDATE_CART,
-      payload: data,
-    });
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <IgContainer>
-        <LoadingSpinner />
-      </IgContainer>
-    );
-  }
-
-  if (items.length < 1) {
-    const buttons = [
-      {
-        name: t('home'),
-        onClick: () => {
-          goTo(ROUTES.home);
-        },
-        endIcon: 'Home',
-        color: 'primary',
-      },
-    ];
-    return (
-      <MessageAndButtons
-        buttons={buttons}
-        message={t('cart_empty_go_shop')}
-      />
-    );
-  }
 
   return (
     <>
-      <IgContainer>
-        <div className={styles.cart}>
-          {items.map(item => (
-            <Card
-              items={{
-                ...item,
-                updateQuantity: async quantity => {
-                  const { data } = await api(
-                    '/api/shop/updateCartItems',
-                    {
-                      method: 'POST',
-                      body: JSON.stringify({
-                        quantity,
-                        cartItemId: item.id,
-                      }),
-                    },
-                  );
-                  const { items: itemsProp, total: totalProp } = data;
-                  setItems(itemsProp);
-                  setTotal(totalProp);
-                  dispatch({
-                    type: ACTION_ENUM.UPDATE_CART,
-                    payload: data,
-                  });
-                },
-                setItems,
-              }}
-              type={CARD_TYPE_ENUM.CART}
+      <Paper>
+        <Tabs
+          value={states.findIndex(s => s.value === eventState)}
+          indicatorColor="primary"
+          textColor="primary"
+        >
+          {states.map((s, index) => (
+            <Tab
+              key={index}
+              onClick={() => onClick(s)}
+              label={s.label}
+              icon={s.icon}
             />
           ))}
-          <DefaultCard className={styles.defaultCard}>
-            <Typography variant="h5" className={styles.typo}>
-              {`Total: ${formatPrice(total)}`}
-            </Typography>
-          </DefaultCard>
-        </div>
-      </IgContainer>
-
-      <ContainerBottomFixed>
-        <div className={styles.buttonDiv}>
-          <Button
-            size="small"
-            variant="contained"
-            endIcon="Check"
-            onClick={onCheckout}
-            style={{ margin: 8 }}
-            className={styles.button}
-          >
-            {t('checkout')}
-          </Button>
-        </div>
-      </ContainerBottomFixed>
+        </Tabs>
+      </Paper>
+      <OpenTab />
     </>
   );
 }

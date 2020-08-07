@@ -32,7 +32,7 @@ export default function Organization(props) {
   ];
 
   const states = TabsGenerator({
-    list: [TABS_ENUM.EVENTS, TABS_ENUM.SETTINGS, TABS_ENUM.SHOP],
+    list: tabsList,
     role: basicInfos.role,
   });
 

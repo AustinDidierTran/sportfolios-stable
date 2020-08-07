@@ -9,6 +9,7 @@ const {
   getCartItems,
   getCartTotal: getCartTotalHelper,
   getCartItemsOrdered: getCartItemsOrderedHelper,
+  getPurchases: getPurchasesHelper,
   getSales: getSalesHelper,
 } = require('../helpers/shop');
 
@@ -49,6 +50,10 @@ const addToCart = async (body, userId) => {
   return getCartItems(userId);
 };
 
+const getPurchases = async userId => {
+  return getPurchasesHelper(userId);
+};
+
 const getSales = async (entityId, userId) => {
   if (!isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
@@ -84,6 +89,7 @@ module.exports = {
   getCart,
   getCartItemsOrdered,
   getCartTotal,
+  getPurchases,
   getSales,
   addToCart,
   updateCartItems,
