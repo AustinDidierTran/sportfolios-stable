@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import styles from './ShopItem.module.css';
 
@@ -13,6 +13,7 @@ import api from '../../../../actions/api';
 import ImageCard from '../../ImageCard';
 
 import EditItem from '../../../../tabs/Shop/EditItem';
+import { TextareaAutosize } from '@material-ui/core';
 
 export default function ShopItem(props) {
   const { id } = useParams();
@@ -29,6 +30,10 @@ export default function ShopItem(props) {
     update,
     fetchItems,
   } = props;
+
+  const text = useMemo(() => decodeURIComponent(description), [
+    description,
+  ]);
 
   const onPaperClick = () => {
     goTo(ROUTES.shopDetails, { id, stripePriceId });
@@ -83,14 +88,12 @@ export default function ShopItem(props) {
         <Typography variant="h5" className={styles.price}>
           {formatPrice(price)}
         </Typography>
-        <Typography
-          variant="h7"
-          color="textSecondary"
-          component="p"
+        <TextareaAutosize
           className={styles.description}
-        >
-          {description}
-        </Typography>
+          placeholder="Description"
+          value={text}
+          disabled
+        />
         {isEditor ? (
           <div className={styles.buttons}>
             <Button

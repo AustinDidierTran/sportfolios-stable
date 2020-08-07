@@ -19,7 +19,7 @@ export default function ScheduleManager() {
   const { teams, games, ranking, title } = useQuery();
 
   useEffect(() => {
-    document.title = formatPageTitle(JSON.parse(title));
+    document.title = formatPageTitle(getTitle());
   }, [title]);
 
   const onDelete = id => {
