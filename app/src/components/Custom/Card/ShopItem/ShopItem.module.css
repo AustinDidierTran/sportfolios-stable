@@ -23,7 +23,7 @@
 
 .description {
   grid-area: description;
-  overflow: auto !important;
+  text-align: left;
 }
 
 .cartButtonChildren {

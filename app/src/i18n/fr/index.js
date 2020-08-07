@@ -141,7 +141,7 @@ export default {
     or: 'ou',
     order_processed: 'Votre commande à été complété avec succès',
     order_processed_title: 'Commande complété',
-
+    ordered: 'Commandé',
     organization: 'Organisation',
     organizations: 'Organisations',
     our_team: 'Notre Équipe',

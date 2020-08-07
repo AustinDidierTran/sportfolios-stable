@@ -12,7 +12,7 @@ export default function Cart() {
     query.tab || TABS_ENUM.CART,
   );
 
-  const tabsList = [TABS_ENUM.CART, TABS_ENUM.ORDERS];
+  const tabsList = [TABS_ENUM.CART, TABS_ENUM.PURCHASES];
   const states = TabsGenerator({ list: tabsList });
 
   const OpenTab = tabsList.includes(eventState)

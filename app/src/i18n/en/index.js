@@ -138,6 +138,7 @@ export default {
     option: 'Option',
     options: 'Options',
     or: 'or',
+    ordered: 'Ordered',
     order_processed: 'Your order has been successfully processed',
     order_processed_title: 'Order processed',
     organization: 'Organization',

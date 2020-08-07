@@ -17,7 +17,7 @@ export const TABS_ENUM = {
   ROSTERS: 'roster',
   EVENTS: 'events',
   GENERAL: 'general',
-  ORDERS: 'orders',
+  PURCHASES: 'purchases',
   SHOP: 'shop',
   SETTINGS: 'settings',
 };
@@ -49,13 +49,13 @@ export default function Tabs(props) {
         },
       ];
     }
-    if (l === TABS_ENUM.ORDERS) {
+    if (l === TABS_ENUM.PURCHASES) {
       return [
         ...prev,
         {
-          value: TABS_ENUM.ORDERS,
+          value: TABS_ENUM.PURCHASES,
           component: Purchases,
-          label: t('orders'),
+          label: t('purchases'),
           icon: 'Store',
         },
       ];
