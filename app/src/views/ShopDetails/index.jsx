@@ -23,7 +23,10 @@ import {
 import { useEffect } from 'react';
 import { formatPrice } from '../../utils/stringFormats';
 import { useFormik } from 'formik';
-import { CircularProgress } from '@material-ui/core';
+import {
+  CircularProgress,
+  TextareaAutosize,
+} from '@material-ui/core';
 import { Store, ACTION_ENUM } from '../../Store';
 
 export default function ShopDetails() {
@@ -43,6 +46,9 @@ export default function ShopDetails() {
     description,
   } = item;
 
+  const text = useMemo(() => decodeURIComponent(description), [
+    description,
+  ]);
   const fetchItem = async () => {
     const { data } = await api(
       formatRoute('/api/shop/getItem', null, { id: stripePriceId }),
@@ -169,14 +175,12 @@ export default function ShopDetails() {
             <Typography variant="h6" className={styles.price}>
               {formatPrice(price)}
             </Typography>
-            <Typography
-              variant="h7"
-              color="textSecondary"
-              component="p"
+            <TextareaAutosize
               className={styles.description}
-            >
-              {description}
-            </Typography>
+              placeholder="Description"
+              value={text}
+              disabled
+            />
             {sizeOptions ? (
               <div className={styles.sizes}>
                 <Select

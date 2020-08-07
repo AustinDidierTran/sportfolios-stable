@@ -14,6 +14,7 @@ import { createItem, onImgUpload } from '../../../utils/shop';
 import { ERROR_ENUM } from '../../../../../common/errors';
 import { useTranslation } from 'react-i18next';
 import AddSizes from '../AddSizes';
+import { TextareaAutosize } from '@material-ui/core';
 
 export default function CreateItem(props) {
   const { id } = useParams();
@@ -48,14 +49,6 @@ export default function CreateItem(props) {
     setIsCreating(!isCreating);
   };
 
-  const validateDescription = value => {
-    if (value.length > 255) {
-      description.reset();
-    } else {
-      description.setValue(value);
-      description.changeDefault(value);
-    }
-  };
   const validateName = value => {
     if (name.value.length > 64) {
       name.reset();
@@ -89,7 +82,7 @@ export default function CreateItem(props) {
     if (validate()) {
       await createItem({
         name: name.value,
-        description: description.value,
+        description: encodeURIComponent(description.value),
         amount: amount.value,
         photoUrl,
         entityId: id,
@@ -155,11 +148,10 @@ export default function CreateItem(props) {
           label={t('price')}
           className={styles.price}
         />
-        <TextField
+        <TextareaAutosize
           {...description.inputProps}
-          label={t('description')}
+          placeholder="Description"
           className={styles.description}
-          onChange={validateDescription}
         />
         <AddSizes
           className={styles.sizes}
