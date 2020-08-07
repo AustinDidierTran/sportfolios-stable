@@ -5,12 +5,12 @@ import styles from './ShopItem.module.css';
 import { Typography } from '../../../MUI';
 import { Paper, Button } from '../..';
 import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import { useParams } from 'react-router-dom';
 import { goTo, ROUTES, formatRoute } from '../../../../actions/goTo';
 import { formatPrice } from '../../../../utils/stringFormats';
 import { useTranslation } from 'react-i18next';
 import api from '../../../../actions/api';
+import ImageCard from '../../ImageCard';
 
 export default function ShopItem(props) {
   const { id } = useParams();
@@ -45,7 +45,7 @@ export default function ShopItem(props) {
 
   return (
     <Paper className={styles.root}>
-      <CardMedia
+      <ImageCard
         className={styles.media}
         image={photoUrl}
         onClick={onPaperClick}
