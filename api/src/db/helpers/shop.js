@@ -2,6 +2,7 @@ const knex = require('../connection');
 const { stripeErrorLogger } = require('../../server/utils/logger');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const { GLOBAL_ENUM } = require('../../../../common/enums');
+const { getEmailsEntity } = require('../../db/helpers/entity');
 
 const getItem = async stripePriceId => {
   const [item] = await knex('stripe_price')
@@ -251,6 +252,8 @@ const getPurchases = async userId => {
       'store_items_paid.quantity',
       'store_items_paid.amount',
       'store_items_paid.metadata',
+      'store_items_paid.seller_entity_id',
+      'store_items.photo_url',
     ])
     .leftJoin(
       'stripe_price',
@@ -264,8 +267,21 @@ const getPurchases = async userId => {
       '=',
       'stripe_price.stripe_product_id',
     )
+    .leftJoin(
+      'store_items',
+      'store_items.stripe_price_id',
+      '=',
+      'store_items_paid.stripe_price_id',
+    )
     .where('store_items_paid.buyer_user_id', userId);
-  return purchases;
+
+  const res = await Promise.all(
+    purchases.map(async p => {
+      const email = await getEmailsEntity(p.seller_entity_id);
+      return { ...p, email };
+    }),
+  );
+  return res;
 };
 
 const getSales = async entityId => {

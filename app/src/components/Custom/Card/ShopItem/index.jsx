@@ -58,7 +58,7 @@ export default function ShopItem(props) {
           {formatPrice(price)}
         </Typography>
         <Typography
-          variant="h6"
+          variant="h7"
           color="textSecondary"
           component="p"
           className={styles.description}
