@@ -6,7 +6,11 @@ import { useTranslation } from 'react-i18next';
 import Chip from '@material-ui/core/Chip';
 import styles from './PurchasesItem.module.css';
 import MailtoButton from '../../MailToButton';
-import { formatPrice } from '../../../../utils/stringFormats';
+import {
+  formatPrice,
+  formatDate,
+} from '../../../../utils/stringFormats';
+import moment from 'moment';
 
 export default function PurchasesItem(props) {
   const { t } = useTranslation();
@@ -20,36 +24,44 @@ export default function PurchasesItem(props) {
     quantity,
     email,
   } = props;
-
   return (
     <ListItem button style={{ width: '100%' }}>
-      <ListItemIcon>
-        <Avatar photoUrl={photoUrl} variant="square"></Avatar>
-      </ListItemIcon>
       <div className={styles.div}>
+        <ListItemIcon>
+          <Avatar
+            photoUrl={photoUrl}
+            variant="square"
+            className={styles.photo}
+          ></Avatar>
+        </ListItemIcon>
         <ListItemText
-          className={styles.text}
+          className={styles.name}
           primary={label}
           secondary={metadata.size}
         ></ListItemText>
         <ListItemText
-          className={styles.text}
+          className={styles.quantity}
           primary={`Qt: ${quantity}`}
           secondary={formatPrice(amount)}
         ></ListItemText>
+        <MailtoButton
+          edge="end"
+          emails={email}
+          className={styles.mail}
+        />
         <Chip
           label={t('ordered')}
           color="primary"
           variant="outlined"
+          className={styles.chip}
         />
-        <MailtoButton edge="end" emails={email} />
+        <ListItemText
+          className={styles.date}
+          secondary={`${t('purchased_on')}: ${formatDate(
+            moment(createdAt),
+          )}`}
+        ></ListItemText>
       </div>
-      <ListItemText
-        className={styles.text}
-        color="textSecondary"
-        primary={`${t('purchased_on')}: ${createdAt}`}
-        secondary={formatPrice(amount)}
-      ></ListItemText>
     </ListItem>
   );
 }
