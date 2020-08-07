@@ -22,8 +22,8 @@ export default function ConfirmEmailSuccess() {
 
   const successButtons = [
     {
-      name: t('go_to_event'),
-      endIcon: 'Event',
+      name: t('go_to_page'),
+      endIcon: 'ExitToApp',
       onClick: () => {
         goTo(successRoute);
       },

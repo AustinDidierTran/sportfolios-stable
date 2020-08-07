@@ -265,8 +265,8 @@ export default {
     complete_order: 'Compléter la commande',
     generate_account_link: 'Générer le lien du compte',
     see_receipt: 'Voir le reçu',
-    redirect_to_success_route: `Vous serez bientôt redirigez vers l'inscription de l'événement. Cliquez ci-dessous pour être redirigé instantanément`,
-    redirect_to_home: `Vous serez bientôt redirigez vers l'accueil . Cliquez ci-dessous pour être redirigé instantanément`,
+    redirect_to_success_route: `Vous êtes maintenant authentifié. Vous serez bientôt redirigé vers la page désirée. Cliquez ci-dessous pour être redirigé dès maintenant.`,
+    redirect_to_home: `Vous serez bientôt redirigez vers l'accueil. Cliquez ci-dessous pour être redirigé dès maintenant.`,
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',
     email_already_used:

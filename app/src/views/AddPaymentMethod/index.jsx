@@ -1,14 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { useFormik } from 'formik';
 
-import {
-  TextField,
-  Typography,
-  Button,
-  Container,
-} from '../../components/MUI';
+import { TextField, Typography, Button } from '../../components/MUI';
 
-import { Paper, LoadingSpinner } from '../../components/Custom';
+import {
+  Paper,
+  LoadingSpinner,
+  IgContainer,
+} from '../../components/Custom';
 import CountrySelect from '../../tabs/Settings/Stripe/Form/CountrySelect';
 import CardSection from '../../utils/stripe/Payment/CardSection';
 
@@ -119,7 +118,7 @@ export default function AddPaymentMethod() {
     return <LoadingSpinner />;
   }
   return (
-    <Container className={styles.main}>
+    <IgContainer className={styles.main}>
       <Paper>
         <form onSubmit={formik.handleSubmit}>
           <div className={styles.content}>
@@ -205,6 +204,6 @@ export default function AddPaymentMethod() {
           <br />
         </form>
       </Paper>
-    </Container>
+    </IgContainer>
   );
 }
