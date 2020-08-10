@@ -3,7 +3,7 @@ import {
   MEMBERSHIP_TYPE_ENUM,
   GLOBAL_ENUM,
 } from '../../../../common/enums';
-import _ from 'lodash';
+import isArray from 'lodash/isArray';
 
 import moment from 'moment';
 import { formatRoute } from '../../actions/goTo';
@@ -167,7 +167,7 @@ export const getFormattedMailTo = (emails, subject, body) => {
     throw 'No email is provided';
   }
 
-  if (!_.isArray(emails)) {
+  if (!isArray(emails)) {
     throw 'Emails should be an array';
   }
 

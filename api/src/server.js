@@ -34,7 +34,7 @@ app.use(compression());
 // public routes
 publicRoutes.forEach(route => app.use(route.routes()));
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'development') {
   testRoutes.forEach(route => app.use(route.routes()));
 }
 

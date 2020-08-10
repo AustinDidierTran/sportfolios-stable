@@ -1,7 +1,7 @@
 {
   "short_name": "Sportfolios",
   "name": "Sportfolios",
-  "description": "Weather forecast information",
+  "description": "Inscris-toi ou connecte-toi sur Sportfolios. Participe à des événements organisés par les fédérations sportives autour de toi.",
   "icons": [
     {
       "src": "/images/logo.ico",
@@ -11,7 +11,7 @@
     {
       "src": "/images/logo.png",
       "type": "image/png",
-      "sizes": "1024x1024",
+      "sizes": "512x512",
       "purpose": "maskable"
     }
   ],
