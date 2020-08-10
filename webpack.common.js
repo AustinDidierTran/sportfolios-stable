@@ -5,10 +5,18 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { InjectManifest } = require('workbox-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
 
 const ROOT_PATH = path.resolve(__dirname);
 
 module.exports = {
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
   devServer: {
     writeToDisk: true,
   },
@@ -67,6 +75,9 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns: [{ from: path.resolve(ROOT_PATH, 'app/public') }],
     }),
+    new CompressionPlugin(),
+    new BundleAnalyzerPlugin(),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   ],
   output: {
     filename: 'bundle.js',

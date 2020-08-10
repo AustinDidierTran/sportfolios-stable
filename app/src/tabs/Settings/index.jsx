@@ -1,12 +1,6 @@
 import React from 'react';
-import Stripe from './Stripe';
-import ManageRoles from './ManageRoles';
-import Memberships from './Memberships';
-import AddMembership from './AddMembership';
-import AddOptionsEvent from './AddOptionsEvent';
-import TeamRegistered from './TeamRegistered';
-import EventSettings from './EventSettings';
-import BasicInfos from './BasicInfos';
+
+import loadable from '@loadable/component';
 import { useParams } from 'react-router-dom';
 import {
   ENTITIES_ROLE_ENUM,
@@ -15,9 +9,18 @@ import {
 } from '../../../../common/enums';
 import { Card } from '../../components/Custom';
 import { useAdmin, useEditor } from '../../hooks/roles';
-import Description from './Description';
 import styles from './Settings.module.css';
-import QuickDescription from './QuickDescription';
+
+const Stripe = loadable(() => import('./Stripe'));
+const ManageRoles = loadable(() => import('./ManageRoles'));
+const Memberships = loadable(() => import('./Memberships'));
+const AddMembership = loadable(() => import('./AddMembership'));
+const AddOptionsEvent = loadable(() => import('./AddOptionsEvent'));
+const TeamRegistered = loadable(() => import('./TeamRegistered'));
+const EventSettings = loadable(() => import('./EventSettings'));
+const BasicInfos = loadable(() => import('./BasicInfos'));
+const Description = loadable(() => import('./Description'));
+const QuickDescription = loadable(() => import('./QuickDescription'));
 
 export default function EntitySettings(props) {
   const { id } = useParams();
