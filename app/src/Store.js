@@ -118,6 +118,8 @@ function reducer(state, action) {
         message: action.message,
         severity: action.severity,
         duration: action.duration,
+        vertical: action.vertical,
+        horizontal: action.horizontal,
         time: Date.now(),
       };
     }

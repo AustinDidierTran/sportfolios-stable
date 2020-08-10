@@ -99,6 +99,7 @@ export default function EventRegistration() {
           type: ACTION_ENUM.SNACK_BAR,
           message: t('team_already_registered'),
           severity: 'error',
+          vertical: 'top',
         });
       }
     } else {
@@ -168,6 +169,7 @@ export default function EventRegistration() {
         }),
         severity: 'success',
         duration: 30000,
+        vertical: 'top',
       });
     }
     if (activeStep === 1) {
@@ -185,6 +187,7 @@ export default function EventRegistration() {
         message,
         severity: 'success',
         duration: 30000,
+        vertical: 'top',
       });
     }
   };
