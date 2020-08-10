@@ -1,9 +1,8 @@
 import React from 'react';
 
 import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
-import { Avatar } from '../../../Custom';
+import { Avatar, Select } from '../../../Custom';
 import { useTranslation } from 'react-i18next';
-import Chip from '@material-ui/core/Chip';
 import styles from './CartItem.module.css';
 import { formatPrice } from '../../../../utils/stringFormats';
 import { IMAGE_ENUM } from '../../../../../../common/enums';
@@ -12,13 +11,23 @@ export default function CartItem(props) {
   const { t } = useTranslation();
 
   const {
+    id,
     metadata: { size, team },
     amount,
     description,
     label,
     photoUrl,
     quantity,
+    updateQuantity,
   } = props;
+
+  const quantityOptions = Array(Math.max(101, quantity + 1))
+    .fill(0)
+    .map((_, index) => ({
+      value: index,
+      display: index,
+    }));
+
   if (team) {
     return (
       <ListItem button style={{ width: '100%' }}>
@@ -40,11 +49,14 @@ export default function CartItem(props) {
             primary={formatPrice(amount)}
             secondary={label}
           ></ListItemText>
-          <Chip
-            label={t('in_cart')}
-            color="primary"
-            variant="outlined"
-            className={styles.chip}
+          <Select
+            className={styles.select}
+            onChange={value => {
+              updateQuantity(value, id);
+            }}
+            value={quantity}
+            options={quantityOptions}
+            label={t('quantity')}
           />
         </div>
       </ListItem>
@@ -70,11 +82,14 @@ export default function CartItem(props) {
           primary={formatPrice(amount)}
           secondary={`Qt: ${quantity}`}
         ></ListItemText>
-        <Chip
-          label={t('in_cart')}
-          color="primary"
-          variant="outlined"
-          className={styles.chip}
+        <Select
+          className={styles.select}
+          onChange={value => {
+            updateQuantity(value, id);
+          }}
+          value={quantity}
+          options={quantityOptions}
+          label={t('quantity')}
         />
       </div>
     </ListItem>

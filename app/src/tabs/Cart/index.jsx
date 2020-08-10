@@ -61,12 +61,12 @@ export default function Cart() {
     updateQuantity();
   }, []);
 
-  const updateQuantity = async (quantity, item) => {
+  const updateQuantity = async (quantity, cartItemId) => {
     const { data } = await api('/api/shop/updateCartItems', {
       method: 'POST',
       body: JSON.stringify({
         quantity,
-        cartItemId: item.id,
+        cartItemId,
       }),
     });
     const { items: itemsProp, total: totalProp } = data;
