@@ -1,4 +1,4 @@
-export function updateRanking(teams, games) {
+const getRankingInfos = (teams, games) => {
   const ranking = teams.map(team => ({
     id: team.id,
     name: team.name,
@@ -60,5 +60,121 @@ export function updateRanking(teams, games) {
     return ranking;
   }, ranking);
 
-  return ranking.sort((a, b) => b.wins - a.wins);
-}
+  return [ranking];
+};
+
+const applyVictoryRule = ranking => {
+  const updatedRanking = ranking
+    .reduce((prevRanking, currentEntry) => {
+      if (!Array.isArray(currentEntry)) {
+        // Already sorted, leave it like this
+        return [...prevRanking, currentEntry];
+      }
+      const winSortedArray = [];
+
+      currentEntry.forEach(team => {
+        if (Array.isArray(winSortedArray[team.wins])) {
+          winSortedArray[team.wins].push(team);
+        } else {
+          winSortedArray[team.wins] = [team];
+        }
+      });
+      return [...prevRanking, ...winSortedArray];
+    }, [])
+    .filter(r => r)
+    .reverse();
+
+  return updatedRanking;
+};
+
+const applyLoseRule = ranking => {
+  const updatedRanking = ranking
+    .reduce((prevRanking, currentEntry) => {
+      if (!Array.isArray(currentEntry)) {
+        // Already sorted, leave it like this
+        return [...prevRanking, currentEntry];
+      }
+      const loseSortedArray = [];
+
+      currentEntry.forEach(team => {
+        if (Array.isArray(loseSortedArray[team.loses])) {
+          loseSortedArray[team.wins].push(team);
+        } else {
+          loseSortedArray[team.wins] = [team];
+        }
+      });
+      return [...prevRanking, ...loseSortedArray];
+    }, [])
+    .filter(r => r);
+  return updatedRanking;
+};
+
+const applyDifferentialRule = ranking => {
+  const updatedRanking = ranking
+    .reduce((prevRanking, currentEntry) => {
+      if (!Array.isArray(currentEntry)) {
+        // Already sorted, leave it like this
+        return [...prevRanking, currentEntry];
+      }
+
+      const differentials = currentEntry.map(
+        t => Number(t.pointAgainst) - Number(t.pointFor),
+      );
+
+      const offSet = Math.max(...differentials);
+
+      const differentialSortedArray = [];
+
+      currentEntry.forEach(team => {
+        const index = team.pointFor - team.pointAgainst + offSet;
+        if (Array.isArray(differentialSortedArray[index])) {
+          differentialSortedArray[index].push(team);
+        } else {
+          differentialSortedArray[index] = [team];
+        }
+      });
+      return [...prevRanking, ...differentialSortedArray];
+    }, [])
+    .filter(r => r)
+    .reverse();
+  return updatedRanking;
+};
+
+const applyRandomRule = ranking => {
+  const updatedRanking = ranking.reduce(
+    (prevRanking, currentEntry) => {
+      if (!Array.isArray(currentEntry)) {
+        // Already sorted, leave it like this
+        return [...prevRanking, currentEntry];
+      }
+      const randomlySortedArray = currentEntry.sort(
+        (a, b) => a.random - b.random,
+      );
+
+      return [...prevRanking, ...randomlySortedArray];
+    },
+    [],
+  );
+  return updatedRanking;
+};
+
+export const updateRanking = (teams, games) => {
+  // Filter games that have not been played
+  const playedGames = games.filter(game =>
+    game.teams.map(t => Number(t.score)).some(score => score !== 0),
+  );
+
+  const rankingInfos = getRankingInfos(teams, playedGames);
+
+  const rankingWithVictoryRule = applyVictoryRule(rankingInfos);
+  const rankingWithLoseRule = applyLoseRule(rankingWithVictoryRule);
+
+  const rankingWithDifferentialRule = applyDifferentialRule(
+    rankingWithLoseRule,
+  );
+  const rankingWithRandom = applyRandomRule(
+    rankingWithDifferentialRule,
+  );
+
+  return rankingWithRandom;
+};
