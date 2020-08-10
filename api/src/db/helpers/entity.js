@@ -589,6 +589,9 @@ async function getRemainingSpots(eventId) {
     .select('maximum_spots')
     .where({ id: eventId });
 
+  if (!event.maximum_spots) {
+    return null;
+  }
   return event.maximum_spots - Number(count);
 }
 
