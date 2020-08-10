@@ -4,7 +4,7 @@ import styles from './Cart.module.css';
 import api from '../../actions/api';
 
 import { goTo, ROUTES } from '../../actions/goTo';
-import { CARD_TYPE_ENUM } from '../../../../common/enums';
+import { GLOBAL_ENUM } from '../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 import {
   formatPrice,
@@ -14,7 +14,7 @@ import {
 import {
   Button,
   MessageAndButtons,
-  Card,
+  List,
   ContainerBottomFixed,
   LoadingSpinner,
   IgContainer,
@@ -58,7 +58,25 @@ export default function Cart() {
 
   useEffect(() => {
     fetchItems();
+    updateQuantity();
   }, []);
+
+  const updateQuantity = async quantity => {
+    const { data } = await api('/api/shop/updateCartItems', {
+      method: 'POST',
+      body: JSON.stringify({
+        quantity,
+        cartItemId: item.id,
+      }),
+    });
+    const { items: itemsProp, total: totalProp } = data;
+    setItems(itemsProp);
+    setTotal(totalProp);
+    dispatch({
+      type: ACTION_ENUM.UPDATE_CART,
+      payload: data,
+    });
+  };
 
   if (isLoading) {
     return (
@@ -91,34 +109,12 @@ export default function Cart() {
     <>
       <IgContainer>
         <div className={styles.cart}>
-          {items.map(item => (
-            <Card
-              items={{
-                ...item,
-                updateQuantity: async quantity => {
-                  const { data } = await api(
-                    '/api/shop/updateCartItems',
-                    {
-                      method: 'POST',
-                      body: JSON.stringify({
-                        quantity,
-                        cartItemId: item.id,
-                      }),
-                    },
-                  );
-                  const { items: itemsProp, total: totalProp } = data;
-                  setItems(itemsProp);
-                  setTotal(totalProp);
-                  dispatch({
-                    type: ACTION_ENUM.UPDATE_CART,
-                    payload: data,
-                  });
-                },
-                setItems,
-              }}
-              type={CARD_TYPE_ENUM.CART}
-            />
-          ))}
+          <List
+            items={items.map(item => ({
+              ...item,
+              type: GLOBAL_ENUM.CART,
+            }))}
+          />
           <DefaultCard className={styles.defaultCard}>
             <Typography variant="h5" className={styles.typo}>
               {`Total: ${formatPrice(total)}`}

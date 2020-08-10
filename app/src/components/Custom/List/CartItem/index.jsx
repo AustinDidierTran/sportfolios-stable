@@ -4,32 +4,22 @@ import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
 import { Avatar } from '../../../Custom';
 import { useTranslation } from 'react-i18next';
 import Chip from '@material-ui/core/Chip';
-import styles from './PurchasesItem.module.css';
-import MailtoButton from '../../MailToButton';
-import {
-  formatPrice,
-  formatDate,
-} from '../../../../utils/stringFormats';
-import moment from 'moment';
-import {
-  GLOBAL_ENUM,
-  IMAGE_ENUM,
-} from '../../../../../../common/enums';
+import styles from './CartItem.module.css';
+import { formatPrice } from '../../../../utils/stringFormats';
+import { IMAGE_ENUM } from '../../../../../../common/enums';
 
-export default function PurchasesItem(props) {
+export default function CartItem(props) {
   const { t } = useTranslation();
 
   const {
-    photoUrl,
-    createdAt,
-    label,
+    metadata: { size, team },
     amount,
-    metadata,
+    description,
+    label,
+    photoUrl,
     quantity,
-    email,
   } = props;
-
-  if (metadata.type === GLOBAL_ENUM.EVENT) {
+  if (team) {
     return (
       <ListItem button style={{ width: '100%' }}>
         <div className={styles.div}>
@@ -42,35 +32,24 @@ export default function PurchasesItem(props) {
           </ListItemIcon>
           <ListItemText
             className={styles.name}
-            primary={label}
-            secondary={metadata.size}
+            primary={description}
+            secondary={team.name}
           ></ListItemText>
           <ListItemText
             className={styles.quantity}
             primary={formatPrice(amount)}
+            secondary={label}
           ></ListItemText>
-          <MailtoButton
-            edge="end"
-            emails={email}
-            className={styles.mail}
-          />
           <Chip
-            label={t('registered')}
+            label={t('in_cart')}
             color="primary"
             variant="outlined"
             className={styles.chip}
           />
-          <ListItemText
-            className={styles.date}
-            secondary={`${t('purchased_on')}: ${formatDate(
-              moment(createdAt),
-            )}`}
-          ></ListItemText>
         </div>
       </ListItem>
     );
   }
-
   return (
     <ListItem button style={{ width: '100%' }}>
       <div className={styles.div}>
@@ -84,30 +63,19 @@ export default function PurchasesItem(props) {
         <ListItemText
           className={styles.name}
           primary={label}
-          secondary={metadata.size}
+          secondary={size}
         ></ListItemText>
         <ListItemText
           className={styles.quantity}
-          primary={`Qt: ${quantity}`}
-          secondary={formatPrice(amount)}
+          primary={formatPrice(amount)}
+          secondary={`Qt: ${quantity}`}
         ></ListItemText>
-        <MailtoButton
-          edge="end"
-          emails={email}
-          className={styles.mail}
-        />
         <Chip
-          label={t('ordered')}
+          label={t('in_cart')}
           color="primary"
           variant="outlined"
           className={styles.chip}
         />
-        <ListItemText
-          className={styles.date}
-          secondary={`${t('purchased_on')}: ${formatDate(
-            moment(createdAt),
-          )}`}
-        ></ListItemText>
       </div>
     </ListItem>
   );

@@ -105,6 +105,7 @@ export default {
     go_back_to_login: 'Go back to login',
     have_an_account_signin: 'Already have an account? Sign in!',
     home: 'Home',
+    in_cart: 'In cart',
     infos: 'Infos',
     informations_saved: 'Informations saved',
     last_name: 'Last Name',
