@@ -15,6 +15,7 @@ import { ERROR_ENUM } from '../../../../../common/errors';
 import { useTranslation } from 'react-i18next';
 import AddSizes from '../AddSizes';
 import { TextareaAutosize } from '@material-ui/core';
+import { GLOBAL_ENUM } from '../../../../../common/enums';
 
 export default function CreateItem(props) {
   const { id } = useParams();
@@ -87,6 +88,7 @@ export default function CreateItem(props) {
         photoUrl,
         entityId: id,
         sizes,
+        type: GLOBAL_ENUM.SHOP_ITEM,
       });
       setIsCreating(!isCreating);
       name.reset();

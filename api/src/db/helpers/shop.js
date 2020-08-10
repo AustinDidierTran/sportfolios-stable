@@ -377,6 +377,7 @@ const addItemToPaidStoreItems = async query => {
     invoice_item_id: invoiceItemId,
     metadata: {
       size: metadata.size,
+      type: metadata.type,
     },
   });
 };
