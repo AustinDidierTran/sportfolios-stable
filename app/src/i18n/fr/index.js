@@ -292,7 +292,7 @@ export default {
     institution_number: "Numéro d'institution",
     transit_number: 'Numéro de transit',
     password_length:
-      'Votre mot de passe doit contenir entre 8 et 16 caractères',
+      'Votre mot de passe doit contenir entre 8 et 24 caractères',
     password_must_match: 'Vos mots de passes doivent être identique',
     something_went_wrong:
       "Une erreur s'est produite. Veuillez réessayer.",
