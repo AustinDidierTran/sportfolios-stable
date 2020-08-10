@@ -42,6 +42,8 @@ export default {
     basic_info: 'Information générales',
     birth_date: 'Date de naissance',
     birth_date_format: '{{date, LL}} ({{age}} ans)',
+    cant_add_product_no_bank_account:
+      "Vous ne pouvez pas ajouter de produit car l'administrateur n'a pas de compte banquaire",
     canadian_dollar: 'Dollar Canadien',
     captain: 'Capitaine',
     card_ending_with: 'Carte finissant avec {{last4}}',

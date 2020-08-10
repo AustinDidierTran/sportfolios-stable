@@ -4,7 +4,7 @@ import { useFormInput } from '../../../hooks/forms';
 import { useContext } from 'react';
 
 import styles from './CreateItem.module.css';
-import { Store } from '../../../Store';
+import { Store, ACTION_ENUM } from '../../../Store';
 
 import { TextField } from '../../../components/MUI';
 import CardContent from '@material-ui/core/CardContent';
@@ -15,6 +15,8 @@ import { ERROR_ENUM } from '../../../../../common/errors';
 import { useTranslation } from 'react-i18next';
 import AddSizes from '../AddSizes';
 import { TextareaAutosize } from '@material-ui/core';
+import api from '../../../actions/api';
+import { formatRoute } from '../../../actions/goTo';
 
 export default function CreateItem(props) {
   const { id } = useParams();
@@ -45,8 +47,26 @@ export default function CreateItem(props) {
     setPhotoUrl(res.photoUrl);
   };
 
-  const reset = () => {
-    setIsCreating(!isCreating);
+  const getHasBankAccount = async () => {
+    const res = await api(
+      formatRoute('/api/stripe/eventHasBankAccount', null, {
+        id,
+      }),
+    );
+    return res.data;
+  };
+
+  const reset = async () => {
+    const hasBankAccount = await getHasBankAccount();
+    if (!hasBankAccount) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('cant_add_product_no_bank_account'),
+        severity: 'error',
+      });
+    } else {
+      setIsCreating(!isCreating);
+    }
   };
 
   const validateName = value => {
