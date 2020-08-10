@@ -147,6 +147,7 @@ export default {
     our_team: 'Our Team',
     paid_with: 'Paid with',
     password: 'Password',
+    password_changed: 'Password has been changed successfully',
     password_reset_message: 'Password has been successfully reset.',
     pay: 'Pay',
     payment_method_added:
