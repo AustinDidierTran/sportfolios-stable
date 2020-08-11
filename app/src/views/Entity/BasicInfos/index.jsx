@@ -1,100 +1,95 @@
 import React, { useState, useContext, useEffect } from 'react';
-
 import { useTranslation } from 'react-i18next';
+import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 
 import styles from './BasicInfos.module.css';
-import { uploadEntityPicture } from '../../../actions/aws';
+
 import { ACTION_ENUM, Store } from '../../../Store';
-import { useFormInput } from '../../../hooks/forms';
-import { useEditor } from '../../../hooks/roles';
-import { changeEntityName } from '../../../actions/api';
 
 import {
   Avatar,
-  Input,
   Button,
+  Input,
   LoadingSpinner,
 } from '../../../components/Custom';
-
 import {
+  Container,
   Typography,
   TextField,
-  Container,
 } from '../../../components/MUI';
+import { getInitialsFromName } from '../../../utils/stringFormats';
+/* eslint-disable-next-line */
+import api, { changeEntityName } from '../../../actions/api';
+import { useFormInput } from '../../../hooks/forms';
+import { uploadEntityPicture } from '../../../actions/aws';
 
 export default function BasicInfos(props) {
   const { t } = useTranslation();
-  const { dispatch } = useContext(Store);
-
   const {
-    basicInfos: {
-      id,
-      name: initialName,
-      photoUrl: initialPhotoUrl,
-      role,
-    },
-  } = props;
-
-  const isEditor = useEditor(role);
-
-  const [photoUrl, setPhotoUrl] = useState(initialPhotoUrl);
-
+    /* eslint-disable-next-line */
+    state: { userInfo },
+    dispatch,
+  } = useContext(Store);
+  const [isEditMode, setEditMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [isEditMode, setEditMode] = useState(false);
+  const {
+    id,
+    name: nameProp,
+    photoUrl: initialPhotoUrl,
+    role,
+  } = props.basicInfos;
 
-  const [img, setImg] = useState(null);
-
-  const name = useFormInput(initialName);
-
-  useEffect(() => {
-    name.changeDefault(initialName);
-  }, [initialName]);
+  const [photoUrl, setPhotoUrl] = useState(initialPhotoUrl);
 
   useEffect(() => {
     setPhotoUrl(initialPhotoUrl);
   }, [initialPhotoUrl]);
 
-  const onSave = async () => {
-    if (name.value.length < 1) {
-      name.setError(t('value_is_required'));
-    } else if (name.value.length > 255) {
-      name.setError(t('value_is_too_long'));
-    } else {
-      setIsLoading(true);
-      name.setError(false);
-
-      const promises = [];
-
-      if (img) {
-        promises.push(onImgUpload());
-      }
-
-      if (name.hasChanged) {
-        promises.push(onNameChange());
-      }
-
-      await Promise.all(promises);
-
-      setEditMode(false);
-
-      setIsLoading(false);
-    }
-  };
+  const initials = getInitialsFromName(nameProp);
+  const name = useFormInput(nameProp);
 
   const onNameChange = async () => {
-    const res = await changeEntityName(id, { name: name.value });
-
+    const res = await changeEntityName(id, {
+      name: name.value,
+    });
     name.changeDefault(res.data.name);
+
+    return res;
+  };
+
+  const onSave = async () => {
+    setIsLoading(true);
+    const promises = [];
+
+    if (name.hasChanged) {
+      promises.push(onNameChange());
+    }
+
+    if (img) {
+      promises.push(onImgUpload());
+    }
+
+    const res = await Promise.all(promises);
+
+    const resErrors = res.filter(r => r.status !== 200);
+
+    if (!resErrors.length) {
+      setEditMode(false);
+    } else {
+      // handle errors
+    }
+    setIsLoading(false);
   };
 
   const onCancel = async () => {
     name.reset();
-    name.setError(false);
     setEditMode(false);
   };
 
   const onEdit = async () => setEditMode(true);
+
+  const [img, setImg] = useState(null);
 
   const onImgChange = ([file]) => {
     setImg(file);
@@ -102,11 +97,11 @@ export default function BasicInfos(props) {
 
   const onImgUpload = async () => {
     const photoUrl = await uploadEntityPicture(id, img);
-
     if (photoUrl) {
       setPhotoUrl(photoUrl);
+
       dispatch({
-        type: ACTION_ENUM.UPDATE_ORGANIZATION_PROFILE_PICTURE,
+        type: ACTION_ENUM.UPDATE_PROFILE_PICTURE,
         payload: photoUrl,
       });
       return { status: 200 };
@@ -118,85 +113,60 @@ export default function BasicInfos(props) {
     return <LoadingSpinner isComponent />;
   }
 
-  if (isEditMode) {
-    return (
-      <Container className={styles.container}>
-        {isLoading ? (
-          <LoadingSpinner isComponent />
-        ) : (
-          <Avatar
-            className={styles.avatar}
-            photoUrl={photoUrl}
-            size="lg"
-          />
-        )}
-        <div className={styles.editor}>
-          <Input
-            className={styles.input}
-            type="file"
-            onChange={onImgChange}
-            isVisible={isEditMode}
-            className={styles.name}
-          />
-          <TextField
-            {...name.inputProps}
-            placeholder={t('name')}
-            label={t('name')}
-            error={name.error}
-            className={styles.input}
-            namespace="Name"
-          />
-          <Button
-            className={styles.save}
-            endIcon="Check"
-            onClick={onSave}
-            style={{ marginRight: '8px' }}
-          >
-            {t('save')}
-          </Button>
-          <Button
-            className={styles.cancel}
-            endIcon="Close"
-            onClick={onCancel}
-            style={{ marginLeft: '8px' }}
-            color="secondary"
-          >
-            {t('cancel')}
-          </Button>
-        </div>
-      </Container>
-    );
-  }
-
   return (
-    <Container className={styles.paper}>
-      <Avatar
-        className={styles.avatar}
-        photoUrl={photoUrl}
-        size="lg"
-      />
-      {name ? (
-        <div className={styles.name}>
-          <Typography variant="h3" className={styles.text}>
-            {name.value}
-          </Typography>
-        </div>
+    <Container className={styles.card}>
+      <Avatar initials={initials} photoUrl={photoUrl} size="lg" />
+      {isEditMode ? (
+        <Input
+          type="file"
+          onChange={onImgChange}
+          isVisible={isEditMode}
+        />
       ) : (
         <></>
       )}
-      {isEditor ? (
-        <Container className={styles.edit}>
-          <Button
-            variant="contained"
-            color="primary"
-            className={styles.button}
-            endIcon="Edit"
-            onClick={onEdit}
-            style={{ margin: '8px' }}
-          >
+      <div className={styles.fullName}>
+        {isEditMode ? (
+          <>
+            <TextField
+              namespace="name"
+              type="text"
+              label={t('name')}
+              {...name.inputProps}
+            />
+          </>
+        ) : (
+          <Typography variant="h3" className={styles.text}>
+            {name.value}
+          </Typography>
+        )}
+      </div>
+      {role === ENTITIES_ROLE_ENUM.ADMIN ? (
+        isEditMode ? (
+          <div className={styles.editor}>
+            <Button
+              className={styles.save}
+              endIcon="Check"
+              onClick={onSave}
+              style={{ marginRight: '8px' }}
+            >
+              {t('save')}
+            </Button>
+            <Button
+              className={styles.cancel}
+              endIcon="Close"
+              onClick={onCancel}
+              style={{ marginLeft: '8px' }}
+              color="secondary"
+            >
+              {t('cancel')}
+            </Button>
+          </div>
+        ) : (
+          <Button onClick={onEdit} endIcon="Edit">
             {t('edit')}
           </Button>
-        </Container>
+        )
       ) : (
         <></>
       )}
