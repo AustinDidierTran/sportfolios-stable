@@ -133,7 +133,6 @@ export default function EventRegistration() {
       team.id = tempTeam.data.id;
     }
     //Check if teams is accepted here
-
     const { status, data } = await api('/api/entity/register', {
       method: 'POST',
       body: JSON.stringify({
@@ -144,7 +143,6 @@ export default function EventRegistration() {
         status: INVOICE_STATUS_ENUM.OPEN,
       }),
     });
-
     if (status === 200) {
       goTo(ROUTES.registrationStatus, null, {
         status: data.status,
