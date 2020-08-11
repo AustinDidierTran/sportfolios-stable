@@ -151,6 +151,7 @@ export default {
     paid: 'Payé',
     paid_with: 'Payé avec',
     password: 'Mot de passe',
+    password_changed: 'Mot de passe changé avec succès',
     password_reset_message:
       'Votre mot de passe a été réinitialisé avec succès!',
     pay: 'Payer',
