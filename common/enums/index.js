@@ -146,6 +146,8 @@ const IMAGE_ENUM = {
 const LOGO_ENUM = {
   LOGO:
     'https://sportfolios-images.s3.amazonaws.com/development/images/entity/20200724-a58ea-8317ff33-3b04-49a1-afd3-420202cddf73',
+  LOGO_256X256:
+    'https://sportfolios-images.s3.amazonaws.com/development/images/entity/20200811-vtd7h-f2a5f90b-d617-4926-baa9-4a3a16c5c112',
   WHITE_LOGO:
     'https://sportfolios-images.s3.amazonaws.com/development/images/entity/20200724-pldn3-8317ff33-3b04-49a1-afd3-420202cddf73',
   ICON_57X57:

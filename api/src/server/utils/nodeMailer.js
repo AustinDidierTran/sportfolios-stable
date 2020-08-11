@@ -72,9 +72,9 @@ async function sendConfirmationEmail({ email, token, successRoute }) {
   }
   if (successRoute) {
     if (language === LANGUAGE_ENUM.ENGLISH) {
-      html = `<div><h1>Email confirmation</h1><p>To confirm your email, please click on the following link 👇<link>${CLIENT_BASE_URL}/confirmEmail/${token}?successRoute=${successRoute}</link></p><img src=${LOGO_ENUM.ICON_180X180}></img></div>`;
+      html = `<div><h1>Email confirmation</h1><p>To confirm your email, please click on the following link 👇<link>${CLIENT_BASE_URL}/confirmEmail/${token}?successRoute=${successRoute}</link></p><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
     } else {
-      html = `<div><h1>Confirmation du courriel</h1><p>Pour confirmer votre addresse courriel cliquez sur le lien suivant 👇<link>${CLIENT_BASE_URL}/confirmEmail/${token}?successRoute=${successRoute}</link></p><img src=${LOGO_ENUM.ICON_180X180}></img></div>`;
+      html = `<div><h1>Confirmation du courriel</h1><p>Pour confirmer votre addresse courriel cliquez sur le lien suivant 👇<link>${CLIENT_BASE_URL}/confirmEmail/${token}?successRoute=${successRoute}</link></p><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
     }
     await sendMail({
       email,
@@ -83,9 +83,9 @@ async function sendConfirmationEmail({ email, token, successRoute }) {
     });
   } else {
     if (language === LANGUAGE_ENUM.ENGLISH) {
-      html = `<div><h1>Email confirmation</h1><p>To confirm your email, please click on the following link 👇<link>${CLIENT_BASE_URL}/confirmEmail/${token}</link></p><img src=${LOGO_ENUM.ICON_180X180}></img></div>`;
+      html = `<div><h1>Email confirmation</h1><p>To confirm your email, please click on the following link 👇<link>${CLIENT_BASE_URL}/confirmEmail/${token}</link></p><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
     } else {
-      html = `<div><h1>Confirmation du courriel</h1><p>Pour confirmer votre addresse courriel cliquez sur le lien suivant 👇<link>${CLIENT_BASE_URL}/confirmEmail/${token}</link></p><img src=${LOGO_ENUM.ICON_180X180}></img></div>`;
+      html = `<div><h1>Confirmation du courriel</h1><p>Pour confirmer votre addresse courriel cliquez sur le lien suivant 👇<link>${CLIENT_BASE_URL}/confirmEmail/${token}</link></p><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
     }
     await sendMail({
       email,
@@ -100,10 +100,10 @@ async function sendReceiptEmail({ email, receipt }) {
   let html = '';
   let subject = '';
   if (language === LANGUAGE_ENUM.ENGLISH) {
-    html = `<div><h1>Your receipt</h1><p>To see your receipt, click on the following link 👇<link>${receipt}</link></p><img src=${LOGO_ENUM.ICON_180X180}></img></div>`;
+    html = `<div><h1>Your receipt</h1><p>To see your receipt, click on the following link 👇<link>${receipt}</link></p><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
     subject = 'Order receipt | Sportfolios';
   } else {
-    html = `<div><h1>Votre reçu</h1><p>Pour voir votre reçu, cliquez sur le lien suivant 👇<link>${receipt}</link></p><img src=${LOGO_ENUM.ICON_180X180}></img></div>`;
+    html = `<div><h1>Votre reçu</h1><p>Pour voir votre reçu, cliquez sur le lien suivant 👇<link>${receipt}</link></p><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
     subject = `Reçu de commande | Sportfolios`;
   }
   await sendMail({
@@ -122,10 +122,10 @@ async function sendTeamRegistrationEmailToAdmin({
   let html = '';
   let subject = '';
   if (language === LANGUAGE_ENUM.ENGLISH) {
-    html = `<div><h1>New registration!</h1><p>A new team named ${team.name} has registered to your event ${event.name} with success. You can access to your event here 👇<link> ${CLIENT_BASE_URL}/${event.id}?tab=settings</link></p><img src=${LOGO_ENUM.ICON_180X180}></img></div>`;
+    html = `<div><h1>New registration!</h1><p>A new team named ${team.name} has registered to your event ${event.name} with success. You can access to your event here 👇<link> ${CLIENT_BASE_URL}/${event.id}?tab=settings</link></p><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
     subject = 'New registration to your tournament | Sportfolios';
   } else {
-    html = `<div><h1>Nouvelle inscription!</h1><p>Une équipe nommée ${team.name} s'est inscrite à votre événement ${event.name} avec succès. Vous pouvez accéder au status de votre événement ici 👇<link> ${CLIENT_BASE_URL}/${event.id}?tab=settings</link></p><img src=${LOGO_ENUM.ICON_180X180}></img></div>`;
+    html = `<div><h1>Nouvelle inscription!</h1><p>Une équipe nommée ${team.name} s'est inscrite à votre événement ${event.name} avec succès. Vous pouvez accéder au status de votre événement ici 👇<link> ${CLIENT_BASE_URL}/${event.id}?tab=settings</link></p><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
     subject = 'Nouvelle inscription à votre tournoi | Sportfolios';
   }
   await sendMail({
@@ -140,10 +140,10 @@ async function sendAcceptedRegistrationEmail({ email, team, event }) {
   let html = '';
   let subject = '';
   if (language === LANGUAGE_ENUM.ENGLISH) {
-    html = `<div><h1>Registration ${team.name}</h1><p>Your team ${team.name} is officially registered to ${event.name}. The tournament is awaiting your payment. You can pay by going on the following link 👇<link> ${CLIENT_BASE_URL}/cart</link></p><img src=${LOGO_ENUM.ICON_180X180}></img></div>`;
+    html = `<div><h1>Registration ${team.name}</h1><p>Your team ${team.name} is officially registered to ${event.name}. The tournament is awaiting your payment. You can pay by going on the following link 👇<link> ${CLIENT_BASE_URL}/cart</link></p><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
     subject = `Registration ${team.name} | Sportfolios`;
   } else {
-    html = `<div><h1>Inscription ${team.name}</h1><p>Votre équipe ${team.name} est officiellement acceptée au tournoi ${event.name}. Le tournoi est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant 👇<link> ${CLIENT_BASE_URL}/cart</link></p><img src=${LOGO_ENUM.ICON_180X180}></img></div>`;
+    html = `<div><h1>Inscription ${team.name}</h1><p>Votre équipe ${team.name} est officiellement acceptée au tournoi ${event.name}. Le tournoi est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant 👇<link> ${CLIENT_BASE_URL}/cart</link></p><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
     subject = `Inscription ${team.name} | Sportfolios`;
   }
   await sendMail({
@@ -158,10 +158,10 @@ async function sendRecoveryEmail({ email, token }) {
   let html = '';
   let subject = '';
   if (language === LANGUAGE_ENUM.ENGLISH) {
-    html = `<div><h1>Password recovery</h1><p>You forgot your password? Voici le lien pour le retrouver 👇<link>${CLIENT_BASE_URL}/recoveryEmail?token=${token}&email=${email}</link>. </p><img src=${LOGO_ENUM.ICON_180X180}></img></div>`;
+    html = `<div><h1>Password recovery</h1><p>You forgot your password? Voici le lien pour le retrouver 👇<link>${CLIENT_BASE_URL}/recoveryEmail?token=${token}&email=${email}</link>. </p><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
     subject = 'Recover your password | Sportfolios';
   } else {
-    html = `<div><h1>Récupération de votre mot de passe</h1><p>Vous avez oublié votre mot de passe? Voici le lien pour le retrouver 👇<link>${CLIENT_BASE_URL}/recoveryEmail?token=${token}&email=${email}</link>. </p><img src=${LOGO_ENUM.ICON_180X180}></img></div>`;
+    html = `<div><h1>Récupération de votre mot de passe</h1><p>Vous avez oublié votre mot de passe? Voici le lien pour le retrouver 👇<link>${CLIENT_BASE_URL}/recoveryEmail?token=${token}&email=${email}</link>. </p><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
     subject = 'Courriel de récupération de compte | Sportfolios';
   }
   await sendMail({
