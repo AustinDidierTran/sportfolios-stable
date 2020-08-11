@@ -30,15 +30,15 @@ const INVOICE_CREATED_ENUM = {
   },
 };
 const INVOICE_PAID_ENUM = {
-  EVENT: async (metadata, stripe) => {
-    const { rosterId, eventId } = metadata;
-    const { status, invoiceItemId } = stripe;
+  EVENT: async body => {
+    const { rosterId, eventId, status, invoiceItemId } = body;
     await updateRegistration(
       rosterId,
       eventId,
       invoiceItemId,
       status,
     );
+    await addItemToPaidStoreItems(body);
   },
   STORE: async body => {
     await addItemToPaidStoreItems(body);

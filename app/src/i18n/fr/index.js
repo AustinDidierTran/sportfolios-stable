@@ -43,6 +43,7 @@ export default {
     basic_info: 'Information générales',
     birth_date: 'Date de naissance',
     birth_date_format: '{{date, LL}} ({{age}} ans)',
+    by: 'Par',
     canadian_dollar: 'Dollar Canadien',
     captain: 'Capitaine',
     card_ending_with: 'Carte finissant avec {{last4}}',
@@ -104,6 +105,7 @@ export default {
     have_an_account_signin:
       'Vous avez déjà un compte? Connectez-vous!',
     home: 'Accueil',
+    in_cart: 'Dans le panier',
     informations_saved: 'Informations sauvegardées',
     infos: 'Infos',
     last_name: 'Nom de famille',

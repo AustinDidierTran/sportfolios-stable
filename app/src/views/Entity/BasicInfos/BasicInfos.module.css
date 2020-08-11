@@ -1,41 +1,27 @@
-.container {
+.card {
   grid-area: basicInfos;
   text-align: center;
   padding: 16px;
 }
 
-.name {
+.fullName {
   margin-top: 8px;
   margin-bottom: 8px;
-  grid-area: name;
-}
-
-.input {
-  grid-area: input;
-}
-
-.cancel {
-  margin-top: 8px !important;
-}
-
-.save {
-  margin-top: 8px !important;
-}
-
-.text {
-  overflow: auto !important;
 }
 
 .editor {
   display: grid !important;
   grid-template-columns: 1fr 1fr;
-  grid-template-areas: 'name name' 'input input';
+}
+
+.text {
+  overflow: auto;
 }
 
 @media (min-width: 768px) {
   .editor {
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-areas: '. name name .' '. input input .' '. save cancel .';
+    grid-template-areas: '. save cancel .';
   }
 
   .cancel {

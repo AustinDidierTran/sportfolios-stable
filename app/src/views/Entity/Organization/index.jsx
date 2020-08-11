@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import { useQuery } from '../../../hooks/queries';
 import TabsGenerator, { TABS_ENUM } from '../../../tabs';
 
-import BasicInfos from '../Person/BasicInfos';
+import BasicInfos from '../BasicInfos';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import { formatPageTitle } from '../../../utils/stringFormats';
 
