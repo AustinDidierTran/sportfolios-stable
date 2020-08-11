@@ -1,6 +1,5 @@
 import { CARD_TYPE_ENUM } from '../../../../../common/enums';
 import Shop from './ShopItem';
-import Cart from './CartItem';
 import Invoice from './InvoiceItem';
 import Default from './DefaultCard';
 import AddPaymentOption from './AddPaymentOption';
@@ -11,7 +10,6 @@ import Game from './Game';
 
 const CardMap = {
   [CARD_TYPE_ENUM.SHOP]: Shop,
-  [CARD_TYPE_ENUM.CART]: Cart,
   [CARD_TYPE_ENUM.INVOICE]: Invoice,
   [CARD_TYPE_ENUM.ADD_PAYMENT_OPTION]: AddPaymentOption,
   [CARD_TYPE_ENUM.DELETE_ENTITY]: DeleteEntity,
