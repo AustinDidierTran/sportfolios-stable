@@ -104,6 +104,7 @@ const GLOBAL_ENUM = {
   ROSTER_ITEM: 25,
   SHOP_ITEM: 26,
   PURCHASES: 27,
+  CART: 28,
   SALES: 28,
 };
 
@@ -118,6 +119,10 @@ const STRIPE_STATUS_ENUM = {
 
 const STRIPE_ERROR_ENUM = {
   CHARGE_ALREADY_REFUNDED: 'charge_already_refunded',
+};
+const IMAGE_ENUM = {
+  ULTIMATE_TOURNAMENT:
+    'https://sportfolios-images.s3.amazonaws.com/development/images/entity/20200716-u8zhq-8317ff33-3b04-49a1-afd3-420202cddf73',
 };
 
 const LOGO_ENUM = {
@@ -177,4 +182,5 @@ module.exports = {
   VIEW_ENUM,
   TAG_TYPE_ENUM,
   ROSTER_ROLE_ENUM,
+  IMAGE_ENUM,
 };

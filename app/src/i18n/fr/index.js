@@ -105,6 +105,7 @@ export default {
     have_an_account_signin:
       'Vous avez déjà un compte? Connectez-vous!',
     home: 'Accueil',
+    in_cart: 'Dans le panier',
     informations_saved: 'Informations sauvegardées',
     infos: 'Infos',
     last_name: 'Nom de famille',

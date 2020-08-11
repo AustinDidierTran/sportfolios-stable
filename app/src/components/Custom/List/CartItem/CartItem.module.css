@@ -1,0 +1,28 @@
+.div {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr 1fr;
+  grid-template-areas: 'photo name quantity chip' 'date date  date mail';
+  width: 100%;
+  align-items: center;
+}
+.name {
+  grid-area: name;
+  overflow: auto;
+}
+.quantity {
+  grid-area: quantity;
+  overflow: auto;
+}
+.chip {
+  grid-area: chip;
+}
+.mail {
+  grid-area: mail;
+}
+.date {
+  grid-area: date;
+  overflow: auto;
+}
+.photo {
+  grid-area: photo;
+}
