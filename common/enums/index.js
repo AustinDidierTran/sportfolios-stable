@@ -105,6 +105,7 @@ const GLOBAL_ENUM = {
   SHOP_ITEM: 26,
   PURCHASES: 27,
   CART: 28,
+  SALES: 28,
 };
 
 const LOGGER_ENUM = {

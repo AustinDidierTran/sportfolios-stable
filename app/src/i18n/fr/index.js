@@ -43,6 +43,7 @@ export default {
     basic_info: 'Information générales',
     birth_date: 'Date de naissance',
     birth_date_format: '{{date, LL}} ({{age}} ans)',
+    by: 'Par',
     canadian_dollar: 'Dollar Canadien',
     captain: 'Capitaine',
     card_ending_with: 'Carte finissant avec {{last4}}',
