@@ -195,6 +195,12 @@ const getUserIdFromEmail = async body => {
   return user_id;
 };
 
+const getLanguageFromEmail = async email => {
+  const id = await getUserIdFromEmail({ email });
+  const infos = await getBasicUserInfoFromId(id);
+  return infos.language;
+};
+
 const getUserIdFromRecoveryPasswordToken = async token => {
   const [response] = await knex('recovery_email_token')
     .select(['user_id', 'expires_at', 'used_at'])
@@ -285,6 +291,7 @@ module.exports = {
   getEmailFromToken,
   getEmailsFromUserId,
   getHashedPasswordFromId,
+  getLanguageFromEmail,
   getUserIdFromEmail,
   getUserIdFromRecoveryPasswordToken,
   sendNewConfirmationEmailAllIncluded,

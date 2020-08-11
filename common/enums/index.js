@@ -62,6 +62,11 @@ const CARD_TYPE_ENUM = {
   EVENT_SETTINGS: 'event settings',
 };
 
+const LANGUAGE_ENUM = {
+  ENGLISH: 'en',
+  FRANCAIS: 'fr',
+};
+
 const INVOICE_STATUS_ENUM = {
   DRAFT: 'draft',
   DELETED: 'deleted',
@@ -198,4 +203,5 @@ module.exports = {
   POSITION_ENUM,
   SEVERITY_ENUM,
   IMAGE_ENUM,
+  LANGUAGE_ENUM,
 };
