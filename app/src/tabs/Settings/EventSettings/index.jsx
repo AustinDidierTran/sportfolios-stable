@@ -6,7 +6,10 @@ import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
-import { CARD_TYPE_ENUM } from '../../../../../common/enums';
+import {
+  CARD_TYPE_ENUM,
+  SEVERITY_ENUM,
+} from '../../../../../common/enums';
 import moment from 'moment';
 import styles from './EventSettings.module.css';
 import { Store, ACTION_ENUM } from '../../../Store';
@@ -72,7 +75,7 @@ export default function EventSettings() {
     dispatch({
       type: ACTION_ENUM.SNACK_BAR,
       message: t('informations_saved'),
-      severity: 'success',
+      severity: SEVERITY_ENUM.SUCCESS,
     });
     getInfos();
   };

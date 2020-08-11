@@ -11,6 +11,7 @@ import {
 import {
   MEMBERSHIP_TYPE_ENUM,
   MEMBERSHIP_LENGTH_ENUM,
+  SEVERITY_ENUM,
 } from '../../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
@@ -74,7 +75,7 @@ export default function AddMembership() {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('membership_exist'),
-        severity: 'error',
+        severity: SEVERITY_ENUM.ERROR,
       });
       return;
     } else {

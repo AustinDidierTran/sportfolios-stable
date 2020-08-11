@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { Store } from '../../../Store';
+import { POSITION_ENUM } from '../../../../../common/enums';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -20,22 +21,22 @@ export default function SnackBar() {
   } = useContext(Store);
 
   const [open, setOpen] = useState(false);
-  const [vert, setVert] = useState('bottom');
-  const [horz, setHorz] = useState('center');
+  const [vert, setVert] = useState(POSITION_ENUM.BOTTOM);
+  const [horz, setHorz] = useState(POSITION_ENUM.CENTER);
 
   useEffect(() => {
     if (message || severity) {
       setOpen(true);
     }
-    setVert(vertical || 'bottom');
-    setHorz(horizontal || 'center');
+    setVert(vertical || POSITION_ENUM.BOTTOM);
+    setHorz(horizontal || POSITION_ENUM.CENTER);
   }, [message, severity, time]);
 
   const handleClose = () => {
     setOpen(false);
     setTimeout(() => {
-      setVert('bottom');
-      setHorz('center');
+      setVert(POSITION_ENUM.BOTTOM);
+      setHorz(POSITION_ENUM.CENTER);
     }, 1000);
   };
 

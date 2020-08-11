@@ -28,6 +28,7 @@ import {
   TextareaAutosize,
 } from '@material-ui/core';
 import { Store, ACTION_ENUM } from '../../Store';
+import { SEVERITY_ENUM } from '../../../../common/enums';
 
 export default function ShopDetails() {
   const {
@@ -81,7 +82,7 @@ export default function ShopDetails() {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: t('you_need_to_create_an_account'),
-          severity: 'info',
+          severity: SEVERITY_ENUM.INFO,
         });
         goToAndReplace(ROUTES.login, null, {
           successRoute: formatRoute(ROUTES.shopDetails, {
@@ -120,7 +121,7 @@ export default function ShopDetails() {
       } else {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
-          severity: 'error',
+          severity: SEVERITY_ENUM.ERROR,
           message: t('something_went_wrong'),
         });
       }
