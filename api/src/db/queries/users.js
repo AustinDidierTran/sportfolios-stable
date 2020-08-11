@@ -35,17 +35,10 @@ const changePassword = async (
   user_id,
   { oldPassword, newPassword },
 ) => {
-  if (
-    !newPassword ||
-    newPassword.length < 8 ||
-    newPassword.length > 40
-  ) {
-    return 404;
-  }
-
   if (!user_id) {
     return 402;
   }
+  const newHashedPassword = await generateHashedPassword(newPassword);
 
   const oldHashedPassword = await getHashedPasswordFromId(user_id);
 
@@ -58,8 +51,6 @@ const changePassword = async (
   if (!isSame) {
     return 403;
   }
-
-  const newHashedPassword = await generateHashedPassword(newPassword);
 
   await updatePasswordFromUserId({
     id: user_id,
