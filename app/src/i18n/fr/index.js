@@ -231,8 +231,8 @@ export default {
     teams_saved: 'Équipes sauvegardées!',
     to_see_your_receipt:
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
-    this_may_take_a_few_seconds:
-      'Cette opération peut prendre quelques secondes... Le temps de vous dégourdir!',
+    waiting_for_payment:
+      'Votre paiement est en cours de traitement. Merci pour votre patience.',
     value_is_required: 'Value is required',
     unsupported_language: 'Langue non supportée',
     upload: 'Téléverser',

@@ -226,8 +226,8 @@ export default {
     team_select: 'Team select',
     teams: 'Teams',
     teams_saved: 'Teams saved!',
-    this_may_take_a_few_seconds:
-      'This may take a few seconds... The time to stretch a little!',
+    waiting_for_payment:
+      'Your payment is being processed. Thank you for your patience',
     value_is_required: 'Valeur obligatoire',
     unsupported_language: 'Unsupported language',
     upload: 'Upload',

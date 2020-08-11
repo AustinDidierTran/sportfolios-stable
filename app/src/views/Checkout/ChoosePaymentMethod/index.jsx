@@ -68,7 +68,7 @@ export default function ChoosePaymentMethod(props) {
         <div className={styles.logo}>
           <img className={styles.img} src={LOGO_ENUM.LOGO} />
         </div>
-        <Typography>{t('this_may_take_a_few_seconds')}</Typography>
+        <Typography>{t('waiting_for_payment')}</Typography>
         <LoadingSpinner isComponent />
       </div>
     );
