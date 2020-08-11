@@ -21,7 +21,7 @@ export default function PurchasesItem(props) {
 
   const {
     photoUrl,
-    createdAt,
+    created_at: createdAt,
     label,
     amount,
     metadata,

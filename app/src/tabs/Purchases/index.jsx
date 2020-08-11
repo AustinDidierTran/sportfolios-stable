@@ -17,15 +17,13 @@ export default function PurchasesTab() {
     );
   }
 
-  const formatPurchases = () => {
-    const sorted = purchases.sort(
-      (a, b) => moment(b.createdAt) - moment(a.createdAt),
-    );
-    return sorted.map(p => ({
-      ...p,
-      type: GLOBAL_ENUM.PURCHASES,
-    }));
-  };
+  const formatPurchases = () =>
+    purchases
+      .sort((a, b) => moment(b.createdAt) - moment(a.createdAt))
+      .map(p => ({
+        ...p,
+        type: GLOBAL_ENUM.PURCHASES,
+      }));
 
   return (
     <IgContainer>
