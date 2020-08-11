@@ -108,6 +108,7 @@ export default function ScheduleManager() {
         secondary: t('team'),
         onDelete,
         notClickable: true,
+        random: Math.random(),
       },
     ]);
   };
