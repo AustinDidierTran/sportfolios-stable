@@ -10,7 +10,6 @@ const getUserInfo = require('./server/middleware/user-info');
 const checkAuth = require('./server/middleware/check-auth');
 const adminOnly = require('./server/middleware/admin-only');
 const errorHandler = require('./server/middleware/error-handler');
-const compression = require('compression');
 
 const publicRoutes = require('./server/routes/public');
 const testRoutes = require('./server/routes/test');
@@ -29,7 +28,6 @@ app.use(errorHandler);
 app.use(cors(corsOptions));
 app.use(bodyParser());
 app.use(getUserInfo);
-app.use(compression());
 
 // public routes
 publicRoutes.forEach(route => app.use(route.routes()));
