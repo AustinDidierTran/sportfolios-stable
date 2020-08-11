@@ -299,6 +299,8 @@ const getSales = async entityId => {
       'store_items_paid.amount',
       'user_email.email',
       'store_items_paid.metadata',
+      'store_items.photo_url',
+      'store_items_paid.created_at',
     ])
     .leftJoin(
       'stripe_price',
@@ -318,8 +320,13 @@ const getSales = async entityId => {
       '=',
       'user_email.user_id',
     )
+    .leftJoin(
+      'store_items',
+      'store_items_paid.stripe_price_id',
+      '=',
+      'store_items.stripe_price_id',
+    )
     .where('store_items_paid.seller_entity_id', entityId);
-
   return sales;
 };
 
