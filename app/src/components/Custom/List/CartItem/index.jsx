@@ -49,15 +49,6 @@ export default function CartItem(props) {
             primary={formatPrice(amount)}
             secondary={label}
           ></ListItemText>
-          <Select
-            className={styles.select}
-            onChange={value => {
-              updateQuantity(value, id);
-            }}
-            value={quantity}
-            options={quantityOptions}
-            label={t('quantity')}
-          />
         </div>
       </ListItem>
     );
