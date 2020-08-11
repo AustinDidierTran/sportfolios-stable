@@ -22,6 +22,8 @@ import { useTranslation } from 'react-i18next';
 import {
   INVOICE_STATUS_ENUM,
   GLOBAL_ENUM,
+  POSITION_ENUM,
+  SEVERITY_ENUM,
 } from '../../../../common/enums';
 import { formatPrice } from '../../utils/stringFormats';
 import styles from './EventRegistration.module.css';
@@ -98,7 +100,8 @@ export default function EventRegistration() {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: t('team_already_registered'),
-          severity: 'error',
+          severity: SEVERITY_ENUM.ERROR,
+          vertical: POSITION_ENUM.TOP,
         });
       }
     } else {
@@ -164,8 +167,9 @@ export default function EventRegistration() {
         message: t('team_selected_add_your_roster', {
           name: team.name,
         }),
-        severity: 'success',
+        severity: SEVERITY_ENUM.SUCCESS,
         duration: 30000,
+        vertical: POSITION_ENUM.TOP,
       });
     }
     if (activeStep === 1) {
@@ -181,8 +185,9 @@ export default function EventRegistration() {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message,
-        severity: 'success',
+        severity: SEVERITY_ENUM.SUCCESS,
         duration: 30000,
+        vertical: POSITION_ENUM.TOP,
       });
     }
   };
@@ -236,7 +241,7 @@ export default function EventRegistration() {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('you_need_to_create_an_account'),
-        severity: 'info',
+        severity: SEVERITY_ENUM.INFO,
       });
       goToAndReplace(ROUTES.login, null, {
         successRoute: `/eventRegistration/${eventId}`,

@@ -89,6 +89,19 @@ const VIEW_ENUM = {
   ORGANIZATION_LIST: 'organizationList',
 };
 
+const POSITION_ENUM = {
+  BOTTOM: 'bottom',
+  TOP: 'top',
+  CENTER: 'center',
+  LEFT: 'left',
+  RIGHT: 'right',
+};
+const SEVERITY_ENUM = {
+  SUCCESS: 'success',
+  ERROR: 'error',
+  INFO: 'info',
+};
+
 // Everything excluding roles
 const GLOBAL_ENUM = {
   PERSON: 1,
@@ -182,5 +195,7 @@ module.exports = {
   VIEW_ENUM,
   TAG_TYPE_ENUM,
   ROSTER_ROLE_ENUM,
+  POSITION_ENUM,
+  SEVERITY_ENUM,
   IMAGE_ENUM,
 };

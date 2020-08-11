@@ -14,7 +14,7 @@ import { useFormik } from 'formik';
 
 import SignupCard from './SignupCard';
 import LoginCard from './LoginCard';
-import { LOGO_ENUM } from '../../../../common/enums';
+import { LOGO_ENUM, SEVERITY_ENUM } from '../../../../common/enums';
 
 export default function Login() {
   const { t } = useTranslation();
@@ -141,7 +141,7 @@ export default function Login() {
             message: t(
               'you_have_no_account_with_this_email_create_one',
             ),
-            severity: 'info',
+            severity: SEVERITY_ENUM.INFO,
           });
         } else {
           let { data } = res;

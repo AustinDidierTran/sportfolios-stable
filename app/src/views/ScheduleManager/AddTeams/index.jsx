@@ -1,5 +1,8 @@
 import React, { useMemo, useContext } from 'react';
-import { GLOBAL_ENUM } from '../../../../../common/enums';
+import {
+  GLOBAL_ENUM,
+  SEVERITY_ENUM,
+} from '../../../../../common/enums';
 import { SearchList, List, Button } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../../hooks/forms';
@@ -19,7 +22,7 @@ export default function AddTeams(props) {
     dispatch({
       type: ACTION_ENUM.SNACK_BAR,
       message: t('teams_saved'),
-      severity: 'success',
+      severity: SEVERITY_ENUM.SUCCESS,
     });
     save();
   };

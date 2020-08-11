@@ -10,6 +10,7 @@ import moment from 'moment';
 import { Store, ACTION_ENUM } from '../../../../Store';
 import styles from './AddPaymentOption.module.css';
 import LoadingSpinner from '../../LoadingSpinner';
+import { SEVERITY_ENUM } from '../../../../../../common/enums';
 
 export default function AddPaymentOption(props) {
   const { fields, onAdd: onAddProps } = props;
@@ -60,7 +61,7 @@ export default function AddPaymentOption(props) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('registration_closes_before_opening'),
-        severity: 'error',
+        severity: SEVERITY_ENUM.ERROR,
       });
       isValid = false;
     }
@@ -93,7 +94,7 @@ export default function AddPaymentOption(props) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('payment_option_exist'),
-        severity: 'error',
+        severity: SEVERITY_ENUM.ERROR,
       });
       setIsLoading(false);
       return;

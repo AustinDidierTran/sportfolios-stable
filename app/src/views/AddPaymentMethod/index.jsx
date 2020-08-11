@@ -21,6 +21,7 @@ import {
 import api from '../../actions/api';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { Store, ACTION_ENUM } from '../../Store';
+import { SEVERITY_ENUM } from '../../../../common/enums';
 
 export default function AddPaymentMethod() {
   const { t } = useTranslation();
@@ -101,7 +102,7 @@ export default function AddPaymentMethod() {
           dispatch({
             type: ACTION_ENUM.SNACK_BAR,
             message: t('payment_method_added'),
-            severity: 'success',
+            severity: SEVERITY_ENUM.SUCCESS,
           });
           goTo(ROUTES.checkout);
         }
