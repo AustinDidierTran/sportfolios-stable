@@ -11,12 +11,13 @@ import { Paper, Select } from '../../../components/Custom';
 import styles from './BasicInfo.module.css';
 
 import api from '../../../actions/api';
-import { Store } from '../../../Store';
+import { Store, ACTION_ENUM } from '../../../Store';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
 export default function BasicInfo() {
   const {
     state: { authToken },
+    dispatch,
   } = useContext(Store);
   const { t } = useTranslation();
 
@@ -56,6 +57,12 @@ export default function BasicInfo() {
         goTo(ROUTES.login);
       } else if (res.status >= 400) {
         formik.setFieldError('address', t('something_went_wrong'));
+      } else {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: t('informations_saved'),
+          severity: 'success',
+        });
       }
     },
   });

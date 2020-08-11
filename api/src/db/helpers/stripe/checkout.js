@@ -360,13 +360,22 @@ const checkout = async (body, userId) => {
     await Promise.all(
       invoicesAndMetadatas.map(async ({ invoiceItem, metadata }) => {
         if (Number(metadata.type) === GLOBAL_ENUM.EVENT) {
-          await INVOICE_PAID_ENUM.EVENT(
-            { rosterId: metadata.rosterId, eventId: metadata.id },
-            {
-              status: paidInvoice.status,
-              invoiceItemId: invoiceItem.id,
+          await INVOICE_PAID_ENUM.EVENT({
+            rosterId: metadata.rosterId,
+            eventId: metadata.id,
+            status: paidInvoice.status,
+            invoiceItemId: invoiceItem.id,
+            sellerEntityId: metadata.sellerEntityId,
+            quantity: invoiceItem.quantity,
+            unitAmount: invoiceItem.unit_amount,
+            amount: invoiceItem.amount,
+            stripePriceId: invoiceItem.price.id,
+            buyerUserId: userId,
+            metadata: {
+              size: metadata.size,
+              type: GLOBAL_ENUM.EVENT,
             },
-          );
+          });
         } else if (Number(metadata.type) === GLOBAL_ENUM.SHOP_ITEM) {
           await INVOICE_PAID_ENUM.STORE({
             sellerEntityId: metadata.seller_entity_id,
@@ -378,6 +387,7 @@ const checkout = async (body, userId) => {
             invoiceItemId: invoiceItem.id,
             metadata: {
               size: metadata.size,
+              type: GLOBAL_ENUM.SHOP_ITEM,
             },
           });
         }

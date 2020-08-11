@@ -5,9 +5,10 @@ import { formatPageTitle } from '../../utils/stringFormats';
 import { MessageAndButtons } from '../../components/Custom';
 import { useQuery } from '../../hooks/queries';
 import { goTo, ROUTES } from '../../actions/goTo';
+import { TABS_ENUM } from '../../tabs';
 
 export default function ProductAddedToCart() {
-  const { name, total, amount } = useQuery();
+  const { name, total, amount, id } = useQuery();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -18,16 +19,16 @@ export default function ProductAddedToCart() {
     goTo(ROUTES.cart);
   };
 
-  const goToHome = () => {
-    goTo(ROUTES.home);
+  const goToShop = () => {
+    goTo(ROUTES.entity, { id }, { tab: TABS_ENUM.SHOP });
   };
 
   const buttons = [
     {
-      name: t('home'),
-      endIcon: 'Home',
+      name: t('back_to_shop'),
+      endIcon: 'Store',
       color: 'default',
-      onClick: goToHome,
+      onClick: goToShop,
     },
     {
       name: t('cart'),

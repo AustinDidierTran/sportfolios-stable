@@ -5,13 +5,14 @@ import { Button, TextField } from '../../../components/MUI';
 import { Paper } from '../../../components/Custom';
 import styles from './ChangePassword.module.css';
 
-import { Store } from '../../../Store';
+import { Store, ACTION_ENUM } from '../../../Store';
 import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
 export default function ChangePassword() {
   const {
     state: { authToken },
+    dispatch,
   } = useContext(Store);
   const { t } = useTranslation();
 
@@ -22,7 +23,7 @@ export default function ChangePassword() {
       errors.oldPassword = t('value_is_required');
     } else if (
       values.oldPassword.length < 8 ||
-      values.oldPassword.length > 16
+      values.oldPassword.length > 24
     ) {
       errors.oldPassword = t('password_length');
     }
@@ -31,7 +32,7 @@ export default function ChangePassword() {
       errors.newPassword = t('value_is_required');
     } else if (
       values.newPassword.length < 8 ||
-      values.newPassword.length > 16
+      values.newPassword.length > 24
     ) {
       errors.newPassword = t('password_length');
     }
@@ -41,7 +42,6 @@ export default function ChangePassword() {
     } else if (values.newPassword !== values.newPasswordConfirm) {
       errors.newPasswordConfirm = t('password_must_match');
     }
-
     return errors;
   };
 
@@ -67,6 +67,11 @@ export default function ChangePassword() {
 
       if (res.status < 300) {
         resetForm();
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: t('password_changed'),
+          severity: 'success',
+        });
       } else if (res.status === 402) {
         // Token is expired, redirect
         goTo(ROUTES.login);

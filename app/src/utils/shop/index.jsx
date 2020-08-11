@@ -30,6 +30,7 @@ const createItem = async params => {
     photoUrl,
     entityId,
     sizes,
+    type,
   } = params;
   const itemParams = {
     stripeProduct: {
@@ -39,6 +40,7 @@ const createItem = async params => {
       metadata: {
         seller_entity_id: entityId,
         sizes: JSON.stringify(sizes),
+        type,
       },
     },
     stripePrice: {

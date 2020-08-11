@@ -17,6 +17,7 @@ import AddSizes from '../AddSizes';
 import { TextareaAutosize } from '@material-ui/core';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
+import { GLOBAL_ENUM } from '../../../../../common/enums';
 
 export default function CreateItem(props) {
   const { id } = useParams();
@@ -108,6 +109,7 @@ export default function CreateItem(props) {
         photoUrl,
         entityId: id,
         sizes,
+        type: GLOBAL_ENUM.SHOP_ITEM,
       });
       setIsCreating(!isCreating);
       name.reset();
