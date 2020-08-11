@@ -45,6 +45,8 @@ export default {
     basic_info: 'Basic Info',
     birth_date_format: '{{date, LL}} ({{age}} years old)',
     birth_date: 'Birth date',
+    cant_add_product_no_bank_account:
+      "Can't add product admin has no bank account",
     by: 'By',
     captain: 'Captain',
     card_ending_with: 'Card ending with {{last4}}',
