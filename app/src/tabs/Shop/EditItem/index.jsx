@@ -29,7 +29,9 @@ export default function EditItem(props) {
 
   const name = useFormInput(item.name);
   const amount = item.price / 100;
-  const description = useFormInput(item.description);
+  const description = useFormInput(
+    decodeURIComponent(item.description),
+  );
 
   const handleChange = event => {
     setSizes(event.target.value);
