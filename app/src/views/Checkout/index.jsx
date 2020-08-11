@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
 
-import { Container } from '../../components/MUI';
 import styles from './Checkout.module.css';
 
 import ChoosePaymentMethod from './ChoosePaymentMethod';
 import { useFormInput } from '../../hooks/forms';
 import { useApiRoute } from '../../hooks/queries';
 import { formatPageTitle } from '../../utils/stringFormats';
-import { Paper, LoadingSpinner } from '../../components/Custom';
+import {
+  Paper,
+  LoadingSpinner,
+  IgContainer,
+} from '../../components/Custom';
 import { useTranslation } from 'react-i18next';
 
 export default function Checkout() {
@@ -25,13 +28,13 @@ export default function Checkout() {
   }
 
   return (
-    <Container className={styles.items}>
+    <IgContainer className={styles.items}>
       <Paper className={styles.paper}>
         <ChoosePaymentMethod
           paymentMethod={paymentMethod}
           response={response}
         />
       </Paper>
-    </Container>
+    </IgContainer>
   );
 }

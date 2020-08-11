@@ -63,7 +63,15 @@ export default function ChoosePaymentMethod(props) {
   };
 
   if (isLoading) {
-    return <LoadingSpinner isComponent />;
+    return (
+      <div>
+        <div className={styles.logo}>
+          <img className={styles.img} src={LOGO_ENUM.LOGO} />
+        </div>
+        <Typography>{t('waiting_for_payment')}</Typography>
+        <LoadingSpinner isComponent />
+      </div>
+    );
   }
 
   if (!paymentMethods.length) {
