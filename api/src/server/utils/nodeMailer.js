@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const { CLIENT_BASE_URL } = require('../../../../conf');
+const { LOGO_ENUM } = require('../../../../common/enums');
 
 let key;
 
@@ -15,11 +16,12 @@ try {
 const YOUR_EMAIL_ADDRESS = 'info@sportfolios.app';
 
 // Do not export this function. Create your own who uses it, then export this one
-async function sendMail({ email, subject, text }) {
+async function sendMail({ email, subject, text, html }) {
   if (!key) {
     /* eslint-disable-next-line */
     console.log(
-      `Google keys are not configured, aborting mail fire. Here was the email content: \n\n ${text}`,
+      `Google keys are not configured, aborting mail fire. Here was the email content: \n\n ${text ||
+        html}`,
     );
     return;
   }
@@ -47,6 +49,7 @@ async function sendMail({ email, subject, text }) {
       to: email,
       subject: realSubject,
       text,
+      html,
     });
   } catch (err) {
     /* eslint-disable-next-line */
@@ -94,7 +97,7 @@ async function sendAcceptedRegistrationEmail({ email, team, event }) {
   await sendMail({
     email,
     subject: `Inscription d'équipe | Sportfolios`,
-    text: `Votre équipe ${team.name} est officiellement acceptée au tournoi ${event.name}. L'organisation est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant: ${CLIENT_BASE_URL}/cart`,
+    html: `<div><h1>inscription ${team.name}</h1><p>Votre équipe ${team.name} est officiellement acceptée au tournoi ${event.name}. L'organisation est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant:<link> ${CLIENT_BASE_URL}/cart</link></p><img src=${LOGO_ENUM.LOGO}/></div>`,
   });
 }
 
