@@ -61,7 +61,7 @@ export default function Cart() {
     updateQuantity();
   }, []);
 
-  const updateQuantity = async quantity => {
+  const updateQuantity = async (quantity, item) => {
     const { data } = await api('/api/shop/updateCartItems', {
       method: 'POST',
       body: JSON.stringify({
@@ -112,6 +112,7 @@ export default function Cart() {
           <List
             items={items.map(item => ({
               ...item,
+              updateQuantity,
               type: GLOBAL_ENUM.CART,
             }))}
           />
