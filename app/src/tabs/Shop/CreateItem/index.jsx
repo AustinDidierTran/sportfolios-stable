@@ -64,6 +64,7 @@ export default function CreateItem(props) {
         message: t('cant_add_product_no_bank_account'),
         severity: 'error',
       });
+      setIsCreating(false);
     } else {
       setIsCreating(!isCreating);
     }
