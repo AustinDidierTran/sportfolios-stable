@@ -3,25 +3,19 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { InjectManifest } = require('workbox-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const CompressionPlugin = require('compression-webpack-plugin');
+
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 
 const ROOT_PATH = path.resolve(__dirname);
 
 module.exports = {
-  optimization: {
-    minimize: true,
-    minimizer: [new TerserPlugin()],
-  },
   devServer: {
     writeToDisk: true,
   },
   entry: {
-    app: path.resolve(ROOT_PATH, 'app/src/index.jsx'),
+    app: path.resolve(ROOT_PATH, 'app/src/index.tsx'),
   },
   module: {
     rules: [
@@ -29,6 +23,11 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loaders: ['babel-loader'],
+      },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
       },
       {
         test: /\.module\.(sc|sa|c)ss$/i,
@@ -55,7 +54,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.tsx'],
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -64,18 +63,9 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(ROOT_PATH, 'app/public/index.html'),
     }),
-    new InjectManifest({
-      maximumFileSizeToCacheInBytes: 5000000,
-      swSrc: path.resolve(
-        __dirname,
-        './service-worker/serviceWorkerWorkbox.js',
-      ),
-      swDest: 'service-worker.js',
-    }),
     new CopyWebpackPlugin({
       patterns: [{ from: path.resolve(ROOT_PATH, 'app/public') }],
     }),
-    new CompressionPlugin(),
     new BundleAnalyzerPlugin(),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
   ],

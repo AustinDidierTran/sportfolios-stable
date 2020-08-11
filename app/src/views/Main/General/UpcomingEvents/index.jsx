@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import * as React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 
-import CardContent from '@material-ui/core/CardContent';
+import { CardContent } from '@material-ui/core/CardContent/index.js';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 import IconButton from '@material-ui/core/IconButton';
@@ -69,7 +70,7 @@ const flag = false;
 export default function UpcomingEvents(props) {
   const { t } = useTranslation();
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [event, setEvent] = useState({});
   const {
     state: { screenSize },
