@@ -43,7 +43,7 @@ export default function PurchasesItem(props) {
         <ListItemText
           className={styles.quantity}
           primary={formatPrice(amount)}
-          secondary={`Qt: ${quantity}`}
+          secondary={t('qt', { quantity })}
         ></ListItemText>
         <MailtoButton
           edge="end"

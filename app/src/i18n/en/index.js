@@ -167,6 +167,7 @@ export default {
     phone_number: 'Phone Number',
     people: 'People',
     purchased_on: 'Purchased on',
+    qt: 'Qt: {{quantity}}',
     ranking: 'Ranking',
     refund: 'Refund',
     refunded: 'Refunded',

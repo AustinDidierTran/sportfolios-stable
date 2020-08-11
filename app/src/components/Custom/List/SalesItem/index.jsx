@@ -13,7 +13,7 @@ export default function SalesItem(props) {
 
   const {
     photo_url: photoUrl,
-    createdAt,
+    created_at: createdAt,
     label,
     amount,
     metadata,
@@ -21,11 +21,7 @@ export default function SalesItem(props) {
     email,
   } = props;
 
-  const emails = useMemo(() => {
-    const mail = [];
-    mail.push({ email });
-    return mail;
-  }, [email]);
+  const emails = useMemo(() => [{ email }], [email]);
 
   return (
     <ListItem button style={{ width: '100%' }}>
@@ -45,7 +41,7 @@ export default function SalesItem(props) {
         <ListItemText
           className={styles.quantity}
           primary={formatPrice(amount)}
-          secondary={`Qt: ${quantity}`}
+          secondary={t('qt', { quantity })}
         ></ListItemText>
         <ListItemText
           className={styles.quantity}

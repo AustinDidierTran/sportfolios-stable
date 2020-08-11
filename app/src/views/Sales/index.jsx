@@ -12,15 +12,13 @@ export default function Sales() {
     `/api/shop/sales?id=${id}`,
   );
 
-  const formatSales = () => {
-    const sorted = response.sort(
-      (a, b) => moment(b.createdAt) - moment(a.createdAt),
-    );
-    return sorted.map(s => ({
-      ...s,
-      type: GLOBAL_ENUM.SALES,
-    }));
-  };
+  const formatSales = () =>
+    response
+      .sort((a, b) => moment(b.createdAt) - moment(a.createdAt))
+      .map(s => ({
+        ...s,
+        type: GLOBAL_ENUM.SALES,
+      }));
 
   if (isLoading) {
     return (
