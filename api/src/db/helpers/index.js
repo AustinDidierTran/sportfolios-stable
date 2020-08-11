@@ -9,6 +9,7 @@ const {
 const {
   sendConfirmationEmail,
 } = require('../../server/utils//nodeMailer');
+const { ERROR_ENUM } = require('../../../../common/errors');
 
 const confirmEmail = async ({ email }) => {
   await knex('user_email')
@@ -80,6 +81,12 @@ const createRecoveryEmailToken = async ({ userId, token }) => {
 };
 
 const generateHashedPassword = async password => {
+  if (!password) {
+    throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
+  }
+  if (password.length < 8 || password.length > 24) {
+    throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
+  }
   const salt = await bcrypt.genSalt();
 
   const hashedPassword = await bcrypt.hash(password, salt);

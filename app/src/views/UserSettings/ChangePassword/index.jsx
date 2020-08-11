@@ -23,7 +23,7 @@ export default function ChangePassword() {
       errors.oldPassword = t('value_is_required');
     } else if (
       values.oldPassword.length < 8 ||
-      values.oldPassword.length > 16
+      values.oldPassword.length > 24
     ) {
       errors.oldPassword = t('password_length');
     }
@@ -32,7 +32,7 @@ export default function ChangePassword() {
       errors.newPassword = t('value_is_required');
     } else if (
       values.newPassword.length < 8 ||
-      values.newPassword.length > 16
+      values.newPassword.length > 24
     ) {
       errors.newPassword = t('password_length');
     }
@@ -42,7 +42,6 @@ export default function ChangePassword() {
     } else if (values.newPassword !== values.newPasswordConfirm) {
       errors.newPasswordConfirm = t('password_must_match');
     }
-
     return errors;
   };
 

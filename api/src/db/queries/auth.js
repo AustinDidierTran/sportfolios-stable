@@ -35,10 +35,6 @@ const signup = async ({
 
   if (!isUnique) return { code: 403 };
 
-  if (!password || password.length < 8 || password.length > 40) {
-    return { code: 402 };
-  }
-
   const hashedPassword = await generateHashedPassword(password);
 
   const confirmationEmailToken = generateToken();

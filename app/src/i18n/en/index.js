@@ -265,7 +265,7 @@ export default {
     old_password: 'Old password',
     see_sales: 'See sales',
     password_length:
-      'Password must be within 8 and 16 characters long.',
+      'Password must be within 8 and 24 characters long.',
     password_must_match: 'Passwords must match',
     select_team: 'Select team',
     something_went_wrong: 'Something went wrong, please try again',
