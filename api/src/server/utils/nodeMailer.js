@@ -61,6 +61,10 @@ async function sendMail({ email, subject, text, html }) {
   }
 }
 
+async function getHtml(title, content, link, buttonName) {
+  return `<html><body style="font-family:Helvetica"><h1>${title}</h1><br/><p>${content}</p><br/>	<a href=${link} target="_blank"><button>${buttonName}</button></a><img src=${LOGO_ENUM.LOGO_256X256}></img><footer> <p> Powered by <a href="https://www.sportfolios.app "target="_blank"> sportfolios.app </a></p></body> </html>`;
+}
+
 async function sendConfirmationEmail({ email, token, successRoute }) {
   const language = await getLanguageFromEmail(email);
   let html = '';
@@ -121,13 +125,22 @@ async function sendTeamRegistrationEmailToAdmin({
   const language = await getLanguageFromEmail(email);
   let html = '';
   let subject = '';
+  let title = '';
+  let content = '';
+  let link = `${CLIENT_BASE_URL}/${event.id}?tab=settings`;
+  let buttonName = '';
   if (language === LANGUAGE_ENUM.ENGLISH) {
-    html = `<div><h1>New registration!</h1><br/><p>A new team named ${team.name} has registered to your event ${event.name} with success. You can access to your event here 👇<br/><link> ${CLIENT_BASE_URL}/${event.id}?tab=settings</link></p><br/><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
+    title = 'New registration!';
+    content = `A new team named ${team.name} has registered to your event ${event.name} with success. You can access to your event here 👇`;
+    buttonName = 'Event';
     subject = 'New registration to your tournament | Sportfolios';
   } else {
-    html = `<div><h1>Nouvelle inscription!</h1><br/><p>Une équipe nommée ${team.name} s'est inscrite à votre événement ${event.name} avec succès. Vous pouvez accéder au status de votre événement ici 👇<br/><link> ${CLIENT_BASE_URL}/${event.id}?tab=settings</link></p><br/><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
+    title = 'Nouvelle inscription!';
+    content = `Une équipe nommée ${team.name} s'est inscrite à votre événement ${event.name} avec succès. Vous pouvez accéder au status de votre événement ici 👇`;
+    buttonName = 'Événement';
     subject = 'Nouvelle inscription à votre tournoi | Sportfolios';
   }
+  html = await getHtml(title, content, link, buttonName);
   await sendMail({
     email,
     subject,
@@ -140,7 +153,8 @@ async function sendAcceptedRegistrationEmail({ email, team, event }) {
   let html = '';
   let subject = '';
   if (language === LANGUAGE_ENUM.ENGLISH) {
-    html = `<div><h1>Registration ${team.name}</h1><br/><p>Your team ${team.name} is officially registered to ${event.name}. The tournament is awaiting your payment. You can pay by going on the following link 👇<br/><link> ${CLIENT_BASE_URL}/cart</link></p><br/><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
+    html = emailFormatter();
+    // `<div><h1>Registration ${team.name}</h1><br/><p>Your team ${team.name} is officially registered to ${event.name}. The tournament is awaiting your payment. You can pay by going on the following link 👇<br/><link> ${CLIENT_BASE_URL}/cart</link></p><br/><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
     subject = `Registration ${team.name} | Sportfolios`;
   } else {
     html = `<div><h1>Inscription ${team.name}</h1><br/><p>Votre équipe ${team.name} est officiellement acceptée au tournoi ${event.name}. Le tournoi est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant 👇<br/><link> ${CLIENT_BASE_URL}/cart</link></p><br/><img src=${LOGO_ENUM.LOGO_256X256}></img></div>`;
