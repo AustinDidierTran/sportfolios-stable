@@ -103,7 +103,6 @@ export default function Cart() {
       />
     );
   }
-  console.log({ items });
   return (
     <>
       <IgContainer>

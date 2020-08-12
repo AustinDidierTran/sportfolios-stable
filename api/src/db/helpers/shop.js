@@ -86,6 +86,45 @@ const getShopItems = async entityId => {
   }));
 };
 
+const getAllShopItems = async type => {
+  const res = await knex('store_items')
+    .select(
+      'store_items.entity_id',
+      'stripe_price.stripe_price_id',
+      'stripe_price.stripe_product_id',
+      'stripe_product.label',
+      'stripe_product.description',
+      'stripe_price.amount',
+      'stripe_price.active',
+      'store_items.photo_url',
+    )
+    .leftJoin(
+      'stripe_price',
+      'stripe_price.stripe_price_id',
+      '=',
+      'store_items.stripe_price_id',
+    )
+    .leftJoin(
+      'stripe_product',
+      'stripe_product.stripe_product_id',
+      '=',
+      'stripe_price.stripe_product_id',
+    )
+    .leftJoin('entities', 'store_items.entity_id', '=', 'entities.id')
+    .where('entities.type', type);
+
+  return res.map(i => ({
+    active: i.active,
+    amount: i.amount,
+    description: i.description,
+    entityId: i.entity_id,
+    label: i.label,
+    photoUrl: i.photo_url,
+    stripePriceId: i.stripe_price_id,
+    stripeProductId: i.stripe_product_id,
+  }));
+};
+
 const getCartItems = async userId => {
   try {
     const cartItems = await knex('cart_items')
@@ -439,6 +478,7 @@ module.exports = {
   getPurchases,
   getSales,
   getShopItems,
+  getAllShopItems,
   removeAllInstancesFromCart,
   removeCartItemInstance,
   updateCartItems,
