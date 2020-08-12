@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './CartItem.module.css';
 import { formatPrice } from '../../../../utils/stringFormats';
 import { IMAGE_ENUM } from '../../../../../../common/enums';
+import Chip from '@material-ui/core/Chip';
 
 export default function CartItem(props) {
   const { t } = useTranslation();
@@ -49,6 +50,12 @@ export default function CartItem(props) {
             primary={formatPrice(amount)}
             secondary={label}
           ></ListItemText>
+          <Chip
+            label={t('registered')}
+            color="primary"
+            variant="outlined"
+            className={styles.chip}
+          />
         </div>
       </ListItem>
     );

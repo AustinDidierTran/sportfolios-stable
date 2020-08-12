@@ -5,7 +5,7 @@ import { Avatar } from '../../../Custom';
 import { useTranslation } from 'react-i18next';
 import Chip from '@material-ui/core/Chip';
 import styles from './PurchasesItem.module.css';
-import MailtoButton from '../../MailToButton';
+// import MailtoButton from '../../MailToButton';
 import {
   formatPrice,
   formatDate,
@@ -26,7 +26,7 @@ export default function PurchasesItem(props) {
     amount,
     metadata,
     quantity,
-    email,
+    // email,
   } = props;
 
   if (metadata.type === GLOBAL_ENUM.EVENT) {
@@ -49,11 +49,11 @@ export default function PurchasesItem(props) {
             className={styles.quantity}
             primary={formatPrice(amount)}
           ></ListItemText>
-          <MailtoButton
+          {/* <MailtoButton
             edge="end"
             emails={email}
             className={styles.mail}
-          />
+          /> */}
           <Chip
             label={t('registered')}
             color="primary"
@@ -91,11 +91,11 @@ export default function PurchasesItem(props) {
           primary={formatPrice(amount)}
           secondary={t('qt', { quantity })}
         ></ListItemText>
-        <MailtoButton
+        {/* <MailtoButton
           edge="end"
           emails={email}
           className={styles.mail}
-        />
+        /> */}
         <Chip
           label={t('ordered')}
           color="primary"
