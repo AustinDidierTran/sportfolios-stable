@@ -29,6 +29,7 @@ export default function ShopItem(props) {
     isEditor,
     update,
     fetchItems,
+    button,
   } = props;
 
   const text = useMemo(() => decodeURIComponent(description), [
@@ -94,6 +95,20 @@ export default function ShopItem(props) {
           value={text}
           disabled
         />
+        {button ? (
+          <div className={styles.otherButtonMain}>
+            <Button
+              onClick={() =>
+                goTo(ROUTES.shopDetails, { id, stripePriceId })
+              }
+              className={styles.otherButton}
+            >
+              {button.name}
+            </Button>
+          </div>
+        ) : (
+          <></>
+        )}
         {isEditor ? (
           <div className={styles.buttons}>
             <Button

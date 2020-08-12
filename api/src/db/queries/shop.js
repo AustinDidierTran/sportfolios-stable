@@ -1,5 +1,6 @@
 const {
   getItem: getItemHelper,
+  getAllShopItems,
   getShopItems,
   addCartItem,
   updateCartItems: updateCartItemsHelper,
@@ -29,6 +30,9 @@ const getItem = async (stripePriceId, userId) => {
 
 const getItems = async (entityId, userId) => {
   return getShopItems(entityId, userId);
+};
+const getAllItems = async type => {
+  return getAllShopItems(type);
 };
 
 const getCart = async userId => {
@@ -86,6 +90,7 @@ const clearCart = async (query, userId) => {
 module.exports = {
   getItem,
   getItems,
+  getAllItems,
   getCart,
   getCartItemsOrdered,
   getCartTotal,

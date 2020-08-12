@@ -26,6 +26,13 @@ router.get(`${BASE_URL}/getItems`, async ctx => {
     data,
   };
 });
+router.get(`${BASE_URL}/getAllItems`, async ctx => {
+  const data = await queries.getAllItems(ctx.query.type);
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
 
 router.get(`${BASE_URL}/getItem`, async ctx => {
   const data = await queries.getItem(

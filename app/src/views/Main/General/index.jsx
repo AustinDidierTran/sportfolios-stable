@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './General.module.css';
 
 import UpcomingEvents from './UpcomingEvents';
+import Merchandise from './Merchandise';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import { GLOBAL_ENUM } from '../../../../../common/enums';
@@ -33,6 +34,7 @@ export default function General() {
       {events.map(e => (
         <UpcomingEvents eventId={e.id} />
       ))}
+      <Merchandise />
     </div>
   );
 }
