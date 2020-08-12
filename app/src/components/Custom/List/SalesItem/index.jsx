@@ -43,11 +43,16 @@ export default function SalesItem(props) {
           primary={formatPrice(amount)}
           secondary={t('qt', { quantity })}
         ></ListItemText>
-        <ListItemText
-          className={styles.quantity}
-          secondary={`${t('by')}: ${email}`}
-          className={styles.email}
-        ></ListItemText>
+        {email ? (
+          <ListItemText
+            className={styles.quantity}
+            secondary={`${t('by')}: ${email}`}
+            className={styles.email}
+          ></ListItemText>
+        ) : (
+          <></>
+        )}
+
         <MailToButton emails={emails} className={styles.mail} />
         <ListItemText
           className={styles.date}

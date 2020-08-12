@@ -1,7 +1,7 @@
 .div {
   display: grid;
   grid-template-columns: 1fr 2fr 2fr 1fr;
-  grid-template-areas: 'photo name quantity chip' 'date date  date mail';
+  grid-template-areas: 'photo name quantity chip' 'date date date date';
   width: 100%;
   align-items: center;
 }
@@ -25,4 +25,11 @@
 }
 .photo {
   grid-area: photo;
+}
+
+@media (min-width: 768px) {
+  .photo {
+    height: 64px !important;
+    width: 64px !important;
+  }
 }

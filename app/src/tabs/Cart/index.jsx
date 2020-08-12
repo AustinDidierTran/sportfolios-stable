@@ -58,7 +58,6 @@ export default function Cart() {
 
   useEffect(() => {
     fetchItems();
-    updateQuantity();
   }, []);
 
   const updateQuantity = async (quantity, cartItemId) => {
@@ -104,7 +103,7 @@ export default function Cart() {
       />
     );
   }
-
+  console.log({ items });
   return (
     <>
       <IgContainer>

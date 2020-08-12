@@ -1,0 +1,41 @@
+.cart {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.defaultCard {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 4px 0 50px 0;
+}
+
+.typo {
+  flex: 1 1 auto;
+  margin: 8px auto !important;
+}
+
+.button {
+  flex: 1 1 auto;
+}
+
+.buttonDiv {
+  flex: 1 1 auto;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .button {
+    flex: 0 0 375px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .buttonDiv {
+    max-width: 1232px;
+  }
+}
