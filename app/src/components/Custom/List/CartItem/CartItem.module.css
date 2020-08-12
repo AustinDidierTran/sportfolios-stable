@@ -1,7 +1,7 @@
 .div {
   display: grid;
   grid-template-columns: 1fr 2fr 2fr 1fr;
-  grid-template-areas: 'photo name quantity chip' 'date date  date mail';
+  grid-template-areas: 'photo name quantity select' 'date date  date mail';
   width: 100%;
   align-items: center;
 }
@@ -13,8 +13,8 @@
   grid-area: quantity;
   overflow: auto;
 }
-.chip {
-  grid-area: chip;
+.select {
+  grid-area: select;
 }
 .mail {
   grid-area: mail;
@@ -25,4 +25,12 @@
 }
 .photo {
   grid-area: photo;
+}
+
+@media (min-width: 600px) {
+  .photo {
+    grid-area: photo;
+    height: 80px !important;
+    width: 80px !important;
+  }
 }
