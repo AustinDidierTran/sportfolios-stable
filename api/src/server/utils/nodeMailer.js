@@ -62,7 +62,7 @@ async function sendMail({ email, subject, text, html }) {
 }
 
 async function getHtml(title, content, link, buttonName) {
-  return `<html><body style="font-family:Helvetica"><h1>${title}</h1><p>${content}</p><a href=${link} target="_blank"><button>${buttonName}</button></a><img src=${LOGO_ENUM.LOGO_256X256}></img><br/><footer> <p> Powered by <a href=${CLIENT_BASE_URL} target="_blank"> ${CLIENT_BASE_URL} </a></p></body> </html>`;
+  return `<html><body style="font-family:Helvetica"><h1>${title}</h1><p>${content}</p><a href=${link} target="_blank"><button>${buttonName}</button></a><img src=${LOGO_ENUM.LOGO_256X256}></img><br/><footer> <p>  <a href=${CLIENT_BASE_URL} target="_blank"> sportfolios.app </a></p></body> </html>`;
 }
 
 async function sendConfirmationEmail({ email, token, successRoute }) {
@@ -111,10 +111,12 @@ async function sendReceiptEmail({ email, receipt }) {
     title = 'Your receipt';
     content = 'To see your receipt, click on the following link 👇';
     subject = 'Order receipt | Sportfolios';
+    buttonName = 'Receipt';
   } else {
     title = 'Votre reçu';
     content = 'Pour voir votre reçu, cliquez sur le lien suivant 👇';
     subject = `Reçu de commande | Sportfolios`;
+    buttonName = 'Reçu';
   }
   html = await getHtml(title, content, link, buttonName);
   await sendMail({
@@ -167,10 +169,12 @@ async function sendAcceptedRegistrationEmail({ email, team, event }) {
     title = `Registration ${team.name}`;
     content = `Your team ${team.name} is officially registered to ${event.name}. The tournament is awaiting your payment. You can pay by going on the following link 👇`;
     subject = `Registration ${team.name} | Sportfolios`;
+    buttonName = 'Pay your registration';
   } else {
     title = `Inscription ${team.name}`;
     content = `Votre équipe ${team.name} est officiellement acceptée au tournoi ${event.name}. Le tournoi est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant 👇`;
     subject = `Inscription ${team.name} | Sportfolios`;
+    buttonName = 'Payez votre inscription';
   }
   html = await getHtml(title, content, link, buttonName);
   await sendMail({
@@ -193,11 +197,13 @@ async function sendRecoveryEmail({ email, token }) {
     content =
       'You forgot your password? Click here to get it back 👇';
     subject = 'Recover your password | Sportfolios';
+    buttonName = 'Recover password';
   } else {
     title = 'Récupération de votre mot de passe';
     content =
       'Vous avez oublié votre mot de passe? Voici le lien pour le retrouver 👇';
     subject = 'Courriel de récupération de compte | Sportfolios';
+    buttonName = 'Récupération de mot de passe';
   }
   html = await getHtml(title, content, link, buttonName);
   await sendMail({
