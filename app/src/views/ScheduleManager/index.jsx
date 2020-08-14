@@ -13,6 +13,7 @@ import uuid from 'uuid';
 import { updateRanking } from './RankingFunctions';
 import { formatPageTitle } from '../../utils/stringFormats';
 import { useFormInput } from '../../hooks/forms';
+import moment from 'moment';
 
 export default function ScheduleManager() {
   const { t } = useTranslation();
@@ -83,6 +84,8 @@ export default function ScheduleManager() {
     const id = team.id || uuid.v1();
     const games = tempTeams.map((opponent, index) => ({
       id: uuid.v1(),
+      field: 'Terrain',
+      time: null,
       teams: [
         {
           id,
@@ -113,8 +116,35 @@ export default function ScheduleManager() {
     ]);
   };
 
-  const changeScore = (gameIndex, teamIndex, score) => {
-    tempGames[gameIndex].teams[teamIndex].score = score;
+  useEffect(() => {
+    sortGame();
+  }, [tempGames]);
+
+  const sortGame = () => {
+    const res = tempGames.sort((a, b) => {
+      return moment(a.time, 'hh:mm') - moment(b.time, 'hh:mm');
+    });
+    setTempGames(res);
+  };
+
+  const changeScore = (id, teamIndex, score) => {
+    const index = tempGames.findIndex(game => {
+      return game.id === id;
+    });
+    tempGames[index].teams[teamIndex].score = score;
+  };
+
+  const saveGame = (id, field, time) => {
+    const index = tempGames.findIndex(game => {
+      return game.id === id;
+    });
+    if (field) {
+      tempGames[index].field = field;
+    }
+    if (time) {
+      tempGames[index].time = time;
+    }
+    sortGame();
   };
 
   return (
@@ -135,6 +165,7 @@ export default function ScheduleManager() {
           className={styles.games}
           games={tempGames}
           changeScore={changeScore}
+          saveGame={saveGame}
         />
         <Ranking
           className={styles.ranking}
