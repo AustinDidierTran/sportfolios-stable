@@ -127,17 +127,24 @@ export default function ScheduleManager() {
     setTempGames(res);
   };
 
-  const changeScore = (gameIndex, teamIndex, score) => {
-    tempGames[gameIndex].teams[teamIndex].score = score;
+  const changeScore = (id, teamIndex, score) => {
+    const index = tempGames.findIndex(game => {
+      return game.id === id;
+    });
+    tempGames[index].teams[teamIndex].score = score;
   };
 
-  const saveGame = (gameIndex, field, time) => {
+  const saveGame = (id, field, time) => {
+    const index = tempGames.findIndex(game => {
+      return game.id === id;
+    });
     if (field) {
-      tempGames[gameIndex].field = field;
+      tempGames[index].field = field;
     }
     if (time) {
-      tempGames[gameIndex].time = time;
+      tempGames[index].time = time;
     }
+    sortGame();
   };
 
   return (

@@ -7,14 +7,7 @@ import { useFormInput } from '../../../../hooks/forms';
 import { useEffect } from 'react';
 
 export default function GameItem(props) {
-  const {
-    teams,
-    changeScore,
-    saveGame,
-    gameIndex,
-    field,
-    time,
-  } = props;
+  const { teams, changeScore, saveGame, field, time, id } = props;
 
   const fieldInput = useFormInput(field);
   const timeInput = useFormInput(time);
@@ -27,14 +20,14 @@ export default function GameItem(props) {
     theTeams.map((team, teamIndex) => {
       if (team.input.hasChanged) {
         team.input.setCurrentAsDefault();
-        changeScore(gameIndex, teamIndex, team.input.value);
+        changeScore(id, teamIndex, team.input.value);
       }
     });
   };
 
   const save = () => {
     if (fieldInput.hasChanged || timeInput.hasChanged) {
-      saveGame(gameIndex, fieldInput.value, timeInput.value);
+      saveGame(id, fieldInput.value, timeInput.value);
     }
   };
 

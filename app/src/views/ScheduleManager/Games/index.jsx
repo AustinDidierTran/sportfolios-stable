@@ -13,10 +13,10 @@ export default function Games(props) {
       <Typography style={{ marginBottom: '8px' }}>
         {t('games')}
       </Typography>
-      {games.map((game, gameIndex) => {
+      {games.map(game => {
         return (
           <Card
-            items={{ ...game, changeScore, saveGame, gameIndex }}
+            items={{ ...game, changeScore, saveGame }}
             type={CARD_TYPE_ENUM.GAME}
           />
         );
