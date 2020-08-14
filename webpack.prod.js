@@ -1,3 +1,4 @@
+const path = require('path');
 const merge = require('webpack-merge');
 const common = require('./webpack.common');
 const CompressionPlugin = require('compression-webpack-plugin');

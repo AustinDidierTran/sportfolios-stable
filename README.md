@@ -417,3 +417,30 @@ openssl req -new -key key.pem -out csr.pem
 openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
 rm csr.pem
 ```
+
+## MODULE BUNDLER
+
+This project is built using [Webpack](https://survivejs.com/webpack/what-is-webpack/#:~:text=Webpack%20gives%20you%20control%20over,issues%20of%20standard%20CSS%20styling).
+
+I have tried using [Next.js](https://nextjs.org/) instead to simplify the setup process, but decided not too. Since the application is already all set up, using next would require lots of changes in the current codebase. It uses a different router, and doesn’t treat pages in the same way as react-router. The api part seemed also pretty different, but I did not look into it that much.
+
+The reason I would use Next.js in a new project is for the SSR (Server-side rendering), built-in typescript and sass-modules integration, easy routing and api integration when started from scratch. Next.js is built on top of webpack, so most web pack features can be added to the project using a web pack config file.
+
+## PWA
+
+### What is a PWA
+
+A progressive web app is, as the name implies, a web application. It is said to be progressive because it has extra new features. In brief, it can be downloaded as an application with no extra code (except IOS), it works offline, and can use some native features, such as push notifications. [Learn more](https://web.dev/what-are-pwas/)
+
+To be a PWA, the application need to pass all of the [LightHouse tests](https://web.dev/lighthouse-pwa/).
+
+For further information, refer to this [article](https://web.dev/lighthouse-pwa/).
+
+This [website](https://web.dev/lighthouse-pwa/) made by microsoft is great to test the production build.
+
+### Service workers
+
+An essential part of any PWA is the use of a service worker
+Since we use webpack, we use [Workbox](https://web.dev/workbox/) to generate ours.
+
+To learn more about service workers, you can play this [game](https://serviceworkies.com/), or read this [article](https://web.dev/service-worker-mindset/).
