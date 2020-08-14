@@ -7,7 +7,15 @@ import { useFormInput } from '../../../../hooks/forms';
 import { useEffect } from 'react';
 
 export default function GameItem(props) {
-  const { teams, changeScore, saveGame, field, time, id } = props;
+  const {
+    teams,
+    changeScore,
+    saveGame,
+    field,
+    time,
+    id,
+    getRank,
+  } = props;
 
   const fieldInput = useFormInput(field);
   const timeInput = useFormInput(time);
@@ -53,6 +61,13 @@ export default function GameItem(props) {
       </div>
       {theTeams.map(team => (
         <div className={styles.team}>
+          <Typography
+            className={styles.position}
+            color="textSecondary"
+            variant="h7"
+          >
+            {getRank(team.id)}
+          </Typography>
           <Typography className={styles.name} variant="h6">
             {team.name}
           </Typography>
