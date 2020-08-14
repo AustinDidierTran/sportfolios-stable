@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom';
 import { Typography } from '../../components/MUI';
 import api from '../../actions/api';
 import { GLOBAL_ENUM } from '../../../../common/enums';
-import CartIcon from '../Cart/CartIcon';
+import CartIcon from '../Cart/CartICon';
 
 const getEntity = async entityId => {
   const { data } = await api(`/api/entity?id=${entityId}`);

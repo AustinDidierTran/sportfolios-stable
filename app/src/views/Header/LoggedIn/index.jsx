@@ -10,7 +10,7 @@ import NotificationModule from './NotificationModule';
 
 import styles from './LoggedIn.module.css';
 import useStyles from './useStyles';
-import CartIcon from '../../Cart/CartIcon';
+import CartIcon from '../../Cart/CartICon';
 
 export default function LoggedIn() {
   const classes = useStyles();
