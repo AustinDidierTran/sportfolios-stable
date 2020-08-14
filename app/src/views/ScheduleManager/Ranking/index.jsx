@@ -17,7 +17,7 @@ export default function Ranking(props) {
         items={ranking.map((r, index) => ({
           ...r,
           type: GLOBAL_ENUM.RANKING,
-          index,
+          index: index + 1,
         }))}
       />
     </div>

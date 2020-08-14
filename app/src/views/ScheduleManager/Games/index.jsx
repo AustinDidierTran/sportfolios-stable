@@ -7,7 +7,7 @@ import { CARD_TYPE_ENUM } from '../../../../../common/enums';
 
 export default function Games(props) {
   const { t } = useTranslation();
-  const { games, changeScore, saveGame } = props;
+  const { games, changeScore, saveGame, getRank } = props;
   return (
     <div className={styles.main}>
       <Typography style={{ marginBottom: '8px' }}>
@@ -16,7 +16,7 @@ export default function Games(props) {
       {games.map(game => {
         return (
           <Card
-            items={{ ...game, changeScore, saveGame }}
+            items={{ ...game, changeScore, saveGame, getRank }}
             type={CARD_TYPE_ENUM.GAME}
           />
         );

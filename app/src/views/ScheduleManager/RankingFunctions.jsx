@@ -7,7 +7,6 @@ const getRankingInfos = (teams, games) => {
     pointFor: 0,
     pointAgainst: 0,
     points: 0,
-    position: team.index,
     random: Math.random(),
   }));
 

@@ -147,6 +147,13 @@ export default function ScheduleManager() {
     sortGame();
   };
 
+  const getRank = teamId => {
+    const index = tempRanking.findIndex(rank => {
+      return rank.id === teamId;
+    });
+    return index + 1;
+  };
+
   return (
     <Paper className={styles.main}>
       <TextField
@@ -166,6 +173,7 @@ export default function ScheduleManager() {
           games={tempGames}
           changeScore={changeScore}
           saveGame={saveGame}
+          getRank={getRank}
         />
         <Ranking
           className={styles.ranking}

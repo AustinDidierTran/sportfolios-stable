@@ -4,8 +4,8 @@
 
 .team {
   display: grid !important;
-  grid-template-columns: 3fr 1fr;
-  grid-template-areas: 'name score';
+  grid-template-columns: 1fr 6fr 2fr;
+  grid-template-areas: 'position name score';
   column-gap: 4px;
   padding: 8px;
 }
@@ -13,6 +13,9 @@
 .name {
   grid-area: name;
   justify-self: start;
+}
+.position {
+  grid-area: position;
 }
 
 .score {
