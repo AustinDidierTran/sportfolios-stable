@@ -38,7 +38,7 @@
 
 @media (min-width: 768px) {
   .main {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-areas: 'field . . time';
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas: 'field . time';
   }
 }

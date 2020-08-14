@@ -53,6 +53,7 @@ export default function GameItem(props) {
         <TextField
           variant="outlined"
           size="small"
+          type="time"
           className={styles.time}
           {...timeInput.inputProps}
         />

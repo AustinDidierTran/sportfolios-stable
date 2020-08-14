@@ -13,6 +13,7 @@ import uuid from 'uuid';
 import { updateRanking } from './RankingFunctions';
 import { formatPageTitle } from '../../utils/stringFormats';
 import { useFormInput } from '../../hooks/forms';
+import moment from 'moment';
 
 export default function ScheduleManager() {
   const { t } = useTranslation();
@@ -84,7 +85,7 @@ export default function ScheduleManager() {
     const games = tempTeams.map((opponent, index) => ({
       id: uuid.v1(),
       field: 'Terrain',
-      time: '9:00',
+      time: null,
       teams: [
         {
           id,
@@ -113,6 +114,17 @@ export default function ScheduleManager() {
         random: Math.random(),
       },
     ]);
+  };
+
+  useEffect(() => {
+    sortGame();
+  }, [tempGames]);
+
+  const sortGame = () => {
+    const res = tempGames.sort((a, b) => {
+      return moment(a.time, 'hh:mm') - moment(b.time, 'hh:mm');
+    });
+    setTempGames(res);
   };
 
   const changeScore = (gameIndex, teamIndex, score) => {
