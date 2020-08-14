@@ -444,3 +444,9 @@ An essential part of any PWA is the use of a service worker
 Since we use webpack, we use [Workbox](https://web.dev/workbox/) to generate ours.
 
 To learn more about service workers, you can play this [game](https://serviceworkies.com/), or read this [article](https://web.dev/service-worker-mindset/).
+
+## What's next?
+
+Next up, deploy the PWA on the google store and app store. To do so, use [PWABuilder](https://serviceworkies.com/).
+
+We also need to optimize the downloads directly from our website, by adding a download banner on the beforeinstallprompt, for example. Follow this [article](https://web.dev/customize-install/) to learn how to do it.
