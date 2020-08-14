@@ -83,6 +83,8 @@ export default function ScheduleManager() {
     const id = team.id || uuid.v1();
     const games = tempTeams.map((opponent, index) => ({
       id: uuid.v1(),
+      field: 'Terrain',
+      time: '9:00',
       teams: [
         {
           id,
@@ -117,6 +119,15 @@ export default function ScheduleManager() {
     tempGames[gameIndex].teams[teamIndex].score = score;
   };
 
+  const saveGame = (gameIndex, field, time) => {
+    if (field) {
+      tempGames[gameIndex].field = field;
+    }
+    if (time) {
+      tempGames[gameIndex].time = time;
+    }
+  };
+
   return (
     <Paper className={styles.main}>
       <TextField
@@ -135,6 +146,7 @@ export default function ScheduleManager() {
           className={styles.games}
           games={tempGames}
           changeScore={changeScore}
+          saveGame={saveGame}
         />
         <Ranking
           className={styles.ranking}

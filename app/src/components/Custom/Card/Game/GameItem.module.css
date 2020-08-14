@@ -19,3 +19,26 @@
   grid-area: score;
   justify-self: center;
 }
+
+.main {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: 'field . time';
+}
+
+.field {
+  grid-area: field;
+  margin: 8px !important;
+}
+
+.time {
+  grid-area: time;
+  margin: 8px !important;
+}
+
+@media (min-width: 768px) {
+  .main {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-areas: 'field . . time';
+  }
+}
