@@ -148,8 +148,8 @@ export default function ScheduleManager() {
   };
 
   const getRank = teamId => {
-    const index = tempRanking.findIndex(rank => {
-      return rank.id === teamId;
+    const index = tempTeams.findIndex(team => {
+      return team.id === teamId;
     });
     return index + 1;
   };
