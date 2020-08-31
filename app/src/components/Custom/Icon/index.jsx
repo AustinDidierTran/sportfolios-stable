@@ -3,6 +3,7 @@ import React from 'react';
 import Add from '@material-ui/icons/Add';
 import AddAPhoto from '@material-ui/icons/AddAPhoto';
 import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
+import Assignment from '@material-ui/icons/Assignment';
 import AttachMoney from '@material-ui/icons/AttachMoney';
 import Business from '@material-ui/icons/Business';
 import Check from '@material-ui/icons/Check';
@@ -52,6 +53,7 @@ const icons = {
   Add,
   AddAPhoto,
   AddShoppingCart,
+  Assignment,
   AttachMoney,
   Business,
   Check,
