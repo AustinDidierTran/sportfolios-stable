@@ -7,6 +7,7 @@ import Settings from './Settings';
 import Purchases from './Purchases';
 import Shop from './Shop';
 import Rosters from './Rosters';
+import Schedule from './Schedule';
 import { useTranslation } from 'react-i18next';
 import { ENTITIES_ROLE_ENUM } from '../Store';
 
@@ -20,6 +21,7 @@ export const TABS_ENUM = {
   PURCHASES: 'purchases',
   SHOP: 'shop',
   SETTINGS: 'settings',
+  SCHEDULE: 'schedule',
 };
 
 export default function Tabs(props) {
@@ -90,6 +92,17 @@ export default function Tabs(props) {
           component: Events,
           label: t('events'),
           icon: 'Event',
+        },
+      ];
+    }
+    if (l === TABS_ENUM.SCHEDULE) {
+      return [
+        ...prev,
+        {
+          value: TABS_ENUM.SCHEDULE,
+          component: Schedule,
+          label: t('schedule'),
+          icon: 'Assignment',
         },
       ];
     }
