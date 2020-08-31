@@ -377,12 +377,11 @@ async function getCreator(id) {
 }
 
 async function eventInfos(id, userId) {
-  const realId = await getRealId(id);
-  const entity = await getEntity(realId);
-  const role = await getEntityRole(realId, userId);
-  const event = await getEvent(realId);
-  const infos = await getGeneralInfos(realId);
-  const creator = await getCreator(realId);
+  const entity = await getEntity(id);
+  const role = await getEntityRole(id, userId);
+  const event = await getEvent(id);
+  const infos = await getGeneralInfos(id);
+  const creator = await getCreator(id);
 
   return {
     id: entity.id,
@@ -948,7 +947,7 @@ async function addMembership(
   userId,
 ) {
   const realId = await getRealId(entityId);
-  const entity = await getEntity(realId, userId);
+  const entity = await getEntity(entityId, userId);
 
   const stripeProduct = {
     name: getMembershipName(membershipType),
