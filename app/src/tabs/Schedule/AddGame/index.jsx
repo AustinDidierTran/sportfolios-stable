@@ -24,6 +24,8 @@ export default function AddGame(props) {
     setOpen(false);
   };
 
+  //TODO WCS-439 WCS-440
+
   return (
     <Dialog
       open={open}
