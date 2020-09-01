@@ -5,11 +5,8 @@ DELETE FROM game_teams WHERE position IS NULL;
 ALTER TABLE game_teams
   ALTER COLUMN roster_id SET NOT NULL,
   ALTER COLUMN position SET NOT NULL,
-  ALTER COLUMN score DROP DEFAULT;
+  ALTER COLUMN score DROP DEFAULT,
+  DROP COLUMN id;
 
 ALTER TABLE game_teams
-  DROP CONSTRAINT game_teams_pkey;
-
-ALTER TABLE game_teams
-  ADD CONSTRAINT game_teams_pkey PRIMARY KEY (game_id),
-  ALTER COLUMN roster_id DROP DEFAULT;
+  ADD CONSTRAINT game_teams_pkey PRIMARY KEY (game_id); 

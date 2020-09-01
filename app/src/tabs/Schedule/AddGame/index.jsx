@@ -31,9 +31,6 @@ export default function AddGame(props) {
     setOpen(false);
   };
 
-<<<<<<< HEAD
-  //TODO WCS-439 WCS-440
-=======
   const validate = values => {
     const { phase, time } = values;
     const errors = {};
@@ -75,7 +72,6 @@ export default function AddGame(props) {
       });
     },
   });
->>>>>>> WIP
 
   return (
     <Dialog
