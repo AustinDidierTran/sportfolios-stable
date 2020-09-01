@@ -897,22 +897,19 @@ async function addGame(phaseId, field, time, team1, team2) {
     .insert({
       start_time: new Date(time),
       field,
+      phase_id: phaseId,
     })
     .returning('*');
-  console.log({ id: res.id, team1, team2 });
-  const [res2] = await knex('game_teams')
+  await knex('game_teams')
     .insert({
       game_id: res.id,
       name: team1,
     })
     .returning('*');
-  console.log({ res2 });
   await knex('game_teams').insert({
     game_id: res.id,
     name: team2,
   });
-  console.log('4');
-  console.log({ res });
   return res;
 }
 

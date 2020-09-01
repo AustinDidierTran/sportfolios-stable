@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Button } from '../../../components/Custom';
 import { TextField } from '../../../components/MUI';
 import styles from './AddGame.module.css';
@@ -11,15 +11,14 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { ERROR_ENUM } from '../../../../../common/errors';
-import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
-import moment from 'moment';
+import { Store, ACTION_ENUM } from '../../../Store';
+import { SEVERITY_ENUM } from '../../../../../common/enums';
 
 export default function AddGame(props) {
   const { t } = useTranslation();
   const { isOpen } = props;
-
-  const { id: eventId } = useParams();
+  const { dispatch } = useContext(Store);
 
   const [open, setOpen] = useState(open);
 
@@ -57,9 +56,8 @@ export default function AddGame(props) {
     validate,
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: async values => {
-      const { phase, field, time, team1, team2 } = values;
-      console.log({ phase, field, time, team1, team2 });
+    onSubmit: async (values, { resetForm }) => {
+      const { field, time, team1, team2 } = values;
       const realTime = new Date(`2020-01-01 ${time}`).getTime();
       await api('/api/entity/game', {
         method: 'POST',
@@ -69,6 +67,13 @@ export default function AddGame(props) {
           team1,
           team2,
         }),
+      });
+      resetForm();
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('game_added'),
+        severity: SEVERITY_ENUM.SUCCESS,
+        duration: 2000,
       });
     },
   });
@@ -84,7 +89,7 @@ export default function AddGame(props) {
         <div>
           <DialogContent>
             <DialogContentText>
-              Create your game here
+              {t('create_a_game')}
             </DialogContentText>
             <TextField
               formik={formik}
@@ -140,7 +145,7 @@ export default function AddGame(props) {
             <Button
               className={styles.button}
               onClick={onCancel}
-              color="secondary"
+              color="grey"
               endIcon="Close"
             >
               {t('finish')}
