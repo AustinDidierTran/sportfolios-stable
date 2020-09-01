@@ -36,6 +36,7 @@ const {
   getRemainingSpots: getRemainingSpotsHelper,
   getRoster: getRosterHelper,
   getEvent: getEventHelper,
+  getPhases: getPhasesHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getOptions: getOptionsHelper,
   removeEntityRole: removeEntityRoleHelper,
@@ -118,6 +119,10 @@ async function getRoster(rosterId, userId) {
 
 async function getEvent(eventId) {
   return getEventHelper(eventId);
+}
+
+async function getPhases(eventId) {
+  return getPhasesHelper(eventId);
 }
 
 async function getGeneralInfos(entityId, userId) {
@@ -331,8 +336,8 @@ async function addGame(body) {
   return res;
 }
 async function addPhase(body) {
-  const { phase } = body;
-  const res = await addPhaseHelper(phase);
+  const { phase, eventId } = body;
+  const res = await addPhaseHelper(phase, eventId);
   return res;
 }
 
@@ -464,6 +469,7 @@ module.exports = {
   getAllRegistered,
   getRemainingSpots,
   getEvent,
+  getPhases,
   getGeneralInfos,
   getS3Signature,
   unregister,

@@ -13,6 +13,7 @@ export default function CustomSelect(props) {
     onChange,
     options,
   } = props;
+  console.log({ options });
 
   const handleChange = (event, ...args) => {
     if (formik) {

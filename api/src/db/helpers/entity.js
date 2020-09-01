@@ -719,6 +719,13 @@ async function getEvent(eventId) {
     .where({ id: realId });
   return res;
 }
+async function getPhases(eventId) {
+  const realId = await getRealId(eventId);
+  const res = await knex('phase')
+    .select('*')
+    .where({ event_id: realId });
+  return res;
+}
 
 async function getGeneralInfos(entityId) {
   const realId = await getRealId(entityId);
@@ -912,9 +919,9 @@ async function addGame(phaseId, field, time, team1, team2) {
   });
   return res;
 }
-async function addPhase(phase) {
+async function addPhase(phase, eventId) {
   const [res] = await knex('phase')
-    .insert({ name: phase })
+    .insert({ name: phase, event_id: eventId })
     .returning('*');
   return res;
 }
@@ -1187,6 +1194,7 @@ module.exports = {
   getRemainingSpots,
   getRoster,
   getEvent,
+  getPhases,
   getGeneralInfos,
   getOptions,
   removeEntityRole,

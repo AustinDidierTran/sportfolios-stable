@@ -7,13 +7,32 @@ import { ERROR_ENUM } from '../../../../../common/errors';
 import api from '../../../actions/api';
 import { Store, ACTION_ENUM } from '../../../Store';
 import { SEVERITY_ENUM } from '../../../../../common/enums';
+import { useParams } from 'react-router-dom';
+import { formatRoute } from '../../../actions/goTo';
 
 export default function AddGame(props) {
   const { t } = useTranslation();
   const { isOpen, onClose } = props;
   const { dispatch } = useContext(Store);
+  const { id: eventId } = useParams();
 
   const [open, setOpen] = useState(isOpen);
+  const [phases, setPhases] = useState([]);
+
+  useEffect(() => {
+    getPhases();
+  }, [open]);
+
+  const getPhases = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/phases', null, { eventId }),
+    );
+    const res = data.map(d => ({
+      value: d.id,
+      display: d.name,
+    }));
+    setPhases(res);
+  };
 
   useEffect(() => {
     setOpen(isOpen);
@@ -84,10 +103,10 @@ export default function AddGame(props) {
 
   const fields = [
     {
+      isSelect: true,
+      options: phases,
       namespace: 'phase',
-      id: 'phase',
       label: 'Phase',
-      type: 'phase',
     },
     {
       namespace: 'field',
