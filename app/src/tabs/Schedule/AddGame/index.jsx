@@ -1,15 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Button } from '../../../components/Custom';
-import { TextField } from '../../../components/MUI';
-import styles from './AddGame.module.css';
+import { FormDialog } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import { ERROR_ENUM } from '../../../../../common/errors';
 import api from '../../../actions/api';
 import { Store, ACTION_ENUM } from '../../../Store';
@@ -78,89 +71,60 @@ export default function AddGame(props) {
     },
   });
 
+  const buttons = [
+    {
+      onClick: onCancel,
+      name: t('finish'),
+      color: 'grey',
+    },
+    {
+      type: 'submit',
+      name: t('add_game'),
+      color: 'primary',
+    },
+  ];
+
+  const fields = [
+    {
+      namespace: 'phase',
+      id: 'phase',
+      label: 'Phase',
+      type: 'phase',
+    },
+    {
+      namespace: 'field',
+      id: 'field',
+      label: t('field'),
+      type: 'field',
+    },
+    {
+      namespace: 'time',
+      id: 'time',
+      type: 'time',
+    },
+    {
+      namespace: 'team1',
+      id: 'team1',
+      label: t('team_1'),
+      type: 'team1',
+    },
+    {
+      namespace: 'team2',
+      id: 'team2',
+      label: t('team_2'),
+      type: 'team2',
+    },
+  ];
+
   return (
-    <Dialog
+    <FormDialog
       open={open}
+      title={'Game 1'}
+      description={t('create_a_game')}
+      buttons={buttons}
+      fields={fields}
+      formik={formik}
       onClose={onCancel}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">Game 1</DialogTitle>
-      <form onSubmit={formik.handleSubmit}>
-        <div>
-          <DialogContent>
-            <DialogContentText>
-              {t('create_a_game')}
-            </DialogContentText>
-            <TextField
-              formik={formik}
-              namespace="phase"
-              autoFocus
-              margin="dense"
-              id="phase"
-              label="Phase"
-              type="phase"
-              fullWidth
-            />
-            <TextField
-              formik={formik}
-              namespace="field"
-              autoFocus
-              margin="dense"
-              id="field"
-              label={t('field')}
-              type="field"
-              fullWidth
-            />
-            <TextField
-              formik={formik}
-              namespace="time"
-              autoFocus
-              margin="dense"
-              id="time"
-              type="time"
-              fullWidth
-            />
-            <TextField
-              formik={formik}
-              namespace="team1"
-              autoFocus
-              margin="dense"
-              id="team1"
-              label={t('team_1')}
-              type="team1"
-              fullWidth
-            />
-            <TextField
-              formik={formik}
-              namespace="team2"
-              autoFocus
-              margin="dense"
-              id="team2"
-              label={t('team_2')}
-              type="team2"
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button
-              className={styles.button}
-              onClick={onCancel}
-              color="grey"
-              endIcon="Close"
-            >
-              {t('finish')}
-            </Button>
-            <Button
-              color="primary"
-              endIcon="Add"
-              className={styles.button}
-              type="submit"
-            >
-              {t('add_game')}
-            </Button>
-          </DialogActions>
-        </div>
-      </form>
-    </Dialog>
+    />
   );
 }

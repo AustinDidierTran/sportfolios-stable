@@ -12,7 +12,6 @@ export default function ScheduleTab(props) {
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [phase, setPhase] = useState(false);
 
   const openDialog = () => {
     setIsOpen(true);
