@@ -7,6 +7,7 @@ const ERROR_ENUM = {
   TOKEN_EXPIRED: 'Token has expired',
   VALUE_IS_INVALID: 'Value is invalid',
   VALUE_IS_REQUIRED: 'value_is_required',
+  VALUE_IS_TOO_LONG: 'value_is_too_long',
 };
 
 const errors = {
