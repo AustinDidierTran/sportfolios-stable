@@ -61,6 +61,7 @@ export default {
     contact: 'Contact',
     country: 'Pays',
     create_a_game: 'Créer une partie',
+    create_a_phase: 'Créer une phase',
     create_event: 'Créer un événement',
     create_organization: 'Créer une organisation',
     create_person: 'Créer une personne',

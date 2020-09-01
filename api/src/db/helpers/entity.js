@@ -912,6 +912,12 @@ async function addGame(phaseId, field, time, team1, team2) {
   });
   return res;
 }
+async function addPhase(phase) {
+  const [res] = await knex('phase')
+    .insert({ name: phase })
+    .returning('*');
+  return res;
+}
 
 async function addOption(
   eventId,
@@ -1157,6 +1163,7 @@ module.exports = {
   addMember,
   addMembership,
   addGame,
+  addPhase,
   addOption,
   addRoster,
   addTeamToEvent,

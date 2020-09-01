@@ -101,10 +101,16 @@ const POSITION_ENUM = {
   LEFT: 'left',
   RIGHT: 'right',
 };
+
 const SEVERITY_ENUM = {
   SUCCESS: 'success',
   ERROR: 'error',
   INFO: 'info',
+};
+
+const STATUS_ENUM = {
+  SUCCESS: 201,
+  ERROR: 404,
 };
 
 // Everything excluding roles
@@ -185,6 +191,7 @@ const LOGO_ENUM = {
 };
 
 module.exports = {
+  STATUS_ENUM,
   REJECTION_ENUM,
   SIZES_ENUM,
   REGISTRATION_STATUS_ENUM,

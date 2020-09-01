@@ -59,6 +59,7 @@ export default {
     contact: 'Contact',
     country: 'Country',
     create_a_game: 'Create a game',
+    create_a_phase: 'Create a phase',
     create_event: 'Create Event',
     create_organization: 'Create Organization',
     create_person: 'Create Person',
