@@ -892,6 +892,26 @@ async function addMember(
     .returning('*');
   return res;
 }
+async function addGame(phaseId, field, time, team1, team2) {
+  const [res] = await knex('games')
+    .insert({
+      start_time: new Date(time),
+      field,
+      phase_id: phaseId,
+    })
+    .returning('*');
+  await knex('game_teams')
+    .insert({
+      game_id: res.id,
+      name: team1,
+    })
+    .returning('*');
+  await knex('game_teams').insert({
+    game_id: res.id,
+    name: team2,
+  });
+  return res;
+}
 
 async function addOption(
   eventId,
@@ -1136,6 +1156,7 @@ module.exports = {
   addEntityRole,
   addMember,
   addMembership,
+  addGame,
   addOption,
   addRoster,
   addTeamToEvent,
