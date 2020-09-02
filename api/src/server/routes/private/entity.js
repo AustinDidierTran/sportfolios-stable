@@ -423,6 +423,23 @@ router.post(`${BASE_URL}/game`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/phase`, async ctx => {
+  const phase = await queries.addPhase(ctx.request.body);
+  if (phase) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: phase,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/option`, async ctx => {
   const option = await queries.addOption(
     ctx.request.body,

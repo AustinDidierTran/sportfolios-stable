@@ -4,6 +4,7 @@ import { Button } from '../../components/Custom';
 import styles from './Schedule.module.css';
 import { useTranslation } from 'react-i18next';
 import AddGame from './AddGame';
+import AddPhase from './AddPhase';
 
 export default function ScheduleTab(props) {
   const { t } = useTranslation();
@@ -11,14 +12,22 @@ export default function ScheduleTab(props) {
     basicInfos: { role },
   } = props;
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [game, setGame] = useState(false);
+  const [phase, setPhase] = useState(false);
 
-  const openDialog = () => {
-    setIsOpen(true);
+  const openGame = () => {
+    setGame(true);
   };
 
+  const closeGame = () => {
+    setGame(false);
+  };
   const openPhase = () => {
     setPhase(true);
+  };
+
+  const closePhase = () => {
+    setPhase(false);
   };
 
   if (role === ENTITIES_ROLE_ENUM.ADMIN) {
@@ -39,12 +48,13 @@ export default function ScheduleTab(props) {
           variant="contained"
           endIcon="Add"
           style={{ margin: '8px' }}
-          onClick={openDialog}
+          onClick={openGame}
           className={styles.button}
         >
           {t('add_game')}
         </Button>
-        <AddGame isOpen={isOpen} />
+        <AddPhase isOpen={phase} onClose={closePhase} />
+        <AddGame isOpen={game} onClose={closeGame} />
       </>
     );
   }
