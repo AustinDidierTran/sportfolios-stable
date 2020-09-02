@@ -129,7 +129,7 @@ After this, connect postgresql
 psql -U postgres
 ```
 
-Where username is the username you set for postgresql.
+Where U is the username you set for postgresql.
 
 Then, you will need to create 3 databases
 
