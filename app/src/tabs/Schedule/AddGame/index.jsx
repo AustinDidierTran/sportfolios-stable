@@ -51,6 +51,7 @@ export default function AddGame(props) {
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       const { field, time, team1, team2 } = values;
+
       const realTime = new Date(`2020-01-01 ${time}`).getTime();
       await api('/api/entity/game', {
         method: 'POST',
@@ -61,6 +62,7 @@ export default function AddGame(props) {
           team2,
         }),
       });
+
       resetForm();
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
