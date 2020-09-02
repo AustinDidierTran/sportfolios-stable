@@ -21,6 +21,7 @@ export default {
     add_existing_person: 'Add existing person',
     add_non_existing_person: 'Add non existing person',
     add_person: 'Add person',
+    add_phase: 'Add phase',
     add_the_teams_you_want_in_your_tournament:
       'Add the teams you want in your tournament',
     admin_has_no_bank_account:

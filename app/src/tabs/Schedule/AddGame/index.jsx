@@ -1,25 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '../../../components/Custom';
-import { TextField } from '../../../components/MUI';
-import styles from './AddGame.module.css';
+import React, { useState, useEffect, useContext } from 'react';
+import { FormDialog } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import { ERROR_ENUM } from '../../../../../common/errors';
-import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
-import moment from 'moment';
+import { Store, ACTION_ENUM } from '../../../Store';
+import { SEVERITY_ENUM } from '../../../../../common/enums';
 
 export default function AddGame(props) {
   const { t } = useTranslation();
   const { isOpen } = props;
-
-  const { id: eventId } = useParams();
+  const { dispatch } = useContext(Store);
 
   const [open, setOpen] = useState(open);
 
@@ -57,9 +49,9 @@ export default function AddGame(props) {
     validate,
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: async values => {
-      const { phase, field, time, team1, team2 } = values;
-      console.log({ phase, field, time, team1, team2 });
+    onSubmit: async (values, { resetForm }) => {
+      const { field, time, team1, team2 } = values;
+
       const realTime = new Date(`2020-01-01 ${time}`).getTime();
       await api('/api/entity/game', {
         method: 'POST',
@@ -70,92 +62,71 @@ export default function AddGame(props) {
           team2,
         }),
       });
+
+      resetForm();
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('game_added'),
+        severity: SEVERITY_ENUM.SUCCESS,
+        duration: 2000,
+      });
     },
   });
 
+  const buttons = [
+    {
+      onClick: onCancel,
+      name: t('finish'),
+      color: 'grey',
+    },
+    {
+      type: 'submit',
+      name: t('add_game'),
+      color: 'primary',
+    },
+  ];
+
+  const fields = [
+    {
+      namespace: 'phase',
+      id: 'phase',
+      label: 'Phase',
+      type: 'phase',
+    },
+    {
+      namespace: 'field',
+      id: 'field',
+      label: t('field'),
+      type: 'field',
+    },
+    {
+      namespace: 'time',
+      id: 'time',
+      type: 'time',
+    },
+    {
+      namespace: 'team1',
+      id: 'team1',
+      label: t('team_1'),
+      type: 'team1',
+    },
+    {
+      namespace: 'team2',
+      id: 'team2',
+      label: t('team_2'),
+      type: 'team2',
+    },
+  ];
+
   return (
-    <Dialog
+    <FormDialog
       open={open}
+      title={'Game 1'}
+      description={t('create_a_game')}
+      buttons={buttons}
+      fields={fields}
+      formik={formik}
       onClose={onCancel}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">Game 1</DialogTitle>
-      <form onSubmit={formik.handleSubmit}>
-        <div>
-          <DialogContent>
-            <DialogContentText>
-              Create your game here
-            </DialogContentText>
-            <TextField
-              formik={formik}
-              namespace="phase"
-              autoFocus
-              margin="dense"
-              id="phase"
-              label="Phase"
-              type="phase"
-              fullWidth
-            />
-            <TextField
-              formik={formik}
-              namespace="field"
-              autoFocus
-              margin="dense"
-              id="field"
-              label={t('field')}
-              type="field"
-              fullWidth
-            />
-            <TextField
-              formik={formik}
-              namespace="time"
-              autoFocus
-              margin="dense"
-              id="time"
-              type="time"
-              fullWidth
-            />
-            <TextField
-              formik={formik}
-              namespace="team1"
-              autoFocus
-              margin="dense"
-              id="team1"
-              label={t('team_1')}
-              type="team1"
-              fullWidth
-            />
-            <TextField
-              formik={formik}
-              namespace="team2"
-              autoFocus
-              margin="dense"
-              id="team2"
-              label={t('team_2')}
-              type="team2"
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button
-              className={styles.button}
-              onClick={onCancel}
-              color="secondary"
-              endIcon="Close"
-            >
-              {t('finish')}
-            </Button>
-            <Button
-              color="primary"
-              endIcon="Add"
-              className={styles.button}
-              type="submit"
-            >
-              {t('add_game')}
-            </Button>
-          </DialogActions>
-        </div>
-      </form>
-    </Dialog>
+    />
   );
 }

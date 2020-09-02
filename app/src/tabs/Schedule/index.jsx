@@ -17,9 +17,23 @@ export default function ScheduleTab(props) {
     setIsOpen(true);
   };
 
+  const openPhase = () => {
+    setPhase(true);
+  };
+
   if (role === ENTITIES_ROLE_ENUM.ADMIN) {
     return (
       <>
+        <Button
+          size="small"
+          variant="contained"
+          endIcon="Add"
+          style={{ margin: '8px' }}
+          onClick={openPhase}
+          className={styles.button}
+        >
+          {t('add_phase')}
+        </Button>
         <Button
           size="small"
           variant="contained"

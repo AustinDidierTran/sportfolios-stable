@@ -20,6 +20,7 @@ export default {
     add_existing_person: 'Ajouter une personne existante',
     add_non_existing_person: 'Ajouter une personne non existante',
     add_person: 'Ajouter une personne',
+    add_phase: 'Ajouter une phase',
     add_the_teams_you_want_in_your_tournament:
       'Ajouter les équipes à votre tournoi',
     added_to_cart: 'Ajouté au panier',
