@@ -921,6 +921,18 @@ async function addGame(phaseId, field, time, team1, team2) {
   return res;
 }
 
+async function addTeamToSchedule(name, eventId) {
+  console.log({ eventId, name });
+  const [res] = await knex('schedule_teams')
+    .insert({
+      event_id: eventId,
+      name,
+    })
+    .returning('*');
+  console.log({ res });
+  return res;
+}
+
 async function addPhase(phase, eventId) {
   const [res] = await knex('phase')
     .insert({ name: phase, event_id: eventId })
@@ -1179,6 +1191,7 @@ module.exports = {
   addMember,
   addMembership,
   addGame,
+  addTeamToSchedule,
   addPhase,
   addTimeSlot,
   addOption,

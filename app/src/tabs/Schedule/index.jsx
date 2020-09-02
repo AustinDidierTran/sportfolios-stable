@@ -5,7 +5,8 @@ import styles from './Schedule.module.css';
 import { useTranslation } from 'react-i18next';
 import AddGame from './AddGame';
 import AddPhase from './AddPhase';
-import AddTimeSlots from './AddTimeSlots';
+import AddTimeSlot from './AddTimeSlot';
+import AddTeam from './AddTeam';
 
 export default function ScheduleTab(props) {
   const { t } = useTranslation();
@@ -16,6 +17,7 @@ export default function ScheduleTab(props) {
   const [game, setGame] = useState(false);
   const [phase, setPhase] = useState(false);
   const [time, setTime] = useState(false);
+  const [team, setTeam] = useState(false);
   const [phaseId, setPhaseId] = useState('none');
 
   const openGame = () => {
@@ -49,6 +51,12 @@ export default function ScheduleTab(props) {
   const closeTime = () => {
     setTime(false);
   };
+  const openTeam = () => {
+    setTeam(true);
+  };
+  const closeTeam = () => {
+    setTeam(false);
+  };
 
   if (role === ENTITIES_ROLE_ENUM.ADMIN) {
     return (
@@ -62,6 +70,16 @@ export default function ScheduleTab(props) {
           className={styles.button}
         >
           {t('add_time_slot')}
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          endIcon="Add"
+          style={{ margin: '8px' }}
+          onClick={openTeam}
+          className={styles.button}
+        >
+          {t('add_team')}
         </Button>
         <Button
           size="small"
@@ -83,7 +101,8 @@ export default function ScheduleTab(props) {
         >
           {t('add_game')}
         </Button>
-        <AddTimeSlots isOpen={time} onClose={closeTime} />
+        <AddTimeSlot isOpen={time} onClose={closeTime} />
+        <AddTeam isOpen={team} onClose={closeTeam} />
         <AddPhase
           isOpen={phase}
           onClose={closePhase}

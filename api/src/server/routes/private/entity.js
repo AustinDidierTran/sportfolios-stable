@@ -440,6 +440,23 @@ router.post(`${BASE_URL}/game`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/addTeamToSchedule`, async ctx => {
+  const game = await queries.addTeamToSchedule(ctx.request.body);
+  if (game) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: game,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/phase`, async ctx => {
   const phase = await queries.addPhase(ctx.request.body);
   if (phase) {
