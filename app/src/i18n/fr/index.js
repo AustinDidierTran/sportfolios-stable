@@ -134,6 +134,7 @@ export default {
     new_team: 'Nouvelle Équipe',
     no: 'non',
     none: 'Aucun',
+    none_feminine: 'Aucune',
     no_payment_method:
       "Il n'y a actuellement aucune méthode de paiement",
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
@@ -173,6 +174,7 @@ export default {
     payments: 'Paiements',
     person: 'Person',
     people: 'Personnes',
+    phase: 'Phase',
     places_left: 'places restantes',
     player: 'Joueur',
     players: 'Joueurs',
@@ -226,6 +228,7 @@ export default {
     teams: 'Équipes',
     teams_saved: 'Équipes sauvegardées!',
     time: 'Temps',
+    time_slot: 'Plage horaire',
     time_slot_added: 'Plage horaire ajoutée',
     to_see_your_receipt:
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',

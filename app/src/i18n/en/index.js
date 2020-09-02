@@ -134,6 +134,7 @@ export default {
     next: 'Next',
     no: 'no',
     none: 'None',
+    none_feminine: 'None',
     no_payment_method: 'There is currently no payment method',
     no_account_signup: "Don't have an account? Signup!",
     no_description: 'No Description',
@@ -169,6 +170,7 @@ export default {
     payment_options: 'Payment options',
     person: 'Person',
     persons: 'Persons',
+    phase: 'Phase',
     places_left: 'places left',
     player: 'Player',
     players: 'Players',
@@ -224,6 +226,7 @@ export default {
     teams: 'Teams',
     teams_saved: 'Teams saved!',
     time: 'Time',
+    time_slot: 'Time slot',
     time_slot_added: 'Time slot added',
     waiting_for_payment:
       'Your payment is being processed. Thank you for your patience',
