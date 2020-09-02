@@ -18,7 +18,6 @@ export default function CustomFormDialog(props) {
     formik,
     onClose,
   } = props;
-  console.log({ fields });
 
   return (
     <Dialog
@@ -35,13 +34,14 @@ export default function CustomFormDialog(props) {
               <>
                 {field.isSelect ? (
                   <Select
-                    options={options}
+                    options={field.options}
                     formik={formik}
                     namespace={field.namespace}
                     autoFocus
                     margin="dense"
                     label={field.label}
                     fullWidth
+                    defaultValue={field.defaultValue}
                   />
                 ) : (
                   <TextField

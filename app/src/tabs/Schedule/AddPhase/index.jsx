@@ -24,6 +24,11 @@ export default function AddPhase(props) {
     setOpen(isOpen);
   }, [isOpen]);
 
+  const handleClose = () => {
+    formik.resetForm();
+    onClose();
+  };
+
   const validate = values => {
     const { phase } = values;
     const errors = {};
@@ -68,14 +73,14 @@ export default function AddPhase(props) {
           duration: 2000,
         });
         onClose();
-        openGameDialog();
+        openGameDialog(res.data.id);
       }
     },
   });
 
   const buttons = [
     {
-      onClick: onClose,
+      onClick: handleClose,
       name: t('cancel'),
       color: 'grey',
     },

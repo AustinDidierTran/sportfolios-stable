@@ -6,13 +6,16 @@ import { useFormik } from 'formik';
 import { ERROR_ENUM } from '../../../../../common/errors';
 import api from '../../../actions/api';
 import { Store, ACTION_ENUM } from '../../../Store';
-import { SEVERITY_ENUM } from '../../../../../common/enums';
+import {
+  SEVERITY_ENUM,
+  STATUS_ENUM,
+} from '../../../../../common/enums';
 import { useParams } from 'react-router-dom';
 import { formatRoute } from '../../../actions/goTo';
 
 export default function AddGame(props) {
   const { t } = useTranslation();
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, phaseId, keepPhase } = props;
   const { dispatch } = useContext(Store);
   const { id: eventId } = useParams();
 
@@ -21,7 +24,11 @@ export default function AddGame(props) {
 
   useEffect(() => {
     getPhases();
-  }, [open]);
+  }, [open, phaseId]);
+
+  useEffect(() => {
+    formik.setFieldValue('phase', phaseId);
+  }, [phaseId, keepPhase]);
 
   const getPhases = async () => {
     const { data } = await api(
@@ -31,21 +38,23 @@ export default function AddGame(props) {
       value: d.id,
       display: d.name,
     }));
-    setPhases(res);
+    setPhases([{ value: 'none', display: t('none') }, ...res]);
   };
 
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
 
+  const onFinish = () => {
+    formik.resetForm();
+    onClose();
+  };
+
   const validate = values => {
     const { phase, time } = values;
     const errors = {};
     if (!time.length) {
       errors.time = t(ERROR_ENUM.VALUE_IS_REQUIRED);
-    }
-    if (phase.length > 64) {
-      errors.phase = t(ERROR_ENUM.VALUE_IS_TOO_LONG);
     }
     if (!phase.length) {
       errors.phase = t(ERROR_ENUM.VALUE_IS_REQUIRED);
@@ -57,7 +66,7 @@ export default function AddGame(props) {
     initialValues: {
       phase: '',
       field: '',
-      time: '',
+      time: '09:00',
       team1: '',
       team2: '',
     },
@@ -65,12 +74,16 @@ export default function AddGame(props) {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
-      const { field, time, team1, team2 } = values;
-
+      const { phase, field, time, team1, team2 } = values;
+      let realPhaseId = phase;
+      if (phase === 'none') {
+        realPhaseId = null;
+      }
       const realTime = new Date(`2020-01-01 ${time}`).getTime();
-      await api('/api/entity/game', {
+      const res = await api('/api/entity/game', {
         method: 'POST',
         body: JSON.stringify({
+          phaseId: realPhaseId,
           field,
           time: realTime,
           team1,
@@ -79,18 +92,28 @@ export default function AddGame(props) {
       });
 
       resetForm();
-      dispatch({
-        type: ACTION_ENUM.SNACK_BAR,
-        message: t('game_added'),
-        severity: SEVERITY_ENUM.SUCCESS,
-        duration: 2000,
-      });
+      keepPhase(phase);
+      if (res.status === STATUS_ENUM.ERROR) {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: ERROR_ENUM.ERROR_OCCURED,
+          severity: SEVERITY_ENUM.ERROR,
+          duration: 4000,
+        });
+      } else {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: t('game_added'),
+          severity: SEVERITY_ENUM.SUCCESS,
+          duration: 2000,
+        });
+      }
     },
   });
 
   const buttons = [
     {
-      onClick: onClose,
+      onClick: onFinish,
       name: t('finish'),
       color: 'grey',
     },
@@ -112,7 +135,7 @@ export default function AddGame(props) {
       namespace: 'field',
       id: 'field',
       label: t('field'),
-      type: 'field',
+      type: 'text',
     },
     {
       namespace: 'time',
@@ -123,13 +146,13 @@ export default function AddGame(props) {
       namespace: 'team1',
       id: 'team1',
       label: t('team_1'),
-      type: 'team1',
+      type: 'text',
     },
     {
       namespace: 'team2',
       id: 'team2',
       label: t('team_2'),
-      type: 'team2',
+      type: 'text',
     },
   ];
 

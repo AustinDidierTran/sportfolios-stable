@@ -14,7 +14,7 @@ export default function ScheduleTab(props) {
 
   const [game, setGame] = useState(false);
   const [phase, setPhase] = useState(false);
-  const [phaseId, setPhaseId] = useState(null);
+  const [phaseId, setPhaseId] = useState('none');
 
   const openGame = () => {
     setGame(true);
@@ -34,6 +34,10 @@ export default function ScheduleTab(props) {
   const openGameDialog = phaseId => {
     setPhaseId(phaseId);
     setGame(true);
+  };
+
+  const keepPhase = phaseId => {
+    setPhaseId(phaseId);
   };
 
   if (role === ENTITIES_ROLE_ENUM.ADMIN) {
@@ -68,6 +72,7 @@ export default function ScheduleTab(props) {
           isOpen={game}
           onClose={closeGame}
           phaseId={phaseId}
+          keepPhase={keepPhase}
         />
       </>
     );
