@@ -917,9 +917,13 @@ async function addMember(
 }
 
 async function addGame(phaseId, field, time, team1, team2) {
+  let realTime = new Date(time);
+  if (!time) {
+    realTime = null;
+  }
   const [res] = await knex('games')
     .insert({
-      start_time: new Date(time),
+      start_time: realTime,
       field,
       phase_id: phaseId,
     })

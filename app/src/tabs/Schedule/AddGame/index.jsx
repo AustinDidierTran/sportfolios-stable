@@ -88,13 +88,22 @@ export default function AddGame(props) {
   };
 
   const validate = values => {
-    const { phase, time } = values;
+    const { phase, field, time, team1, team2 } = values;
     const errors = {};
     if (!time.length) {
       errors.time = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
     if (!phase.length) {
       errors.phase = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!field.length) {
+      errors.field = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!team1.length) {
+      errors.team1 = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!team2.length) {
+      errors.team2 = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
     return errors;
   };
@@ -127,7 +136,7 @@ export default function AddGame(props) {
         realTeam2 = null;
       }
       if (time === 'none') {
-        realTeam2 = null;
+        realTime = null;
       }
       if (field === 'none') {
         realField = null;
