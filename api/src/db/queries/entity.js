@@ -16,6 +16,7 @@ const {
   addOption: addOptionHelper,
   addGame: addGameHelper,
   addPhase: addPhaseHelper,
+  addTimeSlot: addTimeSlotHelper,
   addRoster: addRosterHelper,
   addTeamToEvent: addTeamToEventHelper,
   addMembership: addMembershipHelper,
@@ -335,9 +336,16 @@ async function addGame(body) {
   const res = await addGameHelper(phaseId, field, time, team1, team2);
   return res;
 }
+
 async function addPhase(body) {
   const { phase, eventId } = body;
   const res = await addPhaseHelper(phase, eventId);
+  return res;
+}
+
+async function addTimeSlot(body) {
+  const { date, eventId } = body;
+  const res = await addTimeSlotHelper(date, eventId);
   return res;
 }
 
@@ -449,6 +457,7 @@ module.exports = {
   addMembership,
   addGame,
   addPhase,
+  addTimeSlot,
   addOption,
   addTeamToEvent,
   addRoster,

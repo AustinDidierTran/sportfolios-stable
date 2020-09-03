@@ -17,6 +17,7 @@ export default {
     add_new_product: 'Ajouter un nouveau produit',
     quick_description: 'Description courte',
     add_to_cart: 'Ajouter au panier',
+    add_time_slot: 'Ajouter une plage horaire',
     add_existing_person: 'Ajouter une personne existante',
     add_non_existing_person: 'Ajouter une personne non existante',
     add_person: 'Ajouter une personne',
@@ -223,6 +224,7 @@ export default {
     teams: 'Équipes',
     teams_saved: 'Équipes sauvegardées!',
     time: 'Temps',
+    time_slot_added: 'Plage horaire ajoutée',
     to_see_your_receipt:
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
     waiting_for_payment:

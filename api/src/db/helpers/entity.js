@@ -899,6 +899,7 @@ async function addMember(
     .returning('*');
   return res;
 }
+
 async function addGame(phaseId, field, time, team1, team2) {
   const [res] = await knex('games')
     .insert({
@@ -919,9 +920,17 @@ async function addGame(phaseId, field, time, team1, team2) {
   });
   return res;
 }
+
 async function addPhase(phase, eventId) {
   const [res] = await knex('phase')
     .insert({ name: phase, event_id: eventId })
+    .returning('*');
+  return res;
+}
+
+async function addTimeSlot(date, eventId) {
+  const [res] = await knex('event_time_slots')
+    .insert({ date: new Date(date), event_id: eventId })
     .returning('*');
   return res;
 }
@@ -1171,6 +1180,7 @@ module.exports = {
   addMembership,
   addGame,
   addPhase,
+  addTimeSlot,
   addOption,
   addRoster,
   addTeamToEvent,

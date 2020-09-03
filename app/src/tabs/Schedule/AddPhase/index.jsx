@@ -86,7 +86,7 @@ export default function AddPhase(props) {
     },
     {
       type: 'submit',
-      name: t('add_phase'),
+      name: t('add'),
       color: 'primary',
     },
   ];

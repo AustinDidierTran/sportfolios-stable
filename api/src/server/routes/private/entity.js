@@ -457,6 +457,23 @@ router.post(`${BASE_URL}/phase`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/timeSlots`, async ctx => {
+  const slots = await queries.addTimeSlot(ctx.request.body);
+  if (slots) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: slots,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/option`, async ctx => {
   const option = await queries.addOption(
     ctx.request.body,
