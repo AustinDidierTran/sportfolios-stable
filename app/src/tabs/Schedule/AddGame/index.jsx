@@ -9,6 +9,7 @@ import { Store, ACTION_ENUM } from '../../../Store';
 import {
   SEVERITY_ENUM,
   STATUS_ENUM,
+  SELECT_ENUM,
 } from '../../../../../common/enums';
 import { useParams } from 'react-router-dom';
 import { formatRoute } from '../../../actions/goTo';
@@ -47,7 +48,7 @@ export default function AddGame(props) {
       display: d.name,
     }));
     setPhases([
-      { value: 'none', display: t('none_feminine') },
+      { value: SELECT_ENUM.NONE, display: t('none_feminine') },
       ...res,
     ]);
   };
@@ -72,7 +73,7 @@ export default function AddGame(props) {
       display: d.name,
     }));
     setTeams([
-      { value: 'none', display: t('none_feminine') },
+      { value: SELECT_ENUM.NONE, display: t('none_feminine') },
       ...res,
     ]);
   };
@@ -85,7 +86,10 @@ export default function AddGame(props) {
       value: d.field,
       display: d.field,
     }));
-    setFields([{ value: 'none', display: t('none') }, ...res]);
+    setFields([
+      { value: SELECT_ENUM.NONE, display: t('none') },
+      ...res,
+    ]);
   };
 
   useEffect(() => {
@@ -136,19 +140,19 @@ export default function AddGame(props) {
       let realTeam2 = team2;
       let realTime = new Date(time).getTime();
       let realField = field;
-      if (phase === 'none') {
+      if (phase === SELECT_ENUM.NONE) {
         realPhaseId = null;
       }
-      if (team1 === 'none') {
+      if (team1 === SELECT_ENUM.NONE) {
         realTeam1 = null;
       }
-      if (team2 === 'none') {
+      if (team2 === SELECT_ENUM.NONE) {
         realTeam2 = null;
       }
-      if (time === 'none') {
+      if (time === SELECT_ENUM.NONE) {
         realTime = null;
       }
-      if (field === 'none') {
+      if (field === SELECT_ENUM.NONE) {
         realField = null;
       }
       const res = await api('/api/entity/game', {

@@ -68,6 +68,10 @@ const LANGUAGE_ENUM = {
   FRANCAIS: 'fr',
 };
 
+const SELECT_ENUM = {
+  NONE: 'none',
+};
+
 const INVOICE_STATUS_ENUM = {
   DRAFT: 'draft',
   DELETED: 'deleted',
@@ -205,6 +209,7 @@ module.exports = {
   MEMBERSHIP_LENGTH_ENUM,
   MEMBERSHIP_TYPE_ENUM,
   LOGO_ENUM,
+  SELECT_ENUM,
   STRIPE_ERROR_ENUM,
   STRIPE_STATUS_ENUM,
   VIEW_ENUM,
