@@ -40,6 +40,7 @@ const {
   getRoster: getRosterHelper,
   getEvent: getEventHelper,
   getPhases: getPhasesHelper,
+  getGames: getGamesHelper,
   getSlots: getSlotsHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
   getFields: getFieldsHelper,
@@ -129,6 +130,10 @@ async function getEvent(eventId) {
 
 async function getPhases(eventId) {
   return getPhasesHelper(eventId);
+}
+
+async function getGames(eventId) {
+  return getGamesHelper(eventId);
 }
 
 async function getSlots(eventId) {
@@ -349,8 +354,15 @@ async function addMember(body) {
 }
 
 async function addGame(body) {
-  const { phaseId, field, time, team1, team2 } = body;
-  const res = await addGameHelper(phaseId, field, time, team1, team2);
+  const { eventId, phaseId, field, time, team1, team2 } = body;
+  const res = await addGameHelper(
+    eventId,
+    phaseId,
+    field,
+    time,
+    team1,
+    team2,
+  );
   return res;
 }
 async function addField(body) {
@@ -509,6 +521,7 @@ module.exports = {
   getRemainingSpots,
   getEvent,
   getPhases,
+  getGames,
   getSlots,
   getTeamsSchedule,
   getFields,

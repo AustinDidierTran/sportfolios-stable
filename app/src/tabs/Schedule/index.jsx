@@ -8,6 +8,7 @@ import AddPhase from './AddPhase';
 import AddTimeSlot from './AddTimeSlot';
 import AddTeam from './AddTeam';
 import AddField from './AddField';
+import Games from './Games';
 
 export default function ScheduleTab(props) {
   const { t } = useTranslation();
@@ -66,75 +67,79 @@ export default function ScheduleTab(props) {
     setField(false);
   };
 
-  if (role === ENTITIES_ROLE_ENUM.ADMIN) {
-    return (
-      <>
-        <Button
-          size="small"
-          variant="contained"
-          endIcon="Add"
-          style={{ margin: '8px' }}
-          onClick={openTime}
-          className={styles.button}
-        >
-          {t('add_time_slot')}
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          endIcon="Add"
-          style={{ margin: '8px' }}
-          onClick={openField}
-          className={styles.button}
-        >
-          {t('add_field')}
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          endIcon="Add"
-          style={{ margin: '8px' }}
-          onClick={openTeam}
-          className={styles.button}
-        >
-          {t('add_team')}
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          endIcon="Add"
-          style={{ margin: '8px' }}
-          onClick={openPhase}
-          className={styles.button}
-        >
-          {t('add_phase')}
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          endIcon="Add"
-          style={{ margin: '8px' }}
-          onClick={openGame}
-          className={styles.button}
-        >
-          {t('add_game')}
-        </Button>
-        <AddTimeSlot isOpen={time} onClose={closeTime} />
-        <AddField isOpen={field} onClose={closeField} />
-        <AddTeam isOpen={team} onClose={closeTeam} />
-        <AddPhase
-          isOpen={phase}
-          onClose={closePhase}
-          openGameDialog={openGameDialog}
-        />
-        <AddGame
-          isOpen={game}
-          onClose={closeGame}
-          phaseId={phaseId}
-          keepPhase={keepPhase}
-        />
-      </>
-    );
-  }
-  return <h1>SCHEDULE</h1>;
+  return (
+    <>
+      {role === ENTITIES_ROLE_ENUM.ADMIN ? (
+        <>
+          <Button
+            size="small"
+            variant="contained"
+            endIcon="Add"
+            style={{ margin: '8px' }}
+            onClick={openTime}
+            className={styles.button}
+          >
+            {t('add_time_slot')}
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            endIcon="Add"
+            style={{ margin: '8px' }}
+            onClick={openField}
+            className={styles.button}
+          >
+            {t('add_field')}
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            endIcon="Add"
+            style={{ margin: '8px' }}
+            onClick={openTeam}
+            className={styles.button}
+          >
+            {t('add_team')}
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            endIcon="Add"
+            style={{ margin: '8px' }}
+            onClick={openPhase}
+            className={styles.button}
+          >
+            {t('add_phase')}
+          </Button>
+          <Button
+            size="small"
+            variant="contained"
+            endIcon="Add"
+            style={{ margin: '8px' }}
+            onClick={openGame}
+            className={styles.button}
+          >
+            {t('add_game')}
+          </Button>
+          <AddTimeSlot isOpen={time} onClose={closeTime} />
+          <AddField isOpen={field} onClose={closeField} />
+          <AddTeam isOpen={team} onClose={closeTeam} />
+          <AddPhase
+            isOpen={phase}
+            onClose={closePhase}
+            openGameDialog={openGameDialog}
+          />
+          <AddGame
+            isOpen={game}
+            onClose={closeGame}
+            phaseId={phaseId}
+            keepPhase={keepPhase}
+          />
+        </>
+      ) : (
+        <></>
+      )}
+      <Games />
+    </>
+  );
 }

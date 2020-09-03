@@ -17,7 +17,7 @@ export default function Games(props) {
         return (
           <Card
             items={{ ...game, changeScore, saveGame, getRank }}
-            type={CARD_TYPE_ENUM.GAME}
+            type={CARD_TYPE_ENUM.EDITABLE_GAME}
           />
         );
       })}

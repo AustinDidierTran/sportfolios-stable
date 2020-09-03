@@ -6,6 +6,7 @@ import AddPaymentOption from './AddPaymentOption';
 import DeleteEntity from './DeleteEntity';
 import EventPaymentOption from './EventPaymentOption';
 import EventSettings from './EventSettings';
+import EditableGame from './EditableGame';
 import Game from './Game';
 
 const CardMap = {
@@ -15,6 +16,7 @@ const CardMap = {
   [CARD_TYPE_ENUM.DELETE_ENTITY]: DeleteEntity,
   [CARD_TYPE_ENUM.EVENT_PAYMENT_OPTION]: EventPaymentOption,
   [CARD_TYPE_ENUM.EVENT_SETTINGS]: EventSettings,
+  [CARD_TYPE_ENUM.EDITABLE_GAME]: EditableGame,
   [CARD_TYPE_ENUM.GAME]: Game,
 };
 

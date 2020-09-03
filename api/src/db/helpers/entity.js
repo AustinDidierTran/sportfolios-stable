@@ -719,6 +719,7 @@ async function getEvent(eventId) {
     .where({ id: realId });
   return res;
 }
+
 async function getPhases(eventId) {
   const realId = await getRealId(eventId);
   const res = await knex('phase')
@@ -726,6 +727,39 @@ async function getPhases(eventId) {
     .where({ event_id: realId });
   return res;
 }
+
+async function getGames(eventId) {
+  const realId = await getRealId(eventId);
+  const games = await knex('games')
+    .select('*')
+    .where({ event_id: realId });
+
+  const res = await Promise.all(
+    games.map(async game => {
+      const teams = await getTeams(game.id);
+      let phaseName = null;
+      if (game.phase_id) {
+        phaseName = await getPhaseName(game.phase_id);
+      }
+      return { ...game, phaseName, teams };
+    }),
+  );
+  return res;
+}
+
+const getPhaseName = async phaseId => {
+  const [{ name }] = await knex('phase')
+    .select('name')
+    .where({ id: phaseId });
+  return name;
+};
+
+const getTeams = async gameId => {
+  const teams = await knex('game_teams')
+    .select('*')
+    .where({ game_id: gameId });
+  return teams;
+};
 
 async function getSlots(eventId) {
   const realId = await getRealId(eventId);
@@ -924,7 +958,8 @@ async function addMember(
   return res;
 }
 
-async function addGame(phaseId, field, time, team1, team2) {
+async function addGame(eventId, phaseId, field, time, team1, team2) {
+  const realId = await getRealId(eventId);
   let realTime = new Date(time);
   if (!time) {
     realTime = null;
@@ -932,6 +967,7 @@ async function addGame(phaseId, field, time, team1, team2) {
   const [res] = await knex('games')
     .insert({
       start_time: realTime,
+      event_id: realId,
       field,
       phase_id: phaseId,
     })
@@ -1259,6 +1295,7 @@ module.exports = {
   getRoster,
   getEvent,
   getPhases,
+  getGames,
   getSlots,
   getTeamsSchedule,
   getFields,
