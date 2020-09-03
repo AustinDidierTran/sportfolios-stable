@@ -7,6 +7,7 @@ import AddGame from './AddGame';
 import AddPhase from './AddPhase';
 import AddTimeSlot from './AddTimeSlot';
 import AddTeam from './AddTeam';
+import AddField from './AddField';
 
 export default function ScheduleTab(props) {
   const { t } = useTranslation();
@@ -18,6 +19,7 @@ export default function ScheduleTab(props) {
   const [phase, setPhase] = useState(false);
   const [time, setTime] = useState(false);
   const [team, setTeam] = useState(false);
+  const [field, setField] = useState(false);
   const [phaseId, setPhaseId] = useState('');
 
   const openGame = () => {
@@ -57,6 +59,12 @@ export default function ScheduleTab(props) {
   const closeTeam = () => {
     setTeam(false);
   };
+  const openField = () => {
+    setField(true);
+  };
+  const closeField = () => {
+    setField(false);
+  };
 
   if (role === ENTITIES_ROLE_ENUM.ADMIN) {
     return (
@@ -70,6 +78,16 @@ export default function ScheduleTab(props) {
           className={styles.button}
         >
           {t('add_time_slot')}
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          endIcon="Add"
+          style={{ margin: '8px' }}
+          onClick={openField}
+          className={styles.button}
+        >
+          {t('add_field')}
         </Button>
         <Button
           size="small"
@@ -102,6 +120,7 @@ export default function ScheduleTab(props) {
           {t('add_game')}
         </Button>
         <AddTimeSlot isOpen={time} onClose={closeTime} />
+        <AddField isOpen={field} onClose={closeField} />
         <AddTeam isOpen={team} onClose={closeTeam} />
         <AddPhase
           isOpen={phase}

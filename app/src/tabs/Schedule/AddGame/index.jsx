@@ -25,11 +25,13 @@ export default function AddGame(props) {
   const [phases, setPhases] = useState([]);
   const [slots, setSlots] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [theFields, setFields] = useState([]);
 
   useEffect(() => {
     getPhases();
     getSlots();
     getTeams();
+    getFields();
   }, [open, phaseId]);
 
   useEffect(() => {
@@ -76,6 +78,17 @@ export default function AddGame(props) {
       { value: 'none', display: t('none_feminine') },
       ...res,
     ]);
+  };
+
+  const getFields = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/fields', null, { eventId }),
+    );
+    const res = data.map(d => ({
+      value: d.field,
+      display: d.field,
+    }));
+    setFields([{ value: 'none', display: t('none') }, ...res]);
   };
 
   useEffect(() => {
@@ -193,10 +206,10 @@ export default function AddGame(props) {
       label: t('phase'),
     },
     {
+      isSelect: true,
       namespace: 'field',
-      id: 'field',
       label: t('field'),
-      type: 'text',
+      options: theFields,
     },
     {
       isSelect: true,

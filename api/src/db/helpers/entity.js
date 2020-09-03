@@ -743,6 +743,14 @@ async function getTeamsSchedule(eventId) {
   return res;
 }
 
+async function getFields(eventId) {
+  const realId = await getRealId(eventId);
+  const res = await knex('event_fields')
+    .select('*')
+    .where({ event_id: realId });
+  return res;
+}
+
 async function getGeneralInfos(entityId) {
   const realId = await getRealId(entityId);
   const [res] = await knex('entities_general_infos')
@@ -941,10 +949,22 @@ async function addGame(phaseId, field, time, team1, team2) {
   return res;
 }
 
+async function addField(field, eventId) {
+  const realId = await getRealId(eventId);
+  const [res] = await knex('event_fields')
+    .insert({
+      field,
+      event_id: realId,
+    })
+    .returning('*');
+  return res;
+}
+
 async function addTeamToSchedule(name, eventId) {
+  const realId = await getRealId(eventId);
   const [res] = await knex('schedule_teams')
     .insert({
-      event_id: eventId,
+      event_id: realId,
       name,
     })
     .returning('*');
@@ -952,15 +972,17 @@ async function addTeamToSchedule(name, eventId) {
 }
 
 async function addPhase(phase, eventId) {
+  const realId = await getRealId(eventId);
   const [res] = await knex('phase')
-    .insert({ name: phase, event_id: eventId })
+    .insert({ name: phase, event_id: realId })
     .returning('*');
   return res;
 }
 
 async function addTimeSlot(date, eventId) {
+  const realId = await getRealId(eventId);
   const [res] = await knex('event_time_slots')
-    .insert({ date: new Date(date), event_id: eventId })
+    .insert({ date: new Date(date), event_id: realId })
     .returning('*');
   return res;
 }
@@ -1209,6 +1231,7 @@ module.exports = {
   addMember,
   addMembership,
   addGame,
+  addField,
   addTeamToSchedule,
   addPhase,
   addTimeSlot,
@@ -1238,6 +1261,7 @@ module.exports = {
   getPhases,
   getSlots,
   getTeamsSchedule,
+  getFields,
   getGeneralInfos,
   getOptions,
   removeEntityRole,
