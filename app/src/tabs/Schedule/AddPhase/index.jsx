@@ -10,17 +10,24 @@ import {
   SEVERITY_ENUM,
   STATUS_ENUM,
 } from '../../../../../common/enums';
+import { useParams } from 'react-router-dom';
 
 export default function AddPhase(props) {
   const { t } = useTranslation();
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, openGameDialog } = props;
   const { dispatch } = useContext(Store);
+  const { id: eventId } = useParams();
 
   const [open, setOpen] = useState(isOpen);
 
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
+
+  const handleClose = () => {
+    formik.resetForm();
+    onClose();
+  };
 
   const validate = values => {
     const { phase } = values;
@@ -47,6 +54,7 @@ export default function AddPhase(props) {
         method: 'POST',
         body: JSON.stringify({
           phase,
+          eventId,
         }),
       });
       resetForm();
@@ -64,13 +72,15 @@ export default function AddPhase(props) {
           severity: SEVERITY_ENUM.SUCCESS,
           duration: 2000,
         });
+        onClose();
+        openGameDialog(res.data.id);
       }
     },
   });
 
   const buttons = [
     {
-      onClick: onClose,
+      onClick: handleClose,
       name: t('cancel'),
       color: 'grey',
     },

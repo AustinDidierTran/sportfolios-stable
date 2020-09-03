@@ -6,6 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { TextField } from '../../MUI';
+import { Select } from '../../Custom';
 
 export default function CustomFormDialog(props) {
   const {
@@ -30,16 +31,31 @@ export default function CustomFormDialog(props) {
           <DialogContent>
             <DialogContentText>{description}</DialogContentText>
             {fields.map(field => (
-              <TextField
-                formik={formik}
-                namespace={field.namespace}
-                autoFocus
-                margin="dense"
-                id={field.id}
-                label={field.label}
-                type={field.type}
-                fullWidth
-              />
+              <>
+                {field.isSelect ? (
+                  <Select
+                    options={field.options}
+                    formik={formik}
+                    namespace={field.namespace}
+                    autoFocus
+                    margin="dense"
+                    label={field.label}
+                    fullWidth
+                    defaultValue={field.defaultValue}
+                  />
+                ) : (
+                  <TextField
+                    formik={formik}
+                    namespace={field.namespace}
+                    autoFocus
+                    margin="dense"
+                    id={field.id}
+                    label={field.label}
+                    type={field.type}
+                    fullWidth
+                  />
+                )}
+              </>
             ))}
           </DialogContent>
           <DialogActions>

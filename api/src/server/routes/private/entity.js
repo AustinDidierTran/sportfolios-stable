@@ -178,6 +178,23 @@ router.get(`${BASE_URL}/event`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/phases`, async ctx => {
+  const entity = await queries.getPhases(ctx.query.eventId);
+
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/generalInfos`, async ctx => {
   const entity = await queries.getGeneralInfos(ctx.query.entityId);
 
