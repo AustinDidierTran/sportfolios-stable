@@ -39,6 +39,8 @@ const {
   getRoster: getRosterHelper,
   getEvent: getEventHelper,
   getPhases: getPhasesHelper,
+  getSlots: getSlotsHelper,
+  getTeamsSchedule: getTeamsScheduleHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getOptions: getOptionsHelper,
   removeEntityRole: removeEntityRoleHelper,
@@ -125,6 +127,14 @@ async function getEvent(eventId) {
 
 async function getPhases(eventId) {
   return getPhasesHelper(eventId);
+}
+
+async function getSlots(eventId) {
+  return getSlotsHelper(eventId);
+}
+
+async function getTeamsSchedule(eventId) {
+  return getTeamsScheduleHelper(eventId);
 }
 
 async function getGeneralInfos(entityId, userId) {
@@ -488,6 +498,8 @@ module.exports = {
   getRemainingSpots,
   getEvent,
   getPhases,
+  getSlots,
+  getTeamsSchedule,
   getGeneralInfos,
   getS3Signature,
   unregister,

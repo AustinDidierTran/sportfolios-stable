@@ -195,6 +195,40 @@ router.get(`${BASE_URL}/phases`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/slots`, async ctx => {
+  const entity = await queries.getSlots(ctx.query.eventId);
+
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/teamsSchedule`, async ctx => {
+  const entity = await queries.getTeamsSchedule(ctx.query.eventId);
+
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/generalInfos`, async ctx => {
   const entity = await queries.getGeneralInfos(ctx.query.entityId);
 

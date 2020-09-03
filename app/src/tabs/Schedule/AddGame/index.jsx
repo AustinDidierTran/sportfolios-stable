@@ -12,6 +12,8 @@ import {
 } from '../../../../../common/enums';
 import { useParams } from 'react-router-dom';
 import { formatRoute } from '../../../actions/goTo';
+import moment from 'moment';
+import { formatDate } from '../../../utils/stringFormats';
 
 export default function AddGame(props) {
   const { t } = useTranslation();
@@ -21,9 +23,13 @@ export default function AddGame(props) {
 
   const [open, setOpen] = useState(isOpen);
   const [phases, setPhases] = useState([]);
+  const [slots, setSlots] = useState([]);
+  const [teams, setTeams] = useState([]);
 
   useEffect(() => {
     getPhases();
+    getSlots();
+    getTeams();
   }, [open, phaseId]);
 
   useEffect(() => {
@@ -38,7 +44,38 @@ export default function AddGame(props) {
       value: d.id,
       display: d.name,
     }));
-    setPhases([{ value: 'none', display: t('none') }, ...res]);
+    setPhases([
+      { value: 'none', display: t('none_feminine') },
+      ...res,
+    ]);
+  };
+
+  const getSlots = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/slots', null, { eventId }),
+    );
+    const res = data.map(d => ({
+      value: d.date,
+      display: formatDate(moment(d.date), 'ddd DD MMM h:mm'),
+    }));
+    setSlots([
+      { value: 'none', display: t('none_feminine') },
+      ...res,
+    ]);
+  };
+
+  const getTeams = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/teamsSchedule', null, { eventId }),
+    );
+    const res = data.map(d => ({
+      value: d.name,
+      display: d.name,
+    }));
+    setTeams([
+      { value: 'none', display: t('none_feminine') },
+      ...res,
+    ]);
   };
 
   useEffect(() => {
@@ -66,7 +103,7 @@ export default function AddGame(props) {
     initialValues: {
       phase: '',
       field: '',
-      time: '09:00',
+      time: '',
       team1: '',
       team2: '',
     },
@@ -76,18 +113,33 @@ export default function AddGame(props) {
     onSubmit: async (values, { resetForm }) => {
       const { phase, field, time, team1, team2 } = values;
       let realPhaseId = phase;
+      let realTeam1 = team1;
+      let realTeam2 = team1;
+      let realTime = new Date(time).getTime();
+      let realField = field;
       if (phase === 'none') {
         realPhaseId = null;
       }
-      const realTime = new Date(`2020-01-01 ${time}`).getTime();
+      if (team1 === 'none') {
+        realTeam1 = null;
+      }
+      if (team2 === 'none') {
+        realTeam2 = null;
+      }
+      if (time === 'none') {
+        realTeam2 = null;
+      }
+      if (field === 'none') {
+        realField = null;
+      }
       const res = await api('/api/entity/game', {
         method: 'POST',
         body: JSON.stringify({
           phaseId: realPhaseId,
-          field,
+          field: realField,
           time: realTime,
-          team1,
-          team2,
+          team1: realTeam1,
+          team2: realTeam2,
         }),
       });
 
@@ -129,7 +181,7 @@ export default function AddGame(props) {
       isSelect: true,
       options: phases,
       namespace: 'phase',
-      label: 'Phase',
+      label: t('phase'),
     },
     {
       namespace: 'field',
@@ -138,21 +190,22 @@ export default function AddGame(props) {
       type: 'text',
     },
     {
+      isSelect: true,
       namespace: 'time',
-      id: 'time',
-      type: 'time',
+      label: t('time_slot'),
+      options: slots,
     },
     {
+      isSelect: true,
+      options: teams,
       namespace: 'team1',
-      id: 'team1',
       label: t('team_1'),
-      type: 'text',
     },
     {
+      isSelect: true,
+      options: teams,
       namespace: 'team2',
-      id: 'team2',
       label: t('team_2'),
-      type: 'text',
     },
   ];
 

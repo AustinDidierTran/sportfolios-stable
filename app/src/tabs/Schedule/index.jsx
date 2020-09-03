@@ -18,7 +18,7 @@ export default function ScheduleTab(props) {
   const [phase, setPhase] = useState(false);
   const [time, setTime] = useState(false);
   const [team, setTeam] = useState(false);
-  const [phaseId, setPhaseId] = useState('none');
+  const [phaseId, setPhaseId] = useState('');
 
   const openGame = () => {
     setGame(true);

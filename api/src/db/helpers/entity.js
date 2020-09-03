@@ -727,6 +727,22 @@ async function getPhases(eventId) {
   return res;
 }
 
+async function getSlots(eventId) {
+  const realId = await getRealId(eventId);
+  const res = await knex('event_time_slots')
+    .select('*')
+    .where({ event_id: realId });
+  return res;
+}
+
+async function getTeamsSchedule(eventId) {
+  const realId = await getRealId(eventId);
+  const res = await knex('schedule_teams')
+    .select('*')
+    .where({ event_id: realId });
+  return res;
+}
+
 async function getGeneralInfos(entityId) {
   const realId = await getRealId(entityId);
   const [res] = await knex('entities_general_infos')
@@ -922,14 +938,12 @@ async function addGame(phaseId, field, time, team1, team2) {
 }
 
 async function addTeamToSchedule(name, eventId) {
-  console.log({ eventId, name });
   const [res] = await knex('schedule_teams')
     .insert({
       event_id: eventId,
       name,
     })
     .returning('*');
-  console.log({ res });
   return res;
 }
 
@@ -1218,6 +1232,8 @@ module.exports = {
   getRoster,
   getEvent,
   getPhases,
+  getSlots,
+  getTeamsSchedule,
   getGeneralInfos,
   getOptions,
   removeEntityRole,
