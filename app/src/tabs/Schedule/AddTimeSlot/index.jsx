@@ -13,7 +13,7 @@ import {
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
 
-export default function AddTimeSlots(props) {
+export default function AddTimeSlot(props) {
   const { t } = useTranslation();
   const { isOpen, onClose } = props;
   const { dispatch } = useContext(Store);
