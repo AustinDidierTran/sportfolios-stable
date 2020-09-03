@@ -15,6 +15,7 @@ const {
   addMember: addMemberHelper,
   addOption: addOptionHelper,
   addGame: addGameHelper,
+  addField: addFieldHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addPhase: addPhaseHelper,
   addTimeSlot: addTimeSlotHelper,
@@ -41,6 +42,7 @@ const {
   getPhases: getPhasesHelper,
   getSlots: getSlotsHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
+  getFields: getFieldsHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getOptions: getOptionsHelper,
   removeEntityRole: removeEntityRoleHelper,
@@ -135,6 +137,9 @@ async function getSlots(eventId) {
 
 async function getTeamsSchedule(eventId) {
   return getTeamsScheduleHelper(eventId);
+}
+async function getFields(eventId) {
+  return getFieldsHelper(eventId);
 }
 
 async function getGeneralInfos(entityId, userId) {
@@ -348,6 +353,11 @@ async function addGame(body) {
   const res = await addGameHelper(phaseId, field, time, team1, team2);
   return res;
 }
+async function addField(body) {
+  const { field, eventId } = body;
+  const res = await addFieldHelper(field, eventId);
+  return res;
+}
 
 async function addTeamToSchedule(body) {
   const { name, eventId } = body;
@@ -474,6 +484,7 @@ module.exports = {
   addMember,
   addMembership,
   addGame,
+  addField,
   addTeamToSchedule,
   addPhase,
   addTimeSlot,
@@ -500,6 +511,7 @@ module.exports = {
   getPhases,
   getSlots,
   getTeamsSchedule,
+  getFields,
   getGeneralInfos,
   getS3Signature,
   unregister,

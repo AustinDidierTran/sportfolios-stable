@@ -25,11 +25,13 @@ export default function AddGame(props) {
   const [phases, setPhases] = useState([]);
   const [slots, setSlots] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [theFields, setFields] = useState([]);
 
   useEffect(() => {
     getPhases();
     getSlots();
     getTeams();
+    getFields();
   }, [open, phaseId]);
 
   useEffect(() => {
@@ -78,6 +80,17 @@ export default function AddGame(props) {
     ]);
   };
 
+  const getFields = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/fields', null, { eventId }),
+    );
+    const res = data.map(d => ({
+      value: d.field,
+      display: d.field,
+    }));
+    setFields([{ value: 'none', display: t('none') }, ...res]);
+  };
+
   useEffect(() => {
     setOpen(isOpen);
   }, [isOpen]);
@@ -88,13 +101,22 @@ export default function AddGame(props) {
   };
 
   const validate = values => {
-    const { phase, time } = values;
+    const { phase, field, time, team1, team2 } = values;
     const errors = {};
     if (!time.length) {
       errors.time = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
     if (!phase.length) {
       errors.phase = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!field.length) {
+      errors.field = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!team1.length) {
+      errors.team1 = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!team2.length) {
+      errors.team2 = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
     return errors;
   };
@@ -127,7 +149,7 @@ export default function AddGame(props) {
         realTeam2 = null;
       }
       if (time === 'none') {
-        realTeam2 = null;
+        realTime = null;
       }
       if (field === 'none') {
         realField = null;
@@ -184,10 +206,10 @@ export default function AddGame(props) {
       label: t('phase'),
     },
     {
+      isSelect: true,
       namespace: 'field',
-      id: 'field',
       label: t('field'),
-      type: 'text',
+      options: theFields,
     },
     {
       isSelect: true,

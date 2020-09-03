@@ -162,12 +162,12 @@ router.get(`${BASE_URL}/registered`, async ctx => {
 });
 
 router.get(`${BASE_URL}/event`, async ctx => {
-  const entity = await queries.getEvent(ctx.query.eventId);
+  const event = await queries.getEvent(ctx.query.eventId);
 
-  if (entity) {
+  if (event) {
     ctx.body = {
       status: 'success',
-      data: entity,
+      data: event,
     };
   } else {
     ctx.status = 404;
@@ -179,12 +179,12 @@ router.get(`${BASE_URL}/event`, async ctx => {
 });
 
 router.get(`${BASE_URL}/phases`, async ctx => {
-  const entity = await queries.getPhases(ctx.query.eventId);
+  const phases = await queries.getPhases(ctx.query.eventId);
 
-  if (entity) {
+  if (phases) {
     ctx.body = {
       status: 'success',
-      data: entity,
+      data: phases,
     };
   } else {
     ctx.status = 404;
@@ -196,12 +196,12 @@ router.get(`${BASE_URL}/phases`, async ctx => {
 });
 
 router.get(`${BASE_URL}/slots`, async ctx => {
-  const entity = await queries.getSlots(ctx.query.eventId);
+  const slots = await queries.getSlots(ctx.query.eventId);
 
-  if (entity) {
+  if (slots) {
     ctx.body = {
       status: 'success',
-      data: entity,
+      data: slots,
     };
   } else {
     ctx.status = 404;
@@ -213,12 +213,29 @@ router.get(`${BASE_URL}/slots`, async ctx => {
 });
 
 router.get(`${BASE_URL}/teamsSchedule`, async ctx => {
-  const entity = await queries.getTeamsSchedule(ctx.query.eventId);
+  const teams = await queries.getTeamsSchedule(ctx.query.eventId);
 
-  if (entity) {
+  if (teams) {
     ctx.body = {
       status: 'success',
-      data: entity,
+      data: teams,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/fields`, async ctx => {
+  const field = await queries.getFields(ctx.query.eventId);
+
+  if (field) {
+    ctx.body = {
+      status: 'success',
+      data: field,
     };
   } else {
     ctx.status = 404;
@@ -230,12 +247,12 @@ router.get(`${BASE_URL}/teamsSchedule`, async ctx => {
 });
 
 router.get(`${BASE_URL}/generalInfos`, async ctx => {
-  const entity = await queries.getGeneralInfos(ctx.query.entityId);
+  const infos = await queries.getGeneralInfos(ctx.query.entityId);
 
-  if (entity) {
+  if (infos) {
     ctx.body = {
       status: 'success',
-      data: entity,
+      data: infos,
     };
   } else {
     ctx.status = 404;
@@ -474,13 +491,30 @@ router.post(`${BASE_URL}/game`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/addTeamToSchedule`, async ctx => {
-  const game = await queries.addTeamToSchedule(ctx.request.body);
-  if (game) {
+router.post(`${BASE_URL}/field`, async ctx => {
+  const field = await queries.addField(ctx.request.body);
+  if (field) {
     ctx.status = 201;
     ctx.body = {
       status: 'success',
-      data: game,
+      data: field,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/addTeamToSchedule`, async ctx => {
+  const team = await queries.addTeamToSchedule(ctx.request.body);
+  if (team) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: team,
     };
   } else {
     ctx.status = 404;
