@@ -82,9 +82,7 @@ export default function Games() {
       });
     }
     if (timeSlot != SELECT_ENUM.NONE) {
-      games = games.filter(game => {
-        return game.start_time === timeSlot;
-      });
+      games.filter(game => game.start_time === timeSlot);
     }
     setGames(games);
   };
