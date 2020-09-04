@@ -34,6 +34,13 @@ export default function PhaseSelect(props) {
     ]);
   };
 
+  const handleChange = phaseId => {
+    const phase = phases.find(phase => {
+      return phase.value === phaseId;
+    });
+    onChange(phase);
+  };
+
   return (
     <div className={styles.select}>
       <Select
@@ -43,7 +50,7 @@ export default function PhaseSelect(props) {
         margin="dense"
         label={t('phase')}
         fullWidth
-        onChange={onChange}
+        onChange={handleChange}
       />
     </div>
   );
