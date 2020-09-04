@@ -58,12 +58,9 @@ export default function Games() {
     if (teamName === SELECT_ENUM.NONE) {
       return;
     }
-    const res = games.filter(game => {
-      return game.teams.some(team => {
-        const res2 = team.name === teamName;
-        return res2;
-      });
-    });
+    const res = games.filter(game =>
+      game.teams.some(team => team.name === teamName),
+    );
     setGames(res);
   };
 
