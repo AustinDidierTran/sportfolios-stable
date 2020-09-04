@@ -69,9 +69,7 @@ export default function Games() {
       });
     }
     if (field != SELECT_ENUM.NONE) {
-      games = games.filter(game => {
-        return game.field === field;
-      });
+      games.filter(game => game.field === field);
     }
     setGames(games);
   };
