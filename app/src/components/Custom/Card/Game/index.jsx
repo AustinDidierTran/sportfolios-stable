@@ -6,13 +6,22 @@ import { Typography, Card } from '../../../MUI';
 import { formatDate } from '../../../../utils/stringFormats';
 import moment from 'moment';
 import { ListItemText } from '@material-ui/core';
+import TwoTeamGame from './TwoTeamGame';
 
 export default function GameItem(props) {
   const { teams, field, start_time: startTime, phaseName } = props;
 
-  const team1 = teams[0];
-  const team2 = teams[1];
-
+  if (teams.length === 2) {
+    return (
+      <TwoTeamGame
+        team1={teams[0]}
+        team2={teams[1]}
+        field={field}
+        startTime={startTime}
+        phaseName={phaseName}
+      />
+    );
+  }
   return (
     <Card className={styles.game}>
       <div className={styles.main}>
@@ -20,7 +29,7 @@ export default function GameItem(props) {
           {phaseName}
         </Typography>
         <ListItemText
-          className={styles.name}
+          className={styles.time}
           primary={formatDate(moment(startTime), 'h:mm')}
           secondary={formatDate(moment(startTime), 'ddd')}
         ></ListItemText>
@@ -28,17 +37,14 @@ export default function GameItem(props) {
           {field}
         </Typography>
       </div>
-      <div className={styles.teams}>
-        <Typography className={styles.name1}>{team1.name}</Typography>
-        <Typography className={styles.score1}>
-          {team1.score}
-        </Typography>
-        <Typography className={styles.union}>-</Typography>
-        <Typography className={styles.name2}>{team2.name}</Typography>
-        <Typography className={styles.score2}>
-          {team2.score}
-        </Typography>
-      </div>
+      {teams.map(team => (
+        <div className={styles.teams}>
+          <Typography className={styles.name}>{team.name}</Typography>
+          <Typography className={styles.score}>
+            {team.score}
+          </Typography>
+        </div>
+      ))}
     </Card>
   );
 }
