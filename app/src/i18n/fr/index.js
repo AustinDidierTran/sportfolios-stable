@@ -32,6 +32,7 @@ export default {
       "Vous ne pouvez pas ajouter une option de paiement car l'administrateur n'a pas de compte banquaire relié à son compte",
     admins: 'Administrateurs',
     adress: 'Addresse',
+    at: 'à',
     empty_roster:
       "Cet alignement est vide. Le capitaine de cette équipe n'a pas entré son alignement.",
     empty_roster_add_players:
@@ -101,6 +102,7 @@ export default {
     feature_coming_soon: 'Fonctionnalité à venir!',
     field: 'Terrain',
     field_added: 'Terrain ajouté',
+    filters: 'Filtres',
     finish: 'Finir',
     first_name: 'Prénom',
     fixed_date: 'Date fixe',
@@ -127,8 +129,8 @@ export default {
     send_email: 'Envoyer un courriel',
     maximum_spots: 'Nombre de places',
     max_length: 'Longueur maximum',
-
     menu: 'Menu',
+    more_filters: 'Plus de filtre',
     name: 'Nom',
     next: 'Prochain',
     new_email: 'Nouveau courriel',
@@ -150,6 +152,10 @@ export default {
     no_teams_registered: 'Aucune équipes inscrites',
     no_remaining_spots:
       "Désolé, votre inscription a été refusé. L'événement est maintenant plein et il n'y a plus de place.",
+    of_everyone: 'de tout le monde',
+    of: 'du',
+    of_team: "de l'équipe",
+    on: 'sur le',
     on_going_events: 'Événements en cours',
     only_available_on_desktop: 'Seulement disponible sur ordinateur',
     option: 'Option',
