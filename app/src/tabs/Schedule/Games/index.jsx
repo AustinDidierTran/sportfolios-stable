@@ -12,6 +12,7 @@ import moment from 'moment';
 import TeamSelect from './TeamSelect';
 import PhaseSelect from './PhaseSelect';
 import FieldSelect from './FieldSelect';
+import TimeSlotSelect from './TimeSlotSelect';
 
 export default function Games() {
   const { id: eventId } = useParams();
@@ -19,6 +20,7 @@ export default function Games() {
   const [teamName, setTeamName] = useState(SELECT_ENUM.NONE);
   const [phaseId, setPhaseId] = useState(SELECT_ENUM.NONE);
   const [field, setField] = useState(SELECT_ENUM.NONE);
+  const [timeSlot, setTimeSlot] = useState(SELECT_ENUM.NONE);
 
   useEffect(() => {
     getGames();
@@ -26,7 +28,7 @@ export default function Games() {
 
   useEffect(() => {
     filter();
-  }, [teamName, phaseId, field]);
+  }, [teamName, phaseId, field, timeSlot]);
 
   const sortGames = games => {
     const res = games.sort(
@@ -34,6 +36,7 @@ export default function Games() {
     );
     return res;
   };
+
   const getGames = async () => {
     const { data } = await api(
       formatRoute('/api/entity/games', null, { eventId }),
@@ -50,8 +53,13 @@ export default function Games() {
   const changePhaseId = phaseId => {
     setPhaseId(phaseId);
   };
+
   const changeField = field => {
     setField(field);
+  };
+
+  const changeTimeSlot = timeSlot => {
+    setTimeSlot(timeSlot);
   };
 
   const filter = async () => {
@@ -67,6 +75,9 @@ export default function Games() {
     if (field != SELECT_ENUM.NONE) {
       games.filter(game => game.field === field);
     }
+    if (timeSlot != SELECT_ENUM.NONE) {
+      games.filter(game => game.start_time === timeSlot);
+    }
     setGames(games);
   };
 
@@ -76,6 +87,7 @@ export default function Games() {
         <TeamSelect onChange={changeTeamName} />
         <PhaseSelect onChange={changePhaseId} />
         <FieldSelect onChange={changeField} />
+        <TimeSlotSelect onChange={changeTimeSlot} />
       </div>
       <div className={styles.main} style={{ marginTop: '16px' }}>
         {games.map(game => {
