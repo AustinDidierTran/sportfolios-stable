@@ -2,80 +2,29 @@ import React from 'react';
 
 import styles from './GameItem.module.css';
 
-import { Typography, Card, TextField } from '../../../MUI';
-import { useFormInput } from '../../../../hooks/forms';
-import { useEffect } from 'react';
+import { Typography, Card } from '../../../MUI';
+import { formatDate } from '../../../../utils/stringFormats';
+import moment from 'moment';
 
 export default function GameItem(props) {
-  const {
-    teams,
-    changeScore,
-    saveGame,
-    field,
-    time,
-    id,
-    getRank,
-  } = props;
-
-  const fieldInput = useFormInput(field);
-  const timeInput = useFormInput(time);
-
-  const theTeams = teams.map(team => {
-    return { ...team, input: useFormInput(team.score) };
-  });
-
-  const saveScore = () => {
-    theTeams.map((team, teamIndex) => {
-      if (team.input.hasChanged) {
-        team.input.setCurrentAsDefault();
-        changeScore(id, teamIndex, team.input.value);
-      }
-    });
-  };
-
-  const save = () => {
-    if (fieldInput.hasChanged || timeInput.hasChanged) {
-      saveGame(id, fieldInput.value, timeInput.value);
-    }
-  };
-
-  useEffect(() => saveScore(), [theTeams]);
-  useEffect(() => save(), [fieldInput.value, timeInput.value]);
-
+  const { teams, field, start_time: startTime, phaseName } = props;
   return (
     <Card className={styles.game}>
       <div className={styles.main}>
-        <TextField
-          className={styles.field}
-          {...fieldInput.inputProps}
-          variant="outlined"
-          size="small"
-        />
-        <TextField
-          variant="outlined"
-          size="small"
-          type="time"
-          className={styles.time}
-          {...timeInput.inputProps}
-        />
+        <Typography className={styles.field}>{field}</Typography>
+        <Typography className={styles.phase}>{phaseName}</Typography>
+        <Typography className={styles.time}>
+          {formatDate(moment(startTime), 'h:mm ddd')}
+        </Typography>
       </div>
-      {theTeams.map(team => (
+      {teams.map(team => (
         <div className={styles.team}>
-          <Typography
-            className={styles.position}
-            color="textSecondary"
-            variant="h7"
-          >
-            {getRank(team.id)}
-          </Typography>
           <Typography className={styles.name} variant="h6">
             {team.name}
           </Typography>
-          <TextField
-            className={styles.score}
-            type="number"
-            {...team.input.inputProps}
-          />
+          <Typography className={styles.score} variant="h6">
+            {team.score}
+          </Typography>
         </div>
       ))}
     </Card>

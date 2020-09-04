@@ -60,10 +60,7 @@ export default function AddGame(props) {
       value: d.date,
       display: formatDate(moment(d.date), 'ddd DD MMM h:mm'),
     }));
-    setSlots([
-      { value: 'none', display: t('none_feminine') },
-      ...res,
-    ]);
+    setSlots(res);
   };
 
   const getTeams = async () => {
@@ -136,7 +133,7 @@ export default function AddGame(props) {
       const { phase, field, time, team1, team2 } = values;
       let realPhaseId = phase;
       let realTeam1 = team1;
-      let realTeam2 = team1;
+      let realTeam2 = team2;
       let realTime = new Date(time).getTime();
       let realField = field;
       if (phase === 'none') {
@@ -157,6 +154,7 @@ export default function AddGame(props) {
       const res = await api('/api/entity/game', {
         method: 'POST',
         body: JSON.stringify({
+          eventId,
           phaseId: realPhaseId,
           field: realField,
           time: realTime,

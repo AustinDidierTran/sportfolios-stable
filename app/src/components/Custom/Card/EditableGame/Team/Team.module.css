@@ -25,17 +25,12 @@
 
 .main {
   display: grid !important;
-  grid-template-columns: 2fr 2fr 2fr;
-  grid-template-areas: 'phase field time';
+  grid-template-columns: 2fr 1fr 2fr;
+  grid-template-areas: 'field . time';
 }
 
 .field {
   grid-area: field;
-  margin: 8px !important;
-}
-
-.phase {
-  grid-area: phase;
   margin: 8px !important;
 }
 
@@ -47,6 +42,6 @@
 @media (min-width: 768px) {
   .main {
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-areas: 'phase field time';
+    grid-template-areas: 'field . time';
   }
 }

@@ -195,6 +195,23 @@ router.get(`${BASE_URL}/phases`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/games`, async ctx => {
+  const games = await queries.getGames(ctx.query.eventId);
+
+  if (games) {
+    ctx.body = {
+      status: 'success',
+      data: games,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/slots`, async ctx => {
   const slots = await queries.getSlots(ctx.query.eventId);
 
