@@ -4,21 +4,34 @@
 
 .teams {
   display: grid !important;
-  grid-template-columns: 1fr 1fr;
-  grid-template-areas: 'name score';
+  grid-template-columns: 5fr 1fr 1fr 1fr 5fr;
+  grid-template-areas: 'name1 score1 union score2 name2';
   column-gap: 4px;
   padding: 8px;
 }
 
-.name {
-  grid-area: name;
+.union {
+  grid-area: union;
+}
+
+.name1 {
+  grid-area: name1;
+  justify-self: center;
+  overflow: auto;
+}
+.name2 {
+  grid-area: name2;
   justify-self: center;
   overflow: auto;
 }
 
-.score {
-  grid-area: score;
-  justify-self: center;
+.score1 {
+  grid-area: score1;
+  justify-self: end;
+}
+.score2 {
+  grid-area: score2;
+  justify-self: start;
 }
 
 .main {
