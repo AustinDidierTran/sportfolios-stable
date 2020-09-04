@@ -2,51 +2,65 @@
   margin-bottom: 16px;
 }
 
-.team {
+.teams {
   display: grid !important;
-  grid-template-columns: 1fr 6fr 2fr;
-  grid-template-areas: 'position name score';
+  grid-template-columns: 5fr 1fr 1fr 1fr 5fr;
+  grid-template-areas: 'name1 score1 union score2 name2';
   column-gap: 4px;
   padding: 8px;
 }
 
-.name {
-  grid-area: name;
-  justify-self: start;
-}
-.position {
-  grid-area: position;
+.union {
+  grid-area: union;
 }
 
-.score {
-  grid-area: score;
+.name1 {
+  grid-area: name1;
   justify-self: center;
+  overflow: auto;
+}
+.name2 {
+  grid-area: name2;
+  justify-self: center;
+  overflow: auto;
+}
+
+.score1 {
+  grid-area: score1;
+  justify-self: end;
+}
+.score2 {
+  grid-area: score2;
+  justify-self: start;
 }
 
 .main {
   display: grid !important;
-  grid-template-columns: 2fr 2fr 2fr;
-  grid-template-areas: 'phase field time';
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: 'phase time field';
 }
 
 .field {
   grid-area: field;
   margin: 8px !important;
+  overflow: auto;
 }
 
 .phase {
   grid-area: phase;
   margin: 8px !important;
+  overflow: auto;
 }
 
 .time {
   grid-area: time;
   margin: 8px !important;
+  overflow: auto;
 }
 
 @media (min-width: 768px) {
   .main {
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-areas: 'phase field time';
+    grid-template-areas: 'phase time field';
   }
 }
