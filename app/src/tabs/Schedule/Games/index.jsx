@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Select } from '../../../components/Custom';
+import { Card } from '../../../components/Custom';
 import styles from './Games.module.css';
 import {
   CARD_TYPE_ENUM,
@@ -9,18 +9,22 @@ import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import moment from 'moment';
-import { useTranslation } from 'react-i18next';
+import TeamSelect from './TeamSelect';
+import PhaseSelect from './PhaseSelect';
 
 export default function Games() {
-  const { t } = useTranslation();
   const { id: eventId } = useParams();
   const [games, setGames] = useState([]);
-  const [teams, setTeams] = useState([]);
+  const [teamName, setTeamName] = useState(SELECT_ENUM.NONE);
+  const [phaseId, setPhaseId] = useState(SELECT_ENUM.NONE);
 
   useEffect(() => {
     getGames();
-    getTeams();
   }, [eventId]);
+
+  useEffect(() => {
+    filter();
+  }, [teamName, phaseId]);
 
   const sortGames = games => {
     const res = games.sort(
@@ -38,44 +42,32 @@ export default function Games() {
     return res;
   };
 
-  const getTeams = async () => {
-    const { data } = await api(
-      formatRoute('/api/entity/teamsSchedule', null, { eventId }),
-    );
-    const res = data.map(d => ({
-      value: d.name,
-      display: d.name,
-    }));
-
-    setTeams([
-      { value: SELECT_ENUM.NONE, display: t('none_feminine') },
-      ...res,
-    ]);
+  const changeTeamName = teamName => {
+    setTeamName(teamName);
   };
 
-  const onTeamChange = async teamName => {
-    const games = await getGames();
-    if (teamName === SELECT_ENUM.NONE) {
-      return;
+  const changePhaseId = phaseId => {
+    setPhaseId(phaseId);
+  };
+
+  const filter = async () => {
+    let games = await getGames();
+    if (teamName != SELECT_ENUM.NONE) {
+      games = games.filter(game =>
+        game.teams.some(team => team.name === teamName),
+      );
     }
-    const res = games.filter(game =>
-      game.teams.some(team => team.name === teamName),
-    );
-    setGames(res);
+    if (phaseId != SELECT_ENUM.NONE) {
+      games = games.filter(game => game.phase_id === phaseId);
+    }
+    setGames(games);
   };
 
   return (
     <>
       <div className={styles.select}>
-        <Select
-          options={teams}
-          namespace="team"
-          autoFocus
-          margin="dense"
-          label={t('team')}
-          fullWidth
-          onChange={onTeamChange}
-        />
+        <TeamSelect onChange={changeTeamName} />
+        <PhaseSelect onChange={changePhaseId} />
       </div>
       <div className={styles.main} style={{ marginTop: '16px' }}>
         {games.map(game => {
