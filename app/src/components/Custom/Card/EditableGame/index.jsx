@@ -2,9 +2,10 @@ import React from 'react';
 
 import styles from './EditableGameItem.module.css';
 
-import { Typography, Card, TextField } from '../../../MUI';
+import { Card, TextField } from '../../../MUI';
 import { useFormInput } from '../../../../hooks/forms';
 import { useEffect } from 'react';
+import Team from './Team';
 
 export default function EditableGameItem(props) {
   const {
@@ -60,23 +61,7 @@ export default function EditableGameItem(props) {
         />
       </div>
       {theTeams.map(team => (
-        <div className={styles.team}>
-          <Typography
-            className={styles.position}
-            color="textSecondary"
-            variant="h7"
-          >
-            {getRank(team.id)}
-          </Typography>
-          <Typography className={styles.name} variant="h6">
-            {team.name}
-          </Typography>
-          <TextField
-            className={styles.score}
-            type="number"
-            {...team.input.inputProps}
-          />
-        </div>
+        <Team team={team} getRank={getRank} />
       ))}
     </Card>
   );
