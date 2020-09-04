@@ -53,16 +53,12 @@ export default function Games() {
   const filter = async () => {
     let games = await getGames();
     if (teamName != SELECT_ENUM.NONE) {
-      games = games.filter(game => {
-        return game.teams.some(team => {
-          return team.name === teamName;
-        });
-      });
+      games = games.filter(game =>
+        game.teams.some(team => team.name === teamName),
+      );
     }
     if (phaseId != SELECT_ENUM.NONE) {
-      games = games.filter(game => {
-        return game.phase_id === phaseId;
-      });
+      games = games.filter(game => game.phase_id === phaseId);
     }
     setGames(games);
   };
