@@ -9,7 +9,6 @@ A sport platform looking to generate sport portfolios (Sportfolios) automaticall
 - [Setup the project with the mock server](#setup-the-project-with-the-mock-server)
 - [Setup the project with a server](#setup-the-project-with-a-server)
 - [How to run migrations](#how-to-run-migrations)
-- [Final step](#final-step)
 - [How to run the application](#how-to-run-the-application)
   - [How email are displayed](#how-email-are-displayed)
 - [How to follow git flow and make standard pull requests](#how-to-follow-git-flow-and-make-standard-pull-requests)
@@ -151,7 +150,7 @@ module.exports = {
   test: {
     client: 'pg',
     connection:
-      'sportfolios_api_test://username:password@localhost/sportfolios_api_test',
+      'postgres://username:password@localhost/sportfolios_api_test',
     migrations: {
       directory: path.join(BASE_PATH, 'migrations'),
     },
@@ -162,7 +161,7 @@ module.exports = {
   development: {
     client: 'pg',
     connection:
-      'sportfolios_api_dev://username:password@localhost/sportfolios_api_dev',
+      'postgres://username:password@localhost/sportfolios_api_dev',
     migrations: {
       directory: path.join(BASE_PATH, 'migrations'),
     },
@@ -173,7 +172,7 @@ module.exports = {
   production: {
     client: 'pg',
     connection:
-      'sportfolios_api://username:password@localhost/sportfolios_api',
+      'postgres://username:password@localhost/sportfolios_api',
     migrations: {
       directory: path.join(BASE_PATH, 'migrations'),
     },
@@ -192,22 +191,22 @@ You will also need to create a new file at `api/src/db` called `database.json`. 
 {
   "dev": {
     "driver": "pg",
-    "user": "yourUsername",
-    "password": "yourPassword",
+    "user": "username",
+    "password": "password",
     "host": "localhost",
     "database": "sportfolios_api_dev"
   },
   "test": {
     "driver": "pg",
-    "user": "yourUsername",
-    "password": "yourPassword",
+    "user": "username",
+    "password": "password",
     "host": "localhost",
     "database": "sportfolios_api_test"
   },
   "prod": {
     "driver": "pg",
-    "user": "yourUsername",
-    "password": "yourPassword",
+    "user": "username",
+    "password": "password",
     "host": "localhost",
     "database": "sportfolios_api"
   },
@@ -245,17 +244,6 @@ db-migrate create <migration name> --sql-file
 ```
 
 For more info about db-migrate, you can look at the documentation: https://db-migrate.readthedocs.io/en/latest/Getting%20Started/commands/#up
-
-## Final step
-
-There you go. After this, run in two different terminals the following commands to run in dev:
-
-```sh
-npm run webserver
-npm run dev
-```
-
-There you go, you should have a running API on port 1337 and server on port 3000!
 
 ## How to run the application
 
