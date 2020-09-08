@@ -190,35 +190,33 @@ You will also need to create a new file at `api/src/db` called `database.json`. 
 
 ```json
 {
-  {
   "dev": {
-	"driver": "pg",
-	"user" : "yourUsername",
-	"password" : "yourPassword",
-	"host" : "localhost",
-	"database": "sportfolios_api_dev"
-	},
-"test": {
-	"driver": "pg",
-	"user" : "yourUsername",
-	"password" : "yourPassword",
-	"host" : "localhost",
-	"database": "sportfolios_api_test"
-	},
-"prod": {
-	"driver": "pg",
-	"user" : "yourUsername",
-	"password" : "yourPassword",
-	"host" : "localhost",
-	"database": "sportfolios_api"
-	},
+    "driver": "pg",
+    "user": "yourUsername",
+    "password": "yourPassword",
+    "host": "localhost",
+    "database": "sportfolios_api_dev"
+  },
+  "test": {
+    "driver": "pg",
+    "user": "yourUsername",
+    "password": "yourPassword",
+    "host": "localhost",
+    "database": "sportfolios_api_test"
+  },
+  "prod": {
+    "driver": "pg",
+    "user": "yourUsername",
+    "password": "yourPassword",
+    "host": "localhost",
+    "database": "sportfolios_api"
+  },
 
   "other": "postgres://uname:pw@server.com/dbname"
 }
-}
 ```
 
-Don't forget to change `database`, `username` and `password` for the right parameters.
+Don't forget to change `username` and `password` for the right parameters.
 
 ## How to run migrations
 
