@@ -10,7 +10,6 @@ import TwoTeamGame from './TwoTeamGame';
 
 export default function GameItem(props) {
   const { teams, field, start_time: startTime, phaseName } = props;
-
   if (teams.length === 2) {
     return (
       <TwoTeamGame
