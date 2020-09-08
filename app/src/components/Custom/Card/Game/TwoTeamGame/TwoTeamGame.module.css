@@ -19,6 +19,7 @@
   justify-self: center;
   overflow: auto;
 }
+
 .name2 {
   grid-area: name2;
   justify-self: center;
