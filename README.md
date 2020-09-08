@@ -151,7 +151,7 @@ module.exports = {
   test: {
     client: 'pg',
     connection:
-      'database://username:password@localhost/sportfolios_api_test',
+      'sportfolios_api_test://username:password@localhost/sportfolios_api_test',
     migrations: {
       directory: path.join(BASE_PATH, 'migrations'),
     },
@@ -162,7 +162,7 @@ module.exports = {
   development: {
     client: 'pg',
     connection:
-      'database://username:password@localhost/sportfolios_api_dev',
+      'sportfolios_api_dev://username:password@localhost/sportfolios_api_dev',
     migrations: {
       directory: path.join(BASE_PATH, 'migrations'),
     },
@@ -173,7 +173,7 @@ module.exports = {
   production: {
     client: 'pg',
     connection:
-      'database://username:password@localhost/sportfolios_api',
+      'sportfolios_api://username:password@localhost/sportfolios_api',
     migrations: {
       directory: path.join(BASE_PATH, 'migrations'),
     },
@@ -190,10 +190,31 @@ You will also need to create a new file at `api/src/db` called `database.json`. 
 
 ```json
 {
-  "dev": "database://username:password@localhost/sportfolios_api_dev",
-  "test": "database://username:password@localhost/sportfolios_api_test",
-  "prod": "database://username:password@localhost/sportfolios_api",
+  {
+  "dev": {
+	"driver": "pg",
+	"user" : "yourUsername",
+	"password" : "yourPassword",
+	"host" : "localhost",
+	"database": "sportfolios_api_dev"
+	},
+"test": {
+	"driver": "pg",
+	"user" : "yourUsername",
+	"password" : "yourPassword",
+	"host" : "localhost",
+	"database": "sportfolios_api_test"
+	},
+"prod": {
+	"driver": "pg",
+	"user" : "yourUsername",
+	"password" : "yourPassword",
+	"host" : "localhost",
+	"database": "sportfolios_api"
+	},
+
   "other": "postgres://uname:pw@server.com/dbname"
+}
 }
 ```
 
