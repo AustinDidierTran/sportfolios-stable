@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Card, FormDialog } from '../../../../../components/Custom';
+import { FormDialog } from '../../../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import api from '../../../../../actions/api';
 import {

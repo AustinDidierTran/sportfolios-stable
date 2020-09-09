@@ -1,4 +1,3 @@
-import React from 'react';
 import { formatRoute } from '../../../actions/goTo';
 import api from '../../../actions/api';
 import { SELECT_ENUM } from '../../../../../common/enums';
