@@ -1201,13 +1201,13 @@ async function updateGame(
   teamId1,
   teamId2,
 ) {
-  let res = [];
   let realTime = new Date(time);
   if (!time) {
     realTime = null;
   }
+  const res = [];
   if (phaseId.length) {
-    res = await knex('games')
+    const [r] = await knex('games')
       .where({
         id: gameId,
       })
@@ -1215,10 +1215,11 @@ async function updateGame(
         phase_id: phaseId,
       })
       .returning('*');
+    res.push(r);
   }
 
   if (field.length) {
-    res = await knex('games')
+    const [r] = await knex('games')
       .where({
         id: gameId,
       })
@@ -1226,10 +1227,11 @@ async function updateGame(
         field,
       })
       .returning('*');
+    res.push(r);
   }
 
   if (realTime) {
-    res = await knex('games')
+    const [r] = await knex('games')
       .where({
         id: gameId,
       })
@@ -1237,10 +1239,11 @@ async function updateGame(
         start_time: realTime,
       })
       .returning('*');
+    res.push(r);
   }
 
   if (team1.length) {
-    res = await knex('game_teams')
+    const [r] = await knex('game_teams')
       .where({
         id: teamId1,
       })
@@ -1248,10 +1251,11 @@ async function updateGame(
         name: team1,
       })
       .returning('*');
+    res.push(r);
   }
 
   if (team2.length) {
-    res = await knex('game_teams')
+    const [r] = await knex('game_teams')
       .where({
         id: teamId2,
       })
@@ -1259,8 +1263,9 @@ async function updateGame(
         name: team2,
       })
       .returning('*');
+    res.push(r);
   }
-  return res;
+  return Promise.all(res);
 }
 
 async function removeEntityRole(entityId, entityIdAdmin) {
