@@ -57,6 +57,7 @@ const {
   updateEvent: updateEventHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
   updateMember: updateMemberHelper,
+  updateGame: updateGameHelper,
   updateRegistration: updateRegistrationHelper,
   eventInfos: eventInfosHelper,
   addPlayerToRoster: addPlayerToRosterHelper,
@@ -338,6 +339,30 @@ async function updateMember(body) {
   return res;
 }
 
+async function updateGame(body) {
+  const {
+    gameId,
+    phaseId,
+    field,
+    time,
+    team1,
+    team2,
+    teamId1,
+    teamId2,
+  } = body;
+  const res = await updateGameHelper(
+    gameId,
+    phaseId,
+    field,
+    time,
+    team1,
+    team2,
+    teamId1,
+    teamId2,
+  );
+  return res;
+}
+
 async function addMember(body) {
   const {
     member_type,
@@ -541,6 +566,7 @@ module.exports = {
   updateEvent,
   updateGeneralInfos,
   updateMember,
+  updateGame,
   updateRegistration,
   eventInfos,
   getRoster,

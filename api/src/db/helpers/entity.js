@@ -1171,7 +1171,6 @@ async function addRoster(rosterId, roster) {
 
   return players;
 }
-
 async function updateMember(
   memberType,
   organizationId,
@@ -1189,6 +1188,78 @@ async function updateMember(
       expiration_date: expirationDate,
     })
     .returning('*');
+  return res;
+}
+
+async function updateGame(
+  gameId,
+  phaseId,
+  field,
+  time,
+  team1,
+  team2,
+  teamId1,
+  teamId2,
+) {
+  let res = [];
+  let realTime = new Date(time);
+  if (!time) {
+    realTime = null;
+  }
+  if (phaseId.length) {
+    res = await knex('games')
+      .where({
+        id: gameId,
+      })
+      .update({
+        phase_id: phaseId,
+      })
+      .returning('*');
+  }
+
+  if (field.length) {
+    res = await knex('games')
+      .where({
+        id: gameId,
+      })
+      .update({
+        field,
+      })
+      .returning('*');
+  }
+
+  if (realTime) {
+    res = await knex('games')
+      .where({
+        id: gameId,
+      })
+      .update({
+        start_time: realTime,
+      })
+      .returning('*');
+  }
+
+  if (team1.length) {
+    res = await knex('game_teams')
+      .where({
+        id: teamId1,
+      })
+      .update({
+        name: team1,
+      })
+      .returning('*');
+  }
+
+  if (team2.length) {
+    res = await knex('game_teams')
+      .where({
+        id: teamId2,
+      })
+      .update({
+        name: team2,
+      })
+      .returning('*');
+  }
   return res;
 }
 
@@ -1325,6 +1396,7 @@ module.exports = {
   updateEvent,
   updateGeneralInfos,
   updateMember,
+  updateGame,
   updateRegistration,
   eventInfos,
   addPlayerToRoster,
