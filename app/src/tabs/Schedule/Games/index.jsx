@@ -177,11 +177,9 @@ export default function Games(props) {
       <TeamSelect onChange={changeTeamName} />
       <Typography>{description}</Typography>
       <div className={styles.main} style={{ marginTop: '16px' }}>
-        {games.map(game => {
-          return (
-            <ChangeGame update={update} role={role} game={game} />
-          );
-        })}
+        {games.map(game => (
+          <ChangeGame update={update} role={role} game={game} />
+        ))}
       </div>
     </>
   );

@@ -94,13 +94,11 @@ export default function ChangeGame(props) {
     },
   ];
 
-  const fields = game.teams.map((team, index) => {
-    return {
-      type: 'number',
-      namespace: `score${index + 1}`,
-      label: team.name,
-    };
-  });
+  const fields = game.teams.map((team, index) => ({
+    type: 'number',
+    namespace: `score${index + 1}`,
+    label: team.name,
+  }));
 
   const gameClick = () => {
     setGameDialog(true);
