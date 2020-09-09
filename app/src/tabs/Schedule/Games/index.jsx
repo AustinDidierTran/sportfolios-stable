@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button } from '../../../components/Custom';
+import { Button } from '../../../components/Custom';
 import MUIButton from '@material-ui/core/Button';
 import styles from './Games.module.css';
-import {
-  CARD_TYPE_ENUM,
-  SELECT_ENUM,
-} from '../../../../../common/enums';
+import { SELECT_ENUM } from '../../../../../common/enums';
 import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
@@ -23,8 +20,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { formatDate } from '../../../utils/stringFormats';
 import { Typography } from '@material-ui/core';
+import ChangeGame from './ChangeGame';
 
-export default function Games() {
+export default function Games(props) {
+  const { role } = props;
   const { id: eventId } = useParams();
   const { t } = useTranslation();
   const [games, setGames] = useState([]);
@@ -90,10 +89,10 @@ export default function Games() {
       games = games.filter(game => game.phase_id === phaseId);
     }
     if (field != SELECT_ENUM.NONE) {
-      games.filter(game => game.field === field);
+      games = games.filter(game => game.field === field);
     }
     if (timeSlot != SELECT_ENUM.NONE) {
-      games.filter(game => game.start_time === timeSlot);
+      games = games.filter(game => game.start_time === timeSlot);
     }
     setGames(games);
   };
@@ -131,6 +130,10 @@ export default function Games() {
 
   const closeDialog = () => {
     setOpen(false);
+  };
+
+  const update = () => {
+    getGames();
   };
 
   return (
@@ -174,9 +177,9 @@ export default function Games() {
       <TeamSelect onChange={changeTeamName} />
       <Typography>{description}</Typography>
       <div className={styles.main} style={{ marginTop: '16px' }}>
-        {games.map(game => {
-          return <Card items={game} type={CARD_TYPE_ENUM.GAME} />;
-        })}
+        {games.map(game => (
+          <ChangeGame update={update} role={role} game={game} />
+        ))}
       </div>
     </>
   );

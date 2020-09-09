@@ -135,7 +135,7 @@ export default function ScheduleTab(props) {
         phaseId={phaseId}
         keepPhase={keepPhase}
       />
-      <Games />
+      <Games role={role} />
     </>
   );
 }

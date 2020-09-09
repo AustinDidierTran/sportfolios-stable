@@ -87,6 +87,7 @@ export default {
     enter_person_name: 'Entrée le nom du joueur',
     enter_team_name: "Entrée votre nom d'équipe",
     enter_player_name: 'Entrez le nom du joueur',
+    enter_score: 'Entrez le pointage',
     entity_not_found: "Cette entité n'existe pas",
     event_is_full: "l'événements est plein, aucune place disponible",
     event_end: "Fin de l'événement",

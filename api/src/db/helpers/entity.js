@@ -985,6 +985,19 @@ async function addGame(eventId, phaseId, field, time, team1, team2) {
   return res;
 }
 
+async function addScore(score, teamId, gameId) {
+  const res = await knex('game_teams')
+    .where({
+      id: teamId,
+      game_id: gameId,
+    })
+    .update({
+      score: score,
+    })
+    .returning('*');
+  return res;
+}
+
 async function addField(field, eventId) {
   const realId = await getRealId(eventId);
   const [res] = await knex('event_fields')
@@ -1267,6 +1280,7 @@ module.exports = {
   addMember,
   addMembership,
   addGame,
+  addScore,
   addField,
   addTeamToSchedule,
   addPhase,
