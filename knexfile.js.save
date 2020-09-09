@@ -1,0 +1,39 @@
+const path = require('path');
+
+const BASE_PATH = path.join(__dirname, 'api', 'src', 'db');
+
+module.exports = {
+  test: {
+    client: 'pg',
+    connection:
+      'database://username:password@localhost/sportfolios_api_test',
+    migrations: {
+      directory: path.join(BASE_PATH, 'migrations'),
+    },
+    seeds: {
+  vic    directory: path.join(BASE_PATH, 'seeds'),
+    },
+  },
+  development: {
+    client: 'pg',
+    connection:
+      'database://username:password@localhost/sportfolios_api_dev',
+    migrations: {
+      directory: path.join(BASE_PATH, 'migrations'),
+    },
+    seeds: {
+      directory: path.join(BASE_PATH, 'seeds'),
+    },
+  },
+  production: {
+    client: 'pg',
+    connection:
+      'database://username:password@localhost/sportfolios_api',
+    migrations: {
+      directory: path.join(BASE_PATH, 'migrations'),
+    },
+    seeds: {
+      directory: path.join(BASE_PATH, 'seeds'),
+    },
+  },
+};

@@ -1,0 +1,12 @@
+{
+  "dev": "database://vic:bingo@localhost/sportfolios_api_dev",
+  "test": "database://vic:bingo@localhost/sportfolios_api_test",
+  "prod": "database://vic:bingo@localhost/sportfolios_api",
+  "other": "postgres://uname:pw@server.com/dbname"
+}
+{
+  "dev": "database://username:password@localhost/sportfolios_api_dev",
+  "test": "database://username:password@localhost/sportfolios_api_test",
+  "prod": "database://username:password@localhost/sportfolios_api",
+  "other": "postgres://uname:pw@server.com/dbname"
+}

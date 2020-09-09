@@ -24,6 +24,8 @@ export default function CustomFormDialog(props) {
       open={open}
       onClose={onClose}
       aria-labelledby="form-dialog-title"
+      maxWidth={'xs'}
+      fullWidth
     >
       <DialogTitle id="form-dialog-title">{title}</DialogTitle>
       <form onSubmit={formik.handleSubmit}>
