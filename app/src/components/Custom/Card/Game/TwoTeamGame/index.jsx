@@ -9,7 +9,6 @@ import { ListItemText } from '@material-ui/core';
 
 export default function TwoTeamGame(props) {
   const { team1, team2, field, startTime, phaseName } = props;
-  console.log({});
 
   return (
     <Card className={styles.game}>
