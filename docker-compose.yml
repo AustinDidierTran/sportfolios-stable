@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+
+  # API container
+  api:  
+    container_name: sportfolios_api
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    volumes:
+      - '.:/sportfolios'
+      - '/sportfolios/node_modules'
+    ports:
+      - 1337:1337
+    # to watch file changes
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    # interactive mode for development only (fix a know bug where container don't start and exit with code 0)
+    stdin_open: true
+    # allow container to interact with localhost (for localhost database in dev)
+    network_mode: 'host'  
+
+  # App container
+  app:
+    container_name: sportfolios_app
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    volumes:
+      - '.:/sportfolios'
+      - '/sportfolios/node_modules'
+    ports:
+      - 3000:3000
+    # to watch file changes
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    # interactive mode for development only (fix a know bug where container don't start and exit with code 0)
+    stdin_open: true
