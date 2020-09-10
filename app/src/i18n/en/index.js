@@ -34,6 +34,8 @@ export default {
     adress: 'Address',
     are_you_sure_you_want_to_unregister_this_team:
       'Are you sure you want to unregister this team and refund the team if the team has already paid?',
+    alias: 'Alias',
+    alias_is_already_used: 'Alias is already used',
     at: 'at',
     cart: 'Cart',
     checkout: 'Checkout',
@@ -143,6 +145,7 @@ export default {
     none_feminine: 'None',
     no_payment_method: 'There is currently no payment method',
     no_account_signup: "Don't have an account? Signup!",
+    no_alias: 'No alias',
     no_description: 'No Description',
     notifications: 'Notifications',
     not_paid: 'Not paid',

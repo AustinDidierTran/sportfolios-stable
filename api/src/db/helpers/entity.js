@@ -720,6 +720,14 @@ async function getEvent(eventId) {
   return res;
 }
 
+async function getAlias(entityId) {
+  const realId = await getRealId(entityId);
+  const [res] = await knex('alias')
+    .select('*')
+    .where({ id: realId });
+  return res;
+}
+
 async function getPhases(eventId) {
   const realId = await getRealId(eventId);
   const res = await knex('phase')
@@ -953,6 +961,17 @@ async function addMember(
       organization_id: realId,
       person_id: personId,
       expiration_date: expirationDate,
+    })
+    .returning('*');
+  return res;
+}
+
+async function addAlias(entityId, alias) {
+  const realId = await getRealId(entityId);
+  const [res] = await knex('alias')
+    .insert({
+      id: realId,
+      alias,
     })
     .returning('*');
   return res;
@@ -1192,6 +1211,19 @@ async function updateMember(
   return res;
 }
 
+async function updateAlias(entityId, alias) {
+  const realId = await getRealId(entityId);
+  const res = await knex('alias')
+    .where({
+      id: realId,
+    })
+    .update({
+      alias,
+    })
+    .returning('*');
+  return res;
+}
+
 async function removeEntityRole(entityId, entityIdAdmin) {
   const realEntityId = await getRealId(entityId);
   const realAdminId = await getRealId(entityIdAdmin);
@@ -1278,6 +1310,7 @@ module.exports = {
   addEntity,
   addEntityRole,
   addMember,
+  addAlias,
   addMembership,
   addGame,
   addScore,
@@ -1308,6 +1341,7 @@ module.exports = {
   getRemainingSpots,
   getRoster,
   getEvent,
+  getAlias,
   getPhases,
   getGames,
   getSlots,
@@ -1325,6 +1359,7 @@ module.exports = {
   updateEvent,
   updateGeneralInfos,
   updateMember,
+  updateAlias,
   updateRegistration,
   eventInfos,
   addPlayerToRoster,

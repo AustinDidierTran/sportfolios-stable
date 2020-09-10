@@ -32,6 +32,8 @@ export default {
       "Vous ne pouvez pas ajouter une option de paiement car l'administrateur n'a pas de compte banquaire relié à son compte",
     admins: 'Administrateurs',
     adress: 'Addresse',
+    alias: 'Alias',
+    alias_is_already_used: "L'alias est déjà utilisé",
     at: 'à',
     empty_roster:
       "Cet alignement est vide. Le capitaine de cette équipe n'a pas entré son alignement.",
@@ -143,6 +145,7 @@ export default {
     no_payment_method:
       "Il n'y a actuellement aucune méthode de paiement",
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
+    no_alias: 'Aucun alias',
     no_description: 'Aucune description',
     notifications: 'Notifications',
     not_paid: 'Paiement dû',

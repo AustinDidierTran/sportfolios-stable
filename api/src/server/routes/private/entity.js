@@ -178,6 +178,23 @@ router.get(`${BASE_URL}/event`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/alias`, async ctx => {
+  const alias = await queries.getAlias(ctx.query.entityId);
+
+  if (alias) {
+    ctx.body = {
+      status: 'success',
+      data: alias,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/phases`, async ctx => {
   const phases = await queries.getPhases(ctx.query.eventId);
 
@@ -360,6 +377,23 @@ router.put(`${BASE_URL}/member`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/alias`, async ctx => {
+  const entity = await queries.updateAlias(ctx.request.body);
+  if (entity) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.put(`${BASE_URL}/updateRegistration`, async ctx => {
   const entity = await queries.updateRegistration(
     ctx.request.body,
@@ -481,6 +515,23 @@ router.post(`${BASE_URL}/member`, async ctx => {
     ctx.body = {
       status: 'success',
       data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/alias`, async ctx => {
+  const alias = await queries.addAlias(ctx.request.body);
+  if (alias) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: alias,
     };
   } else {
     ctx.status = 404;
