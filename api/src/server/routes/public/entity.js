@@ -109,4 +109,89 @@ router.get(`${BASE_URL}/options`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/phases`, async ctx => {
+  const phases = await queries.getPhases(ctx.query.eventId);
+
+  if (phases) {
+    ctx.body = {
+      status: 'success',
+      data: phases,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/games`, async ctx => {
+  const games = await queries.getGames(ctx.query.eventId);
+
+  if (games) {
+    ctx.body = {
+      status: 'success',
+      data: games,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/slots`, async ctx => {
+  const slots = await queries.getSlots(ctx.query.eventId);
+
+  if (slots) {
+    ctx.body = {
+      status: 'success',
+      data: slots,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/teamsSchedule`, async ctx => {
+  const teams = await queries.getTeamsSchedule(ctx.query.eventId);
+
+  if (teams) {
+    ctx.body = {
+      status: 'success',
+      data: teams,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/fields`, async ctx => {
+  const field = await queries.getFields(ctx.query.eventId);
+
+  if (field) {
+    ctx.body = {
+      status: 'success',
+      data: field,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 module.exports = router;
