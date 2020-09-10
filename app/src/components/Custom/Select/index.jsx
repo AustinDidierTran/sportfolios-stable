@@ -3,8 +3,10 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import { useTranslation } from 'react-i18next';
 
 export default function CustomSelect(props) {
+  const { t } = useTranslation();
   const {
     className,
     formik,
@@ -40,7 +42,7 @@ export default function CustomSelect(props) {
         {options && options.length ? (
           options.map(option => (
             <MenuItem value={option.value} key={option.value}>
-              {option.display}
+              {option.display || t(option.displayKey)}
             </MenuItem>
           ))
         ) : (

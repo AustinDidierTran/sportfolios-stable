@@ -195,91 +195,6 @@ router.get(`${BASE_URL}/alias`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/phases`, async ctx => {
-  const phases = await queries.getPhases(ctx.query.eventId);
-
-  if (phases) {
-    ctx.body = {
-      status: 'success',
-      data: phases,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
-});
-
-router.get(`${BASE_URL}/games`, async ctx => {
-  const games = await queries.getGames(ctx.query.eventId);
-
-  if (games) {
-    ctx.body = {
-      status: 'success',
-      data: games,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
-});
-
-router.get(`${BASE_URL}/slots`, async ctx => {
-  const slots = await queries.getSlots(ctx.query.eventId);
-
-  if (slots) {
-    ctx.body = {
-      status: 'success',
-      data: slots,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
-});
-
-router.get(`${BASE_URL}/teamsSchedule`, async ctx => {
-  const teams = await queries.getTeamsSchedule(ctx.query.eventId);
-
-  if (teams) {
-    ctx.body = {
-      status: 'success',
-      data: teams,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
-});
-
-router.get(`${BASE_URL}/fields`, async ctx => {
-  const field = await queries.getFields(ctx.query.eventId);
-
-  if (field) {
-    ctx.body = {
-      status: 'success',
-      data: field,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
-});
-
 router.get(`${BASE_URL}/generalInfos`, async ctx => {
   const infos = await queries.getGeneralInfos(ctx.query.entityId);
 
@@ -379,6 +294,23 @@ router.put(`${BASE_URL}/member`, async ctx => {
 
 router.put(`${BASE_URL}/alias`, async ctx => {
   const entity = await queries.updateAlias(ctx.request.body);
+   if (entity) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+  
+router.put(`${BASE_URL}/game`, async ctx => {
+  const entity = await queries.updateGame(ctx.request.body);
   if (entity) {
     ctx.status = 200;
     ctx.body = {

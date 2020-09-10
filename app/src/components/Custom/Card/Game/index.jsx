@@ -9,7 +9,15 @@ import { ListItemText } from '@material-ui/core';
 import TwoTeamGame from './TwoTeamGame';
 
 export default function GameItem(props) {
-  const { teams, field, start_time: startTime, phaseName } = props;
+  const {
+    teams,
+    field,
+    start_time: startTime,
+    phaseName,
+    role,
+    onClick,
+    onEdit,
+  } = props;
   if (teams.length === 2) {
     return (
       <TwoTeamGame
@@ -18,6 +26,9 @@ export default function GameItem(props) {
         field={field}
         startTime={startTime}
         phaseName={phaseName}
+        role={role}
+        onClick={onClick}
+        onEdit={onEdit}
       />
     );
   }

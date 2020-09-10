@@ -81,6 +81,7 @@ export default {
     description: 'Description',
     donate: 'Faites un don',
     done: 'Terminé',
+    edit_game: 'Modifier la partie',
     editor: 'Éditeur',
     email: 'Courriel',
     emails: 'Courriels',

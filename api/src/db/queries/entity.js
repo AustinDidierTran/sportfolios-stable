@@ -60,6 +60,7 @@ const {
   updateGeneralInfos: updateGeneralInfosHelper,
   updateMember: updateMemberHelper,
   updateAlias: updateAliasHelper,
+  updateGame: updateGameHelper,
   updateRegistration: updateRegistrationHelper,
   eventInfos: eventInfosHelper,
   addPlayerToRoster: addPlayerToRosterHelper,
@@ -350,6 +351,29 @@ async function updateAlias(body) {
   const res = await updateAliasHelper(entityId, alias);
   return res;
 }
+  async function updateGame(body) {
+  const {
+    gameId,
+    phaseId,
+    field,
+    time,
+    team1,
+    team2,
+    teamId1,
+    teamId2,
+  } = body;
+  const res = await updateGameHelper(
+    gameId,
+    phaseId,
+    field,
+    time,
+    team1,
+    team2,
+    teamId1,
+    teamId2,
+  );
+  return res;
+}
 
 async function addMember(body) {
   const {
@@ -563,6 +587,7 @@ module.exports = {
   updateGeneralInfos,
   updateMember,
   updateAlias,
+  updateGame,
   updateRegistration,
   eventInfos,
   getRoster,
