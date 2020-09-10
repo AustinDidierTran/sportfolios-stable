@@ -13,6 +13,7 @@ const {
   addEntity: addEntityHelper,
   addEntityRole: addEntityRoleHelper,
   addMember: addMemberHelper,
+  addAlias: addAliasHelper,
   addOption: addOptionHelper,
   addGame: addGameHelper,
   addScore: addScoreHelper,
@@ -40,6 +41,7 @@ const {
   getRemainingSpots: getRemainingSpotsHelper,
   getRoster: getRosterHelper,
   getEvent: getEventHelper,
+  getAlias: getAliasHelper,
   getPhases: getPhasesHelper,
   getGames: getGamesHelper,
   getSlots: getSlotsHelper,
@@ -57,6 +59,7 @@ const {
   updateEvent: updateEventHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
   updateMember: updateMemberHelper,
+  updateAlias: updateAliasHelper,
   updateGame: updateGameHelper,
   updateRegistration: updateRegistrationHelper,
   eventInfos: eventInfosHelper,
@@ -128,6 +131,10 @@ async function getRoster(rosterId, userId) {
 
 async function getEvent(eventId) {
   return getEventHelper(eventId);
+}
+
+async function getAlias(entityId) {
+  return getAliasHelper(entityId);
 }
 
 async function getPhases(eventId) {
@@ -339,7 +346,12 @@ async function updateMember(body) {
   return res;
 }
 
-async function updateGame(body) {
+async function updateAlias(body) {
+  const { entityId, alias } = body;
+  const res = await updateAliasHelper(entityId, alias);
+  return res;
+}
+  async function updateGame(body) {
   const {
     gameId,
     phaseId,
@@ -376,6 +388,12 @@ async function addMember(body) {
     person_id,
     expiration_date,
   );
+  return res;
+}
+
+async function addAlias(body) {
+  const { entityId, alias } = body;
+  const res = await addAliasHelper(entityId, alias);
   return res;
 }
 
@@ -526,6 +544,7 @@ module.exports = {
   addEntity,
   addEntityRole,
   addMember,
+  addAlias,
   addMembership,
   addGame,
   addScore,
@@ -553,6 +572,7 @@ module.exports = {
   getAllRegistered,
   getRemainingSpots,
   getEvent,
+  getAlias,
   getPhases,
   getGames,
   getSlots,
@@ -566,6 +586,7 @@ module.exports = {
   updateEvent,
   updateGeneralInfos,
   updateMember,
+  updateAlias,
   updateGame,
   updateRegistration,
   eventInfos,

@@ -720,6 +720,14 @@ async function getEvent(eventId) {
   return res;
 }
 
+async function getAlias(entityId) {
+  const realId = await getRealId(entityId);
+  const [res] = await knex('alias')
+    .select('*')
+    .where({ id: realId });
+  return res;
+}
+
 async function getPhases(eventId) {
   const realId = await getRealId(eventId);
   const res = await knex('phase')
@@ -958,6 +966,17 @@ async function addMember(
   return res;
 }
 
+async function addAlias(entityId, alias) {
+  const realId = await getRealId(entityId);
+  const [res] = await knex('alias')
+    .insert({
+      id: realId,
+      alias,
+    })
+    .returning('*');
+  return res;
+}
+
 async function addGame(eventId, phaseId, field, time, team1, team2) {
   const realId = await getRealId(eventId);
   let realTime = new Date(time);
@@ -1191,6 +1210,19 @@ async function updateMember(
   return res;
 }
 
+async function updateAlias(entityId, alias) {
+  const realId = await getRealId(entityId);
+  const res = await knex('alias')
+    .where({
+      id: realId,
+    })
+    .update({
+      alias,
+    })
+    .returning('*');
+  return res;
+}
+
 async function updateGame(
   gameId,
   phaseId,
@@ -1354,6 +1386,7 @@ module.exports = {
   addEntity,
   addEntityRole,
   addMember,
+  addAlias,
   addMembership,
   addGame,
   addScore,
@@ -1384,6 +1417,7 @@ module.exports = {
   getRemainingSpots,
   getRoster,
   getEvent,
+  getAlias,
   getPhases,
   getGames,
   getSlots,
@@ -1401,6 +1435,7 @@ module.exports = {
   updateEvent,
   updateGeneralInfos,
   updateMember,
+  updateAlias,
   updateGame,
   updateRegistration,
   eventInfos,
