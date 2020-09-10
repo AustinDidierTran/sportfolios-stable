@@ -152,9 +152,15 @@ export default function Games(props) {
         <div>
           <DialogContent>
             <div className={styles.select}>
-              <PhaseSelect onChange={changePhaseId} />
-              <FieldSelect onChange={changeField} />
-              <TimeSlotSelect onChange={changeTimeSlot} />
+              <PhaseSelect
+                onChange={changePhaseId}
+                phaseId={phaseId}
+              />
+              <FieldSelect onChange={changeField} field={field} />
+              <TimeSlotSelect
+                onChange={changeTimeSlot}
+                timeSlot={timeSlot}
+              />
             </div>
             <DialogContentText>{description}</DialogContentText>
           </DialogContent>
@@ -165,7 +171,7 @@ export default function Games(props) {
           </DialogActions>
         </div>
       </Dialog>
-      <TeamSelect onChange={changeTeamName} />
+      <TeamSelect onChange={changeTeamName} teamName={teamName} />
       <Button
         size="small"
         variant="contained"

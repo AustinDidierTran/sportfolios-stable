@@ -11,7 +11,7 @@ import { formatDate } from '../../../../utils/stringFormats';
 import moment from 'moment';
 
 export default function TimeSlotSelect(props) {
-  const { onChange } = props;
+  const { onChange, timeSlot } = props;
   const { t } = useTranslation();
   const { id: eventId } = useParams();
 
@@ -45,6 +45,7 @@ export default function TimeSlotSelect(props) {
         label={t('time_slot')}
         fullWidth
         onChange={onChange}
+        defaultValue={timeSlot}
       />
     </div>
   );

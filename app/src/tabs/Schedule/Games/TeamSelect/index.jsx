@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import { SELECT_ENUM } from '../../../../../../common/enums';
 
 export default function TeamSelect(props) {
-  const { onChange } = props;
+  const { onChange, teamName } = props;
   const { t } = useTranslation();
   const { id: eventId } = useParams();
 
@@ -47,6 +47,7 @@ export default function TeamSelect(props) {
         label={t('team')}
         fullWidth
         onChange={onChange}
+        defaultValue={teamName}
       />
     </div>
   );
