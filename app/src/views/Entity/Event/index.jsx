@@ -21,13 +21,13 @@ export default function Event(props) {
   }, [basicInfos.name]);
 
   const [eventState, setEventState] = useState(
-    query.tab || TABS_ENUM.EVENT_INFO,
+    query.tab || TABS_ENUM.SCHEDULE,
   );
 
   const states = TabsGenerator({
     list: [
-      TABS_ENUM.EVENT_INFO,
       TABS_ENUM.SCHEDULE,
+      TABS_ENUM.EVENT_INFO,
       TABS_ENUM.ROSTERS,
       TABS_ENUM.SETTINGS,
     ],
