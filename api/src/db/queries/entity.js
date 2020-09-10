@@ -62,6 +62,7 @@ const {
   eventInfos: eventInfosHelper,
   addPlayerToRoster: addPlayerToRosterHelper,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
+  deleteGame: deleteGameHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -522,6 +523,13 @@ async function deletePlayerFromRoster(id, userId) {
   return deletePlayerFromRosterHelper(id, userId);
 }
 
+async function deleteGame(userId, eventId, gameId) {
+  if (!isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return deleteGameHelper(gameId);
+}
+
 module.exports = {
   addEntity,
   addEntityRole,
@@ -573,4 +581,5 @@ module.exports = {
   addPlayerToRoster,
   deletePlayerFromRoster,
   deleteEntityHelper,
+  deleteGame,
 };

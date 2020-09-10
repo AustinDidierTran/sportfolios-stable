@@ -1350,6 +1350,20 @@ const deletePlayerFromRoster = async id => {
   return null;
 };
 
+const deleteGame = async id => {
+  await knex.transaction(async trx => {
+    await knex('game_teams')
+      .where('game_id', id)
+      .del()
+      .transacting(trx);
+    await knex('games')
+      .where({ id })
+      .del()
+      .transacting(trx);
+  });
+  return null;
+};
+
 module.exports = {
   addEntity,
   addEntityRole,
@@ -1406,4 +1420,5 @@ module.exports = {
   eventInfos,
   addPlayerToRoster,
   deletePlayerFromRoster,
+  deleteGame,
 };

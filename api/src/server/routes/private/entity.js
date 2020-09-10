@@ -752,4 +752,25 @@ router.del(`${BASE_URL}/option`, async ctx => {
   };
 });
 
+router.del(`${BASE_URL}/game`, async ctx => {
+  const entity = await queries.deleteGame(
+    ctx.body.userInfo.id,
+    ctx.query.eventId,
+    ctx.query.gameId,
+  );
+  if (entity) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 module.exports = router;
