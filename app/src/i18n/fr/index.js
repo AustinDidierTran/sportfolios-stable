@@ -241,6 +241,8 @@ export default {
     team_history: "Historique de l'équipe",
     teams: 'Équipes',
     teams_saved: 'Équipes sauvegardées!',
+    there_is_no_rosters_for_this_event:
+      "Il n'y a pas d'alignements pour cet événement",
     time: 'Temps',
     time_slot: 'Plage horaire',
     time_slot_added: 'Plage horaire ajoutée',

@@ -7,6 +7,8 @@ import { useParams } from 'react-router-dom';
 import styles from './Rosters.module.css';
 
 import Rosters from './Rosters';
+import { Typography } from '../../components/MUI';
+import { useTranslation } from 'react-i18next';
 
 const getRosters = async eventId => {
   const { data } = await api(
@@ -41,6 +43,7 @@ const addPlayerToRoster = async (player, rosterId) => {
 
 export default function TabRosters() {
   const { id: eventId } = useParams();
+  const { t } = useTranslation();
   const [rosters, setRosters] = useState([]);
 
   const onDelete = async id => {
@@ -65,6 +68,14 @@ export default function TabRosters() {
   useEffect(() => {
     getData();
   }, []);
+
+  if (!rosters.length) {
+    return (
+      <Typography style={{ margin: '16px' }}>
+        {t('there_is_no_rosters_for_this_event')}
+      </Typography>
+    );
+  }
 
   return (
     <div className={styles.contain}>

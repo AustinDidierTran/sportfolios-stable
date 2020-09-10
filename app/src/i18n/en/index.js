@@ -240,6 +240,8 @@ export default {
     team_select: 'Team select',
     teams: 'Teams',
     teams_saved: 'Teams saved!',
+    there_is_no_rosters_for_this_event:
+      'There is no rosters for this event',
     time: 'Time',
     time_slot: 'Time slot',
     time_slot_added: 'Time slot added',
