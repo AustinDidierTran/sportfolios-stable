@@ -31,6 +31,7 @@ export default {
       "You can't create a payment option if admin doesn't have a bank account",
     admin: 'Admin',
     admins: 'Admins',
+    advanced_filters: 'Advanced filters',
     adress: 'Address',
     are_you_sure_you_want_to_unregister_this_team:
       'Are you sure you want to unregister this team and refund the team if the team has already paid?',
