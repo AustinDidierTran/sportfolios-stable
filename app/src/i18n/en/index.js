@@ -4,6 +4,8 @@ export default {
   translations: {
     about: 'About',
     actions: 'Actions',
+    action_confirmation:
+      'Are you sure you want to perform this action?',
     acceptation: 'Acceptation',
     add: 'Add',
     add_editor: 'Add editor',
@@ -62,6 +64,7 @@ export default {
     cart_empty_go_shop: "Your cart is empty, it's time to shop!",
     change_password: 'Change password',
     click_to_create_new_team: 'Click to create your new team',
+    confirm: 'Confirm',
     contact_us: 'Contact us',
     contact: 'Contact',
     country: 'Country',
