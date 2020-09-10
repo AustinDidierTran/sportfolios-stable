@@ -23,10 +23,13 @@ export default function TeamSelect(props) {
     const { data } = await api(
       formatRoute('/api/entity/teamsSchedule', null, { eventId }),
     );
-    const res = data.map(d => ({
-      value: d.name,
-      display: d.name,
-    }));
+    const res = data
+      //TO BE REMOVED ONLY FOR MEMPHRE
+      .filter(d => d.name.length > 5)
+      .map(d => ({
+        value: d.name,
+        display: d.name,
+      }));
 
     setTeams([
       { value: SELECT_ENUM.NONE, display: t('none_feminine') },
