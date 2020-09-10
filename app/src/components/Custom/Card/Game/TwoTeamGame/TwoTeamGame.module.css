@@ -1,3 +1,9 @@
+.gameEdit {
+  margin-bottom: 16px;
+  display: grid !important;
+  grid-template-columns: 15fr 1fr;
+}
+
 .game {
   margin-bottom: 16px;
 }
@@ -8,6 +14,10 @@
   grid-template-areas: 'name1 score1 union score2 name2';
   column-gap: 4px;
   padding: 8px;
+}
+
+.icon {
+  align-self: center;
 }
 
 .union {

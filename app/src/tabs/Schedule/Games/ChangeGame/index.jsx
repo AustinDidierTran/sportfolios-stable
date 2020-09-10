@@ -13,6 +13,7 @@ import { useFormik } from 'formik';
 import { ERROR_ENUM } from '../../../../../../common/errors';
 import { useContext } from 'react';
 import { Store, ACTION_ENUM } from '../../../../Store';
+import EditGame from './EditGame';
 
 export default function ChangeGame(props) {
   const { game, update, role } = props;
@@ -20,8 +21,9 @@ export default function ChangeGame(props) {
   const { dispatch } = useContext(Store);
 
   const [gameDialog, setGameDialog] = useState(false);
+  const [edit, setEdit] = useState(false);
 
-  const handleClose = () => {
+  const closeGame = () => {
     setGameDialog(false);
   };
 
@@ -83,7 +85,7 @@ export default function ChangeGame(props) {
 
   const buttons = [
     {
-      onClick: handleClose,
+      onClick: closeGame,
       name: t('cancel'),
       color: 'secondary',
     },
@@ -104,22 +106,49 @@ export default function ChangeGame(props) {
     setGameDialog(true);
   };
 
+  const onEdit = () => {
+    setEdit(true);
+  };
+  const closeEdit = () => {
+    setEdit(false);
+  };
+
   if (role === ENTITIES_ROLE_ENUM.ADMIN) {
     return (
       <>
-        <div onClick={gameClick}>
-          <Card items={game} type={CARD_TYPE_ENUM.GAME} />
-        </div>
+        <Card
+          items={{
+            ...game,
+            role,
+            onClick: gameClick,
+            onEdit: onEdit,
+          }}
+          type={CARD_TYPE_ENUM.GAME}
+        />
         <FormDialog
           open={gameDialog}
-          onClose={handleClose}
+          onClose={closeGame}
           title={t('enter_score')}
           fields={fields}
           formik={formik}
           buttons={buttons}
         ></FormDialog>
+        <EditGame
+          open={edit}
+          onClose={closeEdit}
+          game={game}
+          update={update}
+        />
       </>
     );
   }
-  return <Card items={game} type={CARD_TYPE_ENUM.GAME} />;
+  return (
+    <Card
+      items={{
+        ...game,
+        role,
+      }}
+      type={CARD_TYPE_ENUM.GAME}
+    />
+  );
 }

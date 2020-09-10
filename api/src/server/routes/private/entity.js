@@ -360,6 +360,23 @@ router.put(`${BASE_URL}/member`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/game`, async ctx => {
+  const entity = await queries.updateGame(ctx.request.body);
+  if (entity) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.put(`${BASE_URL}/updateRegistration`, async ctx => {
   const entity = await queries.updateRegistration(
     ctx.request.body,

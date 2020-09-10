@@ -76,6 +76,7 @@ export default {
     description: 'Description',
     donate: 'Donate',
     done: 'Done',
+    edit_game: 'Edit game',
     editor: 'Editor',
     email: 'Email',
     emails: 'Emails',
