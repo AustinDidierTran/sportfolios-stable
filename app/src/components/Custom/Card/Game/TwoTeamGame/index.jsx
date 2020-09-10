@@ -6,10 +6,13 @@ import { Typography, Card } from '../../../../MUI';
 import { formatDate } from '../../../../../utils/stringFormats';
 import moment from 'moment';
 import { ListItemText } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+
 import { ENTITIES_ROLE_ENUM } from '../../../../../../../common/enums';
+import CustomIconButton from '../../../IconButton';
+import { useTranslation } from 'react-i18next';
 
 export default function TwoTeamGame(props) {
+  const { t } = useTranslation();
   const {
     team1,
     team2,
@@ -19,6 +22,7 @@ export default function TwoTeamGame(props) {
     role,
     onClick,
     onEdit,
+    onDelete,
   } = props;
 
   if (role === ENTITIES_ROLE_ENUM.ADMIN) {
@@ -60,7 +64,22 @@ export default function TwoTeamGame(props) {
             </Typography>
           </div>
         </div>
-        <EditIcon className={styles.icon} onClick={onEdit} />
+        <div className={styles.buttonsContainer}>
+          <CustomIconButton
+            className={styles.icon}
+            onClick={onEdit}
+            tooltip={t('edit_game')}
+            icon="Edit"
+            style={{ color: 'primary' }}
+          />
+          <CustomIconButton
+            className={styles.icon}
+            onClick={onDelete}
+            tooltip={t('delete')}
+            icon="Delete"
+            style={{ color: 'primary' }}
+          />
+        </div>
       </Card>
     );
   }

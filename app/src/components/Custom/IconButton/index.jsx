@@ -13,7 +13,6 @@ export default function CustomIconButton(props) {
     tooltip = '',
     ...otherProps
   } = props;
-
   return (
     <Tooltip title={tooltip}>
       <IconButton

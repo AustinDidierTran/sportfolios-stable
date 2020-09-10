@@ -17,6 +17,7 @@ export default function GameItem(props) {
     role,
     onClick,
     onEdit,
+    onDelete,
   } = props;
   if (teams.length === 2) {
     return (
@@ -29,6 +30,7 @@ export default function GameItem(props) {
         role={role}
         onClick={onClick}
         onEdit={onEdit}
+        onDelete={onDelete}
       />
     );
   }

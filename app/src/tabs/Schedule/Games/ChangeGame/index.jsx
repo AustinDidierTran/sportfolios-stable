@@ -14,6 +14,8 @@ import { ERROR_ENUM } from '../../../../../../common/errors';
 import { useContext } from 'react';
 import { Store, ACTION_ENUM } from '../../../../Store';
 import EditGame from './EditGame';
+import AlertDialog from '../../../../components/Custom/Dialog/AlertDialog';
+import { formatRoute } from '../../../../actions/goTo';
 
 export default function ChangeGame(props) {
   const { game, update, role } = props;
@@ -22,6 +24,7 @@ export default function ChangeGame(props) {
 
   const [gameDialog, setGameDialog] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [deleteGame, setDeleteGame] = useState(false);
 
   const closeGame = () => {
     setGameDialog(false);
@@ -37,6 +40,10 @@ export default function ChangeGame(props) {
       errors.score2 = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
     return errors;
+  };
+
+  const closeDelete = () => {
+    setDeleteGame(false);
   };
 
   const formik = useFormik({
@@ -83,7 +90,7 @@ export default function ChangeGame(props) {
     },
   });
 
-  const buttons = [
+  const formButtons = [
     {
       onClick: closeGame,
       name: t('cancel'),
@@ -109,8 +116,26 @@ export default function ChangeGame(props) {
   const onEdit = () => {
     setEdit(true);
   };
+
   const closeEdit = () => {
     setEdit(false);
+  };
+
+  const onDelete = () => {
+    setDeleteGame(true);
+  };
+
+  const onDeleteConfirmed = async () => {
+    await api(
+      formatRoute('/api/entity/game', null, {
+        eventId: game.eventId,
+        gameId: game.id,
+      }),
+      {
+        method: 'DELETE',
+      },
+    );
+    update();
   };
 
   if (role === ENTITIES_ROLE_ENUM.ADMIN) {
@@ -122,6 +147,7 @@ export default function ChangeGame(props) {
             role,
             onClick: gameClick,
             onEdit: onEdit,
+            onDelete: onDelete,
           }}
           type={CARD_TYPE_ENUM.GAME}
         />
@@ -131,13 +157,18 @@ export default function ChangeGame(props) {
           title={t('enter_score')}
           fields={fields}
           formik={formik}
-          buttons={buttons}
+          buttons={formButtons}
         ></FormDialog>
         <EditGame
           open={edit}
           onClose={closeEdit}
           game={game}
           update={update}
+        />
+        <AlertDialog
+          open={deleteGame}
+          onCancel={closeDelete}
+          onSubmit={onDeleteConfirmed}
         />
       </>
     );
