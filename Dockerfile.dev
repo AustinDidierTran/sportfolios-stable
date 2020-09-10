@@ -14,5 +14,5 @@ RUN npm install
 
 COPY . ./
 
-# Start the api
-CMD npm run webserver
+# Start the dev app
+CMD npm run dev
