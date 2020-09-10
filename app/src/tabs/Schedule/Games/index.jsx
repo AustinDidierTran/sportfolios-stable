@@ -176,7 +176,9 @@ export default function Games(props) {
       >
         {t('advanced_filters')}
       </Button>
-      <Typography>{description}</Typography>
+      <Typography style={{ marginTop: '16px' }}>
+        {description}
+      </Typography>
       <div className={styles.main} style={{ marginTop: '16px' }}>
         {games.map(game => (
           <ChangeGame update={update} role={role} game={game} />
