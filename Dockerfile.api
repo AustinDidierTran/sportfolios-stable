@@ -15,4 +15,4 @@ RUN npm install
 COPY . ./
 
 # Start the api
-CMD ["npm", "run", "webserver"]
+CMD npm run webserver
