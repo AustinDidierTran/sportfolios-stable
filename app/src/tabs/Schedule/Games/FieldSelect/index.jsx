@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import { SELECT_ENUM } from '../../../../../../common/enums';
 
 export default function FieldSelect(props) {
-  const { onChange } = props;
+  const { onChange, field } = props;
   const { t } = useTranslation();
   const { id: eventId } = useParams();
 
@@ -43,6 +43,7 @@ export default function FieldSelect(props) {
         label={t('field')}
         fullWidth
         onChange={onChange}
+        defaultValue={field}
       />
     </div>
   );

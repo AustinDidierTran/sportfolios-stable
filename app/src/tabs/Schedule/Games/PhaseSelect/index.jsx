@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import { SELECT_ENUM } from '../../../../../../common/enums';
 
 export default function PhaseSelect(props) {
-  const { onChange } = props;
+  const { onChange, phaseId } = props;
   const { t } = useTranslation();
   const { id: eventId } = useParams();
 
@@ -51,6 +51,7 @@ export default function PhaseSelect(props) {
         label={t('phase')}
         fullWidth
         onChange={handleChange}
+        defaultValue={phaseId}
       />
     </div>
   );
