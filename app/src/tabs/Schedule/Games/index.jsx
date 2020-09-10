@@ -143,6 +143,8 @@ export default function Games(props) {
         onClose={closeDialog}
         aria-labelledby="form-dialog-title"
         className={styles.dialog}
+        maxWidth={'xs'}
+        fullWidth
       >
         <DialogTitle id="form-dialog-title">
           {t('filters')}
@@ -150,7 +152,6 @@ export default function Games(props) {
         <div>
           <DialogContent>
             <div className={styles.select}>
-              <TeamSelect onChange={changeTeamName} />
               <PhaseSelect onChange={changePhaseId} />
               <FieldSelect onChange={changeField} />
               <TimeSlotSelect onChange={changeTimeSlot} />
@@ -164,17 +165,17 @@ export default function Games(props) {
           </DialogActions>
         </div>
       </Dialog>
+      <TeamSelect onChange={changeTeamName} />
       <Button
         size="small"
         variant="contained"
         endIcon="Add"
-        style={{ margin: '8px' }}
+        style={{ marginLeft: 'auto', marginRight: 'auto' }}
         onClick={openDialog}
         className={styles.button}
       >
-        {t('more_filters')}
+        {t('advanced_filters')}
       </Button>
-      <TeamSelect onChange={changeTeamName} />
       <Typography>{description}</Typography>
       <div className={styles.main} style={{ marginTop: '16px' }}>
         {games.map(game => (

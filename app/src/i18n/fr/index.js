@@ -31,6 +31,7 @@ export default {
     admin_has_no_bank_account:
       "Vous ne pouvez pas ajouter une option de paiement car l'administrateur n'a pas de compte banquaire relié à son compte",
     admins: 'Administrateurs',
+    advanced_filters: 'Filtres avancés',
     adress: 'Addresse',
     alias: 'Alias',
     alias_is_already_used: "L'alias est déjà utilisé",
