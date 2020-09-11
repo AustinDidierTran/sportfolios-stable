@@ -1351,17 +1351,18 @@ const deletePlayerFromRoster = async id => {
 };
 
 const deleteGame = async id => {
-  await knex.transaction(async trx => {
+  const game = await knex.transaction(async trx => {
     await knex('game_teams')
       .where('game_id', id)
       .del()
       .transacting(trx);
-    await knex('games')
+    return knex('games')
       .where({ id })
       .del()
+      .returning('*')
       .transacting(trx);
   });
-  return null;
+  return game;
 };
 
 module.exports = {
