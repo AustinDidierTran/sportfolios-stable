@@ -138,6 +138,7 @@ export default function ChangeGame(props) {
         method: 'DELETE',
       },
     );
+    setDeleteDialogIsOpen(false);
     update();
   };
 
@@ -172,6 +173,7 @@ export default function ChangeGame(props) {
           open={deleteDialogIsOpen}
           onCancel={closeDelete}
           onSubmit={onDeleteConfirmed}
+          title={t('delete_game_confirmation')}
         />
       </>
     );
