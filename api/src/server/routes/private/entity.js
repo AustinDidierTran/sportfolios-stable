@@ -721,8 +721,7 @@ router.del(`${BASE_URL}/option`, async ctx => {
 router.del(`${BASE_URL}/game`, async ctx => {
   const entity = await queries.deleteGame(
     ctx.body.userInfo.id,
-    ctx.query.eventId,
-    ctx.query.gameId,
+    ctx.query,
   );
   if (entity) {
     ctx.status = 200;

@@ -8,6 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 
 export default function CustomDialog(props) {
   const { open, title, description, buttons, onClose } = props;
+
   return (
     <div>
       <Dialog
@@ -36,3 +37,5 @@ export default function CustomDialog(props) {
     </div>
   );
 }
+
+export { default as AlertDialog } from './AlertDialog';

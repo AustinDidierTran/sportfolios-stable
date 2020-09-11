@@ -8,7 +8,7 @@ import moment from 'moment';
 import { ListItemText } from '@material-ui/core';
 
 import { ENTITIES_ROLE_ENUM } from '../../../../../../../common/enums';
-import CustomIconButton from '../../../IconButton';
+import { IconButton } from '../../../../Custom';
 import { useTranslation } from 'react-i18next';
 
 export default function TwoTeamGame(props) {
@@ -65,14 +65,14 @@ export default function TwoTeamGame(props) {
           </div>
         </div>
         <div className={styles.buttonsContainer}>
-          <CustomIconButton
+          <IconButton
             className={styles.icon}
             onClick={onEdit}
             tooltip={t('edit_game')}
             icon="Edit"
             style={{ color: 'primary' }}
           />
-          <CustomIconButton
+          <IconButton
             className={styles.icon}
             onClick={onDelete}
             tooltip={t('delete')}

@@ -5,7 +5,7 @@ export default {
     about: 'À propos',
     actions: 'Actions',
     action_confirmation:
-      'Êtes vous certain de vouloir effectuer cette action?',
+      'Êtes-vous certain de vouloir effectuer cette action?',
     acceptation: 'Acceptation',
     add_admin: 'Ajouter admin',
     add: 'Ajouter',
