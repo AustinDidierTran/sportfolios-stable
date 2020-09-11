@@ -35,6 +35,9 @@ export default function AddTeam(props) {
     if (!name.length) {
       errors.name = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
+    if (name.length > 64) {
+      formik.setFieldValue('name', name.slice(0, 64));
+    }
     return errors;
   };
 
@@ -43,7 +46,7 @@ export default function AddTeam(props) {
       name: '',
     },
     validate,
-    validateOnChange: false,
+    validateOnChange: true,
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       const { name } = values;
