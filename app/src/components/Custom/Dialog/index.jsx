@@ -25,8 +25,11 @@ export default function CustomDialog(props) {
         </DialogContent>
         <DialogActions>
           {buttons.map(button => (
-            <Button onClick={button.onClick} color="primary">
-              {button.title}
+            <Button
+              onClick={button.onClick}
+              color={button.color || 'primary'}
+            >
+              {button.name}
             </Button>
           ))}
         </DialogActions>
@@ -34,3 +37,5 @@ export default function CustomDialog(props) {
     </div>
   );
 }
+
+export { default as AlertDialog } from './AlertDialog';

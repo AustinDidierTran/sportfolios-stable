@@ -5,6 +5,7 @@ import {
   Button,
   ContainerBottomFixed,
   ImageCard,
+  LoadingSpinner,
 } from '../../components/Custom';
 import { Typography } from '../../components/MUI';
 import { useTranslation } from 'react-i18next';
@@ -38,6 +39,7 @@ export default function TabEventInfo() {
   const [canRegister, setCanRegister] = useState(false);
   const [remainingSpots, setRemainingSpots] = useState(null);
   const [color, setColor] = useState('textSecondary');
+  const [isLoading, setIsLoading] = useState(true);
 
   const goToRegistration = () => {
     goTo(ROUTES.eventRegistration, { id });
@@ -112,6 +114,7 @@ export default function TabEventInfo() {
   const getData = async () => {
     const event = await getEvent(id);
     setEvent(event);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -211,6 +214,10 @@ export default function TabEventInfo() {
       );
     }
   };
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className={canRegister ? styles.event : styles.event1}>
