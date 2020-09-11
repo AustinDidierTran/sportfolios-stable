@@ -523,7 +523,8 @@ async function deletePlayerFromRoster(id, userId) {
   return deletePlayerFromRosterHelper(id, userId);
 }
 
-async function deleteGame(userId, eventId, gameId) {
+async function deleteGame(userId, query) {
+  const { eventId, gameId } = query;
   if (!isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }

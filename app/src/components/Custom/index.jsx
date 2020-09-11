@@ -7,7 +7,7 @@ export { default as CartIcon } from './CartIcon';
 export { default as CardMedia } from './CardMedia';
 export { default as Container } from './Container';
 export { default as ContainerBottomFixed } from './ContainerBottomFixed';
-export { default as Dialog } from './Dialog';
+export { default as Dialog, AlertDialog } from './Dialog';
 export { default as FormDialog } from './FormDialog';
 export { default as EntityList } from './EntityList';
 export { default as FeatureContainer } from './FeatureContainer';

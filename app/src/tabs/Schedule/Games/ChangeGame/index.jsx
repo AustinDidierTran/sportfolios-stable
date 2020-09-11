@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-import { Card, FormDialog } from '../../../../components/Custom';
+import {
+  Card,
+  FormDialog,
+  AlertDialog,
+} from '../../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import api from '../../../../actions/api';
 import {
@@ -14,7 +18,6 @@ import { ERROR_ENUM } from '../../../../../../common/errors';
 import { useContext } from 'react';
 import { Store, ACTION_ENUM } from '../../../../Store';
 import EditGame from './EditGame';
-import AlertDialog from '../../../../components/Custom/Dialog/AlertDialog';
 import { formatRoute } from '../../../../actions/goTo';
 
 export default function ChangeGame(props) {
@@ -24,7 +27,7 @@ export default function ChangeGame(props) {
 
   const [gameDialog, setGameDialog] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [deleteGame, setDeleteGame] = useState(false);
+  const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState(false);
 
   const closeGame = () => {
     setGameDialog(false);
@@ -43,7 +46,7 @@ export default function ChangeGame(props) {
   };
 
   const closeDelete = () => {
-    setDeleteGame(false);
+    setDeleteDialogIsOpen(false);
   };
 
   const formik = useFormik({
@@ -122,7 +125,7 @@ export default function ChangeGame(props) {
   };
 
   const onDelete = () => {
-    setDeleteGame(true);
+    setDeleteDialogIsOpen(true);
   };
 
   const onDeleteConfirmed = async () => {
@@ -166,7 +169,7 @@ export default function ChangeGame(props) {
           update={update}
         />
         <AlertDialog
-          open={deleteGame}
+          open={deleteDialogIsOpen}
           onCancel={closeDelete}
           onSubmit={onDeleteConfirmed}
         />
