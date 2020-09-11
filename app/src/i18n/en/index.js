@@ -79,6 +79,8 @@ export default {
     delete: 'Delete',
     select_payment_method: 'Select payment method',
     delete_confirmation_text: 'To delete, type {{name}}',
+    delete_game_confirmation:
+      'Are you sure you want to delete this game?',
     description: 'Description',
     donate: 'Donate',
     done: 'Done',

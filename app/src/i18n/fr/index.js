@@ -82,6 +82,8 @@ export default {
     currency: 'Devise',
     delete: 'Supprimer',
     delete_confirmation_text: 'Pour supprimer, écrivez {{name}}',
+    delete_game_confirmation:
+      'Êtes-vous certain de vouloir supprimer cette partie?',
     description: 'Description',
     donate: 'Faites un don',
     done: 'Terminé',
