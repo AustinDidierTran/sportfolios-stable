@@ -55,6 +55,7 @@ export default function CustomFormDialog(props) {
                     label={field.label}
                     type={field.type}
                     fullWidth
+                    defaultValue={field.defaultValue}
                   />
                 )}
               </>

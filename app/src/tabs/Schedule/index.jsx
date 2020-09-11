@@ -21,7 +21,6 @@ export default function ScheduleTab(props) {
   const [time, setTime] = useState(false);
   const [team, setTeam] = useState(false);
   const [field, setField] = useState(false);
-  const [phaseId, setPhaseId] = useState('');
 
   const openGame = () => {
     setGame(true);
@@ -31,11 +30,6 @@ export default function ScheduleTab(props) {
     setGame(false);
   };
 
-  const openGameDialog = phaseId => {
-    setPhaseId(phaseId);
-    setGame(true);
-  };
-
   const openPhase = () => {
     setPhase(true);
   };
@@ -43,11 +37,6 @@ export default function ScheduleTab(props) {
   const closePhase = () => {
     setPhase(false);
   };
-
-  const keepPhase = phaseId => {
-    setPhaseId(phaseId);
-  };
-
   const openTime = () => {
     setTime(true);
   };
@@ -124,17 +113,8 @@ export default function ScheduleTab(props) {
       <AddTimeSlot isOpen={time} onClose={closeTime} />
       <AddField isOpen={field} onClose={closeField} />
       <AddTeam isOpen={team} onClose={closeTeam} />
-      <AddPhase
-        isOpen={phase}
-        onClose={closePhase}
-        openGameDialog={openGameDialog}
-      />
-      <AddGame
-        isOpen={game}
-        onClose={closeGame}
-        phaseId={phaseId}
-        keepPhase={keepPhase}
-      />
+      <AddPhase isOpen={phase} onClose={closePhase} />
+      <AddGame isOpen={game} onClose={closeGame} />
       <Games role={role} />
     </>
   );

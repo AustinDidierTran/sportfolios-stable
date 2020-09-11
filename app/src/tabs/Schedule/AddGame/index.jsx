@@ -16,7 +16,7 @@ import { getGameOptions } from '../ScheduleFunctions';
 
 export default function AddGame(props) {
   const { t } = useTranslation();
-  const { isOpen, onClose, phaseId, keepPhase } = props;
+  const { isOpen, onClose } = props;
   const { dispatch } = useContext(Store);
   const { id: eventId } = useParams();
 
@@ -30,11 +30,7 @@ export default function AddGame(props) {
 
   useEffect(() => {
     getOptions();
-  }, [open, phaseId]);
-
-  useEffect(() => {
-    formik.setFieldValue('phase', phaseId);
-  }, [phaseId, keepPhase]);
+  }, [open]);
 
   useEffect(() => {
     setOpen(isOpen);
@@ -77,7 +73,7 @@ export default function AddGame(props) {
     validate,
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async values => {
       const { phase, field, time, team1, team2 } = values;
       let realPhaseId = phase;
       let realTeam1 = team1;
@@ -110,9 +106,6 @@ export default function AddGame(props) {
           team2: realTeam2,
         }),
       });
-
-      resetForm();
-      keepPhase(phase);
       if (res.status === STATUS_ENUM.ERROR) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,

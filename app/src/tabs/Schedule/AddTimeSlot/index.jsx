@@ -50,7 +50,7 @@ export default function AddTimeSlot(props) {
     validate,
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async values => {
       const { date, time } = values;
       const realDate = new Date(`${date} ${time}`).getTime();
       const res = await api('/api/entity/timeSlots', {
@@ -60,8 +60,6 @@ export default function AddTimeSlot(props) {
           eventId,
         }),
       });
-
-      resetForm();
       if (res.status === STATUS_ENUM.ERROR) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
@@ -105,7 +103,6 @@ export default function AddTimeSlot(props) {
       type: 'time',
     },
   ];
-
   return (
     <FormDialog
       open={open}

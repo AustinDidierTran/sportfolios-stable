@@ -14,7 +14,7 @@ import { useParams } from 'react-router-dom';
 
 export default function AddPhase(props) {
   const { t } = useTranslation();
-  const { isOpen, onClose, openGameDialog } = props;
+  const { isOpen, onClose } = props;
   const { dispatch } = useContext(Store);
   const { id: eventId } = useParams();
 
@@ -72,8 +72,6 @@ export default function AddPhase(props) {
           severity: SEVERITY_ENUM.SUCCESS,
           duration: 2000,
         });
-        onClose();
-        openGameDialog(res.data.id);
       }
     },
   });
@@ -81,7 +79,7 @@ export default function AddPhase(props) {
   const buttons = [
     {
       onClick: handleClose,
-      name: t('cancel'),
+      name: t('finish'),
       color: 'grey',
     },
     {
