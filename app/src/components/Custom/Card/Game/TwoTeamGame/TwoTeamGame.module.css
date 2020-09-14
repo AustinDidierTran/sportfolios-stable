@@ -17,6 +17,11 @@
   overflow: auto !important;
 }
 
+.buttonsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
 .icon {
   align-self: center;
 }
@@ -28,6 +33,7 @@
 .name1 {
   grid-area: name1;
   justify-self: center;
+  text-overflow: ellipsis !important;
   overflow: auto;
   max-width: 100%;
 }
@@ -35,6 +41,7 @@
 .name2 {
   grid-area: name2;
   justify-self: center;
+  text-overflow: ellipsis !important;
   overflow: auto;
   max-width: 100%;
 }

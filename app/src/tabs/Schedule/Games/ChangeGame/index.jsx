@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-import { Card, FormDialog } from '../../../../components/Custom';
+import {
+  Card,
+  FormDialog,
+  AlertDialog,
+} from '../../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import api from '../../../../actions/api';
 import {
@@ -14,6 +18,7 @@ import { ERROR_ENUM } from '../../../../../../common/errors';
 import { useContext } from 'react';
 import { Store, ACTION_ENUM } from '../../../../Store';
 import EditGame from './EditGame';
+import { formatRoute } from '../../../../actions/goTo';
 
 export default function ChangeGame(props) {
   const { game, update, role } = props;
@@ -22,6 +27,7 @@ export default function ChangeGame(props) {
 
   const [gameDialog, setGameDialog] = useState(false);
   const [edit, setEdit] = useState(false);
+  const [deleteDialogIsOpen, setDeleteDialogIsOpen] = useState(false);
 
   const closeGame = () => {
     setGameDialog(false);
@@ -37,6 +43,10 @@ export default function ChangeGame(props) {
       errors.score2 = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
     return errors;
+  };
+
+  const closeDelete = () => {
+    setDeleteDialogIsOpen(false);
   };
 
   const formik = useFormik({
@@ -83,7 +93,7 @@ export default function ChangeGame(props) {
     },
   });
 
-  const buttons = [
+  const formButtons = [
     {
       onClick: closeGame,
       name: t('cancel'),
@@ -109,8 +119,27 @@ export default function ChangeGame(props) {
   const onEdit = () => {
     setEdit(true);
   };
+
   const closeEdit = () => {
     setEdit(false);
+  };
+
+  const onDelete = () => {
+    setDeleteDialogIsOpen(true);
+  };
+
+  const onDeleteConfirmed = async () => {
+    await api(
+      formatRoute('/api/entity/game', null, {
+        eventId: game.eventId,
+        gameId: game.id,
+      }),
+      {
+        method: 'DELETE',
+      },
+    );
+    setDeleteDialogIsOpen(false);
+    update();
   };
 
   if (role === ENTITIES_ROLE_ENUM.ADMIN) {
@@ -122,6 +151,7 @@ export default function ChangeGame(props) {
             role,
             onClick: gameClick,
             onEdit: onEdit,
+            onDelete: onDelete,
           }}
           type={CARD_TYPE_ENUM.GAME}
         />
@@ -131,13 +161,19 @@ export default function ChangeGame(props) {
           title={t('enter_score')}
           fields={fields}
           formik={formik}
-          buttons={buttons}
+          buttons={formButtons}
         ></FormDialog>
         <EditGame
           open={edit}
           onClose={closeEdit}
           game={game}
           update={update}
+        />
+        <AlertDialog
+          open={deleteDialogIsOpen}
+          onCancel={closeDelete}
+          onSubmit={onDeleteConfirmed}
+          title={t('delete_game_confirmation')}
         />
       </>
     );
