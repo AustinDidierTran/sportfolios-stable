@@ -4,7 +4,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 
@@ -15,7 +14,7 @@ module.exports = {
     writeToDisk: true,
   },
   entry: {
-    app: path.resolve(ROOT_PATH, 'app/src/index.tsx'),
+    app: path.resolve(ROOT_PATH, 'app/src/index.jsx'),
   },
   module: {
     rules: [
@@ -23,11 +22,6 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loaders: ['babel-loader'],
-      },
-      {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
       },
       {
         test: /\.module\.(sc|sa|c)ss$/i,
@@ -54,7 +48,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.tsx'],
+    extensions: ['.js', '.jsx', 'tsx'],
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -62,9 +56,6 @@ module.exports = {
     new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
       template: path.resolve(ROOT_PATH, 'app/public/index.html'),
-    }),
-    new CopyWebpackPlugin({
-      patterns: [{ from: path.resolve(ROOT_PATH, 'app/public') }],
     }),
     new BundleAnalyzerPlugin(),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
