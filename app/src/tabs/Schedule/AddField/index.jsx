@@ -35,6 +35,9 @@ export default function AddField(props) {
     if (!field.length) {
       errors.field = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
+    if (field.length > 64) {
+      formik.setFieldValue('field', field.slice(0, 64));
+    }
     return errors;
   };
 
@@ -43,7 +46,7 @@ export default function AddField(props) {
       field: '',
     },
     validate,
-    validateOnChange: false,
+    validateOnChange: true,
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       const { field } = values;

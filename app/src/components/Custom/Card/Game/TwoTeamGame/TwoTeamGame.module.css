@@ -14,6 +14,7 @@
   grid-template-areas: 'name1 score1 union score2 name2';
   column-gap: 4px;
   padding: 8px;
+  overflow: auto !important;
 }
 
 .buttonsContainer {
@@ -34,7 +35,7 @@
   justify-self: center;
   text-overflow: ellipsis !important;
   overflow: auto;
-  white-space: nowrap;
+  max-width: 100%;
 }
 
 .name2 {
@@ -42,7 +43,7 @@
   justify-self: center;
   text-overflow: ellipsis !important;
   overflow: auto;
-  white-space: nowrap;
+  max-width: 100%;
 }
 
 .score1 {

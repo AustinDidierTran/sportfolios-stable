@@ -33,7 +33,7 @@ export default function AddPhase(props) {
     const { phase } = values;
     const errors = {};
     if (phase.length > 64) {
-      errors.phase = t(ERROR_ENUM.VALUE_IS_TOO_LONG);
+      formik.setFieldValue('phase', phase.slice(0, 64));
     }
     if (!phase.length) {
       errors.phase = t(ERROR_ENUM.VALUE_IS_REQUIRED);
@@ -46,7 +46,7 @@ export default function AddPhase(props) {
       phase: '',
     },
     validate,
-    validateOnChange: false,
+    validateOnChange: true,
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       const { phase } = values;
