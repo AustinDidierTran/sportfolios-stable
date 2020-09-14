@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  
+  # API container
+  api:  
+    container_name: sportfolios_api_prod
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    volumes:
+      - '.:/sportfolios'
+      - '/sportfolios/node_modules'
+    ports:
+      - 1337:1337
+    
+    # allow to communicate with db if it's running on localhost
+    network_mode: 'host'
