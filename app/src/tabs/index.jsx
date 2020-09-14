@@ -11,6 +11,7 @@ const Settings = loadable(() => import('./Settings'));
 const Purchases = loadable(() => import('./Purchases'));
 const Shop = loadable(() => import('./Shop'));
 const Rosters = loadable(() => import('./Rosters'));
+const Schedule = loadable(() => import('./Schedule'));
 
 export const TABS_ENUM = {
   ABOUT: 'about',
