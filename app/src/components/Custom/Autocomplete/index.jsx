@@ -4,9 +4,11 @@ import _ from 'lodash';
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { TextField } from '../../MUI';
+import { Icon } from '../../Custom';
 
 import { useApiRoute } from '../../../hooks/queries';
 import { useTranslation } from 'react-i18next';
+import { InputAdornment } from '@material-ui/core';
 
 export default function CustomAutocomplete(props) {
   const { t } = useTranslation();
@@ -17,6 +19,7 @@ export default function CustomAutocomplete(props) {
     onChange,
     optionsRoute,
     type,
+    icon,
     ...otherProps
   } = props;
 
@@ -68,6 +71,17 @@ export default function CustomAutocomplete(props) {
             InputProps={{
               ...params.InputProps,
               ...inputProps.InputProps,
+              startAdornment: (
+                <>
+                  {icon ? (
+                    <InputAdornment>
+                      <Icon icon={icon} />
+                    </InputAdornment>
+                  ) : (
+                    <></>
+                  )}
+                </>
+              ),
             }}
           />
         );
