@@ -240,7 +240,7 @@ You will also need to create a new file at `api/src/db` called `database.json`. 
 
 Don't forget to change `username` and `password` for the right parameters.
 
-Finally, you will need to edit one line in the files `docker-compose.dev.yml` and `docker-compose.prod.db.yml` to match the previously chosen databse `password`:
+Finally, you will need to edit one line in the files `docker-compose.dev.yml` and `docker-compose.prod.yml` to match the previously chosen databse `password`:
 
 ```yml
 POSTGRES_PASSWORD: password
@@ -285,9 +285,9 @@ docker-compose -f docker-compose.dev.yml up --build
 To run the application in production mode, simply run in sportfolios-stable these following commands in 3 separate terminals:
 
 ```
-docker-compose -f docker-compose.prod.db.yml up --build
-docker-compose -f docker-compose.prod.api.yml up --build
-docker-compose -f docker-compose.prod.app.yml up --build
+docker-compose -f docker-compose.prod.yml up --build db
+docker-compose -f docker-compose.prod.yml up --build api
+docker-compose -f docker-compose.prod.yml up --build app
 ```
 
 Compose can also be used in detached mode (run containers in the background):
@@ -296,7 +296,14 @@ Compose can also be used in detached mode (run containers in the background):
 docker-compose -f <docker-compose file> up -d --build
 ```
 
-These are useful commands for use with Docker in the project
+Once the containers are up and running for the first time, don't forget to do the migration:
+
+```
+cd api/src/db
+db-migrate up
+```
+
+These are useful commands for use with Docker in the project:
 
 ```
 docker ps (list active containers and show id)
@@ -305,7 +312,7 @@ docker stop <container id or name>
 ctrl+c (stop all containers started by the compose up command in "attached mode")
 ```
 
-container id can be only the first 3 characters of the id
+container id can be only the first 3 characters of the id.
 
 If a postgresql server is already running locally on the pc, simply stop it with this command:
 
