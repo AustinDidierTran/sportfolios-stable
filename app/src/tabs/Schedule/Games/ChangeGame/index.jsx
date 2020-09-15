@@ -36,11 +36,11 @@ export default function ChangeGame(props) {
   const validate = values => {
     const { score1, score2 } = values;
     const errors = {};
-    if (!score1) {
-      errors.score1 = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    if (isNaN(score1)) {
+      errors.score1 = t(ERROR_ENUM.VALUE_IS_INVALID);
     }
-    if (!score2) {
-      errors.score2 = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    if (isNaN(score2)) {
+      errors.score2 = t(ERROR_ENUM.VALUE_IS_INVALID);
     }
     return errors;
   };

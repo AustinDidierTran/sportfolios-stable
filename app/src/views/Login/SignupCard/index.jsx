@@ -74,6 +74,7 @@ export default function SignupCard(props) {
                 color: 'grey',
                 margin: '0 auto',
                 fontSize: 12,
+                cursor: 'pointer',
               }}
             >
               {t('have_an_account_signin')}
