@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { fade, makeStyles } from '@material-ui/core/styles';
-import { Autocomplete, Icon } from '../../Custom';
+import { Autocomplete } from '../../Custom';
 import { goTo, goToAndReplace, ROUTES } from '../../../actions/goTo';
 import { useApiRoute, useQuery } from '../../../hooks/queries';
 import { useLocation } from 'react-router-dom';
-import { InputAdornment } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   search: {
@@ -62,14 +61,8 @@ export default function SearchInput(props) {
       freeSolo
       inputProps={{
         className: classes.search,
-        InputProps: {
-          startAdornment: (
-            <InputAdornment>
-              <Icon icon="Search" />
-            </InputAdornment>
-          ),
-        },
       }}
+      icon="Search"
     />
   );
 }

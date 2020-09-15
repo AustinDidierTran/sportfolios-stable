@@ -11,6 +11,7 @@ export default function CustomIconButton(props) {
     onClick = () => {},
     size = 'small',
     tooltip = '',
+    fontSize = 'default',
     ...otherProps
   } = props;
   return (
@@ -19,9 +20,9 @@ export default function CustomIconButton(props) {
         size={size}
         onClick={onClick}
         {...otherProps}
-        style={{ color: '#fff', ...props.style }}
+        style={{ color: 'primary', ...props.style }}
       >
-        <Icon icon={icon} />
+        <Icon icon={icon} fontSize={fontSize} />
       </IconButton>
     </Tooltip>
   );
