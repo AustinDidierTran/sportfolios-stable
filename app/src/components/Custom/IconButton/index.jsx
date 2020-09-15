@@ -16,14 +16,16 @@ export default function CustomIconButton(props) {
   } = props;
   return (
     <Tooltip title={tooltip}>
-      <IconButton
-        size={size}
-        onClick={onClick}
-        {...otherProps}
-        style={{ color: 'primary', ...props.style }}
-      >
-        <Icon icon={icon} fontSize={fontSize} />
-      </IconButton>
+      <div>
+        <IconButton
+          size={size}
+          onClick={onClick}
+          {...otherProps}
+          style={{ color: '#fff', ...props.style }}
+        >
+          <Icon icon={icon} fontSize={fontSize} />
+        </IconButton>
+      </div>  
     </Tooltip>
   );
 }

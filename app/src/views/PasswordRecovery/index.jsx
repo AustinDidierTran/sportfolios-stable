@@ -110,6 +110,7 @@ export default function PasswordRecovery() {
               variant="contained"
               className={styles.button}
               type="submit"
+              style={{ color: '#fff' }}
             >
               {t('reset_password')}
             </Button>
