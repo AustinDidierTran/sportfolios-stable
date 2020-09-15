@@ -80,19 +80,19 @@ export default function AddGame(props) {
       let realTeam2 = team2;
       let realTime = new Date(time).getTime();
       let realField = field;
-      if (phase === SELECT_ENUM.NONE) {
+      if (phase === SELECT_ENUM.ALL) {
         realPhaseId = null;
       }
-      if (team1 === SELECT_ENUM.NONE) {
+      if (team1 === SELECT_ENUM.ALL) {
         realTeam1 = null;
       }
-      if (team2 === SELECT_ENUM.NONE) {
+      if (team2 === SELECT_ENUM.ALL) {
         realTeam2 = null;
       }
-      if (time === SELECT_ENUM.NONE) {
+      if (time === SELECT_ENUM.ALL) {
         realTime = null;
       }
-      if (field === SELECT_ENUM.NONE) {
+      if (field === SELECT_ENUM.ALL) {
         realField = null;
       }
       const res = await api('/api/entity/game', {

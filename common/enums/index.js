@@ -69,7 +69,7 @@ const LANGUAGE_ENUM = {
 };
 
 const SELECT_ENUM = {
-  NONE: 'none',
+  ALL: 'all',
 };
 
 const INVOICE_STATUS_ENUM = {

@@ -12,10 +12,7 @@ const getPhases = async eventId => {
     value: d.id,
     display: d.name,
   }));
-  return [
-    { value: SELECT_ENUM.NONE, displayKey: 'none_feminine' },
-    ...res,
-  ];
+  return [{ value: SELECT_ENUM.ALL, displayKey: 'all' }, ...res];
 };
 
 const getSlots = async eventId => {
@@ -37,10 +34,7 @@ const getTeams = async eventId => {
     value: d.name,
     display: d.name,
   }));
-  return [
-    { value: SELECT_ENUM.NONE, displayKey: 'none_feminine' },
-    ...res,
-  ];
+  return [{ value: SELECT_ENUM.ALL, displayKey: 'all' }, ...res];
 };
 
 const getFields = async eventId => {
@@ -51,7 +45,7 @@ const getFields = async eventId => {
     value: d.field,
     display: d.field,
   }));
-  return [{ value: SELECT_ENUM.NONE, displayKey: 'none' }, ...res];
+  return [{ value: SELECT_ENUM.ALL, displayKey: 'all' }, ...res];
 };
 
 export const getGameOptions = async eventId => {

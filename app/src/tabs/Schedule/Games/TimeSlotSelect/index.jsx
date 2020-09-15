@@ -30,7 +30,7 @@ export default function TimeSlotSelect(props) {
       display: formatDate(moment(d.date), 'ddd DD MMM h:mm'),
     }));
     setTimeSlots([
-      { value: SELECT_ENUM.NONE, display: t('none_feminine') },
+      { value: SELECT_ENUM.ALL, display: t('all_time_slots') },
       ...res,
     ]);
   };

@@ -28,7 +28,7 @@ export default function FieldSelect(props) {
       display: d.field,
     }));
     setFields([
-      { value: SELECT_ENUM.NONE, display: t('none') },
+      { value: SELECT_ENUM.ALL, display: t('all_fields') },
       ...res,
     ]);
   };

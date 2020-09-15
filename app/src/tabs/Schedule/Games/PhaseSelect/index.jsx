@@ -29,7 +29,7 @@ export default function PhaseSelect(props) {
     }));
 
     setPhases([
-      { value: SELECT_ENUM.NONE, display: t('none_feminine') },
+      { value: SELECT_ENUM.ALL, display: t('all_phases') },
       ...res,
     ]);
   };
