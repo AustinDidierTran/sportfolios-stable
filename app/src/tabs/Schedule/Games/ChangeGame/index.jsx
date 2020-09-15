@@ -52,7 +52,7 @@ export default function ChangeGame(props) {
   useEffect(() => {
     formik.setFieldValue('score1', game.teams[0].score);
     formik.setFieldValue('score2', game.teams[1].score);
-  }, [game])
+  }, [game]);
 
   const formik = useFormik({
     initialValues: {
@@ -147,7 +147,10 @@ export default function ChangeGame(props) {
     update();
   };
 
-  if (role === ENTITIES_ROLE_ENUM.ADMIN) {
+  if (
+    role === ENTITIES_ROLE_ENUM.ADMIN ||
+    role === ENTITIES_ROLE_ENUM.EDITOR
+  ) {
     return (
       <>
         <Card
