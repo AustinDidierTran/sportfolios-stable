@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Card,
@@ -48,6 +48,11 @@ export default function ChangeGame(props) {
   const closeDelete = () => {
     setDeleteDialogIsOpen(false);
   };
+
+  useEffect(() => {
+    formik.setFieldValue('score1', game.teams[0].score);
+    formik.setFieldValue('score2', game.teams[1].score);
+  }, [game])
 
   const formik = useFormik({
     initialValues: {

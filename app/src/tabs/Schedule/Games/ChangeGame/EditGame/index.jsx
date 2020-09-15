@@ -37,6 +37,14 @@ export default function EditGame(props) {
     setEdit(open);
   }, [open]);
 
+  useEffect(() => {
+    formik.setFieldValue('phase', game.phase_id);
+    formik.setFieldValue('field', game.field);
+    formik.setFieldValue('time', game.start_time);
+    formik.setFieldValue('team1', game.teams[0].name);
+    formik.setFieldValue('team2', game.teams[1].name);
+  }, [game]);
+
   const closeEdit = () => {
     onClose();
   };
