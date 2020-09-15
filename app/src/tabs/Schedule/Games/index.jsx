@@ -27,11 +27,11 @@ export default function Games(props) {
   const { id: eventId } = useParams();
   const { t } = useTranslation();
   const [games, setGames] = useState([]);
-  const [teamName, setTeamName] = useState(SELECT_ENUM.NONE);
-  const [phaseId, setPhaseId] = useState(SELECT_ENUM.NONE);
+  const [teamName, setTeamName] = useState(SELECT_ENUM.ALL);
+  const [phaseId, setPhaseId] = useState(SELECT_ENUM.ALL);
   const [phaseName, setPhaseName] = useState('');
-  const [field, setField] = useState(SELECT_ENUM.NONE);
-  const [timeSlot, setTimeSlot] = useState(SELECT_ENUM.NONE);
+  const [field, setField] = useState(SELECT_ENUM.ALL);
+  const [timeSlot, setTimeSlot] = useState(SELECT_ENUM.ALL);
   const [open, setOpen] = useState(false);
   const [description, setDescription] = useState(false);
 
@@ -80,18 +80,18 @@ export default function Games(props) {
 
   const filter = async () => {
     let games = await getGames();
-    if (teamName != SELECT_ENUM.NONE) {
+    if (teamName != SELECT_ENUM.ALL) {
       games = games.filter(game =>
         game.teams.some(team => team.name === teamName),
       );
     }
-    if (phaseId != SELECT_ENUM.NONE) {
+    if (phaseId != SELECT_ENUM.ALL) {
       games = games.filter(game => game.phase_id === phaseId);
     }
-    if (field != SELECT_ENUM.NONE) {
+    if (field != SELECT_ENUM.ALL) {
       games = games.filter(game => game.field === field);
     }
-    if (timeSlot != SELECT_ENUM.NONE) {
+    if (timeSlot != SELECT_ENUM.ALL) {
       games = games.filter(game => game.start_time === timeSlot);
     }
     setGames(games);
@@ -100,23 +100,23 @@ export default function Games(props) {
   const getDescription = () => {
     let description = t('games');
     if (
-      teamName === SELECT_ENUM.NONE &&
-      phaseId === SELECT_ENUM.NONE &&
-      field === SELECT_ENUM.NONE &&
-      timeSlot === SELECT_ENUM.NONE
+      teamName === SELECT_ENUM.ALL &&
+      phaseId === SELECT_ENUM.ALL &&
+      field === SELECT_ENUM.ALL &&
+      timeSlot === SELECT_ENUM.ALL
     ) {
       description = null;
     }
-    if (teamName != SELECT_ENUM.NONE) {
+    if (teamName != SELECT_ENUM.ALL) {
       description = description + ` ${t('of_team')} ${teamName}`;
     }
-    if (phaseId != SELECT_ENUM.NONE) {
+    if (phaseId != SELECT_ENUM.ALL) {
       description = description + ` ${t('of')} ${phaseName}`;
     }
-    if (field != SELECT_ENUM.NONE) {
+    if (field != SELECT_ENUM.ALL) {
       description = description + ` ${t('on')} ${field}`;
     }
-    if (timeSlot != SELECT_ENUM.NONE) {
+    if (timeSlot != SELECT_ENUM.ALL) {
       description =
         description +
         ` ${t('at')} ${formatDate(moment(timeSlot), 'h:mm ddd')}`;

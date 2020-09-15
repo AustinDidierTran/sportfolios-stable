@@ -44,6 +44,11 @@ export default {
       "Votre alignement est vide. Utilisé l'outil de recherche pour ajouter des joueurs à votre alignement.",
     are_you_sure_you_want_to_unregister_this_team:
       'Êtes vous sur que vous voulez désinscrire cette équipe et la rembourser si elle à déjà payé?',
+    all: 'Tous',
+    all_teams: 'Tous les équipes',
+    all_phases: 'Tous les phases',
+    all_fields: 'Tous les terrains',
+    all_time_slots: 'Tous les plages horaires',
     all_steps_completed: 'Tous les étapes sont complétées',
     amount_to_pay: 'Montant à payer {{amount}}',
     app_role: 'App Role',
