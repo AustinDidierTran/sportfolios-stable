@@ -14,15 +14,17 @@ export default function CustomSelect(props) {
     namespace,
     onChange,
     options,
-    value,
+    value: valueProp,
   } = props;
 
   //Value cannot be undefined so it is set to an empty string by default
-  const goodValue = formik
-    ? formik.values[namespace]
-    : value
-    ? value
-    : '';
+  let value = '';
+  if (formik) {
+    value = formik.values[namespace];
+  } else if (valueProp) {
+    value = valueProp;
+  }
+
   const handleChange = (event, ...args) => {
     if (formik) {
       formik.handleChange(event, ...args);
@@ -40,7 +42,7 @@ export default function CustomSelect(props) {
         id={namespace}
         name={namespace}
         {...props}
-        value={goodValue}
+        value={value}
         onChange={handleChange}
       >
         <MenuItem disabled value="">

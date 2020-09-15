@@ -12,10 +12,7 @@ import { rest } from 'lodash';
 
 export default function BasicInfo() {
   const [basicInfos, setBasicInfos] = useState([]);
-  const {
-    state: { authToken },
-    dispatch,
-  } = useContext(Store);
+  const { dispatch } = useContext(Store);
   const { t } = useTranslation();
 
   const submit = async values => {
@@ -24,7 +21,6 @@ export default function BasicInfo() {
     const res = await api(`/api/user/changeBasicUserInfo`, {
       method: 'POST',
       body: JSON.stringify({
-        authToken,
         language,
       }),
     });
@@ -32,25 +28,24 @@ export default function BasicInfo() {
     if (res.status === 402) {
       // Token is expired, redirect
       goTo(ROUTES.login);
-      return false;
     } else if (rest.status >= 400) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('something_went_wrong'),
         severity: 'error',
       });
-      return false;
+    } else {
+      basicInfos.language = language;
+      i18n.changeLanguage(language);
     }
     //No error
     return true;
   };
 
-  const handleChange = async values => {
-    if (await submit({ language: values })) {
-      basicInfos.language = values;
-      i18n.changeLanguage(values);
-    }
+  const handleChange = values => {
+    submit({ language: values });
   };
+
   const updateData = async () => {
     const { data } = await api('/api/user/userInfo');
     setBasicInfos(data);
