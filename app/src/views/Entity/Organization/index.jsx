@@ -47,8 +47,7 @@ export default function Organization(props) {
 
   return (
     <IgContainer>
-      <Paper className={styles.card}>
-        <BasicInfos basicInfos={basicInfos} />
+      <Paper>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}
           indicatorColor="primary"
@@ -64,6 +63,9 @@ export default function Organization(props) {
             />
           ))}
         </Tabs>
+      </Paper>
+      <Paper className={styles.card}>
+        <BasicInfos basicInfos={basicInfos} />
       </Paper>
       <OpenTab basicInfos={basicInfos} />
     </IgContainer>
