@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+
+  # API container
+  api:  
+    container_name: sportfolios_api_dev
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    volumes:
+      - '.:/sportfolios'
+      - '/sportfolios/node_modules'
+    ports:
+      - 1337:1337
+    # make container listen to file changes
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on: 
+      - db
+    
+    # allow to communicate with db if it's running on localhost
+    network_mode: 'host' # (Linux only)
+      
+    # (Seems like it's not needed anymore)
+    # interactive mode for development only (fix a known bug where container don't start and exit with code 0)
+    #stdin_open: true
+
+  # App container
+  app:
+    container_name: sportfolios_app_dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - '.:/sportfolios'
+      - '/sportfolios/node_modules'
+    ports:
+      - 3000:3000
+    # make container listen to file changes
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+    # (Seems like it's not needed anymore)
+    # interactive mode for development only (fix a known bug where container don't start and exit with code 0)
+    #stdin_open: true
+
+  # Database container
+  db:
+    container_name: sportfolios_db_dev
+    image: postgres
+    restart: always
+    ports: 
+      - 5432:5432
+    volumes:
+      # persist data even if container shuts down
+      - ./postgres-data:/var/lib/postgresql/data/
+    environment: 
+      # default user is postgres 
+      POSTGRES_PASSWORD: Psql_Sportfolios_Garand
+      POSTGRES_DB: sportfolios_api_dev
