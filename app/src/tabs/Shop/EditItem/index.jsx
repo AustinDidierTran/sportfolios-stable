@@ -33,8 +33,8 @@ export default function EditItem(props) {
     decodeURIComponent(item.description),
   );
 
-  const handleChange = event => {
-    setSizes(event.target.value);
+  const handleChange = value => {
+    setSizes(value);
   };
 
   const onImgChange = async ([file]) => {
