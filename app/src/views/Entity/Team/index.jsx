@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { Tab, Tabs } from '../../../components/MUI';
-import { Container, Paper } from '../../../components/Custom';
+import { Paper, IgContainer } from '../../../components/Custom';
 
 import styles from './Team.module.css';
 import { useParams } from 'react-router-dom';
@@ -39,11 +39,8 @@ export default function Team(props) {
   };
 
   return (
-    <Container className={styles.container}>
-      <Paper className={styles.card}>
-        <Container className={styles.title}>
-          <BasicInfos basicInfos={basicInfos} isManager={isManager} />
-        </Container>
+    <IgContainer className={styles.container}>
+      <Paper>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}
           indicatorColor="primary"
@@ -61,7 +58,10 @@ export default function Team(props) {
           ))}
         </Tabs>
       </Paper>
+      <Paper className={styles.card}>
+        <BasicInfos basicInfos={basicInfos} isManager={isManager} />
+      </Paper>
       <OpenTab basicInfos={basicInfos} />
-    </Container>
+    </IgContainer>
   );
 }
