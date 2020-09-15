@@ -10,9 +10,6 @@
 }
 
 .form {
-  display: grid !important;
-  grid-template-areas: 'inputs' 'buttons';
-  grid-template-rows: auto 46px;
   height: 100%;
 }
 
