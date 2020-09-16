@@ -16,7 +16,7 @@ const {
   addAlias: addAliasHelper,
   addOption: addOptionHelper,
   addGame: addGameHelper,
-  addScoreAndSpirit: addScoreAndSpiritHelper,
+  addScoreSuggestion: addScoreSuggestionHelper,
   addField: addFieldHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addPhase: addPhaseHelper,
@@ -411,13 +411,24 @@ async function addGame(body) {
   return res;
 }
 
-async function addScoreAndSpirit(body) {
-  const { score, spirit, teamId, gameId } = body;
-  const res = await addScoreAndSpiritHelper(
-    score,
-    spirit,
-    teamId,
-    gameId,
+async function addScoreSuggestion(body) {
+  const {
+    eventId,
+    startTime,
+    yourTeam,
+    yourScore,
+    opposingTeam,
+    opposingTeamScore,
+    opposingTeamSpirit,
+  } = body;
+  const res = await addScoreSuggestionHelper(
+    eventId,
+    startTime,
+    yourTeam,
+    yourScore,
+    opposingTeam,
+    opposingTeamScore,
+    opposingTeamSpirit,
   );
   return res;
 }
@@ -561,7 +572,7 @@ module.exports = {
   addAlias,
   addMembership,
   addGame,
-  addScoreAndSpirit,
+  addScoreSuggestion,
   addField,
   addTeamToSchedule,
   addPhase,

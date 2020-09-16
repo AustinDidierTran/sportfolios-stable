@@ -235,6 +235,7 @@ export default {
     something_went_wrong: 'Something went wrong.',
     spirit: 'Spirit',
     status: 'Status',
+    submit_score: 'Submit Score',
     subscribe: 'Subscribe',
     subscribed: 'Subscribed',
     shop: 'Shop',

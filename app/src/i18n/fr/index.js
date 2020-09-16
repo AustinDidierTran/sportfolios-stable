@@ -242,6 +242,7 @@ export default {
     something_went_wrong: 'Une erreur est survenue.',
     spirit: 'Esprit sportif',
     status: 'Status',
+    submit_score: 'Soumettre un résultat',
     subscribe: "S'abonner",
     subscribed: 'Abonné',
     team: 'Équipe',
