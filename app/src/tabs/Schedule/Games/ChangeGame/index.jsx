@@ -52,30 +52,36 @@ export default function ChangeGame(props) {
   useEffect(() => {
     formik.setFieldValue('score1', game.teams[0].score);
     formik.setFieldValue('score2', game.teams[1].score);
+    formik.setFieldValue('spirit1', game.teams[0].score);
+    formik.setFieldValue('spirit2', game.teams[1].score);
   }, [game]);
 
   const formik = useFormik({
     initialValues: {
       score1: '',
       score2: '',
+      spirit1: '',
+      spirit2: '',
     },
     validate,
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
-      const { score1, score2 } = values;
-      const res = await api('/api/entity/score', {
+      const { score1, score2, spirit1, spirit2 } = values;
+      const res = await api('/api/entity/scoreAndSpirit', {
         method: 'POST',
         body: JSON.stringify({
           score: score1,
+          spirit: spirit1,
           teamId: game.teams[0].id,
           gameId: game.id,
         }),
       });
-      const res1 = await api('/api/entity/score', {
+      const res1 = await api('/api/entity/scoreAndSpirit', {
         method: 'POST',
         body: JSON.stringify({
           score: score2,
+          spirit: spirit2,
           teamId: game.teams[1].id,
           gameId: game.id,
         }),

@@ -1004,7 +1004,7 @@ async function addGame(eventId, phaseId, field, time, team1, team2) {
   return res;
 }
 
-async function addScore(score, teamId, gameId) {
+async function addScoreAndSpirit(score, spirit, teamId, gameId) {
   const res = await knex('game_teams')
     .where({
       id: teamId,
@@ -1012,6 +1012,7 @@ async function addScore(score, teamId, gameId) {
     })
     .update({
       score: score,
+      spirit: spirit,
     })
     .returning('*');
   return res;
@@ -1404,7 +1405,7 @@ module.exports = {
   addAlias,
   addMembership,
   addGame,
-  addScore,
+  addScoreAndSpirit,
   addField,
   addTeamToSchedule,
   addPhase,
