@@ -7,6 +7,7 @@ birth_date,
 photo_url, 
 description, 
 quick_description,
+e.created_at,
 deleted_at
 FROM entities e 
 left join entities_name en on e.id = en.entity_id
