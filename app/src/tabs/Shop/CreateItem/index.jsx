@@ -35,8 +35,8 @@ export default function CreateItem(props) {
   const amount = useFormInput('');
   const description = useFormInput('');
 
-  const handleChange = event => {
-    setSizes(event.target.value);
+  const handleChange = value => {
+    setSizes(value);
   };
 
   const onImgChange = async ([file]) => {
