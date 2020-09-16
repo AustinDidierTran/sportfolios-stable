@@ -111,11 +111,20 @@ export default function ChangeGame(props) {
     },
   ];
 
-  const fields = game.teams.map((team, index) => ({
-    type: 'number',
-    namespace: `score${index + 1}`,
-    label: team.name,
-  }));
+  const fields = [];
+
+  game.teams.map((team, index) => {
+    fields.push({
+      type: 'number',
+      namespace: `score${index + 1}`,
+      label: `${t('score')} ${team.name}`,
+    });
+    fields.push({
+      type: 'number',
+      namespace: `spirit${index + 1}`,
+      label: `${t('spirit')} ${team.name}`,
+    });
+  });
 
   const gameClick = () => {
     setGameDialog(true);
