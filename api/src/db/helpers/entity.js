@@ -1014,6 +1014,29 @@ async function addScoreAndSpirit(props) {
     .update({
       score: score,
       spirit: spirit,
+     })
+    .returning('*');
+  return res;
+}
+
+async function addScoreSuggestion(
+  eventId,
+  startTime,
+  yourTeam,
+  yourScore,
+  opposingTeam,
+  opposingTeamScore,
+  opposingTeamSpirit,
+) {
+  const res = await knex('score_suggestion')
+    .insert({
+      event_id: eventId,
+      start_time: new Date(startTime),
+      your_team: yourTeam,
+      your_score: yourScore,
+      opposing_team: opposingTeam,
+      opposing_team_score: opposingTeamScore,
+      opposing_team_spirit: opposingTeamSpirit,
     })
     .returning('*');
   return res;
@@ -1406,7 +1429,7 @@ module.exports = {
   addAlias,
   addMembership,
   addGame,
-  addScoreAndSpirit,
+  addScoreSuggestion,
   addField,
   addTeamToSchedule,
   addPhase,

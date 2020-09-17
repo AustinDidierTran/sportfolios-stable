@@ -491,8 +491,8 @@ router.post(`${BASE_URL}/game`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/scoreAndSpirit`, async ctx => {
-  const game = await queries.addScoreAndSpirit(ctx.request.body);
+router.post(`${BASE_URL}/suggestScore`, async ctx => {
+  const game = await queries.addScoreSuggestion(ctx.request.body);
   if (game) {
     ctx.status = 201;
     ctx.body = {
