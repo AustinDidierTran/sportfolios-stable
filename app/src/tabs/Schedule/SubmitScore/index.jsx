@@ -13,6 +13,7 @@ import {
 import { useParams } from 'react-router-dom';
 import styles from './SubmitScore.module.css';
 import { getSlots, getTeams } from '../ScheduleFunctions';
+import moment from 'moment';
 
 export default function SubmitScore() {
   const { t } = useTranslation();
@@ -32,6 +33,16 @@ export default function SubmitScore() {
     const t = await getTeams(eventId, { withoutAll: true });
     setSlots(s);
     setTeams(t);
+
+    const pastSlots = slots
+      .filter(slot => moment(slot.value) > moment())
+      .map(slot => moment(slot.value));
+    const date = moment.min(pastSlots);
+
+    const def = slots.filter(slot => {
+      return moment(slot.value).isSame(date);
+    });
+    formik.setFieldValue('timeSlot', def[0].value);
   };
 
   const handleClose = () => {
