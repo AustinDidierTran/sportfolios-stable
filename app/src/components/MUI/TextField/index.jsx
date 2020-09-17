@@ -1,7 +1,6 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
-import Typography from '@material-ui/core/Typography';
-
+import { Typography } from '..';
 // See native documentation here: https://material-ui.com/components/text-fields/
 
 export default function CustomTextField(props) {
@@ -12,6 +11,8 @@ export default function CustomTextField(props) {
     hidden,
     namespace,
     onChange,
+    color,
+    variant,
   } = props;
 
   const handleChange = (event, ...args) => {
@@ -29,7 +30,11 @@ export default function CustomTextField(props) {
   }
 
   if (disabled) {
-    return <Typography>{props.value}</Typography>;
+    return (
+      <Typography color={color} variant={variant} {...props}>
+        {props.value || props.defaultValue}
+      </Typography>
+    );
   }
 
   return (

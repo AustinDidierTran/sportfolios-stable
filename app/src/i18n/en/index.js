@@ -238,6 +238,8 @@ export default {
     sizes: 'Sizes',
     something_went_wrong: 'Something went wrong.',
     spirit: 'Spirit',
+    spirit_chart_ligue_mardi:
+      '0: Bad 1: Below average 2: Good or nothing to report 3: Very good 4: Exceptional',
     status: 'Status',
     submit_score: 'Submit Score',
     subscribe: 'Subscribe',
@@ -247,6 +249,7 @@ export default {
       'Start date should be before end date.',
     to_see_your_receipt:
       'A copy of your receipt has been sent to you by email. You can consult it now on Stripe, our safe payment plateform.',
+    total: 'Total',
     tournament_fee: 'Tournament Fee',
     team: 'Team',
     team_1: 'Team 1',
@@ -481,5 +484,13 @@ export default {
     XL: 'X-Large',
     XXL: '2X-Large',
     XXXL: '3X-Large',
+
+    //SPIRIT CATEGORY
+    rules_knowledge_and_use: 'Rules Knowledge and Use',
+    fouls_and_body_contact: 'Fouls and Body Contact',
+    fair_mindedness: 'Fair Mindedness',
+    positive_attitude_and_self_control:
+      'Positive Attitude and Self Control',
+    communication: 'Communication',
   },
 };

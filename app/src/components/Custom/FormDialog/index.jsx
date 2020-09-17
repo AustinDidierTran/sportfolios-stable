@@ -7,6 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { TextField } from '../../MUI';
 import { Select } from '../../Custom';
+import styles from './FormDialog.module.css';
 
 export default function CustomFormDialog(props) {
   const {
@@ -18,7 +19,6 @@ export default function CustomFormDialog(props) {
     formik,
     onClose,
   } = props;
-
   return (
     <Dialog
       open={open}
@@ -44,6 +44,7 @@ export default function CustomFormDialog(props) {
                     label={field.label}
                     fullWidth
                     defaultValue={field.defaultValue}
+                    className={styles.field}
                   />
                 ) : (
                   <TextField
@@ -56,6 +57,10 @@ export default function CustomFormDialog(props) {
                     type={field.type}
                     fullWidth
                     defaultValue={field.defaultValue}
+                    disabled={field.disabled}
+                    className={styles.field}
+                    color={field.color}
+                    variant={field.variant}
                   />
                 )}
               </>
