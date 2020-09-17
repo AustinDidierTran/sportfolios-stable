@@ -411,6 +411,11 @@ async function addGame(body) {
   return res;
 }
 
+async function addScoreAndSpirit(body) {
+  const res = await addScoreAndSpiritHelper(body);
+    return res;
+}
+
 async function addScoreSuggestion(body) {
   const {
     eventId,
@@ -432,6 +437,7 @@ async function addScoreSuggestion(body) {
   );
   return res;
 }
+  
 async function addField(body) {
   const { field, eventId } = body;
   const res = await addFieldHelper(field, eventId);

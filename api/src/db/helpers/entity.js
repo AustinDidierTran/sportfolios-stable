@@ -1004,6 +1004,21 @@ async function addGame(eventId, phaseId, field, time, team1, team2) {
   return res;
 }
 
+async function addScoreAndSpirit(props) {
+  const { score, spirit, teamId, gameId } = props;
+  const res = await knex('game_teams')
+    .where({
+      id: teamId,
+      game_id: gameId,
+    })
+    .update({
+      score: score,
+      spirit: spirit,
+     })
+    .returning('*');
+  return res;
+}
+
 async function addScoreSuggestion(
   eventId,
   startTime,
