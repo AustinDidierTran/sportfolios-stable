@@ -118,6 +118,15 @@ const STATUS_ENUM = {
   ERROR: 404,
 };
 
+const SPIRIT_CATEGORY_ENUM = {
+  RULES_KNOWLEDGE_AND_USE: 'rules_knowledge_and_use',
+  FOULS_AND_BODY_CONTACT: 'fouls_and_body_contact',
+  FAIR_MINDEDNESS: 'fair_mindedness',
+  POSITIVE_ATTITUDE_AND_SELF_CONTROL:
+    'positive_attitude_and_self_control',
+  COMMUNICATION: 'communication',
+};
+
 // Everything excluding roles
 const GLOBAL_ENUM = {
   PERSON: 1,
@@ -219,4 +228,5 @@ module.exports = {
   SEVERITY_ENUM,
   IMAGE_ENUM,
   LANGUAGE_ENUM,
+  SPIRIT_CATEGORY_ENUM,
 };

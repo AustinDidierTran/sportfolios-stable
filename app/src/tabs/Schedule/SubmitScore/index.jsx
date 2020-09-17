@@ -9,6 +9,7 @@ import { Store, ACTION_ENUM } from '../../../Store';
 import {
   SEVERITY_ENUM,
   STATUS_ENUM,
+  SPIRIT_CATEGORY_ENUM,
 } from '../../../../../common/enums';
 import { useParams } from 'react-router-dom';
 import styles from './SubmitScore.module.css';
@@ -23,6 +24,7 @@ export default function SubmitScore() {
   const [open, setOpen] = useState(false);
   const [slots, setSlots] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [total, setTotal] = useState(10);
 
   useEffect(() => {
     getOptions();
@@ -34,6 +36,9 @@ export default function SubmitScore() {
     setSlots(s);
     setTeams(t);
 
+    formik.setFieldValue('yourTeam', t[0].value);
+    formik.setFieldValue('opposingTeam', t[1].value);
+
     const pastSlots = slots
       .filter(slot => moment(slot.value) > moment())
       .map(slot => moment(slot.value));
@@ -42,7 +47,9 @@ export default function SubmitScore() {
     const def = slots.filter(slot => {
       return moment(slot.value).isSame(date);
     });
-    formik.setFieldValue('timeSlot', def[0].value);
+    if (def[0]) {
+      formik.setFieldValue('timeSlot', def[0].value);
+    }
   };
 
   const handleClose = () => {
@@ -65,7 +72,11 @@ export default function SubmitScore() {
       yourScore,
       opposingTeam,
       opposingTeamScore,
-      opposingTeamSpirit,
+      rulesKnowledgeAndUse,
+      foulsAndBodyContact,
+      fairMindedness,
+      positiveAttitudeAndSelfControl,
+      communication,
     } = values;
     const errors = {};
     if (!timeSlot.length) {
@@ -83,9 +94,30 @@ export default function SubmitScore() {
     if (opposingTeamScore < 0) {
       errors.opposingTeamScore = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
-    if (opposingTeamSpirit < 0) {
-      errors.opposingTeamSpirit = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    if (rulesKnowledgeAndUse < 0) {
+      errors.rulesKnowledgeAndUse = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
+    if (foulsAndBodyContact < 0) {
+      errors.foulsAndBodyContact = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (fairMindedness < 0) {
+      errors.fairMindedness = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (positiveAttitudeAndSelfControl < 0) {
+      errors.positiveAttitudeAndSelfControl = t(
+        ERROR_ENUM.VALUE_IS_REQUIRED,
+      );
+    }
+    if (communication < 0) {
+      errors.communication = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    const total =
+      rulesKnowledgeAndUse +
+      foulsAndBodyContact +
+      fairMindedness +
+      positiveAttitudeAndSelfControl +
+      communication;
+    setTotal(total);
     return errors;
   };
 
@@ -96,10 +128,14 @@ export default function SubmitScore() {
       yourScore: 0,
       opposingTeam: '',
       opposingTeamScore: 0,
-      opposingTeamSpirit: 0,
+      rulesKnowledgeAndUse: 2,
+      foulsAndBodyContact: 2,
+      fairMindedness: 2,
+      positiveAttitudeAndSelfControl: 2,
+      communication: 2,
     },
     validate,
-    validateOnChange: false,
+    validateOnChange: true,
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       const {
@@ -108,7 +144,6 @@ export default function SubmitScore() {
         yourScore,
         opposingTeam,
         opposingTeamScore,
-        opposingTeamSpirit,
       } = values;
       const res = await api('/api/entity/suggestScore', {
         method: 'POST',
@@ -119,7 +154,7 @@ export default function SubmitScore() {
           yourScore,
           opposingTeam,
           opposingTeamScore: opposingTeamScore,
-          opposingTeamSpirit: opposingTeamSpirit,
+          opposingTeamSpirit: total,
         }),
       });
 
@@ -142,6 +177,15 @@ export default function SubmitScore() {
       }
     },
   });
+
+  const spiritOptions = [
+    { display: '0', value: 0 },
+    { display: '1', value: 1 },
+    { display: '2', value: 2 },
+    { display: '3', value: 3 },
+    { display: '4', value: 4 },
+  ];
+
   const buttons = [
     {
       onClick: handleClose,
@@ -185,9 +229,50 @@ export default function SubmitScore() {
       type: 'number',
     },
     {
-      namespace: 'opposingTeamSpirit',
-      label: t('opposing_team_spirit'),
-      type: 'number',
+      defaultValue: t('spirit'),
+      disabled: true,
+    },
+    {
+      defaultValue: t('spirit_chart_ligue_mardi'),
+      disabled: true,
+      color: 'textSecondary',
+      variant: 'body2',
+    },
+    {
+      isSelect: true,
+      namespace: 'rulesKnowledgeAndUse',
+      label: `1. ${t(SPIRIT_CATEGORY_ENUM.RULES_KNOWLEDGE_AND_USE)}`,
+      options: spiritOptions,
+    },
+    {
+      isSelect: true,
+      namespace: 'foulsAndBodyContact',
+      label: `2. ${t(SPIRIT_CATEGORY_ENUM.FOULS_AND_BODY_CONTACT)}`,
+      options: spiritOptions,
+    },
+    {
+      isSelect: true,
+      namespace: 'fairMindedness',
+      label: `3. ${t(SPIRIT_CATEGORY_ENUM.FAIR_MINDEDNESS)}`,
+      options: spiritOptions,
+    },
+    {
+      isSelect: true,
+      namespace: 'positiveAttitudeAndSelfControl',
+      label: `4. ${t(
+        SPIRIT_CATEGORY_ENUM.POSITIVE_ATTITUDE_AND_SELF_CONTROL,
+      )}`,
+      options: spiritOptions,
+    },
+    {
+      isSelect: true,
+      namespace: 'communication',
+      label: `5. ${t(SPIRIT_CATEGORY_ENUM.COMMUNICATION)}`,
+      options: spiritOptions,
+    },
+    {
+      defaultValue: `${t('total')}: ${total}`,
+      disabled: true,
     },
   ];
 

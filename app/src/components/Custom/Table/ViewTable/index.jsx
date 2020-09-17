@@ -14,7 +14,6 @@ import { goTo } from '../../../../actions/goTo';
 
 export default function ViewTable(props) {
   const { data, description, headers, onRowClick, title } = props;
-
   return (
     <>
       <Typography gutterBottom variant="h5" component="h2">
