@@ -412,13 +412,7 @@ async function addGame(body) {
 }
 
 async function addScoreAndSpirit(body) {
-  const { score, spirit, teamId, gameId } = body;
-  const res = await addScoreAndSpiritHelper(
-    score,
-    spirit,
-    teamId,
-    gameId,
-  );
+  const res = await addScoreAndSpiritHelper(body);
   return res;
 }
 async function addField(body) {
