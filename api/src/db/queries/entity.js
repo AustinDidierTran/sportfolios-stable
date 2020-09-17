@@ -17,6 +17,7 @@ const {
   addOption: addOptionHelper,
   addGame: addGameHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
+  addScoreAndSpirit: addScoreAndSpiritHelper,
   addField: addFieldHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addPhase: addPhaseHelper,
@@ -413,7 +414,7 @@ async function addGame(body) {
 
 async function addScoreAndSpirit(body) {
   const res = await addScoreAndSpiritHelper(body);
-    return res;
+  return res;
 }
 
 async function addScoreSuggestion(body) {
@@ -437,7 +438,7 @@ async function addScoreSuggestion(body) {
   );
   return res;
 }
-  
+
 async function addField(body) {
   const { field, eventId } = body;
   const res = await addFieldHelper(field, eventId);
@@ -579,6 +580,7 @@ module.exports = {
   addMembership,
   addGame,
   addScoreSuggestion,
+  addScoreAndSpirit,
   addField,
   addTeamToSchedule,
   addPhase,
