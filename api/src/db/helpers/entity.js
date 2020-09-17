@@ -1014,7 +1014,7 @@ async function addScoreAndSpirit(props) {
     .update({
       score: score,
       spirit: spirit,
-     })
+    })
     .returning('*');
   return res;
 }
@@ -1430,6 +1430,7 @@ module.exports = {
   addMembership,
   addGame,
   addScoreSuggestion,
+  addScoreAndSpirit,
   addField,
   addTeamToSchedule,
   addPhase,
