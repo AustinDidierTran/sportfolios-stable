@@ -9,6 +9,7 @@ import AddTimeSlot from './AddTimeSlot';
 import AddTeam from './AddTeam';
 import AddField from './AddField';
 import Games from './Games';
+import SubmitScore from './SubmitScore';
 
 export default function ScheduleTab(props) {
   const { t } = useTranslation();
@@ -55,8 +56,14 @@ export default function ScheduleTab(props) {
   const closeField = () => {
     setField(false);
   };
+
   if (role != ENTITIES_ROLE_ENUM.ADMIN) {
-    return <Games />;
+    return (
+      <>
+        <SubmitScore />
+        <Games />
+      </>
+    );
   }
   return (
     <>
@@ -115,6 +122,7 @@ export default function ScheduleTab(props) {
       <AddTeam isOpen={team} onClose={closeTeam} />
       <AddPhase isOpen={phase} onClose={closePhase} />
       <AddGame isOpen={game} onClose={closeGame} />
+      <SubmitScore />
       <Games role={role} />
     </>
   );

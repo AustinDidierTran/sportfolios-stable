@@ -16,7 +16,7 @@ const {
   addAlias: addAliasHelper,
   addOption: addOptionHelper,
   addGame: addGameHelper,
-  addScore: addScoreHelper,
+  addScoreSuggestion: addScoreSuggestionHelper,
   addField: addFieldHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addPhase: addPhaseHelper,
@@ -352,7 +352,7 @@ async function updateAlias(body) {
   const res = await updateAliasHelper(entityId, alias);
   return res;
 }
-  async function updateGame(body) {
+async function updateGame(body) {
   const {
     gameId,
     phaseId,
@@ -411,9 +411,25 @@ async function addGame(body) {
   return res;
 }
 
-async function addScore(body) {
-  const { score, teamId, gameId } = body;
-  const res = await addScoreHelper(score, teamId, gameId);
+async function addScoreSuggestion(body) {
+  const {
+    eventId,
+    startTime,
+    yourTeam,
+    yourScore,
+    opposingTeam,
+    opposingTeamScore,
+    opposingTeamSpirit,
+  } = body;
+  const res = await addScoreSuggestionHelper(
+    eventId,
+    startTime,
+    yourTeam,
+    yourScore,
+    opposingTeam,
+    opposingTeamScore,
+    opposingTeamSpirit,
+  );
   return res;
 }
 async function addField(body) {
@@ -556,7 +572,7 @@ module.exports = {
   addAlias,
   addMembership,
   addGame,
-  addScore,
+  addScoreSuggestion,
   addField,
   addTeamToSchedule,
   addPhase,

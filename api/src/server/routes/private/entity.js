@@ -294,7 +294,7 @@ router.put(`${BASE_URL}/member`, async ctx => {
 
 router.put(`${BASE_URL}/alias`, async ctx => {
   const entity = await queries.updateAlias(ctx.request.body);
-   if (entity) {
+  if (entity) {
     ctx.status = 200;
     ctx.body = {
       status: 'success',
@@ -308,7 +308,7 @@ router.put(`${BASE_URL}/alias`, async ctx => {
     };
   }
 });
-  
+
 router.put(`${BASE_URL}/game`, async ctx => {
   const entity = await queries.updateGame(ctx.request.body);
   if (entity) {
@@ -491,8 +491,8 @@ router.post(`${BASE_URL}/game`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/score`, async ctx => {
-  const game = await queries.addScore(ctx.request.body);
+router.post(`${BASE_URL}/suggestScore`, async ctx => {
+  const game = await queries.addScoreSuggestion(ctx.request.body);
   if (game) {
     ctx.status = 201;
     ctx.body = {
