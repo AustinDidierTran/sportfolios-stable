@@ -576,6 +576,25 @@ router.post(`${BASE_URL}/addTeamToSchedule`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/addRegisteredToSchedule`, async ctx => {
+  const teams = await queries.addRegisteredToSchedule(
+    ctx.request.body,
+  );
+  if (teams) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: teams,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/phase`, async ctx => {
   const phase = await queries.addPhase(ctx.request.body);
   if (phase) {

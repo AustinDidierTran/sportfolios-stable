@@ -10,12 +10,16 @@ import AddTeam from './AddTeam';
 import AddField from './AddField';
 import Games from './Games';
 import SubmitScore from './SubmitScore';
+import { useEffect } from 'react';
+import api from '../../actions/api';
+import { useParams } from 'react-router-dom';
 
 export default function ScheduleTab(props) {
   const { t } = useTranslation();
   const {
     basicInfos: { role },
   } = props;
+  const { id: eventId } = useParams();
 
   const [game, setGame] = useState(false);
   const [phase, setPhase] = useState(false);
@@ -26,15 +30,12 @@ export default function ScheduleTab(props) {
   const openGame = () => {
     setGame(true);
   };
-
   const closeGame = () => {
     setGame(false);
   };
-
   const openPhase = () => {
     setPhase(true);
   };
-
   const closePhase = () => {
     setPhase(false);
   };
@@ -55,6 +56,19 @@ export default function ScheduleTab(props) {
   };
   const closeField = () => {
     setField(false);
+  };
+
+  useEffect(() => {
+    addRegisteredTeams();
+  }, []);
+
+  const addRegisteredTeams = async () => {
+    await api('/api/entity/addRegisteredToSchedule', {
+      method: 'POST',
+      body: JSON.stringify({
+        eventId,
+      }),
+    });
   };
 
   if (role != ENTITIES_ROLE_ENUM.ADMIN) {

@@ -20,6 +20,7 @@ const {
   addScoreAndSpirit: addScoreAndSpiritHelper,
   addField: addFieldHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
+  addRegisteredToSchedule: addRegisteredToScheduleHelper,
   addPhase: addPhaseHelper,
   addTimeSlot: addTimeSlotHelper,
   addRoster: addRosterHelper,
@@ -38,7 +39,7 @@ const {
   getMembers: getMembersHelper,
   getMemberships: getMembershipsHelper,
   getRegistered: getRegisteredHelper,
-  getAllRegistered: getAllRegisteredHelper,
+  getAllRegisteredInfos: getAllRegisteredInfosHelper,
   getRemainingSpots: getRemainingSpotsHelper,
   getRoster: getRosterHelper,
   getEvent: getEventHelper,
@@ -125,8 +126,8 @@ async function getRegistered(team_id, event_id) {
   return getRegisteredHelper(team_id, event_id);
 }
 
-async function getAllRegistered(eventId, userId) {
-  return getAllRegisteredHelper(eventId, userId);
+async function getAllRegisteredInfos(eventId, userId) {
+  return getAllRegisteredInfosHelper(eventId, userId);
 }
 async function getRemainingSpots(eventId) {
   return getRemainingSpotsHelper(eventId);
@@ -451,8 +452,14 @@ async function addField(body) {
 }
 
 async function addTeamToSchedule(body) {
-  const { name, eventId } = body;
-  const res = await addTeamToScheduleHelper(name, eventId);
+  const { eventId, name, rosterId } = body;
+  const res = await addTeamToScheduleHelper(eventId, name, rosterId);
+  return res;
+}
+
+async function addRegisteredToSchedule(body) {
+  const { eventId } = body;
+  const res = await addRegisteredToScheduleHelper(eventId);
   return res;
 }
 
@@ -520,7 +527,7 @@ const unregister = async (body, userId) => {
     }
   }
 
-  return getAllRegisteredHelper(eventId, userId);
+  return getAllRegisteredInfosHelper(eventId, userId);
 };
 
 async function addMembership(body, userId) {
@@ -588,6 +595,7 @@ module.exports = {
   addScoreAndSpirit,
   addField,
   addTeamToSchedule,
+  addRegisteredToSchedule,
   addPhase,
   addTimeSlot,
   addOption,
@@ -608,7 +616,7 @@ module.exports = {
   getOptions,
   getMemberships,
   getRegistered,
-  getAllRegistered,
+  getAllRegisteredInfos,
   getRemainingSpots,
   getEvent,
   getAlias,

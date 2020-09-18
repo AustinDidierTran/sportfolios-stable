@@ -42,10 +42,10 @@ router.get(`${BASE_URL}/eventInfos`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/allTeamsRegistered`, async ctx => {
+router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
   const userId =
     ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
-  const entity = await queries.getAllRegistered(
+  const entity = await queries.getAllRegisteredInfos(
     ctx.query.eventId,
     userId,
   );

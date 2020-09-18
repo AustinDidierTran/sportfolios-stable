@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 const getRosters = async eventId => {
   const { data } = await api(
-    formatRoute('/api/entity/allTeamsRegistered', null, {
+    formatRoute('/api/entity/allTeamsRegisteredInfos', null, {
       eventId,
     }),
   );
