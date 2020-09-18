@@ -321,12 +321,20 @@ async function getAllForYouPagePosts() {
     .where('active', true);
 
   const fullEvents = await Promise.all(
-    events.map(async e => {
-      const { creator_id: creatorId, ...otherProps } = e;
+    events.map(async event => {
+      const { creator_id: creatorId } = event;
       const creator = await getEntity(creatorId);
       return {
         type: GLOBAL_ENUM.EVENT,
         cardType: CARD_TYPE_ENUM.EVENT,
+        photoUrl: event.photo_url,
+        startDate: event.start_date,
+        endDate: event.end_date,
+        quickDescription: event.quick_description,
+        description: event.description,
+        location: event.location,
+        name: event.name,
+        createdAt: event.created_at,
         creator: {
           id: creator.id,
           type: creator.type,
@@ -334,18 +342,23 @@ async function getAllForYouPagePosts() {
           surname: creator.surname,
           photoUrl: creator.photoUrl,
         },
-        ...otherProps,
       };
     }),
   );
-  const fullMerch = merch.map(e => ({
-    ...e,
+  const fullMerch = merch.map(item => ({
     type: GLOBAL_ENUM.SHOP_ITEM,
     cardType: CARD_TYPE_ENUM.SHOP,
+    label: item.label,
+    amount: item.amount,
+    photoUrl: item.photo_url,
+    description: item.description,
+    stripePriceId: item.stripe_price_id,
+    stripeProductId: item.stripe_product_id,
+    createdAt: item.created_at,
   }));
 
   return [...fullEvents, ...fullMerch].sort(
-    (a, b) => a.created_at - b.created_at,
+    (a, b) => b.createdAt - a.createdAt,
   );
 }
 

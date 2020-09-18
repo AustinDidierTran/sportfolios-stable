@@ -28,8 +28,6 @@ export default function ShopItem(props) {
     stripeProductId,
     isEditor,
     update,
-    fetchItems,
-    button,
   } = props;
 
   const text = useMemo(() => decodeURIComponent(description), [
@@ -68,7 +66,7 @@ export default function ShopItem(props) {
           stripePriceId,
           stripeProductId,
         }}
-        fetchItems={fetchItems}
+        fetchItems={update}
         isEditing={isEditing}
         setIsEditing={s => setIsEditing(s)}
       />
@@ -95,20 +93,7 @@ export default function ShopItem(props) {
           value={text}
           disabled
         />
-        {button ? (
-          <div className={styles.otherButtonMain}>
-            <Button
-              onClick={() =>
-                goTo(ROUTES.shopDetails, { id, stripePriceId })
-              }
-              className={styles.otherButton}
-            >
-              {button.name}
-            </Button>
-          </div>
-        ) : (
-          <></>
-        )}
+
         {isEditor ? (
           <div className={styles.buttons}>
             <Button
@@ -129,7 +114,16 @@ export default function ShopItem(props) {
             </Button>
           </div>
         ) : (
-          <></>
+          <div className={styles.otherButtonMain}>
+            <Button
+              onClick={() =>
+                goTo(ROUTES.shopDetails, { id, stripePriceId })
+              }
+              className={styles.otherButton}
+            >
+              {t('learn_more')}
+            </Button>
+          </div>
         )}
       </CardContent>
     </Paper>
