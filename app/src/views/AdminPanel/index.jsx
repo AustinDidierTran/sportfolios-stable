@@ -8,6 +8,8 @@ import { Typography } from '../../components/MUI';
 import { Container } from '../../components/Custom';
 import SportsTable from './SportsTable';
 import UsersTable from './UsersTable';
+import GaEventsTable from './GoogleAnalyticsEventsTable';
+import GaPageviewsTable from './GoogleAnalyticsPageviewsTable';
 
 export default function AdminPanel() {
   const { t } = useTranslation();
@@ -23,6 +25,8 @@ export default function AdminPanel() {
       </Typography>
       <UsersTable />
       <SportsTable />
+      <GaEventsTable />
+      <GaPageviewsTable />
     </Container>
   );
 }

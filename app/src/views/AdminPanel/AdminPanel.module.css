@@ -5,7 +5,7 @@
 
 .container {
   display: grid !important;
-  grid-template-areas: 'title' 'users' 'sports';
+  grid-template-areas: 'title' 'users' 'sports' 'gaEvents' 'gaPageviews';
   grid-template-columns: 1fr;
   column-gap: 32px;
   row-gap: 32px;

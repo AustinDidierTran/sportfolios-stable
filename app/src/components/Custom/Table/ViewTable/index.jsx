@@ -12,6 +12,8 @@ import { Button } from '../../../Custom';
 import styles from './ViewTable.module.css';
 import { goTo } from '../../../../actions/goTo';
 
+import Switch from '@material-ui/core/Switch';
+
 export default function ViewTable(props) {
   const { data, description, headers, onRowClick, title } = props;
   return (
@@ -52,6 +54,16 @@ export default function ViewTable(props) {
                       >
                         {d[h.value]}
                       </Button>
+                    </TableCell>
+                  ) : h.type === 'toggle' ? (
+                    <TableCell key={index}>
+                      <Switch
+                        name={d.name}
+                        checked={d.isChecked}
+                        onChange={d.handleChange}
+                        inputProps={d.inputProps}
+                        color={d.color}
+                      ></Switch>
                     </TableCell>
                   ) : (
                     <TableCell key={index}>{d[h.value]}</TableCell>

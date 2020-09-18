@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import theme from './theme';
 import { ThemeProvider } from '@material-ui/core/styles';
 
@@ -40,6 +40,11 @@ import Checkout from '../Checkout';
 import Sales from '../Sales';
 import ShopDetails from '../ShopDetails';
 
+import {
+  AddGaPageView,
+  InitGa,
+} from '../../components/Custom/Analytics';
+
 // Mocks
 import MockEvent from '../Mocks/Event';
 
@@ -69,6 +74,11 @@ export default function App() {
   const isAuthenticated = Boolean(authToken);
 
   const optimizely = createInstance(conf.optimizely);
+
+  useEffect(() => {
+    InitGa();
+    AddGaPageView();
+  });
 
   return (
     <OptimizelyProvider
