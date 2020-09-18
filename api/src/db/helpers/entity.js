@@ -310,6 +310,42 @@ async function getAllRolesEntity(entityId) {
   });
 }
 
+async function getAllForYouPagePosts() {
+  const events = await knex('events_infos')
+    .select('*')
+    .whereNull('deleted_at');
+
+  const merch = await knex('store_items_all_infos')
+    .select('*')
+    .where('active', true);
+
+  const fullEvents = await Promise.all(
+    events.map(async e => {
+      const { creator_id: creatorId, ...otherProps } = e;
+      const creator = await getEntity(creatorId);
+      return {
+        type: GLOBAL_ENUM.EVENT,
+        creator: {
+          id: creator.id,
+          type: creator.type,
+          name: creator.name,
+          surname: creator.surname,
+          photoUrl: creator.photoUrl,
+        },
+        ...otherProps,
+      };
+    }),
+  );
+  const fullMerch = merch.map(e => ({
+    ...e,
+    type: GLOBAL_ENUM.SHOP_ITEM,
+  }));
+
+  return [...fullEvents, ...fullMerch].sort(
+    (a, b) => a.created_at - b.created_at,
+  );
+}
+
 async function getRealId(id) {
   const [res] = await knex('alias')
     .select('id')
@@ -1417,6 +1453,7 @@ module.exports = {
   deleteOption,
   deleteRegistration,
   getAllEntities,
+  getAllForYouPagePosts,
   getAllOwnedEntities,
   getOwnedEvents,
   getAllRolesEntity,

@@ -48,6 +48,23 @@ router.get(`${BASE_URL}/all`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/forYouPage`, async ctx => {
+  const entity = await queries.getAllForYouPagePosts(ctx.query);
+
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/ownedEvents`, async ctx => {
   const entity = await queries.getOwnedEvents(
     ctx.query.organizationId,
@@ -294,7 +311,7 @@ router.put(`${BASE_URL}/member`, async ctx => {
 
 router.put(`${BASE_URL}/alias`, async ctx => {
   const entity = await queries.updateAlias(ctx.request.body);
-   if (entity) {
+  if (entity) {
     ctx.status = 200;
     ctx.body = {
       status: 'success',
@@ -308,7 +325,7 @@ router.put(`${BASE_URL}/alias`, async ctx => {
     };
   }
 });
-  
+
 router.put(`${BASE_URL}/game`, async ctx => {
   const entity = await queries.updateGame(ctx.request.body);
   if (entity) {
