@@ -187,6 +187,7 @@ export default {
     organization: 'Organisation',
     organizations: 'Organisations',
     our_team: 'Notre Équipe',
+    page_not_found: 'Page non trouvée',
     paid: 'Payé',
     paid_with: 'Payé avec',
     password: 'Mot de passe',
