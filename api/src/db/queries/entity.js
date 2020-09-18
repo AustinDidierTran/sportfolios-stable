@@ -67,6 +67,7 @@ const {
   addPlayerToRoster: addPlayerToRosterHelper,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
   deleteGame: deleteGameHelper,
+  getAllForYouPagePosts: getAllForYouPagePostsHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -87,6 +88,10 @@ async function getEntity(id, user_id) {
 
 async function getAllEntities(params) {
   return getAllEntitiesHelper(params);
+}
+
+async function getAllForYouPagePosts() {
+  return getAllForYouPagePostsHelper();
 }
 async function getAllOwnedEntities(type, userId) {
   return getAllOwnedEntitiesHelper(type, userId);
@@ -592,6 +597,7 @@ module.exports = {
   deleteEntityMembership,
   deleteOption,
   getAllEntities,
+  getAllForYouPagePosts,
   getAllOwnedEntities,
   getOwnedEvents,
   getAllRolesEntity,

@@ -48,6 +48,23 @@ router.get(`${BASE_URL}/all`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/forYouPage`, async ctx => {
+  const entity = await queries.getAllForYouPagePosts(ctx.query);
+
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/ownedEvents`, async ctx => {
   const entity = await queries.getOwnedEvents(
     ctx.query.organizationId,

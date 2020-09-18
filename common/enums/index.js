@@ -61,6 +61,7 @@ const CARD_TYPE_ENUM = {
   ADD_PAYMENT_OPTION: 'add payment option',
   EVENT_PAYMENT_OPTION: 'event payment option',
   EVENT_SETTINGS: 'event settings',
+  EVENT: 'event',
 };
 
 const LANGUAGE_ENUM = {
