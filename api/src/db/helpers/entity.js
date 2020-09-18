@@ -7,6 +7,7 @@ const {
   GLOBAL_ENUM,
   ROSTER_ROLE_ENUM,
   TAG_TYPE_ENUM,
+  CARD_TYPE_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -325,6 +326,7 @@ async function getAllForYouPagePosts() {
       const creator = await getEntity(creatorId);
       return {
         type: GLOBAL_ENUM.EVENT,
+        cardType: CARD_TYPE_ENUM.EVENT,
         creator: {
           id: creator.id,
           type: creator.type,
@@ -339,6 +341,7 @@ async function getAllForYouPagePosts() {
   const fullMerch = merch.map(e => ({
     ...e,
     type: GLOBAL_ENUM.SHOP_ITEM,
+    cardType: CARD_TYPE_ENUM.SHOP,
   }));
 
   return [...fullEvents, ...fullMerch].sort(
