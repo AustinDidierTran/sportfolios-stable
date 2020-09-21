@@ -20,6 +20,8 @@ const COMPONENT_TYPE_ENUM = {
   SELECT: 'select',
   TEXTFIELD: 'textfield',
   MULTISELECT: 'multiselect',
+  BUTTON: 'button',
+  CHECKBOX: 'checkbox',
 };
 
 const ROSTER_ROLE_ENUM = {

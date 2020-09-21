@@ -7,6 +7,7 @@ export { default as CardMedia } from './CardMedia';
 export { default as ComponentFactory } from './ComponentFactory';
 export { default as Container } from './Container';
 export { default as ContainerBottomFixed } from './ContainerBottomFixed';
+export { default as CheckBox } from './CheckBox';
 export { default as Dialog, AlertDialog } from './Dialog';
 export { default as FormDialog } from './FormDialog';
 export { default as EntityList } from './EntityList';
