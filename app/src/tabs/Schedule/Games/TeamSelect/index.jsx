@@ -25,7 +25,7 @@ export default function TeamSelect(props) {
     );
     const res = data
       //TO BE REMOVED ONLY FOR MEMPHRE
-      .filter(d => d.name.length > 5)
+      .filter(d => d.name.length > 2)
       .map(d => ({
         value: d.name,
         display: d.name,
