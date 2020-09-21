@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Card from '@material-ui/core/Card';
@@ -11,8 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { formatRoute, goTo, ROUTES } from '../../../../actions/goTo';
-import api from '../../../../actions/api';
+import { goTo, ROUTES } from '../../../../actions/goTo';
 import moment from 'moment';
 import { formatIntervalDate } from '../../../../utils/stringFormats';
 import {
@@ -22,7 +21,7 @@ import {
 } from '../../../../components/Custom';
 import { useContext } from 'react';
 import { Store, SCREENSIZE_ENUM } from '../../../../Store';
-import styles from './UpcomingEvents.module.css';
+import styles from './EventPost.module.css';
 import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
@@ -54,44 +53,29 @@ const useStyles = makeStyles(theme => ({
   },
   avatar: {},
 }));
-
-const getEvent = async eventId => {
-  const { data } = await api(
-    formatRoute('/api/entity/eventInfos', null, {
-      id: eventId,
-    }),
-  );
-  return data;
-};
-
 const flag = false;
 
-export default function UpcomingEvents(props) {
+export default function EventPost(props) {
   const { t } = useTranslation();
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
-  const [event, setEvent] = useState({});
+  const [expanded, setExpanded] = useState(false);
   const {
     state: { screenSize },
   } = useContext(Store);
-  const { eventId } = props;
-
+  const {
+    eventId,
+    creator,
+    description,
+    quickDescription,
+    startDate,
+    endDate,
+    location,
+    name,
+    photoUrl,
+  } = props;
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-
-  const getData = async () => {
-    const event = await getEvent(eventId);
-    setEvent(event);
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  if (!event) {
-    return <></>;
-  }
 
   return (
     <Card className={classes.root}>
@@ -101,7 +85,7 @@ export default function UpcomingEvents(props) {
           <Avatar
             aria-label="recipe"
             className={classes.avatar}
-            photoUrl={(event.creator && event.creator.photoUrl) || ''}
+            photoUrl={(creator && creator.photoUrl) || ''}
           ></Avatar>
         }
         action={
@@ -109,10 +93,8 @@ export default function UpcomingEvents(props) {
             <MoreVertIcon style={flag ? {} : { color: '#fff' }} />
           </IconButton>
         }
-        title={event.name || ''}
-        subheader={
-          (event.creator && event.creator.name) || 'Sportfolios'
-        }
+        title={name || ''}
+        subheader={(creator && creator.name) || ''}
       />
       <ImageCard
         onClick={() => goTo(ROUTES.entity, { id: eventId })}
@@ -121,7 +103,7 @@ export default function UpcomingEvents(props) {
             ? classes.media
             : classes.media2
         }
-        photoUrl={event.photoUrl || ''}
+        photoUrl={photoUrl || ''}
       />
       <CardContent>
         <Typography
@@ -130,9 +112,9 @@ export default function UpcomingEvents(props) {
           component="p"
           align="left"
         >
-          {(event.quickDescription &&
-            decodeURIComponent(event.quickDescription)) ||
-            '5v5 mixte, format À Bout de Soufle'}
+          {(quickDescription &&
+            decodeURIComponent(quickDescription)) ||
+            t('event')}
         </Typography>
         <Typography
           variant="body2"
@@ -140,10 +122,7 @@ export default function UpcomingEvents(props) {
           component="p"
           align="left"
         >
-          {formatIntervalDate(
-            moment(event.startDate),
-            moment(event.endDate),
-          )}
+          {formatIntervalDate(moment(startDate), moment(endDate))}
         </Typography>
         <Typography
           variant="body2"
@@ -151,7 +130,7 @@ export default function UpcomingEvents(props) {
           component="p"
           align="left"
         >
-          {event.location || 'Sherbrooke'}
+          {location || t('location_unspecified')}
         </Typography>
       </CardContent>
       <CardActions className={styles.actions} disableSpacing>
@@ -178,7 +157,7 @@ export default function UpcomingEvents(props) {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph>
-            {decodeURIComponent(event.description) || ''}
+            {decodeURIComponent(description) || ''}
           </Typography>
         </CardContent>
       </Collapse>

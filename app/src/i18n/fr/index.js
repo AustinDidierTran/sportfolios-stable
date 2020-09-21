@@ -111,6 +111,7 @@ export default {
     event_settings: "Paramètre de l'événement",
     event_start: "Début de l'événement",
     events: 'Événements',
+    event: 'Événement',
     event_creator: "Créateur d'événement",
     events_that_might_interest_you:
       'Événements qui pourrait vous intéresser',
@@ -140,6 +141,7 @@ export default {
     infos: 'Infos',
     last_name: 'Nom de famille',
     length: 'Durée',
+    location_unspecified: 'Lieu non spécifié',
     login: 'Connexion',
     logout: 'Déconnexion',
     send_email: 'Envoyer un courriel',
