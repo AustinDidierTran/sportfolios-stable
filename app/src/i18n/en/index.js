@@ -451,6 +451,8 @@ export default {
       'You added one player to your roster! Choose your payment option.',
     you_added_players_to_your_roster:
       'You added {{length}} players to your roster! Choose your payment option.',
+    no_bank_account_linked:
+      'You have no bank account linked, payment option needs to be free',
 
     //SIZES
     sizes_enum: {

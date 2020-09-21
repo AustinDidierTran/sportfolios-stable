@@ -365,8 +365,10 @@ async function updateGame(body) {
     phaseId,
     field,
     time,
-    team1,
-    team2,
+    rosterId1,
+    rosterId2,
+    name1,
+    name2,
     teamId1,
     teamId2,
   } = body;
@@ -375,8 +377,10 @@ async function updateGame(body) {
     phaseId,
     field,
     time,
-    team1,
-    team2,
+    rosterId1,
+    rosterId2,
+    name1,
+    name2,
     teamId1,
     teamId2,
   );
@@ -406,14 +410,25 @@ async function addAlias(body) {
 }
 
 async function addGame(body) {
-  const { eventId, phaseId, field, time, team1, team2 } = body;
+  const {
+    eventId,
+    phaseId,
+    field,
+    time,
+    rosterId1,
+    rosterId2,
+    name1,
+    name2,
+  } = body;
   const res = await addGameHelper(
     eventId,
     phaseId,
     field,
     time,
-    team1,
-    team2,
+    rosterId1,
+    rosterId2,
+    name1,
+    name2,
   );
   return res;
 }
@@ -427,18 +442,22 @@ async function addScoreSuggestion(body) {
   const {
     eventId,
     startTime,
-    yourTeam,
+    yourTeamName,
+    yourTeamId,
     yourScore,
-    opposingTeam,
+    opposingTeamName,
+    opposingTeamId,
     opposingTeamScore,
     opposingTeamSpirit,
   } = body;
   const res = await addScoreSuggestionHelper(
     eventId,
     startTime,
-    yourTeam,
+    yourTeamName,
+    yourTeamId,
     yourScore,
-    opposingTeam,
+    opposingTeamName,
+    opposingTeamId,
     opposingTeamScore,
     opposingTeamSpirit,
   );

@@ -118,6 +118,7 @@
     "react-router-dom": "^5.1.2",
     "stripe": "^8.49.0",
     "uuid": "^3.4.0",
+    "validator": "^13.1.17",
     "webpack": "^4.42.1",
     "yup": "^0.28.3"
   }

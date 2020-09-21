@@ -54,7 +54,6 @@ export default function CustomMultiSelect(props) {
       onChange(event.target.value);
     }
   };
-
   return (
     <div {...props}>
       <FormControl className={classes.formControl}>
