@@ -135,7 +135,7 @@ export default function TabEventInfo() {
       }),
     );
     const { data: teams } = await api(
-      formatRoute('/api/entity/allTeamsRegistered', null, {
+      formatRoute('/api/entity/allTeamsRegisteredInfos', null, {
         eventId: id,
       }),
     );

@@ -30,10 +30,18 @@ export const getTeams = async (eventId, withoutAll) => {
   const { data } = await api(
     formatRoute('/api/entity/teamsSchedule', null, { eventId }),
   );
-  const res = data.map(d => ({
-    value: d.name,
-    display: d.name,
-  }));
+  const res = data.map(d => {
+    if (d.roster_id) {
+      return {
+        value: d.roster_id,
+        display: d.name,
+      };
+    }
+    return {
+      value: d.name,
+      display: d.name,
+    };
+  });
   if (withoutAll) {
     return res;
   }

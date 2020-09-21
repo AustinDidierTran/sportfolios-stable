@@ -37,7 +37,7 @@ export default function TeamSelect(props) {
       }),
     );
     const { data: registered } = await api(
-      formatRoute('/api/entity/allTeamsRegistered', null, {
+      formatRoute('/api/entity/allTeamsRegisteredInfos', null, {
         eventId,
       }),
     );

@@ -8,6 +8,7 @@ const {
   ROSTER_ROLE_ENUM,
   TAG_TYPE_ENUM,
   CARD_TYPE_ENUM,
+  REGISTRATION_STATUS_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -217,6 +218,15 @@ async function getAllOwnedEntities(type, userId) {
       return { ...otherProps, photoUrl };
     });
   return res2;
+}
+
+async function getEntitiesName(entityId) {
+  const realId = await getRealId(entityId);
+
+  const [name] = await knex('entities_name')
+    .select('name', 'surname')
+    .where({ entity_id: realId });
+  return name;
 }
 
 async function getOwnedEvents(organizationId) {
@@ -607,11 +617,16 @@ async function getPaymentOption(rosterId) {
   return option;
 }
 
-async function getAllRegistered(eventId, userId) {
+async function getAllRegistered(eventId) {
   const realId = await getRealId(eventId);
   const teams = await knex('event_rosters')
     .select('*')
     .where({ event_id: realId });
+  return teams;
+}
+
+async function getAllRegisteredInfos(eventId, userId) {
+  const teams = await getAllRegistered(eventId);
 
   const props = await Promise.all(
     teams.map(async t => {
@@ -1092,15 +1107,54 @@ async function addField(field, eventId) {
   return res;
 }
 
-async function addTeamToSchedule(name, eventId) {
+async function addTeamToSchedule(eventId, name, rosterId) {
   const realId = await getRealId(eventId);
-  const [res] = await knex('schedule_teams')
-    .insert({
-      event_id: realId,
-      name,
-    })
-    .returning('*');
-  return res;
+  if (
+    !(await isInSchedule(realId, t.roster_id)) &&
+    (await isAcceptedToEvent(realId, t.roster_id))
+  ) {
+    const [res] = await knex('schedule_teams')
+      .insert({
+        event_id: realId,
+        name,
+        roster_id: rosterId,
+      })
+      .returning('*');
+    return res;
+  }
+}
+
+async function isInSchedule(eventId, rosterId) {
+  const [team] = await knex('schedule_teams')
+    .select('*')
+    .where({
+      event_id: eventId,
+      roster_id: rosterId,
+    });
+  return Boolean(team);
+}
+
+async function isAcceptedToEvent(eventId, rosterId) {
+  const [status] = await knex('event_rosters')
+    .select('registration_status')
+    .where({
+      event_id: eventId,
+      roster_id: rosterId,
+    });
+  return (
+    status.registration_status === REGISTRATION_STATUS_ENUM.ACCEPTED
+  );
+}
+
+async function addRegisteredToSchedule(eventId) {
+  const teams = await getAllRegistered(eventId);
+  await Promise.all(
+    teams.map(async t => {
+      const name = await getEntitiesName(t.team_id);
+      await addTeamToSchedule(eventId, name.name, t.roster_id);
+    }),
+  );
+  return teams;
 }
 
 async function addPhase(phase, eventId) {
@@ -1472,6 +1526,7 @@ module.exports = {
   addScoreAndSpirit,
   addField,
   addTeamToSchedule,
+  addRegisteredToSchedule,
   addPhase,
   addTimeSlot,
   addOption,
@@ -1495,6 +1550,7 @@ module.exports = {
   getMemberships,
   getRegistered,
   getAllRegistered,
+  getAllRegisteredInfos,
   getRemainingSpots,
   getRoster,
   getEvent,

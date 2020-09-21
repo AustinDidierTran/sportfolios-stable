@@ -39,7 +39,7 @@ export default function TeamRegistered() {
 
   const getTeams = async () => {
     const { data } = await api(
-      formatRoute('/api/entity/allTeamsRegistered', null, {
+      formatRoute('/api/entity/allTeamsRegisteredInfos', null, {
         eventId,
       }),
     );
