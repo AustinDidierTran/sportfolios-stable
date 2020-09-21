@@ -18,6 +18,7 @@ export default function General() {
   const [isLoading, setIsLoading] = useState([true]);
 
   const getData = async () => {
+    setIsLoading(true);
     const posts = await getAllPosts();
     setPosts(posts);
     setIsLoading(false);

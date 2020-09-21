@@ -327,6 +327,7 @@ async function getAllForYouPagePosts() {
       return {
         type: GLOBAL_ENUM.EVENT,
         cardType: CARD_TYPE_ENUM.EVENT,
+        eventId: event.id,
         photoUrl: event.photo_url,
         startDate: event.start_date,
         endDate: event.end_date,

@@ -55,14 +55,24 @@ const useStyles = makeStyles(theme => ({
 }));
 const flag = false;
 
-export default function UpcomingEvents(props) {
+export default function EventPost(props) {
   const { t } = useTranslation();
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
   const {
     state: { screenSize },
   } = useContext(Store);
-  const { eventId } = props;
+  const {
+    eventId,
+    creator,
+    description,
+    quickDescription,
+    startDate,
+    endDate,
+    location,
+    name,
+    photoUrl,
+  } = props;
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
@@ -75,7 +85,7 @@ export default function UpcomingEvents(props) {
           <Avatar
             aria-label="recipe"
             className={classes.avatar}
-            photoUrl={(props.creator && props.creator.photoUrl) || ''}
+            photoUrl={(creator && creator.photoUrl) || ''}
           ></Avatar>
         }
         action={
@@ -83,10 +93,8 @@ export default function UpcomingEvents(props) {
             <MoreVertIcon style={flag ? {} : { color: '#fff' }} />
           </IconButton>
         }
-        title={props.name || ''}
-        subheader={
-          (props.creator && props.creator.name) || 'Sportfolios'
-        }
+        title={name || ''}
+        subheader={creator && creator.name}
       />
       <ImageCard
         onClick={() => goTo(ROUTES.entity, { id: eventId })}
@@ -95,7 +103,7 @@ export default function UpcomingEvents(props) {
             ? classes.media
             : classes.media2
         }
-        photoUrl={props.photoUrl || ''}
+        photoUrl={photoUrl || ''}
       />
       <CardContent>
         <Typography
@@ -104,9 +112,9 @@ export default function UpcomingEvents(props) {
           component="p"
           align="left"
         >
-          {(props.quickDescription &&
-            decodeURIComponent(props.quickDescription)) ||
-            '5v5 mixte, format À Bout de Soufle'}
+          {(quickDescription &&
+            decodeURIComponent(quickDescription)) ||
+            t('event')}
         </Typography>
         <Typography
           variant="body2"
@@ -114,10 +122,7 @@ export default function UpcomingEvents(props) {
           component="p"
           align="left"
         >
-          {formatIntervalDate(
-            moment(props.startDate),
-            moment(props.endDate),
-          )}
+          {formatIntervalDate(moment(startDate), moment(endDate))}
         </Typography>
         <Typography
           variant="body2"
@@ -125,7 +130,7 @@ export default function UpcomingEvents(props) {
           component="p"
           align="left"
         >
-          {props.location || 'Sherbrooke'}
+          {location || t('location_unspecified')}
         </Typography>
       </CardContent>
       <CardActions className={styles.actions} disableSpacing>
@@ -152,7 +157,7 @@ export default function UpcomingEvents(props) {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph>
-            {decodeURIComponent(props.description) || ''}
+            {decodeURIComponent(description) || ''}
           </Typography>
         </CardContent>
       </Collapse>
