@@ -1178,8 +1178,8 @@ async function addField(field, eventId) {
 async function addTeamToSchedule(eventId, name, rosterId) {
   const realId = await getRealId(eventId);
   if (
-    !(await isInSchedule(realId, t.roster_id)) &&
-    (await isAcceptedToEvent(realId, t.roster_id))
+    !(await isInSchedule(realId, rosterId)) &&
+    (await isAcceptedToEvent(realId, rosterId))
   ) {
     const [res] = await knex('schedule_teams')
       .insert({
