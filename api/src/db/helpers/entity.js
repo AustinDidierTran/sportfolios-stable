@@ -1109,28 +1109,31 @@ async function addField(field, eventId) {
 
 async function addTeamToSchedule(eventId, name, rosterId) {
   const realId = await getRealId(eventId);
-  const [res] = await knex('schedule_teams')
-    .insert({
-      event_id: realId,
-      name,
-      roster_id: rosterId,
-    })
-    .returning('*');
-  return res;
+  if (
+    !(await isInSchedule(realId, t.roster_id)) &&
+    (await isAcceptedToEvent(realId, t.roster_id))
+  ) {
+    const [res] = await knex('schedule_teams')
+      .insert({
+        event_id: realId,
+        name,
+        roster_id: rosterId,
+      })
+      .returning('*');
+    return res;
+  }
 }
 
-async function isNotInSchedule(eventId, rosterId) {
+async function isInSchedule(eventId, rosterId) {
   const [team] = await knex('schedule_teams')
     .select('*')
     .where({
       event_id: eventId,
       roster_id: rosterId,
     });
-  if (team) {
-    return false;
-  }
-  return true;
+  return Boolean(team);
 }
+
 async function isAcceptedToEvent(eventId, rosterId) {
   const [status] = await knex('event_rosters')
     .select('registration_status')
@@ -1138,25 +1141,17 @@ async function isAcceptedToEvent(eventId, rosterId) {
       event_id: eventId,
       roster_id: rosterId,
     });
-  if (
+  return (
     status.registration_status === REGISTRATION_STATUS_ENUM.ACCEPTED
-  ) {
-    return true;
-  }
-  return false;
+  );
 }
 
 async function addRegisteredToSchedule(eventId) {
   const teams = await getAllRegistered(eventId);
   await Promise.all(
     teams.map(async t => {
-      if (
-        (await isNotInSchedule(eventId, t.roster_id)) &&
-        (await isAcceptedToEvent(eventId, t.roster_id))
-      ) {
-        const name = await getEntitiesName(t.team_id);
-        await addTeamToSchedule(eventId, name.name, t.roster_id);
-      }
+      const name = await getEntitiesName(t.team_id);
+      await addTeamToSchedule(eventId, name.name, t.roster_id);
     }),
   );
   return teams;
