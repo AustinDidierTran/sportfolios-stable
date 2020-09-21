@@ -1,17 +1,22 @@
 import ReactGa from 'react-ga';
-import api from '../../../actions/api';
 import { GOOGLE_ANALYTICS_TRACKING_ID } from '../../../../../conf';
 
 const TRACKING_ID = GOOGLE_ANALYTICS_TRACKING_ID;
+const activePageviews = JSON.parse(
+  localStorage.getItem('activeGaPageviews'),
+);
+const activeEvents = JSON.parse(
+  localStorage.getItem('activeGaEvents'),
+);
 
 export const InitGa = () => {
   ReactGa.initialize(TRACKING_ID);
 };
 
 export const AddGaPageView = async () => {
-  const activePageviews = await api('/api/ga/activePageviews');
   if (
-    activePageviews.data.some(
+    activePageviews &&
+    activePageviews.some(
       pv => pv.pathname === window.location.pathname,
     )
   ) {
@@ -29,8 +34,10 @@ export const AddGaEvent = async ({ category, action, label }) => {
     throw new Error('category and action are required');
   }
 
-  const activeEvents = await api('/api/ga/activeEvents');
-  if (activeEvents.data.some(e => e.category === category)) {
+  if (
+    activeEvents &&
+    activeEvents.some(e => e.category === category)
+  ) {
     ReactGa.event({ category, action, label });
   }
 };
