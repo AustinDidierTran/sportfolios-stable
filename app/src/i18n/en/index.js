@@ -70,6 +70,7 @@ export default {
     category: 'Category',
     change_password: 'Change password',
     click_to_create_new_team: 'Click to create your new team',
+    comments: 'Comments',
     confirm: 'Confirm',
     contact_us: 'Contact us',
     contact: 'Contact',
