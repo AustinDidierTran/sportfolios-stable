@@ -69,6 +69,7 @@ export default {
     cart_empty_go_shop: "Your cart is empty, it's time to shop!",
     change_password: 'Change password',
     click_to_create_new_team: 'Click to create your new team',
+    comments: 'Comments',
     confirm: 'Confirm',
     contact_us: 'Contact us',
     contact: 'Contact',

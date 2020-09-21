@@ -449,6 +449,8 @@ async function addScoreSuggestion(body) {
     opposingTeamId,
     opposingTeamScore,
     opposingTeamSpirit,
+    players,
+    comments,
   } = body;
   const res = await addScoreSuggestionHelper(
     eventId,
@@ -460,6 +462,8 @@ async function addScoreSuggestion(body) {
     opposingTeamId,
     opposingTeamScore,
     opposingTeamSpirit,
+    players,
+    comments,
   );
   return res;
 }
