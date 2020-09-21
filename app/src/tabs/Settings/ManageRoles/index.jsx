@@ -100,8 +100,8 @@ export default function ManageRoles() {
     await updateEntities();
   };
 
-  const handleChange = async (event, entity_id_admin) => {
-    await updateRole(entity_id_admin, event.target.value);
+  const handleChange = async (newRole, entity_id_admin) => {
+    await updateRole(entity_id_admin, newRole);
     await updateEntities();
   };
 
@@ -177,8 +177,8 @@ export default function ManageRoles() {
               key={`s${index}`}
               value={e.role}
               labelId="Role"
-              onChange={event =>
-                handleChange(event, e.entity_id_admin)
+              onChange={newRole =>
+                handleChange(newRole, e.entity_id_admin)
               }
               className={styles.select}
               options={items}
