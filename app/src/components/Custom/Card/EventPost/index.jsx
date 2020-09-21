@@ -94,7 +94,7 @@ export default function EventPost(props) {
           </IconButton>
         }
         title={name || ''}
-        subheader={creator && creator.name}
+        subheader={(creator && creator.name) || ''}
       />
       <ImageCard
         onClick={() => goTo(ROUTES.entity, { id: eventId })}
