@@ -712,6 +712,7 @@ async function getRoster(rosterId) {
     id: player.id,
     name: player.name,
     personId: player.person_id,
+    isSub: player.is_sub,
     status: status,
   }));
 
@@ -1181,11 +1182,20 @@ async function addTeamToSchedule(eventId, name, rosterId) {
     !(await isInSchedule(realId, rosterId)) &&
     (await isAcceptedToEvent(realId, rosterId))
   ) {
+    if (rosterId) {
+      const [res] = await knex('schedule_teams')
+        .insert({
+          event_id: realId,
+          name,
+          roster_id: rosterId,
+        })
+        .returning('*');
+      return res;
+    }
     const [res] = await knex('schedule_teams')
       .insert({
         event_id: realId,
         name,
-        roster_id: rosterId,
       })
       .returning('*');
     return res;
@@ -1571,18 +1581,29 @@ const deleteOption = async id => {
 };
 
 const addPlayerToRoster = async body => {
-  const { personId, name, id, rosterId } = body;
+  const { personId, name, id, rosterId, isSub } = body;
   //TODO: Make sure userId adding is team Admin
-  const realId = await getRealId(id);
-
-  const player = await knex('team_players')
-    .insert({
-      roster_id: rosterId,
-      person_id: personId,
-      name: name,
-      id: realId,
-    })
-    .returning('*');
+  let player = {};
+  if (id) {
+    player = await knex('team_players')
+      .insert({
+        roster_id: rosterId,
+        person_id: personId,
+        name: name,
+        id: realId,
+        is_sub: isSub,
+      })
+      .returning('*');
+  } else {
+    player = await knex('team_players')
+      .insert({
+        roster_id: rosterId,
+        person_id: personId,
+        name: name,
+        is_sub: isSub,
+      })
+      .returning('*');
+  }
   return player;
 };
 

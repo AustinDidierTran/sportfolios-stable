@@ -18,6 +18,7 @@ import { getSlots, getTeams } from '../ScheduleFunctions';
 import moment from 'moment';
 import { formatRoute } from '../../../actions/goTo';
 import validator from 'validator';
+import AddSub from './AddSub';
 
 export default function SubmitScore() {
   const { t } = useTranslation();
@@ -25,6 +26,7 @@ export default function SubmitScore() {
   const { id: eventId } = useParams();
 
   const [open, setOpen] = useState(false);
+  const [addSub, setAddSub] = useState(false);
   const [slots, setSlots] = useState([]);
   const [teams, setTeams] = useState([]);
   const [roster, setRoster] = useState([]);
@@ -36,24 +38,24 @@ export default function SubmitScore() {
   }, [open]);
 
   const getRoster = async rosterId => {
-    const { data } = await api(
-      formatRoute('/api/entity/getRoster', null, {
-        rosterId,
-      }),
-    );
-    if (data) {
-      const fullRoster = data.map(d => ({
-        value: d.id,
-        display: d.name,
-      }));
-      setFullRoster(fullRoster);
-
-      const roster = data.map(d => {
-        if (!d.isSub) {
-          return d.name;
-        }
-      });
-      setRoster(roster);
+    if (validator.isUUID(rosterId)) {
+      const { data } = await api(
+        formatRoute('/api/entity/getRoster', null, {
+          rosterId,
+        }),
+      );
+      if (data) {
+        const fullRoster = data.map(d => ({
+          value: d.id,
+          display: d.name,
+        }));
+        setFullRoster(fullRoster);
+        const roster = data.filter(d => !d.isSub).map(d => d.name);
+        setRoster(roster);
+      }
+    } else {
+      setRoster([]);
+      setFullRoster([]);
     }
   };
 
@@ -98,6 +100,19 @@ export default function SubmitScore() {
 
   const onClose = () => {
     setOpen(false);
+  };
+
+  const onAddSub = () => {
+    setAddSub(true);
+  };
+
+  const onAddSubClose = () => {
+    setAddSub(false);
+  };
+
+  const updateRoster = player => {
+    const newRoster = [...roster, player];
+    setRoster(newRoster);
   };
 
   const validate = values => {
@@ -282,6 +297,15 @@ export default function SubmitScore() {
       onChange: handleChange,
     },
     {
+      componentType: COMPONENT_TYPE_ENUM.BUTTON,
+      namespace: 'addSub',
+      children: t('add_player'),
+      endIcon: 'Add',
+      onClick: onAddSub,
+      variant: 'contained',
+      color: 'primary',
+    },
+    {
       namespace: 'yourScore',
       label: t('your_score'),
       type: 'number',
@@ -369,6 +393,12 @@ export default function SubmitScore() {
         fields={fields}
         formik={formik}
         onClose={onClose}
+      />
+      <AddSub
+        open={addSub}
+        onClose={onAddSubClose}
+        rosterId={formik.values.yourTeam}
+        updateRoster={updateRoster}
       />
     </>
   );
