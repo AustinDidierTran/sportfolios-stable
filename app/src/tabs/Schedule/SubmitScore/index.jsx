@@ -10,11 +10,14 @@ import {
   SEVERITY_ENUM,
   STATUS_ENUM,
   SPIRIT_CATEGORY_ENUM,
+  COMPONENT_TYPE_ENUM,
 } from '../../../../../common/enums';
 import { useParams } from 'react-router-dom';
 import styles from './SubmitScore.module.css';
 import { getSlots, getTeams } from '../ScheduleFunctions';
 import moment from 'moment';
+import { formatRoute } from '../../../actions/goTo';
+import validator from 'validator';
 
 export default function SubmitScore() {
   const { t } = useTranslation();
@@ -24,11 +27,32 @@ export default function SubmitScore() {
   const [open, setOpen] = useState(false);
   const [slots, setSlots] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [roster, setRoster] = useState([]);
+  const [fullRoster, setFullRoster] = useState([]);
   const [total, setTotal] = useState(10);
 
   useEffect(() => {
     getOptions();
   }, [open]);
+
+  const getRoster = async rosterId => {
+    const { data } = await api(
+      formatRoute('/api/entity/getRoster', null, {
+        rosterId,
+      }),
+    );
+    if (data) {
+      const fullRoster = data.map(d => d.name);
+      setFullRoster(fullRoster);
+
+      const roster = data.map(d => {
+        if (!d.isSub) {
+          return d.name;
+        }
+      });
+      setRoster(roster);
+    }
+  };
 
   const getOptions = async () => {
     const s = await getSlots(eventId);
@@ -36,13 +60,17 @@ export default function SubmitScore() {
     setSlots(s);
     setTeams(t);
 
-    formik.setFieldValue('yourTeam', t[0].value);
-    formik.setFieldValue('opposingTeam', t[1].value);
+    if (t[0]) {
+      formik.setFieldValue('yourTeam', t[0].value);
+    }
+    if (t[1]) {
+      formik.setFieldValue('opposingTeam', t[1].value);
+    }
 
     const pastSlots = slots
-      .filter(slot => moment(slot.value) > moment())
+      .filter(slot => moment(slot.value) < moment())
       .map(slot => moment(slot.value));
-    const date = moment.min(pastSlots);
+    const date = moment.max(pastSlots);
 
     const def = slots.filter(slot => {
       return moment(slot.value).isSame(date);
@@ -50,6 +78,10 @@ export default function SubmitScore() {
     if (def[0]) {
       formik.setFieldValue('timeSlot', def[0].value);
     }
+  };
+
+  const handleChange = value => {
+    setRoster(value);
   };
 
   const handleClose = () => {
@@ -145,14 +177,30 @@ export default function SubmitScore() {
         opposingTeam,
         opposingTeamScore,
       } = values;
+      let yourTeamName = null;
+      let yourTeamId = null;
+      let opposingTeamName = null;
+      let opposingTeamId = null;
+      if (validator.isUUID(yourTeam)) {
+        yourTeamId = yourTeam;
+      } else {
+        yourTeamName = yourTeam;
+      }
+      if (validator.isUUID(opposingTeam)) {
+        opposingTeamId = opposingTeam;
+      } else {
+        opposingTeamName = opposingTeam;
+      }
       const res = await api('/api/entity/suggestScore', {
         method: 'POST',
         body: JSON.stringify({
           eventId,
           startTime: timeSlot,
-          yourTeam,
+          yourTeamName,
+          yourTeamId,
           yourScore,
-          opposingTeam,
+          opposingTeamName,
+          opposingTeamId,
           opposingTeamScore: opposingTeamScore,
           opposingTeamSpirit: total,
         }),
@@ -178,6 +226,10 @@ export default function SubmitScore() {
     },
   });
 
+  useEffect(() => {
+    getRoster(formik.values.yourTeam);
+  }, [formik.values.yourTeam]);
+
   const spiritOptions = [
     { display: '0', value: 0 },
     { display: '1', value: 1 },
@@ -201,16 +253,24 @@ export default function SubmitScore() {
 
   const fields = [
     {
-      isSelect: true,
+      componentType: COMPONENT_TYPE_ENUM.SELECT,
       namespace: 'timeSlot',
       label: t('time_slot'),
       options: slots,
     },
     {
-      isSelect: true,
+      componentType: COMPONENT_TYPE_ENUM.SELECT,
       namespace: 'yourTeam',
       label: t('your_team'),
       options: teams,
+    },
+    {
+      componentType: COMPONENT_TYPE_ENUM.MULTISELECT,
+      namespace: 'roster',
+      label: t('roster'),
+      options: fullRoster,
+      values: roster,
+      onChange: handleChange,
     },
     {
       namespace: 'yourScore',
@@ -218,7 +278,7 @@ export default function SubmitScore() {
       type: 'number',
     },
     {
-      isSelect: true,
+      componentType: COMPONENT_TYPE_ENUM.SELECT,
       namespace: 'opposingTeam',
       label: t('opposing_team'),
       options: teams,
@@ -239,25 +299,25 @@ export default function SubmitScore() {
       variant: 'body2',
     },
     {
-      isSelect: true,
+      componentType: COMPONENT_TYPE_ENUM.SELECT,
       namespace: 'rulesKnowledgeAndUse',
       label: `1. ${t(SPIRIT_CATEGORY_ENUM.RULES_KNOWLEDGE_AND_USE)}`,
       options: spiritOptions,
     },
     {
-      isSelect: true,
+      componentType: COMPONENT_TYPE_ENUM.SELECT,
       namespace: 'foulsAndBodyContact',
       label: `2. ${t(SPIRIT_CATEGORY_ENUM.FOULS_AND_BODY_CONTACT)}`,
       options: spiritOptions,
     },
     {
-      isSelect: true,
+      componentType: COMPONENT_TYPE_ENUM.SELECT,
       namespace: 'fairMindedness',
       label: `3. ${t(SPIRIT_CATEGORY_ENUM.FAIR_MINDEDNESS)}`,
       options: spiritOptions,
     },
     {
-      isSelect: true,
+      componentType: COMPONENT_TYPE_ENUM.SELECT,
       namespace: 'positiveAttitudeAndSelfControl',
       label: `4. ${t(
         SPIRIT_CATEGORY_ENUM.POSITIVE_ATTITUDE_AND_SELF_CONTROL,
@@ -265,7 +325,7 @@ export default function SubmitScore() {
       options: spiritOptions,
     },
     {
-      isSelect: true,
+      componentType: COMPONENT_TYPE_ENUM.SELECT,
       namespace: 'communication',
       label: `5. ${t(SPIRIT_CATEGORY_ENUM.COMMUNICATION)}`,
       options: spiritOptions,

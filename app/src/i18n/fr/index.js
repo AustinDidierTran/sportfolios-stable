@@ -452,6 +452,8 @@ export default {
       'Vous avez ajouté un joueur à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
     you_added_players_to_your_roster:
       'Vous avez ajouté {{length}} joueurs à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
+    no_bank_account_linked:
+      "Vous n'avez pas de compte en banque relié, l'option de paiement doit etre gratuite",
 
     //SIZES
     sizes_enum: {
