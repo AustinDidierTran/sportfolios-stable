@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './Events.module.css';
 import { goTo, ROUTES, formatRoute } from '../../actions/goTo';
 import {
+  CARD_TYPE_ENUM,
   GLOBAL_ENUM,
   ENTITIES_ROLE_ENUM,
 } from '../../../../common/enums';
