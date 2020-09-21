@@ -133,8 +133,8 @@ async function getRemainingSpots(eventId) {
   return getRemainingSpotsHelper(eventId);
 }
 
-async function getRoster(rosterId, userId) {
-  return getRosterHelper(rosterId, userId);
+async function getRoster(rosterId) {
+  return getRosterHelper(rosterId);
 }
 
 async function getEvent(eventId) {
