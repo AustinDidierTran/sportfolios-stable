@@ -325,10 +325,15 @@ async function getAllForYouPagePosts() {
   const events = await knex('events_infos')
     .select('*')
     .whereNull('deleted_at');
-
   const merch = await knex('store_items_all_infos')
     .select('*')
-    .where('active', true);
+    .leftJoin(
+      'stripe_price',
+      'stripe_price.stripe_price_id',
+      '=',
+      'store_items_all_infos.stripe_price_id',
+    )
+    .where('store_items_all_infos.active', true);
 
   const fullEvents = await Promise.all(
     events.map(async event => {
@@ -356,17 +361,19 @@ async function getAllForYouPagePosts() {
       };
     }),
   );
-  const fullMerch = merch.map(item => ({
-    type: GLOBAL_ENUM.SHOP_ITEM,
-    cardType: CARD_TYPE_ENUM.SHOP,
-    label: item.label,
-    amount: item.amount,
-    photoUrl: item.photo_url,
-    description: item.description,
-    stripePriceId: item.stripe_price_id,
-    stripeProductId: item.stripe_product_id,
-    createdAt: item.created_at,
-  }));
+  const fullMerch = merch
+    .filter(m => m.metadata.type === GLOBAL_ENUM.EVENT)
+    .map(item => ({
+      type: GLOBAL_ENUM.SHOP_ITEM,
+      cardType: CARD_TYPE_ENUM.SHOP,
+      label: item.label,
+      amount: item.amount,
+      photoUrl: item.photo_url,
+      description: item.description,
+      stripePriceId: item.stripe_price_id,
+      stripeProductId: item.stripe_product_id,
+      createdAt: item.created_at,
+    }));
 
   return [...fullEvents, ...fullMerch].sort(
     (a, b) => b.createdAt - a.createdAt,
