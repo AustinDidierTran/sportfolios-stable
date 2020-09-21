@@ -67,6 +67,7 @@ export default {
     captain: 'Captain',
     card_ending_with: 'Card ending with {{last4}}',
     cart_empty_go_shop: "Your cart is empty, it's time to shop!",
+    category: 'Category',
     change_password: 'Change password',
     click_to_create_new_team: 'Click to create your new team',
     confirm: 'Confirm',
@@ -190,6 +191,7 @@ export default {
     password: 'Password',
     password_changed: 'Password has been changed successfully',
     password_reset_message: 'Password has been successfully reset.',
+    pathname: 'Pathname',
     pay: 'Pay',
     payment_method_added:
       'You successfully added a new payment method!',
@@ -350,6 +352,10 @@ export default {
       'Archive your results in your personal Sportfolio.',
     description_card_third_point:
       'Connect with your perfect teammates.',
+    // GOOGLE ANALYTICS EVENTS TABLE
+    ga_events_table_title: 'Google Analytics Events List',
+    // GOOGLE ANALYTICS PAGEVIEWS TABLE
+    ga_pageviews_table_title: 'Google Analytics Pageviews List',
     // SPORTS TABLE
     sports_table_title: 'Sports List',
     // USERS TABLE

@@ -13,6 +13,8 @@ import {
 import { Paper } from '../../../components/Custom';
 import { ROUTES } from '../../../actions/goTo';
 
+import { AddGaEvent } from '../../../components/Custom/Analytics';
+
 export default function LoginCard(props) {
   const { t } = useTranslation();
   const { formik } = props;
@@ -44,6 +46,13 @@ export default function LoginCard(props) {
             className={styles.button}
             type="submit"
             style={{ color: '#fff' }}
+            onClick={() =>
+              AddGaEvent({
+                category: 'Login',
+                action: 'User clicked to log in',
+                label: 'Login_page',
+              })
+            }
           >
             {t('login')}
           </Button>

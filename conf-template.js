@@ -3,4 +3,5 @@ module.exports = {
   API_BASE_URL: 'https://private-4f97fa-sportfolios.apiary-mock.com',
   CLIENT_BASE_URL: 'http://localhost:3000',
   TOKEN_SECRET: '942ad648-fd13-4386-a8ea-a0d4e75324ef',
+  GOOGLE_ANALYTICS_TRACKING_ID: 'UA-178163285-1',
 };

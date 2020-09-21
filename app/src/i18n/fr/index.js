@@ -68,6 +68,7 @@ export default {
     cart: 'Panier',
     cart_empty_go_shop:
       "Votre panier est vide! C'est l'heure d'aller faire des achats!",
+    category: 'Catégorie',
     change_password: 'Changer votre mot de passe',
     confirm: 'Confirmer',
     confirmation_email_sent:
@@ -192,6 +193,7 @@ export default {
     password_changed: 'Mot de passe changé avec succès',
     password_reset_message:
       'Votre mot de passe a été réinitialisé avec succès!',
+    pathname: 'Chemin',
     pay: 'Payer',
     payment_method_added:
       'Vous avez ajouté une nouvelle option de paiement!',
@@ -247,7 +249,7 @@ export default {
     spirit: 'Esprit de jeu',
     spirit_chart_ligue_mardi:
       '0: Mauvais  1: Moyen  2: Bon ou rien à signaler  3: Très bon  4: Mémorable',
-    status: 'Status',
+    status: 'Statut',
     submit_score: 'Soumettre un résultat',
     subscribe: "S'abonner",
     subscribed: 'Abonné',
@@ -355,6 +357,10 @@ export default {
       'Archivez les résultats dans votre Sportfolios personnel.',
     description_card_third_point:
       'Connectez avec vos communautés sportives.',
+    // GOOGLE ANALYTICS EVENTS TABLE
+    ga_events_table_title: 'Liste des événements Google Analytics',
+    // GOOGLE ANALYTICS PAGEVIEWS TABLE
+    ga_pageviews_table_title: 'Liste des chemins Google Analytics',
     // SPORTS TABLE
     sports_table_title: 'Liste des sports',
     // USERS TABLE
