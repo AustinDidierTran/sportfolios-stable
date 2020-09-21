@@ -42,7 +42,10 @@ export default function SubmitScore() {
       }),
     );
     if (data) {
-      const fullRoster = data.map(d => d.name);
+      const fullRoster = data.map(d => ({
+        value: d.id,
+        display: d.name,
+      }));
       setFullRoster(fullRoster);
 
       const roster = data.map(d => {
@@ -165,6 +168,7 @@ export default function SubmitScore() {
       fairMindedness: 2,
       positiveAttitudeAndSelfControl: 2,
       communication: 2,
+      comments: '',
     },
     validate,
     validateOnChange: true,
@@ -176,6 +180,7 @@ export default function SubmitScore() {
         yourScore,
         opposingTeam,
         opposingTeamScore,
+        comments,
       } = values;
       let yourTeamName = null;
       let yourTeamId = null;
@@ -203,6 +208,10 @@ export default function SubmitScore() {
           opposingTeamId,
           opposingTeamScore: opposingTeamScore,
           opposingTeamSpirit: total,
+          players: JSON.stringify(
+            fullRoster.filter(full => roster.includes(full.display)),
+          ),
+          comments,
         }),
       });
 
@@ -268,7 +277,7 @@ export default function SubmitScore() {
       componentType: COMPONENT_TYPE_ENUM.MULTISELECT,
       namespace: 'roster',
       label: t('roster'),
-      options: fullRoster,
+      options: fullRoster.map(r => r.display),
       values: roster,
       onChange: handleChange,
     },
@@ -333,6 +342,11 @@ export default function SubmitScore() {
     {
       defaultValue: `${t('total')}: ${total}`,
       disabled: true,
+    },
+    {
+      namespace: 'comments',
+      label: t('comments'),
+      type: 'text',
     },
   ];
 

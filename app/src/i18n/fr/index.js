@@ -70,6 +70,7 @@ export default {
       "Votre panier est vide! C'est l'heure d'aller faire des achats!",
     category: 'Catégorie',
     change_password: 'Changer votre mot de passe',
+    comments: 'Commentaires',
     confirm: 'Confirmer',
     confirmation_email_sent:
       'Le courriel a été envoyé avec succès. Allez dans votre boîte de courriel pour réinitialiser votre mot de passe.',
