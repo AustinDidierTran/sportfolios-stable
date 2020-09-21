@@ -82,10 +82,7 @@ router.get(`${BASE_URL}/remainingSpots`, async ctx => {
 });
 
 router.get(`${BASE_URL}/getRoster`, async ctx => {
-  const entity = await queries.getRoster(
-    ctx.query.rosterId,
-    ctx.body.userInfo.id,
-  );
+  const entity = await queries.getRoster(ctx.query.rosterId);
 
   if (entity) {
     ctx.body = {
