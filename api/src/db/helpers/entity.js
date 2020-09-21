@@ -1030,8 +1030,29 @@ async function addAlias(entityId, alias) {
     .returning('*');
   return res;
 }
+async function getTeamName(team) {
+  const [res] = await knex('team_rosters')
+    .select('*')
+    .leftJoin(
+      'entities_name',
+      'entities_name.entity_id',
+      '=',
+      'team_rosters.team_id',
+    )
+    .where({ id: team });
+  return res.name;
+}
 
-async function addGame(eventId, phaseId, field, time, team1, team2) {
+async function addGame(
+  eventId,
+  phaseId,
+  field,
+  time,
+  rosterId1,
+  rosterId2,
+  name1,
+  name2,
+) {
   const realId = await getRealId(eventId);
   let realTime = new Date(time);
   if (!time) {
@@ -1045,16 +1066,33 @@ async function addGame(eventId, phaseId, field, time, team1, team2) {
       phase_id: phaseId,
     })
     .returning('*');
-  await knex('game_teams')
-    .insert({
+
+  if (name1) {
+    await knex('game_teams').insert({
       game_id: res.id,
-      name: team1,
-    })
-    .returning('*');
-  await knex('game_teams').insert({
-    game_id: res.id,
-    name: team2,
-  });
+      name: name1,
+    });
+  } else {
+    const teamName = await getTeamName(rosterId1);
+    await knex('game_teams').insert({
+      game_id: res.id,
+      name: teamName,
+      roster_id: rosterId1,
+    });
+  }
+  if (name2) {
+    await knex('game_teams').insert({
+      game_id: res.id,
+      name: name2,
+    });
+  } else {
+    const teamName = await getTeamName(rosterId2);
+    await knex('game_teams').insert({
+      game_id: res.id,
+      name: teamName,
+      roster_id: rosterId2,
+    });
+  }
   return res;
 }
 
@@ -1076,19 +1114,31 @@ async function addScoreAndSpirit(props) {
 async function addScoreSuggestion(
   eventId,
   startTime,
-  yourTeam,
+  yourTeamName,
+  yourTeamId,
   yourScore,
-  opposingTeam,
+  opposingTeamName,
+  opposingTeamId,
   opposingTeamScore,
   opposingTeamSpirit,
 ) {
+  let yourName = yourTeamName;
+  if (yourTeamId) {
+    yourName = await getTeamName(yourTeamId);
+  }
+  let opposingName = opposingTeamName;
+  if (opposingTeamId) {
+    opposingName = await getTeamName(opposingTeamId);
+  }
   const res = await knex('score_suggestion')
     .insert({
       event_id: eventId,
       start_time: new Date(startTime),
-      your_team: yourTeam,
+      your_team: yourName,
+      your_roster_id: yourTeamId,
       your_score: yourScore,
-      opposing_team: opposingTeam,
+      opposing_team: opposingName,
+      opposing_roster_id: opposingTeamId,
       opposing_team_score: opposingTeamScore,
       opposing_team_spirit: opposingTeamSpirit,
     })
@@ -1351,8 +1401,10 @@ async function updateGame(
   phaseId,
   field,
   time,
-  team1,
-  team2,
+  rosterId1,
+  rosterId2,
+  name1,
+  name2,
   teamId1,
   teamId2,
 ) {
@@ -1397,7 +1449,7 @@ async function updateGame(
     res.push(r);
   }
 
-  if (team1.length) {
+  if (name1) {
     const [r] = await knex('game_teams')
       .where({
         id: teamId1,
@@ -1409,13 +1461,40 @@ async function updateGame(
     res.push(r);
   }
 
-  if (team2.length) {
+  if (name2) {
     const [r] = await knex('game_teams')
       .where({
         id: teamId2,
       })
       .update({
         name: team2,
+      })
+      .returning('*');
+    res.push(r);
+  }
+  if (rosterId1) {
+    const teamName = await getTeamName(rosterId1);
+    const [r] = await knex('game_teams')
+      .where({
+        id: teamId1,
+      })
+      .update({
+        name: teamName,
+        roster_id: rosterId1,
+      })
+      .returning('*');
+    res.push(r);
+  }
+
+  if (rosterId2) {
+    const teamName = await getTeamName(rosterId2);
+    const [r] = await knex('game_teams')
+      .where({
+        id: teamId2,
+      })
+      .update({
+        name: teamName,
+        roster_id: rosterId2,
       })
       .returning('*');
     res.push(r);

@@ -9,10 +9,11 @@ import { Store, ACTION_ENUM } from '../../../Store';
 import {
   SEVERITY_ENUM,
   STATUS_ENUM,
-  SELECT_ENUM,
+  COMPONENT_TYPE_ENUM,
 } from '../../../../../common/enums';
 import { useParams } from 'react-router-dom';
 import { getGameOptions } from '../ScheduleFunctions';
+import validator from 'validator';
 
 export default function AddGame(props) {
   const { t } = useTranslation();
@@ -24,7 +25,7 @@ export default function AddGame(props) {
   const [gameOptions, setGameOptions] = useState({});
 
   const getOptions = async () => {
-    const res = await getGameOptions(eventId, t);
+    const res = await getGameOptions(eventId, { withoutAll: true });
     setGameOptions(res);
   };
 
@@ -75,35 +76,32 @@ export default function AddGame(props) {
     validateOnBlur: false,
     onSubmit: async values => {
       const { phase, field, time, team1, team2 } = values;
-      let realPhaseId = phase;
-      let realTeam1 = team1;
-      let realTeam2 = team2;
       let realTime = new Date(time).getTime();
-      let realField = field;
-      if (phase === SELECT_ENUM.ALL) {
-        realPhaseId = null;
+      let rosterId1 = null;
+      let rosterId2 = null;
+      let name1 = null;
+      let name2 = null;
+      if (validator.isUUID(team1)) {
+        rosterId1 = team1;
+      } else {
+        name1 = team1;
       }
-      if (team1 === SELECT_ENUM.ALL) {
-        realTeam1 = null;
-      }
-      if (team2 === SELECT_ENUM.ALL) {
-        realTeam2 = null;
-      }
-      if (time === SELECT_ENUM.ALL) {
-        realTime = null;
-      }
-      if (field === SELECT_ENUM.ALL) {
-        realField = null;
+      if (validator.isUUID(team2)) {
+        rosterId2 = team2;
+      } else {
+        name2 = team2;
       }
       const res = await api('/api/entity/game', {
         method: 'POST',
         body: JSON.stringify({
           eventId,
-          phaseId: realPhaseId,
-          field: realField,
+          phaseId: phase,
+          field,
           time: realTime,
-          team1: realTeam1,
-          team2: realTeam2,
+          rosterId1,
+          rosterId2,
+          name1,
+          name2,
         }),
       });
       if (res.status === STATUS_ENUM.ERROR) {
@@ -139,31 +137,31 @@ export default function AddGame(props) {
 
   const fields = [
     {
-      isSelect: true,
+      componentType: COMPONENT_TYPE_ENUM.SELECT,
       options: gameOptions.phases,
       namespace: 'phase',
       label: t('phase'),
     },
     {
-      isSelect: true,
+      componentType: COMPONENT_TYPE_ENUM.SELECT,
       namespace: 'field',
       label: t('field'),
       options: gameOptions.fields,
     },
     {
-      isSelect: true,
+      componentType: COMPONENT_TYPE_ENUM.SELECT,
       namespace: 'time',
       label: t('time_slot'),
       options: gameOptions.timeSlots,
     },
     {
-      isSelect: true,
+      componentType: COMPONENT_TYPE_ENUM.SELECT,
       options: gameOptions.teams,
       namespace: 'team1',
       label: t('team_1'),
     },
     {
-      isSelect: true,
+      componentType: COMPONENT_TYPE_ENUM.SELECT,
       options: gameOptions.teams,
       namespace: 'team2',
       label: t('team_2'),

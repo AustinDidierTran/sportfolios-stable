@@ -2,6 +2,7 @@
 
 import React from 'react';
 import FormDialog from './index';
+import { COMPONENT_TYPE_ENUM } from '../../../../../common/enums';
 
 const one = [
   {
@@ -21,7 +22,7 @@ const two = [
 ];
 const select = [
   {
-    isSelect: true,
+    componentType: COMPONENT_TYPE_ENUM.SELECT,
     label: 'select',
     namespace: 'select',
     options: [

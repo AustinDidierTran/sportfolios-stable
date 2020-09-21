@@ -4,7 +4,7 @@ import { SELECT_ENUM } from '../../../../../common/enums';
 import moment from 'moment';
 import { formatDate } from '../../../utils/stringFormats';
 
-export const getPhases = async eventId => {
+export const getPhases = async (eventId, withoutAll) => {
   const { data } = await api(
     formatRoute('/api/entity/phases', null, { eventId }),
   );
@@ -12,6 +12,9 @@ export const getPhases = async eventId => {
     value: d.id,
     display: d.name,
   }));
+  if (withoutAll) {
+    return res;
+  }
   return [{ value: SELECT_ENUM.ALL, displayKey: 'all' }, ...res];
 };
 
@@ -48,7 +51,7 @@ export const getTeams = async (eventId, withoutAll) => {
   return [{ value: SELECT_ENUM.ALL, displayKey: 'all' }, ...res];
 };
 
-export const getFields = async eventId => {
+export const getFields = async (eventId, withoutAll) => {
   const { data } = await api(
     formatRoute('/api/entity/fields', null, { eventId }),
   );
@@ -56,15 +59,18 @@ export const getFields = async eventId => {
     value: d.field,
     display: d.field,
   }));
+  if (withoutAll) {
+    return res;
+  }
   return [{ value: SELECT_ENUM.ALL, displayKey: 'all' }, ...res];
 };
 
-export const getGameOptions = async eventId => {
+export const getGameOptions = async (eventId, withoutAll) => {
   const res = await Promise.all([
     getSlots(eventId),
-    getTeams(eventId),
-    getPhases(eventId),
-    getFields(eventId),
+    getTeams(eventId, withoutAll),
+    getPhases(eventId, withoutAll),
+    getFields(eventId, withoutAll),
   ]);
   return {
     timeSlots: res[0],

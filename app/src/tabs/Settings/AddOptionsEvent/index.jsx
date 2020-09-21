@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Paper, Card } from '../../../components/Custom';
-import { Container, Typography } from '../../../components/MUI';
+import { Container } from '../../../components/MUI';
 
 import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
@@ -96,16 +96,6 @@ export default function AddOptionsEvent() {
     },
   ];
 
-  if (!hasBankAccount) {
-    return (
-      <Paper title={t('add_payment_options')}>
-        <Container>
-          <Typography>{t('admin_has_no_bank_account')}</Typography>
-        </Container>
-      </Paper>
-    );
-  }
-
   return (
     <Paper title={t('add_payment_options')}>
       <Container className={styles.container}>
@@ -116,7 +106,7 @@ export default function AddOptionsEvent() {
           />
         ))}
         <Card
-          items={{ fields, onAdd }}
+          items={{ fields, onAdd, hasBankAccount }}
           type={CARD_TYPE_ENUM.ADD_PAYMENT_OPTION}
         />
       </Container>
