@@ -5,17 +5,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import FormDialogFactory from './FormDialogFactory';
-import { ComponentFactory } from '../../Custom';
-
-export { default as FormDialogFactory } from './FormDialogFactory';
-
-export default function CustomFormDialog(props) {
-  const { items, type } = props;
-  if (type) {
-    const FormDialog = FormDialogFactory({ type });
-    return <FormDialog {...items} />;
-  }
+import { ComponentFactory } from '../../../Custom';
+export default function BasicFormDialog(props) {
   const {
     open,
     title,

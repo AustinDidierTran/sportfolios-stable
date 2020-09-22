@@ -72,6 +72,11 @@ const CARD_TYPE_ENUM = {
   EVENT: 'event',
 };
 
+const FORM_DIALOG_TYPE_ENUM = {
+  SUBMIT_SCORE: 'score',
+  SUBMIT_SCORE_AND_SPIRIT: 'score and spirit',
+};
+
 const LANGUAGE_ENUM = {
   ENGLISH: 'en',
   FRANCAIS: 'fr',
@@ -246,4 +251,5 @@ module.exports = {
   STRIPE_STATUS_ENUM,
   TAG_TYPE_ENUM,
   VIEW_ENUM,
+  FORM_DIALOG_TYPE_ENUM,
 };
