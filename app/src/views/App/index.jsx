@@ -19,7 +19,6 @@ import EntityNotFound from '../Entity/EntityNotFound';
 import EventRegistration from '../EventRegistration';
 import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
 import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
-import ForgotPassword from '../ForgotPassword';
 import Header from '../Header';
 import Login from '../Login';
 import Main from '../Main';
@@ -119,10 +118,6 @@ export default function App() {
                   <Route
                     path={ROUTES.confirmEmailSuccess}
                     component={ConfirmEmailSuccess}
-                  />
-                  <Route
-                    path={ROUTES.forgotPassword}
-                    component={ForgotPassword}
                   />
                   <Route
                     path={ROUTES.recoveryEmail}
