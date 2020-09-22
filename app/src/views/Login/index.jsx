@@ -14,6 +14,7 @@ import { useFormik } from 'formik';
 
 import SignupCard from './SignupCard';
 import LoginCard from './LoginCard';
+import ForgotPasswordCard from './ForgotPasswordCard';
 import { LOGO_ENUM, SEVERITY_ENUM } from '../../../../common/enums';
 
 export default function Login() {
@@ -46,11 +47,11 @@ export default function Login() {
         errors.password = t('value_is_required');
       } else if (
         values.password.length < 8 ||
-        values.password.length > 16
+        values.password.length > 24
       ) {
         errors.password = t('password_length');
       }
-    } else {
+    } else if (formik.status.state === 'login') {
       if (!values.email) {
         errors.email = t('value_is_required');
       } else if (
@@ -65,9 +66,19 @@ export default function Login() {
         errors.password = t('value_is_required');
       } else if (
         values.password.length < 8 ||
-        values.password.length > 16
+        values.password.length > 24
       ) {
         errors.password = t('password_length');
+      }
+    } else if (formik.status.state === 'forgotPassword') {
+      if (!values.email) {
+        errors.email = t('value_is_required');
+      } else if (
+        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(
+          values.email,
+        )
+      ) {
+        errors.email = t('invalid_email');
       }
     }
 
@@ -109,7 +120,7 @@ export default function Login() {
         } else {
           goTo(ROUTES.confirmationEmailSent, { email });
         }
-      } else {
+      } else if (formik.status.state === 'login') {
         const { email, password } = values;
         const res = await api('/api/auth/login', {
           method: 'POST',
@@ -175,6 +186,26 @@ export default function Login() {
             }
           }
         }
+      } else if (formik.status.state === 'forgotPassword') {
+        const { email } = values;
+        const res = await api('/api/auth/recoveryEmail', {
+          method: 'POST',
+          body: JSON.stringify({
+            email,
+          }),
+        });
+
+        if (res.status === 404) {
+          // Email not found
+          formik.setFieldError('email', t('email_not_found'));
+          formik.setStatus({ state: 'signup' });
+        }
+        if (res.status === 200) {
+          dispatch({
+            type: ACTION_ENUM.SNACK_BAR,
+            message: t('confirmation_email_sent'),
+          });
+        }
       }
     },
   });
@@ -187,6 +218,19 @@ export default function Login() {
             <img className={styles.img} src={LOGO_ENUM.LOGO} />
           </div>
           <SignupCard successRoute={successRoute} formik={formik} />
+        </Container>
+      </div>
+    );
+  }
+
+  if (formik.status.state === 'forgotPassword') {
+    return (
+      <div className={styles.main}>
+        <Container className={styles.container}>
+          <div className={styles.logo}>
+            <img className={styles.img} src={LOGO_ENUM.LOGO} />
+          </div>
+          <ForgotPasswordCard formik={formik} />
         </Container>
       </div>
     );
