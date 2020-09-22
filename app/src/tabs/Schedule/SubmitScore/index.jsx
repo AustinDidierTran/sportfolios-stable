@@ -38,25 +38,26 @@ export default function SubmitScore() {
   }, [open]);
 
   const getRoster = async rosterId => {
-    if (validator.isUUID(rosterId)) {
-      const { data } = await api(
-        formatRoute('/api/entity/getRoster', null, {
-          rosterId,
-        }),
-      );
-      if (data) {
-        const fullRoster = data.map(d => ({
-          value: d.id,
-          display: d.name,
-        }));
-        setFullRoster(fullRoster);
-        const roster = data.filter(d => !d.isSub).map(d => d.name);
-        setRoster(roster);
-      }
-    } else {
+    if (!validator.isUUID(rosterId)) {
+      return;
+    }
+    const { data } = await api(
+      formatRoute('/api/entity/getRoster', null, {
+        rosterId,
+      }),
+    );
+    if (!data) {
       setRoster([]);
       setFullRoster([]);
+      return;
     }
+    const fullRoster = data.map(d => ({
+      value: d.id,
+      display: d.name,
+    }));
+    setFullRoster(fullRoster);
+    const roster = data.filter(d => !d.isSub).map(d => d.name);
+    setRoster(roster);
   };
 
   const getOptions = async () => {
