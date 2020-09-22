@@ -508,23 +508,6 @@ router.post(`${BASE_URL}/game`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/suggestScore`, async ctx => {
-  const game = await queries.addScoreSuggestion(ctx.request.body);
-  if (game) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: game,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
-});
-
 router.post(`${BASE_URL}/scoreAndSpirit`, async ctx => {
   const game = await queries.addScoreAndSpirit(ctx.request.body);
   if (game) {
@@ -711,15 +694,6 @@ router.post(`${BASE_URL}/roster`, async ctx => {
       message: 'Something went wrong',
     };
   }
-});
-
-router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
-  await queries.addPlayerToRoster(ctx.request.body);
-
-  ctx.status = 201;
-  ctx.body = {
-    status: 'success',
-  };
 });
 
 router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {

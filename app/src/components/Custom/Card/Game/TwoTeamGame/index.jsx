@@ -24,7 +24,6 @@ export default function TwoTeamGame(props) {
     onEdit,
     onDelete,
   } = props;
-
   if (role === ENTITIES_ROLE_ENUM.ADMIN) {
     return (
       <Card className={styles.gameEdit}>
@@ -86,7 +85,7 @@ export default function TwoTeamGame(props) {
 
   return (
     <Card className={styles.game}>
-      <div className={styles.main}>
+      <div className={styles.main} onClick={onClick}>
         <Typography className={styles.phase} color="textSecondary">
           {phaseName}
         </Typography>
