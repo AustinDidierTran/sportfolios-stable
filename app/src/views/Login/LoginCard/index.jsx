@@ -10,7 +10,7 @@ import {
   Typography,
 } from '../../../components/MUI';
 import { Paper } from '../../../components/Custom';
-
+import { LOGIN_STATE_ENUM } from '../../../../../common/enums';
 import { AddGaEvent } from '../../../components/Custom/Analytics';
 
 export default function LoginCard(props) {
@@ -66,7 +66,9 @@ export default function LoginCard(props) {
               cursor: 'pointer',
             }}
             onClick={() =>
-              formik.setStatus({ state: 'forgotPassword' })
+              formik.setStatus({
+                state: LOGIN_STATE_ENUM.FORGOT_PASSWORD,
+              })
             }
           >
             {t('forgot_password')}

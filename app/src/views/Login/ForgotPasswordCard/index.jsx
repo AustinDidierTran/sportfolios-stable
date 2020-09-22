@@ -12,6 +12,7 @@ import {
   Typography,
 } from '../../../components/MUI';
 import { Paper } from '../../../components/Custom';
+import { LOGIN_STATE_ENUM } from '../../../../../common/enums';
 
 export default function ForgotPassword(props) {
   const { t } = useTranslation();
@@ -53,7 +54,9 @@ export default function ForgotPassword(props) {
                 margin: '0 16px',
                 cursor: 'pointer',
               }}
-              onClick={() => formik.setStatus({ state: 'login' })}
+              onClick={() =>
+                formik.setStatus({ state: LOGIN_STATE_ENUM.LOGIN })
+              }
             >
               {t('have_an_account_signin')}
             </Typography>
@@ -66,7 +69,9 @@ export default function ForgotPassword(props) {
                 margin: '0 16px',
                 cursor: 'pointer',
               }}
-              onClick={() => formik.setStatus({ state: 'signup' })}
+              onClick={() =>
+                formik.setStatus({ state: LOGIN_STATE_ENUM.SIGNUP })
+              }
             >
               {t('no_account_signup')}
             </Typography>

@@ -15,7 +15,11 @@ import { useFormik } from 'formik';
 import SignupCard from './SignupCard';
 import LoginCard from './LoginCard';
 import ForgotPasswordCard from './ForgotPasswordCard';
-import { LOGO_ENUM, SEVERITY_ENUM } from '../../../../common/enums';
+import {
+  LOGO_ENUM,
+  SEVERITY_ENUM,
+  LOGIN_STATE_ENUM,
+} from '../../../../common/enums';
 
 export default function Login() {
   const { t } = useTranslation();
@@ -24,7 +28,7 @@ export default function Login() {
 
   const validate = values => {
     const errors = {};
-    if (formik.status.state === 'signup') {
+    if (formik.status.state === LOGIN_STATE_ENUM.SIGNUP) {
       if (!values.email) {
         errors.email = t('value_is_required');
       } else if (
@@ -51,7 +55,7 @@ export default function Login() {
       ) {
         errors.password = t('password_length');
       }
-    } else if (formik.status.state === 'login') {
+    } else if (formik.status.state === LOGIN_STATE_ENUM.LOGIN) {
       if (!values.email) {
         errors.email = t('value_is_required');
       } else if (
@@ -70,7 +74,9 @@ export default function Login() {
       ) {
         errors.password = t('password_length');
       }
-    } else if (formik.status.state === 'forgotPassword') {
+    } else if (
+      formik.status.state === LOGIN_STATE_ENUM.FORGOT_PASSWORD
+    ) {
       if (!values.email) {
         errors.email = t('value_is_required');
       } else if (
@@ -91,13 +97,13 @@ export default function Login() {
       password: '',
     },
     initialStatus: {
-      state: 'login',
+      state: LOGIN_STATE_ENUM.LOGIN,
     },
     validate,
     validateOnChange: false,
     validateOnBlur: true,
     onSubmit: async values => {
-      if (formik.status.state === 'signup') {
+      if (formik.status.state === LOGIN_STATE_ENUM.SIGNUP) {
         const { firstName, lastName, email, password } = values;
 
         const res = await api('/api/auth/signup', {
@@ -120,7 +126,7 @@ export default function Login() {
         } else {
           goTo(ROUTES.confirmationEmailSent, { email });
         }
-      } else if (formik.status.state === 'login') {
+      } else if (formik.status.state === LOGIN_STATE_ENUM.LOGIN) {
         const { email, password } = values;
         const res = await api('/api/auth/login', {
           method: 'POST',
@@ -146,7 +152,7 @@ export default function Login() {
             t('email_password_no_match'),
           );
         } else if (res.status === 404) {
-          formik.setStatus({ state: 'signup' });
+          formik.setStatus({ state: LOGIN_STATE_ENUM.SIGNUP });
           dispatch({
             type: ACTION_ENUM.SNACK_BAR,
             message: t(
@@ -178,7 +184,7 @@ export default function Login() {
                 successRoute,
               });
             } else {
-              if (formik.status.state === 'signup') {
+              if (formik.status.state === LOGIN_STATE_ENUM.SIGNUP) {
                 goTo(ROUTES.confirmEmailSuccess);
               } else {
                 goTo(ROUTES.home);
@@ -186,7 +192,9 @@ export default function Login() {
             }
           }
         }
-      } else if (formik.status.state === 'forgotPassword') {
+      } else if (
+        formik.status.state === LOGIN_STATE_ENUM.FORGOT_PASSWORD
+      ) {
         const { email } = values;
         const res = await api('/api/auth/recoveryEmail', {
           method: 'POST',
@@ -198,7 +206,7 @@ export default function Login() {
         if (res.status === 404) {
           // Email not found
           formik.setFieldError('email', t('email_not_found'));
-          formik.setStatus({ state: 'signup' });
+          formik.setStatus({ state: LOGIN_STATE_ENUM.SIGNUP });
         }
         if (res.status === 200) {
           dispatch({
@@ -210,7 +218,7 @@ export default function Login() {
     },
   });
 
-  if (formik.status.state === 'signup') {
+  if (formik.status.state === LOGIN_STATE_ENUM.SIGNUP) {
     return (
       <div className={styles.main}>
         <Container className={styles.container}>
@@ -223,7 +231,7 @@ export default function Login() {
     );
   }
 
-  if (formik.status.state === 'forgotPassword') {
+  if (formik.status.state === LOGIN_STATE_ENUM.FORGOT_PASSWORD) {
     return (
       <div className={styles.main}>
         <Container className={styles.container}>
@@ -250,7 +258,9 @@ export default function Login() {
         <Button
           variant="outlined"
           color="primary"
-          onClick={() => formik.setStatus({ state: 'signup' })}
+          onClick={() =>
+            formik.setStatus({ state: LOGIN_STATE_ENUM.SIGNUP })
+          }
           className={styles.buttonSignup}
           style={{ borderWidth: '2px' }}
         >
