@@ -12,6 +12,7 @@ import {
   Typography,
 } from '../../../components/MUI';
 import { Paper } from '../../../components/Custom';
+import { LOGIN_STATE_ENUM } from '../../../../../common/enums';
 
 export default function SignupCard(props) {
   const { t } = useTranslation();
@@ -66,7 +67,9 @@ export default function SignupCard(props) {
         <CardActions className={styles.linksContainer}>
           <div
             className={styles.typo}
-            onClick={() => formik.setStatus({ state: 'login' })}
+            onClick={() =>
+              formik.setStatus({ state: LOGIN_STATE_ENUM.LOGIN })
+            }
           >
             <Typography
               style={{

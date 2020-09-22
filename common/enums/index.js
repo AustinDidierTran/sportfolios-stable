@@ -128,6 +128,12 @@ const SPIRIT_CATEGORY_ENUM = {
   COMMUNICATION: 'communication',
 };
 
+const LOGIN_STATE_ENUM = {
+  LOGIN: 'login',
+  SIGNUP: 'signup',
+  FORGOT_PASSWORD: 'forgotPassword',
+};
+
 // Everything excluding roles
 const GLOBAL_ENUM = {
   PERSON: 1,
@@ -230,4 +236,5 @@ module.exports = {
   IMAGE_ENUM,
   LANGUAGE_ENUM,
   SPIRIT_CATEGORY_ENUM,
+  LOGIN_STATE_ENUM,
 };
