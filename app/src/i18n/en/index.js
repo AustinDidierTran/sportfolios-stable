@@ -193,6 +193,7 @@ export default {
     organization: 'Organization',
     organizations: 'Organizations',
     our_team: 'Our Team',
+    page_not_found: 'Page not found',
     paid_with: 'Paid with',
     password: 'Password',
     password_changed: 'Password has been changed successfully',
