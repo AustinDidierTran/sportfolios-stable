@@ -509,5 +509,8 @@ export default {
     positive_attitude_and_self_control:
       'Positive Attitude and Self Control',
     communication: 'Communication',
+    //PROTIP
+    you_can_also_click_on_your_game_to_submit_your_score:
+      'ProTip: You can also click on your game to submit your result.',
   },
 };
