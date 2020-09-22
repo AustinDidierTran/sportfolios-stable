@@ -15,6 +15,7 @@ import Delete from '@material-ui/icons/Delete';
 import Edit from '@material-ui/icons/Edit';
 import EditIcon from '@material-ui/icons/Edit';
 import EmojiEvents from '@material-ui/icons/EmojiEvents';
+import EmojiObjects from '@material-ui/icons/EmojiObjects';
 import Event from '@material-ui/icons/Event';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import FavoriteIcon from '@material-ui/icons/Favorite';
@@ -67,6 +68,7 @@ const icons = {
   Edit,
   EditIcon,
   EmojiEvents,
+  EmojiObjects,
   Event,
   ExitToApp,
   FavoriteIcon,
