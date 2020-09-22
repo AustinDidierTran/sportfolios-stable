@@ -130,7 +130,7 @@ export default function EventPost(props) {
           component="p"
           align="left"
         >
-          {location || t('location_unspecified')}
+          {location || ''}
         </Typography>
       </CardContent>
       <CardActions className={styles.actions} disableSpacing>
