@@ -1,0 +1,14 @@
+.contain {
+  display: flex;
+  flex-direction: column;
+}
+
+.myRoster {
+  flex: 1 1 auto;
+  margin-top: 4px;
+}
+
+.rosters {
+  flex: 1 1 auto;
+  margin-top: 4px;
+}

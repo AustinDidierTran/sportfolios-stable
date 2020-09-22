@@ -1,2 +1,1 @@
-/* Replace with your SQL commands */
-DROP RULE delete_association ON associations;
+DROP RULE IF EXISTS delete_association ON associations;

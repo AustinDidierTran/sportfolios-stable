@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 CREATE TABLE user_email (
     user_id UUID REFERENCES users(id) NOT NULL,
     email VARCHAR(320) NOT NULL PRIMARY KEY,

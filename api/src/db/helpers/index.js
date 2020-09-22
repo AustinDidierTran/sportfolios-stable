@@ -1,10 +1,15 @@
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
-const uuid = require('uuid');
+const { v1: uuidv1 } = require('uuid');
+const {
+  ENTITIES_ROLE_ENUM,
+  GLOBAL_ENUM,
+} = require('../../../../common/enums');
 
 const {
   sendConfirmationEmail,
 } = require('../../server/utils//nodeMailer');
+const { ERROR_ENUM } = require('../../../../common/errors');
 
 const confirmEmail = async ({ email }) => {
   await knex('user_email')
@@ -12,26 +17,50 @@ const confirmEmail = async ({ email }) => {
     .where({ email });
 };
 
-const createUser = async password => {
-  const userArray = await knex('users')
-    .insert({ password })
-    .returning(['id']);
+const createUserEmail = async body => {
+  const { user_id, email } = body;
 
-  return userArray[0];
+  await knex('user_email').insert({ user_id, email });
 };
 
-const createUserEmail = async ({ user_id, email }) => {
-  await knex('user_email').insert({
-    user_id,
-    email,
-  });
-};
+const createUserComplete = async body => {
+  const { password, email, name, surname } = body;
 
-const createUserInfo = async ({ user_id, first_name, last_name }) => {
-  await knex('user_info').insert({
-    user_id: user_id,
-    first_name,
-    last_name,
+  await knex.transaction(async trx => {
+    // Create user
+    const [user_id] = await knex('users')
+      .insert({ password })
+      .returning('id')
+      .transacting(trx);
+
+    // Create user email
+    await knex('user_email')
+      .insert({ user_id, email })
+      .transacting(trx);
+
+    // Create user info
+    const [entity_id] = await knex('entities')
+      .insert({
+        type: GLOBAL_ENUM.PERSON,
+      })
+      .returning('id')
+      .transacting(trx);
+
+    await knex('entities_name')
+      .insert({
+        entity_id,
+        name,
+        surname,
+      })
+      .transacting(trx);
+
+    await knex('user_entity_role')
+      .insert({
+        user_id,
+        entity_id,
+        role: ENTITIES_ROLE_ENUM.ADMIN,
+      })
+      .transacting(trx);
   });
 };
 
@@ -43,15 +72,21 @@ const createConfirmationEmailToken = async ({ email, token }) => {
   });
 };
 
-const createRecoveryEmailToken = async ({ user_id, token }) => {
+const createRecoveryEmailToken = async ({ userId, token }) => {
   await knex('recovery_email_token').insert({
-    user_id,
+    user_id: userId,
     token,
     expires_at: new Date(Date.now() + 60 * 60 * 1000),
   });
 };
 
 const generateHashedPassword = async password => {
+  if (!password) {
+    throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
+  }
+  if (password.length < 8 || password.length > 24) {
+    throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
+  }
   const salt = await bcrypt.genSalt();
 
   const hashedPassword = await bcrypt.hash(password, salt);
@@ -60,35 +95,72 @@ const generateHashedPassword = async password => {
 };
 
 const generateToken = () => {
-  return uuid.v1();
+  return uuidv1();
+};
+
+const generateAuthToken = async userId => {
+  const token = generateToken();
+  await knex('user_token').insert({
+    user_id: userId,
+    token_id: token,
+    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  });
+  return token;
 };
 
 const getBasicUserInfoFromId = async user_id => {
-  const basicUserInfo = await knex('user_info')
-    .select('*')
-    .where({ user_id });
-
-  const app_role = await knex('user_app_role')
+  const [{ app_role } = {}] = await knex('user_app_role')
     .select(['app_role'])
     .where({ user_id });
 
-  if (!basicUserInfo || !basicUserInfo.length) {
-    return null;
-  }
+  const [{ language } = {}] = await knex('users')
+    .select('language')
+    .where({ id: user_id });
 
-  return app_role.length
-    ? { ...basicUserInfo[0], app_role: app_role[0].app_role }
-    : basicUserInfo[0];
+  const persons = await knex('user_entity_role')
+    .select(
+      'user_entity_role.entity_id',
+      'name',
+      'surname',
+      'photo_url',
+    )
+    .leftJoin(
+      'entities',
+      'user_entity_role.entity_id',
+      '=',
+      'entities.id',
+    )
+    .leftJoin(
+      'entities_name',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_name.entity_id',
+    )
+    .leftJoin(
+      'entities_photo',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_photo.entity_id',
+    )
+    .where('entities.type', GLOBAL_ENUM.PERSON)
+    .andWhere({ user_id });
+
+  return {
+    persons,
+    app_role,
+    language,
+    user_id,
+  };
 };
 
-const getEmailsFromUserId = async user_id => {
-  if (!user_id) {
-    return null;
+const getEmailsFromUserId = async userId => {
+  if (!userId) {
+    return [];
   }
 
   const emails = await knex('user_email')
     .select(['email', 'confirmed_email_at'])
-    .where({ user_id });
+    .where({ user_id: userId });
 
   return emails;
 };
@@ -106,41 +178,43 @@ const getEmailFromToken = async ({ token }) => {
 };
 
 const getHashedPasswordFromId = async id => {
-  const response = await knex('users')
+  const [{ password } = {}] = await knex('users')
     .where({ id })
     .returning(['password']);
 
-  if (!response.length) {
-    return null;
-  }
-
-  return response[0].password;
+  return password;
 };
 
-const getUserIdFromEmail = async email => {
-  const response = await knex('user_email')
+const getUserIdFromEmail = async body => {
+  const { email } = body;
+
+  const [{ user_id } = {}] = await knex('user_email')
     .select(['user_id'])
     .where({ email });
 
-  if (!response.length) {
-    return null;
-  }
+  return user_id;
+};
 
-  return response[0].user_id;
+const getLanguageFromEmail = async email => {
+  const id = await getUserIdFromEmail({ email });
+  const infos = await getBasicUserInfoFromId(id);
+  return infos.language;
 };
 
 const getUserIdFromRecoveryPasswordToken = async token => {
-  const response = await knex('recovery_email_token')
+  const [response] = await knex('recovery_email_token')
     .select(['user_id', 'expires_at', 'used_at'])
     .where({ token });
 
   if (
-    !response.length ||
-    response[0].used_at ||
-    Date.now() > response[0].expires_at
+    !response ||
+    response.used_at ||
+    Date.now() > response.expires_at
   ) {
     return null;
   }
+
+  return response.user_id;
 };
 
 const setRecoveryTokenToUsed = async token => {
@@ -151,27 +225,17 @@ const setRecoveryTokenToUsed = async token => {
 
 const updateBasicUserInfoFromUserId = async ({
   user_id,
-  firstName,
   language,
-  lastName,
 }) => {
   const update = {};
-
-  if (firstName) {
-    update.first_name = firstName;
-  }
 
   if (language) {
     update.language = language;
   }
 
-  if (lastName) {
-    update.last_name = lastName;
-  }
-
-  await knex('user_info')
+  await knex('users')
     .update(update)
-    .where({ user_id });
+    .where({ id: user_id });
 };
 
 const updatePasswordFromUserId = async ({ hashedPassword, id }) => {
@@ -196,7 +260,10 @@ const validateEmailIsUnique = async email => {
   return !users.length;
 };
 
-const sendNewConfirmationEmailAllIncluded = async email => {
+const sendNewConfirmationEmailAllIncluded = async (
+  email,
+  successRoute,
+) => {
   const confirmationEmailToken = generateToken();
 
   await createConfirmationEmailToken({
@@ -207,22 +274,24 @@ const sendNewConfirmationEmailAllIncluded = async email => {
   await sendConfirmationEmail({
     email,
     token: confirmationEmailToken,
+    successRoute,
   });
 };
 
 module.exports = {
   confirmEmail,
-  createUser,
   createUserEmail,
-  createUserInfo,
+  createUserComplete,
   createConfirmationEmailToken,
   createRecoveryEmailToken,
   generateHashedPassword,
   generateToken,
+  generateAuthToken,
   getBasicUserInfoFromId,
   getEmailFromToken,
   getEmailsFromUserId,
   getHashedPasswordFromId,
+  getLanguageFromEmail,
   getUserIdFromEmail,
   getUserIdFromRecoveryPasswordToken,
   sendNewConfirmationEmailAllIncluded,

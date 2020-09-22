@@ -1,0 +1,42 @@
+.textarea {
+  width: 90%;
+  margin: 8px !important;
+  resize: none;
+  outline: none;
+  font-family: 'Helvetica';
+  font-size: 16px;
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: hidden;
+  background-color: white;
+}
+
+.textareaEdit {
+  width: 90%;
+  margin: 8px !important;
+  resize: vertical;
+  outline: none;
+  font-family: 'Helvetica';
+  font-size: 16px;
+}
+
+.buttons {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (min-width: 768px) {
+  .buttons {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-areas: '. save cancel .';
+  }
+
+  .cancel {
+    grid-area: cancel;
+  }
+
+  .save {
+    grid-area: save;
+  }
+}

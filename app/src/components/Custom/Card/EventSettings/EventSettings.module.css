@@ -1,0 +1,7 @@
+.paper {
+  display: flex;
+  justify-content: center;
+}
+.item {
+  flex: 1 1 auto;
+}

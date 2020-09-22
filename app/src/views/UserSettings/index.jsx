@@ -1,31 +1,29 @@
-import React from 'react';
-
-import { useTranslation } from 'react-i18next';
+import React, { useEffect } from 'react';
 
 import styles from './UserSettings.module.css';
 
 import BasicInfo from './BasicInfo';
 import ChangePassword from './ChangePassword';
+import Disconnect from './Disconnect';
 import Email from './Email';
-import { Typography, Container } from '../../components/MUI';
+import { IgContainer } from '../../components/Custom';
+import { formatPageTitle } from '../../utils/stringFormats';
+import { useTranslation } from 'react-i18next';
 
 export default function UserSettings() {
   const { t } = useTranslation();
+  useEffect(() => {
+    document.title = formatPageTitle(t('settings'));
+  }, []);
 
   return (
     <div className={styles.main}>
-      <Container className={styles.container}>
-        <Typography
-          variant="h3"
-          className={styles.title}
-          style={{ marginTop: 24 }}
-        >
-          {t('user_settings')}
-        </Typography>
+      <IgContainer className={styles.container}>
         <BasicInfo />
         <ChangePassword />
         <Email />
-      </Container>
+        <Disconnect />
+      </IgContainer>
     </div>
   );
 }

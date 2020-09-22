@@ -15,5 +15,8 @@ module.exports = merge(common, {
     inline: true,
     progress: true,
     port: 3000,
+    // Docker container has port 0.0.0.0:3000,
+    //   but we still access web app with localhost:3000
+    host: '0.0.0.0',
   },
 });

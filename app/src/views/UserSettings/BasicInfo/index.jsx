@@ -1,152 +1,76 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import i18n from '../../../i18n';
 import { useTranslation } from 'react-i18next';
-import { useFormik } from 'formik';
-import {
-  Button,
-  Card,
-  CardContent,
-  TextField,
-  CardActions,
-  Select,
-  Typography,
-} from '../../../components/MUI';
+import { CardContent } from '../../../components/MUI';
+import { Paper, Select } from '../../../components/Custom';
 import styles from './BasicInfo.module.css';
 
 import api from '../../../actions/api';
-import { Store } from '../../../Store';
+import { Store, ACTION_ENUM } from '../../../Store';
 import { goTo, ROUTES } from '../../../actions/goTo';
+import { rest } from 'lodash';
 
 export default function BasicInfo() {
-  const {
-    state: { authToken },
-  } = useContext(Store);
+  const [basicInfos, setBasicInfos] = useState([]);
+  const { dispatch } = useContext(Store);
   const { t } = useTranslation();
 
-  const validate = values => {
-    const errors = {};
+  const submit = async values => {
+    const { language } = values;
 
-    if (!values.firstName) {
-      errors.firstName = t('value_is_required');
+    const res = await api(`/api/user/changeBasicUserInfo`, {
+      method: 'POST',
+      body: JSON.stringify({
+        language,
+      }),
+    });
+
+    if (res.status === 402) {
+      // Token is expired, redirect
+      goTo(ROUTES.login);
+    } else if (rest.status >= 400) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('something_went_wrong'),
+        severity: 'error',
+      });
+    } else {
+      basicInfos.language = language;
+      i18n.changeLanguage(language);
     }
-
-    if (!values.lastName) {
-      errors.lastName = t('value_is_required');
-    }
-
-    return errors;
+    //No error
+    return true;
   };
 
-  const formik = useFormik({
-    initialValues: {
-      firstName: '',
-      language: '',
-      lastName: '',
-      address: '',
-      phoneNumber: '',
-    },
-    validate,
-    validateOnChange: false,
-    validateOnBlur: false,
-    onSubmit: async values => {
-      const { firstName, language, lastName } = values;
+  const handleChange = values => {
+    submit({ language: values });
+  };
 
-      const res = await api(`/api/user/changeBasicUserInfo`, {
-        method: 'POST',
-        body: JSON.stringify({
-          authToken,
-          firstName,
-          language,
-          lastName,
-        }),
-      });
-
-      if (res.status === 402) {
-        // Token is expired, redirect
-        goTo(ROUTES.login);
-      } else if (res.status >= 400) {
-        formik.setFieldError('lastName', t('something_went_wrong'));
-      }
-    },
-  });
-
-  const setBasicInfoValues = async () => {
-    const { status, data } = await api('/api/user/userInfo');
-
-    formik.setValues({
-      firstName: data.first_name,
-      language: data.language,
-      lastName: data.last_name,
-    });
+  const updateData = async () => {
+    const { data } = await api('/api/user/userInfo');
+    setBasicInfos(data);
   };
 
   useEffect(() => {
-    setBasicInfoValues();
+    updateData();
   }, []);
 
-  useEffect(() => {
-    if (formik.values.language) {
-      i18n.changeLanguage(formik.values.language);
-    }
-  }, [formik.values.language]);
-
   return (
-    <Card className={styles.card}>
-      <form className={styles.form} onSubmit={formik.handleSubmit}>
-        <CardContent className={styles.inputs}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {t('basic_info')}
-          </Typography>
-          <TextField
-            namespace="firstName"
-            formik={formik}
-            type="text"
-            label={t('first_name')}
-            fullWidth
-          />
-          <TextField
-            namespace="lastName"
-            formik={formik}
-            type="text"
-            label={t('last_name')}
-            fullWidth
-          />
-          <TextField
-            namespace="address"
-            formik={formik}
-            type="text"
-            label={t('address')}
-            fullWidth
-          />
-          <TextField
-            namespace="phoneNumber"
-            formik={formik}
-            type="text"
-            label={t('phone_number')}
-            fullWidth
-          />
+    <Paper className={styles.card}>
+      <form className={styles.form}>
+        <CardContent onSubmit={submit}>
           <Select
-            formik={formik}
+            onChange={handleChange}
             label={t('select_language')}
             namespace="language"
+            value={basicInfos.language}
             options={[
               { value: 'en', display: 'English' },
               { value: 'fr', display: 'Français' },
             ]}
           />
         </CardContent>
-        <CardActions className={styles.buttons}>
-          <Button
-            size="small"
-            color="primary"
-            variant="contained"
-            className={styles.button}
-            type="submit"
-          >
-            {t('save_basic_info')}
-          </Button>
-        </CardActions>
       </form>
-    </Card>
+    </Paper>
   );
 }

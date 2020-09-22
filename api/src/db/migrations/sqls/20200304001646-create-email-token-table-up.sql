@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 CREATE TABLE confirmation_email_token (
     email VARCHAR(320) NOT NULL,
     token VARCHAR(255) NOT NULL PRIMARY KEY,

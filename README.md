@@ -6,10 +6,10 @@ A sport platform looking to generate sport portfolios (Sportfolios) automaticall
 
 - [Project setup](#project-setup)
 - [Install node,npm,nvm](#install-node-npm-nvm)
+- [Install Docker](#install-docker)
 - [Setup the project with the mock server](#setup-the-project-with-the-mock-server)
 - [Setup the project with a server](#setup-the-project-with-a-server)
 - [How to run migrations](#how-to-run-migrations)
-- [Final step](#final-step)
 - [How to run the application](#how-to-run-the-application)
   - [How email are displayed](#how-email-are-displayed)
 - [How to follow git flow and make standard pull requests](#how-to-follow-git-flow-and-make-standard-pull-requests)
@@ -75,9 +75,30 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 Then, you will have to install and use node v10.13.
 
 ```
-nvm install 10.13
-nvm use 10.13
+nvm install 14.2
+nvm use 14.2
 ```
+
+## Install Docker
+
+On Linux:
+
+```
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker your-user (no need to use sudo for each docker command)
+```
+
+Change 1.27.1 with the latest version of compose found here: https://docs.docker.com/compose/release-notes/
+
+```
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+On Mac:
+
+Install Docker Desktop from https://hub.docker.com/editions/community/docker-ce-desktop-mac
 
 ## Setup the project with the mock server
 
@@ -129,7 +150,7 @@ After this, connect postgresql
 psql -U postgres
 ```
 
-Where username is the username you set for postgresql.
+Where U is the username you set for postgresql.
 
 Then, you will need to create 3 databases
 
@@ -151,7 +172,7 @@ module.exports = {
   test: {
     client: 'pg',
     connection:
-      'database://username:password@localhost/sportfolios_api_test',
+      'postgres://username:password@localhost/sportfolios_api_test',
     migrations: {
       directory: path.join(BASE_PATH, 'migrations'),
     },
@@ -162,7 +183,7 @@ module.exports = {
   development: {
     client: 'pg',
     connection:
-      'database://username:password@localhost/sportfolios_api_dev',
+      'postgres://username:password@localhost/sportfolios_api_dev',
     migrations: {
       directory: path.join(BASE_PATH, 'migrations'),
     },
@@ -173,7 +194,7 @@ module.exports = {
   production: {
     client: 'pg',
     connection:
-      'database://username:password@localhost/sportfolios_api',
+      'postgres://username:password@localhost/sportfolios_api',
     migrations: {
       directory: path.join(BASE_PATH, 'migrations'),
     },
@@ -184,20 +205,45 @@ module.exports = {
 };
 ```
 
-Where sportfolios_api_test is our test database, sportfolios_api_dev is our development and sportfolios_api is our production api. Don't forget to change database, username and password for the right arguments in the connection parameters
+Where sportfolios_api_test is our test database, sportfolios_api_dev is our development and sportfolios_api is our production api. Don't forget to change `username` and `password` for the right arguments in the connection parameters
 
 You will also need to create a new file at `api/src/db` called `database.json`. Its content will look like this:
 
 ```json
 {
-  "dev": "database://username:password@localhost/sportfolios_api_dev",
-  "test": "database://username:password@localhost/sportfolios_api_test",
-  "prod": "database://username:password@localhost/sportfolios_api",
+  "dev": {
+    "driver": "pg",
+    "user": "username",
+    "password": "password",
+    "host": "localhost",
+    "database": "sportfolios_api_dev"
+  },
+  "test": {
+    "driver": "pg",
+    "user": "username",
+    "password": "password",
+    "host": "localhost",
+    "database": "sportfolios_api_test"
+  },
+  "prod": {
+    "driver": "pg",
+    "user": "username",
+    "password": "password",
+    "host": "localhost",
+    "database": "sportfolios_api"
+  },
+
   "other": "postgres://uname:pw@server.com/dbname"
 }
 ```
 
-Don't forget to change `database`, `username` and `password` for the right parameters.
+Don't forget to change `username` and `password` for the right parameters.
+
+Finally, you will need to edit one line in the files `docker-compose.dev.yml` and `docker-compose.prod.yml` to match the previously chosen databse `password`:
+
+```yml
+POSTGRES_PASSWORD: password
+```
 
 ## How to run migrations
 
@@ -227,47 +273,60 @@ db-migrate create <migration name> --sql-file
 
 For more info about db-migrate, you can look at the documentation: https://db-migrate.readthedocs.io/en/latest/Getting%20Started/commands/#up
 
-## Final step
-
-There you go. After this, run in two different terminals the following commands to run in dev:
-
-```sh
-npm run webserver
-npm run dev
-```
-
-There you go, you should have a running API on port 1337 and server on port 3000!
-
 ## How to run the application
 
-To run the application, simply run the following command:
+To run the application in development mode, simply run in sportfolios-stable the following command:
 
 ```
-pm2 start pm2-dev.json
+docker-compose -f docker-compose.dev.yml up --build
 ```
 
-If pm2 is not available, install it via npm
+To run the application in production mode, simply run in sportfolios-stable these following commands in 3 separate terminals:
 
 ```
-npm install pm2 -g
+docker-compose -f docker-compose.prod.yml up --build db
+docker-compose -f docker-compose.prod.yml up --build api
+docker-compose -f docker-compose.prod.yml up --build app
 ```
 
-These are useful commands for use with pm2 in the project
+Compose can also be used in detached mode (run containers in the background):
 
 ```
-pm2 status
-pm2 logs api
-pm2 logs webclient
-pm2 restart all
-pm2 stop all
+docker-compose -f <docker-compose file> up -d --build
 ```
+
+Once the containers are up and running for the first time, don't forget to do the migration:
+
+```
+cd api/src/db
+db-migrate up
+```
+
+These are useful commands for use with Docker in the project:
+
+```
+docker ps (list active containers and show id)
+docker logs <container id or name>
+docker stop <container id or name>
+ctrl+c (stop all containers started by the compose up command in "attached mode")
+```
+
+container id can be only the first 3 characters of the id.
+
+If a postgresql server is already running locally on the pc, simply stop it with this command:
+
+```
+sudo service postgresql stop
+```
+
+If there are some errors about `node_modules/.staging` when launching compose, try deleting `package-lock.json`.
 
 ### How email are displayed
 
 As you won’t have access to the Google API Keys, you won’t receive any emails. The content of these emails will be logged into the terminal, which you will be able to access via this command:
 
 ```
-pm2 logs api
+docker logs sportfolios_api_dev
 ```
 
 ## How to follow git flow and make standard pull requests
@@ -357,3 +416,36 @@ openssl req -new -key key.pem -out csr.pem
 openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
 rm csr.pem
 ```
+
+## MODULE BUNDLER
+
+This project is built using [Webpack](https://survivejs.com/webpack/what-is-webpack/#:~:text=Webpack%20gives%20you%20control%20over,issues%20of%20standard%20CSS%20styling).
+
+I have tried using [Next.js](https://nextjs.org/) instead to simplify the setup process, but decided not too. Since the application is already all set up, using next would require lots of changes in the current codebase. It uses a different router, and doesn’t treat pages in the same way as react-router. The api part seemed also pretty different, but I did not look into it that much.
+
+The reason I would use Next.js in a new project is for the SSR (Server-side rendering), built-in typescript and sass-modules integration, easy routing and api integration when started from scratch. Next.js is built on top of webpack, so most web pack features can be added to the project using a web pack config file.
+
+## PWA
+
+### What is a PWA
+
+A progressive web app is, as the name implies, a web application. It is said to be progressive because it has extra new features. In brief, it can be downloaded as an application with no extra code (except IOS), it works offline, and can use some native features, such as push notifications. [Learn more](https://web.dev/what-are-pwas/)
+
+To be a PWA, the application need to pass all of the [LightHouse tests](https://web.dev/lighthouse-pwa/).
+
+For further information, refer to this [article](https://web.dev/lighthouse-pwa/).
+
+This [website](https://web.dev/lighthouse-pwa/) made by microsoft is great to test the production build.
+
+### Service workers
+
+An essential part of any PWA is the use of a service worker
+Since we use webpack, we use [Workbox](https://web.dev/workbox/) to generate ours.
+
+To learn more about service workers, you can play this [game](https://serviceworkies.com/), or read this [article](https://web.dev/service-worker-mindset/).
+
+## What's next?
+
+Next up, deploy the PWA on the google store and app store. To do so, use [PWABuilder](https://serviceworkies.com/).
+
+We also need to optimize the downloads directly from our website, by adding a download banner on the beforeinstallprompt, for example. Follow this [article](https://web.dev/customize-install/) to learn how to do it.

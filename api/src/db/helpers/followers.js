@@ -18,19 +18,21 @@ const unfollowAthleteWithId = async (sender, target) => {
 
 const getFollowingUsers = async sender => {
   return knex
-    .select(
-      'ui.user_id',
-      'ui.first_name',
-      'ui.last_name',
-      'ui.photo_url',
-    )
+    .select('entities.id', 'name', 'surname', 'photo_url')
     .from('followers')
     .leftJoin(
-      'user_info AS ui',
-      'followers.target',
+      'entities',
+      'entities_name.entity_id',
       '=',
-      'ui.user_id',
+      'entities.id',
     )
+    .leftJoin(
+      'entities',
+      'entities_photo.entity_id',
+      '=',
+      'entities.id',
+    )
+    .leftJoin('entities', 'followers.target', '=', 'entities.id')
     .where('followers.sender', sender);
 };
 

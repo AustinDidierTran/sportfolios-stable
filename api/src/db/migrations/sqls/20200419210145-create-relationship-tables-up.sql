@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 CREATE TABLE relationship_requests (
   sender UUID REFERENCES users(id),
   target UUID REFERENCES users(id),

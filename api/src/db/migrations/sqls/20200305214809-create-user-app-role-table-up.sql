@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 CREATE TABLE user_app_role (
   user_id VARCHAR(255) NOT NULL PRIMARY KEY,
   app_role integer NOT NULL

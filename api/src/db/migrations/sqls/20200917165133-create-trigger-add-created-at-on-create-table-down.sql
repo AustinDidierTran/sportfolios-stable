@@ -1,0 +1,2 @@
+DROP EVENT TRIGGER IF EXISTS tr_create_table;
+DROP FUNCTION IF EXISTS on_create_table_func CASCADE;

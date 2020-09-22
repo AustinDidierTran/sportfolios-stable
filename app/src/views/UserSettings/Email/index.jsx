@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import {
-  Card,
-  CardContent,
-  Typography,
-} from '../../../components/MUI';
+import { CardContent } from '../../../components/MUI';
+import { Paper } from '../../../components/Custom';
 import styles from './Email.module.css';
 import ConfirmedEmailField from './ConfirmedEmailField';
 import NewEmailField from './NewEmailField';
@@ -14,8 +10,6 @@ import api from '../../../actions/api';
 
 export default function Email() {
   const [emails, setEmails] = useState([]);
-
-  const { t } = useTranslation();
 
   const fetchAllEmails = async () => {
     const { data } = await api('/api/user/emails');
@@ -32,11 +26,8 @@ export default function Email() {
   );
 
   return (
-    <Card className={styles.card}>
+    <Paper className={styles.card}>
       <CardContent>
-        <Typography gutterBottom variant="h5" component="h2">
-          {t('emails')}
-        </Typography>
         {confirmedEmails.map(email => (
           <ConfirmedEmailField
             email={email}
@@ -48,6 +39,6 @@ export default function Email() {
         ))}
         <NewEmailField onSubmit={fetchAllEmails} />
       </CardContent>
-    </Card>
+    </Paper>
   );
 }

@@ -1,0 +1,11 @@
+.logo {
+  margin: 0 auto;
+  grid-area: logo;
+  width: 200px;
+  height: 200px;
+}
+
+.img {
+  width: 100%;
+  height: auto;
+}

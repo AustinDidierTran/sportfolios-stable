@@ -1,6 +1,7 @@
 .card {
   grid-area: basic;
   width: 100%;
+  margin-top: 16px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -9,9 +10,6 @@
 }
 
 .form {
-  display: grid !important;
-  grid-template-areas: 'inputs' 'buttons';
-  grid-template-rows: auto 46px;
   height: 100%;
 }
 

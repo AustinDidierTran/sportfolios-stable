@@ -1,21 +1,39 @@
+const { GLOBAL_ENUM } = require('../../../../common/enums');
+
 const {
   addQueryToRecentSearches,
+  getEntitiesFromQuery,
+  getOrganizationsFromQuery,
+  getPersonsFromQuery,
   getPreviousSearchQueriesFromId,
-  getUsersFromQuery,
+  getTeamsFromQuery,
 } = require('../helpers/data');
 
-const globalSearch = async (user_id, query) => {
-  await addQueryToRecentSearches(user_id, query);
-  const users = await getUsersFromQuery(query);
+const globalSearch = async (
+  user_id,
+  query,
+  typeProps,
+  blackList,
+  whiteList,
+) => {
+  const type = Number(typeProps);
+  let entities;
 
-  return {
-    users,
-  };
+  if (type === GLOBAL_ENUM.PERSON) {
+    entities = await getPersonsFromQuery(query, blackList);
+  } else if (type === GLOBAL_ENUM.ORGANIZATION) {
+    entities = await getOrganizationsFromQuery(query);
+  } else if (type === GLOBAL_ENUM.TEAM) {
+    entities = await getTeamsFromQuery(query, blackList, whiteList);
+  } else {
+    await addQueryToRecentSearches(user_id, query);
+    entities = await getEntitiesFromQuery(query, blackList);
+  }
+  return { entities };
 };
 
 const getPreviousSearchQueries = async user_id => {
-  const res = await getPreviousSearchQueriesFromId(user_id);
-  return res[0];
+  return getPreviousSearchQueriesFromId(user_id);
 };
 
 module.exports = {

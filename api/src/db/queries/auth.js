@@ -6,9 +6,7 @@ const {
 } = require('../../server/utils/nodeMailer');
 const {
   confirmEmail: confirmEmailHelper,
-  createUser,
-  createUserEmail,
-  createUserInfo,
+  createUserComplete,
   createConfirmationEmailToken,
   createRecoveryEmailToken,
   generateHashedPassword,
@@ -22,30 +20,30 @@ const {
   updatePasswordFromUserId,
   validateEmailIsConfirmed,
   validateEmailIsUnique,
+  generateAuthToken,
 } = require('../helpers');
 
-const signup = async ({ firstName, lastName, email, password }) => {
+const signup = async ({
+  firstName,
+  lastName,
+  email,
+  password,
+  successRoute,
+}) => {
   // Validate email is not already taken
   const isUnique = await validateEmailIsUnique(email);
 
   if (!isUnique) return { code: 403 };
 
-  if (!password || password.length < 8 || password.length > 40) {
-    return { code: 402 };
-  }
-
   const hashedPassword = await generateHashedPassword(password);
 
   const confirmationEmailToken = generateToken();
 
-  const user = await createUser(hashedPassword);
-
-  await createUserEmail({ user_id: user.id, email });
-
-  await createUserInfo({
-    user_id: user.id,
-    first_name: firstName,
-    last_name: lastName,
+  await createUserComplete({
+    password: hashedPassword,
+    email,
+    name: firstName,
+    surname: lastName,
   });
 
   await createConfirmationEmailToken({
@@ -57,15 +55,15 @@ const signup = async ({ firstName, lastName, email, password }) => {
   await sendConfirmationEmail({
     email,
     token: confirmationEmailToken,
+    successRoute,
   });
-
   return { code: 200 };
 };
 
 const login = async ({ email, password }) => {
   // Validate account with this email exists
-  const user_id = await getUserIdFromEmail(email);
-  if (!user_id) {
+  const userId = await getUserIdFromEmail({ email });
+  if (!userId) {
     return { status: 404 };
   }
 
@@ -75,21 +73,17 @@ const login = async ({ email, password }) => {
     return { status: 401 };
   }
 
-  const hashedPassword = await getHashedPasswordFromId(user_id);
+  const hashedPassword = await getHashedPasswordFromId(userId);
   if (!hashedPassword) {
     return { status: 402 };
   }
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
-  if (isSame) {
-    const token = generateToken();
-    await knex('user_token').insert({
-      user_id: user_id,
-      token_id: token,
-      expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-    });
 
-    const userInfo = await getBasicUserInfoFromId(user_id);
+  if (isSame) {
+    const token = await generateAuthToken(userId);
+
+    const userInfo = await getBasicUserInfoFromId(userId);
 
     return { status: 200, token, userInfo };
   } else {
@@ -107,19 +101,30 @@ const confirmEmail = async ({ token }) => {
 
   await confirmEmailHelper({ email });
 
-  return 200;
+  const authToken = generateToken();
+  const userId = await getUserIdFromEmail({ email });
+
+  await knex('user_token').insert({
+    user_id: userId,
+    token_id: authToken,
+    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+  });
+
+  const userInfo = await getBasicUserInfoFromId(userId);
+
+  return { status: 200, token: authToken, userInfo };
 };
 
 const recoveryEmail = async ({ email }) => {
-  const user_id = await getUserIdFromEmail({ email });
+  const userId = await getUserIdFromEmail({ email });
 
-  if (!user_id) {
+  if (!userId) {
     return 404;
   }
 
   const token = generateToken();
 
-  await createRecoveryEmailToken({ user_id, token });
+  await createRecoveryEmailToken({ userId, token });
 
   await sendRecoveryEmail({ email, token });
 
@@ -130,7 +135,7 @@ const recoverPassword = async ({ token, password }) => {
   const userId = await getUserIdFromRecoveryPasswordToken(token);
 
   if (!userId) {
-    return 403;
+    return { code: 403 };
   }
 
   const hashedPassword = await generateHashedPassword(password);
@@ -139,10 +144,14 @@ const recoverPassword = async ({ token, password }) => {
 
   await setRecoveryTokenToUsed(token);
 
-  return 200;
+  const authToken = await generateAuthToken(userId);
+
+  const userInfo = await getBasicUserInfoFromId(userId);
+
+  return { code: 200, authToken, userInfo };
 };
 
-const resendConfirmationEmail = async ({ email }) => {
+const resendConfirmationEmail = async ({ email, successRoute }) => {
   const isEmailConfirmed = await validateEmailIsConfirmed(email);
 
   if (isEmailConfirmed) {
@@ -153,7 +162,7 @@ const resendConfirmationEmail = async ({ email }) => {
 
   await createConfirmationEmailToken({ email, token });
 
-  await sendConfirmationEmail({ email, token });
+  await sendConfirmationEmail({ email, token, successRoute });
 
   return 200;
 };

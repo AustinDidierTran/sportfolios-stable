@@ -1,35 +1,93 @@
 import history from '../../stores/history';
+import { getFormattedMailTo } from '../../utils/stringFormats';
 
 export const ROUTES = {
+  addPaymentMethod: '/addPaymentMethod',
   adminPanel: '/adminPanel',
   confirmationEmailSent: '/confirmationEmailSent/:email',
   confirmEmail: '/confirmEmail/:token',
   confirmEmailFailure: '/ConfirmEmailFailure',
   confirmEmailSuccess: '/confirmEmailSuccess',
-  forgotPassword: '/forgotPassword',
+  cart: '/cart',
+  checkout: '/checkout',
+  create: '/create',
+  createOrganization: '/organization/create',
+  createPerson: '/person/create',
+  createTeam: '/team/create',
+  entity: '/:id',
+  entityNotFound: '/entityNotFound',
+  event: '/event',
+  eventRegistration: '/eventRegistration/:id',
+  home: '/',
   login: '/login',
-  mockOrganization: '/mock/Organization',
-  mockSelfProfile: '/mock/selfProfile',
-  profile: '/profile/:id',
-  recoveryEmail: '/recoveryEmail/:token',
-  search: '/search/:query',
-  signup: '/signup',
+  memberships: '/memberships',
+  menu: '/menu',
+  mockEvent: '/mock/Event/:openTab',
+  notifications: '/notifications',
+  orderProcessed: '/orderProcessed',
+  organizationList: '/organizationList',
+  productAddedToCart: '/productAddedToCart',
+  recoveryEmail: '/recoveryEmail',
+  registrationStatus: '/registrationStatus',
+  sales: '/sales/:id',
+  scheduleManager: '/scheduleManager',
+  search: '/search',
+  shopDetails: '/shopDetails/:id/:stripePriceId',
+  stripe: '/stripe',
+  team: '/team',
   userSettings: '/userSettings',
 };
 
-export const formatRoute = (route, params) => {
-  if (!params) {
+export const formatRoute = (route, params, queryParams) => {
+  if (!params && !queryParams) {
     return route;
   }
 
-  const paramKeys = Object.keys(params);
+  if (!route) {
+    /* eslint-disable-next-line */
+    console.error('Route is undefined');
+  }
 
-  return paramKeys.reduce(
-    (prev, curr) => prev.replace(`:${curr}`, params[curr]),
-    route,
+  const withParams = params
+    ? Object.keys(params).reduce(
+        (prev, curr) => prev.replace(`:${curr}`, params[curr]),
+        route,
+      )
+    : route;
+
+  if (!queryParams) {
+    return withParams;
+  }
+
+  return Object.keys(queryParams).reduce(
+    (prev, key, index) =>
+      index === 0
+        ? `${prev}?${key}=${queryParams[key]}`
+        : `${prev}&${key}=${queryParams[key]}`,
+    withParams,
   );
 };
 
-export const goTo = (route, params) => {
-  history.push(formatRoute(route, params));
+export const goTo = (route, params, queryParams) => {
+  history.push(formatRoute(route, params, queryParams));
+};
+
+export const goToAndReplace = (route, params, queryParams) => {
+  history.replace(formatRoute(route, params, queryParams));
+};
+
+export const goBack = () => {
+  if (history.length) {
+    history.goBack();
+  } else {
+    history.push(ROUTES.home);
+  }
+};
+
+export const mailTo = (emailsFormatted, subject, message) => {
+  document.location.href = getFormattedMailTo(
+    emailsFormatted,
+    subject,
+    message,
+  );
 };

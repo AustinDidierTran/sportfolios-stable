@@ -25,7 +25,7 @@ export default function CustomDateInput(props) {
     <>
       <TextField
         error={error || inputError}
-        type="date"
+        type="text"
         placeholder="yyyy-mm-dd"
         inputProps={{
           onBlur: () => {

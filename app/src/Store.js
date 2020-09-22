@@ -3,25 +3,81 @@ import { goTo, ROUTES } from './actions/goTo';
 
 import { API_BASE_URL } from '../../conf';
 import i18n from './i18n';
+import api from './actions/api';
+import { errors, ERROR_ENUM } from '../../common/errors';
 
 export const Store = React.createContext();
 
 const localAuthToken = localStorage.getItem('authToken');
 const localUserInfo = localStorage.getItem('userInfo');
 
+const handleLocalAuthToken = token => {
+  if (token === 'null') {
+    return;
+  }
+  if (token === 'undefined') {
+    return;
+  }
+
+  return token;
+};
+
+export const SCREENSIZE_ENUM = {
+  xs: 'xs',
+  sm: 'sm',
+  md: 'md',
+  lg: 'lg',
+  xl: 'xl',
+};
+
+export const BREAKPOINTS = [
+  { breakpoint: SCREENSIZE_ENUM.xl, value: 1920 },
+  { breakpoint: SCREENSIZE_ENUM.lg, value: 1280 },
+  { breakpoint: SCREENSIZE_ENUM.md, value: 960 },
+  { breakpoint: SCREENSIZE_ENUM.sm, value: 600 },
+  { breakpoint: SCREENSIZE_ENUM.xs, value: 0 },
+].sort((a, b) => b.value - a.value);
+
 const initialState = {
-  authToken: localAuthToken,
+  authToken: handleLocalAuthToken(localAuthToken),
+  screenSize: SCREENSIZE_ENUM.xs,
+  cart: [],
   userInfo:
-    localUserInfo &&
-    localUserInfo !== 'undefined' &&
-    JSON.parse(localUserInfo),
+    (localUserInfo &&
+      localUserInfo !== 'undefined' &&
+      localUserInfo !== 'null' &&
+      JSON.parse(localUserInfo)) ||
+    {},
+  activeGaPageviews: [],
+  activeGaEvents: [],
 };
 
 export const ACTION_ENUM = {
+  CLEAR_USER_INFO: 'clear_user_info',
   LOGIN: 'login',
   LOGOUT: 'logout',
+  SNACK_BAR: 'snack_bar',
   UPDATE_PROFILE_PICTURE: 'update_profile_picture',
+  UPDATE_STORE_ITEM_PICTURE: 'update_store_item_picture',
+  UPDATE_CART: 'update_cart',
+  UPDATE_ORGANIZATION_PROFILE_PICTURE:
+    'update_organization_profile_picture',
   UPDATE_USER_INFO: 'update_user_info',
+  WINDOW_RESIZE: 'window_resize',
+  SET_GA_PAGEVIEWS: 'set_ga_pageviews',
+  SET_GA_EVENTS: 'set_ga_events',
+};
+
+export const ENTITIES_ROLE_ENUM = {
+  ADMIN: 1,
+  EDITOR: 2,
+  VIEWER: 3,
+};
+
+export const MEMBERSHIP_TYPE_ENUM = {
+  ELITE: 1,
+  COMPETITIVE: 2,
+  RECREATIONAL: 3,
 };
 
 function reducer(state, action) {
@@ -34,15 +90,50 @@ function reducer(state, action) {
       localStorage.removeItem('authToken');
       localStorage.removeItem('userInfo');
       goTo(ROUTES.login);
-      return { ...state, authToken: null };
+      return {
+        ...state,
+        authToken: null,
+        userInfo: {},
+      };
     }
     case ACTION_ENUM.UPDATE_PROFILE_PICTURE: {
       const newUserInfo = {
         ...state.userInfo,
-        photo_url: action.payload,
+        photoUrl: action.payload,
       };
       localStorage.setItem('userInfo', JSON.stringify(newUserInfo));
       return { ...state, userInfo: newUserInfo };
+    }
+    case ACTION_ENUM.UPDATE_ORGANIZATION_PROFILE_PICTURE: {
+      const newOrganizationInfo = {
+        ...state.organization,
+        photoUrl: action.payload,
+      };
+      localStorage.setItem(
+        'organization',
+        JSON.stringify(newOrganizationInfo),
+      );
+      return { ...state, organization: newOrganizationInfo };
+    }
+    case ACTION_ENUM.CLEAR_USER_INFO: {
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userInfo');
+      return {
+        ...state,
+        authToken: null,
+        userInfo: {},
+      };
+    }
+    case ACTION_ENUM.SNACK_BAR: {
+      return {
+        ...state,
+        message: action.message,
+        severity: action.severity,
+        duration: action.duration,
+        vertical: action.vertical,
+        horizontal: action.horizontal,
+        time: Date.now(),
+      };
     }
     case ACTION_ENUM.UPDATE_USER_INFO: {
       localStorage.setItem(
@@ -51,7 +142,30 @@ function reducer(state, action) {
       );
       return { ...state, userInfo: action.payload };
     }
+    case ACTION_ENUM.WINDOW_RESIZE: {
+      const found = BREAKPOINTS.find(
+        ({ value }) => value < action.payload,
+      ) || { breakpoint: SCREENSIZE_ENUM.xs, value: 0 };
 
+      return { ...state, screenSize: found.breakpoint };
+    }
+    case ACTION_ENUM.UPDATE_CART: {
+      return { ...state, cart: action.payload };
+    }
+    case ACTION_ENUM.SET_GA_PAGEVIEWS: {
+      localStorage.setItem(
+        'activeGaPageviews',
+        JSON.stringify(action.payload),
+      );
+      return { ...state, activeGaEvents: action.payload };
+    }
+    case ACTION_ENUM.SET_GA_EVENTS: {
+      localStorage.setItem(
+        'activeGaEvents',
+        JSON.stringify(action.payload),
+      );
+      return { ...state, activeGaPageviews: action.payload };
+    }
     default:
       return state;
   }
@@ -61,37 +175,78 @@ export function StoreProvider(props) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const value = { state, dispatch };
 
-  useEffect(() => {
-    const authToken = localStorage.getItem('authToken');
+  const handleResize = () => {
+    dispatch({
+      type: ACTION_ENUM.WINDOW_RESIZE,
+      payload: window.innerWidth,
+    });
+  };
 
-    if (!authToken) {
+  const init = async () => {
+    const authToken = handleLocalAuthToken(
+      localStorage.getItem('authToken'),
+    );
+
+    if (authToken) {
+      const res = await fetch(`${API_BASE_URL}/api/user/userInfo`, {
+        headers: {
+          Authorization: authToken,
+        },
+      });
+
+      if (res.status === errors[ERROR_ENUM.TOKEN_EXPIRED].code) {
+        dispatch({
+          type: ACTION_ENUM.CLEAR_USER_INFO,
+        });
+        return;
+      }
+
+      const { data } = await res.json();
+
+      if (data) {
+        dispatch({
+          type: ACTION_ENUM.UPDATE_USER_INFO,
+          payload: data,
+        });
+
+        if (data.language) {
+          i18n.changeLanguage(data.language);
+        }
+      }
+    }
+
+    const res2 = await api('/api/shop/getCartItems');
+    if (res2 && res2.data) {
       dispatch({
-        type: ACTION_ENUM.LOGOUT,
+        type: ACTION_ENUM.UPDATE_CART,
+        payload: res2.data,
       });
     }
 
-    fetch(`${API_BASE_URL}/api/user/userInfo`, {
-      headers: {
-        Authorization: authToken,
-      },
-    })
-      .then(res => res.json())
-      .then(({ data }) => {
-        if (!data) {
-          dispatch({
-            type: ACTION_ENUM.LOGOUT,
-          });
-        } else {
-          dispatch({
-            type: ACTION_ENUM.UPDATE_USER_INFO,
-            payload: data,
-          });
-
-          if (data.language) {
-            i18n.changeLanguage(data.language);
-          }
-        }
+    const res3 = await api('/api/ga/activePageviews');
+    if (res3 && res3.data) {
+      dispatch({
+        type: ACTION_ENUM.SET_GA_PAGEVIEWS,
+        payload: res3.data,
       });
+    }
+
+    const res4 = await api('/api/ga/activeEvents');
+    if (res4 && res4.data) {
+      dispatch({
+        type: ACTION_ENUM.SET_GA_EVENTS,
+        payload: res4.data,
+      });
+    }
+  };
+
+  useEffect(() => {
+    init();
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   return (

@@ -1,0 +1,46 @@
+.game {
+  margin-bottom: 16px;
+}
+
+.teams {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: 'name score';
+  column-gap: 4px;
+  padding: 8px;
+}
+
+.name {
+  grid-area: name;
+  justify-self: center;
+  overflow: auto;
+}
+
+.score {
+  grid-area: score;
+  justify-self: center;
+}
+
+.main {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: 'phase time field';
+}
+
+.field {
+  grid-area: field;
+  margin: 8px !important;
+  overflow: auto;
+}
+
+.phase {
+  grid-area: phase;
+  margin: 8px !important;
+  overflow: auto;
+}
+
+.time {
+  grid-area: time;
+  margin: 8px !important;
+  overflow: auto;
+}

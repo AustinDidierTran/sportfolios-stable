@@ -1,0 +1,46 @@
+.card {
+  width: 100%;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: 'lieu responsable' 'description description' 'infos infos';
+  row-gap: 16px;
+  padding-top: 16px;
+}
+
+.description {
+  grid-area: description;
+  text-align: start;
+}
+
+.reponsable {
+  grid-area: responsable;
+}
+
+.infos {
+  grid-area: infos;
+  text-align: start;
+}
+
+.lieu {
+  grid-area: lieu;
+}
+
+.section {
+  display: grid !important;
+  grid-template-columns: 2fr 6fr;
+  grid-template-areas: 'title texte' ' divider divider';
+  column-gap: 16px;
+}
+
+.title {
+  grid-area: title;
+}
+
+.texte {
+  grid-area: texte;
+}
+.divider {
+  grid-area: divider;
+  margin-left: 0px;
+  margin-right: 0px;
+}

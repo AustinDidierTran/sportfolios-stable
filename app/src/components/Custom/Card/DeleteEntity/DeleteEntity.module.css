@@ -1,0 +1,28 @@
+.paper {
+  padding-top: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.textfield {
+  flex: 1;
+  margin-left: 16px !important;
+  margin-right: 16px !important;
+  overflow: auto;
+}
+
+.button {
+  margin: 16px !important;
+  height: 32px;
+}
+
+@media (min-width: 768px) {
+  .paper {
+    flex-direction: row;
+  }
+  .button {
+    width: 120px;
+    margin-top: unset !important;
+    margin-bottom: unset;
+  }
+}

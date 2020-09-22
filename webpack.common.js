@@ -36,7 +36,7 @@ module.exports = {
         use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
       },
       {
-        test: /\.(png|svg|jpg|gif)$/,
+        test: /\.(png|svg|jpg|gif|ico)$/,
         use: ['file-loader'],
       },
     ],
@@ -50,6 +50,7 @@ module.exports = {
     new MiniCssExtractPlugin(),
     new HtmlWebpackPlugin({
       title: 'Sportfolios',
+      favicon: './favicon.ico',
     }),
   ],
   output: {

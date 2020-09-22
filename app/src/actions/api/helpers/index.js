@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import api from '../index';
+import api from '../../api';
 
 const useFollowingUserInformations = () => {
   const [users, setUsers] = useState([]);
@@ -24,4 +24,22 @@ export const useAllMainInformations = () => {
   const users = useFollowingUserInformations();
 
   return { users };
+};
+
+export const createRefund = async ({ invoiceItemId }) => {
+  const data = await api('/api/stripe/createRefund', {
+    method: 'POST',
+    body: JSON.stringify({ invoiceItemId }),
+  });
+
+  return data;
+};
+
+export const unregister = async ({ eventId, rosterId }) => {
+  const data = await api('/api/entity/unregister', {
+    method: 'POST',
+    body: JSON.stringify({ eventId, rosterId }),
+  });
+
+  return data;
 };

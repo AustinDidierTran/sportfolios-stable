@@ -1,12 +1,15 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import clsx from 'clsx';
 
 // See native documentation here: https://material-ui.com/components/cards/
 
 const useStyles = makeStyles({
   card: {
     minWidth: 275,
+    color: '#fff',
+    backgroundColor: '#18B393',
   },
   bullet: {
     display: 'inline-block',
@@ -21,7 +24,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function CustomCard(props) {
+export default function CustomButton(props) {
   const classes = useStyles();
 
   const defaultProps = {
@@ -29,6 +32,10 @@ export default function CustomCard(props) {
   };
 
   return (
-    <Button className={classes.card} {...defaultProps} {...props} />
+    <Button
+      className={clsx(props.className, classes.card)}
+      {...defaultProps}
+      {...props}
+    />
   );
 }

@@ -1,0 +1,376 @@
+FORMAT: 1A
+HOST: https://www.sportfoliosapp.com/
+
+# Sportfolios API
+
+Sportfolios is a project that allows athletes to be rapidly known by a large audiance.
+
+# Group UUser
+
+Resources related to user
+
+## Authentication [/api/auth]
+
+### Signup [POST /api/auth/signup]
+
+Allows users to signup by providing basic and authentication infos.
+
+Returns 402 on invalid password, 403 on email already taken.
+
++ Request (application/json)
+
+        {
+            "firstName": "John",
+            "lastName": "Doe",
+            "email": "john.doe@gmail.com",
+            "password": "Helloworld"
+        }
+    
++ Response 200 (application/json)
+
+### Login [POST /api/auth/login]
+
+Allows users to login with their email and password.
+
+Returns 401 if email has never been confirmed, 403 on wrong password, 404 if account does not exist.
+
++ Request (application/json)
+        
+        {
+            "email": "john.doe@gmail.com",
+            "password": "Helloworld"
+        }
+
++ Response 200 (application/json)
+
+        {   
+            "data": {
+                "token": "67d8d670-7c60-11ea-8c90-8f6947322319",
+                "userInfo": {
+                    "user_id": "8317ff33-3b04-49a1-afd3-420202cddf73",
+                    "first_name": "John",
+                    "last_name":"Doe",
+                    "language":"fr",
+                    "birth_date":"1994-02-18",
+                    "photo_url":"https://pimage.sport-thieme.de/detail-fillscale/frisbee-freestyle-frisbee/134-4644"
+                }
+            }
+        }
+
+### Confirm Email [POST /api/auth/confirmEmail]
+
+Allows users to confirm their email from their given link.
+
+Returns 403 if token is invalid or expired.
+
++ Request (application/json)
+
+        {
+            "token": "67d8d670-7c60-11ea-8c90-8f6947322319"
+        }
+        
++ Response 200
+
+### Send Confirmation Email [POST /api/auth/sendConfirmationEmail]
+
+Returns 403 if email is already confirmed.
+
++ Request (application/json)
+
+        {
+            "email": "john.doe@gmail.com"
+        }
+        
++ Response 200
+
+### Send password recovery email [POST /api/auth/recoveryEmail]
+
+Returns 404 if user with email is not found
+
++ Request (application/json)
+
+        {
+            "email": "john.doe@gmail.com"
+        }
+        
++ Response 200
+
+### Recover password [POST /api/auth/recoverPassword]
+
+Returns 403 if token is invalid.
+
++ Request (application/json)
+
+        {
+            "token": "67d8d670-7c60-11ea-8c90-8f6947322319",
+            "password": "Helloworld"
+        }
+        
++ Response 200
+
+## Users [/api/user]
+
+### Add email [POST /api/user/addEmail]
+
+Returns 402 if user id is not valid. Returns 403 if email is already in use.
+
++ Request (application/json)
+
+        {
+            "email": "john.doe@gmail.com"
+        }
+        
++ Response 200
+
+### Reset password [POST /api/user/changePassword]
+
++ Request (application/json)
+
+        {
+            "token": "67d8d670-7c60-11ea-8c90-8f6947322319",
+            "password": "Helloworld"
+        }
+        
++ Response 200
+
+### User Info [GET /api/user/userInfo]
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+            "user_id": "8317ff33-3b04-49a1-afd3-420202cddf73",
+            "first_name": "John",
+            "last_name": "Doe",
+            "language": "fr",
+            "birth_date": "1994-02-18",
+            "photo_url": "https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200415-bmu4t-8317ff33-3b04-49a1-afd3-420202cddf73"
+            }
+        }
+
+### Change Basic User Info [POST /api/user/changeBasicUserInfo]
+
++ Request (application/json)
+
+        {
+            "firstName": "John",
+            "lastName": "Doe",
+            "language": "fr"
+        }
+        
++ Response 200
+
+### Get emails [GET /api/user/emails]
+
++ Response 200 (application/json)
+
+        {
+            "data": [
+                {
+                    "email": "john.doe@gmail.com",
+                    "confirmed_email_at": "2020-04-14T18:16:11.053Z"
+                },
+                {
+                    "email": "john.doe@hotmail.com",
+                    "confirmed_at": "2020-04-14T18:16:11.053Z"
+                }
+            ]
+        }
+
+## Profile [api/profile]
+
+### Get S3 Signature [GET /api/profile/s3Signature]
+
++ Request (application/json)
+
+        {
+            "fileType": "image/jpeg"
+        }
+        
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "signedRequest": "https://sportfolios-images.s3-accelerate.amazonaws.com/development/images/profile/20200415-7mo2n-8317ff33-3b04-49a1-afd3-420202cddf73?Content-Type=image%2Fjpeg&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA6JQINATQN5SREG4U%2F20200416%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20200416T022801Z&X-Amz-Expires=3600&X-Amz-Signature=977fedd9b76f7b60bb06504c6b60be1f2b13716914300f30e7e6c716e946b735&X-Amz-SignedHeaders=host%3Bx-amz-acl&x-amz-acl=public-read",
+                "url": "https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200415-7mo2n-8317ff33-3b04-49a1-afd3-420202cddf73"
+                }
+        }
+
+### Get User Info [GET /api/profile/userInfo/:id]
+
++ Response 200 (application/json)
+
+        {
+            "user_id": "8317ff33-3b04-49a1-afd3-420202cddf73",
+            "first_name": "John",
+            "last_name": "Doe",
+            "language": "fr",
+            "birth_date": "1994-02-18",
+            "photo_url": "https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200415-bmu4t-8317ff33-3b04-49a1-afd3-420202cddf73"
+        }
+        
+### Change Birth Date [PUT /api/profile/birthDate]
+
++ Request (application/json)
+
+        {
+            "birthDate": "1994-02-17"
+        }
+
++ Response 200
+
+### Change Photo URL [PUT /api/profile/photoUrl]
+
++ Request 
+
+        {
+            "photoUrl": "https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200415-bmu4t-8317ff33-3b04-49a1-afd3-420202cddf73"
+        }
+        
++ Response 200
+
+# Group Data
+
+Resources related to other data
+
+## Main [/api/data/main]
+
+### All [GET /api/data/main/all]
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "users": [
+                    {
+                        "user_id": "8317ff33-3b04-49a1-afd3-420202cddf73",
+                        "first_name": "Austin-Didier",
+                        "last_name": "Tran",
+                        "photo_url": "https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200415-bmu4t-8317ff33-3b04-49a1-afd3-420202cddf73"
+                    },
+                    {
+                        "user_id": "8317ff33-3b04-49a1-afd3-420202cddf73",
+                        "first_name": "Duy Khang",
+                        "last_name": "Tran",
+                        "photo_url": "https://sportfolios-images.s3.us-east-1.amazonaws.com/development/images/profile/20200415-0o6hk-8317ff33-3b04-49a1-afd3-420202cddf73"
+                    }
+                ]
+            }
+        }
+
+### Following users [GET /api/data/main/followingUsers]
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                [
+                    {
+                        "user_id": "8317ff33-3b04-49a1-afd3-420202cddf73",
+                        "first_name": "Austin-Didier",
+                        "last_name": "Tran",
+                        "photo_url": "https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200415-bmu4t-8317ff33-3b04-49a1-afd3-420202cddf73"
+                    },
+                    {
+                        "user_id": "8317ff33-3b04-49a1-afd3-420202cddf73",
+                        "first_name": "Duy Khang",
+                        "last_name": "Tran",
+                        "photo_url": "https://sportfolios-images.s3.us-east-1.amazonaws.com/development/images/profile/20200415-0o6hk-8317ff33-3b04-49a1-afd3-420202cddf73"
+                    }
+                ]
+            
+            }
+
+## Search [/api/data/search]
+
+### Global search query [GET /api/data/search/global]
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "users": [
+                    {
+                        "user_id": "8317ff33-3b04-49a1-afd3-420202cddf73",
+                        "first_name": "John",
+                        "last_name": "Doe",
+                        "photo_url": "https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200415-bmu4t-8317ff33-3b04-49a1-afd3-420202cddf73"
+                    }
+                ]
+            }
+        }
+
+### Previous results [GET /api/data/search/previous]
+
+Returns previous search queries from the user.
+
++ Response 200 (application/json)
+
+        {
+            "data": {
+                "search_queries": 
+                    [
+                        "Austin",
+                        "Austin-Didier"
+                    ]
+                }
+        }
+
+# Group Followers
+
+Resources related to followers
+
+## Follow [/api/followers]
+
+### Follow [POST /api/followers/follow]
+
++ Request (application/json)
+
+        {
+            "targetId": "8317ff33-3b04-49a1-afd3-420202cddf73"
+        }
+
++ Response 200
+
+### Unfollow [POST /api/followers/unfollow]
+
++ Request (application/json)
+
+        {
+            "targetId": "8317ff33-3b04-49a1-afd3-420202cddf73"
+        }
+
++ Response 200
+
+# Group Notifications
+
+Resources related to notifications
+
+## Notifications [/api/notifications]
+
+### Get All Notifications [GET /api/notifications/all]
+
++ Response 200 (application/json)
+
+        {
+            "status":"success",
+            "data": [{ 
+                "follower":"31df10b0-1055-4e12-ad4a-5e732b8b8544",
+                "seen_at": null,
+                "created_at":"2020-04-22T22:05:52.631Z",
+                "photo_url":null,
+                "first_name":"John",
+                "last_name":"Doe",
+                "type":"follow"
+            }]
+        }
+
+### See Follow notifications [POST /api/notifications/follow/see]
+
++ Request (application/json)
+
+        {
+            "targetId": "8317ff33-3b04-49a1-afd3-420202cddf73"
+        }
+        
++ Response 200

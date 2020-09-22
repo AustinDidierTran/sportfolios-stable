@@ -1,23 +1,18 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-import {
-  Button,
-  Card,
-  CardContent,
-  TextField,
-  CardActions,
-  Typography,
-} from '../../../components/MUI';
+import { Button, TextField } from '../../../components/MUI';
+import { Paper } from '../../../components/Custom';
 import styles from './ChangePassword.module.css';
 
-import { Store } from '../../../Store';
+import { Store, ACTION_ENUM } from '../../../Store';
 import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
-export default function ChangePassword(props) {
+export default function ChangePassword() {
   const {
     state: { authToken },
+    dispatch,
   } = useContext(Store);
   const { t } = useTranslation();
 
@@ -28,7 +23,7 @@ export default function ChangePassword(props) {
       errors.oldPassword = t('value_is_required');
     } else if (
       values.oldPassword.length < 8 ||
-      values.oldPassword.length > 16
+      values.oldPassword.length > 24
     ) {
       errors.oldPassword = t('password_length');
     }
@@ -37,7 +32,7 @@ export default function ChangePassword(props) {
       errors.newPassword = t('value_is_required');
     } else if (
       values.newPassword.length < 8 ||
-      values.newPassword.length > 16
+      values.newPassword.length > 24
     ) {
       errors.newPassword = t('password_length');
     }
@@ -47,7 +42,6 @@ export default function ChangePassword(props) {
     } else if (values.newPassword !== values.newPasswordConfirm) {
       errors.newPasswordConfirm = t('password_must_match');
     }
-
     return errors;
   };
 
@@ -60,7 +54,7 @@ export default function ChangePassword(props) {
     validate,
     validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: async values => {
+    onSubmit: async (values, { resetForm }) => {
       const { oldPassword, newPassword } = values;
       const res = await api('/api/user/changePassword', {
         method: 'POST',
@@ -71,12 +65,17 @@ export default function ChangePassword(props) {
         }),
       });
 
-      if (res.status === 402) {
+      if (res.status < 300) {
+        resetForm();
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: t('password_changed'),
+          severity: 'success',
+        });
+      } else if (res.status === 402) {
         // Token is expired, redirect
         goTo(ROUTES.login);
-      }
-
-      if (res.status === 403) {
+      } else if (res.status === 403) {
         // old password doesn't match
         formik.setFieldError('oldPassword', t('wrong_password'));
       }
@@ -84,12 +83,12 @@ export default function ChangePassword(props) {
   });
 
   return (
-    <Card className={styles.card}>
+    <Paper
+      className={styles.card}
+      childrenProps={{ className: styles.cardContent }}
+    >
       <form onSubmit={formik.handleSubmit} className={styles.form}>
-        <CardContent className={styles.inputs}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {t('change_password')}
-          </Typography>
+        <div className={styles.inputs}>
           <TextField
             formik={formik}
             namespace="oldPassword"
@@ -111,19 +110,20 @@ export default function ChangePassword(props) {
             type="password"
             fullWidth
           />
-        </CardContent>
-        <CardActions className={styles.buttons}>
+        </div>
+        <div className={styles.buttons}>
           <Button
             size="small"
             color="primary"
             variant="contained"
             className={styles.button}
             type="submit"
+            style={{ color: '#fff' }}
           >
             {t('change_password')}
           </Button>
-        </CardActions>
+        </div>
       </form>
-    </Card>
+    </Paper>
   );
 }

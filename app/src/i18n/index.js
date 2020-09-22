@@ -14,7 +14,7 @@ i18n.use(LanguageDetector).init({
   // have a common namespace used around the full app
   ns: ['translations'],
   defaultNS: 'translations',
-  keySeparator: false, // we use content as keys
+  keySeparator: '.', // we use content as keys
   interpolation: {
     escapeValue: false, // not needed for react!!
     formatSeparator: ',',
@@ -32,9 +32,5 @@ i18n.use(LanguageDetector).init({
     wait: true,
   },
 });
-
-const changeLanguage = language => {
-  i18n.changeLanguage(language);
-};
 
 export default i18n;

@@ -1,0 +1,36 @@
+.textarea {
+  flex: 1 1 auto;
+  width: calc(100% - 32px);
+  margin-top: 8px;
+  margin-bottom: 64px !important;
+  resize: none;
+  outline: none;
+  font-family: 'Helvetica';
+  font-size: 16px;
+  border-style: hidden;
+  background-color: white;
+  text-align: justify;
+  line-height: 1.5rem;
+}
+
+.paper {
+  margin: 4px 0;
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+}
+
+.noDescription {
+  margin: 4px 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+}
+
+.typo {
+  flex: 1 1 auto;
+}

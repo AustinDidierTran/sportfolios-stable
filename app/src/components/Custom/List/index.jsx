@@ -2,14 +2,8 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import {
-  List,
-  ListItem,
-  ListSubheader,
-  ListItemIcon,
-  ListItemText,
-} from '../../MUI';
-import { Icon } from '..';
+import { List, ListSubheader } from '../../MUI';
+import ItemFactory from './ItemFactory';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -22,37 +16,37 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+export { default as ItemFactory } from './ItemFactory';
+
 export default function CustomList(props) {
-  const { title, items, ref, selectedIndex } = props;
+  const { title, items, ref, rowRenderer, selectedIndex } = props;
+
   const classes = useStyles();
+
+  const defaultRowRenderer = (item, index) => {
+    const Item = ItemFactory({ type: item.type });
+
+    return <Item {...item} selected={selectedIndex === index} />;
+  };
 
   return (
     <List
       ref={ref}
-      component="nav"
+      style={{ maxWidth: 'unset' }}
       aria-labelledby="nested-list-subheader"
       subheader={
-        <ListSubheader component="div" id="nested-list-subheader">
-          {title}
-        </ListSubheader>
+        title ? (
+          <ListSubheader component="div" id="nested-list-subheader">
+            {title}
+          </ListSubheader>
+        ) : (
+          <></>
+        )
       }
       className={classes.root}
-      disablePadding={true}
+      disablePadding
     >
-      {items &&
-        items.map((item, index) => (
-          <ListItem
-            button
-            onClick={item.onClick}
-            selected={selectedIndex === index}
-            key={`${item.value}${index}`}
-          >
-            <ListItemIcon>
-              <Icon icon={item.icon} />
-            </ListItemIcon>
-            <ListItemText primary={item.value} />
-          </ListItem>
-        ))}
+      {items && items.map(rowRenderer || defaultRowRenderer)}
     </List>
   );
 }

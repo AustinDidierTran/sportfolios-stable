@@ -1,37 +1,64 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '../../components/Custom';
+import { MessageAndButtons } from '../../components/Custom';
 
-import {
-  Card,
-  CardActions,
-  CardContent,
-  Container,
-  Typography,
-} from '../../components/MUI';
-
-import styles from './ConfirmEmail.module.css';
 import { goTo, ROUTES } from '../../actions/goTo';
+import { useQuery } from '../../hooks/queries';
 
 export default function ConfirmEmailSuccess() {
   const { t } = useTranslation();
+  const { successRoute } = useQuery();
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (successRoute) {
+        goTo(successRoute);
+      } else {
+        goTo(ROUTES.home);
+      }
+    }, 5000);
+  }, []);
+
+  const successButtons = [
+    {
+      name: t('go_to_page'),
+      endIcon: 'ExitToApp',
+      onClick: () => {
+        goTo(successRoute);
+      },
+      color: 'primary',
+    },
+  ];
+
+  const buttons = [
+    {
+      name: t('home'),
+      onClick: () => {
+        goTo(ROUTES.home);
+      },
+      endIcon: 'Home',
+      color: 'primary',
+    },
+  ];
+
+  if (successRoute) {
+    return (
+      <MessageAndButtons
+        buttons={successButtons}
+        message={`${t('email_confirm_success')} ${t(
+          'redirect_to_success_route',
+        )}`}
+      />
+    );
+  }
 
   return (
-    <Container className={styles.container}>
-      <Card className={styles.card}>
-        <CardContent>
-          <Typography>{t('email_confirm_success')}</Typography>
-        </CardContent>
-        <CardActions>
-          <Button
-            endIcon="NavigateNext"
-            onClick={() => goTo(ROUTES.login)}
-          >
-            {t('go_to_login')}
-          </Button>
-        </CardActions>
-      </Card>
-    </Container>
+    <MessageAndButtons
+      buttons={buttons}
+      message={`${t('email_confirm_success')} ${t(
+        'redirect_to_home',
+      )}`}
+    />
   );
 }

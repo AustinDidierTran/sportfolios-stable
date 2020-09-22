@@ -1,0 +1,9 @@
+.bottomnavigation {
+  position: fixed;
+  width: 100vw;
+  bottom: 0;
+  border-color: white;
+  border-top-color: grey;
+  border-width: thin;
+  border-style: solid;
+}

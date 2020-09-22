@@ -28,8 +28,6 @@ export default function DataRow(props) {
   };
 
   useEffect(() => {
-    console.log('datum', datum);
-
     Object.keys(values).forEach(key =>
       values[key].changeDefault(datum[key]),
     );

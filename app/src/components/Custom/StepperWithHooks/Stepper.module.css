@@ -1,0 +1,40 @@
+.paper {
+  grid-area: stripe;
+  width: 100%;
+  padding-bottom: 16px;
+}
+
+.all {
+  display: flex;
+  flex-direction: column;
+}
+
+.stepper {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.display {
+  padding-bottom: 16px;
+  flex: 1 1 auto;
+}
+
+.content {
+  padding-bottom: 16px;
+
+  /* background-color: rgba(0, 0, 255, 0.2); */
+  flex: 1 1 auto;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  margin: 8px 0;
+}
+
+.button {
+  margin: 0 16px;
+}

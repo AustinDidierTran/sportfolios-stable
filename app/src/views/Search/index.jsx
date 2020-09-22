@@ -1,27 +1,39 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Container } from '../../components/MUI';
+import { IgContainer } from '../../components/Custom';
 
-import UserSearch from './UserSearch/index';
+import EntitySearch from './EntitySearch/index';
 
-import styles from './Search.module.css';
 import api from '../../actions/api';
+import { useQuery } from '../../hooks/queries';
+import { CircularProgress } from '@material-ui/core';
+import { formatRoute } from '../../actions/goTo';
 
 export default function Search(props) {
-  const {
-    match: {
-      params: { query },
-    },
-  } = props;
+  const { query } = useQuery();
 
-  const [users, setUsers] = useState([]);
+  const { type } = props;
 
-  const fetchSearchResults = async () => {
-    const {
-      data: { users: oUsers },
-    } = await api(`/api/data/search/global?query=${query}`);
+  const [isLoading, setIsLoading] = useState(false);
+  const [entities, setEntities] = useState([]);
+  const [timeoutRef, setTimeoutRef] = useState(null);
+  const asyncFetchResult = async () => {
+    const res = await api(
+      formatRoute('/api/data/search/global', null, { query, type }),
+    );
 
-    setUsers(oUsers);
+    setEntities(res.data.entities);
+
+    setTimeoutRef(null);
+    setIsLoading(false);
+  };
+
+  const fetchSearchResults = () => {
+    setIsLoading(true);
+    if (timeoutRef) {
+      clearTimeout(timeoutRef);
+    }
+    setTimeoutRef(setTimeout(asyncFetchResult, 1000));
   };
 
   useEffect(() => {
@@ -29,8 +41,12 @@ export default function Search(props) {
   }, [query]);
 
   return (
-    <Container className={styles.container}>
-      <UserSearch query={query} users={users} />
-    </Container>
+    <IgContainer>
+      {isLoading ? (
+        <CircularProgress />
+      ) : (
+        <EntitySearch query={query} entities={entities} />
+      )}
+    </IgContainer>
   );
 }

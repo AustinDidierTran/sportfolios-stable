@@ -1,0 +1,21 @@
+.tag {
+  border-radius: 1em;
+  display: flex;
+  flex-direction: row;
+  color: white;
+  align-content: center;
+  width: min-content;
+  flex: 1 1 auto;
+  align-self: center;
+  border: 2px solid white;
+}
+
+.name {
+  flex: 1 1 auto;
+  justify-self: center;
+  padding: 0 8px;
+}
+
+.icon {
+  flex: 1 1 auto;
+}

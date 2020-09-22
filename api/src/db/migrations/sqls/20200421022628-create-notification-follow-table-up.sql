@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 CREATE TABLE notification_follow (
   user_id UUID REFERENCES users(id),
   follower UUID REFERENCES users(id),

@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { Container } from '../../components/MUI';
+import { MessageAndButtons } from '../../components/Custom';
 import styles from './ConfirmationEmailSent.module.css';
+import { goTo, ROUTES } from '../../actions/goTo';
 
 export default function ConfirmationEmailSent(props) {
   const {
@@ -9,15 +11,27 @@ export default function ConfirmationEmailSent(props) {
       params: { email },
     },
   } = props;
+  const { t } = useTranslation();
+
+  const goToLogin = () => {
+    goTo(ROUTES.login);
+  };
+
+  const buttons = [
+    {
+      name: t('go_back_to_login'),
+      onClick: goToLogin,
+      endIcon: 'Undo',
+      color: 'primary',
+    },
+  ];
 
   return (
     <div className={styles.main}>
-      <Container>
-        <p>
-          An email has just been sent to {email}. Please, go look at
-          your inbox to confirm your email.
-        </p>
-      </Container>
+      <MessageAndButtons
+        buttons={buttons}
+        message={t('email_confirmed', { email })}
+      />
     </div>
   );
 }

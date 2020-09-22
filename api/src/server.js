@@ -6,20 +6,15 @@ const cors = require('@koa/cors');
 const { CLIENT_BASE_URL } = require('../../conf');
 
 // Middlewares
+const getUserInfo = require('./server/middleware/user-info');
 const checkAuth = require('./server/middleware/check-auth');
 const adminOnly = require('./server/middleware/admin-only');
+const errorHandler = require('./server/middleware/error-handler');
 
-// Unprotected routes
-const associationRoutes = require('./server/routes/associations');
-const dataRoutes = require('./server/routes/data');
-const authRoutes = require('./server/routes/auth');
-const followerRoutes = require('./server/routes/followers');
-const notificationRoutes = require('./server/routes/notifications');
-const profileRoutes = require('./server/routes/profile');
-const userRoutes = require('./server/routes/users');
-const mainRoutes = require('./server/routes/main');
-
-// Admin routes
+const publicRoutes = require('./server/routes/public');
+const testRoutes = require('./server/routes/test');
+const privateRoutes = require('./server/routes/private');
+const protectedRoutes = require('./server/routes/protected');
 const adminRoutes = require('./server/routes/admin');
 
 const app = new Koa();
@@ -29,27 +24,31 @@ const corsOptions = {
   origin: CLIENT_BASE_URL,
 };
 
+app.use(errorHandler);
 app.use(cors(corsOptions));
 app.use(bodyParser());
+app.use(getUserInfo);
 
 // public routes
-app.use(authRoutes.routes());
+publicRoutes.forEach(route => app.use(route.routes()));
+
+if (process.env.NODE_ENV === 'development') {
+  testRoutes.forEach(route => app.use(route.routes()));
+}
 
 // private routes
 app.use(checkAuth);
-app.use(associationRoutes.routes());
-app.use(dataRoutes.routes());
-app.use(followerRoutes.routes());
-app.use(mainRoutes.routes());
-app.use(notificationRoutes.routes());
-app.use(profileRoutes.routes());
-app.use(userRoutes.routes());
+privateRoutes.forEach(route => app.use(route.routes()));
+
+// TODO: Protect these routes
+protectedRoutes.forEach(route => app.use(route.routes()));
 
 // admin routes
 app.use(adminOnly);
-app.use(adminRoutes.routes());
+adminRoutes.forEach(route => app.use(route.routes()));
 
 const server = app.listen(PORT, () => {
+  /* eslint-disable-next-line */
   console.log(`Server listening on port: ${PORT}`);
 });
 

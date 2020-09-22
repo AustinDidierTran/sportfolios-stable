@@ -1,19 +1,19 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect } from 'react';
 
-import styles from './Main.module.css';
-
-import { Card, CardContent, Container } from '../../components/MUI';
-
-import { useAllMainInformations } from '../../actions/api/helpers';
-
-import FollowingUsersCard from './FollowingUsersCard/index';
+import General from './General';
+import { IgContainer } from '../../components/Custom';
+import { formatPageTitle } from '../../utils/stringFormats';
+import { useTranslation } from 'react-i18next';
 
 export default function Main() {
-  const { users } = useAllMainInformations();
+  const { t } = useTranslation();
+  useEffect(() => {
+    document.title = formatPageTitle(t('home'));
+  }, []);
 
   return (
-    <Container className={styles.container}>
-      <FollowingUsersCard users={users} />
-    </Container>
+    <IgContainer>
+      <General />
+    </IgContainer>
   );
 }

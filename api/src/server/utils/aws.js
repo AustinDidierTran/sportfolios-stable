@@ -1,12 +1,9 @@
-const awsv4 = require('aws-signature-v4');
-
 const aws = require('aws-sdk');
-
-let keys;
 
 try {
   keys = require('./keys/aws-keys.json');
 } catch (e) {
+  /* eslint-disable-next-line */
   console.log(
     `There is an error, keys are probably simply not configured: ${e}`,
   );
