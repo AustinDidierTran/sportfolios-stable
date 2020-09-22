@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { FormDialog } from '../../../components/Custom';
+import { FormDialog } from '../../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
-import { ERROR_ENUM } from '../../../../../common/errors';
-import api from '../../../actions/api';
-import { Store, ACTION_ENUM } from '../../../Store';
+import { ERROR_ENUM } from '../../../../../../common/errors';
+import api from '../../../../actions/api';
+import { Store, ACTION_ENUM } from '../../../../Store';
 import {
   SEVERITY_ENUM,
   STATUS_ENUM,
-} from '../../../../../common/enums';
+} from '../../../../../../common/enums';
 import { useParams } from 'react-router-dom';
 
-export default function AddTeam(props) {
+export default function AddField(props) {
   const { t } = useTranslation();
   const { isOpen, onClose } = props;
   const { dispatch } = useContext(Store);
@@ -30,30 +30,30 @@ export default function AddTeam(props) {
   };
 
   const validate = values => {
-    const { name } = values;
+    const { field } = values;
     const errors = {};
-    if (!name.length) {
-      errors.name = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    if (!field.length) {
+      errors.field = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
-    if (name.length > 64) {
-      formik.setFieldValue('name', name.slice(0, 64));
+    if (field.length > 64) {
+      formik.setFieldValue('field', field.slice(0, 64));
     }
     return errors;
   };
 
   const formik = useFormik({
     initialValues: {
-      name: '',
+      field: '',
     },
     validate,
     validateOnChange: true,
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
-      const { name } = values;
-      const res = await api('/api/entity/addTeamToSchedule', {
+      const { field } = values;
+      const res = await api('/api/entity/field', {
         method: 'POST',
         body: JSON.stringify({
-          name,
+          field,
           eventId,
         }),
       });
@@ -69,7 +69,7 @@ export default function AddTeam(props) {
       } else {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
-          message: t('team_added'),
+          message: t('field_added'),
           severity: SEVERITY_ENUM.SUCCESS,
           duration: 2000,
         });
@@ -92,17 +92,17 @@ export default function AddTeam(props) {
 
   const fields = [
     {
-      namespace: 'name',
-      id: 'name',
+      namespace: 'field',
+      id: 'field',
       type: 'text',
-      label: t('name'),
+      label: t('field'),
     },
   ];
 
   return (
     <FormDialog
       open={open}
-      title={t('add_team')}
+      title={t('add_field')}
       buttons={buttons}
       fields={fields}
       formik={formik}

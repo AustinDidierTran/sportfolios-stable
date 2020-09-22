@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 
-import { Select } from '../../../../components/Custom';
+import { Select } from '../../../../../components/Custom';
 import styles from './TimeSlotSelect.module.css';
 import { useTranslation } from 'react-i18next';
-import api from '../../../../actions/api';
-import { formatRoute } from '../../../../actions/goTo';
+import api from '../../../../../actions/api';
+import { formatRoute } from '../../../../../actions/goTo';
 import { useParams } from 'react-router-dom';
-import { SELECT_ENUM } from '../../../../../../common/enums';
-import { formatDate } from '../../../../utils/stringFormats';
+import { SELECT_ENUM } from '../../../../../../../common/enums';
+import { formatDate } from '../../../../../utils/stringFormats';
 import moment from 'moment';
 
 export default function TimeSlotSelect(props) {
@@ -45,7 +45,7 @@ export default function TimeSlotSelect(props) {
         label={t('time_slot')}
         fullWidth
         onChange={onChange}
-        defaultValue={timeSlot}
+        value={timeSlot}
       />
     </div>
   );
