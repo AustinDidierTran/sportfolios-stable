@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
-import { Select } from '../../../../components/Custom';
+import { Select } from '../../../../../components/Custom';
 import styles from './FieldSelect.module.css';
 import { useTranslation } from 'react-i18next';
-import api from '../../../../actions/api';
-import { formatRoute } from '../../../../actions/goTo';
+import api from '../../../../../actions/api';
+import { formatRoute } from '../../../../../actions/goTo';
 import { useParams } from 'react-router-dom';
-import { SELECT_ENUM } from '../../../../../../common/enums';
+import { SELECT_ENUM } from '../../../../../../../common/enums';
 
 export default function FieldSelect(props) {
   const { onChange, field } = props;
@@ -43,7 +43,7 @@ export default function FieldSelect(props) {
         label={t('field')}
         fullWidth
         onChange={onChange}
-        defaultValue={field}
+        value={field}
       />
     </div>
   );

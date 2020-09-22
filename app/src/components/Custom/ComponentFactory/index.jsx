@@ -12,7 +12,7 @@ export default function ComponentFactory(props) {
         formik={component.formik}
         namespace={component.namespace}
         label={component.label}
-        defaultValue={component.defaultValue}
+        value={component.defaultValue}
         style={component.style}
       />
     );

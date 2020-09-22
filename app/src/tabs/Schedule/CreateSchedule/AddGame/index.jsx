@@ -1,53 +1,66 @@
-import React, { useState, useEffect } from 'react';
-
-import { FormDialog } from '../../../../../components/Custom';
+import React, { useState, useEffect, useContext } from 'react';
+import { FormDialog } from '../../../../components/Custom';
 import { useTranslation } from 'react-i18next';
-import api from '../../../../../actions/api';
-import {
-  STATUS_ENUM,
-  SEVERITY_ENUM,
-  COMPONENT_TYPE_ENUM,
-} from '../../../../../../../common/enums';
 import { useFormik } from 'formik';
-import { ERROR_ENUM } from '../../../../../../../common/errors';
-import { useContext } from 'react';
-import { Store, ACTION_ENUM } from '../../../../../Store';
-import { getGameOptions } from '../../../ScheduleFunctions';
+
+import { ERROR_ENUM } from '../../../../../../common/errors';
+import api from '../../../../actions/api';
+import { Store, ACTION_ENUM } from '../../../../Store';
+import {
+  SEVERITY_ENUM,
+  STATUS_ENUM,
+  COMPONENT_TYPE_ENUM,
+} from '../../../../../../common/enums';
 import { useParams } from 'react-router-dom';
+import { getGameOptions } from '../../ScheduleFunctions';
 import validator from 'validator';
 
-export default function EditGame(props) {
-  const { game, update, open, onClose } = props;
+export default function AddGame(props) {
   const { t } = useTranslation();
+  const { isOpen, onClose, update } = props;
   const { dispatch } = useContext(Store);
   const { id: eventId } = useParams();
 
-  const [edit, setEdit] = useState(open);
+  const [open, setOpen] = useState(isOpen);
   const [gameOptions, setGameOptions] = useState({});
 
   const getOptions = async () => {
-    const res = await getGameOptions(eventId, t);
+    const res = await getGameOptions(eventId, { withoutAll: true });
     setGameOptions(res);
   };
 
   useEffect(() => {
     getOptions();
-  }, [edit]);
-
-  useEffect(() => {
-    setEdit(open);
   }, [open]);
 
   useEffect(() => {
-    formik.setFieldValue('phase', game.phase_id);
-    formik.setFieldValue('field', game.field);
-    formik.setFieldValue('time', game.start_time);
-    formik.setFieldValue('team1', game.teams[0].name);
-    formik.setFieldValue('team2', game.teams[1].name);
-  }, [game]);
+    setOpen(isOpen);
+  }, [isOpen]);
 
-  const closeEdit = () => {
+  const onFinish = () => {
+    formik.resetForm();
     onClose();
+  };
+
+  const validate = values => {
+    const { phase, field, time, team1, team2 } = values;
+    const errors = {};
+    if (!time.length) {
+      errors.time = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!phase.length) {
+      errors.phase = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!field.length) {
+      errors.field = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!team1.length) {
+      errors.team1 = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!team2.length) {
+      errors.team2 = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    return errors;
   };
 
   const formik = useFormik({
@@ -58,6 +71,7 @@ export default function EditGame(props) {
       team1: '',
       team2: '',
     },
+    validate,
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
@@ -78,9 +92,9 @@ export default function EditGame(props) {
         name2 = team2;
       }
       const res = await api('/api/entity/game', {
-        method: 'PUT',
+        method: 'POST',
         body: JSON.stringify({
-          gameId: game.id,
+          eventId,
           phaseId: phase,
           field,
           time: realTime,
@@ -88,8 +102,6 @@ export default function EditGame(props) {
           rosterId2,
           name1,
           name2,
-          teamId1: game.teams[0].id,
-          teamId2: game.teams[1].id,
         }),
       });
       if (res.status === STATUS_ENUM.ERROR) {
@@ -100,21 +112,26 @@ export default function EditGame(props) {
           duration: 4000,
         });
       } else {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: t('game_added'),
+          severity: SEVERITY_ENUM.SUCCESS,
+          duration: 2000,
+        });
         update();
-        onClose();
       }
     },
   });
 
   const buttons = [
     {
-      onClick: closeEdit,
-      name: t('cancel'),
-      color: 'secondary',
+      onClick: onFinish,
+      name: t('finish'),
+      color: 'grey',
     },
     {
       type: 'submit',
-      name: t('done'),
+      name: t('add'),
       color: 'primary',
     },
   ];
@@ -153,15 +170,13 @@ export default function EditGame(props) {
   ];
 
   return (
-    <>
-      <FormDialog
-        open={edit}
-        onClose={closeEdit}
-        title={t('edit_game')}
-        fields={fields}
-        formik={formik}
-        buttons={buttons}
-      ></FormDialog>
-    </>
+    <FormDialog
+      open={open}
+      title={t('create_a_game')}
+      buttons={buttons}
+      fields={fields}
+      formik={formik}
+      onClose={onClose}
+    />
   );
 }

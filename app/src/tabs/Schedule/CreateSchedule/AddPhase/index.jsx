@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { FormDialog } from '../../../components/Custom';
+import { FormDialog } from '../../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
-import { ERROR_ENUM } from '../../../../../common/errors';
-import api from '../../../actions/api';
-import { Store, ACTION_ENUM } from '../../../Store';
+import { ERROR_ENUM } from '../../../../../../common/errors';
+import api from '../../../../actions/api';
+import { Store, ACTION_ENUM } from '../../../../Store';
 import {
   SEVERITY_ENUM,
   STATUS_ENUM,
-} from '../../../../../common/enums';
+} from '../../../../../../common/enums';
 import { useParams } from 'react-router-dom';
 
 export default function AddPhase(props) {

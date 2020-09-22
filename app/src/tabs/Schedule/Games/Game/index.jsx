@@ -7,12 +7,12 @@ import {
   CARD_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,
 } from '../../../../../../common/enums';
-import EditGame from './EditGame';
+import EditGameDialog from './EditGameDialog';
 import { formatRoute } from '../../../../actions/goTo';
 import SubmitScoreDialog from '../../SubmitScore/SubmitScoreDialog';
-import EnterScoreAndSpirit from './EnterScoreAndSpirit';
+import EnterScoreAndSpirit from '../ChangeGame/EnterScoreAndSpirit';
 
-export default function ChangeGame(props) {
+export default function Game(props) {
   const { game, update, role } = props;
   const { t } = useTranslation();
 
@@ -87,7 +87,7 @@ export default function ChangeGame(props) {
           update={update}
           game={game}
         />
-        <EditGame
+        <EditGameDialog
           open={edit}
           onClose={closeEdit}
           game={game}

@@ -1,19 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { FormDialog } from '../../../components/Custom';
+import { FormDialog } from '../../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
-import { ERROR_ENUM } from '../../../../../common/errors';
-import api from '../../../actions/api';
-import { Store, ACTION_ENUM } from '../../../Store';
+import { ERROR_ENUM } from '../../../../../../common/errors';
+import api from '../../../../actions/api';
+import { Store, ACTION_ENUM } from '../../../../Store';
 import {
   SEVERITY_ENUM,
   STATUS_ENUM,
-} from '../../../../../common/enums';
+} from '../../../../../../common/enums';
 import { useParams } from 'react-router-dom';
-import moment from 'moment';
 
-export default function AddTimeSlot(props) {
+export default function AddTeam(props) {
   const { t } = useTranslation();
   const { isOpen, onClose } = props;
   const { dispatch } = useContext(Store);
@@ -31,35 +30,35 @@ export default function AddTimeSlot(props) {
   };
 
   const validate = values => {
-    const { date, time } = values;
+    const { name } = values;
     const errors = {};
-    if (!time.length) {
-      errors.time = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    if (!name.length) {
+      errors.name = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
-    if (!date.length) {
-      errors.date = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    if (name.length > 64) {
+      formik.setFieldValue('name', name.slice(0, 64));
     }
     return errors;
   };
 
   const formik = useFormik({
     initialValues: {
-      time: '09:00',
-      date: moment().format('YYYY-MM-DD'),
+      name: '',
     },
     validate,
-    validateOnChange: false,
+    validateOnChange: true,
     validateOnBlur: false,
-    onSubmit: async values => {
-      const { date, time } = values;
-      const realDate = new Date(`${date} ${time}`).getTime();
-      const res = await api('/api/entity/timeSlots', {
+    onSubmit: async (values, { resetForm }) => {
+      const { name } = values;
+      const res = await api('/api/entity/addTeamToSchedule', {
         method: 'POST',
         body: JSON.stringify({
-          date: realDate,
+          name,
           eventId,
         }),
       });
+
+      resetForm();
       if (res.status === STATUS_ENUM.ERROR) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
@@ -70,7 +69,7 @@ export default function AddTimeSlot(props) {
       } else {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
-          message: t('time_slot_added'),
+          message: t('team_added'),
           severity: SEVERITY_ENUM.SUCCESS,
           duration: 2000,
         });
@@ -93,20 +92,17 @@ export default function AddTimeSlot(props) {
 
   const fields = [
     {
-      namespace: 'date',
-      id: 'date',
-      type: 'date',
-    },
-    {
-      namespace: 'time',
-      id: 'time',
-      type: 'time',
+      namespace: 'name',
+      id: 'name',
+      type: 'text',
+      label: t('name'),
     },
   ];
+
   return (
     <FormDialog
       open={open}
-      title={t('add_time_slot')}
+      title={t('add_team')}
       buttons={buttons}
       fields={fields}
       formik={formik}
