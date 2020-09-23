@@ -1,15 +1,17 @@
-import About from './About';
-import Cart from './Cart';
-import EventInfo from './EventInfo';
-import Events from './Events';
-import General from './General';
-import Settings from './Settings';
-import Purchases from './Purchases';
-import Shop from './Shop';
-import Rosters from './Rosters';
-import Schedule from './Schedule';
+import loadable from '@loadable/component';
 import { useTranslation } from 'react-i18next';
 import { ENTITIES_ROLE_ENUM } from '../Store';
+
+const About = loadable(() => import('./About'));
+const Cart = loadable(() => import('./Cart'));
+const EventInfo = loadable(() => import('./EventInfo'));
+const Events = loadable(() => import('./Events'));
+const General = loadable(() => import('./General'));
+const Settings = loadable(() => import('./Settings'));
+const Purchases = loadable(() => import('./Purchases'));
+const Shop = loadable(() => import('./Shop'));
+const Rosters = loadable(() => import('./Rosters'));
+const Schedule = loadable(() => import('./Schedule'));
 
 export const TABS_ENUM = {
   ABOUT: 'about',

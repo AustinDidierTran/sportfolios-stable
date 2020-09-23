@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import theme from './theme';
 import { ThemeProvider } from '@material-ui/core/styles';
-
+import loadable from '@loadable/component';
 import { Router, Switch, Route } from 'react-router-dom';
 
 import {
@@ -9,35 +9,61 @@ import {
   OptimizelyProvider,
 } from '@optimizely/react-sdk';
 
-import AddPaymentMethod from '../AddPaymentMethod';
-import AdminPanel from '../AdminPanel';
-import ConfirmationEmailSent from '../ConfirmationEmailSent';
-import ConfirmEmail from '../ConfirmEmail';
-import Entity from '../Entity';
-import EntityCreate from '../../components/Custom/EntityCreate';
-import EntityNotFound from '../Entity/EntityNotFound';
-import EventRegistration from '../EventRegistration';
-import ConfirmEmailFailure from '../ConfirmEmail/ConfirmEmailFailure';
-import ConfirmEmailSuccess from '../ConfirmEmail/ConfirmEmailSuccess';
-import Header from '../Header';
-import Login from '../Login';
-import Main from '../Main';
-import Memberships from '../Memberships';
-import Menu from '../Menu';
-import Notifications from '../../views/Notifications';
-import OrderProcessed from '../OrderProcessed';
-import OrganizationList from '../Main/OrganizationList';
-import PasswordRecovery from '../PasswordRecovery';
-import ProductAddedToCart from '../ProductAddedToCart';
-import RegistrationStatus from '../RegistrationStatus';
-import ScheduleManager from '../ScheduleManager';
-import Search from '../Search';
-import Stripe from '../../utils/stripe/Payment/index';
-import UserSettings from '../UserSettings';
-import Cart from '../Cart';
-import Checkout from '../Checkout';
-import Sales from '../Sales';
-import ShopDetails from '../ShopDetails';
+const Login = loadable(() => import('../Login'));
+const AddPaymentMethod = loadable(() =>
+  import('../AddPaymentMethod'),
+);
+const AdminPanel = loadable(() => import('../AdminPanel'));
+const ConfirmationEmailSent = loadable(() =>
+  import('../ConfirmationEmailSent'),
+);
+const ConfirmEmail = loadable(() => import('../ConfirmEmail'));
+const Entity = loadable(() => import('../Entity'));
+const EntityCreate = loadable(() =>
+  import('../../components/Custom/EntityCreate'),
+);
+const EntityNotFound = loadable(() =>
+  import('../Entity/EntityNotFound'),
+);
+const EventRegistration = loadable(() =>
+  import('../EventRegistration'),
+);
+const ConfirmEmailFailure = loadable(() =>
+  import('../ConfirmEmail/ConfirmEmailFailure'),
+);
+const ConfirmEmailSuccess = loadable(() =>
+  import('../ConfirmEmail/ConfirmEmailSuccess'),
+);
+const Header = loadable(() => import('../Header'));
+const Main = loadable(() => import('../Main'));
+const Memberships = loadable(() => import('../Memberships'));
+const Menu = loadable(() => import('../Menu'));
+const Notifications = loadable(() =>
+  import('../../views/Notifications'),
+);
+const OrderProcessed = loadable(() => import('../OrderProcessed'));
+const OrganizationList = loadable(() =>
+  import('../Main/OrganizationList'),
+);
+const PasswordRecovery = loadable(() =>
+  import('../PasswordRecovery'),
+);
+const ProductAddedToCart = loadable(() =>
+  import('../ProductAddedToCart'),
+);
+const RegistrationStatus = loadable(() =>
+  import('../RegistrationStatus'),
+);
+const ScheduleManager = loadable(() => import('../ScheduleManager'));
+const Search = loadable(() => import('../Search'));
+const Stripe = loadable(() =>
+  import('../../utils/stripe/Payment/index'),
+);
+const UserSettings = loadable(() => import('../UserSettings'));
+const Cart = loadable(() => import('../Cart'));
+const Checkout = loadable(() => import('../Checkout'));
+const Sales = loadable(() => import('../Sales'));
+const ShopDetails = loadable(() => import('../ShopDetails'));
 
 import {
   AddGaPageView,
