@@ -210,6 +210,7 @@ export default function SubmitScoreSpiritForm(props) {
             fullRoster.filter(full => roster.includes(full.display)),
           ),
           comments,
+          suggestedBy,
         }),
       });
 

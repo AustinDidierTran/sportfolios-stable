@@ -465,7 +465,7 @@ async function addScoreAndSpirit(body) {
   return res;
 }
 
-async function addScoreSuggestion(body) {
+async function addScoreSuggestion(body, userId) {
   const {
     eventId,
     startTime,
@@ -478,7 +478,13 @@ async function addScoreSuggestion(body) {
     opposingTeamSpirit,
     players,
     comments,
+    suggestedBy,
   } = body;
+
+  if (!isAllowed(suggestedBy, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
   const res = await addScoreSuggestionHelper(
     eventId,
     startTime,
@@ -491,6 +497,7 @@ async function addScoreSuggestion(body) {
     opposingTeamSpirit,
     players,
     comments,
+    suggestedBy,
   );
   return res;
 }

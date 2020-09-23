@@ -232,6 +232,7 @@ export default function SubmitScoreDialog(props) {
             fullRoster.filter(full => roster.includes(full.display)),
           ),
           comments,
+          suggestedBy,
         }),
       });
 

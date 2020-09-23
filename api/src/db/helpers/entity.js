@@ -1172,6 +1172,7 @@ async function addScoreSuggestion(
   opposingTeamSpirit,
   players,
   comments,
+  suggestedBy,
 ) {
   let yourName = yourTeamName;
   if (yourTeamId) {
@@ -1196,6 +1197,7 @@ async function addScoreSuggestion(
       opposing_team_spirit: opposingTeamSpirit,
       players,
       comments,
+      suggestedBy,
     })
     .returning('*');
   return res;
