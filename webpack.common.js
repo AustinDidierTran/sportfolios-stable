@@ -3,7 +3,6 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 
@@ -14,7 +13,7 @@ module.exports = {
     writeToDisk: true,
   },
   entry: {
-    app: path.resolve(ROOT_PATH, 'app/src/index.jsx'),
+    app: path.resolve(ROOT_PATH, 'app/src/index.tsx'),
   },
   module: {
     rules: [
@@ -22,6 +21,11 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loaders: ['babel-loader'],
+      },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
       },
       {
         test: /\.module\.(sc|sa|c)ss$/i,
@@ -48,7 +52,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.js', '.jsx', 'tsx'],
+    extensions: ['.js', '.jsx', '.tsx'],
   },
   plugins: [
     new CleanWebpackPlugin(),
