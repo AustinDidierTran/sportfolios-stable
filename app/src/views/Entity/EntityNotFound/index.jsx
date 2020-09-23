@@ -29,8 +29,11 @@ export default function EntityNotFound() {
       <IgContainer>
         <Paper className={styles.card}>
           <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
-              {t('entity_not_found')}
+            <Typography variant="h1" component="h2">
+              404
+            </Typography>
+            <Typography gutterBottom variant="h3" component="h2">
+              {t('page_not_found')}
             </Typography>
           </CardContent>
           <CardActions className={styles.buttons}>

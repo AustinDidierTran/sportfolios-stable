@@ -29,7 +29,7 @@ export default function PasswordRecovery() {
       errors.password = t('value_is_required');
     } else if (
       values.password.length < 8 ||
-      values.password.length > 16
+      values.password.length > 24
     ) {
       errors.password = t('password_length');
     }

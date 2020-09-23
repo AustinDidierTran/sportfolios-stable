@@ -5,10 +5,11 @@ import { useTranslation } from 'react-i18next';
 import styles from './Events.module.css';
 import { goTo, ROUTES, formatRoute } from '../../actions/goTo';
 import {
+  CARD_TYPE_ENUM,
   GLOBAL_ENUM,
   ENTITIES_ROLE_ENUM,
 } from '../../../../common/enums';
-import UpcomingEvents from '../../views/Main/General/UpcomingEvents';
+import Card from '../../components/Custom/Card';
 import api from '../../actions/api';
 import { useParams } from 'react-router-dom';
 
@@ -48,7 +49,10 @@ export default function Events(props) {
       <div className={styles.div}>
         <div className={styles.general}>
           {events.map(e => (
-            <UpcomingEvents eventId={e.id} />
+            <Card
+              type={CARD_TYPE_ENUM.EVENT}
+              items={{ eventId: e.id }}
+            />
           ))}
         </div>
       </div>
@@ -64,7 +68,10 @@ export default function Events(props) {
 
       <div className={styles.general}>
         {events.map(e => (
-          <UpcomingEvents eventId={e.id} />
+          <Card
+            type={CARD_TYPE_ENUM.EVENT}
+            items={{ eventId: e.id }}
+          />
         ))}
       </div>
     </div>

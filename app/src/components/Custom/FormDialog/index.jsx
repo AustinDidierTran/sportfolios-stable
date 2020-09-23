@@ -5,10 +5,17 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { TextField } from '../../MUI';
-import { Select } from '../../Custom';
+import FormDialogFactory from './FormDialogFactory';
+import { ComponentFactory } from '../../Custom';
+
+export { default as FormDialogFactory } from './FormDialogFactory';
 
 export default function CustomFormDialog(props) {
+  const { items, type } = props;
+  if (type) {
+    const FormDialog = FormDialogFactory({ type });
+    return <FormDialog {...items} />;
+  }
   const {
     open,
     title,
@@ -18,7 +25,6 @@ export default function CustomFormDialog(props) {
     formik,
     onClose,
   } = props;
-
   return (
     <Dialog
       open={open}
@@ -31,34 +37,15 @@ export default function CustomFormDialog(props) {
       <form onSubmit={formik.handleSubmit}>
         <div>
           <DialogContent>
-            <DialogContentText>{description}</DialogContentText>
+            {description ? (
+              <DialogContentText>{description}</DialogContentText>
+            ) : (
+              <></>
+            )}
             {fields.map(field => (
-              <>
-                {field.isSelect ? (
-                  <Select
-                    options={field.options}
-                    formik={formik}
-                    namespace={field.namespace}
-                    autoFocus
-                    margin="dense"
-                    label={field.label}
-                    fullWidth
-                    defaultValue={field.defaultValue}
-                  />
-                ) : (
-                  <TextField
-                    formik={formik}
-                    namespace={field.namespace}
-                    autoFocus
-                    margin="dense"
-                    id={field.id}
-                    label={field.label}
-                    type={field.type}
-                    fullWidth
-                    defaultValue={field.defaultValue}
-                  />
-                )}
-              </>
+              <div style={{ marginTop: '8px' }}>
+                <ComponentFactory component={{ ...field, formik }} />
+              </div>
             ))}
           </DialogContent>
           <DialogActions>

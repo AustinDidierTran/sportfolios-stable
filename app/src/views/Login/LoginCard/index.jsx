@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import styles from './LoginCard.module.css';
 import {
@@ -11,7 +10,8 @@ import {
   Typography,
 } from '../../../components/MUI';
 import { Paper } from '../../../components/Custom';
-import { ROUTES } from '../../../actions/goTo';
+import { LOGIN_STATE_ENUM } from '../../../../../common/enums';
+import { AddGaEvent } from '../../../components/Custom/Analytics';
 
 export default function LoginCard(props) {
   const { t } = useTranslation();
@@ -44,24 +44,35 @@ export default function LoginCard(props) {
             className={styles.button}
             type="submit"
             style={{ color: '#fff' }}
+            onClick={() =>
+              AddGaEvent({
+                category: 'Login',
+                action: 'User clicked to log in',
+                label: 'Login_page',
+              })
+            }
           >
             {t('login')}
           </Button>
         </CardActions>
         <Divider />
         <CardActions className={styles.linksContainer}>
-          <Link
+          <Typography
             style={{
+              fontSize: 12,
               textDecoration: 'none',
               color: 'grey',
               margin: '0 auto',
+              cursor: 'pointer',
             }}
-            to={ROUTES.forgotPassword}
+            onClick={() =>
+              formik.setStatus({
+                state: LOGIN_STATE_ENUM.FORGOT_PASSWORD,
+              })
+            }
           >
-            <Typography style={{ fontSize: 12 }}>
-              {t('forgot_password')}
-            </Typography>
-          </Link>
+            {t('forgot_password')}
+          </Typography>
         </CardActions>
       </form>
     </Paper>

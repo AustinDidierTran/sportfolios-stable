@@ -16,6 +16,14 @@ const SIZES_ENUM = {
   XXXL: '3x-large',
 };
 
+const COMPONENT_TYPE_ENUM = {
+  SELECT: 'select',
+  TEXTFIELD: 'textfield',
+  MULTISELECT: 'multiselect',
+  BUTTON: 'button',
+  CHECKBOX: 'checkbox',
+};
+
 const ROSTER_ROLE_ENUM = {
   CAPTAIN: 'captain',
   PLAYER: 'player',
@@ -61,6 +69,12 @@ const CARD_TYPE_ENUM = {
   ADD_PAYMENT_OPTION: 'add payment option',
   EVENT_PAYMENT_OPTION: 'event payment option',
   EVENT_SETTINGS: 'event settings',
+  EVENT: 'event',
+};
+
+const FORM_DIALOG_TYPE_ENUM = {
+  SUBMIT_SCORE: 'score',
+  SUBMIT_SCORE_AND_SPIRIT: 'score and spirit',
 };
 
 const LANGUAGE_ENUM = {
@@ -116,6 +130,21 @@ const SEVERITY_ENUM = {
 const STATUS_ENUM = {
   SUCCESS: 201,
   ERROR: 404,
+};
+
+const SPIRIT_CATEGORY_ENUM = {
+  RULES_KNOWLEDGE_AND_USE: 'rules_knowledge_and_use',
+  FOULS_AND_BODY_CONTACT: 'fouls_and_body_contact',
+  FAIR_MINDEDNESS: 'fair_mindedness',
+  POSITIVE_ATTITUDE_AND_SELF_CONTROL:
+    'positive_attitude_and_self_control',
+  COMMUNICATION: 'communication',
+};
+
+const LOGIN_STATE_ENUM = {
+  LOGIN: 'login',
+  SIGNUP: 'signup',
+  FORGOT_PASSWORD: 'forgotPassword',
 };
 
 // Everything excluding roles
@@ -196,27 +225,31 @@ const LOGO_ENUM = {
 };
 
 module.exports = {
-  STATUS_ENUM,
-  REJECTION_ENUM,
-  SIZES_ENUM,
-  REGISTRATION_STATUS_ENUM,
   CARD_TYPE_ENUM,
+  COMPONENT_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
+  IMAGE_ENUM,
   INVOICE_STATUS_ENUM,
+  LANGUAGE_ENUM,
   LIST_ROW_TYPE_ENUM,
   LOGGER_ENUM,
+  LOGIN_STATE_ENUM,
+  LOGO_ENUM,
   MEMBERSHIP_LENGTH_ENUM,
   MEMBERSHIP_TYPE_ENUM,
-  LOGO_ENUM,
+  POSITION_ENUM,
+  REGISTRATION_STATUS_ENUM,
+  REJECTION_ENUM,
+  ROSTER_ROLE_ENUM,
   SELECT_ENUM,
+  SEVERITY_ENUM,
+  SIZES_ENUM,
+  SPIRIT_CATEGORY_ENUM,
+  STATUS_ENUM,
   STRIPE_ERROR_ENUM,
   STRIPE_STATUS_ENUM,
-  VIEW_ENUM,
   TAG_TYPE_ENUM,
-  ROSTER_ROLE_ENUM,
-  POSITION_ENUM,
-  SEVERITY_ENUM,
-  IMAGE_ENUM,
-  LANGUAGE_ENUM,
+  VIEW_ENUM,
+  FORM_DIALOG_TYPE_ENUM,
 };

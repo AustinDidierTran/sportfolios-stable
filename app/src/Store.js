@@ -48,6 +48,8 @@ const initialState = {
       localUserInfo !== 'null' &&
       JSON.parse(localUserInfo)) ||
     {},
+  activeGaPageviews: [],
+  activeGaEvents: [],
 };
 
 export const ACTION_ENUM = {
@@ -62,6 +64,8 @@ export const ACTION_ENUM = {
     'update_organization_profile_picture',
   UPDATE_USER_INFO: 'update_user_info',
   WINDOW_RESIZE: 'window_resize',
+  SET_GA_PAGEVIEWS: 'set_ga_pageviews',
+  SET_GA_EVENTS: 'set_ga_events',
 };
 
 export const ENTITIES_ROLE_ENUM = {
@@ -86,7 +90,11 @@ function reducer(state, action) {
       localStorage.removeItem('authToken');
       localStorage.removeItem('userInfo');
       goTo(ROUTES.login);
-      return { ...state, authToken: null, userInfo: {} };
+      return {
+        ...state,
+        authToken: null,
+        userInfo: {},
+      };
     }
     case ACTION_ENUM.UPDATE_PROFILE_PICTURE: {
       const newUserInfo = {
@@ -110,7 +118,11 @@ function reducer(state, action) {
     case ACTION_ENUM.CLEAR_USER_INFO: {
       localStorage.removeItem('authToken');
       localStorage.removeItem('userInfo');
-      return { ...state, authToken: null, userInfo: {} };
+      return {
+        ...state,
+        authToken: null,
+        userInfo: {},
+      };
     }
     case ACTION_ENUM.SNACK_BAR: {
       return {
@@ -139,6 +151,20 @@ function reducer(state, action) {
     }
     case ACTION_ENUM.UPDATE_CART: {
       return { ...state, cart: action.payload };
+    }
+    case ACTION_ENUM.SET_GA_PAGEVIEWS: {
+      localStorage.setItem(
+        'activeGaPageviews',
+        JSON.stringify(action.payload),
+      );
+      return { ...state, activeGaEvents: action.payload };
+    }
+    case ACTION_ENUM.SET_GA_EVENTS: {
+      localStorage.setItem(
+        'activeGaEvents',
+        JSON.stringify(action.payload),
+      );
+      return { ...state, activeGaPageviews: action.payload };
     }
     default:
       return state;
@@ -194,6 +220,22 @@ export function StoreProvider(props) {
       dispatch({
         type: ACTION_ENUM.UPDATE_CART,
         payload: res2.data,
+      });
+    }
+
+    const res3 = await api('/api/ga/activePageviews');
+    if (res3 && res3.data) {
+      dispatch({
+        type: ACTION_ENUM.SET_GA_PAGEVIEWS,
+        payload: res3.data,
+      });
+    }
+
+    const res4 = await api('/api/ga/activeEvents');
+    if (res4 && res4.data) {
+      dispatch({
+        type: ACTION_ENUM.SET_GA_EVENTS,
+        payload: res4.data,
       });
     }
   };

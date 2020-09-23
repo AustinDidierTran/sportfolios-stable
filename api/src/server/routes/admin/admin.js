@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const queries = require('../../../db/queries/admin');
+const gaQueries = require('../../../db/queries/googleAnalytics');
 
 const router = new Router();
 const BASE_URL = '/api/admin';
@@ -20,6 +21,30 @@ router.get(`${BASE_URL}/sports`, async ctx => {
       id: sport.id,
       name: sport.name,
       scoreType: sport.score_type,
+    })),
+  };
+});
+
+router.get(`${BASE_URL}/gaEvents`, async ctx => {
+  const events = await gaQueries.getAllEvents();
+  ctx.body = {
+    status: 'success',
+    data: events.map(event => ({
+      id: event.id,
+      category: event.category,
+      enabled: event.enabled,
+    })),
+  };
+});
+
+router.get(`${BASE_URL}/gaPageviews`, async ctx => {
+  const pageviews = await gaQueries.getAllPageviews();
+  ctx.body = {
+    status: 'success',
+    data: pageviews.map(pageview => ({
+      id: pageview.id,
+      pathname: pageview.pathname,
+      enabled: pageview.enabled,
     })),
   };
 });
@@ -54,6 +79,54 @@ router.put(`${BASE_URL}/sport/:id`, async ctx => {
         id: sport.id,
         name: sport.name,
         scoreType: sport.score_type,
+      },
+    };
+  } else {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/gaEvents/:id`, async ctx => {
+  const [event] = await gaQueries.updateEvent(
+    ctx.params.id,
+    ctx.request.body.enabled,
+  );
+  if (event) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: {
+        id: event.id,
+        category: event.category,
+        enabled: event.enabled,
+      },
+    };
+  } else {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/gaPageviews/:id`, async ctx => {
+  const [pageview] = await gaQueries.updatePageview(
+    ctx.params.id,
+    ctx.request.body.enabled,
+  );
+  if (pageview) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: {
+        id: pageview.id,
+        pathname: pageview.pathname,
+        enabled: pageview.enabled,
       },
     };
   } else {

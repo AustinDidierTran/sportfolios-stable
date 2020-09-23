@@ -42,10 +42,10 @@ router.get(`${BASE_URL}/eventInfos`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/allTeamsRegistered`, async ctx => {
+router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
   const userId =
     ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
-  const entity = await queries.getAllRegistered(
+  const entity = await queries.getAllRegisteredInfos(
     ctx.query.eventId,
     userId,
   );
@@ -81,11 +81,42 @@ router.get(`${BASE_URL}/remainingSpots`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/suggestScore`, async ctx => {
+  const game = await queries.addScoreSuggestion(ctx.request.body);
+  if (game) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: game,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
+  const player = await queries.addPlayerToRoster(ctx.request.body);
+  if (player) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: player,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/getRoster`, async ctx => {
-  const entity = await queries.getRoster(
-    ctx.query.rosterId,
-    ctx.body.userInfo.id,
-  );
+  const entity = await queries.getRoster(ctx.query.rosterId);
 
   if (entity) {
     ctx.body = {

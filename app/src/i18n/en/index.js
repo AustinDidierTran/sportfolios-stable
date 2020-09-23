@@ -13,10 +13,12 @@ export default {
     add_team: 'Add team',
     add_field: 'Add field',
     add_new_person: 'Add new person',
+    add_player: 'Add player',
     add_player_with_no_account: 'Add player with no account',
     add_new_player: 'Add new player',
     add_payment_method: 'Add payment method',
     add_payment_options: 'Add payment options',
+    add_sub: 'Add sub',
     add_new_product: 'Add new product',
     add_to_cart: 'Add to cart',
     add_time_slot: 'Add time slot',
@@ -67,8 +69,10 @@ export default {
     captain: 'Captain',
     card_ending_with: 'Card ending with {{last4}}',
     cart_empty_go_shop: "Your cart is empty, it's time to shop!",
+    category: 'Category',
     change_password: 'Change password',
     click_to_create_new_team: 'Click to create your new team',
+    comments: 'Comments',
     confirm: 'Confirm',
     contact_us: 'Contact us',
     contact: 'Contact',
@@ -113,6 +117,7 @@ export default {
     event_registration: 'Event Registration',
     event_start: 'Start of event',
     events: 'Events',
+    event: 'Event',
     events_that_might_interest_you: 'Events that might interest you',
     expiration_date: 'Expiration Date',
     feature_coming_soon: 'Feature coming soon!',
@@ -138,8 +143,10 @@ export default {
     in_cart: 'In cart',
     infos: 'Infos',
     informations_saved: 'Informations saved',
+    is_sub: 'Is Sub',
     last_name: 'Last Name',
     length: 'Length',
+    location_unspecified: 'Location unspecified',
     login: 'Login',
     logout: 'Log out',
     send_email: 'Send email',
@@ -174,6 +181,9 @@ export default {
     on: 'on',
     on_going_events: 'On Going Events',
     only_available_on_desktop: 'Only available on desktop',
+    opposing_team: 'Opposing team',
+    opposing_team_score: 'Opposing team score',
+    opposing_team_spirit: 'Opposing team spirit',
     option: 'Option',
     options: 'Options',
     or: 'or',
@@ -183,10 +193,12 @@ export default {
     organization: 'Organization',
     organizations: 'Organizations',
     our_team: 'Our Team',
+    page_not_found: 'Page not found',
     paid_with: 'Paid with',
     password: 'Password',
     password_changed: 'Password has been changed successfully',
     password_reset_message: 'Password has been successfully reset.',
+    pathname: 'Pathname',
     pay: 'Pay',
     payment_method_added:
       'You successfully added a new payment method!',
@@ -198,6 +210,7 @@ export default {
     phase: 'Phase',
     places_left: 'places left',
     player: 'Player',
+    player_name: 'Player name',
     players: 'Players',
     pre_ranking: 'Pre-ranking',
     price: 'Price',
@@ -219,9 +232,11 @@ export default {
       "Entering your roster helps the event manager better rank teams for the schedule. Enter it the best you can, even if it's not final.",
     settings: 'Settings',
     schedule: 'Schedule',
+    score: 'Score',
     search: 'Search...',
     search_results: 'Search results for {{query}}',
     save_basic_info: 'Save new basic infos',
+    score_submitted: 'Score submitted',
     score_type: 'Score Type',
     select_existing_person: 'Select existing person',
     select_language: 'Select Language',
@@ -232,7 +247,12 @@ export default {
     sizes: 'Size',
     sizes: 'Sizes',
     something_went_wrong: 'Something went wrong.',
+    spirit: 'Spirit',
+    spirit_chart_ligue_mardi:
+      '0: Bad 1: Below average 2: Good or nothing to report 3: Very good 4: Exceptional',
     status: 'Status',
+    submit_score: 'Submit Score',
+    sub: 'Sub',
     subscribe: 'Subscribe',
     subscribed: 'Subscribed',
     shop: 'Shop',
@@ -240,6 +260,7 @@ export default {
       'Start date should be before end date.',
     to_see_your_receipt:
       'A copy of your receipt has been sent to you by email. You can consult it now on Stripe, our safe payment plateform.',
+    total: 'Total',
     tournament_fee: 'Tournament Fee',
     team: 'Team',
     team_1: 'Team 1',
@@ -272,6 +293,9 @@ export default {
     you_paid_with: 'You paid with',
     your_item_has_been_added_to_cart:
       'You added {{amount}} {{name}} to your cart for a total of {{total}}.',
+    your_team: 'Your team',
+    your_score: 'Your score',
+    your_spirit: 'Your spirit',
     your_upcoming_events: 'Your Upcoming Events',
     your_total_is: 'Your total is',
     payment_method: 'Payment Method',
@@ -337,6 +361,10 @@ export default {
       'Archive your results in your personal Sportfolio.',
     description_card_third_point:
       'Connect with your perfect teammates.',
+    // GOOGLE ANALYTICS EVENTS TABLE
+    ga_events_table_title: 'Google Analytics Events List',
+    // GOOGLE ANALYTICS PAGEVIEWS TABLE
+    ga_pageviews_table_title: 'Google Analytics Pageviews List',
     // SPORTS TABLE
     sports_table_title: 'Sports List',
     // USERS TABLE
@@ -431,6 +459,8 @@ export default {
       'You added one player to your roster! Choose your payment option.',
     you_added_players_to_your_roster:
       'You added {{length}} players to your roster! Choose your payment option.',
+    no_bank_account_linked:
+      'You have no bank account linked, payment option needs to be free',
 
     //SIZES
     sizes_enum: {
@@ -471,5 +501,16 @@ export default {
     XL: 'X-Large',
     XXL: '2X-Large',
     XXXL: '3X-Large',
+
+    //SPIRIT CATEGORY
+    rules_knowledge_and_use: 'Rules Knowledge and Use',
+    fouls_and_body_contact: 'Fouls and Body Contact',
+    fair_mindedness: 'Fair Mindedness',
+    positive_attitude_and_self_control:
+      'Positive Attitude and Self Control',
+    communication: 'Communication',
+    //PROTIP
+    you_can_also_click_on_your_game_to_submit_your_score:
+      'ProTip: You can also click on your game to submit your result.',
   },
 };

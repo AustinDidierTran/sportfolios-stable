@@ -2,39 +2,42 @@ import React, { useState, useEffect } from 'react';
 
 import styles from './General.module.css';
 
-import UpcomingEvents from './UpcomingEvents';
-import Merchandise from './Merchandise';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
-import { GLOBAL_ENUM } from '../../../../../common/enums';
+import { Card, LoadingSpinner } from '../../../components/Custom';
 
-const getAllEvents = async () => {
+const getAllPosts = async () => {
   const { data } = await api(
-    formatRoute('/api/entity/all', null, {
-      type: GLOBAL_ENUM.EVENT,
-    }),
+    formatRoute('/api/entity/forYouPage', null),
   );
   return data || [];
 };
 
 export default function General() {
-  const [events, setEvents] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState([true]);
 
   const getData = async () => {
-    const events = await getAllEvents();
-    setEvents(events);
+    setIsLoading(true);
+    const posts = await getAllPosts();
+    setPosts(posts);
+    setIsLoading(false);
   };
 
   useEffect(() => {
     getData();
   }, []);
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
   return (
     <div className={styles.general}>
-      {events.map(e => (
-        <UpcomingEvents eventId={e.id} />
-      ))}
-      <Merchandise />
+      {posts.map(e => {
+        return (
+          <Card type={e.cardType} items={{ ...e, update: getData }} />
+        );
+      })}
     </div>
   );
 }

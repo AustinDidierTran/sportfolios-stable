@@ -13,7 +13,7 @@ import LoadingSpinner from '../../LoadingSpinner';
 import { SEVERITY_ENUM } from '../../../../../../common/enums';
 
 export default function AddPaymentOption(props) {
-  const { fields, onAdd: onAddProps } = props;
+  const { fields, onAdd: onAddProps, hasBankAccount } = props;
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
   const { id: eventId } = useParams();
@@ -54,6 +54,17 @@ export default function AddPaymentOption(props) {
         if (price.value < 0) {
           values[f.value].setError(t('invalid_input'));
           isValid = false;
+        }
+        if (!hasBankAccount) {
+          if (price > 0) {
+            values[f.value].setError(t('no_bank_account_linked'));
+            dispatch({
+              type: ACTION_ENUM.SNACK_BAR,
+              message: t('no_bank_account_linked'),
+              severity: SEVERITY_ENUM.ERROR,
+            });
+            isValid = false;
+          }
         }
       }
     });

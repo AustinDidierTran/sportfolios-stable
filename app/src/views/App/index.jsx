@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import theme from './theme';
 import { ThemeProvider } from '@material-ui/core/styles';
 import loadable from '@loadable/component';
@@ -34,7 +34,6 @@ const ConfirmEmailFailure = loadable(() =>
 const ConfirmEmailSuccess = loadable(() =>
   import('../ConfirmEmail/ConfirmEmailSuccess'),
 );
-const ForgotPassword = loadable(() => import('../ForgotPassword'));
 const Header = loadable(() => import('../Header'));
 const Main = loadable(() => import('../Main'));
 const Memberships = loadable(() => import('../Memberships'));
@@ -66,6 +65,11 @@ const Checkout = loadable(() => import('../Checkout'));
 const Sales = loadable(() => import('../Sales'));
 const ShopDetails = loadable(() => import('../ShopDetails'));
 
+import {
+  AddGaPageView,
+  InitGa,
+} from '../../components/Custom/Analytics';
+
 // Mocks
 import MockEvent from '../Mocks/Event';
 
@@ -95,6 +99,11 @@ export default function App() {
   const isAuthenticated = Boolean(authToken);
 
   const optimizely = createInstance(conf.optimizely);
+
+  useEffect(() => {
+    InitGa();
+    AddGaPageView();
+  });
 
   return (
     <OptimizelyProvider
@@ -135,10 +144,6 @@ export default function App() {
                   <Route
                     path={ROUTES.confirmEmailSuccess}
                     component={ConfirmEmailSuccess}
-                  />
-                  <Route
-                    path={ROUTES.forgotPassword}
-                    component={ForgotPassword}
                   />
                   <Route
                     path={ROUTES.recoveryEmail}

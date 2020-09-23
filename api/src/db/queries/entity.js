@@ -16,9 +16,11 @@ const {
   addAlias: addAliasHelper,
   addOption: addOptionHelper,
   addGame: addGameHelper,
-  addScore: addScoreHelper,
+  addScoreSuggestion: addScoreSuggestionHelper,
+  addScoreAndSpirit: addScoreAndSpiritHelper,
   addField: addFieldHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
+  addRegisteredToSchedule: addRegisteredToScheduleHelper,
   addPhase: addPhaseHelper,
   addTimeSlot: addTimeSlotHelper,
   addRoster: addRosterHelper,
@@ -37,7 +39,7 @@ const {
   getMembers: getMembersHelper,
   getMemberships: getMembershipsHelper,
   getRegistered: getRegisteredHelper,
-  getAllRegistered: getAllRegisteredHelper,
+  getAllRegisteredInfos: getAllRegisteredInfosHelper,
   getRemainingSpots: getRemainingSpotsHelper,
   getRoster: getRosterHelper,
   getEvent: getEventHelper,
@@ -66,6 +68,7 @@ const {
   addPlayerToRoster: addPlayerToRosterHelper,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
   deleteGame: deleteGameHelper,
+  getAllForYouPagePosts: getAllForYouPagePostsHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -86,6 +89,10 @@ async function getEntity(id, user_id) {
 
 async function getAllEntities(params) {
   return getAllEntitiesHelper(params);
+}
+
+async function getAllForYouPagePosts() {
+  return getAllForYouPagePostsHelper();
 }
 async function getAllOwnedEntities(type, userId) {
   return getAllOwnedEntitiesHelper(type, userId);
@@ -119,15 +126,15 @@ async function getRegistered(team_id, event_id) {
   return getRegisteredHelper(team_id, event_id);
 }
 
-async function getAllRegistered(eventId, userId) {
-  return getAllRegisteredHelper(eventId, userId);
+async function getAllRegisteredInfos(eventId, userId) {
+  return getAllRegisteredInfosHelper(eventId, userId);
 }
 async function getRemainingSpots(eventId) {
   return getRemainingSpotsHelper(eventId);
 }
 
-async function getRoster(rosterId, userId) {
-  return getRosterHelper(rosterId, userId);
+async function getRoster(rosterId) {
+  return getRosterHelper(rosterId);
 }
 
 async function getEvent(eventId) {
@@ -352,14 +359,16 @@ async function updateAlias(body) {
   const res = await updateAliasHelper(entityId, alias);
   return res;
 }
-  async function updateGame(body) {
+async function updateGame(body) {
   const {
     gameId,
     phaseId,
     field,
     time,
-    team1,
-    team2,
+    rosterId1,
+    rosterId2,
+    name1,
+    name2,
     teamId1,
     teamId2,
   } = body;
@@ -368,8 +377,10 @@ async function updateAlias(body) {
     phaseId,
     field,
     time,
-    team1,
-    team2,
+    rosterId1,
+    rosterId2,
+    name1,
+    name2,
     teamId1,
     teamId2,
   );
@@ -399,23 +410,64 @@ async function addAlias(body) {
 }
 
 async function addGame(body) {
-  const { eventId, phaseId, field, time, team1, team2 } = body;
+  const {
+    eventId,
+    phaseId,
+    field,
+    time,
+    rosterId1,
+    rosterId2,
+    name1,
+    name2,
+  } = body;
   const res = await addGameHelper(
     eventId,
     phaseId,
     field,
     time,
-    team1,
-    team2,
+    rosterId1,
+    rosterId2,
+    name1,
+    name2,
   );
   return res;
 }
 
-async function addScore(body) {
-  const { score, teamId, gameId } = body;
-  const res = await addScoreHelper(score, teamId, gameId);
+async function addScoreAndSpirit(body) {
+  const res = await addScoreAndSpiritHelper(body);
   return res;
 }
+
+async function addScoreSuggestion(body) {
+  const {
+    eventId,
+    startTime,
+    yourTeamName,
+    yourTeamId,
+    yourScore,
+    opposingTeamName,
+    opposingTeamId,
+    opposingTeamScore,
+    opposingTeamSpirit,
+    players,
+    comments,
+  } = body;
+  const res = await addScoreSuggestionHelper(
+    eventId,
+    startTime,
+    yourTeamName,
+    yourTeamId,
+    yourScore,
+    opposingTeamName,
+    opposingTeamId,
+    opposingTeamScore,
+    opposingTeamSpirit,
+    players,
+    comments,
+  );
+  return res;
+}
+
 async function addField(body) {
   const { field, eventId } = body;
   const res = await addFieldHelper(field, eventId);
@@ -423,8 +475,14 @@ async function addField(body) {
 }
 
 async function addTeamToSchedule(body) {
-  const { name, eventId } = body;
-  const res = await addTeamToScheduleHelper(name, eventId);
+  const { eventId, name, rosterId } = body;
+  const res = await addTeamToScheduleHelper(eventId, name, rosterId);
+  return res;
+}
+
+async function addRegisteredToSchedule(body) {
+  const { eventId } = body;
+  const res = await addRegisteredToScheduleHelper(eventId);
   return res;
 }
 
@@ -492,7 +550,7 @@ const unregister = async (body, userId) => {
     }
   }
 
-  return getAllRegisteredHelper(eventId, userId);
+  return getAllRegisteredInfosHelper(eventId, userId);
 };
 
 async function addMembership(body, userId) {
@@ -556,9 +614,11 @@ module.exports = {
   addAlias,
   addMembership,
   addGame,
-  addScore,
+  addScoreSuggestion,
+  addScoreAndSpirit,
   addField,
   addTeamToSchedule,
+  addRegisteredToSchedule,
   addPhase,
   addTimeSlot,
   addOption,
@@ -568,6 +628,7 @@ module.exports = {
   deleteEntityMembership,
   deleteOption,
   getAllEntities,
+  getAllForYouPagePosts,
   getAllOwnedEntities,
   getOwnedEvents,
   getAllRolesEntity,
@@ -578,7 +639,7 @@ module.exports = {
   getOptions,
   getMemberships,
   getRegistered,
-  getAllRegistered,
+  getAllRegisteredInfos,
   getRemainingSpots,
   getEvent,
   getAlias,

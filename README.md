@@ -100,7 +100,6 @@ On Mac:
 
 Install Docker Desktop from https://hub.docker.com/editions/community/docker-ce-desktop-mac
 
-
 ## Setup the project with the mock server
 
 First, create a copy of _conf-template.js_ and name it _conf.js_ at the root.

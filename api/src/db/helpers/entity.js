@@ -7,6 +7,8 @@ const {
   GLOBAL_ENUM,
   ROSTER_ROLE_ENUM,
   TAG_TYPE_ENUM,
+  CARD_TYPE_ENUM,
+  REGISTRATION_STATUS_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -218,6 +220,15 @@ async function getAllOwnedEntities(type, userId) {
   return res2;
 }
 
+async function getEntitiesName(entityId) {
+  const realId = await getRealId(entityId);
+
+  const [name] = await knex('entities_name')
+    .select('name', 'surname')
+    .where({ entity_id: realId });
+  return name;
+}
+
 async function getOwnedEvents(organizationId) {
   const realId = await getRealId(organizationId);
   const events = await knex('entities')
@@ -308,6 +319,65 @@ async function getAllRolesEntity(entityId) {
 
     return { ...otherProps, photoUrl };
   });
+}
+
+async function getAllForYouPagePosts() {
+  const events = await knex('events_infos')
+    .select('*')
+    .whereNull('deleted_at');
+  const merch = await knex('store_items_all_infos')
+    .select('*')
+    .leftJoin(
+      'stripe_price',
+      'stripe_price.stripe_price_id',
+      '=',
+      'store_items_all_infos.stripe_price_id',
+    )
+    .where('store_items_all_infos.active', true);
+
+  const fullEvents = await Promise.all(
+    events.map(async event => {
+      const { creator_id: creatorId } = event;
+      const creator = await getEntity(creatorId);
+      return {
+        type: GLOBAL_ENUM.EVENT,
+        cardType: CARD_TYPE_ENUM.EVENT,
+        eventId: event.id,
+        photoUrl: event.photo_url,
+        startDate: event.start_date,
+        endDate: event.end_date,
+        quickDescription: event.quick_description,
+        description: event.description,
+        location: event.location,
+        name: event.name,
+        createdAt: event.created_at,
+        creator: {
+          id: creator.id,
+          type: creator.type,
+          name: creator.name,
+          surname: creator.surname,
+          photoUrl: creator.photoUrl,
+        },
+      };
+    }),
+  );
+  const fullMerch = merch
+    .filter(m => m.metadata.type === GLOBAL_ENUM.EVENT)
+    .map(item => ({
+      type: GLOBAL_ENUM.SHOP_ITEM,
+      cardType: CARD_TYPE_ENUM.SHOP,
+      label: item.label,
+      amount: item.amount,
+      photoUrl: item.photo_url,
+      description: item.description,
+      stripePriceId: item.stripe_price_id,
+      stripeProductId: item.stripe_product_id,
+      createdAt: item.created_at,
+    }));
+
+  return [...fullEvents, ...fullMerch].sort(
+    (a, b) => b.createdAt - a.createdAt,
+  );
 }
 
 async function getRealId(id) {
@@ -568,11 +638,16 @@ async function getPaymentOption(rosterId) {
   return option;
 }
 
-async function getAllRegistered(eventId, userId) {
+async function getAllRegistered(eventId) {
   const realId = await getRealId(eventId);
   const teams = await knex('event_rosters')
     .select('*')
     .where({ event_id: realId });
+  return teams;
+}
+
+async function getAllRegisteredInfos(eventId, userId) {
+  const teams = await getAllRegistered(eventId);
 
   const props = await Promise.all(
     teams.map(async t => {
@@ -644,6 +719,7 @@ async function getRoster(rosterId) {
     id: player.id,
     name: player.name,
     personId: player.person_id,
+    isSub: player.is_sub,
     status: status,
   }));
 
@@ -976,8 +1052,29 @@ async function addAlias(entityId, alias) {
     .returning('*');
   return res;
 }
+async function getTeamName(team) {
+  const [res] = await knex('team_rosters')
+    .select('*')
+    .leftJoin(
+      'entities_name',
+      'entities_name.entity_id',
+      '=',
+      'team_rosters.team_id',
+    )
+    .where({ id: team });
+  return res.name;
+}
 
-async function addGame(eventId, phaseId, field, time, team1, team2) {
+async function addGame(
+  eventId,
+  phaseId,
+  field,
+  time,
+  rosterId1,
+  rosterId2,
+  name1,
+  name2,
+) {
   const realId = await getRealId(eventId);
   let realTime = new Date(time);
   if (!time) {
@@ -991,20 +1088,38 @@ async function addGame(eventId, phaseId, field, time, team1, team2) {
       phase_id: phaseId,
     })
     .returning('*');
-  await knex('game_teams')
-    .insert({
+
+  if (name1) {
+    await knex('game_teams').insert({
       game_id: res.id,
-      name: team1,
-    })
-    .returning('*');
-  await knex('game_teams').insert({
-    game_id: res.id,
-    name: team2,
-  });
+      name: name1,
+    });
+  } else {
+    const teamName = await getTeamName(rosterId1);
+    await knex('game_teams').insert({
+      game_id: res.id,
+      name: teamName,
+      roster_id: rosterId1,
+    });
+  }
+  if (name2) {
+    await knex('game_teams').insert({
+      game_id: res.id,
+      name: name2,
+    });
+  } else {
+    const teamName = await getTeamName(rosterId2);
+    await knex('game_teams').insert({
+      game_id: res.id,
+      name: teamName,
+      roster_id: rosterId2,
+    });
+  }
   return res;
 }
 
-async function addScore(score, teamId, gameId) {
+async function addScoreAndSpirit(props) {
+  const { score, spirit, teamId, gameId } = props;
   const res = await knex('game_teams')
     .where({
       id: teamId,
@@ -1012,6 +1127,48 @@ async function addScore(score, teamId, gameId) {
     })
     .update({
       score: score,
+      spirit: spirit,
+    })
+    .returning('*');
+  return res;
+}
+
+async function addScoreSuggestion(
+  eventId,
+  startTime,
+  yourTeamName,
+  yourTeamId,
+  yourScore,
+  opposingTeamName,
+  opposingTeamId,
+  opposingTeamScore,
+  opposingTeamSpirit,
+  players,
+  comments,
+) {
+  let yourName = yourTeamName;
+  if (yourTeamId) {
+    yourName = await getTeamName(yourTeamId);
+  }
+  let opposingName = opposingTeamName;
+  if (opposingTeamId) {
+    opposingName = await getTeamName(opposingTeamId);
+  }
+  const realEventId = await getRealId(eventId);
+
+  const res = await knex('score_suggestion')
+    .insert({
+      event_id: realEventId,
+      start_time: new Date(startTime),
+      your_team: yourName,
+      your_roster_id: yourTeamId,
+      your_score: yourScore,
+      opposing_team: opposingName,
+      opposing_roster_id: opposingTeamId,
+      opposing_team_score: opposingTeamScore,
+      opposing_team_spirit: opposingTeamSpirit,
+      players,
+      comments,
     })
     .returning('*');
   return res;
@@ -1028,15 +1185,63 @@ async function addField(field, eventId) {
   return res;
 }
 
-async function addTeamToSchedule(name, eventId) {
+async function addTeamToSchedule(eventId, name, rosterId) {
   const realId = await getRealId(eventId);
-  const [res] = await knex('schedule_teams')
-    .insert({
-      event_id: realId,
-      name,
-    })
-    .returning('*');
-  return res;
+  if (
+    !(await isInSchedule(realId, rosterId)) &&
+    (await isAcceptedToEvent(realId, rosterId))
+  ) {
+    if (rosterId) {
+      const [res] = await knex('schedule_teams')
+        .insert({
+          event_id: realId,
+          name,
+          roster_id: rosterId,
+        })
+        .returning('*');
+      return res;
+    }
+    const [res] = await knex('schedule_teams')
+      .insert({
+        event_id: realId,
+        name,
+      })
+      .returning('*');
+    return res;
+  }
+}
+
+async function isInSchedule(eventId, rosterId) {
+  const [team] = await knex('schedule_teams')
+    .select('*')
+    .where({
+      event_id: eventId,
+      roster_id: rosterId,
+    });
+  return Boolean(team);
+}
+
+async function isAcceptedToEvent(eventId, rosterId) {
+  const [status] = await knex('event_rosters')
+    .select('registration_status')
+    .where({
+      event_id: eventId,
+      roster_id: rosterId,
+    });
+  return (
+    status.registration_status === REGISTRATION_STATUS_ENUM.ACCEPTED
+  );
+}
+
+async function addRegisteredToSchedule(eventId) {
+  const teams = await getAllRegistered(eventId);
+  await Promise.all(
+    teams.map(async t => {
+      const name = await getEntitiesName(t.team_id);
+      await addTeamToSchedule(eventId, name.name, t.roster_id);
+    }),
+  );
+  return teams;
 }
 
 async function addPhase(phase, eventId) {
@@ -1228,8 +1433,10 @@ async function updateGame(
   phaseId,
   field,
   time,
-  team1,
-  team2,
+  rosterId1,
+  rosterId2,
+  name1,
+  name2,
   teamId1,
   teamId2,
 ) {
@@ -1274,7 +1481,7 @@ async function updateGame(
     res.push(r);
   }
 
-  if (team1.length) {
+  if (name1) {
     const [r] = await knex('game_teams')
       .where({
         id: teamId1,
@@ -1286,13 +1493,40 @@ async function updateGame(
     res.push(r);
   }
 
-  if (team2.length) {
+  if (name2) {
     const [r] = await knex('game_teams')
       .where({
         id: teamId2,
       })
       .update({
         name: team2,
+      })
+      .returning('*');
+    res.push(r);
+  }
+  if (rosterId1) {
+    const teamName = await getTeamName(rosterId1);
+    const [r] = await knex('game_teams')
+      .where({
+        id: teamId1,
+      })
+      .update({
+        name: teamName,
+        roster_id: rosterId1,
+      })
+      .returning('*');
+    res.push(r);
+  }
+
+  if (rosterId2) {
+    const teamName = await getTeamName(rosterId2);
+    const [r] = await knex('game_teams')
+      .where({
+        id: teamId2,
+      })
+      .update({
+        name: teamName,
+        roster_id: rosterId2,
       })
       .returning('*');
     res.push(r);
@@ -1356,18 +1590,29 @@ const deleteOption = async id => {
 };
 
 const addPlayerToRoster = async body => {
-  const { personId, name, id, rosterId } = body;
+  const { personId, name, id, rosterId, isSub } = body;
   //TODO: Make sure userId adding is team Admin
-  const realId = await getRealId(id);
-
-  const player = await knex('team_players')
-    .insert({
-      roster_id: rosterId,
-      person_id: personId,
-      name: name,
-      id: realId,
-    })
-    .returning('*');
+  let player = {};
+  if (id) {
+    player = await knex('team_players')
+      .insert({
+        roster_id: rosterId,
+        person_id: personId,
+        name: name,
+        id: realId,
+        is_sub: isSub,
+      })
+      .returning('*');
+  } else {
+    player = await knex('team_players')
+      .insert({
+        roster_id: rosterId,
+        person_id: personId,
+        name: name,
+        is_sub: isSub,
+      })
+      .returning('*');
+  }
   return player;
 };
 
@@ -1404,9 +1649,11 @@ module.exports = {
   addAlias,
   addMembership,
   addGame,
-  addScore,
+  addScoreSuggestion,
+  addScoreAndSpirit,
   addField,
   addTeamToSchedule,
+  addRegisteredToSchedule,
   addPhase,
   addTimeSlot,
   addOption,
@@ -1417,6 +1664,7 @@ module.exports = {
   deleteOption,
   deleteRegistration,
   getAllEntities,
+  getAllForYouPagePosts,
   getAllOwnedEntities,
   getOwnedEvents,
   getAllRolesEntity,
@@ -1429,6 +1677,7 @@ module.exports = {
   getMemberships,
   getRegistered,
   getAllRegistered,
+  getAllRegisteredInfos,
   getRemainingSpots,
   getRoster,
   getEvent,

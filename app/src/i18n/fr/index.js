@@ -15,9 +15,11 @@ export default {
     add_field: 'Ajouter un terrain',
     add_new_person: 'Ajouter une nouvelle personne',
     add_new_player: 'Ajouter un nouveau joueur',
+    add_player: 'Ajouter un joueur',
     add_player_with_no_account: 'Ajouter un joueur sans compte',
     add_payment_method: 'Ajouter une option de paiement',
     add_payment_options: 'Ajouter des options de paiements',
+    add_sub: 'Ajouter un remplacant',
     add_new_product: 'Ajouter un nouveau produit',
     quick_description: 'Description courte',
     add_to_cart: 'Ajouter au panier',
@@ -45,10 +47,10 @@ export default {
     are_you_sure_you_want_to_unregister_this_team:
       'Êtes vous sur que vous voulez désinscrire cette équipe et la rembourser si elle à déjà payé?',
     all: 'Tous',
-    all_teams: 'Tous les équipes',
-    all_phases: 'Tous les phases',
+    all_teams: 'Toutes les équipes',
+    all_phases: 'Toutes les phases',
     all_fields: 'Tous les terrains',
-    all_time_slots: 'Tous les plages horaires',
+    all_time_slots: 'Toutes les plages horaires',
     all_steps_completed: 'Tous les étapes sont complétées',
     amount_to_pay: 'Montant à payer {{amount}}',
     app_role: 'App Role',
@@ -68,7 +70,9 @@ export default {
     cart: 'Panier',
     cart_empty_go_shop:
       "Votre panier est vide! C'est l'heure d'aller faire des achats!",
+    category: 'Catégorie',
     change_password: 'Changer votre mot de passe',
+    comments: 'Commentaires',
     confirm: 'Confirmer',
     confirmation_email_sent:
       'Le courriel a été envoyé avec succès. Allez dans votre boîte de courriel pour réinitialiser votre mot de passe.',
@@ -110,6 +114,7 @@ export default {
     event_settings: "Paramètre de l'événement",
     event_start: "Début de l'événement",
     events: 'Événements',
+    event: 'Événement',
     event_creator: "Créateur d'événement",
     events_that_might_interest_you:
       'Événements qui pourrait vous intéresser',
@@ -136,9 +141,11 @@ export default {
     home: 'Accueil',
     in_cart: 'Dans le panier',
     informations_saved: 'Informations sauvegardées',
+    is_sub: 'Est un remplacant',
     infos: 'Infos',
     last_name: 'Nom de famille',
     length: 'Durée',
+    location_unspecified: 'Lieu non spécifié',
     login: 'Connexion',
     logout: 'Déconnexion',
     send_email: 'Envoyer un courriel',
@@ -174,6 +181,9 @@ export default {
     on: 'sur le',
     on_going_events: 'Événements en cours',
     only_available_on_desktop: 'Seulement disponible sur ordinateur',
+    opposing_team: 'Équipe adverse',
+    opposing_team_score: "Pointage de l'équipe adverse",
+    opposing_team_spirit: "Esprit de jeu de l'équipe adverse",
     option: 'Option',
     options: 'Options',
     or: 'ou',
@@ -183,12 +193,14 @@ export default {
     organization: 'Organisation',
     organizations: 'Organisations',
     our_team: 'Notre Équipe',
+    page_not_found: 'Page non trouvée',
     paid: 'Payé',
     paid_with: 'Payé avec',
     password: 'Mot de passe',
     password_changed: 'Mot de passe changé avec succès',
     password_reset_message:
       'Votre mot de passe a été réinitialisé avec succès!',
+    pathname: 'Chemin',
     pay: 'Payer',
     payment_method_added:
       'Vous avez ajouté une nouvelle option de paiement!',
@@ -201,6 +213,7 @@ export default {
     phase: 'Phase',
     places_left: 'places restantes',
     player: 'Joueur',
+    player_name: 'Nom du joueur',
     players: 'Joueurs',
     private: 'Privée',
     pre_ranking: 'Préclassement',
@@ -219,6 +232,8 @@ export default {
       "L'alignement aide le responsable du tournoi à classer ses équipes. Vous pouvez entrer votre alignement au meilleur de vos connaissances, mais il n'a pas de besoin d'être final.",
     settings: 'Paramètres',
     schedule: 'Horaire',
+    score: 'Pointage',
+    score_submitted: 'Résultat soumis',
     score_type: 'Type de pointage',
     quantity: 'Quantité',
     search_results: 'Résultats de recherche pour {{query}}',
@@ -239,7 +254,12 @@ export default {
     size: 'Grandeur',
     sizes: 'Grandeurs',
     something_went_wrong: 'Une erreur est survenue.',
-    status: 'Status',
+    spirit: 'Esprit de jeu',
+    spirit_chart_ligue_mardi:
+      '0: Mauvais  1: Moyen  2: Bon ou rien à signaler  3: Très bon  4: Mémorable',
+    status: 'Statut',
+    submit_score: 'Soumettre un résultat',
+    sub: 'Remplacant',
     subscribe: "S'abonner",
     subscribed: 'Abonné',
     team: 'Équipe',
@@ -256,6 +276,7 @@ export default {
     time: 'Temps',
     time_slot: 'Plage horaire',
     time_slot_added: 'Plage horaire ajoutée',
+    total: 'Total',
     to_see_your_receipt:
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
     waiting_for_payment:
@@ -277,6 +298,9 @@ export default {
     you_paid_with: 'Vous avez payé avec',
     your_item_has_been_added_to_cart:
       'Vous avez ajouté {{amount}} {{name}} à votre panier pour un total de {{total}}.',
+    your_team: 'Votre équipe',
+    your_score: 'Votre pointage',
+    your_spirit: 'Votre esprit de jeu',
     your_total_is: 'Votre total est de',
     your_upcoming_events: 'Vos prochains événements',
     payment_method: 'Méthode de paiement',
@@ -342,6 +366,10 @@ export default {
       'Archivez les résultats dans votre Sportfolios personnel.',
     description_card_third_point:
       'Connectez avec vos communautés sportives.',
+    // GOOGLE ANALYTICS EVENTS TABLE
+    ga_events_table_title: 'Liste des événements Google Analytics',
+    // GOOGLE ANALYTICS PAGEVIEWS TABLE
+    ga_pageviews_table_title: 'Liste des chemins Google Analytics',
     // SPORTS TABLE
     sports_table_title: 'Liste des sports',
     // USERS TABLE
@@ -433,6 +461,8 @@ export default {
       'Vous avez ajouté un joueur à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
     you_added_players_to_your_roster:
       'Vous avez ajouté {{length}} joueurs à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
+    no_bank_account_linked:
+      "Vous n'avez pas de compte en banque relié, l'option de paiement doit etre gratuite",
 
     //SIZES
     sizes_enum: {
@@ -473,5 +503,17 @@ export default {
     XL: 'X-Large',
     XXL: '2X-Large',
     XXXL: '3X-Large',
+
+    //SPIRIT CATEGORY
+    rules_knowledge_and_use:
+      'Connaissances et application des règlements',
+    fouls_and_body_contact: 'Fautes et contacts',
+    fair_mindedness: 'Honnêteter et équité',
+    positive_attitude_and_self_control:
+      'Attitude positive et maîtrise de soi',
+    communication: 'Communication',
+    //PROTIP
+    you_can_also_click_on_your_game_to_submit_your_score:
+      'ProTip: Vous pouvez aussi cliquer sur votre partie pour entrer votre résultat.',
   },
 };
