@@ -1,10 +1,9 @@
 version: '3'
 
 services:
-  
   # API container
-  api:  
-    container_name: sportfolios_api_prod
+  api:
+    container_name: sportfolios_api
     build:
       context: .
       dockerfile: Dockerfile.api
@@ -13,9 +12,8 @@ services:
       - '/sportfolios/node_modules'
     ports:
       - 1337:1337
-    
-    # allow to communicate with db if it's running on localhost
-    network_mode: 'host' # (Linux only)
+    # allow container to interact with localhost (for localhost database in dev)
+    network_mode: 'host'
 
   # App container
   app:
@@ -34,12 +32,12 @@ services:
     container_name: sportfolios_db_prod
     image: postgres
     restart: always
-    ports: 
+    ports:
       - 5432:5432
     volumes:
       # persist data even if container shuts down
       - ./postgres-data:/var/lib/postgresql/data/
-    environment: 
-      # default user is postgres 
+    environment:
+      # default user is postgres
       POSTGRES_PASSWORD: Psql_Sportfolios_Garand
-      POSTGRES_DB: sportfolios_api_dev    
+      POSTGRES_DB: sportfolios_api_dev
