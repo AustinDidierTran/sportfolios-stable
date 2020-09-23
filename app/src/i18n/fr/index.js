@@ -282,7 +282,6 @@ export default {
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
     waiting_for_payment:
       'Votre paiement est en cours de traitement. Merci pour votre patience.',
-    value_is_required: 'Value is required',
     unsupported_language: 'Langue non supportée',
     upload: 'Téléverser',
     valid_until: "Valide jusqu'au",
@@ -349,7 +348,8 @@ export default {
       "Une erreur s'est produite. Veuillez réessayer.",
     token_expired:
       "Le token n'est plus valide, svp en demander un autre.",
-    value_is_required: 'Une valeur est obligatoire.',
+    value_is_invalid: 'La valeur entrée est invalide',
+    value_is_required: 'Une valeur est obligatoire',
     value_must_have_x_digits:
       'La valeur doit avoir {{digits}} chiffres.',
 

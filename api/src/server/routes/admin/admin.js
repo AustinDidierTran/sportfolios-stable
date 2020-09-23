@@ -66,6 +66,26 @@ router.post(`${BASE_URL}/sport`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/gaPageview`, async ctx => {
+  const pageView = await gaQueries.addPageview(
+    ctx.request.body.pathname,
+    ctx.request.body.enabled,
+  );
+  if (pageView.length) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: pageView,
+    };
+  } else {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.put(`${BASE_URL}/sport/:id`, async ctx => {
   const [sport] = await queries.updateSport(
     ctx.params.id,
