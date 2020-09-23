@@ -1,6 +1,6 @@
 import React from 'react';
 
-import _ from 'lodash';
+import isEqual from 'lodash/isEqual';
 
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { TextField } from '../../MUI';
@@ -51,7 +51,7 @@ export default function CustomAutocomplete(props) {
       autoHighlight
       getOptionLabel={option => option.display}
       options={options}
-      getOptionSelected={_.isEqual}
+      getOptionSelected={isEqual}
       renderInput={params => {
         return (
           <TextField
