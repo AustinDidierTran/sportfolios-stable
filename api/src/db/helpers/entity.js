@@ -198,14 +198,12 @@ async function getAllOwnedEntities(type, userId) {
     )
     .whereNull('deleted_at')
     .where({ type });
-
   const res = await Promise.all(
     entities.map(async entity => {
       const role = await getEntityRole(entity.id, userId);
       return { ...entity, role };
     }),
   );
-
   const res2 = res
     .filter(({ role }) => {
       return (
