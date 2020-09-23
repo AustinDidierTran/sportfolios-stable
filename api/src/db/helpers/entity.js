@@ -1154,13 +1154,7 @@ async function addScoreSuggestion(
   if (opposingTeamId) {
     opposingName = await getTeamName(opposingTeamId);
   }
-  let [{ id: realEventId } = {}] = await knex('alias')
-    .select('id')
-    .where({ alias: eventId });
-
-  if (!realEventId) {
-    realEventId = eventId;
-  }
+  const realEventId = await getRealId(eventId);
 
   const res = await knex('score_suggestion')
     .insert({
