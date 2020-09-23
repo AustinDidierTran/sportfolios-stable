@@ -179,6 +179,7 @@ export default {
     of: 'of',
     of_team: 'of team',
     on: 'on',
+    on_le_in_french: 'on',
     on_going_events: 'On Going Events',
     only_available_on_desktop: 'Only available on desktop',
     opposing_team: 'Opposing team',

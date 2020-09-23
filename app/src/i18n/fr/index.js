@@ -179,6 +179,7 @@ export default {
     of: 'du',
     of_team: "de l'équipe",
     on: 'sur le',
+    on_le_in_french: 'le',
     on_going_events: 'Événements en cours',
     only_available_on_desktop: 'Seulement disponible sur ordinateur',
     opposing_team: 'Équipe adverse',

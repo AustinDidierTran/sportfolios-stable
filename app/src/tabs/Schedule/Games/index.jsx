@@ -47,7 +47,11 @@ export default function Games(props) {
       games = games.filter(game => game.field === field);
     }
     if (timeSlot != SELECT_ENUM.ALL) {
-      games = games.filter(game => game.start_time === timeSlot);
+      games = games.filter(
+        game =>
+          moment(game.start_time).format('YYYY M D') ===
+          moment(timeSlot).format('YYYY M D'),
+      );
     }
     setGames(games);
   };
