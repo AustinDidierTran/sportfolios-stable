@@ -74,7 +74,10 @@ export default function GameFilters(props) {
     if (timeSlot != SELECT_ENUM.ALL) {
       description =
         description +
-        ` ${t('at')} ${formatDate(moment(timeSlot), 'h:mm ddd')}`;
+        ` ${t('on_le_in_french')} ${formatDate(
+          moment(timeSlot),
+          'DD MMM',
+        )}`;
     }
     setDescription(description);
   };
