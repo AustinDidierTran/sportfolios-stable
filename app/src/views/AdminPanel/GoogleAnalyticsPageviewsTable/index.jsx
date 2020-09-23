@@ -27,7 +27,7 @@ export default function GaPageviewsTable() {
           }),
         });
 
-        if (res.status <= 299) {
+        if (res.status >= 200 && res.status <= 299) {
           updatePageviews();
         }
       };
@@ -77,7 +77,7 @@ export default function GaPageviewsTable() {
           enabled: true,
         }),
       });
-      if (res.status <= 299) {
+      if (res.status >= 200 && res.status <= 299) {
         updatePageviews();
       }
       resetForm();
