@@ -27,22 +27,18 @@ export default function TimeSlotSelect(props) {
     );
 
     const res = data
+      .map(d => ({
+        value: moment(d.date).format('YYYY M D'),
+        display: formatDate(moment(d.date), 'DD MMM'),
+      }))
       .reduce((prev, curr) => {
         if (prev) {
-          if (
-            !prev
-              .map(p => moment(p.date).format('YYYY M D'))
-              .includes(moment(curr.date).format('YYYY M D'))
-          ) {
+          if (!prev.map(p => p.value).includes(curr.value)) {
             return [...prev, curr];
           }
           return prev;
         }
-      }, [])
-      .map(d => ({
-        value: d.date,
-        display: formatDate(moment(d.date), 'DD MMM'),
-      }));
+      }, []);
 
     setTimeSlots([
       { value: SELECT_ENUM.ALL, display: t('all_time_slots') },
