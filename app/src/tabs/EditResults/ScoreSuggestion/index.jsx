@@ -4,6 +4,7 @@ import { formatRoute } from '../../../actions/goTo';
 
 export default function Game(props) {
   const { game } = props;
+  /* eslint-disable-next-line */
   const [suggestions, setSuggestions] = useState([]);
 
   const { event_id, id, start_time, teams } = game;
