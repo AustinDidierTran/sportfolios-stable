@@ -278,7 +278,6 @@ export default {
     time_slot_added: 'Time slot added',
     waiting_for_payment:
       'Your payment is being processed. Thank you for your patience',
-    value_is_required: 'Valeur obligatoire',
     unsupported_language: 'Unsupported language',
     upload: 'Upload',
     valid_until: 'Valid until',
@@ -343,7 +342,8 @@ export default {
     account_number: 'Account number',
     institution_number: 'Institution number',
     transit_number: 'Transit number',
-    value_is_required: 'Value is required.',
+    value_is_invalid: 'Value is invalid',
+    value_is_required: 'Value is required',
     value_must_have_x_digits: 'Value must have {{digits}} digits.',
 
     value_must_be_numeric: 'Value must be a number.',
