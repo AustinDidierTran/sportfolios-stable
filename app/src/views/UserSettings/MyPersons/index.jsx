@@ -19,7 +19,7 @@ import api from '../../../actions/api';
 import { LoadingSpinner, Avatar } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 
-export default function MyPersons(props) {
+export default function MyPersons() {
   const { t } = useTranslation();
   const [persons, setPersons] = useState([]);
   const [isLoading, setIsLoading] = useState([true]);
@@ -31,13 +31,13 @@ export default function MyPersons(props) {
       }),
     );
     //Permet de mettre la primary person comme 1er élément de la liste
-    data.sort((a, b) =>
-      a.isPrimaryPerson === b.isPrimaryPerson
-        ? 0
-        : a.isPrimaryPerson
-        ? -1
-        : 1,
-    );
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].isPrimaryPerson) {
+        data.unshift(data.splice(i, 1)[0]);
+        break;
+      }
+    }
+
     setPersons(data);
     setIsLoading(false);
   };
