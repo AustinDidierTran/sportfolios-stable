@@ -849,7 +849,8 @@ async function getSlots(eventId) {
   const realId = await getRealId(eventId);
   const res = await knex('event_time_slots')
     .select('*')
-    .where({ event_id: realId });
+    .where({ event_id: realId })
+    .orderBy('date');
   return res;
 }
 

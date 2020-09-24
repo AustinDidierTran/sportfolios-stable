@@ -24,7 +24,7 @@ export const getSlots = async eventId => {
   );
   const res = data.map(d => ({
     value: d.date,
-    display: formatDate(moment(d.date), 'ddd DD MMM h:mm'),
+    display: formatDate(moment(d.date), 'ddd DD MMM HH:mm'),
   }));
   return res;
 };
