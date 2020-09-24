@@ -59,7 +59,7 @@ export default function MyPersons() {
       const res = await api('/api/user/primaryPerson', {
         method: 'PUT',
         body: JSON.stringify({
-          primaryPerson: newPrimaryPersonId,
+          primaryPersonId: newPrimaryPersonId,
         }),
       });
       if (res.status === STATUS_ENUM.ERROR) {
@@ -76,6 +76,7 @@ export default function MyPersons() {
           severity: SEVERITY_ENUM.SUCCES,
           duration: 2000,
         });
+        fetchOwnedPersons();
       }
     }
     setEditPrimaryPerson(false);

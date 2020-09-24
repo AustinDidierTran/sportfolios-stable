@@ -251,6 +251,12 @@ const updatePasswordFromUserId = async ({ hashedPassword, id }) => {
     .where({ id });
 };
 
+const updatePrimaryPerson = async (user_id, primary_person) => {
+  return await knex('user_primary_person')
+    .update({ primary_person })
+    .where({ user_id });
+};
+
 const validateEmailIsConfirmed = async email => {
   const response = await knex('user_email')
     .where({ email })
@@ -308,4 +314,5 @@ module.exports = {
   validateEmailIsConfirmed,
   validateEmailIsUnique,
   getPrimaryPersonIdFromUserId,
+  updatePrimaryPerson,
 };

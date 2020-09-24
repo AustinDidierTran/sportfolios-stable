@@ -669,4 +669,5 @@ module.exports = {
   deletePlayerFromRoster,
   deleteEntityHelper,
   deleteGame,
+  isAllowed,
 };

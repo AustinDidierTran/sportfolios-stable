@@ -1,4 +1,7 @@
-const { GLOBAL_ENUM } = require('../../../../common/enums');
+const {
+  GLOBAL_ENUM,
+  ENTITIES_ROLE_ENUM,
+} = require('../../../../common/enums');
 const bcrypt = require('bcrypt');
 
 const {
@@ -12,9 +15,12 @@ const {
   updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,
   getPrimaryPersonIdFromUserId,
+  updatePrimaryPerson: updatePrimaryPersonHelper,
 } = require('../helpers');
 
 const { getAllOwnedEntities } = require('../helpers/entity');
+
+const { isAllowed } = require('./entity');
 
 const addEmail = async (user_id, { email }) => {
   if (!user_id) {
@@ -125,6 +131,15 @@ const getOwnedPersons = async userId => {
   return { status: 200, persons: res };
 };
 
+const updatePrimaryPerson = async (body, userId) => {
+  const { primaryPersonId } = body;
+  if (!isAllowed(primaryPersonId, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return await updatePrimaryPersonHelper(userId, primaryPersonId);
+};
+
 module.exports = {
   addEmail,
   changePassword,
@@ -133,4 +148,5 @@ module.exports = {
   userInfo,
   getPrimaryPersonId,
   getOwnedPersons,
+  updatePrimaryPerson,
 };
