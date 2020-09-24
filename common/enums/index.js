@@ -75,6 +75,7 @@ const CARD_TYPE_ENUM = {
 const FORM_DIALOG_TYPE_ENUM = {
   SUBMIT_SCORE: 'score',
   SUBMIT_SCORE_AND_SPIRIT: 'score and spirit',
+  ENTER_EMAIL: 'email',
 };
 
 const LANGUAGE_ENUM = {

@@ -3,13 +3,18 @@ import {
   GLOBAL_ENUM,
   STATUS_ENUM,
   SEVERITY_ENUM,
+  FORM_DIALOG_TYPE_ENUM,
 } from '../../../../../common/enums';
 import { ERROR_ENUM } from '../../../../../common/errors';
 import { Card } from '@material-ui/core';
 import styles from './MyPersons.module.css';
 import { formatRoute } from '../../../actions/goTo';
 import api from '../../../actions/api';
-import { LoadingSpinner, List } from '../../../components/Custom';
+import {
+  LoadingSpinner,
+  List,
+  FormDialog,
+} from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import EditPrimaryPerson from './EditPrimaryPerson';
 import { Store, ACTION_ENUM } from '../../../Store';
@@ -19,6 +24,8 @@ export default function MyPersons() {
   const [persons, setPersons] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editPrimaryPerson, setEditPrimaryPerson] = useState(false);
+  const [sendPerson, setSendPerson] = useState(false);
+  const [selectedPersonName, setSelectedPersonName] = useState();
   const { dispatch } = useContext(Store);
 
   const fetchOwnedPersons = async () => {
@@ -40,6 +47,20 @@ export default function MyPersons() {
 
   const closeEditPrimaryPerson = () => {
     setEditPrimaryPerson(false);
+  };
+
+  const closeSendPerson = () => {
+    setSendPerson(false);
+  };
+
+  const onSendEmail = email => {
+    closeSendPerson();
+    dispatch({
+      type: ACTION_ENUM.SNACK_BAR,
+      message: t('person_transfer_email_sent', { email }),
+      severity: SEVERITY_ENUM.SUCCES,
+      duration: 4000,
+    });
   };
 
   const submitPrimaryPerson = async newPrimaryPersonId => {
@@ -94,13 +115,17 @@ export default function MyPersons() {
             } else {
               subtitle = t('secondary_person');
               icon = 'Send';
-              onIconClick = () => console.log('sendIcon clicked');
+              onIconClick = name => {
+                setSelectedPersonName(name);
+                setSendPerson(true);
+              };
             }
             return {
               ...person,
               secondary: subtitle,
               iconButton: icon,
-              onIconButtonClick: onIconClick,
+              onIconButtonClick: () =>
+                onIconClick(person.name + ' ' + person.surname),
             };
           })}
         />
@@ -110,6 +135,16 @@ export default function MyPersons() {
         persons={persons}
         handleClose={closeEditPrimaryPerson}
         handleSubmit={submitPrimaryPerson}
+      />
+      <FormDialog
+        type={FORM_DIALOG_TYPE_ENUM.ENTER_EMAIL}
+        items={{
+          open: sendPerson,
+          onClose: closeSendPerson,
+          title: t('to_transfer') + ' ' + selectedPersonName,
+          description: t('transfer_person_description'),
+          onSubmit: onSendEmail,
+        }}
       />
     </>
   );

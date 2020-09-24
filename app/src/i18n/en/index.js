@@ -209,6 +209,8 @@ export default {
     payment_options: 'Payment options',
     person: 'Person',
     persons: 'Persons',
+    person_transfer_email_sent:
+      'A email was sent to {{email}} to complete the transfer',
     phase: 'Phase',
     places_left: 'places left',
     player: 'Player',
@@ -278,6 +280,9 @@ export default {
     teams_saved: 'Teams saved!',
     there_is_no_rosters_for_this_event:
       'There is no rosters for this event.',
+    to_transfer: 'Transfer',
+    transfer_person_description:
+      'By confirming you accept to give all the admin permissions on this person and give it to the user who own the email you specified.',
     time: 'Time',
     time_slot: 'Time slot',
     time_slot_added: 'Time slot added',

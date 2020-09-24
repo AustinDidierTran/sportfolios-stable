@@ -210,7 +210,9 @@ export default {
     payment_options: 'Options de paiements',
     payment_option_exist: 'Option de paiement existante',
     payments: 'Paiements',
-    person: 'Person',
+    person: 'Personne',
+    person_transfer_email_sent:
+      'Un courriel pour procéder au transfert a été envoyé à {{email}}',
     people: 'Personnes',
     phase: 'Phase',
     places_left: 'places restantes',
@@ -278,6 +280,9 @@ export default {
     teams_saved: 'Équipes sauvegardées!',
     there_is_no_rosters_for_this_event:
       "Il n'y a pas d'alignements pour cet événement.",
+    to_transfer: 'Transférer',
+    transfer_person_description:
+      "En confirmant vous acceptez de céder toutes les permissions sur cette personne à l'utilisateur possédant l'adresse courriel que vous avez entrée",
     time: 'Temps',
     time_slot: 'Plage horaire',
     time_slot_added: 'Plage horaire ajoutée',

@@ -6,12 +6,27 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { ComponentFactory } from '../../../Custom';
+import { useTranslation } from 'react-i18next';
 export default function BasicFormDialog(props) {
+  const { t } = useTranslation();
+  const defaultButtons = [
+    {
+      onClick: onClose,
+      name: t('cancel'),
+      color: 'secondary',
+    },
+    {
+      type: 'submit',
+      name: t('done'),
+      color: 'primary',
+    },
+  ];
+
   const {
     open,
     title,
     description,
-    buttons,
+    buttons = defaultButtons,
     fields,
     formik,
     onClose,
@@ -45,6 +60,7 @@ export default function BasicFormDialog(props) {
                 onClick={button.onClick}
                 color={button.color}
                 type={button.type}
+                disabled={button.disabled}
               >
                 {button.name}
               </Button>
