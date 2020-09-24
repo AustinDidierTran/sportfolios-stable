@@ -7,6 +7,7 @@ import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import Assignment from '@material-ui/icons/Assignment';
 import AttachMoney from '@material-ui/icons/AttachMoney';
+import Autorenew from '@material-ui/icons/Autorenew';
 import Business from '@material-ui/icons/Business';
 import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
@@ -60,6 +61,7 @@ const icons = {
   ArrowUpward,
   Assignment,
   AttachMoney,
+  Autorenew,
   Business,
   Check,
   Close,

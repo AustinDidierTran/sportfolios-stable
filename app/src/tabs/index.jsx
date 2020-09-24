@@ -12,11 +12,16 @@ const Purchases = loadable(() => import('./Purchases'));
 const Shop = loadable(() => import('./Shop'));
 const Rosters = loadable(() => import('./Rosters'));
 const Schedule = loadable(() => import('./Schedule'));
+const SwitchToAdmin = loadable(() => import('./SwitchToAdmin'));
+const SwitchToUser = loadable(() => import('./SwitchToUser'));
+const EditRankings = loadable(() => import('./EditRankings'));
+const EditSchedule = loadable(() => import('./EditSchedule'));
+const EditRosters = loadable(() => import('./EditRosters'));
 
 export const TABS_ENUM = {
   ABOUT: 'about',
   CART: 'cart',
-  EVENT_INFO: 'event info',
+  EVENT_INFO: 'eventInfo',
   ROSTERS: 'roster',
   EVENTS: 'events',
   GENERAL: 'general',
@@ -24,6 +29,11 @@ export const TABS_ENUM = {
   SHOP: 'shop',
   SETTINGS: 'settings',
   SCHEDULE: 'schedule',
+  SWITCH_TO_ADMIN: 'switchToAdmin',
+  SWITCH_TO_USER: 'switchToUser',
+  EDIT_SCHEDULE: 'editSchedule',
+  EDIT_RANKINGS: 'editRankings',
+  EDIT_ROSTERS: 'editRosters',
 };
 
 export default function Tabs(props) {
@@ -133,6 +143,101 @@ export default function Tabs(props) {
             label: t('settings'),
             icon: 'Settings',
             value: TABS_ENUM.SETTINGS,
+          },
+        ];
+      }
+      return prev;
+    }
+    if (l === TABS_ENUM.SWITCH_TO_ADMIN) {
+      if (
+        [
+          ENTITIES_ROLE_ENUM.ADMIN,
+          ENTITIES_ROLE_ENUM.EDITOR,
+        ].includes(role)
+      ) {
+        return [
+          ...prev,
+          {
+            component: SwitchToAdmin,
+            label: t('admin_view'),
+            icon: 'Autorenew',
+            value: TABS_ENUM.SWITCH_TO_ADMIN,
+          },
+        ];
+      }
+      return prev;
+    }
+    if (l === TABS_ENUM.SWITCH_TO_USER) {
+      if (
+        [
+          ENTITIES_ROLE_ENUM.ADMIN,
+          ENTITIES_ROLE_ENUM.EDITOR,
+        ].includes(role)
+      ) {
+        return [
+          ...prev,
+          {
+            component: SwitchToUser,
+            label: t('user_view'),
+            icon: 'Autorenew',
+            value: TABS_ENUM.SWITCH_TO_USER,
+          },
+        ];
+      }
+      return prev;
+    }
+    if (l === TABS_ENUM.EDIT_SCHEDULE) {
+      if (
+        [
+          ENTITIES_ROLE_ENUM.ADMIN,
+          ENTITIES_ROLE_ENUM.EDITOR,
+        ].includes(role)
+      ) {
+        return [
+          ...prev,
+          {
+            component: EditSchedule,
+            label: t('schedule'),
+            icon: 'Assignment',
+            value: TABS_ENUM.EDIT_SCHEDULE,
+          },
+        ];
+      }
+      return prev;
+    }
+    if (l === TABS_ENUM.EDIT_RANKINGS) {
+      if (
+        [
+          ENTITIES_ROLE_ENUM.ADMIN,
+          ENTITIES_ROLE_ENUM.EDITOR,
+        ].includes(role)
+      ) {
+        return [
+          ...prev,
+          {
+            component: EditRankings,
+            label: t('rankings'),
+            icon: 'EmojiEvents',
+            value: TABS_ENUM.EDIT_RANKINGS,
+          },
+        ];
+      }
+      return prev;
+    }
+    if (l === TABS_ENUM.EDIT_ROSTERS) {
+      if (
+        [
+          ENTITIES_ROLE_ENUM.ADMIN,
+          ENTITIES_ROLE_ENUM.EDITOR,
+        ].includes(role)
+      ) {
+        return [
+          ...prev,
+          {
+            component: EditRosters,
+            label: t('rosters'),
+            icon: 'Group',
+            value: TABS_ENUM.EDIT_ROSTERS,
           },
         ];
       }
