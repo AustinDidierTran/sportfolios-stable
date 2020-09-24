@@ -12,11 +12,13 @@ const Purchases = loadable(() => import('./Purchases'));
 const Shop = loadable(() => import('./Shop'));
 const Rosters = loadable(() => import('./Rosters'));
 const Schedule = loadable(() => import('./Schedule'));
+const Results = loadable(() => import('./Results'));
 const SwitchToAdmin = loadable(() => import('./SwitchToAdmin'));
 const SwitchToUser = loadable(() => import('./SwitchToUser'));
 const EditRankings = loadable(() => import('./EditRankings'));
 const EditSchedule = loadable(() => import('./EditSchedule'));
 const EditRosters = loadable(() => import('./EditRosters'));
+const EditResults = loadable(() => import('./EditResults'));
 
 export const TABS_ENUM = {
   ABOUT: 'about',
@@ -29,11 +31,13 @@ export const TABS_ENUM = {
   SHOP: 'shop',
   SETTINGS: 'settings',
   SCHEDULE: 'schedule',
+  RESULTS: 'results',
   SWITCH_TO_ADMIN: 'switchToAdmin',
   SWITCH_TO_USER: 'switchToUser',
   EDIT_SCHEDULE: 'editSchedule',
   EDIT_RANKINGS: 'editRankings',
   EDIT_ROSTERS: 'editRosters',
+  EDIT_RESULTS: 'editResults',
 };
 
 export default function Tabs(props) {
@@ -115,6 +119,17 @@ export default function Tabs(props) {
           component: Schedule,
           label: t('schedule'),
           icon: 'Assignment',
+        },
+      ];
+    }
+    if (l === TABS_ENUM.RESULTS) {
+      return [
+        ...prev,
+        {
+          value: TABS_ENUM.RESULTS,
+          component: Results,
+          label: t('results'),
+          icon: 'EmojiEvents',
         },
       ];
     }
@@ -217,7 +232,7 @@ export default function Tabs(props) {
           {
             component: EditRankings,
             label: t('rankings'),
-            icon: 'EmojiEvents',
+            icon: 'FormatListNumbered',
             value: TABS_ENUM.EDIT_RANKINGS,
           },
         ];
@@ -238,6 +253,25 @@ export default function Tabs(props) {
             label: t('rosters'),
             icon: 'Group',
             value: TABS_ENUM.EDIT_ROSTERS,
+          },
+        ];
+      }
+      return prev;
+    }
+    if (l === TABS_ENUM.EDIT_RESULTS) {
+      if (
+        [
+          ENTITIES_ROLE_ENUM.ADMIN,
+          ENTITIES_ROLE_ENUM.EDITOR,
+        ].includes(role)
+      ) {
+        return [
+          ...prev,
+          {
+            component: EditResults,
+            label: t('results'),
+            icon: 'EmojiEvents',
+            value: TABS_ENUM.EDIT_RESULTS,
           },
         ];
       }

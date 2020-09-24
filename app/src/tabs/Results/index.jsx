@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import styles from './Games.module.css';
-import { SELECT_ENUM } from '../../../../../common/enums';
+import styles from './Results.module.css';
+import { SELECT_ENUM } from '../../../../common/enums';
 import { useParams } from 'react-router-dom';
-import api from '../../../actions/api';
-import { formatRoute } from '../../../actions/goTo';
+import api from '../../actions/api';
+import { formatRoute } from '../../actions/goTo';
 import moment from 'moment';
-import Game from './Game';
-import GameFilters from './GameFilters';
+import Game from '../Schedule/Games/Game';
+import GameFilters from '../Schedule/Games/GameFilters';
 
-export default function Games(props) {
-  const { role, updated } = props;
+export default function Results() {
   const { id: eventId } = useParams();
   const [games, setGames] = useState([]);
+  const onlyPast = true;
 
   useEffect(() => {
     getGames();
-  }, [eventId, updated]);
-
+  }, [eventId]);
   const sortGames = games => {
     const res = games
       .filter(
@@ -24,7 +23,7 @@ export default function Games(props) {
           moment(game.start_time)
             .set('hour', 0)
             .set('minute', 0)
-            .add(1, 'day') > moment(),
+            .add(1, 'day') < moment(),
       )
       .sort((a, b) => moment(a.start_time) - moment(b.start_time));
     return res;
@@ -68,10 +67,10 @@ export default function Games(props) {
 
   return (
     <>
-      <GameFilters update={filter} />
+      <GameFilters update={filter} onlyPast={onlyPast} />
       <div className={styles.main} style={{ marginTop: '16px' }}>
         {games.map(game => (
-          <Game update={update} role={role} game={game} />
+          <Game update={update} game={game} />
         ))}
       </div>
     </>

@@ -11,22 +11,26 @@ import { formatDate } from '../../../../../utils/stringFormats';
 import moment from 'moment';
 
 export default function TimeSlotSelect(props) {
-  const { onChange, timeSlot } = props;
+  const { onChange, timeSlot, onlyPast: onlyPastProps } = props;
   const { t } = useTranslation();
   const { id: eventId } = useParams();
-
   const [timeSlots, setTimeSlots] = useState([]);
+  const [onlyPast, setOnlyPast] = useState(onlyPastProps);
 
   useEffect(() => {
     getTimeSlots();
   }, []);
+
+  useEffect(() => {
+    setOnlyPast(onlyPastProps);
+  }, [onlyPastProps]);
 
   const getTimeSlots = async () => {
     const { data } = await api(
       formatRoute('/api/entity/slots', null, { eventId }),
     );
 
-    const res = data
+    const mapped = data
       .map(d => ({
         value: moment(d.date).format('YYYY M D'),
         display: formatDate(moment(d.date), 'DD MMM'),
@@ -40,10 +44,24 @@ export default function TimeSlotSelect(props) {
         }
       }, []);
 
-    setTimeSlots([
-      { value: SELECT_ENUM.ALL, display: t('all_time_slots') },
-      ...res,
-    ]);
+    if (onlyPast) {
+      const res = mapped.filter(m => {
+        return moment(m.value).add(1, 'day') < moment();
+      });
+
+      setTimeSlots([
+        { value: SELECT_ENUM.ALL, display: t('all_time_slots') },
+        ...res,
+      ]);
+    } else {
+      const res = mapped.filter(
+        m => moment(m.value).add(1, 'day') > moment(),
+      );
+      setTimeSlots([
+        { value: SELECT_ENUM.ALL, display: t('all_time_slots') },
+        ...res,
+      ]);
+    }
   };
 
   return (

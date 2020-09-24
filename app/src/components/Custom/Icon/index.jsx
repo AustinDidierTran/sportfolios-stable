@@ -23,6 +23,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FiberManualRecord from '@material-ui/icons/FiberManualRecord';
 import Flag from '@material-ui/icons/Flag';
 import Folder from '@material-ui/icons/Folder';
+import FormatListNumbered from '@material-ui/icons/FormatListNumbered';
 import Group from '@material-ui/icons/Group';
 import Home from '@material-ui/icons/Home';
 import Info from '@material-ui/icons/Info';
@@ -77,6 +78,7 @@ const icons = {
   FiberManualRecord,
   Flag,
   Folder,
+  FormatListNumbered,
   Group,
   Home,
   Info,
