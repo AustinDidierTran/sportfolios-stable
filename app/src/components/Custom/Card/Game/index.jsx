@@ -42,7 +42,7 @@ export default function GameItem(props) {
         </Typography>
         <ListItemText
           className={styles.time}
-          primary={formatDate(moment(startTime), 'h:mm')}
+          primary={formatDate(moment(startTime), 'HH:mm')}
           secondary={formatDate(moment(startTime), 'ddd')}
         ></ListItemText>
         <Typography className={styles.field} color="textSecondary">

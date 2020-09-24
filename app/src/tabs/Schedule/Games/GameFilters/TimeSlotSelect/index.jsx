@@ -25,10 +25,21 @@ export default function TimeSlotSelect(props) {
     const { data } = await api(
       formatRoute('/api/entity/slots', null, { eventId }),
     );
-    const res = data.map(d => ({
-      value: d.date,
-      display: formatDate(moment(d.date), 'ddd DD MMM h:mm'),
-    }));
+
+    const res = data
+      .map(d => ({
+        value: moment(d.date).format('YYYY M D'),
+        display: formatDate(moment(d.date), 'DD MMM'),
+      }))
+      .reduce((prev, curr) => {
+        if (prev) {
+          if (!prev.map(p => p.value).includes(curr.value)) {
+            return [...prev, curr];
+          }
+          return prev;
+        }
+      }, []);
+
     setTimeSlots([
       { value: SELECT_ENUM.ALL, display: t('all_time_slots') },
       ...res,

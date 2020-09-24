@@ -1,5 +1,4 @@
 import loadable from '@loadable/component';
-
 import { useTranslation } from 'react-i18next';
 import { ENTITIES_ROLE_ENUM } from '../Store';
 
