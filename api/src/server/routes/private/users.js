@@ -134,4 +134,29 @@ router.get(`${BASE_URL}/emails`, async ctx => {
   }
 });
 
+//Owned persons
+router.get(`${BASE_URL}/ownedPersons`, async ctx => {
+  const { status, persons } = await queries.getOwnedPersons(
+    ctx.body.userInfo.id,
+  );
+  if (status === 200) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: persons,
+    };
+  } else if (status === 403) {
+    ctx.status = 403;
+    ctx.body = {
+      status: 'error',
+      message: 'Token is invalid',
+    };
+  } else {
+    ctx.status = status;
+    ctx.body = {
+      status: 'error',
+    };
+  }
+});
+
 module.exports = router;
