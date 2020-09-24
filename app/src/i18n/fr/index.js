@@ -34,6 +34,7 @@ export default {
     admin: 'Admin',
     admin_has_no_bank_account:
       "Vous ne pouvez pas ajouter une option de paiement car l'administrateur n'a pas de compte banquaire relié à son compte",
+    admin_view: 'Vue admin',
     admins: 'Administrateurs',
     advanced_filters: 'Filtres avancés',
     adress: 'Addresse',
@@ -262,6 +263,7 @@ export default {
     sub: 'Remplacant',
     subscribe: "S'abonner",
     subscribed: 'Abonné',
+    switch_view: 'Changer de vue',
     team: 'Équipe',
     team_1: 'Équipe 1',
     team_2: 'Équipe 2',
@@ -283,6 +285,7 @@ export default {
       'Votre paiement est en cours de traitement. Merci pour votre patience.',
     unsupported_language: 'Langue non supportée',
     upload: 'Téléverser',
+    user_view: 'Vue utilisateur',
     valid_until: "Valide jusqu'au",
     viewer: 'Visiteur',
     accepted: 'Accepté',

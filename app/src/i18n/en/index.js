@@ -34,6 +34,7 @@ export default {
     admin_has_no_bank_account:
       "You can't create a payment option if admin doesn't have a bank account",
     admin: 'Admin',
+    admin_view: 'Admin view',
     admins: 'Admins',
     advanced_filters: 'Advanced filters',
     adress: 'Address',
@@ -256,6 +257,7 @@ export default {
     subscribe: 'Subscribe',
     subscribed: 'Subscribed',
     shop: 'Shop',
+    switch_view: 'Switch view',
     error_start_date_before_end:
       'Start date should be before end date.',
     to_see_your_receipt:
@@ -280,6 +282,7 @@ export default {
       'Your payment is being processed. Thank you for your patience',
     unsupported_language: 'Unsupported language',
     upload: 'Upload',
+    user_view: 'User view',
     valid_until: 'Valid until',
     viewer: 'Viewer',
     yes: 'yes',
