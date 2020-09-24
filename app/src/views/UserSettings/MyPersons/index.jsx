@@ -1,5 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { GLOBAL_ENUM } from '../../../../../common/enums';
+import React, { useEffect, useState, useContext } from 'react';
+import {
+  GLOBAL_ENUM,
+  STATUS_ENUM,
+  SEVERITY_ENUM,
+} from '../../../../../common/enums';
+import { ERROR_ENUM } from '../../../../../common/errors';
 import {
   Grid,
   IconButton,
@@ -18,11 +23,15 @@ import { formatRoute } from '../../../actions/goTo';
 import api from '../../../actions/api';
 import { LoadingSpinner, Avatar } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
+import EditPrimaryPerson from './EditPrimaryPerson';
+import { Store, ACTION_ENUM } from '../../../Store';
 
 export default function MyPersons() {
   const { t } = useTranslation();
   const [persons, setPersons] = useState([]);
-  const [isLoading, setIsLoading] = useState([true]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [editPrimaryPerson, setEditPrimaryPerson] = useState(false);
+  const { dispatch } = useContext(Store);
 
   const fetchOwnedPersons = async () => {
     const { data } = await api(
@@ -37,9 +46,39 @@ export default function MyPersons() {
         break;
       }
     }
-
     setPersons(data);
     setIsLoading(false);
+  };
+
+  const closeEditPrimaryPerson = () => {
+    setEditPrimaryPerson(false);
+  };
+
+  const submitPrimaryPerson = async newPrimaryPersonId => {
+    if (persons[0].id !== newPrimaryPersonId) {
+      const res = await api('/api/user/primaryPerson', {
+        method: 'PUT',
+        body: JSON.stringify({
+          primaryPerson: newPrimaryPersonId,
+        }),
+      });
+      if (res.status === STATUS_ENUM.ERROR) {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: ERROR_ENUM.ERROR_OCCURED,
+          severity: SEVERITY_ENUM.ERROR,
+          duration: 4000,
+        });
+      } else {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: t('primary_person_changed'),
+          severity: SEVERITY_ENUM.SUCCES,
+          duration: 2000,
+        });
+      }
+    }
+    setEditPrimaryPerson(false);
   };
 
   useEffect(() => {
@@ -51,46 +90,64 @@ export default function MyPersons() {
   }
 
   return (
-    <Card className={styles.card}>
-      <Grid item xs={12}>
-        <Typography variant="h6" className={styles.title}>
-          {t('my_persons')}
-        </Typography>
-        <div className={styles.demo}>
-          <List>
-            {persons.map(person => {
-              const subtitle = person.isPrimaryPerson
-                ? t('primary_person')
-                : t('secondary_person'); //TODO use translate
-              const Icon = person.isPrimaryPerson
-                ? EditIcon
-                : SendIcon;
-              return (
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar
-                      photoUrl={person.photoUrl}
-                      initials={
-                        person.name.charAt(0) +
-                        person.surname.charAt(0)
-                      }
+    <>
+      <Card className={styles.card}>
+        <Grid item xs={12}>
+          <Typography variant="h6" className={styles.title}>
+            {t('my_persons')}
+          </Typography>
+          <div className={styles.demo}>
+            <List>
+              {persons.map(person => {
+                var subtitle;
+                var Icon;
+                var onIconClick;
+                if (person.isPrimaryPerson) {
+                  subtitle = t('primary_person');
+                  Icon = EditIcon;
+                  onIconClick = () => setEditPrimaryPerson(true);
+                } else {
+                  subtitle = t('secondary_person');
+                  Icon = SendIcon;
+                  onIconClick = () => console.log('sendIcon clicked');
+                }
+                return (
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar
+                        photoUrl={person.photoUrl}
+                        initials={
+                          person.name.charAt(0) +
+                          person.surname.charAt(0)
+                        }
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={person.name + ' ' + person.surname}
+                      secondary={subtitle}
                     />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={person.name + ' ' + person.surname}
-                    secondary={subtitle}
-                  />
-                  <ListItemSecondaryAction>
-                    <IconButton edge="end" aria-label="delete">
-                      <Icon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              );
-            })}
-          </List>
-        </div>
-      </Grid>
-    </Card>
+                    <ListItemSecondaryAction>
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
+                        onClick={onIconClick}
+                      >
+                        <Icon />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </div>
+        </Grid>
+      </Card>
+      <EditPrimaryPerson
+        open={editPrimaryPerson}
+        persons={persons}
+        handleClose={closeEditPrimaryPerson}
+        handleSubmit={submitPrimaryPerson}
+      />
+    </>
   );
 }
