@@ -220,6 +220,7 @@ export default {
     pre_ranking: 'Préclassement',
     price: 'Prix',
     primary_person: 'Personne principale',
+    primary_person_changed: 'Personne principale changée',
     product_added_to_cart: 'Produit ajouté au panier',
     phone_number: 'Numéro de téléphone',
     purchased_on: 'Acheté le',
@@ -247,6 +248,8 @@ export default {
     select_person: 'Sélectionner une personne',
     save_basic_info: 'Sauvegarder informations',
     select_language: 'Sélectionner votre langue',
+    select_your_primary_person:
+      'Sélectionner votre personne principale',
     send_new_confirmation_email:
       'Envoyer un nouveau courriel de confirmation',
     send_password_recovery_email:
