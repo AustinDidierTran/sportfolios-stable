@@ -99,7 +99,10 @@ router.post(`${BASE_URL}/suggestScore`, async ctx => {
 });
 
 router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
-  const player = await queries.addPlayerToRoster(ctx.request.body);
+  const player = await queries.addPlayerToRoster(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (player) {
     ctx.status = 201;
     ctx.body = {

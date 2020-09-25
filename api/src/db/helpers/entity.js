@@ -1588,26 +1588,34 @@ const deleteOption = async id => {
     .del();
 };
 
-const addPlayerToRoster = async body => {
+const addPlayerToRoster = async (body, userId) => {
   const { personId, name, id, rosterId, isSub } = body;
   //TODO: Make sure userId adding is team Admin
   let player = {};
-  if (id) {
+  if (personId) {
     player = await knex('team_players')
       .insert({
         roster_id: rosterId,
         person_id: personId,
         name: name,
-        id: realId,
+        id,
         is_sub: isSub,
       })
       .returning('*');
   } else {
+    const person = await addEntity(
+      {
+        name,
+        type: GLOBAL_ENUM.PERSON,
+      },
+      userId,
+    );
     player = await knex('team_players')
       .insert({
         roster_id: rosterId,
-        person_id: personId,
+        person_id: person.id,
         name: name,
+        id,
         is_sub: isSub,
       })
       .returning('*');
