@@ -74,6 +74,7 @@ export default {
     category: 'Catégorie',
     change_password: 'Changer votre mot de passe',
     choose_your_primary_person: 'Choisir votre personne principale',
+    change_team: "Changer l'équipe",
     comments: 'Commentaires',
     confirm: 'Confirmer',
     confirmation_email_sent:
@@ -269,7 +270,7 @@ export default {
       '0: Mauvais  1: Moyen  2: Bon ou rien à signaler  3: Très bon  4: Mémorable',
     status: 'Statut',
     submit_score: 'Soumettre un résultat',
-    sub: 'Remplacant',
+    sub: 'Remplaçant',
     sub_added: 'Remplaçant ajouté',
     subscribe: "S'abonner",
     subscribed: 'Abonné',

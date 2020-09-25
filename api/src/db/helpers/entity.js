@@ -1197,7 +1197,7 @@ async function addScoreSuggestion(
       opposing_team_spirit: opposingTeamSpirit,
       players,
       comments,
-      suggestedBy,
+      created_by: suggestedBy,
     })
     .returning('*');
   return res;

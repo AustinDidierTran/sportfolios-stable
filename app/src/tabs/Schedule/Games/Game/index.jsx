@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 
-import { Card, AlertDialog } from '../../../../components/Custom';
+import {
+  Card,
+  AlertDialog,
+  FormDialog,
+} from '../../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import api from '../../../../actions/api';
 import {
   CARD_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,
+  FORM_DIALOG_TYPE_ENUM,
 } from '../../../../../../common/enums';
 import EditGameDialog from './EditGameDialog';
 import { formatRoute } from '../../../../actions/goTo';
-import SubmitScoreDialog from '../../SubmitScore/SubmitScoreDialog';
 import EnterScoreAndSpirit from '../ChangeGame/EnterScoreAndSpirit';
 
 export default function Game(props) {
@@ -112,10 +116,13 @@ export default function Game(props) {
         }}
         type={CARD_TYPE_ENUM.GAME}
       />
-      <SubmitScoreDialog
-        open={submitScore}
-        onClose={closeSubmitScore}
-        game={game}
+      <FormDialog
+        type={FORM_DIALOG_TYPE_ENUM.SUBMIT_SCORE_AND_SPIRIT}
+        items={{
+          open: submitScore,
+          onClose: closeSubmitScore,
+          game: game,
+        }}
       />
     </>
   );

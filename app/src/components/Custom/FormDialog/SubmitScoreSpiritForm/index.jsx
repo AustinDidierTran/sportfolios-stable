@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { FormDialog } from '../../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
@@ -19,23 +20,47 @@ import {
 import moment from 'moment';
 import { formatRoute } from '../../../../actions/goTo';
 import validator from 'validator';
-import BasicFormDialog from '../BasicFormDialog';
+import AddPlayer from './AddPlayer';
 
-export default function SubmitScoreSpiritForm(props) {
+export default function SubmitScoreDialog(props) {
+  const { open: openProps, onClose, game } = props;
   const { t } = useTranslation();
-  const { dispatch } = useContext(Store);
+  const {
+    state: { userInfo },
+    dispatch,
+  } = useContext(Store);
   const { id: eventId } = useParams();
+
+  const [open, setOpen] = useState(false);
+  const [addPlayer, setAddPlayer] = useState(false);
   const [slots, setSlots] = useState([]);
   const [teams, setTeams] = useState([]);
   const [roster, setRoster] = useState([]);
   const [fullRoster, setFullRoster] = useState([]);
   const [total, setTotal] = useState(10);
 
-  const { open } = props;
+  const onAddPlayer = () => {
+    setAddPlayer(true);
+  };
+
+  const onAddPlayerClose = () => {
+    setAddPlayer(false);
+  };
+
+  const updateRoster = player => {
+    const newRoster = [...roster, player];
+    setRoster(newRoster);
+  };
 
   useEffect(() => {
-    getOptions();
+    if (open) {
+      getOptions();
+    }
   }, [open]);
+
+  useEffect(() => {
+    setOpen(openProps);
+  }, [openProps]);
 
   const getRoster = async rosterId => {
     const { data } = await api(
@@ -65,23 +90,29 @@ export default function SubmitScoreSpiritForm(props) {
     setSlots(s);
     setTeams(t);
 
-    if (t[0]) {
-      formik.setFieldValue('yourTeam', t[0].value);
-    }
-    if (t[1]) {
-      formik.setFieldValue('opposingTeam', t[1].value);
-    }
+    if (game) {
+      formik.setFieldValue('yourTeam', game.teams[0].roster_id);
+      formik.setFieldValue('opposingTeam', game.teams[1].roster_id);
+      formik.setFieldValue('timeSlot', game.start_time);
+    } else {
+      if (t[0]) {
+        formik.setFieldValue('yourTeam', t[0].value);
+      }
+      if (t[1]) {
+        formik.setFieldValue('opposingTeam', t[1].value);
+      }
 
-    const pastSlots = slots
-      .filter(slot => moment(slot.value) < moment())
-      .map(slot => moment(slot.value));
-    const date = moment.max(pastSlots);
+      const pastSlots = slots
+        .filter(slot => moment(slot.value) < moment())
+        .map(slot => moment(slot.value));
+      const date = moment.max(pastSlots);
 
-    const def = slots.filter(slot => {
-      return moment(slot.value).isSame(date);
-    });
-    if (def[0]) {
-      formik.setFieldValue('timeSlot', def[0].value);
+      const def = slots.filter(slot => {
+        return moment(slot.value).isSame(date);
+      });
+      if (def[0]) {
+        formik.setFieldValue('timeSlot', def[0].value);
+      }
     }
   };
 
@@ -92,10 +123,6 @@ export default function SubmitScoreSpiritForm(props) {
   const handleClose = () => {
     formik.resetForm();
     onClose();
-  };
-
-  const onClose = () => {
-    setOpen(false);
   };
 
   const validate = values => {
@@ -184,6 +211,12 @@ export default function SubmitScoreSpiritForm(props) {
       let yourTeamId = null;
       let opposingTeamName = null;
       let opposingTeamId = null;
+
+      const suggestedBy =
+        typeof userInfo.persons === 'undefined'
+          ? null
+          : userInfo.persons[0].entity_id;
+
       if (validator.isUUID(yourTeam)) {
         yourTeamId = yourTeam;
       } else {
@@ -215,7 +248,7 @@ export default function SubmitScoreSpiritForm(props) {
       });
 
       resetForm();
-      if (res.status === STATUS_ENUM.ERROR) {
+      if (res.status === STATUS_ENUM.ERROR || res.status >= 400) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: ERROR_ENUM.ERROR_OCCURED,
@@ -235,7 +268,9 @@ export default function SubmitScoreSpiritForm(props) {
   });
 
   useEffect(() => {
-    getRoster(formik.values.yourTeam);
+    if (formik.values.yourTeam) {
+      getRoster(formik.values.yourTeam);
+    }
   }, [formik.values.yourTeam]);
 
   const spiritOptions = [
@@ -279,6 +314,15 @@ export default function SubmitScoreSpiritForm(props) {
       options: fullRoster.map(r => r.display),
       values: roster,
       onChange: handleChange,
+    },
+    {
+      componentType: COMPONENT_TYPE_ENUM.BUTTON,
+      namespace: 'addPlayer',
+      children: t('add_player'),
+      endIcon: 'Add',
+      onClick: onAddPlayer,
+      variant: 'contained',
+      color: 'primary',
     },
     {
       namespace: 'yourScore',
@@ -348,14 +392,23 @@ export default function SubmitScoreSpiritForm(props) {
       type: 'text',
     },
   ];
+
   return (
-    <BasicFormDialog
-      open={open}
-      title={t('submit_score')}
-      buttons={buttons}
-      fields={fields}
-      formik={formik}
-      onClose={onClose}
-    />
+    <>
+      <FormDialog
+        open={open}
+        title={t('submit_score')}
+        buttons={buttons}
+        fields={fields}
+        formik={formik}
+        onClose={onClose}
+      />
+      <AddPlayer
+        open={addPlayer}
+        onClose={onAddPlayerClose}
+        rosterId={formik.values.yourTeam}
+        updateRoster={updateRoster}
+      />
+    </>
   );
 }
