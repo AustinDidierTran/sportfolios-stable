@@ -5,7 +5,7 @@ import styles from './Email.module.css';
 import ConfirmedEmailField from './ConfirmedEmailField';
 import NewEmailField from './NewEmailField';
 import UnconfirmedEmailField from './UnconfirmedEmailField';
-import _ from 'lodash';
+import partition from 'lodash/partition';
 import api from '../../../actions/api';
 
 export default function Email() {
@@ -20,7 +20,7 @@ export default function Email() {
     fetchAllEmails();
   }, []);
 
-  const [confirmedEmails, unconfirmedEmails] = _.partition(
+  const [confirmedEmails, unconfirmedEmails] = partition(
     emails,
     email => email.confirmed_email_at,
   );

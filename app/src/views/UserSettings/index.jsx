@@ -9,6 +9,7 @@ import Email from './Email';
 import { IgContainer } from '../../components/Custom';
 import { formatPageTitle } from '../../utils/stringFormats';
 import { useTranslation } from 'react-i18next';
+import MyPersons from './MyPersons';
 
 export default function UserSettings() {
   const { t } = useTranslation();
@@ -22,6 +23,7 @@ export default function UserSettings() {
         <BasicInfo />
         <ChangePassword />
         <Email />
+        <MyPersons />
         <Disconnect />
       </IgContainer>
     </div>

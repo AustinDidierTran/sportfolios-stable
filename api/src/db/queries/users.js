@@ -1,3 +1,4 @@
+const { GLOBAL_ENUM } = require('../../../../common/enums');
 const bcrypt = require('bcrypt');
 
 const {
@@ -10,7 +11,10 @@ const {
   sendNewConfirmationEmailAllIncluded,
   updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,
+  getPrimaryPersonIdFromUserId,
 } = require('../helpers');
+
+const { getAllOwnedEntities } = require('../helpers/entity');
 
 const addEmail = async (user_id, { email }) => {
   if (!user_id) {
@@ -93,10 +97,40 @@ const userInfo = async id => {
   return { basicUserInfo, status: 200 };
 };
 
+const getPrimaryPersonId = async userId => {
+  const { id } = await getPrimaryPersonIdFromUserId(userId);
+  if (!id) {
+    return { status: 403 };
+  }
+
+  return { status: 200, id };
+};
+
+const getOwnedPersons = async userId => {
+  const persons = await getAllOwnedEntities(
+    GLOBAL_ENUM.PERSON,
+    userId,
+  );
+  const primaryPersonId = await getPrimaryPersonIdFromUserId(userId);
+  if (!persons || !primaryPersonId) {
+    return { status: 403 };
+  }
+  var res = await Promise.all(
+    persons.map(async person => {
+      const isPrimaryPerson = person.id == primaryPersonId;
+      const obj = { ...person, isPrimaryPerson };
+      return obj;
+    }),
+  );
+  return { status: 200, persons: res };
+};
+
 module.exports = {
   addEmail,
   changePassword,
   changeUserInfo,
   getEmails,
   userInfo,
+  getPrimaryPersonId,
+  getOwnedPersons,
 };

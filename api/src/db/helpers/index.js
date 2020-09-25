@@ -185,6 +185,13 @@ const getHashedPasswordFromId = async id => {
   return password;
 };
 
+const getPrimaryPersonIdFromUserId = async user_id => {
+  const [{ primary_person: id }] = await knex('user_primary_person')
+    .select('primary_person')
+    .where({ user_id });
+  return id;
+};
+
 const getUserIdFromEmail = async body => {
   const { email } = body;
 
@@ -300,4 +307,5 @@ module.exports = {
   updatePasswordFromUserId,
   validateEmailIsConfirmed,
   validateEmailIsUnique,
+  getPrimaryPersonIdFromUserId,
 };

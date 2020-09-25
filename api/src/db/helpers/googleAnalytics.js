@@ -38,6 +38,15 @@ async function updatePageviewsPathnameToggle(pathnameId, enabled) {
     .returning('*');
 }
 
+async function addPageviewsPathname(pathname, enabled) {
+  return knex('ga_toggles_pageviews')
+    .insert({
+      pathname,
+      enabled,
+    })
+    .returning('*');
+}
+
 module.exports = {
   getEventCategories,
   getPageviewPathnames,
@@ -45,4 +54,5 @@ module.exports = {
   getActivePageviewsPathnames,
   updateEventCategoryToggle,
   updatePageviewsPathnameToggle,
+  addPageviewsPathname,
 };
