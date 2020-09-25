@@ -104,7 +104,7 @@ const userInfo = async id => {
 };
 
 const getPrimaryPersonId = async userId => {
-  const { id } = await getPrimaryPersonIdFromUserId(userId);
+  const id = await getPrimaryPersonIdFromUserId(userId);
   if (!id) {
     return { status: 403 };
   }

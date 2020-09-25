@@ -27,7 +27,7 @@ export default function EditPrimaryPerson(props) {
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{t('select_your_primary_person')}</DialogTitle>
+      <DialogTitle>{t('choose_your_primary_person')}</DialogTitle>
       <DialogContent>
         <FormControl>
           <RadioGroup value={selectedValue} onChange={handleChange}>

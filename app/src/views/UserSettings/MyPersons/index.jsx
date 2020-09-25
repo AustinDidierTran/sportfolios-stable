@@ -5,23 +5,11 @@ import {
   SEVERITY_ENUM,
 } from '../../../../../common/enums';
 import { ERROR_ENUM } from '../../../../../common/errors';
-import {
-  Grid,
-  IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  Typography,
-  ListItemSecondaryAction,
-  ListItemText,
-  Card,
-} from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import SendIcon from '@material-ui/icons/Send';
+import { Card } from '@material-ui/core';
 import styles from './MyPersons.module.css';
 import { formatRoute } from '../../../actions/goTo';
 import api from '../../../actions/api';
-import { LoadingSpinner, Avatar } from '../../../components/Custom';
+import { LoadingSpinner, List } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import EditPrimaryPerson from './EditPrimaryPerson';
 import { Store, ACTION_ENUM } from '../../../Store';
@@ -93,55 +81,29 @@ export default function MyPersons() {
   return (
     <>
       <Card className={styles.card}>
-        <Grid item xs={12}>
-          <Typography variant="h6" className={styles.title}>
-            {t('my_persons')}
-          </Typography>
-          <div className={styles.demo}>
-            <List>
-              {persons.map(person => {
-                var subtitle;
-                var Icon;
-                var onIconClick;
-                if (person.isPrimaryPerson) {
-                  subtitle = t('primary_person');
-                  Icon = EditIcon;
-                  onIconClick = () => setEditPrimaryPerson(true);
-                } else {
-                  subtitle = t('secondary_person');
-                  Icon = SendIcon;
-                  onIconClick = () => console.log('sendIcon clicked');
-                }
-                return (
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar
-                        photoUrl={person.photoUrl}
-                        initials={
-                          person.name.charAt(0) +
-                          person.surname.charAt(0)
-                        }
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={person.name + ' ' + person.surname}
-                      secondary={subtitle}
-                    />
-                    <ListItemSecondaryAction>
-                      <IconButton
-                        edge="end"
-                        aria-label="delete"
-                        onClick={onIconClick}
-                      >
-                        <Icon />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                );
-              })}
-            </List>
-          </div>
-        </Grid>
+        <List
+          title={t('my_persons')}
+          items={persons.map(person => {
+            let subtitle;
+            let icon;
+            let onIconClick;
+            if (person.isPrimaryPerson) {
+              subtitle = t('primary_person');
+              icon = 'Edit';
+              onIconClick = () => setEditPrimaryPerson(true);
+            } else {
+              subtitle = t('secondary_person');
+              icon = 'Send';
+              onIconClick = () => console.log('sendIcon clicked');
+            }
+            return {
+              ...person,
+              secondary: subtitle,
+              iconButton: icon,
+              onIconButtonClick: onIconClick,
+            };
+          })}
+        />
       </Card>
       <EditPrimaryPerson
         open={editPrimaryPerson}
