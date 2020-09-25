@@ -16,6 +16,7 @@ export default function EditResults() {
   useEffect(() => {
     getGames();
   }, [eventId]);
+
   const sortGames = games => {
     const res = games
       .filter(
