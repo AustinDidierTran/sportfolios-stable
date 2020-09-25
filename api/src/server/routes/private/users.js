@@ -161,8 +161,8 @@ router.get(`${BASE_URL}/ownedPersons`, async ctx => {
 
 router.put(`${BASE_URL}/primaryPerson`, async ctx => {
   const success = await queries.updatePrimaryPerson(
-    ctx.request.body,
     ctx.body.userInfo.id,
+    ctx.request.body,
   );
   if (success) {
     ctx.status = 200;
@@ -176,6 +176,16 @@ router.put(`${BASE_URL}/primaryPerson`, async ctx => {
       message: 'That person does not exist.',
     };
   }
+});
+
+router.post(`${BASE_URL}/transferPerson`, async ctx => {
+  console.log('route');
+  const r = ctx.request.body;
+  console.log({ r });
+  await queries.sendTransferPersonEmail(
+    ctx.body.userInfo.id,
+    ctx.request.body,
+  );
 });
 
 module.exports = router;

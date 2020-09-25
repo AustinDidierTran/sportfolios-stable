@@ -4,7 +4,12 @@ const {
   LOGO_ENUM,
   LANGUAGE_ENUM,
 } = require('../../../../common/enums');
-const { getLanguageFromEmail } = require('../../db/helpers/index');
+/*const {
+  getLanguageFromEmail,
+  /*getUserIdFromEmail,
+  getBasicUserInfoFromId,
+  getPrimaryPersonIdFromUserId,
+} = require('../../db/helpers');*/
 
 let key;
 
@@ -65,8 +70,12 @@ async function getHtml(title, content, link, buttonName) {
   return `<html><body style="font-family:Helvetica"><h1>${title}</h1><p>${content}</p><a href=${link} target="_blank"><button>${buttonName}</button></a><img src=${LOGO_ENUM.LOGO_256X256}></img><br/><footer> <p>  <a href=${CLIENT_BASE_URL} target="_blank"> sportfolios.app </a></p></body> </html>`;
 }
 
-async function sendConfirmationEmail({ email, token, successRoute }) {
-  const language = await getLanguageFromEmail(email);
+async function sendConfirmationEmail({
+  email,
+  language,
+  token,
+  successRoute,
+}) {
   let html = '';
   let subject = '';
   let title = '';
@@ -98,6 +107,53 @@ async function sendConfirmationEmail({ email, token, successRoute }) {
     html,
   });
 }
+
+const sendPersonTransferEmail = async ({
+  email,
+  sendedName,
+  senderName,
+  language,
+  token,
+}) => {
+  console.log('nodemail');
+
+  let html = '';
+  let subject = '';
+  let title = '';
+  let content = '';
+  let link = '';
+  let buttonName = '';
+  if (language === LANGUAGE_ENUM.ENGLISH) {
+    subject =
+      senderName +
+      ' wants to transfer a person to your account | Sportfolios';
+    title = 'Person Transfer';
+    content =
+      senderName +
+      ' wants to transfer the person ' +
+      sendedName +
+      ' on Sportfolios. Click on the following link to sign in and complete the transfer 👇';
+    buttonName = 'Accept the transfer';
+  } else {
+    subject =
+      senderName +
+      ' veut transférer une personne à votre compte | Sportfolios';
+    title = 'Transfère de personne';
+    content =
+      senderName +
+      ' veut vous transférer la personne ' +
+      sendedName +
+      ' sur Sportfolios. Cliquez sur le lien suivant pour vous connecter et finaliser le transfert 👇';
+    buttonName = 'Accepter le transfert';
+  }
+  link = `${CLIENT_BASE_URL}/transferPerson/${token}`;
+  html = await getHtml(title, content, link, buttonName);
+  await sendMail({
+    email,
+    subject,
+    html,
+  });
+};
 
 async function sendReceiptEmail({ email, receipt }) {
   const language = await getLanguageFromEmail(email);
@@ -218,4 +274,5 @@ module.exports = {
   sendReceiptEmail,
   sendAcceptedRegistrationEmail,
   sendTeamRegistrationEmailToAdmin,
+  sendPersonTransferEmail,
 };

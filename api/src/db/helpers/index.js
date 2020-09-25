@@ -8,7 +8,8 @@ const {
 
 const {
   sendConfirmationEmail,
-} = require('../../server/utils//nodeMailer');
+  sendPersonTransferEmail,
+} = require('../../server/utils/nodeMailer');
 const { ERROR_ENUM } = require('../../../../common/errors');
 
 const confirmEmail = async ({ email }) => {
@@ -204,8 +205,11 @@ const getUserIdFromEmail = async body => {
 
 const getLanguageFromEmail = async email => {
   const id = await getUserIdFromEmail({ email });
-  const infos = await getBasicUserInfoFromId(id);
-  return infos.language;
+  let infos;
+  if (id) {
+    infos = await getBasicUserInfoFromId(id);
+  }
+  return infos ? infos.language : undefined;
 };
 
 const getUserIdFromRecoveryPasswordToken = async token => {
@@ -278,6 +282,7 @@ const sendNewConfirmationEmailAllIncluded = async (
   successRoute,
 ) => {
   const confirmationEmailToken = generateToken();
+  const language = await getLanguageFromEmail(email);
 
   await createConfirmationEmailToken({
     email,
@@ -286,8 +291,41 @@ const sendNewConfirmationEmailAllIncluded = async (
 
   await sendConfirmationEmail({
     email,
+    language,
     token: confirmationEmailToken,
     successRoute,
+  });
+};
+
+const sendPersonTransferEmailAllIncluded = async ({
+  email,
+  sendedPersonId,
+  senderUserId,
+}) => {
+  const personTransferToken = generateToken();
+  const sender = await getBasicUserInfoFromId(senderUserId);
+  const language =
+    (await getLanguageFromEmail(email)) || sender.language;
+  const senderPrimaryPersonId = await getPrimaryPersonIdFromUserId(
+    senderUserId,
+  );
+  const senderPrimaryPerson = sender.persons.find(
+    person => person.entity_id === senderPrimaryPersonId,
+  );
+  const senderName =
+    senderPrimaryPerson.name + ' ' + senderPrimaryPerson.surname;
+
+  const sendedPerson = sender.persons.find(
+    person => person.entity_id === sendedPersonId,
+  );
+  const sendedName = sendedPerson.name + ' ' + sendedPerson.surname;
+  //TODO Save token in db with person id and email
+  await sendPersonTransferEmail({
+    email,
+    sendedName,
+    senderName,
+    language,
+    token: personTransferToken,
   });
 };
 
@@ -315,4 +353,5 @@ module.exports = {
   validateEmailIsUnique,
   getPrimaryPersonIdFromUserId,
   updatePrimaryPerson,
+  sendPersonTransferEmailAllIncluded,
 };

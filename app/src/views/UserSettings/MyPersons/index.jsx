@@ -25,7 +25,7 @@ export default function MyPersons() {
   const [isLoading, setIsLoading] = useState(true);
   const [editPrimaryPerson, setEditPrimaryPerson] = useState(false);
   const [sendPerson, setSendPerson] = useState(false);
-  const [selectedPersonName, setSelectedPersonName] = useState();
+  const [selectedPerson, setSelectedPerson] = useState();
   const { dispatch } = useContext(Store);
 
   const fetchOwnedPersons = async () => {
@@ -53,8 +53,15 @@ export default function MyPersons() {
     setSendPerson(false);
   };
 
-  const onSendEmail = email => {
+  const onSendEmail = async email => {
     closeSendPerson();
+    await api('/api/user/transferPerson', {
+      method: 'POST',
+      body: JSON.stringify({
+        email,
+        sendedPersonId: selectedPerson.id,
+      }),
+    });
     dispatch({
       type: ACTION_ENUM.SNACK_BAR,
       message: t('person_transfer_email_sent', { email }),
@@ -115,17 +122,17 @@ export default function MyPersons() {
             } else {
               subtitle = t('secondary_person');
               icon = 'Send';
-              onIconClick = name => {
-                setSelectedPersonName(name);
+              onIconClick = person => {
+                setSelectedPerson(person);
                 setSendPerson(true);
               };
             }
             return {
               ...person,
+              completeName: person.name + ' ' + person.surname,
               secondary: subtitle,
               iconButton: icon,
-              onIconButtonClick: () =>
-                onIconClick(person.name + ' ' + person.surname),
+              onIconButtonClick: () => onIconClick(person),
             };
           })}
         />
@@ -141,7 +148,14 @@ export default function MyPersons() {
         items={{
           open: sendPerson,
           onClose: closeSendPerson,
-          title: t('to_transfer') + ' ' + selectedPersonName,
+          title:
+            t('to_transfer') +
+            (selectedPerson
+              ? ' ' +
+                selectedPerson.name +
+                ' ' +
+                selectedPerson.surname
+              : ''),
           description: t('transfer_person_description'),
           onSubmit: onSendEmail,
         }}

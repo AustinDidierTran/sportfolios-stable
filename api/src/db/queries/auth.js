@@ -50,10 +50,11 @@ const signup = async ({
     email,
     token: confirmationEmailToken,
   });
-
+  const language = await getLanguageFromEmail(email);
   // Send confirmation email with link
   await sendConfirmationEmail({
     email,
+    language,
     token: confirmationEmailToken,
     successRoute,
   });
@@ -159,10 +160,16 @@ const resendConfirmationEmail = async ({ email, successRoute }) => {
   }
 
   const token = generateToken();
+  const language = await getLanguageFromEmail(email);
 
   await createConfirmationEmailToken({ email, token });
 
-  await sendConfirmationEmail({ email, token, successRoute });
+  await sendConfirmationEmail({
+    email,
+    language,
+    token,
+    successRoute,
+  });
 
   return 200;
 };

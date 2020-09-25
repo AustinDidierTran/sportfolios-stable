@@ -15,12 +15,28 @@ const {
   updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,
   getPrimaryPersonIdFromUserId,
+  sendPersonTransferEmailAllIncluded,
   updatePrimaryPerson: updatePrimaryPersonHelper,
 } = require('../helpers');
 
 const { getAllOwnedEntities } = require('../helpers/entity');
 
 const { isAllowed } = require('./entity');
+
+const sendTransferPersonEmail = async (
+  user_id,
+  { email, sendedPersonId },
+) => {
+  console.log('query');
+  console.log(user_id);
+  console.log({ email, sendedPersonId, senderUserId: user_id });
+  sendPersonTransferEmailAllIncluded({
+    email,
+    sendedPersonId,
+    senderUserId: user_id,
+  });
+  return 200;
+};
 
 const addEmail = async (user_id, { email }) => {
   if (!user_id) {
@@ -149,4 +165,5 @@ module.exports = {
   getPrimaryPersonId,
   getOwnedPersons,
   updatePrimaryPerson,
+  sendTransferPersonEmail,
 };
