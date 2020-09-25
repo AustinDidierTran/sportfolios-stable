@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { FormDialog } from '../../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
@@ -20,6 +19,7 @@ import {
 import moment from 'moment';
 import { formatRoute } from '../../../../actions/goTo';
 import validator from 'validator';
+import BasicFormDialog from '../BasicFormDialog';
 import AddPlayer from './AddPlayer';
 
 export default function SubmitScoreDialog(props) {
@@ -212,10 +212,9 @@ export default function SubmitScoreDialog(props) {
       let opposingTeamName = null;
       let opposingTeamId = null;
 
-      const suggestedBy =
-        typeof userInfo.persons === 'undefined'
-          ? null
-          : userInfo.persons[0].entity_id;
+      const suggestedBy = userInfo.persons
+        ? userInfo.persons[0].entity_id
+        : null;
 
       if (validator.isUUID(yourTeam)) {
         yourTeamId = yourTeam;
@@ -395,7 +394,7 @@ export default function SubmitScoreDialog(props) {
 
   return (
     <>
-      <FormDialog
+      <BasicFormDialog
         open={open}
         title={t('submit_score')}
         buttons={buttons}
