@@ -6,7 +6,7 @@ import MyRosterCard from '../MyRosterCard';
 
 export default function Rosters(props) {
   const { rosters, onAdd, onDelete } = props;
-  const [expandedPosition, setExpandedPosition] = useState(0);
+  const [expandedIndex, setExpandedIndex] = useState(0);
 
   if (!rosters || !rosters.length) {
     // TODO: It should say there are no rosters [WCS-372]
@@ -26,11 +26,11 @@ export default function Rosters(props) {
           return (
             <MyRosterCard
               roster={roster}
-              expandedPosition={expandedPosition}
-              setExpandedPosition={setExpandedPosition}
+              expandedIndex={expandedIndex}
+              setExpandedIndex={setExpandedIndex}
               onAdd={onAdd}
               onDelete={onDelete}
-              index={index}
+              index={index + 1}
             />
           );
         }
@@ -38,8 +38,9 @@ export default function Rosters(props) {
         return (
           <RosterCard
             roster={roster}
-            expandedPosition={expandedPosition}
-            setExpandedPosition={setExpandedPosition}
+            expandedIndex={expandedIndex}
+            setExpandedIndex={setExpandedIndex}
+            index={index + 1}
           />
         );
       })}

@@ -14,8 +14,8 @@ const isEven = n => {
 export default function MyRosterCard(props) {
   const {
     roster,
-    expandedPosition,
-    setExpandedPosition,
+    expandedIndex,
+    setExpandedIndex,
     onDelete,
     onAdd,
     index,
@@ -32,14 +32,12 @@ export default function MyRosterCard(props) {
   const [expanded, setExpanded] = useState(true);
 
   const onExpand = () => {
-    setExpandedPosition(oldPosition =>
-      oldPosition === position ? 0 : position,
-    );
+    setExpandedIndex(oldIndex => (oldIndex === index ? 0 : index));
   };
 
   useEffect(() => {
-    setExpanded(expandedPosition === position);
-  }, [expandedPosition]);
+    setExpanded(expandedIndex === index);
+  }, [expandedIndex]);
 
   if (
     role == ROSTER_ROLE_ENUM.CAPTAIN ||
@@ -50,13 +48,15 @@ export default function MyRosterCard(props) {
         <div
           className={styles.card}
           style={
-            isEven(index)
+            isEven(position ? position : index)
               ? { backgroundColor: '#19bf9d', color: '#fff' }
               : { backgroundColor: '#18B393', color: '#fff' }
           }
         >
           <div className={styles.default}>
-            <div className={styles.position}>{position}</div>
+            <div className={styles.position}>
+              {position ? position : '-'}
+            </div>
             <div className={styles.title} onClick={onExpand}>
               <div className={styles.name}>
                 <Typography>{name.toUpperCase()}</Typography>
@@ -81,7 +81,7 @@ export default function MyRosterCard(props) {
               className={styles.expanded}
               hidden={!expanded}
               style={
-                isEven(index)
+                isEven(position ? position : index)
                   ? {
                       borderBottomColor: '#19bf9d',
                       borderBottomWidth: '2px',
