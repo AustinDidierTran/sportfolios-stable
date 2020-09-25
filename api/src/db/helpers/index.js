@@ -252,7 +252,7 @@ const updatePasswordFromUserId = async ({ hashedPassword, id }) => {
 };
 
 const updatePrimaryPerson = async (user_id, primary_person) => {
-  return await knex('user_primary_person')
+  return knex('user_primary_person')
     .update({ primary_person })
     .where({ user_id });
 };

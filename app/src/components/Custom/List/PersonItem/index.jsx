@@ -1,12 +1,13 @@
 import React, { useMemo } from 'react';
 
 import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
-import { Avatar } from '../../../Custom';
+import { Avatar, IconButton } from '../../../Custom';
 import { getInitialsFromName } from '../../../../utils/stringFormats/index';
 import { useTranslation } from 'react-i18next';
 import { goTo, ROUTES } from '../../../../actions/goTo';
 import { useCallback } from 'react';
 import styles from './PersonItem.module.css';
+import { ListItemSecondaryAction } from '@material-ui/core';
 
 export default function PersonItem(props) {
   const { t } = useTranslation();
@@ -21,6 +22,8 @@ export default function PersonItem(props) {
     secondary,
     icon,
     inverseColor,
+    iconButton,
+    onIconButtonClick,
   } = props;
 
   const initials = useMemo(
@@ -71,6 +74,19 @@ export default function PersonItem(props) {
         primary={completeName || name}
         secondary={secondary || t('person')}
       ></ListItemText>
+      {iconButton ? (
+        <ListItemSecondaryAction>
+          <IconButton
+            edge="end"
+            onClick={onIconButtonClick}
+            icon={iconButton}
+            style={{ color: 'secondary' }}
+            size="medium"
+          />
+        </ListItemSecondaryAction>
+      ) : (
+        <></>
+      )}
     </ListItem>
   );
 }

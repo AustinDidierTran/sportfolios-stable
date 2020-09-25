@@ -73,6 +73,7 @@ export default {
       "Votre panier est vide! C'est l'heure d'aller faire des achats!",
     category: 'Catégorie',
     change_password: 'Changer votre mot de passe',
+    choose_your_primary_person: 'Choisir votre personne principale',
     comments: 'Commentaires',
     confirm: 'Confirmer',
     confirmation_email_sent:
@@ -250,8 +251,6 @@ export default {
     select_person: 'Sélectionner une personne',
     save_basic_info: 'Sauvegarder informations',
     select_language: 'Sélectionner votre langue',
-    select_your_primary_person:
-      'Sélectionner votre personne principale',
     send_new_confirmation_email:
       'Envoyer un nouveau courriel de confirmation',
     send_password_recovery_email:

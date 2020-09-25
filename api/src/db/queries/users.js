@@ -104,7 +104,7 @@ const userInfo = async id => {
 };
 
 const getPrimaryPersonId = async userId => {
-  const { id } = await getPrimaryPersonIdFromUserId(userId);
+  const id = await getPrimaryPersonIdFromUserId(userId);
   if (!id) {
     return { status: 403 };
   }
@@ -133,7 +133,13 @@ const getOwnedPersons = async userId => {
 
 const updatePrimaryPerson = async (body, userId) => {
   const { primaryPersonId } = body;
-  if (!isAllowed(primaryPersonId, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
+  if (
+    !(await isAllowed(
+      primaryPersonId,
+      userId,
+      ENTITIES_ROLE_ENUM.ADMIN,
+    ))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
