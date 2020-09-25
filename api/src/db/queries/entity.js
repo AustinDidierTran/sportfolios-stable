@@ -78,7 +78,11 @@ const {
 const { addEventCartItem } = require('../helpers/shop');
 const { getEmailsFromUserId } = require('../helpers');
 
-async function isAllowed(entityId, userId, acceptationRole) {
+async function isAllowed(
+  entityId,
+  userId,
+  acceptationRole = ENTITIES_ROLE_ENUM.ADMIN,
+) {
   const role = await getEntityRoleHelper(entityId, userId);
   return role <= acceptationRole;
 }
@@ -276,7 +280,7 @@ const addEntity = async (body, user_id) => {
 async function updateEntity(body, userId) {
   const { id, name, surname, photoUrl } = body;
 
-  if (!isAllowed(id, userId)) {
+  if (!isAllowed(id, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   if (name || surname) {
