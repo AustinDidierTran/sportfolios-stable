@@ -75,6 +75,7 @@ export default {
     change_password: 'Changer votre mot de passe',
     choose_your_primary_person: 'Choisir votre personne principale',
     change_team: "Changer l'équipe",
+    choose_your_primary_person: 'Choisir votre personne principale',
     comments: 'Commentaires',
     confirm: 'Confirmer',
     confirmation_email_sent:

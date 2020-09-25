@@ -74,6 +74,7 @@ export default {
     change_password: 'Change password',
     choose_your_primary_person: 'Choose your primary person',
     change_team: 'Change team',
+    choose_your_primary_person: 'Choose your primary person',
     click_to_create_new_team: 'Click to create your new team',
     comments: 'Comments',
     confirm: 'Confirm',
