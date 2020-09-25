@@ -198,14 +198,12 @@ async function getAllOwnedEntities(type, userId) {
     )
     .whereNull('deleted_at')
     .where({ type });
-
   const res = await Promise.all(
     entities.map(async entity => {
       const role = await getEntityRole(entity.id, userId);
       return { ...entity, role };
     }),
   );
-
   const res2 = res
     .filter(({ role }) => {
       return (
@@ -849,7 +847,8 @@ async function getSlots(eventId) {
   const realId = await getRealId(eventId);
   const res = await knex('event_time_slots')
     .select('*')
-    .where({ event_id: realId });
+    .where({ event_id: realId })
+    .orderBy('date');
   return res;
 }
 

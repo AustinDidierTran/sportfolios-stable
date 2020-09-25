@@ -76,15 +76,20 @@ export default function SubmitScoreDialog(props) {
 
   const getOptions = async () => {
     const s = await getSlots(eventId);
-    const t = await getTeams(eventId, { withoutAll: true });
     setSlots(s);
-    setTeams(t);
 
     if (game) {
+      const t = game.teams.map(t => ({
+        display: t.name,
+        value: t.roster_id,
+      }));
+      setTeams(t);
       formik.setFieldValue('yourTeam', game.teams[0].roster_id);
       formik.setFieldValue('opposingTeam', game.teams[1].roster_id);
       formik.setFieldValue('timeSlot', game.start_time);
     } else {
+      const t = await getTeams(eventId, { withoutAll: true });
+      setTeams(t);
       if (t[0]) {
         formik.setFieldValue('yourTeam', t[0].value);
       }
@@ -255,6 +260,22 @@ export default function SubmitScoreDialog(props) {
       getRoster(formik.values.yourTeam);
     }
   }, [formik.values.yourTeam]);
+
+  useEffect(() => {
+    const team = formik.values.yourTeam;
+    if (team === formik.values.opposingTeam && teams.length) {
+      const t = teams.filter(t => t.value != team);
+      formik.setFieldValue('opposingTeam', t[0].value);
+    }
+  }, [formik.values.yourTeam]);
+
+  useEffect(() => {
+    const team = formik.values.opposingTeam;
+    if (team === formik.values.yourTeam && teams.length) {
+      const t = teams.filter(t => t.value != team);
+      formik.setFieldValue('yourTeam', t[0].value);
+    }
+  }, [formik.values.opposingTeam]);
 
   const spiritOptions = [
     { display: '0', value: 0 },

@@ -7,6 +7,7 @@ import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import Assignment from '@material-ui/icons/Assignment';
 import AttachMoney from '@material-ui/icons/AttachMoney';
+import Autorenew from '@material-ui/icons/Autorenew';
 import Business from '@material-ui/icons/Business';
 import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
@@ -22,6 +23,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FiberManualRecord from '@material-ui/icons/FiberManualRecord';
 import Flag from '@material-ui/icons/Flag';
 import Folder from '@material-ui/icons/Folder';
+import FormatListNumbered from '@material-ui/icons/FormatListNumbered';
 import Group from '@material-ui/icons/Group';
 import Home from '@material-ui/icons/Home';
 import Info from '@material-ui/icons/Info';
@@ -60,6 +62,7 @@ const icons = {
   ArrowUpward,
   Assignment,
   AttachMoney,
+  Autorenew,
   Business,
   Check,
   Close,
@@ -75,6 +78,7 @@ const icons = {
   FiberManualRecord,
   Flag,
   Folder,
+  FormatListNumbered,
   Group,
   Home,
   Info,

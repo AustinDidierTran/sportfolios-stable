@@ -19,7 +19,7 @@ import { formatDate } from '../../../../utils/stringFormats';
 import { Typography } from '@material-ui/core';
 
 export default function GameFilters(props) {
-  const { update } = props;
+  const { update, onlyPast } = props;
   const { t } = useTranslation();
   const [teamName, setTeamName] = useState(SELECT_ENUM.ALL);
   const [phaseId, setPhaseId] = useState(SELECT_ENUM.ALL);
@@ -74,7 +74,10 @@ export default function GameFilters(props) {
     if (timeSlot != SELECT_ENUM.ALL) {
       description =
         description +
-        ` ${t('at')} ${formatDate(moment(timeSlot), 'h:mm ddd')}`;
+        ` ${t('on_le_in_french')} ${formatDate(
+          moment(timeSlot),
+          'DD MMM',
+        )}`;
     }
     setDescription(description);
   };
@@ -111,6 +114,7 @@ export default function GameFilters(props) {
               <TimeSlotSelect
                 onChange={changeTimeSlot}
                 timeSlot={timeSlot}
+                onlyPast={onlyPast}
               />
               <TeamSelect
                 onChange={changeTeamName}

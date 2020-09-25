@@ -34,6 +34,7 @@ export default {
     admin_has_no_bank_account:
       "You can't create a payment option if admin doesn't have a bank account",
     admin: 'Admin',
+    admin_view: 'Admin view',
     admins: 'Admins',
     advanced_filters: 'Advanced filters',
     adress: 'Address',
@@ -154,6 +155,7 @@ export default {
     max_length: 'Maximum length',
     menu: 'Menu',
     more_filters: 'More Filters',
+    my_persons: 'My persons',
     name: 'Name',
     new_email: 'New email',
     new_organization: 'New organization',
@@ -179,6 +181,7 @@ export default {
     of: 'of',
     of_team: 'of team',
     on: 'on',
+    on_le_in_french: 'on',
     on_going_events: 'On Going Events',
     only_available_on_desktop: 'Only available on desktop',
     opposing_team: 'Opposing team',
@@ -214,6 +217,7 @@ export default {
     players: 'Players',
     pre_ranking: 'Pre-ranking',
     price: 'Price',
+    primary_person: 'Primary person',
     product_added_to_cart: 'Product added to cart',
     private: 'Private',
     phone_number: 'Phone Number',
@@ -235,6 +239,7 @@ export default {
     score: 'Score',
     search: 'Search...',
     search_results: 'Search results for {{query}}',
+    secondary_person: 'Secondary person',
     save_basic_info: 'Save new basic infos',
     score_submitted: 'Score submitted',
     score_type: 'Score Type',
@@ -257,6 +262,7 @@ export default {
     subscribe: 'Subscribe',
     subscribed: 'Subscribed',
     shop: 'Shop',
+    switch_view: 'Switch view',
     error_start_date_before_end:
       'Start date should be before end date.',
     to_see_your_receipt:
@@ -279,9 +285,9 @@ export default {
     time_slot_added: 'Time slot added',
     waiting_for_payment:
       'Your payment is being processed. Thank you for your patience',
-    value_is_required: 'Valeur obligatoire',
     unsupported_language: 'Unsupported language',
     upload: 'Upload',
+    user_view: 'User view',
     valid_until: 'Valid until',
     viewer: 'Viewer',
     yes: 'yes',
@@ -344,7 +350,8 @@ export default {
     account_number: 'Account number',
     institution_number: 'Institution number',
     transit_number: 'Transit number',
-    value_is_required: 'Value is required.',
+    value_is_invalid: 'Value is invalid',
+    value_is_required: 'Value is required',
     value_must_have_x_digits: 'Value must have {{digits}} digits.',
 
     value_must_be_numeric: 'Value must be a number.',

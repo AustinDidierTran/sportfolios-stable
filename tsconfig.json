@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "module": "ESNext",
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "strict": true,
+    "noUnusedLocals": true
+  }
+}
