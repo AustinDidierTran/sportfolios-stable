@@ -691,4 +691,11 @@ module.exports = {
   updateGeneralInfos,
   updateMember,
   updateRegistration,
+  eventInfos,
+  getRoster,
+  addPlayerToRoster,
+  deletePlayerFromRoster,
+  deleteEntityHelper,
+  deleteGame,
+  isAllowed,
 };

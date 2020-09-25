@@ -73,6 +73,7 @@ export default {
       "Votre panier est vide! C'est l'heure d'aller faire des achats!",
     category: 'Catégorie',
     change_password: 'Changer votre mot de passe',
+    choose_your_primary_person: 'Choisir votre personne principale',
     comments: 'Commentaires',
     confirm: 'Confirmer',
     confirmation_email_sent:
@@ -223,6 +224,7 @@ export default {
     pre_ranking: 'Préclassement',
     price: 'Prix',
     primary_person: 'Personne principale',
+    primary_person_changed: 'Personne principale changée',
     product_added_to_cart: 'Produit ajouté au panier',
     phone_number: 'Numéro de téléphone',
     purchased_on: 'Acheté le',
