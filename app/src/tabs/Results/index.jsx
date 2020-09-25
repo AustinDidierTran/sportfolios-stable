@@ -7,6 +7,7 @@ import { formatRoute } from '../../actions/goTo';
 import moment from 'moment';
 import Game from '../Schedule/Games/Game';
 import GameFilters from '../Schedule/Games/GameFilters';
+import SubmitScore from '../Schedule/SubmitScore';
 
 export default function Results() {
   const { id: eventId } = useParams();
@@ -67,6 +68,7 @@ export default function Results() {
 
   return (
     <>
+      <SubmitScore />
       <GameFilters update={filter} onlyPast={onlyPast} />
       <div className={styles.main} style={{ marginTop: '16px' }}>
         {games.map(game => (

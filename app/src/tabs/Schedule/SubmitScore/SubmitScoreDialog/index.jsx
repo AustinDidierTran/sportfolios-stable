@@ -69,11 +69,7 @@ export default function SubmitScoreDialog(props) {
       }));
       setFullRoster(fullRoster);
 
-      const roster = data.map(d => {
-        if (!d.isSub) {
-          return d.name;
-        }
-      });
+      const roster = data.filter(d => !d.isSub).map(d => d.name);
       setRoster(roster);
     }
   };
