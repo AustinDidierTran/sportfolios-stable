@@ -260,6 +260,7 @@ export default {
     status: 'Statut',
     submit_score: 'Soumettre un résultat',
     sub: 'Remplacant',
+    sub_added: 'Remplaçant ajouté',
     subscribe: "S'abonner",
     subscribed: 'Abonné',
     team: 'Équipe',

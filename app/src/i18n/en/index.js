@@ -253,6 +253,7 @@ export default {
     status: 'Status',
     submit_score: 'Submit Score',
     sub: 'Sub',
+    sub_added: 'Sub added',
     subscribe: 'Subscribe',
     subscribed: 'Subscribed',
     shop: 'Shop',
