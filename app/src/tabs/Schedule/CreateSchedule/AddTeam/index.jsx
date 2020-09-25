@@ -7,6 +7,7 @@ import { ERROR_ENUM } from '../../../../../../common/errors';
 import api from '../../../../actions/api';
 import { Store, ACTION_ENUM } from '../../../../Store';
 import {
+  GLOBAL_ENUM,
   SEVERITY_ENUM,
   STATUS_ENUM,
 } from '../../../../../../common/enums';
@@ -50,11 +51,27 @@ export default function AddTeam(props) {
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       const { name } = values;
+
+      const { data: team } = await api('/api/entity', {
+        method: 'POST',
+        body: JSON.stringify({
+          name: name,
+          type: GLOBAL_ENUM.TEAM,
+        }),
+      });
+      const { data } = await api('/api/entity/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          eventId,
+          teamId: team.id,
+        }),
+      });
       const res = await api('/api/entity/addTeamToSchedule', {
         method: 'POST',
         body: JSON.stringify({
-          name,
           eventId,
+          name,
+          rosterId: data.rosterId,
         }),
       });
 

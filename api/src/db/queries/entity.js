@@ -225,22 +225,25 @@ async function addTeamToEvent(body, userId) {
   });
 
   // Add roster
-  await addRosterHelper(rosterId, roster);
-
-  if (registrationStatus === REGISTRATION_STATUS_ENUM.ACCEPTED) {
-    // Add item to cart
-    await addEventCartItem(
-      {
-        stripePriceId: paymentOption,
-        metadata: {
-          sellerEntityId: eventId,
-          buyerId: teamId,
-          rosterId,
-          team,
+  if (roster) {
+    await addRosterHelper(rosterId, roster);
+  }
+  if (paymentOption) {
+    if (registrationStatus === REGISTRATION_STATUS_ENUM.ACCEPTED) {
+      // Add item to cart
+      await addEventCartItem(
+        {
+          stripePriceId: paymentOption,
+          metadata: {
+            sellerEntityId: eventId,
+            buyerId: teamId,
+            rosterId,
+            team,
+          },
         },
-      },
-      userId,
-    );
+        userId,
+      );
+    }
 
     // send mail to organization admin
     // TODO find real event user creator
@@ -265,8 +268,7 @@ async function addTeamToEvent(body, userId) {
     );
   }
   // Handle other acceptation statuses
-
-  return { status: registrationStatus };
+  return { status: registrationStatus, rosterId };
 }
 
 async function getOptions(eventId) {
