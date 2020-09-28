@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { FormDialog } from '../../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
@@ -214,8 +213,8 @@ export default function SubmitScoreDialog(props) {
       let opposingTeamName = null;
       let opposingTeamId = null;
 
-      const suggestedBy = userInfo.persons
-        ? userInfo.persons[0].entity_id
+      const suggestedBy = userInfo.primaryPerson
+        ? userInfo.primaryPerson.entity_id
         : null;
 
       if (validator.isUUID(yourTeam)) {

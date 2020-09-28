@@ -759,7 +759,7 @@ async function getRole(captains, rosterId, userId) {
   }
   const basicInfo = await getBasicUserInfoFromId(userId);
 
-  const personId = basicInfo.persons[0].entity_id;
+  const personId = basicInfo.primaryPerson.entity_id;
 
   if (captains.some(c => c.id === personId)) {
     return ROSTER_ROLE_ENUM.CAPTAIN;

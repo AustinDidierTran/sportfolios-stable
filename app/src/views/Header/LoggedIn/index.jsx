@@ -46,7 +46,7 @@ export default function LoggedIn() {
                 icon="AccountCircle"
                 onClick={() =>
                   goTo(ROUTES.entity, {
-                    id: userInfo.persons[0].entity_id,
+                    id: userInfo.primaryPerson.entity_id,
                   })
                 }
               />
