@@ -211,6 +211,7 @@ export default {
     person: 'Person',
     persons: 'Persons',
     phase: 'Phase',
+    phase_added: 'Phase added',
     places_left: 'places left',
     player: 'Player',
     player_name: 'Player name',
