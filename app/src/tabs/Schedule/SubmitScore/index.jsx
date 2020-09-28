@@ -40,7 +40,7 @@ export default function SubmitScore() {
       </div>
       <FormDialog
         type={FORM_DIALOG_TYPE_ENUM.SUBMIT_SCORE_AND_SPIRIT}
-        items={(open, onClose)}
+        items={{ open, onClose }}
       />
     </>
   );

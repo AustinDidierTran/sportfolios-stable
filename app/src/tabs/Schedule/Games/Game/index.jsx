@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 
-import { Card } from '../../../../components/Custom';
-import { CARD_TYPE_ENUM } from '../../../../../../common/enums';
-import SubmitScoreDialog from '../../SubmitScore/SubmitScoreDialog';
+import { Card, FormDialog } from '../../../../components/Custom';
+import {
+  CARD_TYPE_ENUM,
+  FORM_DIALOG_TYPE_ENUM,
+} from '../../../../../../common/enums';
 
 export default function Game(props) {
   const { game } = props;

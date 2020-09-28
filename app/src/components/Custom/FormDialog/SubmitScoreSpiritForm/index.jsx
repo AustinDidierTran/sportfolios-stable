@@ -75,26 +75,27 @@ export default function SubmitScoreDialog(props) {
       }));
       setFullRoster(fullRoster);
 
-      const roster = data.map(d => {
-        if (!d.isSub) {
-          return d.name;
-        }
-      });
+      const roster = data.filter(d => !d.isSub).map(d => d.name);
       setRoster(roster);
     }
   };
 
   const getOptions = async () => {
     const s = await getSlots(eventId);
-    const t = await getTeams(eventId, { withoutAll: true });
     setSlots(s);
-    setTeams(t);
 
     if (game) {
+      const t = game.teams.map(t => ({
+        display: t.name,
+        value: t.roster_id,
+      }));
+      setTeams(t);
       formik.setFieldValue('yourTeam', game.teams[0].roster_id);
       formik.setFieldValue('opposingTeam', game.teams[1].roster_id);
       formik.setFieldValue('timeSlot', game.start_time);
     } else {
+      const t = await getTeams(eventId, { withoutAll: true });
+      setTeams(t);
       if (t[0]) {
         formik.setFieldValue('yourTeam', t[0].value);
       }
@@ -102,12 +103,12 @@ export default function SubmitScoreDialog(props) {
         formik.setFieldValue('opposingTeam', t[1].value);
       }
 
-      const pastSlots = slots
+      const pastSlots = s
         .filter(slot => moment(slot.value) < moment())
         .map(slot => moment(slot.value));
       const date = moment.max(pastSlots);
 
-      const def = slots.filter(slot => {
+      const def = s.filter(slot => {
         return moment(slot.value).isSame(date);
       });
       if (def[0]) {
@@ -198,7 +199,7 @@ export default function SubmitScoreDialog(props) {
     validate,
     validateOnChange: true,
     validateOnBlur: false,
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async values => {
       const {
         timeSlot,
         yourTeam,
@@ -260,8 +261,7 @@ export default function SubmitScoreDialog(props) {
           severity: SEVERITY_ENUM.SUCCESS,
           duration: 2000,
         });
-        onClose();
-        resetForm();
+        handleClose();
       }
     },
   });
@@ -271,6 +271,22 @@ export default function SubmitScoreDialog(props) {
       getRoster(formik.values.yourTeam);
     }
   }, [formik.values.yourTeam]);
+
+  useEffect(() => {
+    const team = formik.values.yourTeam;
+    if (team === formik.values.opposingTeam && teams.length && team) {
+      const t = teams.filter(t => t.value != team);
+      formik.setFieldValue('opposingTeam', t[0].value);
+    }
+  }, [formik.values.yourTeam]);
+
+  useEffect(() => {
+    const team = formik.values.opposingTeam;
+    if (team === formik.values.yourTeam && teams.length && team) {
+      const t = teams.filter(t => t.value != team);
+      formik.setFieldValue('yourTeam', t[0].value);
+    }
+  }, [formik.values.opposingTeam]);
 
   const spiritOptions = [
     { display: '0', value: 0 },
@@ -400,7 +416,7 @@ export default function SubmitScoreDialog(props) {
         buttons={buttons}
         fields={fields}
         formik={formik}
-        onClose={onClose}
+        onClose={handleClose}
       />
       <AddPlayer
         open={addPlayer}
