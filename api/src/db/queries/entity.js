@@ -78,8 +78,14 @@ const {
 const { addEventCartItem } = require('../helpers/shop');
 const { getEmailsFromUserId } = require('../helpers');
 
-async function isAllowed(entityId, userId, acceptationRole) {
+async function isAllowed(
+  entityId,
+  userId,
+  acceptationRole = ENTITIES_ROLE_ENUM.ADMIN,
+) {
+  console.log('allo');
   const role = await getEntityRoleHelper(entityId, userId);
+  console.log({ role });
   return role <= acceptationRole;
 }
 

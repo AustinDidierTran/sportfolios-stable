@@ -1638,6 +1638,28 @@ const deleteGame = async id => {
   return game;
 };
 
+const deletePersonTransfer = async person_id => {
+  console.log({ person_id });
+  await knex('transfered_person')
+    .where({ person_id })
+    .del();
+  return null;
+};
+
+const personIsAwaitingTransfer = async personId => {
+  return (
+    await knex.first(
+      knex.raw(
+        'exists ?',
+        knex('transfered_person')
+          .select('*')
+          .where('person_id', personId)
+          .andWhere('expires_at', '>', 'now()'),
+      ),
+    )
+  ).exists;
+};
+
 module.exports = {
   addEntity,
   addEntityRole,
@@ -1702,4 +1724,6 @@ module.exports = {
   addPlayerToRoster,
   deletePlayerFromRoster,
   deleteGame,
+  personIsAwaitingTransfer,
+  deletePersonTransfer,
 };

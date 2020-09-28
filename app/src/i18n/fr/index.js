@@ -65,6 +65,8 @@ export default {
       "Vous ne pouvez pas ajouter de produit car l'administrateur n'a pas de compte banquaire",
     by: 'Par',
     canadian_dollar: 'Dollar Canadien',
+    cancel_person_transfer_confirmation:
+      'Êtes vous certain de vouloir annuler le transfert de {{name}}?',
     captain: 'Capitaine',
     card_ending_with: 'Carte finissant avec {{last4}}',
     cart: 'Panier',
@@ -211,6 +213,7 @@ export default {
     payment_option_exist: 'Option de paiement existante',
     payments: 'Paiements',
     person: 'Personne',
+    person_awaiting_transfer: 'Personne en cours de transfert',
     person_transfer_email_sent:
       'Un courriel pour procéder au transfert a été envoyé à {{email}}',
     people: 'Personnes',

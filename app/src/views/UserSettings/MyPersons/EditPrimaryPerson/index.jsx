@@ -36,6 +36,7 @@ export default function EditPrimaryPerson(props) {
                 value={person.id}
                 control={<Radio />}
                 label={person.name + ' ' + person.surname}
+                disabled={person.isToBeTransfered}
               />
             ))}
           </RadioGroup>

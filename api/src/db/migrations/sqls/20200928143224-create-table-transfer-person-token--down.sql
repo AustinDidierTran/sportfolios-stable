@@ -1,1 +1,1 @@
-/* Replace with your SQL commands */
+DROP TABLE transfered_person;

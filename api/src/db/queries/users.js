@@ -19,7 +19,11 @@ const {
   updatePrimaryPerson: updatePrimaryPersonHelper,
 } = require('../helpers');
 
-const { getAllOwnedEntities } = require('../helpers/entity');
+const {
+  getAllOwnedEntities,
+  personIsAwaitingTransfer,
+  deletePersonTransfer,
+} = require('../helpers/entity');
 
 const { isAllowed } = require('./entity');
 
@@ -27,14 +31,19 @@ const sendTransferPersonEmail = async (
   user_id,
   { email, sendedPersonId },
 ) => {
-  console.log('query');
-  console.log(user_id);
-  console.log({ email, sendedPersonId, senderUserId: user_id });
   sendPersonTransferEmailAllIncluded({
     email,
     sendedPersonId,
     senderUserId: user_id,
   });
+  return 200;
+};
+
+const cancelPersonTransfer = async (user_id, personId) => {
+  if (!(await isAllowed(personId, user_id))) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  deletePersonTransfer(personId);
   return 200;
 };
 
@@ -140,7 +149,12 @@ const getOwnedPersons = async userId => {
   var res = await Promise.all(
     persons.map(async person => {
       const isPrimaryPerson = person.id == primaryPersonId;
-      const obj = { ...person, isPrimaryPerson };
+      console.log('coucou');
+      const isToBeTransfered = await personIsAwaitingTransfer(
+        person.id,
+      );
+      console.log({ isToBeTransfered });
+      const obj = { ...person, isPrimaryPerson, isToBeTransfered };
       return obj;
     }),
   );
@@ -166,4 +180,5 @@ module.exports = {
   getOwnedPersons,
   updatePrimaryPerson,
   sendTransferPersonEmail,
+  cancelPersonTransfer,
 };

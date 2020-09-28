@@ -63,6 +63,8 @@ export default {
     basic_info: 'Basic Info',
     birth_date_format: '{{date, LL}} ({{age}} years old)',
     birth_date: 'Birth date',
+    cancel_person_transfer_confirmation:
+      'Are you sure you want to cancel the transfer of {{name}}?',
     cant_add_product_no_bank_account:
       "Can't add product admin has no bank account",
     by: 'By',
@@ -209,6 +211,7 @@ export default {
     payment_options: 'Payment options',
     person: 'Person',
     persons: 'Persons',
+    person_awaiting_transfer: 'Person awaiting transfer',
     person_transfer_email_sent:
       'A email was sent to {{email}} to complete the transfer',
     phase: 'Phase',

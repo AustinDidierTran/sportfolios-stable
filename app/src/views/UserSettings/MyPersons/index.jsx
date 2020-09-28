@@ -14,6 +14,7 @@ import {
   LoadingSpinner,
   List,
   FormDialog,
+  AlertDialog,
 } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import EditPrimaryPerson from './EditPrimaryPerson';
@@ -26,6 +27,7 @@ export default function MyPersons() {
   const [editPrimaryPerson, setEditPrimaryPerson] = useState(false);
   const [sendPerson, setSendPerson] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState();
+  const [confirmCancelation, setConfirmCancelation] = useState(false);
   const { dispatch } = useContext(Store);
 
   const fetchOwnedPersons = async () => {
@@ -53,6 +55,22 @@ export default function MyPersons() {
     setSendPerson(false);
   };
 
+  const closePersonTransfer = () => {
+    setConfirmCancelation(false);
+  };
+
+  const confirmPersonTransfer = async () => {
+    console.log('confirm');
+    await api(
+      formatRoute('/api/user/transferPerson', null, {
+        id: selectedPerson.id,
+      }),
+      { method: 'DELETE' },
+    );
+    closePersonTransfer();
+    fetchOwnedPersons();
+  };
+
   const onSendEmail = async email => {
     closeSendPerson();
     await api('/api/user/transferPerson', {
@@ -66,8 +84,9 @@ export default function MyPersons() {
       type: ACTION_ENUM.SNACK_BAR,
       message: t('person_transfer_email_sent', { email }),
       severity: SEVERITY_ENUM.SUCCES,
-      duration: 4000,
+      duration: 3000,
     });
+    fetchOwnedPersons();
   };
 
   const submitPrimaryPerson = async newPrimaryPersonId => {
@@ -119,6 +138,13 @@ export default function MyPersons() {
               subtitle = t('primary_person');
               icon = 'Edit';
               onIconClick = () => setEditPrimaryPerson(true);
+            } else if (person.isToBeTransfered) {
+              subtitle = t('person_awaiting_transfer');
+              icon = 'CancelSend';
+              onIconClick = person => {
+                setSelectedPerson(person);
+                setConfirmCancelation(true);
+              };
             } else {
               subtitle = t('secondary_person');
               icon = 'Send';
@@ -142,6 +168,16 @@ export default function MyPersons() {
         persons={persons}
         handleClose={closeEditPrimaryPerson}
         handleSubmit={submitPrimaryPerson}
+      />
+      <AlertDialog
+        open={confirmCancelation}
+        title={t('cancel_person_transfer_confirmation', {
+          name: selectedPerson
+            ? selectedPerson.name + ' ' + selectedPerson.surname
+            : '',
+        })}
+        onSubmit={confirmPersonTransfer}
+        onCancel={closePersonTransfer}
       />
       <FormDialog
         type={FORM_DIALOG_TYPE_ENUM.ENTER_EMAIL}

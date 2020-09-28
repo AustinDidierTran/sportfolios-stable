@@ -8,6 +8,8 @@ import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import Assignment from '@material-ui/icons/Assignment';
 import AttachMoney from '@material-ui/icons/AttachMoney';
 import Business from '@material-ui/icons/Business';
+import Cancel from '@material-ui/icons/Cancel';
+import CancelSend from '@material-ui/icons/CancelScheduleSend';
 import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
 import Deck from '@material-ui/icons/Deck';
@@ -63,6 +65,8 @@ const icons = {
   Business,
   Check,
   Close,
+  Cancel,
+  CancelSend,
   Deck,
   Delete,
   Edit,

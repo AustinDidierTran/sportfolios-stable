@@ -179,12 +179,16 @@ router.put(`${BASE_URL}/primaryPerson`, async ctx => {
 });
 
 router.post(`${BASE_URL}/transferPerson`, async ctx => {
-  console.log('route');
-  const r = ctx.request.body;
-  console.log({ r });
   await queries.sendTransferPersonEmail(
     ctx.body.userInfo.id,
     ctx.request.body,
+  );
+});
+
+router.delete(`${BASE_URL}/transferPerson`, async ctx => {
+  await queries.cancelPersonTransfer(
+    ctx.body.userInfo.id,
+    ctx.query.id,
   );
 });
 

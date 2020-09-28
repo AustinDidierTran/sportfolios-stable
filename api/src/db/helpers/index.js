@@ -1,3 +1,6 @@
+const ONE_HOUR = 60 * 60 * 1000;
+const ONE_DAY = 24 * ONE_HOUR;
+const ONE_WEEK = 7 * ONE_DAY;
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
 const { v1: uuidv1 } = require('uuid');
@@ -69,7 +72,20 @@ const createConfirmationEmailToken = async ({ email, token }) => {
   await knex('confirmation_email_token').insert({
     email,
     token: token,
-    expires_at: new Date(Date.now() + 60 * 60 * 1000),
+    expires_at: new Date(Date.now() + ONE_HOUR),
+  });
+};
+
+const createPersonTransferToken = async ({
+  email,
+  person_id,
+  token,
+}) => {
+  await knex('transfered_person').insert({
+    email,
+    token,
+    person_id,
+    expires_at: new Date(Date.now() + ONE_WEEK),
   });
 };
 
@@ -77,7 +93,7 @@ const createRecoveryEmailToken = async ({ userId, token }) => {
   await knex('recovery_email_token').insert({
     user_id: userId,
     token,
-    expires_at: new Date(Date.now() + 60 * 60 * 1000),
+    expires_at: new Date(Date.now() + ONE_HOUR),
   });
 };
 
@@ -104,7 +120,7 @@ const generateAuthToken = async userId => {
   await knex('user_token').insert({
     user_id: userId,
     token_id: token,
-    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    expires_at: new Date(Date.now() + ONE_WEEK),
   });
   return token;
 };
@@ -320,6 +336,12 @@ const sendPersonTransferEmailAllIncluded = async ({
   );
   const sendedName = sendedPerson.name + ' ' + sendedPerson.surname;
   //TODO Save token in db with person id and email
+  await createPersonTransferToken({
+    email,
+    token: personTransferToken,
+    person_id: sendedPersonId,
+  });
+
   await sendPersonTransferEmail({
     email,
     sendedName,
