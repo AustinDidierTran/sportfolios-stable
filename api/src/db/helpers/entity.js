@@ -198,14 +198,12 @@ async function getAllOwnedEntities(type, userId) {
     )
     .whereNull('deleted_at')
     .where({ type });
-
   const res = await Promise.all(
     entities.map(async entity => {
       const role = await getEntityRole(entity.id, userId);
       return { ...entity, role };
     }),
   );
-
   const res2 = res
     .filter(({ role }) => {
       return (
@@ -378,6 +376,34 @@ async function getAllForYouPagePosts() {
   return [...fullEvents, ...fullMerch].sort(
     (a, b) => b.createdAt - a.createdAt,
   );
+}
+async function getScoreSuggestion(
+  event_id,
+  id,
+  start_time,
+  name1,
+  rosterId1,
+  name2,
+  rosterId2,
+) {
+  let realTime = new Date(start_time);
+  const suggestions1 = await knex('score_suggestion')
+    .select('*')
+    .where({
+      event_id,
+      start_time: realTime,
+      your_roster_id: rosterId1,
+      opposing_roster_id: rosterId2,
+    });
+  const suggestions2 = await knex('score_suggestion')
+    .select('*')
+    .where({
+      event_id,
+      start_time: realTime,
+      your_roster_id: rosterId2,
+      opposing_roster_id: rosterId1,
+    });
+  return suggestions1.concat(suggestions2);
 }
 
 async function getRealId(id) {
@@ -849,7 +875,8 @@ async function getSlots(eventId) {
   const realId = await getRealId(eventId);
   const res = await knex('event_time_slots')
     .select('*')
-    .where({ event_id: realId });
+    .where({ event_id: realId })
+    .orderBy('date');
   return res;
 }
 
@@ -1154,9 +1181,11 @@ async function addScoreSuggestion(
   if (opposingTeamId) {
     opposingName = await getTeamName(opposingTeamId);
   }
+  const realEventId = await getRealId(eventId);
+
   const res = await knex('score_suggestion')
     .insert({
-      event_id: eventId,
+      event_id: realEventId,
       start_time: new Date(startTime),
       your_team: yourName,
       your_roster_id: yourTeamId,
@@ -1663,6 +1692,7 @@ module.exports = {
   deleteRegistration,
   getAllEntities,
   getAllForYouPagePosts,
+  getScoreSuggestion,
   getAllOwnedEntities,
   getOwnedEvents,
   getAllRolesEntity,

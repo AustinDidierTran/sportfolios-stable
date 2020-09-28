@@ -22,7 +22,7 @@ services:
     network_mode: 'host' # (Linux only)
 
     # (Seems like it's not needed anymore)
-    # interactive mode for development only (fix a known bug where container don't start and exit with code 0)
+    # interactive mode for development only (fix a know bug where container don't start and exit with code 0)
     #stdin_open: true
 
   # App container
@@ -41,10 +41,10 @@ services:
       - CHOKIDAR_USEPOLLING=true
 
     # (Seems like it's not needed anymore)
-    # interactive mode for development only (fix a known bug where container don't start and exit with code 0)
+    # interactive mode for development only (fix a know bug where container don't start and exit with code 0)
     #stdin_open: true
 
-  # Database container
+  # Database
   db:
     container_name: sportfolios_db_dev
     image: postgres:12

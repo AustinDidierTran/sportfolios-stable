@@ -5,6 +5,7 @@ const {
   getActivePageviewsPathnames: getActivePageviewsHelper,
   updateEventCategoryToggle: updateEventHelper,
   updatePageviewsPathnameToggle: updatePageviewHelper,
+  addPageviewsPathname: addPageviewHelper,
 } = require('../helpers/googleAnalytics');
 
 async function getAllEvents() {
@@ -31,6 +32,10 @@ async function updatePageview(id, enabled) {
   return updatePageviewHelper(id, enabled);
 }
 
+async function addPageview(pathname, enabled) {
+  return addPageviewHelper(pathname, enabled);
+}
+
 module.exports = {
   getAllEvents,
   getAllPageviews,
@@ -38,4 +43,5 @@ module.exports = {
   getAllActivePageviews,
   updateEvent,
   updatePageview,
+  addPageview,
 };

@@ -122,7 +122,7 @@ export default function ScheduleManager() {
 
   const sortGame = () => {
     const res = tempGames.sort((a, b) => {
-      return moment(a.time, 'hh:mm') - moment(b.time, 'hh:mm');
+      return moment(a.time, 'HH:mm') - moment(b.time, 'HH:mm');
     });
     setTempGames(res);
   };

@@ -61,6 +61,10 @@ const createUserComplete = async body => {
         role: ENTITIES_ROLE_ENUM.ADMIN,
       })
       .transacting(trx);
+
+    await knex('user_primary_person')
+      .insert({ user_id, primary_person: entity_id })
+      .transacting(trx);
   });
 };
 
@@ -185,6 +189,13 @@ const getHashedPasswordFromId = async id => {
   return password;
 };
 
+const getPrimaryPersonIdFromUserId = async user_id => {
+  const [{ primary_person: id }] = await knex('user_primary_person')
+    .select('primary_person')
+    .where({ user_id });
+  return id;
+};
+
 const getUserIdFromEmail = async body => {
   const { email } = body;
 
@@ -244,6 +255,12 @@ const updatePasswordFromUserId = async ({ hashedPassword, id }) => {
     .where({ id });
 };
 
+const updatePrimaryPerson = async (user_id, primary_person) => {
+  return knex('user_primary_person')
+    .update({ primary_person })
+    .where({ user_id });
+};
+
 const validateEmailIsConfirmed = async email => {
   const response = await knex('user_email')
     .where({ email })
@@ -300,4 +317,6 @@ module.exports = {
   updatePasswordFromUserId,
   validateEmailIsConfirmed,
   validateEmailIsUnique,
+  getPrimaryPersonIdFromUserId,
+  updatePrimaryPerson,
 };

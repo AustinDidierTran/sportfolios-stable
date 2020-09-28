@@ -5,7 +5,7 @@ const ERROR_ENUM = {
     'Invalid transit number. The number should be in the format xxxxx-yyy or xxxxxyyy.',
   REGISTRATION_ERROR: 'There was an error with your registration',
   TOKEN_EXPIRED: 'Token has expired',
-  VALUE_IS_INVALID: 'Value is invalid',
+  VALUE_IS_INVALID: 'value_is_invalid',
   VALUE_IS_REQUIRED: 'value_is_required',
   VALUE_IS_TOO_LONG: 'value_is_too_long',
 };
