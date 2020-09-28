@@ -44,7 +44,7 @@ export default {
     empty_roster:
       "Cet alignement est vide. Le capitaine de cette équipe n'a pas entré son alignement.",
     empty_roster_add_players:
-      "Votre alignement est vide. Utilisé l'outil de recherche pour ajouter des joueurs à votre alignement.",
+      "Votre alignement est vide. Utilisez l'outil de recherche pour ajouter des joueurs à votre alignement.",
     are_you_sure_you_want_to_unregister_this_team:
       'Êtes vous sur que vous voulez désinscrire cette équipe et la rembourser si elle à déjà payé?',
     all: 'Tous',

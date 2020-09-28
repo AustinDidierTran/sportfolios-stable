@@ -68,6 +68,20 @@ export default function MyPersons() {
               return (
                 <ListItem>
                   <ListItemAvatar>
+                    {person.surname ? (
+                      <Avatar
+                        photoUrl={person.photoUrl}
+                        initials={
+                          person.name.charAt(0) +
+                          person.surname.charAt(0)
+                        }
+                      />
+                    ) : (
+                      <Avatar
+                        photoUrl={person.photoUrl}
+                        initials={person.name.charAt(0)}
+                      />
+                    )}
                     <Avatar
                       photoUrl={person.photoUrl}
                       initials={
