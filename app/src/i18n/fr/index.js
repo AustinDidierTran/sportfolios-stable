@@ -74,6 +74,8 @@ export default {
     category: 'Catégorie',
     change_password: 'Changer votre mot de passe',
     choose_your_primary_person: 'Choisir votre personne principale',
+    change_team: "Changer l'équipe",
+    choose_your_primary_person: 'Choisir votre personne principale',
     comments: 'Commentaires',
     confirm: 'Confirmer',
     confirmation_email_sent:
@@ -174,6 +176,7 @@ export default {
     not_paid: 'Paiement dû',
     no_notifications: 'Pas de notifications',
     no_notifications_message: 'Revenez plus tard.',
+    no_option: 'Aucune option',
     no_roster: 'Aucun alignement',
     no_teams: 'Acune équipe',
     no_teams_registered: 'Aucune équipes inscrites',
@@ -269,7 +272,7 @@ export default {
       '0: Mauvais  1: Moyen  2: Bon ou rien à signaler  3: Très bon  4: Mémorable',
     status: 'Statut',
     submit_score: 'Soumettre un résultat',
-    sub: 'Remplacant',
+    sub: 'Remplaçant',
     sub_added: 'Remplaçant ajouté',
     subscribe: "S'abonner",
     subscribed: 'Abonné',
@@ -528,5 +531,7 @@ export default {
     //PROTIP
     you_can_also_click_on_your_game_to_submit_your_score:
       'ProTip: Vous pouvez aussi cliquer sur votre partie pour entrer votre résultat.',
+    you_can_click_on_a_game_to_change_score:
+      'ProTip: Vous pouvez cliquer sur une partie pour changer le pointage.',
   },
 };

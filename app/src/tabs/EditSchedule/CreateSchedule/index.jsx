@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '../../../components/Custom';
-import styles from '../Schedule.module.css';
+import styles from '../EditSchedule.module.css';
 import { useTranslation } from 'react-i18next';
 import AddGame from './AddGame';
 import AddPhase from './AddPhase';

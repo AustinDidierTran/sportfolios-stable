@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Icon } from '../../../components/Custom';
+import { Button, Icon, FormDialog } from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
 import { useTranslation } from 'react-i18next';
 import styles from './SubmitScore.module.css';
-import SubmitScoreDialog from './SubmitScoreDialog';
+import { FORM_DIALOG_TYPE_ENUM } from '../../../../../common/enums';
 
 export default function SubmitScore() {
   const { t } = useTranslation();
@@ -38,7 +38,10 @@ export default function SubmitScore() {
           {t('you_can_also_click_on_your_game_to_submit_your_score')}
         </Typography>
       </div>
-      <SubmitScoreDialog open={open} onClose={onClose} />
+      <FormDialog
+        type={FORM_DIALOG_TYPE_ENUM.SUBMIT_SCORE_AND_SPIRIT}
+        items={{ open, onClose }}
+      />
     </>
   );
 }
