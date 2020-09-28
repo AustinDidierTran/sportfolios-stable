@@ -762,16 +762,16 @@ router.del(`${BASE_URL}/option`, async ctx => {
 });
 
 router.del(`${BASE_URL}/game`, async ctx => {
-  const entity = await queries.deleteGame(
+  const game = await queries.deleteGame(
     ctx.body.userInfo.id,
     ctx.query,
   );
-  if (entity) {
-    ctx.status = 200;
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
+  if (game) {
+    (ctx.status = 201),
+      (ctx.body = {
+        status: 'success',
+        data: game,
+      });
   } else {
     ctx.status = 404;
     ctx.body = {

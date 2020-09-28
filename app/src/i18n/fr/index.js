@@ -136,6 +136,7 @@ export default {
     funding_goal: 'Objectif: {{goal}}$',
     games: 'Parties',
     game_added: 'Partie ajoutée',
+    game_deleted: 'Partie supprimée',
     general: 'Général',
     general_informations: 'Informations générales',
     goal: 'Objectif',

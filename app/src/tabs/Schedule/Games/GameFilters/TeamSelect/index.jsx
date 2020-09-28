@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import { SELECT_ENUM } from '../../../../../../../common/enums';
 
 export default function TeamSelect(props) {
-  const { onChange, teamName } = props;
+  const { onChange, teamId } = props;
   const { t } = useTranslation();
   const { id: eventId } = useParams();
 
@@ -37,6 +37,11 @@ export default function TeamSelect(props) {
     ]);
   };
 
+  const handleChange = teamId => {
+    const team = teams.find(team => team.value === teamId);
+    onChange(team);
+  };
+
   return (
     <div className={styles.select}>
       <Select
@@ -46,8 +51,8 @@ export default function TeamSelect(props) {
         margin="dense"
         label={t('team')}
         fullWidth
-        onChange={onChange}
-        value={teamName}
+        onChange={handleChange}
+        value={teamId}
       />
     </div>
   );

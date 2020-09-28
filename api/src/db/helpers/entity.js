@@ -551,7 +551,6 @@ async function getEntityRole(entityId, userId) {
     )
     .whereNull('entities.deleted_at')
     .where({ user_id: userId });
-
   const roles = await Promise.all(
     entities.map(async entity => {
       if (entity.entity_id === entityId) {
@@ -561,7 +560,6 @@ async function getEntityRole(entityId, userId) {
       }
     }),
   );
-
   return Math.min(...roles);
 }
 
@@ -1665,7 +1663,7 @@ const deletePlayerFromRoster = async id => {
 };
 
 const deleteGame = async id => {
-  const game = await knex.transaction(async trx => {
+  const [game] = await knex.transaction(async trx => {
     await knex('game_teams')
       .where('game_id', id)
       .del()

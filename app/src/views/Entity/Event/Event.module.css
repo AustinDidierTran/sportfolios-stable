@@ -1,3 +1,4 @@
 .tab {
-  min-width: 80px !important;
+  min-width: 0px !important;
+  overflow-wrap: normal;
 }
