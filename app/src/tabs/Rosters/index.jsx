@@ -29,7 +29,6 @@ const deletePlayerFromRoster = async id => {
     },
   );
 };
-
 const addPlayerToRoster = async (player, rosterId) => {
   const { data } = await api(`/api/entity/addPlayerToRoster`, {
     method: 'POST',
