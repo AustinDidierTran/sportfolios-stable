@@ -48,7 +48,7 @@ export default function MyRosterCard(props) {
         <div
           className={styles.card}
           style={
-            isEven(position ? position : index)
+            isEven(index)
               ? { backgroundColor: '#19bf9d', color: '#fff' }
               : { backgroundColor: '#18B393', color: '#fff' }
           }
@@ -81,7 +81,7 @@ export default function MyRosterCard(props) {
               className={styles.expanded}
               hidden={!expanded}
               style={
-                isEven(position ? position : index)
+                isEven(index)
                   ? {
                       borderBottomColor: '#19bf9d',
                       borderBottomWidth: '2px',
