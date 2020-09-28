@@ -174,7 +174,7 @@ export default function Tabs(props) {
           ...prev,
           {
             component: SwitchToAdmin,
-            label: t('admin_view'),
+            label: t('admin'),
             icon: 'Autorenew',
             value: TABS_ENUM.SWITCH_TO_ADMIN,
           },
@@ -193,7 +193,7 @@ export default function Tabs(props) {
           ...prev,
           {
             component: SwitchToUser,
-            label: t('user_view'),
+            label: t('player'),
             icon: 'Autorenew',
             value: TABS_ENUM.SWITCH_TO_USER,
           },

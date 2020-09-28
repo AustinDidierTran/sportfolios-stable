@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { Card, AlertDialog } from '../../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import api from '../../../../actions/api';
-import { CARD_TYPE_ENUM } from '../../../../../../common/enums';
+import {
+  CARD_TYPE_ENUM,
+  SEVERITY_ENUM,
+  STATUS_ENUM,
+} from '../../../../../../common/enums';
 import EditGameDialog from './EditGameDialog';
 import { formatRoute } from '../../../../actions/goTo';
 import EnterScore from './EnterScore';
+import { ACTION_ENUM, Store } from '../../../../Store';
+import { ERROR_ENUM } from '../../../../../../common/errors';
 
 export default function EditGame(props) {
   const { game, update } = props;
+  const { dispatch } = useContext(Store);
   const { t } = useTranslation();
 
   const [gameDialog, setGameDialog] = useState(false);
@@ -41,17 +48,33 @@ export default function EditGame(props) {
   };
 
   const onDeleteConfirmed = async () => {
-    await api(
+    const res = await api(
       formatRoute('/api/entity/game', null, {
-        eventId: game.eventId,
+        eventId: game.event_id,
         gameId: game.id,
       }),
       {
         method: 'DELETE',
       },
     );
-    setDeleteDialogIsOpen(false);
-    update();
+    if (res.status === STATUS_ENUM.SUCCESS) {
+      setDeleteDialogIsOpen(false);
+      update();
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('game_deleted'),
+        severity: SEVERITY_ENUM.SUCCES,
+        duration: 4000,
+      });
+    } else {
+      setDeleteDialogIsOpen(false);
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: ERROR_ENUM.ERROR_OCCURED,
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
+      });
+    }
   };
 
   return (

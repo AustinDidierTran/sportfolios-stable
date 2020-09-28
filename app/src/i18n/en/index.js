@@ -136,6 +136,7 @@ export default {
     funding_goal: 'Goal: {{goal}}$',
     games: 'Games',
     game_added: 'Game added',
+    game_deleted: 'Game deleted',
     general: 'General',
     general_informations: 'General informations',
     generate_account_link: 'Generate Account Link',

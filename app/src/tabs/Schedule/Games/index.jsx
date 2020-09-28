@@ -38,11 +38,11 @@ export default function Games() {
     return res;
   };
 
-  const filter = async (teamName, phaseId, field, timeSlot) => {
+  const filter = async (teamId, phaseId, field, timeSlot) => {
     let games = await getGames();
-    if (teamName != SELECT_ENUM.ALL) {
+    if (teamId != SELECT_ENUM.ALL) {
       games = games.filter(game =>
-        game.teams.some(team => team.name === teamName),
+        game.teams.some(team => team.roster_id === teamId),
       );
     }
     if (phaseId != SELECT_ENUM.ALL) {
