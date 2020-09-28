@@ -61,6 +61,10 @@ const createUserComplete = async body => {
         role: ENTITIES_ROLE_ENUM.ADMIN,
       })
       .transacting(trx);
+
+    await knex('user_primary_person')
+      .insert({ user_id, primary_person: entity_id })
+      .transacting(trx);
   });
 };
 
