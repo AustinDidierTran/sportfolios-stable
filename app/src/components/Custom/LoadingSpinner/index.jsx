@@ -8,7 +8,11 @@ export default function LoadingSpinner(props) {
   const { isComponent } = props;
 
   if (isComponent) {
-    return <CircularProgress className={styles.component} />;
+    return (
+      <div>
+        <CircularProgress className={styles.component} />
+      </div>
+    );
   }
 
   return (

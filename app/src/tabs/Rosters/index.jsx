@@ -9,6 +9,7 @@ import styles from './Rosters.module.css';
 import Rosters from './Rosters';
 import { Typography } from '../../components/MUI';
 import { useTranslation } from 'react-i18next';
+import { LoadingSpinner } from '../../components/Custom';
 
 const getRosters = async eventId => {
   const { data } = await api(
@@ -44,6 +45,7 @@ export default function TabRosters() {
   const { id: eventId } = useParams();
   const { t } = useTranslation();
   const [rosters, setRosters] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const onDelete = async id => {
     await deletePlayerFromRoster(id);
@@ -62,11 +64,16 @@ export default function TabRosters() {
       //position: position from db here,
     }));
     setRosters(rostersUpdated);
+    setIsLoading(false);
   };
 
   useEffect(() => {
     getData();
   }, []);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   if (!rosters.length) {
     return (

@@ -1,11 +1,11 @@
 import React from 'react';
 import loadable from '@loadable/component';
 
-import { CircularProgress } from '@material-ui/core';
 import { formatRoute } from '../../actions/goTo';
 import { GLOBAL_ENUM } from '../../../../common/enums';
 import { useApiRoute } from '../../hooks/queries';
 import { useParams } from 'react-router-dom';
+import { LoadingSpinner } from '../../components/Custom';
 
 const EntityNotFound = loadable(() => import('./EntityNotFound'));
 const Event = loadable(() => import('./Event'));
@@ -31,7 +31,7 @@ export default function Entity() {
   );
 
   if (isLoading) {
-    return <CircularProgress />;
+    return <LoadingSpinner />;
   }
 
   if (!basicInfos) {
