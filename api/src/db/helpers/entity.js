@@ -377,6 +377,34 @@ async function getAllForYouPagePosts() {
     (a, b) => b.createdAt - a.createdAt,
   );
 }
+async function getScoreSuggestion(
+  event_id,
+  id,
+  start_time,
+  name1,
+  rosterId1,
+  name2,
+  rosterId2,
+) {
+  let realTime = new Date(start_time);
+  const suggestions1 = await knex('score_suggestion')
+    .select('*')
+    .where({
+      event_id,
+      start_time: realTime,
+      your_roster_id: rosterId1,
+      opposing_roster_id: rosterId2,
+    });
+  const suggestions2 = await knex('score_suggestion')
+    .select('*')
+    .where({
+      event_id,
+      start_time: realTime,
+      your_roster_id: rosterId2,
+      opposing_roster_id: rosterId1,
+    });
+  return suggestions1.concat(suggestions2);
+}
 
 async function getRealId(id) {
   const [res] = await knex('alias')
@@ -1672,6 +1700,7 @@ module.exports = {
   deleteRegistration,
   getAllEntities,
   getAllForYouPagePosts,
+  getScoreSuggestion,
   getAllOwnedEntities,
   getOwnedEvents,
   getAllRolesEntity,
