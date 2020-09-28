@@ -105,8 +105,8 @@ export default {
     emails: 'Courriels',
     email_confirmed:
       'Un courriel de confirmation a été envoyé à {{email}}. Veuillez regarder vos courriels pour confirmer votre compte.',
-    enter_person_name: 'Entrée le nom du joueur',
-    enter_team_name: "Entrée votre nom d'équipe",
+    enter_person_name: 'Entrez le nom du joueur',
+    enter_team_name: "Entrez votre nom d'équipe",
     enter_player_name: 'Entrez le nom du joueur',
     enter_score: 'Entrez le pointage',
     entity_not_found: "Cette entité n'existe pas",

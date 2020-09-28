@@ -57,9 +57,9 @@ export default function TabRosters() {
 
   const getData = async () => {
     const rosters = await getRosters(eventId);
-    const rostersUpdated = rosters.map((roster, index) => ({
+    const rostersUpdated = rosters.map(roster => ({
       ...roster,
-      position: index + 1,
+      //position: position from db here,
     }));
     setRosters(rostersUpdated);
   };
