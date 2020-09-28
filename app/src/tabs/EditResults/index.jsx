@@ -62,12 +62,16 @@ export default function EditResults() {
     setGames(games);
   };
 
+  const update = () => {
+    getGames();
+  };
+
   return (
     <>
       <GameFilters update={filter} onlyPast={onlyPast} />
       <div className={styles.main} style={{ marginTop: '16px' }}>
         {games.map(game => (
-          <ScoreSuggestions game={game} />
+          <ScoreSuggestions game={game} update={update} />
         ))}
       </div>
     </>

@@ -8,6 +8,8 @@ import EventPaymentOption from './EventPaymentOption';
 import EventSettings from './EventSettings';
 import EditableGame from './EditableGame';
 import Game from './Game';
+import TwoTeamGame from './TwoTeamGame';
+import TwoTeamGameEditable from './TwoTeamGameEditable';
 import EventPost from './EventPost';
 
 const CardMap = {
@@ -19,6 +21,8 @@ const CardMap = {
   [CARD_TYPE_ENUM.EVENT_SETTINGS]: EventSettings,
   [CARD_TYPE_ENUM.EDITABLE_GAME]: EditableGame,
   [CARD_TYPE_ENUM.GAME]: Game,
+  [CARD_TYPE_ENUM.TWO_TEAM_GAME]: TwoTeamGame,
+  [CARD_TYPE_ENUM.TWO_TEAM_GAME_EDITABLE]: TwoTeamGameEditable,
   [CARD_TYPE_ENUM.EVENT]: EventPost,
 };
 

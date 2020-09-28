@@ -236,7 +236,6 @@ export default function SubmitScoreDialog(props) {
         }),
       });
 
-      resetForm();
       if (res.status === STATUS_ENUM.ERROR) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
@@ -251,6 +250,7 @@ export default function SubmitScoreDialog(props) {
           severity: SEVERITY_ENUM.SUCCESS,
           duration: 2000,
         });
+        resetForm();
         onClose();
       }
     },

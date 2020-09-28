@@ -176,6 +176,7 @@ export default {
     not_paid: 'Not paid',
     no_notifications: 'No Notifications',
     no_notifications_message: 'Come back later.',
+    no_option: 'No option',
     no_roster: 'No roster',
     no_remaining_spots:
       'Sorry, your registration has been refused. Event is now full and there are no available spots left.',
@@ -527,5 +528,7 @@ export default {
     //PROTIP
     you_can_also_click_on_your_game_to_submit_your_score:
       'ProTip: You can also click on your game to submit your result.',
+    you_can_click_on_a_game_to_change_score:
+      'ProTip: You can click on a game to change score.',
   },
 };

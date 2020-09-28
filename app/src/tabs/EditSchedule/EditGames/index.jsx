@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import styles from './Games.module.css';
+import styles from './EditGames.module.css';
 import { SELECT_ENUM } from '../../../../../common/enums';
 import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import moment from 'moment';
-import Game from './Game';
+import EditGame from './EditGame';
 import GameFilters from './GameFilters';
+import { Icon } from '../../../components/Custom';
+import { Typography } from '../../../components/MUI';
+import { useTranslation } from 'react-i18next';
 
-export default function Games() {
+export default function EditGames(props) {
+  const { updated } = props;
+  const { t } = useTranslation();
   const { id: eventId } = useParams();
   const [games, setGames] = useState([]);
 
   useEffect(() => {
     getGames();
-  }, [eventId]);
+  }, [eventId, updated]);
 
   const sortGames = games => {
     const res = games
@@ -64,12 +69,23 @@ export default function Games() {
   const update = () => {
     getGames();
   };
+
   return (
     <>
       <GameFilters update={filter} />
+      <div className={styles.proTip}>
+        {window.innerWidth < 768 ? (
+          <></>
+        ) : (
+          <Icon icon="EmojiObjects" color="grey" />
+        )}
+        <Typography color="textSecondary" variant="body2">
+          {t('you_can_click_on_a_game_to_change_score')}
+        </Typography>
+      </div>
       <div className={styles.main} style={{ marginTop: '16px' }}>
         {games.map(game => (
-          <Game update={update} game={game} />
+          <EditGame update={update} game={game} />
         ))}
       </div>
     </>

@@ -246,7 +246,6 @@ export default function SubmitScoreDialog(props) {
         }),
       });
 
-      resetForm();
       if (res.status === STATUS_ENUM.ERROR || res.status >= 400) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
@@ -262,6 +261,7 @@ export default function SubmitScoreDialog(props) {
           duration: 2000,
         });
         onClose();
+        resetForm();
       }
     },
   });
