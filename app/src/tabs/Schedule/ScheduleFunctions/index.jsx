@@ -34,14 +34,8 @@ export const getTeams = async (eventId, withoutAll) => {
     formatRoute('/api/entity/teamsSchedule', null, { eventId }),
   );
   const res = data.map(d => {
-    if (d.roster_id) {
-      return {
-        value: d.roster_id,
-        display: d.name,
-      };
-    }
     return {
-      value: d.name,
+      value: d.roster_id,
       display: d.name,
     };
   });

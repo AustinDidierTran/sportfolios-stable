@@ -670,11 +670,10 @@ router.post(`${BASE_URL}/membership`, async ctx => {
 });
 
 router.post(`${BASE_URL}/register`, async ctx => {
-  const { status, reason } = await queries.addTeamToEvent(
+  const { status, reason, rosterId } = await queries.addTeamToEvent(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-
   if (status === REGISTRATION_STATUS_ENUM.REFUSED) {
     ctx.status = errors[ERROR_ENUM.REGISTRATION_ERROR].code;
     ctx.body = {
@@ -685,7 +684,7 @@ router.post(`${BASE_URL}/register`, async ctx => {
     ctx.status = 200;
     ctx.body = {
       status: 'success',
-      data: { status },
+      data: { status, rosterId },
     };
   } else {
     ctx.status = 404;
