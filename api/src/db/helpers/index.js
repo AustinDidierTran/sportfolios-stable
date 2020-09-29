@@ -1,6 +1,3 @@
-const ONE_HOUR = 60 * 60 * 1000;
-const ONE_DAY = 24 * ONE_HOUR;
-const ONE_WEEK = 7 * ONE_DAY;
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
 const { v1: uuidv1 } = require('uuid');
@@ -9,11 +6,14 @@ const {
   GLOBAL_ENUM,
 } = require('../../../../common/enums');
 
+const { expirationTimes } = require('../../../../common/constants');
+
 const {
   sendConfirmationEmail,
   sendPersonTransferEmail,
 } = require('../../server/utils/nodeMailer');
 const { ERROR_ENUM } = require('../../../../common/errors');
+const { deletePersonTransfer } = require('./entity');
 
 const confirmEmail = async ({ email }) => {
   await knex('user_email')
@@ -72,7 +72,9 @@ const createConfirmationEmailToken = async ({ email, token }) => {
   await knex('confirmation_email_token').insert({
     email,
     token: token,
-    expires_at: new Date(Date.now() + ONE_HOUR),
+    expires_at: new Date(
+      Date.now() + expirationTimes.EMAIL_CONFIRMATION_TOKEN,
+    ),
   });
 };
 
@@ -81,19 +83,25 @@ const createPersonTransferToken = async ({
   person_id,
   token,
 }) => {
-  await knex('transfered_person').insert({
-    email,
-    token,
-    person_id,
-    expires_at: new Date(Date.now() + ONE_WEEK),
-  });
+  return await knex('transfered_person')
+    .insert({
+      email,
+      token,
+      person_id,
+      expires_at: new Date(
+        Date.now() + expirationTimes.PERSON_TRANSFER_TOKEN,
+      ),
+    })
+    .returning('*');
 };
 
 const createRecoveryEmailToken = async ({ userId, token }) => {
   await knex('recovery_email_token').insert({
     user_id: userId,
     token,
-    expires_at: new Date(Date.now() + ONE_HOUR),
+    expires_at: new Date(
+      Date.now() + expirationTimes.ACCOUNT_RECOVERY_TOKEN,
+    ),
   });
 };
 
@@ -120,7 +128,7 @@ const generateAuthToken = async userId => {
   await knex('user_token').insert({
     user_id: userId,
     token_id: token,
-    expires_at: new Date(Date.now() + ONE_WEEK),
+    expires_at: new Date(Date.now() + expirationTimes.AUTH_TOKEN),
   });
   return token;
 };
@@ -221,11 +229,11 @@ const getUserIdFromEmail = async body => {
 
 const getLanguageFromEmail = async email => {
   const id = await getUserIdFromEmail({ email });
-  let infos;
-  if (id) {
-    infos = await getBasicUserInfoFromId(id);
+  if (!id) {
+    return;
   }
-  return infos ? infos.language : undefined;
+  const infos = await getBasicUserInfoFromId(id);
+  return infos.language;
 };
 
 const getUserIdFromRecoveryPasswordToken = async token => {
@@ -336,19 +344,30 @@ const sendPersonTransferEmailAllIncluded = async ({
   );
   const sendedName = sendedPerson.name + ' ' + sendedPerson.surname;
   //TODO Save token in db with person id and email
-  await createPersonTransferToken({
+  const res = await createPersonTransferToken({
     email,
     token: personTransferToken,
     person_id: sendedPersonId,
   });
 
-  await sendPersonTransferEmail({
+  if (!res) {
+    return;
+  }
+
+  const res2 = await sendPersonTransferEmail({
     email,
     sendedName,
     senderName,
     language,
     token: personTransferToken,
   });
+
+  //Reversing the insert in db if the email can't be sent
+  if (!res2) {
+    await deletePersonTransfer(sendedPersonId);
+    return;
+  }
+  return res;
 };
 
 module.exports = {

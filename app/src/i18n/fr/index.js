@@ -214,6 +214,7 @@ export default {
     payments: 'Paiements',
     person: 'Personne',
     person_awaiting_transfer: 'Personne en cours de transfert',
+    person_transfer_canceled: 'Le transfert a été annulé',
     person_transfer_email_sent:
       'Un courriel pour procéder au transfert a été envoyé à {{email}}',
     people: 'Personnes',

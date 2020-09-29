@@ -4,12 +4,6 @@ const {
   LOGO_ENUM,
   LANGUAGE_ENUM,
 } = require('../../../../common/enums');
-/*const {
-  getLanguageFromEmail,
-  /*getUserIdFromEmail,
-  getBasicUserInfoFromId,
-  getPrimaryPersonIdFromUserId,
-} = require('../../db/helpers');*/
 
 let key;
 
@@ -53,7 +47,7 @@ async function sendMail({ email, subject, text, html }) {
   });
   try {
     await transporter.verify();
-    await transporter.sendMail({
+    return await transporter.sendMail({
       from: YOUR_EMAIL_ADDRESS,
       to: email,
       subject: realSubject,
@@ -115,8 +109,6 @@ const sendPersonTransferEmail = async ({
   language,
   token,
 }) => {
-  console.log('nodemail');
-
   let html = '';
   let subject = '';
   let title = '';
@@ -148,7 +140,7 @@ const sendPersonTransferEmail = async ({
   }
   link = `${CLIENT_BASE_URL}/transferPerson/${token}`;
   html = await getHtml(title, content, link, buttonName);
-  await sendMail({
+  return await sendMail({
     email,
     subject,
     html,

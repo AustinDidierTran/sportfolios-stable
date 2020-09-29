@@ -1639,11 +1639,11 @@ const deleteGame = async id => {
 };
 
 const deletePersonTransfer = async person_id => {
-  console.log({ person_id });
-  await knex('transfered_person')
+  const [person] = await knex('transfered_person')
     .where({ person_id })
-    .del();
-  return null;
+    .del()
+    .returning('person_id');
+  return person;
 };
 
 const personIsAwaitingTransfer = async personId => {

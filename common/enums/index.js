@@ -167,6 +167,12 @@ const GLOBAL_ENUM = {
   SALES: 29,
 };
 
+const MILLIS_TIME_ENUM = {
+  ONE_HOUR: 60 * 60 * 1000,
+  ONE_DAY: 24 * 60 * 60 * 1000,
+  ONE_WEEK: 7 * 24 * 60 * 60 * 1000,
+};
+
 const LOGGER_ENUM = {
   STRIPE: '[STRIPE]',
 };
@@ -253,4 +259,5 @@ module.exports = {
   TAG_TYPE_ENUM,
   VIEW_ENUM,
   FORM_DIALOG_TYPE_ENUM,
+  MILLIS_TIME_ENUM,
 };

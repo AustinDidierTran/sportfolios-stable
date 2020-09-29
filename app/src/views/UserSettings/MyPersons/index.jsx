@@ -55,37 +55,60 @@ export default function MyPersons() {
     setSendPerson(false);
   };
 
-  const closePersonTransfer = () => {
+  const closeCancelPersonTransfer = () => {
     setConfirmCancelation(false);
   };
 
-  const confirmPersonTransfer = async () => {
-    console.log('confirm');
-    await api(
+  const confirmCancelPersonTransfer = async () => {
+    const res = await api(
       formatRoute('/api/user/transferPerson', null, {
         id: selectedPerson.id,
       }),
       { method: 'DELETE' },
     );
-    closePersonTransfer();
+    if (res.status === STATUS_ENUM.ERROR) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('something_went_wrong'),
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
+      });
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('person_transfer_canceled'),
+        severity: SEVERITY_ENUM.SUCCESS,
+        duration: 2000,
+      });
+    }
+    closeCancelPersonTransfer();
     fetchOwnedPersons();
   };
 
   const onSendEmail = async email => {
-    closeSendPerson();
-    await api('/api/user/transferPerson', {
+    const res = await api('/api/user/transferPerson', {
       method: 'POST',
       body: JSON.stringify({
         email,
         sendedPersonId: selectedPerson.id,
       }),
     });
-    dispatch({
-      type: ACTION_ENUM.SNACK_BAR,
-      message: t('person_transfer_email_sent', { email }),
-      severity: SEVERITY_ENUM.SUCCES,
-      duration: 3000,
-    });
+    if (res.status === STATUS_ENUM.ERROR) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('something_went_wrong'),
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
+      });
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('person_transfer_email_sent', { email }),
+        severity: SEVERITY_ENUM.SUCCES,
+        duration: 3000,
+      });
+    }
+    closeSendPerson();
     fetchOwnedPersons();
   };
 
@@ -121,6 +144,38 @@ export default function MyPersons() {
     fetchOwnedPersons();
   }, []);
 
+  const items = persons.map(person => {
+    let subtitle;
+    let icon;
+    let onIconClick;
+    if (person.isPrimaryPerson) {
+      subtitle = t('primary_person');
+      icon = 'Edit';
+      onIconClick = () => setEditPrimaryPerson(true);
+    } else if (person.isToBeTransfered) {
+      subtitle = t('person_awaiting_transfer');
+      icon = 'CancelSend';
+      onIconClick = person => {
+        setSelectedPerson(person);
+        setConfirmCancelation(true);
+      };
+    } else {
+      subtitle = t('secondary_person');
+      icon = 'Send';
+      onIconClick = person => {
+        setSelectedPerson(person);
+        setSendPerson(true);
+      };
+    }
+    return {
+      ...person,
+      completeName: person.name + ' ' + person.surname,
+      secondary: subtitle,
+      iconButton: icon,
+      onIconButtonClick: () => onIconClick(person),
+    };
+  });
+
   if (isLoading) {
     return <LoadingSpinner isComponent />;
   }
@@ -128,40 +183,7 @@ export default function MyPersons() {
   return (
     <>
       <Card className={styles.card}>
-        <List
-          title={t('my_persons')}
-          items={persons.map(person => {
-            let subtitle;
-            let icon;
-            let onIconClick;
-            if (person.isPrimaryPerson) {
-              subtitle = t('primary_person');
-              icon = 'Edit';
-              onIconClick = () => setEditPrimaryPerson(true);
-            } else if (person.isToBeTransfered) {
-              subtitle = t('person_awaiting_transfer');
-              icon = 'CancelSend';
-              onIconClick = person => {
-                setSelectedPerson(person);
-                setConfirmCancelation(true);
-              };
-            } else {
-              subtitle = t('secondary_person');
-              icon = 'Send';
-              onIconClick = person => {
-                setSelectedPerson(person);
-                setSendPerson(true);
-              };
-            }
-            return {
-              ...person,
-              completeName: person.name + ' ' + person.surname,
-              secondary: subtitle,
-              iconButton: icon,
-              onIconButtonClick: () => onIconClick(person),
-            };
-          })}
-        />
+        <List title={t('my_persons')} items={items} />
       </Card>
       <EditPrimaryPerson
         open={editPrimaryPerson}
@@ -176,8 +198,8 @@ export default function MyPersons() {
             ? selectedPerson.name + ' ' + selectedPerson.surname
             : '',
         })}
-        onSubmit={confirmPersonTransfer}
-        onCancel={closePersonTransfer}
+        onSubmit={confirmCancelPersonTransfer}
+        onCancel={closeCancelPersonTransfer}
       />
       <FormDialog
         type={FORM_DIALOG_TYPE_ENUM.ENTER_EMAIL}

@@ -212,6 +212,7 @@ export default {
     person: 'Person',
     persons: 'Persons',
     person_awaiting_transfer: 'Person awaiting transfer',
+    person_transfer_canceled: 'Person transfer canceled',
     person_transfer_email_sent:
       'A email was sent to {{email}} to complete the transfer',
     phase: 'Phase',
@@ -256,7 +257,6 @@ export default {
     signup: 'Signup',
     sizes: 'Size',
     sizes: 'Sizes',
-    something_went_wrong: 'Something went wrong.',
     spirit: 'Spirit',
     spirit_chart_ligue_mardi:
       '0: Bad 1: Below average 2: Good or nothing to report 3: Very good 4: Exceptional',

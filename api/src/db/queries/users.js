@@ -31,20 +31,18 @@ const sendTransferPersonEmail = async (
   user_id,
   { email, sendedPersonId },
 ) => {
-  sendPersonTransferEmailAllIncluded({
+  return await sendPersonTransferEmailAllIncluded({
     email,
     sendedPersonId,
     senderUserId: user_id,
   });
-  return 200;
 };
 
 const cancelPersonTransfer = async (user_id, personId) => {
   if (!(await isAllowed(personId, user_id))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  deletePersonTransfer(personId);
-  return 200;
+  return await deletePersonTransfer(personId);
 };
 
 const addEmail = async (user_id, { email }) => {
@@ -144,21 +142,19 @@ const getOwnedPersons = async userId => {
   );
   const primaryPersonId = await getPrimaryPersonIdFromUserId(userId);
   if (!persons || !primaryPersonId) {
-    return { status: 403 };
+    return;
   }
   var res = await Promise.all(
     persons.map(async person => {
       const isPrimaryPerson = person.id == primaryPersonId;
-      console.log('coucou');
       const isToBeTransfered = await personIsAwaitingTransfer(
         person.id,
       );
-      console.log({ isToBeTransfered });
       const obj = { ...person, isPrimaryPerson, isToBeTransfered };
       return obj;
     }),
   );
-  return { status: 200, persons: res };
+  return res;
 };
 
 const updatePrimaryPerson = async (body, userId) => {

@@ -83,9 +83,7 @@ async function isAllowed(
   userId,
   acceptationRole = ENTITIES_ROLE_ENUM.ADMIN,
 ) {
-  console.log('allo');
   const role = await getEntityRoleHelper(entityId, userId);
-  console.log({ role });
   return role <= acceptationRole;
 }
 
