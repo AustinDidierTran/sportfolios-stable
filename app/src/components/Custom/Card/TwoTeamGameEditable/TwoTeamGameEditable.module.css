@@ -1,7 +1,6 @@
 .gameEdit {
-  margin-bottom: 16px;
   display: grid !important;
-  grid-template-columns: 15fr 1fr;
+  grid-template-columns: 15fr 2fr;
   cursor: pointer;
 }
 
@@ -27,6 +26,7 @@
 
 .icon {
   align-self: center;
+  justify-self: center;
 }
 
 .union {

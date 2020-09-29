@@ -6,7 +6,7 @@ import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
 import moment from 'moment';
 import GameFilters from '../Schedule/Games/GameFilters';
-import ScoreSuggestions from './ScoreSuggestion';
+import ScoreSuggestion from './ScoreSuggestion';
 
 export default function EditResults() {
   const { id: eventId } = useParams();
@@ -39,11 +39,11 @@ export default function EditResults() {
     return res;
   };
 
-  const filter = async (teamName, phaseId, field, timeSlot) => {
+  const filter = async (teamId, phaseId, field, timeSlot) => {
     let games = await getGames();
-    if (teamName != SELECT_ENUM.ALL) {
+    if (teamId != SELECT_ENUM.ALL) {
       games = games.filter(game =>
-        game.teams.some(team => team.name === teamName),
+        game.teams.some(team => team.roster_id === teamId),
       );
     }
     if (phaseId != SELECT_ENUM.ALL) {
@@ -71,7 +71,7 @@ export default function EditResults() {
       <GameFilters update={filter} onlyPast={onlyPast} />
       <div className={styles.main} style={{ marginTop: '16px' }}>
         {games.map(game => (
-          <ScoreSuggestions game={game} update={update} />
+          <ScoreSuggestion game={game} update={update} />
         ))}
       </div>
     </>

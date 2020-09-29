@@ -1,0 +1,56 @@
+.card {
+  display: grid;
+  grid-template-columns: 14fr 2fr;
+  grid-template-areas: 'game buttons';
+}
+
+.game {
+  display: grid !important;
+  grid-template-columns: 5fr 1fr 1fr 1fr 5fr;
+  grid-template-areas: 'person score1 union score2 status';
+  grid-area: game;
+}
+
+.union {
+  grid-area: union;
+  align-self: center;
+}
+
+.status {
+  grid-area: status;
+  align-self: center;
+  justify-self: center;
+}
+
+.score1 {
+  grid-area: score1;
+  justify-self: end;
+  align-self: center;
+}
+
+.score2 {
+  grid-area: score2;
+  justify-self: start;
+  align-self: center;
+}
+
+.person {
+  grid-area: person;
+  justify-self: center;
+  text-overflow: ellipsis !important;
+  overflow: auto;
+  max-width: 100%;
+}
+
+.buttons {
+  grid-area: buttons;
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+}
+
+@media (min-width: 768px) {
+  .status {
+    width: 40%;
+  }
+}

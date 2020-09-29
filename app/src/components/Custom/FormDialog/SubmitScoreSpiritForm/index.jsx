@@ -230,6 +230,7 @@ export default function SubmitScoreDialog(props) {
       const res = await api('/api/entity/suggestScore', {
         method: 'POST',
         body: JSON.stringify({
+          gameId: game.id,
           eventId,
           startTime: timeSlot,
           yourTeamName,
@@ -276,7 +277,9 @@ export default function SubmitScoreDialog(props) {
     const team = formik.values.yourTeam;
     if (team === formik.values.opposingTeam && teams.length && team) {
       const t = teams.filter(t => t.value != team);
-      formik.setFieldValue('opposingTeam', t[0].value);
+      if (t.length) {
+        formik.setFieldValue('opposingTeam', t[0].value);
+      }
     }
   }, [formik.values.yourTeam]);
 
@@ -284,7 +287,9 @@ export default function SubmitScoreDialog(props) {
     const team = formik.values.opposingTeam;
     if (team === formik.values.yourTeam && teams.length && team) {
       const t = teams.filter(t => t.value != team);
-      formik.setFieldValue('yourTeam', t[0].value);
+      if (t.length) {
+        formik.setFieldValue('yourTeam', t[0].value);
+      }
     }
   }, [formik.values.opposingTeam]);
 

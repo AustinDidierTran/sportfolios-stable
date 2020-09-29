@@ -5,11 +5,11 @@ import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import moment from 'moment';
-import EditGame from './EditGame';
 import GameFilters from './GameFilters';
 import { Icon } from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
 import { useTranslation } from 'react-i18next';
+import ScoreSuggestion from '../../EditResults/ScoreSuggestion';
 
 export default function EditGames(props) {
   const { updated } = props;
@@ -43,11 +43,11 @@ export default function EditGames(props) {
     return res;
   };
 
-  const filter = async (teamName, phaseId, field, timeSlot) => {
+  const filter = async (teamId, phaseId, field, timeSlot) => {
     let games = await getGames();
-    if (teamName != SELECT_ENUM.ALL) {
+    if (teamId != SELECT_ENUM.ALL) {
       games = games.filter(game =>
-        game.teams.some(team => team.name === teamName),
+        game.teams.some(team => team.roster_id === teamId),
       );
     }
     if (phaseId != SELECT_ENUM.ALL) {
@@ -85,7 +85,7 @@ export default function EditGames(props) {
       </div>
       <div className={styles.main} style={{ marginTop: '16px' }}>
         {games.map(game => (
-          <EditGame update={update} game={game} />
+          <ScoreSuggestion update={update} game={game} />
         ))}
       </div>
     </>
