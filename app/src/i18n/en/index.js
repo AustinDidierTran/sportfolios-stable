@@ -268,6 +268,8 @@ export default {
     secondary_person: 'Secondary person',
     save_basic_info: 'Save new basic infos',
     score_submitted: 'Score submitted',
+    score_suggestion: 'Score suggestion',
+    score_suggestions: 'Score suggestions',
     score_type: 'Score Type',
     select_existing_person: 'Select existing person',
     select_language: 'Select Language',

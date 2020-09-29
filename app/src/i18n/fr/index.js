@@ -234,6 +234,7 @@ export default {
     person_transfer_done: 'Le transfert a été complété',
     person_transfer_email_sent:
       'Un courriel pour procéder au transfert a été envoyé à {{email}}',
+    pending: 'En attente',
     people: 'Personnes',
     phase: 'Phase',
     phase_added: 'Phase ajoutée',
@@ -265,6 +266,8 @@ export default {
     schedule: 'Horaire',
     score: 'Pointage',
     score_submitted: 'Résultat soumis',
+    score_suggestion: 'Suggestion de résultat',
+    score_suggestions: 'Suggestions de résultats',
     score_type: 'Type de pointage',
     quantity: 'Quantité',
     search_results: 'Résultats de recherche pour {{query}}',
