@@ -1,8 +1,6 @@
 const Router = require('koa-router');
 const queries = require('../../../db/queries/entity');
-const {
-  REGISTRATION_STATUS_ENUM,
-} = require('../../../../../common/enums');
+const { STATUS_ENUM } = require('../../../../../common/enums');
 const {
   ERROR_ENUM,
   errors,
@@ -359,6 +357,24 @@ router.put(`${BASE_URL}/game`, async ctx => {
     };
   }
 });
+router.put(`${BASE_URL}/updateSuggestionStatus`, async ctx => {
+  const suggestion = await queries.updateSuggestionStatus(
+    ctx.request.body,
+  );
+  if (suggestion) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: suggestion,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
 
 router.put(`${BASE_URL}/updateRegistration`, async ctx => {
   const entity = await queries.updateRegistration(
@@ -674,7 +690,7 @@ router.post(`${BASE_URL}/register`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  if (status === REGISTRATION_STATUS_ENUM.REFUSED) {
+  if (status === STATUS_ENUM.REFUSED) {
     ctx.status = errors[ERROR_ENUM.REGISTRATION_ERROR].code;
     ctx.body = {
       status: 'error',

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { MessageAndButtons } from '../../components/Custom';
 import {
-  REGISTRATION_STATUS_ENUM,
+  STATUS_ENUM,
   REJECTION_ENUM,
 } from '../../../../common/enums';
 import { goTo, ROUTES } from '../../actions/goTo';
@@ -25,7 +25,7 @@ export default function RegistrationStatus() {
   let values = {};
 
   switch (status) {
-    case REGISTRATION_STATUS_ENUM.ACCEPTED:
+    case STATUS_ENUM.ACCEPTED:
       values = {
         message: t('registration_accepted'),
         onClick: goToCart,
@@ -33,7 +33,7 @@ export default function RegistrationStatus() {
         endIcon: 'ShoppingCart',
       };
       break;
-    case REGISTRATION_STATUS_ENUM.PENDING:
+    case STATUS_ENUM.PENDING:
       values = {
         message: t('registration_pending'),
         onClick: returnHome,
@@ -41,7 +41,7 @@ export default function RegistrationStatus() {
         endIcon: 'Home',
       };
       break;
-    case REGISTRATION_STATUS_ENUM.REFUSED:
+    case STATUS_ENUM.REFUSED:
       if (reason === REJECTION_ENUM.NO_REMAINING_SPOTS) {
         values = {
           message: t('no_remaining_spots'),

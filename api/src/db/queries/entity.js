@@ -2,7 +2,7 @@ const {
   ENTITIES_ROLE_ENUM,
   INVOICE_STATUS_ENUM,
   STRIPE_ERROR_ENUM,
-  REGISTRATION_STATUS_ENUM,
+  STATUS_ENUM,
   REJECTION_ENUM,
 } = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -67,6 +67,7 @@ const {
   updateEntityRole: updateEntityRoleHelper,
   updateEvent: updateEventHelper,
   updateGame: updateGameHelper,
+  updateSuggestionStatus: updateSuggestionStatusHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
   updateMember: updateMemberHelper,
   updateRegistration: updateRegistrationHelper,
@@ -100,22 +101,11 @@ async function getAllForYouPagePosts() {
   return getAllForYouPagePostsHelper();
 }
 async function getScoreSuggestion(query) {
-  const {
-    event_id,
-    id,
-    start_time,
-    name1,
-    rosterId1,
-    name2,
-    rosterId2,
-  } = query;
+  const { event_id, start_time, rosterId1, rosterId2 } = query;
   return getScoreSuggestionHelper(
     event_id,
-    id,
     start_time,
-    name1,
     rosterId1,
-    name2,
     rosterId2,
   );
 }
@@ -229,13 +219,13 @@ async function addTeamToEvent(body, userId) {
   const remainingSpots = await getRemainingSpotsHelper(eventId);
 
   if (remainingSpots < 1 && remainingSpots) {
-    const registrationStatus = REGISTRATION_STATUS_ENUM.REFUSED;
+    const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
   }
 
   // TODO: Validate status of team
-  const registrationStatus = REGISTRATION_STATUS_ENUM.ACCEPTED;
+  const registrationStatus = STATUS_ENUM.ACCEPTED;
 
   const team = await getEntity(teamId, userId);
 
@@ -254,7 +244,7 @@ async function addTeamToEvent(body, userId) {
     await addRosterHelper(rosterId, roster);
   }
   if (paymentOption) {
-    if (registrationStatus === REGISTRATION_STATUS_ENUM.ACCEPTED) {
+    if (registrationStatus === STATUS_ENUM.ACCEPTED) {
       // Add item to cart
       await addEventCartItem(
         {
@@ -422,6 +412,30 @@ async function updateGame(body) {
   return res;
 }
 
+async function updateSuggestionStatus(body) {
+  const {
+    gameId,
+    eventId,
+    startTime,
+    yourRosterId,
+    opposingRosterId,
+    yourScore,
+    opposingTeamScore,
+    status,
+  } = body;
+  const res = await updateSuggestionStatusHelper(
+    gameId,
+    eventId,
+    startTime,
+    yourRosterId,
+    opposingRosterId,
+    yourScore,
+    opposingTeamScore,
+    status,
+  );
+  return res;
+}
+
 async function addMember(body) {
   const {
     member_type,
@@ -475,6 +489,7 @@ async function addScoreAndSpirit(body) {
 
 async function addScoreSuggestion(body, userId) {
   const {
+    gameId,
     eventId,
     startTime,
     yourTeamName,
@@ -497,6 +512,7 @@ async function addScoreSuggestion(body, userId) {
   }
 
   const res = await addScoreSuggestionHelper(
+    gameId,
     eventId,
     startTime,
     yourTeamName,
@@ -714,6 +730,7 @@ module.exports = {
   updateEntityRole,
   updateEvent,
   updateGame,
+  updateSuggestionStatus,
   updateGeneralInfos,
   updateMember,
   updateRegistration,
