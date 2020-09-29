@@ -15,6 +15,7 @@ import {
   List,
   FormDialog,
   AlertDialog,
+  IconButton,
 } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import EditPrimaryPerson from './EditPrimaryPerson';
@@ -144,35 +145,62 @@ export default function MyPersons() {
     fetchOwnedPersons();
   }, []);
 
-  const items = persons.map(person => {
-    let subtitle;
-    let icon;
-    let onIconClick;
-    if (person.isPrimaryPerson) {
-      subtitle = t('primary_person');
-      icon = 'Edit';
-      onIconClick = () => setEditPrimaryPerson(true);
-    } else if (person.isToBeTransfered) {
-      subtitle = t('person_awaiting_transfer');
-      icon = 'CancelSend';
-      onIconClick = person => {
+  const transferedPersonActions = person => [
+    <IconButton
+      edge="end"
+      onClick={() => {
         setSelectedPerson(person);
         setConfirmCancelation(true);
-      };
-    } else {
-      subtitle = t('secondary_person');
-      icon = 'Send';
-      onIconClick = person => {
+      }}
+      icon="CancelSend"
+      style={{ color: 'secondary' }}
+      size="medium"
+    />,
+  ];
+
+  const primaryPersonActions = () => [
+    <IconButton
+      edge="end"
+      onClick={() => {
+        setEditPrimaryPerson(true);
+      }}
+      icon="Edit"
+      style={{ color: 'secondary' }}
+      size="medium"
+    />,
+  ];
+
+  const secondaryPersonActions = person => [
+    <IconButton
+      edge="end"
+      onClick={() => {
         setSelectedPerson(person);
         setSendPerson(true);
-      };
+      }}
+      icon="Send"
+      style={{ color: 'secondary' }}
+      size="medium"
+    />,
+  ];
+
+  const items = persons.map(person => {
+    let subtitle;
+    let actions;
+    if (person.isPrimaryPerson) {
+      subtitle = t('primary_person');
+      actions = primaryPersonActions();
+    } else if (person.isToBeTransfered) {
+      subtitle = t('person_awaiting_transfer');
+      actions = transferedPersonActions(person);
+    } else {
+      subtitle = t('secondary_person');
+      actions = secondaryPersonActions(person);
     }
     return {
       ...person,
       completeName: person.name + ' ' + person.surname,
       secondary: subtitle,
-      iconButton: icon,
-      onIconButtonClick: () => onIconClick(person),
+      secondaryActions: actions,
     };
   });
 

@@ -402,11 +402,29 @@ const sendPersonTransferEmailAllIncluded = async ({
   });
 
   //Reversing the insert in db if the email can't be sent
-  if (!res2) {
+  /*if (!res2) {
     await deletePersonTransfer(sendedPersonId);
     return;
-  }
+  }*/
   return res;
+};
+
+const getPeopleTransferedToUser = async userId => {
+  const emailsAndConfirmed = (
+    await getEmailsFromUserId(userId)
+  ).filter(email => email.confirmed_email_at);
+  const email = emailsAndConfirmed.map(email => email.email);
+  return await getPeopleTransferedToEmails(email);
+};
+
+const getPeopleTransferedToEmails = async emails => {
+  const peopleId = knex
+    .select('person_id')
+    .from('transfered_person')
+    .whereIn('email', emails);
+  return await knex('person_all_infos')
+    .select('*')
+    .whereIn('id', peopleId);
 };
 
 module.exports = {
@@ -434,4 +452,6 @@ module.exports = {
   getPrimaryPersonIdFromUserId,
   updatePrimaryPerson,
   sendPersonTransferEmailAllIncluded,
+  getPeopleTransferedToUser,
+  getPeopleTransferedToEmails,
 };

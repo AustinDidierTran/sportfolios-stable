@@ -17,6 +17,7 @@ const {
   getPrimaryPersonIdFromUserId,
   sendPersonTransferEmailAllIncluded,
   updatePrimaryPerson: updatePrimaryPersonHelper,
+  getPeopleTransferedToUser: getPeopleTransferedToUserHelper,
 } = require('../helpers');
 
 const {
@@ -172,6 +173,10 @@ const updatePrimaryPerson = async (body, userId) => {
   return await updatePrimaryPersonHelper(userId, primaryPersonId);
 };
 
+const getPeopleTransferedToUser = async userId => {
+  return await getPeopleTransferedToUserHelper(userId);
+};
+
 module.exports = {
   addEmail,
   changePassword,
@@ -183,4 +188,5 @@ module.exports = {
   updatePrimaryPerson,
   sendTransferPersonEmail,
   cancelPersonTransfer,
+  getPeopleTransferedToUser,
 };
