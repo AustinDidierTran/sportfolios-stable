@@ -4,7 +4,7 @@ const {
   sendConfirmationEmail,
   sendRecoveryEmail,
 } = require('../../server/utils/nodeMailer');
-const { expirationTimes } = require('../../../../common/constants');
+const { EXPIRATION_TIMES } = require('../../../../common/constants');
 const {
   confirmEmail: confirmEmailHelper,
   createUserComplete,
@@ -109,7 +109,7 @@ const confirmEmail = async ({ token }) => {
   await knex('user_token').insert({
     user_id: userId,
     token_id: authToken,
-    expires_at: new Date(Date.now() + expirationTimes.AUTH_TOKEN),
+    expires_at: new Date(Date.now() + EXPIRATION_TIMES.AUTH_TOKEN),
   });
 
   const userInfo = await getBasicUserInfoFromId(userId);

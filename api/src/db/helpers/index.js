@@ -6,7 +6,7 @@ const {
   GLOBAL_ENUM,
 } = require('../../../../common/enums');
 
-const { expirationTimes } = require('../../../../common/constants');
+const { EXPIRATION_TIMES } = require('../../../../common/constants');
 
 const {
   sendConfirmationEmail,
@@ -77,7 +77,7 @@ const createConfirmationEmailToken = async ({ email, token }) => {
     email,
     token: token,
     expires_at: new Date(
-      Date.now() + expirationTimes.EMAIL_CONFIRMATION_TOKEN,
+      Date.now() + EXPIRATION_TIMES.EMAIL_CONFIRMATION_TOKEN,
     ),
   });
 };
@@ -93,7 +93,7 @@ const createPersonTransferToken = async ({
       token,
       person_id,
       expires_at: new Date(
-        Date.now() + expirationTimes.PERSON_TRANSFER_TOKEN,
+        Date.now() + EXPIRATION_TIMES.PERSON_TRANSFER_TOKEN,
       ),
     })
     .returning('*');
@@ -104,7 +104,7 @@ const createRecoveryEmailToken = async ({ userId, token }) => {
     user_id: userId,
     token,
     expires_at: new Date(
-      Date.now() + expirationTimes.ACCOUNT_RECOVERY_TOKEN,
+      Date.now() + EXPIRATION_TIMES.ACCOUNT_RECOVERY_TOKEN,
     ),
   });
 };
@@ -132,7 +132,7 @@ const generateAuthToken = async userId => {
   await knex('user_token').insert({
     user_id: userId,
     token_id: token,
-    expires_at: new Date(Date.now() + expirationTimes.AUTH_TOKEN),
+    expires_at: new Date(Date.now() + EXPIRATION_TIMES.AUTH_TOKEN),
   });
   return token;
 };
