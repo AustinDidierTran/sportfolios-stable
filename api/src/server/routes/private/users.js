@@ -136,25 +136,18 @@ router.get(`${BASE_URL}/emails`, async ctx => {
 
 //Owned persons
 router.get(`${BASE_URL}/ownedPersons`, async ctx => {
-  const { status, persons } = await queries.getOwnedPersons(
-    ctx.body.userInfo.id,
-  );
-  if (status === 200) {
+  const persons = await queries.getOwnedPersons(ctx.body.userInfo.id);
+  if (persons) {
     ctx.status = 200;
     ctx.body = {
       status: 'success',
       data: persons,
     };
-  } else if (status === 403) {
-    ctx.status = 403;
-    ctx.body = {
-      status: 'error',
-      message: 'Token is invalid',
-    };
   } else {
-    ctx.status = status;
+    ctx.status = 404;
     ctx.body = {
       status: 'error',
+      message: 'Something went wrong',
     };
   }
 });
@@ -170,10 +163,50 @@ router.put(`${BASE_URL}/primaryPerson`, async ctx => {
       status: 'success',
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'That person does not exist.',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/transferPerson`, async ctx => {
+  const person = await queries.sendTransferPersonEmail(
+    ctx.body.userInfo.id,
+    ctx.request.body,
+  );
+  if (person) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: person,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.delete(`${BASE_URL}/transferPerson`, async ctx => {
+  const person = await queries.cancelPersonTransfer(
+    ctx.body.userInfo.id,
+    ctx.query.id,
+  );
+  if (person) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: person,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
     };
   }
 });

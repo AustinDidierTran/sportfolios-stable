@@ -66,6 +66,8 @@ export default {
       "Vous ne pouvez pas ajouter de produit car l'administrateur n'a pas de compte banquaire",
     by: 'Par',
     canadian_dollar: 'Dollar Canadien',
+    cancel_person_transfer_confirmation:
+      'Êtes vous certain de vouloir annuler le transfert de {{name}}?',
     captain: 'Capitaine',
     card_ending_with: 'Carte finissant avec {{last4}}',
     cart: 'Panier',
@@ -216,7 +218,11 @@ export default {
     payment_options: 'Options de paiements',
     payment_option_exist: 'Option de paiement existante',
     payments: 'Paiements',
-    person: 'Person',
+    person: 'Personne',
+    person_awaiting_transfer: 'Personne en cours de transfert',
+    person_transfer_canceled: 'Le transfert a été annulé',
+    person_transfer_email_sent:
+      'Un courriel pour procéder au transfert a été envoyé à {{email}}',
     people: 'Personnes',
     phase: 'Phase',
     phase_added: 'Phase ajoutée',
@@ -288,6 +294,9 @@ export default {
     teams_saved: 'Équipes sauvegardées!',
     there_is_no_rosters_for_this_event:
       "Il n'y a pas d'alignements pour cet événement.",
+    to_transfer: 'Transférer',
+    transfer_person_description:
+      "En confirmant vous acceptez de céder toutes les permissions sur cette personne à l'utilisateur possédant l'adresse courriel que vous avez entrée",
     time: 'Temps',
     time_slot: 'Plage horaire',
     time_slot_added: 'Plage horaire ajoutée',

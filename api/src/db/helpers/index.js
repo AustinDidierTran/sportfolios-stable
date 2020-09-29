@@ -6,10 +6,14 @@ const {
   GLOBAL_ENUM,
 } = require('../../../../common/enums');
 
+const { EXPIRATION_TIMES } = require('../../../../common/constants');
+
 const {
   sendConfirmationEmail,
-} = require('../../server/utils//nodeMailer');
+  sendPersonTransferEmail,
+} = require('../../server/utils/nodeMailer');
 const { ERROR_ENUM } = require('../../../../common/errors');
+const { deletePersonTransfer } = require('./entity');
 
 const confirmEmail = async ({ email }) => {
   await knex('user_email')
@@ -72,15 +76,36 @@ const createConfirmationEmailToken = async ({ email, token }) => {
   await knex('confirmation_email_token').insert({
     email,
     token: token,
-    expires_at: new Date(Date.now() + 60 * 60 * 1000),
+    expires_at: new Date(
+      Date.now() + EXPIRATION_TIMES.EMAIL_CONFIRMATION_TOKEN,
+    ),
   });
+};
+
+const createPersonTransferToken = async ({
+  email,
+  person_id,
+  token,
+}) => {
+  return await knex('transfered_person')
+    .insert({
+      email,
+      token,
+      person_id,
+      expires_at: new Date(
+        Date.now() + EXPIRATION_TIMES.PERSON_TRANSFER_TOKEN,
+      ),
+    })
+    .returning('*');
 };
 
 const createRecoveryEmailToken = async ({ userId, token }) => {
   await knex('recovery_email_token').insert({
     user_id: userId,
     token,
-    expires_at: new Date(Date.now() + 60 * 60 * 1000),
+    expires_at: new Date(
+      Date.now() + EXPIRATION_TIMES.ACCOUNT_RECOVERY_TOKEN,
+    ),
   });
 };
 
@@ -107,7 +132,7 @@ const generateAuthToken = async userId => {
   await knex('user_token').insert({
     user_id: userId,
     token_id: token,
-    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    expires_at: new Date(Date.now() + EXPIRATION_TIMES.AUTH_TOKEN),
   });
   return token;
 };
@@ -242,6 +267,9 @@ const getUserIdFromEmail = async body => {
 
 const getLanguageFromEmail = async email => {
   const id = await getUserIdFromEmail({ email });
+  if (!id) {
+    return;
+  }
   const infos = await getBasicUserInfoFromId(id);
   return infos.language;
 };
@@ -292,7 +320,8 @@ const updatePasswordFromUserId = async ({ hashedPassword, id }) => {
 const updatePrimaryPerson = async (user_id, primary_person) => {
   return knex('user_primary_person')
     .update({ primary_person })
-    .where({ user_id });
+    .where({ user_id })
+    .returning('*');
 };
 
 const validateEmailIsConfirmed = async email => {
@@ -316,6 +345,7 @@ const sendNewConfirmationEmailAllIncluded = async (
   successRoute,
 ) => {
   const confirmationEmailToken = generateToken();
+  const language = await getLanguageFromEmail(email);
 
   await createConfirmationEmailToken({
     email,
@@ -324,9 +354,59 @@ const sendNewConfirmationEmailAllIncluded = async (
 
   await sendConfirmationEmail({
     email,
+    language,
     token: confirmationEmailToken,
     successRoute,
   });
+};
+
+const sendPersonTransferEmailAllIncluded = async ({
+  email,
+  sendedPersonId,
+  senderUserId,
+}) => {
+  const personTransferToken = generateToken();
+  const sender = await getBasicUserInfoFromId(senderUserId);
+  const language =
+    (await getLanguageFromEmail(email)) || sender.language;
+  const senderPrimaryPersonId = await getPrimaryPersonIdFromUserId(
+    senderUserId,
+  );
+  const senderPrimaryPerson = sender.persons.find(
+    person => person.entity_id === senderPrimaryPersonId,
+  );
+  const senderName =
+    senderPrimaryPerson.name + ' ' + senderPrimaryPerson.surname;
+
+  const sendedPerson = sender.persons.find(
+    person => person.entity_id === sendedPersonId,
+  );
+  const sendedName = sendedPerson.name + ' ' + sendedPerson.surname;
+  //TODO Save token in db with person id and email
+  const res = await createPersonTransferToken({
+    email,
+    token: personTransferToken,
+    person_id: sendedPersonId,
+  });
+
+  if (!res) {
+    return;
+  }
+
+  const res2 = await sendPersonTransferEmail({
+    email,
+    sendedName,
+    senderName,
+    language,
+    token: personTransferToken,
+  });
+
+  //Reversing the insert in db if the email can't be sent
+  if (!res2) {
+    await deletePersonTransfer(sendedPersonId);
+    return;
+  }
+  return res;
 };
 
 module.exports = {
@@ -353,4 +433,5 @@ module.exports = {
   validateEmailIsUnique,
   getPrimaryPersonIdFromUserId,
   updatePrimaryPerson,
+  sendPersonTransferEmailAllIncluded,
 };

@@ -77,6 +77,7 @@ const CARD_TYPE_ENUM = {
 const FORM_DIALOG_TYPE_ENUM = {
   SUBMIT_SCORE: 'score',
   SUBMIT_SCORE_AND_SPIRIT: 'score and spirit',
+  ENTER_EMAIL: 'email',
 };
 
 const LANGUAGE_ENUM = {
@@ -168,6 +169,12 @@ const GLOBAL_ENUM = {
   SALES: 29,
 };
 
+const MILLIS_TIME_ENUM = {
+  ONE_HOUR: 60 * 60 * 1000,
+  ONE_DAY: 24 * 60 * 60 * 1000,
+  ONE_WEEK: 7 * 24 * 60 * 60 * 1000,
+};
+
 const LOGGER_ENUM = {
   STRIPE: '[STRIPE]',
 };
@@ -254,4 +261,5 @@ module.exports = {
   TAG_TYPE_ENUM,
   VIEW_ENUM,
   FORM_DIALOG_TYPE_ENUM,
+  MILLIS_TIME_ENUM,
 };

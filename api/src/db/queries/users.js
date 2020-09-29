@@ -15,12 +15,35 @@ const {
   updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,
   getPrimaryPersonIdFromUserId,
+  sendPersonTransferEmailAllIncluded,
   updatePrimaryPerson: updatePrimaryPersonHelper,
 } = require('../helpers');
 
-const { getAllOwnedEntities } = require('../helpers/entity');
+const {
+  getAllOwnedEntities,
+  personIsAwaitingTransfer,
+  deletePersonTransfer,
+} = require('../helpers/entity');
 
 const { isAllowed } = require('./entity');
+
+const sendTransferPersonEmail = async (
+  user_id,
+  { email, sendedPersonId },
+) => {
+  return await sendPersonTransferEmailAllIncluded({
+    email,
+    sendedPersonId,
+    senderUserId: user_id,
+  });
+};
+
+const cancelPersonTransfer = async (user_id, personId) => {
+  if (!(await isAllowed(personId, user_id))) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return await deletePersonTransfer(personId);
+};
 
 const addEmail = async (user_id, { email }) => {
   if (!user_id) {
@@ -119,16 +142,19 @@ const getOwnedPersons = async userId => {
   );
   const primaryPersonId = await getPrimaryPersonIdFromUserId(userId);
   if (!persons || !primaryPersonId) {
-    return { status: 403 };
+    return;
   }
   var res = await Promise.all(
     persons.map(async person => {
       const isPrimaryPerson = person.id == primaryPersonId;
-      const obj = { ...person, isPrimaryPerson };
+      const isToBeTransfered = await personIsAwaitingTransfer(
+        person.id,
+      );
+      const obj = { ...person, isPrimaryPerson, isToBeTransfered };
       return obj;
     }),
   );
-  return { status: 200, persons: res };
+  return res;
 };
 
 const updatePrimaryPerson = async (body, userId) => {
@@ -155,4 +181,6 @@ module.exports = {
   getPrimaryPersonId,
   getOwnedPersons,
   updatePrimaryPerson,
+  sendTransferPersonEmail,
+  cancelPersonTransfer,
 };
