@@ -21,8 +21,13 @@ export default function EditPrimaryPerson(props) {
     setSelectedValue(event.target.value);
   };
 
-  const onClick = () => {
+  const onSubmit = () => {
     handleSubmit(selectedValue);
+  };
+
+  const onClose = () => {
+    setSelectedValue(persons[0].id);
+    handleClose();
   };
 
   return (
@@ -43,10 +48,10 @@ export default function EditPrimaryPerson(props) {
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="secondary">
+        <Button onClick={onClose} color="secondary">
           {t('cancel')}
         </Button>
-        <Button onClick={onClick} color="primary">
+        <Button onClick={onSubmit} color="primary">
           {t('confirm')}
         </Button>
       </DialogActions>

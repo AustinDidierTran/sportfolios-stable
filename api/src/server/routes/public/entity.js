@@ -82,7 +82,13 @@ router.get(`${BASE_URL}/remainingSpots`, async ctx => {
 });
 
 router.post(`${BASE_URL}/suggestScore`, async ctx => {
-  const game = await queries.addScoreSuggestion(ctx.request.body);
+  const userId =
+    ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
+
+  const game = await queries.addScoreSuggestion(
+    ctx.request.body,
+    userId,
+  );
   if (game) {
     ctx.status = 201;
     ctx.body = {
@@ -99,7 +105,10 @@ router.post(`${BASE_URL}/suggestScore`, async ctx => {
 });
 
 router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
-  const player = await queries.addPlayerToRoster(ctx.request.body);
+  const player = await queries.addPlayerToRoster(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (player) {
     ctx.status = 201;
     ctx.body = {

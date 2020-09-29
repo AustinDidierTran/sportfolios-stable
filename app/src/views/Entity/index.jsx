@@ -1,15 +1,17 @@
 import React from 'react';
+import loadable from '@loadable/component';
 
-import { CircularProgress } from '@material-ui/core';
 import { formatRoute } from '../../actions/goTo';
 import { GLOBAL_ENUM } from '../../../../common/enums';
 import { useApiRoute } from '../../hooks/queries';
 import { useParams } from 'react-router-dom';
-import EntityNotFound from './EntityNotFound';
-import Event from './Event';
-import Organization from './Organization';
-import Person from './Person';
-import Team from './Team';
+import { LoadingSpinner } from '../../components/Custom';
+
+const EntityNotFound = loadable(() => import('./EntityNotFound'));
+const Event = loadable(() => import('./Event'));
+const Organization = loadable(() => import('./Organization'));
+const Person = loadable(() => import('./Person'));
+const Team = loadable(() => import('./Team'));
 
 const EntityMap = {
   [GLOBAL_ENUM.PERSON]: Person,
@@ -29,7 +31,7 @@ export default function Entity() {
   );
 
   if (isLoading) {
-    return <CircularProgress />;
+    return <LoadingSpinner />;
   }
 
   if (!basicInfos) {

@@ -157,10 +157,17 @@ export default function TeamRegistered() {
                       {team.captains[0].name}&nbsp;
                       {team.captains[0].surname}
                     </StyledTableCell>
-                    <StyledTableCell component="th" scope="row">
-                      {team.option.name}&nbsp;
-                      {formatPrice(team.option.price)}
-                    </StyledTableCell>
+                    {team.option ? (
+                      <StyledTableCell component="th" scope="row">
+                        {team.option.name}&nbsp;
+                        {formatPrice(team.option.price)}
+                      </StyledTableCell>
+                    ) : (
+                      <StyledTableCell component="th" scope="row">
+                        {t('no_option')}
+                      </StyledTableCell>
+                    )}
+
                     <StyledTableCell align="center">
                       <PaymentChip status={team.status} />
                     </StyledTableCell>

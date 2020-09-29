@@ -34,6 +34,7 @@ export default {
     admin_has_no_bank_account:
       "You can't create a payment option if admin doesn't have a bank account",
     admin: 'Admin',
+    admin_view: 'Admin view',
     admins: 'Admins',
     advanced_filters: 'Advanced filters',
     adress: 'Address',
@@ -73,6 +74,7 @@ export default {
     cart_empty_go_shop: "Your cart is empty, it's time to shop!",
     category: 'Category',
     change_password: 'Change password',
+    change_team: 'Change team',
     choose_your_primary_person: 'Choose your primary person',
     click_to_create_new_team: 'Click to create your new team',
     comments: 'Comments',
@@ -136,6 +138,7 @@ export default {
     funding_goal: 'Goal: {{goal}}$',
     games: 'Games',
     game_added: 'Game added',
+    game_deleted: 'Game deleted',
     general: 'General',
     general_informations: 'General informations',
     generate_account_link: 'Generate Account Link',
@@ -144,6 +147,7 @@ export default {
     have_an_account_signin: 'Already have an account? Sign in!',
     home: 'Home',
     in_cart: 'In cart',
+    info: 'Info',
     infos: 'Infos',
     informations_saved: 'Informations saved',
     is_sub: 'Is Sub',
@@ -174,6 +178,7 @@ export default {
     not_paid: 'Not paid',
     no_notifications: 'No Notifications',
     no_notifications_message: 'Come back later.',
+    no_option: 'No option',
     no_roster: 'No roster',
     no_remaining_spots:
       'Sorry, your registration has been refused. Event is now full and there are no available spots left.',
@@ -183,6 +188,7 @@ export default {
     of: 'of',
     of_team: 'of team',
     on: 'on',
+    on_le_in_french: 'on',
     on_going_events: 'On Going Events',
     only_available_on_desktop: 'Only available on desktop',
     opposing_team: 'Opposing team',
@@ -216,6 +222,7 @@ export default {
     person_transfer_email_sent:
       'A email was sent to {{email}} to complete the transfer',
     phase: 'Phase',
+    phase_added: 'Phase added',
     places_left: 'places left',
     player: 'Player',
     player_name: 'Player name',
@@ -231,6 +238,7 @@ export default {
     purchased_on: 'Purchased on',
     qt: 'Qt: {{quantity}}',
     ranking: 'Ranking',
+    rankings: 'Rankings',
     refund: 'Refund',
     refunded: 'Refunded',
     results: 'Results',
@@ -263,9 +271,11 @@ export default {
     status: 'Status',
     submit_score: 'Submit Score',
     sub: 'Sub',
+    sub_added: 'Sub added',
     subscribe: 'Subscribe',
     subscribed: 'Subscribed',
     shop: 'Shop',
+    switch_view: 'Switch view',
     error_start_date_before_end:
       'Start date should be before end date.',
     to_see_your_receipt:
@@ -291,9 +301,9 @@ export default {
     time_slot_added: 'Time slot added',
     waiting_for_payment:
       'Your payment is being processed. Thank you for your patience',
-    value_is_required: 'Valeur obligatoire',
     unsupported_language: 'Unsupported language',
     upload: 'Upload',
+    user_view: 'User view',
     valid_until: 'Valid until',
     viewer: 'Viewer',
     yes: 'yes',
@@ -356,7 +366,8 @@ export default {
     account_number: 'Account number',
     institution_number: 'Institution number',
     transit_number: 'Transit number',
-    value_is_required: 'Value is required.',
+    value_is_invalid: 'Value is invalid',
+    value_is_required: 'Value is required',
     value_must_have_x_digits: 'Value must have {{digits}} digits.',
 
     value_must_be_numeric: 'Value must be a number.',
@@ -525,5 +536,7 @@ export default {
     //PROTIP
     you_can_also_click_on_your_game_to_submit_your_score:
       'ProTip: You can also click on your game to submit your result.',
+    you_can_click_on_a_game_to_change_score:
+      'ProTip: You can click on a game to change score.',
   },
 };

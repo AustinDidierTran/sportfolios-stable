@@ -34,6 +34,7 @@ export default {
     admin: 'Admin',
     admin_has_no_bank_account:
       "Vous ne pouvez pas ajouter une option de paiement car l'administrateur n'a pas de compte banquaire relié à son compte",
+    admin_view: 'Vue admin',
     admins: 'Administrateurs',
     advanced_filters: 'Filtres avancés',
     adress: 'Addresse',
@@ -43,7 +44,7 @@ export default {
     empty_roster:
       "Cet alignement est vide. Le capitaine de cette équipe n'a pas entré son alignement.",
     empty_roster_add_players:
-      "Votre alignement est vide. Utilisé l'outil de recherche pour ajouter des joueurs à votre alignement.",
+      "Votre alignement est vide. Utilisez l'outil de recherche pour ajouter des joueurs à votre alignement.",
     are_you_sure_you_want_to_unregister_this_team:
       'Êtes vous sur que vous voulez désinscrire cette équipe et la rembourser si elle à déjà payé?',
     all: 'Tous',
@@ -74,6 +75,7 @@ export default {
       "Votre panier est vide! C'est l'heure d'aller faire des achats!",
     category: 'Catégorie',
     change_password: 'Changer votre mot de passe',
+    change_team: "Changer l'équipe",
     choose_your_primary_person: 'Choisir votre personne principale',
     comments: 'Commentaires',
     confirm: 'Confirmer',
@@ -105,8 +107,8 @@ export default {
     emails: 'Courriels',
     email_confirmed:
       'Un courriel de confirmation a été envoyé à {{email}}. Veuillez regarder vos courriels pour confirmer votre compte.',
-    enter_person_name: 'Entrée le nom du joueur',
-    enter_team_name: "Entrée votre nom d'équipe",
+    enter_person_name: 'Entrez le nom du joueur',
+    enter_team_name: "Entrez votre nom d'équipe",
     enter_player_name: 'Entrez le nom du joueur',
     enter_score: 'Entrez le pointage',
     entity_not_found: "Cette entité n'existe pas",
@@ -135,6 +137,7 @@ export default {
     funding_goal: 'Objectif: {{goal}}$',
     games: 'Parties',
     game_added: 'Partie ajoutée',
+    game_deleted: 'Partie supprimée',
     general: 'Général',
     general_informations: 'Informations générales',
     goal: 'Objectif',
@@ -145,6 +148,7 @@ export default {
     in_cart: 'Dans le panier',
     informations_saved: 'Informations sauvegardées',
     is_sub: 'Est un remplacant',
+    infos: 'Info',
     infos: 'Infos',
     last_name: 'Nom de famille',
     length: 'Durée',
@@ -174,6 +178,7 @@ export default {
     not_paid: 'Paiement dû',
     no_notifications: 'Pas de notifications',
     no_notifications_message: 'Revenez plus tard.',
+    no_option: 'Aucune option',
     no_roster: 'Aucun alignement',
     no_teams: 'Acune équipe',
     no_teams_registered: 'Aucune équipes inscrites',
@@ -183,6 +188,7 @@ export default {
     of: 'du',
     of_team: "de l'équipe",
     on: 'sur le',
+    on_le_in_french: 'le',
     on_going_events: 'Événements en cours',
     only_available_on_desktop: 'Seulement disponible sur ordinateur',
     opposing_team: 'Équipe adverse',
@@ -219,6 +225,7 @@ export default {
       'Un courriel pour procéder au transfert a été envoyé à {{email}}',
     people: 'Personnes',
     phase: 'Phase',
+    phase_added: 'Phase ajoutée',
     places_left: 'places restantes',
     player: 'Joueur',
     player_name: 'Nom du joueur',
@@ -232,6 +239,7 @@ export default {
     phone_number: 'Numéro de téléphone',
     purchased_on: 'Acheté le',
     ranking: 'Classement',
+    rankings: 'Classements',
     refunded: 'Remboursé',
     results: 'Résultats',
     reset: 'Réinitialiser',
@@ -270,9 +278,11 @@ export default {
       '0: Mauvais  1: Moyen  2: Bon ou rien à signaler  3: Très bon  4: Mémorable',
     status: 'Statut',
     submit_score: 'Soumettre un résultat',
-    sub: 'Remplacant',
+    sub: 'Remplaçant',
+    sub_added: 'Remplaçant ajouté',
     subscribe: "S'abonner",
     subscribed: 'Abonné',
+    switch_view: 'Changer de vue',
     team: 'Équipe',
     team_1: 'Équipe 1',
     team_2: 'Équipe 2',
@@ -295,9 +305,9 @@ export default {
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
     waiting_for_payment:
       'Votre paiement est en cours de traitement. Merci pour votre patience.',
-    value_is_required: 'Value is required',
     unsupported_language: 'Langue non supportée',
     upload: 'Téléverser',
+    user_view: 'Vue utilisateur',
     valid_until: "Valide jusqu'au",
     viewer: 'Visiteur',
     accepted: 'Accepté',
@@ -362,7 +372,8 @@ export default {
       "Une erreur s'est produite. Veuillez réessayer.",
     token_expired:
       "Le token n'est plus valide, svp en demander un autre.",
-    value_is_required: 'Une valeur est obligatoire.',
+    value_is_invalid: 'La valeur entrée est invalide',
+    value_is_required: 'Une valeur est obligatoire',
     value_must_have_x_digits:
       'La valeur doit avoir {{digits}} chiffres.',
 
@@ -529,5 +540,7 @@ export default {
     //PROTIP
     you_can_also_click_on_your_game_to_submit_your_score:
       'ProTip: Vous pouvez aussi cliquer sur votre partie pour entrer votre résultat.',
+    you_can_click_on_a_game_to_change_score:
+      'ProTip: Vous pouvez cliquer sur une partie pour changer le pointage.',
   },
 };

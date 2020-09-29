@@ -159,7 +159,13 @@ const getOwnedPersons = async userId => {
 
 const updatePrimaryPerson = async (body, userId) => {
   const { primaryPersonId } = body;
-  if (!isAllowed(primaryPersonId, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
+  if (
+    !(await isAllowed(
+      primaryPersonId,
+      userId,
+      ENTITIES_ROLE_ENUM.ADMIN,
+    ))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 

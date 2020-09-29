@@ -19,9 +19,10 @@ import { formatDate } from '../../../../utils/stringFormats';
 import { Typography } from '@material-ui/core';
 
 export default function GameFilters(props) {
-  const { update } = props;
+  const { update, onlyPast } = props;
   const { t } = useTranslation();
-  const [teamName, setTeamName] = useState(SELECT_ENUM.ALL);
+  const [teamId, setTeamId] = useState(SELECT_ENUM.ALL);
+  const [teamName, setTeamName] = useState('');
   const [phaseId, setPhaseId] = useState(SELECT_ENUM.ALL);
   const [phaseName, setPhaseName] = useState('');
   const [field, setField] = useState(SELECT_ENUM.ALL);
@@ -30,12 +31,14 @@ export default function GameFilters(props) {
   const [description, setDescription] = useState(false);
 
   useEffect(() => {
-    update(teamName, phaseId, field, timeSlot);
+    update(teamId, phaseId, field, timeSlot);
     getDescription();
-  }, [teamName, phaseId, field, timeSlot]);
+  }, [teamId, phaseId, field, timeSlot]);
 
-  const changeTeamName = teamName => {
-    setTeamName(teamName);
+  const changeTeam = team => {
+    const { value, display } = team;
+    setTeamId(value);
+    setTeamName(display);
   };
 
   const changePhaseId = phase => {
@@ -55,14 +58,14 @@ export default function GameFilters(props) {
   const getDescription = () => {
     let description = t('games');
     if (
-      teamName === SELECT_ENUM.ALL &&
+      teamId === SELECT_ENUM.ALL &&
       phaseId === SELECT_ENUM.ALL &&
       field === SELECT_ENUM.ALL &&
       timeSlot === SELECT_ENUM.ALL
     ) {
       description = null;
     }
-    if (teamName != SELECT_ENUM.ALL) {
+    if (teamId != SELECT_ENUM.ALL) {
       description = description + ` ${t('of_team')} ${teamName}`;
     }
     if (phaseId != SELECT_ENUM.ALL) {
@@ -74,7 +77,10 @@ export default function GameFilters(props) {
     if (timeSlot != SELECT_ENUM.ALL) {
       description =
         description +
-        ` ${t('at')} ${formatDate(moment(timeSlot), 'h:mm ddd')}`;
+        ` ${t('on_le_in_french')} ${formatDate(
+          moment(timeSlot),
+          'DD MMM',
+        )}`;
     }
     setDescription(description);
   };
@@ -111,11 +117,9 @@ export default function GameFilters(props) {
               <TimeSlotSelect
                 onChange={changeTimeSlot}
                 timeSlot={timeSlot}
+                onlyPast={onlyPast}
               />
-              <TeamSelect
-                onChange={changeTeamName}
-                teamName={teamName}
-              />
+              <TeamSelect onChange={changeTeam} teamId={teamId} />
             </div>
             <DialogContentText>{description}</DialogContentText>
           </DialogContent>
@@ -126,7 +130,7 @@ export default function GameFilters(props) {
           </DialogActions>
         </div>
       </Dialog>
-      <TeamSelect onChange={changeTeamName} teamName={teamName} />
+      <TeamSelect onChange={changeTeam} teamId={teamId} />
       <Button
         size="small"
         variant="contained"

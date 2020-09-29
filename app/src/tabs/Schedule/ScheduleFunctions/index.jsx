@@ -24,7 +24,7 @@ export const getSlots = async eventId => {
   );
   const res = data.map(d => ({
     value: d.date,
-    display: formatDate(moment(d.date), 'ddd DD MMM h:mm'),
+    display: formatDate(moment(d.date), 'ddd DD MMM HH:mm'),
   }));
   return res;
 };
@@ -34,14 +34,8 @@ export const getTeams = async (eventId, withoutAll) => {
     formatRoute('/api/entity/teamsSchedule', null, { eventId }),
   );
   const res = data.map(d => {
-    if (d.roster_id) {
-      return {
-        value: d.roster_id,
-        display: d.name,
-      };
-    }
     return {
-      value: d.name,
+      value: d.roster_id,
       display: d.name,
     };
   });

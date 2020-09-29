@@ -154,8 +154,8 @@ router.get(`${BASE_URL}/ownedPersons`, async ctx => {
 
 router.put(`${BASE_URL}/primaryPerson`, async ctx => {
   const success = await queries.updatePrimaryPerson(
-    ctx.body.userInfo.id,
     ctx.request.body,
+    ctx.body.userInfo.id,
   );
   if (success) {
     ctx.status = 200;
@@ -163,7 +163,7 @@ router.put(`${BASE_URL}/primaryPerson`, async ctx => {
       status: 'success',
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'That person does not exist.',

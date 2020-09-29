@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import styles from './RosterCard.module.css';
 import { Paper, Icon } from '../../../components/Custom';
 
@@ -12,34 +12,31 @@ const isEven = n => {
 };
 
 export default function RosterCard(props) {
-  const { roster, expandedPosition, setExpandedPosition } = props;
+  const { roster, expandedIndex, setExpandedIndex, index } = props;
   const { position, name, players } = roster;
-  const [expanded, setExpanded] = useState(false);
   const { role, registrationStatus } = roster;
+  const expanded = useMemo(() => expandedIndex === index, [
+    expandedIndex,
+    index,
+  ]);
 
   const onExpand = () => {
-    setExpandedPosition(oldPosition =>
-      oldPosition === position ? 0 : position,
-    );
+    setExpandedIndex(oldIndex => (oldIndex === index ? 0 : index));
   };
-
-  useEffect(() => {
-    setExpanded(expandedPosition === position);
-  }, [expandedPosition]);
 
   if (role == ENTITIES_ROLE_ENUM.ADMIN) {
     return (
       <Paper className={styles.paper}>
         <div
           className={styles.card}
-          style={
-            isEven(position) ? { backgroundColor: '#f2f2f2' } : {}
-          }
-          key={position}
+          style={isEven(index) ? { backgroundColor: '#f2f2f2' } : {}}
+          key={index}
           onClick={onExpand}
         >
           <div className={styles.default}>
-            <div className={styles.position}>{position}</div>
+            <div className={styles.position}>
+              {position ? position : '-'}
+            </div>
             <div className={styles.name}>
               <Typography>{name.toUpperCase()}</Typography>
             </div>
@@ -67,12 +64,14 @@ export default function RosterCard(props) {
     <Paper className={styles.paper}>
       <div
         className={styles.card}
-        style={isEven(position) ? { backgroundColor: '#f2f2f2' } : {}}
-        key={position}
+        style={isEven(index) ? { backgroundColor: '#f2f2f2' } : {}}
+        key={index}
         onClick={onExpand}
       >
         <div className={styles.default}>
-          <div className={styles.position}>{position}</div>
+          <div className={styles.position}>
+            {position ? position : '-'}
+          </div>
           <div className={styles.name}>
             <Typography>{name.toUpperCase()}</Typography>
           </div>

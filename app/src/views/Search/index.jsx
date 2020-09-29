@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import { IgContainer } from '../../components/Custom';
+import { IgContainer, LoadingSpinner } from '../../components/Custom';
 
 import EntitySearch from './EntitySearch/index';
 
 import api from '../../actions/api';
 import { useQuery } from '../../hooks/queries';
-import { CircularProgress } from '@material-ui/core';
 import { formatRoute } from '../../actions/goTo';
 
 export default function Search(props) {
@@ -43,7 +42,7 @@ export default function Search(props) {
   return (
     <IgContainer>
       {isLoading ? (
-        <CircularProgress />
+        <LoadingSpinner />
       ) : (
         <EntitySearch query={query} entities={entities} />
       )}

@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import { SELECT_ENUM } from '../../../../../../../common/enums';
 
 export default function TeamSelect(props) {
-  const { onChange, teamName } = props;
+  const { onChange, teamId } = props;
   const { t } = useTranslation();
   const { id: eventId } = useParams();
 
@@ -27,7 +27,7 @@ export default function TeamSelect(props) {
       //TO BE REMOVED ONLY FOR MEMPHRE
       .filter(d => d.name.length > 2)
       .map(d => ({
-        value: d.name,
+        value: d.roster_id,
         display: d.name,
       }));
 
@@ -35,6 +35,11 @@ export default function TeamSelect(props) {
       { value: SELECT_ENUM.ALL, display: t('all_teams') },
       ...res,
     ]);
+  };
+
+  const handleChange = teamId => {
+    const team = teams.find(team => team.value === teamId);
+    onChange(team);
   };
 
   return (
@@ -46,8 +51,8 @@ export default function TeamSelect(props) {
         margin="dense"
         label={t('team')}
         fullWidth
-        onChange={onChange}
-        value={teamName}
+        onChange={handleChange}
+        value={teamId}
       />
     </div>
   );

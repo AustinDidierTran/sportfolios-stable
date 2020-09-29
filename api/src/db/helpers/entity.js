@@ -377,6 +377,34 @@ async function getAllForYouPagePosts() {
     (a, b) => b.createdAt - a.createdAt,
   );
 }
+async function getScoreSuggestion(
+  event_id,
+  id,
+  start_time,
+  name1,
+  rosterId1,
+  name2,
+  rosterId2,
+) {
+  let realTime = new Date(start_time);
+  const suggestions1 = await knex('score_suggestion')
+    .select('*')
+    .where({
+      event_id,
+      start_time: realTime,
+      your_roster_id: rosterId1,
+      opposing_roster_id: rosterId2,
+    });
+  const suggestions2 = await knex('score_suggestion')
+    .select('*')
+    .where({
+      event_id,
+      start_time: realTime,
+      your_roster_id: rosterId2,
+      opposing_roster_id: rosterId1,
+    });
+  return suggestions1.concat(suggestions2);
+}
 
 async function getRealId(id) {
   const [res] = await knex('alias')
@@ -523,7 +551,6 @@ async function getEntityRole(entityId, userId) {
     )
     .whereNull('entities.deleted_at')
     .where({ user_id: userId });
-
   const roles = await Promise.all(
     entities.map(async entity => {
       if (entity.entity_id === entityId) {
@@ -533,7 +560,6 @@ async function getEntityRole(entityId, userId) {
       }
     }),
   );
-
   return Math.min(...roles);
 }
 
@@ -731,7 +757,7 @@ async function getRole(captains, rosterId, userId) {
   }
   const basicInfo = await getBasicUserInfoFromId(userId);
 
-  const personId = basicInfo.persons[0].entity_id;
+  const personId = basicInfo.primaryPerson.entity_id;
 
   if (captains.some(c => c.id === personId)) {
     return ROSTER_ROLE_ENUM.CAPTAIN;
@@ -847,7 +873,8 @@ async function getSlots(eventId) {
   const realId = await getRealId(eventId);
   const res = await knex('event_time_slots')
     .select('*')
-    .where({ event_id: realId });
+    .where({ event_id: realId })
+    .orderBy('date');
   return res;
 }
 
@@ -1143,6 +1170,7 @@ async function addScoreSuggestion(
   opposingTeamSpirit,
   players,
   comments,
+  suggestedBy,
 ) {
   let yourName = yourTeamName;
   if (yourTeamId) {
@@ -1152,9 +1180,11 @@ async function addScoreSuggestion(
   if (opposingTeamId) {
     opposingName = await getTeamName(opposingTeamId);
   }
+  const realEventId = await getRealId(eventId);
+
   const res = await knex('score_suggestion')
     .insert({
-      event_id: eventId,
+      event_id: realEventId,
       start_time: new Date(startTime),
       your_team: yourName,
       your_roster_id: yourTeamId,
@@ -1165,6 +1195,7 @@ async function addScoreSuggestion(
       opposing_team_spirit: opposingTeamSpirit,
       players,
       comments,
+      created_by: suggestedBy,
     })
     .returning('*');
   return res;
@@ -1585,26 +1616,34 @@ const deleteOption = async id => {
     .del();
 };
 
-const addPlayerToRoster = async body => {
+const addPlayerToRoster = async (body, userId) => {
   const { personId, name, id, rosterId, isSub } = body;
   //TODO: Make sure userId adding is team Admin
   let player = {};
-  if (id) {
+  if (personId) {
     player = await knex('team_players')
       .insert({
         roster_id: rosterId,
         person_id: personId,
         name: name,
-        id: realId,
+        id,
         is_sub: isSub,
       })
       .returning('*');
   } else {
+    const person = await addEntity(
+      {
+        name,
+        type: GLOBAL_ENUM.PERSON,
+      },
+      userId,
+    );
     player = await knex('team_players')
       .insert({
         roster_id: rosterId,
-        person_id: personId,
+        person_id: person.id,
         name: name,
+        id,
         is_sub: isSub,
       })
       .returning('*');
@@ -1624,7 +1663,7 @@ const deletePlayerFromRoster = async id => {
 };
 
 const deleteGame = async id => {
-  const game = await knex.transaction(async trx => {
+  const [game] = await knex.transaction(async trx => {
     await knex('game_teams')
       .where('game_id', id)
       .del()
@@ -1683,6 +1722,7 @@ module.exports = {
   deleteRegistration,
   getAllEntities,
   getAllForYouPagePosts,
+  getScoreSuggestion,
   getAllOwnedEntities,
   getOwnedEvents,
   getAllRolesEntity,

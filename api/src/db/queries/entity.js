@@ -10,65 +10,66 @@ const moment = require('moment');
 const { signS3Request } = require('../../server/utils/aws');
 
 const {
+  addAlias: addAliasHelper,
   addEntity: addEntityHelper,
   addEntityRole: addEntityRoleHelper,
-  addMember: addMemberHelper,
-  addAlias: addAliasHelper,
-  addOption: addOptionHelper,
-  addGame: addGameHelper,
-  addScoreSuggestion: addScoreSuggestionHelper,
-  addScoreAndSpirit: addScoreAndSpiritHelper,
   addField: addFieldHelper,
-  addTeamToSchedule: addTeamToScheduleHelper,
-  addRegisteredToSchedule: addRegisteredToScheduleHelper,
-  addPhase: addPhaseHelper,
-  addTimeSlot: addTimeSlotHelper,
-  addRoster: addRosterHelper,
-  addTeamToEvent: addTeamToEventHelper,
+  addGame: addGameHelper,
+  addMember: addMemberHelper,
   addMembership: addMembershipHelper,
-  getEntityRole: getEntityRoleHelper,
+  addOption: addOptionHelper,
+  addPhase: addPhaseHelper,
+  addPlayerToRoster: addPlayerToRosterHelper,
+  addRegisteredToSchedule: addRegisteredToScheduleHelper,
+  addRoster: addRosterHelper,
+  addScoreAndSpirit: addScoreAndSpiritHelper,
+  addScoreSuggestion: addScoreSuggestionHelper,
+  addTeamToEvent: addTeamToEventHelper,
+  addTeamToSchedule: addTeamToScheduleHelper,
+  addTimeSlot: addTimeSlotHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
+  deleteGame: deleteGameHelper,
   deleteOption: deleteOptionHelper,
+  deletePlayerFromRoster: deletePlayerFromRosterHelper,
+  eventInfos: eventInfosHelper,
+  getAlias: getAliasHelper,
   getAllEntities: getAllEntitiesHelper,
+  getAllForYouPagePosts: getAllForYouPagePostsHelper,
   getAllOwnedEntities: getAllOwnedEntitiesHelper,
-  getOwnedEvents: getOwnedEventsHelper,
+  getAllRegisteredInfos: getAllRegisteredInfosHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
   getEntity: getEntityHelper,
+  getEntityRole: getEntityRoleHelper,
+  getEvent: getEventHelper,
+  getFields: getFieldsHelper,
+  getGames: getGamesHelper,
+  getGeneralInfos: getGeneralInfosHelper,
   getMembers: getMembersHelper,
   getMemberships: getMembershipsHelper,
+  getOptions: getOptionsHelper,
+  getOwnedEvents: getOwnedEventsHelper,
+  getPhases: getPhasesHelper,
   getRegistered: getRegisteredHelper,
-  getAllRegisteredInfos: getAllRegisteredInfosHelper,
   getRemainingSpots: getRemainingSpotsHelper,
   getRoster: getRosterHelper,
-  getEvent: getEventHelper,
-  getAlias: getAliasHelper,
-  getPhases: getPhasesHelper,
-  getGames: getGamesHelper,
+  getRosterInvoiceItem,
+  getScoreSuggestion: getScoreSuggestionHelper,
   getSlots: getSlotsHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
-  getFields: getFieldsHelper,
-  getGeneralInfos: getGeneralInfosHelper,
-  getOptions: getOptionsHelper,
   removeEntityRole: removeEntityRoleHelper,
-  getRosterInvoiceItem,
   removeEventCartItem: removeEventCartItemHelper,
   unregister: unregisterHelper,
+  updateAlias: updateAliasHelper,
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
   updateEntityRole: updateEntityRoleHelper,
   updateEvent: updateEventHelper,
+  updateGame: updateGameHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
   updateMember: updateMemberHelper,
-  updateAlias: updateAliasHelper,
-  updateGame: updateGameHelper,
   updateRegistration: updateRegistrationHelper,
-  eventInfos: eventInfosHelper,
-  addPlayerToRoster: addPlayerToRosterHelper,
-  deletePlayerFromRoster: deletePlayerFromRosterHelper,
-  deleteGame: deleteGameHelper,
-  getAllForYouPagePosts: getAllForYouPagePostsHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -97,6 +98,26 @@ async function getAllEntities(params) {
 
 async function getAllForYouPagePosts() {
   return getAllForYouPagePostsHelper();
+}
+async function getScoreSuggestion(query) {
+  const {
+    event_id,
+    id,
+    start_time,
+    name1,
+    rosterId1,
+    name2,
+    rosterId2,
+  } = query;
+  return getScoreSuggestionHelper(
+    event_id,
+    id,
+    start_time,
+    name1,
+    rosterId1,
+    name2,
+    rosterId2,
+  );
 }
 async function getAllOwnedEntities(type, userId) {
   return getAllOwnedEntitiesHelper(type, userId);
@@ -174,7 +195,9 @@ async function getGeneralInfos(entityId, userId) {
 
 async function updateEvent(body, userId) {
   const { eventId, maximumSpots, eventStart, eventEnd } = body;
-  if (!isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return updateEventHelper(
@@ -188,7 +211,9 @@ async function updateEvent(body, userId) {
 
 async function updateGeneralInfos(body, userId) {
   const { entityId, ...otherBody } = body;
-  if (!isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  if (
+    !(await isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return updateGeneralInfosHelper(entityId, otherBody);
@@ -196,7 +221,7 @@ async function updateGeneralInfos(body, userId) {
 
 async function addTeamToEvent(body, userId) {
   const { teamId, eventId, paymentOption, roster, status } = body;
-  if (!isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -225,22 +250,25 @@ async function addTeamToEvent(body, userId) {
   });
 
   // Add roster
-  await addRosterHelper(rosterId, roster);
-
-  if (registrationStatus === REGISTRATION_STATUS_ENUM.ACCEPTED) {
-    // Add item to cart
-    await addEventCartItem(
-      {
-        stripePriceId: paymentOption,
-        metadata: {
-          sellerEntityId: eventId,
-          buyerId: teamId,
-          rosterId,
-          team,
+  if (roster) {
+    await addRosterHelper(rosterId, roster);
+  }
+  if (paymentOption) {
+    if (registrationStatus === REGISTRATION_STATUS_ENUM.ACCEPTED) {
+      // Add item to cart
+      await addEventCartItem(
+        {
+          stripePriceId: paymentOption,
+          metadata: {
+            sellerEntityId: eventId,
+            buyerId: teamId,
+            rosterId,
+            team,
+          },
         },
-      },
-      userId,
-    );
+        userId,
+      );
+    }
 
     // send mail to organization admin
     // TODO find real event user creator
@@ -265,8 +293,7 @@ async function addTeamToEvent(body, userId) {
     );
   }
   // Handle other acceptation statuses
-
-  return { status: registrationStatus };
+  return { status: registrationStatus, rosterId };
 }
 
 async function getOptions(eventId) {
@@ -280,7 +307,7 @@ const addEntity = async (body, user_id) => {
 async function updateEntity(body, userId) {
   const { id, name, surname, photoUrl } = body;
 
-  if (!isAllowed(id, userId)) {
+  if (!(await isAllowed(id, userId), ENTITIES_ROLE_ENUM.ADMIN)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   if (name || surname) {
@@ -306,7 +333,9 @@ async function getS3Signature(userId, { fileType }) {
 
 async function updateEntityRole(body, userId) {
   const { entity_id, entity_id_admin, role } = body;
-  if (!isAllowed(entity_id, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
+  if (
+    !(await isAllowed(entity_id, userId, ENTITIES_ROLE_ENUM.ADMIN))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   if (role === ENTITIES_ROLE_ENUM.VIEWER) {
@@ -323,7 +352,7 @@ async function updateEntityRole(body, userId) {
 
 async function updateRegistration(body, userId) {
   const { rosterId, eventId, invoiceItemId, status } = body;
-  if (!isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.ADMIN))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return updateRegistrationHelper(
@@ -336,7 +365,9 @@ async function updateRegistration(body, userId) {
 
 async function addEntityRole(body, userId) {
   const { entity_id, entity_id_admin, role } = body;
-  if (!isAllowed(entity_id, userId, ENTITIES_ROLE_ENUM.ADMIN)) {
+  if (
+    !(await isAllowed(entity_id, userId, ENTITIES_ROLE_ENUM.ADMIN))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return addEntityRoleHelper(entity_id, entity_id_admin, role);
@@ -442,7 +473,7 @@ async function addScoreAndSpirit(body) {
   return res;
 }
 
-async function addScoreSuggestion(body) {
+async function addScoreSuggestion(body, userId) {
   const {
     eventId,
     startTime,
@@ -455,7 +486,16 @@ async function addScoreSuggestion(body) {
     opposingTeamSpirit,
     players,
     comments,
+    suggestedBy,
   } = body;
+
+  if (
+    suggestedBy &&
+    !(await isAllowed(suggestedBy, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
   const res = await addScoreSuggestionHelper(
     eventId,
     startTime,
@@ -468,6 +508,7 @@ async function addScoreSuggestion(body) {
     opposingTeamSpirit,
     players,
     comments,
+    suggestedBy,
   );
   return res;
 }
@@ -504,7 +545,9 @@ async function addTimeSlot(body) {
 
 async function addOption(body, userId) {
   const { eventId, name, price, endTime, startTime } = body;
-  if (!isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   const res = await addOptionHelper(
@@ -526,7 +569,9 @@ async function addRoster(body) {
 
 const unregister = async (body, userId) => {
   const { eventId, rosterId } = body;
-  if (!isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -605,63 +650,72 @@ async function deletePlayerFromRoster(id, userId) {
 
 async function deleteGame(userId, query) {
   const { eventId, gameId } = query;
-  if (!isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return deleteGameHelper(gameId);
 }
 
 module.exports = {
+  addAlias,
   addEntity,
   addEntityRole,
-  addMember,
-  addAlias,
-  addMembership,
-  addGame,
-  addScoreSuggestion,
-  addScoreAndSpirit,
   addField,
-  addTeamToSchedule,
-  addRegisteredToSchedule,
-  addPhase,
-  addTimeSlot,
+  addGame,
+  addMember,
+  addMembership,
   addOption,
-  addTeamToEvent,
+  addPhase,
+  addPlayerToRoster,
+  addRegisteredToSchedule,
   addRoster,
+  addScoreAndSpirit,
+  addScoreSuggestion,
+  addTeamToEvent,
+  addTeamToSchedule,
+  addTimeSlot,
   deleteEntity,
+  deleteEntityHelper,
   deleteEntityMembership,
+  deleteGame,
   deleteOption,
+  deletePlayerFromRoster,
+  eventInfos,
+  getAlias,
   getAllEntities,
   getAllForYouPagePosts,
   getAllOwnedEntities,
-  getOwnedEvents,
+  getAllRegisteredInfos,
   getAllRolesEntity,
   getAllTypeEntities,
   getEntity,
   getEntity,
-  getMembers,
-  getOptions,
-  getMemberships,
-  getRegistered,
-  getAllRegisteredInfos,
-  getRemainingSpots,
   getEvent,
-  getAlias,
-  getPhases,
+  getFields,
   getGames,
+  getGeneralInfos,
+  getMembers,
+  getMemberships,
+  getOptions,
+  getOwnedEvents,
+  getPhases,
+  getRegistered,
+  getRemainingSpots,
+  getRoster,
+  getS3Signature,
+  getScoreSuggestion,
   getSlots,
   getTeamsSchedule,
-  getFields,
-  getGeneralInfos,
-  getS3Signature,
   unregister,
+  updateAlias,
   updateEntity,
   updateEntityRole,
   updateEvent,
+  updateGame,
   updateGeneralInfos,
   updateMember,
-  updateAlias,
-  updateGame,
   updateRegistration,
   eventInfos,
   getRoster,

@@ -59,7 +59,9 @@ const getPurchases = async userId => {
 };
 
 const getSales = async (entityId, userId) => {
-  if (!isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  if (
+    !(await isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return getSalesHelper(entityId);

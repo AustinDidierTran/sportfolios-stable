@@ -8,19 +8,24 @@ import moment from 'moment';
 import Game from './Game';
 import GameFilters from './GameFilters';
 
-export default function Games(props) {
-  const { role, updated } = props;
+export default function Games() {
   const { id: eventId } = useParams();
   const [games, setGames] = useState([]);
 
   useEffect(() => {
     getGames();
-  }, [eventId, updated]);
+  }, [eventId]);
 
   const sortGames = games => {
-    const res = games.sort(
-      (a, b) => moment(a.start_time) - moment(b.start_time),
-    );
+    const res = games
+      .filter(
+        game =>
+          moment(game.start_time)
+            .set('hour', 0)
+            .set('minute', 0)
+            .add(1, 'day') > moment(),
+      )
+      .sort((a, b) => moment(a.start_time) - moment(b.start_time));
     return res;
   };
 
@@ -33,11 +38,11 @@ export default function Games(props) {
     return res;
   };
 
-  const filter = async (teamName, phaseId, field, timeSlot) => {
+  const filter = async (teamId, phaseId, field, timeSlot) => {
     let games = await getGames();
-    if (teamName != SELECT_ENUM.ALL) {
+    if (teamId != SELECT_ENUM.ALL) {
       games = games.filter(game =>
-        game.teams.some(team => team.name === teamName),
+        game.teams.some(team => team.roster_id === teamId),
       );
     }
     if (phaseId != SELECT_ENUM.ALL) {
@@ -47,7 +52,11 @@ export default function Games(props) {
       games = games.filter(game => game.field === field);
     }
     if (timeSlot != SELECT_ENUM.ALL) {
-      games = games.filter(game => game.start_time === timeSlot);
+      games = games.filter(
+        game =>
+          moment(game.start_time).format('YYYY M D') ===
+          moment(timeSlot).format('YYYY M D'),
+      );
     }
     setGames(games);
   };
@@ -55,13 +64,12 @@ export default function Games(props) {
   const update = () => {
     getGames();
   };
-
   return (
     <>
       <GameFilters update={filter} />
       <div className={styles.main} style={{ marginTop: '16px' }}>
         {games.map(game => (
-          <Game update={update} role={role} game={game} />
+          <Game update={update} game={game} />
         ))}
       </div>
     </>

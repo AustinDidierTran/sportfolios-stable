@@ -65,6 +65,23 @@ router.get(`${BASE_URL}/forYouPage`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/scoreSuggestion`, async ctx => {
+  const suggestion = await queries.getScoreSuggestion(ctx.query);
+
+  if (suggestion) {
+    ctx.body = {
+      status: 'success',
+      data: suggestion,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/ownedEvents`, async ctx => {
   const entity = await queries.getOwnedEvents(
     ctx.query.organizationId,
@@ -653,11 +670,10 @@ router.post(`${BASE_URL}/membership`, async ctx => {
 });
 
 router.post(`${BASE_URL}/register`, async ctx => {
-  const { status, reason } = await queries.addTeamToEvent(
+  const { status, reason, rosterId } = await queries.addTeamToEvent(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-
   if (status === REGISTRATION_STATUS_ENUM.REFUSED) {
     ctx.status = errors[ERROR_ENUM.REGISTRATION_ERROR].code;
     ctx.body = {
@@ -668,7 +684,7 @@ router.post(`${BASE_URL}/register`, async ctx => {
     ctx.status = 200;
     ctx.body = {
       status: 'success',
-      data: { status },
+      data: { status, rosterId },
     };
   } else {
     ctx.status = 404;
@@ -746,16 +762,16 @@ router.del(`${BASE_URL}/option`, async ctx => {
 });
 
 router.del(`${BASE_URL}/game`, async ctx => {
-  const entity = await queries.deleteGame(
+  const game = await queries.deleteGame(
     ctx.body.userInfo.id,
     ctx.query,
   );
-  if (entity) {
-    ctx.status = 200;
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
+  if (game) {
+    (ctx.status = 201),
+      (ctx.body = {
+        status: 'success',
+        data: game,
+      });
   } else {
     ctx.status = 404;
     ctx.body = {

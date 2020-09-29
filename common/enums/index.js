@@ -63,6 +63,8 @@ const CARD_TYPE_ENUM = {
   SHOP: 'shop',
   CART: 'cart',
   GAME: 'game',
+  TWO_TEAM_GAME: 'twoTeamGame',
+  TWO_TEAM_GAME_EDITABLE: 'twoTeamGameEditable',
   EDITABLE_GAME: 'editable game',
   INVOICE: 'invoice',
   DELETE_ENTITY: 'delete entity',

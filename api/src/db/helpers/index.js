@@ -65,6 +65,10 @@ const createUserComplete = async body => {
         role: ENTITIES_ROLE_ENUM.ADMIN,
       })
       .transacting(trx);
+
+    await knex('user_primary_person')
+      .insert({ user_id, primary_person: entity_id })
+      .transacting(trx);
   });
 };
 
@@ -142,6 +146,39 @@ const getBasicUserInfoFromId = async user_id => {
     .select('language')
     .where({ id: user_id });
 
+  const [primaryPerson] = await knex('user_entity_role')
+    .select(
+      'user_entity_role.entity_id',
+      'name',
+      'surname',
+      'photo_url',
+    )
+    .leftJoin(
+      'entities',
+      'user_entity_role.entity_id',
+      '=',
+      'entities.id',
+    )
+    .leftJoin(
+      'entities_name',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_name.entity_id',
+    )
+    .leftJoin(
+      'entities_photo',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_photo.entity_id',
+    )
+    .where('entities.type', GLOBAL_ENUM.PERSON)
+    .andWhere({
+      'user_entity_role.entity_id': await getPrimaryPersonIdFromUserId(
+        user_id,
+      ),
+    });
+
+  // soon to be changed/deprecated
   const persons = await knex('user_entity_role')
     .select(
       'user_entity_role.entity_id',
@@ -171,6 +208,7 @@ const getBasicUserInfoFromId = async user_id => {
     .andWhere({ user_id });
 
   return {
+    primaryPerson,
     persons,
     app_role,
     language,
@@ -282,7 +320,8 @@ const updatePasswordFromUserId = async ({ hashedPassword, id }) => {
 const updatePrimaryPerson = async (user_id, primary_person) => {
   return knex('user_primary_person')
     .update({ primary_person })
-    .where({ user_id });
+    .where({ user_id })
+    .returning('*');
 };
 
 const validateEmailIsConfirmed = async email => {

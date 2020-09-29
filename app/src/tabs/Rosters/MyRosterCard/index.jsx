@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import styles from './MyRosterCard.module.css';
 import { Paper, Icon, Avatar } from '../../../components/Custom';
 
@@ -14,8 +14,8 @@ const isEven = n => {
 export default function MyRosterCard(props) {
   const {
     roster,
-    expandedPosition,
-    setExpandedPosition,
+    expandedIndex,
+    setExpandedIndex,
     onDelete,
     onAdd,
     index,
@@ -29,17 +29,14 @@ export default function MyRosterCard(props) {
     registrationStatus,
   } = roster;
 
-  const [expanded, setExpanded] = useState(true);
+  const expanded = useMemo(() => expandedIndex === index, [
+    expandedIndex,
+    index,
+  ]);
 
   const onExpand = () => {
-    setExpandedPosition(oldPosition =>
-      oldPosition === position ? 0 : position,
-    );
+    setExpandedIndex(oldIndex => (oldIndex === index ? 0 : index));
   };
-
-  useEffect(() => {
-    setExpanded(expandedPosition === position);
-  }, [expandedPosition]);
 
   if (
     role == ROSTER_ROLE_ENUM.CAPTAIN ||
@@ -56,7 +53,9 @@ export default function MyRosterCard(props) {
           }
         >
           <div className={styles.default}>
-            <div className={styles.position}>{position}</div>
+            <div className={styles.position}>
+              {position ? position : '-'}
+            </div>
             <div className={styles.title} onClick={onExpand}>
               <div className={styles.name}>
                 <Typography>{name.toUpperCase()}</Typography>

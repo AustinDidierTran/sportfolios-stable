@@ -6,34 +6,10 @@ import { Typography, Card } from '../../../MUI';
 import { formatDate } from '../../../../utils/stringFormats';
 import moment from 'moment';
 import { ListItemText } from '@material-ui/core';
-import TwoTeamGame from './TwoTeamGame';
 
 export default function GameItem(props) {
-  const {
-    teams,
-    field,
-    start_time: startTime,
-    phaseName,
-    role,
-    onClick,
-    onEdit,
-    onDelete,
-  } = props;
-  if (teams.length === 2) {
-    return (
-      <TwoTeamGame
-        team1={teams[0]}
-        team2={teams[1]}
-        field={field}
-        startTime={startTime}
-        phaseName={phaseName}
-        role={role}
-        onClick={onClick}
-        onEdit={onEdit}
-        onDelete={onDelete}
-      />
-    );
-  }
+  const { teams, field, start_time: startTime, phaseName } = props;
+
   return (
     <Card className={styles.game}>
       <div className={styles.main}>
@@ -42,7 +18,7 @@ export default function GameItem(props) {
         </Typography>
         <ListItemText
           className={styles.time}
-          primary={formatDate(moment(startTime), 'h:mm')}
+          primary={formatDate(moment(startTime), 'HH:mm')}
           secondary={formatDate(moment(startTime), 'ddd')}
         ></ListItemText>
         <Typography className={styles.field} color="textSecondary">
