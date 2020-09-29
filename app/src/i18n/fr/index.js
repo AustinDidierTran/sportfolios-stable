@@ -50,8 +50,10 @@ export default {
       "Cet alignement est vide. Le capitaine de cette équipe n'a pas entré son alignement.",
     empty_roster_add_players:
       "Votre alignement est vide. Utilisez l'outil de recherche pour ajouter des joueurs à votre alignement.",
+    are_you_sure_you_want_to_unregister_all_team:
+      'Êtes-vous sûr de vouloir désinscrire toutes les équipes et les rembourser si elles ont déjà payé?',
     are_you_sure_you_want_to_unregister_this_team:
-      'Êtes vous sur que vous voulez désinscrire cette équipe et la rembourser si elle à déjà payé?',
+      'Êtes-vous sûr de vouloir désinscrire cette équipe et la rembourser si elle à déjà payé?',
     all: 'Tous',
     all_teams: 'Toutes les équipes',
     all_phases: 'Toutes les phases',
@@ -319,6 +321,8 @@ export default {
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
     waiting_for_payment:
       'Votre paiement est en cours de traitement. Merci pour votre patience.',
+    unregister: 'Désinscrire',
+    unregister_all: 'Tout désinscrire',
     unsupported_language: 'Langue non supportée',
     upload: 'Téléverser',
     user_view: 'Vue utilisateur',
@@ -501,7 +505,11 @@ export default {
     you_added_players_to_your_roster:
       'Vous avez ajouté {{length}} joueurs à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
     no_bank_account_linked:
-      "Vous n'avez pas de compte en banque relié, l'option de paiement doit être gratuite.",
+      "Vous n'avez pas de compte en banque relié, l'option de paiement doit etre gratuite.",
+    some_teams_cannot_be_deleted:
+      "Des équipes n'ont pas pu être désinscrites de l'événement. Elles sont probablement dans des parties. Les remboursements ont toutefois été fait s'il y a lieu.",
+    this_team_cannot_be_deleted:
+      "Cette équipe n'a pas pu être désinscrite de l'événement. Elle est probablement dans une partie. Le remboursement a toutefois été fait s'il y a lieu.",
 
     //SIZES
     sizes_enum: {

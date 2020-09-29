@@ -458,16 +458,24 @@ router.post(BASE_URL, async ctx => {
 });
 
 router.post(`${BASE_URL}/unregister`, async ctx => {
-  const data = await queries.unregister(
+  const res = await queries.unregister(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
 
-  ctx.status = 200;
-  ctx.body = {
-    status: 'success',
-    data,
-  };
+  if (res.failed) {
+    ctx.status = 403;
+    ctx.body = {
+      status: 'error',
+      data: res.data,
+    };
+  } else {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: res.data,
+    };
+  }
 });
 
 router.post(`${BASE_URL}/role`, async ctx => {

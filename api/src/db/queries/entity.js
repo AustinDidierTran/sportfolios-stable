@@ -584,38 +584,44 @@ async function addRoster(body) {
 }
 
 const unregister = async (body, userId) => {
-  const { eventId, rosterId } = body;
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
+  const { eventId, rosterIds } = body;
+  const result = { failed: false, data: [] };
 
-  const { invoiceItemId, status } = await getRosterInvoiceItem({
-    eventId,
-    rosterId,
-  });
-
-  try {
-    if (status === INVOICE_STATUS_ENUM.PAID) {
-      // Registration paid, refund please
-      await createRefund({ invoiceItemId });
-    } else {
-      // Registration is not paid, remove from cart
-      await removeEventCartItemHelper({ rosterId });
+  for await (const rosterId of rosterIds) {
+    if (
+      !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+    ) {
+      throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
 
-    await unregisterHelper({ rosterId, eventId });
-  } catch (err) {
-    if (err.code === STRIPE_ERROR_ENUM.CHARGE_ALREADY_REFUNDED) {
-      // Error is fine, keep unregistering
+    const { invoiceItemId, status } = await getRosterInvoiceItem({
+      eventId,
+      rosterId,
+    });
+
+    try {
+      if (status === INVOICE_STATUS_ENUM.PAID) {
+        // Registration paid, refund please
+        await createRefund({ invoiceItemId });
+      } else {
+        // Registration is not paid, remove from cart
+        await removeEventCartItemHelper({ rosterId });
+      }
+
       await unregisterHelper({ rosterId, eventId });
-    } else {
-      throw err;
+    } catch (err) {
+      if (err.code === STRIPE_ERROR_ENUM.CHARGE_ALREADY_REFUNDED) {
+        // Error is fine, keep unregistering
+        await unregisterHelper({ rosterId, eventId });
+      } else {
+        // Temporary fix : team won't be unregistered, but cart item could be removed, same for refund
+        result.failed = true; // team is probably used in event game, can't delete
+      }
     }
   }
 
-  return getAllRegisteredInfosHelper(eventId, userId);
+  result.data = await getAllRegisteredInfosHelper(eventId, userId);
+  return result;
 };
 
 async function addMembership(body, userId) {

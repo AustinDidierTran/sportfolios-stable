@@ -982,6 +982,15 @@ const deleteRegistration = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
   return knex.transaction(async trx => {
+    // temporary, table will probably be removed
+    await knex('schedule_teams')
+      .where({
+        event_id: realEventId,
+        roster_id: realRosterId,
+      })
+      .del()
+      .transacting(trx);
+
     await knex('event_rosters')
       .where({
         roster_id: realRosterId,
