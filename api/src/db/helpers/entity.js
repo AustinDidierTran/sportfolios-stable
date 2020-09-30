@@ -1761,8 +1761,35 @@ const deletePlayerFromRoster = async id => {
   return null;
 };
 
+const getGame = async id => {
+  const [game] = await knex('games')
+    .select('*')
+    .where({ id });
+  const teams = await getTeams(id);
+  return { ...game, teams };
+};
+
 const deleteGame = async id => {
-  const [game] = await knex.transaction(async trx => {
+  const game = await getGame(id);
+  const [res] = await knex.transaction(async trx => {
+    await knex('score_suggestion')
+      .where({
+        event_id: game.event_id,
+        start_time: game.start_time,
+        your_roster_id: game.teams[0].roster_id,
+        opposing_roster_id: game.teams[1].roster_id,
+      })
+      .del()
+      .transacting(trx);
+    await knex('score_suggestion')
+      .where({
+        event_id: game.event_id,
+        start_time: game.start_time,
+        your_roster_id: game.teams[1].roster_id,
+        opposing_roster_id: game.teams[0].roster_id,
+      })
+      .del()
+      .transacting(trx);
     await knex('game_teams')
       .where('game_id', id)
       .del()
@@ -1773,7 +1800,7 @@ const deleteGame = async id => {
       .returning('*')
       .transacting(trx);
   });
-  return game;
+  return res;
 };
 
 module.exports = {

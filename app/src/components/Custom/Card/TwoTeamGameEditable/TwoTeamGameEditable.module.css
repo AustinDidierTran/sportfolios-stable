@@ -24,6 +24,13 @@
   align-items: center;
 }
 
+.buttonContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  align-items: center;
+}
+
 .icon {
   align-self: center;
   justify-self: center;
