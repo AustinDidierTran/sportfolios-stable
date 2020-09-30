@@ -41,6 +41,7 @@ export default {
     adress: 'Addresse',
     alias: 'Alias',
     alias_is_already_used: "L'alias est déjà utilisé",
+    anonymous: 'Anonyme',
     at: 'à',
     empty_roster:
       "Cet alignement est vide. Le capitaine de cette équipe n'a pas entré son alignement.",
@@ -221,6 +222,7 @@ export default {
     payment_options: 'Options de paiements',
     payment_option_exist: 'Option de paiement existante',
     payments: 'Paiements',
+    pending: 'En attente',
     person: 'Personne',
     person_awaiting_transfer: 'Personne en cours de transfert',
     person_transfer_canceled: 'Le transfert a été annulé',
@@ -244,6 +246,7 @@ export default {
     ranking: 'Classement',
     rankings: 'Classements',
     refunded: 'Remboursé',
+    refused: 'Refusé',
     results: 'Résultats',
     reset: 'Réinitialiser',
     reset_password: 'Réinitialiser le mot de passe',

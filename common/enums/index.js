@@ -60,18 +60,19 @@ const MEMBERSHIP_TYPE_ENUM = {
 };
 
 const CARD_TYPE_ENUM = {
-  SHOP: 'shop',
-  CART: 'cart',
-  GAME: 'game',
-  TWO_TEAM_GAME: 'twoTeamGame',
-  TWO_TEAM_GAME_EDITABLE: 'twoTeamGameEditable',
-  EDITABLE_GAME: 'editable game',
-  INVOICE: 'invoice',
-  DELETE_ENTITY: 'delete entity',
   ADD_PAYMENT_OPTION: 'add payment option',
+  CART: 'cart',
+  DELETE_ENTITY: 'delete entity',
+  EDITABLE_GAME: 'editable game',
   EVENT_PAYMENT_OPTION: 'event payment option',
   EVENT_SETTINGS: 'event settings',
   EVENT: 'event',
+  GAME: 'game',
+  INVOICE: 'invoice',
+  SCORE_SUGGESTION: 'score suggestion',
+  SHOP: 'shop',
+  TWO_TEAM_GAME_EDITABLE: 'twoTeamGameEditable',
+  TWO_TEAM_GAME: 'twoTeamGame',
 };
 
 const FORM_DIALOG_TYPE_ENUM = {
@@ -99,10 +100,12 @@ const INVOICE_STATUS_ENUM = {
   VOID: 'void',
 };
 
-const REGISTRATION_STATUS_ENUM = {
+const STATUS_ENUM = {
   ACCEPTED: 'accepted',
   PENDING: 'pending',
   REFUSED: 'refused',
+  SUCCESS: 201,
+  ERROR: 404,
 };
 
 const REJECTION_ENUM = {
@@ -128,11 +131,6 @@ const SEVERITY_ENUM = {
   SUCCESS: 'success',
   ERROR: 'error',
   INFO: 'info',
-};
-
-const STATUS_ENUM = {
-  SUCCESS: 201,
-  ERROR: 404,
 };
 
 const SPIRIT_CATEGORY_ENUM = {
@@ -248,7 +246,7 @@ module.exports = {
   MEMBERSHIP_LENGTH_ENUM,
   MEMBERSHIP_TYPE_ENUM,
   POSITION_ENUM,
-  REGISTRATION_STATUS_ENUM,
+  STATUS_ENUM,
   REJECTION_ENUM,
   ROSTER_ROLE_ENUM,
   SELECT_ENUM,
