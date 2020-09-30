@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import styles from './RosterCard.module.css';
 import { Paper, Icon } from '../../../components/Custom';
 
@@ -14,16 +14,15 @@ const isEven = n => {
 export default function RosterCard(props) {
   const { roster, expandedIndex, setExpandedIndex, index } = props;
   const { position, name, players } = roster;
-  const [expanded, setExpanded] = useState(false);
   const { role, registrationStatus } = roster;
+  const expanded = useMemo(() => expandedIndex === index, [
+    expandedIndex,
+    index,
+  ]);
 
   const onExpand = () => {
     setExpandedIndex(oldIndex => (oldIndex === index ? 0 : index));
   };
-
-  useEffect(() => {
-    setExpanded(expandedIndex === index);
-  }, [expandedIndex]);
 
   if (role == ENTITIES_ROLE_ENUM.ADMIN) {
     return (

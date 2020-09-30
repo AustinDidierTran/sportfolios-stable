@@ -1,7 +1,6 @@
 const knex = require('../connection');
 
 const { getMembershipName } = require('../../../../common/functions');
-const { getBasicUserInfoFromId } = require('./index');
 const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
@@ -752,14 +751,20 @@ async function getRoster(rosterId) {
   return props;
 }
 
+const getPrimaryPersonIdFromUserId = async user_id => {
+  const [{ primary_person: id }] = await knex('user_primary_person')
+    .select('primary_person')
+    .where({ user_id });
+  return id;
+};
+
 async function getRole(captains, rosterId, userId) {
   const realId = await getRealId(rosterId);
   if (!userId) {
     return ROSTER_ROLE_ENUM.VIEWER;
   }
-  const basicInfo = await getBasicUserInfoFromId(userId);
 
-  const personId = basicInfo.primaryPerson.entity_id;
+  const personId = await getPrimaryPersonIdFromUserId(userId);
 
   if (captains.some(c => c.id === personId)) {
     return ROSTER_ROLE_ENUM.CAPTAIN;
@@ -1803,6 +1808,28 @@ const deleteGame = async id => {
   return res;
 };
 
+const deletePersonTransfer = async person_id => {
+  const [person] = await knex('transfered_person')
+    .where({ person_id })
+    .del()
+    .returning('person_id');
+  return person;
+};
+
+const personIsAwaitingTransfer = async personId => {
+  return (
+    await knex.first(
+      knex.raw(
+        'exists ?',
+        knex('transfered_person')
+          .select('*')
+          .where('person_id', personId)
+          .andWhere('expires_at', '>', 'now()'),
+      ),
+    )
+  ).exists;
+};
+
 module.exports = {
   addEntity,
   addEntityRole,
@@ -1869,4 +1896,6 @@ module.exports = {
   addPlayerToRoster,
   deletePlayerFromRoster,
   deleteGame,
+  personIsAwaitingTransfer,
+  deletePersonTransfer,
 };

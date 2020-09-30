@@ -7,6 +7,7 @@ export default {
     action_confirmation:
       'Êtes-vous certain de vouloir effectuer cette action?',
     acceptation: 'Acceptation',
+    accept: 'Accepter',
     add_admin: 'Ajouter admin',
     add: 'Ajouter',
     add_editor: 'Ajouter éditeur',
@@ -57,6 +58,7 @@ export default {
     amount_to_pay: 'Montant à payer {{amount}}',
     app_role: 'App Role',
     awaiting_payments: 'Paiements en attentes',
+    awaiting_your_approval: 'En attente de votre approbation',
     athlete_history: "Historique de l'athlète",
     back: 'Revenir',
     back_to_shop: 'Revenir au magasin',
@@ -67,6 +69,8 @@ export default {
       "Vous ne pouvez pas ajouter de produit car l'administrateur n'a pas de compte banquaire",
     by: 'Par',
     canadian_dollar: 'Dollar Canadien',
+    cancel_person_transfer_confirmation:
+      'Êtes vous certain de vouloir annuler le transfert de {{name}}?',
     captain: 'Capitaine',
     card_ending_with: 'Carte finissant avec {{last4}}',
     cart: 'Panier',
@@ -93,6 +97,7 @@ export default {
       'Cliquer pour créer votre nouvelle équipe',
     created_by: 'Créé par {{name}}',
     currency: 'Devise',
+    decline: 'Refuser',
     delete: 'Supprimer',
     delete_confirmation_text: 'Pour supprimer, écrivez {{name}}',
     delete_game_confirmation:
@@ -218,7 +223,11 @@ export default {
     payment_option_exist: 'Option de paiement existante',
     payments: 'Paiements',
     pending: 'En attente',
-    person: 'Person',
+    person: 'Personne',
+    person_awaiting_transfer: 'Personne en cours de transfert',
+    person_transfer_canceled: 'Le transfert a été annulé',
+    person_transfer_email_sent:
+      'Un courriel pour procéder au transfert a été envoyé à {{email}}',
     people: 'Personnes',
     phase: 'Phase',
     phase_added: 'Phase ajoutée',
@@ -291,6 +300,10 @@ export default {
     teams_saved: 'Équipes sauvegardées!',
     there_is_no_rosters_for_this_event:
       "Il n'y a pas d'alignements pour cet événement.",
+    to_transfer: 'Transférer',
+    transfer_person_description:
+      "En confirmant vous acceptez de céder toutes les permissions sur cette personne à l'utilisateur possédant l'adresse courriel que vous avez entrée",
+    transfered_to_you: 'Transféré à vous',
     time: 'Temps',
     time_slot: 'Plage horaire',
     time_slot_added: 'Plage horaire ajoutée',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import styles from './MyRosterCard.module.css';
 import { Paper, Icon, Avatar } from '../../../components/Custom';
 
@@ -29,15 +29,14 @@ export default function MyRosterCard(props) {
     registrationStatus,
   } = roster;
 
-  const [expanded, setExpanded] = useState(true);
+  const expanded = useMemo(() => expandedIndex === index, [
+    expandedIndex,
+    index,
+  ]);
 
   const onExpand = () => {
     setExpandedIndex(oldIndex => (oldIndex === index ? 0 : index));
   };
-
-  useEffect(() => {
-    setExpanded(expandedIndex === index);
-  }, [expandedIndex]);
 
   if (
     role == ROSTER_ROLE_ENUM.CAPTAIN ||

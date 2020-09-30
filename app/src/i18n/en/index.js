@@ -7,6 +7,7 @@ export default {
     action_confirmation:
       'Are you sure you want to perform this action?',
     acceptation: 'Acceptation',
+    accept: 'Accept',
     add: 'Add',
     add_editor: 'Add editor',
     add_game: 'Add game',
@@ -60,11 +61,14 @@ export default {
       'Recovery email has been sent successfully. Go look at your email to reset your password.',
     athlete_history: 'Athlete history',
     awaiting_payments: 'Awaiting payments',
+    awaiting_your_approval: 'Awaiting your approval',
     back: 'Back',
     back_to_shop: 'Back to shop',
     basic_info: 'Basic Info',
     birth_date_format: '{{date, LL}} ({{age}} years old)',
     birth_date: 'Birth date',
+    cancel_person_transfer_confirmation:
+      'Are you sure you want to cancel the transfer of {{name}}?',
     cant_add_product_no_bank_account:
       "Can't add product admin has no bank account",
     by: 'By',
@@ -89,6 +93,7 @@ export default {
     create_team: 'Create Team',
     created_by: 'Created by {{name}}',
     currency: 'Currency',
+    decline: 'Decline',
     delete: 'Delete',
     select_payment_method: 'Select payment method',
     delete_confirmation_text: 'To delete, type {{name}}',
@@ -217,6 +222,10 @@ export default {
     pending: 'Pending',
     person: 'Person',
     persons: 'Persons',
+    person_awaiting_transfer: 'Person awaiting transfer',
+    person_transfer_canceled: 'Person transfer canceled',
+    person_transfer_email_sent:
+      'A email was sent to {{email}} to complete the transfer',
     phase: 'Phase',
     phase_added: 'Phase added',
     places_left: 'places left',
@@ -262,7 +271,6 @@ export default {
     signup: 'Signup',
     sizes: 'Size',
     sizes: 'Sizes',
-    something_went_wrong: 'Something went wrong.',
     spirit: 'Spirit',
     spirit_chart_ligue_mardi:
       '0: Bad 1: Below average 2: Good or nothing to report 3: Very good 4: Exceptional',
@@ -291,6 +299,10 @@ export default {
     teams_saved: 'Teams saved!',
     there_is_no_rosters_for_this_event:
       'There is no rosters for this event.',
+    to_transfer: 'Transfer',
+    transfer_person_description:
+      'By confirming you accept to give all the admin permissions on this person and give it to the user who own the email you specified.',
+    transfered_to_you: 'Transfered to you',
     time: 'Time',
     time_slot: 'Time slot',
     time_slot_added: 'Time slot added',

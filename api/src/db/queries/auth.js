@@ -4,6 +4,7 @@ const {
   sendConfirmationEmail,
   sendRecoveryEmail,
 } = require('../../server/utils/nodeMailer');
+const { EXPIRATION_TIMES } = require('../../../../common/constants');
 const {
   confirmEmail: confirmEmailHelper,
   createUserComplete,
@@ -50,10 +51,11 @@ const signup = async ({
     email,
     token: confirmationEmailToken,
   });
-
+  const language = await getLanguageFromEmail(email);
   // Send confirmation email with link
   await sendConfirmationEmail({
     email,
+    language,
     token: confirmationEmailToken,
     successRoute,
   });
@@ -107,7 +109,7 @@ const confirmEmail = async ({ token }) => {
   await knex('user_token').insert({
     user_id: userId,
     token_id: authToken,
-    expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    expires_at: new Date(Date.now() + EXPIRATION_TIMES.AUTH_TOKEN),
   });
 
   const userInfo = await getBasicUserInfoFromId(userId);
@@ -159,10 +161,16 @@ const resendConfirmationEmail = async ({ email, successRoute }) => {
   }
 
   const token = generateToken();
+  const language = await getLanguageFromEmail(email);
 
   await createConfirmationEmailToken({ email, token });
 
-  await sendConfirmationEmail({ email, token, successRoute });
+  await sendConfirmationEmail({
+    email,
+    language,
+    token,
+    successRoute,
+  });
 
   return 200;
 };
