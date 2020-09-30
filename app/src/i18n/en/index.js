@@ -77,6 +77,10 @@ export default {
     cant_add_product_no_bank_account:
       "Can't add product admin has no bank account",
     by: 'By',
+    cant_unregister_all_teams:
+      'Only {{howManyCanUnregister}}/{{totalOfTeams}} teams can be unregistered since some teams are in a game. Do you want to unregister the available ones?',
+    cant_unregister_any_teams:
+      'No teams can be unregistered since they are all already in a game.',
     captain: 'Captain',
     card_ending_with: 'Card ending with {{last4}}',
     cart_empty_go_shop: "Your cart is empty, it's time to shop!",
@@ -502,9 +506,9 @@ export default {
     no_bank_account_linked:
       'You have no bank account linked, payment option needs to be free',
     some_teams_cannot_be_deleted:
-      "Some teams can't be unregistered from the event. They are probably in a game. Refunds still have been made if needed.",
+      "Some teams can't be unregistered from the event since they are already in a game.",
     this_team_cannot_be_deleted:
-      "This team can't be unregistered from the event. It is probably in a game. Refund still has been made if needed.",
+      "This team can't be unregistered from the event since it is already in a game.",
 
     //SIZES
     sizes_enum: {

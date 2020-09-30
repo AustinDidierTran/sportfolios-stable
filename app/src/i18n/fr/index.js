@@ -75,7 +75,11 @@ export default {
     by: 'Par',
     canadian_dollar: 'Dollar Canadien',
     cancel_person_transfer_confirmation:
-      'Êtes vous certain de vouloir annuler le transfert de {{name}}?',
+      'Êtes-vous certain de vouloir annuler le transfert de {{name}}?',
+    cant_unregister_all_teams:
+      "Seulement {{howManyCanUnregister}}/{{totalOfTeams}} équipes peuvent être désinscrites puisque certaines sont déjà dans des parties. Voulez-vous désinscrire celles qui peuvent l'être?",
+    cant_unregister_any_teams:
+      "Aucune équipe ne peut être désinscrite puisqu'elles sont déjà toutes dans des parties.",
     captain: 'Capitaine',
     card_ending_with: 'Carte finissant avec {{last4}}',
     cart: 'Panier',
@@ -507,9 +511,9 @@ export default {
     no_bank_account_linked:
       "Vous n'avez pas de compte en banque relié, l'option de paiement doit etre gratuite.",
     some_teams_cannot_be_deleted:
-      "Des équipes n'ont pas pu être désinscrites de l'événement. Elles sont probablement dans des parties. Les remboursements ont toutefois été fait s'il y a lieu.",
+      "Des équipes n'ont pas pu être désinscrites de l'événement puisqu'elles sont déjà dans des parties.",
     this_team_cannot_be_deleted:
-      "Cette équipe n'a pas pu être désinscrite de l'événement. Elle est probablement dans une partie. Le remboursement a toutefois été fait s'il y a lieu.",
+      "Cette équipe n'a pas pu être désinscrite de l'événement puisqu'elle est déjà dans une partie.",
 
     //SIZES
     sizes_enum: {

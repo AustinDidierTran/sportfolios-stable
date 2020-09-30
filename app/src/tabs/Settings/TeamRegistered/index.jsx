@@ -32,6 +32,10 @@ export default function TeamRegistered() {
   const { dispatch } = useContext(Store);
 
   const [teams, setTeams] = useState([]);
+  const [
+    teamsThatCanBeUnregistered,
+    setTeamsThatCanBeUnregistered,
+  ] = useState([]);
   const [maximumSpots, setMaximumSpots] = useState();
   const [openUnregister, setOpenUnregister] = useState(false);
   const [openUnregisterAll, setOpenUnregisterAll] = useState(false);
@@ -63,7 +67,16 @@ export default function TeamRegistered() {
     setRosterId(rosterId);
   };
 
-  const handleUnregisterAllClick = () => {
+  const handleUnregisterAllClick = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/canUnregisterList', null, {
+        eventId,
+        rosterIds: teams.map(t => t.rosterId),
+      }),
+    );
+
+    setTeamsThatCanBeUnregistered(data);
+
     setOpenUnregisterAll(true);
   };
 
@@ -89,7 +102,7 @@ export default function TeamRegistered() {
   const onUnregisterAll = async () => {
     const res = await unregister({
       eventId,
-      rosterIds: teams.map(t => t.rosterId),
+      rosterIds: teamsThatCanBeUnregistered,
     });
 
     if (res.status === 403) {
@@ -245,12 +258,28 @@ export default function TeamRegistered() {
         onCancel={onCloseUnregister}
         onSubmit={onUnregisterTeam}
         title={t('are_you_sure_you_want_to_unregister_this_team')}
+        description={teams.find(x => x.rosterId === rosterId)?.name}
       />
       <AlertDialog
         open={openUnregisterAll}
         onCancel={onCloseUnregisterAll}
         onSubmit={onUnregisterAll}
-        title={t('are_you_sure_you_want_to_unregister_all_team')}
+        title={
+          teamsThatCanBeUnregistered.length == 0
+            ? t('cant_unregister_any_teams')
+            : teamsThatCanBeUnregistered.length < teams.length
+            ? t('cant_unregister_all_teams', {
+                howManyCanUnregister:
+                  teamsThatCanBeUnregistered.length,
+                totalOfTeams: teams.length,
+              })
+            : t('are_you_sure_you_want_to_unregister_all_team')
+        }
+        description={teamsThatCanBeUnregistered
+          .map(function(rosterId) {
+            return teams.find(x => x.rosterId === rosterId)?.name;
+          })
+          .join(', ')}
       />
     </Paper>
   );

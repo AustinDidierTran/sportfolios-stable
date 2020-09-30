@@ -457,6 +457,27 @@ router.post(BASE_URL, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/canUnregisterList`, async ctx => {
+  const res = await queries.canUnregisterList(
+    ctx.query.rosterIds,
+    ctx.query.eventId,
+  );
+
+  if (res) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/unregister`, async ctx => {
   const res = await queries.unregister(
     ctx.request.body,

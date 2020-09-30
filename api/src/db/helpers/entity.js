@@ -978,17 +978,34 @@ async function updateEntityPhoto(entityId, photo_url) {
     .where({ entity_id: realId });
 }
 
+const whichTeamsCanUnregister = async (rosterIds, eventId) => {
+  var list = [];
+  for await (const rosterId of rosterIds) {
+    if (await canUnregisterTeam(rosterId, eventId)) {
+      list.push(rosterId);
+    }
+  }
+
+  return list;
+};
+
 const canUnregisterTeam = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
 
-  const eventGames = await knex('games')
-    .select('id')
-    .where({ event_id: realEventId });
+  const canUnregister =
+    (
+      await knex('game_teams')
+        .whereIn(
+          'game_id',
+          knex('games')
+            .select('id')
+            .where({ event_id: realEventId }),
+        )
+        .andWhere({ roster_id: realRosterId })
+    )?.length == 0;
 
-  return knex('game_teams')
-    .where({ roster_id: realRosterId })
-    .whereIn('game_id', eventGames)[0].exists;
+  return canUnregister;
 };
 
 const deleteRegistration = async (rosterId, eventId) => {
@@ -1904,10 +1921,11 @@ module.exports = {
   getFields,
   getGeneralInfos,
   getOptions,
+  getRosterInvoiceItem,
+  whichTeamsCanUnregister,
   removeEntityRole,
   removeEventCartItem,
   unregister,
-  getRosterInvoiceItem,
   updateEntityName,
   updateEntityPhoto,
   updateEntityRole,
