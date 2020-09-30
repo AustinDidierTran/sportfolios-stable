@@ -79,6 +79,22 @@ router.get(`${BASE_URL}/scoreSuggestion`, async ctx => {
     };
   }
 });
+router.get(`${BASE_URL}/sameSuggestions`, async ctx => {
+  const suggestion = await queries.getSameSuggestions(ctx.query);
+
+  if (suggestion) {
+    ctx.body = {
+      status: 'success',
+      data: suggestion,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
 
 router.get(`${BASE_URL}/ownedEvents`, async ctx => {
   const entity = await queries.getOwnedEvents(

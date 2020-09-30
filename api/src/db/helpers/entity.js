@@ -406,7 +406,32 @@ async function getScoreSuggestion(
   const res = suggestions.sort(
     (a, b) => moment(a.created_at) - moment(b.created_at),
   );
+
   return res;
+}
+async function getSameSuggestions(
+  eventId,
+  startTime,
+  yourRosterId,
+  opposingRosterId,
+  yourScore,
+  opposingTeamScore,
+) {
+  const suggestion = {
+    eventId,
+    startTime,
+    yourRosterId,
+    opposingRosterId,
+    yourScore: Number(yourScore),
+    opposingTeamScore: Number(opposingTeamScore),
+  };
+  const suggestions = await getScoreSuggestion(
+    eventId,
+    startTime,
+    yourRosterId,
+    opposingRosterId,
+  );
+  return keepSameSuggestions(suggestions, suggestion);
 }
 
 async function getRealId(id) {
@@ -1569,6 +1594,34 @@ async function updateGame(
   }
   return Promise.all(res);
 }
+async function keepSameSuggestions(suggestions, suggestion) {
+  return suggestions.filter(s => {
+    return (
+      (s.your_roster_id === suggestion.yourRosterId &&
+        s.opposing_roster_id === suggestion.opposingRosterId &&
+        s.your_score === suggestion.yourScore &&
+        s.opposing_team_score === suggestion.opposingTeamScore) ||
+      (s.your_roster_id === suggestion.opposingRosterId &&
+        s.opposing_roster_id === suggestion.yourRosterId &&
+        s.yourScore === suggestion.opposingTeamScore &&
+        s.opposing_team_score === suggestion.your_score)
+    );
+  });
+}
+async function keepDifferentSuggestions(suggestions, suggestion) {
+  return suggestions.filter(s => {
+    return (
+      (s.your_roster_id != suggestion.yourRosterId ||
+        s.opposing_roster_id != suggestion.opposingRosterId ||
+        s.your_score != suggestion.yourScore ||
+        s.opposing_team_score != suggestion.opposingTeamScore) &&
+      (s.your_roster_id != suggestion.opposingRosterId ||
+        s.opposing_roster_id != suggestion.yourRosterId ||
+        s.your_score != suggestion.opposingTeamScore ||
+        s.opposing_team_score != suggestion.yourScore)
+    );
+  });
+}
 
 async function updateSuggestionStatus(
   gameId,
@@ -1586,32 +1639,22 @@ async function updateSuggestionStatus(
     yourRosterId,
     opposingRosterId,
   );
+  const suggestion = {
+    gameId,
+    eventId,
+    startTime,
+    yourRosterId,
+    opposingRosterId,
+    yourScore: Number(yourScore),
+    opposingTeamScore: Number(opposingTeamScore),
+    status,
+  };
 
-  const same = suggestions.filter(suggestion => {
-    return (
-      (suggestion.your_roster_id === yourRosterId &&
-        suggestion.opposing_roster_id === opposingRosterId &&
-        suggestion.your_score === yourScore &&
-        suggestion.opposing_team_score === opposingTeamScore) ||
-      (suggestion.your_roster_id === opposingRosterId &&
-        suggestion.opposing_roster_id === yourRosterId &&
-        suggestion.your_score === opposingTeamScore &&
-        suggestion.opposing_team_score === yourScore)
-    );
-  });
-
-  const different = suggestions.filter(suggestion => {
-    return (
-      (suggestion.your_roster_id != yourRosterId ||
-        suggestion.opposing_roster_id != opposingRosterId ||
-        suggestion.your_score != yourScore ||
-        suggestion.opposing_team_score != opposingTeamScore) &&
-      (suggestion.your_roster_id != opposingRosterId ||
-        suggestion.opposing_roster_id != yourRosterId ||
-        suggestion.your_score != opposingTeamScore ||
-        suggestion.opposing_team_score != yourScore)
-    );
-  });
+  const same = await keepSameSuggestions(suggestions, suggestion);
+  const different = await keepDifferentSuggestions(
+    suggestions,
+    suggestion,
+  );
 
   const [res] = await Promise.all(
     same.map(async s => {
@@ -1858,6 +1901,7 @@ module.exports = {
   getAllEntities,
   getAllForYouPagePosts,
   getScoreSuggestion,
+  getSameSuggestions,
   getAllOwnedEntities,
   getOwnedEvents,
   getAllRolesEntity,

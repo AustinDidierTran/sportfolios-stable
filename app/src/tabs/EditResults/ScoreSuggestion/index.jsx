@@ -26,9 +26,9 @@ export default function ScoreSuggestion(props) {
   const { t } = useTranslation();
 
   const [suggestions, setSuggestions] = useState([]);
-  const [expanded, setExpanded] = useState(false);
-  const [icon, setIcon] = useState('KeyboardArrowDown');
-  const [message, setMessage] = useState(t('score_suggestions'));
+  const [expanded, setExpanded] = useState(true);
+  const [icon, setIcon] = useState('KeyboardArrowUp');
+  const [message, setMessage] = useState('');
 
   const handleExpand = () => {
     const newExpanded = !expanded;
@@ -50,6 +50,21 @@ export default function ScoreSuggestion(props) {
     getSuggestions();
   }, []);
 
+  const getSameSuggestions = (suggestions, suggestion) => {
+    return suggestions.filter(s => {
+      return (
+        (s.your_roster_id === suggestion.your_roster_id &&
+          s.opposing_roster_id === suggestion.opposing_roster_id &&
+          s.your_score === suggestion.your_score &&
+          s.opposing_team_score === suggestion.opposing_team_score) ||
+        (s.your_roster_id === suggestion.opposing_roster_id &&
+          s.opposing_roster_id === suggestion.your_roster_id &&
+          s.your_score === suggestion.opposing_team_score &&
+          s.opposing_team_score === suggestion.your_score)
+      );
+    });
+  };
+
   const getSuggestions = async () => {
     const { data } = await api(
       formatRoute('/api/entity/scoreSuggestion', null, {
@@ -59,8 +74,20 @@ export default function ScoreSuggestion(props) {
         rosterId2,
       }),
     );
-    setSuggestions(data);
-    const expanded = !data.some(s => s.status != STATUS_ENUM.PENDING);
+
+    const res = data.reduce((prev, curr) => {
+      if (prev.length < 1) {
+        return [...prev, curr];
+      }
+      const samesugg = getSameSuggestions(prev, curr);
+      if (samesugg.length < 1) {
+        return [...prev, curr];
+      }
+      return [...prev];
+    }, []);
+
+    setSuggestions(res);
+    const expanded = res.some(s => s.status === STATUS_ENUM.PENDING);
     if (!expanded) {
       setTimeout(() => {
         setExpanded(expanded);

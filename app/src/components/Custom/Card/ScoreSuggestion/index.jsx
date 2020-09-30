@@ -35,9 +35,9 @@ export default function ScoreSuggestion(props) {
   const { t } = useTranslation();
   const classes = useStyles();
 
-  const [name, setName] = useState(t('anonymous'));
+  const [message, setMessage] = useState(t('anonymous'));
 
-  const getPerson = async () => {
+  const getPersonName = async () => {
     if (!suggestion.created_by) {
       return t('anonymous');
     }
@@ -45,15 +45,48 @@ export default function ScoreSuggestion(props) {
       formatRoute('/api/entity', null, { id: suggestion.created_by }),
     );
 
-    const name = data.surname
-      ? `${data.name} ${data.surname}`
-      : data.name;
-    setName(name);
+    return { name: data.name, surname: data.surname };
+  };
+
+  const getNumber = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/sameSuggestions', null, {
+        eventId: suggestion.event_id,
+        startTime: suggestion.start_time,
+        yourRosterId: suggestion.your_roster_id,
+        opposingRosterId: suggestion.opposing_roster_id,
+        yourScore: suggestion.your_score,
+        opposingTeamScore: suggestion.opposing_team_score,
+      }),
+    );
+    return data.length;
+  };
+
+  const getMessage = async () => {
+    const number = await getNumber();
+    const name = await getPersonName();
+    if (number === 2) {
+      setMessage(
+        t('name_and_x_other', {
+          name: name.name,
+          number: number - 1,
+        }),
+      );
+    } else if (number > 2) {
+      setMessage(
+        t('name_and_x_others', {
+          name: name.name,
+          number: number - 1,
+        }),
+      );
+    } else {
+      setMessage(`${name.name} ${name.surname}`);
+    }
   };
 
   useEffect(() => {
-    getPerson();
-  }, [suggestion.created_by]);
+    getMessage();
+  }, [suggestion]);
 
   let className = classes.odd;
   if (index % 2 === 0) {
@@ -62,7 +95,7 @@ export default function ScoreSuggestion(props) {
 
   let chipColor = 'primary';
   if (suggestion.status === STATUS_ENUM.PENDING) {
-    chipColor = 'yellow';
+    chipColor = 'default';
   }
   if (suggestion.status === STATUS_ENUM.REFUSED) {
     chipColor = 'secondary';
@@ -108,7 +141,7 @@ export default function ScoreSuggestion(props) {
         <div className={styles.game}>
           <ListItemText
             className={styles.person}
-            primary={name}
+            primary={message}
             secondary={formatDate(
               moment(suggestion.created_at),
               'D MMM H:mm',

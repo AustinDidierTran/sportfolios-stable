@@ -348,6 +348,8 @@ export default {
     payment_method: 'Méthode de paiement',
     review: 'Passer en revue et payer',
     name: 'Nom',
+    name_and_x_others: '{{name}} et {{number}} autres',
+    name_and_x_other: '{{name}} et {{number}} autre',
     select_payment_method: 'Sélectionner une méthode de paiement',
     email: 'Courriel',
     phone_number: 'Numéro de téléphone',

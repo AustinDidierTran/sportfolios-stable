@@ -56,6 +56,7 @@ const {
   getRoster: getRosterHelper,
   getRosterInvoiceItem,
   getScoreSuggestion: getScoreSuggestionHelper,
+  getSameSuggestions: getSameSuggestionsHelper,
   getSlots: getSlotsHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
   removeEntityRole: removeEntityRoleHelper,
@@ -107,6 +108,24 @@ async function getScoreSuggestion(query) {
     start_time,
     rosterId1,
     rosterId2,
+  );
+}
+async function getSameSuggestions(query) {
+  const {
+    eventId,
+    startTime,
+    yourRosterId,
+    opposingRosterId,
+    yourScore,
+    opposingTeamScore,
+  } = query;
+  return getSameSuggestionsHelper(
+    eventId,
+    startTime,
+    yourRosterId,
+    opposingRosterId,
+    yourScore,
+    opposingTeamScore,
   );
 }
 async function getAllOwnedEntities(type, userId) {
@@ -722,6 +741,7 @@ module.exports = {
   getRoster,
   getS3Signature,
   getScoreSuggestion,
+  getSameSuggestions,
   getSlots,
   getTeamsSchedule,
   unregister,

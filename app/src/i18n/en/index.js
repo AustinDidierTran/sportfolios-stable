@@ -170,6 +170,8 @@ export default {
     more_filters: 'More Filters',
     my_persons: 'My persons',
     name: 'Name',
+    name_and_x_others: '{{name}} and {{number}} others',
+    name_and_x_other: '{{name}} and {{number}} other',
     new_email: 'New email',
     new_organization: 'New organization',
     new_team: 'New team',
