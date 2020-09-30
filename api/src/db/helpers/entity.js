@@ -9,6 +9,7 @@ const {
   CARD_TYPE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
   STATUS_ENUM,
+  PERSON_TRANSFER_STATUS_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');

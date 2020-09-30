@@ -223,7 +223,6 @@ export default {
     payment_options: 'Options de paiements',
     payment_option_exist: 'Option de paiement existante',
     payments: 'Paiements',
-<<<<<<< HEAD
     person: 'Personne',
     person_awaiting_transfer: 'Personne en cours de transfert',
     person_transfer_canceled: 'Le transfert a été annulé',
@@ -231,10 +230,6 @@ export default {
     person_transfer_done: 'Le transfert a été complété',
     person_transfer_email_sent:
       'Un courriel pour procéder au transfert a été envoyé à {{email}}',
-=======
-    pending: 'En attente',
-    person: 'Person',
->>>>>>> You can now accept score suggestion
     people: 'Personnes',
     phase: 'Phase',
     phase_added: 'Phase ajoutée',
