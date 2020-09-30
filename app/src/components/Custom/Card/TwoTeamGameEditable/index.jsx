@@ -57,22 +57,34 @@ export default function TwoTeamGameEditable(props) {
           </Typography>
         </div>
       </div>
-      <div className={styles.buttonsContainer}>
-        <IconButton
-          className={styles.icon}
-          onClick={onEdit}
-          tooltip={t('edit_game')}
-          icon="Edit"
-          style={{ color: 'primary' }}
-        />
-        <IconButton
-          className={styles.icon}
-          onClick={onDelete}
-          tooltip={t('delete')}
-          icon="Delete"
-          style={{ color: 'primary' }}
-        />
-      </div>
+      {onEdit ? (
+        <div className={styles.buttonsContainer}>
+          <IconButton
+            className={styles.icon}
+            onClick={onEdit}
+            tooltip={t('edit_game')}
+            icon="Edit"
+            style={{ color: 'primary' }}
+          />
+          <IconButton
+            className={styles.icon}
+            onClick={onDelete}
+            tooltip={t('delete')}
+            icon="Delete"
+            style={{ color: 'primary' }}
+          />
+        </div>
+      ) : (
+        <div className={styles.buttonContainer}>
+          <IconButton
+            className={styles.icon}
+            onClick={onDelete}
+            tooltip={t('delete')}
+            icon="Delete"
+            style={{ color: 'primary' }}
+          />
+        </div>
+      )}
     </Card>
   );
 }

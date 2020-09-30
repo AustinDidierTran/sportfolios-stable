@@ -15,7 +15,7 @@ import { ACTION_ENUM, Store } from '../../../../Store';
 import { ERROR_ENUM } from '../../../../../../common/errors';
 
 export default function EditGame(props) {
-  const { game, update } = props;
+  const { game, update, withoutEdit } = props;
   const { dispatch } = useContext(Store);
   const { t } = useTranslation();
 
@@ -79,15 +79,27 @@ export default function EditGame(props) {
 
   return (
     <>
-      <Card
-        items={{
-          ...game,
-          onClick: gameClick,
-          onEdit: onEdit,
-          onDelete: onDelete,
-        }}
-        type={CARD_TYPE_ENUM.TWO_TEAM_GAME_EDITABLE}
-      />
+      {withoutEdit ? (
+        <Card
+          items={{
+            ...game,
+            onClick: gameClick,
+            onDelete: onDelete,
+          }}
+          type={CARD_TYPE_ENUM.TWO_TEAM_GAME_EDITABLE}
+        />
+      ) : (
+        <Card
+          items={{
+            ...game,
+            onClick: gameClick,
+            onEdit: onEdit,
+            onDelete: onDelete,
+          }}
+          type={CARD_TYPE_ENUM.TWO_TEAM_GAME_EDITABLE}
+        />
+      )}
+
       <EnterScore
         open={gameDialog}
         onClose={closeGameDialog}

@@ -6,7 +6,7 @@ import { Card } from '../../../components/Custom';
 import EditGame from '../../EditSchedule/EditGames/EditGame';
 
 export default function ScoreSuggestion(props) {
-  const { game, update } = props;
+  const { game, update, withoutEdit } = props;
   const [suggestions, setSuggestions] = useState([]);
 
   const { event_id, start_time, teams } = game;
@@ -34,7 +34,11 @@ export default function ScoreSuggestion(props) {
   };
   return (
     <>
-      <EditGame update={update} game={game} />
+      <EditGame
+        update={update}
+        game={game}
+        withoutEdit={withoutEdit || suggestions.length}
+      />
       <div style={{ marginBottom: '16px' }}>
         {suggestions.map((suggestion, index) => (
           <Card
