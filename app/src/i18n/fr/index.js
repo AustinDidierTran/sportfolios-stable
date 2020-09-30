@@ -223,6 +223,7 @@ export default {
     payment_options: 'Options de paiements',
     payment_option_exist: 'Option de paiement existante',
     payments: 'Paiements',
+    pending: 'En attente',
     person: 'Personne',
     person_awaiting_transfer: 'Personne en cours de transfert',
     person_transfer_canceled: 'Le transfert a été annulé',

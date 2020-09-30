@@ -9,7 +9,6 @@ const {
   CARD_TYPE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
   STATUS_ENUM,
-  PERSON_TRANSFER_STATUS_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -1808,6 +1807,15 @@ const deleteGame = async id => {
       .transacting(trx);
   });
   return res;
+
+};
+
+const deletePersonTransfer = async person_id => {
+  const [person] = await knex('transfered_person')
+    .where({ person_id })
+    .del()
+    .returning('person_id');
+  return person;
 };
 
 const personIsAwaitingTransfer = async personId => {
