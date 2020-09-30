@@ -141,11 +141,9 @@ const getBasicUserInfoFromId = async user_id => {
   const [{ app_role } = {}] = await knex('user_app_role')
     .select(['app_role'])
     .where({ user_id });
-
   const [{ language } = {}] = await knex('users')
     .select('language')
     .where({ id: user_id });
-
   const [primaryPerson] = await knex('user_entity_role')
     .select(
       'user_entity_role.entity_id',
@@ -206,7 +204,6 @@ const getBasicUserInfoFromId = async user_id => {
     )
     .where('entities.type', GLOBAL_ENUM.PERSON)
     .andWhere({ user_id });
-
   return {
     primaryPerson,
     persons,

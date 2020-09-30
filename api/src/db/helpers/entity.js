@@ -1,7 +1,6 @@
 const knex = require('../connection');
 
 const { getMembershipName } = require('../../../../common/functions');
-const { getBasicUserInfoFromId } = require('./index');
 const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
@@ -750,14 +749,20 @@ async function getRoster(rosterId) {
   return props;
 }
 
+const getPrimaryPersonIdFromUserId = async user_id => {
+  const [{ primary_person: id }] = await knex('user_primary_person')
+    .select('primary_person')
+    .where({ user_id });
+  return id;
+};
+
 async function getRole(captains, rosterId, userId) {
   const realId = await getRealId(rosterId);
   if (!userId) {
     return ROSTER_ROLE_ENUM.VIEWER;
   }
-  const basicInfo = await getBasicUserInfoFromId(userId);
 
-  const personId = basicInfo.primaryPerson.entity_id;
+  const personId = await getPrimaryPersonIdFromUserId(userId);
 
   if (captains.some(c => c.id === personId)) {
     return ROSTER_ROLE_ENUM.CAPTAIN;
