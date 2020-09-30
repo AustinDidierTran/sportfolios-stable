@@ -27,6 +27,7 @@ const {
   addTeamToEvent: addTeamToEventHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
+  canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
   deleteGame: deleteGameHelper,
@@ -593,6 +594,10 @@ const unregister = async (body, userId) => {
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
+
+    // check if can unregister team (look if is in any game)
+    const bool = await canUnregisterTeamHelper({ rosterId, eventId });
+    console.log(bool);
 
     const { invoiceItemId, status } = await getRosterInvoiceItem({
       eventId,

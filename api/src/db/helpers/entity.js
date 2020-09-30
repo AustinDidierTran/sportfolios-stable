@@ -978,6 +978,19 @@ async function updateEntityPhoto(entityId, photo_url) {
     .where({ entity_id: realId });
 }
 
+const canUnregisterTeam = async (rosterId, eventId) => {
+  const realEventId = await getRealId(eventId);
+  const realRosterId = await getRealId(rosterId);
+
+  const eventGames = await knex('games')
+    .select('id')
+    .where({ event_id: realEventId });
+
+  return knex('game_teams')
+    .where({ roster_id: realRosterId })
+    .whereIn('game_id', eventGames)[0].exists;
+};
+
 const deleteRegistration = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
@@ -1859,6 +1872,7 @@ module.exports = {
   addOption,
   addRoster,
   addTeamToEvent,
+  canUnregisterTeam,
   deleteEntity,
   deleteEntityMembership,
   deleteOption,
