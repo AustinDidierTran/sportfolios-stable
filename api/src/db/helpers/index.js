@@ -4,6 +4,7 @@ const { v1: uuidv1 } = require('uuid');
 const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
+  PERSON_TRANSFER_STATUS_ENUM,
 } = require('../../../../common/enums');
 
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
@@ -13,7 +14,6 @@ const {
   sendPersonTransferEmail,
 } = require('../../server/utils/nodeMailer');
 const { ERROR_ENUM } = require('../../../../common/errors');
-const { deletePersonTransfer } = require('./entity');
 
 const confirmEmail = async ({ email }) => {
   await knex('user_email')
@@ -86,12 +86,14 @@ const createPersonTransferToken = async ({
   email,
   person_id,
   token,
+  sender_id,
 }) => {
   return knex('transfered_person')
     .insert({
       email,
       token,
       person_id,
+      sender_id,
       expires_at: new Date(
         Date.now() + EXPIRATION_TIMES.PERSON_TRANSFER_TOKEN,
       ),
@@ -384,6 +386,7 @@ const sendPersonTransferEmailAllIncluded = async ({
     email,
     token: personTransferToken,
     person_id: sendedPersonId,
+    sender_id: senderUserId,
   });
 
   if (!res) {
@@ -400,7 +403,7 @@ const sendPersonTransferEmailAllIncluded = async ({
 
   //Reversing the insert in db if the email can't be sent
   if (!res2) {
-    await deletePersonTransfer(sendedPersonId);
+    //await cancelPersonTransfer(sendedPersonId);
     return;
   }
   return res;
@@ -418,10 +421,47 @@ const getPeopleTransferedToEmails = async emails => {
   const peopleId = knex
     .select('person_id')
     .from('transfered_person')
-    .whereIn('email', emails);
+    .whereIn('email', emails)
+    .andWhere('status', PERSON_TRANSFER_STATUS_ENUM.PENDING);
   return knex('person_all_infos')
     .select('*')
     .whereIn('id', peopleId);
+};
+
+const transferPerson = async (person_id, user_id) => {
+  return knex.transaction(async trx => {
+    const id = await knex('user_entity_role')
+      .update({ user_id })
+      .where('entity_id', person_id)
+      .andWhere('role', ENTITIES_ROLE_ENUM.ADMIN)
+      .returning('entity_id')
+      .transacting(trx);
+
+    await knex('transfered_person')
+      .update('status', PERSON_TRANSFER_STATUS_ENUM.ACCEPTED)
+      .where({ person_id })
+      .andWhere('status', PERSON_TRANSFER_STATUS_ENUM.PENDING)
+      .transacting(trx);
+    return id;
+  });
+};
+
+const cancelPersonTransfer = async person_id => {
+  const [person] = await knex('transfered_person')
+    .where({ person_id })
+    .andWhere('status', PERSON_TRANSFER_STATUS_ENUM.PENDING)
+    .update('status', PERSON_TRANSFER_STATUS_ENUM.CANCELED)
+    .returning('person_id');
+  return person;
+};
+
+const declinePersonTransfer = async person_id => {
+  const [person] = await knex('transfered_person')
+    .where({ person_id })
+    .andWhere('status', PERSON_TRANSFER_STATUS_ENUM.PENDING)
+    .update('status', PERSON_TRANSFER_STATUS_ENUM.REFUSED)
+    .returning('person_id');
+  return person;
 };
 
 module.exports = {
@@ -451,4 +491,7 @@ module.exports = {
   sendPersonTransferEmailAllIncluded,
   getPeopleTransferedToUser,
   getPeopleTransferedToEmails,
+  transferPerson,
+  cancelPersonTransfer,
+  declinePersonTransfer,
 };

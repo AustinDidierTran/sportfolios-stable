@@ -5,7 +5,6 @@ import {
   SEVERITY_ENUM,
   FORM_DIALOG_TYPE_ENUM,
 } from '../../../../../common/enums';
-import { ERROR_ENUM } from '../../../../../common/errors';
 import { Card } from '@material-ui/core';
 import styles from './MyPersons.module.css';
 import { formatRoute } from '../../../actions/goTo';
@@ -16,6 +15,7 @@ import {
   FormDialog,
   AlertDialog,
   IconButton,
+  Button,
 } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import EditPrimaryPerson from './EditPrimaryPerson';
@@ -29,6 +29,7 @@ export default function MyPersons() {
   const [sendPerson, setSendPerson] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState();
   const [confirmCancelation, setConfirmCancelation] = useState(false);
+  const [declineDialog, setDeclineDialog] = useState(false);
   const { dispatch } = useContext(Store);
 
   const fetchOwnedPersons = async () => {
@@ -59,6 +60,57 @@ export default function MyPersons() {
   const closeCancelPersonTransfer = () => {
     setConfirmCancelation(false);
   };
+  const closeDeclineDialog = () => {
+    setDeclineDialog(false);
+  };
+
+  const showErrorMessage = (
+    message = t('something_went_wrong'),
+    duration = 4000,
+  ) =>
+    dispatch({
+      type: ACTION_ENUM.SNACK_BAR,
+      message,
+      severity: SEVERITY_ENUM.ERROR,
+      duration,
+    });
+
+  const showSuccessMessage = (message, duration = 2000) =>
+    dispatch({
+      type: ACTION_ENUM.SNACK_BAR,
+      message,
+      severity: SEVERITY_ENUM.SUCCESS,
+      duration,
+    });
+
+  const confirmDecline = async () => {
+    const res = await api(
+      formatRoute('/api/user/declinePersonTransfer', null, {
+        id: selectedPerson.id,
+      }),
+    );
+    if (res.status === STATUS_ENUM.ERROR) {
+      showErrorMessage();
+    } else {
+      showSuccessMessage(t('person_transfer_declined'));
+    }
+    closeDeclineDialog();
+    fetchOwnedPersons();
+  };
+
+  const approveTransfer = async () => {
+    const res = await api(
+      formatRoute('/api/user/acceptPersonTransfer', null, {
+        id: selectedPerson.id,
+      }),
+    );
+    if (res.status === STATUS_ENUM.ERROR) {
+      showErrorMessage();
+    } else {
+      showSuccessMessage(t('person_transfer_done'));
+    }
+    fetchOwnedPersons();
+  };
 
   const confirmCancelPersonTransfer = async () => {
     const res = await api(
@@ -68,19 +120,9 @@ export default function MyPersons() {
       { method: 'DELETE' },
     );
     if (res.status === STATUS_ENUM.ERROR) {
-      dispatch({
-        type: ACTION_ENUM.SNACK_BAR,
-        message: t('something_went_wrong'),
-        severity: SEVERITY_ENUM.ERROR,
-        duration: 4000,
-      });
+      showErrorMessage();
     } else {
-      dispatch({
-        type: ACTION_ENUM.SNACK_BAR,
-        message: t('person_transfer_canceled'),
-        severity: SEVERITY_ENUM.SUCCESS,
-        duration: 2000,
-      });
+      showSuccessMessage(t('person_transfer_canceled'));
     }
     closeCancelPersonTransfer();
     fetchOwnedPersons();
@@ -95,19 +137,9 @@ export default function MyPersons() {
       }),
     });
     if (res.status === STATUS_ENUM.ERROR) {
-      dispatch({
-        type: ACTION_ENUM.SNACK_BAR,
-        message: t('something_went_wrong'),
-        severity: SEVERITY_ENUM.ERROR,
-        duration: 4000,
-      });
+      showErrorMessage();
     } else {
-      dispatch({
-        type: ACTION_ENUM.SNACK_BAR,
-        message: t('person_transfer_email_sent', { email }),
-        severity: SEVERITY_ENUM.SUCCES,
-        duration: 3000,
-      });
+      showSuccessMessage(t('person_transfer_email_sent'), 3000);
     }
     closeSendPerson();
     fetchOwnedPersons();
@@ -122,19 +154,9 @@ export default function MyPersons() {
         }),
       });
       if (res.status === STATUS_ENUM.ERROR) {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: ERROR_ENUM.ERROR_OCCURED,
-          severity: SEVERITY_ENUM.ERROR,
-          duration: 4000,
-        });
+        showErrorMessage();
       } else {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: t('primary_person_changed'),
-          severity: SEVERITY_ENUM.SUCCES,
-          duration: 2000,
-        });
+        showSuccessMessage(t('primary_person_changed'));
         fetchOwnedPersons();
       }
     }
@@ -183,6 +205,54 @@ export default function MyPersons() {
     />,
   ];
 
+  const awaitingApprovalPersonAction = person =>
+    window.innerWidth >= 768
+      ? [
+          <Button
+            endIcon="Delete"
+            size="small"
+            onClick={() => {
+              setSelectedPerson(person);
+              setDeclineDialog(true);
+            }}
+            color="secondary"
+            style={{ marginRight: 5 }}
+          >
+            {t('decline')}
+          </Button>,
+          <Button
+            endIcon="Check"
+            size="small"
+            onClick={() => {
+              setSelectedPerson(person);
+              approveTransfer();
+            }}
+            color="primary"
+          >
+            {t('accept')}
+          </Button>,
+        ]
+      : [
+          <IconButton
+            size="medium"
+            onClick={() => {
+              setSelectedPerson(person);
+              setDeclineDialog(true);
+            }}
+            style={{ color: 'secondary' }}
+            icon="Delete"
+          />,
+          <IconButton
+            size="medium"
+            onClick={() => {
+              setSelectedPerson(person);
+              approveTransfer();
+            }}
+            style={{ color: 'secondary' }}
+            icon="Check"
+          />,
+        ];
+
   const items = persons.map(person => {
     let subtitle;
     let actions;
@@ -192,6 +262,9 @@ export default function MyPersons() {
     } else if (person.isToBeTransfered) {
       subtitle = t('person_awaiting_transfer');
       actions = transferedPersonActions(person);
+    } else if (person.isAwaitingApproval) {
+      subtitle = t('awaiting_your_approval');
+      actions = awaitingApprovalPersonAction(person);
     } else {
       subtitle = t('secondary_person');
       actions = secondaryPersonActions(person);
@@ -245,6 +318,16 @@ export default function MyPersons() {
           description: t('transfer_person_description'),
           onSubmit: onSendEmail,
         }}
+      />
+      <AlertDialog
+        open={declineDialog}
+        title={t('cancel_person_transfer_confirmation', {
+          name: selectedPerson
+            ? selectedPerson.name + ' ' + selectedPerson.surname
+            : '',
+        })}
+        onSubmit={confirmDecline}
+        onCancel={closeDeclineDialog}
       />
     </>
   );
