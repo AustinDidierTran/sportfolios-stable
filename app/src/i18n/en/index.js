@@ -7,6 +7,7 @@ export default {
     action_confirmation:
       'Are you sure you want to perform this action?',
     acceptation: 'Acceptation',
+    accept: 'Accept',
     add: 'Add',
     add_editor: 'Add editor',
     add_game: 'Add game',
@@ -59,6 +60,7 @@ export default {
       'Recovery email has been sent successfully. Go look at your email to reset your password.',
     athlete_history: 'Athlete history',
     awaiting_payments: 'Awaiting payments',
+    awaiting_your_approval: 'Awaiting your approval',
     back: 'Back',
     back_to_shop: 'Back to shop',
     basic_info: 'Basic Info',
@@ -90,6 +92,7 @@ export default {
     create_team: 'Create Team',
     created_by: 'Created by {{name}}',
     currency: 'Currency',
+    decline: 'Decline',
     delete: 'Delete',
     select_payment_method: 'Select payment method',
     delete_confirmation_text: 'To delete, type {{name}}',
@@ -296,6 +299,7 @@ export default {
     to_transfer: 'Transfer',
     transfer_person_description:
       'By confirming you accept to give all the admin permissions on this person and give it to the user who own the email you specified.',
+    transfered_to_you: 'Transfered to you',
     time: 'Time',
     time_slot: 'Time slot',
     time_slot_added: 'Time slot added',

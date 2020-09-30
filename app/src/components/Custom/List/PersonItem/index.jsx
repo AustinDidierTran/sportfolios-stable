@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
-import { Avatar, IconButton } from '../../../Custom';
+import { Avatar } from '../../../Custom';
 import { getInitialsFromName } from '../../../../utils/stringFormats/index';
 import { useTranslation } from 'react-i18next';
 import { goTo, ROUTES } from '../../../../actions/goTo';
@@ -22,8 +22,7 @@ export default function PersonItem(props) {
     secondary,
     icon,
     inverseColor,
-    iconButton,
-    onIconButtonClick,
+    secondaryActions, //secondaryAction is an array of components, this array should not contain more than 2 or 3 buttons
   } = props;
 
   const initials = useMemo(
@@ -51,7 +50,12 @@ export default function PersonItem(props) {
       button
       onClick={handleClick}
       selected={selected}
-      style={{ width: '100%' }}
+      style={{
+        width: '100%',
+        secondaryAction: {
+          paddingRight: 96,
+        },
+      }}
     >
       <ListItemIcon>
         {inverseColor ? (
@@ -74,15 +78,13 @@ export default function PersonItem(props) {
         primary={completeName || name}
         secondary={secondary || t('person')}
       ></ListItemText>
-      {iconButton ? (
+      {secondaryActions ? (
         <ListItemSecondaryAction>
-          <IconButton
-            edge="end"
-            onClick={onIconButtonClick}
-            icon={iconButton}
-            style={{ color: 'secondary' }}
-            size="medium"
-          />
+          <div className={styles.secondaryActions}>
+            {secondaryActions.map(action => (
+              <>{action}</>
+            ))}
+          </div>
         </ListItemSecondaryAction>
       ) : (
         <></>

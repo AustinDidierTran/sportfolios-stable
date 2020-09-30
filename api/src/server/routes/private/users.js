@@ -211,4 +211,23 @@ router.delete(`${BASE_URL}/transferPerson`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/transferedPeople`, async ctx => {
+  const people = await queries.getPeopleTransferedToUser(
+    ctx.body.userInfo.id,
+  );
+  if (people) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: people,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 module.exports = router;

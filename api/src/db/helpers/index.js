@@ -87,7 +87,7 @@ const createPersonTransferToken = async ({
   person_id,
   token,
 }) => {
-  return await knex('transfered_person')
+  return knex('transfered_person')
     .insert({
       email,
       token,
@@ -406,6 +406,24 @@ const sendPersonTransferEmailAllIncluded = async ({
   return res;
 };
 
+const getPeopleTransferedToUser = async userId => {
+  const emailsAndConfirmed = await getEmailsFromUserId(userId);
+  const emails = emailsAndConfirmed
+    .filter(email => email.confirmed_email_at)
+    .map(email => email.email);
+  return getPeopleTransferedToEmails(emails);
+};
+
+const getPeopleTransferedToEmails = async emails => {
+  const peopleId = knex
+    .select('person_id')
+    .from('transfered_person')
+    .whereIn('email', emails);
+  return knex('person_all_infos')
+    .select('*')
+    .whereIn('id', peopleId);
+};
+
 module.exports = {
   confirmEmail,
   createUserEmail,
@@ -431,4 +449,6 @@ module.exports = {
   getPrimaryPersonIdFromUserId,
   updatePrimaryPerson,
   sendPersonTransferEmailAllIncluded,
+  getPeopleTransferedToUser,
+  getPeopleTransferedToEmails,
 };

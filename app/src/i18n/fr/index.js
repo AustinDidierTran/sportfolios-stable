@@ -7,6 +7,7 @@ export default {
     action_confirmation:
       'Êtes-vous certain de vouloir effectuer cette action?',
     acceptation: 'Acceptation',
+    accept: 'Accepter',
     add_admin: 'Ajouter admin',
     add: 'Ajouter',
     add_editor: 'Ajouter éditeur',
@@ -56,6 +57,7 @@ export default {
     amount_to_pay: 'Montant à payer {{amount}}',
     app_role: 'App Role',
     awaiting_payments: 'Paiements en attentes',
+    awaiting_your_approval: 'En attente de votre approbation',
     athlete_history: "Historique de l'athlète",
     back: 'Revenir',
     back_to_shop: 'Revenir au magasin',
@@ -94,6 +96,7 @@ export default {
       'Cliquer pour créer votre nouvelle équipe',
     created_by: 'Créé par {{name}}',
     currency: 'Devise',
+    decline: 'Refuser',
     delete: 'Supprimer',
     delete_confirmation_text: 'Pour supprimer, écrivez {{name}}',
     delete_game_confirmation:
@@ -297,6 +300,7 @@ export default {
     to_transfer: 'Transférer',
     transfer_person_description:
       "En confirmant vous acceptez de céder toutes les permissions sur cette personne à l'utilisateur possédant l'adresse courriel que vous avez entrée",
+    transfered_to_you: 'Transféré à vous',
     time: 'Temps',
     time_slot: 'Plage horaire',
     time_slot_added: 'Plage horaire ajoutée',
