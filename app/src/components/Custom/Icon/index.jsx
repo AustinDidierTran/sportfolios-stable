@@ -55,7 +55,6 @@ import SportsKabaddi from '@material-ui/icons/SportsKabaddi';
 import Store from '@material-ui/icons/Store';
 import SupervisedUserCircle from '@material-ui/icons/SupervisedUserCircle';
 import Undo from '@material-ui/icons/Undo';
-import CheckIcon from '@material-ui/icons/Check';
 
 const icons = {
   AccountCircle,
@@ -113,7 +112,6 @@ const icons = {
   Store,
   SupervisedUserCircle,
   Undo,
-  CheckIcon,
 };
 
 export default function CustomIcon(props) {

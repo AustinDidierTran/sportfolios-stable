@@ -46,13 +46,11 @@ export default function TransferedPeople() {
   };
 
   const confirmDecline = () => {
-    console.log('confirmDecline');
     closeDeclineDialog();
     fetchTransferedPeople();
   };
 
   const confirmApprove = () => {
-    console.log('confirmApprove');
     closeApproveDialog();
     fetchTransferedPeople();
   };
@@ -62,7 +60,7 @@ export default function TransferedPeople() {
   }
 
   const actions = person =>
-    window.innerWidth > 768
+    window.innerWidth >= 768
       ? [
           <Button
             endIcon="Delete"
@@ -77,7 +75,7 @@ export default function TransferedPeople() {
             {t('decline')}
           </Button>,
           <Button
-            endIcon="CheckIcon"
+            endIcon="Check"
             size="small"
             onClick={() => {
               setSelectedPerson(person);
@@ -105,19 +103,17 @@ export default function TransferedPeople() {
               setApproveDialog(true);
             }}
             style={{ color: 'secondary' }}
-            icon="CheckIcon"
+            icon="Check"
           />,
         ];
 
-  const items = people.map(person => {
-    return {
-      ...person,
-      photoUrl: person.photo_url,
-      completeName: person.name + ' ' + person.surname,
-      secondary: t('transfered_to_you'),
-      secondaryActions: actions(person),
-    };
-  });
+  const items = people.map(person => ({
+    ...person,
+    photoUrl: person.photo_url,
+    completeName: person.name + ' ' + person.surname,
+    secondary: t('transfered_to_you'),
+    secondaryActions: actions(person),
+  }));
 
   return (
     <>

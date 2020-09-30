@@ -32,7 +32,7 @@ const sendTransferPersonEmail = async (
   user_id,
   { email, sendedPersonId },
 ) => {
-  return await sendPersonTransferEmailAllIncluded({
+  return sendPersonTransferEmailAllIncluded({
     email,
     sendedPersonId,
     senderUserId: user_id,
@@ -43,7 +43,7 @@ const cancelPersonTransfer = async (user_id, personId) => {
   if (!(await isAllowed(personId, user_id))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return await deletePersonTransfer(personId);
+  return deletePersonTransfer(personId);
 };
 
 const addEmail = async (user_id, { email }) => {

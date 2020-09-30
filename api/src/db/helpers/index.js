@@ -87,7 +87,7 @@ const createPersonTransferToken = async ({
   person_id,
   token,
 }) => {
-  return await knex('transfered_person')
+  return knex('transfered_person')
     .insert({
       email,
       token,
@@ -402,19 +402,19 @@ const sendPersonTransferEmailAllIncluded = async ({
   });
 
   //Reversing the insert in db if the email can't be sent
-  /*if (!res2) {
+  if (!res2) {
     await deletePersonTransfer(sendedPersonId);
     return;
-  }*/
+  }
   return res;
 };
 
 const getPeopleTransferedToUser = async userId => {
-  const emailsAndConfirmed = (
-    await getEmailsFromUserId(userId)
-  ).filter(email => email.confirmed_email_at);
-  const email = emailsAndConfirmed.map(email => email.email);
-  return await getPeopleTransferedToEmails(email);
+  const emailsAndConfirmed = await getEmailsFromUserId(userId);
+  const emails = emailsAndConfirmed
+    .filter(email => email.confirmed_email_at)
+    .map(email => email.email);
+  return getPeopleTransferedToEmails(emails);
 };
 
 const getPeopleTransferedToEmails = async emails => {
@@ -422,7 +422,7 @@ const getPeopleTransferedToEmails = async emails => {
     .select('person_id')
     .from('transfered_person')
     .whereIn('email', emails);
-  return await knex('person_all_infos')
+  return knex('person_all_infos')
     .select('*')
     .whereIn('id', peopleId);
 };
