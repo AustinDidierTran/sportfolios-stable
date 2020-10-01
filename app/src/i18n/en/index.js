@@ -225,7 +225,7 @@ export default {
     person_awaiting_transfer: 'Person awaiting transfer',
     person_transfer_canceled: 'Person transfer canceled',
     person_transfer_declined: 'Person transfer declined',
-    person_transfer_done: 'Person transfr completed',
+    person_transfer_done: 'Person transfer completed',
     person_transfer_email_sent:
       'A email was sent to {{email}} to complete the transfer',
     phase: 'Phase',
