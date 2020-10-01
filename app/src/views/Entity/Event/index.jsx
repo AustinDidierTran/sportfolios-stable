@@ -28,6 +28,7 @@ export default function Event(props) {
     list: [
       TABS_ENUM.SCHEDULE,
       TABS_ENUM.RESULTS,
+      TABS_ENUM.RANKINGS,
       TABS_ENUM.ROSTERS,
       TABS_ENUM.EVENT_INFO,
       TABS_ENUM.SWITCH_TO_ADMIN,
@@ -40,6 +41,7 @@ export default function Event(props) {
       TABS_ENUM.EDIT_SCHEDULE,
       TABS_ENUM.EDIT_RESULTS,
       TABS_ENUM.EDIT_RANKINGS,
+      TABS_ENUM.EDIT_ROSTERS,
       TABS_ENUM.SETTINGS,
       TABS_ENUM.SWITCH_TO_USER,
     ],
@@ -131,6 +133,8 @@ export default function Event(props) {
     return '';
   }, [basicInfos]);
 
+  const className = states.length > 5 ? styles.div6 : styles.div;
+
   return (
     <IgContainer>
       <Helmet>
@@ -145,9 +149,10 @@ export default function Event(props) {
           value={states.findIndex(s => s.value === eventState)}
           indicatorColor="primary"
           textColor="primary"
+          variant="fullWidth"
         >
           {states.map((s, index) => (
-            <div className={styles.tab}>
+            <div className={className}>
               <Tab
                 key={index}
                 onClick={() => onClick(s)}

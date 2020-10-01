@@ -4,40 +4,42 @@ import { ENTITIES_ROLE_ENUM } from '../Store';
 
 const About = loadable(() => import('./About'));
 const Cart = loadable(() => import('./Cart'));
+const EditRankings = loadable(() => import('./EditRankings'));
+const EditResults = loadable(() => import('./EditResults'));
+const EditRosters = loadable(() => import('./EditRosters'));
+const EditSchedule = loadable(() => import('./EditSchedule'));
 const EventInfo = loadable(() => import('./EventInfo'));
 const Events = loadable(() => import('./Events'));
 const General = loadable(() => import('./General'));
-const Settings = loadable(() => import('./Settings'));
 const Purchases = loadable(() => import('./Purchases'));
-const Shop = loadable(() => import('./Shop'));
+const Rankings = loadable(() => import('./Rankings'));
+const Results = loadable(() => import('./Results'));
 const Rosters = loadable(() => import('./Rosters'));
 const Schedule = loadable(() => import('./Schedule'));
-const Results = loadable(() => import('./Results'));
+const Settings = loadable(() => import('./Settings'));
+const Shop = loadable(() => import('./Shop'));
 const SwitchToAdmin = loadable(() => import('./SwitchToAdmin'));
 const SwitchToUser = loadable(() => import('./SwitchToUser'));
-const EditRankings = loadable(() => import('./EditRankings'));
-const EditSchedule = loadable(() => import('./EditSchedule'));
-const EditRosters = loadable(() => import('./EditRosters'));
-const EditResults = loadable(() => import('./EditResults'));
 
 export const TABS_ENUM = {
   ABOUT: 'about',
   CART: 'cart',
+  EDIT_RANKINGS: 'editRankings',
+  EDIT_RESULTS: 'editResults',
+  EDIT_ROSTERS: 'editRosters',
+  EDIT_SCHEDULE: 'editSchedule',
   EVENT_INFO: 'eventInfo',
-  ROSTERS: 'roster',
   EVENTS: 'events',
   GENERAL: 'general',
   PURCHASES: 'purchases',
-  SHOP: 'shop',
-  SETTINGS: 'settings',
-  SCHEDULE: 'schedule',
+  RANKINGS: 'rankings',
   RESULTS: 'results',
+  ROSTERS: 'roster',
+  SCHEDULE: 'schedule',
+  SETTINGS: 'settings',
+  SHOP: 'shop',
   SWITCH_TO_ADMIN: 'switchToAdmin',
   SWITCH_TO_USER: 'switchToUser',
-  EDIT_SCHEDULE: 'editSchedule',
-  EDIT_RANKINGS: 'editRankings',
-  EDIT_ROSTERS: 'editRosters',
-  EDIT_RESULTS: 'editResults',
 };
 
 export default function Tabs(props) {
@@ -130,6 +132,17 @@ export default function Tabs(props) {
           component: Results,
           label: t('results'),
           icon: 'EmojiEvents',
+        },
+      ];
+    }
+    if (l === TABS_ENUM.RANKINGS) {
+      return [
+        ...prev,
+        {
+          value: TABS_ENUM.RANKINGS,
+          component: Rankings,
+          label: t('rankings'),
+          icon: 'FormatListNumbered',
         },
       ];
     }

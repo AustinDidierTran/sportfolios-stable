@@ -52,6 +52,7 @@ const {
   getOptions: getOptionsHelper,
   getOwnedEvents: getOwnedEventsHelper,
   getPhases: getPhasesHelper,
+  getPreRanking: getPreRankingHelper,
   getRegistered: getRegisteredHelper,
   getRemainingSpots: getRemainingSpotsHelper,
   getRoster: getRosterHelper,
@@ -165,8 +166,13 @@ async function getRegistered(team_id, event_id) {
 async function getAllRegisteredInfos(eventId, userId) {
   return getAllRegisteredInfosHelper(eventId, userId);
 }
+
 async function getRemainingSpots(eventId) {
   return getRemainingSpotsHelper(eventId);
+}
+
+async function getPreRanking(eventId) {
+  return getPreRankingHelper(eventId);
 }
 
 async function getRoster(rosterId) {
@@ -733,10 +739,13 @@ module.exports = {
   canUnregisterTeamsList,
   deleteEntity,
   deleteEntityHelper,
+  deleteEntityHelper,
   deleteEntityMembership,
+  deleteGame,
   deleteGame,
   deleteOption,
   deletePlayerFromRoster,
+  eventInfos,
   eventInfos,
   getAlias,
   getAllEntities,
@@ -745,7 +754,6 @@ module.exports = {
   getAllRegisteredInfos,
   getAllRolesEntity,
   getAllTypeEntities,
-  getEntity,
   getEntity,
   getEvent,
   getFields,
@@ -756,6 +764,7 @@ module.exports = {
   getOptions,
   getOwnedEvents,
   getPhases,
+  getPreRanking,
   getRegistered,
   getRemainingSpots,
   getRoster,
@@ -764,6 +773,8 @@ module.exports = {
   getSameSuggestions,
   getSlots,
   getTeamsSchedule,
+  isAllowed,
+  unregister,
   unregisterTeams,
   updateAlias,
   updateEntity,
@@ -774,11 +785,4 @@ module.exports = {
   updateGeneralInfos,
   updateMember,
   updateRegistration,
-  eventInfos,
-  getRoster,
-  addPlayerToRoster,
-  deletePlayerFromRoster,
-  deleteEntityHelper,
-  deleteGame,
-  isAllowed,
 };
