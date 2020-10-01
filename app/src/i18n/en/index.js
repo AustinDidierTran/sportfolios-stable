@@ -509,6 +509,8 @@ export default {
       "Some teams can't be unregistered from the event since they are already in a game.",
     this_team_cannot_be_deleted:
       "This team can't be unregistered from the event since it is already in a game.",
+    team_unregister_success: 'Team unregistered successfully',
+    teams_unregister_success: 'Teams unregistered successfully',
 
     //SIZES
     sizes_enum: {

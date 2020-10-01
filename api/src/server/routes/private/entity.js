@@ -464,7 +464,7 @@ router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
   );
 
   if (res) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: res,
@@ -489,9 +489,10 @@ router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
     ctx.body = {
       status: 'error',
       data: res.data,
+      message: 'Something went wrong',
     };
   } else {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: res.data,

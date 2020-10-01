@@ -23,7 +23,11 @@ import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import { unregisterTeams } from '../../../actions/api/helpers';
 import { formatPrice } from '../../../utils/stringFormats';
-import { SEVERITY_ENUM } from '../../../../../common/enums';
+import {
+  SEVERITY_ENUM,
+  STATUS_ENUM,
+} from '../../../../../common/enums';
+import { ERROR_ENUM } from '../../../../../common/errors';
 import { Store, ACTION_ENUM } from '../../../Store';
 
 export default function TeamRegistered() {
@@ -114,14 +118,21 @@ export default function TeamRegistered() {
       rosterIds: [rosterId],
     });
 
-    /*if (res.status === 403) {
+    if (res.status === STATUS_ENUM.SUCCESS) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
-        message: t('this_team_cannot_be_deleted'),
+        message: t('team_unregister_success'),
+        severity: SEVERITY_ENUM.SUCCES,
+        duration: 4000,
+      });
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: ERROR_ENUM.ERROR_OCCURED,
         severity: SEVERITY_ENUM.ERROR,
         duration: 4000,
       });
-    }*/
+    }
 
     setTeams(res.data);
     setOpenUnregister(false);
@@ -133,14 +144,21 @@ export default function TeamRegistered() {
       rosterIds: teamsThatCanBeUnregistered,
     });
 
-    /*if (res.status === 403) {
+    if (res.status === STATUS_ENUM.SUCCESS) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
-        message: t('some_teams_cannot_be_deleted'),
+        message: t('teams_unregister_success'),
+        severity: SEVERITY_ENUM.SUCCES,
+        duration: 4000,
+      });
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: ERROR_ENUM.ERROR_OCCURED,
         severity: SEVERITY_ENUM.ERROR,
         duration: 4000,
       });
-    }*/
+    }
 
     setTeams(res.data);
     setOpenUnregisterAll(false);

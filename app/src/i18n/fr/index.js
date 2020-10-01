@@ -514,6 +514,8 @@ export default {
       "Des équipes n'ont pas pu être désinscrites de l'événement puisqu'elles sont déjà dans des parties.",
     this_team_cannot_be_deleted:
       "Cette équipe ne peut pas être désinscrite de l'événement puisqu'elle est déjà dans une partie.",
+    team_unregister_success: 'Équipe désinscrite avec succès',
+    teams_unregister_success: 'Équipes désinscrites avec succès',
 
     //SIZES
     sizes_enum: {
