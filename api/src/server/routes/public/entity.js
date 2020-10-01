@@ -64,6 +64,23 @@ router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/preRanking`, async ctx => {
+  const ranking = await queries.getPreRanking(ctx.query.eventId);
+
+  if (ranking) {
+    ctx.body = {
+      status: 'success',
+      data: ranking,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/remainingSpots`, async ctx => {
   const remaining = await queries.getRemainingSpots(ctx.query.id);
 

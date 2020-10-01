@@ -114,6 +114,10 @@ const addEntity = async (body, userId) => {
           .insert({ id: entityId })
           .returning(['id'])
           .transacting(trx);
+
+        await knex('divisions')
+          .insert({ event_id: event.id })
+          .transacting(trx);
         return event;
       }
     }
@@ -703,6 +707,7 @@ async function getAllRegisteredInfos(eventId, userId) {
   );
   return props;
 }
+
 async function getRemainingSpots(eventId) {
   const realId = await getRealId(eventId);
   const [{ count }] = await knex('event_rosters')
@@ -717,6 +722,14 @@ async function getRemainingSpots(eventId) {
     return null;
   }
   return event.maximum_spots - Number(count);
+}
+
+async function getPreRanking(eventId) {
+  const realId = await getRealId(eventId);
+  const teams = await knex('division_ranking')
+    .select('*')
+    .where({ event_id: realId });
+  return teams;
 }
 
 async function getRegistrationStatus(eventId, rosterId) {
@@ -1409,6 +1422,13 @@ async function addTeamToEvent(body) {
       })
       .returning('*')
       .transacting(trx);
+
+    await knex('division_ranking')
+      .insert({
+        team_id: roster.team_id,
+        event_id: res.event_id,
+      })
+      .transacting(trx);
     return res.roster_id;
   });
 }
@@ -1742,6 +1762,7 @@ module.exports = {
   getAllRegistered,
   getAllRegisteredInfos,
   getRemainingSpots,
+  getPreRanking,
   getRoster,
   getEvent,
   getAlias,
