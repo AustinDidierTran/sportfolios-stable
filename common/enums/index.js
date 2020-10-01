@@ -108,6 +108,13 @@ const STATUS_ENUM = {
   ERROR: 404,
 };
 
+const PERSON_TRANSFER_STATUS_ENUM = {
+  ACCEPTED: 'accepted',
+  PENDING: 'pending',
+  REFUSED: 'refused',
+  CANCELED: 'canceled',
+};
+
 const REJECTION_ENUM = {
   NO_REMAINING_SPOTS: 'no_remaining_spots',
 };
@@ -260,4 +267,5 @@ module.exports = {
   VIEW_ENUM,
   FORM_DIALOG_TYPE_ENUM,
   MILLIS_TIME_ENUM,
+  PERSON_TRANSFER_STATUS_ENUM,
 };

@@ -163,6 +163,7 @@ export default {
     login: 'Connexion',
     logout: 'Déconnexion',
     send_email: 'Envoyer un courriel',
+    send: 'envoyer',
     maximum_spots: 'Nombre de places',
     max_length: 'Longueur maximum',
     menu: 'Menu',
@@ -229,6 +230,8 @@ export default {
     person: 'Personne',
     person_awaiting_transfer: 'Personne en cours de transfert',
     person_transfer_canceled: 'Le transfert a été annulé',
+    person_transfer_declined: 'Le transfert a été refusé',
+    person_transfer_done: 'Le transfert a été complété',
     person_transfer_email_sent:
       'Un courriel pour procéder au transfert a été envoyé à {{email}}',
     people: 'Personnes',

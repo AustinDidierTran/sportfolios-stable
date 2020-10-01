@@ -7,6 +7,7 @@ const {
   ROSTER_ROLE_ENUM,
   TAG_TYPE_ENUM,
   CARD_TYPE_ENUM,
+  PERSON_TRANSFER_STATUS_ENUM,
   STATUS_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
@@ -1806,6 +1807,7 @@ const deleteGame = async id => {
       .transacting(trx);
   });
   return res;
+
 };
 
 const deletePersonTransfer = async person_id => {
@@ -1824,7 +1826,8 @@ const personIsAwaitingTransfer = async personId => {
         knex('transfered_person')
           .select('*')
           .where('person_id', personId)
-          .andWhere('expires_at', '>', 'now()'),
+          .andWhere('expires_at', '>', 'now()')
+          .andWhere('status', PERSON_TRANSFER_STATUS_ENUM.PENDING),
       ),
     )
   ).exists;
@@ -1897,5 +1900,4 @@ module.exports = {
   deletePlayerFromRoster,
   deleteGame,
   personIsAwaitingTransfer,
-  deletePersonTransfer,
 };
