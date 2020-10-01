@@ -108,12 +108,12 @@ export default function ManageRoles() {
   const items = [
     { display: t('admin'), value: ENTITIES_ROLE_ENUM.ADMIN },
     { display: t('editor'), value: ENTITIES_ROLE_ENUM.EDITOR },
-    { display: t('none'), value: ENTITIES_ROLE_ENUM.VIEWER },
+    { display: t('remove'), value: ENTITIES_ROLE_ENUM.VIEWER },
   ];
 
   const eventItems = [
     { display: t('editor'), value: ENTITIES_ROLE_ENUM.EDITOR },
-    { display: t('none'), value: ENTITIES_ROLE_ENUM.VIEWER },
+    { display: t('remove'), value: ENTITIES_ROLE_ENUM.VIEWER },
   ];
 
   return (

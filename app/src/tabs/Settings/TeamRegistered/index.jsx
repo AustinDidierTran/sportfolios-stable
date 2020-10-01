@@ -190,6 +190,10 @@ export default function TeamRegistered() {
                 <StyledTableCell>
                   {t('no_teams_registered')}
                 </StyledTableCell>
+                <StyledTableCell />
+                <StyledTableCell />
+                <StyledTableCell />
+                <StyledTableCell />
               </StyledTableRow>
             )}
           </TableBody>

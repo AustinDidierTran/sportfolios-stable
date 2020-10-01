@@ -252,6 +252,7 @@ export default {
     refund: 'Refund',
     refunded: 'Refunded',
     refused: 'Refused',
+    remove: 'Remove',
     results: 'Results',
     reset: 'Reset',
     reset_password: 'Reset password',

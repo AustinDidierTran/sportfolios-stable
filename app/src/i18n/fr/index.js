@@ -253,6 +253,7 @@ export default {
     rankings: 'Classements',
     refunded: 'Remboursé',
     refused: 'Refusé',
+    remove: 'Retirer',
     results: 'Résultats',
     reset: 'Réinitialiser',
     reset_password: 'Réinitialiser le mot de passe',
