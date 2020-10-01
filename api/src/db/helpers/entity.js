@@ -311,7 +311,8 @@ async function getAllRolesEntity(entityId) {
       '=',
       'entities.id',
     )
-    .where('entities_role.entity_id', realId);
+    .where('entities_role.entity_id', realId)
+    .orderBy('entities_role.role');
 
   return entities_role.map(e => {
     const { photo_url: photoUrl, ...otherProps } = e;
