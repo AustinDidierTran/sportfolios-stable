@@ -59,7 +59,7 @@ const {
   getScoreSuggestion: getScoreSuggestionHelper,
   getSlots: getSlotsHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
-  whichTeamsCanUnregister: whichTeamsCanUnregisterHelper,
+  getWichTeamsCanUnregister: getWichTeamsCanUnregisterHelper,
   removeEntityRole: removeEntityRoleHelper,
   removeEventCartItem: removeEventCartItemHelper,
   unregister: unregisterHelper,
@@ -585,21 +585,24 @@ async function addRoster(body) {
   return res;
 }
 
-const canUnregisterList = async (rosterIds, eventId) => {
-  return whichTeamsCanUnregisterHelper(rosterIds.split(','), eventId);
+const canUnregisterTeamsList = async (rosterIds, eventId) => {
+  return getWichTeamsCanUnregisterHelper(
+    JSON.parse(rosterIds),
+    eventId,
+  );
 };
 
-const unregister = async (body, userId) => {
+const unregisterTeams = async (body, userId) => {
   const { eventId, rosterIds } = body;
   const result = { failed: false, data: [] };
 
-  for await (const rosterId of rosterIds) {
-    if (
-      !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-    ) {
-      throw new Error(ERROR_ENUM.ACCESS_DENIED);
-    }
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
 
+  for (const rosterId of rosterIds) {
     if (await canUnregisterTeamHelper(rosterId, eventId)) {
       const { invoiceItemId, status } = await getRosterInvoiceItem({
         eventId,
@@ -708,7 +711,7 @@ module.exports = {
   addTeamToEvent,
   addTeamToSchedule,
   addTimeSlot,
-  canUnregisterList,
+  canUnregisterTeamsList,
   deleteEntity,
   deleteEntityHelper,
   deleteEntityMembership,
@@ -741,7 +744,7 @@ module.exports = {
   getScoreSuggestion,
   getSlots,
   getTeamsSchedule,
-  unregister,
+  unregisterTeams,
   updateAlias,
   updateEntity,
   updateEntityRole,

@@ -978,9 +978,9 @@ async function updateEntityPhoto(entityId, photo_url) {
     .where({ entity_id: realId });
 }
 
-const whichTeamsCanUnregister = async (rosterIds, eventId) => {
+const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
   var list = [];
-  for await (const rosterId of rosterIds) {
+  for (const rosterId of rosterIds) {
     if (await canUnregisterTeam(rosterId, eventId)) {
       list.push(rosterId);
     }
@@ -1922,7 +1922,7 @@ module.exports = {
   getGeneralInfos,
   getOptions,
   getRosterInvoiceItem,
-  whichTeamsCanUnregister,
+  getWichTeamsCanUnregister,
   removeEntityRole,
   removeEventCartItem,
   unregister,

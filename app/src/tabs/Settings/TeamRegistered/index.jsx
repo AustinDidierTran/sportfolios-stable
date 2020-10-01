@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
-import { unregister } from '../../../actions/api/helpers';
+import { unregisterTeams } from '../../../actions/api/helpers';
 import { formatPrice } from '../../../utils/stringFormats';
 import { SEVERITY_ENUM } from '../../../../../common/enums';
 import { Store, ACTION_ENUM } from '../../../Store';
@@ -62,31 +62,24 @@ export default function TeamRegistered() {
     getTeams();
   }, [eventId]);
 
-  const handleUnregisterClick = rosterId => {
-    setOpenUnregister(true);
-    setRosterId(rosterId);
-  };
-
-  const handleUnregisterAllClick = async () => {
+  const getCanUnregisterTeamsList = async rosterIds => {
     const { data } = await api(
-      formatRoute('/api/entity/canUnregisterList', null, {
+      formatRoute('/api/entity/canUnregisterTeamsList', null, {
         eventId,
-        rosterIds: teams.map(t => t.rosterId),
+        rosterIds: JSON.stringify(rosterIds),
       }),
     );
 
-    setTeamsThatCanBeUnregistered(data);
-
-    setOpenUnregisterAll(true);
+    return data;
   };
 
-  const onUnregisterTeam = async () => {
-    const res = await unregister({
-      eventId,
-      rosterIds: [rosterId],
-    });
+  const handleUnregisterClick = async rosterId => {
+    setRosterId(rosterId);
+    const data = await getCanUnregisterTeamsList([rosterId]);
 
-    if (res.status === 403) {
+    if (data.length) {
+      setOpenUnregister(true);
+    } else {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('this_team_cannot_be_deleted'),
@@ -94,25 +87,60 @@ export default function TeamRegistered() {
         duration: 4000,
       });
     }
+  };
+
+  const handleUnregisterAllClick = async () => {
+    const data = await getCanUnregisterTeamsList(
+      teams.map(t => t.rosterId),
+    );
+
+    setTeamsThatCanBeUnregistered(data);
+
+    if (data.length) {
+      setOpenUnregisterAll(true);
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('cant_unregister_any_teams'),
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
+      });
+    }
+  };
+
+  const onUnregisterTeam = async () => {
+    const res = await unregisterTeams({
+      eventId,
+      rosterIds: [rosterId],
+    });
+
+    /*if (res.status === 403) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('this_team_cannot_be_deleted'),
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
+      });
+    }*/
 
     setTeams(res.data);
     setOpenUnregister(false);
   };
 
   const onUnregisterAll = async () => {
-    const res = await unregister({
+    const res = await unregisterTeams({
       eventId,
       rosterIds: teamsThatCanBeUnregistered,
     });
 
-    if (res.status === 403) {
+    /*if (res.status === 403) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('some_teams_cannot_be_deleted'),
         severity: SEVERITY_ENUM.ERROR,
         duration: 4000,
       });
-    }
+    }*/
 
     setTeams(res.data);
     setOpenUnregisterAll(false);
@@ -265,15 +293,13 @@ export default function TeamRegistered() {
         onCancel={onCloseUnregisterAll}
         onSubmit={onUnregisterAll}
         title={
-          teamsThatCanBeUnregistered.length == 0
-            ? t('cant_unregister_any_teams')
-            : teamsThatCanBeUnregistered.length < teams.length
+          teamsThatCanBeUnregistered.length < teams.length
             ? t('cant_unregister_all_teams', {
                 howManyCanUnregister:
                   teamsThatCanBeUnregistered.length,
                 totalOfTeams: teams.length,
               })
-            : t('are_you_sure_you_want_to_unregister_all_team')
+            : t('are_you_sure_you_want_to_unregister_all_teams')
         }
         description={teamsThatCanBeUnregistered
           .map(function(rosterId) {

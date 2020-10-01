@@ -42,7 +42,7 @@ export default {
     admins: 'Admins',
     advanced_filters: 'Advanced filters',
     adress: 'Address',
-    are_you_sure_you_want_to_unregister_all_team:
+    are_you_sure_you_want_to_unregister_all_teams:
       'Are you sure you want to unregister all teams and refund them if they have already paid?',
     are_you_sure_you_want_to_unregister_this_team:
       'Are you sure you want to unregister this team and refund the team if the team has already paid?',

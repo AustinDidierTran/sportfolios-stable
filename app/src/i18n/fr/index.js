@@ -50,7 +50,7 @@ export default {
       "Cet alignement est vide. Le capitaine de cette équipe n'a pas entré son alignement.",
     empty_roster_add_players:
       "Votre alignement est vide. Utilisez l'outil de recherche pour ajouter des joueurs à votre alignement.",
-    are_you_sure_you_want_to_unregister_all_team:
+    are_you_sure_you_want_to_unregister_all_teams:
       'Êtes-vous sûr de vouloir désinscrire toutes les équipes et les rembourser si elles ont déjà payé?',
     are_you_sure_you_want_to_unregister_this_team:
       'Êtes-vous sûr de vouloir désinscrire cette équipe et la rembourser si elle à déjà payé?',
@@ -79,7 +79,7 @@ export default {
     cant_unregister_all_teams:
       "Seulement {{howManyCanUnregister}}/{{totalOfTeams}} équipes peuvent être désinscrites puisque certaines sont déjà dans des parties. Voulez-vous désinscrire celles qui peuvent l'être?",
     cant_unregister_any_teams:
-      "Aucune équipe ne peut être désinscrite puisqu'elles sont déjà toutes dans des parties.",
+      "Aucune équipe ne peut être désinscrite de l'événement puisqu'elles sont déjà toutes dans des parties.",
     captain: 'Capitaine',
     card_ending_with: 'Carte finissant avec {{last4}}',
     cart: 'Panier',
@@ -513,7 +513,7 @@ export default {
     some_teams_cannot_be_deleted:
       "Des équipes n'ont pas pu être désinscrites de l'événement puisqu'elles sont déjà dans des parties.",
     this_team_cannot_be_deleted:
-      "Cette équipe n'a pas pu être désinscrite de l'événement puisqu'elle est déjà dans une partie.",
+      "Cette équipe ne peut pas être désinscrite de l'événement puisqu'elle est déjà dans une partie.",
 
     //SIZES
     sizes_enum: {

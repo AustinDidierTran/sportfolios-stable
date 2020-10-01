@@ -457,8 +457,8 @@ router.post(BASE_URL, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/canUnregisterList`, async ctx => {
-  const res = await queries.canUnregisterList(
+router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
+  const res = await queries.canUnregisterTeamsList(
     ctx.query.rosterIds,
     ctx.query.eventId,
   );
@@ -478,8 +478,8 @@ router.get(`${BASE_URL}/canUnregisterList`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/unregister`, async ctx => {
-  const res = await queries.unregister(
+router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
+  const res = await queries.unregisterTeams(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
