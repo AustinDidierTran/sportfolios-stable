@@ -47,35 +47,20 @@ export default function ScoreSuggestion(props) {
     return { name: data.name, surname: data.surname };
   };
 
-  const getNumber = async () => {
-    const { data } = await api(
-      formatRoute('/api/entity/sameSuggestions', null, {
-        eventId: suggestion.event_id,
-        startTime: suggestion.start_time,
-        yourRosterId: suggestion.your_roster_id,
-        opposingRosterId: suggestion.opposing_roster_id,
-        yourScore: suggestion.your_score,
-        opposingTeamScore: suggestion.opposing_team_score,
-      }),
-    );
-    return data.length;
-  };
-
   const getMessage = async () => {
-    const number = await getNumber();
     const name = await getPersonName();
-    if (number === 2) {
+    if (suggestion.number === 2) {
       setMessage(
         t('name_and_x_other', {
           name: name.name,
-          number: number - 1,
+          number: suggestion.number - 1,
         }),
       );
-    } else if (number > 2) {
+    } else if (suggestion.number > 2) {
       setMessage(
         t('name_and_x_others', {
           name: name.name,
-          number: number - 1,
+          number: suggestion.number - 1,
         }),
       );
     } else {

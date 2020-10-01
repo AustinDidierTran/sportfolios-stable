@@ -1851,7 +1851,6 @@ const deleteGame = async id => {
       .transacting(trx);
   });
   return res;
-
 };
 
 const deletePersonTransfer = async person_id => {
@@ -1944,5 +1943,6 @@ module.exports = {
   addPlayerToRoster,
   deletePlayerFromRoster,
   deleteGame,
+  deletePersonTransfer,
   personIsAwaitingTransfer,
 };

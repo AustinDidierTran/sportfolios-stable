@@ -27,7 +27,7 @@ export default function ScoreSuggestion(props) {
   const [suggestions, setSuggestions] = useState([]);
   const [expanded, setExpanded] = useState(false);
   const [icon, setIcon] = useState('KeyboardArrowDown');
-  const [message, setMessage] = useState('score_suggestions');
+  const [message, setMessage] = useState('');
 
   const handleExpand = () => {
     const newExpanded = !expanded;
@@ -85,8 +85,15 @@ export default function ScoreSuggestion(props) {
       return [...prev];
     }, []);
 
-    setSuggestions(res);
-    const expanded = res.some(s => s.status === STATUS_ENUM.PENDING);
+    const res2 = res
+      .map(m => ({
+        ...m,
+        number: getSameSuggestions(data, m).length,
+      }))
+      .sort((a, b) => b.number - a.number);
+
+    setSuggestions(res2);
+    const expanded = res2.some(s => s.status === STATUS_ENUM.PENDING);
     if (!expanded) {
       setTimeout(() => {
         setExpanded(expanded);
@@ -104,6 +111,20 @@ export default function ScoreSuggestion(props) {
     update();
     getSuggestions();
   };
+
+  // const getNumber = async () => {
+  //   const { data } = await api(
+  //     formatRoute('/api/entity/sameSuggestions', null, {
+  //       eventId: suggestion.event_id,
+  //       startTime: suggestion.start_time,
+  //       yourRosterId: suggestion.your_roster_id,
+  //       opposingRosterId: suggestion.opposing_roster_id,
+  //       yourScore: suggestion.your_score,
+  //       opposingTeamScore: suggestion.opposing_team_score,
+  //     }),
+  //   );
+  //   setNumber(data.length);
+  // };
 
   return (
     <>
