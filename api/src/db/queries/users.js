@@ -17,12 +17,15 @@ const {
   getPrimaryPersonIdFromUserId,
   sendPersonTransferEmailAllIncluded,
   updatePrimaryPerson: updatePrimaryPersonHelper,
+  getPeopleTransferedToUser: getPeopleTransferedToUserHelper,
+  transferPerson: transferPersonHelper,
+  cancelPersonTransfer: cancelPersonTransferHelper,
+  declinePersonTransfer: declinePersonTransferHelper,
 } = require('../helpers');
 
 const {
   getAllOwnedEntities,
   personIsAwaitingTransfer,
-  deletePersonTransfer,
 } = require('../helpers/entity');
 
 const { isAllowed } = require('./entity');
@@ -31,7 +34,7 @@ const sendTransferPersonEmail = async (
   user_id,
   { email, sendedPersonId },
 ) => {
-  return await sendPersonTransferEmailAllIncluded({
+  return sendPersonTransferEmailAllIncluded({
     email,
     sendedPersonId,
     senderUserId: user_id,
@@ -42,7 +45,7 @@ const cancelPersonTransfer = async (user_id, personId) => {
   if (!(await isAllowed(personId, user_id))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return await deletePersonTransfer(personId);
+  return cancelPersonTransferHelper(personId);
 };
 
 const addEmail = async (user_id, { email }) => {
@@ -135,6 +138,14 @@ const getPrimaryPersonId = async userId => {
   return { status: 200, id };
 };
 
+const getOwnedAndTransferedPersons = async userId => {
+  const [owned, transfered] = await Promise.all([
+    getOwnedPersons(userId),
+    getPeopleTransferedToUser(userId),
+  ]);
+  return owned.concat(transfered);
+};
+
 const getOwnedPersons = async userId => {
   const persons = await getAllOwnedEntities(
     GLOBAL_ENUM.PERSON,
@@ -169,7 +180,24 @@ const updatePrimaryPerson = async (body, userId) => {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  return await updatePrimaryPersonHelper(userId, primaryPersonId);
+  return updatePrimaryPersonHelper(userId, primaryPersonId);
+};
+
+const getPeopleTransferedToUser = async userId => {
+  return (await getPeopleTransferedToUserHelper(userId)).map(
+    person => {
+      const { photo_url: photoUrl, ...otherProps } = person;
+      return { photoUrl, isAwaitingApproval: true, ...otherProps };
+    },
+  );
+};
+
+const transferPerson = async (personId, userId) => {
+  return transferPersonHelper(personId, userId);
+};
+
+const declinePersonTransfer = async personId => {
+  return declinePersonTransferHelper(personId);
 };
 
 module.exports = {
@@ -183,4 +211,8 @@ module.exports = {
   updatePrimaryPerson,
   sendTransferPersonEmail,
   cancelPersonTransfer,
+  getPeopleTransferedToUser,
+  transferPerson,
+  declinePersonTransfer,
+  getOwnedAndTransferedPersons,
 };

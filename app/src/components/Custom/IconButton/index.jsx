@@ -14,6 +14,7 @@ export default function CustomIconButton(props) {
     fontSize = 'default',
     ...otherProps
   } = props;
+
   return (
     <Tooltip title={tooltip}>
       <div>
@@ -25,7 +26,7 @@ export default function CustomIconButton(props) {
         >
           <Icon icon={icon} fontSize={fontSize} />
         </IconButton>
-      </div>  
+      </div>
     </Tooltip>
   );
 }

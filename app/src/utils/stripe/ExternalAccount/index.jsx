@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button } from '../../../components/MUI';
+import { Button } from '../../../components/Custom';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import { useTranslation } from 'react-i18next';

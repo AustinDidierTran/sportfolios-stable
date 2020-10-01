@@ -5,3 +5,7 @@
 .text {
   overflow: auto;
 }
+
+.secondaryActions {
+  display: inline-flex;
+}

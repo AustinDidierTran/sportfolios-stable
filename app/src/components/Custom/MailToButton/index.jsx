@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
-import MailIcon from '@material-ui/icons/Mail';
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from '../IconButton';
 import { mailTo } from '../../../actions/goTo';
+import { useTranslation } from 'react-i18next';
 
 export default function MailtoButton(props) {
+  const { t } = useTranslation();
   const { emails, subject, message } = props;
 
   const [emailsFormatted, setEmailsFormatted] = useState([]);
@@ -18,8 +19,12 @@ export default function MailtoButton(props) {
   };
 
   return (
-    <IconButton color="primary" variant="contained" onClick={onClick}>
-      <MailIcon />
-    </IconButton>
+    <IconButton
+      variant="contained"
+      onClick={onClick}
+      icon="Mail"
+      tooltip={t('send_email')}
+      style={{ color: '#18b393' }}
+    ></IconButton>
   );
 }

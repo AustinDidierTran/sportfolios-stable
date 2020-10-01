@@ -136,7 +136,9 @@ router.get(`${BASE_URL}/emails`, async ctx => {
 
 //Owned persons
 router.get(`${BASE_URL}/ownedPersons`, async ctx => {
-  const persons = await queries.getOwnedPersons(ctx.body.userInfo.id);
+  const persons = await queries.getOwnedAndTransferedPersons(
+    ctx.body.userInfo.id,
+  );
   if (persons) {
     ctx.status = 200;
     ctx.body = {
@@ -201,6 +203,62 @@ router.delete(`${BASE_URL}/transferPerson`, async ctx => {
     ctx.body = {
       status: 'success',
       data: person,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/transferedPeople`, async ctx => {
+  const people = await queries.getPeopleTransferedToUser(
+    ctx.body.userInfo.id,
+  );
+  if (people) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: people,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/acceptPersonTransfer`, async ctx => {
+  const personId = await queries.transferPerson(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+  if (personId) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: previousOwnerId,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/declinePersonTransfer`, async ctx => {
+  const id = await queries.declinePersonTransfer(ctx.query.id);
+  if (id) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: id,
     };
   } else {
     ctx.status = STATUS_ENUM.ERROR;

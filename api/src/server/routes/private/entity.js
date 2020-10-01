@@ -1,8 +1,6 @@
 const Router = require('koa-router');
 const queries = require('../../../db/queries/entity');
-const {
-  REGISTRATION_STATUS_ENUM,
-} = require('../../../../../common/enums');
+const { STATUS_ENUM } = require('../../../../../common/enums');
 const {
   ERROR_ENUM,
   errors,
@@ -67,6 +65,22 @@ router.get(`${BASE_URL}/forYouPage`, async ctx => {
 
 router.get(`${BASE_URL}/scoreSuggestion`, async ctx => {
   const suggestion = await queries.getScoreSuggestion(ctx.query);
+
+  if (suggestion) {
+    ctx.body = {
+      status: 'success',
+      data: suggestion,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+router.get(`${BASE_URL}/sameSuggestions`, async ctx => {
+  const suggestion = await queries.getSameSuggestions(ctx.query);
 
   if (suggestion) {
     ctx.body = {
@@ -359,6 +373,24 @@ router.put(`${BASE_URL}/game`, async ctx => {
     };
   }
 });
+router.put(`${BASE_URL}/updateSuggestionStatus`, async ctx => {
+  const suggestion = await queries.updateSuggestionStatus(
+    ctx.request.body,
+  );
+  if (suggestion) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: suggestion,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
 
 router.put(`${BASE_URL}/updateRegistration`, async ctx => {
   const entity = await queries.updateRegistration(
@@ -441,17 +473,47 @@ router.post(BASE_URL, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/unregister`, async ctx => {
-  const data = await queries.unregister(
+router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
+  const res = await queries.canUnregisterTeamsList(
+    ctx.query.rosterIds,
+    ctx.query.eventId,
+  );
+
+  if (res) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
+  const res = await queries.unregisterTeams(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
 
-  ctx.status = 200;
-  ctx.body = {
-    status: 'success',
-    data,
-  };
+  if (res.failed) {
+    ctx.status = 403;
+    ctx.body = {
+      status: 'error',
+      data: res.data,
+      message: 'Something went wrong',
+    };
+  } else {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: res.data,
+    };
+  }
 });
 
 router.post(`${BASE_URL}/role`, async ctx => {
@@ -674,7 +736,7 @@ router.post(`${BASE_URL}/register`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  if (status === REGISTRATION_STATUS_ENUM.REFUSED) {
+  if (status === STATUS_ENUM.REFUSED) {
     ctx.status = errors[ERROR_ENUM.REGISTRATION_ERROR].code;
     ctx.body = {
       status: 'error',

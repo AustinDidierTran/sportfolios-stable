@@ -39,7 +39,10 @@ router.get(`${BASE_URL}/hasStripeBankAccount`, async ctx => {
 });
 
 router.get(`${BASE_URL}/eventHasBankAccount`, async ctx => {
-  const data = await queries.eventHasBankAccount(ctx.query.id);
+  const data = await queries.eventHasBankAccount(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
   ctx.body = {
     status: 'success',
     data,

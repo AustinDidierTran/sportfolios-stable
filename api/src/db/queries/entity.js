@@ -2,7 +2,7 @@ const {
   ENTITIES_ROLE_ENUM,
   INVOICE_STATUS_ENUM,
   STRIPE_ERROR_ENUM,
-  REGISTRATION_STATUS_ENUM,
+  STATUS_ENUM,
   REJECTION_ENUM,
 } = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -27,6 +27,7 @@ const {
   addTeamToEvent: addTeamToEventHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
+  canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
   deleteGame: deleteGameHelper,
@@ -57,8 +58,10 @@ const {
   getRoster: getRosterHelper,
   getRosterInvoiceItem,
   getScoreSuggestion: getScoreSuggestionHelper,
+  getSameSuggestions: getSameSuggestionsHelper,
   getSlots: getSlotsHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
+  getWichTeamsCanUnregister: getWichTeamsCanUnregisterHelper,
   removeEntityRole: removeEntityRoleHelper,
   removeEventCartItem: removeEventCartItemHelper,
   unregister: unregisterHelper,
@@ -68,6 +71,7 @@ const {
   updateEntityRole: updateEntityRoleHelper,
   updateEvent: updateEventHelper,
   updateGame: updateGameHelper,
+  updateSuggestionStatus: updateSuggestionStatusHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
   updateMember: updateMemberHelper,
   updateRegistration: updateRegistrationHelper,
@@ -101,23 +105,30 @@ async function getAllForYouPagePosts() {
   return getAllForYouPagePostsHelper();
 }
 async function getScoreSuggestion(query) {
-  const {
-    event_id,
-    id,
-    start_time,
-    name1,
-    rosterId1,
-    name2,
-    rosterId2,
-  } = query;
+  const { event_id, start_time, rosterId1, rosterId2 } = query;
   return getScoreSuggestionHelper(
     event_id,
-    id,
     start_time,
-    name1,
     rosterId1,
-    name2,
     rosterId2,
+  );
+}
+async function getSameSuggestions(query) {
+  const {
+    eventId,
+    startTime,
+    yourRosterId,
+    opposingRosterId,
+    yourScore,
+    opposingTeamScore,
+  } = query;
+  return getSameSuggestionsHelper(
+    eventId,
+    startTime,
+    yourRosterId,
+    opposingRosterId,
+    yourScore,
+    opposingTeamScore,
   );
 }
 async function getAllOwnedEntities(type, userId) {
@@ -235,13 +246,13 @@ async function addTeamToEvent(body, userId) {
   const remainingSpots = await getRemainingSpotsHelper(eventId);
 
   if (remainingSpots < 1 && remainingSpots) {
-    const registrationStatus = REGISTRATION_STATUS_ENUM.REFUSED;
+    const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
   }
 
   // TODO: Validate status of team
-  const registrationStatus = REGISTRATION_STATUS_ENUM.ACCEPTED;
+  const registrationStatus = STATUS_ENUM.ACCEPTED;
 
   const team = await getEntity(teamId, userId);
 
@@ -260,7 +271,7 @@ async function addTeamToEvent(body, userId) {
     await addRosterHelper(rosterId, roster);
   }
   if (paymentOption) {
-    if (registrationStatus === REGISTRATION_STATUS_ENUM.ACCEPTED) {
+    if (registrationStatus === STATUS_ENUM.ACCEPTED) {
       // Add item to cart
       await addEventCartItem(
         {
@@ -428,6 +439,30 @@ async function updateGame(body) {
   return res;
 }
 
+async function updateSuggestionStatus(body) {
+  const {
+    gameId,
+    eventId,
+    startTime,
+    yourRosterId,
+    opposingRosterId,
+    yourScore,
+    opposingTeamScore,
+    status,
+  } = body;
+  const res = await updateSuggestionStatusHelper(
+    gameId,
+    eventId,
+    startTime,
+    yourRosterId,
+    opposingRosterId,
+    yourScore,
+    opposingTeamScore,
+    status,
+  );
+  return res;
+}
+
 async function addMember(body) {
   const {
     member_type,
@@ -481,6 +516,7 @@ async function addScoreAndSpirit(body) {
 
 async function addScoreSuggestion(body, userId) {
   const {
+    gameId,
     eventId,
     startTime,
     yourTeamName,
@@ -503,6 +539,7 @@ async function addScoreSuggestion(body, userId) {
   }
 
   const res = await addScoreSuggestionHelper(
+    gameId,
     eventId,
     startTime,
     yourTeamName,
@@ -573,39 +610,56 @@ async function addRoster(body) {
   return res;
 }
 
-const unregister = async (body, userId) => {
-  const { eventId, rosterId } = body;
+const canUnregisterTeamsList = async (rosterIds, eventId) => {
+  return getWichTeamsCanUnregisterHelper(
+    JSON.parse(rosterIds),
+    eventId,
+  );
+};
+
+const unregisterTeams = async (body, userId) => {
+  const { eventId, rosterIds } = body;
+  const result = { failed: false, data: [] };
+
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  const { invoiceItemId, status } = await getRosterInvoiceItem({
-    eventId,
-    rosterId,
-  });
+  for (const rosterId of rosterIds) {
+    if (await canUnregisterTeamHelper(rosterId, eventId)) {
+      const { invoiceItemId, status } = await getRosterInvoiceItem({
+        eventId,
+        rosterId,
+      });
 
-  try {
-    if (status === INVOICE_STATUS_ENUM.PAID) {
-      // Registration paid, refund please
-      await createRefund({ invoiceItemId });
-    } else {
-      // Registration is not paid, remove from cart
-      await removeEventCartItemHelper({ rosterId });
-    }
+      try {
+        if (status === INVOICE_STATUS_ENUM.PAID) {
+          // Registration paid, refund please
+          await createRefund({ invoiceItemId });
+        } else {
+          // Registration is not paid, remove from cart
+          await removeEventCartItemHelper({ rosterId });
+        }
 
-    await unregisterHelper({ rosterId, eventId });
-  } catch (err) {
-    if (err.code === STRIPE_ERROR_ENUM.CHARGE_ALREADY_REFUNDED) {
-      // Error is fine, keep unregistering
-      await unregisterHelper({ rosterId, eventId });
+        await unregisterHelper({ rosterId, eventId });
+      } catch (err) {
+        if (err.code === STRIPE_ERROR_ENUM.CHARGE_ALREADY_REFUNDED) {
+          // Error is fine, keep unregistering
+          await unregisterHelper({ rosterId, eventId });
+        } else {
+          throw err;
+        }
+      }
     } else {
-      throw err;
+      // team is in a game, can't unregister and refund
+      result.failed = true;
     }
   }
 
-  return getAllRegisteredInfosHelper(eventId, userId);
+  result.data = await getAllRegisteredInfosHelper(eventId, userId);
+  return result;
 };
 
 async function addMembership(body, userId) {
@@ -682,6 +736,7 @@ module.exports = {
   addTeamToEvent,
   addTeamToSchedule,
   addTimeSlot,
+  canUnregisterTeamsList,
   deleteEntity,
   deleteEntityHelper,
   deleteEntityHelper,
@@ -715,15 +770,18 @@ module.exports = {
   getRoster,
   getS3Signature,
   getScoreSuggestion,
+  getSameSuggestions,
   getSlots,
   getTeamsSchedule,
   isAllowed,
   unregister,
+  unregisterTeams,
   updateAlias,
   updateEntity,
   updateEntityRole,
   updateEvent,
   updateGame,
+  updateSuggestionStatus,
   updateGeneralInfos,
   updateMember,
   updateRegistration,

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 import {
   Paper,
   MailToButton,
-  Dialog,
+  AlertDialog,
+  IconButton,
 } from '../../../components/Custom';
 import PaymentChip from './PaymentChip';
 
@@ -20,21 +21,36 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
-import { unregister } from '../../../actions/api/helpers';
-import { IconButton } from '../../../components/Custom';
+import { unregisterTeams } from '../../../actions/api/helpers';
 import { formatPrice } from '../../../utils/stringFormats';
+import {
+  SEVERITY_ENUM,
+  STATUS_ENUM,
+} from '../../../../../common/enums';
+import { ERROR_ENUM } from '../../../../../common/errors';
+import { Store, ACTION_ENUM } from '../../../Store';
 
 export default function TeamRegistered() {
   const { t } = useTranslation();
   const { id: eventId } = useParams();
+  const { dispatch } = useContext(Store);
 
   const [teams, setTeams] = useState([]);
+  const [
+    teamsThatCanBeUnregistered,
+    setTeamsThatCanBeUnregistered,
+  ] = useState([]);
   const [maximumSpots, setMaximumSpots] = useState();
-  const [open, setOpen] = useState(false);
+  const [openUnregister, setOpenUnregister] = useState(false);
+  const [openUnregisterAll, setOpenUnregisterAll] = useState(false);
   const [rosterId, setRosterId] = useState(null);
 
-  const onClose = () => {
-    setOpen(false);
+  const onCloseUnregister = () => {
+    setOpenUnregister(false);
+  };
+
+  const onCloseUnregisterAll = () => {
+    setOpenUnregisterAll(false);
   };
 
   const getTeams = async () => {
@@ -50,18 +66,102 @@ export default function TeamRegistered() {
     getTeams();
   }, [eventId]);
 
-  const handleClick = rosterId => {
-    setOpen(true);
+  const getCanUnregisterTeamsList = async rosterIds => {
+    const { data } = await api(
+      formatRoute('/api/entity/canUnregisterTeamsList', null, {
+        eventId,
+        rosterIds: JSON.stringify(rosterIds),
+      }),
+    );
+
+    return data;
+  };
+
+  const handleUnregisterClick = async rosterId => {
     setRosterId(rosterId);
+    const data = await getCanUnregisterTeamsList([rosterId]);
+
+    if (data.length) {
+      setOpenUnregister(true);
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('this_team_cannot_be_deleted'),
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
+      });
+    }
+  };
+
+  const handleUnregisterAllClick = async () => {
+    const data = await getCanUnregisterTeamsList(
+      teams.map(t => t.rosterId),
+    );
+
+    setTeamsThatCanBeUnregistered(data);
+
+    if (data.length) {
+      setOpenUnregisterAll(true);
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('cant_unregister_any_teams'),
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
+      });
+    }
   };
 
   const onUnregisterTeam = async () => {
-    const { data } = await unregister({
+    const res = await unregisterTeams({
       eventId,
-      rosterId,
+      rosterIds: [rosterId],
     });
-    setTeams(data);
-    setOpen(false);
+
+    if (res.status === STATUS_ENUM.SUCCESS) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('team_unregister_success'),
+        severity: SEVERITY_ENUM.SUCCES,
+        duration: 4000,
+      });
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: ERROR_ENUM.ERROR_OCCURED,
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
+      });
+    }
+
+    setTeams(res.data);
+    setOpenUnregister(false);
+  };
+
+  const onUnregisterAll = async () => {
+    const res = await unregisterTeams({
+      eventId,
+      rosterIds: teamsThatCanBeUnregistered,
+    });
+
+    if (res.status === STATUS_ENUM.SUCCESS) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('teams_unregister_success'),
+        severity: SEVERITY_ENUM.SUCCES,
+        duration: 4000,
+      });
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: ERROR_ENUM.ERROR_OCCURED,
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
+      });
+    }
+
+    setTeams(res.data);
+    setOpenUnregisterAll(false);
   };
 
   const getMaximumSpots = async () => {
@@ -76,17 +176,6 @@ export default function TeamRegistered() {
   useEffect(() => {
     getMaximumSpots();
   }, [teams]);
-
-  const buttons = [
-    {
-      title: t('yes'),
-      onClick: onUnregisterTeam,
-    },
-    {
-      title: t('no'),
-      onClick: onClose,
-    },
-  ];
 
   const StyledTableCell = withStyles(theme => ({
     head: {
@@ -129,7 +218,20 @@ export default function TeamRegistered() {
               <StyledTableCell />
               <StyledTableCell />
               <StyledTableCell />
-              <StyledTableCell />
+              <StyledTableCell align="center">
+                {teams.length > 0 ? (
+                  <IconButton
+                    //color="primary"
+                    variant="contained"
+                    icon="MoneyOff"
+                    tooltip={t('unregister_all')}
+                    onClick={() => handleUnregisterAllClick()}
+                    style={{ color: '#f44336' }}
+                  />
+                ) : (
+                  <></>
+                )}
+              </StyledTableCell>
             </TableRow>
           </TableHead>
           <TableHead>
@@ -178,7 +280,9 @@ export default function TeamRegistered() {
                         variant="contained"
                         icon="MoneyOff"
                         tooltip={t('unregister')}
-                        onClick={() => handleClick(team.rosterId)}
+                        onClick={() =>
+                          handleUnregisterClick(team.rosterId)
+                        }
                         style={{ color: '#18b393' }}
                       />
                     </StyledTableCell>
@@ -190,19 +294,41 @@ export default function TeamRegistered() {
                 <StyledTableCell>
                   {t('no_teams_registered')}
                 </StyledTableCell>
+                <StyledTableCell />
+                <StyledTableCell />
+                <StyledTableCell />
+                <StyledTableCell />
               </StyledTableRow>
             )}
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog
-        description={t(
-          'are_you_sure_you_want_to_unregister_this_team',
-        )}
-        onClose={onClose}
-        open={open}
-        buttons={buttons}
-      ></Dialog>
+      <AlertDialog
+        open={openUnregister}
+        onCancel={onCloseUnregister}
+        onSubmit={onUnregisterTeam}
+        title={t('are_you_sure_you_want_to_unregister_this_team')}
+        description={teams.find(x => x.rosterId === rosterId)?.name}
+      />
+      <AlertDialog
+        open={openUnregisterAll}
+        onCancel={onCloseUnregisterAll}
+        onSubmit={onUnregisterAll}
+        title={
+          teamsThatCanBeUnregistered.length < teams.length
+            ? t('cant_unregister_all_teams', {
+                howManyCanUnregister:
+                  teamsThatCanBeUnregistered.length,
+                totalOfTeams: teams.length,
+              })
+            : t('are_you_sure_you_want_to_unregister_all_teams')
+        }
+        description={teamsThatCanBeUnregistered
+          .map(function(rosterId) {
+            return teams.find(x => x.rosterId === rosterId)?.name;
+          })
+          .join(', ')}
+      />
     </Paper>
   );
 }

@@ -7,7 +7,10 @@ export default {
     action_confirmation:
       'Are you sure you want to perform this action?',
     acceptation: 'Acceptation',
+    accept: 'Accept',
+    account_holder_name: 'Account Holder Name',
     add: 'Add',
+    add_bank_account: 'Add bank account',
     add_editor: 'Add editor',
     add_game: 'Add game',
     add_team: 'Add team',
@@ -18,6 +21,7 @@ export default {
     add_new_player: 'Add new player',
     add_payment_method: 'Add payment method',
     add_payment_options: 'Add payment options',
+    add_personal_information: 'Add personal information',
     add_sub: 'Add sub',
     add_new_product: 'Add new product',
     add_to_cart: 'Add to cart',
@@ -38,10 +42,13 @@ export default {
     admins: 'Admins',
     advanced_filters: 'Advanced filters',
     adress: 'Address',
+    are_you_sure_you_want_to_unregister_all_teams:
+      'Are you sure you want to unregister all teams and refund them if they have already paid?',
     are_you_sure_you_want_to_unregister_this_team:
       'Are you sure you want to unregister this team and refund the team if the team has already paid?',
     alias: 'Alias',
     alias_is_already_used: 'Alias is already used',
+    anonymous: 'Anonymous',
     at: 'at',
     cart: 'Cart',
     checkout: 'Checkout',
@@ -59,6 +66,7 @@ export default {
       'Recovery email has been sent successfully. Go look at your email to reset your password.',
     athlete_history: 'Athlete history',
     awaiting_payments: 'Awaiting payments',
+    awaiting_your_approval: 'Awaiting your approval',
     back: 'Back',
     back_to_shop: 'Back to shop',
     basic_info: 'Basic Info',
@@ -69,6 +77,10 @@ export default {
     cant_add_product_no_bank_account:
       "Can't add product admin has no bank account",
     by: 'By',
+    cant_unregister_all_teams:
+      'Only {{howManyCanUnregister}}/{{totalOfTeams}} teams can be unregistered since some teams are in a game. Do you want to unregister the available ones?',
+    cant_unregister_any_teams:
+      'No teams can be unregistered since they are all already in a game.',
     captain: 'Captain',
     card_ending_with: 'Card ending with {{last4}}',
     cart_empty_go_shop: "Your cart is empty, it's time to shop!",
@@ -90,6 +102,7 @@ export default {
     create_team: 'Create Team',
     created_by: 'Created by {{name}}',
     currency: 'Currency',
+    decline: 'Decline',
     delete: 'Delete',
     select_payment_method: 'Select payment method',
     delete_confirmation_text: 'To delete, type {{name}}',
@@ -163,6 +176,8 @@ export default {
     more_filters: 'More Filters',
     my_persons: 'My persons',
     name: 'Name',
+    name_and_x_others: '{{name}} and {{number}} others',
+    name_and_x_other: '{{name}} and {{number}} other',
     new_email: 'New email',
     new_organization: 'New organization',
     new_team: 'New team',
@@ -215,10 +230,13 @@ export default {
     payments: 'Payments',
     payment_option_exist: 'Payment option exist',
     payment_options: 'Payment options',
+    pending: 'Pending',
     person: 'Person',
     persons: 'Persons',
     person_awaiting_transfer: 'Person awaiting transfer',
     person_transfer_canceled: 'Person transfer canceled',
+    person_transfer_declined: 'Person transfer declined',
+    person_transfer_done: 'Person transfer completed',
     person_transfer_email_sent:
       'A email was sent to {{email}} to complete the transfer',
     phase: 'Phase',
@@ -241,6 +259,8 @@ export default {
     rankings: 'Rankings',
     refund: 'Refund',
     refunded: 'Refunded',
+    refused: 'Refused',
+    remove: 'Remove',
     results: 'Results',
     reset: 'Reset',
     reset_password: 'Reset password',
@@ -256,12 +276,15 @@ export default {
     secondary_person: 'Secondary person',
     save_basic_info: 'Save new basic infos',
     score_submitted: 'Score submitted',
+    score_suggestion: 'Score suggestion',
+    score_suggestions: 'Score suggestions',
     score_type: 'Score Type',
     select_existing_person: 'Select existing person',
     select_language: 'Select Language',
     select_person: 'Select person',
     send_new_confirmation_email: 'Send new confirmation email',
     send_password_recovery_email: 'Send password recovery email',
+    shop: 'Shop',
     signup: 'Signup',
     sizes: 'Size',
     sizes: 'Sizes',
@@ -274,7 +297,7 @@ export default {
     sub_added: 'Sub added',
     subscribe: 'Subscribe',
     subscribed: 'Subscribed',
-    shop: 'Shop',
+    surname: 'Surname',
     switch_view: 'Switch view',
     error_start_date_before_end:
       'Start date should be before end date.',
@@ -296,11 +319,14 @@ export default {
     to_transfer: 'Transfer',
     transfer_person_description:
       'By confirming you accept to give all the admin permissions on this person and give it to the user who own the email you specified.',
+    transfered_to_you: 'Transfered to you',
     time: 'Time',
     time_slot: 'Time slot',
     time_slot_added: 'Time slot added',
     waiting_for_payment:
       'Your payment is being processed. Thank you for your patience',
+    unregister: 'Unregister',
+    unregister_all: 'Unregister all',
     unsupported_language: 'Unsupported language',
     upload: 'Upload',
     user_view: 'User view',
@@ -404,7 +430,6 @@ export default {
     edit: 'Edit',
     save: 'Save',
     submit: 'Submit',
-    checkout: 'Checkout',
     use_same_and_continue: 'Use same and continue',
     personal_information: 'Personal Information',
     create_new_account: 'Create new account',
@@ -485,6 +510,12 @@ export default {
       'You added {{length}} players to your roster! Choose your payment option.',
     no_bank_account_linked:
       'You have no bank account linked, payment option needs to be free',
+    some_teams_cannot_be_deleted:
+      "Some teams can't be unregistered from the event since they are already in a game.",
+    this_team_cannot_be_deleted:
+      "This team can't be unregistered from the event since it is already in a game.",
+    team_unregister_success: 'Team unregistered successfully',
+    teams_unregister_success: 'Teams unregistered successfully',
 
     //SIZES
     sizes_enum: {

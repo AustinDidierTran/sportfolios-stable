@@ -145,7 +145,7 @@ export default function ExternalAccountForm(props) {
             namespace="accountHolderName"
             formik={formik}
             type="accountHolderName"
-            label="Account Holder Name"
+            label={t('account_holder_name')}
             fullWidth
           />
           <TextField

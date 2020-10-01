@@ -7,8 +7,11 @@ export default {
     action_confirmation:
       'Êtes-vous certain de vouloir effectuer cette action?',
     acceptation: 'Acceptation',
+    accept: 'Accepter',
+    account_holder_name: 'Nom du titulaire du compte',
     add_admin: 'Ajouter admin',
     add: 'Ajouter',
+    add_bank_account: 'Ajouter le compte bancaire',
     add_editor: 'Ajouter éditeur',
     add_game: 'Ajouter une partie',
     add_team: 'Ajouter une équipe',
@@ -19,6 +22,7 @@ export default {
     add_player_with_no_account: 'Ajouter un joueur sans compte',
     add_payment_method: 'Ajouter une option de paiement',
     add_payment_options: 'Ajouter des options de paiements',
+    add_personal_information: 'Ajouter les informations personnelles',
     add_sub: 'Ajouter un remplacant',
     add_new_product: 'Ajouter un nouveau produit',
     quick_description: 'Description courte',
@@ -40,13 +44,16 @@ export default {
     adress: 'Addresse',
     alias: 'Alias',
     alias_is_already_used: "L'alias est déjà utilisé",
+    anonymous: 'Anonyme',
     at: 'à',
     empty_roster:
       "Cet alignement est vide. Le capitaine de cette équipe n'a pas entré son alignement.",
     empty_roster_add_players:
       "Votre alignement est vide. Utilisez l'outil de recherche pour ajouter des joueurs à votre alignement.",
+    are_you_sure_you_want_to_unregister_all_teams:
+      'Êtes-vous sûr de vouloir désinscrire toutes les équipes et les rembourser si elles ont déjà payé?',
     are_you_sure_you_want_to_unregister_this_team:
-      'Êtes vous sur que vous voulez désinscrire cette équipe et la rembourser si elle à déjà payé?',
+      'Êtes-vous sûr de vouloir désinscrire cette équipe et la rembourser si elle à déjà payé?',
     all: 'Tous',
     all_teams: 'Toutes les équipes',
     all_phases: 'Toutes les phases',
@@ -56,6 +63,7 @@ export default {
     amount_to_pay: 'Montant à payer {{amount}}',
     app_role: 'App Role',
     awaiting_payments: 'Paiements en attentes',
+    awaiting_your_approval: 'En attente de votre approbation',
     athlete_history: "Historique de l'athlète",
     back: 'Revenir',
     back_to_shop: 'Revenir au magasin',
@@ -67,7 +75,11 @@ export default {
     by: 'Par',
     canadian_dollar: 'Dollar Canadien',
     cancel_person_transfer_confirmation:
-      'Êtes vous certain de vouloir annuler le transfert de {{name}}?',
+      'Êtes-vous certain de vouloir annuler le transfert de {{name}}?',
+    cant_unregister_all_teams:
+      "Seulement {{howManyCanUnregister}}/{{totalOfTeams}} équipes peuvent être désinscrites puisque certaines sont déjà dans des parties. Voulez-vous désinscrire celles qui peuvent l'être?",
+    cant_unregister_any_teams:
+      "Aucune équipe ne peut être désinscrite de l'événement puisqu'elles sont déjà toutes dans des parties.",
     captain: 'Capitaine',
     card_ending_with: 'Carte finissant avec {{last4}}',
     cart: 'Panier',
@@ -94,6 +106,7 @@ export default {
       'Cliquer pour créer votre nouvelle équipe',
     created_by: 'Créé par {{name}}',
     currency: 'Devise',
+    decline: 'Refuser',
     delete: 'Supprimer',
     delete_confirmation_text: 'Pour supprimer, écrivez {{name}}',
     delete_game_confirmation:
@@ -156,6 +169,7 @@ export default {
     login: 'Connexion',
     logout: 'Déconnexion',
     send_email: 'Envoyer un courriel',
+    send: 'envoyer',
     maximum_spots: 'Nombre de places',
     max_length: 'Longueur maximum',
     menu: 'Menu',
@@ -218,11 +232,15 @@ export default {
     payment_options: 'Options de paiements',
     payment_option_exist: 'Option de paiement existante',
     payments: 'Paiements',
+    pending: 'En attente',
     person: 'Personne',
     person_awaiting_transfer: 'Personne en cours de transfert',
     person_transfer_canceled: 'Le transfert a été annulé',
+    person_transfer_declined: 'Le transfert a été refusé',
+    person_transfer_done: 'Le transfert a été complété',
     person_transfer_email_sent:
       'Un courriel pour procéder au transfert a été envoyé à {{email}}',
+    pending: 'En attente',
     people: 'Personnes',
     phase: 'Phase',
     phase_added: 'Phase ajoutée',
@@ -241,6 +259,8 @@ export default {
     ranking: 'Classement',
     rankings: 'Classements',
     refunded: 'Remboursé',
+    refused: 'Refusé',
+    remove: 'Retirer',
     results: 'Résultats',
     reset: 'Réinitialiser',
     reset_password: 'Réinitialiser le mot de passe',
@@ -252,6 +272,8 @@ export default {
     schedule: 'Horaire',
     score: 'Pointage',
     score_submitted: 'Résultat soumis',
+    score_suggestion: 'Suggestion de résultat',
+    score_suggestions: 'Suggestions de résultats',
     score_type: 'Type de pointage',
     quantity: 'Quantité',
     search_results: 'Résultats de recherche pour {{query}}',
@@ -282,6 +304,7 @@ export default {
     sub_added: 'Remplaçant ajouté',
     subscribe: "S'abonner",
     subscribed: 'Abonné',
+    surname: 'Nom de famille',
     switch_view: 'Changer de vue',
     team: 'Équipe',
     team_1: 'Équipe 1',
@@ -297,6 +320,7 @@ export default {
     to_transfer: 'Transférer',
     transfer_person_description:
       "En confirmant vous acceptez de céder toutes les permissions sur cette personne à l'utilisateur possédant l'adresse courriel que vous avez entrée",
+    transfered_to_you: 'Transféré à vous',
     time: 'Temps',
     time_slot: 'Plage horaire',
     time_slot_added: 'Plage horaire ajoutée',
@@ -305,6 +329,8 @@ export default {
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
     waiting_for_payment:
       'Votre paiement est en cours de traitement. Merci pour votre patience.',
+    unregister: 'Désinscrire',
+    unregister_all: 'Tout désinscrire',
     unsupported_language: 'Langue non supportée',
     upload: 'Téléverser',
     user_view: 'Vue utilisateur',
@@ -330,6 +356,8 @@ export default {
     payment_method: 'Méthode de paiement',
     review: 'Passer en revue et payer',
     name: 'Nom',
+    name_and_x_others: '{{name}} et {{number}} autres',
+    name_and_x_other: '{{name}} et {{number}} autre',
     select_payment_method: 'Sélectionner une méthode de paiement',
     email: 'Courriel',
     phone_number: 'Numéro de téléphone',
@@ -487,7 +515,13 @@ export default {
     you_added_players_to_your_roster:
       'Vous avez ajouté {{length}} joueurs à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
     no_bank_account_linked:
-      "Vous n'avez pas de compte en banque relié, l'option de paiement doit etre gratuite",
+      "Vous n'avez pas de compte en banque relié, l'option de paiement doit etre gratuite.",
+    some_teams_cannot_be_deleted:
+      "Des équipes n'ont pas pu être désinscrites de l'événement puisqu'elles sont déjà dans des parties.",
+    this_team_cannot_be_deleted:
+      "Cette équipe ne peut pas être désinscrite de l'événement puisqu'elle est déjà dans une partie.",
+    team_unregister_success: 'Équipe désinscrite avec succès',
+    teams_unregister_success: 'Équipes désinscrites avec succès',
 
     //SIZES
     sizes_enum: {
