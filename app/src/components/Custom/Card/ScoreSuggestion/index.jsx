@@ -39,12 +39,11 @@ export default function ScoreSuggestion(props) {
 
   const getPersonName = async () => {
     if (!suggestion.created_by) {
-      return t('anonymous');
+      return { name: t('anonymous') };
     }
     const { data } = await api(
       formatRoute('/api/entity', null, { id: suggestion.created_by }),
     );
-
     return { name: data.name, surname: data.surname };
   };
 
@@ -80,7 +79,11 @@ export default function ScoreSuggestion(props) {
         }),
       );
     } else {
-      setMessage(`${name.name} ${name.surname}`);
+      if (name.surname) {
+        setMessage(`${name.name} ${name.surname}`);
+      } else {
+        setMessage(name.name);
+      }
     }
   };
 

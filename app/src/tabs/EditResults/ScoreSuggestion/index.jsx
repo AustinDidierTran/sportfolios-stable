@@ -5,7 +5,6 @@ import {
 } from '../../../../../common/enums';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
-import { Card } from '../../../components/Custom';
 import EditGame from '../../EditSchedule/EditGames/EditGame';
 import { Card, IconButton } from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
@@ -26,9 +25,9 @@ export default function ScoreSuggestion(props) {
   const { t } = useTranslation();
 
   const [suggestions, setSuggestions] = useState([]);
-  const [expanded, setExpanded] = useState(true);
-  const [icon, setIcon] = useState('KeyboardArrowUp');
-  const [message, setMessage] = useState('');
+  const [expanded, setExpanded] = useState(false);
+  const [icon, setIcon] = useState('KeyboardArrowDown');
+  const [message, setMessage] = useState('score_suggestions');
 
   const handleExpand = () => {
     const newExpanded = !expanded;
@@ -94,6 +93,10 @@ export default function ScoreSuggestion(props) {
         setIcon('KeyboardArrowDown');
         setMessage(t('score_suggestions'));
       }, 1000);
+    } else {
+      setExpanded(expanded);
+      setIcon('KeyboardArrowUp');
+      setMessage('');
     }
   };
 
