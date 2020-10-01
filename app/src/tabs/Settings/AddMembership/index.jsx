@@ -133,7 +133,7 @@ export default function AddMembership() {
       ],
     },
     {
-      display: t('Type'),
+      display: 'Type',
       value: 1,
       type: 'select',
       onChange: onChangeType,

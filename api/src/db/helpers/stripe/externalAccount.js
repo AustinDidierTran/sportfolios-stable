@@ -9,7 +9,8 @@ const { stripeLogger } = require('../../../server/utils/logger');
 const {
   fillWithZeros,
 } = require('../../../../../common/utils/stringFormat');
-const { getCreator } = require('../entity');
+const { getCreator, getEntity } = require('../entity');
+const { GLOBAL_ENUM } = require('../../../../../common/enums');
 
 const getStripeAccount = async senderId => {
   const [account = {}] = await knex('stripe_accounts')
@@ -28,7 +29,14 @@ const hasStripeBankAccount = async senderId => {
   return Boolean(account.bank_account_id);
 };
 
-const eventHasBankAccount = async adminId => {
+const eventHasBankAccount = async (adminId, userId) => {
+  const entity = await getEntity(adminId, userId);
+  if (entity.type === GLOBAL_ENUM.ORGANIZATION) {
+    const organizationAccount = await getStripeAccount(adminId);
+    return Boolean(organizationAccount.bank_account_id);
+  }
+
+  // not an organization, check for creator's account
   const admin = await getCreator(adminId);
   const account = await getStripeAccount(admin.id);
   return Boolean(account.bank_account_id);

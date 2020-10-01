@@ -8,8 +8,10 @@ export default {
       'Êtes-vous certain de vouloir effectuer cette action?',
     acceptation: 'Acceptation',
     accept: 'Accepter',
+    account_holder_name: 'Nom du titulaire du compte',
     add_admin: 'Ajouter admin',
     add: 'Ajouter',
+    add_bank_account: 'Ajouter le compte bancaire',
     add_editor: 'Ajouter éditeur',
     add_game: 'Ajouter une partie',
     add_team: 'Ajouter une équipe',
@@ -20,6 +22,7 @@ export default {
     add_player_with_no_account: 'Ajouter un joueur sans compte',
     add_payment_method: 'Ajouter une option de paiement',
     add_payment_options: 'Ajouter des options de paiements',
+    add_personal_information: 'Ajouter les informations personnelles',
     add_sub: 'Ajouter un remplacant',
     add_new_product: 'Ajouter un nouveau produit',
     quick_description: 'Description courte',
@@ -288,6 +291,7 @@ export default {
     sub_added: 'Remplaçant ajouté',
     subscribe: "S'abonner",
     subscribed: 'Abonné',
+    surname: 'Nom de famille',
     switch_view: 'Changer de vue',
     team: 'Équipe',
     team_1: 'Équipe 1',
@@ -494,7 +498,7 @@ export default {
     you_added_players_to_your_roster:
       'Vous avez ajouté {{length}} joueurs à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
     no_bank_account_linked:
-      "Vous n'avez pas de compte en banque relié, l'option de paiement doit etre gratuite",
+      "Vous n'avez pas de compte en banque relié, l'option de paiement doit être gratuite.",
 
     //SIZES
     sizes_enum: {
