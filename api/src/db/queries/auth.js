@@ -7,21 +7,22 @@ const {
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
 const {
   confirmEmail: confirmEmailHelper,
-  createUserComplete,
   createConfirmationEmailToken,
   createRecoveryEmailToken,
+  createUserComplete,
+  generateAuthToken,
   generateHashedPassword,
   generateToken,
   getBasicUserInfoFromId,
   getEmailFromToken,
   getHashedPasswordFromId,
+  getLanguageFromEmail,
   getUserIdFromEmail,
   getUserIdFromRecoveryPasswordToken,
   setRecoveryTokenToUsed,
   updatePasswordFromUserId,
   validateEmailIsConfirmed,
   validateEmailIsUnique,
-  generateAuthToken,
 } = require('../helpers');
 
 const signup = async ({
