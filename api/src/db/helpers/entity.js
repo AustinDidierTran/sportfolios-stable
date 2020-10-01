@@ -979,10 +979,49 @@ async function updateEntityPhoto(entityId, photo_url) {
     .where({ entity_id: realId });
 }
 
+const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
+  var list = [];
+  for (const rosterId of rosterIds) {
+    if (await canUnregisterTeam(rosterId, eventId)) {
+      list.push(rosterId);
+    }
+  }
+
+  return list;
+};
+
+const canUnregisterTeam = async (rosterId, eventId) => {
+  const realEventId = await getRealId(eventId);
+  const realRosterId = await getRealId(rosterId);
+
+  const canUnregister =
+    (
+      await knex('game_teams')
+        .whereIn(
+          'game_id',
+          knex('games')
+            .select('id')
+            .where({ event_id: realEventId }),
+        )
+        .andWhere({ roster_id: realRosterId })
+    )?.length == 0;
+
+  return canUnregister;
+};
+
 const deleteRegistration = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
   return knex.transaction(async trx => {
+    // temporary, table will probably be removed
+    await knex('schedule_teams')
+      .where({
+        event_id: realEventId,
+        roster_id: realRosterId,
+      })
+      .del()
+      .transacting(trx);
+
     await knex('event_rosters')
       .where({
         roster_id: realRosterId,
@@ -1851,6 +1890,7 @@ module.exports = {
   addOption,
   addRoster,
   addTeamToEvent,
+  canUnregisterTeam,
   deleteEntity,
   deleteEntityMembership,
   deleteOption,
@@ -1882,10 +1922,11 @@ module.exports = {
   getFields,
   getGeneralInfos,
   getOptions,
+  getRosterInvoiceItem,
+  getWichTeamsCanUnregister,
   removeEntityRole,
   removeEventCartItem,
   unregister,
-  getRosterInvoiceItem,
   updateEntityName,
   updateEntityPhoto,
   updateEntityRole,

@@ -50,8 +50,10 @@ export default {
       "Cet alignement est vide. Le capitaine de cette équipe n'a pas entré son alignement.",
     empty_roster_add_players:
       "Votre alignement est vide. Utilisez l'outil de recherche pour ajouter des joueurs à votre alignement.",
+    are_you_sure_you_want_to_unregister_all_teams:
+      'Êtes-vous sûr de vouloir désinscrire toutes les équipes et les rembourser si elles ont déjà payé?',
     are_you_sure_you_want_to_unregister_this_team:
-      'Êtes vous sur que vous voulez désinscrire cette équipe et la rembourser si elle à déjà payé?',
+      'Êtes-vous sûr de vouloir désinscrire cette équipe et la rembourser si elle à déjà payé?',
     all: 'Tous',
     all_teams: 'Toutes les équipes',
     all_phases: 'Toutes les phases',
@@ -73,7 +75,11 @@ export default {
     by: 'Par',
     canadian_dollar: 'Dollar Canadien',
     cancel_person_transfer_confirmation:
-      'Êtes vous certain de vouloir annuler le transfert de {{name}}?',
+      'Êtes-vous certain de vouloir annuler le transfert de {{name}}?',
+    cant_unregister_all_teams:
+      "Seulement {{howManyCanUnregister}}/{{totalOfTeams}} équipes peuvent être désinscrites puisque certaines sont déjà dans des parties. Voulez-vous désinscrire celles qui peuvent l'être?",
+    cant_unregister_any_teams:
+      "Aucune équipe ne peut être désinscrite de l'événement puisqu'elles sont déjà toutes dans des parties.",
     captain: 'Capitaine',
     card_ending_with: 'Carte finissant avec {{last4}}',
     cart: 'Panier',
@@ -320,6 +326,8 @@ export default {
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
     waiting_for_payment:
       'Votre paiement est en cours de traitement. Merci pour votre patience.',
+    unregister: 'Désinscrire',
+    unregister_all: 'Tout désinscrire',
     unsupported_language: 'Langue non supportée',
     upload: 'Téléverser',
     user_view: 'Vue utilisateur',
@@ -502,7 +510,13 @@ export default {
     you_added_players_to_your_roster:
       'Vous avez ajouté {{length}} joueurs à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
     no_bank_account_linked:
-      "Vous n'avez pas de compte en banque relié, l'option de paiement doit être gratuite.",
+      "Vous n'avez pas de compte en banque relié, l'option de paiement doit etre gratuite.",
+    some_teams_cannot_be_deleted:
+      "Des équipes n'ont pas pu être désinscrites de l'événement puisqu'elles sont déjà dans des parties.",
+    this_team_cannot_be_deleted:
+      "Cette équipe ne peut pas être désinscrite de l'événement puisqu'elle est déjà dans une partie.",
+    team_unregister_success: 'Équipe désinscrite avec succès',
+    teams_unregister_success: 'Équipes désinscrites avec succès',
 
     //SIZES
     sizes_enum: {

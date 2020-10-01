@@ -42,6 +42,8 @@ export default {
     admins: 'Admins',
     advanced_filters: 'Advanced filters',
     adress: 'Address',
+    are_you_sure_you_want_to_unregister_all_teams:
+      'Are you sure you want to unregister all teams and refund them if they have already paid?',
     are_you_sure_you_want_to_unregister_this_team:
       'Are you sure you want to unregister this team and refund the team if the team has already paid?',
     alias: 'Alias',
@@ -75,6 +77,10 @@ export default {
     cant_add_product_no_bank_account:
       "Can't add product admin has no bank account",
     by: 'By',
+    cant_unregister_all_teams:
+      'Only {{howManyCanUnregister}}/{{totalOfTeams}} teams can be unregistered since some teams are in a game. Do you want to unregister the available ones?',
+    cant_unregister_any_teams:
+      'No teams can be unregistered since they are all already in a game.',
     captain: 'Captain',
     card_ending_with: 'Card ending with {{last4}}',
     cart_empty_go_shop: "Your cart is empty, it's time to shop!",
@@ -315,6 +321,8 @@ export default {
     time_slot_added: 'Time slot added',
     waiting_for_payment:
       'Your payment is being processed. Thank you for your patience',
+    unregister: 'Unregister',
+    unregister_all: 'Unregister all',
     unsupported_language: 'Unsupported language',
     upload: 'Upload',
     user_view: 'User view',
@@ -498,6 +506,12 @@ export default {
       'You added {{length}} players to your roster! Choose your payment option.',
     no_bank_account_linked:
       'You have no bank account linked, payment option needs to be free',
+    some_teams_cannot_be_deleted:
+      "Some teams can't be unregistered from the event since they are already in a game.",
+    this_team_cannot_be_deleted:
+      "This team can't be unregistered from the event since it is already in a game.",
+    team_unregister_success: 'Team unregistered successfully',
+    teams_unregister_success: 'Teams unregistered successfully',
 
     //SIZES
     sizes_enum: {

@@ -27,6 +27,7 @@ const {
   addTeamToEvent: addTeamToEventHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
+  canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
   deleteGame: deleteGameHelper,
@@ -58,6 +59,7 @@ const {
   getScoreSuggestion: getScoreSuggestionHelper,
   getSlots: getSlotsHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
+  getWichTeamsCanUnregister: getWichTeamsCanUnregisterHelper,
   removeEntityRole: removeEntityRoleHelper,
   removeEventCartItem: removeEventCartItemHelper,
   unregister: unregisterHelper,
@@ -583,39 +585,56 @@ async function addRoster(body) {
   return res;
 }
 
-const unregister = async (body, userId) => {
-  const { eventId, rosterId } = body;
+const canUnregisterTeamsList = async (rosterIds, eventId) => {
+  return getWichTeamsCanUnregisterHelper(
+    JSON.parse(rosterIds),
+    eventId,
+  );
+};
+
+const unregisterTeams = async (body, userId) => {
+  const { eventId, rosterIds } = body;
+  const result = { failed: false, data: [] };
+
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  const { invoiceItemId, status } = await getRosterInvoiceItem({
-    eventId,
-    rosterId,
-  });
+  for (const rosterId of rosterIds) {
+    if (await canUnregisterTeamHelper(rosterId, eventId)) {
+      const { invoiceItemId, status } = await getRosterInvoiceItem({
+        eventId,
+        rosterId,
+      });
 
-  try {
-    if (status === INVOICE_STATUS_ENUM.PAID) {
-      // Registration paid, refund please
-      await createRefund({ invoiceItemId });
-    } else {
-      // Registration is not paid, remove from cart
-      await removeEventCartItemHelper({ rosterId });
-    }
+      try {
+        if (status === INVOICE_STATUS_ENUM.PAID) {
+          // Registration paid, refund please
+          await createRefund({ invoiceItemId });
+        } else {
+          // Registration is not paid, remove from cart
+          await removeEventCartItemHelper({ rosterId });
+        }
 
-    await unregisterHelper({ rosterId, eventId });
-  } catch (err) {
-    if (err.code === STRIPE_ERROR_ENUM.CHARGE_ALREADY_REFUNDED) {
-      // Error is fine, keep unregistering
-      await unregisterHelper({ rosterId, eventId });
+        await unregisterHelper({ rosterId, eventId });
+      } catch (err) {
+        if (err.code === STRIPE_ERROR_ENUM.CHARGE_ALREADY_REFUNDED) {
+          // Error is fine, keep unregistering
+          await unregisterHelper({ rosterId, eventId });
+        } else {
+          throw err;
+        }
+      }
     } else {
-      throw err;
+      // team is in a game, can't unregister and refund
+      result.failed = true;
     }
   }
 
-  return getAllRegisteredInfosHelper(eventId, userId);
+  result.data = await getAllRegisteredInfosHelper(eventId, userId);
+  return result;
 };
 
 async function addMembership(body, userId) {
@@ -692,6 +711,7 @@ module.exports = {
   addTeamToEvent,
   addTeamToSchedule,
   addTimeSlot,
+  canUnregisterTeamsList,
   deleteEntity,
   deleteEntityHelper,
   deleteEntityMembership,
@@ -724,7 +744,7 @@ module.exports = {
   getScoreSuggestion,
   getSlots,
   getTeamsSchedule,
-  unregister,
+  unregisterTeams,
   updateAlias,
   updateEntity,
   updateEntityRole,

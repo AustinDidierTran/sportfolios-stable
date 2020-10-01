@@ -457,17 +457,47 @@ router.post(BASE_URL, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/unregister`, async ctx => {
-  const data = await queries.unregister(
+router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
+  const res = await queries.canUnregisterTeamsList(
+    ctx.query.rosterIds,
+    ctx.query.eventId,
+  );
+
+  if (res) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
+  const res = await queries.unregisterTeams(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
 
-  ctx.status = 200;
-  ctx.body = {
-    status: 'success',
-    data,
-  };
+  if (res.failed) {
+    ctx.status = 403;
+    ctx.body = {
+      status: 'error',
+      data: res.data,
+      message: 'Something went wrong',
+    };
+  } else {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: res.data,
+    };
+  }
 });
 
 router.post(`${BASE_URL}/role`, async ctx => {
