@@ -1,0 +1,12 @@
+.collapse {
+  display: grid;
+  grid-template-columns: 15fr 1fr;
+}
+.seeScore {
+  justify-self: end;
+  align-self: center;
+}
+.button {
+  justify-self: center;
+  align-self: center;
+}

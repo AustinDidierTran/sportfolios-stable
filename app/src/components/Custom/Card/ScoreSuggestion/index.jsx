@@ -35,25 +35,46 @@ export default function ScoreSuggestion(props) {
   const { t } = useTranslation();
   const classes = useStyles();
 
-  const [name, setName] = useState(t('anonymous'));
+  const [message, setMessage] = useState(t('anonymous'));
 
-  const getPerson = async () => {
+  const getPersonName = async () => {
     if (!suggestion.created_by) {
-      return t('anonymous');
+      return { name: t('anonymous') };
     }
     const { data } = await api(
       formatRoute('/api/entity', null, { id: suggestion.created_by }),
     );
+    return { name: data.name, surname: data.surname };
+  };
 
-    const name = data.surname
-      ? `${data.name} ${data.surname}`
-      : data.name;
-    setName(name);
+  const getMessage = async () => {
+    const name = await getPersonName();
+    if (suggestion.number === 2) {
+      setMessage(
+        t('name_and_x_other', {
+          name: name.name,
+          number: suggestion.number - 1,
+        }),
+      );
+    } else if (suggestion.number > 2) {
+      setMessage(
+        t('name_and_x_others', {
+          name: name.name,
+          number: suggestion.number - 1,
+        }),
+      );
+    } else {
+      if (name.surname) {
+        setMessage(`${name.name} ${name.surname}`);
+      } else {
+        setMessage(name.name);
+      }
+    }
   };
 
   useEffect(() => {
-    getPerson();
-  }, [suggestion.created_by]);
+    getMessage();
+  }, [suggestion]);
 
   let className = classes.odd;
   if (index % 2 === 0) {
@@ -62,7 +83,7 @@ export default function ScoreSuggestion(props) {
 
   let chipColor = 'primary';
   if (suggestion.status === STATUS_ENUM.PENDING) {
-    chipColor = 'yellow';
+    chipColor = 'default';
   }
   if (suggestion.status === STATUS_ENUM.REFUSED) {
     chipColor = 'secondary';
@@ -108,7 +129,7 @@ export default function ScoreSuggestion(props) {
         <div className={styles.game}>
           <ListItemText
             className={styles.person}
-            primary={name}
+            primary={message}
             secondary={formatDate(
               moment(suggestion.created_at),
               'D MMM H:mm',
