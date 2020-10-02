@@ -137,7 +137,7 @@ export default function ExternalAccountForm(props) {
       <form onSubmit={formik.handleSubmit}>
         <div className={styles.content}>
           <Typography gutterBottom variant="h5" component="h2">
-            Link bank account
+            {t('link_bank_account')}
           </Typography>
           <CountrySelect formik={formik} />
           <CurrencySelect formik={formik} />
@@ -178,7 +178,7 @@ export default function ExternalAccountForm(props) {
             type="submit"
             disabled={isSubmitting}
           >
-            SUBMIT
+            {t('submit')}
           </Button>
         </div>
       </form>

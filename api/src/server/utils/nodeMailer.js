@@ -4,6 +4,7 @@ const {
   LOGO_ENUM,
   LANGUAGE_ENUM,
 } = require('../../../../common/enums');
+const { getLanguageFromEmail } = require('../../db/helpers');
 
 let key;
 
@@ -178,6 +179,7 @@ async function sendTeamRegistrationEmailToAdmin({
   email,
   team,
   event,
+  placesLeft,
 }) {
   const language = await getLanguageFromEmail(email);
   let html = '';
@@ -186,14 +188,27 @@ async function sendTeamRegistrationEmailToAdmin({
   let content = '';
   let link = `${CLIENT_BASE_URL}/${event.id}?tab=settings`;
   let buttonName = '';
+
   if (language === LANGUAGE_ENUM.ENGLISH) {
     title = 'New registration!';
-    content = `A new team named ${team.name} has registered to your event ${event.name} with success. You can access to your event here 👇`;
+    if (placesLeft > 1) {
+      content = `A new team named ${team.name} has registered to your event ${event.name} with success, ${placesLeft} spots remaining. You can access to your event here 👇`;
+    } else if (placesLeft === 1) {
+      content = `A new team named ${team.name} has registered to your event ${event.name} with success, only one spot remaining. You can access to your event here 👇`;
+    } else if (placesLeft === 0) {
+      content = `A new team named ${team.name} has registered to your event ${event.name} with success, no more spots remaining. You can access to your event here 👇`;
+    }
     buttonName = 'Event';
     subject = 'New registration to your tournament | Sportfolios';
   } else {
     title = 'Nouvelle inscription!';
-    content = `Une équipe nommée ${team.name} s'est inscrite à votre événement ${event.name} avec succès. Vous pouvez accéder au status de votre événement ici 👇`;
+    if (placesLeft > 1) {
+      content = `Une équipe nommée ${team.name} s'est inscrite à votre événement ${event.name} avec succès, plus que ${placesLeft} places disponibles. Vous pouvez accéder au status de votre événement ici 👇`;
+    } else if (placesLeft === 1) {
+      content = `Une équipe nommée ${team.name} s'est inscrite à votre événement ${event.name} avec succès, plus qu'une seule place disponible. Vous pouvez accéder au status de votre événement ici 👇`;
+    } else if (placesLeft === 0) {
+      content = `Une équipe nommée ${team.name} s'est inscrite à votre événement ${event.name} avec succès, plus de place disponible. Vous pouvez accéder au status de votre événement ici 👇`;
+    }
     buttonName = 'Événement';
     subject = 'Nouvelle inscription à votre tournoi | Sportfolios';
   }

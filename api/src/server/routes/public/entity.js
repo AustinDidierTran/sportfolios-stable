@@ -64,6 +64,25 @@ router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/allTeamsAcceptedRegistered`, async ctx => {
+  const acceptedRegistration = await queries.getAllAcceptedRegistered(
+    ctx.query.eventId,
+  );
+
+  if (acceptedRegistration) {
+    ctx.body = {
+      status: 'success',
+      data: acceptedRegistration,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/preRanking`, async ctx => {
   const ranking = await queries.getPreRanking(ctx.query.eventId);
 
@@ -84,7 +103,7 @@ router.get(`${BASE_URL}/preRanking`, async ctx => {
 router.get(`${BASE_URL}/remainingSpots`, async ctx => {
   const remaining = await queries.getRemainingSpots(ctx.query.id);
 
-  if (remaining) {
+  if (remaining >= 0) {
     ctx.body = {
       status: 'success',
       data: remaining,
