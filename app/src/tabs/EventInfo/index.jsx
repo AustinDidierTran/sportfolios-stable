@@ -257,7 +257,7 @@ export default function TabEventInfo() {
             >
               {event.location || 'Sherbrooke'}
             </Typography>
-            {event.maximumSpots ? (
+            {!isFull ? (
               <Typography variant="body2" color={color} component="p">
                 {remainingSpots}&nbsp;
                 {t('places_left')}

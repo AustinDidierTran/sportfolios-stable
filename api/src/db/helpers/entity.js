@@ -660,7 +660,10 @@ async function getRegistered(teamId, eventId) {
   const rostersId = rosters.map(roster => roster.id);
   return knex('event_rosters')
     .select('*')
-    .where({ event_id: realEventId })
+    .where({
+      event_id: realEventId,
+      registration_status: STATUS_ENUM.ACCEPTED,
+    })
     .whereIn('roster_id', rostersId);
 }
 
@@ -698,7 +701,20 @@ async function getAllRegistered(eventId) {
   const realId = await getRealId(eventId);
   const teams = await knex('event_rosters')
     .select('*')
-    .where({ event_id: realId });
+    .where({
+      event_id: realId,
+    });
+  return teams;
+}
+
+async function getAllAcceptedRegistered(eventId) {
+  const realId = await getRealId(eventId);
+  const teams = await knex('event_rosters')
+    .select('*')
+    .where({
+      event_id: realId,
+      registration_status: STATUS_ENUM.ACCEPTED,
+    });
   return teams;
 }
 
@@ -741,7 +757,10 @@ async function getRemainingSpots(eventId) {
   const realId = await getRealId(eventId);
   const [{ count }] = await knex('event_rosters')
     .count('team_id')
-    .where({ event_id: realId });
+    .where({
+      event_id: realId,
+      registration_status: STATUS_ENUM.ACCEPTED,
+    });
 
   const [event] = await knex('events')
     .select('maximum_spots')
@@ -766,7 +785,10 @@ async function getRegistrationStatus(eventId, rosterId) {
   const realRosterId = await getRealId(rosterId);
   const [registration] = await knex('event_rosters')
     .select('registration_status')
-    .where({ roster_id: realRosterId, event_id: realEventId });
+    .where({
+      roster_id: realRosterId,
+      event_id: realEventId,
+    });
 
   return registration.registration_status;
 }
@@ -1347,7 +1369,7 @@ async function isAcceptedToEvent(eventId, rosterId) {
 }
 
 async function addRegisteredToSchedule(eventId) {
-  const teams = await getAllRegistered(eventId);
+  const teams = await getAllAcceptedRegistered(eventId);
   await Promise.all(
     teams.map(async t => {
       const name = await getEntitiesName(t.team_id);
@@ -1972,6 +1994,7 @@ module.exports = {
   getMembers,
   getMemberships,
   getRegistered,
+  getAllAcceptedRegistered,
   getAllRegistered,
   getAllRegisteredInfos,
   getRemainingSpots,

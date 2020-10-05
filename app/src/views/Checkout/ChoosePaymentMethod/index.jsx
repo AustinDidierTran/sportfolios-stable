@@ -19,8 +19,13 @@ export default function ChoosePaymentMethod(props) {
   const { t } = useTranslation();
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [
+    isGettingPaymentMethod,
+    setIsGettingPaymentMethod,
+  ] = useState(false);
 
   const getPaymentMethods = async () => {
+    setIsGettingPaymentMethod(true);
     const { data } = await api('/api/stripe/paymentMethods');
     const pms = data.map(d => ({
       display: t('card_ending_with', { last4: d.last4 }),
@@ -29,6 +34,7 @@ export default function ChoosePaymentMethod(props) {
     }));
     setPaymentMethods(pms);
     if (paymentMethod) paymentMethod.changeDefault(pms[0].value);
+    setIsGettingPaymentMethod(false);
   };
 
   useEffect(() => {
@@ -61,6 +67,10 @@ export default function ChoosePaymentMethod(props) {
     }
     setIsLoading(false);
   };
+
+  if (isGettingPaymentMethod) {
+    return <LoadingSpinner />;
+  }
 
   if (isLoading) {
     return (

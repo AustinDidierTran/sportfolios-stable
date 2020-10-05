@@ -101,7 +101,7 @@ export default function CustomStepper(props) {
         {activeStep === steps.length ? (
           <div>
             <Typography className={styles.instructions}>
-              All steps completed - you&apos;re finished
+              {t('all_steps_completed')}
             </Typography>
             <Button onClick={handleReset} className={styles.button}>
               {t('reset')}
