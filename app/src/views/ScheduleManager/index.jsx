@@ -10,7 +10,7 @@ import { goTo, ROUTES } from '../../actions/goTo';
 import { GLOBAL_ENUM } from '../../../../common/enums';
 import { useQuery } from '../../hooks/queries';
 import uuid from 'uuid';
-import { updateRanking } from '../../tabs/Rankings/RankingFunctions';
+import { updateRanking } from './RankingFunctions';
 import { formatPageTitle } from '../../utils/stringFormats';
 import { useFormInput } from '../../hooks/forms';
 import moment from 'moment';

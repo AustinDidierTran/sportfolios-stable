@@ -753,12 +753,19 @@ async function getRemainingSpots(eventId) {
   return event.maximum_spots - Number(count);
 }
 
-async function getPreRanking(eventId) {
+async function getRankings(eventId) {
   const realId = await getRealId(eventId);
   const teams = await knex('division_ranking')
     .select('*')
     .where({ event_id: realId });
-  return teams;
+  const res = await Promise.all(
+    teams.map(async team => {
+      const name = await getEntitiesName(team.team_id);
+      return { ...team, name: name.name, surname: name.surname };
+    }),
+  );
+
+  return res;
 }
 
 async function getRegistrationStatus(eventId, rosterId) {
@@ -897,6 +904,26 @@ async function getGames(eventId) {
         phaseName = await getPhaseName(game.phase_id);
       }
       return { ...game, phaseName, teams };
+    }),
+  );
+  return res;
+}
+
+async function getTeamGames(eventId) {
+  const games = await getGames(eventId);
+
+  const res = await Promise.all(
+    games.map(async game => {
+      const teams = await knex('game_teams')
+        .select('*')
+        .leftJoin(
+          'team_rosters',
+          'team_rosters.id',
+          '=',
+          'game_teams.roster_id',
+        )
+        .where({ game_id: game.id });
+      return { id: game.id, phaseId: game.phase_id, eventId, teams };
     }),
   );
   return res;
@@ -1042,7 +1069,7 @@ const canUnregisterTeam = async (rosterId, eventId) => {
             .where({ event_id: realEventId }),
         )
         .andWhere({ roster_id: realRosterId })
-    )?.length == 0;
+    ).length == 0;
 
   return canUnregister;
 };
@@ -1975,12 +2002,13 @@ module.exports = {
   getAllRegistered,
   getAllRegisteredInfos,
   getRemainingSpots,
-  getPreRanking,
+  getRankings,
   getRoster,
   getEvent,
   getAlias,
   getPhases,
   getGames,
+  getTeamGames,
   getSlots,
   getTeamsSchedule,
   getFields,

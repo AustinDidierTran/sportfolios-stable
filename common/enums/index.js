@@ -162,16 +162,18 @@ const GLOBAL_ENUM = {
   TEAM: 3,
   EVENT: 4,
   // All numbers under 20 are reserved for potentiel entities
-  MEMBERSHIP: 20,
-  MEMBERSHIP_DETAIL: 21,
-  CART_ITEM: 22,
-  EVENT_CREATOR: 23,
-  PAYMENT_OPTION: 24,
-  ROSTER_ITEM: 25,
-  SHOP_ITEM: 26,
-  PURCHASES: 27,
-  CART: 28,
-  SALES: 29,
+  CART_ITEM: 'cart_item',
+  CART: 'cart',
+  EVENT_CREATOR: 'event_creator',
+  MEMBERSHIP_DETAIL: 'membership_detail',
+  MEMBERSHIP: 'membership',
+  PAYMENT_OPTION: 'payment_option',
+  PURCHASES: 'pruchases',
+  RANKING_WITH_STATS: 'ranking_with_stats',
+  RANKING: 'ranking',
+  ROSTER_ITEM: 'roster_item',
+  SALES: 'sales',
+  SHOP_ITEM: 'shop_item',
 };
 
 const MILLIS_TIME_ENUM = {

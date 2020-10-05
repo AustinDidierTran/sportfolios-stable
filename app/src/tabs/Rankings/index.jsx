@@ -1,27 +1,73 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
-
+import Ranking from './Ranking';
+import { updateRanking } from './RankingFunctions';
 export default function Rankings() {
   const { id: eventId } = useParams();
+  const { t } = useTranslation();
 
   const [preRanking, setPreRanking] = useState([]);
+  const [ranking, setRanking] = useState([]);
 
-  const getPreRanking = async () => {
+  const getRankings = async () => {
     const { data } = await api(
-      formatRoute('/api/entity/preRanking', null, {
+      formatRoute('/api/entity/rankings', null, {
         eventId,
       }),
     );
-    setPreRanking(data);
+    const ranking = data
+      .map(d => ({
+        position: d.initial_position,
+        name: d.name,
+        id: d.team_id,
+      }))
+      .sort((a, b) => a.position - b.position)
+      .map((m, index) => {
+        if (!m.position) {
+          m.position = index + 1;
+        }
+        return m;
+      });
+    setPreRanking(ranking);
+
+    const { data: games } = await api(
+      formatRoute('/api/entity/teamGames', null, { eventId }),
+    );
+
+    games.map(game => {
+      const res1 = ranking.find(r => game.teams[0].team_id === r.id);
+      game.teams[0].position = res1.position;
+
+      const res2 = ranking.find(r => game.teams[1].team_id === r.id);
+      game.teams[1].position = res2.position;
+    });
+
+    const rankingInfos = updateRanking(ranking, games);
+    setRanking(rankingInfos);
+  };
+
+  const getInfos = async () => {
+    await getRankings();
   };
 
   useEffect(() => {
-    getPreRanking();
+    getInfos();
   }, []);
 
-  console.log({ preRanking });
-
-  return <></>;
+  return (
+    <>
+      <Ranking
+        ranking={preRanking}
+        title={t('pre_ranking')}
+      ></Ranking>
+      <Ranking
+        ranking={ranking}
+        title={t('ranking')}
+        withStats
+      ></Ranking>
+    </>
+  );
 }

@@ -16,7 +16,7 @@ export default function Ranking(props) {
       <List
         items={ranking.map((r, index) => ({
           ...r,
-          type: GLOBAL_ENUM.RANKING,
+          type: GLOBAL_ENUM.RANKING_WITH_STATS,
           index: index + 1,
         }))}
       />
