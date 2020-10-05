@@ -1,5 +1,6 @@
 import history from '../../stores/history';
 import { getFormattedMailTo } from '../../utils/stringFormats';
+import api from '../api';
 
 export const ROUTES = {
   addPaymentMethod: '/addPaymentMethod',
@@ -71,6 +72,15 @@ export const formatRoute = (route, params, queryParams) => {
 export const goTo = (route, params, queryParams) => {
   history.push(formatRoute(route, params, queryParams));
 };
+
+export const goToAlias = async (entityId) => {
+  const { data } = await api(
+    formatRoute('/api/entity/alias', null, {
+      entityId,
+    }),
+  );
+  history.push(formatRoute(data ? data.reduced_alias : entityId));
+}
 
 export const goToAndReplace = (route, params, queryParams) => {
   history.replace(formatRoute(route, params, queryParams));

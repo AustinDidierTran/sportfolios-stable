@@ -226,23 +226,6 @@ router.get(`${BASE_URL}/event`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/alias`, async ctx => {
-  const alias = await queries.getAlias(ctx.query.entityId);
-
-  if (alias) {
-    ctx.body = {
-      status: 'success',
-      data: alias,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
-});
-
 router.get(`${BASE_URL}/generalInfos`, async ctx => {
   const infos = await queries.getGeneralInfos(ctx.query.entityId);
 
