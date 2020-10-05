@@ -1077,6 +1077,10 @@ const canUnregisterTeam = async (rosterId, eventId) => {
 const deleteRegistration = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
+  const [res] = await knex('team_rosters')
+    .select('team_id')
+    .where({ id: realRosterId });
+
   return knex.transaction(async trx => {
     // temporary, table will probably be removed
     await knex('schedule_teams')
@@ -1092,6 +1096,11 @@ const deleteRegistration = async (rosterId, eventId) => {
         roster_id: realRosterId,
         event_id: realEventId,
       })
+      .del()
+      .transacting(trx);
+
+    await knex('division_ranking')
+      .where({ team_id: res.team_id })
       .del()
       .transacting(trx);
 
