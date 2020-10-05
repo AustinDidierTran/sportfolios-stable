@@ -9,6 +9,7 @@ const getRankingInfos = (teams, games) => {
     points: 0,
     random: Math.random(),
   }));
+
   games.reduce((ranking, game) => {
     const {
       id: id0,

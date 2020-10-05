@@ -251,6 +251,25 @@ router.get(`${BASE_URL}/teamGames`, async ctx => {
     };
   }
 });
+router.get(`${BASE_URL}/phasesGameAndTeams`, async ctx => {
+  const games = await queries.getPhasesGameAndTeams(
+    ctx.query.eventId,
+    ctx.query.phaseId,
+  );
+
+  if (games) {
+    ctx.body = {
+      status: 'success',
+      data: games,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
 
 router.get(`${BASE_URL}/slots`, async ctx => {
   const slots = await queries.getSlots(ctx.query.eventId);

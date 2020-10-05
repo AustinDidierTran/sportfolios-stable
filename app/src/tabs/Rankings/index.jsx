@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
+import PhaseRankings from './PhaseRanking';
 import Ranking from './Ranking';
 import { updateRanking } from './RankingFunctions';
+
 export default function Rankings() {
   const { id: eventId } = useParams();
   const { t } = useTranslation();
@@ -49,12 +51,8 @@ export default function Rankings() {
     setRanking(rankingInfos);
   };
 
-  const getInfos = async () => {
-    await getRankings();
-  };
-
   useEffect(() => {
-    getInfos();
+    getRankings();
   }, []);
 
   return (
@@ -68,6 +66,7 @@ export default function Rankings() {
         title={t('ranking')}
         withStats
       ></Ranking>
+      <PhaseRankings />
     </>
   );
 }
