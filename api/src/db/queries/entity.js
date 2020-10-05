@@ -47,6 +47,7 @@ const {
   getFields: getFieldsHelper,
   getGames: getGamesHelper,
   getTeamGames: getTeamGamesHelper,
+  getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getMembers: getMembersHelper,
   getMemberships: getMembershipsHelper,
@@ -197,6 +198,9 @@ async function getGames(eventId) {
 }
 async function getTeamGames(eventId) {
   return getTeamGamesHelper(eventId);
+}
+async function getPhasesGameAndTeams(eventId, phaseId) {
+  return getPhasesGameAndTeamsHelper(eventId, phaseId);
 }
 
 async function getSlots(eventId) {
@@ -763,6 +767,7 @@ module.exports = {
   getFields,
   getGames,
   getTeamGames,
+  getPhasesGameAndTeams,
   getGeneralInfos,
   getMembers,
   getMemberships,

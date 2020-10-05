@@ -258,7 +258,6 @@ const applyRules = (games, initialRanking) => {
 };
 
 export const updateRanking = (teams, games) => {
-  console.log({ teams, games });
   // Filter games that have not been played
   const playedGames = games.filter(game =>
     game.teams.map(t => Number(t.score)).some(score => score !== 0),
