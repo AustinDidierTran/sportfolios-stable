@@ -41,6 +41,7 @@ export default function TeamRegistered() {
     setTeamsThatCanBeUnregistered,
   ] = useState([]);
   const [maximumSpots, setMaximumSpots] = useState();
+  const [acceptedSpots, setAcceptedSpots] = useState();
   const [openUnregister, setOpenUnregister] = useState(false);
   const [openUnregisterAll, setOpenUnregisterAll] = useState(false);
   const [rosterId, setRosterId] = useState(null);
@@ -173,8 +174,18 @@ export default function TeamRegistered() {
     setMaximumSpots(data.maximum_spots);
   };
 
+  const getAcceptedSpots = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/allTeamsAcceptedRegistered', null, {
+        eventId,
+      }),
+    );
+    setAcceptedSpots(data?.length);
+  };
+
   useEffect(() => {
     getMaximumSpots();
+    getAcceptedSpots();
   }, [teams]);
 
   const StyledTableCell = withStyles(theme => ({
@@ -203,21 +214,18 @@ export default function TeamRegistered() {
           <TableHead>
             <TableRow>
               {maximumSpots ? (
-                <StyledTableCell>
+                <StyledTableCell colSpan={4}>
                   {t('registration_status')}:&nbsp;
-                  {teams.length}/{maximumSpots}&nbsp;
-                  {t('registered')}
+                  {acceptedSpots}/{maximumSpots}&nbsp;
+                  {t('accepted')}
                 </StyledTableCell>
               ) : (
-                <StyledTableCell>
+                <StyledTableCell colSpan={4}>
                   {t('registration_status')}:&nbsp;
-                  {teams.length}&nbsp;
-                  {t('registered')}
+                  {acceptedSpots}&nbsp;
+                  {t('accepted')}
                 </StyledTableCell>
               )}
-              <StyledTableCell />
-              <StyledTableCell />
-              <StyledTableCell />
               <StyledTableCell align="center">
                 {teams.length > 0 ? (
                   <IconButton
@@ -291,13 +299,9 @@ export default function TeamRegistered() {
               </>
             ) : (
               <StyledTableRow align="center">
-                <StyledTableCell>
+                <StyledTableCell colSpan={5}>
                   {t('no_teams_registered')}
                 </StyledTableCell>
-                <StyledTableCell />
-                <StyledTableCell />
-                <StyledTableCell />
-                <StyledTableCell />
               </StyledTableRow>
             )}
           </TableBody>

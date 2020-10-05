@@ -56,6 +56,7 @@ const {
   getRankings: getRankingsHelper,
   getRegistered: getRegisteredHelper,
   getRemainingSpots: getRemainingSpotsHelper,
+  getAllAcceptedRegistered: getAllAcceptedRegisteredHelper,
   getRoster: getRosterHelper,
   getRosterInvoiceItem,
   getScoreSuggestion: getScoreSuggestionHelper,
@@ -168,6 +169,10 @@ async function getAllRegisteredInfos(eventId, userId) {
   return getAllRegisteredInfosHelper(eventId, userId);
 }
 
+async function getAllAcceptedRegistered(eventId) {
+  return getAllAcceptedRegisteredHelper(eventId);
+}
+
 async function getRemainingSpots(eventId) {
   return getRemainingSpotsHelper(eventId);
 }
@@ -249,7 +254,7 @@ async function addTeamToEvent(body, userId) {
   // Reject team if there is already too many registered teams
   const remainingSpots = await getRemainingSpotsHelper(eventId);
 
-  if (remainingSpots < 1 && remainingSpots) {
+  if (remainingSpots === 0) {
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
@@ -299,6 +304,7 @@ async function addTeamToEvent(body, userId) {
         email,
         team,
         event,
+        placesLeft: await getRemainingSpotsHelper(event.id),
       }),
     );
 
@@ -755,6 +761,7 @@ module.exports = {
   getAllEntities,
   getAllForYouPagePosts,
   getAllOwnedEntities,
+  getAllAcceptedRegistered,
   getAllRegisteredInfos,
   getAllRolesEntity,
   getAllTypeEntities,

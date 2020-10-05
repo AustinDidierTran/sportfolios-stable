@@ -125,7 +125,7 @@ export default {
     enter_player_name: 'Entrez le nom du joueur',
     enter_score: 'Entrez le pointage',
     entity_not_found: "Cette entité n'existe pas",
-    event_is_full: "l'événements est plein, aucune place disponible",
+    event_is_full: "l'événement est plein, aucune place disponible",
     event_end: "Fin de l'événement",
     event_manager: "Responsable de l'événement",
     event_registration: 'Inscription à un événement',
@@ -165,6 +165,7 @@ export default {
     infos: 'Infos',
     last_name: 'Nom de famille',
     length: 'Durée',
+    link_bank_account: 'Lier le compte bancaire',
     location_unspecified: 'Lieu non spécifié',
     login: 'Connexion',
     logout: 'Déconnexion',
@@ -195,7 +196,7 @@ export default {
     no_option: 'Aucune option',
     no_roster: 'Aucun alignement',
     no_teams: 'Acune équipe',
-    no_teams_registered: 'Aucune équipes inscrites',
+    no_teams_registered: 'Aucune équipe inscrite',
     no_remaining_spots:
       "Désolé, votre inscription a été refusé. L'événement est maintenant plein et il n'y a plus de place.",
     of_everyone: 'de tout le monde',
@@ -211,8 +212,8 @@ export default {
     option: 'Option',
     options: 'Options',
     or: 'ou',
-    order_processed: 'Votre commande à été complété avec succès',
-    order_processed_title: 'Commande complété',
+    order_processed: 'Votre commande a été complétée avec succès',
+    order_processed_title: 'Commande complétée',
     ordered: 'Commandé',
     organization: 'Organisation',
     organizations: 'Organisations',
@@ -258,6 +259,7 @@ export default {
     purchased_on: 'Acheté le',
     ranking: 'Classement',
     rankings: 'Classements',
+    receipt: 'Reçu',
     refunded: 'Remboursé',
     refused: 'Refusé',
     remove: 'Retirer',
@@ -481,7 +483,7 @@ export default {
 
     //REGISTRATION
     register: "S'inscrire",
-    registered: 'inscrit',
+    registered: 'Inscrits',
     registration_can_be_payed_later:
       "Vous n'avez pas à payer tant que vous n'avez pas été officiellement accepté à l'événement. Lorsque vous serez accepté, vous recevrez un courriel afin de compléter le paiement.",
     registration_open_date: 'Date ouverture inscriptions',
