@@ -9,6 +9,7 @@ const getRankingInfos = (teams, games) => {
     points: 0,
     random: Math.random(),
   }));
+
   games.reduce((ranking, game) => {
     const {
       id: id0,
@@ -18,7 +19,7 @@ const getRankingInfos = (teams, games) => {
       pointFor: pointFor0,
       pointAgainst: pointAgainst0,
       random: random0,
-    } = ranking[game.teams[0].position - 1];
+    } = ranking[game.teams[0].index];
     const {
       id: id1,
       name: name1,
@@ -27,7 +28,7 @@ const getRankingInfos = (teams, games) => {
       pointFor: pointFor1,
       pointAgainst: pointAgainst1,
       random: random1,
-    } = ranking[game.teams[1].position - 1];
+    } = ranking[game.teams[1].index];
 
     let w0 = wins0;
     let w1 = wins1;
@@ -42,7 +43,7 @@ const getRankingInfos = (teams, games) => {
       w1 = w1 + 1;
       l0 = l0 + 1;
     }
-    ranking[game.teams[0].position - 1] = {
+    ranking[game.teams[0].index] = {
       id: id0,
       name: name0,
       wins: w0,
@@ -51,7 +52,7 @@ const getRankingInfos = (teams, games) => {
       pointAgainst: pointAgainst0 + Number(game.teams[1].score),
       random: random0,
     };
-    ranking[game.teams[1].position - 1] = {
+    ranking[game.teams[1].index] = {
       id: id1,
       name: name1,
       wins: w1,
@@ -87,6 +88,7 @@ const applyVictoryRule = ranking => {
         }
       });
       winSortedArray.reverse();
+
       if (winSortedArray.length === 1) {
         return [...prevRanking, winSortedArray[0]];
       }
@@ -262,6 +264,7 @@ export const updateRanking = (teams, games) => {
   );
 
   const ranking = getRankingInfos(teams, playedGames);
+
   const rankingWithAppliedRules = applyRules(
     playedGames,
     ranking,

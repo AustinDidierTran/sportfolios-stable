@@ -46,13 +46,14 @@ const {
   getEvent: getEventHelper,
   getFields: getFieldsHelper,
   getGames: getGamesHelper,
+  getTeamGames: getTeamGamesHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getMembers: getMembersHelper,
   getMemberships: getMembershipsHelper,
   getOptions: getOptionsHelper,
   getOwnedEvents: getOwnedEventsHelper,
   getPhases: getPhasesHelper,
-  getPreRanking: getPreRankingHelper,
+  getRankings: getRankingsHelper,
   getRegistered: getRegisteredHelper,
   getRemainingSpots: getRemainingSpotsHelper,
   getAllAcceptedRegistered: getAllAcceptedRegisteredHelper,
@@ -176,8 +177,8 @@ async function getRemainingSpots(eventId) {
   return getRemainingSpotsHelper(eventId);
 }
 
-async function getPreRanking(eventId) {
-  return getPreRankingHelper(eventId);
+async function getRankings(eventId) {
+  return getRankingsHelper(eventId);
 }
 
 async function getRoster(rosterId) {
@@ -198,6 +199,9 @@ async function getPhases(eventId) {
 
 async function getGames(eventId) {
   return getGamesHelper(eventId);
+}
+async function getTeamGames(eventId) {
+  return getTeamGamesHelper(eventId);
 }
 
 async function getSlots(eventId) {
@@ -765,13 +769,14 @@ module.exports = {
   getEvent,
   getFields,
   getGames,
+  getTeamGames,
   getGeneralInfos,
   getMembers,
   getMemberships,
   getOptions,
   getOwnedEvents,
   getPhases,
-  getPreRanking,
+  getRankings,
   getRegistered,
   getRemainingSpots,
   getRoster,

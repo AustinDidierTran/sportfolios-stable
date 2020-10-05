@@ -10,6 +10,7 @@ import TeamItem from './TeamItem';
 import PaymentOptionItem from './PaymentOptionItem';
 import RosterItem from './RosterItem';
 import RankingItem from './RankingItem';
+import RankingWithStatsItem from './RankingWithStatsItem';
 import PurchasesItem from './PurchasesItem';
 import CartItem from './CartItem';
 import SalesItem from './SalesItem';
@@ -24,6 +25,7 @@ const ItemMap = {
   [GLOBAL_ENUM.TEAM]: TeamItem,
   [GLOBAL_ENUM.PAYMENT_OPTION]: PaymentOptionItem,
   [GLOBAL_ENUM.ROSTER_ITEM]: RosterItem,
+  [GLOBAL_ENUM.RANKING_WITH_STATS]: RankingWithStatsItem,
   [GLOBAL_ENUM.RANKING]: RankingItem,
   [GLOBAL_ENUM.PURCHASES]: PurchasesItem,
   [GLOBAL_ENUM.CART]: CartItem,

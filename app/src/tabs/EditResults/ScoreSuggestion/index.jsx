@@ -6,9 +6,12 @@ import {
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import EditGame from '../../EditSchedule/EditGames/EditGame';
-import { Card, IconButton } from '../../../components/Custom';
+import {
+  Card,
+  IconButton,
+  Collapse,
+} from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
-import Collapse from '@material-ui/core/Collapse';
 import { useTranslation } from 'react-i18next';
 import styles from './ScoreSuggestion.module.css';
 import { makeStyles } from '@material-ui/core/styles';
@@ -111,20 +114,6 @@ export default function ScoreSuggestion(props) {
     update();
     getSuggestions();
   };
-
-  // const getNumber = async () => {
-  //   const { data } = await api(
-  //     formatRoute('/api/entity/sameSuggestions', null, {
-  //       eventId: suggestion.event_id,
-  //       startTime: suggestion.start_time,
-  //       yourRosterId: suggestion.your_roster_id,
-  //       opposingRosterId: suggestion.opposing_roster_id,
-  //       yourScore: suggestion.your_score,
-  //       opposingTeamScore: suggestion.opposing_team_score,
-  //     }),
-  //   );
-  //   setNumber(data.length);
-  // };
 
   return (
     <>

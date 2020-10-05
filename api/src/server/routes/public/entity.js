@@ -83,9 +83,8 @@ router.get(`${BASE_URL}/allTeamsAcceptedRegistered`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/preRanking`, async ctx => {
-  const ranking = await queries.getPreRanking(ctx.query.eventId);
-
+router.get(`${BASE_URL}/rankings`, async ctx => {
+  const ranking = await queries.getRankings(ctx.query.eventId);
   if (ranking) {
     ctx.body = {
       status: 'success',
@@ -204,6 +203,23 @@ router.get(`${BASE_URL}/phases`, async ctx => {
 
 router.get(`${BASE_URL}/games`, async ctx => {
   const games = await queries.getGames(ctx.query.eventId);
+
+  if (games) {
+    ctx.body = {
+      status: 'success',
+      data: games,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/teamGames`, async ctx => {
+  const games = await queries.getTeamGames(ctx.query.eventId);
 
   if (games) {
     ctx.body = {
