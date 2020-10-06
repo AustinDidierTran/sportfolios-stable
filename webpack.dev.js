@@ -10,7 +10,9 @@ module.exports = merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     contentBase: path.resolve(ROOT_PATH, 'app/build'),
-    historyApiFallback: true,
+    historyApiFallback: {
+      disableDotRule: true
+    },
     hot: true,
     inline: true,
     progress: true,

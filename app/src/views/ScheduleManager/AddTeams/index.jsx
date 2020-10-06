@@ -48,6 +48,7 @@ export default function AddTeams(props) {
         secondary={t('team')}
         allowCreate
         withoutIcon
+        autoFocus
       />
       <hr />
       <Typography style={{ marginTop: '16px' }}>

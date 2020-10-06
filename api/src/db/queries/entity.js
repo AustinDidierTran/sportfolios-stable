@@ -271,9 +271,11 @@ async function addTeamToEvent(body, userId) {
 
   const event = await getEntity(eventId, userId);
 
+  const realEventId = await (await getEntity(eventId, userId)).id;
+
   const rosterId = await addTeamToEventHelper({
     teamId,
-    eventId,
+    eventId: realEventId,
     status,
     registrationStatus,
     paymentOption,
@@ -290,7 +292,7 @@ async function addTeamToEvent(body, userId) {
         {
           stripePriceId: paymentOption,
           metadata: {
-            sellerEntityId: eventId,
+            sellerEntityId: realEventId,
             buyerId: teamId,
             rosterId,
             team,

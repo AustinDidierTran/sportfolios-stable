@@ -441,7 +441,7 @@ async function getSameSuggestions(
 async function getRealId(id) {
   const [res] = await knex('alias')
     .select('id')
-    .where({ alias: id });
+    .where({ reduced_alias: id.replace(/\./g, '').toLowerCase() });
   if (res) {
     return res.id;
   }
@@ -1114,7 +1114,7 @@ const canUnregisterTeam = async (rosterId, eventId) => {
             .where({ event_id: realEventId }),
         )
         .andWhere({ roster_id: realRosterId })
-    ).length == 0;
+    )?.length == 0;
 
   return canUnregister;
 };
@@ -1240,6 +1240,7 @@ async function addAlias(entityId, alias) {
     .insert({
       id: realId,
       alias,
+      reduced_alias: alias.replace(/\./g, '').toLowerCase(),
     })
     .returning('*');
   return res;
@@ -1624,6 +1625,7 @@ async function updateAlias(entityId, alias) {
     })
     .update({
       alias,
+      reduced_alias: alias.replace(/\./g, '').toLowerCase(),
     })
     .returning('*');
   return res;

@@ -23,6 +23,23 @@ router.get(BASE_URL, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/alias`, async ctx => {
+  const alias = await queries.getAlias(ctx.query.entityId);
+
+  if (alias) {
+    ctx.body = {
+      status: 'success',
+      data: alias,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/eventInfos`, async ctx => {
   const userId =
     ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;

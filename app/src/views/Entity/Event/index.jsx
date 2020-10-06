@@ -12,6 +12,7 @@ import { formatPageTitle } from '../../../utils/stringFormats';
 import { Helmet } from 'react-helmet';
 import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 import styles from './Event.module.css';
+import { AddGaEvent } from '../../../components/Custom/Analytics';
 
 export default function Event(props) {
   const { basicInfos } = props;
@@ -20,6 +21,11 @@ export default function Event(props) {
 
   useEffect(() => {
     document.title = formatPageTitle(basicInfos.name);
+    AddGaEvent({
+      category: 'Visit',
+      action: 'User visited event',
+      label: 'Event_page',
+    })
   }, [basicInfos.name]);
 
   const [isAdmin, setIsAdmin] = useState(false);

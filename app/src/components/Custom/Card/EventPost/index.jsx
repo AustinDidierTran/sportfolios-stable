@@ -11,7 +11,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { goTo, ROUTES } from '../../../../actions/goTo';
+import { goToAlias } from '../../../../actions/goTo';
 import moment from 'moment';
 import { formatIntervalDate } from '../../../../utils/stringFormats';
 import {
@@ -97,7 +97,7 @@ export default function EventPost(props) {
         subheader={(creator && creator.name) || ''}
       />
       <ImageCard
-        onClick={() => goTo(ROUTES.entity, { id: eventId })}
+        onClick={() => goToAlias(eventId)}
         className={
           screenSize == SCREENSIZE_ENUM.xs
             ? classes.media
@@ -135,7 +135,7 @@ export default function EventPost(props) {
       </CardContent>
       <CardActions className={styles.actions} disableSpacing>
         <Button
-          onClick={() => goTo(ROUTES.entity, { id: eventId })}
+          onClick={() => goToAlias(eventId)}
           style={{ width: '50px' }}
           className={styles.eventButton}
         >

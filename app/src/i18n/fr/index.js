@@ -256,6 +256,7 @@ export default {
     primary_person_changed: 'Personne principale changée',
     product_added_to_cart: 'Produit ajouté au panier',
     phone_number: 'Numéro de téléphone',
+    purchases: 'Achats',
     purchased_on: 'Acheté le',
     ranking: 'Classement',
     rankings: 'Classements',

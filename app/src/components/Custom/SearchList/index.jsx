@@ -21,6 +21,7 @@ export default function SearchList(props) {
     withoutIcon,
     secondary,
     style,
+    autoFocus,
   } = props;
 
   const { t } = useTranslation();
@@ -135,9 +136,8 @@ export default function SearchList(props) {
           variant="outlined"
           size="small"
           label={label}
-          autoFocus
+          autoFocus={autoFocus}
           style={{ width: '100%', ...style }}
-          autoFocus
           onKeyPress={onEnter}
         />
       ) : (
@@ -147,7 +147,7 @@ export default function SearchList(props) {
           label={label}
           style={{ margin: '8px', ...style }}
           size="small"
-          autoFocus
+          autoFocus={autoFocus}
           onKeyPress={onEnter}
           InputProps={{
             startAdornment: (
