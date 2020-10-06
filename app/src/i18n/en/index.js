@@ -254,6 +254,7 @@ export default {
     private: 'Private',
     phone_number: 'Phone Number',
     people: 'People',
+    purchases: 'Purchases',
     purchased_on: 'Purchased on',
     qt: 'Qt: {{quantity}}',
     ranking: 'Ranking',
