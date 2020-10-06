@@ -118,6 +118,7 @@ export default function TeamSelect(props) {
         allowCreate
         withoutIcon
         whiteList={whiteList}
+        autoFocus
       />
     </div>
   );

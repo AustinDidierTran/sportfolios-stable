@@ -73,14 +73,16 @@ export const goTo = (route, params, queryParams) => {
   history.push(formatRoute(route, params, queryParams));
 };
 
-export const goToAlias = async (entityId) => {
+export const goToAlias = async (entityId, params, queryParams) => {
   const { data } = await api(
     formatRoute('/api/entity/alias', null, {
       entityId,
     }),
   );
-  history.push(formatRoute(data ? data.reduced_alias : entityId));
-}
+  history.push(
+    formatRoute(data ? data.alias : entityId, params, queryParams),
+  );
+};
 
 export const goToAndReplace = (route, params, queryParams) => {
   history.replace(formatRoute(route, params, queryParams));

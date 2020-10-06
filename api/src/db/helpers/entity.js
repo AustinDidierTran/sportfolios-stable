@@ -441,7 +441,7 @@ async function getSameSuggestions(
 async function getRealId(id) {
   const [res] = await knex('alias')
     .select('id')
-    .where({ reduced_alias: (id.replace(/\./g, '')).toLowerCase(), });
+    .where({ reduced_alias: id.replace(/\./g, '').toLowerCase() });
   if (res) {
     return res.id;
   }
@@ -1240,7 +1240,7 @@ async function addAlias(entityId, alias) {
     .insert({
       id: realId,
       alias,
-      reduced_alias: (alias.replace(/\./g, '')).toLowerCase(),
+      reduced_alias: alias.replace(/\./g, '').toLowerCase(),
     })
     .returning('*');
   return res;
@@ -1625,7 +1625,7 @@ async function updateAlias(entityId, alias) {
     })
     .update({
       alias,
-      reduced_alias: (alias.replace(/\./g, '')).toLowerCase(),
+      reduced_alias: alias.replace(/\./g, '').toLowerCase(),
     })
     .returning('*');
   return res;

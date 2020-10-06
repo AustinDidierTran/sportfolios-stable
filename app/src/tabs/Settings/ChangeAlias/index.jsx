@@ -4,7 +4,7 @@ import { Paper, Button } from '../../../components/Custom';
 import { Typography, TextField } from '../../../components/MUI';
 
 import { useTranslation } from 'react-i18next';
-import { formatRoute } from '../../../actions/goTo';
+import { formatRoute, goToAlias } from '../../../actions/goTo';
 import api from '../../../actions/api';
 import { useParams } from 'react-router-dom';
 import styles from './ChangeAlias.module.css';
@@ -13,6 +13,7 @@ import {
   STATUS_ENUM,
   SEVERITY_ENUM,
 } from '../../../../../common/enums';
+import { TABS_ENUM } from '../../../tabs';
 import { useContext } from 'react';
 import { Store, ACTION_ENUM } from '../../../Store';
 import { ERROR_ENUM } from '../../../../../common/errors';
@@ -30,6 +31,10 @@ export default function ChangeAlias() {
   useEffect(() => {
     getAlias();
   }, []);
+
+  useEffect(() => {
+    formik.setFieldValue('alias', theAlias);
+  }, [theAlias]);
 
   const getAlias = async () => {
     const { data } = await api(
@@ -80,7 +85,6 @@ export default function ChangeAlias() {
           }),
         });
       }
-      getAlias();
       if (res.status === STATUS_ENUM.ERROR) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
@@ -89,6 +93,7 @@ export default function ChangeAlias() {
         });
       } else {
         setEdit(false);
+        goToAlias(alias, null, { tab: TABS_ENUM.SETTINGS });
       }
     },
   });
@@ -112,6 +117,7 @@ export default function ChangeAlias() {
             type="text"
             fullWidth
             className={styles.textfield}
+            autoFocus
           />
           <div className={styles.buttons}>
             <Button

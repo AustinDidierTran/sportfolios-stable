@@ -47,6 +47,7 @@ export default function Players(props) {
             secondary={t('player')}
             allowCreate
             withoutIcon
+            autoFocus
           />
         </div>
         {players.length ? (

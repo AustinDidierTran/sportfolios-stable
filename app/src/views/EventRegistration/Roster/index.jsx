@@ -89,6 +89,7 @@ export default function Roster(props) {
         secondary={t('player')}
         allowCreate
         withoutIcon
+        autoFocus
       />
       <hr />
       <Typography style={{ marginTop: '16px' }}>
