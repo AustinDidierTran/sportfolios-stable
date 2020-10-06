@@ -951,6 +951,29 @@ async function getTeamGames(eventId) {
   return res;
 }
 
+async function getPhasesGameAndTeams(eventId, phaseId) {
+  const realId = await getRealId(eventId);
+  const games = await knex('games')
+    .select('*')
+    .where({ event_id: realId, phase_id: phaseId });
+
+  const res = await Promise.all(
+    games.map(async game => {
+      const teams = await knex('game_teams')
+        .select('*')
+        .leftJoin(
+          'team_rosters',
+          'team_rosters.id',
+          '=',
+          'game_teams.roster_id',
+        )
+        .where({ game_id: game.id });
+      return { id: game.id, phaseId: game.phase_id, eventId, teams };
+    }),
+  );
+  return res;
+}
+
 const getPhaseName = async phaseId => {
   const [{ name }] = await knex('phase')
     .select('name')
@@ -2041,6 +2064,7 @@ module.exports = {
   getPhases,
   getGames,
   getTeamGames,
+  getPhasesGameAndTeams,
   getSlots,
   getTeamsSchedule,
   getFields,

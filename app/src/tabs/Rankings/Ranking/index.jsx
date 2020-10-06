@@ -26,6 +26,10 @@ export default function Ranking(props) {
     setExpanded(exp);
   };
 
+  if (!ranking.length) {
+    return <></>;
+  }
+
   return (
     <div className={styles.div}>
       <Accordion expanded={expanded} onChange={onExpand}>
