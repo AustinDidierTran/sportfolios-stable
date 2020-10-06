@@ -1,6 +1,7 @@
 const {
   GLOBAL_ENUM,
   ENTITIES_ROLE_ENUM,
+  PERSON_TRANSFER_STATUS_ENUM,
 } = require('../../../../common/enums');
 const bcrypt = require('bcrypt');
 
@@ -16,18 +17,22 @@ const {
   updatePasswordFromUserId,
   getPrimaryPersonIdFromUserId,
   sendPersonTransferEmailAllIncluded,
+  confirmEmail,
   updatePrimaryPerson: updatePrimaryPersonHelper,
   getPeopleTransferedToUser: getPeopleTransferedToUserHelper,
   transferPerson: transferPersonHelper,
   cancelPersonTransfer: cancelPersonTransferHelper,
   declinePersonTransfer: declinePersonTransferHelper,
+  getTransferInfosFromToken: getTransferInfosHelper,
+  generateAuthToken,
+  generateToken,
+  validateEmailIsConfirmed,
 } = require('../helpers');
 
 const {
   getAllOwnedEntities,
   personIsAwaitingTransfer,
 } = require('../helpers/entity');
-
 const { isAllowed } = require('./entity');
 
 const sendTransferPersonEmail = async (
@@ -140,7 +145,9 @@ const getPrimaryPersonId = async userId => {
 
 const getOwnedAndTransferedPersons = async userId => {
   const [owned, transfered] = await Promise.all([
-    getOwnedPersons(userId),
+    (await getOwnedPersons(userId)).filter(
+      person => person.role === ENTITIES_ROLE_ENUM.ADMIN,
+    ),
     getPeopleTransferedToUser(userId),
   ]);
   return owned.concat(transfered);
@@ -200,6 +207,39 @@ const declinePersonTransfer = async personId => {
   return declinePersonTransferHelper(personId);
 };
 
+const getTransferInfos = async token => {
+  const infos = await getTransferInfosHelper(token);
+  if (!infos) {
+    //Token does not exists
+    return;
+  }
+  const { email, person_id, status, expires_at } = infos;
+  const userId = await getUserIdFromEmail(email);
+  let authToken, userInfo;
+  if (userId) {
+    //Login the user
+    if (!(await validateEmailIsConfirmed(email))) {
+      await createConfirmationEmailToken({
+        email,
+        token: await generateToken(),
+      });
+    }
+    await confirmEmail({ email });
+    authToken = await generateAuthToken(userId);
+    userInfo = await getBasicUserInfoFromId(userId);
+  }
+  const isPending =
+    status === PERSON_TRANSFER_STATUS_ENUM.PENDING &&
+    expires_at > Date.now();
+  return {
+    email,
+    personId: person_id,
+    isPending,
+    userInfo,
+    authToken,
+  };
+};
+
 module.exports = {
   addEmail,
   changePassword,
@@ -215,4 +255,5 @@ module.exports = {
   transferPerson,
   declinePersonTransfer,
   getOwnedAndTransferedPersons,
+  getTransferInfos,
 };

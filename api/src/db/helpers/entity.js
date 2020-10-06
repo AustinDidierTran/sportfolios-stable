@@ -75,13 +75,15 @@ const addEntity = async (body, userId) => {
         return { id: entityId };
       }
       case GLOBAL_ENUM.PERSON: {
-        await knex('user_entity_role')
+        const id = await knex('user_entity_role')
           .insert({
             user_id: userId,
             entity_id: entityId,
             role: ENTITIES_ROLE_ENUM.ADMIN,
           })
+          .returning('entity_id')
           .transacting(trx);
+        return { id };
       }
       case GLOBAL_ENUM.EVENT: {
         let entity_id_admin;
@@ -2014,14 +2016,6 @@ const deleteGame = async id => {
   return res;
 };
 
-const deletePersonTransfer = async person_id => {
-  const [person] = await knex('transfered_person')
-    .where({ person_id })
-    .del()
-    .returning('person_id');
-  return person;
-};
-
 const personIsAwaitingTransfer = async personId => {
   return (
     await knex.first(
@@ -2111,6 +2105,5 @@ module.exports = {
   addPlayerToRoster,
   deletePlayerFromRoster,
   deleteGame,
-  deletePersonTransfer,
   personIsAwaitingTransfer,
 };

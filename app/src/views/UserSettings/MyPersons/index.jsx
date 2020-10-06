@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import EditPrimaryPerson from './EditPrimaryPerson';
 import { Store, ACTION_ENUM } from '../../../Store';
 
-export default function MyPersons() {
+export default function MyPersons(props) {
   const { t } = useTranslation();
   const [persons, setPersons] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,8 +30,10 @@ export default function MyPersons() {
   const [selectedPerson, setSelectedPerson] = useState();
   const [confirmCancelation, setConfirmCancelation] = useState(false);
   const [declineDialog, setDeclineDialog] = useState(false);
+  const [acceptDialog, setAcceptDialog] = useState(false);
   const { dispatch } = useContext(Store);
 
+  const { personId: personToTransferId } = props;
   const fetchOwnedPersons = async () => {
     const { data } = await api(
       formatRoute('/api/user/ownedPersons', null, {
@@ -43,6 +45,18 @@ export default function MyPersons() {
       if (data[i].isPrimaryPerson) {
         data.unshift(data.splice(i, 1)[0]);
         break;
+      }
+    }
+
+    if (personToTransferId) {
+      const person = data.find(
+        person =>
+          person.id == personToTransferId &&
+          person.isAwaitingApproval,
+      );
+      if (person) {
+        setSelectedPerson(person);
+        setAcceptDialog(true);
       }
     }
     setPersons(data);
@@ -95,7 +109,12 @@ export default function MyPersons() {
       showSuccessMessage(t('person_transfer_declined'));
     }
     closeDeclineDialog();
+    closeAccept();
     fetchOwnedPersons();
+  };
+
+  const closeAccept = () => {
+    setAcceptDialog(false);
   };
 
   const approveTransfer = async () => {
@@ -109,6 +128,7 @@ export default function MyPersons() {
     } else {
       showSuccessMessage(t('person_transfer_done'));
     }
+    closeAccept();
     fetchOwnedPersons();
   };
 
@@ -328,6 +348,16 @@ export default function MyPersons() {
         })}
         onSubmit={confirmDecline}
         onCancel={closeDeclineDialog}
+      />
+      <AlertDialog
+        open={acceptDialog}
+        title={t('accept_person_transfer_confirmation', {
+          name: selectedPerson
+            ? selectedPerson.name + ' ' + selectedPerson.surname
+            : '',
+        })}
+        onSubmit={approveTransfer}
+        onCancel={confirmDecline}
       />
     </>
   );

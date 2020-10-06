@@ -8,6 +8,9 @@ export default {
       'Êtes-vous certain de vouloir effectuer cette action?',
     acceptation: 'Acceptation',
     accept: 'Accepter',
+    accept_person_transfer_confirmation:
+      'Êtes vous certain de vouloir accepter le transfert de {{name}}?',
+
     account_holder_name: 'Nom du titulaire du compte',
     add_admin: 'Ajouter admin',
     add: 'Ajouter',
@@ -98,6 +101,8 @@ export default {
     country: 'Pays',
     create_a_game: 'Créer une partie',
     create_a_phase: 'Créer une phase',
+    create_an_account_to_accept_person_transfer:
+      'Veuillez choisir un mot de passe pour vous créer un compte et accepter le transfert de personne',
     create_event: 'Créer un événement',
     create_organization: 'Créer une organisation',
     create_person: 'Créer une personne',
@@ -242,6 +247,8 @@ export default {
     person_transfer_email_sent:
       'Un courriel pour procéder au transfert a été envoyé à {{email}}',
     pending: 'En attente',
+    person_transfer_expired:
+      'Vous arrivez trop tard! Le transfert de cette personne a expiré ou a été annulé',
     people: 'Personnes',
     phase: 'Phase',
     phase_added: 'Phase ajoutée',

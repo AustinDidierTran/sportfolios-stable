@@ -42,6 +42,23 @@ router.post(`${BASE_URL}/login`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/transferPersonSignup`, async ctx => {
+  const res = await queries.transferPersonSignup(ctx.request.body);
+  console.log({ res });
+  if (res) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = res.code;
+    ctx.body = {
+      status: 'error',
+    };
+  }
+});
+
 // Confirm email
 router.post(`${BASE_URL}/confirmEmail`, async ctx => {
   const res = await queries.confirmEmail(ctx.request.body);

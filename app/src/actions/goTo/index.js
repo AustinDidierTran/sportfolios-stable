@@ -37,16 +37,18 @@ export const ROUTES = {
   stripe: '/stripe',
   team: '/team',
   userSettings: '/userSettings',
+  transferPerson: '/transferPerson/:token',
+  transferPersonExpired: '/transferPersonExpired',
 };
 
 export const formatRoute = (route, params, queryParams) => {
-  if (!params && !queryParams) {
-    return route;
-  }
-
   if (!route) {
     /* eslint-disable-next-line */
     console.error('Route is undefined');
+  }
+
+  if (!params && !queryParams) {
+    return route;
   }
 
   const withParams = params

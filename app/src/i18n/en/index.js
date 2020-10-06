@@ -8,6 +8,8 @@ export default {
       'Are you sure you want to perform this action?',
     acceptation: 'Acceptation',
     accept: 'Accept',
+    accept_person_transfer_confirmation:
+      'Are you sure you want to accept the transfer of {{name}}?',
     account_holder_name: 'Account Holder Name',
     add: 'Add',
     add_bank_account: 'Add bank account',
@@ -96,6 +98,8 @@ export default {
     country: 'Country',
     create_a_game: 'Create a game',
     create_a_phase: 'Create a phase',
+    create_an_account_to_accept_person_transfer:
+      'Please choose a password to create an account and accept the person transfer',
     create_event: 'Create Event',
     create_organization: 'Create Organization',
     create_person: 'Create Person',
@@ -240,6 +244,8 @@ export default {
     person_transfer_done: 'Person transfer completed',
     person_transfer_email_sent:
       'A email was sent to {{email}} to complete the transfer',
+    person_transfer_expired:
+      'Too late! This person transfer is expired or has been canceled',
     phase: 'Phase',
     phase_added: 'Phase added',
     places_left: 'places left',
