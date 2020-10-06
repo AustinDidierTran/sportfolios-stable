@@ -21,6 +21,7 @@ import EmojiEvents from '@material-ui/icons/EmojiEvents';
 import EmojiObjects from '@material-ui/icons/EmojiObjects';
 import Event from '@material-ui/icons/Event';
 import ExitToApp from '@material-ui/icons/ExitToApp';
+import ExpandMore from '@material-ui/icons/ExpandMore';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FiberManualRecord from '@material-ui/icons/FiberManualRecord';
 import Flag from '@material-ui/icons/Flag';
@@ -78,6 +79,7 @@ const icons = {
   EmojiObjects,
   Event,
   ExitToApp,
+  ExpandMore,
   FavoriteIcon,
   FiberManualRecord,
   Flag,

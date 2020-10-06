@@ -1,0 +1,13 @@
+.main {
+  display: grid;
+  grid-template-columns: 1fr 7fr;
+  grid-template-areas: 'position name';
+  padding: 0px;
+}
+
+.position {
+  grid-area: position;
+}
+.name {
+  grid-area: name;
+}
