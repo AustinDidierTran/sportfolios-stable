@@ -7,14 +7,10 @@ import AddPhase from './AddPhase';
 import AddTimeSlot from './AddTimeSlot';
 import AddTeam from './AddTeam';
 import AddField from './AddField';
-import { useEffect } from 'react';
-import api from '../../../actions/api';
-import { useParams } from 'react-router-dom';
 
 export default function ScheduleTab(props) {
   const { t } = useTranslation();
   const { update } = props;
-  const { id: eventId } = useParams();
 
   const [game, setGame] = useState(false);
   const [phase, setPhase] = useState(false);
@@ -51,19 +47,6 @@ export default function ScheduleTab(props) {
   };
   const closeField = () => {
     setField(false);
-  };
-
-  useEffect(() => {
-    addRegisteredTeams();
-  }, []);
-
-  const addRegisteredTeams = async () => {
-    await api('/api/entity/addRegisteredToSchedule', {
-      method: 'POST',
-      body: JSON.stringify({
-        eventId,
-      }),
-    });
   };
 
   return (

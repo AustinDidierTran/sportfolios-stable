@@ -35,6 +35,7 @@ export default function Event(props) {
       TABS_ENUM.SCHEDULE,
       TABS_ENUM.RESULTS,
       TABS_ENUM.ROSTERS,
+      TABS_ENUM.RANKINGS,
       TABS_ENUM.EVENT_INFO,
       TABS_ENUM.SWITCH_TO_ADMIN,
     ],
@@ -45,6 +46,7 @@ export default function Event(props) {
     list: [
       TABS_ENUM.EDIT_SCHEDULE,
       TABS_ENUM.EDIT_RESULTS,
+      TABS_ENUM.EDIT_RANKINGS,
       TABS_ENUM.EDIT_ROSTERS,
       TABS_ENUM.SETTINGS,
       TABS_ENUM.SWITCH_TO_USER,
