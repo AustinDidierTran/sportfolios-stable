@@ -1114,7 +1114,7 @@ const canUnregisterTeam = async (rosterId, eventId) => {
             .where({ event_id: realEventId }),
         )
         .andWhere({ roster_id: realRosterId })
-    )?.length == 0;
+    ).length == 0;
 
   return canUnregister;
 };
