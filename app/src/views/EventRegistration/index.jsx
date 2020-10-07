@@ -146,6 +146,14 @@ export default function EventRegistration() {
         status: INVOICE_STATUS_ENUM.OPEN,
       }),
     });
+    await api('/api/entity/addTeamToSchedule', {
+      method: 'POST',
+      body: JSON.stringify({
+        eventId,
+        name: team.name,
+        rosterId: data.rosterId,
+      }),
+    });
     if (status === 200) {
       goTo(ROUTES.registrationStatus, null, {
         status: data.status,

@@ -1384,7 +1384,6 @@ async function addField(field, eventId) {
 
 async function addTeamToSchedule(eventId, name, rosterId) {
   const realId = await getRealId(eventId);
-  console.log('addteamtoschedule');
   if (
     !(await isInSchedule(realId, rosterId)) &&
     (await isAcceptedToEvent(realId, rosterId))
