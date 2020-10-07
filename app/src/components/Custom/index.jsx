@@ -1,4 +1,6 @@
 export { default as Autocomplete } from './Autocomplete';
+export { default as Accordion } from './Accordion';
+export { default as AccordionDnD } from './AccordionDnD';
 export { default as Avatar } from './Avatar';
 export { default as BottomNavigation } from './BottomNavigation';
 export { default as Button } from './Button';
@@ -10,6 +12,7 @@ export { default as Container } from './Container';
 export { default as ContainerBottomFixed } from './ContainerBottomFixed';
 export { default as CheckBox } from './CheckBox';
 export { default as Dialog, AlertDialog } from './Dialog';
+export { default as DnDSimpleList } from './DnDSimpleList';
 export { default as FormDialog } from './FormDialog';
 export { default as EntityList } from './EntityList';
 export { default as FeatureContainer } from './FeatureContainer';
