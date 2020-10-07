@@ -1104,19 +1104,19 @@ const canUnregisterTeam = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
 
-  const canUnregister =
-    (
-      await knex('game_teams')
-        .whereIn(
-          'game_id',
-          knex('games')
-            .select('id')
-            .where({ event_id: realEventId }),
-        )
-        .andWhere({ roster_id: realRosterId })
-    ).length == 0;
+  const games = await knex('game_teams')
+    .whereIn(
+      'game_id',
+      knex('games')
+        .select('id')
+        .where({ event_id: realEventId }),
+    )
+    .andWhere({ roster_id: realRosterId });
 
-  return canUnregister;
+  if (games) {
+    return games.length == 0;
+  }
+  return true;
 };
 
 const deleteRegistration = async (rosterId, eventId) => {
