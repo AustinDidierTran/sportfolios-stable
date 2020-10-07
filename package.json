@@ -8,7 +8,7 @@
     "watch": "webpack --watch",
     "prod-webserver": "NODE_ENV=production node api/src/server.js",
     "staging-webserver": "node api/src/server.js",
-    "webserver": "nodemon api/src/server.js --harmony",
+    "webserver": "nodemon api/src/server.js",
     "dev": "webpack-dev-server --open --config webpack.dev.js",
     "test": "jest __tests__",
     "build": "webpack --config webpack.prod.js",
