@@ -23,7 +23,7 @@ exports.up = async function(db) {
     .select('*')
     .where({ roster_id: null });
 
-  names.forEach(async name => {
+  for (const name of names) {
     const userId = '8317ff33-3b04-49a1-afd3-420202cddf73';
     const entity = await addEntity(
       {
@@ -32,6 +32,7 @@ exports.up = async function(db) {
       },
       userId,
     );
+
     const [roster] = await knex('team_rosters')
       .insert({ team_id: entity.id })
       .returning('id');
@@ -40,7 +41,8 @@ exports.up = async function(db) {
       .update({ roster_id: roster })
       .where({ name: name.name })
       .returning('*');
-  });
+  }
+
   return null;
 };
 
