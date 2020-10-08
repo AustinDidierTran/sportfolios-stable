@@ -59,6 +59,7 @@ const {
   getRemainingSpots: getRemainingSpotsHelper,
   getAllAcceptedRegistered: getAllAcceptedRegisteredHelper,
   getRoster: getRosterHelper,
+  getRosterWithSub: getRosterWithSubHelper,
   getRosterInvoiceItem,
   getScoreSuggestion: getScoreSuggestionHelper,
   getSameSuggestions: getSameSuggestionsHelper,
@@ -184,6 +185,9 @@ async function getRankings(eventId) {
 
 async function getRoster(rosterId) {
   return getRosterHelper(rosterId);
+}
+async function getRosterWithSub(rosterId) {
+  return getRosterWithSubHelper(rosterId);
 }
 
 async function getEvent(eventId) {
@@ -787,6 +791,7 @@ module.exports = {
   getRegistered,
   getRemainingSpots,
   getRoster,
+  getRosterWithSub,
   getS3Signature,
   getScoreSuggestion,
   getSameSuggestions,

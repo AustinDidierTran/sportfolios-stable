@@ -804,6 +804,25 @@ async function getRoster(rosterId) {
   const realId = await getRealId(rosterId);
   const roster = await knex('team_players')
     .select('*')
+    .where({ roster_id: realId, is_sub: false });
+
+  //TODO: Make a call to know if has created an account or is child account
+  const status = TAG_TYPE_ENUM.REGISTERED;
+
+  const props = roster.map(player => ({
+    id: player.id,
+    name: player.name,
+    personId: player.person_id,
+    isSub: player.is_sub,
+    status: status,
+  }));
+
+  return props;
+}
+async function getRosterWithSub(rosterId) {
+  const realId = await getRealId(rosterId);
+  const roster = await knex('team_players')
+    .select('*')
     .where({ roster_id: realId });
 
   //TODO: Make a call to know if has created an account or is child account
@@ -1104,7 +1123,6 @@ const canUnregisterTeam = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
 
-<<<<<<< HEAD
   const games = await knex('game_teams')
     .whereIn(
       'game_id',
@@ -1113,19 +1131,6 @@ const canUnregisterTeam = async (rosterId, eventId) => {
         .where({ event_id: realEventId }),
     )
     .andWhere({ roster_id: realRosterId });
-=======
-  const canUnregister =
-    (
-      await knex('game_teams')
-        .whereIn(
-          'game_id',
-          knex('games')
-            .select('id')
-            .where({ event_id: realEventId }),
-        )
-        .andWhere({ roster_id: realRosterId })
-    ).length == 0;
->>>>>>> Ranking removed
 
   if (games) {
     return games.length == 0;
@@ -2075,6 +2080,7 @@ module.exports = {
   getRemainingSpots,
   getRankings,
   getRoster,
+  getRosterWithSub,
   getEvent,
   getAlias,
   getPhases,

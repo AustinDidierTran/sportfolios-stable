@@ -64,15 +64,23 @@ export default function SubmitScoreDialog(props) {
 
   const getRoster = async rosterId => {
     const { data } = await api(
-      formatRoute('/api/entity/getRoster', null, {
+      formatRoute('/api/entity/getRosterWithSub', null, {
         rosterId,
       }),
     );
     if (data) {
-      const fullRoster = data.map(d => ({
-        value: d.id,
-        display: d.name,
-      }));
+      const fullRoster = data.map(d => {
+        if (d.isSub) {
+          return {
+            value: d.id,
+            display: `${d.name} (${t('sub')})`,
+          };
+        }
+        return {
+          value: d.id,
+          display: d.name,
+        };
+      });
       setFullRoster(fullRoster);
 
       const roster = data.filter(d => !d.isSub).map(d => d.name);
