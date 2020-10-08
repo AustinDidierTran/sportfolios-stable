@@ -79,6 +79,7 @@ export default {
       'Vous ne pouvez pas transférer une personne à votre propre adresse courriel',
     by: 'Par',
     canadian_dollar: 'Dollar Canadien',
+    cancel_person_transfer: 'Annuler le transfert de cette personne',
     cancel_person_transfer_confirmation:
       'Êtes-vous certain de vouloir annuler le transfert de {{name}}?',
     cant_unregister_all_teams:
@@ -122,6 +123,7 @@ export default {
     donate: 'Faites un don',
     done: 'Terminé',
     edit_game: 'Modifier la partie',
+    edit_your_primary_person: 'Changer de personne primaire',
     editor: 'Éditeur',
     email: 'Courriel',
     emails: 'Courriels',
@@ -333,6 +335,7 @@ export default {
     transfer_person_description:
       "En confirmant vous acceptez de céder toutes les permissions sur cette personne à l'utilisateur possédant l'adresse courriel que vous avez entrée",
     transfered_to_you: 'Transféré à vous',
+    transfer_this_person: 'Transférer cette personne',
     time: 'Temps',
     time_slot: 'Plage horaire',
     time_slot_added: 'Plage horaire ajoutée',

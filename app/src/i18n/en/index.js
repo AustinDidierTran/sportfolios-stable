@@ -74,6 +74,7 @@ export default {
     basic_info: 'Basic Info',
     birth_date_format: '{{date, LL}} ({{age}} years old)',
     birth_date: 'Birth date',
+    cancel_person_transfer: 'Cancel this person transfer',
     cancel_person_transfer_confirmation:
       'Are you sure you want to cancel the transfer of {{name}}?',
     cant_add_product_no_bank_account:
@@ -118,6 +119,7 @@ export default {
     donate: 'Donate',
     done: 'Done',
     edit_game: 'Edit game',
+    edit_your_primary_person: 'Edit your primary person',
     editor: 'Editor',
     email: 'Email',
     emails: 'Emails',
@@ -331,6 +333,7 @@ export default {
     transfer_person_description:
       'By confirming you accept to give all the admin permissions on this person and give it to the user who own the email you specified.',
     transfered_to_you: 'Transfered to you',
+    transfer_this_person: 'Transfer this person',
     time: 'Time',
     time_slot: 'Time slot',
     time_slot_added: 'Time slot added',

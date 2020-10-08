@@ -192,6 +192,7 @@ export default function MyPersons(props) {
 
   const transferedPersonActions = person => [
     <IconButton
+      tooltip={t('cancel_person_transfer')}
       edge="end"
       onClick={() => {
         setSelectedPerson(person);
@@ -205,6 +206,7 @@ export default function MyPersons(props) {
 
   const primaryPersonActions = () => [
     <IconButton
+      tooltip={t('edit_your_primary_person')}
       edge="end"
       onClick={() => {
         setEditPrimaryPerson(true);
@@ -217,6 +219,7 @@ export default function MyPersons(props) {
 
   const secondaryPersonActions = person => [
     <IconButton
+      tooltip={t('transfer_this_person')}
       edge="end"
       onClick={() => {
         setSelectedPerson(person);
@@ -257,6 +260,7 @@ export default function MyPersons(props) {
         ]
       : [
           <IconButton
+            tooltip={t('cancel')}
             size="medium"
             onClick={() => {
               setSelectedPerson(person);
@@ -266,6 +270,7 @@ export default function MyPersons(props) {
             icon="Delete"
           />,
           <IconButton
+            tooltip={t('confirm')}
             size="medium"
             onClick={() => {
               setSelectedPerson(person);
