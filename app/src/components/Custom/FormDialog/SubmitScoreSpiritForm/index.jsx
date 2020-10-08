@@ -230,7 +230,7 @@ export default function SubmitScoreDialog(props) {
       const res = await api('/api/entity/suggestScore', {
         method: 'POST',
         body: JSON.stringify({
-          gameId: game.id,
+          gameId: game?.id,
           eventId,
           startTime: timeSlot,
           yourTeamName,
