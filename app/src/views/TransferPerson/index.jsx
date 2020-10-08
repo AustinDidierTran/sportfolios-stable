@@ -8,7 +8,7 @@ import RegisterCard from './RegisterCard';
 import styles from './TransferPerson.module.css';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-import { LOGO_ENUM } from '../../../../common/enums';
+import { LOGO_ENUM, STATUS_ENUM } from '../../../../common/enums';
 
 export default function TransferPerson(props) {
   const {
@@ -29,7 +29,7 @@ export default function TransferPerson(props) {
       formatRoute('/api/user/transferPerson', null, { token }),
     );
 
-    if (res.status >= 300) {
+    if (res.status === STATUS_ENUM.ERROR) {
       goTo(ROUTES.entityNotFound);
       return;
     }
@@ -104,7 +104,7 @@ export default function TransferPerson(props) {
           personId,
         }),
       });
-      if (res.status >= 400) {
+      if (res.status === STATUS_ENUM.ERROR) {
         formik.setFieldError('password', t('something_went_wrong'));
       } else {
         dispatch({

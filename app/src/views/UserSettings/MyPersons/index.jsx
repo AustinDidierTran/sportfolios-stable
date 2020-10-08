@@ -20,6 +20,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import EditPrimaryPerson from './EditPrimaryPerson';
 import { Store, ACTION_ENUM } from '../../../Store';
+import { ERROR_ENUM, errors } from '../../../../../common/errors';
 
 export default function MyPersons(props) {
   const { t } = useTranslation();
@@ -140,7 +141,7 @@ export default function MyPersons(props) {
       { method: 'DELETE' },
     );
     if (res.status === STATUS_ENUM.ERROR) {
-      showErrorMessage();
+      showErrorMessage(res.message);
     } else {
       showSuccessMessage(t('person_transfer_canceled'));
     }
@@ -156,7 +157,9 @@ export default function MyPersons(props) {
         sendedPersonId: selectedPerson.id,
       }),
     });
-    if (res.status === STATUS_ENUM.ERROR) {
+    if (res.status === errors[ERROR_ENUM.VALUE_IS_INVALID].code) {
+      showErrorMessage(t('cant_transfer_person_to_your_own_email'));
+    } else if (res.status == STATUS_ENUM.ERROR) {
       showErrorMessage();
     } else {
       showSuccessMessage(t('person_transfer_email_sent'), 3000);

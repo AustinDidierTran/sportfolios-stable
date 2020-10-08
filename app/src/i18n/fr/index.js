@@ -75,6 +75,8 @@ export default {
     birth_date_format: '{{date, LL}} ({{age}} ans)',
     cant_add_product_no_bank_account:
       "Vous ne pouvez pas ajouter de produit car l'administrateur n'a pas de compte banquaire",
+    cant_transfer_person_to_your_own_email:
+      'Vous ne pouvez pas transférer une personne à votre propre adresse courriel',
     by: 'Par',
     canadian_dollar: 'Dollar Canadien',
     cancel_person_transfer_confirmation:

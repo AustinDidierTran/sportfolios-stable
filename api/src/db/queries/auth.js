@@ -131,8 +131,8 @@ const recoveryEmail = async ({ email }) => {
   const token = generateToken();
 
   await createRecoveryEmailToken({ userId, token });
-
-  await sendRecoveryEmail({ email, token });
+  const language = await getLanguageFromEmail(email);
+  await sendRecoveryEmail({ email, token, language });
 
   return 200;
 };

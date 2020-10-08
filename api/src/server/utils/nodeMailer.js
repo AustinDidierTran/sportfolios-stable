@@ -4,7 +4,6 @@ const {
   LOGO_ENUM,
   LANGUAGE_ENUM,
 } = require('../../../../common/enums');
-const { getLanguageFromEmail } = require('../../db/helpers');
 
 let key;
 
@@ -148,8 +147,7 @@ const sendPersonTransferEmail = async ({
   });
 };
 
-async function sendReceiptEmail({ email, receipt }) {
-  const language = await getLanguageFromEmail(email);
+async function sendReceiptEmail({ email, receipt, language }) {
   let html = '';
   let subject = '';
   let title = '';
@@ -180,8 +178,8 @@ async function sendTeamRegistrationEmailToAdmin({
   team,
   event,
   placesLeft,
+  language,
 }) {
-  const language = await getLanguageFromEmail(email);
   let html = '';
   let subject = '';
   let title = '';
@@ -220,8 +218,12 @@ async function sendTeamRegistrationEmailToAdmin({
   });
 }
 
-async function sendAcceptedRegistrationEmail({ email, team, event }) {
-  const language = await getLanguageFromEmail(email);
+async function sendAcceptedRegistrationEmail({
+  email,
+  team,
+  event,
+  language,
+}) {
   let html = '';
   let subject = '';
   let title = '';
@@ -247,8 +249,7 @@ async function sendAcceptedRegistrationEmail({ email, team, event }) {
   });
 }
 
-async function sendRecoveryEmail({ email, token }) {
-  const language = await getLanguageFromEmail(email);
+async function sendRecoveryEmail({ email, token, language }) {
   let html = '';
   let subject = '';
   let title = '';

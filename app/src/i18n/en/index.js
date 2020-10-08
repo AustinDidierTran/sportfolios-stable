@@ -78,6 +78,8 @@ export default {
       'Are you sure you want to cancel the transfer of {{name}}?',
     cant_add_product_no_bank_account:
       "Can't add product admin has no bank account",
+    cant_transfer_person_to_your_own_email:
+      "You can't transfer someone to your own email",
     by: 'By',
     cant_unregister_all_teams:
       'Only {{howManyCanUnregister}}/{{totalOfTeams}} teams can be unregistered since some teams are in a game. Do you want to unregister the available ones?',

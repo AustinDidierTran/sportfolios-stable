@@ -4,6 +4,7 @@ const {
   PERSON_TRANSFER_STATUS_ENUM,
 } = require('../../../../common/enums');
 const bcrypt = require('bcrypt');
+const { ERROR_ENUM } = require('../../../../common/errors');
 
 const {
   createUserEmail,
@@ -39,6 +40,11 @@ const sendTransferPersonEmail = async (
   user_id,
   { email, sendedPersonId },
 ) => {
+  if (
+    (await getEmailsFromUserId(user_id)).find(e => e.email == email)
+  ) {
+    throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
+  }
   return sendPersonTransferEmailAllIncluded({
     email,
     sendedPersonId,

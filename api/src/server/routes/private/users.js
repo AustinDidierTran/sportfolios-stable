@@ -1,6 +1,6 @@
 const Router = require('koa-router');
+const { STATUS_ENUM } = require('../../../../../common/enums');
 const queries = require('../../../db/queries/users');
-
 const router = new Router();
 const BASE_URL = '/api/user';
 
@@ -174,22 +174,27 @@ router.put(`${BASE_URL}/primaryPerson`, async ctx => {
 });
 
 router.post(`${BASE_URL}/transferPerson`, async ctx => {
-  const person = await queries.sendTransferPersonEmail(
-    ctx.body.userInfo.id,
-    ctx.request.body,
-  );
-  if (person) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: person,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+  let person;
+  try {
+    person = await queries.sendTransferPersonEmail(
+      ctx.body.userInfo.id,
+      ctx.request.body,
+    );
+    if (person) {
+      ctx.status = 201;
+      ctx.body = {
+        status: 'success',
+        data: person,
+      };
+    } else {
+      ctx.status = STATUS_ENUM;
+      ctx.body = {
+        status: 'error',
+        message: 'Something went wrong',
+      };
+    }
+  } catch (e) {
+    throw e;
   }
 });
 
