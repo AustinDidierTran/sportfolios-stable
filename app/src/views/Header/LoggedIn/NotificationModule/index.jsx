@@ -1,89 +1,80 @@
-import React, { useMemo, useRef, useState } from 'react';
-import api from '../../../../actions/api';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import NotificationList from './NotificationList';
+import React from 'react';
+// import React, { useRef, useMemo, useEffect, useState } from 'react';
+// import { useMemo, useState } from 'react';
+// import api from '../../../../actions/api';
+// import NotificationsIcon from '@material-ui/icons/Notifications';
+// import NotificationList from './NotificationList';
 
-import { OptimizelyFeature } from '@optimizely/react-sdk';
+// import styles from './NotificationModule.module.css';
 
-import styles from './NotificationModule.module.css';
-import { FEATURE_FLAGS } from '../../../../../../common/flags';
-
-import { Badge, IconButton } from '../../../../components/MUI';
-import { useEffect } from 'react';
+// import { Badge, IconButton } from '../../../../components/MUI';
 
 export default function NotificationModule() {
-  const [notifications, setNotifications] = useState([]);
-  const [open, setOpen] = useState(false);
+  // const [notifications, setNotifications] = useState([]);
+  // const [open, setOpen] = useState(false);
 
-  const node = useRef();
+  // const node = useRef();
 
-  const handleClick = e => {
-    if (!node || !node.current || !node.current.contains(e.target)) {
-      setOpen(false);
-    }
-  };
+  // const handleClick = e => {
+  //   if (!node || !node.current || !node.current.contains(e.target)) {
+  //     setOpen(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClick);
+  // useEffect(() => {
+  //   document.addEventListener('mousedown', handleClick);
 
-    return () => {
-      document.removeEventListener('mousedown', handleClick);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClick);
+  //   };
+  // }, []);
 
-  const toggleNotification = () => setOpen(!open);
+  // const toggleNotification = () => setOpen(!open);
 
-  const closeNotificationModule = () => setOpen(false);
+  // const closeNotificationModule = () => setOpen(false);
 
-  const unreadNotificationsCount = useMemo(
-    () =>
-      (notifications &&
-        notifications.filter(n => !n.seen_at).length) ||
-      0,
-    [notifications],
-  );
+  // const unreadNotificationsCount = useMemo(
+  //   () =>
+  //     (notifications &&
+  //       notifications.filter(n => !n.seen_at).length) ||
+  //     0,
+  //   [notifications],
+  // );
 
-  const initializeNotifications = async () => {
-    const { data } = await api('/api/notifications/all');
+  // const initializeNotifications = async () => {
+  //   const { data } = await api('/api/notifications/all');
 
-    setNotifications(data);
-  };
+  //   setNotifications(data);
+  // };
 
-  useEffect(() => {
-    initializeNotifications();
-  }, []);
+  // useEffect(() => {
+  //   initializeNotifications();
+  // }, []);
 
   return (
-    <OptimizelyFeature feature={FEATURE_FLAGS.NOTIFICATIONS}>
-      {enabled =>
-        enabled ? (
-          <div className={styles.root} ref={node}>
-            <IconButton
-              aria-label={`show ${unreadNotificationsCount} new notifications`}
-              color="inherit"
-              onClick={toggleNotification}
-            >
-              {unreadNotificationsCount ? (
-                <Badge
-                  badgeContent={unreadNotificationsCount}
-                  color="secondary"
-                >
-                  <NotificationsIcon />
-                </Badge>
-              ) : (
-                <NotificationsIcon />
-              )}
-            </IconButton>
-            <NotificationList
-              closeNotificationModule={closeNotificationModule}
-              open={open}
-              notifications={notifications}
-            />
-          </div>
-        ) : (
-          <></>
-        )
-      }
-    </OptimizelyFeature>
+    <></>
+    // <div className={styles.root} ref={node}>
+    //   <IconButton
+    //     aria-label={`show ${unreadNotificationsCount} new notifications`}
+    //     color="inherit"
+    //     onClick={toggleNotification}
+    //   >
+    //     {unreadNotificationsCount ? (
+    //       <Badge
+    //         badgeContent={unreadNotificationsCount}
+    //         color="secondary"
+    //       >
+    //         <NotificationsIcon />
+    //       </Badge>
+    //     ) : (
+    //       <NotificationsIcon />
+    //     )}
+    //   </IconButton>
+    //   <NotificationList
+    //     closeNotificationModule={closeNotificationModule}
+    //     open={open}
+    //     notifications={notifications}
+    //   />
+    // </div>
   );
 }

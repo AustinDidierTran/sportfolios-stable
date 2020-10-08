@@ -1104,7 +1104,6 @@ const canUnregisterTeam = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
 
-<<<<<<< HEAD
   const games = await knex('game_teams')
     .whereIn(
       'game_id',
@@ -1113,19 +1112,6 @@ const canUnregisterTeam = async (rosterId, eventId) => {
         .where({ event_id: realEventId }),
     )
     .andWhere({ roster_id: realRosterId });
-=======
-  const canUnregister =
-    (
-      await knex('game_teams')
-        .whereIn(
-          'game_id',
-          knex('games')
-            .select('id')
-            .where({ event_id: realEventId }),
-        )
-        .andWhere({ roster_id: realRosterId })
-    ).length == 0;
->>>>>>> Ranking removed
 
   if (games) {
     return games.length == 0;
