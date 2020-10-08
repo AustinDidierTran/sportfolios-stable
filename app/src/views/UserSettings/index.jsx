@@ -10,7 +10,11 @@ import { IgContainer, LoadingSpinner } from '../../components/Custom';
 import { formatPageTitle } from '../../utils/stringFormats';
 import { useTranslation } from 'react-i18next';
 import MyPersons from './MyPersons';
+<<<<<<< HEAD
 import { Store } from '../../Store';
+=======
+import AppLinking from './AppLinking';
+>>>>>>> Setup facebook sdk
 
 export default function UserSettings() {
   const { t } = useTranslation();
@@ -33,6 +37,7 @@ export default function UserSettings() {
         <ChangePassword />
         <Email />
         <MyPersons />
+        <AppLinking />
         <Disconnect />
       </IgContainer>
     </div>
