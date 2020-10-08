@@ -11,3 +11,20 @@
 .name {
   grid-area: name;
 }
+
+.div {
+  display: grid;
+  grid-template-rows: 1fr;
+  width: 100%;
+}
+.button {
+  width: 40%;
+  margin-bottom: 8px !important;
+  justify-self: end;
+}
+
+@media (min-width: 768px) {
+  .button {
+    width: 25%;
+  }
+}

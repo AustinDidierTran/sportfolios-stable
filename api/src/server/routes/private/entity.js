@@ -250,7 +250,7 @@ router.get(`${BASE_URL}/s3Signature`, async ctx => {
   );
 
   if (code === 200) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data,
@@ -269,7 +269,7 @@ router.put(`${BASE_URL}`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -289,7 +289,7 @@ router.put(`${BASE_URL}/role`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -309,7 +309,7 @@ router.put(`${BASE_URL}/member`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -326,7 +326,7 @@ router.put(`${BASE_URL}/member`, async ctx => {
 router.put(`${BASE_URL}/alias`, async ctx => {
   const entity = await queries.updateAlias(ctx.request.body);
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -343,7 +343,7 @@ router.put(`${BASE_URL}/alias`, async ctx => {
 router.put(`${BASE_URL}/game`, async ctx => {
   const entity = await queries.updateGame(ctx.request.body);
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -361,7 +361,7 @@ router.put(`${BASE_URL}/updateSuggestionStatus`, async ctx => {
     ctx.request.body,
   );
   if (suggestion) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: suggestion,
@@ -381,7 +381,7 @@ router.put(`${BASE_URL}/updateRegistration`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -401,7 +401,27 @@ router.put(`${BASE_URL}/updateEvent`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/updatePreRanking`, async ctx => {
+  const entity = await queries.updatePreRanking(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (entity) {
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -421,7 +441,7 @@ router.put(`${BASE_URL}/updateGeneralInfos`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -726,7 +746,7 @@ router.post(`${BASE_URL}/register`, async ctx => {
       data: { status, reason },
     };
   } else if (status) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: { status, rosterId },
@@ -762,7 +782,7 @@ router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
     ctx.query.id,
     ctx.body.userInfo.id,
   );
-  ctx.status = 200;
+  ctx.status = 201;
   ctx.body = {
     status: 'success',
   };

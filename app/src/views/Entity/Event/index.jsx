@@ -34,8 +34,8 @@ export default function Event(props) {
     list: [
       TABS_ENUM.SCHEDULE,
       TABS_ENUM.RESULTS,
-      TABS_ENUM.ROSTERS,
       TABS_ENUM.RANKINGS,
+      TABS_ENUM.ROSTERS,
       TABS_ENUM.EVENT_INFO,
       TABS_ENUM.SWITCH_TO_ADMIN,
     ],

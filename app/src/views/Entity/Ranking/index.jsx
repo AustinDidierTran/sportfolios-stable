@@ -64,8 +64,7 @@ export default function Ranking() {
   return (
     <Paper className={styles.bigCard}>
       <Typography variant="h3" className={styles.title}>
-        {' '}
-        {t('pre_ranking')}{' '}
+        {t('preranking')}
       </Typography>
       <hr className={styles.divider}></hr>
       {categories.map(categorie => (

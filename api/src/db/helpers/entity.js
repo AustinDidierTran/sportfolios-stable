@@ -1073,6 +1073,20 @@ async function updateEvent(
   return entity;
 }
 
+async function updatePreRanking(eventId, ranking) {
+  const realId = await getRealId(eventId);
+  const res = await Promise.all(
+    ranking.map(async (r, index) => {
+      const [rank] = await knex('division_ranking')
+        .update({ initial_position: index + 1 })
+        .where({ event_id: realId, team_id: r.id })
+        .returning('*');
+      return rank;
+    }),
+  );
+  return res;
+}
+
 async function updateGeneralInfos(entityId, body) {
   const { description, quickDescription } = body;
   const realId = await getRealId(entityId);
@@ -2101,6 +2115,7 @@ module.exports = {
   updateEntityPhoto,
   updateEntityRole,
   updateEvent,
+  updatePreRanking,
   updateGeneralInfos,
   updateMember,
   updateAlias,
