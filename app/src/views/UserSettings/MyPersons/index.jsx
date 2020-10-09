@@ -142,7 +142,10 @@ export default function MyPersons() {
     } else if (res.status == STATUS_ENUM.ERROR) {
       showErrorMessage();
     } else {
-      showSuccessMessage(t('person_transfer_email_sent'), 3000);
+      showSuccessMessage(
+        t('person_transfer_email_sent', { email }),
+        3000,
+      );
     }
     closeSendPerson();
     fetchOwnedPersons();
