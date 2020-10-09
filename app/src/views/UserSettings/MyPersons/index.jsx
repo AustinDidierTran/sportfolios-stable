@@ -60,7 +60,6 @@ export default function MyPersons(props) {
         setAcceptDialog(true);
       }
     }
-    console.log({ data });
     setPersons(data);
     setIsLoading(false);
   };
