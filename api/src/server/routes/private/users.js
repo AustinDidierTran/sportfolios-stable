@@ -181,13 +181,13 @@ router.post(`${BASE_URL}/transferPerson`, async ctx => {
       ctx.request.body,
     );
     if (person) {
-      ctx.status = 201;
+      ctx.status = STATUS_ENUM.SUCCESS;
       ctx.body = {
         status: 'success',
         data: person,
       };
     } else {
-      ctx.status = STATUS_ENUM;
+      ctx.status = STATUS_ENUM.ERROR;
       ctx.body = {
         status: 'error',
         message: 'Something went wrong',
@@ -204,7 +204,7 @@ router.delete(`${BASE_URL}/transferPerson`, async ctx => {
     ctx.query.id,
   );
   if (person) {
-    ctx.status = 200;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: person,
@@ -243,7 +243,7 @@ router.get(`${BASE_URL}/acceptPersonTransfer`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (personId) {
-    ctx.status = 200;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: previousOwnerId,
@@ -260,7 +260,7 @@ router.get(`${BASE_URL}/acceptPersonTransfer`, async ctx => {
 router.get(`${BASE_URL}/declinePersonTransfer`, async ctx => {
   const id = await queries.declinePersonTransfer(ctx.query.id);
   if (id) {
-    ctx.status = 200;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: id,

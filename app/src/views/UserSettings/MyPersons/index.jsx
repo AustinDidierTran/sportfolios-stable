@@ -60,6 +60,7 @@ export default function MyPersons(props) {
         setAcceptDialog(true);
       }
     }
+    console.log({ data });
     setPersons(data);
     setIsLoading(false);
   };
@@ -118,10 +119,10 @@ export default function MyPersons(props) {
     setAcceptDialog(false);
   };
 
-  const approveTransfer = async () => {
+  const approveTransfer = async person => {
     const res = await api(
       formatRoute('/api/user/acceptPersonTransfer', null, {
-        id: selectedPerson.id,
+        id: person.id,
       }),
     );
     if (res.status === STATUS_ENUM.ERROR) {
@@ -250,8 +251,7 @@ export default function MyPersons(props) {
             endIcon="Check"
             size="small"
             onClick={() => {
-              setSelectedPerson(person);
-              approveTransfer();
+              approveTransfer(person);
             }}
             color="primary"
           >
@@ -273,8 +273,7 @@ export default function MyPersons(props) {
             tooltip={t('confirm')}
             size="medium"
             onClick={() => {
-              setSelectedPerson(person);
-              approveTransfer();
+              approveTransfer(person);
             }}
             style={{ color: 'secondary' }}
             icon="Check"
