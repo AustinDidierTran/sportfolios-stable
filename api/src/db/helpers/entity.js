@@ -804,6 +804,25 @@ async function getRoster(rosterId) {
   const realId = await getRealId(rosterId);
   const roster = await knex('team_players')
     .select('*')
+    .where({ roster_id: realId, is_sub: false });
+
+  //TODO: Make a call to know if has created an account or is child account
+  const status = TAG_TYPE_ENUM.REGISTERED;
+
+  const props = roster.map(player => ({
+    id: player.id,
+    name: player.name,
+    personId: player.person_id,
+    isSub: player.is_sub,
+    status: status,
+  }));
+
+  return props;
+}
+async function getRosterWithSub(rosterId) {
+  const realId = await getRealId(rosterId);
+  const roster = await knex('team_players')
+    .select('*')
     .where({ roster_id: realId });
 
   //TODO: Make a call to know if has created an account or is child account
@@ -2061,6 +2080,7 @@ module.exports = {
   getRemainingSpots,
   getRankings,
   getRoster,
+  getRosterWithSub,
   getEvent,
   getAlias,
   getPhases,
