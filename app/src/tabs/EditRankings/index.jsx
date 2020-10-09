@@ -65,11 +65,22 @@ export default function EditRankings() {
     }
   };
 
+  const onCancel = () => {
+    getRankings();
+  };
+
   const buttons = [
     {
       onClick: onSave,
       name: t('save'),
       color: 'primary',
+      endIcon: 'Check',
+    },
+    {
+      onClick: onCancel,
+      name: t('cancel'),
+      color: 'secondary',
+      endIcon: 'Close',
     },
   ];
 

@@ -98,6 +98,7 @@ export default function CustomAccordionDnD(props) {
               color={button.color}
               type={button.type}
               disabled={button.disabled}
+              endIcon={button.endIcon}
               className={styles.button}
             >
               {button.name}
