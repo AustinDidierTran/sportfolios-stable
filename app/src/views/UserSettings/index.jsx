@@ -11,11 +11,8 @@ import { formatPageTitle } from '../../utils/stringFormats';
 import { useTranslation } from 'react-i18next';
 import MyPersons from './MyPersons';
 import { Store } from '../../Store';
-import qs from 'query-string';
 
-export default function UserSettings(props) {
-  const { personId } = qs.parse(props.location.search);
-
+export default function UserSettings() {
   const { t } = useTranslation();
   const { state } = useContext(Store);
   useEffect(() => {
@@ -35,7 +32,7 @@ export default function UserSettings(props) {
         <BasicInfo />
         <ChangePassword />
         <Email />
-        <MyPersons personId={personId} />
+        <MyPersons />
         <Disconnect />
       </IgContainer>
     </div>

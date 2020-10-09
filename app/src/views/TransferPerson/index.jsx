@@ -56,7 +56,7 @@ export default function TransferPerson(props) {
           userInfo: userInfo,
         },
       });
-      goTo(ROUTES.userSettings, null, { personId });
+      goTo(ROUTES.userSettings);
       return;
     }
 
