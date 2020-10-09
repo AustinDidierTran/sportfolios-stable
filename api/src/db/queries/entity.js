@@ -86,7 +86,10 @@ const {
   sendAcceptedRegistrationEmail,
 } = require('../../server/utils/nodeMailer');
 const { addEventCartItem } = require('../helpers/shop');
-const { getEmailsFromUserId } = require('../helpers');
+const {
+  getEmailsFromUserId,
+  getLanguageFromEmail,
+} = require('../helpers');
 
 async function isAllowed(
   entityId,
@@ -309,25 +312,29 @@ async function addTeamToEvent(body, userId) {
     // send mail to organization admin
     // TODO find real event user creator
     const creatorEmails = ['austindidier@sportfolios.app'];
-    creatorEmails.map(async email =>
+    creatorEmails.map(async email => {
+      const language = await getLanguageFromEmail(email);
       sendTeamRegistrationEmailToAdmin({
         email,
         team,
         event,
+        language,
         placesLeft: await getRemainingSpotsHelper(event.id),
-      }),
-    );
+      });
+    });
 
     // Send accepted email to team captain
     const captainEmails = await getEmailsFromUserId(userId);
 
-    captainEmails.map(({ email }) =>
+    captainEmails.map(async ({ email }) => {
+      const language = await getLanguageFromEmail(email);
       sendAcceptedRegistrationEmail({
+        language,
         team,
         event,
         email,
-      }),
-    );
+      });
+    });
   }
   // Handle other acceptation statuses
   return { status: registrationStatus, rosterId };

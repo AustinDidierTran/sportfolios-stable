@@ -17,7 +17,10 @@ const {
 const {
   sendReceiptEmail: sendReceiptEmailHelper,
 } = require('../../../server/utils/nodeMailer');
-const { getEmailsFromUserId } = require('../index');
+const {
+  getEmailsFromUserId,
+  getLanguageFromEmail,
+} = require('../index');
 
 const formatMetadata = metadata =>
   Object.keys(metadata).reduce((prev, curr) => {
@@ -281,8 +284,8 @@ const sendReceiptEmail = async (body, userId) => {
   const { receipt } = body;
   const [person] = await getEmailsFromUserId(userId);
   const email = person.email;
-
-  return sendReceiptEmailHelper({ email, receipt });
+  const language = await getLanguageFromEmail(email);
+  return sendReceiptEmailHelper({ email, receipt, language });
 };
 
 const getMetadata = async (stripePriceId, cartItemId) => {

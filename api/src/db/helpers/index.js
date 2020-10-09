@@ -177,7 +177,6 @@ const getBasicUserInfoFromId = async user_id => {
         user_id,
       ),
     });
-
   // soon to be changed/deprecated
   const persons = await knex('user_entity_role')
     .select(
@@ -254,9 +253,7 @@ const getPrimaryPersonIdFromUserId = async user_id => {
   return id;
 };
 
-const getUserIdFromEmail = async body => {
-  const { email } = body;
-
+const getUserIdFromEmail = async email => {
   const [{ user_id } = {}] = await knex('user_email')
     .select(['user_id'])
     .where({ email });
@@ -265,7 +262,7 @@ const getUserIdFromEmail = async body => {
 };
 
 const getLanguageFromEmail = async email => {
-  const id = await getUserIdFromEmail({ email });
+  const id = await getUserIdFromEmail(email);
   if (!id) {
     return;
   }
@@ -464,6 +461,13 @@ const declinePersonTransfer = async person_id => {
   return person;
 };
 
+const getTransferInfosFromToken = async token => {
+  return knex('transfered_person')
+    .select('*')
+    .where({ token })
+    .first();
+};
+
 module.exports = {
   confirmEmail,
   createUserEmail,
@@ -494,4 +498,5 @@ module.exports = {
   transferPerson,
   cancelPersonTransfer,
   declinePersonTransfer,
+  getTransferInfosFromToken,
 };

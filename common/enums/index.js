@@ -105,6 +105,7 @@ const STATUS_ENUM = {
   PENDING: 'pending',
   REFUSED: 'refused',
   SUCCESS: 201,
+  FORBIDDEN: 403,
   ERROR: 404,
 };
 

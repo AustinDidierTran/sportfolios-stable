@@ -8,6 +8,8 @@ export default {
       'Are you sure you want to perform this action?',
     acceptation: 'Acceptation',
     accept: 'Accept',
+    accept_person_transfer_confirmation:
+      'Are you sure you want to accept the transfer of {{name}}?',
     account_holder_name: 'Account Holder Name',
     add: 'Add',
     add_bank_account: 'Add bank account',
@@ -72,10 +74,13 @@ export default {
     basic_info: 'Basic Info',
     birth_date_format: '{{date, LL}} ({{age}} years old)',
     birth_date: 'Birth date',
+    cancel_person_transfer: 'Cancel this person transfer',
     cancel_person_transfer_confirmation:
       'Are you sure you want to cancel the transfer of {{name}}?',
     cant_add_product_no_bank_account:
       "Can't add product admin has no bank account",
+    cant_transfer_person_to_your_own_email:
+      "You can't transfer someone to your own email",
     by: 'By',
     cant_unregister_all_teams:
       'Only {{howManyCanUnregister}}/{{totalOfTeams}} teams can be unregistered since some teams are in a game. Do you want to unregister the available ones?',
@@ -96,6 +101,8 @@ export default {
     country: 'Country',
     create_a_game: 'Create a game',
     create_a_phase: 'Create a phase',
+    create_an_account_to_accept_person_transfer:
+      'Please choose a password to create an account and accept the person transfer',
     create_event: 'Create Event',
     create_organization: 'Create Organization',
     create_person: 'Create Person',
@@ -112,6 +119,7 @@ export default {
     donate: 'Donate',
     done: 'Done',
     edit_game: 'Edit game',
+    edit_your_primary_person: 'Edit your primary person',
     editor: 'Editor',
     email: 'Email',
     emails: 'Emails',
@@ -240,6 +248,8 @@ export default {
     person_transfer_done: 'Person transfer completed',
     person_transfer_email_sent:
       'A email was sent to {{email}} to complete the transfer',
+    person_transfer_expired:
+      'Too late! This person transfer is expired or has been canceled',
     phase: 'Phase',
     phase_added: 'Phase added',
     places_left: 'places left',
@@ -323,6 +333,7 @@ export default {
     transfer_person_description:
       'By confirming you accept to give all the admin permissions on this person and give it to the user who own the email you specified.',
     transfered_to_you: 'Transfered to you',
+    transfer_this_person: 'Transfer this person',
     time: 'Time',
     time_slot: 'Time slot',
     time_slot_added: 'Time slot added',

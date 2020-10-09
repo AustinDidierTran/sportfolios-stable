@@ -59,6 +59,10 @@ const Cart = loadable(() => import('../Cart'));
 const Checkout = loadable(() => import('../Checkout'));
 const Sales = loadable(() => import('../Sales'));
 const ShopDetails = loadable(() => import('../ShopDetails'));
+const TransferPerson = loadable(() => import('../TransferPerson'));
+const TransferPersonExpired = loadable(() =>
+  import('../TransferPerson/TransferPersonExpired'),
+);
 
 import {
   AddGaPageView,
@@ -130,6 +134,14 @@ export default function App() {
                 <Route
                   path={ROUTES.recoveryEmail}
                   component={PasswordRecovery}
+                />
+                <Route
+                  path={ROUTES.transferPerson}
+                  component={TransferPerson}
+                />
+                <Route
+                  path={ROUTES.transferPersonExpired}
+                  component={TransferPersonExpired}
                 />
                 <Route
                   exact

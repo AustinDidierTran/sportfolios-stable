@@ -8,6 +8,9 @@ export default {
       'Êtes-vous certain de vouloir effectuer cette action?',
     acceptation: 'Acceptation',
     accept: 'Accepter',
+    accept_person_transfer_confirmation:
+      'Êtes vous certain de vouloir accepter le transfert de {{name}}?',
+
     account_holder_name: 'Nom du titulaire du compte',
     add_admin: 'Ajouter admin',
     add: 'Ajouter',
@@ -72,8 +75,11 @@ export default {
     birth_date_format: '{{date, LL}} ({{age}} ans)',
     cant_add_product_no_bank_account:
       "Vous ne pouvez pas ajouter de produit car l'administrateur n'a pas de compte banquaire",
+    cant_transfer_person_to_your_own_email:
+      'Vous ne pouvez pas transférer une personne à votre propre adresse courriel',
     by: 'Par',
     canadian_dollar: 'Dollar Canadien',
+    cancel_person_transfer: 'Annuler le transfert de cette personne',
     cancel_person_transfer_confirmation:
       'Êtes-vous certain de vouloir annuler le transfert de {{name}}?',
     cant_unregister_all_teams:
@@ -98,6 +104,8 @@ export default {
     country: 'Pays',
     create_a_game: 'Créer une partie',
     create_a_phase: 'Créer une phase',
+    create_an_account_to_accept_person_transfer:
+      'Veuillez choisir un mot de passe pour vous créer un compte et accepter le transfert de personne',
     create_event: 'Créer un événement',
     create_organization: 'Créer une organisation',
     create_person: 'Créer une personne',
@@ -115,6 +123,7 @@ export default {
     donate: 'Faites un don',
     done: 'Terminé',
     edit_game: 'Modifier la partie',
+    edit_your_primary_person: 'Changer de personne primaire',
     editor: 'Éditeur',
     email: 'Courriel',
     emails: 'Courriels',
@@ -242,6 +251,8 @@ export default {
     person_transfer_email_sent:
       'Un courriel pour procéder au transfert a été envoyé à {{email}}',
     pending: 'En attente',
+    person_transfer_expired:
+      'Vous arrivez trop tard! Le transfert de cette personne a expiré ou a été annulé',
     people: 'Personnes',
     phase: 'Phase',
     phase_added: 'Phase ajoutée',
@@ -324,6 +335,7 @@ export default {
     transfer_person_description:
       "En confirmant vous acceptez de céder toutes les permissions sur cette personne à l'utilisateur possédant l'adresse courriel que vous avez entrée",
     transfered_to_you: 'Transféré à vous',
+    transfer_this_person: 'Transférer cette personne',
     time: 'Temps',
     time_slot: 'Plage horaire',
     time_slot_added: 'Plage horaire ajoutée',

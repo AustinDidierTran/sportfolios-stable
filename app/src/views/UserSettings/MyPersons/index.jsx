@@ -20,6 +20,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import EditPrimaryPerson from './EditPrimaryPerson';
 import { Store, ACTION_ENUM } from '../../../Store';
+import { ERROR_ENUM, errors } from '../../../../../common/errors';
 
 export default function MyPersons() {
   const { t } = useTranslation();
@@ -98,10 +99,10 @@ export default function MyPersons() {
     fetchOwnedPersons();
   };
 
-  const approveTransfer = async () => {
+  const approveTransfer = async person => {
     const res = await api(
       formatRoute('/api/user/acceptPersonTransfer', null, {
-        id: selectedPerson.id,
+        id: person.id,
       }),
     );
     if (res.status === STATUS_ENUM.ERROR) {
@@ -120,7 +121,7 @@ export default function MyPersons() {
       { method: 'DELETE' },
     );
     if (res.status === STATUS_ENUM.ERROR) {
-      showErrorMessage();
+      showErrorMessage(res.message);
     } else {
       showSuccessMessage(t('person_transfer_canceled'));
     }
@@ -136,7 +137,9 @@ export default function MyPersons() {
         sendedPersonId: selectedPerson.id,
       }),
     });
-    if (res.status === STATUS_ENUM.ERROR) {
+    if (res.status === errors[ERROR_ENUM.VALUE_IS_INVALID].code) {
+      showErrorMessage(t('cant_transfer_person_to_your_own_email'));
+    } else if (res.status == STATUS_ENUM.ERROR) {
       showErrorMessage();
     } else {
       showSuccessMessage(t('person_transfer_email_sent'), 3000);
@@ -169,6 +172,7 @@ export default function MyPersons() {
 
   const transferedPersonActions = person => [
     <IconButton
+      tooltip={t('cancel_person_transfer')}
       edge="end"
       onClick={() => {
         setSelectedPerson(person);
@@ -182,6 +186,7 @@ export default function MyPersons() {
 
   const primaryPersonActions = () => [
     <IconButton
+      tooltip={t('edit_your_primary_person')}
       edge="end"
       onClick={() => {
         setEditPrimaryPerson(true);
@@ -194,6 +199,7 @@ export default function MyPersons() {
 
   const secondaryPersonActions = person => [
     <IconButton
+      tooltip={t('transfer_this_person')}
       edge="end"
       onClick={() => {
         setSelectedPerson(person);
@@ -224,8 +230,7 @@ export default function MyPersons() {
             endIcon="Check"
             size="small"
             onClick={() => {
-              setSelectedPerson(person);
-              approveTransfer();
+              approveTransfer(person);
             }}
             color="primary"
           >
@@ -234,6 +239,7 @@ export default function MyPersons() {
         ]
       : [
           <IconButton
+            tooltip={t('cancel')}
             size="medium"
             onClick={() => {
               setSelectedPerson(person);
@@ -243,10 +249,10 @@ export default function MyPersons() {
             icon="Delete"
           />,
           <IconButton
+            tooltip={t('confirm')}
             size="medium"
             onClick={() => {
-              setSelectedPerson(person);
-              approveTransfer();
+              approveTransfer(person);
             }}
             style={{ color: 'secondary' }}
             icon="Check"
