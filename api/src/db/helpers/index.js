@@ -400,7 +400,7 @@ const sendPersonTransferEmailAllIncluded = async ({
 
   //Reversing the insert in db if the email can't be sent
   if (!res2) {
-    //await cancelPersonTransfer(sendedPersonId);
+    await cancelPersonTransfer(sendedPersonId);
     return;
   }
   return res;
