@@ -73,7 +73,7 @@ const {
   updateEntityName: updateEntityNameHelper,
   updateEntityPhoto: updateEntityPhotoHelper,
   updateEntityRole: updateEntityRoleHelper,
-  updateEvent: updateEventHelper,
+  updatePreRanking: updatePreRankingHelper,
   updateGame: updateGameHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
@@ -244,6 +244,15 @@ async function updateEvent(body, userId) {
     eventEnd,
     userId,
   );
+}
+async function updatePreRanking(body, userId) {
+  const { eventId, ranking } = body;
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return updatePreRankingHelper(eventId, ranking);
 }
 
 async function updateGeneralInfos(body, userId) {
@@ -810,6 +819,7 @@ module.exports = {
   updateEntity,
   updateEntityRole,
   updateEvent,
+  updatePreRanking,
   updateGame,
   updateSuggestionStatus,
   updateGeneralInfos,

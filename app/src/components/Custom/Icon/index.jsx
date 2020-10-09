@@ -15,6 +15,7 @@ import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
 import Deck from '@material-ui/icons/Deck';
 import Delete from '@material-ui/icons/Delete';
+import DragIndicator from '@material-ui/icons/DragIndicator';
 import Edit from '@material-ui/icons/Edit';
 import EditIcon from '@material-ui/icons/Edit';
 import EmojiEvents from '@material-ui/icons/EmojiEvents';
@@ -45,6 +46,7 @@ import PrintIcon from '@material-ui/icons/Print';
 import Publish from '@material-ui/icons/Publish';
 import Receipt from '@material-ui/icons/Receipt';
 import RemoveShoppingCart from '@material-ui/icons/RemoveShoppingCart';
+import Reorder from '@material-ui/icons/Reorder';
 import SaveIcon from '@material-ui/icons/Save';
 import Search from '@material-ui/icons/Search';
 import Send from '@material-ui/icons/Send';
@@ -73,6 +75,7 @@ const icons = {
   CancelSend,
   Deck,
   Delete,
+  DragIndicator,
   Edit,
   EditIcon,
   EmojiEvents,
@@ -103,6 +106,7 @@ const icons = {
   Publish,
   Receipt,
   RemoveShoppingCart,
+  Reorder,
   SaveIcon,
   Search,
   Send,

@@ -57,10 +57,7 @@ export default function Rankings() {
 
   return (
     <>
-      <Ranking
-        ranking={preRanking}
-        title={t('pre_ranking')}
-      ></Ranking>
+      <Ranking ranking={preRanking} title={t('preranking')}></Ranking>
       <Ranking
         ranking={ranking}
         title={t('ranking')}
