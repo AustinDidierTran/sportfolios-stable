@@ -1,0 +1,22 @@
+.collapse {
+  display: grid !important;
+  grid-template-columns: 1fr 14fr 1fr;
+  grid-template-areas: 'nothing seeScore iconButton';
+}
+.divider {
+  margin-bottom: 16px;
+}
+.seeScore {
+  justify-self: center;
+  align-self: center;
+  grid-area: seeScore;
+}
+.iconButton {
+  grid-area: iconButton;
+}
+.nothing {
+  grid-area: nothing;
+}
+.games {
+  margin-bottom: 8px !important;
+}

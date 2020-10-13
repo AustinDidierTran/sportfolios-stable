@@ -18,9 +18,9 @@ import {
 } from '../../../../tabs/Schedule/ScheduleFunctions';
 import moment from 'moment';
 import { formatRoute } from '../../../../actions/goTo';
-import validator from 'validator';
 import BasicFormDialog from '../BasicFormDialog';
 import AddPlayer from './AddPlayer';
+import validator from 'validator';
 
 export default function SubmitScoreDialog(props) {
   const { open: openProps, onClose, game } = props;

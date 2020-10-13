@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import EditGames from './EditGames';
+import AllEditGames from './AllEditGames';
 import CreateSchedule from './CreateSchedule';
 
 export default function EditScheduleTab() {
@@ -12,7 +12,7 @@ export default function EditScheduleTab() {
   return (
     <>
       <CreateSchedule update={update} />
-      <EditGames updated={updated} />
+      <AllEditGames updated={updated} />
     </>
   );
 }
