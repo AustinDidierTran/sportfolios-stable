@@ -110,6 +110,7 @@ export default {
     create_organization: 'Créer une organisation',
     create_person: 'Créer une personne',
     create_team: 'Créer une équipe',
+    clear_all: 'Réinitialiser',
     click_to_create_new_team:
       'Cliquer pour créer votre nouvelle équipe',
     created_by: 'Créé par {{name}}',
@@ -199,6 +200,7 @@ export default {
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
     no_alias: 'Aucun alias',
     no_description: 'Aucune description',
+    no_games: 'Aucune partie',
     notifications: 'Notifications',
     not_paid: 'Paiement dû',
     no_notifications: 'Pas de notifications',

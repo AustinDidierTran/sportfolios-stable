@@ -93,6 +93,15 @@ export default function GameFilters(props) {
     setOpen(false);
   };
 
+  const clearAll = () => {
+    setTeamId(SELECT_ENUM.ALL);
+    setTeamName('');
+    setPhaseId(SELECT_ENUM.ALL);
+    setPhaseName('');
+    setField(SELECT_ENUM.ALL);
+    setTimeSlot(SELECT_ENUM.ALL);
+  };
+
   return (
     <>
       <Dialog
@@ -120,7 +129,16 @@ export default function GameFilters(props) {
               />
               <FieldSelect onChange={changeField} field={field} />
             </div>
-            <DialogContentText>{description}</DialogContentText>
+            <DialogContentText className={styles.description}>
+              {description}
+            </DialogContentText>
+            <Button
+              size="small"
+              variant="contained"
+              onClick={clearAll}
+            >
+              {t('clear_all')}
+            </Button>
           </DialogContent>
           <DialogActions>
             <MUIButton onClick={closeDialog} color="primary">
@@ -135,7 +153,6 @@ export default function GameFilters(props) {
         endIcon="Add"
         style={{ marginLeft: 'auto', marginRight: 'auto' }}
         onClick={openDialog}
-        className={styles.button}
       >
         {t('filters')}
       </Button>
