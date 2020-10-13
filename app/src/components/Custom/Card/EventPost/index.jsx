@@ -76,7 +76,7 @@ export default function EventPost(props) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-
+  console.log({ creator });
   return (
     <Card className={classes.root}>
       <CardHeader
@@ -152,7 +152,9 @@ export default function EventPost(props) {
           >
             <ExpandMoreIcon />
           </IconButton>
-        ) : null}
+        ) : (
+          <></>
+        )}
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>

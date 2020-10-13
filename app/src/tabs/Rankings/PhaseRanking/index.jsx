@@ -74,8 +74,9 @@ export default function PhaseRankings() {
   }, []);
   return (
     <>
-      {phases.map(phase => (
+      {phases.map((phase, index) => (
         <Ranking
+          key={index}
           ranking={phase.ranking}
           title={phase.title}
           withStats
