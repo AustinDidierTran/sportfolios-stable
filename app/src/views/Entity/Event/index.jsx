@@ -13,16 +13,8 @@ import { formatPageTitle } from '../../../utils/stringFormats';
 import { Helmet } from 'react-helmet';
 import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 import { AddGaEvent } from '../../../components/Custom/Analytics';
-import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles(() => ({
-  tab: {
-    minWidth: 140,
-  },
-}));
 
 export default function Event(props) {
-  const classes = useStyles();
   const { basicInfos } = props;
   const { id } = useParams();
   const query = useQuery();
@@ -154,13 +146,29 @@ export default function Event(props) {
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="fr_CA" />
       </Helmet>
-      <div className={classes.root}>
-        <Paper>
+      <Paper>
+        {window.innerWidth < 768 ? (
           <Tabs
             value={states.findIndex(s => s.value === eventState)}
             indicatorColor="primary"
             textColor="primary"
-            variant="fullWidth"
+          >
+            {states.map((s, index) => (
+              <Tab
+                key={index}
+                onClick={() => onClick(s)}
+                icon={<Icon icon={s.icon} />}
+                style={{
+                  minWidth: window.innerWidth / states.length,
+                }}
+              />
+            ))}
+          </Tabs>
+        ) : (
+          <Tabs
+            value={states.findIndex(s => s.value === eventState)}
+            indicatorColor="primary"
+            textColor="primary"
           >
             {states.map((s, index) => (
               <Tab
@@ -168,12 +176,12 @@ export default function Event(props) {
                 onClick={() => onClick(s)}
                 label={s.label}
                 icon={<Icon icon={s.icon} />}
-                className={classes.tab}
+                style={{ minWidth: 700 / states.length }}
               />
             ))}
           </Tabs>
-        </Paper>
-      </div>
+        )}
+      </Paper>
       <OpenTab basicInfos={basicInfos} />
     </IgContainer>
   );

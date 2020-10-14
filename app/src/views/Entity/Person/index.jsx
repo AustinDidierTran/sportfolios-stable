@@ -1,11 +1,10 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Tab, Tabs } from '../../../components/MUI';
-import { Paper, IgContainer } from '../../../components/Custom';
+import { Paper, IgContainer, Icon } from '../../../components/Custom';
 import { formatPageTitle } from '../../../utils/stringFormats';
-import styles from './Person.module.css';
-
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import TabsGenerator, { TABS_ENUM } from '../../../tabs';
 import { goTo, ROUTES } from '../../../actions/goTo';
 
@@ -37,22 +36,40 @@ export default function Person(props) {
   return (
     <IgContainer>
       <Paper>
-        <Tabs
-          value={states.findIndex(s => s.value === eventState)}
-          indicatorColor="primary"
-          textColor="primary"
-          className={styles.tabs}
-          // centered
-        >
-          {states.map((s, index) => (
-            <Tab
-              key={index}
-              onClick={() => onClick(s)}
-              label={s.label}
-              icon={s.icon}
-            />
-          ))}
-        </Tabs>
+        {window.innerWidth < 768 ? (
+          <Tabs
+            value={states.findIndex(s => s.value === eventState)}
+            indicatorColor="primary"
+            textColor="primary"
+          >
+            {states.map((s, index) => (
+              <Tab
+                key={index}
+                onClick={() => onClick(s)}
+                icon={<Icon icon={s.icon} />}
+                style={{
+                  minWidth: window.innerWidth / states.length,
+                }}
+              />
+            ))}
+          </Tabs>
+        ) : (
+          <Tabs
+            value={states.findIndex(s => s.value === eventState)}
+            indicatorColor="primary"
+            textColor="primary"
+          >
+            {states.map((s, index) => (
+              <Tab
+                key={index}
+                onClick={() => onClick(s)}
+                label={s.label}
+                icon={<Icon icon={s.icon} />}
+                style={{ minWidth: 700 / states.length }}
+              />
+            ))}
+          </Tabs>
+        )}
       </Paper>
       <OpenTab basicInfos={basicInfos} />
     </IgContainer>
