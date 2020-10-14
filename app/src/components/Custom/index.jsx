@@ -35,4 +35,4 @@ export { default as SpeedDial } from './SpeedDial';
 export { default as Stepper } from './Stepper';
 export { default as StepperWithHooks } from './StepperWithHooks';
 export { default as Table } from './Table';
-export { default as FacebookSDK } from './FacebookSDK';
+export { default as FacebookLoginButton } from './FacebookLoginButton';
