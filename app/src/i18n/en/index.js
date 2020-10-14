@@ -93,6 +93,7 @@ export default {
     change_password: 'Change password',
     change_team: 'Change team',
     choose_your_primary_person: 'Choose your primary person',
+    clear_all: 'Clear all',
     click_to_create_new_team: 'Click to create your new team',
     comments: 'Comments',
     confirm: 'Confirm',
@@ -191,6 +192,7 @@ export default {
     new_organization: 'New organization',
     new_team: 'New team',
     next: 'Next',
+    upcoming_games: 'Upcoming games',
     no: 'no',
     none: 'None',
     none_feminine: 'None',
@@ -198,6 +200,7 @@ export default {
     no_account_signup: "Don't have an account? Signup!",
     no_alias: 'No alias',
     no_description: 'No Description',
+    no_games: 'No games',
     notifications: 'Notifications',
     not_paid: 'Not paid',
     no_notifications: 'No Notifications',
@@ -232,6 +235,7 @@ export default {
     password: 'Password',
     password_changed: 'Password has been changed successfully',
     password_reset_message: 'Password has been successfully reset.',
+    past_games: 'Past games',
     pathname: 'Pathname',
     pay: 'Pay',
     payment_method_added:
@@ -580,8 +584,8 @@ export default {
       'Positive Attitude and Self Control',
     communication: 'Communication',
     //PROTIP
-    you_can_also_click_on_your_game_to_submit_your_score:
-      'ProTip: You can also click on your game to submit your result.',
+    you_can_click_on_your_game_to_submit_your_score:
+      'ProTip: You can click on your game to submit your result.',
     you_can_click_on_a_game_to_change_score:
       'ProTip: You can click on a game to change score.',
   },

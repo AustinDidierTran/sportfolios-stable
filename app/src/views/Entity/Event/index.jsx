@@ -33,7 +33,6 @@ export default function Event(props) {
   const userState = TabsGenerator({
     list: [
       TABS_ENUM.SCHEDULE,
-      TABS_ENUM.RESULTS,
       TABS_ENUM.RANKINGS,
       TABS_ENUM.ROSTERS,
       TABS_ENUM.EVENT_INFO,
@@ -45,7 +44,6 @@ export default function Event(props) {
   const adminState = TabsGenerator({
     list: [
       TABS_ENUM.EDIT_SCHEDULE,
-      TABS_ENUM.EDIT_RESULTS,
       TABS_ENUM.EDIT_RANKINGS,
       TABS_ENUM.EDIT_ROSTERS,
       TABS_ENUM.SETTINGS,

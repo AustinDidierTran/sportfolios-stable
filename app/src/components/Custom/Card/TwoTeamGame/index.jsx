@@ -8,12 +8,23 @@ import moment from 'moment';
 import { ListItemText } from '@material-ui/core';
 
 export default function TwoTeamGame(props) {
-  const { teams, field, start_time, phaseName, onClick } = props;
+  const {
+    teams,
+    field,
+    start_time,
+    phaseName,
+    onClick,
+    isPastGame,
+  } = props;
   const team1 = teams[0];
   const team2 = teams[1];
 
+  let cardClass = styles.game;
+  if (isPastGame) {
+    cardClass = styles.pastGame;
+  }
   return (
-    <Card className={styles.game}>
+    <Card className={cardClass}>
       <div className={styles.main} onClick={onClick}>
         <Typography className={styles.phase} color="textSecondary">
           {phaseName}

@@ -8,6 +8,9 @@
 .game {
   margin-bottom: 16px;
 }
+.pastGame {
+  margin-bottom: 16px;
+}
 
 .teams {
   display: grid !important;

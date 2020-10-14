@@ -110,6 +110,7 @@ export default {
     create_organization: 'Créer une organisation',
     create_person: 'Créer une personne',
     create_team: 'Créer une équipe',
+    clear_all: 'Réinitialiser',
     click_to_create_new_team:
       'Cliquer pour créer votre nouvelle équipe',
     created_by: 'Créé par {{name}}',
@@ -187,6 +188,7 @@ export default {
     my_persons: 'Mes personnes',
     name: 'Nom',
     next: 'Prochain',
+    upcoming_games: 'Prochaines parties',
     new_email: 'Nouveau courriel',
     new_organization: 'Nouvelle Organisation',
     new_team: 'Nouvelle Équipe',
@@ -198,6 +200,7 @@ export default {
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
     no_alias: 'Aucun alias',
     no_description: 'Aucune description',
+    no_games: 'Aucune partie',
     notifications: 'Notifications',
     not_paid: 'Paiement dû',
     no_notifications: 'Pas de notifications',
@@ -234,6 +237,7 @@ export default {
     password_changed: 'Mot de passe changé avec succès',
     password_reset_message:
       'Votre mot de passe a été réinitialisé avec succès!',
+    past_games: 'Parties antérieurs',
     pathname: 'Chemin',
     pay: 'Payer',
     payment_method_added:
@@ -588,8 +592,8 @@ export default {
       'Attitude positive et maîtrise de soi',
     communication: 'Communication',
     //PROTIP
-    you_can_also_click_on_your_game_to_submit_your_score:
-      'ProTip: Vous pouvez aussi cliquer sur votre partie pour entrer votre résultat.',
+    you_can_click_on_your_game_to_submit_your_score:
+      'ProTip: Vous pouvez cliquer sur votre partie pour entrer votre résultat.',
     you_can_click_on_a_game_to_change_score:
       'ProTip: Vous pouvez cliquer sur une partie pour changer le pointage.',
   },
