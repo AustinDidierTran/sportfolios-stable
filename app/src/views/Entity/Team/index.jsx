@@ -5,9 +5,7 @@ import { Paper, IgContainer } from '../../../components/Custom';
 
 import styles from './Team.module.css';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '../../../hooks/queries';
 
-import BasicInfos from '../BasicInfos';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import TabsGenerator, { TABS_ENUM } from '../../../tabs';
 import { formatPageTitle } from '../../../utils/stringFormats';
@@ -15,20 +13,16 @@ import { formatPageTitle } from '../../../utils/stringFormats';
 export default function Team(props) {
   const { basicInfos } = props;
   const { id } = useParams();
-  const query = useQuery();
 
   useEffect(() => {
     document.title = formatPageTitle(basicInfos.name);
   }, [basicInfos]);
 
-  const isManager = id === id; //Need query to identify users that are managers
-
-  const [eventState, setEventState] = useState(
-    query.tab || TABS_ENUM.ABOUT,
-  );
+  const [eventState, setEventState] = useState(TABS_ENUM.ABOUT);
 
   const states = TabsGenerator({
-    list: [TABS_ENUM.ABOUT, TABS_ENUM.SETTINGS],
+    list: [TABS_ENUM.ABOUT],
+    role: basicInfos.role,
   });
 
   const OpenTab = states.find(s => s.value == eventState).component;
@@ -57,9 +51,6 @@ export default function Team(props) {
             />
           ))}
         </Tabs>
-      </Paper>
-      <Paper className={styles.card}>
-        <BasicInfos basicInfos={basicInfos} isManager={isManager} />
       </Paper>
       <OpenTab basicInfos={basicInfos} />
     </IgContainer>

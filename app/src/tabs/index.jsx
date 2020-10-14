@@ -4,6 +4,7 @@ import { ENTITIES_ROLE_ENUM } from '../Store';
 
 const About = loadable(() => import('./About'));
 const Cart = loadable(() => import('./Cart'));
+const EditPersonInfos = loadable(() => import('./EditPersonInfos'));
 const EditRankings = loadable(() => import('./EditRankings'));
 const EditResults = loadable(() => import('./EditResults'));
 const EditRosters = loadable(() => import('./EditRosters'));
@@ -24,6 +25,7 @@ const SwitchToUser = loadable(() => import('./SwitchToUser'));
 export const TABS_ENUM = {
   ABOUT: 'about',
   CART: 'cart',
+  EDIT_PERSON_INFOS: 'editPersonInfos',
   EDIT_RANKINGS: 'editRankings',
   EDIT_RESULTS: 'editResults',
   EDIT_ROSTERS: 'editRosters',
@@ -209,6 +211,25 @@ export default function Tabs(props) {
             label: t('player'),
             icon: 'Autorenew',
             value: TABS_ENUM.SWITCH_TO_USER,
+          },
+        ];
+      }
+      return prev;
+    }
+    if (l === TABS_ENUM.EDIT_PERSON_INFOS) {
+      if (
+        [
+          ENTITIES_ROLE_ENUM.ADMIN,
+          ENTITIES_ROLE_ENUM.EDITOR,
+        ].includes(role)
+      ) {
+        return [
+          ...prev,
+          {
+            component: EditPersonInfos,
+            label: t('edit_infos'),
+            icon: 'Edit',
+            value: TABS_ENUM.EDIT_PERSON_INFOS,
           },
         ];
       }

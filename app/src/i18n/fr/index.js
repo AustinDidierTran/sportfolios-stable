@@ -123,6 +123,7 @@ export default {
     description: 'Description',
     donate: 'Faites un don',
     done: 'Terminé',
+    edit_infos: 'Modifier infos',
     edit_game: 'Modifier la partie',
     edit_your_primary_person: 'Changer de personne primaire',
     editor: 'Éditeur',
