@@ -76,7 +76,7 @@ export default function EventPost(props) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
-  console.log({ creator });
+
   return (
     <Card className={classes.root}>
       <CardHeader

@@ -9,12 +9,14 @@ import GameFilters from './GameFilters';
 import Games from './Games';
 import { useTranslation } from 'react-i18next';
 import ProTip from './ProTip';
+import { LoadingSpinner } from '../../../components/Custom';
 
 export default function AllGames() {
   const { t } = useTranslation();
   const { id: eventId } = useParams();
   const [games, setGames] = useState([]);
   const [pastGames, setPastGames] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getGames();
@@ -48,6 +50,7 @@ export default function AllGames() {
       formatRoute('/api/entity/games', null, { eventId }),
     );
     sortGames(data);
+    setIsLoading(false);
     return data;
   };
 
@@ -73,6 +76,10 @@ export default function AllGames() {
     }
     sortGames(games);
   };
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>

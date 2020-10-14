@@ -52,7 +52,7 @@ export default function Games(props) {
         className={styles.games}
       >
         {games.length ? (
-          games.map(game => <Game game={game} />)
+          games.map(game => <Game game={game} key={game.id} />)
         ) : (
           <Typography color="textSecondary">
             {t('no_games')}

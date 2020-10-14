@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
+import { LoadingSpinner } from '../../components/Custom';
 import PhaseRankings from './PhaseRanking';
 import Ranking from './Ranking';
 import { updateRanking } from './RankingFunctions';
@@ -13,6 +14,7 @@ export default function Rankings() {
 
   const [preRanking, setPreRanking] = useState([]);
   const [ranking, setRanking] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getRankings = async () => {
     const { data } = await api(
@@ -49,11 +51,16 @@ export default function Rankings() {
 
     const rankingInfos = updateRanking(ranking, games);
     setRanking(rankingInfos);
+    setIsLoading(false);
   };
 
   useEffect(() => {
     getRankings();
   }, []);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>

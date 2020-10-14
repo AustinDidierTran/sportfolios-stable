@@ -31,6 +31,7 @@ export default function Rosters(props) {
               onAdd={onAdd}
               onDelete={onDelete}
               index={index + 1}
+              key={roster.rosterId}
             />
           );
         }
@@ -41,6 +42,7 @@ export default function Rosters(props) {
             expandedIndex={expandedIndex}
             setExpandedIndex={setExpandedIndex}
             index={index + 1}
+            key={roster.rosterId}
           />
         );
       })}
