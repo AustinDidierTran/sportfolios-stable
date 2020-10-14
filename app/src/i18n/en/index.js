@@ -119,6 +119,7 @@ export default {
     description: 'Description',
     donate: 'Donate',
     done: 'Done',
+    edit_infos: 'Edit infos',
     edit_game: 'Edit game',
     edit_your_primary_person: 'Edit your primary person',
     editor: 'Editor',
