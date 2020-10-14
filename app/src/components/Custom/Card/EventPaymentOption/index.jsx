@@ -12,12 +12,12 @@ export default function EventPaymentOption(props) {
   const paymentOptionId = option[4];
 
   const arr = fields.filter(f => f.type != 'time');
-
   const items = arr.map((f, index) => ({
     display: f.display,
     value: option[index],
     helperText: f.helperText,
     type: GLOBAL_ENUM.PAYMENT_OPTION,
+    key: index,
   }));
 
   return (

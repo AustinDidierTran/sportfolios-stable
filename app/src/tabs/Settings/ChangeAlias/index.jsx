@@ -42,7 +42,7 @@ export default function ChangeAlias() {
         entityId,
       }),
     );
-    if (data.alias) {
+    if (data?.alias) {
       setTheAlias(data.alias);
     } else {
       setTheAlias(null);

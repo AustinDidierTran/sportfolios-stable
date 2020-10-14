@@ -48,7 +48,11 @@ export default function EditGames(props) {
         className={styles.games}
       >
         {games.map(game => (
-          <ScoreSuggestion game={game} update={update} />
+          <ScoreSuggestion
+            game={game}
+            update={update}
+            key={game.id}
+          />
         ))}
       </Collapse>
     </>

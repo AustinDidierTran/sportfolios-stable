@@ -65,11 +65,13 @@ export default function AddOptionsEvent() {
     {
       display: t('name'),
       value: 0,
+      type: 'text',
     },
     {
       display: t('price'),
       value: 1,
       type: 'number',
+      initialValue: 0,
     },
     {
       helperText: t('registration_open_date'),
@@ -99,10 +101,11 @@ export default function AddOptionsEvent() {
   return (
     <Paper title={t('add_payment_options')}>
       <Container className={styles.container}>
-        {options.map(option => (
+        {options.map((option, index) => (
           <Card
             type={CARD_TYPE_ENUM.EVENT_PAYMENT_OPTION}
             items={{ fields, option, onDelete }}
+            key={index}
           />
         ))}
         <Card

@@ -24,10 +24,11 @@ export default function CustomDialog(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          {buttons.map(button => (
+          {buttons.map((button, index) => (
             <Button
               onClick={button.onClick}
               color={button.color || 'primary'}
+              key={index}
             >
               {button.name}
             </Button>

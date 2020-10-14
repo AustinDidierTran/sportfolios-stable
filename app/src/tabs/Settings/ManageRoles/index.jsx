@@ -119,9 +119,9 @@ export default function ManageRoles() {
   return (
     <Paper title={t('admins')}>
       {entities.map((e, index) => [
-        <List disablePadding className={styles.list}>
+        <List disablePadding className={styles.list} key={index}>
           <ListItem
-            key={`l${index}`}
+            key={index}
             button
             onClick={() =>
               goTo(ROUTES.entity, { id: e.entity_id_admin })

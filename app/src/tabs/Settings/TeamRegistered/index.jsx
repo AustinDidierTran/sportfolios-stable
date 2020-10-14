@@ -258,8 +258,8 @@ export default function TeamRegistered() {
           <TableBody>
             {teams.length > 0 ? (
               <>
-                {teams.map(team => (
-                  <StyledTableRow key={team.name}>
+                {teams.map((team, index) => (
+                  <StyledTableRow key={index}>
                     <StyledTableCell component="th" scope="row">
                       {team.name}
                     </StyledTableCell>
