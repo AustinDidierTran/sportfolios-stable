@@ -1,5 +1,5 @@
 import { useEffect, useContext } from 'react';
-import { FACEBOOK_TEST_APP_ID } from '../../../conf';
+import { FACEBOOK_APP_ID } from '../../../conf';
 import { Store } from '../../src/Store';
 import { LANGUAGE_ENUM } from '../../../common/enums';
 export const useFacebookSDK = () => {
@@ -9,7 +9,7 @@ export const useFacebookSDK = () => {
   const loadFbLoginApi = language => {
     window.fbAsyncInit = function() {
       FB.init({
-        appId: FACEBOOK_TEST_APP_ID,
+        appId: FACEBOOK_APP_ID,
         cookie: true, // enable cookies to allow the server to access
         // the session
         xfbml: true, // parse social plugins on this page
