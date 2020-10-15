@@ -618,11 +618,11 @@ export default {
       'ProTip: Vous pouvez cliquer sur une partie pour changer le pointage.',
 
     //APP DESCRIPTION
-    messenger_description:
-      'Connecte ton compte Messenger pout activer le chatbot Sportfolios',
-    disconnect_app:
-      "Déconnecter l'application {{appName}} de ton compte",
     facebook_description:
       'Connecte ton compte Facebook pour retrouver tes amis et pouvoir activer le chatbot Sportfolios',
+    messenger_description:
+      'Connecte ton compte Messenger pour activer le chatbot Sportfolios',
+    disconnect_app:
+      "Déconnecter l'application {{appName}} de ton compte",
   },
 };

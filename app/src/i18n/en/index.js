@@ -610,10 +610,10 @@ export default {
       'ProTip: You can click on a game to change score.',
 
     //APP DESCRIPTION
-    messenger_description:
-      "Connect with Messenger to enable Sprotfolios' chatbot",
-    disconnect_app: 'Disconnect {{appName}} app from your account',
     facebook_description:
       "Connect with Facebook to find your friends and enable Sportfolios' chatbot",
+    messenger_description:
+      "Connect with Messenger to enable Sportfolios' chatbot",
+    disconnect_app: 'Disconnect {{appName}} app from your account',
   },
 };

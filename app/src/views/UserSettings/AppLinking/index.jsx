@@ -85,6 +85,7 @@ export default function AppLinking() {
     showErrorToast();
   };
   const loginCallback = response => {
+    console.log({ response });
     if (response.status === FACEBOOK_STATUS_ENUM.CONNECTED) {
       onSuccessfulFBConnection();
     } else if (
