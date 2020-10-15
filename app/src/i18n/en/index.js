@@ -597,7 +597,7 @@ export default {
 
     //APP DESCRIPTION
     facebook_description:"Connect with Facebook to find your friends and enable Sportfolios' chatbot",
-    
-    
+    messenger_description: "Connect with Messenger to enable Sprotfolios' chatbot",
+    disconnect_app: 'Disconnect {{appName}} app from your account'
   },
 };

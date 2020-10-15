@@ -254,11 +254,12 @@ const setFacebookData = async(userId, data)=>{
 }
 
 const linkFacebook = async(userId, data)=>{
-  const {facebook_id} = data;
-  if(!facebook_id){
+  console.log({data})
+  const {facebook_app_id} = data;
+  if(!facebook_app_id){
     return;
   }
-  if(await isLinkedFacebookAccount(facebook_id)){
+  if(await isLinkedFacebookAccount(facebook_app_id)){
     throw Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return setFacebookDataHelper(userId,data)
