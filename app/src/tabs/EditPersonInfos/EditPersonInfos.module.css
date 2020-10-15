@@ -1,0 +1,43 @@
+.card {
+  padding: 16px;
+  margin-bottom: 16px;
+  margin-top: 16px;
+}
+
+.div2equal {
+  display: grid;
+  grid-template-columns: 1fr 0.1fr 1fr;
+  grid-template-areas: 'zone1 empty zone2';
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.zone1 {
+  grid-area: zone1;
+}
+
+.zone2 {
+  grid-area: zone2;
+}
+
+.divStateZip {
+  display: grid;
+  grid-template-columns: 1fr 0.1fr 2fr;
+  grid-template-areas: 'zone1 empty zone2';
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.divSingleItem {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-bottom: 4px;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}

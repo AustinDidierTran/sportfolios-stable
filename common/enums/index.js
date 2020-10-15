@@ -97,6 +97,12 @@ const SELECT_ENUM = {
   ALL: 'all',
 };
 
+const GENDER_ENUM = {
+  MALE: 'Male',
+  FEMALE: 'Female',
+  NOT_SPECIFIED: 'Other',
+};
+
 const INVOICE_STATUS_ENUM = {
   DRAFT: 'draft',
   DELETED: 'deleted',
@@ -252,12 +258,15 @@ const LOGO_ENUM = {
     'https://sportfolios-images.s3.amazonaws.com/development/images/entity/20200724-vefl9-8317ff33-3b04-49a1-afd3-420202cddf73',
   WHITE_ICON_180X180:
     'https://sportfolios-images.s3.amazonaws.com/development/images/entity/20200724-klr71-8317ff33-3b04-49a1-afd3-420202cddf73',
+  POWERED_BY_GOOGLE: 
+    'https://sportfolios-images.s3.amazonaws.com/development/images/entity/20201015-q2kik-8317ff33-3b04-49a1-afd3-420202cddf73',
 };
 
 module.exports = {
   CARD_TYPE_ENUM,
   COMPONENT_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,
+  GENDER_ENUM,
   GLOBAL_ENUM,
   IMAGE_ENUM,
   INVOICE_STATUS_ENUM,
