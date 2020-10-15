@@ -1967,7 +1967,7 @@ const addPlayerToRoster = async (body, userId) => {
     player = await knex('team_players')
       .insert({
         roster_id: rosterId,
-        person_id: person.id,
+        person_id: person.id[0],
         name: name,
         id,
         is_sub: isSub,

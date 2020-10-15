@@ -71,7 +71,8 @@ const getEntitiesFromQuery = async (query, blackList) => {
     )
     .where('complete_name', 'ILIKE', `%${query}%`)
     .orWhere('name', 'ILIKE', `%${query}%`)
-    .orWhere('surname', 'ILIKE', `%${query}%`);
+    .orWhere('surname', 'ILIKE', `%${query}%`)
+    .limit(15);
 
   if (!blackList || blackList === undefined) {
     return entities.map(mappingFunction);
@@ -135,7 +136,8 @@ const getPersonsFromQuery = async (query, blackList, whiteList) => {
     )
     .where('complete_name', 'ILIKE', `%${query}%`)
     .orWhere('name', 'ILIKE', `%${query}%`)
-    .orWhere('surname', 'ILIKE', `%${query}%`);
+    .orWhere('surname', 'ILIKE', `%${query}%`)
+    .limit(15);
 
   if (whiteList) {
     const parsed = JSON.parse(whiteList);
@@ -206,7 +208,8 @@ const getTeamsFromQuery = async (query, blackList, whiteList) => {
     )
     .where('complete_name', 'ILIKE', `%${query}%`)
     .orWhere('name', 'ILIKE', `%${query}%`)
-    .orWhere('surname', 'ILIKE', `%${query}%`);
+    .orWhere('surname', 'ILIKE', `%${query}%`)
+    .limit(15);
 
   if (whiteList) {
     const parsed = JSON.parse(whiteList);
@@ -277,7 +280,8 @@ const getOrganizationsFromQuery = async query => {
     )
     .where('complete_name', 'ILIKE', `%${query}%`)
     .orWhere('name', 'ILIKE', `%${query}%`)
-    .orWhere('surname', 'ILIKE', `%${query}%`);
+    .orWhere('surname', 'ILIKE', `%${query}%`)
+    .limit(15);
 
   if (whiteList) {
     const parsed = JSON.parse(whiteList);

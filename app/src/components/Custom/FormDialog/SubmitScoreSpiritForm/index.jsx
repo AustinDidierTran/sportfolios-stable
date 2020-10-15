@@ -46,10 +46,20 @@ export default function SubmitScoreDialog(props) {
   const onAddPlayerClose = () => {
     setAddPlayer(false);
   };
-
   const updateRoster = player => {
-    const newRoster = [...roster, player];
+    let name = '';
+    if (player.is_sub) {
+      name = `${player.completeName || player.name} (${t('sub')})`;
+    } else {
+      name = player.completeName || player.name;
+    }
+    const newRoster = [...roster, name];
     setRoster(newRoster);
+    const newFullRoster = [
+      ...fullRoster,
+      { display: name, value: player.id },
+    ];
+    setFullRoster(newFullRoster);
   };
 
   useEffect(() => {
@@ -420,7 +430,6 @@ export default function SubmitScoreDialog(props) {
       type: 'text',
     },
   ];
-
   return (
     <>
       <BasicFormDialog
@@ -435,6 +444,7 @@ export default function SubmitScoreDialog(props) {
         open={addPlayer}
         onClose={onAddPlayerClose}
         rosterId={formik.values.yourTeam}
+        fullRoster={fullRoster}
         updateRoster={updateRoster}
       />
     </>
