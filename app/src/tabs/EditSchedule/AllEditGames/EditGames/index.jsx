@@ -32,7 +32,9 @@ export default function EditGames(props) {
     <>
       <div className={styles.collapse} onClick={handleExpand}>
         <div className={styles.nothing} />
-        <Typography className={styles.seeScore}>{title}</Typography>
+        <Typography className={styles.seeScore} color="textSecondary">
+          {title}
+        </Typography>
         <IconButton
           aria-expanded={expanded}
           icon={icon}
@@ -48,7 +50,11 @@ export default function EditGames(props) {
         className={styles.games}
       >
         {games.map(game => (
-          <ScoreSuggestion game={game} update={update} />
+          <ScoreSuggestion
+            game={game}
+            update={update}
+            key={game.id}
+          />
         ))}
       </Collapse>
     </>

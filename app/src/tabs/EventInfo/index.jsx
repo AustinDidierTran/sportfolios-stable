@@ -29,6 +29,14 @@ const getEvent = async eventId => {
   );
   return data;
 };
+const getTeams = async eventId => {
+  const { data: teams } = await api(
+    formatRoute('/api/entity/allTeamsRegisteredInfos', null, {
+      eventId,
+    }),
+  );
+  return teams;
+};
 
 export default function TabEventInfo() {
   const { t } = useTranslation();
@@ -36,6 +44,7 @@ export default function TabEventInfo() {
   const [options, setOptions] = useState([]);
   const [isFull, setIsFull] = useState(false);
   const [event, setEvent] = useState({});
+  const [teams, setTeams] = useState([]);
   const [canRegister, setCanRegister] = useState(false);
   const [remainingSpots, setRemainingSpots] = useState(null);
   const [color, setColor] = useState('textSecondary');
@@ -108,12 +117,18 @@ export default function TabEventInfo() {
   };
 
   useEffect(() => {
-    getIsFull();
+    if (!event || !event.maximum_spots) {
+      setIsFull(false);
+    } else {
+      setIsFull(teams.length >= event.maximum_spots);
+    }
   }, [options]);
 
   const getData = async () => {
     const event = await getEvent(id);
     setEvent(event);
+    const teams = await getTeams(id);
+    setTeams(teams);
     setIsLoading(false);
   };
 
@@ -128,23 +143,13 @@ export default function TabEventInfo() {
     );
   };
 
-  const getIsFull = async () => {
-    const { data } = await api(
-      formatRoute('/api/entity/event', null, {
-        eventId: id,
-      }),
-    );
-    const { data: teams } = await api(
-      formatRoute('/api/entity/allTeamsRegisteredInfos', null, {
-        eventId: id,
-      }),
-    );
-    if (!data || !data.maximum_spots) {
-      setIsFull(false);
+  useEffect(() => {
+    if (options.length < 1 || isFull || isLate || isEarly) {
+      setCanRegister(false);
     } else {
-      setIsFull(teams.length >= data.maximum_spots);
+      setCanRegister(true);
     }
-  };
+  }, [isFull, options, isLate, isEarly]);
 
   const Problems = () => {
     if (options.length < 1) {
@@ -158,7 +163,6 @@ export default function TabEventInfo() {
         </Typography>
       );
     } else if (isFull) {
-      setCanRegister(false);
       return (
         <Typography
           variant="body2"
@@ -169,7 +173,6 @@ export default function TabEventInfo() {
         </Typography>
       );
     } else if (isLate) {
-      setCanRegister(false);
       return (
         <Typography
           variant="body2"
@@ -180,7 +183,6 @@ export default function TabEventInfo() {
         </Typography>
       );
     } else if (isEarly) {
-      setCanRegister(false);
       return (
         <>
           <Typography
@@ -201,7 +203,6 @@ export default function TabEventInfo() {
         </>
       );
     } else {
-      setCanRegister(true);
       return (
         <Typography
           variant="body2"
@@ -257,11 +258,21 @@ export default function TabEventInfo() {
             >
               {event.location || 'Sherbrooke'}
             </Typography>
-            {!isFull ? (
-              <Typography variant="body2" color={color} component="p">
-                {remainingSpots}&nbsp;
-                {t('places_left')}
-              </Typography>
+            {remainingSpots ? (
+              <>
+                {!isFull ? (
+                  <Typography
+                    variant="body2"
+                    color={color}
+                    component="p"
+                  >
+                    {remainingSpots}&nbsp;
+                    {t('places_left')}
+                  </Typography>
+                ) : (
+                  <></>
+                )}
+              </>
             ) : (
               <></>
             )}

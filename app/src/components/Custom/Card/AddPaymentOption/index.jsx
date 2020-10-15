@@ -129,9 +129,10 @@ export default function AddPaymentOption(props) {
   return (
     <Paper>
       <List>
-        {fields.map(f => (
+        {fields.map((f, index) => (
           <ListItem
             style={{ paddingTop: '8px', paddingBottom: '0px' }}
+            index={index}
           >
             <Input
               helperText={f.helperText}

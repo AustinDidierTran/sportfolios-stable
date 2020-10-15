@@ -39,7 +39,7 @@ export default function EventSettings() {
     {
       helperText: t('maximum_spots'),
       type: 'number',
-      initialValue: infos.maximum_spots,
+      initialValue: infos.maximum_spots || 0,
     },
     {
       helperText: t('event_start'),

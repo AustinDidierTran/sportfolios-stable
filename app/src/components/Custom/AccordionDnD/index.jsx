@@ -90,7 +90,7 @@ export default function CustomAccordionDnD(props) {
       </AccordionSummary>
       <AccordionDetails>
         <div className={styles.div}>
-          {buttons.map(button => (
+          {buttons.map((button, index) => (
             <Button
               onClick={() => {
                 button.onClick(items);
@@ -100,6 +100,7 @@ export default function CustomAccordionDnD(props) {
               disabled={button.disabled}
               endIcon={button.endIcon}
               className={styles.button}
+              key={index}
             >
               {button.name}
             </Button>

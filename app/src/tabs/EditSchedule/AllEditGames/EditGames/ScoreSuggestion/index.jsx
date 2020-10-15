@@ -150,6 +150,7 @@ export default function ScoreSuggestion(props) {
                   index,
                   update: updateSuggestions,
                 }}
+                key={index}
               />
             ))}
           </Collapse>

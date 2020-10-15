@@ -60,7 +60,6 @@ export default function Ranking() {
   categories.map(categorie =>
     categorie.teams.sort((a, b) => a.position - b.position),
   );
-
   return (
     <Paper className={styles.bigCard}>
       <Typography variant="h3" className={styles.title}>

@@ -152,7 +152,9 @@ export default function EventPost(props) {
           >
             <ExpandMoreIcon />
           </IconButton>
-        ) : null}
+        ) : (
+          <></>
+        )}
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>

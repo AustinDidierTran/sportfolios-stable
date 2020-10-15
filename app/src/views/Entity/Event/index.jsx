@@ -1,17 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { Tab, Tabs } from '../../../components/MUI';
-import { Paper, IgContainer } from '../../../components/Custom';
+import { Paper, IgContainer, Icon } from '../../../components/Custom';
 
 import { useParams } from 'react-router-dom';
 import { useQuery } from '../../../hooks/queries';
 
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import TabsGenerator, { TABS_ENUM } from '../../../tabs';
 import { formatPageTitle } from '../../../utils/stringFormats';
 import { Helmet } from 'react-helmet';
 import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
-import styles from './Event.module.css';
 import { AddGaEvent } from '../../../components/Custom/Analytics';
 
 export default function Event(props) {
@@ -137,8 +137,6 @@ export default function Event(props) {
     return '';
   }, [basicInfos]);
 
-  const className = states.length > 5 ? styles.div6 : styles.div;
-
   return (
     <IgContainer>
       <Helmet>
@@ -149,23 +147,40 @@ export default function Event(props) {
         <meta property="og:locale" content="fr_CA" />
       </Helmet>
       <Paper>
-        <Tabs
-          value={states.findIndex(s => s.value === eventState)}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-        >
-          {states.map((s, index) => (
-            <div className={className}>
+        {window.innerWidth < 768 ? (
+          <Tabs
+            value={states.findIndex(s => s.value === eventState)}
+            indicatorColor="primary"
+            textColor="primary"
+          >
+            {states.map((s, index) => (
+              <Tab
+                key={index}
+                onClick={() => onClick(s)}
+                icon={<Icon icon={s.icon} />}
+                style={{
+                  minWidth: window.innerWidth / states.length,
+                }}
+              />
+            ))}
+          </Tabs>
+        ) : (
+          <Tabs
+            value={states.findIndex(s => s.value === eventState)}
+            indicatorColor="primary"
+            textColor="primary"
+          >
+            {states.map((s, index) => (
               <Tab
                 key={index}
                 onClick={() => onClick(s)}
                 label={s.label}
-                icon={s.icon}
+                icon={<Icon icon={s.icon} />}
+                style={{ minWidth: 700 / states.length }}
               />
-            </div>
-          ))}
-        </Tabs>
+            ))}
+          </Tabs>
+        )}
       </Paper>
       <OpenTab basicInfos={basicInfos} />
     </IgContainer>

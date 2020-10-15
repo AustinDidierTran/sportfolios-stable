@@ -33,7 +33,6 @@ export default function Players(props) {
   if (!players) {
     return null;
   }
-
   if (role === ROSTER_ROLE_ENUM.CAPTAIN) {
     return (
       <div className={styles.card}>
@@ -57,6 +56,7 @@ export default function Players(props) {
                 player={player}
                 role={role}
                 onDelete={onDelete}
+                key={player.id}
               />
             ))}
           </div>

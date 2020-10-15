@@ -61,7 +61,7 @@ export default function Events(props) {
   return (
     <div className={styles.div}>
       <div className={styles.buttonDiv}>
-        <Button onClick={handleClick} style={{ margin: 8 }}>
+        <Button onClick={handleClick} style={{ margin: '8px' }}>
           {t('create_event')}
         </Button>
       </div>

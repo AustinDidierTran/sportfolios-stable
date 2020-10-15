@@ -48,15 +48,16 @@ export default function BasicFormDialog(props) {
             ) : (
               <></>
             )}
-            {fields.map(field => (
-              <div style={{ marginTop: '8px' }}>
+            {fields.map((field, index) => (
+              <div style={{ marginTop: '8px' }} key={index}>
                 <ComponentFactory component={{ ...field, formik }} />
               </div>
             ))}
           </DialogContent>
           <DialogActions>
-            {buttons.map(button => (
+            {buttons.map((button, index) => (
               <Button
+                key={index}
                 onClick={button.onClick}
                 color={button.color}
                 type={button.type}
