@@ -38,17 +38,20 @@ export default function SearchList(props) {
     }
     if (blackList) {
       if (blackList.length > 0) {
-        return formatRoute('/api/data/search/global', null, {
+        const res = formatRoute('/api/data/search/global', null, {
           blackList: JSON.stringify(blackList),
           query: query.value,
           type,
         });
+        return res;
       }
     }
-    return formatRoute('/api/data/search/global', null, {
+
+    const res = formatRoute('/api/data/search/global', null, {
       query: query.value,
       type,
     });
+    return res;
   }, [query, type]);
 
   const { response } = useApiRoute(optionsRoute, {
@@ -110,7 +113,6 @@ export default function SearchList(props) {
       query.onChange(value);
     }
   };
-
   const onEnter = e => {
     if (e.key === 'Enter') {
       if (e.target.value) {
