@@ -1,0 +1,12 @@
+.button {
+  max-height: 30px;
+  padding-right: 96px;
+}
+
+.main {
+  width: 100%;
+}
+
+.text {
+  max-width: 60%;
+}

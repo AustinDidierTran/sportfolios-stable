@@ -10,7 +10,7 @@ export default {
     accept: 'Accepter',
     accept_person_transfer_confirmation:
       'Êtes vous certain de vouloir accepter le transfert de {{name}}?',
-
+      account_already_linked: 'Ce compte est déjà lié à un compte Sportfolios.',
     account_holder_name: 'Nom du titulaire du compte',
     add_admin: 'Ajouter admin',
     add: 'Ajouter',
@@ -99,7 +99,9 @@ export default {
     confirm: 'Confirmer',
     confirmation_email_sent:
       'Le courriel a été envoyé avec succès. Allez dans votre boîte de courriel pour réinitialiser votre mot de passe.',
-    contact_us: 'Contactez-nous',
+      connection_failed: 'La connexion au compte a échoué, veuillez réessayer',
+      connect_with_facebook: 'Se connecter avec Facebook',
+      contact_us: 'Contactez-nous',
     contact: 'Contact',
     country: 'Pays',
     create_a_game: 'Créer une partie',
@@ -186,6 +188,7 @@ export default {
     max_length: 'Longueur maximum',
     menu: 'Menu',
     more_filters: 'Plus de filtre',
+    my_apps: 'Mes applications',
     my_persons: 'Mes personnes',
     name: 'Nom',
     next: 'Prochain',
@@ -350,7 +353,8 @@ export default {
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
     waiting_for_payment:
       'Votre paiement est en cours de traitement. Merci pour votre patience.',
-    unregister: 'Désinscrire',
+    unlink_facebook_account: 'Déconnecter mon compte Facebook',
+      unregister: 'Désinscrire',
     unregister_all: 'Tout désinscrire',
     unsupported_language: 'Langue non supportée',
     upload: 'Téléverser',
@@ -597,5 +601,9 @@ export default {
       'ProTip: Vous pouvez cliquer sur votre partie pour entrer votre résultat.',
     you_can_click_on_a_game_to_change_score:
       'ProTip: Vous pouvez cliquer sur une partie pour changer le pointage.',
+
+    //APP DESCRIPTION
+    facebook_description:"Connecte ton compte Facebook pour retrouver tes amis et pouvoir activer le chatbot Sportfolios",
+    
   },
 };

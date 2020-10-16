@@ -1,0 +1,28 @@
+.main {
+  margin-top: 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  padding: 16px;
+  justify-content: space-between;
+  align-items: center;
+}
+.first {
+  grid-column: 1;
+}
+
+.second {
+  grid-column: 2;
+}
+
+.third {
+  grid-column: 3;
+}
+
+.fourth {
+  grid-column: 4;
+  justify-self: end;
+  max-height: 30px;
+}

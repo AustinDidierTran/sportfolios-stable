@@ -3,8 +3,8 @@ const {
   ENTITIES_ROLE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
 } = require('../../../../common/enums');
+const {ERROR_ENUM}= require('../../../../common/errors');
 const bcrypt = require('bcrypt');
-const { ERROR_ENUM } = require('../../../../common/errors');
 
 const {
   createUserEmail,
@@ -28,6 +28,10 @@ const {
   generateAuthToken,
   generateToken,
   validateEmailIsConfirmed,
+  setFacebookData:setFacebookDataHelper,
+  getFacebookId,
+  deleteFacebookId,
+  isLinkedFacebookAccount
 } = require('../helpers');
 
 const {
@@ -245,6 +249,36 @@ const getTransferInfos = async token => {
     authToken,
   };
 };
+const setFacebookData = async(userId, data)=>{
+  return setFacebookDataHelper(userId,data)
+}
+
+const linkFacebook = async(userId, data)=>{
+  const {facebook_id} = data;
+  if(!facebook_id){
+    return;
+  }
+  if(await isLinkedFacebookAccount(facebook_id)){
+    throw Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return setFacebookDataHelper(userId,data)
+}
+
+const getConnectedApps = async (userId) => {
+  const facebookId = await getFacebookId(userId)
+  const facebook = {
+    connected: Boolean(facebookId),
+    id: facebookId
+  }
+  let apps= {};
+  apps.facebook = facebook;
+  return apps;
+}
+
+const unlinkFacebook = async (user_id)=>{
+  return deleteFacebookId(user_id);
+}
+
 
 module.exports = {
   addEmail,
@@ -262,4 +296,8 @@ module.exports = {
   declinePersonTransfer,
   getOwnedAndTransferedPersons,
   getTransferInfos,
+  setFacebookData,
+  getConnectedApps,
+  unlinkFacebook,
+  linkFacebook
 };

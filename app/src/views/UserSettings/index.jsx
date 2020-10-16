@@ -11,6 +11,7 @@ import { formatPageTitle } from '../../utils/stringFormats';
 import { useTranslation } from 'react-i18next';
 import MyPersons from './MyPersons';
 import { Store } from '../../Store';
+import AppLinking from './AppLinking';
 
 export default function UserSettings() {
   const { t } = useTranslation();
@@ -33,6 +34,7 @@ export default function UserSettings() {
         <ChangePassword />
         <Email />
         <MyPersons />
+        <AppLinking />
         <Disconnect />
       </IgContainer>
     </div>
