@@ -1,129 +1,98 @@
-import React, { useEffect, useState } from 'react';
-
-import PlacesAutocomplete from 'react-places-autocomplete';
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { GOOGLE_PLACES_API_KEY } from '../../../../../conf';
-import { LOGO_ENUM } from '../../../../../common/enums';
+import { useTranslation } from 'react-i18next';
 import styles from './AddressSearchInput.module.css';
+import uuid from 'uuid';
 
-export default function AddressSearchInput() {
+// REFERENCE: https://medium.com/better-programming/the-best-practice-with-google-place-autocomplete-api-on-react-939211e8b4ce
+
+let autoComplete;
+
+function AddressSearchInput(props) {
   const { t } = useTranslation();
-  const [address, setAddress] = useState('');
+  const [query, setQuery] = useState('');
+  const [address, setAddress] = useState({});
+  const autoCompleteRef = useRef(null);
+  const { language: languageProp } = props;
 
-  const handleSelect = address => {
-    console.log(`Selected ${address}`);
+  useEffect(() => {
+    loadScript(
+      `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_PLACES_API_KEY}&libraries=places`,
+      () => handleScriptLoad(setQuery, autoCompleteRef),
+    );
+  }, []);
+
+  const loadScript = (url, callback) => {
+    let script = document.createElement('script');
+    script.type = 'text/javascript';
+
+    if (script.readyState) {
+      script.onreadystatechange = function() {
+        if (
+          script.readyState === 'loaded' ||
+          script.readyState === 'complete'
+        ) {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else {
+      script.onload = () => callback();
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
   };
 
-  return (
-    <PlacesAutocomplete
-      value={address}
-      onChange={() => setAddress(address)}
-      onSelect={handleSelect}
-      shouldFetchSuggestions={address?.length > 3}
-      debounce={400}
-    >
-      {({ getInputProps, suggestions, getSuggestionItemProps }) => {
-        return (
-          <div className={styles.searchBarContainer}>
-            <div className={styles.searchInputContainer}>
-              <input
-                {...getInputProps({
-                  placeholder: t('type_address'),
-                  className: styles.searchInput,
-                })}
-              />
-              {address?.length > 0 && (
-                <button
-                  className={styles.clearButton}
-                  onClick={() => setAddress('')}
-                >
-                  x
-                </button>
-              )}
-            </div>
-            {suggestions.length > 0 && (
-              <div className={styles.autocompleteContainer}>
-                {suggestions.map(suggestion => {
-                  /*const className = classnames({styles.suggestion-item}, {
-                    {styles.suggestion-item--active}: suggestion.active,
-                });*/
+  function handleScriptLoad(updateQuery, autoCompleteRef) {
+    const options = {
+      sessiontoken: uuid.v4(),
+      types: ['address'],
+      componentRestrictions: { country: 'ca' },
+      language: `${languageProp}`,
+      //radius: 50000,
+      //location: `45.404476, -71.888351`, // Location biasis: search around this (doesn't seem to work...)
+    };
 
-                  return (
-                    <div
-                    //{...getSuggestionItemProps(suggestion, { className })}
-                    >
-                      <strong>
-                        {suggestion.formattedSuggestion.mainText}
-                      </strong>{' '}
-                      <small>
-                        {suggestion.formattedSuggestion.secondaryText}
-                      </small>
-                    </div>
-                  );
-                })}
-                <div className={styles.dropdownFooter}>
-                  <div>
-                    <img
-                      src={LOGO_ENUM.POWERED_BY_GOOGLE}
-                      alt="powered by Google"
-                      className={styles.dropdownFooterImage}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      }}
-    </PlacesAutocomplete>
+    autoComplete = new window.google.maps.places.Autocomplete(
+      autoCompleteRef.current,
+      options,
+    );
+    autoComplete.setFields([
+      'address_components',
+      'formatted_address',
+    ]);
+    autoComplete.addListener('place_changed', () =>
+      handlePlaceSelect(updateQuery),
+    );
+  }
+
+  async function handlePlaceSelect(updateQuery) {
+    const addressObject = autoComplete.getPlace();
+    const query = addressObject.formatted_address;
+    updateQuery(query);
+    console.log(addressObject);
+    const fullAddress = addressObject.address_components;
+    setAddress({
+      street_address: `${fullAddress[0].long_name} ${fullAddress[1].long_name}`,
+      city: fullAddress[3].long_name,
+      state: fullAddress[5].short_name,
+      country: fullAddress[6].short_name,
+      zip: fullAddress[7].short_name,
+    });
+  }
+
+  return (
+    <div className={styles.searchLocationInput}>
+      <input
+        ref={autoCompleteRef}
+        onChange={event => setQuery(event.target.value)}
+        placeholder={t('address')}
+        value={query}
+      />
+    </div>
   );
 }
 
-/*
-<PlacesAutocomplete
-      value={address}
-      onChange={() => setAddress(address)}
-      onSelect={handleSelect}
-      shouldFetchSuggestions={address?.length > 3}
-      debounce={400}
-    >
-      {({
-        getInputProps,
-        suggestions,
-        getSuggestionItemProps,
-        loading,
-      }) => (
-        <div>
-          <input
-            {...getInputProps({
-              placeholder: t('type_address'),
-              className: 'location-search-input',
-            })}
-          />
-          <div className="autocomplete-dropdown-container">
-            {loading && <div>Loading...</div>}
-            {suggestions.map(suggestion => {
-              const className = suggestion.active
-                ? 'suggestion-item--active'
-                : 'suggestion-item';
-              // inline style for demonstration purpose
-              const style = suggestion.active
-                ? { backgroundColor: '#fafafa', cursor: 'pointer' }
-                : { backgroundColor: '#ffffff', cursor: 'pointer' };
-              return (
-                <div
-                  {...getSuggestionItemProps(suggestion, {
-                    className,
-                    style,
-                  })}
-                >
-                  <span>{suggestion.description}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-        </PlacesAutocomplete>
-        */
+export default AddressSearchInput;

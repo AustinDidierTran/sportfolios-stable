@@ -1,68 +1,31 @@
-.searchBarContainer {
-  width: 90%;
-  max-width: 500px;
-  /*margin: 20px auto 0;*/
-}
-
-.searchInputContainer {
-  position: relative;
-}
-
-.searchInput,
-.searchInput:focus,
-.searchInput:active {
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16),
-    0 0 0 1px rgba(0, 0, 0, 0.08);
-  border: honeydew;
-  display: block;
-  width: 100%;
-  padding: 16px;
-  font-size: 16px;
-  border-radius: 2px;
-  outline: none;
-}
-
-.clearButton,
-.clearButton:active,
-.clearButton:focus {
-  position: absolute;
-  right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: transparent;
-  border: none;
-  outline: none;
-  font-weight: 600;
-  color: #999;
-}
-
-.autocompleteContainer {
-  border-bottom: honeydew;
-  border-left: honeydew;
-  border-right: honeydew;
-  border-top: 1px solid #e6e6e6;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  border-radius: 0 0 2px 2px;
-}
-
-.suggestionItem {
-  padding: 8px;
-  text-align: left;
-  background-color: #fff;
-  cursor: pointer;
-}
-
-.suggestionItemActive {
-  background-color: #fafafa;
-}
-
-.dropdownFooter {
+.searchLocationInput {
   display: flex;
-  justify-content: flex-end;
-  padding: 4px;
+  overflow: auto;
+  border-radius: 4px;
+  border: 1px solid #d8d8d8;
 }
 
-.dropdownFooterImage {
-  display: inline-block;
-  width: 150px;
+.searchLocationInput:focus-within {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: rgba(223, 225, 229, 0);
+  box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28);
+}
+
+.searchLocationInput:hover {
+  box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28);
+  border-color: rgba(223, 225, 229, 0);
+}
+
+.searchLocationInput input {
+  height: 32px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.searchLocationInput input:focus {
+  outline: none;
 }
