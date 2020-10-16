@@ -4,6 +4,13 @@ const ENTITIES_ROLE_ENUM = {
   VIEWER: 3,
 };
 
+const APP_ENUM = {
+  FACEBOOK: 'Facebook',
+  MESSENGER: 'Messenger',
+  GOOGLE: 'Google',
+  APPLE: 'Apple',
+}
+
 const SIZES_ENUM = {
   XXXS: '3x-small',
   XXS: '2x-small',
@@ -116,6 +123,11 @@ const PERSON_TRANSFER_STATUS_ENUM = {
   CANCELED: 'canceled',
 };
 
+const FACEBOOK_STATUS_ENUM = {
+  CONNECTED: 'connected',
+  NOT_AUTHORIZED: 'not_authorized'
+}
+
 const REJECTION_ENUM = {
   NO_REMAINING_SPOTS: 'no_remaining_spots',
 };
@@ -175,6 +187,7 @@ const GLOBAL_ENUM = {
   ROSTER_ITEM: 'roster_item',
   SALES: 'sales',
   SHOP_ITEM: 'shop_item',
+  APP_ITEM: 'app_item'
 };
 
 const MILLIS_TIME_ENUM = {
@@ -271,4 +284,6 @@ module.exports = {
   FORM_DIALOG_TYPE_ENUM,
   MILLIS_TIME_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
+  FACEBOOK_STATUS_ENUM,
+  APP_ENUM
 };

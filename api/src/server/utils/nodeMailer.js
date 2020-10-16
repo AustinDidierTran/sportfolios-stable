@@ -130,7 +130,7 @@ const sendPersonTransferEmail = async ({
     subject =
       senderName +
       ' veut transférer une personne à votre compte | Sportfolios';
-    title = 'Transfère de personne';
+    title = 'Transfert de personne';
     content =
       senderName +
       ' veut vous transférer la personne ' +

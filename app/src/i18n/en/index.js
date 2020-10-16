@@ -10,7 +10,7 @@ export default {
     accept: 'Accept',
     accept_person_transfer_confirmation:
       'Are you sure you want to accept the transfer of {{name}}?',
-    account_already_linked: 'This account is already linked to another sportfolios user.',
+    account_already_linked: 'This account is already linked to another Sportfolios user.',
     account_holder_name: 'Account Holder Name',
     add: 'Add',
     add_bank_account: 'Add bank account',
@@ -593,5 +593,10 @@ export default {
       'ProTip: You can click on your game to submit your result.',
     you_can_click_on_a_game_to_change_score:
       'ProTip: You can click on a game to change score.',
+
+    //APP DESCRIPTION
+    facebook_description:"Connect with Facebook to find your friends and enable Sportfolios' chatbot",
+    
+    
   },
 };

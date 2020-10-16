@@ -10,7 +10,7 @@ export default {
     accept: 'Accepter',
     accept_person_transfer_confirmation:
       'Êtes vous certain de vouloir accepter le transfert de {{name}}?',
-      account_already_linked: 'Ce compte est déjà lié à un compte sportfolios.',
+      account_already_linked: 'Ce compte est déjà lié à un compte Sportfolios.',
     account_holder_name: 'Nom du titulaire du compte',
     add_admin: 'Ajouter admin',
     add: 'Ajouter',
@@ -600,5 +600,9 @@ export default {
       'ProTip: Vous pouvez cliquer sur votre partie pour entrer votre résultat.',
     you_can_click_on_a_game_to_change_score:
       'ProTip: Vous pouvez cliquer sur une partie pour changer le pointage.',
+
+    //APP DESCRIPTION
+    facebook_description:"Connecte ton compte Facebook pour retrouver tes amis et pouvoir activer le chatbot Sportfolios",
+    
   },
 };
