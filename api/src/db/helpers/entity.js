@@ -1047,6 +1047,22 @@ async function getGeneralInfos(entityId) {
   };
 }
 
+async function getPersonInfos(entityId) {
+  const realId = await getRealId(entityId);
+  const [res] = await knex('person_all_infos')
+  .select('*')
+  .where({id: realId});
+
+  return {
+    photoUrl: res.photo_url,
+    name: res.name,
+    surname: res.surname,
+    birthDate: res.birth_date,
+    gender: res.gender,
+    address: res.address,
+  };
+}
+
 async function updateEntityRole(entityId, entityIdAdmin, role) {
   const realEntityId = await getRealId(entityId);
   const realAdminId = await getRealId(entityIdAdmin);
@@ -1109,6 +1125,58 @@ async function updateGeneralInfos(entityId, body) {
     .where({ entity_id: realId })
     .returning('*');
   return entity;
+}
+
+async function updatePersonInfosHelper(entityId, body) {
+  const { personInfos } = body;
+  const realId = await getRealId(entityId);
+
+  let fullname;
+  let birthDate;
+  let gender;
+  let fullAddress;
+
+  if (personInfos.name || personInfos.surname) {  
+    fullname = await knex('entities_name')
+    .update({name: personInfos.name, surname: personInfos.surname})
+    .where({ entity_id: realId })
+    .returning('*');  
+  }
+
+  if (personInfos.birthDate) {  
+    birthDate = await knex('entities_birth_date')
+    .update({birth_date: personInfos.birthDate})
+    .where({ entity_id: realId })
+    .returning('birth_date');  
+  }
+
+  if (personInfos.gender) {  
+    gender = await knex('entities_gender')
+    .update({gender: personInfos.gender})
+    .where({ entity_id: realId })
+    .returning('gender');  
+  }
+
+  if (personInfos.address) {
+    // something different
+    /*fullAddress = await knex('entities_address')
+    .update({
+      street_address: personInfos.address.street_address,
+      city: personInfos.address.city,
+      state: personInfos.address.state,
+      zip: personInfos.address.zip,
+      country: personInfos.address.country})
+    .where({ entity_id: realId })
+    .returning('*');*/
+  }
+
+  return {
+    name: fullname[0].name,
+    surname: fullname[0].surname,
+    birthDate: birthDate[0],
+    gender: gender[0],
+    address: fullAddress,
+  };
 }
 
 async function updateEntityName(entityId, name, surname) {
@@ -2144,6 +2212,7 @@ module.exports = {
   getOptions,
   getRosterInvoiceItem,
   getWichTeamsCanUnregister,
+  getPersonInfos,
   removeEntityRole,
   removeEventCartItem,
   unregister,
@@ -2153,6 +2222,7 @@ module.exports = {
   updateEvent,
   updatePreRanking,
   updateGeneralInfos,
+  updatePersonInfosHelper,
   updateMember,
   updateAlias,
   updateGame,

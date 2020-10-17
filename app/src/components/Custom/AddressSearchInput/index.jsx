@@ -12,6 +12,7 @@ let autoComplete;
 function AddressSearchInput(props) {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
+  /* eslint-disable-next-line */
   const [address, setAddress] = useState({});
   const autoCompleteRef = useRef(null);
   const { language: languageProp } = props;
@@ -72,7 +73,6 @@ function AddressSearchInput(props) {
     const addressObject = autoComplete.getPlace();
     const query = addressObject.formatted_address;
     updateQuery(query);
-    console.log(addressObject);
     const fullAddress = addressObject.address_components;
     setAddress({
       street_address: `${fullAddress[0].long_name} ${fullAddress[1].long_name}`,

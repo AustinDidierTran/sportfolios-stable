@@ -53,6 +53,7 @@ const {
   getMemberships: getMembershipsHelper,
   getOptions: getOptionsHelper,
   getOwnedEvents: getOwnedEventsHelper,
+  getPersonInfos: getPersonInfosHelper,
   getPhases: getPhasesHelper,
   getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
   getRankings: getRankingsHelper,
@@ -77,6 +78,7 @@ const {
   updateEvent: updateEventHelper,
   updateGame: updateGameHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
+  updatePersonInfosHelper,
   updateMember: updateMemberHelper,
   updatePreRanking: updatePreRankingHelper,
   updateRegistration: updateRegistrationHelper,
@@ -236,6 +238,10 @@ async function getGeneralInfos(entityId, userId) {
   return getGeneralInfosHelper(entityId, userId);
 }
 
+async function getPersonInfos(entityId) {
+  return getPersonInfosHelper(entityId);
+}
+
 async function updateEvent(body, userId) {
   const { eventId, maximumSpots, eventStart, eventEnd } = body;
   if (
@@ -269,6 +275,16 @@ async function updateGeneralInfos(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return updateGeneralInfosHelper(entityId, otherBody);
+}
+
+async function updatePersonInfos(body, userId) {
+  const { entityId, ...otherBody } = body;
+  if (
+    !(await isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return updatePersonInfosHelper(entityId, otherBody);
 }
 
 async function addTeamToEvent(body, userId) {
@@ -814,6 +830,7 @@ module.exports = {
   getMemberships,
   getOptions,
   getOwnedEvents,
+  getPersonInfos,
   getPhases,
   getRankings,
   getRegistered,
@@ -831,6 +848,7 @@ module.exports = {
   updateEntity,
   updateEntityRole,
   updateEvent,
+  updatePersonInfos,
   updatePreRanking,
   updateGame,
   updateSuggestionStatus,

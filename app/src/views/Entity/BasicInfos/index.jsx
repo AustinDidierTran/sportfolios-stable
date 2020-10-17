@@ -92,7 +92,6 @@ export default function BasicInfos(props) {
   const [img, setImg] = useState(null);
 
   const onImgChange = ([file]) => {
-    console.log(file);
     setImg(file);
   };
 

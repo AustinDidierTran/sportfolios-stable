@@ -10,7 +10,7 @@
   grid-template-areas: 'zone1 zone2';
   align-items: center;
   justify-content: center;
-  margin-bottom: 4px;
+  margin-bottom: 16px;
 }
 
 .zone1 {
@@ -21,21 +21,6 @@
 .zone2 {
   grid-area: zone2;
   margin-left: 8px;
-}
-
-.divStateZip {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-template-areas: 'zone1 zone2';
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 8px;
-}
-
-.divSingleItem {
-  display: grid;
-  grid-template-columns: 1fr;
-  margin-bottom: 8px;
 }
 
 .divSearch {
