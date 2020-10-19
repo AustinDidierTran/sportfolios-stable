@@ -61,13 +61,18 @@ export default function PersonSearchListEventRegistration(props) {
   });
 
   const handleClick = (...args) => {
-    onClick(args[1]);
     query.reset();
+    onClick(args[1]);
   };
 
   const openDialog = name => {
     setName(name);
     setOpen(true);
+  };
+
+  const handleAdd = person => {
+    query.reset();
+    onClick(person);
   };
 
   const options = useMemo(() => {
@@ -164,7 +169,7 @@ export default function PersonSearchListEventRegistration(props) {
         open={open}
         onClose={onClose}
         name={name}
-        onAdd={onClick}
+        onAdd={handleAdd}
         rosterId={rosterId}
       />
     </>

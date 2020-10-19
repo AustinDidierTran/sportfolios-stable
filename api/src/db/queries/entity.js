@@ -305,7 +305,7 @@ async function addTeamToEvent(body, userId) {
 
   // Add roster
   if (roster) {
-    await addRosterHelper(rosterId, roster);
+    await addRosterHelper(rosterId, roster, userId);
   }
   if (paymentOption) {
     if (registrationStatus === STATUS_ENUM.ACCEPTED) {

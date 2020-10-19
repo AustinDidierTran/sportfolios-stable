@@ -9,13 +9,29 @@ const {
 } = require('../../../../common/enums');
 
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
-
 const {
   sendConfirmationEmail,
   sendPersonTransferEmail,
   sendAddPersonToTeamEmail,
 } = require('../../server/utils/nodeMailer');
 const { ERROR_ENUM } = require('../../../../common/errors');
+
+const sendTransferAddNewPlayer = async (
+  user_id,
+  { email, sendedPersonId, teamName },
+) => {
+  if (
+    (await getEmailsFromUserId(user_id)).find(e => e.email == email)
+  ) {
+    throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
+  }
+  return sendPlayerTransfer({
+    email,
+    sendedPersonId,
+    senderUserId: user_id,
+    teamName,
+  });
+};
 
 const confirmEmail = async ({ email }) => {
   await knex('user_email')
@@ -623,6 +639,7 @@ module.exports = {
   updatePrimaryPerson,
   sendPersonTransferEmailAllIncluded,
   sendPlayerTransfer,
+  sendTransferAddNewPlayer,
   getPeopleTransferedToUser,
   getPeopleTransferedToEmails,
   transferPerson,

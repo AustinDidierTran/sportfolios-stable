@@ -108,7 +108,7 @@ export default function AddNonExistingPlayer(props) {
     },
     {
       type: 'submit',
-      name: t('send'),
+      name: t('add'),
       color: 'primary',
     },
   ];
@@ -162,6 +162,7 @@ export default function AddNonExistingPlayer(props) {
       open={open}
       onClose={onClose}
       title={t('add_player_with_no_account')}
+      description={t('invite_this_player_to_join_your_team')}
       fields={fields}
       formik={formik}
       buttons={buttons}

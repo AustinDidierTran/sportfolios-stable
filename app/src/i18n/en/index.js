@@ -184,6 +184,8 @@ export default {
     location_unspecified: 'Location unspecified',
     login: 'Login',
     logout: 'Log out',
+    invite_this_player_to_join_your_team:
+      'Invite this player to join your team',
     send_email: 'Send email',
     maximum_spots: 'Maximum spots',
     max_length: 'Maximum length',
@@ -264,6 +266,7 @@ export default {
     phase_added: 'Phase added',
     places_left: 'places left',
     player: 'Player',
+    player_added: 'Player added',
     player_name: 'Player name',
     players: 'Players',
     preranking: 'Preranking',
