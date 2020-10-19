@@ -18,6 +18,7 @@ import styles from './AppLinking.module.css';
 export default function AppLinking() {
   useFacebookSDK();
   const [isLinkedFB, setIsLinkedFB] = useState(false);
+  const [isLinkedMessenger, setIsLinkedMessenger] = useState(false);
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
   const [alertDialog, setAlertDialog] = useState(false);
@@ -43,7 +44,7 @@ export default function AppLinking() {
       { fields: 'id,email,picture,first_name,last_name' },
       async function(response) {
         const {
-          id: facebook_id,
+          id: facebook_app_id,
           first_name: name,
           last_name: surname,
           email,
@@ -52,7 +53,7 @@ export default function AppLinking() {
         const res = await api('/api/user/facebookConnection', {
           method: 'POST',
           body: JSON.stringify({
-            facebook_id,
+            facebook_app_id,
             name,
             surname,
             email,
@@ -138,6 +139,14 @@ export default function AppLinking() {
       type: GLOBAL_ENUM.APP_ITEM,
       description: t('facebook_description'),
     },
+    {
+      onConnect: () => {},
+      onDisconnect: () => {},
+      app: APP_ENUM.MESSENGER,
+      isConnected: isLinkedMessenger,
+      type: GLOBAL_ENUM.APP_ITEM,
+      description: t('messenger_description'),
+    },
   ];
   return (
     <>
@@ -146,7 +155,7 @@ export default function AppLinking() {
       </Card>
       <AlertDialog
         open={alertDialog}
-        description={t('disconnect_app', selectedApp)}
+        description={t('disconnect_app', { appName: selectedApp })}
         onSubmit={onFBUnlinkConfirmed}
         onCancel={() => setAlertDialog(false)}
       />

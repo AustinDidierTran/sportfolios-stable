@@ -10,6 +10,8 @@ import styles from './AppItem.module.css';
 const images = {
   [APP_ENUM.FACEBOOK]:
     'https://sportfolios-images.s3.amazonaws.com/development/images/entity/20201015-swk3f-03819b6b-b74e-4cb8-9a1a-299a9ee3b2fc',
+  [APP_ENUM.MESSENGER]:
+    'https://sportfolios-images.s3.amazonaws.com/development/images/entity/20201016-9hha3-03819b6b-b74e-4cb8-9a1a-299a9ee3b2fc',
 };
 
 const defaultImage =

@@ -31,6 +31,7 @@ import Folder from '@material-ui/icons/Folder';
 import FormatListNumbered from '@material-ui/icons/FormatListNumbered';
 import Group from '@material-ui/icons/Group';
 import Home from '@material-ui/icons/Home';
+import Help from '@material-ui/icons/Help';
 import Info from '@material-ui/icons/Info';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
@@ -92,6 +93,7 @@ const icons = {
   FormatListNumbered,
   Group,
   Home,
+  Help,
   Info,
   KeyboardArrowDown,
   KeyboardArrowUp,
