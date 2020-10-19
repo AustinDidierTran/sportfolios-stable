@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../../hooks/forms';
 import styles from './Roster.module.css';
 import { Typography } from '@material-ui/core';
+import api from '../../../actions/api';
+import { formatRoute } from '../../../actions/goTo';
 
 export default function Roster(props) {
   const { t } = useTranslation();
@@ -19,14 +21,20 @@ export default function Roster(props) {
     roster,
   ]);
 
-  const addPerson = person => {
+  const addPerson = async person => {
     if (person.id) {
+      const { data } = await api(
+        formatRoute('/api/entity', null, {
+          id: person.id,
+        }),
+      );
       setRoster(oldRoster => [
         ...oldRoster,
         {
           person_id: person.id,
           type: GLOBAL_ENUM.ROSTER_ITEM,
           name: person.completeName || person.name,
+          photoUrl: data.photoUrl,
           secondary: t('player'),
           onDelete,
         },

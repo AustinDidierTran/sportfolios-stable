@@ -53,7 +53,6 @@ export default function TeamSelect(props) {
     });
     setWhiteList(entities.map(e => e.id));
   };
-
   if (selectedTeam) {
     return (
       <div className={styles.main}>
@@ -95,7 +94,6 @@ export default function TeamSelect(props) {
       </div>
     );
   }
-
   return (
     <div className={styles.main}>
       <Typography

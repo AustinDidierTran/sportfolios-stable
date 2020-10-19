@@ -1,16 +1,16 @@
 import React, { useMemo, useState } from 'react';
 
-import { List, Icon } from '../..';
-import { TextField } from '../../../MUI';
+import { List, Icon } from '../../../../components/Custom';
+import { TextField } from '../../../../components/MUI';
 import { formatRoute } from '../../../../actions/goTo';
 import { useApiRoute } from '../../../../hooks/queries';
 import { useFormInput } from '../../../../hooks/forms';
 import { InputAdornment } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { GLOBAL_ENUM } from '../../../../../../common/enums';
-import AddNonExistingPlayer from './AddNonExistingPlayer';
+import AddNonExistingPlayerEventRegistration from './AddNonExistingPlayerEventRegistration';
 
-export default function PersonSearchList(props) {
+export default function PersonSearchListEventRegistration(props) {
   const {
     blackList,
     whiteList,
@@ -22,9 +22,6 @@ export default function PersonSearchList(props) {
     secondary,
     style,
     autoFocus,
-    isSub,
-    onChange,
-    handleClose,
     rosterId,
   } = props;
   const { t } = useTranslation();
@@ -62,6 +59,7 @@ export default function PersonSearchList(props) {
   const { response } = useApiRoute(optionsRoute, {
     defaultValue: { entities: [] },
   });
+
   const handleClick = (...args) => {
     onClick(args[1]);
     query.reset();
@@ -71,6 +69,7 @@ export default function PersonSearchList(props) {
     setName(name);
     setOpen(true);
   };
+
   const options = useMemo(() => {
     if (allowCreate) {
       return [
@@ -125,11 +124,6 @@ export default function PersonSearchList(props) {
     setOpen(false);
   };
 
-  const close = id => {
-    query.reset();
-    handleClose(id);
-  };
-
   return (
     <>
       {withoutIcon ? (
@@ -166,14 +160,11 @@ export default function PersonSearchList(props) {
       ) : (
         <List items={options}></List>
       )}
-      <AddNonExistingPlayer
+      <AddNonExistingPlayerEventRegistration
         open={open}
         onClose={onClose}
         name={name}
-        isSub={isSub}
-        onChange={onChange}
-        onClick={onClick}
-        handleClose={close}
+        onAdd={onClick}
         rosterId={rosterId}
       />
     </>
