@@ -7,7 +7,7 @@ import {
   AddressSearchInput,
   LoadingSpinner,
 } from '../../components/Custom';
-import { TextField } from '../../components/MUI';
+import { TextField, Typography } from '../../components/MUI';
 import MenuItem from '@material-ui/core/MenuItem';
 import api from '../../actions/api';
 import { useTranslation } from 'react-i18next';
@@ -39,10 +39,10 @@ export default function EditPersonInfos(props) {
   } = basicInfos;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [img, setImg] = useState(null);
   const [photoUrl, setPhotoUrl] = useState(initialPhotoUrl);
   const [personInfos, setPersonInfos] = useState({});
   const [changesMade, setChangesMade] = useState(false);
-  const [img, setImg] = useState(null);
 
   const initials = getInitialsFromName(
     surnameProp ? `${nameProp} ${surnameProp}` : nameProp,
@@ -68,8 +68,30 @@ export default function EditPersonInfos(props) {
     formik.setFieldValue('birthDate', personInfos.birthDate || '');
     formik.setFieldValue('gender', personInfos.gender || '');
     formik.setFieldValue('address', personInfos.address || '');
+    formik.setFieldValue(
+      'addressFormatted',
+      personInfos.formattedAddress || '',
+    );
     setPhotoUrl(personInfos.photoUrl);
   }, [personInfos]);
+
+  const validate = values => {
+    const { name, surname, gender } = values;
+    const errors = {};
+    if (!name.length) {
+      errors.name = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!surname.length) {
+      errors.surname = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!gender.length) {
+      errors.gender = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!birthDate.value) {
+      errors.birthDate = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    return errors;
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -77,14 +99,22 @@ export default function EditPersonInfos(props) {
       surname: '',
       birthDate: '',
       gender: '',
+      formattedAddress: '',
       address: '',
     },
-    //validate cannot be empty?
+    validate,
     validateOnChange: false,
     onSubmit: async values => {
       const { name, surname, birthDate, gender, address } = values;
 
       setIsLoading(true);
+
+      if (img) {
+        const photoUrl = await uploadEntityPicture(personId, img);
+        if (photoUrl) {
+          setPhotoUrl(photoUrl);
+        }
+      }
 
       const res = await api(`/api/entity/updatePersonInfos`, {
         method: 'PUT',
@@ -107,20 +137,13 @@ export default function EditPersonInfos(props) {
         });
       }
 
-      if (img) {
-        //promises.push(onImgUpload());
-        const photoUrl = await uploadEntityPicture(personId, img);
-        if (photoUrl) {
-          setPhotoUrl(photoUrl);
-        }
-      }
-
       setIsLoading(false);
       setChangesMade(false);
     },
   });
 
   const onCancel = async () => {
+    formik.resetForm();
     getPersonInfos();
     setChangesMade(false);
   };
@@ -132,11 +155,14 @@ export default function EditPersonInfos(props) {
     setChangesMade(true);
   };
 
+  const addressChanged = newAddress => {
+    formik.setFieldValue('address', newAddress);
+    setChangesMade(true);
+  };
+
   if (isLoading) {
     return <LoadingSpinner isComponent />;
   }
-
-  // You have included the Google Maps JavaScript API multiple times on this page. This may cause unexpected errors.
 
   const valueChanged = () => {
     setChangesMade(true);
@@ -166,7 +192,7 @@ export default function EditPersonInfos(props) {
             className={styles.zone1}
             formik={formik}
             type="name"
-            label={t('first_name')}
+            helperText={t('first_name')}
             onChange={valueChanged}
           />
           <TextField
@@ -174,7 +200,7 @@ export default function EditPersonInfos(props) {
             className={styles.zone2}
             formik={formik}
             type="surname"
-            label={t('last_name')}
+            helperText={t('last_name')}
             onChange={valueChanged}
           />
         </div>
@@ -184,7 +210,7 @@ export default function EditPersonInfos(props) {
             className={styles.zone1}
             formik={formik}
             type="date"
-            label={t('birth_date')}
+            helperText={t('birth_date')}
             onChange={valueChanged}
           />
           <TextField
@@ -193,7 +219,7 @@ export default function EditPersonInfos(props) {
             formik={formik}
             select
             type="gender"
-            label={t('gender')}
+            helperText={t('gender')}
             onChange={valueChanged}
           >
             <MenuItem value={GENDER_ENUM.FEMALE}>
@@ -207,8 +233,22 @@ export default function EditPersonInfos(props) {
         </div>
 
         <div className={styles.divSearch}>
-          <AddressSearchInput language={userInfo.language} />
+          <AddressSearchInput
+            namespace="addressFormatted"
+            formik={formik}
+            language={userInfo.language}
+            addressChanged={addressChanged}
+          />
         </div>
+        {personInfos.formattedAddress ? (
+          <div className={styles.address}>
+            <Typography variant="caption" color="textSecondary">
+              {t('address')}
+            </Typography>
+          </div>
+        ) : (
+          <></>
+        )}
 
         {changesMade ? (
           <div className={styles.buttons}>

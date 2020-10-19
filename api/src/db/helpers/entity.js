@@ -1053,14 +1053,32 @@ async function getPersonInfos(entityId) {
   .select('*')
   .where({id: realId});
 
-  return {
+  let resObj = {
     photoUrl: res.photo_url,
     name: res.name,
     surname: res.surname,
     birthDate: res.birth_date,
     gender: res.gender,
-    address: res.address,
+    formattedAddress: res.address
   };
+
+  const [fullAddress] = await knex('entities_address')
+  .select('*')
+  .where({entity_id: realId});
+
+  if(fullAddress) {
+    resObj.address = {
+      street_address: fullAddress.street_address,
+      city: fullAddress.city,
+      state: fullAddress.state,
+      zip: fullAddress.zip,
+      country: fullAddress.country,
+    };
+  } else {
+    resObj.address = null;
+  }
+
+  return resObj;
 }
 
 async function updateEntityRole(entityId, entityIdAdmin, role) {
@@ -1132,51 +1150,74 @@ async function updatePersonInfosHelper(entityId, body) {
   const realId = await getRealId(entityId);
 
   let fullname;
-  let birthDate;
-  let gender;
+  let birthDateRes;
+  let genderRes;
   let fullAddress;
+  let outputPersonInfos = {};
 
   if (personInfos.name || personInfos.surname) {  
     fullname = await knex('entities_name')
     .update({name: personInfos.name, surname: personInfos.surname})
     .where({ entity_id: realId })
-    .returning('*');  
+    .returning('*'); 
+    
+    outputPersonInfos.name = fullname[0].name;
+    outputPersonInfos.surname = fullname[0].surname;
   }
 
-  if (personInfos.birthDate) {  
-    birthDate = await knex('entities_birth_date')
-    .update({birth_date: personInfos.birthDate})
-    .where({ entity_id: realId })
-    .returning('birth_date');  
+  if (personInfos.birthDate) {      
+    birthDateRes = await knex.raw(
+      `? ON CONFLICT (entity_id)
+        DO UPDATE SET
+          birth_date = '${personInfos.birthDate}'
+        RETURNING birth_date;`,
+      [knex('entities_birth_date').insert({
+        entity_id: realId,
+        birth_date: personInfos.birthDate,
+      })],
+    );
+
+    outputPersonInfos.birthDate = birthDateRes.rows[0].birth_date;
   }
 
   if (personInfos.gender) {  
-    gender = await knex('entities_gender')
-    .update({gender: personInfos.gender})
-    .where({ entity_id: realId })
-    .returning('gender');  
+    genderRes = await knex.raw(
+      `? ON CONFLICT (entity_id)
+        DO UPDATE SET
+          gender = '${personInfos.gender}'
+        RETURNING gender;`,
+      [knex('entities_gender').insert({
+        entity_id: realId,
+        gender: personInfos.gender,
+      })],
+    );
+
+    outputPersonInfos.gender = genderRes.rows[0].gender;
   }
 
-  if (personInfos.address) {
-    // something different
-    /*fullAddress = await knex('entities_address')
-    .update({
-      street_address: personInfos.address.street_address,
-      city: personInfos.address.city,
-      state: personInfos.address.state,
-      zip: personInfos.address.zip,
-      country: personInfos.address.country})
-    .where({ entity_id: realId })
-    .returning('*');*/
+  if (personInfos.address.length != 0) {
+    fullAddress = await knex.raw(
+      `? ON CONFLICT (entity_id)
+        DO UPDATE SET
+        street_address = '${personInfos.address.street_address}',
+        city = '${personInfos.address.city}',
+        state = '${personInfos.address.state}',
+        zip = '${personInfos.address.zip}',
+        country = '${personInfos.address.country}'
+        RETURNING CONCAT_WS(', ', street_address, city, state, zip, country);`,
+      [knex('entities_address').insert({
+        entity_id: realId,
+        street_address: personInfos.address.street_address,
+        city: personInfos.address.city,
+        state: personInfos.address.state,
+        zip: personInfos.address.zip,
+        country: personInfos.address.country})],
+    );
+
+    outputPersonInfos.address = fullAddress.rows[0].concat_ws;
   }
 
-  return {
-    name: fullname[0].name,
-    surname: fullname[0].surname,
-    birthDate: birthDate[0],
-    gender: gender[0],
-    address: fullAddress,
-  };
+  return outputPersonInfos;
 }
 
 async function updateEntityName(entityId, name, surname) {

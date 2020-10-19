@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { GOOGLE_PLACES_API_KEY } from '../../../../../conf';
 import { useTranslation } from 'react-i18next';
@@ -6,47 +6,45 @@ import styles from './AddressSearchInput.module.css';
 import uuid from 'uuid';
 
 // REFERENCE: https://medium.com/better-programming/the-best-practice-with-google-place-autocomplete-api-on-react-939211e8b4ce
+// REFERENCE: https://cleverbeagle.com/blog/articles/tutorial-how-to-load-third-party-scripts-dynamically-in-javascript
 
 let autoComplete;
 
 function AddressSearchInput(props) {
+  const {
+    language: languageProp,
+    addressChanged,
+    formik,
+    namespace,
+  } = props;
   const { t } = useTranslation();
-  const [query, setQuery] = useState('');
-  /* eslint-disable-next-line */
-  const [address, setAddress] = useState({});
   const autoCompleteRef = useRef(null);
-  const { language: languageProp } = props;
 
   useEffect(() => {
-    loadScript(
+    loadGooglePlaces(
       `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_PLACES_API_KEY}&libraries=places`,
-      () => handleScriptLoad(setQuery, autoCompleteRef),
+      () => handleScriptLoad(autoCompleteRef),
     );
   }, []);
 
-  const loadScript = (url, callback) => {
-    let script = document.createElement('script');
-    script.type = 'text/javascript';
+  const loadGooglePlaces = (url, callback) => {
+    const existingScript = document.getElementById('googlePlaces');
 
-    if (script.readyState) {
-      script.onreadystatechange = function() {
-        if (
-          script.readyState === 'loaded' ||
-          script.readyState === 'complete'
-        ) {
-          script.onreadystatechange = null;
-          callback();
-        }
+    if (!existingScript) {
+      const script = document.createElement('script');
+      script.src = url;
+      script.id = 'googlePlaces';
+      document.body.appendChild(script);
+
+      script.onload = () => {
+        if (callback) callback();
       };
-    } else {
-      script.onload = () => callback();
     }
 
-    script.src = url;
-    document.getElementsByTagName('head')[0].appendChild(script);
+    if (existingScript && callback) callback();
   };
 
-  function handleScriptLoad(updateQuery, autoCompleteRef) {
+  function handleScriptLoad(autoCompleteRef) {
     const options = {
       sessiontoken: uuid.v4(),
       types: ['address'],
@@ -65,31 +63,72 @@ function AddressSearchInput(props) {
       'formatted_address',
     ]);
     autoComplete.addListener('place_changed', () =>
-      handlePlaceSelect(updateQuery),
+      handlePlaceSelect(),
     );
   }
 
-  async function handlePlaceSelect(updateQuery) {
+  const PLACES_CATEGORIES = {
+    STREET_NUMBER: 'street_number',
+    ROUTE: 'route',
+    LOCALITY: 'locality',
+    STATE: 'administrative_area_level_1',
+    COUNTRY: 'country',
+    ZIP: 'postal_code',
+  };
+
+  async function handlePlaceSelect() {
     const addressObject = autoComplete.getPlace();
-    const query = addressObject.formatted_address;
-    updateQuery(query);
     const fullAddress = addressObject.address_components;
-    setAddress({
-      street_address: `${fullAddress[0].long_name} ${fullAddress[1].long_name}`,
-      city: fullAddress[3].long_name,
-      state: fullAddress[5].short_name,
-      country: fullAddress[6].short_name,
-      zip: fullAddress[7].short_name,
+
+    let street_number = '';
+    let route = '';
+    let outputAddress = {
+      street_address: null,
+      city: null,
+      state: null,
+      country: null,
+      zip: null,
+    };
+
+    fullAddress.forEach(e => {
+      if (e.types.includes(PLACES_CATEGORIES.STREET_NUMBER)) {
+        street_number = e.long_name;
+      }
+      if (e.types.includes(PLACES_CATEGORIES.ROUTE)) {
+        route = e.long_name;
+      }
+      outputAddress.street_address = `${street_number} ${route}`;
+      if (e.types.includes(PLACES_CATEGORIES.LOCALITY)) {
+        outputAddress.city = e.long_name;
+      }
+      if (e.types.includes(PLACES_CATEGORIES.STATE)) {
+        outputAddress.state = e.short_name;
+      }
+      if (e.types.includes(PLACES_CATEGORIES.COUNTRY)) {
+        outputAddress.country = e.long_name;
+      }
+      if (e.types.includes(PLACES_CATEGORIES.ZIP)) {
+        outputAddress.zip = e.long_name;
+      }
     });
+
+    formik.setFieldValue(namespace, addressObject.formatted_address);
+    addressChanged(outputAddress, addressObject.formatted_address);
   }
+
+  const onChange = event => {
+    formik.setFieldValue(namespace, event.target.value);
+  };
 
   return (
     <div className={styles.searchLocationInput}>
       <input
         ref={autoCompleteRef}
-        onChange={event => setQuery(event.target.value)}
+        id={namespace}
+        name={namespace}
+        value={(formik && formik.values[namespace]) || ''}
+        onChange={onChange}
         placeholder={t('address')}
-        value={query}
       />
     </div>
   );
