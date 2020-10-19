@@ -10,7 +10,8 @@ export default {
     accept: 'Accept',
     accept_person_transfer_confirmation:
       'Are you sure you want to accept the transfer of {{name}}?',
-    account_already_linked: 'This account is already linked to another Sportfolios user.',
+    account_already_linked:
+      'This account is already linked to another Sportfolios user.',
     account_holder_name: 'Account Holder Name',
     add: 'Add',
     add_bank_account: 'Add bank account',
@@ -349,8 +350,8 @@ export default {
     time_slot_added: 'Time slot added',
     waiting_for_payment:
       'Your payment is being processed. Thank you for your patience',
-      unlink_facebook_account: 'Disconnect my Facebook account',
-      unregister: 'Unregister',
+    unlink_facebook_account: 'Disconnect my Facebook account',
+    unregister: 'Unregister',
     unregister_all: 'Unregister all',
     unsupported_language: 'Unsupported language',
     upload: 'Upload',
@@ -394,6 +395,8 @@ export default {
       'You will soon be redirected to the home page. Click below to be redirected instantly.',
     // Validation
     confirm_new_password: 'Confirm New Password',
+    email_already_exist:
+      'There is already an existing account with this email',
     email_already_used:
       'Email is already in used. Please choose another one',
     email_not_confirmed:
@@ -596,8 +599,10 @@ export default {
       'ProTip: You can click on a game to change score.',
 
     //APP DESCRIPTION
-    facebook_description:"Connect with Facebook to find your friends and enable Sportfolios' chatbot",
-    messenger_description: "Connect with Messenger to enable Sprotfolios' chatbot",
-    disconnect_app: 'Disconnect {{appName}} app from your account'
+    messenger_description:
+      "Connect with Messenger to enable Sprotfolios' chatbot",
+    disconnect_app: 'Disconnect {{appName}} app from your account',
+    facebook_description:
+      "Connect with Facebook to find your friends and enable Sportfolios' chatbot",
   },
 };

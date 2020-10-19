@@ -146,6 +146,52 @@ const sendPersonTransferEmail = async ({
     html,
   });
 };
+const sendAddPersonToTeamEmail = async ({
+  email,
+  teamName,
+  senderName,
+  language,
+  token,
+}) => {
+  let html = '';
+  let subject = '';
+  let title = '';
+  let content = '';
+  let link = '';
+  let buttonName = '';
+  if (language === LANGUAGE_ENUM.ENGLISH) {
+    subject =
+      senderName +
+      ' wants to add you to his team ' +
+      teamName +
+      ' | Sportfolios';
+    title = 'Join ' + teamName;
+    content =
+      senderName +
+      ' wants to add you to his team ' +
+      teamName +
+      ' on Sportfolios. Click on the following link to sign in and be part of the team 👇';
+    buttonName = 'Join ' + teamName;
+  } else {
+    subject =
+      senderName +
+      ' veut vous ajouter à son équipe ' +
+      teamName +
+      ' | Sportfolios';
+    title = 'Rejoindre ' + teamName;
+    content =
+      senderName +
+      " veut vous ajouter à son équipe sur Sportfolios. Cliquez sur le lien suivant pour vous connecter et faire partie de l'équipe 👇";
+    buttonName = 'Rejoindre ' + teamName;
+  }
+  link = `${CLIENT_BASE_URL}/transferPerson/${token}`;
+  html = await getHtml(title, content, link, buttonName);
+  return await sendMail({
+    email,
+    subject,
+    html,
+  });
+};
 
 async function sendReceiptEmail({ email, receipt, language }) {
   let html = '';
@@ -283,4 +329,5 @@ module.exports = {
   sendAcceptedRegistrationEmail,
   sendTeamRegistrationEmailToAdmin,
   sendPersonTransferEmail,
+  sendAddPersonToTeamEmail,
 };

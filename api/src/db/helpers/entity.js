@@ -13,6 +13,7 @@ const {
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
+const { sendTransferAddNewPlayer } = require('../queries/users');
 
 const addEntity = async (body, userId) => {
   const { name, creator, surname, type } = body;
@@ -75,7 +76,7 @@ const addEntity = async (body, userId) => {
         return { id: entityId };
       }
       case GLOBAL_ENUM.PERSON: {
-        const id = await knex('user_entity_role')
+        const [id] = await knex('user_entity_role')
           .insert({
             user_id: userId,
             entity_id: entityId,
@@ -727,7 +728,7 @@ async function getAllRegisteredInfos(eventId, userId) {
     teams.map(async t => {
       const entity = await getEntity(t.team_id, userId);
       const emails = await getEmailsEntity(t.team_id);
-      const players = await getRoster(t.roster_id);
+      const players = await getRosterWithSub(t.roster_id);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.roster_id);
       const role = await getRole(captains, t.roster_id, userId);
@@ -1632,6 +1633,30 @@ async function addRoster(rosterId, roster) {
 
   return players;
 }
+async function addNewPersonToRoster(body, userId) {
+  const { name, surname, email, isSub, rosterId } = body;
+  const person = await addEntity(
+    { name, surname, type: GLOBAL_ENUM.PERSON },
+    userId,
+  );
+  const teamName = await getTeamName(rosterId);
+  await addPlayerToRoster(
+    {
+      personId: person.id,
+      name: `${name} ${surname}`,
+      rosterId,
+      isSub,
+    },
+    userId,
+  );
+  await sendTransferAddNewPlayer(userId, {
+    email,
+    sendedPersonId: person.id,
+    teamName,
+  });
+  return { is_sub: isSub, name: `${name} ${surname}`, id: person.id };
+}
+
 async function updateMember(
   memberType,
   organizationId,
@@ -1951,7 +1976,7 @@ const addPlayerToRoster = async (body, userId) => {
       .insert({
         roster_id: rosterId,
         person_id: personId,
-        name: name,
+        name,
         id,
         is_sub: isSub,
       })
@@ -1968,7 +1993,7 @@ const addPlayerToRoster = async (body, userId) => {
       .insert({
         roster_id: rosterId,
         person_id: person.id[0],
-        name: name,
+        name,
         id,
         is_sub: isSub,
       })
@@ -2061,6 +2086,7 @@ module.exports = {
   addTimeSlot,
   addOption,
   addRoster,
+  addNewPersonToRoster,
   addTeamToEvent,
   canUnregisterTeam,
   deleteEntity,

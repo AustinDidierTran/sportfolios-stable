@@ -1,9 +1,10 @@
 import React, { useMemo, useContext } from 'react';
+import { SEVERITY_ENUM } from '../../../../../common/enums';
 import {
-  GLOBAL_ENUM,
-  SEVERITY_ENUM,
-} from '../../../../../common/enums';
-import { SearchList, List, Button } from '../../../components/Custom';
+  TeamSearchList,
+  List,
+  Button,
+} from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../../hooks/forms';
 import styles from './AddTeams.module.css';
@@ -37,11 +38,10 @@ export default function AddTeams(props) {
       >
         {t('add_the_teams_you_want_in_your_tournament')}
       </Typography>
-      <SearchList
+      <TeamSearchList
         className={styles.item}
         clearOnSelect={false}
         label={t('enter_team_name')}
-        type={GLOBAL_ENUM.TEAM}
         onClick={addTeam}
         query={query}
         blackList={blackList}
