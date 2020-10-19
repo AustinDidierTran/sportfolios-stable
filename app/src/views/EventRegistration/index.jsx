@@ -154,7 +154,8 @@ export default function EventRegistration() {
         rosterId: data.rosterId,
       }),
     });
-    if (status === 200) {
+
+    if (status < 300) {
       goTo(ROUTES.registrationStatus, null, {
         status: data.status,
       });

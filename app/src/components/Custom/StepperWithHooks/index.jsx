@@ -61,10 +61,7 @@ export default function CustomStepperWithHooks(props) {
                     onClick={handleBack}
                     variant="contained"
                     color="primary"
-                    style={
-                      completed.has(activeStep)
-                        ? { color: 'white' }
-                        : {}
+                    style={{ color: 'white' }
                     }
                   >
                     {t('back')}
@@ -77,8 +74,7 @@ export default function CustomStepperWithHooks(props) {
                       color="primary"
                       onClick={finish}
                       disabled={!completed.has(activeStep)}
-                      style={
-                        !activeStep === 0 ? { color: 'white' } : {}
+                      style={ { color: 'white' }
                       }
                     >
                       {t('finish')}
@@ -94,11 +90,7 @@ export default function CustomStepperWithHooks(props) {
                         handleNext();
                       }}
                       disabled={!completed.has(activeStep)}
-                      style={
-                        completed.has(activeStep)
-                          ? { color: 'white' }
-                          : {}
-                      }
+                      style={{ color: 'white' }}
                     >
                       {activeStep === steps.length - 1
                         ? t('finish')
