@@ -184,6 +184,8 @@ export default {
     location_unspecified: 'Lieu non spécifié',
     login: 'Connexion',
     logout: 'Déconnexion',
+    invite_this_player_to_join_your_team:
+      'Inviter ce joueur à joindre votre équipe',
     send_email: 'Envoyer un courriel',
     send: 'envoyer',
     maximum_spots: 'Nombre de places',
@@ -268,6 +270,7 @@ export default {
     phase_added: 'Phase ajoutée',
     places_left: 'places restantes',
     player: 'Joueur',
+    player_added: 'Joueur ajouté',
     player_name: 'Nom du joueur',
     players: 'Joueurs',
     private: 'Privée',

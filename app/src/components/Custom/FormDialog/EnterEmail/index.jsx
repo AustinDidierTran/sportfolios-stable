@@ -49,7 +49,7 @@ export default function EnterEmail(props) {
     },
     {
       type: 'submit',
-      name: t('send'),
+      name: t('add'),
       color: 'primary',
       disabled: !isValidEmail,
     },

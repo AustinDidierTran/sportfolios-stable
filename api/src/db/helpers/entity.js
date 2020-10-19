@@ -13,7 +13,7 @@ const {
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
-const { sendTransferAddNewPlayer } = require('../queries/users');
+const { sendTransferAddNewPlayer } = require('../helpers/index');
 
 const addEntity = async (body, userId) => {
   const { name, creator, surname, type } = body;
@@ -1618,19 +1618,35 @@ async function addTeamToEvent(body) {
     return res.roster_id;
   });
 }
-
-async function addRoster(rosterId, roster) {
+async function addPersonToRoster(rosterId, person) {
   const realId = await getRealId(rosterId);
-  const players = await knex('team_players')
-    .insert(
-      roster.map(person => ({
-        roster_id: realId,
-        person_id: person.person_id,
-        name: person.name,
-      })),
-    )
+  const player = await knex('team_players')
+    .insert({
+      roster_id: realId,
+      person_id: person.person_id,
+      name: person.name,
+    })
     .returning('*');
-
+  return player;
+}
+async function addRoster(rosterId, roster, userId) {
+  const players = Promise.all(
+    roster.map(async r => {
+      if (r.email) {
+        const res = await addNewPersonToRoster(
+          {
+            ...r,
+            rosterId,
+          },
+          userId,
+        );
+        return res;
+      } else {
+        const res = await addPersonToRoster(rosterId, r);
+        return res;
+      }
+    }),
+  );
   return players;
 }
 async function addNewPersonToRoster(body, userId) {

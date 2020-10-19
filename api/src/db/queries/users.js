@@ -18,7 +18,6 @@ const {
   updatePasswordFromUserId,
   getPrimaryPersonIdFromUserId,
   sendPersonTransferEmailAllIncluded,
-  sendPlayerTransfer,
   confirmEmail,
   updatePrimaryPerson: updatePrimaryPersonHelper,
   getPeopleTransferedToUser: getPeopleTransferedToUserHelper,
@@ -54,23 +53,6 @@ const sendTransferPersonEmail = async (
     email,
     sendedPersonId,
     senderUserId: user_id,
-  });
-};
-
-const sendTransferAddNewPlayer = async (
-  user_id,
-  { email, sendedPersonId, teamName },
-) => {
-  if (
-    (await getEmailsFromUserId(user_id)).find(e => e.email == email)
-  ) {
-    throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
-  }
-  return sendPlayerTransfer({
-    email,
-    sendedPersonId,
-    senderUserId: user_id,
-    teamName,
   });
 };
 
@@ -307,7 +289,6 @@ module.exports = {
   getOwnedPersons,
   updatePrimaryPerson,
   sendTransferPersonEmail,
-  sendTransferAddNewPlayer,
   cancelPersonTransfer,
   getPeopleTransferedToUser,
   transferPerson,
