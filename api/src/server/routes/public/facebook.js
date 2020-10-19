@@ -32,7 +32,7 @@ status:'EVENT_RECEIVED'
 
 router.get(`${BASE_URL}/messengerHook`, async ctx => {
 // Your verify token. Should be a random string.
-let VERIFY_TOKEN = "7noYUm%z@vsOpi3pYUY6BPwre3!@7"
+let VERIFY_TOKEN = '7noYUm%z@vsOpi3pYUY6BPwre3!@7'
     
 // Parse the query params
 let mode = ctx.request.query['hub.mode'];

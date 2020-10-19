@@ -254,7 +254,6 @@ const setFacebookData = async(userId, data)=>{
 }
 
 const linkFacebook = async(userId, data)=>{
-  console.log({data})
   const {facebook_app_id} = data;
   if(!facebook_app_id){
     return;
