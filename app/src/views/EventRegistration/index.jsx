@@ -93,8 +93,13 @@ export default function EventRegistration() {
           event_id: eventId,
         }),
       );
+      const { data: theTeam } = await api(
+        formatRoute('/api/entity', null, {
+          id: team.id,
+        }),
+      );
       if (data.length < 1) {
-        setTeam(team);
+        setTeam(theTeam);
         stepHook.handleCompleted(0);
       } else {
         dispatch({

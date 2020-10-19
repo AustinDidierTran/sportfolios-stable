@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import BasicFormDialog from '../BasicFormDialog';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
+import { validateEmail } from '../../../../utils/stringFormats';
 export default function EnterEmail(props) {
   const { t } = useTranslation();
   const { open, onClose, title, description, onSubmit } = props;
@@ -12,10 +13,7 @@ export default function EnterEmail(props) {
   };
 
   const validate = values => {
-    return (
-      values.email &&
-      /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
-    );
+    return validateEmail(values.email);
   };
 
   const formik = useFormik({

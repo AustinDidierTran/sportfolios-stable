@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GLOBAL_ENUM } from '../../../../common/enums';
-import { SearchList, Button } from '../../components/Custom';
+import { Button, TeamSearchList } from '../../components/Custom';
 import { Typography } from '../../components/MUI';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../hooks/forms';
@@ -53,7 +53,6 @@ export default function TeamSelect(props) {
     });
     setWhiteList(entities.map(e => e.id));
   };
-
   if (selectedTeam) {
     return (
       <div className={styles.main}>
@@ -95,7 +94,6 @@ export default function TeamSelect(props) {
       </div>
     );
   }
-
   return (
     <div className={styles.main}>
       <Typography
@@ -108,11 +106,10 @@ export default function TeamSelect(props) {
           'you_can_always_change_your_team_name_in_your_team_profile',
         )}
       </Typography>
-      <SearchList
+      <TeamSearchList
         className={styles.item}
         clearOnSelect={false}
         label={t('enter_team_name')}
-        type={GLOBAL_ENUM.TEAM}
         onClick={onClick}
         query={query}
         allowCreate

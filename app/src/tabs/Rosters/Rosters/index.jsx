@@ -5,7 +5,7 @@ import { ROSTER_ROLE_ENUM } from '../../../../../common/enums';
 import MyRosterCard from '../MyRosterCard';
 
 export default function Rosters(props) {
-  const { rosters, onAdd, onDelete } = props;
+  const { rosters, onAdd, onDelete, update } = props;
   const [expandedIndex, setExpandedIndex] = useState(0);
 
   if (!rosters || !rosters.length) {
@@ -32,6 +32,7 @@ export default function Rosters(props) {
               onDelete={onDelete}
               index={index + 1}
               key={roster.rosterId}
+              update={update}
             />
           );
         }

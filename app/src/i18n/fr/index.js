@@ -10,7 +10,8 @@ export default {
     accept: 'Accepter',
     accept_person_transfer_confirmation:
       'Êtes vous certain de vouloir accepter le transfert de {{name}}?',
-      account_already_linked: 'Ce compte est déjà lié à un compte Sportfolios.',
+    account_already_linked:
+      'Ce compte est déjà lié à un compte Sportfolios.',
     account_holder_name: 'Nom du titulaire du compte',
     add_admin: 'Ajouter admin',
     add: 'Ajouter',
@@ -99,9 +100,10 @@ export default {
     confirm: 'Confirmer',
     confirmation_email_sent:
       'Le courriel a été envoyé avec succès. Allez dans votre boîte de courriel pour réinitialiser votre mot de passe.',
-      connection_failed: 'La connexion au compte a échoué, veuillez réessayer',
-      connect_with_facebook: 'Se connecter avec Facebook',
-      contact_us: 'Contactez-nous',
+    connection_failed:
+      'La connexion au compte a échoué, veuillez réessayer',
+    connect_with_facebook: 'Se connecter avec Facebook',
+    contact_us: 'Contactez-nous',
     contact: 'Contact',
     country: 'Pays',
     create_a_game: 'Créer une partie',
@@ -354,7 +356,7 @@ export default {
     waiting_for_payment:
       'Votre paiement est en cours de traitement. Merci pour votre patience.',
     unlink_facebook_account: 'Déconnecter mon compte Facebook',
-      unregister: 'Désinscrire',
+    unregister: 'Désinscrire',
     unregister_all: 'Tout désinscrire',
     unsupported_language: 'Langue non supportée',
     upload: 'Téléverser',
@@ -403,6 +405,8 @@ export default {
     redirect_to_home: `Vous serez bientôt redirigez vers l'accueil. Cliquez ci-dessous pour être redirigé dès maintenant.`,
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',
+    email_already_exist:
+      'Il y a déjà un compte associé à ce courriel',
     email_already_used:
       'Courriel déjà utilisé. Veuillez en choisir un autre.',
     email_not_confirmed:
@@ -410,7 +414,7 @@ export default {
     email_not_found: "Il n'existe pas de compte avec ce courriel",
     email_password_no_match:
       'Erreur du courriel ou du mot de passe. Svp, réessayez.',
-    invalid_email: 'Courriel invalid.',
+    invalid_email: 'Courriel invalide.',
     invalid_input: 'Valeur incorrect',
     name_is_required: 'Nom obligatoire',
     new_password: 'Nouveau mot de passe',
@@ -603,8 +607,11 @@ export default {
       'ProTip: Vous pouvez cliquer sur une partie pour changer le pointage.',
 
     //APP DESCRIPTION
-    facebook_description:'Connecte ton compte Facebook pour retrouver tes amis et pouvoir activer le chatbot Sportfolios',
-    messenger_description: 'Connecte ton compte Messenger pout activer le chatbot Sportfolios',
-    disconnect_app: 'Déconnecter l\'application {{appName}} de ton compte'
+    messenger_description:
+      'Connecte ton compte Messenger pout activer le chatbot Sportfolios',
+    disconnect_app:
+      "Déconnecter l'application {{appName}} de ton compte",
+    facebook_description:
+      'Connecte ton compte Facebook pour retrouver tes amis et pouvoir activer le chatbot Sportfolios',
   },
 };

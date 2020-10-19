@@ -13,6 +13,7 @@ const { EXPIRATION_TIMES } = require('../../../../common/constants');
 const {
   sendConfirmationEmail,
   sendPersonTransferEmail,
+  sendAddPersonToTeamEmail,
 } = require('../../server/utils/nodeMailer');
 const { ERROR_ENUM } = require('../../../../common/errors');
 
@@ -333,7 +334,6 @@ const validateEmailIsUnique = async email => {
   const users = await knex('user_email')
     .where({ email })
     .returning(['id']);
-
   return !users.length;
 };
 
@@ -386,7 +386,6 @@ const sendPersonTransferEmailAllIncluded = async ({
     person_id: sendedPersonId,
     sender_id: senderUserId,
   });
-
   if (!res) {
     return;
   }
@@ -404,6 +403,51 @@ const sendPersonTransferEmailAllIncluded = async ({
     await cancelPersonTransfer(sendedPersonId);
     return;
   }
+  return res;
+};
+const sendPlayerTransfer = async ({
+  email,
+  sendedPersonId,
+  senderUserId,
+  teamName,
+}) => {
+  const personTransferToken = generateToken();
+  const sender = await getBasicUserInfoFromId(senderUserId);
+  const language =
+    (await getLanguageFromEmail(email)) || sender.language;
+  const senderPrimaryPersonId = await getPrimaryPersonIdFromUserId(
+    senderUserId,
+  );
+  const senderPrimaryPerson = sender.persons.find(
+    person => person.entity_id === senderPrimaryPersonId,
+  );
+  const senderName =
+    senderPrimaryPerson.name + ' ' + senderPrimaryPerson.surname;
+
+  //TODO Save token in db with person id and email
+  const res = await createPersonTransferToken({
+    email,
+    token: personTransferToken,
+    person_id: sendedPersonId,
+    sender_id: senderUserId,
+  });
+  if (!res) {
+    return;
+  }
+
+  await sendAddPersonToTeamEmail({
+    email,
+    teamName,
+    senderName,
+    language,
+    token: personTransferToken,
+  });
+
+  //Reversing the insert in db if the email can't be sent
+  // if (!res2) {
+  //   await cancelPersonTransfer(sendedPersonId);
+  //   return;
+  // }
   return res;
 };
 
@@ -468,58 +512,90 @@ const getTransferInfosFromToken = async token => {
     .where({ token })
     .first();
 };
-const setFacebookData = async (user_id, data )=>{
-  const {facebook_app_id, name, surname, email, picture} = data;
-  let updateQuery ={};
-  if (!facebook_app_id){
+const setFacebookData = async (user_id, data) => {
+  const { facebook_id, name, surname, email, picture } = data;
+  let updateQuery = {};
+  if (!facebook_id) {
     return;
   }
-  if(name){
-    updateQuery.name=name;
+  if (name) {
+    updateQuery.name = name;
   }
-  if(surname){
-    updateQuery.surname=surname;
+  if (surname) {
+    updateQuery.surname = surname;
   }
-  if (email){
+  if (email) {
     updateQuery.email = email;
   }
-  if(picture){
-    updateQuery.picture=picture;
+  if (picture) {
+    updateQuery.picture = picture;
   }
-  if (Object.keys(updateQuery).length===0){
+  if (Object.keys(updateQuery).length === 0) {
     return;
   }
   return knex.transaction(async trx => {
     //Upsert data
-    const insertData = ( trx('facebook_data').insert({facebook_app_id, name, surname, email, picture}));
-    const updateData= ( trx('facebook_data').update(updateQuery).whereRaw('facebook_data.facebook_app_id = ?', [facebook_app_id]));
-    const queryData = util.format('%s ON CONFLICT (facebook_app_id) DO UPDATE SET %s RETURNING *', insertData.toString(),updateData.toString().replace(/^update\s.*\sset\s/i, ''));
+    const insertData = trx('facebook_data').insert({
+      facebook_id,
+      name,
+      surname,
+      email,
+      picture,
+    });
+    const updateData = trx('facebook_data')
+      .update(updateQuery)
+      .whereRaw('facebook_data.facebook_id = ?', [facebook_id]);
+    const queryData = util.format(
+      '%s ON CONFLICT (facebook_id) DO UPDATE SET %s RETURNING *',
+      insertData.toString(),
+      updateData.toString().replace(/^update\s.*\sset\s/i, ''),
+    );
     const datas = await knex.raw(queryData);
 
     //Upsert user_facebook_id
-    const insertId =  trx('user_facebook_id').insert({facebook_app_id, user_id});
-    const updateId = trx('user_facebook_id').update({facebook_app_id}).whereRaw('user_facebook_id.facebook_app_id = ?', [facebook_app_id]);
-    const queryId = util.format('%s ON CONFLICT (user_id) DO UPDATE SET %s', insertId.toString(),updateId.toString().replace(/^update\s.*\sset\s/i, ''))
+    const insertId = trx('user_facebook_id').insert({
+      facebook_id,
+      user_id,
+    });
+    const updateId = trx('user_facebook_id')
+      .update({ facebook_id })
+      .whereRaw('user_facebook_id.facebook_id = ?', [facebook_id]);
+    const queryId = util.format(
+      '%s ON CONFLICT (user_id) DO UPDATE SET %s',
+      insertId.toString(),
+      updateId.toString().replace(/^update\s.*\sset\s/i, ''),
+    );
     await knex.raw(queryId);
     return datas;
-  }); 
-}
+  });
+};
 
-const getFacebookId = async(user_id) => {
-  const [id] = await knex('user_facebook_id').select('facebook_app_id').where({user_id});
-  return id.facebook_app_id; 
-}
+const getFacebookId = async user_id => {
+  const [id] = await knex('user_facebook_id')
+    .select('facebook_id')
+    .where({ user_id });
+  return id.facebook_id;
+};
 
-const deleteFacebookId = async (user_id)=>{
-  return knex('user_facebook_id').del().where({user_id}).returning('facebook_app_id');
-}
+const deleteFacebookId = async user_id => {
+  return knex('user_facebook_id')
+    .del()
+    .where({ user_id })
+    .returning('facebook_id');
+};
 
-const isLinkedFacebookAccount = async(facebook_app_id)=>{
-  return (await knex.first(
-    knex.raw(
-      'exists ?', knex('user_facebook_id').select('user_id').where({facebook_app_id})))).exists;
-}
-
+const isLinkedFacebookAccount = async facebook_id => {
+  return (
+    await knex.first(
+      knex.raw(
+        'exists ?',
+        knex('user_facebook_id')
+          .select('user_id')
+          .where({ facebook_id }),
+      ),
+    )
+  ).exists;
+};
 
 module.exports = {
   confirmEmail,
@@ -546,6 +622,7 @@ module.exports = {
   getPrimaryPersonIdFromUserId,
   updatePrimaryPerson,
   sendPersonTransferEmailAllIncluded,
+  sendPlayerTransfer,
   getPeopleTransferedToUser,
   getPeopleTransferedToEmails,
   transferPerson,
@@ -555,5 +632,5 @@ module.exports = {
   setFacebookData,
   getFacebookId,
   deleteFacebookId,
-  isLinkedFacebookAccount
+  isLinkedFacebookAccount,
 };

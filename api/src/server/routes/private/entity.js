@@ -243,6 +243,23 @@ router.get(`${BASE_URL}/generalInfos`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/uniqueEmail`, async ctx => {
+  const email = await queries.validateEmailIsUnique(ctx.query.email);
+  if (email) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: email,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That email does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/s3Signature`, async ctx => {
   const { code, data } = await queries.getS3Signature(
     ctx.body.userInfo.id,
@@ -767,6 +784,27 @@ router.post(`${BASE_URL}/roster`, async ctx => {
     ctx.body = {
       status: 'success',
       data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/addNewPersonToRoster`, async ctx => {
+  const person = await queries.addNewPersonToRoster(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (person) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: person,
     };
   } else {
     ctx.status = 404;

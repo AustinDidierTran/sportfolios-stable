@@ -3,7 +3,7 @@ const {
   ENTITIES_ROLE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
 } = require('../../../../common/enums');
-const {ERROR_ENUM}= require('../../../../common/errors');
+const { ERROR_ENUM } = require('../../../../common/errors');
 const bcrypt = require('bcrypt');
 
 const {
@@ -18,6 +18,7 @@ const {
   updatePasswordFromUserId,
   getPrimaryPersonIdFromUserId,
   sendPersonTransferEmailAllIncluded,
+  sendPlayerTransfer,
   confirmEmail,
   updatePrimaryPerson: updatePrimaryPersonHelper,
   getPeopleTransferedToUser: getPeopleTransferedToUserHelper,
@@ -28,10 +29,10 @@ const {
   generateAuthToken,
   generateToken,
   validateEmailIsConfirmed,
-  setFacebookData:setFacebookDataHelper,
+  setFacebookData: setFacebookDataHelper,
   getFacebookId,
   deleteFacebookId,
-  isLinkedFacebookAccount
+  isLinkedFacebookAccount,
 } = require('../helpers');
 
 const {
@@ -53,6 +54,23 @@ const sendTransferPersonEmail = async (
     email,
     sendedPersonId,
     senderUserId: user_id,
+  });
+};
+
+const sendTransferAddNewPlayer = async (
+  user_id,
+  { email, sendedPersonId, teamName },
+) => {
+  if (
+    (await getEmailsFromUserId(user_id)).find(e => e.email == email)
+  ) {
+    throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
+  }
+  return sendPlayerTransfer({
+    email,
+    sendedPersonId,
+    senderUserId: user_id,
+    teamName,
   });
 };
 
@@ -249,36 +267,35 @@ const getTransferInfos = async token => {
     authToken,
   };
 };
-const setFacebookData = async(userId, data)=>{
-  return setFacebookDataHelper(userId,data)
-}
+const setFacebookData = async (userId, data) => {
+  return setFacebookDataHelper(userId, data);
+};
 
-const linkFacebook = async(userId, data)=>{
-  const {facebook_app_id} = data;
-  if(!facebook_app_id){
+const linkFacebook = async (userId, data) => {
+  const { facebook_id } = data;
+  if (!facebook_id) {
     return;
   }
-  if(await isLinkedFacebookAccount(facebook_app_id)){
+  if (await isLinkedFacebookAccount(facebook_id)) {
     throw Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return setFacebookDataHelper(userId,data)
-}
+  return setFacebookDataHelper(userId, data);
+};
 
-const getConnectedApps = async (userId) => {
-  const facebookId = await getFacebookId(userId)
+const getConnectedApps = async userId => {
+  const facebookId = await getFacebookId(userId);
   const facebook = {
     connected: Boolean(facebookId),
-    id: facebookId
-  }
-  let apps= {};
+    id: facebookId,
+  };
+  let apps = {};
   apps.facebook = facebook;
   return apps;
-}
+};
 
-const unlinkFacebook = async (user_id)=>{
+const unlinkFacebook = async user_id => {
   return deleteFacebookId(user_id);
-}
-
+};
 
 module.exports = {
   addEmail,
@@ -290,6 +307,7 @@ module.exports = {
   getOwnedPersons,
   updatePrimaryPerson,
   sendTransferPersonEmail,
+  sendTransferAddNewPlayer,
   cancelPersonTransfer,
   getPeopleTransferedToUser,
   transferPerson,
@@ -299,5 +317,5 @@ module.exports = {
   setFacebookData,
   getConnectedApps,
   unlinkFacebook,
-  linkFacebook
+  linkFacebook,
 };

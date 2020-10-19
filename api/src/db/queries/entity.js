@@ -22,6 +22,7 @@ const {
   addPlayerToRoster: addPlayerToRosterHelper,
   addRegisteredToSchedule: addRegisteredToScheduleHelper,
   addRoster: addRosterHelper,
+  addNewPersonToRoster: addNewPersonToRosterHelper,
   addScoreAndSpirit: addScoreAndSpiritHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
   addTeamToEvent: addTeamToEventHelper,
@@ -90,6 +91,7 @@ const { addEventCartItem } = require('../helpers/shop');
 const {
   getEmailsFromUserId,
   getLanguageFromEmail,
+  validateEmailIsUnique: validateEmailIsUniqueHelper,
 } = require('../helpers');
 
 async function isAllowed(
@@ -200,6 +202,9 @@ async function getEvent(eventId) {
 
 async function getAlias(entityId) {
   return getAliasHelper(entityId);
+}
+async function validateEmailIsUnique(email) {
+  return validateEmailIsUniqueHelper(email);
 }
 
 async function getPhases(eventId) {
@@ -646,6 +651,10 @@ async function addRoster(body) {
   const res = await addRosterHelper(rosterId, roster);
   return res;
 }
+async function addNewPersonToRoster(body, userId) {
+  const res = await addNewPersonToRosterHelper(body, userId);
+  return res;
+}
 
 const canUnregisterTeamsList = async (rosterIds, eventId) => {
   return getWichTeamsCanUnregisterHelper(
@@ -768,6 +777,7 @@ module.exports = {
   addPlayerToRoster,
   addRegisteredToSchedule,
   addRoster,
+  addNewPersonToRoster,
   addScoreAndSpirit,
   addScoreSuggestion,
   addTeamToEvent,
@@ -785,6 +795,7 @@ module.exports = {
   eventInfos,
   eventInfos,
   getAlias,
+  validateEmailIsUnique,
   getAllEntities,
   getAllForYouPagePosts,
   getAllOwnedEntities,

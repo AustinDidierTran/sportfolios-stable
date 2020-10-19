@@ -57,7 +57,7 @@ export default function SubmitScoreDialog(props) {
     setRoster(newRoster);
     const newFullRoster = [
       ...fullRoster,
-      { display: name, value: player.id },
+      { display: name, value: player.person_id || player.id },
     ];
     setFullRoster(newFullRoster);
   };
@@ -82,12 +82,12 @@ export default function SubmitScoreDialog(props) {
       const fullRoster = data.map(d => {
         if (d.isSub) {
           return {
-            value: d.id,
+            value: d.personId,
             display: `${d.name} (${t('sub')})`,
           };
         }
         return {
-          value: d.id,
+          value: d.personId,
           display: d.name,
         };
       });

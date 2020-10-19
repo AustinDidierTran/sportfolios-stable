@@ -13,10 +13,9 @@ import {
   SEVERITY_ENUM,
   STATUS_ENUM,
   COMPONENT_TYPE_ENUM,
-  GLOBAL_ENUM,
 } from '../../../../../../../common/enums';
 import { useEffect } from 'react';
-import SearchList from '../../../SearchList';
+import PersonSearchList from '../../../SearchList/PersonSearchList';
 import ComponentFactory from '../../../ComponentFactory';
 import { useFormInput } from '../../../../../hooks/forms';
 import PersonItem from '../../../List/PersonItem';
@@ -33,12 +32,12 @@ export default function AddPlayer(props) {
   } = props;
   const [open, setOpen] = useState(false);
   const [person, setPerson] = useState(null);
-  const [isChecked, setIsChecked] = useState(true);
+  const [isSub, setIsSub] = useState(true);
   const query = useFormInput('');
 
   const blackList = useMemo(() => {
     if (fullRoster) {
-      return fullRoster.map(r => r.person_id);
+      return fullRoster.map(r => r.value);
     }
   }, [fullRoster]);
 
@@ -46,16 +45,19 @@ export default function AddPlayer(props) {
     setOpen(openProps);
   }, [openProps]);
 
-  const handleClose = () => {
+  const handleClose = player => {
     setPerson(null);
     onClose();
+    if (player.id) {
+      updateRoster(player);
+    }
   };
 
   const onChange = value => {
-    setIsChecked(value);
+    setIsSub(value);
   };
 
-  const onSelectPlayer = (event, player) => {
+  const onClick = player => {
     setPerson(player);
   };
 
@@ -64,7 +66,7 @@ export default function AddPlayer(props) {
       method: 'POST',
       body: JSON.stringify({
         name: person.completeName || person.name,
-        isSub: isChecked,
+        isSub,
         rosterId,
         personId: person.id,
       }),
@@ -79,38 +81,35 @@ export default function AddPlayer(props) {
     } else {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
-        message: t('sub_added'),
+        message: t('player_added'),
         severity: SEVERITY_ENUM.SUCCESS,
         duration: 2000,
       });
-      handleClose();
-      updateRoster(res.data[0]);
+      handleClose(res.data[0]);
     }
   };
-
   const buttons = [
-    {
-      onClick: onPlayerAddToRoster,
-      name: t('add'),
-      color: 'primary',
-    },
     {
       onClick: handleClose,
       name: t('cancel'),
       color: 'secondary',
     },
-  ];
-
-  const fields = [
     {
-      componentType: COMPONENT_TYPE_ENUM.CHECKBOX,
-      name: 'isSub',
-      label: t('is_sub'),
-      checked: isChecked,
-      onChange: onChange,
+      onClick: onPlayerAddToRoster,
+      name: t('add'),
       color: 'primary',
+      disabled: person ? false : true,
     },
   ];
+
+  const field = {
+    componentType: COMPONENT_TYPE_ENUM.CHECKBOX,
+    name: 'isSub',
+    label: t('is_sub'),
+    checked: isSub,
+    onChange: onChange,
+    color: 'primary',
+  };
   return (
     <Dialog
       open={open}
@@ -128,27 +127,28 @@ export default function AddPlayer(props) {
             <PersonItem
               {...person}
               secondary={t('player')}
-              notClickabl
+              notClickable
             />
           ) : (
             <></>
           )}
-          <SearchList
+          <PersonSearchList
             clearOnSelect={false}
             blackList={blackList}
             label={t('enter_player_name')}
-            type={GLOBAL_ENUM.PERSON}
-            onClick={onSelectPlayer}
             query={query}
             allowCreate
             withoutIcon
             autoFocus
+            isSub={isSub}
+            onClick={onClick}
+            onChange={onChange}
+            handleClose={handleClose}
+            rosterId={rosterId}
           />
-          {fields.map((field, index) => (
-            <div style={{ marginTop: '8px' }} key={index}>
-              <ComponentFactory component={{ ...field }} />
-            </div>
-          ))}
+          <div style={{ marginTop: '8px' }}>
+            <ComponentFactory component={{ ...field }} />
+          </div>
         </DialogContent>
         <DialogActions>
           {buttons.map((button, index) => (
@@ -157,6 +157,7 @@ export default function AddPlayer(props) {
               color={button.color}
               type={button.type}
               key={index}
+              disabled={button.disabled}
             >
               {button.name}
             </Button>

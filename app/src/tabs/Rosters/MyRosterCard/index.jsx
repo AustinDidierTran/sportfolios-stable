@@ -19,6 +19,7 @@ export default function MyRosterCard(props) {
     onDelete,
     onAdd,
     index,
+    update,
   } = props;
   const {
     position,
@@ -95,6 +96,7 @@ export default function MyRosterCard(props) {
             >
               <Players
                 players={players}
+                update={update}
                 role={role}
                 rosterId={rosterId}
                 onDelete={onDelete}
