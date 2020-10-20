@@ -10,6 +10,7 @@ import {
 import { Card } from '../../components/Custom';
 import { useAdmin, useEditor } from '../../hooks/roles';
 import styles from './Settings.module.css';
+import BottomPageLogo from '../../components/Custom/BottomPageLogo';
 
 const Stripe = loadable(() => import('./Stripe'));
 const ManageRoles = loadable(() => import('./ManageRoles'));
@@ -45,6 +46,7 @@ export default function EntitySettings(props) {
               items={{ id, name: basicInfos.name }}
               type={CARD_TYPE_ENUM.DELETE_ENTITY}
             />
+            <BottomPageLogo />
           </div>
         );
       }
@@ -53,6 +55,7 @@ export default function EntitySettings(props) {
         return (
           <div className={styles.div}>
             <Stripe id={id} />
+            <BottomPageLogo />
           </div>
         );
       }
@@ -74,6 +77,7 @@ export default function EntitySettings(props) {
               items={{ id, name: basicInfos.name }}
               type={CARD_TYPE_ENUM.DELETE_ENTITY}
             />
+            <BottomPageLogo />
           </div>
         );
       }
@@ -84,6 +88,7 @@ export default function EntitySettings(props) {
             <AddOptionsEvent />
             <TeamRegistered />
             <EventSettings />
+            <BottomPageLogo />
           </div>
         );
       }
@@ -99,6 +104,7 @@ export default function EntitySettings(props) {
               items={{ id, name: basicInfos.name }}
               type={CARD_TYPE_ENUM.DELETE_ENTITY}
             />
+            <BottomPageLogo />
           </div>
         );
       }
@@ -107,6 +113,7 @@ export default function EntitySettings(props) {
           <div className={styles.div}>
             <Stripe id={id} />
             <AddMembership />
+            <BottomPageLogo />
           </div>
         );
       }
@@ -118,6 +125,7 @@ export default function EntitySettings(props) {
           <div className={styles.div}>
             <Stripe id={id} />
             <ManageRoles role={role} />
+            <BottomPageLogo />
           </div>
         );
       }
@@ -125,6 +133,7 @@ export default function EntitySettings(props) {
         return (
           <div className={styles.div}>
             <Stripe id={id} />
+            <BottomPageLogo />
           </div>
         );
       }

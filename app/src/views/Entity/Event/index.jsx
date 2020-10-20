@@ -184,7 +184,9 @@ export default function Event(props) {
             </Tabs>
           )}
         </Paper>
-        <OpenTab basicInfos={basicInfos} />
+        <div style={{ marginBottom: '128px' }}>
+          <OpenTab basicInfos={basicInfos} />
+        </div>
       </IgContainer>
     </Div100vh>
   );

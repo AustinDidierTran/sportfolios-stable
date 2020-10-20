@@ -2,7 +2,6 @@ import React, { useEffect, useState, useContext } from 'react';
 import {
   Paper,
   StepperWithHooks,
-  CardMedia,
   IgContainer,
   LoadingSpinner,
 } from '../../components/Custom';
@@ -30,7 +29,7 @@ import { formatPrice } from '../../utils/stringFormats';
 import styles from './EventRegistration.module.css';
 import { Typography } from '../../components/MUI';
 import { Container } from '@material-ui/core';
-import { Store, SCREENSIZE_ENUM, ACTION_ENUM } from '../../Store';
+import { Store, ACTION_ENUM } from '../../Store';
 import { ERROR_ENUM, errors } from '../../../../common/errors';
 
 const getEvent = async eventId => {
@@ -52,7 +51,7 @@ export default function EventRegistration() {
   const [event, setEvent] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const {
-    state: { authToken, screenSize },
+    state: { authToken },
     dispatch,
   } = useContext(Store);
 
@@ -274,16 +273,9 @@ export default function EventRegistration() {
   return (
     <IgContainer>
       <Paper className={styles.paper}>
-        <CardMedia
-          onClick={() => goTo(ROUTES.entity, { id })}
-          photoUrl={event.photoUrl || ''}
-          className={styles.media}
-        />
-        {screenSize == SCREENSIZE_ENUM.xs ? null : (
-          <div className={styles.typo}>
-            <Typography>{event.name || ''}</Typography>
-          </div>
-        )}
+        <div className={styles.typo}>
+          <Typography variant="h3">{event.name || ''}</Typography>
+        </div>
         <Container>
           <StepperWithHooks
             steps={steps}

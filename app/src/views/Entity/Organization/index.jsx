@@ -87,7 +87,9 @@ export default function Organization(props) {
       <Paper className={styles.card}>
         <BasicInfos basicInfos={basicInfos} />
       </Paper>
-      <OpenTab basicInfos={basicInfos} />
+      <div style={{ marginBottom: '128px' }}>
+        <OpenTab basicInfos={basicInfos} />
+      </div>
     </IgContainer>
   );
 }
