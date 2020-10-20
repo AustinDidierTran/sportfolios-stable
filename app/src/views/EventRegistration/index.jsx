@@ -4,6 +4,7 @@ import {
   StepperWithHooks,
   CardMedia,
   IgContainer,
+  LoadingSpinner,
 } from '../../components/Custom';
 import PaymentOptionSelect from './PaymentOptionSelect';
 import TeamSelect from './TeamSelect';
@@ -49,6 +50,7 @@ export default function EventRegistration() {
   const [paymentOptions, setPaymentOptions] = useState([]);
   const [roster, setRoster] = useState([]);
   const [event, setEvent] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const {
     state: { authToken, screenSize },
     dispatch,
@@ -130,6 +132,7 @@ export default function EventRegistration() {
   };
 
   const finish = async () => {
+    setIsLoading(true);
     if (!team.id) {
       const tempTeam = await api('/api/entity', {
         method: 'POST',
@@ -160,6 +163,7 @@ export default function EventRegistration() {
       }),
     });
 
+    setIsLoading(false);
     if (status < 300) {
       goTo(ROUTES.registrationStatus, null, {
         status: data.status,
@@ -262,6 +266,10 @@ export default function EventRegistration() {
       });
     }
   }, []);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <IgContainer>

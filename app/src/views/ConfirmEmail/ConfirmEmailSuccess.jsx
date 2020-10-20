@@ -17,7 +17,7 @@ export default function ConfirmEmailSuccess() {
       } else {
         goTo(ROUTES.home);
       }
-    }, 5000);
+    }, 3000);
   }, []);
 
   const successButtons = [
