@@ -94,11 +94,12 @@ export default function Review() {
       <div className={styles.view}>
         <div className={styles.title}>{t('review')}</div>
         <div className={styles.content}>
-          {items.map(item => {
+          {items.map((item, index) => {
             return (
               <CustomCard
                 items={{ ...item, setItems }}
                 type={CARD_TYPE_ENUM.INVOICE}
+                key={index}
               />
             );
           })}

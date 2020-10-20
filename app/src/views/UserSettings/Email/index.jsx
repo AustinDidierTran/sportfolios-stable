@@ -28,14 +28,15 @@ export default function Email() {
   return (
     <Paper className={styles.card}>
       <CardContent>
-        {confirmedEmails.map(email => (
+        {confirmedEmails.map((email, index) => (
           <ConfirmedEmailField
             email={email}
             isDeletable={confirmedEmails.length > 1}
+            key={index}
           />
         ))}
-        {unconfirmedEmails.map(email => (
-          <UnconfirmedEmailField email={email} />
+        {unconfirmedEmails.map((email, index) => (
+          <UnconfirmedEmailField email={email} key={index} />
         ))}
         <NewEmailField onSubmit={fetchAllEmails} />
       </CardContent>

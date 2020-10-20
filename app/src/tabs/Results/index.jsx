@@ -71,8 +71,8 @@ export default function Results() {
       <SubmitScore />
       <GameFilters update={filter} onlyPast={onlyPast} />
       <div className={styles.main} style={{ marginTop: '16px' }}>
-        {games.map(game => (
-          <Game update={update} game={game} />
+        {games.map((game, index) => (
+          <Game update={update} game={game} key={index} />
         ))}
       </div>
     </>

@@ -81,8 +81,8 @@ export default function PersonItem(props) {
       {secondaryActions ? (
         <ListItemSecondaryAction>
           <div className={styles.secondaryActions}>
-            {secondaryActions.map(action => (
-              <>{action}</>
+            {secondaryActions.map((action, index) => (
+              <div key={index}>{action}</div>
             ))}
           </div>
         </ListItemSecondaryAction>

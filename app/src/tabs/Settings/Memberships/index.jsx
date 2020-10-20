@@ -123,8 +123,8 @@ export default function Memberships(props) {
 
   return (
     <Paper title={t('memberships')}>
-      {personsItems.map(items => (
-        <Paper title={items[0].personName}>
+      {personsItems.map((items, index) => (
+        <Paper title={items[0].personName} key={index}>
           <List items={items}></List>
         </Paper>
       ))}

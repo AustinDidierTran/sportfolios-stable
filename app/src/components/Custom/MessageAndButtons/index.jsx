@@ -31,7 +31,7 @@ export default function MessageAndButtons(props) {
           {message}
         </Typography>
         <div className={styles.buttons}>
-          {buttons.map(button => (
+          {buttons.map((button, index) => (
             <Button
               size="small"
               variant="contained"
@@ -44,6 +44,7 @@ export default function MessageAndButtons(props) {
               }}
               color={button.color}
               className={styles.button}
+              key={index}
             >
               {button.name}
             </Button>

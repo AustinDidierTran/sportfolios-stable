@@ -29,10 +29,12 @@ export default function Organizations() {
   return (
     <Paper className={styles.card} title={t('organizations')}>
       <List
-        items={organizations.map(organization => ({
+        items={organizations.map((organization, index) => ({
           id: organization.id,
           value: organization.name,
-          iconComponent: <Avatar photoUrl={organization.photoUrl} />,
+          iconComponent: (
+            <Avatar photoUrl={organization.photoUrl} key={index} />
+          ),
         }))}
       />
     </Paper>

@@ -36,12 +36,13 @@ export default function EditPrimaryPerson(props) {
       <DialogContent>
         <FormControl>
           <RadioGroup value={selectedValue} onChange={handleChange}>
-            {persons.map(person => (
+            {persons.map((person, index) => (
               <FormControlLabel
                 value={person.id}
                 control={<Radio />}
                 label={person.name + ' ' + person.surname}
                 disabled={person.isToBeTransfered}
+                key={index}
               />
             ))}
           </RadioGroup>

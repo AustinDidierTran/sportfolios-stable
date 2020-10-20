@@ -13,11 +13,12 @@ export default function Games(props) {
       <Typography style={{ marginBottom: '8px' }}>
         {t('games')}
       </Typography>
-      {games.map(game => {
+      {games.map((game, index) => {
         return (
           <Card
             items={{ ...game, changeScore, saveGame, getRank }}
             type={CARD_TYPE_ENUM.EDITABLE_GAME}
+            key={index}
           />
         );
       })}

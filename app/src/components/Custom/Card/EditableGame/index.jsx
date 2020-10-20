@@ -60,8 +60,8 @@ export default function EditableGameItem(props) {
           {...timeInput.inputProps}
         />
       </div>
-      {theTeams.map(team => (
-        <Team team={team} getRank={getRank} />
+      {theTeams.map((team, index) => (
+        <Team team={team} getRank={getRank} key={index} />
       ))}
     </Card>
   );

@@ -48,10 +48,11 @@ export default function Events(props) {
     return (
       <div className={styles.div}>
         <div className={styles.general}>
-          {events.map(e => (
+          {events.map((e, index) => (
             <Card
               type={CARD_TYPE_ENUM.EVENT}
               items={{ eventId: e.id }}
+              key={index}
             />
           ))}
         </div>
@@ -67,10 +68,11 @@ export default function Events(props) {
       </div>
 
       <div className={styles.general}>
-        {events.map(e => (
+        {events.map((e, index) => (
           <Card
             type={CARD_TYPE_ENUM.EVENT}
             items={{ eventId: e.id }}
+            key={index}
           />
         ))}
       </div>
