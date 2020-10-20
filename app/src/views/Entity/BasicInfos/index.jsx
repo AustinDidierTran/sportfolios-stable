@@ -1,6 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
+import {
+  ENTITIES_ROLE_ENUM,
+  GLOBAL_ENUM,
+} from '../../../../../common/enums';
 
 import styles from './BasicInfos.module.css';
 
@@ -36,8 +39,10 @@ export default function BasicInfos(props) {
   const {
     id,
     name: nameProp,
+    surname,
     photoUrl: initialPhotoUrl,
     role,
+    type,
   } = props.basicInfos;
 
   const [photoUrl, setPhotoUrl] = useState(initialPhotoUrl);
@@ -137,11 +142,12 @@ export default function BasicInfos(props) {
           </>
         ) : (
           <Typography variant="h3" className={styles.text}>
-            {name.value}
+            {`${name.value}${surname ? ' ' + surname : ''}`}
           </Typography>
         )}
       </div>
-      {role === ENTITIES_ROLE_ENUM.ADMIN ? (
+      {role === ENTITIES_ROLE_ENUM.ADMIN &&
+      type !== GLOBAL_ENUM.PERSON ? (
         isEditMode ? (
           <div className={styles.editor}>
             <Button

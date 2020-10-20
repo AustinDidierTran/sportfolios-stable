@@ -13,6 +13,7 @@ import Cancel from '@material-ui/icons/Cancel';
 import CancelSend from '@material-ui/icons/CancelScheduleSend';
 import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Deck from '@material-ui/icons/Deck';
 import Delete from '@material-ui/icons/Delete';
 import DragIndicator from '@material-ui/icons/DragIndicator';
@@ -73,6 +74,7 @@ const icons = {
   Business,
   Check,
   Close,
+  CloudUploadIcon,
   Cancel,
   CancelSend,
   Deck,

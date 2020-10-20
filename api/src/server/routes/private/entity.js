@@ -260,6 +260,43 @@ router.get(`${BASE_URL}/uniqueEmail`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/personInfos`, async ctx => {
+  const infos = await queries.getPersonInfos(ctx.query.entityId);
+
+  if (infos) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: infos,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/person`, async ctx => {
+  const infos = await queries.getGeneralInfos(ctx.query.entityId);
+
+  if (infos) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: infos,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/s3Signature`, async ctx => {
   const { code, data } = await queries.getS3Signature(
     ctx.body.userInfo.id,
@@ -465,6 +502,26 @@ router.put(`${BASE_URL}/updateGeneralInfos`, async ctx => {
     };
   } else {
     ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/updatePersonInfos`, async ctx => {
+  const personInfos = await queries.updatePersonInfos(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (personInfos) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: personInfos,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'That entity does not exist.',

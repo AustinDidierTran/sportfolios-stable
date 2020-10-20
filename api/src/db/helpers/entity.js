@@ -1047,6 +1047,38 @@ async function getGeneralInfos(entityId) {
   };
 }
 
+async function getPersonInfos(entityId) {
+  const realId = await getRealId(entityId);
+  const [res] = await knex('person_all_infos')
+  .select('*')
+  .where({id: realId});
+
+  let resObj = {
+    photoUrl: res.photo_url,
+    name: res.name,
+    surname: res.surname,
+    birthDate: res.birth_date,
+    gender: res.gender,
+    formattedAddress: res.address
+  };
+
+  const [fullAddress] = await knex('entities_address')
+  .select('*')
+  .where({entity_id: realId});
+
+  if(fullAddress) {
+    resObj.address = {
+      street_address: fullAddress.street_address,
+      city: fullAddress.city,
+      state: fullAddress.state,
+      zip: fullAddress.zip,
+      country: fullAddress.country,
+    };
+  }
+
+  return resObj;
+}
+
 async function updateEntityRole(entityId, entityIdAdmin, role) {
   const realEntityId = await getRealId(entityId);
   const realAdminId = await getRealId(entityIdAdmin);
@@ -1109,6 +1141,81 @@ async function updateGeneralInfos(entityId, body) {
     .where({ entity_id: realId })
     .returning('*');
   return entity;
+}
+
+async function updatePersonInfosHelper(entityId, body) {
+  const { personInfos } = body;
+  const realId = await getRealId(entityId);
+
+  let fullname;
+  let birthDateRes;
+  let genderRes;
+  let fullAddress;
+  let outputPersonInfos = {};
+
+  if (personInfos.name || personInfos.surname) {  
+    fullname = await knex('entities_name')
+    .update({name: personInfos.name, surname: personInfos.surname})
+    .where({ entity_id: realId })
+    .returning('*'); 
+    
+    outputPersonInfos.name = fullname[0].name;
+    outputPersonInfos.surname = fullname[0].surname;
+  }
+
+  if (personInfos.birthDate) {      
+    birthDateRes = await knex.raw(
+      `? ON CONFLICT (entity_id)
+        DO UPDATE SET
+          birth_date = '${personInfos.birthDate}'
+        RETURNING birth_date;`,
+      [knex('entities_birth_date').insert({
+        entity_id: realId,
+        birth_date: personInfos.birthDate,
+      })],
+    );
+
+    outputPersonInfos.birthDate = birthDateRes.rows[0].birth_date;
+  }
+
+  if (personInfos.gender) {  
+    genderRes = await knex.raw(
+      `? ON CONFLICT (entity_id)
+        DO UPDATE SET
+          gender = '${personInfos.gender}'
+        RETURNING gender;`,
+      [knex('entities_gender').insert({
+        entity_id: realId,
+        gender: personInfos.gender,
+      })],
+    );
+
+    outputPersonInfos.gender = genderRes.rows[0].gender;
+  }
+
+  if (personInfos.address.length != 0) {
+    fullAddress = await knex.raw(
+      `? ON CONFLICT (entity_id)
+        DO UPDATE SET
+        street_address = '${personInfos.address.street_address}',
+        city = '${personInfos.address.city}',
+        state = '${personInfos.address.state}',
+        zip = '${personInfos.address.zip}',
+        country = '${personInfos.address.country}'
+        RETURNING CONCAT_WS(', ', street_address, city, state, zip, country);`,
+      [knex('entities_address').insert({
+        entity_id: realId,
+        street_address: personInfos.address.street_address,
+        city: personInfos.address.city,
+        state: personInfos.address.state,
+        zip: personInfos.address.zip,
+        country: personInfos.address.country})],
+    );
+
+    outputPersonInfos.address = fullAddress.rows[0].concat_ws;
+  }
+
+  return outputPersonInfos;
 }
 
 async function updateEntityName(entityId, name, surname) {
@@ -2144,6 +2251,7 @@ module.exports = {
   getOptions,
   getRosterInvoiceItem,
   getWichTeamsCanUnregister,
+  getPersonInfos,
   removeEntityRole,
   removeEventCartItem,
   unregister,
@@ -2153,6 +2261,7 @@ module.exports = {
   updateEvent,
   updatePreRanking,
   updateGeneralInfos,
+  updatePersonInfosHelper,
   updateMember,
   updateAlias,
   updateGame,

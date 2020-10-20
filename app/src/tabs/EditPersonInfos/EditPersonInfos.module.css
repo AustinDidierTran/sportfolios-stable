@@ -1,0 +1,43 @@
+.card {
+  padding: 16px;
+  margin-bottom: 16px;
+  margin-top: 16px;
+}
+
+.div2equal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: 'zone1 zone2';
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.zone1 {
+  grid-area: zone1;
+  margin-right: 8px;
+}
+
+.zone2 {
+  grid-area: zone2;
+  margin-left: 8px;
+}
+
+.divSearch {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-top: 14px;
+}
+
+.address {
+  display: flex;
+  flex-direction: row;
+  margin-top: 3px;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 16px;
+}

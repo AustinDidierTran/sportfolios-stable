@@ -97,6 +97,12 @@ const SELECT_ENUM = {
   ALL: 'all',
 };
 
+const GENDER_ENUM = {
+  MALE: 'Male',
+  FEMALE: 'Female',
+  NOT_SPECIFIED: 'Other',
+};
+
 const INVOICE_STATUS_ENUM = {
   DRAFT: 'draft',
   DELETED: 'deleted',
@@ -258,6 +264,7 @@ module.exports = {
   CARD_TYPE_ENUM,
   COMPONENT_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,
+  GENDER_ENUM,
   GLOBAL_ENUM,
   IMAGE_ENUM,
   INVOICE_STATUS_ENUM,
