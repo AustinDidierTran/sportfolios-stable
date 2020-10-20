@@ -32,12 +32,19 @@ const {
   getFacebookId,
   deleteFacebookId,
   isLinkedFacebookAccount,
+  setMessengerId,
 } = require('../helpers');
 
 const {
   getAllOwnedEntities,
   personIsAwaitingTransfer,
 } = require('../helpers/entity');
+
+const {
+  getMessengerIdFromFbID,
+  sendMessage,
+} = require('../helpers/facebook');
+
 const { isAllowed } = require('./entity');
 
 const sendTransferPersonEmail = async (
@@ -279,6 +286,17 @@ const unlinkFacebook = async user_id => {
   return deleteFacebookId(user_id);
 };
 
+const linkMessengerFromFBId = async (user_id, facebook_id) => {
+  console.log('allo', facebook_id);
+  const messengerId = await getMessengerIdFromFbID(facebook_id);
+  if (!messengerId) {
+    throw Error(ERROR_ENUM.VALUE_IS_INVALID);
+  }
+  console.log('allo ', messengerId);
+  sendMessage(messengerId, 'Bonjour! Ceci est un test');
+  return setMessengerId(user_id, messengerId);
+};
+
 module.exports = {
   addEmail,
   changePassword,
@@ -299,4 +317,5 @@ module.exports = {
   getConnectedApps,
   unlinkFacebook,
   linkFacebook,
+  linkMessengerFromFBId,
 };

@@ -617,6 +617,13 @@ const isLinkedFacebookAccount = async facebook_app_id => {
   ).exists;
 };
 
+const setMessengerId = async (user_id, messengerId) => {
+  return knex('user_facebook_id')
+    .where({ user_id })
+    .update({ facebook_messenger_id: messengerId })
+    .returning('facebook_messenger_id');
+};
+
 module.exports = {
   confirmEmail,
   createUserEmail,
@@ -654,4 +661,5 @@ module.exports = {
   getFacebookId,
   deleteFacebookId,
   isLinkedFacebookAccount,
+  setMessengerId,
 };

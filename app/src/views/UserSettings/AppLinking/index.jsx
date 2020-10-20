@@ -14,6 +14,7 @@ import {
 import { ERROR_ENUM, errors } from '../../../../../common/errors';
 import { Store, ACTION_ENUM } from '../../../Store';
 import styles from './AppLinking.module.css';
+import { formatRoute } from '../../../actions/goTo';
 
 export default function AppLinking() {
   useFacebookSDK();
@@ -23,6 +24,7 @@ export default function AppLinking() {
   const { dispatch } = useContext(Store);
   const [alertDialog, setAlertDialog] = useState(false);
   const [selectedApp, setSelectedApp] = useState('');
+  const [fbUserId, setFBUserId] = useState();
 
   const fetchConnectedApp = async () => {
     const res = await api('/api/user/connectedApps');
@@ -30,7 +32,10 @@ export default function AppLinking() {
       return;
     }
     const { data } = res;
-    setIsLinkedFB(data && data.facebook && data.facebook.connected);
+    if (data && data.facebook) {
+      setFBUserId(data.facebook.id);
+      setIsLinkedFB(data.facebook.connected);
+    }
   };
 
   useEffect(() => {
@@ -64,6 +69,7 @@ export default function AppLinking() {
           showErrorToast(t('account_already_linked'));
         } else if (res.status === STATUS_ENUM.SUCCESS) {
           setIsLinkedFB(true);
+          setFBUserId(facebook_app_id);
         } else {
           showErrorToast();
           onFBUnlink();
@@ -126,6 +132,16 @@ export default function AppLinking() {
     setAlertDialog(false);
   };
 
+  const onMessengerConnect = async () => {
+    console.log({ fbUserId });
+    const res = await api('/api/user/messengerConnection', {
+      method: 'POST',
+      body: JSON.stringify({
+        facebook_id: fbUserId,
+      }),
+    });
+  };
+
   const items = [
     {
       onConnect: () => {
@@ -140,7 +156,7 @@ export default function AppLinking() {
       description: t('facebook_description'),
     },
     {
-      onConnect: () => {},
+      onConnect: onMessengerConnect,
       onDisconnect: () => {},
       app: APP_ENUM.MESSENGER,
       isConnected: isLinkedMessenger,
