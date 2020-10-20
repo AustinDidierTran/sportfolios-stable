@@ -22,8 +22,7 @@ const getMessengerIdFromFbID = async facebook_id => {
   }
 };
 
-const sendMessage = async (facebookId, messengerId, message) => {
-  console.log('tesst');
+const sendMessage = async (messengerId, message) => {
   const uri = `${FACEBOOK_BASE_URL}/me/messages?access_token=${process.env.FACEBOOK_PAGE_TOKEN}`;
   const body = {
     messaging_type: 'UPDATE',

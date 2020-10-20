@@ -3,7 +3,7 @@ const {
   ENTITIES_ROLE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
 } = require('../../../../common/enums');
-const { ERROR_ENUM } = require('../../../../common/errors');
+const { ERROR_ENUM, errors } = require('../../../../common/errors');
 const bcrypt = require('bcrypt');
 
 const {
@@ -287,13 +287,11 @@ const unlinkFacebook = async user_id => {
 };
 
 const linkMessengerFromFBId = async (user_id, facebook_id) => {
-  console.log('allo', facebook_id);
   const messengerId = await getMessengerIdFromFbID(facebook_id);
   if (!messengerId) {
-    throw Error(ERROR_ENUM.VALUE_IS_INVALID);
+    throw new errors[ERROR_ENUM.VALUE_IS_INVALID]();
   }
-  console.log('allo ', messengerId);
-  sendMessage(messengerId, 'Bonjour! Ceci est un test');
+  sendMessage(messengerId, 'Votre compte a été lié avec succès!');
   return setMessengerId(user_id, messengerId);
 };
 

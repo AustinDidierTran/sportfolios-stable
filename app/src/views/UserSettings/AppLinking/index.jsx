@@ -14,7 +14,7 @@ import {
 import { ERROR_ENUM, errors } from '../../../../../common/errors';
 import { Store, ACTION_ENUM } from '../../../Store';
 import styles from './AppLinking.module.css';
-import { formatRoute } from '../../../actions/goTo';
+import conf from '../../../../../conf';
 
 export default function AppLinking() {
   useFacebookSDK();
@@ -111,8 +111,11 @@ export default function AppLinking() {
     const res = await api('/api/user/facebookConnection', {
       method: 'DELETE',
     });
+    console.log({ res });
     if (res.status === STATUS_ENUM.ERROR) {
       showErrorToast();
+    } else if (fbUserId == conf.FACEBOOK_ADMIN_ID) {
+      setIsLinkedFB(false);
     } else {
       await FB.api('/me/permissions', 'DELETE', {}, function(
         response,
@@ -133,13 +136,19 @@ export default function AppLinking() {
   };
 
   const onMessengerConnect = async () => {
-    console.log({ fbUserId });
     const res = await api('/api/user/messengerConnection', {
       method: 'POST',
       body: JSON.stringify({
         facebook_id: fbUserId,
       }),
     });
+    if (res.status == errors[ERROR_ENUM.VALUE_IS_INVALID].code) {
+      setMessengerDialog(true);
+    } else if (res.status == STATUS_ENUM.SUCCESS) {
+      setIsLinkedMessenger(true);
+    } else {
+      showErrorToast();
+    }
   };
 
   const items = [
@@ -156,6 +165,16 @@ export default function AppLinking() {
       description: t('facebook_description'),
     },
     {
+      secondaryAction: (
+        <div
+          class="fb-send-to-messenger"
+          messenger_app_id={conf.FACEBOOK_APP_ID}
+          page_id={conf.FACEBOOK_PAGE_ID}
+          data-ref={userInfo.id}
+          color="blue"
+          size="standard"
+        ></div>
+      ),
       onConnect: onMessengerConnect,
       onDisconnect: () => {},
       app: APP_ENUM.MESSENGER,

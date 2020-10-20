@@ -347,18 +347,23 @@ router.get(`${BASE_URL}/connectedApps`, async ctx => {
 });
 
 router.post(`${BASE_URL}/messengerConnection`, async ctx => {
-  const data = await queries.linkMessengerFromFBId(
-    ctx.body.userInfo.id,
-    ctx.request.body.facebook_id,
-  );
-  if (data) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.data = data;
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      message: 'Something went wrong',
-    };
+  try {
+    const data = await queries.linkMessengerFromFBId(
+      ctx.body.userInfo.id,
+      ctx.request.body.facebook_id,
+    );
+    if (data) {
+      ctx.status = STATUS_ENUM.SUCCESS;
+      ctx.data = data;
+    } else {
+      ctx.status = STATUS_ENUM.ERROR;
+      ctx.body = {
+        message: 'Something went wrong',
+      };
+    }
+  } catch (err) {
+    ctx.status = err.status;
+    ctx.body = err.message;
   }
 });
 

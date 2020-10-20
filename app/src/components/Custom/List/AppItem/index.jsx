@@ -25,8 +25,21 @@ export default function AppItem(props) {
     app,
     description,
     isConnected,
+    secondaryAction,
   } = props;
   const imageSrc = images[app] || defaultImage;
+  const action = secondaryAction ? (
+    secondaryAction
+  ) : (
+    <Button
+      className={styles.button}
+      onClick={isConnected ? onDisconnect : onConnect}
+      variant="outlined"
+      color={isConnected ? 'secondary' : 'primary'}
+    >
+      {isConnected ? t('disconnect') : t('connect')}
+    </Button>
+  );
 
   return (
     <ListItem className={styles.main}>
@@ -39,14 +52,7 @@ export default function AppItem(props) {
         secondary={description}
       />
       <ListItemSecondaryAction>
-        <Button
-          className={styles.button}
-          onClick={isConnected ? onDisconnect : onConnect}
-          variant="outlined"
-          color={isConnected ? 'secondary' : 'primary'}
-        >
-          {isConnected ? t('disconnect') : t('connect')}
-        </Button>
+        <>{action}</>
       </ListItemSecondaryAction>
     </ListItem>
   );
