@@ -5,7 +5,6 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n/index';
 import { StoreProvider } from './Store';
 import App from './views/App/index';
-import Div100vh from 'react-div-100vh';
 
 import '../styles/global.css';
 
@@ -38,9 +37,7 @@ function main() {
     <StoreProvider>
       <I18nextProvider i18n={i18n}>
         <BrowserRouter>
-          <Div100vh>
-            <App />
-          </Div100vh>
+          <App />
         </BrowserRouter>
       </I18nextProvider>
     </StoreProvider>,
