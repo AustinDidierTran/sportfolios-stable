@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './Players.module.css';
 import Tag from '../../Tag';
 import { ENTITIES_ROLE_ENUM } from '../../../../Store';
-import { Typography } from '@material-ui/core';
+import { Typography } from '../../../../components/MUI';
 import { useTranslation } from 'react-i18next';
 
 export default function Players(props) {
@@ -30,9 +30,13 @@ export default function Players(props) {
     return (
       <div className={styles.card}>
         {playersUpdated.map((player, index) => (
-          <div className={styles.player} key={index}>
-            <div className={styles.position}>{`${index}`}</div>
-            <div className={styles.name}>{player && player.name}</div>
+          <div className={styles.player} key={player.id}>
+            <div className={styles.position}>
+              <Typography>{`${index}`}</Typography>
+            </div>
+            <div className={styles.name}>
+              <Typography>{player && player.name}</Typography>
+            </div>
             <div className={styles.pod}>
               <Tag type={player.status} />
             </div>
@@ -53,9 +57,13 @@ export default function Players(props) {
   return (
     <div className={styles.card}>
       {playersUpdated.map((player, index) => (
-        <div className={styles.player} key={index}>
-          <div className={styles.position}>{`${index}`}</div>
-          <div className={styles.name}>{player.name}</div>
+        <div className={styles.player} key={player.id}>
+          <div className={styles.position}>
+            <Typography>{`${index}`}</Typography>
+          </div>
+          <div className={styles.name}>
+            <Typography>{player.name}</Typography>
+          </div>
         </div>
       ))}
     </div>

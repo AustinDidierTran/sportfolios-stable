@@ -77,7 +77,7 @@ export default function TabRosters() {
 
   if (!rosters.length) {
     return (
-      <Typography style={{ margin: '16px' }}>
+      <Typography color="textSecondary" style={{ margin: '16px' }}>
         {t('there_is_no_rosters_for_this_event')}
       </Typography>
     );
