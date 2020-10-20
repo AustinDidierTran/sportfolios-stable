@@ -13,6 +13,7 @@ import { formatPageTitle } from '../../../utils/stringFormats';
 import { Helmet } from 'react-helmet';
 import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 import { AddGaEvent } from '../../../components/Custom/Analytics';
+import Div100vh from 'react-div-100vh';
 
 export default function Event(props) {
   const { basicInfos } = props;
@@ -138,51 +139,53 @@ export default function Event(props) {
   }, [basicInfos]);
 
   return (
-    <IgContainer>
-      <Helmet>
-        <meta property="og:title" content={basicInfos.name} />
-        <meta property="og:description" content={ogDescription} />
-        <meta property="og:image" content={basicInfos.photoUrl} />
-        <meta property="og:type" content="website" />
-        <meta property="og:locale" content="fr_CA" />
-      </Helmet>
-      <Paper>
-        {window.innerWidth < 768 ? (
-          <Tabs
-            value={states.findIndex(s => s.value === eventState)}
-            indicatorColor="primary"
-            textColor="primary"
-          >
-            {states.map((s, index) => (
-              <Tab
-                key={index}
-                onClick={() => onClick(s)}
-                icon={<Icon icon={s.icon} />}
-                style={{
-                  minWidth: window.innerWidth / states.length,
-                }}
-              />
-            ))}
-          </Tabs>
-        ) : (
-          <Tabs
-            value={states.findIndex(s => s.value === eventState)}
-            indicatorColor="primary"
-            textColor="primary"
-          >
-            {states.map((s, index) => (
-              <Tab
-                key={index}
-                onClick={() => onClick(s)}
-                label={s.label}
-                icon={<Icon icon={s.icon} />}
-                style={{ minWidth: 700 / states.length }}
-              />
-            ))}
-          </Tabs>
-        )}
-      </Paper>
-      <OpenTab basicInfos={basicInfos} />
-    </IgContainer>
+    <Div100vh>
+      <IgContainer>
+        <Helmet>
+          <meta property="og:title" content={basicInfos.name} />
+          <meta property="og:description" content={ogDescription} />
+          <meta property="og:image" content={basicInfos.photoUrl} />
+          <meta property="og:type" content="website" />
+          <meta property="og:locale" content="fr_CA" />
+        </Helmet>
+        <Paper>
+          {window.innerWidth < 768 ? (
+            <Tabs
+              value={states.findIndex(s => s.value === eventState)}
+              indicatorColor="primary"
+              textColor="primary"
+            >
+              {states.map((s, index) => (
+                <Tab
+                  key={index}
+                  onClick={() => onClick(s)}
+                  icon={<Icon icon={s.icon} />}
+                  style={{
+                    minWidth: window.innerWidth / states.length,
+                  }}
+                />
+              ))}
+            </Tabs>
+          ) : (
+            <Tabs
+              value={states.findIndex(s => s.value === eventState)}
+              indicatorColor="primary"
+              textColor="primary"
+            >
+              {states.map((s, index) => (
+                <Tab
+                  key={index}
+                  onClick={() => onClick(s)}
+                  label={s.label}
+                  icon={<Icon icon={s.icon} />}
+                  style={{ minWidth: 700 / states.length }}
+                />
+              ))}
+            </Tabs>
+          )}
+        </Paper>
+        <OpenTab basicInfos={basicInfos} />
+      </IgContainer>
+    </Div100vh>
   );
 }
