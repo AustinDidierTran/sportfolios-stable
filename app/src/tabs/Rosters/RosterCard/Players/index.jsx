@@ -30,7 +30,7 @@ export default function Players(props) {
     return (
       <div className={styles.card}>
         {playersUpdated.map((player, index) => (
-          <div className={styles.player}>
+          <div className={styles.player} key={index}>
             <div className={styles.position}>{`${index}`}</div>
             <div className={styles.name}>{player && player.name}</div>
             <div className={styles.pod}>
@@ -53,7 +53,7 @@ export default function Players(props) {
   return (
     <div className={styles.card}>
       {playersUpdated.map((player, index) => (
-        <div className={styles.player}>
+        <div className={styles.player} key={index}>
           <div className={styles.position}>{`${index}`}</div>
           <div className={styles.name}>{player.name}</div>
         </div>

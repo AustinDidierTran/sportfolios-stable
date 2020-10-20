@@ -112,6 +112,7 @@ export default function Players(props) {
                 player={player}
                 role={role}
                 onDelete={handleDelete}
+                key={player.id}
               />
             );
           })}

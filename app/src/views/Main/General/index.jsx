@@ -33,9 +33,13 @@ export default function General() {
   }
   return (
     <div className={styles.general}>
-      {posts.map(e => {
+      {posts.map((e, index) => {
         return (
-          <Card type={e.cardType} items={{ ...e, update: getData }} />
+          <Card
+            type={e.cardType}
+            items={{ ...e, update: getData }}
+            key={index}
+          />
         );
       })}
     </div>

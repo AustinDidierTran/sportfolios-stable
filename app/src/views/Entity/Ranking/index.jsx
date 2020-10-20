@@ -66,11 +66,11 @@ export default function Ranking() {
         {t('preranking')}
       </Typography>
       <hr className={styles.divider}></hr>
-      {categories.map(categorie => (
-        <Container className={styles.container}>
+      {categories.map((categorie, index) => (
+        <Container className={styles.container} key={index}>
           <Typography variant="h4">{categorie.name}</Typography>
-          {categorie.teams.map(team => (
-            <List className={styles.list}>
+          {categorie.teams.map((team, teamIndex) => (
+            <List className={styles.list} key={teamIndex}>
               <ListItem className={styles.listItem}>
                 <Typography
                   color="primary"

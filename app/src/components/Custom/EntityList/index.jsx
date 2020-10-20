@@ -86,11 +86,12 @@ export default function EntityList(props) {
             {entityObject.buttonLabel}
           </Button>
           <List
-            items={entities.map(entity => ({
+            items={entities.map((entity, index) => ({
               id: entity.id,
               name: entity.name,
               photoUrl: entity.photoUrl,
               type: Number(entity.type),
+              key: { index },
             }))}
           />
         </>

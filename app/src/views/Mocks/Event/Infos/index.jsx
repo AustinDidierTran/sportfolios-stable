@@ -83,8 +83,8 @@ export default function Infos() {
           {t('general_informations')}
         </Typography>
         <List>
-          {infos.sections.map(section => (
-            <Container className={styles.section}>
+          {infos.sections.map((section, index) => (
+            <Container className={styles.section} key={index}>
               <Typography variant="h5" className={styles.title}>
                 {section.title}:{' '}
               </Typography>

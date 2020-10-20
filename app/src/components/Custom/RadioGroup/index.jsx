@@ -19,11 +19,12 @@ export default function CustomRadioGroup(props) {
         value={value}
         onChange={onChange}
       >
-        {options.map(option => (
+        {options.map((option, index) => (
           <FormControlLabel
             value={option.value}
             label={option.display}
             control={<Radio color="primary" />}
+            key={index}
           />
         ))}
       </RadioGroup>

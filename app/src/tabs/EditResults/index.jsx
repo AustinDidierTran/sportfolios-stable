@@ -70,8 +70,13 @@ export default function EditResults() {
     <>
       <GameFilters update={filter} onlyPast={onlyPast} />
       <div className={styles.main} style={{ marginTop: '16px' }}>
-        {games.map(game => (
-          <ScoreSuggestion game={game} update={update} withoutEdit />
+        {games.map((game, index) => (
+          <ScoreSuggestion
+            game={game}
+            update={update}
+            key={index}
+            withoutEdit
+          />
         ))}
       </div>
     </>
