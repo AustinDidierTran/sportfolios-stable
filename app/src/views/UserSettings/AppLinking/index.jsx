@@ -170,7 +170,7 @@ export default function AppLinking() {
           class="fb-send-to-messenger"
           messenger_app_id={conf.FACEBOOK_APP_ID}
           page_id={conf.FACEBOOK_PAGE_ID}
-          data-ref={userInfo.id}
+          data-ref={'Testing'}
           color="blue"
           size="standard"
         ></div>
