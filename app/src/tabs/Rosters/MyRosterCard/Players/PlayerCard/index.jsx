@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './PlayerCard.module.css';
-import { ROSTER_ROLE_ENUM } from '../../../../../../../common/enums';
+import {
+  ROSTER_ROLE_ENUM,
+  FORM_DIALOG_TYPE_ENUM,
+} from '../../../../../../../common/enums';
 import Chip from '@material-ui/core/Chip';
 import { useTranslation } from 'react-i18next';
-import { IconButton } from '../../../../../components/Custom';
+import {
+  IconButton,
+  FormDialog,
+} from '../../../../../components/Custom';
 import { Typography } from '../../../../../components/MUI';
 import api from '../../../../../actions/api';
 import { formatRoute } from '../../../../../actions/goTo';
@@ -11,6 +17,17 @@ import { formatRoute } from '../../../../../actions/goTo';
 export default function PlayerCard(props) {
   const { isEventAdmin, player, role, onDelete } = props;
   const { t } = useTranslation();
+
+  const [playerInfos, setPlayerInfos] = useState({});
+  const [playerAcceptation, setPlayerAcceptation] = useState(false);
+
+  const closePlayerAcceptation = () => {
+    setPlayerAcceptation(false);
+  };
+
+  const openPlayerAcceptation = () => {
+    setPlayerAcceptation(true);
+  };
 
   const onPlayerDeleteFromRoster = () => {
     onDelete(player.id);
@@ -22,16 +39,17 @@ export default function PlayerCard(props) {
         entityId: personId,
       }),
     );
+    setPlayerInfos(data);
   };
 
   const onAboutClick = async e => {
     console.log('about this person');
-    console.log(e);
-
-    //const playerInfos = getPersonInfos();
+    console.log(player);
+    setPlayerInfos(getPersonInfos());
+    openPlayerAcceptation();
   };
 
-  if (role == ROSTER_ROLE_ENUM.CAPTAIN) {
+  if (isEventAdmin || role == ROSTER_ROLE_ENUM.CAPTAIN) {
     return (
       <div className={styles.card}>
         <div className={styles.player}>
@@ -70,6 +88,14 @@ export default function PlayerCard(props) {
             />
           </div>
         </div>
+        <FormDialog
+          type={FORM_DIALOG_TYPE_ENUM.PLAYER_ACCEPTATION}
+          items={{
+            open: playerAcceptation,
+            onClose: closePlayerAcceptation,
+            personInfos: playerInfos,
+          }}
+        />
       </div>
     );
   }
