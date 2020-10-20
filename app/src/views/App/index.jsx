@@ -86,7 +86,6 @@ import { SpeedDial } from '../../components/Custom';
 import SnackBar from './SnackBar/index';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
-import BottomPageLogo from '../../components/Custom/BottomPageLogo';
 const stripePromise = loadStripe(conf.STRIPE.publicKey);
 
 export default function App() {
