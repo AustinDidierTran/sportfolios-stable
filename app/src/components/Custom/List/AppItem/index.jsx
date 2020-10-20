@@ -48,7 +48,7 @@ export default function AppItem(props) {
       </ListItemIcon>
       <ListItemText
         className={styles.text}
-        primary={app}
+        primary={app + ' (Beta)'}
         secondary={description}
       />
       <ListItemSecondaryAction>
