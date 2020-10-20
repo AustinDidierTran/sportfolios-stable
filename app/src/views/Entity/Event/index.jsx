@@ -46,7 +46,6 @@ export default function Event(props) {
     list: [
       TABS_ENUM.EDIT_SCHEDULE,
       TABS_ENUM.EDIT_RANKINGS,
-      TABS_ENUM.EDIT_ROSTERS,
       TABS_ENUM.SETTINGS,
       TABS_ENUM.SWITCH_TO_USER,
     ],
@@ -184,7 +183,9 @@ export default function Event(props) {
             </Tabs>
           )}
         </Paper>
-        <OpenTab basicInfos={basicInfos} />
+        <div style={{ marginBottom: '128px' }}>
+          <OpenTab basicInfos={basicInfos} />
+        </div>
       </IgContainer>
     </Div100vh>
   );

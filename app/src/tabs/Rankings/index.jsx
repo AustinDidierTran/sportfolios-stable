@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
 import { LoadingSpinner } from '../../components/Custom';
+import { Typography } from '../../components/MUI';
 import PhaseRankings from './PhaseRanking';
 import Ranking from './Ranking';
 import { updateRanking } from './RankingFunctions';
@@ -61,7 +62,13 @@ export default function Rankings() {
   if (isLoading) {
     return <LoadingSpinner />;
   }
-
+  if (!preRanking.length && !ranking.length) {
+    return (
+      <Typography style={{ margin: '8px' }}>
+        {t('no_teams_registered')}
+      </Typography>
+    );
+  }
   return (
     <>
       <Ranking ranking={preRanking} title={t('preranking')}></Ranking>

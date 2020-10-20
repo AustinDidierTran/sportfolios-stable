@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import MyPersons from './MyPersons';
 import { Store } from '../../Store';
 import AppLinking from './AppLinking';
+import BottomPageLogo from '../../components/Custom/BottomPageLogo';
 
 export default function UserSettings() {
   const { t } = useTranslation();
@@ -36,6 +37,7 @@ export default function UserSettings() {
         <MyPersons />
         <AppLinking />
         <Disconnect />
+        <BottomPageLogo />
       </IgContainer>
     </div>
   );
