@@ -21,6 +21,12 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.about {
+  grid-area: position;
+  justify-self: center;
+  align-self: center;
+}
+
 .name {
   grid-area: name;
   justify-self: start;

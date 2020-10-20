@@ -16,7 +16,15 @@ import { formatRoute } from '../../../../actions/goTo';
 
 export default function Players(props) {
   const { t } = useTranslation();
-  const { players, role, rosterId, onDelete, onAdd, update } = props;
+  const {
+    isEventAdmin,
+    players,
+    role,
+    rosterId,
+    onDelete,
+    onAdd,
+    update,
+  } = props;
   const [blackList, setBlackList] = useState(null);
   const [isLoading, setisLoading] = useState(false);
 
@@ -87,6 +95,7 @@ export default function Players(props) {
               <div className={styles.player}>
                 {players.map(player => (
                   <PlayerCard
+                    isEventAdmin={isEventAdmin}
                     player={player}
                     role={role}
                     onDelete={handleDelete}
@@ -109,6 +118,7 @@ export default function Players(props) {
           {players.map(player => {
             return (
               <PlayerCard
+                isEventAdmin={isEventAdmin}
                 player={player}
                 role={role}
                 onDelete={handleDelete}

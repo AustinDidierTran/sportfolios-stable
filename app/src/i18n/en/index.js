@@ -349,7 +349,7 @@ export default {
     teams: 'Teams',
     teams_saved: 'Teams saved!',
     there_is_no_rosters_for_this_event:
-      'There is no rosters for this event.',
+      'There are no rosters for this event.',
     to_transfer: 'Transfer',
     transfer_person_description:
       'By confirming you accept to give all the admin permissions on this person and give it to the user who own the email you specified.',

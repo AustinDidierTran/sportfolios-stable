@@ -13,6 +13,7 @@ const isEven = n => {
 
 export default function MyRosterCard(props) {
   const {
+    isEventAdmin,
     roster,
     expandedIndex,
     setExpandedIndex,
@@ -40,6 +41,7 @@ export default function MyRosterCard(props) {
   };
 
   if (
+    isEventAdmin ||
     role == ROSTER_ROLE_ENUM.CAPTAIN ||
     role == ROSTER_ROLE_ENUM.PLAYER
   ) {
@@ -95,6 +97,7 @@ export default function MyRosterCard(props) {
               }
             >
               <Players
+                isEventAdmin={isEventAdmin}
                 players={players}
                 update={update}
                 role={role}

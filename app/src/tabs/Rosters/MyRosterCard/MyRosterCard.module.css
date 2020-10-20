@@ -17,8 +17,11 @@
 
 .position {
   grid-area: position;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   justify-self: center;
-  align-self: center;
+  margin-bottom: 8px;
 
   font-size: 24px;
   font-family: Arial, Helvetica, sans-serif;
@@ -41,6 +44,7 @@
   align-content: center;
   justify-content: left;
   align-self: center;
+  align-items: center;
 }
 
 .avatar {
@@ -54,12 +58,14 @@
   justify-self: end;
   align-self: center;
   width: 100%;
+  margin-bottom: 8px;
 }
 
 .expand {
   grid-area: expand;
   display: flex;
   flex-direction: column;
+  margin-bottom: 8px;
 
   justify-content: center;
   justify-self: center;
