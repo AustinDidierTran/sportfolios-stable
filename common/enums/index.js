@@ -9,7 +9,7 @@ const APP_ENUM = {
   MESSENGER: 'Messenger',
   GOOGLE: 'Google',
   APPLE: 'Apple',
-}
+};
 
 const SIZES_ENUM = {
   XXXS: '3x-small',
@@ -131,8 +131,12 @@ const PERSON_TRANSFER_STATUS_ENUM = {
 
 const FACEBOOK_STATUS_ENUM = {
   CONNECTED: 'connected',
-  NOT_AUTHORIZED: 'not_authorized'
-}
+  NOT_AUTHORIZED: 'not_authorized',
+};
+
+const FACEBOOK_PAYLOADS = {
+  GET_STARTED: 'GET_STARTED',
+};
 
 const REJECTION_ENUM = {
   NO_REMAINING_SPOTS: 'no_remaining_spots',
@@ -193,7 +197,7 @@ const GLOBAL_ENUM = {
   ROSTER_ITEM: 'roster_item',
   SALES: 'sales',
   SHOP_ITEM: 'shop_item',
-  APP_ITEM: 'app_item'
+  APP_ITEM: 'app_item',
 };
 
 const MILLIS_TIME_ENUM = {
@@ -292,5 +296,5 @@ module.exports = {
   MILLIS_TIME_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
   FACEBOOK_STATUS_ENUM,
-  APP_ENUM
+  APP_ENUM,
 };

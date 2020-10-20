@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 import { APP_ENUM } from '../../../../../../common/enums';
 import { ListItemSecondaryAction } from '@material-ui/core';
 import styles from './AppItem.module.css';
-import conf from '../../../../../../conf';
 
 const images = {
   [APP_ENUM.FACEBOOK]:
@@ -26,11 +25,11 @@ export default function AppItem(props) {
     app,
     description,
     isConnected,
-    secondaryAction,
+    secondaryActions,
   } = props;
   const imageSrc = images[app] || defaultImage;
-  const action = secondaryAction ? (
-    secondaryAction
+  const actions = secondaryActions ? (
+    secondaryActions
   ) : (
     <Button
       className={styles.button}
@@ -53,14 +52,7 @@ export default function AppItem(props) {
         secondary={description}
       />
       <ListItemSecondaryAction>
-        <div
-          class="fb-send-to-messenger"
-          messenger_app_id={conf.FACEBOOK_APP_ID}
-          page_id={conf.FACEBOOK_PAGE_ID}
-          data-ref={'Testing'}
-          color="blue"
-          size="standard"
-        ></div>
+        <>{actions}</>
       </ListItemSecondaryAction>
     </ListItem>
   );

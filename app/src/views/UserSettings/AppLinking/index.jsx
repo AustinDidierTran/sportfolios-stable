@@ -25,6 +25,9 @@ export default function AppLinking() {
   const [alertDialog, setAlertDialog] = useState(false);
   const [selectedApp, setSelectedApp] = useState('');
   const [fbUserId, setFBUserId] = useState();
+  const {
+    state: { userInfo },
+  } = useContext(Store);
 
   const fetchConnectedApp = async () => {
     const res = await api('/api/user/connectedApps');
@@ -135,19 +138,35 @@ export default function AppLinking() {
     setAlertDialog(false);
   };
 
+  const openMessenger = () => {
+    const win = window.open(
+      `https://www.m.me/sportfoliosapp?ref=${userInfo.id}`,
+      '_blank',
+    );
+    if (win != null) {
+      win.focus();
+    }
+  };
+
   const onMessengerConnect = async () => {
-    const res = await api('/api/user/messengerConnection', {
-      method: 'POST',
-      body: JSON.stringify({
-        facebook_id: fbUserId,
-      }),
-    });
-    if (res.status == errors[ERROR_ENUM.VALUE_IS_INVALID].code) {
-      setMessengerDialog(true);
-    } else if (res.status == STATUS_ENUM.SUCCESS) {
-      setIsLinkedMessenger(true);
+    openMessenger();
+    //if is already linked on facebook, try to link automaticaly by getting his messenger ID
+    if (fbUserId) {
+      const res = await api('/api/user/messengerConnection', {
+        method: 'POST',
+        body: JSON.stringify({
+          facebook_id: fbUserId,
+        }),
+      });
+      if (res.status == errors[ERROR_ENUM.VALUE_IS_INVALID].code) {
+        openMessenger();
+      } else if (res.status == STATUS_ENUM.SUCCESS) {
+        setIsLinkedMessenger(true);
+      } else {
+        showErrorToast();
+      }
     } else {
-      showErrorToast();
+      openMessenger();
     }
   };
 
@@ -165,16 +184,6 @@ export default function AppLinking() {
       description: t('facebook_description'),
     },
     {
-      secondaryAction: (
-        <div
-          class="fb-send-to-messenger"
-          messenger_app_id={conf.FACEBOOK_APP_ID}
-          page_id={conf.FACEBOOK_PAGE_ID}
-          data-ref={'Testing'}
-          color="blue"
-          size="standard"
-        ></div>
-      ),
       onConnect: onMessengerConnect,
       onDisconnect: () => {},
       app: APP_ENUM.MESSENGER,
@@ -183,6 +192,7 @@ export default function AppLinking() {
       description: t('messenger_description'),
     },
   ];
+
   return (
     <>
       <Card className={styles.main}>
