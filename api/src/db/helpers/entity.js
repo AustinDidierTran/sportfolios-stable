@@ -1074,8 +1074,6 @@ async function getPersonInfos(entityId) {
       zip: fullAddress.zip,
       country: fullAddress.country,
     };
-  } else {
-    resObj.address = null;
   }
 
   return resObj;

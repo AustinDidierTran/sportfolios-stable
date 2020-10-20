@@ -264,12 +264,13 @@ router.get(`${BASE_URL}/personInfos`, async ctx => {
   const infos = await queries.getPersonInfos(ctx.query.entityId);
 
   if (infos) {
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: infos,
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'That record does not exist.',
@@ -281,12 +282,13 @@ router.get(`${BASE_URL}/person`, async ctx => {
   const infos = await queries.getGeneralInfos(ctx.query.entityId);
 
   if (infos) {
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: infos,
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
 
@@ -513,13 +515,13 @@ router.put(`${BASE_URL}/updatePersonInfos`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (personInfos) {
-    ctx.status = 201;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: personInfos,
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'That entity does not exist.',

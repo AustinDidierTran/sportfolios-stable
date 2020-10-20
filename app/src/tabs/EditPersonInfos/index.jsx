@@ -22,6 +22,7 @@ import {
   SEVERITY_ENUM,
 } from '../../../../common/enums';
 import { ERROR_ENUM } from '../../../../common/errors';
+const moment = require('moment');
 
 export default function EditPersonInfos(props) {
   const { basicInfos } = props;
@@ -210,6 +211,11 @@ export default function EditPersonInfos(props) {
             className={styles.zone1}
             formik={formik}
             type="date"
+            InputProps={{
+              inputProps: {
+                max: moment(new Date()).format('YYYY-MM-DD'),
+              },
+            }}
             helperText={t('birth_date')}
             onChange={valueChanged}
           />
@@ -236,8 +242,9 @@ export default function EditPersonInfos(props) {
           <AddressSearchInput
             namespace="addressFormatted"
             formik={formik}
-            language={userInfo.language}
             addressChanged={addressChanged}
+            country="ca"
+            language={userInfo.language}
           />
         </div>
         {personInfos.formattedAddress ? (

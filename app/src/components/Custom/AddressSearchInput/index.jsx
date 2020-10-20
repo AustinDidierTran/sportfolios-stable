@@ -16,6 +16,7 @@ function AddressSearchInput(props) {
     addressChanged,
     formik,
     namespace,
+    country,
   } = props;
   const { t } = useTranslation();
   const autoCompleteRef = useRef(null);
@@ -48,10 +49,8 @@ function AddressSearchInput(props) {
     const options = {
       sessiontoken: uuid.v4(),
       types: ['address'],
-      componentRestrictions: { country: 'ca' },
+      componentRestrictions: { country },
       language: `${languageProp}`,
-      //radius: 50000,
-      //location: `45.404476, -71.888351`, // Location biasis: search around this (doesn't seem to work...)
     };
 
     autoComplete = new window.google.maps.places.Autocomplete(
