@@ -4,9 +4,11 @@ import { Collapse, IconButton } from '../../../../components/Custom';
 import { Typography } from '../../../../components/MUI';
 import { Divider } from '@material-ui/core';
 import ScoreSuggestion from './ScoreSuggestion';
+import { useTranslation } from 'react-i18next';
 
 export default function EditGames(props) {
   const { games, title, isOpen, update } = props;
+  const { t } = useTranslation();
 
   const [expanded, setExpanded] = useState(isOpen);
   const [icon, setIcon] = useState('KeyboardArrowDown');
@@ -49,13 +51,21 @@ export default function EditGames(props) {
         unmountOnExit
         className={styles.games}
       >
-        {games.map(game => (
-          <ScoreSuggestion
-            game={game}
-            update={update}
-            key={game.id}
-          />
-        ))}
+        {games.length ? (
+          <>
+            {games.map(game => (
+              <ScoreSuggestion
+                game={game}
+                update={update}
+                key={game.id}
+              />
+            ))}
+          </>
+        ) : (
+          <Typography color="textSecondary">
+            {t('no_games')}
+          </Typography>
+        )}
       </Collapse>
     </>
   );
