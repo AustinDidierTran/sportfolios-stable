@@ -5,9 +5,9 @@ import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
 import moment from 'moment';
-import Game from '../Schedule/Games/Game';
-import GameFilters from '../Schedule/Games/GameFilters';
-import SubmitScore from '../Schedule/SubmitScore';
+import Game from '../Schedule/AllGames/Games/Game';
+import GameFilters from '../Schedule/AllGames/GameFilters';
+import SubmitScore from '../Schedule/AllGames/ProTip';
 
 export default function Results() {
   const { id: eventId } = useParams();
@@ -71,8 +71,8 @@ export default function Results() {
       <SubmitScore />
       <GameFilters update={filter} onlyPast={onlyPast} />
       <div className={styles.main} style={{ marginTop: '16px' }}>
-        {games.map(game => (
-          <Game update={update} game={game} />
+        {games.map((game, index) => (
+          <Game update={update} game={game} key={index} />
         ))}
       </div>
     </>

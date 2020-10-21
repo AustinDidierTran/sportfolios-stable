@@ -27,7 +27,7 @@ export default function PhaseRankings() {
         let position = 1;
         games.forEach(g => {
           if (
-            !teams.filter(team => team.team_id === g.teams[0].team_id)
+            !teams.filter(team => team.id === g.teams[0].team_id)
               .length
           ) {
             teams.push({
@@ -39,7 +39,7 @@ export default function PhaseRankings() {
             position = position + 1;
           }
           if (
-            !teams.filter(team => team.team_id === g.teams[1].team_id)
+            !teams.filter(team => team.id === g.teams[1].team_id)
               .length
           ) {
             teams.push({
@@ -74,8 +74,9 @@ export default function PhaseRankings() {
   }, []);
   return (
     <>
-      {phases.map(phase => (
+      {phases.map((phase, index) => (
         <Ranking
+          key={index}
           ranking={phase.ranking}
           title={phase.title}
           withStats

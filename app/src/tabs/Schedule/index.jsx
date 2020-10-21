@@ -1,12 +1,6 @@
 import React from 'react';
-import Games from './Games';
-import SubmitScore from './SubmitScore';
+import AllGames from './AllGames';
 
 export default function ScheduleTab() {
-  return (
-    <>
-      <SubmitScore />
-      <Games />
-    </>
-  );
+  return <AllGames />;
 }

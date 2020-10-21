@@ -83,13 +83,40 @@ export const MEMBERSHIP_TYPE_ENUM = {
 function reducer(state, action) {
   switch (action.type) {
     case ACTION_ENUM.LOGIN: {
-      localStorage.setItem('authToken', action.payload);
-      return { ...state, authToken: action.payload };
+      if (action.payload.authToken) {
+        localStorage.setItem('authToken', action.payload.authToken);
+      } else {
+        localStorage.setItem('authToken', action.payload);
+      }
+      if (action.payload.userInfo) {
+        localStorage.setItem(
+          'userInfo',
+          JSON.stringify(action.payload.userInfo),
+        );
+      }
+      if (action.payload.route) {
+        goTo(
+          action.payload.route,
+          action.payload.params,
+          action.payload.queryParams,
+        );
+      }
+      return {
+        ...state,
+        authToken: action.payload.authToken || action.payload,
+        userInfo: action.payload.userInfo || state.userInfo,
+      };
     }
     case ACTION_ENUM.LOGOUT: {
       localStorage.removeItem('authToken');
       localStorage.removeItem('userInfo');
-      goTo(ROUTES.login);
+      action.payload
+        ? goTo(
+            action.payload.route,
+            action.payload.params,
+            action.payload.queryParams,
+          )
+        : goTo(ROUTES.login);
       return {
         ...state,
         authToken: null,

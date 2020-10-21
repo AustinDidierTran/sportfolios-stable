@@ -24,7 +24,10 @@ const {
   validateEmailIsConfirmed,
   validateEmailIsUnique,
 } = require('../helpers');
-
+const {
+  ENTITIES_ROLE_ENUM,
+  PERSON_TRANSFER_STATUS_ENUM,
+} = require('../../../../common/enums');
 const signup = async ({
   firstName,
   lastName,
@@ -65,7 +68,7 @@ const signup = async ({
 
 const login = async ({ email, password }) => {
   // Validate account with this email exists
-  const userId = await getUserIdFromEmail({ email });
+  const userId = await getUserIdFromEmail(email);
   if (!userId) {
     return { status: 404 };
   }
@@ -105,7 +108,7 @@ const confirmEmail = async ({ token }) => {
   await confirmEmailHelper({ email });
 
   const authToken = generateToken();
-  const userId = await getUserIdFromEmail({ email });
+  const userId = await getUserIdFromEmail(email);
 
   await knex('user_token').insert({
     user_id: userId,
@@ -119,7 +122,7 @@ const confirmEmail = async ({ token }) => {
 };
 
 const recoveryEmail = async ({ email }) => {
-  const userId = await getUserIdFromEmail({ email });
+  const userId = await getUserIdFromEmail(email);
 
   if (!userId) {
     return 404;
@@ -128,8 +131,8 @@ const recoveryEmail = async ({ email }) => {
   const token = generateToken();
 
   await createRecoveryEmailToken({ userId, token });
-
-  await sendRecoveryEmail({ email, token });
+  const language = await getLanguageFromEmail(email);
+  await sendRecoveryEmail({ email, token, language });
 
   return 200;
 };
@@ -176,6 +179,69 @@ const resendConfirmationEmail = async ({ email, successRoute }) => {
   return 200;
 };
 
+const transferPersonSignup = async ({
+  email,
+  password,
+  personId,
+}) => {
+  const hashedPassword = await generateHashedPassword(password);
+  const { token: authToken, user_id } = await knex.transaction(
+    async trx => {
+      // Create user
+      const [user_id] = await knex('users')
+        .insert({ password: hashedPassword })
+        .returning('id')
+        .transacting(trx);
+
+      if (!user_id) {
+        return;
+      }
+
+      // Create user email and confirm it right away
+      await knex('user_email')
+        .insert({ user_id, email, confirmed_email_at: new Date() })
+        .transacting(trx);
+
+      //Log the user
+      const token = generateToken();
+      await knex('user_token')
+        .insert({
+          user_id,
+          token_id: token,
+          expires_at: new Date(
+            Date.now() + EXPIRATION_TIMES.AUTH_TOKEN,
+          ),
+        })
+        .transacting(trx);
+      //transfer the person
+      await knex('user_entity_role')
+        .update({ user_id })
+        .where('entity_id', personId)
+        .andWhere('role', ENTITIES_ROLE_ENUM.ADMIN)
+        .returning('entity_id')
+        .transacting(trx);
+      await knex('transfered_person')
+        .update('status', PERSON_TRANSFER_STATUS_ENUM.ACCEPTED)
+        .where({ person_id: personId })
+        .andWhere('status', PERSON_TRANSFER_STATUS_ENUM.PENDING)
+        .transacting(trx);
+
+      //set person as primary person
+      await knex('user_primary_person')
+        .insert({
+          user_id,
+          primary_person: personId,
+        })
+        .transacting(trx);
+
+      return { token, user_id };
+    },
+  );
+  //get user infos
+  const userInfo = await getBasicUserInfoFromId(user_id);
+  return { authToken, userInfo };
+};
+
 module.exports = {
   confirmEmail,
   login,
@@ -183,4 +249,5 @@ module.exports = {
   recoveryEmail,
   resendConfirmationEmail,
   signup,
+  transferPersonSignup,
 };

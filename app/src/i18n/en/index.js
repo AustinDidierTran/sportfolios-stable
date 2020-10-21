@@ -8,6 +8,10 @@ export default {
       'Are you sure you want to perform this action?',
     acceptation: 'Acceptation',
     accept: 'Accept',
+    accept_person_transfer_confirmation:
+      'Are you sure you want to accept the transfer of {{name}}?',
+    account_already_linked:
+      'This account is already linked to another Sportfolios user.',
     account_holder_name: 'Account Holder Name',
     add: 'Add',
     add_bank_account: 'Add bank account',
@@ -72,10 +76,13 @@ export default {
     basic_info: 'Basic Info',
     birth_date_format: '{{date, LL}} ({{age}} years old)',
     birth_date: 'Birth date',
+    cancel_person_transfer: 'Cancel this person transfer',
     cancel_person_transfer_confirmation:
       'Are you sure you want to cancel the transfer of {{name}}?',
     cant_add_product_no_bank_account:
       "Can't add product admin has no bank account",
+    cant_transfer_person_to_your_own_email:
+      "You can't transfer someone to your own email",
     by: 'By',
     cant_unregister_all_teams:
       'Only {{howManyCanUnregister}}/{{totalOfTeams}} teams can be unregistered since some teams are in a game. Do you want to unregister the available ones?',
@@ -86,16 +93,22 @@ export default {
     cart_empty_go_shop: "Your cart is empty, it's time to shop!",
     category: 'Category',
     change_password: 'Change password',
+    change_picture: 'Change picture',
     change_team: 'Change team',
     choose_your_primary_person: 'Choose your primary person',
+    clear_all: 'Clear all',
     click_to_create_new_team: 'Click to create your new team',
     comments: 'Comments',
     confirm: 'Confirm',
+    connection_failed: 'Connection failed. Please try again.',
+    connect_with_facebook: 'Connect with Facebook',
     contact_us: 'Contact us',
     contact: 'Contact',
     country: 'Country',
     create_a_game: 'Create a game',
     create_a_phase: 'Create a phase',
+    create_an_account_to_accept_person_transfer:
+      'Please choose a password to create an account and accept the person transfer',
     create_event: 'Create Event',
     create_organization: 'Create Organization',
     create_person: 'Create Person',
@@ -111,7 +124,10 @@ export default {
     description: 'Description',
     donate: 'Donate',
     done: 'Done',
+    do_not_specify: 'Do not specify',
+    edit_infos: 'Edit infos',
     edit_game: 'Edit game',
+    edit_your_primary_person: 'Edit your primary person',
     editor: 'Editor',
     email: 'Email',
     emails: 'Emails',
@@ -139,6 +155,7 @@ export default {
     events_that_might_interest_you: 'Events that might interest you',
     expiration_date: 'Expiration Date',
     feature_coming_soon: 'Feature coming soon!',
+    female: 'Female',
     field: 'Field',
     field_added: 'Field added',
     filters: 'Filters',
@@ -152,6 +169,7 @@ export default {
     games: 'Games',
     game_added: 'Game added',
     game_deleted: 'Game deleted',
+    gender: 'Gender',
     general: 'General',
     general_informations: 'General informations',
     generate_account_link: 'Generate Account Link',
@@ -170,11 +188,15 @@ export default {
     location_unspecified: 'Location unspecified',
     login: 'Login',
     logout: 'Log out',
+    invite_this_player_to_join_your_team:
+      'Invite this player to join your team',
     send_email: 'Send email',
+    male: 'Male',
     maximum_spots: 'Maximum spots',
     max_length: 'Maximum length',
     menu: 'Menu',
     more_filters: 'More Filters',
+    my_apps: 'My apps',
     my_persons: 'My persons',
     name: 'Name',
     name_and_x_others: '{{name}} and {{number}} others',
@@ -183,6 +205,7 @@ export default {
     new_organization: 'New organization',
     new_team: 'New team',
     next: 'Next',
+    upcoming_games: 'Upcoming games',
     no: 'no',
     none: 'None',
     none_feminine: 'None',
@@ -190,6 +213,7 @@ export default {
     no_account_signup: "Don't have an account? Signup!",
     no_alias: 'No alias',
     no_description: 'No Description',
+    no_games: 'No games',
     notifications: 'Notifications',
     not_paid: 'Not paid',
     no_notifications: 'No Notifications',
@@ -224,6 +248,7 @@ export default {
     password: 'Password',
     password_changed: 'Password has been changed successfully',
     password_reset_message: 'Password has been successfully reset.',
+    past_games: 'Past games',
     pathname: 'Pathname',
     pay: 'Pay',
     payment_method_added:
@@ -240,13 +265,17 @@ export default {
     person_transfer_done: 'Person transfer completed',
     person_transfer_email_sent:
       'A email was sent to {{email}} to complete the transfer',
+    person_transfer_expired:
+      'Too late! This person transfer is expired or has been canceled',
     phase: 'Phase',
     phase_added: 'Phase added',
     places_left: 'places left',
     player: 'Player',
+    player_added: 'Player added',
     player_name: 'Player name',
     players: 'Players',
-    pre_ranking: 'Pre-ranking',
+    preranking: 'Preranking',
+    preranking_saved: 'Preranking saved',
     price: 'Price',
     primary_person: 'Primary person',
     primary_person_changed: 'Primary person changed',
@@ -294,7 +323,9 @@ export default {
     spirit: 'Spirit',
     spirit_chart_ligue_mardi:
       '0: Bad 1: Below average 2: Good or nothing to report 3: Very good 4: Exceptional',
+    statistics: 'Statistics',
     status: 'Status',
+    street_address: 'Street address',
     submit_score: 'Submit Score',
     sub: 'Sub',
     sub_added: 'Sub added',
@@ -323,11 +354,14 @@ export default {
     transfer_person_description:
       'By confirming you accept to give all the admin permissions on this person and give it to the user who own the email you specified.',
     transfered_to_you: 'Transfered to you',
+    transfer_this_person: 'Transfer this person',
     time: 'Time',
     time_slot: 'Time slot',
     time_slot_added: 'Time slot added',
+    type_address: 'Type an address',
     waiting_for_payment:
       'Your payment is being processed. Thank you for your patience',
+    unlink_facebook_account: 'Disconnect my Facebook account',
     unregister: 'Unregister',
     unregister_all: 'Unregister all',
     unsupported_language: 'Unsupported language',
@@ -359,7 +393,7 @@ export default {
     line2: 'Line 2',
     city: 'City',
     state: 'State',
-    postal_code: 'Postal Code',
+    postal_code: 'Zip Code',
     address: 'Address',
     account_already_exists: 'Account already exists',
     complete_order: 'Complete order',
@@ -372,6 +406,8 @@ export default {
       'You will soon be redirected to the home page. Click below to be redirected instantly.',
     // Validation
     confirm_new_password: 'Confirm New Password',
+    email_already_exist:
+      'There is already an existing account with this email',
     email_already_used:
       'Email is already in used. Please choose another one',
     email_not_confirmed:
@@ -568,9 +604,16 @@ export default {
       'Positive Attitude and Self Control',
     communication: 'Communication',
     //PROTIP
-    you_can_also_click_on_your_game_to_submit_your_score:
-      'ProTip: You can also click on your game to submit your result.',
+    you_can_click_on_your_game_to_submit_your_score:
+      'ProTip: You can click on your game to submit your result.',
     you_can_click_on_a_game_to_change_score:
       'ProTip: You can click on a game to change score.',
+
+    //APP DESCRIPTION
+    messenger_description:
+      "Connect with Messenger to enable Sprotfolios' chatbot",
+    disconnect_app: 'Disconnect {{appName}} app from your account',
+    facebook_description:
+      "Connect with Facebook to find your friends and enable Sportfolios' chatbot",
   },
 };

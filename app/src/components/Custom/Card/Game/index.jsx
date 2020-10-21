@@ -25,8 +25,8 @@ export default function GameItem(props) {
           {field}
         </Typography>
       </div>
-      {teams.map(team => (
-        <div className={styles.teams}>
+      {teams.map((team, index) => (
+        <div className={styles.teams} key={index}>
           <Typography className={styles.name}>{team.name}</Typography>
           <Typography className={styles.score}>
             {team.score}

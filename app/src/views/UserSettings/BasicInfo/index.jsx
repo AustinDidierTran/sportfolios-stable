@@ -15,6 +15,10 @@ export default function BasicInfo() {
   const { dispatch } = useContext(Store);
   const { t } = useTranslation();
 
+  useEffect(() => {
+    handleChange(basicInfos.language);
+  }, [basicInfos.language]);
+
   const submit = async values => {
     const { language } = values;
 

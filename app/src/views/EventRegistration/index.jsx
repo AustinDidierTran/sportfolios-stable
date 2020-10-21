@@ -2,8 +2,8 @@ import React, { useEffect, useState, useContext } from 'react';
 import {
   Paper,
   StepperWithHooks,
-  CardMedia,
   IgContainer,
+  LoadingSpinner,
 } from '../../components/Custom';
 import PaymentOptionSelect from './PaymentOptionSelect';
 import TeamSelect from './TeamSelect';
@@ -29,7 +29,7 @@ import { formatPrice } from '../../utils/stringFormats';
 import styles from './EventRegistration.module.css';
 import { Typography } from '../../components/MUI';
 import { Container } from '@material-ui/core';
-import { Store, SCREENSIZE_ENUM, ACTION_ENUM } from '../../Store';
+import { Store, ACTION_ENUM } from '../../Store';
 import { ERROR_ENUM, errors } from '../../../../common/errors';
 
 const getEvent = async eventId => {
@@ -49,8 +49,9 @@ export default function EventRegistration() {
   const [paymentOptions, setPaymentOptions] = useState([]);
   const [roster, setRoster] = useState([]);
   const [event, setEvent] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
   const {
-    state: { authToken, screenSize },
+    state: { authToken },
     dispatch,
   } = useContext(Store);
 
@@ -93,8 +94,13 @@ export default function EventRegistration() {
           event_id: eventId,
         }),
       );
+      const { data: theTeam } = await api(
+        formatRoute('/api/entity', null, {
+          id: team.id,
+        }),
+      );
       if (data.length < 1) {
-        setTeam(team);
+        setTeam(theTeam);
         stepHook.handleCompleted(0);
       } else {
         dispatch({
@@ -125,6 +131,7 @@ export default function EventRegistration() {
   };
 
   const finish = async () => {
+    setIsLoading(true);
     if (!team.id) {
       const tempTeam = await api('/api/entity', {
         method: 'POST',
@@ -146,7 +153,17 @@ export default function EventRegistration() {
         status: INVOICE_STATUS_ENUM.OPEN,
       }),
     });
-    if (status === 200) {
+    await api('/api/entity/addTeamToSchedule', {
+      method: 'POST',
+      body: JSON.stringify({
+        eventId,
+        name: team.name,
+        rosterId: data.rosterId,
+      }),
+    });
+
+    setIsLoading(false);
+    if (status < 300) {
       goTo(ROUTES.registrationStatus, null, {
         status: data.status,
       });
@@ -249,19 +266,16 @@ export default function EventRegistration() {
     }
   }, []);
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <IgContainer>
       <Paper className={styles.paper}>
-        <CardMedia
-          onClick={() => goTo(ROUTES.entity, { id })}
-          photoUrl={event.photoUrl || ''}
-          className={styles.media}
-        />
-        {screenSize == SCREENSIZE_ENUM.xs ? null : (
-          <div className={styles.typo}>
-            <Typography>{event.name || ''}</Typography>
-          </div>
-        )}
+        <div className={styles.typo}>
+          <Typography variant="h3">{event.name || ''}</Typography>
+        </div>
         <Container>
           <StepperWithHooks
             steps={steps}

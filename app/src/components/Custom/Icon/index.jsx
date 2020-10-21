@@ -13,8 +13,10 @@ import Cancel from '@material-ui/icons/Cancel';
 import CancelSend from '@material-ui/icons/CancelScheduleSend';
 import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Deck from '@material-ui/icons/Deck';
 import Delete from '@material-ui/icons/Delete';
+import DragIndicator from '@material-ui/icons/DragIndicator';
 import Edit from '@material-ui/icons/Edit';
 import EditIcon from '@material-ui/icons/Edit';
 import EmojiEvents from '@material-ui/icons/EmojiEvents';
@@ -22,6 +24,7 @@ import EmojiObjects from '@material-ui/icons/EmojiObjects';
 import Event from '@material-ui/icons/Event';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import Facebook from '@material-ui/icons/Facebook';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FiberManualRecord from '@material-ui/icons/FiberManualRecord';
 import Flag from '@material-ui/icons/Flag';
@@ -29,6 +32,7 @@ import Folder from '@material-ui/icons/Folder';
 import FormatListNumbered from '@material-ui/icons/FormatListNumbered';
 import Group from '@material-ui/icons/Group';
 import Home from '@material-ui/icons/Home';
+import Help from '@material-ui/icons/Help';
 import Info from '@material-ui/icons/Info';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
@@ -45,6 +49,7 @@ import PrintIcon from '@material-ui/icons/Print';
 import Publish from '@material-ui/icons/Publish';
 import Receipt from '@material-ui/icons/Receipt';
 import RemoveShoppingCart from '@material-ui/icons/RemoveShoppingCart';
+import Reorder from '@material-ui/icons/Reorder';
 import SaveIcon from '@material-ui/icons/Save';
 import Search from '@material-ui/icons/Search';
 import Send from '@material-ui/icons/Send';
@@ -69,10 +74,12 @@ const icons = {
   Business,
   Check,
   Close,
+  CloudUploadIcon,
   Cancel,
   CancelSend,
   Deck,
   Delete,
+  DragIndicator,
   Edit,
   EditIcon,
   EmojiEvents,
@@ -80,6 +87,7 @@ const icons = {
   Event,
   ExitToApp,
   ExpandMore,
+  Facebook,
   FavoriteIcon,
   FiberManualRecord,
   Flag,
@@ -87,6 +95,7 @@ const icons = {
   FormatListNumbered,
   Group,
   Home,
+  Help,
   Info,
   KeyboardArrowDown,
   KeyboardArrowUp,
@@ -103,6 +112,7 @@ const icons = {
   Publish,
   Receipt,
   RemoveShoppingCart,
+  Reorder,
   SaveIcon,
   Search,
   Send,

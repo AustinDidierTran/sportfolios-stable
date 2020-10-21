@@ -17,7 +17,6 @@ import LoadingSpinner from '../LoadingSpinner';
 
 export default function EntityCreate() {
   const { id, type } = useQuery();
-
   const { t } = useTranslation();
 
   const titleDictionary = useMemo(

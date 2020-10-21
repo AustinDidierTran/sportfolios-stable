@@ -22,6 +22,7 @@ const {
   addPlayerToRoster: addPlayerToRosterHelper,
   addRegisteredToSchedule: addRegisteredToScheduleHelper,
   addRoster: addRosterHelper,
+  addNewPersonToRoster: addNewPersonToRosterHelper,
   addScoreAndSpirit: addScoreAndSpiritHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
   addTeamToEvent: addTeamToEventHelper,
@@ -35,6 +36,7 @@ const {
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
   eventInfos: eventInfosHelper,
   getAlias: getAliasHelper,
+  getAllAcceptedRegistered: getAllAcceptedRegisteredHelper,
   getAllEntities: getAllEntitiesHelper,
   getAllForYouPagePosts: getAllForYouPagePostsHelper,
   getAllOwnedEntities: getAllOwnedEntitiesHelper,
@@ -46,23 +48,24 @@ const {
   getEvent: getEventHelper,
   getFields: getFieldsHelper,
   getGames: getGamesHelper,
-  getTeamGames: getTeamGamesHelper,
-  getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getMembers: getMembersHelper,
   getMemberships: getMembershipsHelper,
   getOptions: getOptionsHelper,
   getOwnedEvents: getOwnedEventsHelper,
+  getPersonInfos: getPersonInfosHelper,
   getPhases: getPhasesHelper,
+  getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
   getRankings: getRankingsHelper,
   getRegistered: getRegisteredHelper,
   getRemainingSpots: getRemainingSpotsHelper,
-  getAllAcceptedRegistered: getAllAcceptedRegisteredHelper,
   getRoster: getRosterHelper,
   getRosterInvoiceItem,
-  getScoreSuggestion: getScoreSuggestionHelper,
+  getRosterWithSub: getRosterWithSubHelper,
   getSameSuggestions: getSameSuggestionsHelper,
+  getScoreSuggestion: getScoreSuggestionHelper,
   getSlots: getSlotsHelper,
+  getTeamGames: getTeamGamesHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
   getWichTeamsCanUnregister: getWichTeamsCanUnregisterHelper,
   removeEntityRole: removeEntityRoleHelper,
@@ -74,10 +77,12 @@ const {
   updateEntityRole: updateEntityRoleHelper,
   updateEvent: updateEventHelper,
   updateGame: updateGameHelper,
-  updateSuggestionStatus: updateSuggestionStatusHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
+  updatePersonInfosHelper,
   updateMember: updateMemberHelper,
+  updatePreRanking: updatePreRankingHelper,
   updateRegistration: updateRegistrationHelper,
+  updateSuggestionStatus: updateSuggestionStatusHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -85,7 +90,11 @@ const {
   sendAcceptedRegistrationEmail,
 } = require('../../server/utils/nodeMailer');
 const { addEventCartItem } = require('../helpers/shop');
-const { getEmailsFromUserId } = require('../helpers');
+const {
+  getEmailsFromUserId,
+  getLanguageFromEmail,
+  validateEmailIsUnique: validateEmailIsUniqueHelper,
+} = require('../helpers');
 
 async function isAllowed(
   entityId,
@@ -185,6 +194,9 @@ async function getRankings(eventId) {
 async function getRoster(rosterId) {
   return getRosterHelper(rosterId);
 }
+async function getRosterWithSub(rosterId) {
+  return getRosterWithSubHelper(rosterId);
+}
 
 async function getEvent(eventId) {
   return getEventHelper(eventId);
@@ -192,6 +204,9 @@ async function getEvent(eventId) {
 
 async function getAlias(entityId) {
   return getAliasHelper(entityId);
+}
+async function validateEmailIsUnique(email) {
+  return validateEmailIsUniqueHelper(email);
 }
 
 async function getPhases(eventId) {
@@ -223,6 +238,10 @@ async function getGeneralInfos(entityId, userId) {
   return getGeneralInfosHelper(entityId, userId);
 }
 
+async function getPersonInfos(entityId) {
+  return getPersonInfosHelper(entityId);
+}
+
 async function updateEvent(body, userId) {
   const { eventId, maximumSpots, eventStart, eventEnd } = body;
   if (
@@ -238,6 +257,15 @@ async function updateEvent(body, userId) {
     userId,
   );
 }
+async function updatePreRanking(body, userId) {
+  const { eventId, ranking } = body;
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return updatePreRankingHelper(eventId, ranking);
+}
 
 async function updateGeneralInfos(body, userId) {
   const { entityId, ...otherBody } = body;
@@ -247,6 +275,16 @@ async function updateGeneralInfos(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return updateGeneralInfosHelper(entityId, otherBody);
+}
+
+async function updatePersonInfos(body, userId) {
+  const { entityId, ...otherBody } = body;
+  if (
+    !(await isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return updatePersonInfosHelper(entityId, otherBody);
 }
 
 async function addTeamToEvent(body, userId) {
@@ -283,7 +321,7 @@ async function addTeamToEvent(body, userId) {
 
   // Add roster
   if (roster) {
-    await addRosterHelper(rosterId, roster);
+    await addRosterHelper(rosterId, roster, userId);
   }
   if (paymentOption) {
     if (registrationStatus === STATUS_ENUM.ACCEPTED) {
@@ -305,25 +343,29 @@ async function addTeamToEvent(body, userId) {
     // send mail to organization admin
     // TODO find real event user creator
     const creatorEmails = ['austindidier@sportfolios.app'];
-    creatorEmails.map(async email =>
+    creatorEmails.map(async email => {
+      const language = await getLanguageFromEmail(email);
       sendTeamRegistrationEmailToAdmin({
         email,
         team,
         event,
+        language,
         placesLeft: await getRemainingSpotsHelper(event.id),
-      }),
-    );
+      });
+    });
 
     // Send accepted email to team captain
     const captainEmails = await getEmailsFromUserId(userId);
 
-    captainEmails.map(({ email }) =>
+    captainEmails.map(async ({ email }) => {
+      const language = await getLanguageFromEmail(email);
       sendAcceptedRegistrationEmail({
+        language,
         team,
         event,
         email,
-      }),
-    );
+      });
+    });
   }
   // Handle other acceptation statuses
   return { status: registrationStatus, rosterId };
@@ -625,6 +667,10 @@ async function addRoster(body) {
   const res = await addRosterHelper(rosterId, roster);
   return res;
 }
+async function addNewPersonToRoster(body, userId) {
+  const res = await addNewPersonToRosterHelper(body, userId);
+  return res;
+}
 
 const canUnregisterTeamsList = async (rosterIds, eventId) => {
   return getWichTeamsCanUnregisterHelper(
@@ -747,6 +793,7 @@ module.exports = {
   addPlayerToRoster,
   addRegisteredToSchedule,
   addRoster,
+  addNewPersonToRoster,
   addScoreAndSpirit,
   addScoreSuggestion,
   addTeamToEvent,
@@ -764,6 +811,7 @@ module.exports = {
   eventInfos,
   eventInfos,
   getAlias,
+  validateEmailIsUnique,
   getAllEntities,
   getAllForYouPagePosts,
   getAllOwnedEntities,
@@ -782,11 +830,13 @@ module.exports = {
   getMemberships,
   getOptions,
   getOwnedEvents,
+  getPersonInfos,
   getPhases,
   getRankings,
   getRegistered,
   getRemainingSpots,
   getRoster,
+  getRosterWithSub,
   getS3Signature,
   getScoreSuggestion,
   getSameSuggestions,
@@ -798,6 +848,8 @@ module.exports = {
   updateEntity,
   updateEntityRole,
   updateEvent,
+  updatePersonInfos,
+  updatePreRanking,
   updateGame,
   updateSuggestionStatus,
   updateGeneralInfos,

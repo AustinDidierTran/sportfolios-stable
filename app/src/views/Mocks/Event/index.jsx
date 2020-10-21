@@ -66,10 +66,11 @@ export default function Event(props) {
             className={styles.tabs}
             centered
           >
-            {states.map(s => (
+            {states.map((s, index) => (
               <Tab
                 label={s.label}
                 onClick={() => setEventState(s.value)}
+                key={index}
               />
             ))}
           </Tabs>

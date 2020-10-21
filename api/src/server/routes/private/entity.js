@@ -243,6 +243,60 @@ router.get(`${BASE_URL}/generalInfos`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/uniqueEmail`, async ctx => {
+  const email = await queries.validateEmailIsUnique(ctx.query.email);
+  if (email) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: email,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That email does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/personInfos`, async ctx => {
+  const infos = await queries.getPersonInfos(ctx.query.entityId);
+
+  if (infos) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: infos,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/person`, async ctx => {
+  const infos = await queries.getGeneralInfos(ctx.query.entityId);
+
+  if (infos) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: infos,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/s3Signature`, async ctx => {
   const { code, data } = await queries.getS3Signature(
     ctx.body.userInfo.id,
@@ -250,7 +304,7 @@ router.get(`${BASE_URL}/s3Signature`, async ctx => {
   );
 
   if (code === 200) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data,
@@ -269,7 +323,7 @@ router.put(`${BASE_URL}`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -289,7 +343,7 @@ router.put(`${BASE_URL}/role`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -309,7 +363,7 @@ router.put(`${BASE_URL}/member`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -326,7 +380,7 @@ router.put(`${BASE_URL}/member`, async ctx => {
 router.put(`${BASE_URL}/alias`, async ctx => {
   const entity = await queries.updateAlias(ctx.request.body);
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -343,7 +397,7 @@ router.put(`${BASE_URL}/alias`, async ctx => {
 router.put(`${BASE_URL}/game`, async ctx => {
   const entity = await queries.updateGame(ctx.request.body);
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -361,7 +415,7 @@ router.put(`${BASE_URL}/updateSuggestionStatus`, async ctx => {
     ctx.request.body,
   );
   if (suggestion) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: suggestion,
@@ -381,7 +435,7 @@ router.put(`${BASE_URL}/updateRegistration`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -401,7 +455,27 @@ router.put(`${BASE_URL}/updateEvent`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/updatePreRanking`, async ctx => {
+  const entity = await queries.updatePreRanking(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (entity) {
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
@@ -421,13 +495,33 @@ router.put(`${BASE_URL}/updateGeneralInfos`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: entity,
     };
   } else {
     ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/updatePersonInfos`, async ctx => {
+  const personInfos = await queries.updatePersonInfos(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (personInfos) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: personInfos,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'That entity does not exist.',
@@ -726,7 +820,7 @@ router.post(`${BASE_URL}/register`, async ctx => {
       data: { status, reason },
     };
   } else if (status) {
-    ctx.status = 200;
+    ctx.status = 201;
     ctx.body = {
       status: 'success',
       data: { status, rosterId },
@@ -757,12 +851,33 @@ router.post(`${BASE_URL}/roster`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/addNewPersonToRoster`, async ctx => {
+  const person = await queries.addNewPersonToRoster(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (person) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: person,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
   await queries.deletePlayerFromRoster(
     ctx.query.id,
     ctx.body.userInfo.id,
   );
-  ctx.status = 200;
+  ctx.status = 201;
   ctx.body = {
     status: 'success',
   };

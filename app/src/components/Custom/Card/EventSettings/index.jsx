@@ -59,7 +59,7 @@ export default function EventSettings(props) {
     <Paper className={styles.paper}>
       <List>
         {fields.map((f, index) => (
-          <ListItem>
+          <ListItem key={index}>
             <Input
               helperText={f.helperText}
               label={f.display}

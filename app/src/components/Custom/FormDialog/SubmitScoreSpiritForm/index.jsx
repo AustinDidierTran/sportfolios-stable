@@ -18,9 +18,9 @@ import {
 } from '../../../../tabs/Schedule/ScheduleFunctions';
 import moment from 'moment';
 import { formatRoute } from '../../../../actions/goTo';
-import validator from 'validator';
 import BasicFormDialog from '../BasicFormDialog';
 import AddPlayer from './AddPlayer';
+import validator from 'validator';
 
 export default function SubmitScoreDialog(props) {
   const { open: openProps, onClose, game } = props;
@@ -46,10 +46,20 @@ export default function SubmitScoreDialog(props) {
   const onAddPlayerClose = () => {
     setAddPlayer(false);
   };
-
   const updateRoster = player => {
-    const newRoster = [...roster, player];
+    let name = '';
+    if (player.is_sub) {
+      name = `${player.completeName || player.name} (${t('sub')})`;
+    } else {
+      name = player.completeName || player.name;
+    }
+    const newRoster = [...roster, name];
     setRoster(newRoster);
+    const newFullRoster = [
+      ...fullRoster,
+      { display: name, value: player.person_id || player.id },
+    ];
+    setFullRoster(newFullRoster);
   };
 
   useEffect(() => {
@@ -64,15 +74,23 @@ export default function SubmitScoreDialog(props) {
 
   const getRoster = async rosterId => {
     const { data } = await api(
-      formatRoute('/api/entity/getRoster', null, {
+      formatRoute('/api/entity/getRosterWithSub', null, {
         rosterId,
       }),
     );
     if (data) {
-      const fullRoster = data.map(d => ({
-        value: d.id,
-        display: d.name,
-      }));
+      const fullRoster = data.map(d => {
+        if (d.isSub) {
+          return {
+            value: d.personId,
+            display: `${d.name} (${t('sub')})`,
+          };
+        }
+        return {
+          value: d.personId,
+          display: d.name,
+        };
+      });
       setFullRoster(fullRoster);
 
       const roster = data.filter(d => !d.isSub).map(d => d.name);
@@ -412,7 +430,6 @@ export default function SubmitScoreDialog(props) {
       type: 'text',
     },
   ];
-
   return (
     <>
       <BasicFormDialog
@@ -427,6 +444,7 @@ export default function SubmitScoreDialog(props) {
         open={addPlayer}
         onClose={onAddPlayerClose}
         rosterId={formik.values.yourTeam}
+        fullRoster={fullRoster}
         updateRoster={updateRoster}
       />
     </>

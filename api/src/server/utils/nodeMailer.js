@@ -4,7 +4,6 @@ const {
   LOGO_ENUM,
   LANGUAGE_ENUM,
 } = require('../../../../common/enums');
-const { getLanguageFromEmail } = require('../../db/helpers');
 
 let key;
 
@@ -131,7 +130,7 @@ const sendPersonTransferEmail = async ({
     subject =
       senderName +
       ' veut transférer une personne à votre compte | Sportfolios';
-    title = 'Transfère de personne';
+    title = 'Transfert de personne';
     content =
       senderName +
       ' veut vous transférer la personne ' +
@@ -147,9 +146,54 @@ const sendPersonTransferEmail = async ({
     html,
   });
 };
+const sendAddPersonToTeamEmail = async ({
+  email,
+  teamName,
+  senderName,
+  language,
+  token,
+}) => {
+  let html = '';
+  let subject = '';
+  let title = '';
+  let content = '';
+  let link = '';
+  let buttonName = '';
+  if (language === LANGUAGE_ENUM.ENGLISH) {
+    subject =
+      senderName +
+      ' wants to add you to his team ' +
+      teamName +
+      ' | Sportfolios';
+    title = 'Join ' + teamName;
+    content =
+      senderName +
+      ' wants to add you to his team ' +
+      teamName +
+      ' on Sportfolios. Click on the following link to sign in and be part of the team 👇';
+    buttonName = 'Join ' + teamName;
+  } else {
+    subject =
+      senderName +
+      ' veut vous ajouter à son équipe ' +
+      teamName +
+      ' | Sportfolios';
+    title = 'Rejoindre ' + teamName;
+    content =
+      senderName +
+      " veut vous ajouter à son équipe sur Sportfolios. Cliquez sur le lien suivant pour vous connecter et faire partie de l'équipe 👇";
+    buttonName = 'Rejoindre ' + teamName;
+  }
+  link = `${CLIENT_BASE_URL}/transferPerson/${token}`;
+  html = await getHtml(title, content, link, buttonName);
+  return await sendMail({
+    email,
+    subject,
+    html,
+  });
+};
 
-async function sendReceiptEmail({ email, receipt }) {
-  const language = await getLanguageFromEmail(email);
+async function sendReceiptEmail({ email, receipt, language }) {
   let html = '';
   let subject = '';
   let title = '';
@@ -180,8 +224,8 @@ async function sendTeamRegistrationEmailToAdmin({
   team,
   event,
   placesLeft,
+  language,
 }) {
-  const language = await getLanguageFromEmail(email);
   let html = '';
   let subject = '';
   let title = '';
@@ -220,8 +264,12 @@ async function sendTeamRegistrationEmailToAdmin({
   });
 }
 
-async function sendAcceptedRegistrationEmail({ email, team, event }) {
-  const language = await getLanguageFromEmail(email);
+async function sendAcceptedRegistrationEmail({
+  email,
+  team,
+  event,
+  language,
+}) {
   let html = '';
   let subject = '';
   let title = '';
@@ -247,8 +295,7 @@ async function sendAcceptedRegistrationEmail({ email, team, event }) {
   });
 }
 
-async function sendRecoveryEmail({ email, token }) {
-  const language = await getLanguageFromEmail(email);
+async function sendRecoveryEmail({ email, token, language }) {
   let html = '';
   let subject = '';
   let title = '';
@@ -282,4 +329,5 @@ module.exports = {
   sendAcceptedRegistrationEmail,
   sendTeamRegistrationEmailToAdmin,
   sendPersonTransferEmail,
+  sendAddPersonToTeamEmail,
 };

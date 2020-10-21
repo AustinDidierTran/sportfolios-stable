@@ -17,9 +17,9 @@ export default function RosterItem(props) {
     secondary,
     photoUrl,
     name,
+    surname,
     onDelete,
   } = props;
-
   const initials = useMemo(() => getInitialsFromName(name), [name]);
 
   const handleDelete = () => {
@@ -35,11 +35,20 @@ export default function RosterItem(props) {
       <ListItemIcon>
         <Avatar photoUrl={photoUrl} initials={initials}></Avatar>
       </ListItemIcon>
-      <ListItemText
-        className={styles.text}
-        primary={name}
-        secondary={secondary || t('person')}
-      ></ListItemText>
+      {surname ? (
+        <ListItemText
+          className={styles.text}
+          primary={`${name} ${surname}`}
+          secondary={secondary || t('person')}
+        ></ListItemText>
+      ) : (
+        <ListItemText
+          className={styles.text}
+          primary={name}
+          secondary={secondary || t('person')}
+        ></ListItemText>
+      )}
+
       <IconButton edge="end" onClick={handleDelete}>
         <Icon icon="Delete" />
       </IconButton>

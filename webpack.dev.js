@@ -11,7 +11,7 @@ module.exports = merge(common, {
   devServer: {
     contentBase: path.resolve(ROOT_PATH, 'app/build'),
     historyApiFallback: {
-      disableDotRule: true
+      disableDotRule: true,
     },
     hot: true,
     inline: true,
@@ -20,5 +20,6 @@ module.exports = merge(common, {
     // Docker container has port 0.0.0.0:3000,
     //   but we still acces web app with localhost:3000
     host: '0.0.0.0',
+    https: true,
   },
 });

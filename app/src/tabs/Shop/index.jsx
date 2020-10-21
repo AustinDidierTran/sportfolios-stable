@@ -60,11 +60,12 @@ export default function Shop(props) {
               <br />
             </>
           ) : null}
-          {items.map(item => {
+          {items.map((item, index) => {
             return (
               <CustomCard
                 items={{ ...item, setItems, isEditor, update }}
                 type={CARD_TYPE_ENUM.SHOP}
+                key={index}
               />
             );
           })}

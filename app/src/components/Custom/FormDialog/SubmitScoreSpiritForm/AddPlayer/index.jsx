@@ -1,7 +1,10 @@
-import React, { useState, useContext } from 'react';
-import { FormDialog } from '../../../../../components/Custom';
+import React, { useState, useContext, useMemo } from 'react';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
 import { useTranslation } from 'react-i18next';
-import { useFormik } from 'formik';
 
 import { ERROR_ENUM } from '../../../../../../../common/errors';
 import api from '../../../../../actions/api';
@@ -12,76 +15,79 @@ import {
   COMPONENT_TYPE_ENUM,
 } from '../../../../../../../common/enums';
 import { useEffect } from 'react';
+import PersonSearchList from '../../../SearchList/PersonSearchList';
+import ComponentFactory from '../../../ComponentFactory';
+import { useFormInput } from '../../../../../hooks/forms';
+import PersonItem from '../../../List/PersonItem';
 
 export default function AddPlayer(props) {
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
-  const { open: openProps, rosterId, onClose, updateRoster } = props;
+  const {
+    open: openProps,
+    rosterId,
+    onClose,
+    updateRoster,
+    fullRoster,
+  } = props;
   const [open, setOpen] = useState(false);
-  const [isChecked, setIsChecked] = useState(true);
+  const [person, setPerson] = useState(null);
+  const [isSub, setIsSub] = useState(true);
+  const query = useFormInput('');
+
+  const blackList = useMemo(() => {
+    if (fullRoster) {
+      return fullRoster.map(r => r.value);
+    }
+  }, [fullRoster]);
 
   useEffect(() => {
     setOpen(openProps);
   }, [openProps]);
 
-  const handleClose = () => {
-    formik.resetForm();
+  const handleClose = player => {
+    setPerson(null);
     onClose();
+    if (player.id) {
+      updateRoster(player);
+    }
   };
 
   const onChange = value => {
-    setIsChecked(value);
+    setIsSub(value);
   };
 
-  const validate = values => {
-    const { player } = values;
-    const errors = {};
-    if (!player.length) {
-      errors.player = t(ERROR_ENUM.VALUE_IS_REQUIRED);
-    }
-
-    return errors;
+  const onClick = player => {
+    setPerson(player);
   };
 
-  const formik = useFormik({
-    initialValues: {
-      player: '',
-    },
-    validate,
-    validateOnChange: false,
-    validateOnBlur: false,
-    onSubmit: async (values, { resetForm }) => {
-      const { player } = values;
-      const res = await api('/api/entity/addPlayerToRoster', {
-        method: 'POST',
-        body: JSON.stringify({
-          name: player,
-          isSub: isChecked,
-          rosterId,
-        }),
+  const onPlayerAddToRoster = async () => {
+    const res = await api('/api/entity/addPlayerToRoster', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: person.completeName || person.name,
+        isSub,
+        rosterId,
+        personId: person.id,
+      }),
+    });
+    if (res.status === STATUS_ENUM.ERROR) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: ERROR_ENUM.ERROR_OCCURED,
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
       });
-
-      resetForm();
-      if (res.status === STATUS_ENUM.ERROR) {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: ERROR_ENUM.ERROR_OCCURED,
-          severity: SEVERITY_ENUM.ERROR,
-          duration: 4000,
-        });
-      } else {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: t('sub_added'),
-          severity: SEVERITY_ENUM.SUCCESS,
-          duration: 2000,
-        });
-        onClose();
-        updateRoster(player);
-      }
-    },
-  });
-
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('player_added'),
+        severity: SEVERITY_ENUM.SUCCESS,
+        duration: 2000,
+      });
+      handleClose(res.data[0]);
+    }
+  };
   const buttons = [
     {
       onClick: handleClose,
@@ -89,38 +95,75 @@ export default function AddPlayer(props) {
       color: 'secondary',
     },
     {
-      type: 'submit',
-      name: t('done'),
+      onClick: onPlayerAddToRoster,
+      name: t('add'),
       color: 'primary',
+      disabled: person ? false : true,
     },
   ];
 
-  const fields = [
-    {
-      namespace: 'player',
-      label: t('player_name'),
-      type: 'text',
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.CHECKBOX,
-      name: 'isSub',
-      label: t('is_sub'),
-      checked: isChecked,
-      onChange: onChange,
-      color: 'primary',
-    },
-  ];
-
+  const field = {
+    componentType: COMPONENT_TYPE_ENUM.CHECKBOX,
+    name: 'isSub',
+    label: t('is_sub'),
+    checked: isSub,
+    onChange: onChange,
+    color: 'primary',
+  };
   return (
-    <>
-      <FormDialog
-        open={open}
-        title={t('add_player')}
-        buttons={buttons}
-        fields={fields}
-        formik={formik}
-        onClose={onClose}
-      />
-    </>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="form-dialog-title"
+      maxWidth={'xs'}
+      fullWidth
+    >
+      <DialogTitle id="form-dialog-title">
+        {t('add_player')}
+      </DialogTitle>
+      <div>
+        <DialogContent>
+          {person ? (
+            <PersonItem
+              {...person}
+              secondary={t('player')}
+              notClickable
+            />
+          ) : (
+            <></>
+          )}
+          <PersonSearchList
+            clearOnSelect={false}
+            blackList={blackList}
+            label={t('enter_player_name')}
+            query={query}
+            allowCreate
+            withoutIcon
+            autoFocus
+            isSub={isSub}
+            onClick={onClick}
+            onChange={onChange}
+            handleClose={handleClose}
+            rosterId={rosterId}
+          />
+          <div style={{ marginTop: '8px' }}>
+            <ComponentFactory component={{ ...field }} />
+          </div>
+        </DialogContent>
+        <DialogActions>
+          {buttons.map((button, index) => (
+            <Button
+              onClick={button.onClick}
+              color={button.color}
+              type={button.type}
+              key={index}
+              disabled={button.disabled}
+            >
+              {button.name}
+            </Button>
+          ))}
+        </DialogActions>
+      </div>
+    </Dialog>
   );
 }

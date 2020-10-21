@@ -1,8 +1,9 @@
 const Router = require('koa-router');
+const { STATUS_ENUM } = require('../../../../../common/enums');
 const queries = require('../../../db/queries/users');
-
 const router = new Router();
 const BASE_URL = '/api/user';
+
 
 // Add email
 router.post(`${BASE_URL}/addEmail`, async ctx => {
@@ -174,22 +175,27 @@ router.put(`${BASE_URL}/primaryPerson`, async ctx => {
 });
 
 router.post(`${BASE_URL}/transferPerson`, async ctx => {
-  const person = await queries.sendTransferPersonEmail(
-    ctx.body.userInfo.id,
-    ctx.request.body,
-  );
-  if (person) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: person,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+  let person;
+  try {
+    person = await queries.sendTransferPersonEmail(
+      ctx.body.userInfo.id,
+      ctx.request.body,
+    );
+    if (person) {
+      ctx.status = STATUS_ENUM.SUCCESS;
+      ctx.body = {
+        status: 'success',
+        data: person,
+      };
+    } else {
+      ctx.status = STATUS_ENUM.ERROR;
+      ctx.body = {
+        status: 'error',
+        message: 'Something went wrong',
+      };
+    }
+  } catch (e) {
+    throw e;
   }
 });
 
@@ -199,7 +205,7 @@ router.delete(`${BASE_URL}/transferPerson`, async ctx => {
     ctx.query.id,
   );
   if (person) {
-    ctx.status = 200;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: person,
@@ -238,7 +244,7 @@ router.get(`${BASE_URL}/acceptPersonTransfer`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (personId) {
-    ctx.status = 200;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: previousOwnerId,
@@ -255,11 +261,79 @@ router.get(`${BASE_URL}/acceptPersonTransfer`, async ctx => {
 router.get(`${BASE_URL}/declinePersonTransfer`, async ctx => {
   const id = await queries.declinePersonTransfer(ctx.query.id);
   if (id) {
-    ctx.status = 200;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: id,
     };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/facebookData`, async ctx => {
+  const data = await queries.setFacebookData(ctx.body.userInfo.id, ctx.request.body);
+  if(data){
+    ctx.body = {
+      status:STATUS_ENUM.SUCCESS,
+      data:data
+    }
+  }else {
+    ctx.body = {
+      status:STATUS_ENUM.ERROR,
+      message: 'Something went wrong'
+    }
+  }
+});
+
+router.post(`${BASE_URL}/facebookConnection`, async ctx => {
+  const data = await queries.linkFacebook(ctx.body.userInfo.id, ctx.request.body);
+  if(data){
+    ctx.status = STATUS_ENUM.SUCCESS
+    ctx.body = {
+      data:data
+    }
+  }else {
+    ctx.status=STATUS_ENUM.ERROR
+    ctx.body = {
+      message: 'Something went wrong'
+    }
+  }
+});
+
+router.delete(`${BASE_URL}/facebookConnection`, async ctx => {
+  try{
+  const res = await queries.unlinkFacebook(
+    ctx.body.userInfo.id,
+  );
+  if (res) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: res
+    };
+  } else {
+    ctx.body = {
+      status: STATUS_ENUM.ERROR,
+      message: 'Something went wrong',
+    };
+  }}catch(e) {
+    throw e;
+  }
+});
+
+
+router.get(`${BASE_URL}/connectedApps`, async ctx => {
+  const res = await queries.getConnectedApps(ctx.body.userInfo.id);
+  if (res) {
+    ctx.body = {
+      status:STATUS_ENUM.SUCCESS,
+      data:res
+    }
   } else {
     ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {

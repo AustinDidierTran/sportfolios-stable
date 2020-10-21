@@ -90,6 +90,7 @@ export default function TabRosters() {
           rosters={rosters}
           onAdd={onAdd}
           onDelete={onDelete}
+          update={getData}
         />
       </div>
     </div>

@@ -129,18 +129,19 @@ export default function TeamSchedule() {
           <MenuItem value={'Brackets'}>Brackets</MenuItem>
         </Select>
       </FormControl>
-      {phases.map(phase => (
+      {phases.map((phase, index) => (
         <Paper className={styles.phase}>
           <Typography
             variant="h6"
             color="textSecondary"
             className={styles.name}
+            key={index}
           >
             {phase.name}
           </Typography>
           <hr className={styles.divider}></hr>
-          {phase.games.map(g => (
-            <Game game={g} />
+          {phase.games.map((g, index) => (
+            <Game game={g} key={index} />
           ))}
         </Paper>
       ))}

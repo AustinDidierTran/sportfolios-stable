@@ -10,9 +10,10 @@ import {
 } from 'react-beautiful-dnd';
 import Divider from '@material-ui/core/Divider';
 import { makeStyles } from '@material-ui/core/styles';
-import { Icon } from '../';
-import { ListItem, Typography, ListItemText } from '../../MUI';
+import { Icon, Button } from '../';
+import { ListItem, ListItemText } from '../../MUI';
 import styles from './AccordionDnD.module.css';
+import { ListItemIcon } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
   primary: {
@@ -20,8 +21,6 @@ const useStyles = makeStyles(() => ({
     justifySelf: 'end',
   },
 }));
-
-const grid = 8;
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -39,7 +38,6 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
 const getListStyle = isDraggingOver => ({
   background: isDraggingOver ? 'whitesmoke' : 'white',
-  padding: grid,
   width: '100%',
 });
 
@@ -48,6 +46,7 @@ export default function CustomAccordionDnD(props) {
     title,
     items: itemsProps,
     withIndex,
+    buttons,
     ...otherProps
   } = props;
   const classes = useStyles();
@@ -87,66 +86,91 @@ export default function CustomAccordionDnD(props) {
           <Icon icon="ExpandMore" className={classes.primary} />
         }
       >
-        <Typography>{title}</Typography>
+        <ListItemText primary={title} />
       </AccordionSummary>
       <AccordionDetails>
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="droppable">
-            {(provided, snapshot) => (
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                style={getListStyle(snapshot.isDraggingOver)}
-              >
-                {items.map((item, index) => (
-                  <Draggable
-                    key={item.id}
-                    draggableId={item.id}
-                    index={index}
-                  >
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        style={getItemStyle(
-                          snapshot.isDragging,
-                          provided.draggableProps.style,
-                        )}
-                      >
-                        {withIndex ? (
-                          <ListItem>
-                            <div
-                              className={styles.main}
-                              style={{ width: '100%' }}
-                            >
-                              <ListItemText
-                                className={styles.position}
-                                secondary={index + 1}
-                              />
-                              <ListItemText
-                                className={styles.name}
-                                primary={item.content}
-                              />
-                            </div>
-                          </ListItem>
-                        ) : (
-                          <ListItem>
-                            <div style={{ width: '100%' }}>
-                              <ListItemText primary={item.content} />
-                            </div>
-                          </ListItem>
-                        )}
-                        <Divider />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
+        <div className={styles.div}>
+          {buttons.map((button, index) => (
+            <Button
+              onClick={() => {
+                button.onClick(items);
+              }}
+              color={button.color}
+              type={button.type}
+              disabled={button.disabled}
+              endIcon={button.endIcon}
+              className={styles.button}
+              key={index}
+            >
+              {button.name}
+            </Button>
+          ))}
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
+                  {items.map((item, index) => (
+                    <Draggable
+                      key={item.id}
+                      draggableId={item.id}
+                      index={index}
+                    >
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={getItemStyle(
+                            snapshot.isDragging,
+                            provided.draggableProps.style,
+                          )}
+                        >
+                          {withIndex ? (
+                            <ListItem>
+                              <ListItemIcon>
+                                <Icon
+                                  icon="Reorder"
+                                  color="textSecondary"
+                                />
+                              </ListItemIcon>
+                              <div
+                                className={styles.main}
+                                style={{ width: '100%' }}
+                              >
+                                <ListItemText
+                                  className={styles.position}
+                                  secondary={index + 1}
+                                />
+                                <ListItemText
+                                  className={styles.name}
+                                  primary={item.content}
+                                />
+                              </div>
+                            </ListItem>
+                          ) : (
+                            <ListItem>
+                              <div style={{ width: '100%' }}>
+                                <ListItemText
+                                  primary={item.content}
+                                />
+                              </div>
+                            </ListItem>
+                          )}
+                          <Divider />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
       </AccordionDetails>
     </Accordion>
   );

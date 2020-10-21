@@ -103,6 +103,7 @@ export default function DataRow(props) {
             header={h}
             index={index}
             error={validationErrors[h.value]}
+            key={index}
             {...values[h.value]}
           />
         ) : (

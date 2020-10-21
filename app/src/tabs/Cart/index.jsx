@@ -108,10 +108,11 @@ export default function Cart() {
       <IgContainer>
         <div className={styles.cart}>
           <List
-            items={items.map(item => ({
+            items={items.map((item, index) => ({
               ...item,
               updateQuantity,
               type: GLOBAL_ENUM.CART,
+              key: index,
             }))}
           />
           <DefaultCard className={styles.defaultCard}>

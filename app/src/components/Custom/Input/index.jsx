@@ -14,7 +14,6 @@ export default function CustomInput(props) {
   if (!isVisible) {
     return <></>;
   }
-
   switch (type) {
     case 'date':
       return <DateInput {...props} />;

@@ -13,6 +13,8 @@ export default function CustomTextField(props) {
     onChange,
     color,
     variant,
+    formikDisabled,
+    ...otherProps
   } = props;
 
   const handleChange = (event, ...args) => {
@@ -44,8 +46,11 @@ export default function CustomTextField(props) {
       error={Boolean((formik && formik.errors[namespace]) || error)}
       helperText={(formik && formik.errors[namespace]) || error}
       value={formik && formik.values[namespace]}
-      {...props}
+      color={color}
+      variant={variant}
+      {...otherProps}
       onChange={handleChange}
+      disabled={formikDisabled}
     />
   );
 }

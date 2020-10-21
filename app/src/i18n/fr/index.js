@@ -8,6 +8,10 @@ export default {
       'Êtes-vous certain de vouloir effectuer cette action?',
     acceptation: 'Acceptation',
     accept: 'Accepter',
+    accept_person_transfer_confirmation:
+      'Êtes vous certain de vouloir accepter le transfert de {{name}}?',
+    account_already_linked:
+      'Ce compte est déjà lié à un compte Sportfolios.',
     account_holder_name: 'Nom du titulaire du compte',
     add_admin: 'Ajouter admin',
     add: 'Ajouter',
@@ -72,8 +76,11 @@ export default {
     birth_date_format: '{{date, LL}} ({{age}} ans)',
     cant_add_product_no_bank_account:
       "Vous ne pouvez pas ajouter de produit car l'administrateur n'a pas de compte banquaire",
+    cant_transfer_person_to_your_own_email:
+      'Vous ne pouvez pas transférer une personne à votre propre adresse courriel',
     by: 'Par',
     canadian_dollar: 'Dollar Canadien',
+    cancel_person_transfer: 'Annuler le transfert de cette personne',
     cancel_person_transfer_confirmation:
       'Êtes-vous certain de vouloir annuler le transfert de {{name}}?',
     cant_unregister_all_teams:
@@ -87,21 +94,28 @@ export default {
       "Votre panier est vide! C'est l'heure d'aller faire des achats!",
     category: 'Catégorie',
     change_password: 'Changer votre mot de passe',
+    change_picture: 'Changer la photo',
     change_team: "Changer l'équipe",
     choose_your_primary_person: 'Choisir votre personne principale',
     comments: 'Commentaires',
     confirm: 'Confirmer',
     confirmation_email_sent:
       'Le courriel a été envoyé avec succès. Allez dans votre boîte de courriel pour réinitialiser votre mot de passe.',
+    connection_failed:
+      'La connexion au compte a échoué, veuillez réessayer',
+    connect_with_facebook: 'Se connecter avec Facebook',
     contact_us: 'Contactez-nous',
     contact: 'Contact',
     country: 'Pays',
     create_a_game: 'Créer une partie',
     create_a_phase: 'Créer une phase',
+    create_an_account_to_accept_person_transfer:
+      'Veuillez choisir un mot de passe pour vous créer un compte et accepter le transfert de personne',
     create_event: 'Créer un événement',
     create_organization: 'Créer une organisation',
     create_person: 'Créer une personne',
     create_team: 'Créer une équipe',
+    clear_all: 'Réinitialiser',
     click_to_create_new_team:
       'Cliquer pour créer votre nouvelle équipe',
     created_by: 'Créé par {{name}}',
@@ -114,7 +128,10 @@ export default {
     description: 'Description',
     donate: 'Faites un don',
     done: 'Terminé',
+    do_not_specify: 'Ne pas spécifier',
+    edit_infos: 'Modifier les infos',
     edit_game: 'Modifier la partie',
+    edit_your_primary_person: 'Changer de personne primaire',
     editor: 'Éditeur',
     email: 'Courriel',
     emails: 'Courriels',
@@ -138,6 +155,7 @@ export default {
       'Événements qui pourrait vous intéresser',
     expiration_date: "Date d'expiration",
     feature_coming_soon: 'Fonctionnalité à venir!',
+    female: 'Femme',
     field: 'Terrain',
     field_added: 'Terrain ajouté',
     filters: 'Filtres',
@@ -151,6 +169,7 @@ export default {
     games: 'Parties',
     game_added: 'Partie ajoutée',
     game_deleted: 'Partie supprimée',
+    gender: 'Genre',
     general: 'Général',
     general_informations: 'Informations générales',
     goal: 'Objectif',
@@ -169,15 +188,20 @@ export default {
     location_unspecified: 'Lieu non spécifié',
     login: 'Connexion',
     logout: 'Déconnexion',
+    invite_this_player_to_join_your_team:
+      'Inviter ce joueur à joindre votre équipe',
     send_email: 'Envoyer un courriel',
     send: 'envoyer',
+    male: 'Homme',
     maximum_spots: 'Nombre de places',
     max_length: 'Longueur maximum',
     menu: 'Menu',
     more_filters: 'Plus de filtre',
+    my_apps: 'Mes applications',
     my_persons: 'Mes personnes',
     name: 'Nom',
     next: 'Prochain',
+    upcoming_games: 'Prochaines parties',
     new_email: 'Nouveau courriel',
     new_organization: 'Nouvelle Organisation',
     new_team: 'Nouvelle Équipe',
@@ -189,6 +213,7 @@ export default {
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
     no_alias: 'Aucun alias',
     no_description: 'Aucune description',
+    no_games: 'Aucune partie',
     notifications: 'Notifications',
     not_paid: 'Paiement dû',
     no_notifications: 'Pas de notifications',
@@ -225,6 +250,7 @@ export default {
     password_changed: 'Mot de passe changé avec succès',
     password_reset_message:
       'Votre mot de passe a été réinitialisé avec succès!',
+    past_games: 'Parties antérieurs',
     pathname: 'Chemin',
     pay: 'Payer',
     payment_method_added:
@@ -242,15 +268,19 @@ export default {
     person_transfer_email_sent:
       'Un courriel pour procéder au transfert a été envoyé à {{email}}',
     pending: 'En attente',
+    person_transfer_expired:
+      'Vous arrivez trop tard! Le transfert de cette personne a expiré ou a été annulé',
     people: 'Personnes',
     phase: 'Phase',
     phase_added: 'Phase ajoutée',
     places_left: 'places restantes',
     player: 'Joueur',
+    player_added: 'Joueur ajouté',
     player_name: 'Nom du joueur',
     players: 'Joueurs',
     private: 'Privée',
-    pre_ranking: 'Préclassement',
+    preranking: 'Préclassement',
+    preranking_saved: 'Préclassement sauvegardé',
     price: 'Prix',
     primary_person: 'Personne principale',
     primary_person_changed: 'Personne principale changée',
@@ -301,7 +331,9 @@ export default {
     spirit: 'Esprit de jeu',
     spirit_chart_ligue_mardi:
       '0: Mauvais  1: Moyen  2: Bon ou rien à signaler  3: Très bon  4: Mémorable',
+    statistics: 'Statistiques',
     status: 'Statut',
+    street_address: 'Adresse',
     submit_score: 'Soumettre un résultat',
     sub: 'Remplaçant',
     sub_added: 'Remplaçant ajouté',
@@ -324,14 +356,17 @@ export default {
     transfer_person_description:
       "En confirmant vous acceptez de céder toutes les permissions sur cette personne à l'utilisateur possédant l'adresse courriel que vous avez entrée",
     transfered_to_you: 'Transféré à vous',
+    transfer_this_person: 'Transférer cette personne',
     time: 'Temps',
     time_slot: 'Plage horaire',
     time_slot_added: 'Plage horaire ajoutée',
     total: 'Total',
     to_see_your_receipt:
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
+    type_address: 'Entrez une addresse',
     waiting_for_payment:
       'Votre paiement est en cours de traitement. Merci pour votre patience.',
+    unlink_facebook_account: 'Déconnecter mon compte Facebook',
     unregister: 'Désinscrire',
     unregister_all: 'Tout désinscrire',
     unsupported_language: 'Langue non supportée',
@@ -381,6 +416,8 @@ export default {
     redirect_to_home: `Vous serez bientôt redirigez vers l'accueil. Cliquez ci-dessous pour être redirigé dès maintenant.`,
     // Validation
     confirm_new_password: 'Confirmer votre nouveau mot de passe',
+    email_already_exist:
+      'Il y a déjà un compte associé à ce courriel',
     email_already_used:
       'Courriel déjà utilisé. Veuillez en choisir un autre.',
     email_not_confirmed:
@@ -388,7 +425,7 @@ export default {
     email_not_found: "Il n'existe pas de compte avec ce courriel",
     email_password_no_match:
       'Erreur du courriel ou du mot de passe. Svp, réessayez.',
-    invalid_email: 'Courriel invalid.',
+    invalid_email: 'Courriel invalide.',
     invalid_input: 'Valeur incorrect',
     name_is_required: 'Nom obligatoire',
     new_password: 'Nouveau mot de passe',
@@ -575,9 +612,17 @@ export default {
       'Attitude positive et maîtrise de soi',
     communication: 'Communication',
     //PROTIP
-    you_can_also_click_on_your_game_to_submit_your_score:
-      'ProTip: Vous pouvez aussi cliquer sur votre partie pour entrer votre résultat.',
+    you_can_click_on_your_game_to_submit_your_score:
+      'ProTip: Vous pouvez cliquer sur votre partie pour entrer votre résultat.',
     you_can_click_on_a_game_to_change_score:
       'ProTip: Vous pouvez cliquer sur une partie pour changer le pointage.',
+
+    //APP DESCRIPTION
+    messenger_description:
+      'Connecte ton compte Messenger pout activer le chatbot Sportfolios',
+    disconnect_app:
+      "Déconnecter l'application {{appName}} de ton compte",
+    facebook_description:
+      'Connecte ton compte Facebook pour retrouver tes amis et pouvoir activer le chatbot Sportfolios',
   },
 };

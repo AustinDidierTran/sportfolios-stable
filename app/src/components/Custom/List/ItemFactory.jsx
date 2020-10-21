@@ -14,6 +14,7 @@ import RankingWithStatsItem from './RankingWithStatsItem';
 import PurchasesItem from './PurchasesItem';
 import CartItem from './CartItem';
 import SalesItem from './SalesItem';
+import AppItem from './AppItem';
 
 const ItemMap = {
   [GLOBAL_ENUM.EVENT_CREATOR]: EventCreatorItem,
@@ -30,6 +31,7 @@ const ItemMap = {
   [GLOBAL_ENUM.PURCHASES]: PurchasesItem,
   [GLOBAL_ENUM.CART]: CartItem,
   [GLOBAL_ENUM.SALES]: SalesItem,
+  [GLOBAL_ENUM.APP_ITEM]: AppItem,
 };
 
 export default function ItemFactory(props) {

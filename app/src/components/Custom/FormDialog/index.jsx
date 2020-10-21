@@ -42,18 +42,19 @@ export default function CustomFormDialog(props) {
             ) : (
               <></>
             )}
-            {fields.map(field => (
-              <div style={{ marginTop: '8px' }}>
+            {fields.map((field, index) => (
+              <div style={{ marginTop: '8px' }} key={index}>
                 <ComponentFactory component={{ ...field, formik }} />
               </div>
             ))}
           </DialogContent>
           <DialogActions>
-            {buttons.map(button => (
+            {buttons.map((button, index) => (
               <Button
                 onClick={button.onClick}
                 color={button.color}
                 type={button.type}
+                key={index}
               >
                 {button.name}
               </Button>

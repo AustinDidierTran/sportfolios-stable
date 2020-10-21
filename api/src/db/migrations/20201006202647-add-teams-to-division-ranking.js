@@ -45,6 +45,7 @@ exports.up = async function(db) {
         team_id: teamId.team_id,
         event_id: roster.event_id,
       });
+      return roster;
   });
   return null;
 };

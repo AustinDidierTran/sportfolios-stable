@@ -60,19 +60,17 @@ export default function Ranking() {
   categories.map(categorie =>
     categorie.teams.sort((a, b) => a.position - b.position),
   );
-
   return (
     <Paper className={styles.bigCard}>
       <Typography variant="h3" className={styles.title}>
-        {' '}
-        {t('pre_ranking')}{' '}
+        {t('preranking')}
       </Typography>
       <hr className={styles.divider}></hr>
-      {categories.map(categorie => (
-        <Container className={styles.container}>
+      {categories.map((categorie, index) => (
+        <Container className={styles.container} key={index}>
           <Typography variant="h4">{categorie.name}</Typography>
-          {categorie.teams.map(team => (
-            <List className={styles.list}>
+          {categorie.teams.map((team, teamIndex) => (
+            <List className={styles.list} key={teamIndex}>
               <ListItem className={styles.listItem}>
                 <Typography
                   color="primary"

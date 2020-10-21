@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Ranking.module.css';
 import { GLOBAL_ENUM } from '../../../../../common/enums';
-import { Accordion } from '../../../components/Custom';
+import { Accordion, List } from '../../../components/Custom';
 
 export default function Ranking(props) {
-  const { ranking, title, withStats } = props;
+  const { ranking, title, withStats, withoutPosition } = props;
 
   const [items, setItems] = useState([]);
 
@@ -14,6 +14,8 @@ export default function Ranking(props) {
         ...r,
         type: GLOBAL_ENUM.RANKING_WITH_STATS,
         index: index + 1,
+        key: index,
+        withoutPosition,
       }));
       setItems(items);
     } else {
@@ -21,6 +23,8 @@ export default function Ranking(props) {
         ...r,
         type: GLOBAL_ENUM.RANKING,
         index: index + 1,
+        key: index,
+        withoutPosition,
       }));
       setItems(items);
     }
@@ -35,7 +39,7 @@ export default function Ranking(props) {
 
   return (
     <div className={styles.div}>
-      <Accordion title={title} items={items} />
+      <Accordion title={title} content={<List items={items} />} />
     </div>
   );
 }

@@ -192,6 +192,22 @@ router.get(`${BASE_URL}/getRoster`, async ctx => {
     };
   }
 });
+router.get(`${BASE_URL}/getRosterWithSub`, async ctx => {
+  const entity = await queries.getRosterWithSub(ctx.query.rosterId);
+
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
 
 router.get(`${BASE_URL}/options`, async ctx => {
   const option = await queries.getOptions(ctx.query.eventId);

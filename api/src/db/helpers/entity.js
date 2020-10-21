@@ -13,6 +13,7 @@ const {
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
+const { sendTransferAddNewPlayer } = require('../helpers/index');
 
 const addEntity = async (body, userId) => {
   const { name, creator, surname, type } = body;
@@ -75,13 +76,15 @@ const addEntity = async (body, userId) => {
         return { id: entityId };
       }
       case GLOBAL_ENUM.PERSON: {
-        await knex('user_entity_role')
+        const [id] = await knex('user_entity_role')
           .insert({
             user_id: userId,
             entity_id: entityId,
             role: ENTITIES_ROLE_ENUM.ADMIN,
           })
+          .returning('entity_id')
           .transacting(trx);
+        return { id };
       }
       case GLOBAL_ENUM.EVENT: {
         let entity_id_admin;
@@ -725,7 +728,7 @@ async function getAllRegisteredInfos(eventId, userId) {
     teams.map(async t => {
       const entity = await getEntity(t.team_id, userId);
       const emails = await getEmailsEntity(t.team_id);
-      const players = await getRoster(t.roster_id);
+      const players = await getRosterWithSub(t.roster_id);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.roster_id);
       const role = await getRole(captains, t.roster_id, userId);
@@ -801,6 +804,25 @@ async function getRegistrationStatus(eventId, rosterId) {
 }
 
 async function getRoster(rosterId) {
+  const realId = await getRealId(rosterId);
+  const roster = await knex('team_players')
+    .select('*')
+    .where({ roster_id: realId, is_sub: false });
+
+  //TODO: Make a call to know if has created an account or is child account
+  const status = TAG_TYPE_ENUM.REGISTERED;
+
+  const props = roster.map(player => ({
+    id: player.id,
+    name: player.name,
+    personId: player.person_id,
+    isSub: player.is_sub,
+    status: status,
+  }));
+
+  return props;
+}
+async function getRosterWithSub(rosterId) {
   const realId = await getRealId(rosterId);
   const roster = await knex('team_players')
     .select('*')
@@ -1025,6 +1047,38 @@ async function getGeneralInfos(entityId) {
   };
 }
 
+async function getPersonInfos(entityId) {
+  const realId = await getRealId(entityId);
+  const [res] = await knex('person_all_infos')
+  .select('*')
+  .where({id: realId});
+
+  let resObj = {
+    photoUrl: res.photo_url,
+    name: res.name,
+    surname: res.surname,
+    birthDate: res.birth_date,
+    gender: res.gender,
+    formattedAddress: res.address
+  };
+
+  const [fullAddress] = await knex('entities_address')
+  .select('*')
+  .where({entity_id: realId});
+
+  if(fullAddress) {
+    resObj.address = {
+      street_address: fullAddress.street_address,
+      city: fullAddress.city,
+      state: fullAddress.state,
+      zip: fullAddress.zip,
+      country: fullAddress.country,
+    };
+  }
+
+  return resObj;
+}
+
 async function updateEntityRole(entityId, entityIdAdmin, role) {
   const realEntityId = await getRealId(entityId);
   const realAdminId = await getRealId(entityIdAdmin);
@@ -1054,6 +1108,20 @@ async function updateEvent(
   return entity;
 }
 
+async function updatePreRanking(eventId, ranking) {
+  const realId = await getRealId(eventId);
+  const res = await Promise.all(
+    ranking.map(async (r, index) => {
+      const [rank] = await knex('division_ranking')
+        .update({ initial_position: index + 1 })
+        .where({ event_id: realId, team_id: r.id })
+        .returning('*');
+      return rank;
+    }),
+  );
+  return res;
+}
+
 async function updateGeneralInfos(entityId, body) {
   const { description, quickDescription } = body;
   const realId = await getRealId(entityId);
@@ -1073,6 +1141,81 @@ async function updateGeneralInfos(entityId, body) {
     .where({ entity_id: realId })
     .returning('*');
   return entity;
+}
+
+async function updatePersonInfosHelper(entityId, body) {
+  const { personInfos } = body;
+  const realId = await getRealId(entityId);
+
+  let fullname;
+  let birthDateRes;
+  let genderRes;
+  let fullAddress;
+  let outputPersonInfos = {};
+
+  if (personInfos.name || personInfos.surname) {  
+    fullname = await knex('entities_name')
+    .update({name: personInfos.name, surname: personInfos.surname})
+    .where({ entity_id: realId })
+    .returning('*'); 
+    
+    outputPersonInfos.name = fullname[0].name;
+    outputPersonInfos.surname = fullname[0].surname;
+  }
+
+  if (personInfos.birthDate) {      
+    birthDateRes = await knex.raw(
+      `? ON CONFLICT (entity_id)
+        DO UPDATE SET
+          birth_date = '${personInfos.birthDate}'
+        RETURNING birth_date;`,
+      [knex('entities_birth_date').insert({
+        entity_id: realId,
+        birth_date: personInfos.birthDate,
+      })],
+    );
+
+    outputPersonInfos.birthDate = birthDateRes.rows[0].birth_date;
+  }
+
+  if (personInfos.gender) {  
+    genderRes = await knex.raw(
+      `? ON CONFLICT (entity_id)
+        DO UPDATE SET
+          gender = '${personInfos.gender}'
+        RETURNING gender;`,
+      [knex('entities_gender').insert({
+        entity_id: realId,
+        gender: personInfos.gender,
+      })],
+    );
+
+    outputPersonInfos.gender = genderRes.rows[0].gender;
+  }
+
+  if (personInfos.address.length != 0) {
+    fullAddress = await knex.raw(
+      `? ON CONFLICT (entity_id)
+        DO UPDATE SET
+        street_address = '${personInfos.address.street_address}',
+        city = '${personInfos.address.city}',
+        state = '${personInfos.address.state}',
+        zip = '${personInfos.address.zip}',
+        country = '${personInfos.address.country}'
+        RETURNING CONCAT_WS(', ', street_address, city, state, zip, country);`,
+      [knex('entities_address').insert({
+        entity_id: realId,
+        street_address: personInfos.address.street_address,
+        city: personInfos.address.city,
+        state: personInfos.address.state,
+        zip: personInfos.address.zip,
+        country: personInfos.address.country})],
+    );
+
+    outputPersonInfos.address = fullAddress.rows[0].concat_ws;
+  }
+
+  return outputPersonInfos;
 }
 
 async function updateEntityName(entityId, name, surname) {
@@ -1582,21 +1725,61 @@ async function addTeamToEvent(body) {
     return res.roster_id;
   });
 }
-
-async function addRoster(rosterId, roster) {
+async function addPersonToRoster(rosterId, person) {
   const realId = await getRealId(rosterId);
-  const players = await knex('team_players')
-    .insert(
-      roster.map(person => ({
-        roster_id: realId,
-        person_id: person.person_id,
-        name: person.name,
-      })),
-    )
+  const player = await knex('team_players')
+    .insert({
+      roster_id: realId,
+      person_id: person.person_id,
+      name: person.name,
+    })
     .returning('*');
-
+  return player;
+}
+async function addRoster(rosterId, roster, userId) {
+  const players = Promise.all(
+    roster.map(async r => {
+      if (r.email) {
+        const res = await addNewPersonToRoster(
+          {
+            ...r,
+            rosterId,
+          },
+          userId,
+        );
+        return res;
+      } else {
+        const res = await addPersonToRoster(rosterId, r);
+        return res;
+      }
+    }),
+  );
   return players;
 }
+async function addNewPersonToRoster(body, userId) {
+  const { name, surname, email, isSub, rosterId } = body;
+  const person = await addEntity(
+    { name, surname, type: GLOBAL_ENUM.PERSON },
+    userId,
+  );
+  const teamName = await getTeamName(rosterId);
+  await addPlayerToRoster(
+    {
+      personId: person.id,
+      name: `${name} ${surname}`,
+      rosterId,
+      isSub,
+    },
+    userId,
+  );
+  await sendTransferAddNewPlayer(userId, {
+    email,
+    sendedPersonId: person.id,
+    teamName,
+  });
+  return { is_sub: isSub, name: `${name} ${surname}`, id: person.id };
+}
+
 async function updateMember(
   memberType,
   organizationId,
@@ -1916,7 +2099,7 @@ const addPlayerToRoster = async (body, userId) => {
       .insert({
         roster_id: rosterId,
         person_id: personId,
-        name: name,
+        name,
         id,
         is_sub: isSub,
       })
@@ -1932,8 +2115,8 @@ const addPlayerToRoster = async (body, userId) => {
     player = await knex('team_players')
       .insert({
         roster_id: rosterId,
-        person_id: person.id,
-        name: name,
+        person_id: person.id[0],
+        name,
         id,
         is_sub: isSub,
       })
@@ -1995,14 +2178,6 @@ const deleteGame = async id => {
   return res;
 };
 
-const deletePersonTransfer = async person_id => {
-  const [person] = await knex('transfered_person')
-    .where({ person_id })
-    .del()
-    .returning('person_id');
-  return person;
-};
-
 const personIsAwaitingTransfer = async personId => {
   return (
     await knex.first(
@@ -2034,6 +2209,7 @@ module.exports = {
   addTimeSlot,
   addOption,
   addRoster,
+  addNewPersonToRoster,
   addTeamToEvent,
   canUnregisterTeam,
   deleteEntity,
@@ -2061,6 +2237,7 @@ module.exports = {
   getRemainingSpots,
   getRankings,
   getRoster,
+  getRosterWithSub,
   getEvent,
   getAlias,
   getPhases,
@@ -2074,6 +2251,7 @@ module.exports = {
   getOptions,
   getRosterInvoiceItem,
   getWichTeamsCanUnregister,
+  getPersonInfos,
   removeEntityRole,
   removeEventCartItem,
   unregister,
@@ -2081,7 +2259,9 @@ module.exports = {
   updateEntityPhoto,
   updateEntityRole,
   updateEvent,
+  updatePreRanking,
   updateGeneralInfos,
+  updatePersonInfosHelper,
   updateMember,
   updateAlias,
   updateGame,
@@ -2091,6 +2271,5 @@ module.exports = {
   addPlayerToRoster,
   deletePlayerFromRoster,
   deleteGame,
-  deletePersonTransfer,
   personIsAwaitingTransfer,
 };

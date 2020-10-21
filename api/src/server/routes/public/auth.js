@@ -1,4 +1,5 @@
 const Router = require('koa-router');
+const { STATUS_ENUM } = require('../../../../../common/enums');
 const queries = require('../../../db/queries/auth');
 
 const router = new Router();
@@ -38,6 +39,22 @@ router.post(`${BASE_URL}/login`, async ctx => {
         token,
         userInfo,
       }),
+    };
+  }
+});
+
+router.post(`${BASE_URL}/transferPersonSignup`, async ctx => {
+  const res = await queries.transferPersonSignup(ctx.request.body);
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
     };
   }
 });

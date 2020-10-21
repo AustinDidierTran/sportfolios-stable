@@ -1,10 +1,13 @@
 import React, { useEffect, useMemo } from 'react';
 import { GLOBAL_ENUM } from '../../../../../common/enums';
-import { SearchList, List } from '../../../components/Custom';
+import { List } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../../hooks/forms';
 import styles from './Roster.module.css';
 import { Typography } from '@material-ui/core';
+import api from '../../../actions/api';
+import { formatRoute } from '../../../actions/goTo';
+import PersonSearchListEventRegistration from './PersonSearchListEventRegistration';
 
 export default function Roster(props) {
   const { t } = useTranslation();
@@ -15,19 +18,24 @@ export default function Roster(props) {
   useEffect(() => {
     onClick(null, roster);
   }, [roster]);
-
   const blackList = useMemo(() => roster.map(r => r.person_id), [
     roster,
   ]);
 
-  const addPerson = (e, person) => {
+  const addPerson = async person => {
     if (person.id) {
+      const { data } = await api(
+        formatRoute('/api/entity', null, {
+          id: person.id,
+        }),
+      );
       setRoster(oldRoster => [
         ...oldRoster,
         {
           person_id: person.id,
           type: GLOBAL_ENUM.ROSTER_ITEM,
           name: person.completeName,
+          photoUrl: data.photoUrl,
           secondary: t('player'),
           onDelete,
         },
@@ -46,7 +54,9 @@ export default function Roster(props) {
           id: newId,
           type: GLOBAL_ENUM.ROSTER_ITEM,
           name: person.name,
+          surname: person.surname,
           secondary: t('player'),
+          email: person.email,
           onDelete,
         },
       ]);
@@ -78,11 +88,10 @@ export default function Roster(props) {
           'roster_doesnt_have_to_be_final_only_for_pre_ranking_purpose',
         )}
       </Typography>
-      <SearchList
+      <PersonSearchListEventRegistration
         className={styles.item}
         clearOnSelect={false}
         label={t('enter_player_name')}
-        type={GLOBAL_ENUM.PERSON}
         onClick={addPerson}
         query={query}
         blackList={blackList}

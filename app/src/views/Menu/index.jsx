@@ -28,7 +28,7 @@ export default function Menu() {
   ];
   return (
     <div className={styles.container}>
-      {data.map(d => (
+      {data.map((d, index) => (
         <Paper
           className={styles.card}
           onClick={
@@ -37,6 +37,7 @@ export default function Menu() {
               history.push(d.route);
             })
           }
+          key={index}
         >
           <Typography style={d.style}>{d.name}</Typography>
         </Paper>

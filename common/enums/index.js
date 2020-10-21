@@ -4,6 +4,13 @@ const ENTITIES_ROLE_ENUM = {
   VIEWER: 3,
 };
 
+const APP_ENUM = {
+  FACEBOOK: 'Facebook',
+  MESSENGER: 'Messenger',
+  GOOGLE: 'Google',
+  APPLE: 'Apple',
+}
+
 const SIZES_ENUM = {
   XXXS: '3x-small',
   XXS: '2x-small',
@@ -90,6 +97,12 @@ const SELECT_ENUM = {
   ALL: 'all',
 };
 
+const GENDER_ENUM = {
+  MALE: 'Male',
+  FEMALE: 'Female',
+  NOT_SPECIFIED: 'Other',
+};
+
 const INVOICE_STATUS_ENUM = {
   DRAFT: 'draft',
   DELETED: 'deleted',
@@ -105,6 +118,7 @@ const STATUS_ENUM = {
   PENDING: 'pending',
   REFUSED: 'refused',
   SUCCESS: 201,
+  FORBIDDEN: 403,
   ERROR: 404,
 };
 
@@ -114,6 +128,11 @@ const PERSON_TRANSFER_STATUS_ENUM = {
   REFUSED: 'refused',
   CANCELED: 'canceled',
 };
+
+const FACEBOOK_STATUS_ENUM = {
+  CONNECTED: 'connected',
+  NOT_AUTHORIZED: 'not_authorized'
+}
 
 const REJECTION_ENUM = {
   NO_REMAINING_SPOTS: 'no_remaining_spots',
@@ -174,6 +193,7 @@ const GLOBAL_ENUM = {
   ROSTER_ITEM: 'roster_item',
   SALES: 'sales',
   SHOP_ITEM: 'shop_item',
+  APP_ITEM: 'app_item'
 };
 
 const MILLIS_TIME_ENUM = {
@@ -244,6 +264,7 @@ module.exports = {
   CARD_TYPE_ENUM,
   COMPONENT_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,
+  GENDER_ENUM,
   GLOBAL_ENUM,
   IMAGE_ENUM,
   INVOICE_STATUS_ENUM,
@@ -270,4 +291,6 @@ module.exports = {
   FORM_DIALOG_TYPE_ENUM,
   MILLIS_TIME_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
+  FACEBOOK_STATUS_ENUM,
+  APP_ENUM
 };

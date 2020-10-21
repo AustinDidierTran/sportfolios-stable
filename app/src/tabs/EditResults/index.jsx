@@ -5,8 +5,8 @@ import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
 import moment from 'moment';
-import GameFilters from '../Schedule/Games/GameFilters';
-import ScoreSuggestion from './ScoreSuggestion';
+import GameFilters from '../Schedule/AllGames/GameFilters';
+import ScoreSuggestion from '../EditSchedule/AllEditGames/EditGames/ScoreSuggestion';
 
 export default function EditResults() {
   const { id: eventId } = useParams();
@@ -70,8 +70,13 @@ export default function EditResults() {
     <>
       <GameFilters update={filter} onlyPast={onlyPast} />
       <div className={styles.main} style={{ marginTop: '16px' }}>
-        {games.map(game => (
-          <ScoreSuggestion game={game} update={update} withoutEdit />
+        {games.map((game, index) => (
+          <ScoreSuggestion
+            game={game}
+            update={update}
+            key={index}
+            withoutEdit
+          />
         ))}
       </div>
     </>
