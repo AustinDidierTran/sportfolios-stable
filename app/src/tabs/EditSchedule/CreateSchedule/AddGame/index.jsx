@@ -12,7 +12,7 @@ import {
   COMPONENT_TYPE_ENUM,
 } from '../../../../../../common/enums';
 import { useParams } from 'react-router-dom';
-import { getGameOptions } from '../../../Schedule/ScheduleFunctions';
+import { getFutureGameOptions } from '../../../Schedule/ScheduleFunctions';
 import validator from 'validator';
 
 export default function AddGame(props) {
@@ -25,7 +25,9 @@ export default function AddGame(props) {
   const [gameOptions, setGameOptions] = useState({});
 
   const getOptions = async () => {
-    const res = await getGameOptions(eventId, { withoutAll: true });
+    const res = await getFutureGameOptions(eventId, {
+      withoutAll: true,
+    });
     setGameOptions(res);
   };
 
