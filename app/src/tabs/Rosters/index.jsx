@@ -41,7 +41,8 @@ const addPlayerToRoster = async (player, rosterId) => {
   return data;
 };
 
-export default function TabRosters() {
+export default function TabRosters(props) {
+  const { isEventAdmin } = props;
   const { id: eventId } = useParams();
   const { t } = useTranslation();
   const [rosters, setRosters] = useState([]);
@@ -87,6 +88,7 @@ export default function TabRosters() {
     <div className={styles.contain}>
       <div className={styles.rosters}>
         <Rosters
+          isEventAdmin={isEventAdmin}
           rosters={rosters}
           onAdd={onAdd}
           onDelete={onDelete}

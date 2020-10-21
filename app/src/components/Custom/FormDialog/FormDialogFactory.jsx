@@ -1,12 +1,10 @@
 import { FORM_DIALOG_TYPE_ENUM } from '../../../../../common/enums';
 import EnterEmail from './EnterEmail';
-import PlayerAcceptationForm from './PlayerAcceptationForm';
 import SubmitScoreAndSpiritForm from './SubmitScoreSpiritForm';
 
 const FormDialogMap = {
   [FORM_DIALOG_TYPE_ENUM.SUBMIT_SCORE_AND_SPIRIT]: SubmitScoreAndSpiritForm,
   [FORM_DIALOG_TYPE_ENUM.ENTER_EMAIL]: EnterEmail,
-  [FORM_DIALOG_TYPE_ENUM.PLAYER_ACCEPTATION]: PlayerAcceptationForm,
 };
 
 export default function FormDialogFactory(props) {
