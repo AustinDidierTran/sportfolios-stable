@@ -34,9 +34,21 @@ export default function EditGames(props) {
     <>
       <div className={styles.collapse} onClick={handleExpand}>
         <div className={styles.nothing} />
-        <Typography className={styles.seeScore} color="textSecondary">
-          {title}
-        </Typography>
+        {games.length > 99 ? (
+          <Typography
+            className={styles.seeScore}
+            color="textSecondary"
+          >
+            {`${title} (99+)`}
+          </Typography>
+        ) : (
+          <Typography
+            className={styles.seeScore}
+            color="textSecondary"
+          >
+            {`${title} (${games.length})`}
+          </Typography>
+        )}
         <IconButton
           aria-expanded={expanded}
           icon={icon}
