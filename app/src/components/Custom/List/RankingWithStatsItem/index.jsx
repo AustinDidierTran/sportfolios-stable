@@ -12,16 +12,22 @@ export default function RankingWithStatsItem(props) {
     loses = 0,
     pointFor = 0,
     pointAgainst = 0,
+    withoutPosition,
   } = props;
 
   return (
     <>
       <ListItem style={{ width: '100%' }}>
         <div className={styles.main} style={{ width: '100%' }}>
-          <ListItemText
-            className={styles.position}
-            secondary={index}
-          />
+          {withoutPosition ? (
+            <ListItemText className={styles.position} secondary="-" />
+          ) : (
+            <ListItemText
+              className={styles.position}
+              secondary={index}
+            />
+          )}
+
           <ListItemText className={styles.name} primary={name} />
           <ListItemText
             className={styles.wins}

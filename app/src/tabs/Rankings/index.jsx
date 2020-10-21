@@ -72,12 +72,13 @@ export default function Rankings() {
   return (
     <>
       <Ranking ranking={preRanking} title={t('preranking')}></Ranking>
+      <PhaseRankings />
       <Ranking
         ranking={ranking}
-        title={t('ranking')}
+        title={t('statistics')}
         withStats
+        withoutPosition
       ></Ranking>
-      <PhaseRankings />
     </>
   );
 }
