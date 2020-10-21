@@ -11,6 +11,12 @@ const getRankingInfos = (teams, games) => {
   }));
 
   games.reduce((ranking, game) => {
+    const index0 = ranking.findIndex(
+      r => r.id === game.teams[0].team_id,
+    );
+    const index1 = ranking.findIndex(
+      r => r.id === game.teams[1].team_id,
+    );
     const {
       id: id0,
       name: name0,
@@ -19,7 +25,8 @@ const getRankingInfos = (teams, games) => {
       pointFor: pointFor0,
       pointAgainst: pointAgainst0,
       random: random0,
-    } = ranking[game.teams[0].position - 1];
+    } = ranking[index0];
+
     const {
       id: id1,
       name: name1,
@@ -28,7 +35,7 @@ const getRankingInfos = (teams, games) => {
       pointFor: pointFor1,
       pointAgainst: pointAgainst1,
       random: random1,
-    } = ranking[game.teams[1].position - 1];
+    } = ranking[index1];
 
     let w0 = wins0;
     let w1 = wins1;
@@ -43,7 +50,7 @@ const getRankingInfos = (teams, games) => {
       w1 = w1 + 1;
       l0 = l0 + 1;
     }
-    ranking[game.teams[0].position - 1] = {
+    ranking[index0] = {
       id: id0,
       name: name0,
       wins: w0,
@@ -52,7 +59,7 @@ const getRankingInfos = (teams, games) => {
       pointAgainst: pointAgainst0 + Number(game.teams[1].score),
       random: random0,
     };
-    ranking[game.teams[1].position - 1] = {
+    ranking[index1] = {
       id: id1,
       name: name1,
       wins: w1,
@@ -61,6 +68,7 @@ const getRankingInfos = (teams, games) => {
       pointAgainst: pointAgainst1 + Number(game.teams[0].score),
       random: random1,
     };
+
     return ranking;
   }, ranking);
 
@@ -202,13 +210,13 @@ const applyGameBetweenTeamRules = (
         const teamIds = currentEntry.map(r => r.id);
 
         const interestingGames = games.filter(g =>
-          g.teams.every(team => teamIds.includes(team.id)),
+          g.teams.every(team => teamIds.includes(team.team_id)),
         );
-
         const newRanking = getRankingInfos(
           currentEntry,
           interestingGames,
         );
+
         const newEntry = applyRules(
           interestingGames,
           newRanking,
