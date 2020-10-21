@@ -1,5 +1,6 @@
 const Router = require('koa-router');
-
+const { FACEBOOK_PAYLOADS } = require('../../../../../common/enums');
+const queries = require('../../../db/queries/facebook');
 const router = new Router();
 const BASE_URL = '/api/fb';
 
@@ -14,6 +15,26 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
       // will only ever contain one message, so we get index 0
       let webhook_event = entry.messaging[0];
       console.log(webhook_event);
+      const senderId = webhook_event.sender.id;
+      if (webhook_event.message) {
+        //User sent a message
+      } else if (webhook_event.postback) {
+        //Someone clicked on postbackbutton
+        const payload = webhook_event.postback.payload;
+        if (payload == FACEBOOK_PAYLOADS.GET_STARTED) {
+          if (webhook_event.postback.referral) {
+            const userId = webhook_event.postback.referral.ref;
+            console.log({ userId });
+          } else {
+            //Did not click on userSetting "connect" button, so we can't know who clicked
+            console.log('no ref');
+            queries.sendMessage(
+              senderId,
+              'You now need to link your Sportfolios account, please go on this page to complete the action: https://sportfolios.app/userSettings',
+            );
+          }
+        }
+      }
     });
 
     // Returns a '200 OK' response to all requests
