@@ -140,7 +140,7 @@ export default function AppLinking() {
 
   const openMessenger = () => {
     const win = window.open(
-      `https://www.m.me/sportfoliosapp?ref=${userInfo.id}`,
+      `https://www.m.me/sportfoliosapp?ref=${userInfo.user_id}`,
       '_blank',
     );
     if (win != null) {

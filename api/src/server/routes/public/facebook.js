@@ -24,13 +24,13 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
         if (payload == FACEBOOK_PAYLOADS.GET_STARTED) {
           if (webhook_event.postback.referral) {
             const userId = webhook_event.postback.referral.ref;
-            console.log({ userId });
+            queries.linkMessengerAccountAllIncluded(userId, senderId);
           } else {
             //Did not click on userSetting "connect" button, so we can't know who clicked
             console.log('no ref');
             queries.sendMessage(
               senderId,
-              'You now need to link your Sportfolios account, please go on this page to complete the action: https://sportfolios.app/userSettings',
+              'You now need to link your Sportfolios account, please follow the following link: https://sportfolios.app/userSettings',
             );
           }
         }
