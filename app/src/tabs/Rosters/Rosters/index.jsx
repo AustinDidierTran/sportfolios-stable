@@ -5,7 +5,7 @@ import { ROSTER_ROLE_ENUM } from '../../../../../common/enums';
 import MyRosterCard from '../MyRosterCard';
 
 export default function Rosters(props) {
-  const { rosters, onAdd, onDelete, update } = props;
+  const { isEventAdmin, rosters, onAdd, onDelete, update } = props;
   const [expandedIndex, setExpandedIndex] = useState(0);
 
   if (!rosters || !rosters.length) {
@@ -18,6 +18,7 @@ export default function Rosters(props) {
     <div className={styles.contain}>
       {rosters.map((roster, index) => {
         if (
+          isEventAdmin ||
           [
             ROSTER_ROLE_ENUM.CAPTAIN,
             ROSTER_ROLE_ENUM.PLAYER,
@@ -25,6 +26,7 @@ export default function Rosters(props) {
         ) {
           return (
             <MyRosterCard
+              isEventAdmin={isEventAdmin}
               roster={roster}
               expandedIndex={expandedIndex}
               setExpandedIndex={setExpandedIndex}

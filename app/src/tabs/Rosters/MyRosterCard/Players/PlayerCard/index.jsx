@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
 import styles from './PlayerCard.module.css';
-import {
-  ROSTER_ROLE_ENUM,
-  FORM_DIALOG_TYPE_ENUM,
-} from '../../../../../../../common/enums';
+import { ROSTER_ROLE_ENUM } from '../../../../../../../common/enums';
 import Chip from '@material-ui/core/Chip';
 import { useTranslation } from 'react-i18next';
-import {
-  IconButton,
-  FormDialog,
-} from '../../../../../components/Custom';
+import { IconButton } from '../../../../../components/Custom';
+import PersonInfoDialog from '../../../../../components/Custom/Dialog/PersonInfosDialog';
 import { Typography } from '../../../../../components/MUI';
 import api from '../../../../../actions/api';
 import { formatRoute } from '../../../../../actions/goTo';
@@ -18,15 +13,29 @@ export default function PlayerCard(props) {
   const { isEventAdmin, player, role, onDelete } = props;
   const { t } = useTranslation();
 
-  const [playerInfos, setPlayerInfos] = useState({});
-  const [playerAcceptation, setPlayerAcceptation] = useState(false);
+  const [playerInfos, setPlayerInfos] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const closePlayerAcceptation = () => {
-    setPlayerAcceptation(false);
+    setOpen(false);
   };
 
   const openPlayerAcceptation = () => {
-    setPlayerAcceptation(true);
+    setOpen(true);
+  };
+
+  const onPlayerAccept = () => {
+    // eslint-disable-next-line
+    console.log('accepting');
+    // do things
+    closePlayerAcceptation();
+  };
+
+  const onPlayerDecline = () => {
+    // eslint-disable-next-line
+    console.log('declining');
+    // do things
+    closePlayerAcceptation();
   };
 
   const onPlayerDeleteFromRoster = () => {
@@ -36,16 +45,14 @@ export default function PlayerCard(props) {
   const getPersonInfos = async () => {
     const { data } = await api(
       formatRoute('/api/entity/personInfos', null, {
-        entityId: personId,
+        entityId: player.personId,
       }),
     );
     setPlayerInfos(data);
   };
 
-  const onAboutClick = async e => {
-    console.log('about this person');
-    console.log(player);
-    setPlayerInfos(getPersonInfos());
+  const onAboutClick = async () => {
+    await getPersonInfos();
     openPlayerAcceptation();
   };
 
@@ -88,13 +95,12 @@ export default function PlayerCard(props) {
             />
           </div>
         </div>
-        <FormDialog
-          type={FORM_DIALOG_TYPE_ENUM.PLAYER_ACCEPTATION}
-          items={{
-            open: playerAcceptation,
-            onClose: closePlayerAcceptation,
-            personInfos: playerInfos,
-          }}
+        <PersonInfoDialog
+          open={open}
+          personInfos={playerInfos}
+          onSubmit={onPlayerAccept}
+          onDecline={onPlayerDecline}
+          onClose={closePlayerAcceptation}
         />
       </div>
     );
