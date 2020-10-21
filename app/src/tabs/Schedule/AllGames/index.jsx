@@ -22,27 +22,31 @@ export default function AllGames() {
     getGames();
   }, [eventId]);
 
+  const scoreIsSubmitted = game => {
+    return game.teams[0].score != 0 || game.teams[1].score != 0;
+  };
+
   const sortGames = games => {
-    const res = games
-      .filter(
-        game =>
-          moment(game.start_time)
-            .set('hour', 0)
-            .set('minute', 0)
-            .add(1, 'day') > moment(),
-      )
-      .sort((a, b) => moment(a.start_time) - moment(b.start_time));
-    setGames(res);
     const pastGames = games
       .filter(
         game =>
           moment(game.start_time)
             .set('hour', 0)
             .set('minute', 0)
-            .add(1, 'day') < moment(),
+            .add(1, 'day') < moment() && scoreIsSubmitted(game),
       )
       .sort((a, b) => moment(a.start_time) - moment(b.start_time));
     setPastGames(pastGames);
+    const res = games
+      .filter(
+        game =>
+          moment(game.start_time)
+            .set('hour', 0)
+            .set('minute', 0)
+            .add(1, 'day') > moment() || !scoreIsSubmitted(game),
+      )
+      .sort((a, b) => moment(a.start_time) - moment(b.start_time));
+    setGames(res);
   };
 
   const getGames = async () => {
