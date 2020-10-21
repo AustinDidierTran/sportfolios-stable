@@ -936,6 +936,9 @@ async function getAlias(entityId) {
   const [res] = await knex('alias')
     .select('*')
     .where({ id: realId });
+  if (!res) {
+    return { alias: entityId };
+  }
   return res;
 }
 
