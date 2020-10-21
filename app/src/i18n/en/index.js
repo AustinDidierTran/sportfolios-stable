@@ -323,6 +323,7 @@ export default {
     spirit: 'Spirit',
     spirit_chart_ligue_mardi:
       '0: Bad 1: Below average 2: Good or nothing to report 3: Very good 4: Exceptional',
+    statistics: 'Statistics',
     status: 'Status',
     street_address: 'Street address',
     submit_score: 'Submit Score',

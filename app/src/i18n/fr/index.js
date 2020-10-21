@@ -331,6 +331,7 @@ export default {
     spirit: 'Esprit de jeu',
     spirit_chart_ligue_mardi:
       '0: Mauvais  1: Moyen  2: Bon ou rien à signaler  3: Très bon  4: Mémorable',
+    statistics: 'Statistiques',
     status: 'Statut',
     street_address: 'Adresse',
     submit_score: 'Soumettre un résultat',

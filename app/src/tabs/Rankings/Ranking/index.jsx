@@ -4,7 +4,7 @@ import { GLOBAL_ENUM } from '../../../../../common/enums';
 import { Accordion, List } from '../../../components/Custom';
 
 export default function Ranking(props) {
-  const { ranking, title, withStats } = props;
+  const { ranking, title, withStats, withoutPosition } = props;
 
   const [items, setItems] = useState([]);
 
@@ -15,6 +15,7 @@ export default function Ranking(props) {
         type: GLOBAL_ENUM.RANKING_WITH_STATS,
         index: index + 1,
         key: index,
+        withoutPosition,
       }));
       setItems(items);
     } else {
@@ -23,6 +24,7 @@ export default function Ranking(props) {
         type: GLOBAL_ENUM.RANKING,
         index: index + 1,
         key: index,
+        withoutPosition,
       }));
       setItems(items);
     }
