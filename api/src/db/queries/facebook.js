@@ -3,6 +3,7 @@ const {
 } = require('../helpers/facebook');
 
 const { setMessengerId } = require('../helpers');
+const { MESSENGER_MESSAGES_FR } = require('../../../../common/enums');
 
 const sendMessage = (messengerId, message) => {
   return sendMessageHelper(messengerId, message);
@@ -16,12 +17,12 @@ const linkMessengerAccountAllIncluded = async (
   if (res) {
     sendMessageHelper(
       messengerId,
-      "You have been sign up to Sportfolios' chatbot successfuly! Come again after your next match to submit your scores",
+      MESSENGER_MESSAGES_FR.CONNECTION_SUCCESS,
     );
   } else {
     sendMessageHelper(
       messengerId,
-      'There was an error while linking your account, please try again later',
+      MESSENGER_MESSAGES_FR.CONNECTION_ERROR,
     );
   }
 };

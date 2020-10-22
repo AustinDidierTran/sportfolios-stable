@@ -29,26 +29,7 @@ const sendMessage = async (messengerId, message) => {
     recipient: {
       id: messengerId,
     },
-    message: {
-      text: message,
-      quick_replies: [
-        {
-          content_type: 'text',
-          title: 'trop génial! 🤩',
-          payload: '1',
-        },
-        {
-          content_type: 'text',
-          title: 'c de la 💩',
-          payload: '2',
-        },
-        {
-          content_type: 'text',
-          title: 'lit 🔥',
-          payload: '3',
-        },
-      ],
-    },
+    message,
   };
   console.log(JSON.stringify(body));
   const res = await axios.post(uri, body).catch(function(error) {

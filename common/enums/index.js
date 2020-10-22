@@ -134,8 +134,9 @@ const FACEBOOK_STATUS_ENUM = {
   NOT_AUTHORIZED: 'not_authorized',
 };
 
-const FACEBOOK_PAYLOADS = {
+const MESSENGER_PAYLOADS = {
   GET_STARTED: 'GET_STARTED',
+  IGNORE: 'IGNORE',
 };
 
 const REJECTION_ENUM = {
@@ -264,6 +265,54 @@ const LOGO_ENUM = {
     'https://sportfolios-images.s3.amazonaws.com/development/images/entity/20200724-klr71-8317ff33-3b04-49a1-afd3-420202cddf73',
 };
 
+const MESSENGER_MESSAGES_EN = {
+  CONNECTION_SUCCESS: {
+    text:
+      "You have been sign up to Sportfolios' chatbot successfuly! Come again after your next match to submit your scores",
+    quick_replies: [
+      {
+        content_type: 'text',
+        title: 'great! 🤩',
+        payload: 'IGNORE',
+      },
+    ],
+  },
+  CONNECTION_ERROR: {
+    text:
+      'There was an error while linking your account, please try again later',
+  },
+  GET_STARTED_NO_REF: {
+    text:
+      'You now need to link your Sportfolios account, please follow the following link: https://sportfolios.app/userSettings',
+  },
+};
+
+const MESSENGER_MESSAGES_FR = {
+  CONNECTION_SUCCESS: {
+    text:
+      'Vous êtes maintenant inscrit au chatbot Sportfolios! Revenez après votre prochaine partie pour soumettre votre score facilement.',
+    quick_replies: [
+      {
+        content_type: 'text',
+        title: 'Génial 🤩',
+        payload: 'IGNORE',
+      },
+    ],
+  },
+  CONNECTION_ERROR: {
+    text:
+      'Une erreur est survenue en tentant de lier votre compte, veuillez réessayer plus tard',
+  },
+  GET_STARTED_NO_REF: {
+    text:
+      'Vous devez maintenant lier votre compte Sportfolios, veuillez suivre le lien suivant et connecter le chatbot: https://sportfolios.app/userSettings',
+  },
+  I_DONT_UNDERSTAND: {
+    text:
+      "Désolé, je ne peux pas encore prendre en compte votre message pour l'instant",
+  },
+};
+
 module.exports = {
   CARD_TYPE_ENUM,
   COMPONENT_TYPE_ENUM,
@@ -297,5 +346,7 @@ module.exports = {
   PERSON_TRANSFER_STATUS_ENUM,
   FACEBOOK_STATUS_ENUM,
   APP_ENUM,
-  FACEBOOK_PAYLOADS,
+  MESSENGER_PAYLOADS,
+  MESSENGER_MESSAGES_EN,
+  MESSENGER_MESSAGES_FR,
 };

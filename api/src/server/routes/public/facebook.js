@@ -1,5 +1,8 @@
 const Router = require('koa-router');
-const { FACEBOOK_PAYLOADS } = require('../../../../../common/enums');
+const {
+  MESSENGER_PAYLOADS,
+  MESSENGER_MESSAGES_FR,
+} = require('../../../../../common/enums');
 const queries = require('../../../db/queries/facebook');
 const router = new Router();
 const BASE_URL = '/api/fb';
@@ -18,22 +21,38 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
       const senderId = webhook_event.sender.id;
       if (webhook_event.message) {
         //User sent a message
+        if (webhook_event.message.quick_reply) {
+          const payload = webhook_event.message.quick_reply.payload;
+          if (payload == MESSENGER_PAYLOADS.IGNORE) {
+            //do nothing
+          }
+        } else {
+          queries.sendMessage(
+            senderId,
+            MESSENGER_MESSAGES_FR.I_DONT_UNDERSTAND,
+          );
+        }
       } else if (webhook_event.postback) {
         //Someone clicked on postbackbutton
         const payload = webhook_event.postback.payload;
-        if (payload == FACEBOOK_PAYLOADS.GET_STARTED) {
+        if (payload == MESSENGER_PAYLOADS.GET_STARTED) {
+          //Clicked on get started button
           if (webhook_event.postback.referral) {
+            //Came from the userSetting "connect" button, userID has been passed in ref
             const userId = webhook_event.postback.referral.ref;
             queries.linkMessengerAccountAllIncluded(userId, senderId);
           } else {
             //Did not click on userSetting "connect" button, so we can't know who clicked
-            console.log('no ref');
             queries.sendMessage(
               senderId,
-              'You now need to link your Sportfolios account, please follow the following link: https://sportfolios.app/userSettings',
+              MESSENGER_MESSAGES_FR.GET_STARTED_NO_REF,
             );
           }
         }
+      } else if (webhook_event.referral) {
+        //User clicked on connect from userSettings, but had already clicked on "get started" before
+        const userId = webhook_event.referral.ref;
+        queries.linkMessengerAccountAllIncluded(userId, senderId);
       }
     });
 
@@ -63,9 +82,7 @@ router.get(`${BASE_URL}/messengerHook`, async ctx => {
     if (mode === 'subscribe' && token === VERIFY_TOKEN) {
       // Responds with the challenge token from the request
       ctx.status = 200;
-      ctx.body = {
-        status: challenge,
-      };
+      ctx.message = challenge;
     } else {
       // Responds with '403 Forbidden' if verify tokens do not match
       ctx.status = 403;

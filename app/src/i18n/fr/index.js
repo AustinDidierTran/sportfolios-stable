@@ -619,7 +619,7 @@ export default {
 
     //APP DESCRIPTION
     facebook_description:
-      'Connecte ton compte Facebook pour retrouver tes amis et pouvoir activer le chatbot Sportfolios',
+      'Connecte ton compte Facebook pour retrouver tes amis sur Sportfolios',
     messenger_description:
       'Connecte ton compte Messenger pour activer le chatbot Sportfolios',
     disconnect_app:
