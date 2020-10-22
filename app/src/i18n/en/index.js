@@ -182,6 +182,7 @@ export default {
     infos: 'Infos',
     informations_saved: 'Informations saved',
     is_sub: 'Is Sub',
+    junior: 'Junior',
     last_name: 'Last Name',
     length: 'Length',
     link_bank_account: 'Link bank account',
