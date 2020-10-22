@@ -130,6 +130,10 @@ export default function AddMembership() {
           display: t('elite'),
           value: MEMBERSHIP_TYPE_ENUM.ELITE,
         },
+        {
+          display: t('junior'),
+          value: MEMBERSHIP_TYPE_ENUM.JUNIOR,
+        },
       ],
     },
     {

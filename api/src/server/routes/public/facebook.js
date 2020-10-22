@@ -26,11 +26,78 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
           if (payload == MESSENGER_PAYLOADS.IGNORE) {
             //do nothing
           }
+          if (payload == MESSENGER_PAYLOADS.MOCK) {
+            queries.sendMessage(
+              senderId,
+              MESSENGER_MESSAGES_FR.REQUEST_SCORE_SUBMISSION,
+            );
+          }
+          if (payload == MESSENGER_PAYLOADS.YES1) {
+            queries.sendMessage(
+              senderId,
+              MESSENGER_MESSAGES_FR.SCORE_SUBMITION_EXPLAINATION,
+            );
+          }
+          if (payload == MESSENGER_PAYLOADS.YES2) {
+            queries.sendMessage(
+              senderId,
+              MESSENGER_MESSAGES_FR.SCORE_CONFIRMED_VICTORY,
+            );
+          }
+          if (payload == MESSENGER_PAYLOADS.YES3) {
+            queries.sendMessage(
+              senderId,
+              MESSENGER_MESSAGES_FR.SPIRIT_RULES,
+            );
+          }
+          if (payload == MESSENGER_PAYLOADS.SPIRIT_RULES) {
+            queries.sendMessage(
+              senderId,
+              MESSENGER_MESSAGES_FR.SPIRIT_FOUL,
+            );
+          }
+          if (payload == MESSENGER_PAYLOADS.SPIRIT_FOUL) {
+            queries.sendMessage(
+              senderId,
+              MESSENGER_MESSAGES_FR.SPIRIT_EQUITY,
+            );
+          }
+          if (payload == MESSENGER_PAYLOADS.SPIRIT_EQUITY) {
+            queries.sendMessage(
+              senderId,
+              MESSENGER_MESSAGES_FR.SPIRIT_SELF_CONTROL,
+            );
+          }
+          if (payload == MESSENGER_PAYLOADS.SPIRIT_SELF_CONTROL) {
+            queries.sendMessage(
+              senderId,
+              MESSENGER_MESSAGES_FR.SPIRIT_COMMUNICATION,
+            );
+          }
+          if (payload == MESSENGER_PAYLOADS.SPIRIT_COMMUNICATION) {
+            queries.sendMessage(
+              senderId,
+              MESSENGER_MESSAGES_FR.SPIRIT_CONFIRMATION,
+            );
+          }
+          if (payload == MESSENGER_PAYLOADS.YES4) {
+            queries.sendMessage(
+              senderId,
+              MESSENGER_MESSAGES_FR.SUBMIT_CONFIRMATION,
+            );
+          }
         } else {
-          queries.sendMessage(
-            senderId,
-            MESSENGER_MESSAGES_FR.I_DONT_UNDERSTAND,
-          );
+          if (/[0-9]*-[0-9]*/i.test(webhook_event.message.text)) {
+            queries.sendMessage(
+              senderId,
+              MESSENGER_MESSAGES_FR.SCORE_SUBMISSION_VICTORY,
+            );
+          } else {
+            queries.sendMessage(
+              senderId,
+              MESSENGER_MESSAGES_FR.I_DONT_UNDERSTAND,
+            );
+          }
         }
       } else if (webhook_event.postback) {
         //Someone clicked on postbackbutton
