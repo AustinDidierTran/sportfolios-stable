@@ -137,6 +137,9 @@ const FACEBOOK_STATUS_ENUM = {
 const MESSENGER_PAYLOADS = {
   GET_STARTED: 'GET_STARTED',
   IGNORE: 'IGNORE',
+  MOCK: 'mock',
+  YES1: 'yes1',
+  NO: 'no',
 };
 
 const REJECTION_ENUM = {
@@ -295,7 +298,12 @@ const MESSENGER_MESSAGES_FR = {
       {
         content_type: 'text',
         title: 'Génial 🤩',
-        payload: 'IGNORE',
+        payload: MESSENGER_PAYLOADS.IGNORE,
+      },
+      {
+        content_type: 'text',
+        title: 'Simuler 🚀',
+        payload: MESSENGER_PAYLOADS.MOCK,
       },
     ],
   },
@@ -310,6 +318,26 @@ const MESSENGER_MESSAGES_FR = {
   I_DONT_UNDERSTAND: {
     text:
       "Désolé, je ne peux pas encore prendre en compte votre message pour l'instant",
+  },
+  REQUEST_SCORE_SUBMISSION: {
+    text:
+      "Bonjour Austin-Didier, votre équipe vient tout juste d'affronter l'équipe A20. Désirez-vous soumettre votre pointage ici?",
+    quick_replies: [
+      {
+        content_type: 'text',
+        title: 'Oui',
+        payload: MESSENGER_PAYLOADS.YES,
+      },
+      {
+        content_type: 'text',
+        title: 'Non',
+        payload: MESSENGER_PAYLOADS.NO,
+      },
+    ],
+  },
+  SCORE_SUBMITION_EXPLAINATION: {
+    text:
+      'Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-[leur pointage]. Par exemple, pour une victoir de 13 à 10 veuillez entrer 13-10',
   },
 };
 
