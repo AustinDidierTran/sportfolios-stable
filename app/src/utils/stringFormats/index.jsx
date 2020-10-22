@@ -82,15 +82,27 @@ export const getMembershipName = type => {
     return 'competitive_member';
   } else if (type === MEMBERSHIP_TYPE_ENUM.ELITE) {
     return 'elite_member';
+  } else if (type === MEMBERSHIP_TYPE_ENUM.JUNIOR) {
+    return 'junior_member';
   } else {
     return '';
   }
 };
-export const getMembershipType = type => {
-  if (type === -1) {
+export const getMembershipType = (length, date) => {
+  if (length) {
+    if (length === MEMBERSHIP_LENGTH_ENUM.ONE_YEAR) {
+      return 'yearly';
+    }
+    if (length === MEMBERSHIP_LENGTH_ENUM.SIX_MONTH) {
+      return 'biannual';
+    }
+    if (length === MEMBERSHIP_LENGTH_ENUM.ONE_MONTH) {
+      return 'monthly';
+    }
+  } else if (date) {
     return 'fixed_date';
   } else {
-    return 'length';
+    return null;
   }
 };
 
@@ -118,26 +130,29 @@ export const getMembershipUnit = type => {
   }
 };
 
-export const getExpirationDate = (length, fixed_date) => {
-  if (length !== -1) {
+export const getExpirationDate = (length, date) => {
+  if (length) {
     return formatDate(
       moment().add(
         getMembershipLength(length),
         getMembershipUnit(length),
       ),
     );
-  } else {
+  } else if (date) {
     if (
-      moment(fixed_date).set('year', moment().get('year')) < moment()
+      moment(new Date(date)).set('year', moment().get('year')) <
+      moment()
     ) {
       return formatDate(
-        moment(fixed_date).set('year', moment().get('year') + 1),
+        moment(new Date(date)).set('year', moment().get('year') + 1),
       );
     } else {
       return formatDate(
-        moment(fixed_date).set('year', moment().get('year')),
+        moment(new Date(date)).set('year', moment().get('year')),
       );
     }
+  } else {
+    return null;
   }
 };
 

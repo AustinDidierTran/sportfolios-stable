@@ -37,15 +37,6 @@ const ROSTER_ROLE_ENUM = {
   VIEWER: 'viewer',
 };
 
-const LIST_ROW_TYPE_ENUM = {
-  PERSON: 1,
-  ORGANIZATION: 2,
-  TEAM: 3,
-  MEMBERSHIP: 4,
-  MEMBERSHIP_DETAIL: 5,
-  RANKING: 6,
-};
-
 const TAG_TYPE_ENUM = {
   ACCEPTED: 'accepted',
   PENDING: 'pending',
@@ -58,6 +49,10 @@ const MEMBERSHIP_LENGTH_ENUM = {
   ONE_MONTH: 1,
   SIX_MONTH: 2,
   ONE_YEAR: 3,
+};
+const MEMBERSHIP_LENGTH_TYPE_ENUM = {
+  FIXED: 'fixed',
+  LENGTH: 'length',
 };
 
 const MEMBERSHIP_TYPE_ENUM = {
@@ -87,6 +82,7 @@ const FORM_DIALOG_TYPE_ENUM = {
   SUBMIT_SCORE: 'score',
   SUBMIT_SCORE_AND_SPIRIT: 'score and spirit',
   ENTER_EMAIL: 'email',
+  ADD_MEMBERSHIP: 'add membership',
 };
 
 const LANGUAGE_ENUM = {
@@ -187,6 +183,7 @@ const GLOBAL_ENUM = {
   EVENT_CREATOR: 'event_creator',
   MEMBERSHIP_DETAIL: 'membership_detail',
   MEMBERSHIP: 'membership',
+  MEMBERSHIP_ORGANIZATION: 'membership organization',
   PAYMENT_OPTION: 'payment_option',
   PURCHASES: 'pruchases',
   RANKING_WITH_STATS: 'ranking_with_stats',
@@ -270,7 +267,6 @@ module.exports = {
   IMAGE_ENUM,
   INVOICE_STATUS_ENUM,
   LANGUAGE_ENUM,
-  LIST_ROW_TYPE_ENUM,
   LOGGER_ENUM,
   LOGIN_STATE_ENUM,
   LOGO_ENUM,
@@ -294,4 +290,5 @@ module.exports = {
   PERSON_TRANSFER_STATUS_ENUM,
   FACEBOOK_STATUS_ENUM,
   APP_ENUM,
+  MEMBERSHIP_LENGTH_TYPE_ENUM,
 };
