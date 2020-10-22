@@ -150,6 +150,7 @@ const sendAddPersonToTeamEmail = async ({
   email,
   teamName,
   senderName,
+  senderIsEventAdmin,
   language,
   token,
 }) => {
@@ -160,28 +161,51 @@ const sendAddPersonToTeamEmail = async ({
   let link = '';
   let buttonName = '';
   if (language === LANGUAGE_ENUM.ENGLISH) {
-    subject =
-      senderName +
-      ' wants to add you to his team ' +
-      teamName +
-      ' | Sportfolios';
     title = 'Join ' + teamName;
-    content =
-      senderName +
-      ' wants to add you to his team ' +
-      teamName +
-      ' on Sportfolios. Click on the following link to sign in and be part of the team 👇';
+
+    if (senderIsEventAdmin) {
+      subject =
+        'Invitation to join the team ' + teamName + ' | Sportfolios';
+
+      content =
+        'You have been invited to join a team on Sportfolios. Click on the following link to sign in and be part of the team 👇';
+    } else {
+      subject =
+        senderName +
+        ' wants to add you to his team ' +
+        teamName +
+        ' | Sportfolios';
+
+      content =
+        senderName +
+        ' wants to add you to his team ' +
+        teamName +
+        ' on Sportfolios. Click on the following link to sign in and be part of the team 👇';
+    }
+
     buttonName = 'Join ' + teamName;
   } else {
-    subject =
-      senderName +
-      ' veut vous ajouter à son équipe ' +
-      teamName +
-      ' | Sportfolios';
     title = 'Rejoindre ' + teamName;
-    content =
-      senderName +
-      " veut vous ajouter à son équipe sur Sportfolios. Cliquez sur le lien suivant pour vous connecter et faire partie de l'équipe 👇";
+    if (senderIsEventAdmin) {
+      subject =
+        "Invitation à joindre l'équipe " +
+        teamName +
+        ' | Sportfolios';
+
+      content =
+        "Vous venez d'être invité à joindre une équipe sur Sportfolios. Cliquez sur le lien suivant pour vous connecter et faire partie de l'équipe 👇";
+    } else {
+      subject =
+        senderName +
+        ' vous invite à joindre son équipe ' +
+        teamName +
+        ' | Sportfolios';
+
+      content =
+        senderName +
+        " veut vous ajouter à son équipe sur Sportfolios. Cliquez sur le lien suivant pour vous connecter et faire partie de l'équipe 👇";
+    }
+
     buttonName = 'Rejoindre ' + teamName;
   }
   link = `${CLIENT_BASE_URL}/transferPerson/${token}`;

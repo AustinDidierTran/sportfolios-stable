@@ -75,6 +75,9 @@ export default function Players(props) {
       <div className={styles.card}>
         <div className={styles.searchList}>
           <PersonSearchList
+            addedByEventAdmin={
+              isEventAdmin && role !== ROSTER_ROLE_ENUM.CAPTAIN
+            }
             clearOnSelect={false}
             blackList={blackList}
             label={t('enter_player_name')}

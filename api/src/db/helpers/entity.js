@@ -1783,7 +1783,14 @@ async function addRoster(rosterId, roster, userId) {
   return players;
 }
 async function addNewPersonToRoster(body, userId) {
-  const { name, surname, email, isSub, rosterId } = body;
+  const {
+    addedByEventAdmin,
+    name,
+    surname,
+    email,
+    isSub,
+    rosterId,
+  } = body;
   const person = await addEntity(
     { name, surname, type: GLOBAL_ENUM.PERSON },
     userId,
@@ -1800,6 +1807,7 @@ async function addNewPersonToRoster(body, userId) {
   );
   await sendTransferAddNewPlayer(userId, {
     email,
+    senderIsEventAdmin: addedByEventAdmin,
     sendedPersonId: person.id,
     teamName,
   });
