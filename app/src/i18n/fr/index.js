@@ -180,6 +180,7 @@ export default {
     in_cart: 'Dans le panier',
     informations_saved: 'Informations sauvegardées',
     is_sub: 'Est un remplacant',
+    junior: 'Junior',
     infos: 'Info',
     infos: 'Infos',
     last_name: 'Nom de famille',
