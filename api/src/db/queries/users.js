@@ -34,6 +34,8 @@ const {
   deleteFacebookId,
   isLinkedFacebookAccount,
   setMessengerId,
+  getMessengerId,
+  deleteMessengerId,
 } = require('../helpers');
 
 const {
@@ -262,11 +264,11 @@ const setFacebookData = async (userId, data) => {
 };
 
 const linkFacebook = async (userId, data) => {
-  const { facebook_app_id } = data;
-  if (!facebook_app_id) {
+  const { facebook_id } = data;
+  if (!facebook_id) {
     return;
   }
-  if (await isLinkedFacebookAccount(facebook_app_id)) {
+  if (await isLinkedFacebookAccount(facebook_id)) {
     throw Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return setFacebookDataHelper(userId, data);
@@ -278,8 +280,14 @@ const getConnectedApps = async userId => {
     connected: Boolean(facebookId),
     id: facebookId,
   };
+  const messengerId = await getMessengerId(userId);
+  const messenger = {
+    connected: Boolean(messengerId),
+    id: messengerId,
+  };
   let apps = {};
   apps.facebook = facebook;
+  apps.messenger = messenger;
   return apps;
 };
 
@@ -294,6 +302,10 @@ const linkMessengerFromFBId = async (user_id, facebook_id) => {
   }
   sendMessage(messengerId, MESSENGER_MESSAGES_FR.CONNECTIONS_SUCCESS);
   return setMessengerId(user_id, messengerId);
+};
+
+const unlinkMessenger = async user_id => {
+  return deleteMessengerId(user_id);
 };
 
 module.exports = {
@@ -317,4 +329,5 @@ module.exports = {
   unlinkFacebook,
   linkFacebook,
   linkMessengerFromFBId,
+  unlinkMessenger,
 };

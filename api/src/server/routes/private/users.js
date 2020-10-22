@@ -367,4 +367,24 @@ router.post(`${BASE_URL}/messengerConnection`, async ctx => {
   }
 });
 
+router.delete(`${BASE_URL}/messengerConnection`, async ctx => {
+  try {
+    const res = await queries.unlinkMessenger(ctx.body.userInfo.id);
+    if (res) {
+      ctx.status = 200;
+      ctx.body = {
+        status: 'success',
+        data: res,
+      };
+    } else {
+      ctx.body = {
+        status: STATUS_ENUM.ERROR,
+        message: 'Something went wrong',
+      };
+    }
+  } catch (e) {
+    throw e;
+  }
+});
+
 module.exports = router;

@@ -529,9 +529,9 @@ const getTransferInfosFromToken = async token => {
     .first();
 };
 const setFacebookData = async (user_id, data) => {
-  const { facebook_app_id, name, surname, email, picture } = data;
+  const { facebook_id, name, surname, email, picture } = data;
   let updateQuery = {};
-  if (!facebook_app_id) {
+  if (!facebook_id) {
     return;
   }
   if (name) {
@@ -552,7 +552,7 @@ const setFacebookData = async (user_id, data) => {
   return knex.transaction(async trx => {
     //Upsert data
     const insertData = trx('facebook_data').insert({
-      facebook_app_id,
+      facebook_id,
       name,
       surname,
       email,
@@ -560,68 +560,73 @@ const setFacebookData = async (user_id, data) => {
     });
     const updateData = trx('facebook_data')
       .update(updateQuery)
-      .whereRaw('facebook_data.facebook_app_id = ?', [
-        facebook_app_id,
-      ]);
+      .whereRaw('facebook_data.facebook_id = ?', [facebook_id]);
     const queryData = util.format(
-      '%s ON CONFLICT (facebook_app_id) DO UPDATE SET %s RETURNING *',
+      '%s ON CONFLICT (facebook_id) DO UPDATE SET %s RETURNING *',
       insertData.toString(),
       updateData.toString().replace(/^update\s.*\sset\s/i, ''),
     );
     const datas = await knex.raw(queryData);
 
-    //Upsert user_facebook_id
-    const insertId = trx('user_facebook_id').insert({
-      facebook_app_id,
-      user_id,
-    });
-    const updateId = trx('user_facebook_id')
-      .update({ facebook_app_id })
-      .whereRaw('user_facebook_id.facebook_app_id = ?', [
-        facebook_app_id,
-      ]);
-    const queryId = util.format(
-      '%s ON CONFLICT (user_id) DO UPDATE SET %s',
-      insertId.toString(),
-      updateId.toString().replace(/^update\s.*\sset\s/i, ''),
-    );
-    await knex.raw(queryId);
+    //Update user__facebook_id
+    const success = await trx('user_app_id')
+      .update({ facebook_id })
+      .where({ user_id });
+    if (!success) {
+      return;
+    }
+
     return datas;
   });
 };
 
 const getFacebookId = async user_id => {
-  const [id] = await knex('user_facebook_id')
-    .select('facebook_app_id')
+  const [id] = await knex('user_apps_id')
+    .select('facebook_id')
     .where({ user_id });
-  return id.facebook_app_id;
+  return id && id.facebook_id;
 };
 
 const deleteFacebookId = async user_id => {
-  return knex('user_facebook_id')
-    .del()
+  return knex('user_apps_id')
+    .update({ facebook_id: null })
     .where({ user_id })
-    .returning('facebook_app_id');
+    .returning('user_id');
 };
 
-const isLinkedFacebookAccount = async facebook_app_id => {
+const isLinkedFacebookAccount = async facebook_id => {
   return (
     await knex.first(
       knex.raw(
         'exists ?',
-        knex('user_facebook_id')
+        knex('user_apps_id')
           .select('user_id')
-          .where({ facebook_app_id }),
+          .where({ facebook_id }),
       ),
     )
   ).exists;
 };
 
-const setMessengerId = async (user_id, messengerId) => {
-  return knex('user_facebook_id')
+const setMessengerId = async (user_id, messenger_id) => {
+  return knex('user_apps_id')
     .where({ user_id })
-    .update({ facebook_messenger_id: messengerId })
-    .returning('facebook_messenger_id');
+    .update({ messenger_id })
+    .returning('messenger_id');
+};
+
+const getMessengerId = async user_id => {
+  const [res] = await knex('user_apps_id')
+    .where({ user_id })
+    .select('messenger_id');
+  return res.messenger_id;
+};
+
+const deleteMessengerId = async user_id => {
+  const res = await knex('user_apps_id')
+    .update({ messenger_id: null })
+    .where({ user_id })
+    .returning('user_id');
+return res;
 };
 
 module.exports = {
@@ -662,4 +667,6 @@ module.exports = {
   deleteFacebookId,
   isLinkedFacebookAccount,
   setMessengerId,
+  getMessengerId,
+  deleteMessengerId,
 };

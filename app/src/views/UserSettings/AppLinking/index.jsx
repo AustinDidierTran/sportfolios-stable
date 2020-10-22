@@ -35,9 +35,15 @@ export default function AppLinking() {
       return;
     }
     const { data } = res;
-    if (data && data.facebook) {
-      setFBUserId(data.facebook.id);
-      setIsLinkedFB(data.facebook.connected);
+
+    if (data) {
+      if (data.facebook) {
+        setFBUserId(data.facebook.id);
+        setIsLinkedFB(data.facebook.connected);
+      }
+      if (data.messenger) {
+        setIsLinkedMessenger(data.messenger.connected);
+      }
     }
   };
 
@@ -52,7 +58,7 @@ export default function AppLinking() {
       { fields: 'id,email,picture,first_name,last_name' },
       async function(response) {
         const {
-          id: facebook_app_id,
+          id: facebook_id,
           first_name: name,
           last_name: surname,
           email,
@@ -61,7 +67,7 @@ export default function AppLinking() {
         const res = await api('/api/user/facebookConnection', {
           method: 'POST',
           body: JSON.stringify({
-            facebook_app_id,
+            facebook_id,
             name,
             surname,
             email,
@@ -72,7 +78,7 @@ export default function AppLinking() {
           showErrorToast(t('account_already_linked'));
         } else if (res.status === STATUS_ENUM.SUCCESS) {
           setIsLinkedFB(true);
-          setFBUserId(facebook_app_id);
+          setFBUserId(facebook_id);
         } else {
           showErrorToast();
           onFBUnlink();
@@ -114,7 +120,6 @@ export default function AppLinking() {
     const res = await api('/api/user/facebookConnection', {
       method: 'DELETE',
     });
-    console.log({ res });
     if (res.status === STATUS_ENUM.ERROR) {
       showErrorToast();
     } else if (fbUserId == conf.FACEBOOK_ADMIN_ID) {
@@ -149,7 +154,6 @@ export default function AppLinking() {
   };
 
   const onMessengerConnect = async () => {
-    openMessenger();
     //if is already linked on facebook, try to link automaticaly by getting his messenger ID
     if (fbUserId) {
       const res = await api('/api/user/messengerConnection', {
@@ -170,6 +174,23 @@ export default function AppLinking() {
     }
   };
 
+  const onMessengerUnlink = async () => {
+    setSelectedApp(APP_ENUM.MESSENGER);
+    setAlertDialog(true);
+  };
+
+  const onMessengerUnlinkConfirmed = async () => {
+    const res = await api('/api/user/messengerConnection', {
+      method: 'DELETE',
+    });
+    if (res.status === STATUS_ENUM.SUCCESS) {
+      setIsLinkedMessenger(false);
+    } else {
+      showErrorToast();
+    }
+    setAlertDialog(false);
+  };
+
   const items = [
     {
       onConnect: () => {
@@ -185,13 +206,18 @@ export default function AppLinking() {
     },
     {
       onConnect: onMessengerConnect,
-      onDisconnect: () => {},
+      onDisconnect: onMessengerUnlink,
       app: APP_ENUM.MESSENGER,
       isConnected: isLinkedMessenger,
       type: GLOBAL_ENUM.APP_ITEM,
       description: t('messenger_description'),
     },
   ];
+
+  const unlinkConfirmedFunctions = {
+    [APP_ENUM.FACEBOOK]: onFBUnlinkConfirmed,
+    [APP_ENUM.MESSENGER]: onMessengerUnlinkConfirmed,
+  };
 
   return (
     <>
@@ -201,7 +227,7 @@ export default function AppLinking() {
       <AlertDialog
         open={alertDialog}
         description={t('disconnect_app', { appName: selectedApp })}
-        onSubmit={onFBUnlinkConfirmed}
+        onSubmit={unlinkConfirmedFunctions[selectedApp]}
         onCancel={() => setAlertDialog(false)}
       />
     </>
