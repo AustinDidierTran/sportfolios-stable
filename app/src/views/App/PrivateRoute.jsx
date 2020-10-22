@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { Store } from '../../Store';
+import history from '../../stores/history';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -14,7 +15,9 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         authToken ? (
           <Component {...props} />
         ) : (
-          <Redirect to="/login" />
+          <Redirect
+            to={`/login?redirectUrl=${history.location.pathname}`}
+          />
         )
       }
     />

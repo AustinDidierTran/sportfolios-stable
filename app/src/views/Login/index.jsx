@@ -23,7 +23,7 @@ import {
 
 export default function Login() {
   const { t } = useTranslation();
-  const { successRoute } = useQuery();
+  const { successRoute, redirectUrl } = useQuery();
   const { dispatch } = useContext(Store);
 
   const validate = values => {
@@ -178,8 +178,9 @@ export default function Login() {
               type: ACTION_ENUM.UPDATE_USER_INFO,
               payload: userInfo,
             });
-
-            if (successRoute) {
+            if (redirectUrl) {
+              goTo(redirectUrl);
+            } else if (successRoute) {
               goTo(ROUTES.confirmEmailSuccess, null, {
                 successRoute,
               });
