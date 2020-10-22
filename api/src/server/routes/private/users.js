@@ -314,7 +314,7 @@ router.delete(`${BASE_URL}/facebookConnection`, async ctx => {
   try {
     const res = await queries.unlinkFacebook(ctx.body.userInfo.id);
     if (res) {
-      ctx.status = 200;
+      ctx.status = STATUS_ENUM.SUCCESS;
       ctx.body = {
         status: 'success',
         data: res,
@@ -371,7 +371,7 @@ router.delete(`${BASE_URL}/messengerConnection`, async ctx => {
   try {
     const res = await queries.unlinkMessenger(ctx.body.userInfo.id);
     if (res) {
-      ctx.status = 200;
+      ctx.status = STATUS_ENUM.SUCCESS;
       ctx.body = {
         status: 'success',
         data: res,

@@ -626,7 +626,7 @@ const deleteMessengerId = async user_id => {
     .update({ messenger_id: null })
     .where({ user_id })
     .returning('user_id');
-return res;
+  return res;
 };
 
 module.exports = {

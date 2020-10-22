@@ -120,11 +120,9 @@ export default function AppLinking() {
     const res = await api('/api/user/facebookConnection', {
       method: 'DELETE',
     });
-    if (res.status === STATUS_ENUM.ERROR) {
-      showErrorToast();
-    } else if (fbUserId == conf.FACEBOOK_ADMIN_ID) {
+    if (fbUserId == conf.FACEBOOK_ADMIN_ID) {
       setIsLinkedFB(false);
-    } else {
+    } else if (res.status === STATUS_ENUM.SUCCESS) {
       await FB.api('/me/permissions', 'DELETE', {}, function(
         response,
       ) {
@@ -139,6 +137,8 @@ export default function AppLinking() {
           showErrorToast();
         }
       });
+    } else {
+      showErrorToast();
     }
     setAlertDialog(false);
   };
