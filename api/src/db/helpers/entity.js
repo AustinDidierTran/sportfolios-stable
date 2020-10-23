@@ -15,6 +15,9 @@ const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
 const { sendTransferAddNewPlayer } = require('../helpers/index');
+const {
+  formatPrice,
+} = require('../../../../common/utils/stringFormat');
 
 const addEntity = async (body, userId) => {
   const { name, creator, surname, type } = body;
@@ -669,7 +672,7 @@ async function getMemberships(entityId) {
 
   return memberships.map(m => ({
     ...m,
-    price: m.price / 100,
+    price: formatPrice(m.price),
   }));
 }
 
