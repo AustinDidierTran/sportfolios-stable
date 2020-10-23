@@ -2,8 +2,9 @@ const {
   GLOBAL_ENUM,
   ENTITIES_ROLE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
+  MESSENGER_MESSAGES_FR,
 } = require('../../../../common/enums');
-const { ERROR_ENUM } = require('../../../../common/errors');
+const { ERROR_ENUM, errors } = require('../../../../common/errors');
 const bcrypt = require('bcrypt');
 
 const {
@@ -32,12 +33,21 @@ const {
   getFacebookId,
   deleteFacebookId,
   isLinkedFacebookAccount,
+  setMessengerId,
+  getMessengerId,
+  deleteMessengerId,
 } = require('../helpers');
 
 const {
   getAllOwnedEntities,
   personIsAwaitingTransfer,
 } = require('../helpers/entity');
+
+const {
+  getMessengerIdFromFbID,
+  sendMessage,
+} = require('../helpers/facebook');
+
 const { isAllowed } = require('./entity');
 
 const sendTransferPersonEmail = async (
@@ -270,13 +280,32 @@ const getConnectedApps = async userId => {
     connected: Boolean(facebookId),
     id: facebookId,
   };
+  const messengerId = await getMessengerId(userId);
+  const messenger = {
+    connected: Boolean(messengerId),
+    id: messengerId,
+  };
   let apps = {};
   apps.facebook = facebook;
+  apps.messenger = messenger;
   return apps;
 };
 
 const unlinkFacebook = async user_id => {
   return deleteFacebookId(user_id);
+};
+
+const linkMessengerFromFBId = async (user_id, facebook_id) => {
+  const messengerId = await getMessengerIdFromFbID(facebook_id);
+  if (!messengerId) {
+    throw new errors[ERROR_ENUM.VALUE_IS_INVALID]();
+  }
+  sendMessage(messengerId, MESSENGER_MESSAGES_FR.CONNECTIONS_SUCCESS);
+  return setMessengerId(user_id, messengerId);
+};
+
+const unlinkMessenger = async user_id => {
+  return deleteMessengerId(user_id);
 };
 
 module.exports = {
@@ -299,4 +328,6 @@ module.exports = {
   getConnectedApps,
   unlinkFacebook,
   linkFacebook,
+  linkMessengerFromFBId,
+  unlinkMessenger,
 };
