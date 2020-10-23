@@ -157,7 +157,7 @@ export const getExpirationDate = (length, date) => {
   }
 };
 
-export const formatPrice = price => `${price / 100} CAD`;
+export const formatPrice = price => `${price / 100}$`;
 
 export const validateDate = dateProps => {
   //date format: 'MM/DD'

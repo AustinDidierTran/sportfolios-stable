@@ -1,5 +1,6 @@
 const ERROR_ENUM = {
   ACCESS_DENIED: 'Access denied',
+  CLOSE_AFTER_OPEN: 'error_close_date_before_start_date',
   EMAIL_ALREADY_EXIST: 'email_already_exist',
   ERROR_OCCURED: 'An error has occured',
   INVALID_EMAIL: 'invalid_email',
@@ -16,6 +17,10 @@ const errors = {
   [ERROR_ENUM.ACCESS_DENIED]: {
     message: ERROR_ENUM.ACCESS_DENIED,
     code: 401,
+  },
+  [ERROR_ENUM.CLOSE_AFTER_OPEN]: {
+    message: ERROR_ENUM.CLOSE_AFTER_OPEN,
+    code: 405,
   },
   [ERROR_ENUM.TOKEN_EXPIRED]: {
     message: ERROR_ENUM.TOKEN_EXPIRED,

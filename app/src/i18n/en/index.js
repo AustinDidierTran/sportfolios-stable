@@ -131,6 +131,7 @@ export default {
     do_not_specify: 'Do not specify',
     edit_infos: 'Edit infos',
     edit_game: 'Edit game',
+    edit_payment_option: 'Edit payment option',
     edit_your_primary_person: 'Edit your primary person',
     editor: 'Editor',
     email: 'Email',
@@ -167,7 +168,9 @@ export default {
     finish: 'Finish',
     first_name: 'First Name',
     fixed_date: 'Fixed Date',
+    for_free_option: '0 for free option',
     forgot_password: 'Forgot Password?',
+    free: 'Free',
     full_name: 'Full name',
     funding: 'Funding',
     funding_goal: 'Goal: {{goal}}$',
@@ -242,6 +245,7 @@ export default {
     on_le_in_french: 'on',
     on_going_events: 'On Going Events',
     only_available_on_desktop: 'Only available on desktop',
+    open_from_to: 'Open from {{startDate}} to {{endDate}}',
     opposing_team: 'Opposing team',
     opposing_team_score: 'Opposing team score',
     opposing_team_spirit: 'Opposing team spirit',
@@ -349,6 +353,8 @@ export default {
     subscribed: 'Subscribed',
     surname: 'Surname',
     switch_view: 'Switch view',
+    error_close_date_before_start_date:
+      'Close date must be after open date',
     error_start_date_before_end:
       'Start date should be before end date.',
     to_see_your_receipt:

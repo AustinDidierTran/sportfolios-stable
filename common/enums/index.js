@@ -197,6 +197,7 @@ const GLOBAL_ENUM = {
   CART_ITEM: 'cart_item',
   CART: 'cart',
   EVENT_CREATOR: 'event_creator',
+  EVENT_PAYMENT_OPTION: 'event_payment_option',
   MEMBERSHIP_DETAIL: 'membership_detail',
   MEMBERSHIP: 'membership',
   MEMBERSHIP_ORGANIZATION: 'membership organization',

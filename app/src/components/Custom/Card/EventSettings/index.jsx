@@ -61,6 +61,7 @@ export default function EventSettings(props) {
         {fields.map((f, index) => (
           <ListItem key={index}>
             <Input
+              fullWidth
               helperText={f.helperText}
               label={f.display}
               type={f.type}
@@ -69,11 +70,10 @@ export default function EventSettings(props) {
           </ListItem>
         ))}
         <Button
-          className={styles.save}
           size="small"
           variant="contained"
           endIcon="Check"
-          style={{ margin: '8px' }}
+          style={{ marginTop: '8px' }}
           onClick={handleSave}
         >
           {t('save')}
