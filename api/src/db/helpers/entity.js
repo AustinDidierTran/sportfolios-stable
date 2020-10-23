@@ -9,11 +9,15 @@ const {
   CARD_TYPE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
   STATUS_ENUM,
+  MEMBERSHIP_LENGTH_TYPE_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
 const { sendTransferAddNewPlayer } = require('../helpers/index');
+const {
+  formatPrice,
+} = require('../../../../common/utils/stringFormat');
 
 const addEntity = async (body, userId) => {
   const { name, creator, surname, type } = body;
@@ -662,9 +666,14 @@ async function getOptions(eventId) {
 
 async function getMemberships(entityId) {
   const realId = await getRealId(entityId);
-  return knex('entity_memberships')
+  const memberships = await knex('entity_memberships')
     .select('*')
     .where({ entity_id: realId });
+
+  return memberships.map(m => ({
+    ...m,
+    price: formatPrice(m.price),
+  }));
 }
 
 async function getRegistered(teamId, eventId) {
@@ -1671,17 +1680,17 @@ async function addOption(
 
 async function addMembership(
   entityId,
-  membershipType,
+  membership,
   length,
-  fixedDate,
+  date,
+  type,
   price,
   userId,
 ) {
   const realId = await getRealId(entityId);
   const entity = await getEntity(entityId, userId);
-
   const stripeProduct = {
-    name: getMembershipName(membershipType),
+    name: getMembershipName(membership),
     active: true,
     description: entity.name,
     metadata: { type: GLOBAL_ENUM.MEMBERSHIP, id: realId },
@@ -1696,21 +1705,33 @@ async function addMembership(
   };
   const priceStripe = await addPrice({
     stripePrice,
-    realId,
+    entityId,
     photoUrl: entity.photoUrl,
   });
-
-  const [res] = await knex('entity_memberships')
-    .insert({
-      stripe_price_id: priceStripe.id,
-      entity_id: realId,
-      membership_type: membershipType,
-      length,
-      fixed_date: fixedDate,
-      price,
-    })
-    .returning('*');
-  return res;
+  if (type === MEMBERSHIP_LENGTH_TYPE_ENUM.FIXED) {
+    const [res] = await knex('entity_memberships')
+      .insert({
+        stripe_price_id: priceStripe.id,
+        entity_id: realId,
+        membership_type: membership,
+        fixed_date: date,
+        price,
+      })
+      .returning('*');
+    return res;
+  }
+  if (type === MEMBERSHIP_LENGTH_TYPE_ENUM.LENGTH) {
+    const [res] = await knex('entity_memberships')
+      .insert({
+        stripe_price_id: priceStripe.id,
+        entity_id: realId,
+        membership_type: membership,
+        length,
+        price,
+      })
+      .returning('*');
+    return res;
+  }
 }
 
 async function addTeamToEvent(body) {
@@ -2084,22 +2105,10 @@ const deleteEntity = async (entityId, userId) => {
   }
 };
 
-const deleteEntityMembership = async (
-  entityId,
-  membershipTypeProps,
-  lengthProps,
-  fixedDate,
-) => {
-  const realId = await getRealId(entityId);
-  const membershipType = Number(membershipTypeProps);
-  const length = Number(lengthProps);
-
+const deleteEntityMembership = async membershipId => {
   await knex('entity_memberships')
     .where({
-      entity_id: realId,
-      membership_type: membershipType,
-      length,
-      fixed_date: fixedDate,
+      id: membershipId,
     })
     .del();
 };

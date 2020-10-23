@@ -16,6 +16,9 @@ const fillWithZeros = (number, zeros = 0) => {
   return zerosArray.reduce(prev => `0${prev}`, `${parsedNumber}`);
 };
 
+const formatPrice = price => `${price / 100}`;
+
 module.exports = {
+  formatPrice,
   fillWithZeros,
 };
