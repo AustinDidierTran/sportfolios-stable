@@ -18,7 +18,7 @@ const { ERROR_ENUM } = require('../../../../common/errors');
 
 const sendTransferAddNewPlayer = async (
   user_id,
-  { email, sendedPersonId, teamName },
+  { email, senderIsEventAdmin, sendedPersonId, teamName },
 ) => {
   if (
     (await getEmailsFromUserId(user_id)).find(e => e.email == email)
@@ -27,6 +27,7 @@ const sendTransferAddNewPlayer = async (
   }
   return sendPlayerTransfer({
     email,
+    senderIsEventAdmin,
     sendedPersonId,
     senderUserId: user_id,
     teamName,
@@ -423,6 +424,7 @@ const sendPersonTransferEmailAllIncluded = async ({
 };
 const sendPlayerTransfer = async ({
   email,
+  senderIsEventAdmin,
   sendedPersonId,
   senderUserId,
   teamName,
@@ -454,6 +456,7 @@ const sendPlayerTransfer = async ({
   await sendAddPersonToTeamEmail({
     email,
     teamName,
+    senderIsEventAdmin,
     senderName,
     language,
     token: personTransferToken,

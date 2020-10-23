@@ -24,6 +24,7 @@ export default function AddNonExistingPlayer(props) {
     onChange,
     onClose,
     rosterId,
+    addedByEventAdmin,
   } = props;
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
@@ -83,6 +84,7 @@ export default function AddNonExistingPlayer(props) {
           email,
           isSub,
           rosterId,
+          addedByEventAdmin,
         }),
       });
       if (res.status === STATUS_ENUM.ERROR) {

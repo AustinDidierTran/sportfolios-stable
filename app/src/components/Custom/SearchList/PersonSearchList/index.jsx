@@ -26,6 +26,7 @@ export default function PersonSearchList(props) {
     onChange,
     handleClose,
     rosterId,
+    addedByEventAdmin,
   } = props;
   const { t } = useTranslation();
   const query = useFormInput('');
@@ -167,6 +168,7 @@ export default function PersonSearchList(props) {
         <List items={options}></List>
       )}
       <AddNonExistingPlayer
+        addedByEventAdmin={addedByEventAdmin}
         open={open}
         onClose={onClose}
         name={name}
