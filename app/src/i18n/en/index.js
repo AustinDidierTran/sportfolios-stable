@@ -202,6 +202,7 @@ export default {
     maximum_spots: 'Maximum spots',
     max_length: 'Maximum length',
     menu: 'Menu',
+    missing_info: 'Missing info',
     monthly: 'Monthly',
     more_filters: 'More Filters',
     my_apps: 'My apps',
@@ -224,6 +225,7 @@ export default {
     no_games: 'No games',
     notifications: 'Notifications',
     not_paid: 'Not paid',
+    not_specified: 'Not specified',
     no_notifications: 'No Notifications',
     no_notifications_message: 'Come back later.',
     no_option: 'No option',
@@ -357,7 +359,7 @@ export default {
     teams: 'Teams',
     teams_saved: 'Teams saved!',
     there_is_no_rosters_for_this_event:
-      'There is no rosters for this event.',
+      'There are no rosters for this event.',
     to_transfer: 'Transfer',
     transfer_person_description:
       'By confirming you accept to give all the admin permissions on this person and give it to the user who own the email you specified.',

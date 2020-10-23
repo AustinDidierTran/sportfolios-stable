@@ -41,7 +41,8 @@ const addPlayerToRoster = async (player, rosterId) => {
   return data;
 };
 
-export default function TabRosters() {
+export default function TabRosters(props) {
+  const { isEventAdmin } = props;
   const { id: eventId } = useParams();
   const { t } = useTranslation();
   const [rosters, setRosters] = useState([]);
@@ -77,7 +78,7 @@ export default function TabRosters() {
 
   if (!rosters.length) {
     return (
-      <Typography style={{ margin: '16px' }}>
+      <Typography color="textSecondary" style={{ margin: '16px' }}>
         {t('there_is_no_rosters_for_this_event')}
       </Typography>
     );
@@ -87,6 +88,7 @@ export default function TabRosters() {
     <div className={styles.contain}>
       <div className={styles.rosters}>
         <Rosters
+          isEventAdmin={isEventAdmin}
           rosters={rosters}
           onAdd={onAdd}
           onDelete={onDelete}
