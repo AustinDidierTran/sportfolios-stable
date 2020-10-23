@@ -569,7 +569,7 @@ const setFacebookData = async (user_id, data) => {
     const datas = await knex.raw(queryData);
 
     //Update user__facebook_id
-    const success = await trx('user_app_id')
+    const success = await trx('user_apps_id')
       .update({ facebook_id })
       .where({ user_id });
     if (!success) {
