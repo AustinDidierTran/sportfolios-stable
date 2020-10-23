@@ -11,7 +11,9 @@ const getMessengerIdFromFbID = async facebook_id => {
   const appsecret_proof = hmac.digest('hex');
   const uri = `${FACEBOOK_BASE_URL}/${facebook_id}/ids_for_pages?page=${process.env.FACEBOOK_PAGE_ID}&access_token=${process.env.FACEBOOK_APP_TOKEN}&appsecret_proof=${appsecret_proof}`;
   const res = await axios.get(uri).catch(function(error) {
+    // eslint-disable-next-line no-console
     console.log(error.response.data);
+    return;
   });
   if (res && res.data && res.data.data.length > 0) {
     return res.data.data[0].id;
@@ -30,6 +32,7 @@ const sendMessage = async (messengerId, message) => {
     message,
   };
   const res = await axios.post(uri, body).catch(function(error) {
+    // eslint-disable-next-line no-console
     console.log(error.response.data);
     return;
   });

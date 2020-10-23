@@ -17,6 +17,7 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
       // Gets the message. entry.messaging is an array, but
       // will only ever contain one message, so we get index 0
       let webhook_event = entry.messaging[0];
+      // eslint-disable-next-line no-console
       console.log(webhook_event);
       const senderId = webhook_event.sender.id;
       if (webhook_event.message) {
