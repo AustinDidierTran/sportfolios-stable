@@ -16,9 +16,6 @@ export const useFacebookSDK = () => {
         version: 'v8.0',
         status: true,
       });
-      FB.Event.subscribe('send_to_messenger', function(e) {
-        console.log({ e });
-      });
     };
 
     // Load the SDK asynchronously
