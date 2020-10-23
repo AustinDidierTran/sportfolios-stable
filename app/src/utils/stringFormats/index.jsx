@@ -6,6 +6,7 @@ import {
 import isArray from 'lodash/isArray';
 
 import moment from 'moment';
+import 'moment/locale/fr';
 import { formatRoute } from '../../actions/goTo';
 
 export const getInitialsFromName = completeName => {
