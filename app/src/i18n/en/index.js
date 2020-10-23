@@ -74,6 +74,7 @@ export default {
     back: 'Back',
     back_to_shop: 'Back to shop',
     basic_info: 'Basic Info',
+    biannual: 'Biannual',
     birth_date_format: '{{date, LL}} ({{age}} years old)',
     birth_date: 'Birth date',
     cancel_person_transfer: 'Cancel this person transfer',
@@ -117,10 +118,13 @@ export default {
     currency: 'Currency',
     decline: 'Decline',
     delete: 'Delete',
+    delete_membership: 'Delete membership',
     select_payment_method: 'Select payment method',
     delete_confirmation_text: 'To delete, type {{name}}',
     delete_game_confirmation:
       'Are you sure you want to delete this game?',
+    delete_membership_confirmation:
+      'Are you sure you want to delete this membership?',
     description: 'Description',
     donate: 'Donate',
     done: 'Done',
@@ -154,6 +158,7 @@ export default {
     event: 'Event',
     events_that_might_interest_you: 'Events that might interest you',
     expiration_date: 'Expiration Date',
+    expire_on: 'Expire on',
     feature_coming_soon: 'Feature coming soon!',
     female: 'Female',
     field: 'Field',
@@ -182,6 +187,8 @@ export default {
     infos: 'Infos',
     informations_saved: 'Informations saved',
     is_sub: 'Is Sub',
+    junior: 'Junior',
+    junior_member: 'Junior member',
     last_name: 'Last Name',
     length: 'Length',
     link_bank_account: 'Link bank account',
@@ -196,6 +203,7 @@ export default {
     max_length: 'Maximum length',
     menu: 'Menu',
     missing_info: 'Missing info',
+    monthly: 'Monthly',
     more_filters: 'More Filters',
     my_apps: 'My apps',
     my_persons: 'My persons',
@@ -360,6 +368,7 @@ export default {
     time: 'Time',
     time_slot: 'Time slot',
     time_slot_added: 'Time slot added',
+    type: 'Type',
     type_address: 'Type an address',
     waiting_for_payment:
       'Your payment is being processed. Thank you for your patience',
@@ -371,6 +380,7 @@ export default {
     user_view: 'User view',
     valid_until: 'Valid until',
     viewer: 'Viewer',
+    yearly: 'Yearly',
     yes: 'yes',
     you_can_always_change_your_team_name_in_your_team_profile:
       "If you are not sure about your team name, be aware that you can still change it later in your team's profile.",
@@ -506,6 +516,7 @@ export default {
     elite_membership: 'Elite Membership',
     member: 'Member',
     membership: 'Membership',
+    membership_added: 'Membership added',
     membership_exist: 'Membership Exist',
     memberships: 'Memberships',
     recreational: 'Recreational',
@@ -612,10 +623,10 @@ export default {
       'ProTip: You can click on a game to change score.',
 
     //APP DESCRIPTION
-    messenger_description:
-      "Connect with Messenger to enable Sprotfolios' chatbot",
-    disconnect_app: 'Disconnect {{appName}} app from your account',
     facebook_description:
-      "Connect with Facebook to find your friends and enable Sportfolios' chatbot",
+      'Connect with Facebook to find your friends on Sportfolios',
+    messenger_description:
+      "Connect with Messenger to enable Sportfolios' chatbot",
+    disconnect_app: 'Disconnect {{appName}} app from your account',
   },
 };

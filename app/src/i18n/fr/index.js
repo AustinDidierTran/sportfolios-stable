@@ -72,6 +72,7 @@ export default {
     back: 'Revenir',
     back_to_shop: 'Revenir au magasin',
     basic_info: 'Information générales',
+    biannual: 'Biannuel',
     birth_date: 'Date de naissance',
     birth_date_format: '{{date, LL}} ({{age}} ans)',
     cant_add_product_no_bank_account:
@@ -122,9 +123,12 @@ export default {
     currency: 'Devise',
     decline: 'Refuser',
     delete: 'Supprimer',
+    delete_membership: "Supprimer l'affiliation",
     delete_confirmation_text: 'Pour supprimer, écrivez {{name}}',
     delete_game_confirmation:
       'Êtes-vous certain de vouloir supprimer cette partie?',
+    delete_membership_confirmation:
+      'Êtes-vous certain de vouloir supprimer cette affilitation?',
     description: 'Description',
     donate: 'Faites un don',
     done: 'Terminé',
@@ -154,6 +158,7 @@ export default {
     events_that_might_interest_you:
       'Événements qui pourrait vous intéresser',
     expiration_date: "Date d'expiration",
+    expire_on: 'Expire le',
     feature_coming_soon: 'Fonctionnalité à venir!',
     female: 'Femme',
     field: 'Terrain',
@@ -180,6 +185,8 @@ export default {
     in_cart: 'Dans le panier',
     informations_saved: 'Informations sauvegardées',
     is_sub: 'Est un remplacant',
+    junior: 'Junior',
+    junior_member: 'Membre junior',
     infos: 'Info',
     infos: 'Infos',
     last_name: 'Nom de famille',
@@ -197,6 +204,7 @@ export default {
     max_length: 'Longueur maximum',
     menu: 'Menu',
     missing_info: 'Info manquante',
+    monthly: 'Mensuel',
     more_filters: 'Plus de filtre',
     my_apps: 'Mes applications',
     my_persons: 'Mes personnes',
@@ -362,6 +370,7 @@ export default {
     time: 'Temps',
     time_slot: 'Plage horaire',
     time_slot_added: 'Plage horaire ajoutée',
+    type: 'Type',
     total: 'Total',
     to_see_your_receipt:
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
@@ -377,7 +386,7 @@ export default {
     valid_until: "Valide jusqu'au",
     viewer: 'Visiteur',
     accepted: 'Accepté',
-
+    yearly: 'Annuel',
     yes: 'oui',
     you_can_always_change_your_team_name_in_your_team_profile:
       "Si vous hésitez pour votre nom d'équipe, sachez que vous pouvez le changer plus tard dans votre profil d'équipe.",
@@ -504,21 +513,22 @@ export default {
     one_year: 'Un an',
 
     //MEMBERSHIP
-    add_membership: 'Ajouter un membership',
+    add_membership: 'Ajouter une affiliation',
     become_member: 'Devenir membre',
     competitive: 'Compétitif',
-    competitive_membership: 'Membership Compétitif',
+    competitive_membership: 'Affiliation Compétitif',
     competitive_member: 'Membre compétitif',
     elite: 'Élite',
     elite_member: 'Membre élite',
-    elite_membership: 'Membership Élite',
+    elite_membership: 'Affiliation Élite',
     member: 'Membre',
-    membership: 'Membership',
-    membership_exist: 'Membership Existant',
-    memberships: 'Memberships',
+    membership: 'Affiliation',
+    membership_added: 'Affiliation ajouté',
+    membership_exist: 'Affiliation Existant',
+    memberships: 'Affiliations',
     recreational: 'Récréatif',
     recreational_member: 'Membre récréatif',
-    recreational_membership: 'Membership Récréatif',
+    recreational_membership: 'Affiliation Récréatif',
     renew_membership: 'Renouveler',
 
     //REGISTRATION
@@ -620,11 +630,11 @@ export default {
       'ProTip: Vous pouvez cliquer sur une partie pour changer le pointage.',
 
     //APP DESCRIPTION
+    facebook_description:
+      'Connecte ton compte Facebook pour retrouver tes amis sur Sportfolios',
     messenger_description:
-      'Connecte ton compte Messenger pout activer le chatbot Sportfolios',
+      'Connecte ton compte Messenger pour activer le chatbot Sportfolios',
     disconnect_app:
       "Déconnecter l'application {{appName}} de ton compte",
-    facebook_description:
-      'Connecte ton compte Facebook pour retrouver tes amis et pouvoir activer le chatbot Sportfolios',
   },
 };

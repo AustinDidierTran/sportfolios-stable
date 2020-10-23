@@ -4,6 +4,7 @@ import EventCreatorItem from './EventCreatorItem';
 import EventItem from './EventItem';
 import MembershipDetailItem from './MembershipDetailItem';
 import MembershipItem from './MembershipItem';
+import MembershipOrganizationItem from './MembershipOrganizationItem';
 import OrganizationItem from './OrganizationItem';
 import PersonItem from './PersonItem';
 import TeamItem from './TeamItem';
@@ -21,6 +22,7 @@ const ItemMap = {
   [GLOBAL_ENUM.EVENT]: EventItem,
   [GLOBAL_ENUM.MEMBERSHIP_DETAIL]: MembershipDetailItem,
   [GLOBAL_ENUM.MEMBERSHIP]: MembershipItem,
+  [GLOBAL_ENUM.MEMBERSHIP_ORGANIZATION]: MembershipOrganizationItem,
   [GLOBAL_ENUM.ORGANIZATION]: OrganizationItem,
   [GLOBAL_ENUM.PERSON]: PersonItem,
   [GLOBAL_ENUM.TEAM]: TeamItem,

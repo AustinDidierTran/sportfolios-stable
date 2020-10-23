@@ -7,6 +7,8 @@ const getMembershipName = type => {
     return 'competitive_member';
   } else if (type === MEMBERSHIP_TYPE_ENUM.ELITE) {
     return 'elite_member';
+  } else if (type === MEMBERSHIP_TYPE_ENUM.JUNIOR) {
+    return 'junior_member';
   } else {
     return '';
   }
