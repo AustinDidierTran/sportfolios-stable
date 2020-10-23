@@ -270,7 +270,11 @@ export default function TeamRegistered() {
                     {team.option ? (
                       <StyledTableCell component="th" scope="row">
                         {team.option.name}&nbsp;
-                        {formatPrice(team.option.price)}
+                        {`(${
+                          team.option.price === 0
+                            ? t('free')
+                            : formatPrice(team.option.price)
+                        })`}
                       </StyledTableCell>
                     ) : (
                       <StyledTableCell component="th" scope="row">
@@ -282,16 +286,18 @@ export default function TeamRegistered() {
                       <PaymentChip status={team.status} />
                     </StyledTableCell>
                     <StyledTableCell align="center">
-                      <MailToButton emails={team.emails} />
+                      <MailToButton
+                        emails={team.emails}
+                        color="grey"
+                      />
                       <IconButton
-                        color="primary"
                         variant="contained"
                         icon="MoneyOff"
                         tooltip={t('unregister')}
                         onClick={() =>
                           handleUnregisterClick(team.rosterId)
                         }
-                        style={{ color: '#18b393' }}
+                        style={{ color: 'primary' }}
                       />
                     </StyledTableCell>
                   </StyledTableRow>

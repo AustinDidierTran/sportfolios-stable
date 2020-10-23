@@ -58,6 +58,7 @@ export default function ComponentFactory(props) {
     <TextField
       formik={component.formik}
       namespace={component.namespace}
+      InputLabelProps={{ shrink: component.shrink }}
       id={component.id}
       label={component.label}
       type={component.type}
