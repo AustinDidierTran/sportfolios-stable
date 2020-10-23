@@ -1,3 +1,3 @@
-DROP table user_facebook_id;
-DROP table facebook_data;
+DROP table IF EXISTS user_facebook_id;
+DROP table IF EXISTS facebook_data;
 

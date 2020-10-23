@@ -9,11 +9,15 @@ const {
   CARD_TYPE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
   STATUS_ENUM,
+  MEMBERSHIP_LENGTH_TYPE_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
 const { sendTransferAddNewPlayer } = require('../helpers/index');
+const {
+  formatPrice,
+} = require('../../../../common/utils/stringFormat');
 
 const addEntity = async (body, userId) => {
   const { name, creator, surname, type } = body;
@@ -237,31 +241,44 @@ async function getEntitiesName(entityId) {
 
 async function getOwnedEvents(organizationId) {
   const realId = await getRealId(organizationId);
-  const events = await knex('entities')
-    .select('id', 'type', 'name', 'photo_url')
-    .leftJoin(
-      'entities_name',
-      'entities.id',
-      '=',
-      'entities_name.entity_id',
-    )
-    .leftJoin(
-      'entities_photo',
-      'entities.id',
-      '=',
-      'entities_photo.entity_id',
-    )
+  const events = await knex('events_infos')
+    .select('*')
     .leftJoin(
       'entities_role',
-      'entities.id',
+      'events_infos.id',
       '=',
       'entities_role.entity_id',
     )
-    .whereNull('deleted_at')
     .where('entities_role.entity_id_admin', '=', realId)
-    .andWhere('entities_role.role', '=', ENTITIES_ROLE_ENUM.ADMIN)
-    .andWhere('entities.type', '=', GLOBAL_ENUM.EVENT);
-  return events;
+    .whereNull('deleted_at');
+
+  const fullEvents = await Promise.all(
+    events.map(async event => {
+      const { creator_id: creatorId } = event;
+      const creator = await getEntity(creatorId);
+      return {
+        type: GLOBAL_ENUM.EVENT,
+        cardType: CARD_TYPE_ENUM.EVENT,
+        eventId: event.id,
+        photoUrl: event.photo_url,
+        startDate: event.start_date,
+        endDate: event.end_date,
+        quickDescription: event.quick_description,
+        description: event.description,
+        location: event.location,
+        name: event.name,
+        createdAt: event.created_at,
+        creator: {
+          id: creator.id,
+          type: creator.type,
+          name: creator.name,
+          surname: creator.surname,
+          photoUrl: creator.photoUrl,
+        },
+      };
+    }),
+  );
+  return fullEvents;
 }
 async function getAllTypeEntities(type) {
   const entities = await knex('entities')
@@ -649,9 +666,14 @@ async function getOptions(eventId) {
 
 async function getMemberships(entityId) {
   const realId = await getRealId(entityId);
-  return knex('entity_memberships')
+  const memberships = await knex('entity_memberships')
     .select('*')
     .where({ entity_id: realId });
+
+  return memberships.map(m => ({
+    ...m,
+    price: formatPrice(m.price),
+  }));
 }
 
 async function getRegistered(teamId, eventId) {
@@ -923,6 +945,9 @@ async function getAlias(entityId) {
   const [res] = await knex('alias')
     .select('*')
     .where({ id: realId });
+  if (!res) {
+    return { alias: entityId };
+  }
   return res;
 }
 
@@ -1050,8 +1075,8 @@ async function getGeneralInfos(entityId) {
 async function getPersonInfos(entityId) {
   const realId = await getRealId(entityId);
   const [res] = await knex('person_all_infos')
-  .select('*')
-  .where({id: realId});
+    .select('*')
+    .where({ id: realId });
 
   let resObj = {
     photoUrl: res.photo_url,
@@ -1059,14 +1084,14 @@ async function getPersonInfos(entityId) {
     surname: res.surname,
     birthDate: res.birth_date,
     gender: res.gender,
-    formattedAddress: res.address
+    formattedAddress: res.address,
   };
 
   const [fullAddress] = await knex('entities_address')
-  .select('*')
-  .where({entity_id: realId});
+    .select('*')
+    .where({ entity_id: realId });
 
-  if(fullAddress) {
+  if (fullAddress) {
     resObj.address = {
       street_address: fullAddress.street_address,
       city: fullAddress.city,
@@ -1153,41 +1178,48 @@ async function updatePersonInfosHelper(entityId, body) {
   let fullAddress;
   let outputPersonInfos = {};
 
-  if (personInfos.name || personInfos.surname) {  
+  if (personInfos.name || personInfos.surname) {
     fullname = await knex('entities_name')
-    .update({name: personInfos.name, surname: personInfos.surname})
-    .where({ entity_id: realId })
-    .returning('*'); 
-    
+      .update({
+        name: personInfos.name,
+        surname: personInfos.surname,
+      })
+      .where({ entity_id: realId })
+      .returning('*');
+
     outputPersonInfos.name = fullname[0].name;
     outputPersonInfos.surname = fullname[0].surname;
   }
 
-  if (personInfos.birthDate) {      
+  if (personInfos.birthDate) {
     birthDateRes = await knex.raw(
       `? ON CONFLICT (entity_id)
         DO UPDATE SET
           birth_date = '${personInfos.birthDate}'
         RETURNING birth_date;`,
-      [knex('entities_birth_date').insert({
-        entity_id: realId,
-        birth_date: personInfos.birthDate,
-      })],
+      [
+        knex('entities_birth_date').insert({
+          entity_id: realId,
+          birth_date: personInfos.birthDate,
+        }),
+      ],
     );
 
     outputPersonInfos.birthDate = birthDateRes.rows[0].birth_date;
   }
 
-  if (personInfos.gender) {  
+  if (personInfos.gender) {
     genderRes = await knex.raw(
       `? ON CONFLICT (entity_id)
         DO UPDATE SET
           gender = '${personInfos.gender}'
         RETURNING gender;`,
-      [knex('entities_gender').insert({
-        entity_id: realId,
-        gender: personInfos.gender,
-      })],
+      [
+        knex('entities_gender').insert({
+          entity_id: realId,
+          gender: personInfos.gender,
+        }),
+      ],
     );
 
     outputPersonInfos.gender = genderRes.rows[0].gender;
@@ -1203,13 +1235,16 @@ async function updatePersonInfosHelper(entityId, body) {
         zip = '${personInfos.address.zip}',
         country = '${personInfos.address.country}'
         RETURNING CONCAT_WS(', ', street_address, city, state, zip, country);`,
-      [knex('entities_address').insert({
-        entity_id: realId,
-        street_address: personInfos.address.street_address,
-        city: personInfos.address.city,
-        state: personInfos.address.state,
-        zip: personInfos.address.zip,
-        country: personInfos.address.country})],
+      [
+        knex('entities_address').insert({
+          entity_id: realId,
+          street_address: personInfos.address.street_address,
+          city: personInfos.address.city,
+          state: personInfos.address.state,
+          zip: personInfos.address.zip,
+          country: personInfos.address.country,
+        }),
+      ],
     );
 
     outputPersonInfos.address = fullAddress.rows[0].concat_ws;
@@ -1645,17 +1680,17 @@ async function addOption(
 
 async function addMembership(
   entityId,
-  membershipType,
+  membership,
   length,
-  fixedDate,
+  date,
+  type,
   price,
   userId,
 ) {
   const realId = await getRealId(entityId);
   const entity = await getEntity(entityId, userId);
-
   const stripeProduct = {
-    name: getMembershipName(membershipType),
+    name: getMembershipName(membership),
     active: true,
     description: entity.name,
     metadata: { type: GLOBAL_ENUM.MEMBERSHIP, id: realId },
@@ -1670,21 +1705,33 @@ async function addMembership(
   };
   const priceStripe = await addPrice({
     stripePrice,
-    realId,
+    entityId,
     photoUrl: entity.photoUrl,
   });
-
-  const [res] = await knex('entity_memberships')
-    .insert({
-      stripe_price_id: priceStripe.id,
-      entity_id: realId,
-      membership_type: membershipType,
-      length,
-      fixed_date: fixedDate,
-      price,
-    })
-    .returning('*');
-  return res;
+  if (type === MEMBERSHIP_LENGTH_TYPE_ENUM.FIXED) {
+    const [res] = await knex('entity_memberships')
+      .insert({
+        stripe_price_id: priceStripe.id,
+        entity_id: realId,
+        membership_type: membership,
+        fixed_date: date,
+        price,
+      })
+      .returning('*');
+    return res;
+  }
+  if (type === MEMBERSHIP_LENGTH_TYPE_ENUM.LENGTH) {
+    const [res] = await knex('entity_memberships')
+      .insert({
+        stripe_price_id: priceStripe.id,
+        entity_id: realId,
+        membership_type: membership,
+        length,
+        price,
+      })
+      .returning('*');
+    return res;
+  }
 }
 
 async function addTeamToEvent(body) {
@@ -2045,41 +2092,23 @@ async function removeEntityRole(entityId, entityIdAdmin) {
 
 const deleteEntity = async (entityId, userId) => {
   const realId = await getRealId(entityId);
-  const [{ role } = {}] = await knex('user_entity_role')
-    .select('entities_role.role')
-    .leftJoin(
-      'entities_role',
-      'entities_role.entity_id_admin',
-      '=',
-      'user_entity_role.entity_id',
-    )
-    .where('entities_role.entity_id', realId)
-    .andWhere('user_entity_role.user_id', userId);
+  const role = await getEntityRole(entityId, userId);
   if (role !== ENTITIES_ROLE_ENUM.ADMIN) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   } else {
+    await knex('alias')
+      .where({ id: realId })
+      .del();
     await knex('entities')
       .where({ id: realId })
       .del();
   }
 };
 
-const deleteEntityMembership = async (
-  entityId,
-  membershipTypeProps,
-  lengthProps,
-  fixedDate,
-) => {
-  const realId = await getRealId(entityId);
-  const membershipType = Number(membershipTypeProps);
-  const length = Number(lengthProps);
-
+const deleteEntityMembership = async membershipId => {
   await knex('entity_memberships')
     .where({
-      entity_id: realId,
-      membership_type: membershipType,
-      length,
-      fixed_date: fixedDate,
+      id: membershipId,
     })
     .del();
 };

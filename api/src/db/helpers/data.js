@@ -16,14 +16,14 @@ const getEntitiesFromQuery = async (query, blackList) => {
       return {
         id: e.id,
         type: e.type,
-        photoUrl: e.photoUrl,
+        photoUrl: e.photo_url,
         completeName: e.complete_name || e.name,
       };
     }
     return {
       id: e.id,
       type: e.type,
-      photoUrl: e.photoUrl,
+      photoUrl: e.photo_url,
       name: e.complete_name || e.name,
     };
   };

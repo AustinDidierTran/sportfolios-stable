@@ -14,7 +14,7 @@ export const useFacebookSDK = () => {
         // the session
         xfbml: true, // parse social plugins on this page
         version: 'v8.0',
-        status:true
+        status: true,
       });
     };
 

@@ -54,13 +54,15 @@ export const updateMembership = async (
   goTo(ROUTES.cart);
 };
 
-export const getExpirationDate = (length, fixedDate) => {
-  if (length !== -1) {
+export const getExpirationDate = (length, date) => {
+  if (length) {
     return moment().add(
       getMembershipLength(length),
       getMembershipUnit(length),
     );
+  } else if (date) {
+    return moment(new Date(date));
   } else {
-    return moment(fixedDate);
+    return null;
   }
 };

@@ -14,6 +14,7 @@ import {
 import { ERROR_ENUM, errors } from '../../../../../common/errors';
 import { Store, ACTION_ENUM } from '../../../Store';
 import styles from './AppLinking.module.css';
+import conf from '../../../../../conf';
 
 export default function AppLinking() {
   useFacebookSDK();
@@ -23,6 +24,10 @@ export default function AppLinking() {
   const { dispatch } = useContext(Store);
   const [alertDialog, setAlertDialog] = useState(false);
   const [selectedApp, setSelectedApp] = useState('');
+  const [fbUserId, setFBUserId] = useState();
+  const {
+    state: { userInfo },
+  } = useContext(Store);
 
   const fetchConnectedApp = async () => {
     const res = await api('/api/user/connectedApps');
@@ -30,7 +35,16 @@ export default function AppLinking() {
       return;
     }
     const { data } = res;
-    setIsLinkedFB(data && data.facebook && data.facebook.connected);
+
+    if (data) {
+      if (data.facebook) {
+        setFBUserId(data.facebook.id);
+        setIsLinkedFB(data.facebook.connected);
+      }
+      if (data.messenger) {
+        setIsLinkedMessenger(data.messenger.connected);
+      }
+    }
   };
 
   useEffect(() => {
@@ -44,7 +58,7 @@ export default function AppLinking() {
       { fields: 'id,email,picture,first_name,last_name' },
       async function(response) {
         const {
-          id: facebook_app_id,
+          id: facebook_id,
           first_name: name,
           last_name: surname,
           email,
@@ -53,7 +67,7 @@ export default function AppLinking() {
         const res = await api('/api/user/facebookConnection', {
           method: 'POST',
           body: JSON.stringify({
-            facebook_app_id,
+            facebook_id,
             name,
             surname,
             email,
@@ -64,6 +78,7 @@ export default function AppLinking() {
           showErrorToast(t('account_already_linked'));
         } else if (res.status === STATUS_ENUM.SUCCESS) {
           setIsLinkedFB(true);
+          setFBUserId(facebook_id);
         } else {
           showErrorToast();
           onFBUnlink();
@@ -105,9 +120,9 @@ export default function AppLinking() {
     const res = await api('/api/user/facebookConnection', {
       method: 'DELETE',
     });
-    if (res.status === STATUS_ENUM.ERROR) {
-      showErrorToast();
-    } else {
+    if (fbUserId == conf.FACEBOOK_ADMIN_ID) {
+      setIsLinkedFB(false);
+    } else if (res.status === STATUS_ENUM.SUCCESS) {
       await FB.api('/me/permissions', 'DELETE', {}, function(
         response,
       ) {
@@ -122,6 +137,56 @@ export default function AppLinking() {
           showErrorToast();
         }
       });
+    } else {
+      showErrorToast();
+    }
+    setAlertDialog(false);
+  };
+
+  const openMessenger = () => {
+    const win = window.open(
+      `https://www.m.me/sportfoliosapp?ref=${userInfo.user_id}`,
+      '_blank',
+    );
+    if (win != null) {
+      win.focus();
+    }
+  };
+
+  const onMessengerConnect = async () => {
+    //if is already linked on facebook, try to link automaticaly by getting his messenger ID
+    if (fbUserId) {
+      const res = await api('/api/user/messengerConnection', {
+        method: 'POST',
+        body: JSON.stringify({
+          facebook_id: fbUserId,
+        }),
+      });
+      if (res.status == errors[ERROR_ENUM.VALUE_IS_INVALID].code) {
+        openMessenger();
+      } else if (res.status == STATUS_ENUM.SUCCESS) {
+        setIsLinkedMessenger(true);
+      } else {
+        showErrorToast();
+      }
+    } else {
+      openMessenger();
+    }
+  };
+
+  const onMessengerUnlink = async () => {
+    setSelectedApp(APP_ENUM.MESSENGER);
+    setAlertDialog(true);
+  };
+
+  const onMessengerUnlinkConfirmed = async () => {
+    const res = await api('/api/user/messengerConnection', {
+      method: 'DELETE',
+    });
+    if (res.status === STATUS_ENUM.SUCCESS) {
+      setIsLinkedMessenger(false);
+    } else {
+      showErrorToast();
     }
     setAlertDialog(false);
   };
@@ -140,14 +205,20 @@ export default function AppLinking() {
       description: t('facebook_description'),
     },
     {
-      onConnect: () => {},
-      onDisconnect: () => {},
+      onConnect: onMessengerConnect,
+      onDisconnect: onMessengerUnlink,
       app: APP_ENUM.MESSENGER,
       isConnected: isLinkedMessenger,
       type: GLOBAL_ENUM.APP_ITEM,
       description: t('messenger_description'),
     },
   ];
+
+  const unlinkConfirmedFunctions = {
+    [APP_ENUM.FACEBOOK]: onFBUnlinkConfirmed,
+    [APP_ENUM.MESSENGER]: onMessengerUnlinkConfirmed,
+  };
+
   return (
     <>
       <Card className={styles.main}>
@@ -156,7 +227,7 @@ export default function AppLinking() {
       <AlertDialog
         open={alertDialog}
         description={t('disconnect_app', { appName: selectedApp })}
-        onSubmit={onFBUnlinkConfirmed}
+        onSubmit={unlinkConfirmedFunctions[selectedApp]}
         onCancel={() => setAlertDialog(false)}
       />
     </>

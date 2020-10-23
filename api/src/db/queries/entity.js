@@ -725,18 +725,13 @@ const unregisterTeams = async (body, userId) => {
 };
 
 async function addMembership(body, userId) {
-  const {
-    entity_id,
-    membership_type,
-    length,
-    fixed_date,
-    price,
-  } = body;
+  const { entityId, membership, length, date, type, price } = body;
   const res = await addMembershipHelper(
-    entity_id,
-    membership_type,
+    entityId,
+    membership,
     length,
-    fixed_date,
+    date,
+    type,
     price,
     userId,
   );
@@ -748,14 +743,9 @@ async function deleteEntity(id, user_id) {
 }
 
 async function deleteEntityMembership(query) {
-  const { entity_id, membership_type, length, fixed_date } = query;
+  const { membershipId } = query;
 
-  return deleteEntityMembershipHelper(
-    entity_id,
-    membership_type,
-    length,
-    fixed_date,
-  );
+  return deleteEntityMembershipHelper(membershipId);
 }
 
 async function deleteOption(id) {

@@ -884,23 +884,11 @@ router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
 });
 
 router.del(BASE_URL, async ctx => {
-  const entity = await queries.deleteEntity(
-    ctx.query.id,
-    ctx.body.userInfo.id,
-  );
-  if (entity) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
+  await queries.deleteEntity(ctx.query.id, ctx.body.userInfo.id);
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
 });
 
 router.del(`${BASE_URL}/membership`, async ctx => {
