@@ -63,11 +63,9 @@ const MEMBERSHIP_TYPE_ENUM = {
 };
 
 const CARD_TYPE_ENUM = {
-  ADD_PAYMENT_OPTION: 'add payment option',
   CART: 'cart',
   DELETE_ENTITY: 'delete entity',
   EDITABLE_GAME: 'editable game',
-  EVENT_PAYMENT_OPTION: 'event payment option',
   EVENT_SETTINGS: 'event settings',
   EVENT: 'event',
   GAME: 'game',

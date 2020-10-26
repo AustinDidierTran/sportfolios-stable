@@ -48,6 +48,7 @@ export default {
     adress: 'Addresse',
     alias: 'Alias',
     alias_is_already_used: "L'alias est déjà utilisé",
+    an_error_has_occured: 'Une erreur est survenue',
     anonymous: 'Anonyme',
     at: 'à',
     empty_roster:
@@ -63,7 +64,7 @@ export default {
     all_phases: 'Toutes les phases',
     all_fields: 'Tous les terrains',
     all_time_slots: 'Toutes les plages horaires',
-    all_steps_completed: 'Tous les étapes sont complétées',
+    all_steps_completed: 'Toutes les étapes sont complétées',
     amount_to_pay: 'Montant à payer {{amount}}',
     app_role: 'App Role',
     awaiting_payments: 'Paiements en attentes',
@@ -96,6 +97,7 @@ export default {
     category: 'Catégorie',
     change_password: 'Changer votre mot de passe',
     change_picture: 'Changer la photo',
+    changes_saved: 'Changements sauvegardés',
     change_team: "Changer l'équipe",
     choose_your_primary_person: 'Choisir votre personne principale',
     comments: 'Commentaires',
@@ -129,6 +131,9 @@ export default {
       'Êtes-vous certain de vouloir supprimer cette partie?',
     delete_membership_confirmation:
       'Êtes-vous certain de vouloir supprimer cette affilitation?',
+    delete_payment_option: "Supprimer l'option de paiement",
+    delete_payment_option_confirmation:
+      'Êtes-vous certain de vouloir supprimer cette option de paiement?',
     description: 'Description',
     donate: 'Faites un don',
     done: 'Terminé',
@@ -580,7 +585,7 @@ export default {
     you_added_players_to_your_roster:
       'Vous avez ajouté {{length}} joueurs à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
     no_bank_account_linked:
-      "Vous n'avez pas de compte en banque relié, l'option de paiement doit etre gratuite.",
+      "Vous n'avez pas de compte en banque relié, l'option de paiement doit être gratuite.",
     some_teams_cannot_be_deleted:
       "Des équipes n'ont pas pu être désinscrites de l'événement puisqu'elles sont déjà dans des parties.",
     this_team_cannot_be_deleted:

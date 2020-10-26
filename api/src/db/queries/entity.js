@@ -80,6 +80,7 @@ const {
   updateGeneralInfos: updateGeneralInfosHelper,
   updatePersonInfosHelper,
   updateMember: updateMemberHelper,
+  updateOption: updateOptionHelper,
   updatePreRanking: updatePreRankingHelper,
   updateRegistration: updateRegistrationHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
@@ -469,6 +470,11 @@ async function updateAlias(body) {
   const res = await updateAliasHelper(entityId, alias);
   return res;
 }
+
+async function updateOption(body) {
+  return updateOptionHelper(body);
+}
+
 async function updateGame(body) {
   const {
     gameId,
@@ -844,5 +850,6 @@ module.exports = {
   updateSuggestionStatus,
   updateGeneralInfos,
   updateMember,
+  updateOption,
   updateRegistration,
 };

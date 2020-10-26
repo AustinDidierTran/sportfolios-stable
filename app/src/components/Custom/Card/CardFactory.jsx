@@ -1,9 +1,7 @@
 import { CARD_TYPE_ENUM } from '../../../../../common/enums';
-import AddPaymentOption from './AddPaymentOption';
 import Default from './DefaultCard';
 import DeleteEntity from './DeleteEntity';
 import EditableGame from './EditableGame';
-import EventPaymentOption from './EventPaymentOption';
 import EventPost from './EventPost';
 import EventSettings from './EventSettings';
 import Game from './Game';
@@ -14,10 +12,8 @@ import TwoTeamGame from './TwoTeamGame';
 import TwoTeamGameEditable from './TwoTeamGameEditable';
 
 const CardMap = {
-  [CARD_TYPE_ENUM.ADD_PAYMENT_OPTION]: AddPaymentOption,
   [CARD_TYPE_ENUM.DELETE_ENTITY]: DeleteEntity,
   [CARD_TYPE_ENUM.EDITABLE_GAME]: EditableGame,
-  [CARD_TYPE_ENUM.EVENT_PAYMENT_OPTION]: EventPaymentOption,
   [CARD_TYPE_ENUM.EVENT_SETTINGS]: EventSettings,
   [CARD_TYPE_ENUM.EVENT]: EventPost,
   [CARD_TYPE_ENUM.GAME]: Game,

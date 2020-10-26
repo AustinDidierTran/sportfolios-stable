@@ -655,7 +655,9 @@ async function getOptions(eventId) {
       '=',
       'event_payment_options.event_id',
     )
-    .where({ event_id: realId });
+    .whereNull('event_payment_options.deleted_at')
+    .andWhere({ event_id: realId })
+    .orderBy('event_payment_options.created_at');
 
   return res.map(r => ({
     ...r,
@@ -1265,6 +1267,17 @@ async function updateEntityPhoto(entityId, photo_url) {
   return knex('entities_photo')
     .update({ photo_url })
     .where({ entity_id: realId });
+}
+
+async function updateOption(body) {
+  const { id, start_time, end_time } = body;
+
+  return knex('event_payment_options')
+    .update({
+      start_time: new Date(start_time),
+      end_time: new Date(end_time),
+    })
+    .where({ id });
 }
 
 const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
@@ -2122,7 +2135,7 @@ const deleteEntityMembership = async membershipId => {
 };
 
 const deleteOption = async id => {
-  return await knex('event_payment_options')
+  return knex('event_payment_options')
     .where({ id })
     .del();
 };
@@ -2296,6 +2309,7 @@ module.exports = {
   updateEntityPhoto,
   updateEntityRole,
   updateEvent,
+  updateOption,
   updatePreRanking,
   updateGeneralInfos,
   updatePersonInfosHelper,

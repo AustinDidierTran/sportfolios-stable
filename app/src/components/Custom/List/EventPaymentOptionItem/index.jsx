@@ -48,11 +48,13 @@ export default function EventPaymentOptionItem(props) {
             onEdit({ id, name, price, start_time, end_time })
           }
           style={{ color: 'primary' }}
+          tooltip={t('edit')}
         />
         <IconButton
           icon="Delete"
           onClick={() => onDelete(id)}
           style={{ color: 'primary' }}
+          tooltip={t('delete')}
         />
       </ListItem>
       <Divider />

@@ -529,6 +529,23 @@ router.put(`${BASE_URL}/updatePersonInfos`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/updateOption`, async ctx => {
+  const option = await queries.updateOption(ctx.request.body);
+  if (option) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: option,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.post(BASE_URL, async ctx => {
   const entityId = await queries.addEntity(
     ctx.request.body,
@@ -774,13 +791,13 @@ router.post(`${BASE_URL}/option`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (option) {
-    ctx.status = 201;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: option,
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'Could not add this option',
@@ -902,8 +919,7 @@ router.del(`${BASE_URL}/membership`, async ctx => {
 
 router.del(`${BASE_URL}/option`, async ctx => {
   await queries.deleteOption(ctx.query.id);
-
-  ctx.status = 201;
+  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: 'success',
   };
