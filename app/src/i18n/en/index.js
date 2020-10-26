@@ -52,6 +52,7 @@ export default {
       'Are you sure you want to unregister this team and refund the team if the team has already paid?',
     alias: 'Alias',
     alias_is_already_used: 'Alias is already used',
+    an_error_has_occured: 'An error has occured',
     anonymous: 'Anonymous',
     at: 'at',
     cart: 'Cart',
@@ -95,6 +96,7 @@ export default {
     category: 'Category',
     change_password: 'Change password',
     change_picture: 'Change picture',
+    changes_saved: 'Changes saved',
     change_team: 'Change team',
     choose_your_primary_person: 'Choose your primary person',
     clear_all: 'Clear all',
@@ -125,6 +127,9 @@ export default {
       'Are you sure you want to delete this game?',
     delete_membership_confirmation:
       'Are you sure you want to delete this membership?',
+    delete_payment_option: 'Delete payment option',
+    delete_payment_option_confirmation:
+      'Are you sure you want to delete this payment option?',
     description: 'Description',
     donate: 'Donate',
     done: 'Done',
