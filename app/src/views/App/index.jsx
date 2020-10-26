@@ -3,7 +3,7 @@ import theme from './theme';
 import { ThemeProvider } from '@material-ui/core/styles';
 import loadable from '@loadable/component';
 import { Router, Switch, Route } from 'react-router-dom';
-
+const PrivacyPolicy = loadable(() => import('../PrivacyPolicy'));
 const Login = loadable(() => import('../Login'));
 const AddPaymentMethod = loadable(() =>
   import('../AddPaymentMethod'),
@@ -114,6 +114,10 @@ export default function App() {
                 <AdminRoute
                   path={ROUTES.adminPanel}
                   component={AdminPanel}
+                />
+                <Route 
+                path={ROUTES.privacyPolicy}
+                component={PrivacyPolicy}
                 />
                 <Route
                   path={ROUTES.addPaymentMethod}
