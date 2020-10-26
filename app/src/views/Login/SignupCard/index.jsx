@@ -13,7 +13,7 @@ import {
 } from '../../../components/MUI';
 import { Paper } from '../../../components/Custom';
 import { LOGIN_STATE_ENUM } from '../../../../../common/enums';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 export default function SignupCard(props) {
   const { t } = useTranslation();
@@ -51,7 +51,16 @@ export default function SignupCard(props) {
             type="password"
             fullWidth
           />
-          <Typography variant='caption' color='textSecondary'>{t('privacy_signup')} <Link target="_blank" rel="noopener noreferrer" to='/privacy'>{t('here')}</Link></Typography>
+          <Typography variant="caption" color="textSecondary">
+            {t('privacy_signup')}{' '}
+            <Link
+              target="_blank"
+              rel="noopener noreferrer"
+              to="/privacy"
+            >
+              {t('here')}
+            </Link>
+          </Typography>
         </CardContent>
         <CardActions>
           <Button

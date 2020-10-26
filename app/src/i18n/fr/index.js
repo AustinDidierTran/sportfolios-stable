@@ -181,7 +181,7 @@ export default {
     go_back_to_login: 'Retourner à la connexion',
     have_an_account_signin:
       'Vous avez déjà un compte? Connectez-vous!',
-      here: 'ici',
+    here: 'ici',
     home: 'Accueil',
     in_cart: 'Dans le panier',
     informations_saved: 'Informations sauvegardées',
@@ -296,8 +296,10 @@ export default {
     primary_person: 'Personne principale',
     primary_person_changed: 'Personne principale changée',
     privacy_policy: 'Politique de confidentialité',
-    privacy_policy_and_legal_documents: 'Politique de confidentialité et documents légaux',
-    privacy_signup: "En appuyant sur s'enregistrer, vous acceptez nos termes et conditions ainsi que notre politique de confidentitalité qui peuvent être trouvés",
+    privacy_policy_and_legal_documents:
+      'Politique de confidentialité et documents légaux',
+    privacy_signup:
+      "En appuyant sur s'enregistrer, vous acceptez nos termes et conditions ainsi que notre politique de confidentitalité qui peuvent être trouvés",
     product_added_to_cart: 'Produit ajouté au panier',
     phone_number: 'Numéro de téléphone',
     purchases: 'Achats',

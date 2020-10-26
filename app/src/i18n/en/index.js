@@ -291,8 +291,10 @@ export default {
     primary_person: 'Primary person',
     primary_person_changed: 'Primary person changed',
     privacy_policy: 'Privacy policy',
-    privacy_policy_and_legal_documents: 'Privacy policy and legal documents',
-    privacy_signup: 'By signing up on Sportfolios, you agree to our Terms and Privacy policy wich can be find',
+    privacy_policy_and_legal_documents:
+      'Privacy policy and legal documents',
+    privacy_signup:
+      'By signing up on Sportfolios, you agree to our Terms and Privacy policy wich can be find',
     product_added_to_cart: 'Product added to cart',
     private: 'Private',
     phone_number: 'Phone Number',
