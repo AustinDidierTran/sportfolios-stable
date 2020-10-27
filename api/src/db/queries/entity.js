@@ -57,6 +57,7 @@ const {
   getPersonInfos: getPersonInfosHelper,
   getPhases: getPhasesHelper,
   getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
+  getPrimaryPerson: getPrimaryPersonHelper,
   getRankings: getRankingsHelper,
   getRegistered: getRegisteredHelper,
   getRegistrationTeamPaymentOption: getRegistrationTeamPaymentOptionHelper,
@@ -86,13 +87,17 @@ const {
   updatePreRanking: updatePreRankingHelper,
   updateRegistration: updateRegistrationHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
+  getMembership,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
   sendTeamRegistrationEmailToAdmin,
   sendAcceptedRegistrationEmail,
 } = require('../../server/utils/nodeMailer');
-const { addEventCartItem } = require('../helpers/shop');
+const {
+  addEventCartItem,
+  addMembershipCartItem,
+} = require('../helpers/shop');
 const {
   getEmailsFromUserId,
   getLanguageFromEmail,
@@ -195,6 +200,9 @@ async function getRemainingSpots(eventId) {
 
 async function getRankings(eventId) {
   return getRankingsHelper(eventId);
+}
+async function getPrimaryPerson(userId) {
+  return getPrimaryPersonHelper(userId);
 }
 
 async function getRoster(rosterId) {
@@ -544,19 +552,37 @@ async function updateSuggestionStatus(body) {
   return res;
 }
 
-async function addMember(body) {
+async function addMember(body, userId) {
   const {
-    member_type,
-    organization_id,
-    person_id,
-    expiration_date,
+    membershipId,
+    membershipType,
+    organizationId,
+    personId,
+    expirationDate,
   } = body;
+
   const res = await addMemberHelper(
-    member_type,
-    organization_id,
-    person_id,
-    expiration_date,
+    membershipType,
+    organizationId,
+    personId,
+    expirationDate,
   );
+
+  const person = await getEntity(personId);
+
+  const organization = await getEntity(organizationId);
+
+  const membership = await getMembership(membershipId);
+  await addMembershipCartItem(
+    {
+      ...membership,
+      person,
+      organization,
+      sellerEntityId: organizationId,
+    },
+    userId,
+  );
+
   return res;
 }
 
@@ -855,6 +881,7 @@ module.exports = {
   getPersonInfos,
   getPhases,
   getRankings,
+  getPrimaryPerson,
   getRegistered,
   getRemainingSpots,
   getRoster,

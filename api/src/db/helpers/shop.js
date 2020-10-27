@@ -294,6 +294,7 @@ const getPurchases = async userId => {
       'store_items_paid.created_at',
       'store_items_paid.seller_entity_id',
       'store_items.photo_url',
+      'receipts.receipt_url',
     ])
     .leftJoin(
       'stripe_price',
@@ -312,6 +313,12 @@ const getPurchases = async userId => {
       'store_items.stripe_price_id',
       '=',
       'store_items_paid.stripe_price_id',
+    )
+    .leftJoin(
+      'receipts',
+      'receipts.id',
+      '=',
+      'store_items_paid.receipt_id',
     )
     .where('store_items_paid.buyer_user_id', userId);
 
@@ -374,7 +381,16 @@ const addEventCartItem = async (body, userId) => {
   await knex('cart_items').insert({
     stripe_price_id: stripePriceId,
     user_id: userId,
-    metadata,
+    metadata: { ...metadata, type: GLOBAL_ENUM.EVENT },
+  });
+};
+
+const addMembershipCartItem = async (body, userId) => {
+  const { stripe_price_id } = body;
+  await knex('cart_items').insert({
+    stripe_price_id,
+    user_id: userId,
+    metadata: { ...body, type: GLOBAL_ENUM.MEMBERSHIP },
   });
 };
 
@@ -411,8 +427,14 @@ const addItemToPaidStoreItems = async query => {
     buyerUserId,
     invoiceItemId,
     metadata,
+    receiptUrl,
   } = query;
-
+  const [receipt] = await knex('receipts')
+    .insert({
+      receipt_url: receiptUrl,
+      user_id: buyerUserId,
+    })
+    .returning('*');
   await knex('store_items_paid').insert({
     seller_entity_id: sellerEntityId,
     quantity,
@@ -421,10 +443,8 @@ const addItemToPaidStoreItems = async query => {
     stripe_price_id: stripePriceId,
     buyer_user_id: buyerUserId,
     invoice_item_id: invoiceItemId,
-    metadata: {
-      size: metadata.size,
-      type: metadata.type,
-    },
+    metadata,
+    receipt_id: receipt.id,
   });
 };
 
@@ -469,6 +489,7 @@ const clearCart = async userId => {
 module.exports = {
   addCartItem,
   addEventCartItem,
+  addMembershipCartItem,
   addItemToPaidStoreItems,
   clearCart,
   getCartItems,

@@ -10,6 +10,7 @@ const {
   PERSON_TRANSFER_STATUS_ENUM,
   STATUS_ENUM,
   MEMBERSHIP_LENGTH_TYPE_ENUM,
+  INVOICE_STATUS_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -615,9 +616,8 @@ async function getEntityRole(entityId, userId) {
   return Math.min(...roles);
 }
 
-async function getMembers(personsString, organizationId) {
+async function getMembers(personId, organizationId) {
   const realId = await getRealId(organizationId);
-  const persons = personsString.split(',');
   const members = await knex('memberships')
     .select('*')
     .rightJoin(
@@ -626,7 +626,7 @@ async function getMembers(personsString, organizationId) {
       '=',
       'memberships.person_id',
     )
-    .whereIn('entities.id', persons)
+    .where('entities.id', '=', personId)
     .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
     .andWhere({ organization_id: realId });
   return members.map(m => ({
@@ -635,6 +635,7 @@ async function getMembers(personsString, organizationId) {
     memberType: m.member_type,
     expirationDate: m.expiration_date,
     id: m.id,
+    status: m.status,
   }));
 }
 async function getOrganizationMembers(organizationId) {
@@ -704,6 +705,13 @@ async function getMemberships(entityId) {
     ...m,
     price: formatPrice(m.price),
   }));
+}
+
+async function getMembership(membershipId) {
+  const [membership] = await knex('entity_memberships')
+    .select('*')
+    .where({ id: membershipId });
+  return membership;
 }
 
 async function getRegistered(teamId, eventId) {
@@ -902,11 +910,12 @@ async function getRosterWithSub(rosterId) {
   return props;
 }
 
-const getPrimaryPersonIdFromUserId = async user_id => {
+const getPrimaryPerson = async user_id => {
   const [{ primary_person: id }] = await knex('user_primary_person')
     .select('primary_person')
     .where({ user_id });
-  return id;
+  const primaryPerson = await getEntity(id);
+  return primaryPerson;
 };
 
 async function getRole(captains, rosterId, userId) {
@@ -915,7 +924,8 @@ async function getRole(captains, rosterId, userId) {
     return ROSTER_ROLE_ENUM.VIEWER;
   }
 
-  const personId = await getPrimaryPersonIdFromUserId(userId);
+  const person = await getPrimaryPerson(userId);
+  const personId = person.id;
 
   if (captains.some(c => c.id === personId)) {
     return ROSTER_ROLE_ENUM.CAPTAIN;
@@ -1429,6 +1439,23 @@ async function updateRegistration(
       roster_id: realRosterId,
     });
 }
+async function updateMembershipInvoice(body) {
+  const {
+    metadata: { person, organization, membership_type },
+    invoiceItemId,
+  } = body;
+  const res = knex('memberships')
+    .update({
+      invoice_item_id: invoiceItemId,
+      status: INVOICE_STATUS_ENUM.PAID,
+    })
+    .where({
+      person_id: person.id,
+      organization_id: organization.id,
+      member_type: membership_type,
+    });
+  return res;
+}
 
 async function addEntityRole(entityId, entityIdAdmin, role) {
   const realEntityId = await getRealId(entityId);
@@ -1450,15 +1477,36 @@ async function addMember(
   expirationDate,
 ) {
   const realId = await getRealId(organizationId);
-  const [res] = await knex('memberships')
-    .insert({
+  const [member] = await knex('memberships')
+    .select('*')
+    .where({
       member_type: memberType,
       organization_id: realId,
       person_id: personId,
-      expiration_date: expirationDate,
-    })
-    .returning('*');
-  return res;
+    });
+  if (member) {
+    const [res] = await knex('memberships')
+      .update({
+        expiration_date: expirationDate,
+      })
+      .where({
+        member_type: memberType,
+        organization_id: realId,
+        person_id: personId,
+      })
+      .returning('*');
+    return res;
+  } else {
+    const [res] = await knex('memberships')
+      .insert({
+        member_type: memberType,
+        organization_id: realId,
+        person_id: personId,
+        expiration_date: expirationDate,
+      })
+      .returning('*');
+    return res;
+  }
 }
 
 async function addAlias(entityId, alias) {
@@ -2358,6 +2406,7 @@ module.exports = {
   getMembers,
   getOrganizationMembers,
   getMemberships,
+  getMembership,
   getRegistered,
   getRegistrationTeamPaymentOption,
   getAllAcceptedRegistered,
@@ -2378,6 +2427,7 @@ module.exports = {
   getFields,
   getGeneralInfos,
   getOptions,
+  getPrimaryPerson,
   getRosterInvoiceItem,
   getWichTeamsCanUnregister,
   getPersonInfos,
@@ -2397,6 +2447,7 @@ module.exports = {
   updateGame,
   updateSuggestionStatus,
   updateRegistration,
+  updateMembershipInvoice,
   eventInfos,
   addPlayerToRoster,
   deletePlayerFromRoster,

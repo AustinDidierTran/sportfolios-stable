@@ -5,7 +5,10 @@ import { Avatar, Select } from '../../../Custom';
 import { useTranslation } from 'react-i18next';
 import styles from './CartItem.module.css';
 import { formatPrice } from '../../../../utils/stringFormats';
-import { IMAGE_ENUM } from '../../../../../../common/enums';
+import {
+  GLOBAL_ENUM,
+  IMAGE_ENUM,
+} from '../../../../../../common/enums';
 import Chip from '@material-ui/core/Chip';
 
 export default function CartItem(props) {
@@ -13,7 +16,7 @@ export default function CartItem(props) {
 
   const {
     id,
-    metadata: { size, team },
+    metadata,
     amount,
     description,
     label,
@@ -22,14 +25,15 @@ export default function CartItem(props) {
     updateQuantity,
   } = props;
 
+  const { type } = metadata;
   const quantityOptions = Array(Math.max(101, quantity + 1))
     .fill(0)
     .map((_, index) => ({
       value: index,
       display: index,
     }));
-
-  if (team) {
+  if (type === GLOBAL_ENUM.TEAM) {
+    const { team } = metadata;
     return (
       <ListItem button style={{ width: '100%' }}>
         <div className={styles.div}>
@@ -60,6 +64,35 @@ export default function CartItem(props) {
       </ListItem>
     );
   }
+  if (type === GLOBAL_ENUM.MEMBERSHIP) {
+    const { person, organization } = metadata;
+    return (
+      <ListItem button style={{ width: '100%' }}>
+        <div className={styles.div}>
+          <ListItemIcon>
+            <Avatar
+              photoUrl={
+                organization.photoUrl ||
+                IMAGE_ENUM.ULTIMATE_TOURNAMENT
+              }
+              variant="square"
+              className={styles.photo}
+            ></Avatar>
+          </ListItemIcon>
+          <ListItemText
+            className={styles.name}
+            primary={t(label)}
+            secondary={description}
+          ></ListItemText>
+          <ListItemText
+            className={styles.quantity}
+            primary={formatPrice(amount)}
+            secondary={`${person?.name} ${person?.surname}`}
+          ></ListItemText>
+        </div>
+      </ListItem>
+    );
+  }
   return (
     <ListItem button style={{ width: '100%' }}>
       <div className={styles.div}>
@@ -73,7 +106,7 @@ export default function CartItem(props) {
         <ListItemText
           className={styles.name}
           primary={label}
-          secondary={size}
+          secondary={size || ''}
         ></ListItemText>
         <ListItemText
           className={styles.quantity}

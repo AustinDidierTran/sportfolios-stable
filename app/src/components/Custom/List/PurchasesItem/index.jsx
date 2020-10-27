@@ -1,9 +1,8 @@
 import React from 'react';
 
 import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
-import { Avatar } from '../../../Custom';
+import { Avatar, IconButton } from '../../../Custom';
 import { useTranslation } from 'react-i18next';
-import Chip from '@material-ui/core/Chip';
 import styles from './PurchasesItem.module.css';
 // import MailtoButton from '../../MailToButton';
 import {
@@ -26,9 +25,12 @@ export default function PurchasesItem(props) {
     amount,
     metadata,
     quantity,
+    receipt_url: receiptUrl,
     // email,
   } = props;
-
+  const goToReceipt = () => {
+    window.location.href = receiptUrl;
+  };
   if (metadata.type === GLOBAL_ENUM.EVENT) {
     return (
       <ListItem button style={{ width: '100%' }}>
@@ -54,11 +56,52 @@ export default function PurchasesItem(props) {
             emails={email}
             className={styles.mail}
           /> */}
-          <Chip
-            label={t('registered')}
-            color="primary"
-            variant="outlined"
-            className={styles.chip}
+          <IconButton
+            onClick={goToReceipt}
+            tooltip={t('receipt')}
+            icon="Receipt"
+            style={{ color: 'primary' }}
+          />
+          <ListItemText
+            className={styles.date}
+            secondary={`${t('purchased_on')}: ${formatDate(
+              moment(createdAt),
+            )}`}
+          ></ListItemText>
+        </div>
+      </ListItem>
+    );
+  }
+  if (metadata.type === GLOBAL_ENUM.MEMBERSHIP) {
+    const { organization, person } = metadata;
+    return (
+      <ListItem button style={{ width: '100%' }}>
+        <div className={styles.div}>
+          <ListItemIcon>
+            <Avatar
+              photoUrl={
+                organization?.photoUrl ||
+                IMAGE_ENUM.ULTIMATE_TOURNAMENT
+              }
+              variant="square"
+              className={styles.photo}
+            ></Avatar>
+          </ListItemIcon>
+          <ListItemText
+            className={styles.name}
+            primary={t(label)}
+            secondary={organization?.name}
+          ></ListItemText>
+          <ListItemText
+            className={styles.quantity}
+            primary={formatPrice(amount)}
+            secondary={`${person?.name} ${person?.surname}`}
+          ></ListItemText>
+          <IconButton
+            onClick={goToReceipt}
+            tooltip={t('receipt')}
+            icon="Receipt"
+            style={{ color: 'primary' }}
           />
           <ListItemText
             className={styles.date}
@@ -96,11 +139,11 @@ export default function PurchasesItem(props) {
           emails={email}
           className={styles.mail}
         /> */}
-        <Chip
-          label={t('ordered')}
-          color="primary"
-          variant="outlined"
-          className={styles.chip}
+        <IconButton
+          onClick={goToReceipt}
+          tooltip={t('receipt')}
+          icon="Receipt"
+          style={{ color: 'primary' }}
         />
         <ListItemText
           className={styles.date}

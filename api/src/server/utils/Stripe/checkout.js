@@ -2,6 +2,7 @@ const {
   addMember,
   deleteRegistration,
   updateRegistration,
+  updateMembershipInvoice,
 } = require('../../../db/helpers/entity');
 
 const {
@@ -43,7 +44,10 @@ const INVOICE_PAID_ENUM = {
   STORE: async body => {
     await addItemToPaidStoreItems(body);
   },
-  MEMBERSHIPS: () => {},
+  MEMBERSHIPS: async body => {
+    await updateMembershipInvoice(body);
+    await addItemToPaidStoreItems(body);
+  },
 };
 
 const INVOICE_REFUND_ENUM = {

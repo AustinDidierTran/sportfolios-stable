@@ -4,6 +4,7 @@ import {
 } from '../stringFormats';
 import { ROUTES, goTo } from '../../actions/goTo';
 import api from '../../actions/api';
+import moment from 'moment';
 
 export const addMembership = async (personId, stripePriceId) => {
   await api('/api/shop/addCartItem', {

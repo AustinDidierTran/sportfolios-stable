@@ -117,7 +117,7 @@ export default function EntitySettings(props) {
           </div>
         );
       }
-      return <Memberships basicInfos={basicInfos} />;
+      return <Memberships />;
 
     case GLOBAL_ENUM.PERSON:
       if (isAdmin) {

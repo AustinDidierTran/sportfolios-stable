@@ -77,6 +77,10 @@ export const goTo = (route, params, queryParams) => {
   history.push(formatRoute(route, params, queryParams));
 };
 
+export const goToLink = route => {
+  history.push(route);
+};
+
 export const goToAlias = async (entityId, params, queryParams) => {
   const { data } = await api(
     formatRoute('/api/entity/alias', null, {

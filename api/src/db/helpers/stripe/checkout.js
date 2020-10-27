@@ -118,11 +118,9 @@ const payInvoice = async (body, userId) => {
 
   try {
     const invoice = await stripe.invoices.pay(invoiceId, params);
-
     await knex('stripe_invoice')
       .update({ status: invoice.status })
       .where({ user_id: userId });
-
     stripeLogger('invoice paid, update status:', invoice.status);
     return invoice;
   } catch (err) {
@@ -187,7 +185,6 @@ const createTransfers = async invoice => {
         const [invoiceItem] = await knex('stripe_invoice_item')
           .select('*')
           .where({ invoice_item_id: invoiceItemId });
-
         const externalAccount = await getExternalAccount(
           invoiceItem.seller_entity_id,
         );
@@ -359,7 +356,6 @@ const checkout = async (body, userId) => {
     const transfers = await createTransfers(paidInvoice, userId);
 
     await sendReceiptEmail({ receipt: receiptUrl }, userId);
-
     await Promise.all(
       invoicesAndMetadatas.map(async ({ invoiceItem, metadata }) => {
         if (Number(metadata.type) === GLOBAL_ENUM.EVENT) {
@@ -374,6 +370,7 @@ const checkout = async (body, userId) => {
             amount: invoiceItem.amount,
             stripePriceId: invoiceItem.price.id,
             buyerUserId: userId,
+            receiptUrl,
             metadata: {
               size: metadata.size,
               type: GLOBAL_ENUM.EVENT,
@@ -388,9 +385,25 @@ const checkout = async (body, userId) => {
             stripePriceId: invoiceItem.price.id,
             buyerUserId: userId,
             invoiceItemId: invoiceItem.id,
+            receiptUrl,
             metadata: {
               size: metadata.size,
               type: GLOBAL_ENUM.SHOP_ITEM,
+            },
+          });
+        } else if (metadata.type === GLOBAL_ENUM.MEMBERSHIP) {
+          await INVOICE_PAID_ENUM.MEMBERSHIPS({
+            sellerEntityId: metadata.sellerEntityId,
+            quantity: invoiceItem.quantity,
+            unitAmount: invoiceItem.unit_amount,
+            amount: invoiceItem.amount,
+            stripePriceId: invoiceItem.price.id,
+            buyerUserId: userId,
+            invoiceItemId: invoiceItem.id,
+            receiptUrl,
+            metadata: {
+              ...metadata,
+              type: GLOBAL_ENUM.MEMBERSHIP,
             },
           });
         }

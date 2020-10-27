@@ -29,6 +29,7 @@ const COMPONENT_TYPE_ENUM = {
   MULTISELECT: 'multiselect',
   BUTTON: 'button',
   CHECKBOX: 'checkbox',
+  LIST_ITEM: 'list item',
 };
 
 const ROSTER_ROLE_ENUM = {
@@ -82,6 +83,7 @@ const FORM_DIALOG_TYPE_ENUM = {
   ENTER_EMAIL: 'email',
   ADD_EDIT_EVENT_PAYMENT_OPTION: 'add edit event payment option',
   ADD_MEMBERSHIP: 'add membership',
+  BECOME_MEMBER: 'become member',
 };
 
 const LANGUAGE_ENUM = {

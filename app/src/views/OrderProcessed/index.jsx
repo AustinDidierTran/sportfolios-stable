@@ -10,6 +10,7 @@ import { Typography } from '../../components/MUI';
 import { useQuery } from '../../hooks/queries';
 import styles from './OrderProcessed.module.css';
 import { LOGO_ENUM } from '../../../../common/enums';
+import { goTo } from '../../actions/goTo';
 
 export default function OrderProcessed() {
   const { paid, last4, receiptUrl } = useQuery();
@@ -26,10 +27,6 @@ export default function OrderProcessed() {
   const totalFormatted = formatPrice(paid);
 
   const cardNumber = '**** **** **** ' + last4;
-
-  const onClick = goToReceipt;
-  const button = t('receipt');
-  const endIcon = 'Receipt';
 
   return (
     <IgContainer>
@@ -59,13 +56,26 @@ export default function OrderProcessed() {
         <Button
           size="small"
           variant="contained"
-          endIcon={endIcon}
+          endIcon="Home"
           style={{
             margin: '8px',
           }}
-          onClick={onClick}
+          onClick={() => {
+            goTo('/');
+          }}
         >
-          {button}
+          {t('home')}
+        </Button>
+        <Button
+          size="small"
+          variant="contained"
+          endIcon="Receipt"
+          style={{
+            margin: '8px',
+          }}
+          onClick={goToReceipt}
+        >
+          {t('receipt')}
         </Button>
       </Paper>
     </IgContainer>
