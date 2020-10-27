@@ -180,6 +180,7 @@ export default {
     generate_account_link: 'Generate Account Link',
     goal: 'Goal',
     go_back_to_login: 'Go back to login',
+    here: 'here',
     have_an_account_signin: 'Already have an account? Sign in!',
     home: 'Home',
     in_cart: 'In cart',
@@ -289,6 +290,11 @@ export default {
     price: 'Price',
     primary_person: 'Primary person',
     primary_person_changed: 'Primary person changed',
+    privacy_policy: 'Privacy policy',
+    privacy_policy_and_legal_documents:
+      'Privacy policy and legal documents',
+    privacy_signup:
+      'By signing up on Sportfolios, you agree to our Terms and Privacy policy which can be find',
     product_added_to_cart: 'Product added to cart',
     private: 'Private',
     phone_number: 'Phone Number',
@@ -358,6 +364,7 @@ export default {
     team_select: 'Team select',
     teams: 'Teams',
     teams_saved: 'Teams saved!',
+    terms_and_conditions: 'Terms and conditions',
     there_is_no_rosters_for_this_event:
       'There are no rosters for this event.',
     to_transfer: 'Transfer',

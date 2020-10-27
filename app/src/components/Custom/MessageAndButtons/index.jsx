@@ -33,6 +33,7 @@ export default function MessageAndButtons(props) {
         <div className={styles.buttons}>
           {buttons.map((button, index) => (
             <Button
+              href= {button.href || ''}
               size="small"
               variant="contained"
               endIcon={button.endIcon}

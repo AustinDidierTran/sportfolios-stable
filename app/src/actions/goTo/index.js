@@ -39,6 +39,7 @@ export const ROUTES = {
   userSettings: '/userSettings',
   transferPerson: '/transferPerson/:token',
   transferPersonExpired: '/transferPersonExpired',
+  privacyPolicy: '/privacy'
 };
 
 export const formatRoute = (route, params, queryParams) => {

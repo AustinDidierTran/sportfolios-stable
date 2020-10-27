@@ -181,6 +181,7 @@ export default {
     go_back_to_login: 'Retourner à la connexion',
     have_an_account_signin:
       'Vous avez déjà un compte? Connectez-vous!',
+    here: 'ici',
     home: 'Accueil',
     in_cart: 'Dans le panier',
     informations_saved: 'Informations sauvegardées',
@@ -294,6 +295,11 @@ export default {
     price: 'Prix',
     primary_person: 'Personne principale',
     primary_person_changed: 'Personne principale changée',
+    privacy_policy: 'Politique de confidentialité',
+    privacy_policy_and_legal_documents:
+      'Politique de confidentialité et documents légaux',
+    privacy_signup:
+      "En appuyant sur s'enregistrer, vous acceptez nos termes et conditions ainsi que notre politique de confidentialité qui peuvent être trouvés",
     product_added_to_cart: 'Produit ajouté au panier',
     phone_number: 'Numéro de téléphone',
     purchases: 'Achats',
@@ -360,6 +366,7 @@ export default {
     team_history: "Historique de l'équipe",
     teams: 'Équipes',
     teams_saved: 'Équipes sauvegardées!',
+    terms_and_conditions: 'Termes et conditions',
     there_is_no_rosters_for_this_event:
       "Il n'y a pas d'alignements pour cet événement.",
     to_transfer: 'Transférer',
