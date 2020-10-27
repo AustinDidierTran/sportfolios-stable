@@ -256,7 +256,7 @@ export default function TeamRegistered() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {teams.length > 0 ? (
+            {teams?.length > 0 ? (
               <>
                 {teams.map((team, index) => (
                   <StyledTableRow key={index}>
@@ -271,9 +271,9 @@ export default function TeamRegistered() {
                       <StyledTableCell component="th" scope="row">
                         {team.option.name}&nbsp;
                         {`(${
-                          team.option.price === 0
+                          team.option.team_price === 0
                             ? t('free')
-                            : formatPrice(team.option.price)
+                            : formatPrice(team.option.team_price)
                         })`}
                       </StyledTableCell>
                     ) : (

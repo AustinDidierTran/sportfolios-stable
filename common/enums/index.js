@@ -80,6 +80,7 @@ const FORM_DIALOG_TYPE_ENUM = {
   SUBMIT_SCORE: 'score',
   SUBMIT_SCORE_AND_SPIRIT: 'score and spirit',
   ENTER_EMAIL: 'email',
+  ADD_EDIT_EVENT_PAYMENT_OPTION: 'add edit event payment option',
   ADD_MEMBERSHIP: 'add membership',
 };
 

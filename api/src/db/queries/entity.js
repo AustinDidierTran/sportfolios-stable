@@ -58,6 +58,7 @@ const {
   getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
   getRankings: getRankingsHelper,
   getRegistered: getRegisteredHelper,
+  getRegistrationTeamPaymentOption: getRegistrationTeamPaymentOptionHelper,
   getRemainingSpots: getRemainingSpotsHelper,
   getRoster: getRosterHelper,
   getRosterInvoiceItem,
@@ -243,6 +244,10 @@ async function getPersonInfos(entityId) {
   return getPersonInfosHelper(entityId);
 }
 
+async function getRegistrationTeamPaymentOption(paymentOptionId) {
+  return getRegistrationTeamPaymentOptionHelper(paymentOptionId);
+}
+
 async function updateEvent(body, userId) {
   const { eventId, maximumSpots, eventStart, eventEnd } = body;
   if (
@@ -324,21 +329,29 @@ async function addTeamToEvent(body, userId) {
   if (roster) {
     await addRosterHelper(rosterId, roster, userId);
   }
+
   if (paymentOption) {
     if (registrationStatus === STATUS_ENUM.ACCEPTED) {
-      // Add item to cart
-      await addEventCartItem(
-        {
-          stripePriceId: paymentOption,
-          metadata: {
-            sellerEntityId: realEventId,
-            buyerId: teamId,
-            rosterId,
-            team,
-          },
-        },
-        userId,
+      // if team_price === 0, bypass
+      const teamPaymentOption = await getRegistrationTeamPaymentOption(
+        paymentOption,
       );
+
+      if (teamPaymentOption.team_price > 0) {
+        // Add item to cart
+        await addEventCartItem(
+          {
+            stripePriceId: teamPaymentOption.team_stripe_price_id,
+            metadata: {
+              sellerEntityId: realEventId,
+              buyerId: teamId,
+              rosterId,
+              team,
+            },
+          },
+          userId,
+        );
+      }
     }
 
     // send mail to organization admin
@@ -651,7 +664,14 @@ async function addTimeSlot(body) {
 }
 
 async function addOption(body, userId) {
-  const { eventId, name, price, endTime, startTime } = body;
+  const {
+    eventId,
+    name,
+    teamPrice,
+    playerPrice,
+    endTime,
+    startTime,
+  } = body;
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
@@ -660,7 +680,8 @@ async function addOption(body, userId) {
   const res = await addOptionHelper(
     eventId,
     name,
-    price,
+    teamPrice,
+    playerPrice,
     endTime,
     startTime,
     userId,

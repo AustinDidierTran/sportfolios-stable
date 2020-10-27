@@ -15,7 +15,8 @@ export default function EventPaymentOptionItem(props) {
   const {
     id,
     name,
-    price,
+    team_price,
+    individual_price,
     start_time,
     end_time,
     onDelete,
@@ -34,8 +35,12 @@ export default function EventPaymentOptionItem(props) {
     <div>
       <ListItem>
         <ListItemText
-          primary={`${name} | ${
-            price === 0 ? t('free') : formatPrice(price)
+          primary={`${name} | ${t('price_team')} ${
+            team_price === 0 ? t('free') : formatPrice(team_price)
+          }, ${t('price_individual')} ${
+            individual_price === 0
+              ? t('free')
+              : formatPrice(individual_price)
           }`}
           secondary={t('open_from_to', {
             startDate,
@@ -45,7 +50,14 @@ export default function EventPaymentOptionItem(props) {
         <IconButton
           icon="Edit"
           onClick={() =>
-            onEdit({ id, name, price, start_time, end_time })
+            onEdit({
+              id,
+              name,
+              team_price,
+              individual_price,
+              start_time,
+              end_time,
+            })
           }
           style={{ color: 'primary' }}
           tooltip={t('edit')}
