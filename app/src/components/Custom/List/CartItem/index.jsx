@@ -24,8 +24,7 @@ export default function CartItem(props) {
     quantity,
     updateQuantity,
   } = props;
-
-  const { type } = metadata;
+  const { type, size } = metadata;
   const quantityOptions = Array(Math.max(101, quantity + 1))
     .fill(0)
     .map((_, index) => ({
@@ -88,6 +87,32 @@ export default function CartItem(props) {
             className={styles.quantity}
             primary={formatPrice(amount)}
             secondary={`${person?.name} ${person?.surname}`}
+          ></ListItemText>
+        </div>
+      </ListItem>
+    );
+  }
+  if (type === GLOBAL_ENUM.EVENT) {
+    const { team } = metadata;
+    return (
+      <ListItem button style={{ width: '100%' }}>
+        <div className={styles.div}>
+          <ListItemIcon>
+            <Avatar
+              photoUrl={photoUrl || IMAGE_ENUM.ULTIMATE_TOURNAMENT}
+              variant="square"
+              className={styles.photo}
+            ></Avatar>
+          </ListItemIcon>
+          <ListItemText
+            className={styles.name}
+            primary={label}
+            secondary={description}
+          ></ListItemText>
+          <ListItemText
+            className={styles.quantity}
+            primary={formatPrice(amount)}
+            secondary={team.name}
           ></ListItemText>
         </div>
       </ListItem>

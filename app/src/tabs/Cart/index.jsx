@@ -76,7 +76,6 @@ export default function Cart() {
       payload: data,
     });
   };
-
   if (isLoading) {
     return (
       <IgContainer>
