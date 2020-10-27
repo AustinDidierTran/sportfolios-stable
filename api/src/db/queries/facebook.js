@@ -9,6 +9,7 @@ const sendMessage = (messengerId, message) => {
   return sendMessageHelper(messengerId, message);
 };
 
+//TODO Remove this function
 const linkMessengerAccountAllIncluded = async (
   userId,
   messengerId,
@@ -27,7 +28,12 @@ const linkMessengerAccountAllIncluded = async (
   }
 };
 
+const linkMessengerAccount = async (userId, messengerId) => {
+  return setMessengerId(userId, messengerId);
+};
+
 module.exports = {
   sendMessage,
   linkMessengerAccountAllIncluded,
+  linkMessengerAccount,
 };
