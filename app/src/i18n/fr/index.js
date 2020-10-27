@@ -299,7 +299,7 @@ export default {
     privacy_policy_and_legal_documents:
       'Politique de confidentialité et documents légaux',
     privacy_signup:
-      "En appuyant sur s'enregistrer, vous acceptez nos termes et conditions ainsi que notre politique de confidentitalité qui peuvent être trouvés",
+      "En appuyant sur s'enregistrer, vous acceptez nos termes et conditions ainsi que notre politique de confidentialité qui peuvent être trouvés",
     product_added_to_cart: 'Produit ajouté au panier',
     phone_number: 'Numéro de téléphone',
     purchases: 'Achats',

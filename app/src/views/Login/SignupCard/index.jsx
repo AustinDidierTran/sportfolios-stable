@@ -52,7 +52,7 @@ export default function SignupCard(props) {
             fullWidth
           />
           <Typography variant="caption" color="textSecondary">
-            {t('privacy_signup')}{' '}
+            {t('privacy_signup') + ' '}
             <Link
               target="_blank"
               rel="noopener noreferrer"

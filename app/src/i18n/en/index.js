@@ -294,7 +294,7 @@ export default {
     privacy_policy_and_legal_documents:
       'Privacy policy and legal documents',
     privacy_signup:
-      'By signing up on Sportfolios, you agree to our Terms and Privacy policy wich can be find',
+      'By signing up on Sportfolios, you agree to our Terms and Privacy policy which can be find',
     product_added_to_cart: 'Product added to cart',
     private: 'Private',
     phone_number: 'Phone Number',
