@@ -45,9 +45,11 @@ export default {
     admin_view: 'Vue admin',
     admins: 'Administrateurs',
     advanced_filters: 'Filtres avancés',
-    adress: 'Addresse',
+    adress: 'Adresse',
     alias: 'Alias',
     alias_is_already_used: "L'alias est déjà utilisé",
+    and_lowerCased: 'et',
+    an_error_has_occured: 'Une erreur est survenue',
     anonymous: 'Anonyme',
     at: 'à',
     empty_roster:
@@ -63,7 +65,7 @@ export default {
     all_phases: 'Toutes les phases',
     all_fields: 'Tous les terrains',
     all_time_slots: 'Toutes les plages horaires',
-    all_steps_completed: 'Tous les étapes sont complétées',
+    all_steps_completed: 'Toutes les étapes sont complétées',
     amount_to_pay: 'Montant à payer {{amount}}',
     app_role: 'App Role',
     awaiting_payments: 'Paiements en attentes',
@@ -96,6 +98,7 @@ export default {
     category: 'Catégorie',
     change_password: 'Changer votre mot de passe',
     change_picture: 'Changer la photo',
+    changes_saved: 'Changements sauvegardés',
     change_team: "Changer l'équipe",
     choose_your_primary_person: 'Choisir votre personne principale',
     comments: 'Commentaires',
@@ -129,12 +132,16 @@ export default {
       'Êtes-vous certain de vouloir supprimer cette partie?',
     delete_membership_confirmation:
       'Êtes-vous certain de vouloir supprimer cette affilitation?',
+    delete_payment_option: "Supprimer l'option de paiement",
+    delete_payment_option_confirmation:
+      'Êtes-vous certain de vouloir supprimer cette option de paiement?',
     description: 'Description',
     donate: 'Faites un don',
     done: 'Terminé',
     do_not_specify: 'Ne pas spécifier',
     edit_infos: 'Modifier les infos',
     edit_game: 'Modifier la partie',
+    edit_payment_option: "Modifier l'option de paiement",
     edit_your_primary_person: 'Changer de personne primaire',
     editor: 'Éditeur',
     email: 'Courriel',
@@ -168,6 +175,7 @@ export default {
     first_name: 'Prénom',
     fixed_date: 'Date fixe',
     forgot_password: 'Mot de passe oublié?',
+    free: 'Gratuit',
     full_name: 'Nom complet',
     funding: 'Financement',
     funding_goal: 'Objectif: {{goal}}$',
@@ -242,6 +250,7 @@ export default {
     on_le_in_french: 'le',
     on_going_events: 'Événements en cours',
     only_available_on_desktop: 'Seulement disponible sur ordinateur',
+    open_from_to: 'Ouvert du {{startDate}} au {{endDate}}',
     opposing_team: 'Équipe adverse',
     opposing_team_score: "Pointage de l'équipe adverse",
     opposing_team_spirit: "Esprit de jeu de l'équipe adverse",
@@ -266,6 +275,8 @@ export default {
     pay: 'Payer',
     payment_method_added:
       'Vous avez ajouté une nouvelle option de paiement!',
+    payment_team: "Paiement d'équipe",
+    payment_individual: 'Paiement individuel',
     payment_option: 'Option de paiement',
     payment_options: 'Options de paiements',
     payment_option_exist: 'Option de paiement existante',
@@ -273,6 +284,7 @@ export default {
     pending: 'En attente',
     person: 'Personne',
     person_awaiting_transfer: 'Personne en cours de transfert',
+    per_player: 'Par joueur',
     person_transfer_canceled: 'Le transfert a été annulé',
     person_transfer_declined: 'Le transfert a été refusé',
     person_transfer_done: 'Le transfert a été complété',
@@ -293,6 +305,8 @@ export default {
     preranking: 'Préclassement',
     preranking_saved: 'Préclassement sauvegardé',
     price: 'Prix',
+    price_individual: 'Prix individuel',
+    price_team: "Prix d'équipe",
     primary_person: 'Personne principale',
     primary_person_changed: 'Personne principale changée',
     privacy_policy: 'Politique de confidentialité',
@@ -424,6 +438,8 @@ export default {
     refund: 'Remboursement',
     postal_code: 'Code postal',
     address: 'Adresse',
+    error_close_date_before_start_date:
+      "La date de fermeture doit être après la date d'ouverture",
     error_start_date_before_end:
       'La date de départ devrait être avant la date de fin.',
     account_already_exists: 'Le compte existe déjà',
@@ -574,7 +590,7 @@ export default {
     you_added_players_to_your_roster:
       'Vous avez ajouté {{length}} joueurs à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
     no_bank_account_linked:
-      "Vous n'avez pas de compte en banque relié, l'option de paiement doit etre gratuite.",
+      "Vous n'avez pas de compte en banque relié, l'option de paiement doit être gratuite.",
     some_teams_cannot_be_deleted:
       "Des équipes n'ont pas pu être désinscrites de l'événement puisqu'elles sont déjà dans des parties.",
     this_team_cannot_be_deleted:

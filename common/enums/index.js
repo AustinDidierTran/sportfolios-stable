@@ -63,11 +63,9 @@ const MEMBERSHIP_TYPE_ENUM = {
 };
 
 const CARD_TYPE_ENUM = {
-  ADD_PAYMENT_OPTION: 'add payment option',
   CART: 'cart',
   DELETE_ENTITY: 'delete entity',
   EDITABLE_GAME: 'editable game',
-  EVENT_PAYMENT_OPTION: 'event payment option',
   EVENT_SETTINGS: 'event settings',
   EVENT: 'event',
   GAME: 'game',
@@ -82,6 +80,7 @@ const FORM_DIALOG_TYPE_ENUM = {
   SUBMIT_SCORE: 'score',
   SUBMIT_SCORE_AND_SPIRIT: 'score and spirit',
   ENTER_EMAIL: 'email',
+  ADD_EDIT_EVENT_PAYMENT_OPTION: 'add edit event payment option',
   ADD_MEMBERSHIP: 'add membership',
 };
 
@@ -197,6 +196,7 @@ const GLOBAL_ENUM = {
   CART_ITEM: 'cart_item',
   CART: 'cart',
   EVENT_CREATOR: 'event_creator',
+  EVENT_PAYMENT_OPTION: 'event_payment_option',
   MEMBERSHIP_DETAIL: 'membership_detail',
   MEMBERSHIP: 'membership',
   MEMBERSHIP_ORGANIZATION: 'membership organization',

@@ -70,7 +70,7 @@ export default function EventRegistration() {
         (prev, d) => [
           ...prev,
           {
-            display: `${d.name} ${formatPrice(d.price)}`,
+            display: `${d.name} | ${getPaymentOptionDisplay(d)}`,
             value: d.id,
           },
         ],
@@ -78,6 +78,30 @@ export default function EventRegistration() {
       );
 
     setPaymentOptions(options);
+  };
+
+  const getPaymentOptionDisplay = option => {
+    if (option.team_price === 0 && option.individual_price === 0) {
+      return t('free');
+    } else if (
+      option.team_price === 0 &&
+      option.individual_price !== 0
+    ) {
+      return `${formatPrice(option.individual_price)} (${t(
+        'per_player',
+      )})`;
+    } else if (
+      option.team_price !== 0 &&
+      option.individual_price === 0
+    ) {
+      return `${formatPrice(option.team_price)} (${t('team')})`;
+    } else {
+      return `${formatPrice(option.team_price)} (${t('team')}) ${t(
+        'and_lowerCased',
+      )} ${formatPrice(option.individual_price)} (${t(
+        'per_player',
+      )})`;
+    }
   };
 
   useEffect(() => {

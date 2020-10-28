@@ -2,6 +2,7 @@ import React from 'react';
 import { TextField } from '../../MUI';
 import { Select, MultiSelect, Button, CheckBox } from '../../Custom';
 import { COMPONENT_TYPE_ENUM } from '../../../../../common/enums';
+import { InputAdornment } from '@material-ui/core';
 
 export default function ComponentFactory(props) {
   const { component } = props;
@@ -58,6 +59,16 @@ export default function ComponentFactory(props) {
     <TextField
       formik={component.formik}
       namespace={component.namespace}
+      InputLabelProps={{ shrink: component.shrink }}
+      InputProps={{
+        endAdornment: component.endAdorment ? (
+          <InputAdornment position="end">
+            {component.endAdorment}
+          </InputAdornment>
+        ) : (
+          <></>
+        ),
+      }}
       id={component.id}
       label={component.label}
       type={component.type}

@@ -644,7 +644,8 @@ async function getOptions(eventId) {
   const res = await knex('event_payment_options')
     .select(
       'event_payment_options.name',
-      'price',
+      'team_price',
+      'individual_price',
       'start_time',
       'end_time',
       'id',
@@ -655,7 +656,9 @@ async function getOptions(eventId) {
       '=',
       'event_payment_options.event_id',
     )
-    .where({ event_id: realId });
+    .whereNull('event_payment_options.deleted_at')
+    .andWhere({ event_id: realId })
+    .orderBy('event_payment_options.created_at');
 
   return res.map(r => ({
     ...r,
@@ -692,6 +695,14 @@ async function getRegistered(teamId, eventId) {
     .whereIn('roster_id', rostersId);
 }
 
+async function getRegistrationTeamPaymentOption(paymentOptionId) {
+  const [teamPaymentOption] = await knex('event_payment_options')
+    .select('team_price', 'team_stripe_price_id')
+    .where({ id: paymentOptionId });
+
+  return teamPaymentOption;
+}
+
 async function getTeamCaptains(teamId, userId) {
   const realId = await getRealId(teamId);
   const caps = await knex('entities_role')
@@ -711,7 +722,7 @@ async function getTeamCaptains(teamId, userId) {
 async function getPaymentOption(rosterId) {
   const realId = await getRealId(rosterId);
   const [option] = await knex('event_payment_options')
-    .select('id', 'name', 'price')
+    .select('id', 'name', 'team_price')
     .leftJoin(
       'event_rosters',
       'event_rosters.payment_option_id',
@@ -1267,6 +1278,17 @@ async function updateEntityPhoto(entityId, photo_url) {
     .where({ entity_id: realId });
 }
 
+async function updateOption(body) {
+  const { id, start_time, end_time } = body;
+
+  return knex('event_payment_options')
+    .update({
+      start_time: new Date(start_time),
+      end_time: new Date(end_time),
+    })
+    .where({ id });
+}
+
 const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
   var list = [];
   for (const rosterId of rosterIds) {
@@ -1636,7 +1658,8 @@ async function addTimeSlot(date, eventId) {
 async function addOption(
   eventId,
   name,
-  price,
+  teamPrice,
+  playerPrice,
   endTime,
   startTime,
   userId,
@@ -1644,33 +1667,73 @@ async function addOption(
   const realId = await getRealId(eventId);
   const entity = await getEntity(eventId, userId);
 
-  const stripeProduct = {
-    name,
-    active: true,
-    description: entity.name,
+  let teamPriceStripe;
+  let individualPriceStripe;
 
-    // TODO: Add entity seller id
-    metadata: { type: GLOBAL_ENUM.EVENT, id: realId },
-  };
-  const product = await addProduct({ stripeProduct });
-  const stripePrice = {
-    currency: 'cad',
-    unit_amount: price,
-    active: true,
-    product: product.id,
-    metadata: { type: GLOBAL_ENUM.EVENT, id: realId },
-  };
-  const priceStripe = await addPrice({
-    stripePrice,
-    entityId: realId,
-    photoUrl: entity.photoUrl,
-  });
+  if (teamPrice > 0) {
+    const stripeProductTeam = {
+      name: `${name} - Paiement d'équipe`, // ${t('payment_team')}
+      active: true,
+      description: entity.name,
+
+      // TODO: Add entity seller id
+      metadata: { type: GLOBAL_ENUM.EVENT, id: realId },
+    };
+    const productTeam = await addProduct({
+      stripeProduct: stripeProductTeam,
+    });
+    const stripePriceTeam = {
+      currency: 'cad',
+      unit_amount: teamPrice,
+      active: true,
+      product: productTeam.id,
+      metadata: { type: GLOBAL_ENUM.EVENT, id: realId },
+    };
+    teamPriceStripe = await addPrice({
+      stripePrice: stripePriceTeam,
+      entityId: realId,
+      photoUrl: entity.photoUrl,
+    });
+  }
+
+  if (playerPrice > 0) {
+    const stripeProductIndividual = {
+      name: `${name} - Paiement individuel`, // ${t('payment_individual')}
+      active: true,
+      description: entity.name,
+
+      // TODO: Add entity seller id
+      metadata: { type: GLOBAL_ENUM.EVENT, id: realId },
+    };
+    const productIndividual = await addProduct({
+      stripeProduct: stripeProductIndividual,
+    });
+    const stripePriceIndividual = {
+      currency: 'cad',
+      unit_amount: playerPrice,
+      active: true,
+      product: productIndividual.id,
+      metadata: { type: GLOBAL_ENUM.EVENT, id: realId },
+    };
+    individualPriceStripe = await addPrice({
+      stripePrice: stripePriceIndividual,
+      entityId: realId,
+      photoUrl: entity.photoUrl,
+    });
+  }
+
   const [res] = await knex('event_payment_options')
     .insert({
-      id: priceStripe.id,
       event_id: realId,
       name,
-      price,
+      team_stripe_price_id: teamPriceStripe
+        ? teamPriceStripe.id
+        : null,
+      team_price: teamPrice,
+      individual_stripe_price_id: individualPriceStripe
+        ? individualPriceStripe.id
+        : null,
+      individual_price: playerPrice,
       end_time: new Date(endTime),
       start_time: new Date(startTime),
     })
@@ -2122,7 +2185,7 @@ const deleteEntityMembership = async membershipId => {
 };
 
 const deleteOption = async id => {
-  return await knex('event_payment_options')
+  return knex('event_payment_options')
     .where({ id })
     .del();
 };
@@ -2268,6 +2331,7 @@ module.exports = {
   getMembers,
   getMemberships,
   getRegistered,
+  getRegistrationTeamPaymentOption,
   getAllAcceptedRegistered,
   getAllRegistered,
   getAllRegisteredInfos,
@@ -2296,6 +2360,7 @@ module.exports = {
   updateEntityPhoto,
   updateEntityRole,
   updateEvent,
+  updateOption,
   updatePreRanking,
   updateGeneralInfos,
   updatePersonInfosHelper,
