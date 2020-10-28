@@ -2,7 +2,7 @@ const ERROR_ENUM = {
   ACCESS_DENIED: 'Access denied',
   CLOSE_AFTER_OPEN: 'error_close_date_before_start_date',
   EMAIL_ALREADY_EXIST: 'email_already_exist',
-  ERROR_OCCURED: 'an_error_has_occured',
+  ERROR_OCCURED: 'An error has occured',
   INVALID_EMAIL: 'invalid_email',
   INVALID_TRANSIT_NUMBER:
     'Invalid transit number. The number should be in the format xxxxx-yyy or xxxxxyyy.',

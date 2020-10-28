@@ -21,7 +21,6 @@ import {
   STATUS_ENUM,
   FORM_DIALOG_TYPE_ENUM,
 } from '../../../../../common/enums';
-import { ERROR_ENUM } from '../../../../../common/errors';
 import { Store, ACTION_ENUM } from '../../../Store';
 
 export default function AddOptionsEvent() {
@@ -64,7 +63,7 @@ export default function AddOptionsEvent() {
         id: eventId,
       }),
     );
-    setHasBankAccount(res.data);
+    setHasBankAccount(res?.data || false);
   };
 
   const onEdit = option => {
@@ -131,7 +130,7 @@ export default function AddOptionsEvent() {
     if (res.status === STATUS_ENUM.ERROR) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
-        message: t(ERROR_ENUM.ERROR_OCCURED),
+        message: t('an_error_has_occured'),
         severity: SEVERITY_ENUM.ERROR,
       });
       setIsLoading(false);
@@ -167,7 +166,7 @@ export default function AddOptionsEvent() {
     } else {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
-        message: t(ERROR_ENUM.ERROR_OCCURED),
+        message: t('an_error_has_occured'),
         severity: SEVERITY_ENUM.ERROR,
       });
       setIsLoading(false);

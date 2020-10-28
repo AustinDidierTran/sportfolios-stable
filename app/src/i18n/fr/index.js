@@ -141,7 +141,7 @@ export default {
     do_not_specify: 'Ne pas spécifier',
     edit_infos: 'Modifier les infos',
     edit_game: 'Modifier la partie',
-    edit_payment_option: 'Modifier option de paiement',
+    edit_payment_option: "Modifier l'option de paiement",
     edit_your_primary_person: 'Changer de personne primaire',
     editor: 'Éditeur',
     email: 'Courriel',
@@ -174,7 +174,7 @@ export default {
     finish: 'Finir',
     first_name: 'Prénom',
     fixed_date: 'Date fixe',
-    for_free_option: '0 pour une option gratuite',
+    for_free_option: 'Mettre 0 pour une option gratuite',
     forgot_password: 'Mot de passe oublié?',
     free: 'Gratuit',
     full_name: 'Nom complet',
@@ -440,7 +440,7 @@ export default {
     postal_code: 'Code postal',
     address: 'Adresse',
     error_close_date_before_start_date:
-      "La date de fermeture dois être après la date d'ouverture",
+      "La date de fermeture doit être après la date d'ouverture",
     error_start_date_before_end:
       'La date de départ devrait être avant la date de fin.',
     account_already_exists: 'Le compte existe déjà',

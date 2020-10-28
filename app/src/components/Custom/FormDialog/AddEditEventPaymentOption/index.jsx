@@ -103,6 +103,9 @@ export default function AddEditEventPaymentOption(props) {
     if (closeDate < openDate) {
       errors.closeDate = t(ERROR_ENUM.CLOSE_AFTER_OPEN);
     }
+    if (closeDate === openDate && closeTime < openTime) {
+      errors.closeTime = t(ERROR_ENUM.CLOSE_AFTER_OPEN);
+    }
     if (!closeTime.length) {
       errors.closeTime = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
@@ -132,7 +135,7 @@ export default function AddEditEventPaymentOption(props) {
     },
   });
 
-  const fields = [
+  const nonEditableFields = [
     {
       namespace: 'name',
       label: t('name'),
@@ -140,18 +143,21 @@ export default function AddEditEventPaymentOption(props) {
     },
     {
       namespace: 'teamPrice',
-      label: `${t('price_team')} (${t('for_free_option')})`,
+      label: t('price_team'),
       type: 'number',
       initialValue: 0,
       endAdorment: '$',
     },
     {
       namespace: 'playerPrice',
-      label: `${t('price_individual')} (${t('for_free_option')})`,
+      label: t('price_individual'),
       type: 'number',
       initialValue: 0,
       endAdorment: '$',
     },
+  ];
+
+  const editableFields = [
     {
       namespace: 'openDate',
       label: t('registration_open_date'),
@@ -208,10 +214,14 @@ export default function AddEditEventPaymentOption(props) {
             (selectedOption.individual_price === 0
               ? t('free')
               : formatPrice(selectedOption.individual_price))
-          : ''
+          : `(${t('for_free_option')})`
       }
       buttons={buttons}
-      fields={isEdit ? fields.slice(-4) : fields}
+      fields={
+        isEdit
+          ? editableFields
+          : nonEditableFields.concat(editableFields)
+      }
       formik={formik}
       onClose={handleClose}
     />
