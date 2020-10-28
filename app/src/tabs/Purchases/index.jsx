@@ -15,9 +15,10 @@ export default function PurchasesTab() {
   const formatPurchases = () =>
     purchases
       .sort((a, b) => moment(b.createdAt) - moment(a.createdAt))
-      .map(p => ({
+      .map((p, index) => ({
         ...p,
         type: LIST_ITEM_ENUM.PURCHASES,
+        key: index,
       }));
 
   return <List items={formatPurchases()} />;

@@ -100,23 +100,21 @@ export default function Cart() {
   }
   return (
     <>
-      <IgContainer>
-        <div className={styles.cart}>
-          <List
-            items={items.map((item, index) => ({
-              ...item,
-              updateQuantity,
-              type: LIST_ITEM_ENUM.CART,
-              key: index,
-            }))}
-          />
-          <DefaultCard className={styles.defaultCard}>
-            <Typography variant="h5" className={styles.typo}>
-              {`Total: ${formatPrice(total)}`}
-            </Typography>
-          </DefaultCard>
-        </div>
-      </IgContainer>
+      <div className={styles.cart}>
+        <List
+          items={items.map((item, index) => ({
+            ...item,
+            updateQuantity,
+            type: LIST_ITEM_ENUM.CART,
+            key: index,
+          }))}
+        />
+        <DefaultCard className={styles.defaultCard}>
+          <Typography variant="h5" className={styles.typo}>
+            {`Total: ${formatPrice(total)}`}
+          </Typography>
+        </DefaultCard>
+      </div>
 
       <ContainerBottomFixed>
         <div className={styles.buttonDiv}>

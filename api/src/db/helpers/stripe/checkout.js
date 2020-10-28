@@ -371,10 +371,7 @@ const checkout = async (body, userId) => {
             stripePriceId: invoiceItem.price.id,
             buyerUserId: userId,
             receiptUrl,
-            metadata: {
-              size: metadata.size,
-              type: GLOBAL_ENUM.EVENT,
-            },
+            metadata: { ...metadata, type: GLOBAL_ENUM.EVENT },
           });
         } else if (Number(metadata.type) === GLOBAL_ENUM.SHOP_ITEM) {
           await INVOICE_PAID_ENUM.STORE({
@@ -386,10 +383,7 @@ const checkout = async (body, userId) => {
             buyerUserId: userId,
             invoiceItemId: invoiceItem.id,
             receiptUrl,
-            metadata: {
-              size: metadata.size,
-              type: GLOBAL_ENUM.SHOP_ITEM,
-            },
+            metadata: { ...metadata, type: GLOBAL_ENUM.SHOP_ITEM },
           });
         } else if (metadata.type === GLOBAL_ENUM.MEMBERSHIP) {
           await INVOICE_PAID_ENUM.MEMBERSHIPS({

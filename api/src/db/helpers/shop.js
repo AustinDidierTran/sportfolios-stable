@@ -163,21 +163,28 @@ const getCartItems = async userId => {
       )
       .where('cart_items.user_id', userId)
       .orderBy('cart_items.created_at');
+    cartItems.forEach(item => {
+      if (!item.metadata.type || item.amount === 0) {
+        deleteCartItems(item.id, item.user_id);
+      }
+    });
     return (
-      cartItems.map(i => ({
-        active: i.active,
-        amount: i.amount,
-        description: i.description,
-        id: i.id,
-        label: i.label,
-        metadata: i.metadata,
-        quantity: i.quantity,
-        photoUrl: i.photo_url,
-        stripePriceId: i.stripe_price_id,
-        stripePriceMetadata: i.stripe_price_metadata,
-        stripeProductId: i.stripe_product_id,
-        userId: i.user_id,
-      })) || []
+      cartItems
+        .filter(c => c.metadata.type)
+        .map(i => ({
+          active: i.active,
+          amount: i.amount,
+          description: i.description,
+          id: i.id,
+          label: i.label,
+          metadata: i.metadata,
+          quantity: i.quantity,
+          photoUrl: i.photo_url,
+          stripePriceId: i.stripe_price_id,
+          stripePriceMetadata: i.stripe_price_metadata,
+          stripeProductId: i.stripe_product_id,
+          userId: i.user_id,
+        })) || []
     );
   } catch (err) {
     stripeErrorLogger('GetCartItem error', err);
@@ -187,7 +194,11 @@ const getCartItems = async userId => {
 
 const getCartTotal = async userId => {
   const items = await knex('cart_items')
-    .select(['stripe_price.amount', 'cart_items.quantity'])
+    .select([
+      'stripe_price.amount',
+      'cart_items.quantity',
+      'cart_items.metadata',
+    ])
     .leftJoin(
       'stripe_price',
       'cart_items.stripe_price_id',
@@ -195,12 +206,10 @@ const getCartTotal = async userId => {
       'stripe_price.stripe_price_id',
     )
     .where('cart_items.user_id', userId);
-
   const total = items.reduce(
     (prev, curr) => prev + curr.amount * curr.quantity,
     0,
   );
-
   return total;
 };
 
@@ -417,6 +426,12 @@ const updateCartItems = async (body, userId) => {
   }
 };
 
+const deleteCartItems = async (cartItemId, userId) => {
+  await knex('cart_items')
+    .where({ id: cartItemId, user_id: userId })
+    .del();
+};
+
 const addItemToPaidStoreItems = async query => {
   const {
     sellerEntityId,
@@ -503,4 +518,5 @@ module.exports = {
   removeAllInstancesFromCart,
   removeCartItemInstance,
   updateCartItems,
+  deleteCartItems,
 };
