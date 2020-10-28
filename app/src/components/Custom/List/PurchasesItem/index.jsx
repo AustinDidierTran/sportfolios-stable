@@ -35,6 +35,7 @@ export default function PurchasesItem(props) {
   };
   const { type } = metadata;
   if (type === GLOBAL_ENUM.EVENT) {
+    const { team } = metadata;
     return (
       <>
         <ListItem style={{ width: '100%' }}>
