@@ -174,7 +174,6 @@ export default {
     finish: 'Finish',
     first_name: 'First Name',
     fixed_date: 'Fixed Date',
-    for_free_option: 'Put 0 for free a option',
     forgot_password: 'Forgot Password?',
     free: 'Free',
     full_name: 'Full name',

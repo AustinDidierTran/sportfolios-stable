@@ -145,14 +145,12 @@ export default function AddEditEventPaymentOption(props) {
       namespace: 'teamPrice',
       label: t('price_team'),
       type: 'number',
-      initialValue: 0,
       endAdorment: '$',
     },
     {
       namespace: 'playerPrice',
       label: t('price_individual'),
       type: 'number',
-      initialValue: 0,
       endAdorment: '$',
     },
   ];
@@ -214,7 +212,7 @@ export default function AddEditEventPaymentOption(props) {
             (selectedOption.individual_price === 0
               ? t('free')
               : formatPrice(selectedOption.individual_price))
-          : `(${t('for_free_option')})`
+          : ''
       }
       buttons={buttons}
       fields={

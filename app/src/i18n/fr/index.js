@@ -174,7 +174,6 @@ export default {
     finish: 'Finir',
     first_name: 'Prénom',
     fixed_date: 'Date fixe',
-    for_free_option: 'Mettre 0 pour une option gratuite',
     forgot_password: 'Mot de passe oublié?',
     free: 'Gratuit',
     full_name: 'Nom complet',
