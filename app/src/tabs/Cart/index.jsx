@@ -99,6 +99,7 @@ export default function Cart() {
       <MessageAndButtons
         buttons={buttons}
         message={t('cart_empty_go_shop')}
+        withoutIgContainer
       />
     );
   }

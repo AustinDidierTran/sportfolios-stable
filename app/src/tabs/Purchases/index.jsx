@@ -1,7 +1,6 @@
 import React from 'react';
-import { IgContainer, List } from '../../components/Custom';
+import { List, LoadingSpinner } from '../../components/Custom';
 import { useApiRoute } from '../../hooks/queries';
-import { CircularProgress } from '@material-ui/core';
 import { LIST_ITEM_ENUM } from '../../../../common/enums';
 import moment from 'moment';
 
@@ -10,11 +9,7 @@ export default function PurchasesTab() {
     '/api/shop/purchases',
   );
   if (isLoading) {
-    return (
-      <IgContainer>
-        <CircularProgress />
-      </IgContainer>
-    );
+    return <LoadingSpinner />;
   }
 
   const formatPurchases = () =>
@@ -25,9 +20,5 @@ export default function PurchasesTab() {
         type: LIST_ITEM_ENUM.PURCHASES,
       }));
 
-  return (
-    <IgContainer>
-      <List items={formatPurchases()} />
-    </IgContainer>
-  );
+  return <List items={formatPurchases()} />;
 }

@@ -24,14 +24,14 @@ export default function CartItem(props) {
     quantity,
     updateQuantity,
   } = props;
-  const { type, size } = metadata;
   const quantityOptions = Array(Math.max(101, quantity + 1))
     .fill(0)
     .map((_, index) => ({
       value: index,
       display: index,
     }));
-  if (type === GLOBAL_ENUM.TEAM) {
+  const { type } = metadata;
+  if (type === GLOBAL_ENUM.TEAM || type === GLOBAL_ENUM.EVENT) {
     const { team } = metadata;
     return (
       <ListItem button style={{ width: '100%' }}>
@@ -92,14 +92,14 @@ export default function CartItem(props) {
       </ListItem>
     );
   }
-  if (type === GLOBAL_ENUM.EVENT) {
-    const { team } = metadata;
+  if (type === GLOBAL_ENUM.SHOP_ITEM) {
+    const { size } = metadata;
     return (
       <ListItem button style={{ width: '100%' }}>
         <div className={styles.div}>
           <ListItemIcon>
             <Avatar
-              photoUrl={photoUrl || IMAGE_ENUM.ULTIMATE_TOURNAMENT}
+              photoUrl={photoUrl}
               variant="square"
               className={styles.photo}
             ></Avatar>
@@ -107,47 +107,25 @@ export default function CartItem(props) {
           <ListItemText
             className={styles.name}
             primary={label}
-            secondary={description}
+            secondary={size || ''}
           ></ListItemText>
           <ListItemText
             className={styles.quantity}
             primary={formatPrice(amount)}
-            secondary={team.name}
+            secondary={`Qt: ${quantity}`}
           ></ListItemText>
+          <Select
+            className={styles.select}
+            onChange={value => {
+              updateQuantity(value, id);
+            }}
+            value={quantity}
+            options={quantityOptions}
+            label={t('quantity')}
+          />
         </div>
       </ListItem>
     );
   }
-  return (
-    <ListItem button style={{ width: '100%' }}>
-      <div className={styles.div}>
-        <ListItemIcon>
-          <Avatar
-            photoUrl={photoUrl}
-            variant="square"
-            className={styles.photo}
-          ></Avatar>
-        </ListItemIcon>
-        <ListItemText
-          className={styles.name}
-          primary={label}
-          secondary={size || ''}
-        ></ListItemText>
-        <ListItemText
-          className={styles.quantity}
-          primary={formatPrice(amount)}
-          secondary={`Qt: ${quantity}`}
-        ></ListItemText>
-        <Select
-          className={styles.select}
-          onChange={value => {
-            updateQuantity(value, id);
-          }}
-          value={quantity}
-          options={quantityOptions}
-          label={t('quantity')}
-        />
-      </div>
-    </ListItem>
-  );
+  return <></>;
 }

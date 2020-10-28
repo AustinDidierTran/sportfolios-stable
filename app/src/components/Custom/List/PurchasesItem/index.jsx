@@ -33,7 +33,7 @@ export default function PurchasesItem(props) {
   };
   if (metadata.type === GLOBAL_ENUM.EVENT) {
     return (
-      <ListItem button style={{ width: '100%' }}>
+      <ListItem style={{ width: '100%' }}>
         <div className={styles.div}>
           <ListItemIcon>
             <Avatar
@@ -75,7 +75,7 @@ export default function PurchasesItem(props) {
   if (metadata.type === GLOBAL_ENUM.MEMBERSHIP) {
     const { organization, person } = metadata;
     return (
-      <ListItem button style={{ width: '100%' }}>
+      <ListItem style={{ width: '100%' }}>
         <div className={styles.div}>
           <ListItemIcon>
             <Avatar
@@ -115,7 +115,7 @@ export default function PurchasesItem(props) {
   }
 
   return (
-    <ListItem button style={{ width: '100%' }}>
+    <ListItem style={{ width: '100%' }}>
       <div className={styles.div}>
         <ListItemIcon>
           <Avatar
