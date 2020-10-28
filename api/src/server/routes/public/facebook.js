@@ -1,7 +1,8 @@
 const Router = require('koa-router');
 const router = new Router();
 const BASE_URL = '/api/fb';
-const { handleMessage } = require('../../utils/ChatBot/receive');
+const { Chatbot } = require('../../utils/ChatBot');
+const { CHATBOT_STATES } = require('../../../../../common/enums');
 
 router.post(`${BASE_URL}/messengerHook`, async ctx => {
   let body = ctx.request.body;
@@ -9,14 +10,18 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
   // Checks this is an event from a page subscription
   if (body.object === 'page') {
     // Iterates over each entry - there may be multiple if batched
-    body.entry.forEach(function(entry) {
+    body.entry.forEach(async function(entry) {
       // Gets the message. entry.messaging is an array, but
       // will only ever contain one message, so we get index 0
       let webhookEvent = entry.messaging[0];
       // eslint-disable-next-line no-console
       console.log(webhookEvent);
-      const senderId = webhookEvent.sender.id;
-      return handleMessage(senderId, webhookEvent);
+      //TODO: Get state in db
+      const state = CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT;
+      const chatbot = new Chatbot(state);
+      chatbot.handleEvent(webhookEvent);
+      console.log(chatbot.state);
+      //TODO: Set new state
     });
     // Returns a '200 OK' response to all requests
     ctx.status = 200;
