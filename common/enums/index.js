@@ -109,6 +109,7 @@ const GENDER_ENUM = {
 const INVOICE_STATUS_ENUM = {
   DRAFT: 'draft',
   DELETED: 'deleted',
+  FREE: 'free',
   OPEN: 'open',
   PAID: 'paid',
   REFUNDED: 'refunded',
@@ -118,6 +119,7 @@ const INVOICE_STATUS_ENUM = {
 
 const STATUS_ENUM = {
   ACCEPTED: 'accepted',
+  ACCEPTED_FREE: 'accepted free',
   PENDING: 'pending',
   REFUSED: 'refused',
   SUCCESS: 201,
@@ -572,7 +574,6 @@ module.exports = {
   MEMBERSHIP_LENGTH_ENUM,
   MEMBERSHIP_TYPE_ENUM,
   POSITION_ENUM,
-  STATUS_ENUM,
   REJECTION_ENUM,
   ROSTER_ROLE_ENUM,
   SELECT_ENUM,

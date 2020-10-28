@@ -25,6 +25,14 @@ export default function RegistrationStatus() {
   let values = {};
 
   switch (status) {
+    case STATUS_ENUM.ACCEPTED_FREE:
+      values = {
+        message: t('registration_accepted_free'),
+        onClick: returnHome,
+        button: t('home'),
+        endIcon: 'Home',
+      };
+      break;
     case STATUS_ENUM.ACCEPTED:
       values = {
         message: t('registration_accepted'),
@@ -37,7 +45,7 @@ export default function RegistrationStatus() {
       values = {
         message: t('registration_pending'),
         onClick: returnHome,
-        button: t('Home'),
+        button: t('home'),
         endIcon: 'Home',
       };
       break;
@@ -46,14 +54,14 @@ export default function RegistrationStatus() {
         values = {
           message: t('no_remaining_spots'),
           onClick: returnHome,
-          button: t('Home'),
+          button: t('home'),
           endIcon: 'Home',
         };
       } else {
         values = {
           message: t('registration_refused'),
           onClick: returnHome,
-          button: t('Home'),
+          button: t('home'),
           endIcon: 'Home',
         };
       }

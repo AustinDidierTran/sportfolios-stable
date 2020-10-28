@@ -330,19 +330,25 @@ async function addTeamToEvent(body, userId) {
     return { status: registrationStatus, reason };
   }
 
-  // TODO: Validate status of team
-  const registrationStatus = STATUS_ENUM.ACCEPTED;
-
   const team = await getEntity(teamId, userId);
 
   const event = await getEntity(eventId, userId);
 
   const realEventId = await (await getEntity(eventId, userId)).id;
 
+  const teamPaymentOption = await getRegistrationTeamPaymentOption(
+    paymentOption,
+  );
+  const isFreeOption = teamPaymentOption.team_price === 0;
+  // TODO: Validate status of team
+  const registrationStatus = isFreeOption
+    ? STATUS_ENUM.ACCEPTED_FREE
+    : STATUS_ENUM.ACCEPTED;
+
   const rosterId = await addTeamToEventHelper({
     teamId,
     eventId: realEventId,
-    status,
+    status: isFreeOption ? INVOICE_STATUS_ENUM.FREE : status,
     registrationStatus,
     paymentOption,
   });
@@ -354,26 +360,19 @@ async function addTeamToEvent(body, userId) {
 
   if (paymentOption) {
     if (registrationStatus === STATUS_ENUM.ACCEPTED) {
-      // if team_price === 0, bypass
-      const teamPaymentOption = await getRegistrationTeamPaymentOption(
-        paymentOption,
-      );
-
-      if (teamPaymentOption.team_price > 0) {
-        // Add item to cart
-        await addEventCartItem(
-          {
-            stripePriceId: teamPaymentOption.team_stripe_price_id,
-            metadata: {
-              sellerEntityId: realEventId,
-              buyerId: teamId,
-              rosterId,
-              team,
-            },
+      // wont be added to cart if free
+      await addEventCartItem(
+        {
+          stripePriceId: teamPaymentOption.team_stripe_price_id,
+          metadata: {
+            sellerEntityId: realEventId,
+            buyerId: teamId,
+            rosterId,
+            team,
           },
-          userId,
-        );
-      }
+        },
+        userId,
+      );
     }
 
     // send mail to organization admin
@@ -400,6 +399,7 @@ async function addTeamToEvent(body, userId) {
         team,
         event,
         email,
+        isFreeOption,
       });
     });
   }

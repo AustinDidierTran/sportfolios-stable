@@ -64,6 +64,10 @@ async function getHtml(title, content, link, buttonName) {
   return `<html><body style="font-family:Helvetica"><h1>${title}</h1><p>${content}</p><a href=${link} target="_blank"><button>${buttonName}</button></a><img src=${LOGO_ENUM.LOGO_256X256}></img><br/><footer> <p>  <a href=${CLIENT_BASE_URL} target="_blank"> sportfolios.app </a></p></body> </html>`;
 }
 
+async function getHtmlNoButton(title, content) {
+  return `<html><body style="font-family:Helvetica"><h1>${title}</h1><p>${content}</p><img src=${LOGO_ENUM.LOGO_256X256}></img><br/><footer> <p>  <a href=${CLIENT_BASE_URL} target="_blank"> sportfolios.app </a></p></body> </html>`;
+}
+
 async function sendConfirmationEmail({
   email,
   language,
@@ -293,6 +297,7 @@ async function sendAcceptedRegistrationEmail({
   team,
   event,
   language,
+  isFreeOption,
 }) {
   let html = '';
   let subject = '';
@@ -302,16 +307,27 @@ async function sendAcceptedRegistrationEmail({
   let buttonName = '';
   if (language === LANGUAGE_ENUM.ENGLISH) {
     title = `Registration ${team.name}`;
-    content = `Your team ${team.name} is officially registered to ${event.name}. The tournament is awaiting your payment. You can pay by going on the following link 👇`;
     subject = `Registration ${team.name} | Sportfolios`;
-    buttonName = 'Pay your registration';
+    if (isFreeOption) {
+      content = `Your team ${team.name} is officially registered to ${event.name}.`;
+    } else {
+      content = `Your team ${team.name} is officially registered to ${event.name}. The tournament is awaiting your payment. You can pay by going on the following link 👇`;
+      buttonName = 'Pay your registration';
+    }
   } else {
     title = `Inscription ${team.name}`;
-    content = `Votre équipe ${team.name} est officiellement acceptée au tournoi ${event.name}. Le tournoi est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant 👇`;
     subject = `Inscription ${team.name} | Sportfolios`;
-    buttonName = 'Payez votre inscription';
+    if (isFreeOption) {
+      content = `Votre équipe ${team.name} est officiellement acceptée au tournoi ${event.name}.`;
+    } else {
+      content = `Votre équipe ${team.name} est officiellement acceptée au tournoi ${event.name}. Le tournoi est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant 👇`;
+      buttonName = 'Payez votre inscription';
+    }
   }
-  html = await getHtml(title, content, link, buttonName);
+  html =
+    buttonName !== ''
+      ? await getHtml(title, content, link, buttonName)
+      : await getHtmlNoButton(title, content);
   await sendMail({
     email,
     subject,
