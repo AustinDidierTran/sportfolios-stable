@@ -583,6 +583,23 @@ const setFacebookData = async (user_id, data) => {
   });
 };
 
+const getChatbotInfos = async messenger_id => {
+  const db = await knex('messenger_user_chatbot_state').select('*');
+  console.log({ db });
+  const [infos] = await knex('messenger_user_chatbot_state')
+    .select('*')
+    .first()
+    .where({ messenger_id });
+  console.log({ infos });
+  return infos;
+};
+
+const setChatbotInfos = async (messenger_id, infos) => {
+  return knex('messenger_user_chatbot_state')
+    .update({ ...infos })
+    .where({ messenger_id });
+};
+
 const getFacebookId = async user_id => {
   const [id] = await knex('user_apps_id')
     .select('facebook_id')
@@ -611,6 +628,8 @@ const isLinkedFacebookAccount = async facebook_id => {
 };
 
 const setMessengerId = async (user_id, messenger_id) => {
+  const insertIfNotExist = `INSERT INTO messenger_user_chatbot_state(messenger_id) ${messenger_id} ON CONFLICT DO NOTHING`;
+  knex.raw(insertIfNotExist);
   return knex('user_apps_id')
     .where({ user_id })
     .update({ messenger_id })
@@ -672,4 +691,6 @@ module.exports = {
   setMessengerId,
   getMessengerId,
   deleteMessengerId,
+  getChatbotInfos,
+  setChatbotInfos,
 };

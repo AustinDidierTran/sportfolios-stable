@@ -3,6 +3,7 @@ const router = new Router();
 const BASE_URL = '/api/fb';
 const { Chatbot } = require('../../utils/ChatBot');
 const { CHATBOT_STATES } = require('../../../../../common/enums');
+const queries = require('../../../db/queries/facebook');
 
 router.post(`${BASE_URL}/messengerHook`, async ctx => {
   let body = ctx.request.body;
@@ -17,6 +18,9 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
       // eslint-disable-next-line no-console
       console.log(webhookEvent);
       //TODO: Get state in db
+      const senderId = webhookEvent.sender.id;
+      const chatbotinfos = await queries.getChatbotInfos(senderId);
+      console.log({ chatbotinfos });
       const state = CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT;
       const chatbot = new Chatbot(state);
       chatbot.handleEvent(webhookEvent);

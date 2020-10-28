@@ -2,7 +2,11 @@ const {
   sendMessage: sendMessageHelper,
 } = require('../helpers/facebook');
 
-const { setMessengerId } = require('../helpers');
+const {
+  setMessengerId,
+  getChatbotInfos: getChatbotInfosHelper,
+  setChatbotInfos: setChatbotInfosHelper,
+} = require('../helpers');
 const { MESSENGER_MESSAGES_FR } = require('../../../../common/enums');
 
 const sendMessage = (messengerId, message) => {
@@ -32,8 +36,18 @@ const linkMessengerAccount = async (userId, messengerId) => {
   return setMessengerId(userId, messengerId);
 };
 
+const getChatbotInfos = async messengerId => {
+  return getChatbotInfosHelper(messengerId);
+};
+
+const setChatbotInfos = async (messengerId, infos) => {
+  return setChatbotInfosHelper(messengerId, infos);
+};
+
 module.exports = {
   sendMessage,
   linkMessengerAccountAllIncluded,
   linkMessengerAccount,
+  getChatbotInfos,
+  setChatbotInfos,
 };
