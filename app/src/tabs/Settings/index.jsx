@@ -14,7 +14,6 @@ import BottomPageLogo from '../../components/Custom/BottomPageLogo';
 
 const Stripe = loadable(() => import('./Stripe'));
 const ManageRoles = loadable(() => import('./ManageRoles'));
-const Memberships = loadable(() => import('./Memberships'));
 const AddMembership = loadable(() => import('./AddMembership'));
 const AddOptionsEvent = loadable(() => import('./AddOptionsEvent'));
 const TeamRegistered = loadable(() => import('./TeamRegistered'));
@@ -117,7 +116,7 @@ export default function EntitySettings(props) {
           </div>
         );
       }
-      return <Memberships />;
+      return <></>;
 
     case GLOBAL_ENUM.PERSON:
       if (isAdmin) {

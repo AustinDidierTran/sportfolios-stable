@@ -14,6 +14,7 @@ import {
   GLOBAL_ENUM,
   IMAGE_ENUM,
 } from '../../../../../../common/enums';
+import { Divider } from '@material-ui/core';
 
 export default function PurchasesItem(props) {
   const { t } = useTranslation();
@@ -31,127 +32,142 @@ export default function PurchasesItem(props) {
   const goToReceipt = () => {
     window.location.href = receiptUrl;
   };
-  if (metadata.type === GLOBAL_ENUM.EVENT) {
+  const { type } = metadata;
+  if (type === GLOBAL_ENUM.EVENT) {
     return (
-      <ListItem style={{ width: '100%' }}>
-        <div className={styles.div}>
-          <ListItemIcon>
-            <Avatar
-              photoUrl={photoUrl || IMAGE_ENUM.ULTIMATE_TOURNAMENT}
-              variant="square"
-              className={styles.photo}
-            ></Avatar>
-          </ListItemIcon>
-          <ListItemText
-            className={styles.name}
-            primary={label}
-            secondary={metadata.size}
-          ></ListItemText>
-          <ListItemText
-            className={styles.quantity}
-            primary={formatPrice(amount)}
-          ></ListItemText>
-          {/* <MailtoButton
+      <>
+        <ListItem style={{ width: '100%' }}>
+          <div className={styles.div}>
+            <ListItemIcon>
+              <Avatar
+                photoUrl={photoUrl || IMAGE_ENUM.ULTIMATE_TOURNAMENT}
+                variant="square"
+                className={styles.photo}
+              ></Avatar>
+            </ListItemIcon>
+            <ListItemText
+              className={styles.name}
+              primary={description}
+              secondary={team.name}
+            ></ListItemText>
+            <ListItemText
+              className={styles.quantity}
+              primary={formatPrice(amount)}
+              secondary={label}
+            ></ListItemText>
+            {/* <MailtoButton
             edge="end"
             emails={email}
             className={styles.mail}
           /> */}
-          <IconButton
-            onClick={goToReceipt}
-            tooltip={t('receipt')}
-            icon="Receipt"
-            style={{ color: 'primary' }}
-          />
-          <ListItemText
-            className={styles.date}
-            secondary={`${t('purchased_on')}: ${formatDate(
-              moment(createdAt),
-            )}`}
-          ></ListItemText>
-        </div>
-      </ListItem>
+            <IconButton
+              onClick={goToReceipt}
+              tooltip={t('receipt')}
+              icon="Receipt"
+              style={{ color: 'primary' }}
+            />
+            <ListItemText
+              className={styles.date}
+              secondary={`${t('purchased_on')}: ${formatDate(
+                moment(createdAt),
+              )}`}
+            ></ListItemText>
+          </div>
+        </ListItem>
+        <Divider />
+      </>
     );
   }
-  if (metadata.type === GLOBAL_ENUM.MEMBERSHIP) {
+  if (type === GLOBAL_ENUM.MEMBERSHIP) {
     const { organization, person } = metadata;
     return (
-      <ListItem style={{ width: '100%' }}>
-        <div className={styles.div}>
-          <ListItemIcon>
-            <Avatar
-              photoUrl={
-                organization?.photoUrl ||
-                IMAGE_ENUM.ULTIMATE_TOURNAMENT
-              }
-              variant="square"
-              className={styles.photo}
-            ></Avatar>
-          </ListItemIcon>
-          <ListItemText
-            className={styles.name}
-            primary={t(label)}
-            secondary={organization?.name}
-          ></ListItemText>
-          <ListItemText
-            className={styles.quantity}
-            primary={formatPrice(amount)}
-            secondary={`${person?.name} ${person?.surname}`}
-          ></ListItemText>
-          <IconButton
-            onClick={goToReceipt}
-            tooltip={t('receipt')}
-            icon="Receipt"
-            style={{ color: 'primary' }}
-          />
-          <ListItemText
-            className={styles.date}
-            secondary={`${t('purchased_on')}: ${formatDate(
-              moment(createdAt),
-            )}`}
-          ></ListItemText>
-        </div>
-      </ListItem>
+      <>
+        <ListItem style={{ width: '100%' }}>
+          <div className={styles.div}>
+            <ListItemIcon>
+              <Avatar
+                photoUrl={
+                  organization?.photoUrl ||
+                  IMAGE_ENUM.ULTIMATE_TOURNAMENT
+                }
+                variant="square"
+                className={styles.photo}
+              ></Avatar>
+            </ListItemIcon>
+            <ListItemText
+              className={styles.name}
+              primary={t(label)}
+              secondary={organization?.name}
+            ></ListItemText>
+            <ListItemText
+              className={styles.quantity}
+              primary={formatPrice(amount)}
+              secondary={`${person?.name} ${person?.surname}`}
+            ></ListItemText>
+            <IconButton
+              onClick={goToReceipt}
+              tooltip={t('receipt')}
+              icon="Receipt"
+              style={{ color: 'primary' }}
+            />
+            <ListItemText
+              className={styles.date}
+              secondary={`${t('purchased_on')}: ${formatDate(
+                moment(createdAt),
+              )}`}
+            ></ListItemText>
+          </div>
+        </ListItem>
+        <Divider />
+      </>
     );
   }
 
-  return (
-    <ListItem style={{ width: '100%' }}>
-      <div className={styles.div}>
-        <ListItemIcon>
-          <Avatar
-            photoUrl={photoUrl}
-            variant="square"
-            className={styles.photo}
-          ></Avatar>
-        </ListItemIcon>
-        <ListItemText
-          className={styles.name}
-          primary={label}
-          secondary={t(metadata.size)}
-        ></ListItemText>
-        <ListItemText
-          className={styles.quantity}
-          primary={formatPrice(amount)}
-          secondary={t('qt', { quantity })}
-        ></ListItemText>
-        {/* <MailtoButton
+  if (type === GLOBAL_ENUM.SHOP_ITEM) {
+    const { size } = metadata;
+    return (
+      <>
+        <ListItem style={{ width: '100%' }}>
+          <div className={styles.div}>
+            <ListItemIcon>
+              <Avatar
+                photoUrl={photoUrl}
+                variant="square"
+                className={styles.photo}
+              ></Avatar>
+            </ListItemIcon>
+            <ListItemText
+              className={styles.name}
+              primary={label}
+              secondary={t(size) || ''}
+            ></ListItemText>
+            <ListItemText
+              className={styles.quantity}
+              primary={formatPrice(amount)}
+              secondary={t('Qt', { quantity })}
+            ></ListItemText>
+            {/* <MailtoButton
           edge="end"
           emails={email}
           className={styles.mail}
         /> */}
-        <IconButton
-          onClick={goToReceipt}
-          tooltip={t('receipt')}
-          icon="Receipt"
-          style={{ color: 'primary' }}
-        />
-        <ListItemText
-          className={styles.date}
-          secondary={`${t('purchased_on')}: ${formatDate(
-            moment(createdAt),
-          )}`}
-        ></ListItemText>
-      </div>
-    </ListItem>
-  );
+            <IconButton
+              onClick={goToReceipt}
+              tooltip={t('receipt')}
+              icon="Receipt"
+              style={{ color: 'primary' }}
+            />
+            <ListItemText
+              className={styles.date}
+              secondary={`${t('purchased_on')}: ${formatDate(
+                moment(createdAt),
+              )}`}
+            ></ListItemText>
+          </div>
+        </ListItem>
+        <Divider />
+      </>
+    );
+  }
+  return <></>;
 }

@@ -26,7 +26,7 @@ export default function Cart() {
 
   return (
     <IgContainer>
-      <Paper>
+      <Paper style={{ marginBottom: '8px' }}>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}
           indicatorColor="primary"

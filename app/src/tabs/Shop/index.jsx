@@ -44,7 +44,7 @@ export default function Shop(props) {
   };
 
   return (
-    <Container className={styles.items}>
+    <Container className={styles.items} style={{ marginTop: '8px' }}>
       <FeatureContainer
         className={styles.feature}
         feature={FEATURE_FLAGS.SHOP}

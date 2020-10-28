@@ -9,7 +9,7 @@ import {
   GLOBAL_ENUM,
   IMAGE_ENUM,
 } from '../../../../../../common/enums';
-import Chip from '@material-ui/core/Chip';
+import { Divider } from '@material-ui/core';
 
 export default function CartItem(props) {
   const { t } = useTranslation();
@@ -34,97 +34,100 @@ export default function CartItem(props) {
   if (type === GLOBAL_ENUM.TEAM || type === GLOBAL_ENUM.EVENT) {
     const { team } = metadata;
     return (
-      <ListItem button style={{ width: '100%' }}>
-        <div className={styles.div}>
-          <ListItemIcon>
-            <Avatar
-              photoUrl={photoUrl || IMAGE_ENUM.ULTIMATE_TOURNAMENT}
-              variant="square"
-              className={styles.photo}
-            ></Avatar>
-          </ListItemIcon>
-          <ListItemText
-            className={styles.name}
-            primary={description}
-            secondary={team.name}
-          ></ListItemText>
-          <ListItemText
-            className={styles.quantity}
-            primary={formatPrice(amount)}
-            secondary={label}
-          ></ListItemText>
-          <Chip
-            label={t('registered')}
-            color="primary"
-            variant="outlined"
-            className={styles.chip}
-          />
-        </div>
-      </ListItem>
+      <>
+        <ListItem style={{ width: '100%' }}>
+          <div className={styles.div}>
+            <ListItemIcon>
+              <Avatar
+                photoUrl={photoUrl || IMAGE_ENUM.ULTIMATE_TOURNAMENT}
+                variant="square"
+                className={styles.photo}
+              ></Avatar>
+            </ListItemIcon>
+            <ListItemText
+              className={styles.name}
+              primary={description}
+              secondary={team.name}
+            ></ListItemText>
+            <ListItemText
+              className={styles.quantity}
+              primary={formatPrice(amount)}
+              secondary={label}
+            ></ListItemText>
+          </div>
+        </ListItem>
+        <Divider />
+      </>
     );
   }
   if (type === GLOBAL_ENUM.MEMBERSHIP) {
     const { person, organization } = metadata;
     return (
-      <ListItem button style={{ width: '100%' }}>
-        <div className={styles.div}>
-          <ListItemIcon>
-            <Avatar
-              photoUrl={
-                organization.photoUrl ||
-                IMAGE_ENUM.ULTIMATE_TOURNAMENT
-              }
-              variant="square"
-              className={styles.photo}
-            ></Avatar>
-          </ListItemIcon>
-          <ListItemText
-            className={styles.name}
-            primary={t(label)}
-            secondary={description}
-          ></ListItemText>
-          <ListItemText
-            className={styles.quantity}
-            primary={formatPrice(amount)}
-            secondary={`${person?.name} ${person?.surname}`}
-          ></ListItemText>
-        </div>
-      </ListItem>
+      <>
+        <ListItem style={{ width: '100%' }}>
+          <div className={styles.div}>
+            <ListItemIcon>
+              <Avatar
+                photoUrl={
+                  organization?.photoUrl ||
+                  IMAGE_ENUM.ULTIMATE_TOURNAMENT
+                }
+                variant="square"
+                className={styles.photo}
+              ></Avatar>
+            </ListItemIcon>
+            <ListItemText
+              className={styles.name}
+              primary={t(label)}
+              secondary={organization?.name}
+            ></ListItemText>
+            <ListItemText
+              className={styles.quantity}
+              primary={formatPrice(amount)}
+              secondary={`${person?.name} ${person?.surname}`}
+            ></ListItemText>
+          </div>
+        </ListItem>
+        <Divider />
+      </>
     );
   }
   if (type === GLOBAL_ENUM.SHOP_ITEM) {
     const { size } = metadata;
     return (
-      <ListItem button style={{ width: '100%' }}>
-        <div className={styles.div}>
-          <ListItemIcon>
-            <Avatar
-              photoUrl={photoUrl}
-              variant="square"
-              className={styles.photo}
-            ></Avatar>
-          </ListItemIcon>
-          <ListItemText
-            className={styles.name}
-            primary={label}
-            secondary={size || ''}
-          ></ListItemText>
-          <ListItemText
-            className={styles.quantity}
-            primary={formatPrice(amount)}
-            secondary={`Qt: ${quantity}`}
-          ></ListItemText>
-          <Select
-            className={styles.select}
-            onChange={value => {
-              updateQuantity(value, id);
-            }}
-            value={quantity}
-            options={quantityOptions}
-            label={t('quantity')}
-          />
-        </div>
-      </ListItem>
+      <>
+        <ListItem style={{ width: '100%' }}>
+          <div className={styles.div}>
+            <ListItemIcon>
+              <Avatar
+                photoUrl={photoUrl}
+                variant="square"
+                className={styles.photo}
+              ></Avatar>
+            </ListItemIcon>
+            <ListItemText
+              className={styles.name}
+              primary={label}
+              secondary={t(size) || ''}
+            ></ListItemText>
+            <ListItemText
+              className={styles.quantity}
+              primary={formatPrice(amount)}
+              secondary={`Qt: ${quantity}`}
+            ></ListItemText>
+            <Select
+              className={styles.select}
+              onChange={value => {
+                updateQuantity(value, id);
+              }}
+              value={quantity}
+              options={quantityOptions}
+              label={t('quantity')}
+            />
+          </div>
+        </ListItem>
+        <Divider />
+      </>
     );
   }
   return <></>;

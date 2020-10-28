@@ -17,7 +17,6 @@ import {
   List,
   ContainerBottomFixed,
   LoadingSpinner,
-  IgContainer,
 } from '../../components/Custom';
 import DefaultCard from '../../components/MUI/Card';
 import { Typography } from '../../components/MUI';
@@ -77,11 +76,7 @@ export default function Cart() {
     });
   };
   if (isLoading) {
-    return (
-      <IgContainer>
-        <LoadingSpinner />
-      </IgContainer>
-    );
+    return <LoadingSpinner />;
   }
 
   if (items.length < 1) {

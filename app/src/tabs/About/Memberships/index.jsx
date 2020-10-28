@@ -19,7 +19,7 @@ import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
 import { Store } from '../../../Store';
-import { Divider } from '@material-ui/core';
+import { Divider, Typography } from '@material-ui/core';
 
 export default function Memberships() {
   const { t } = useTranslation();
@@ -93,7 +93,7 @@ export default function Memberships() {
     setOpen(false);
   };
   return (
-    <Paper title={t('memberships')}>
+    <>
       <Button
         size="small"
         variant="contained"
@@ -102,21 +102,31 @@ export default function Memberships() {
       >
         {t('become_member')}
       </Button>
-      <FormDialog
-        type={FORM_DIALOG_TYPE_ENUM.BECOME_MEMBER}
-        items={{
-          open,
-          onClose,
-          update: getMembers,
-        }}
-      />
-      {members.map((m, index) => (
-        <>
-          <List items={m.person} />
-          <List key={index} items={m.items} />
-          <Divider />
-        </>
-      ))}
-    </Paper>
+      <Paper title={t('memberships')}>
+        <FormDialog
+          type={FORM_DIALOG_TYPE_ENUM.BECOME_MEMBER}
+          items={{
+            open,
+            onClose,
+            update: getMembers,
+          }}
+        />
+        {members.length ? (
+          <>
+            {members.map((m, index) => (
+              <>
+                <List items={m.person} />
+                <List key={index} items={m.items} />
+                <Divider />
+              </>
+            ))}
+          </>
+        ) : (
+          <Typography style={{ margin: '16px' }}>
+            {t('you_are_not_a_member_of_this_organization')}
+          </Typography>
+        )}
+      </Paper>
+    </>
   );
 }
