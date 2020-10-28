@@ -2,13 +2,13 @@ import React from 'react';
 
 import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
 
-import { Button } from '../../../Custom';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { useTranslation } from 'react-i18next';
 import styles from './MembershipItem.module.css';
 import { goTo, ROUTES } from '../../../../actions/goTo';
 import { grey } from '@material-ui/core/colors';
 import { formatDate } from '../../../../utils/stringFormats';
+import { Button } from '../..';
 
 export default function MembershipItem(props) {
   const { t } = useTranslation();

@@ -5,12 +5,12 @@ import api from '../api';
 export const ROUTES = {
   addPaymentMethod: '/addPaymentMethod',
   adminPanel: '/adminPanel',
+  cart: '/cart',
+  checkout: '/checkout',
   confirmationEmailSent: '/confirmationEmailSent/:email',
   confirmEmail: '/confirmEmail/:token',
   confirmEmailFailure: '/ConfirmEmailFailure',
   confirmEmailSuccess: '/confirmEmailSuccess',
-  cart: '/cart',
-  checkout: '/checkout',
   create: '/create',
   createOrganization: '/organization/create',
   createPerson: '/person/create',
@@ -21,12 +21,14 @@ export const ROUTES = {
   eventRegistration: '/eventRegistration/:id',
   home: '/',
   login: '/login',
+  membersList: '/membersList',
   memberships: '/memberships',
   menu: '/menu',
   mockEvent: '/mock/Event/:openTab',
   notifications: '/notifications',
   orderProcessed: '/orderProcessed',
   organizationList: '/organizationList',
+  privacyPolicy: '/privacy',
   productAddedToCart: '/productAddedToCart',
   recoveryEmail: '/recoveryEmail',
   registrationStatus: '/registrationStatus',
@@ -36,10 +38,9 @@ export const ROUTES = {
   shopDetails: '/shopDetails/:id/:stripePriceId',
   stripe: '/stripe',
   team: '/team',
-  userSettings: '/userSettings',
   transferPerson: '/transferPerson/:token',
   transferPersonExpired: '/transferPersonExpired',
-  privacyPolicy: '/privacy'
+  userSettings: '/userSettings',
 };
 
 export const formatRoute = (route, params, queryParams) => {

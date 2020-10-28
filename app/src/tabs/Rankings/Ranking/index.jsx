@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Ranking.module.css';
-import { GLOBAL_ENUM } from '../../../../../common/enums';
+import { LIST_ITEM_ENUM } from '../../../../../common/enums';
 import { Accordion, List } from '../../../components/Custom';
 
 export default function Ranking(props) {
@@ -12,7 +12,7 @@ export default function Ranking(props) {
     if (withStats) {
       const items = ranking.map((r, index) => ({
         ...r,
-        type: GLOBAL_ENUM.RANKING_WITH_STATS,
+        type: LIST_ITEM_ENUM.RANKING_WITH_STATS,
         index: index + 1,
         key: index,
         withoutPosition,
@@ -21,7 +21,7 @@ export default function Ranking(props) {
     } else {
       const items = ranking.map((r, index) => ({
         ...r,
-        type: GLOBAL_ENUM.RANKING,
+        type: LIST_ITEM_ENUM.RANKING,
         index: index + 1,
         key: index,
         withoutPosition,

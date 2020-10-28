@@ -4,7 +4,7 @@ import styles from './Cart.module.css';
 import api from '../../actions/api';
 
 import { goTo, ROUTES } from '../../actions/goTo';
-import { GLOBAL_ENUM } from '../../../../common/enums';
+import { LIST_ITEM_ENUM } from '../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 import {
   formatPrice,
@@ -111,7 +111,7 @@ export default function Cart() {
             items={items.map((item, index) => ({
               ...item,
               updateQuantity,
-              type: GLOBAL_ENUM.CART,
+              type: LIST_ITEM_ENUM.CART,
               key: index,
             }))}
           />

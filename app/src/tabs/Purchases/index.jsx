@@ -2,7 +2,7 @@ import React from 'react';
 import { IgContainer, List } from '../../components/Custom';
 import { useApiRoute } from '../../hooks/queries';
 import { CircularProgress } from '@material-ui/core';
-import { GLOBAL_ENUM } from '../../../../common/enums';
+import { LIST_ITEM_ENUM } from '../../../../common/enums';
 import moment from 'moment';
 
 export default function PurchasesTab() {
@@ -22,7 +22,7 @@ export default function PurchasesTab() {
       .sort((a, b) => moment(b.createdAt) - moment(a.createdAt))
       .map(p => ({
         ...p,
-        type: GLOBAL_ENUM.PURCHASES,
+        type: LIST_ITEM_ENUM.PURCHASES,
       }));
 
   return (

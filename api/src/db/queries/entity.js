@@ -50,6 +50,7 @@ const {
   getGames: getGamesHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getMembers: getMembersHelper,
+  getOrganizationMembers: getOrganizationMembersHelper,
   getMemberships: getMembershipsHelper,
   getOptions: getOptionsHelper,
   getOwnedEvents: getOwnedEventsHelper,
@@ -149,8 +150,8 @@ async function getAllOwnedEntities(type, userId) {
   return getAllOwnedEntitiesHelper(type, userId);
 }
 
-async function getOwnedEvents(organizatioId) {
-  return getOwnedEventsHelper(organizatioId);
+async function getOwnedEvents(organizationId) {
+  return getOwnedEventsHelper(organizationId);
 }
 
 async function getAllTypeEntities(type) {
@@ -161,8 +162,11 @@ async function getAllRolesEntity(id) {
   return getAllRolesEntityHelper(id);
 }
 
-async function getMembers(persons, organization_id) {
-  return getMembersHelper(persons, organization_id);
+async function getMembers(persons, organizationId) {
+  return getMembersHelper(persons, organizationId);
+}
+async function getOrganizationMembers(organizationId) {
+  return getOrganizationMembersHelper(organizationId);
 }
 
 async function eventInfos(id, user_id) {
@@ -844,6 +848,7 @@ module.exports = {
   getPhasesGameAndTeams,
   getGeneralInfos,
   getMembers,
+  getOrganizationMembers,
   getMemberships,
   getOptions,
   getOwnedEvents,
