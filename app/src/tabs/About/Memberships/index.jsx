@@ -51,11 +51,12 @@ export default function Memberships() {
             }),
           );
           const items = await Promise.all(
-            data.map(d => ({
+            data.map((d, index) => ({
               primary: getPrimary(d),
               secondary: getSecondary(d),
               status: d.status,
               type: GLOBAL_ENUM.MEMBERSHIP,
+              key: index,
             })),
           );
           return {
@@ -65,6 +66,7 @@ export default function Memberships() {
                 ...person.data,
                 completeName: `${person.data?.name} ${person.data?.surname}`,
                 type: GLOBAL_ENUM.PERSON,
+                key: person.data.id,
               },
             ],
           };
@@ -114,11 +116,11 @@ export default function Memberships() {
         {members.length ? (
           <>
             {members.map((m, index) => (
-              <>
+              <div key={index}>
                 <List items={m.person} />
                 <List key={index} items={m.items} />
                 <Divider />
-              </>
+              </div>
             ))}
           </>
         ) : (

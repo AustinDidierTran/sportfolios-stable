@@ -26,6 +26,7 @@ export default function PurchasesItem(props) {
     amount,
     metadata,
     quantity,
+    description,
     receipt_url: receiptUrl,
     // email,
   } = props;

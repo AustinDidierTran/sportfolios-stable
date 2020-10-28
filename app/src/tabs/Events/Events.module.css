@@ -1,5 +1,4 @@
 .div {
-  margin-top: -12px !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -21,7 +20,6 @@
   display: flex;
   width: 100%;
   justify-content: center;
-  margin-top: 16px;
 }
 
 @media (min-width: 768px) {

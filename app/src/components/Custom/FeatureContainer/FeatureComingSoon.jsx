@@ -6,7 +6,9 @@ export default function FeatureComingSoon() {
   const { t } = useTranslation();
   return (
     <div>
-      <Typography variant="h6">{t('feature_coming_soon')}</Typography>
+      <Typography style={{ marginTop: '8px' }}>
+        {t('feature_coming_soon')}
+      </Typography>
     </div>
   );
 }

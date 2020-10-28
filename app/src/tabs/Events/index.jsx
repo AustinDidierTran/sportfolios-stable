@@ -60,7 +60,7 @@ export default function Events(props) {
               ))}
             </>
           ) : (
-            <Typography style={{ margin: '16px' }}>
+            <Typography>
               {t('this_organization_has_no_events')}
             </Typography>
           )}
