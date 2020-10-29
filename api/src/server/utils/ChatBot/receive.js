@@ -58,11 +58,11 @@ async function handleMessage(messengerId, event) {
   if (Array.isArray(responses)) {
     let delay = 0;
     for (let response of responses) {
-      sendMessage(response, delay * 2000);
+      sendMessages(response, delay * 2000);
       delay++;
     }
   } else {
-    sendMessage(responses);
+    sendMessages(responses);
   }
 }
 

@@ -15,7 +15,10 @@ class Chatbot {
 
   changeState(stateType) {
     this.setState(stateType);
-    this.state.sendIntroMessages(this.chatbotInfos.messengerId);
+    this.state.sendMessages(
+      this.chatbotInfos.messengerId,
+      this.state.getIntroMessages(),
+    );
   }
 
   handleEvent(webhookEvent) {

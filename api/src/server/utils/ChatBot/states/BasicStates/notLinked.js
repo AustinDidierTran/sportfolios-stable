@@ -25,7 +25,7 @@ class NotLinked extends State {
   }
 
   handleNoRef(messengerId) {
-    this.sendMessage(
+    this.sendMessages(
       messengerId,
       MESSENGER_MESSAGES_FR.GET_STARTED_NO_REF,
     );

@@ -24,11 +24,8 @@ class ScoreSubmissionRequestSent extends State {
     this.context.changeState(nextState);
   }
 
-  sendIntroMessages(messengerId) {
-    this.sendMessage(
-      messengerId,
-      MESSENGER_MESSAGES_FR.REQUEST_SCORE_SUBMISSION,
-    );
+  getIntroMessages() {
+    return MESSENGER_MESSAGES_FR.REQUEST_SCORE_SUBMISSION;
   }
 }
 

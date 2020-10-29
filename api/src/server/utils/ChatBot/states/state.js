@@ -9,9 +9,9 @@ class State {
   }
 
   // eslint-disable-next-line no-unused-vars
-  sendIntroMessages(senderId) {
+  getIntroMessages() {
     throw new Error(
-      'You need to implement the method sendIntroMessages',
+      'You need to implement the method getIntroMessages',
     );
   }
 
@@ -136,8 +136,19 @@ class State {
     );
   }
 
-  sendMessage(messengerId, message) {
-    queries.sendMessage(messengerId, message);
+  sendMessages(messengerId, messages) {
+    if (Array.isArray(messages)) {
+      let delay = 0;
+      for (let message of messages) {
+        setTimeout(
+          () => queries.sendMessage(messengerId, message),
+          delay * 2000,
+        );
+        delay++;
+      }
+    } else {
+      queries.sendMessage(messengerId, messages);
+    }
   }
 }
 

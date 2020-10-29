@@ -155,6 +155,7 @@ const MESSENGER_PAYLOADS = {
   SPIRIT_EQUITY: 'se',
   SPIRIT_SELF_CONTROL: 'ssc',
   SPIRIT_COMMUNICATION: 'sc',
+  NEXT_GAME: 'next_game',
 };
 
 const BASIC_CHATBOT_STATES = {
@@ -359,6 +360,25 @@ const MESSENGER_MESSAGES_FR = {
   I_DONT_UNDERSTAND: {
     text:
       "Désolé, je ne peux pas encore prendre en compte votre message pour l'instant",
+  },
+  WELCOME: {
+    text: 'Bienvenue sur le chatbot Sportfolios!',
+  },
+  HELP: {
+    text:
+      "Voici les différentes actions que vous pouvez effectuer:\n• Dites test pour lancer un simulation de soumission de score\n• Dites partie pour connaître l'heure de votre prochaine partie\nÀ tout moment dites 'recommencer' pour revenir à ce menu.",
+    quick_replies: [
+      {
+        content_type: 'text',
+        title: 'Prochaine partie? 🕓',
+        payload: MESSENGER_PAYLOADS.NEXT_GAME,
+      },
+      {
+        content_type: 'text',
+        title: 'Simuler 🚀',
+        payload: MESSENGER_PAYLOADS.MOCK,
+      },
+    ],
   },
   REQUEST_SCORE_SUBMISSION: {
     text:
