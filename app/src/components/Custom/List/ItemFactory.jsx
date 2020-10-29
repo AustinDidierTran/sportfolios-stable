@@ -1,41 +1,46 @@
-import { GLOBAL_ENUM } from '../../../../../common/enums';
+import {
+  GLOBAL_ENUM,
+  LIST_ITEM_ENUM,
+} from '../../../../../common/enums';
+import AppItem from './AppItem';
+import CartItem from './CartItem';
 import DefaultItem from './DefaultItem';
 import EventCreatorItem from './EventCreatorItem';
 import EventItem from './EventItem';
 import EventPaymentOptionItem from './EventPaymentOptionItem';
+import MemberItem from './MemberItem';
 import MembershipDetailItem from './MembershipDetailItem';
 import MembershipItem from './MembershipItem';
 import MembershipOrganizationItem from './MembershipOrganizationItem';
 import OrganizationItem from './OrganizationItem';
-import PersonItem from './PersonItem';
-import TeamItem from './TeamItem';
 import PaymentOptionItem from './PaymentOptionItem';
-import RosterItem from './RosterItem';
+import PersonItem from './PersonItem';
+import PurchasesItem from './PurchasesItem';
 import RankingItem from './RankingItem';
 import RankingWithStatsItem from './RankingWithStatsItem';
-import PurchasesItem from './PurchasesItem';
-import CartItem from './CartItem';
+import RosterItem from './RosterItem';
 import SalesItem from './SalesItem';
-import AppItem from './AppItem';
+import TeamItem from './TeamItem';
 
 const ItemMap = {
-  [GLOBAL_ENUM.EVENT_CREATOR]: EventCreatorItem,
   [GLOBAL_ENUM.EVENT]: EventItem,
-  [GLOBAL_ENUM.EVENT_PAYMENT_OPTION]: EventPaymentOptionItem,
-  [GLOBAL_ENUM.MEMBERSHIP_DETAIL]: MembershipDetailItem,
-  [GLOBAL_ENUM.MEMBERSHIP]: MembershipItem,
-  [GLOBAL_ENUM.MEMBERSHIP_ORGANIZATION]: MembershipOrganizationItem,
   [GLOBAL_ENUM.ORGANIZATION]: OrganizationItem,
   [GLOBAL_ENUM.PERSON]: PersonItem,
   [GLOBAL_ENUM.TEAM]: TeamItem,
-  [GLOBAL_ENUM.PAYMENT_OPTION]: PaymentOptionItem,
-  [GLOBAL_ENUM.ROSTER_ITEM]: RosterItem,
-  [GLOBAL_ENUM.RANKING_WITH_STATS]: RankingWithStatsItem,
-  [GLOBAL_ENUM.RANKING]: RankingItem,
-  [GLOBAL_ENUM.PURCHASES]: PurchasesItem,
-  [GLOBAL_ENUM.CART]: CartItem,
-  [GLOBAL_ENUM.SALES]: SalesItem,
-  [GLOBAL_ENUM.APP_ITEM]: AppItem,
+  [LIST_ITEM_ENUM.APP_ITEM]: AppItem,
+  [LIST_ITEM_ENUM.CART]: CartItem,
+  [LIST_ITEM_ENUM.EVENT_CREATOR]: EventCreatorItem,
+  [LIST_ITEM_ENUM.EVENT_PAYMENT_OPTION]: EventPaymentOptionItem,
+  [LIST_ITEM_ENUM.MEMBER]: MemberItem,
+  [LIST_ITEM_ENUM.MEMBERSHIP_DETAIL]: MembershipDetailItem,
+  [LIST_ITEM_ENUM.MEMBERSHIP_ORGANIZATION]: MembershipOrganizationItem,
+  [LIST_ITEM_ENUM.MEMBERSHIP]: MembershipItem,
+  [LIST_ITEM_ENUM.PAYMENT_OPTION]: PaymentOptionItem,
+  [LIST_ITEM_ENUM.PURCHASES]: PurchasesItem,
+  [LIST_ITEM_ENUM.RANKING_WITH_STATS]: RankingWithStatsItem,
+  [LIST_ITEM_ENUM.RANKING]: RankingItem,
+  [LIST_ITEM_ENUM.ROSTER_ITEM]: RosterItem,
+  [LIST_ITEM_ENUM.SALES]: SalesItem,
 };
 
 export default function ItemFactory(props) {

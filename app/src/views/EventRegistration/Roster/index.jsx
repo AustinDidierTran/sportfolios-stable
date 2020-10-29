@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { GLOBAL_ENUM } from '../../../../../common/enums';
+import { LIST_ITEM_ENUM } from '../../../../../common/enums';
 import { List } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../../hooks/forms';
@@ -33,7 +33,7 @@ export default function Roster(props) {
         ...oldRoster,
         {
           person_id: person.id,
-          type: GLOBAL_ENUM.ROSTER_ITEM,
+          type: LIST_ITEM_ENUM.ROSTER_ITEM,
           name: person.completeName,
           photoUrl: data.photoUrl,
           secondary: t('player'),
@@ -52,7 +52,7 @@ export default function Roster(props) {
         ...oldRoster,
         {
           id: newId,
-          type: GLOBAL_ENUM.ROSTER_ITEM,
+          type: LIST_ITEM_ENUM.ROSTER_ITEM,
           name: person.name,
           surname: person.surname,
           secondary: t('player'),

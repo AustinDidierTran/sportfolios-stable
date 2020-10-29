@@ -12,7 +12,7 @@ import {
 } from '../../../utils/stringFormats';
 import {
   FORM_DIALOG_TYPE_ENUM,
-  GLOBAL_ENUM,
+  LIST_ITEM_ENUM,
 } from '../../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
@@ -41,7 +41,7 @@ export default function AddMembership() {
       membershipType: t(getMembershipType(d.length, d.fixed_date)),
       expirationDate: getExpirationDate(d.length, d.fixed_date),
       price: d.price,
-      type: GLOBAL_ENUM.MEMBERSHIP_ORGANIZATION,
+      type: LIST_ITEM_ENUM.MEMBERSHIP_ORGANIZATION,
       id: d.id,
       onDelete,
     }));

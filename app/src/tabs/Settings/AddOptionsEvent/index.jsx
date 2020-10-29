@@ -16,10 +16,10 @@ import { useParams } from 'react-router-dom';
 
 import styles from './AddOptionsEvent.module.css';
 import {
-  GLOBAL_ENUM,
   SEVERITY_ENUM,
   STATUS_ENUM,
   FORM_DIALOG_TYPE_ENUM,
+  LIST_ITEM_ENUM,
 } from '../../../../../common/enums';
 import { Store, ACTION_ENUM } from '../../../Store';
 
@@ -49,7 +49,7 @@ export default function AddOptionsEvent() {
     );
     const dataOptions = data.map(o => ({
       ...o,
-      type: GLOBAL_ENUM.EVENT_PAYMENT_OPTION,
+      type: LIST_ITEM_ENUM.EVENT_PAYMENT_OPTION,
       onDelete: onDelete,
       onEdit: onEdit,
       key: o.id,

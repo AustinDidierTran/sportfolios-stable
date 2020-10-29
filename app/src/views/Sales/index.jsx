@@ -3,7 +3,7 @@ import { IgContainer, List } from '../../components/Custom';
 import { useApiRoute } from '../../hooks/queries';
 import { CircularProgress } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
-import { GLOBAL_ENUM } from '../../../../common/enums';
+import { LIST_ITEM_ENUM } from '../../../../common/enums';
 import moment from 'moment';
 
 export default function Sales() {
@@ -17,7 +17,7 @@ export default function Sales() {
       .sort((a, b) => moment(b.createdAt) - moment(a.createdAt))
       .map(s => ({
         ...s,
-        type: GLOBAL_ENUM.SALES,
+        type: LIST_ITEM_ENUM.SALES,
       }));
 
   if (isLoading) {

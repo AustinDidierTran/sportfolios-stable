@@ -8,8 +8,8 @@ import {
   STATUS_ENUM,
   SEVERITY_ENUM,
   APP_ENUM,
-  GLOBAL_ENUM,
   FACEBOOK_STATUS_ENUM,
+  LIST_ITEM_ENUM,
 } from '../../../../../common/enums';
 import { ERROR_ENUM, errors } from '../../../../../common/errors';
 import { Store, ACTION_ENUM } from '../../../Store';
@@ -201,7 +201,7 @@ export default function AppLinking() {
       onDisconnect: onFBUnlink,
       app: APP_ENUM.FACEBOOK,
       isConnected: isLinkedFB,
-      type: GLOBAL_ENUM.APP_ITEM,
+      type: LIST_ITEM_ENUM.APP_ITEM,
       description: t('facebook_description'),
     },
     {
@@ -209,7 +209,7 @@ export default function AppLinking() {
       onDisconnect: onMessengerUnlink,
       app: APP_ENUM.MESSENGER,
       isConnected: isLinkedMessenger,
-      type: GLOBAL_ENUM.APP_ITEM,
+      type: LIST_ITEM_ENUM.APP_ITEM,
       description: t('messenger_description'),
     },
   ];

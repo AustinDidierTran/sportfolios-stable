@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Paper, Button, List } from '../../components/Custom';
 import api from '../../actions/api';
 import { useQuery } from '../../hooks/queries';
-import { GLOBAL_ENUM } from '../../../../common/enums';
+import { LIST_ITEM_ENUM } from '../../../../common/enums';
 import { getMemberships } from '../../utils/memberships';
 
 export default function Memberships() {
@@ -54,7 +54,7 @@ export default function Memberships() {
         ...d,
         isMember,
         personId,
-        type: GLOBAL_ENUM.MEMBERSHIP_DETAIL,
+        type: LIST_ITEM_ENUM.MEMBERSHIP_DETAIL,
       }));
     setOptions(options);
   };

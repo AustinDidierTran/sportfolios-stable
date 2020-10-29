@@ -1,5 +1,5 @@
 import React from 'react';
-import { GLOBAL_ENUM } from '../../../../../common/enums';
+import { LIST_ITEM_ENUM } from '../../../../../common/enums';
 import { List } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import styles from './Ranking.module.css';
@@ -16,7 +16,7 @@ export default function Ranking(props) {
       <List
         items={ranking.map((r, index) => ({
           ...r,
-          type: GLOBAL_ENUM.RANKING_WITH_STATS,
+          type: LIST_ITEM_ENUM.RANKING_WITH_STATS,
           index: index + 1,
         }))}
       />

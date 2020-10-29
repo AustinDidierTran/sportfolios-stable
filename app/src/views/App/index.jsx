@@ -37,6 +37,7 @@ const Notifications = loadable(() =>
   import('../../views/Notifications'),
 );
 const OrderProcessed = loadable(() => import('../OrderProcessed'));
+const MembersList = loadable(() => import('../MembersList'));
 const OrganizationList = loadable(() =>
   import('../Main/OrganizationList'),
 );
@@ -115,9 +116,9 @@ export default function App() {
                   path={ROUTES.adminPanel}
                   component={AdminPanel}
                 />
-                <Route 
-                path={ROUTES.privacyPolicy}
-                component={PrivacyPolicy}
+                <Route
+                  path={ROUTES.privacyPolicy}
+                  component={PrivacyPolicy}
                 />
                 <Route
                   path={ROUTES.addPaymentMethod}
@@ -157,6 +158,11 @@ export default function App() {
                   exact
                   path={ROUTES.orderProcessed}
                   component={OrderProcessed}
+                />
+                <Route
+                  exact
+                  path={ROUTES.membersList}
+                  component={MembersList}
                 />
                 <Route path={ROUTES.sales} component={Sales} />
                 <Route

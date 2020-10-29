@@ -171,6 +171,22 @@ router.get(`${BASE_URL}/members`, async ctx => {
     };
   }
 });
+router.get(`${BASE_URL}/organizationMembers`, async ctx => {
+  const entity = await queries.getOrganizationMembers(ctx.query.id);
+
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
 
 router.get(`${BASE_URL}/memberships`, async ctx => {
   const entity = await queries.getMemberships(ctx.query.id);

@@ -637,6 +637,33 @@ async function getMembers(personsString, organizationId) {
     id: m.id,
   }));
 }
+async function getOrganizationMembers(organizationId) {
+  const realId = await getRealId(organizationId);
+  const members = await knex('memberships')
+    .select('*')
+    .rightJoin(
+      'entities',
+      'entities.id',
+      '=',
+      'memberships.person_id',
+    )
+    .whereNull('deleted_at')
+    .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
+    .andWhere({ organization_id: realId });
+
+  const res = await Promise.all(
+    members.map(async m => ({
+      organizationId: m.organization_id,
+      person: await getEntity(m.person_id),
+      memberType: m.member_type,
+      expirationDate: m.expiration_date,
+      id: m.id,
+      createdAt: m.created_at,
+      status: m.status,
+    })),
+  );
+  return res;
+}
 
 async function getOptions(eventId) {
   const realId = await getRealId(eventId);
@@ -2329,6 +2356,7 @@ module.exports = {
   getEntityRole,
   getEmailsEntity,
   getMembers,
+  getOrganizationMembers,
   getMemberships,
   getRegistered,
   getRegistrationTeamPaymentOption,
