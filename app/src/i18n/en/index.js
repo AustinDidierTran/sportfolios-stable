@@ -296,6 +296,7 @@ export default {
     max_length: 'Maximum length',
     maximum_spots: 'Maximum spots',
     member: 'Member',
+    member_added: 'Member added',
     members_list: 'Members list | {{organization}}',
     membership_added: 'Membership added',
     membership_exist: 'Membership Exist',

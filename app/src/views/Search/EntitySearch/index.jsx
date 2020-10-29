@@ -16,6 +16,7 @@ export default function EntitySearch(props) {
     () =>
       entities.map(entity => ({
         ...entity,
+        key: entity.id,
       })),
     [entities],
   );

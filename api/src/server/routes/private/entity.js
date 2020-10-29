@@ -682,6 +682,22 @@ router.post(`${BASE_URL}/member`, async ctx => {
     };
   }
 });
+router.post(`${BASE_URL}/memberManually`, async ctx => {
+  const entity = await queries.addMemberManually(ctx.request.body);
+  if (entity) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
 
 router.post(`${BASE_URL}/alias`, async ctx => {
   const alias = await queries.addAlias(ctx.request.body);

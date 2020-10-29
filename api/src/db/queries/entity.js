@@ -552,6 +552,23 @@ async function updateSuggestionStatus(body) {
   return res;
 }
 
+async function addMemberManually(body) {
+  const {
+    membershipType,
+    organizationId,
+    personId,
+    expirationDate,
+  } = body;
+
+  const res = await addMemberHelper(
+    membershipType,
+    organizationId,
+    personId,
+    expirationDate,
+  );
+  return res;
+}
+
 async function addMember(body, userId) {
   const {
     membershipId,
@@ -834,6 +851,7 @@ module.exports = {
   addField,
   addGame,
   addMember,
+  addMemberManually,
   addMembership,
   addOption,
   addPhase,

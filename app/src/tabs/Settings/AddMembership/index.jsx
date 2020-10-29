@@ -44,6 +44,7 @@ export default function AddMembership() {
       type: LIST_ITEM_ENUM.MEMBERSHIP_ORGANIZATION,
       id: d.id,
       onDelete,
+      key: d.id,
     }));
     setOptions(data);
   };

@@ -64,7 +64,7 @@ export default function PersonSearchList(props) {
     defaultValue: { entities: [] },
   });
   const handleClick = (...args) => {
-    onClick(args[1]);
+    onClick(args[0]);
     query.reset();
   };
 
@@ -84,16 +84,20 @@ export default function PersonSearchList(props) {
           },
           icon: 'Add',
           inverseColor: true,
+          key: 'create',
         },
         ...response.entities
           .filter(entity => !rejectedTypes.includes(entity.type))
-          .map(e => ({
-            ...e,
-            secondary,
-            onClick: (...args) => {
-              handleClick(...args);
-            },
-          })),
+          .map(e => {
+            return {
+              ...e,
+              secondary,
+              onClick: () => {
+                handleClick(e);
+              },
+              key: e.id,
+            };
+          }),
       ];
     }
     return response.entities
@@ -101,9 +105,10 @@ export default function PersonSearchList(props) {
       .map(e => ({
         ...e,
         secondary,
-        onClick: (...args) => {
-          handleClick(...args);
+        onClick: () => {
+          handleClick(e);
         },
+        key: e.id,
       }));
   }, [response]);
 

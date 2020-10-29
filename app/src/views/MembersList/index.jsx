@@ -2,12 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatPageTitle } from '../../utils/stringFormats';
 
-import { Paper, Button, IgContainer } from '../../components/Custom';
+import {
+  Paper,
+  Button,
+  IgContainer,
+  FormDialog,
+} from '../../components/Custom';
 import { useQuery } from '../../hooks/queries';
 import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
 import { List } from '../../components/Custom';
-import { LIST_ITEM_ENUM } from '../../../../common/enums';
+import {
+  FORM_DIALOG_TYPE_ENUM,
+  LIST_ITEM_ENUM,
+} from '../../../../common/enums';
 
 export default function MembersList() {
   const { id } = useQuery();
@@ -15,6 +23,7 @@ export default function MembersList() {
 
   const [organization, setOrganization] = useState(null);
   const [members, setMembers] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     document.title = formatPageTitle(
@@ -46,6 +55,14 @@ export default function MembersList() {
     setMembers(res);
   };
 
+  const onOpen = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
   return (
     <IgContainer>
       <Paper
@@ -61,11 +78,19 @@ export default function MembersList() {
           style={{
             margin: '8px',
           }}
-          onClick={() => {}}
+          onClick={onOpen}
         >
           {t('add_member')}
         </Button>
         <List items={members} />
+        <FormDialog
+          type={FORM_DIALOG_TYPE_ENUM.ADD_MEMBER}
+          items={{
+            open,
+            onClose,
+            update: getMembers,
+          }}
+        />
       </Paper>
     </IgContainer>
   );

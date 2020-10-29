@@ -11,21 +11,21 @@ import {
   COMPONENT_TYPE_ENUM,
   MEMBERSHIP_TYPE_ENUM,
 } from '../../../../../../common/enums';
-import { useParams } from 'react-router-dom';
 import BasicFormDialog from '../BasicFormDialog';
 import moment from 'moment';
+import { useQuery } from '../../../../hooks/queries';
 
 export default function AddMember(props) {
   const { open: openProps, onClose, update } = props;
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
-  const { id: entityId } = useParams();
+  const { id: entityId } = useQuery();
 
   const [open, setOpen] = useState(false);
   const [person, setPerson] = useState(null);
 
   const validate = values => {
-    const { person, expirationDate } = values;
+    const { expirationDate } = values;
     const errors = {};
     if (!person) {
       errors.person = t(ERROR_ENUM.VALUE_IS_REQUIRED);
@@ -46,14 +46,14 @@ export default function AddMember(props) {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
-      const { person, membership, expirationDate } = values;
-      const res = await api(`/api/entity/membership`, {
+      const { membership, expirationDate } = values;
+      const res = await api(`/api/entity/memberManually`, {
         method: 'POST',
         body: JSON.stringify({
-          entityId,
-          person,
-          membership,
-          expirationDate,
+          membershipType: membership,
+          organizationId: entityId,
+          personId: person.id,
+          expirationDate: new Date(expirationDate),
         }),
       });
 
@@ -71,6 +71,7 @@ export default function AddMember(props) {
           severity: SEVERITY_ENUM.SUCCESS,
           duration: 2000,
         });
+        update();
         handleClose();
       }
     },
@@ -82,11 +83,16 @@ export default function AddMember(props) {
       'membership',
       MEMBERSHIP_TYPE_ENUM.RECREATIONAL,
     );
-    formik.setFieldValue('expirationDate', moment().add(1, 'year'));
+    formik.setFieldValue(
+      'expirationDate',
+      moment()
+        .add(1, 'year')
+        .format('YYYY-MM-DD'),
+    );
   }, [openProps]);
 
   const handleClose = () => {
-    formik.resetForm();
+    setPerson(null);
     onClose();
   };
 
@@ -141,6 +147,7 @@ export default function AddMember(props) {
       namespace: 'expirationDate',
       label: t('expiration_date'),
       type: 'date',
+      shrink: true,
     },
   ];
 
@@ -160,7 +167,7 @@ export default function AddMember(props) {
   return (
     <BasicFormDialog
       open={open}
-      title={t('add_membership')}
+      title={t('add_member')}
       buttons={buttons}
       fields={fields}
       formik={formik}

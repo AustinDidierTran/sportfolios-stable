@@ -3,6 +3,8 @@ import { ListItem, TextField } from '../../MUI';
 import { Select, MultiSelect, Button, CheckBox } from '../../Custom';
 import { COMPONENT_TYPE_ENUM } from '../../../../../common/enums';
 import { InputAdornment } from '@material-ui/core';
+import PersonSearchList from '../SearchList/PersonSearchList';
+import PersonItem from '../List/PersonItem';
 
 export default function ComponentFactory(props) {
   const { component } = props;
@@ -57,6 +59,38 @@ export default function ComponentFactory(props) {
   }
   if (component.componentType === COMPONENT_TYPE_ENUM.LIST_ITEM) {
     return <ListItem primary={component.primary} />;
+  }
+  if (
+    component.componentType === COMPONENT_TYPE_ENUM.PERSON_SEARCH_LIST
+  ) {
+    return (
+      <PersonSearchList
+        clearOnSelect={false}
+        blackList={component.blackList}
+        label={component.label}
+        query={component.query}
+        allowCreate
+        withoutIcon
+        autoFocus
+        isSub={component.isSub}
+        onClick={component.onClick}
+        onChange={component.onChange}
+        handleClose={component.handleClose}
+        rosterId={component.rosterId}
+      />
+    );
+  }
+  if (component.componentType === COMPONENT_TYPE_ENUM.PERSON_ITEM) {
+    return (
+      <PersonItem
+        {...component.person}
+        secondary={component.secondary}
+        notClickable={component.notClickable}
+      />
+    );
+  }
+  if (component.componentType === COMPONENT_TYPE_ENUM.EMPTY) {
+    return <> </>;
   }
   return (
     <TextField
