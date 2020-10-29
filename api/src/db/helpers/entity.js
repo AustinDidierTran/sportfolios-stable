@@ -13,6 +13,7 @@ const {
   INVOICE_STATUS_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
+const { addEventCartItem } = require('../helpers/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
 const { sendTransferAddNewPlayer } = require('../helpers/index');
@@ -736,6 +737,27 @@ async function getRegistrationTeamPaymentOption(paymentOptionId) {
     .where({ id: paymentOptionId });
 
   return teamPaymentOption;
+}
+
+async function getIndividualPaymentOptionFromRosterId(rosterId) {
+  const [roster] = await knex('event_rosters')
+    .select('payment_option_id', 'team_id')
+    .where({ roster_id: rosterId });
+
+  const [option] = await knex('event_payment_options')
+    .select(
+      'individual_price',
+      'individual_stripe_price_id',
+      'event_id',
+    )
+    .where({ id: roster.payment_option_id });
+
+  return {
+    individual_price: option.individual_price,
+    individual_stripe_price_id: option.individual_stripe_price_id,
+    event_id: option.event_id,
+    teamId: roster.team_id,
+  };
 }
 
 async function getTeamCaptains(teamId, userId) {
@@ -1520,6 +1542,7 @@ async function addAlias(entityId, alias) {
     .returning('*');
   return res;
 }
+
 async function getTeamName(team) {
   const [res] = await knex('team_rosters')
     .select('*')
@@ -1531,6 +1554,13 @@ async function getTeamName(team) {
     )
     .where({ id: team });
   return res.name;
+}
+
+async function getUserIdFromPersonId(personId) {
+  const [user] = await knex('user_entity_role')
+    .select('user_id')
+    .where({ entity_id: personId });
+  return user.user_id;
 }
 
 async function addGame(
@@ -1910,22 +1940,30 @@ async function addTeamToEvent(body) {
     return res.roster_id;
   });
 }
-async function addPersonToRoster(rosterId, person) {
-  const realId = await getRealId(rosterId);
-  const player = await knex('team_players')
-    .insert({
-      roster_id: realId,
-      person_id: person.person_id,
-      name: person.name,
-    })
-    .returning('*');
-  return player;
-}
-async function addRoster(rosterId, roster, userId) {
+
+async function addRoster(eventId, team, rosterId, roster, userId) {
+  paymentOption = await getIndividualPaymentOptionFromRosterId(
+    rosterId,
+  );
+
+  let cartItem =
+    paymentOption.individual_price === 0
+      ? null
+      : {
+          stripePriceId: paymentOption.individual_stripe_price_id,
+          metadata: {
+            sellerEntityId: eventId,
+            buyerId: '',
+            rosterId,
+            team,
+          },
+        };
+
   const players = Promise.all(
     roster.map(async r => {
       if (r.email) {
         const res = await addNewPersonToRoster(
+          cartItem,
           {
             ...r,
             rosterId,
@@ -1934,14 +1972,22 @@ async function addRoster(rosterId, roster, userId) {
         );
         return res;
       } else {
-        const res = await addPersonToRoster(rosterId, r);
+        const res = await addPlayerToRoster(
+          {
+            ...r,
+            rosterId,
+          },
+          userId,
+          cartItem,
+        );
         return res;
       }
     }),
   );
   return players;
 }
-async function addNewPersonToRoster(body, userId) {
+
+async function addNewPersonToRoster(cartItem, body, userId) {
   const {
     addedByEventAdmin,
     name,
@@ -1954,8 +2000,10 @@ async function addNewPersonToRoster(body, userId) {
     { name, surname, type: GLOBAL_ENUM.PERSON },
     userId,
   );
+
   const teamName = await getTeamName(rosterId);
   await addPlayerToRoster(
+    cartItem,
     {
       personId: person.id,
       name: `${name} ${surname}`,
@@ -1972,6 +2020,58 @@ async function addNewPersonToRoster(body, userId) {
   });
   return { is_sub: isSub, name: `${name} ${surname}`, id: person.id };
 }
+
+const addPlayerToRoster = async (body, userId, cartItem) => {
+  const { personId, name, id, rosterId, isSub } = body;
+
+  if (!isSub && !cartItem) {
+    const paymentOption = await getIndividualPaymentOptionFromRosterId(
+      rosterId,
+    );
+
+    if (paymentOption.individual_price !== 0) {
+      cartItem = {
+        stripePriceId: paymentOption.individual_stripe_price_id,
+        metadata: {
+          sellerEntityId: paymentOption.event_id,
+          buyerId: personId,
+          rosterId,
+          team: await getEntity(paymentOption.teamId, userId),
+        },
+      };
+
+      await addEventCartItem(
+        cartItem,
+        await getUserIdFromPersonId(personId),
+      );
+    }
+  }
+
+  //TODO: Make sure userId adding is team Admin
+  const player = await knex('team_players')
+    .insert({
+      roster_id: rosterId,
+      person_id: personId,
+      name,
+      id,
+      is_sub: isSub,
+    })
+    .returning('*');
+
+  return player;
+};
+
+const deletePlayerFromRoster = async id => {
+  //TODO: Make sure userId deleting is team Admin
+  //check if can delete (is unpaid)
+  const realId = await getRealId(id);
+  await knex('team_players')
+    .where({
+      id: realId,
+    })
+    .del();
+  return null;
+};
 
 async function updateMember(
   memberType,
@@ -2278,52 +2378,6 @@ const deleteOption = async id => {
   return knex('event_payment_options')
     .where({ id })
     .del();
-};
-
-const addPlayerToRoster = async (body, userId) => {
-  const { personId, name, id, rosterId, isSub } = body;
-  //TODO: Make sure userId adding is team Admin
-  let player = {};
-  if (personId) {
-    player = await knex('team_players')
-      .insert({
-        roster_id: rosterId,
-        person_id: personId,
-        name,
-        id,
-        is_sub: isSub,
-      })
-      .returning('*');
-  } else {
-    const person = await addEntity(
-      {
-        name,
-        type: GLOBAL_ENUM.PERSON,
-      },
-      userId,
-    );
-    player = await knex('team_players')
-      .insert({
-        roster_id: rosterId,
-        person_id: person.id[0],
-        name,
-        id,
-        is_sub: isSub,
-      })
-      .returning('*');
-  }
-  return player;
-};
-
-const deletePlayerFromRoster = async id => {
-  //TODO: Make sure userId deleting is team Admin
-  const realId = await getRealId(id);
-  await knex('team_players')
-    .where({
-      id: realId,
-    })
-    .del();
-  return null;
 };
 
 const getGame = async id => {

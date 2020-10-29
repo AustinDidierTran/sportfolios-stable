@@ -905,23 +905,6 @@ router.post(`${BASE_URL}/register`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/roster`, async ctx => {
-  const entity = await queries.addRoster(ctx.request.body);
-  if (entity) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
-});
-
 router.post(`${BASE_URL}/addNewPersonToRoster`, async ctx => {
   const person = await queries.addNewPersonToRoster(
     ctx.request.body,

@@ -43,6 +43,7 @@ const ROSTER_ROLE_ENUM = {
 
 const TAG_TYPE_ENUM = {
   ACCEPTED: 'accepted',
+  ACCEPTED_FREE: 'accepted free',
   PENDING: 'pending',
   REGISTERED: 'registered',
   UNREGISTERED: 'unregistered',
