@@ -1,5 +1,8 @@
-const State = require('./state');
-const { CHATBOT_STATES } = require('../../../../../../common/enums');
+const State = require('../state');
+const {
+  SCORE_SUBMISSION_CHATBOT_STATES,
+  BASIC_CHATBOT_STATES,
+} = require('../../../../../../../common/enums');
 
 class AwaitingScoreSubmissionState extends State {
   handleEvent(webhookEvent) {
@@ -8,15 +11,15 @@ class AwaitingScoreSubmissionState extends State {
       const score = this.getScores(webhookEvent);
       console.log(`MY SCORE ${score[0]} OPPONENT ${score[1]}`);
       nextState =
-        CHATBOT_STATES.AWAITING_SCORE_SUBMISSION_CONFIRMATION;
+        SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION_CONFIRMATION;
     } else if (this.isStop(webhookEvent)) {
       console.log('STOP');
-      nextState = CHATBOT_STATES.HOME;
+      nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
       console.log('DEFAULT');
     }
     if (nextState) {
-      this.context.setState(nextState);
+      this.context.changeState(nextState);
     }
   }
 }

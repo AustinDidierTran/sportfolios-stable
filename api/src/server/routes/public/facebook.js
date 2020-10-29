@@ -1,8 +1,11 @@
 const Router = require('koa-router');
+const _ = require('lodash');
 const router = new Router();
 const BASE_URL = '/api/fb';
 const { Chatbot } = require('../../utils/ChatBot');
-const { CHATBOT_STATES } = require('../../../../../common/enums');
+const {
+  BASIC_CHATBOT_STATES,
+} = require('../../../../../common/enums');
 const queries = require('../../../db/queries/facebook');
 
 router.post(`${BASE_URL}/messengerHook`, async ctx => {
@@ -21,22 +24,29 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
       if (
         webhookEvent.message &&
         webhookEvent.message.text &&
-        webhookEvent.message.text.includes('hardreset')
+        webhookEvent.message.text
+          .trim()
+          .toLowerCase()
+          .includes('hardreset')
       ) {
         queries.setChatbotInfos(senderId, {
-          state: CHATBOT_STATES.NOT_LINKED,
+          state: BASIC_CHATBOT_STATES.NOT_LINKED,
         });
       } else {
-        const chatbotInfos = await queries.getChatbotInfos(senderId);
-        console.log({ chatbotInfos });
-        const initialState = chatbotInfos.state;
-        console.log({ StartState: initialState });
-        const chatbot = new Chatbot(initialState);
+        const initialChatbotInfos = await queries.getChatbotInfos(
+          senderId,
+        );
+        console.log({ initialChatbotInfos });
+        const chatbot = new Chatbot({ ...initialChatbotInfos });
         chatbot.handleEvent(webhookEvent);
-        const endState = chatbot.stateType;
-        console.log({ endState });
-        if (endState != initialState) {
-          queries.setChatbotInfos(senderId, { state: endState });
+        const endChatbotInfos = chatbot.chatbotInfos;
+        console.log({ endChatbotInfos });
+        console.log({ initialChatbotInfos });
+        if (!_.isEqual(initialChatbotInfos, endChatbotInfos)) {
+          queries.setChatbotInfos(senderId, {
+            state: endChatbotInfos.state,
+            game_in_submission: endChatbotInfos.gameInSubmission,
+          });
         }
       }
     });

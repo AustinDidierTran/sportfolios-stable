@@ -1,9 +1,18 @@
 const {
   MESSENGER_PAYLOADS,
 } = require('../../../../../../common/enums');
+const queries = require('../../../../db/queries/facebook');
+
 class State {
   setContext(context) {
     this.context = context;
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  sendIntroMessages(senderId) {
+    throw new Error(
+      'You need to implement the method sendIntroMessages',
+    );
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -78,8 +87,8 @@ class State {
     const payload = this.getPayload(webhookEvent);
     return (
       isGreeting ||
-      text.includes('recommencer') ||
-      text.includes('start over') ||
+      text === 'recommencer' ||
+      text === 'start over' ||
       payload === MESSENGER_PAYLOADS.START_OVER
     );
   }
@@ -87,9 +96,7 @@ class State {
   isStartMock(webhookEvent) {
     const payload = this.getPayload(webhookEvent);
     const text = this.getText(webhookEvent);
-    return (
-      payload === MESSENGER_PAYLOADS.MOCK || text.includes('test')
-    );
+    return payload === MESSENGER_PAYLOADS.MOCK || text === 'test';
   }
 
   isScore(webhookEvent) {
@@ -122,11 +129,15 @@ class State {
     const text = this.getText(webhookEvent);
     const payload = this.getPayload(webhookEvent);
     return (
-      text.includes('stop') ||
-      text.includes('annuler') ||
-      text.includes('cancel') ||
+      text === 'stop' ||
+      text === 'annuler' ||
+      text === 'cancel' ||
       payload === MESSENGER_PAYLOADS.STOP
     );
+  }
+
+  sendMessage(messengerId, message) {
+    queries.sendMessage(messengerId, message);
   }
 }
 

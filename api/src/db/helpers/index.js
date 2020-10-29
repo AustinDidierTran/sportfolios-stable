@@ -6,7 +6,7 @@ const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
-  CHATBOT_STATES,
+  BASIC_CHATBOT_STATES,
 } = require('../../../../common/enums');
 
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
@@ -595,14 +595,23 @@ const getChatbotInfos = async messenger_id => {
     .select('*')
     .first()
     .where({ messenger_id });
-  return infos;
+  return {
+    messengerId: infos.messenger_id,
+    state: infos.state,
+    gameInSubmission: infos.game_in_submission,
+  };
 };
 
 const setChatbotInfos = async (messenger_id, infos) => {
-  return knex('messenger_user_chatbot_state')
+  const res = await knex('messenger_user_chatbot_state')
     .update({ ...infos })
     .where({ messenger_id })
     .returning('*');
+  return {
+    messengerId: res.messenger_id,
+    state: res.state,
+    gameInSubmission: res.game_in_submission,
+  };
 };
 
 const addChatbotId = async messenger_id => {
@@ -655,12 +664,13 @@ const getMessengerId = async user_id => {
 const deleteMessengerId = async user_id => {
   //Reseting chatbot state
   await setChatbotInfos(await getMessengerId(user_id), {
-    state: CHATBOT_STATES.NOT_LINKED,
+    state: BASIC_CHATBOT_STATES.NOT_LINKED,
   });
   const res = await knex('user_apps_id')
     .update({ messenger_id: null })
     .where({ user_id })
     .returning('user_id');
+
   return res;
 };
 

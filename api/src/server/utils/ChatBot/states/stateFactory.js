@@ -1,14 +1,18 @@
-const { CHATBOT_STATES } = require('../../../../../../common/enums');
-const AwaitingScoreSubmissionState = require('./awaitingScoreSubmission');
-const ScoreSubmissionRequestSent = require('./scoreSubmissionRequestSent');
-const InitialState = require('./initialState');
-const NotLinked = require('./notLinked');
+const {
+  BASIC_CHATBOT_STATES,
+  SCORE_SUBMISSION_CHATBOT_STATES,
+} = require('../../../../../../common/enums');
+const {
+  AwaitingScoreSubmissionState,
+  ScoreSubmissionRequestSent,
+} = require('./ScoreSubmissionStates');
+const { Home, NotLinked } = require('./BasicStates');
 
 const stateMap = {
-  [CHATBOT_STATES.AWAITING_SCORE_SUBMISSION]: AwaitingScoreSubmissionState,
-  [CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT]: ScoreSubmissionRequestSent,
-  [CHATBOT_STATES.HOME]: InitialState,
-  [CHATBOT_STATES.NOT_LINKED]: NotLinked,
+  [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION]: AwaitingScoreSubmissionState,
+  [SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT]: ScoreSubmissionRequestSent,
+  [BASIC_CHATBOT_STATES.HOME]: Home,
+  [BASIC_CHATBOT_STATES.NOT_LINKED]: NotLinked,
 };
 
 function StateFactory(state) {

@@ -157,9 +157,12 @@ const MESSENGER_PAYLOADS = {
   SPIRIT_COMMUNICATION: 'sc',
 };
 
-const CHATBOT_STATES = {
+const BASIC_CHATBOT_STATES = {
   NOT_LINKED: 0,
   HOME: 1,
+};
+
+const SCORE_SUBMISSION_CHATBOT_STATES = {
   SCORE_SUBMISSION_REQUEST_SENT: 2,
   AWAITING_SCORE_SUBMISSION: 3,
   AWAITING_SCORE_SUBMISSION_CONFIRMATION: 4,
@@ -364,7 +367,7 @@ const MESSENGER_MESSAGES_FR = {
       {
         content_type: 'text',
         title: 'Oui',
-        payload: MESSENGER_PAYLOADS.YES1,
+        payload: MESSENGER_PAYLOADS.YES,
       },
       {
         content_type: 'text',
@@ -384,7 +387,7 @@ const MESSENGER_MESSAGES_FR = {
       {
         content_type: 'text',
         title: 'Oui',
-        payload: MESSENGER_PAYLOADS.YES2,
+        payload: MESSENGER_PAYLOADS.YES,
       },
       {
         content_type: 'text',
@@ -400,7 +403,7 @@ const MESSENGER_MESSAGES_FR = {
       {
         content_type: 'text',
         title: 'Oui',
-        payload: MESSENGER_PAYLOADS.YES3,
+        payload: MESSENGER_PAYLOADS.YES,
       },
       {
         content_type: 'text',
@@ -546,7 +549,7 @@ const MESSENGER_MESSAGES_FR = {
       {
         content_type: 'text',
         title: 'Oui',
-        payload: MESSENGER_PAYLOADS.YES4,
+        payload: MESSENGER_PAYLOADS.YES,
       },
       {
         content_type: 'text',
@@ -609,5 +612,6 @@ module.exports = {
   MESSENGER_PAYLOADS,
   MESSENGER_MESSAGES_EN,
   MESSENGER_MESSAGES_FR,
-  CHATBOT_STATES,
+  BASIC_CHATBOT_STATES,
+  SCORE_SUBMISSION_CHATBOT_STATES,
 };
