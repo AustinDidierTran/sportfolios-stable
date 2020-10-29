@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import TabsGenerator, { TABS_ENUM } from '../../tabs';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { Tab, Tabs } from '../../components/MUI';
-import { Paper } from '../../components/Custom';
+import { IgContainer, Paper } from '../../components/Custom';
 import { useQuery } from '../../hooks/queries';
 
 export default function Cart() {
@@ -25,8 +25,8 @@ export default function Cart() {
   };
 
   return (
-    <>
-      <Paper>
+    <IgContainer>
+      <Paper style={{ marginBottom: '8px' }}>
         <Tabs
           value={states.findIndex(s => s.value === eventState)}
           indicatorColor="primary"
@@ -43,6 +43,6 @@ export default function Cart() {
         </Tabs>
       </Paper>
       <OpenTab />
-    </>
+    </IgContainer>
   );
 }

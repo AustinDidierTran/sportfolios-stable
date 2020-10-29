@@ -84,7 +84,6 @@ export default function AddMembership() {
       <Button
         size="small"
         variant="contained"
-        endIcon="Add"
         style={{ margin: '8px' }}
         onClick={onOpen}
       >

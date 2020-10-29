@@ -148,7 +148,7 @@ export default function ChoosePaymentMethod(props) {
           onClick={pay}
           style={{ margin: 8 }}
         >
-          Payer
+          {t('pay')}
         </Button>
       </ContainerBottomFixed>
     </div>

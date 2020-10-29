@@ -160,23 +160,15 @@ export default function Tabs(props) {
       ];
     }
     if (l === TABS_ENUM.SETTINGS) {
-      if (
-        [
-          ENTITIES_ROLE_ENUM.ADMIN,
-          ENTITIES_ROLE_ENUM.EDITOR,
-        ].includes(role)
-      ) {
-        return [
-          ...prev,
-          {
-            component: Settings,
-            label: t('settings'),
-            icon: 'Settings',
-            value: TABS_ENUM.SETTINGS,
-          },
-        ];
-      }
-      return prev;
+      return [
+        ...prev,
+        {
+          component: Settings,
+          label: t('settings'),
+          icon: 'Settings',
+          value: TABS_ENUM.SETTINGS,
+        },
+      ];
     }
     if (l === TABS_ENUM.SWITCH_TO_ADMIN) {
       if (

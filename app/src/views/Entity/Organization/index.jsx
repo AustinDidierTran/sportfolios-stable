@@ -4,14 +4,13 @@ import { Paper, IgContainer, Icon } from '../../../components/Custom';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import styles from './Organization.module.css';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '../../../hooks/queries';
 import TabsGenerator, { TABS_ENUM } from '../../../tabs';
 
-import BasicInfos from '../BasicInfos';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import { formatPageTitle } from '../../../utils/stringFormats';
+import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 
 export default function Organization(props) {
   const { basicInfos } = props;
@@ -26,11 +25,16 @@ export default function Organization(props) {
     query.tab || TABS_ENUM.EVENTS,
   );
 
-  const tabsList = [
-    TABS_ENUM.EVENTS,
-    TABS_ENUM.SETTINGS,
-    TABS_ENUM.SHOP,
-  ];
+  const tabsList =
+    basicInfos.role === ENTITIES_ROLE_ENUM.ADMIN ||
+    basicInfos.role === ENTITIES_ROLE_ENUM.EDITOR
+      ? [
+          TABS_ENUM.ABOUT,
+          TABS_ENUM.EVENTS,
+          TABS_ENUM.SHOP,
+          TABS_ENUM.SETTINGS,
+        ]
+      : [TABS_ENUM.ABOUT, TABS_ENUM.EVENTS, TABS_ENUM.SHOP];
 
   const states = TabsGenerator({
     list: tabsList,
@@ -83,9 +87,6 @@ export default function Organization(props) {
             ))}
           </Tabs>
         )}
-      </Paper>
-      <Paper className={styles.card}>
-        <BasicInfos basicInfos={basicInfos} />
       </Paper>
       <div style={{ marginBottom: '128px' }}>
         <OpenTab basicInfos={basicInfos} />

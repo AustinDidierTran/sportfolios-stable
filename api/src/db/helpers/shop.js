@@ -163,21 +163,28 @@ const getCartItems = async userId => {
       )
       .where('cart_items.user_id', userId)
       .orderBy('cart_items.created_at');
+    cartItems.forEach(item => {
+      if (!item.metadata.type || item.amount === 0) {
+        deleteCartItems(item.id, item.user_id);
+      }
+    });
     return (
-      cartItems.map(i => ({
-        active: i.active,
-        amount: i.amount,
-        description: i.description,
-        id: i.id,
-        label: i.label,
-        metadata: i.metadata,
-        quantity: i.quantity,
-        photoUrl: i.photo_url,
-        stripePriceId: i.stripe_price_id,
-        stripePriceMetadata: i.stripe_price_metadata,
-        stripeProductId: i.stripe_product_id,
-        userId: i.user_id,
-      })) || []
+      cartItems
+        .filter(c => c.metadata.type)
+        .map(i => ({
+          active: i.active,
+          amount: i.amount,
+          description: i.description,
+          id: i.id,
+          label: i.label,
+          metadata: i.metadata,
+          quantity: i.quantity,
+          photoUrl: i.photo_url,
+          stripePriceId: i.stripe_price_id,
+          stripePriceMetadata: i.stripe_price_metadata,
+          stripeProductId: i.stripe_product_id,
+          userId: i.user_id,
+        })) || []
     );
   } catch (err) {
     stripeErrorLogger('GetCartItem error', err);
@@ -187,7 +194,11 @@ const getCartItems = async userId => {
 
 const getCartTotal = async userId => {
   const items = await knex('cart_items')
-    .select(['stripe_price.amount', 'cart_items.quantity'])
+    .select([
+      'stripe_price.amount',
+      'cart_items.quantity',
+      'cart_items.metadata',
+    ])
     .leftJoin(
       'stripe_price',
       'cart_items.stripe_price_id',
@@ -195,12 +206,10 @@ const getCartTotal = async userId => {
       'stripe_price.stripe_price_id',
     )
     .where('cart_items.user_id', userId);
-
   const total = items.reduce(
     (prev, curr) => prev + curr.amount * curr.quantity,
     0,
   );
-
   return total;
 };
 
@@ -294,6 +303,7 @@ const getPurchases = async userId => {
       'store_items_paid.created_at',
       'store_items_paid.seller_entity_id',
       'store_items.photo_url',
+      'receipts.receipt_url',
     ])
     .leftJoin(
       'stripe_price',
@@ -312,6 +322,12 @@ const getPurchases = async userId => {
       'store_items.stripe_price_id',
       '=',
       'store_items_paid.stripe_price_id',
+    )
+    .leftJoin(
+      'receipts',
+      'receipts.id',
+      '=',
+      'store_items_paid.receipt_id',
     )
     .where('store_items_paid.buyer_user_id', userId);
 
@@ -374,7 +390,16 @@ const addEventCartItem = async (body, userId) => {
   await knex('cart_items').insert({
     stripe_price_id: stripePriceId,
     user_id: userId,
-    metadata,
+    metadata: { ...metadata, type: GLOBAL_ENUM.EVENT },
+  });
+};
+
+const addMembershipCartItem = async (body, userId) => {
+  const { stripe_price_id } = body;
+  await knex('cart_items').insert({
+    stripe_price_id,
+    user_id: userId,
+    metadata: { ...body, type: GLOBAL_ENUM.MEMBERSHIP },
   });
 };
 
@@ -401,6 +426,12 @@ const updateCartItems = async (body, userId) => {
   }
 };
 
+const deleteCartItems = async (cartItemId, userId) => {
+  await knex('cart_items')
+    .where({ id: cartItemId, user_id: userId })
+    .del();
+};
+
 const addItemToPaidStoreItems = async query => {
   const {
     sellerEntityId,
@@ -411,8 +442,14 @@ const addItemToPaidStoreItems = async query => {
     buyerUserId,
     invoiceItemId,
     metadata,
+    receiptUrl,
   } = query;
-
+  const [receipt] = await knex('receipts')
+    .insert({
+      receipt_url: receiptUrl,
+      user_id: buyerUserId,
+    })
+    .returning('*');
   await knex('store_items_paid').insert({
     seller_entity_id: sellerEntityId,
     quantity,
@@ -421,10 +458,8 @@ const addItemToPaidStoreItems = async query => {
     stripe_price_id: stripePriceId,
     buyer_user_id: buyerUserId,
     invoice_item_id: invoiceItemId,
-    metadata: {
-      size: metadata.size,
-      type: metadata.type,
-    },
+    metadata,
+    receipt_id: receipt.id,
   });
 };
 
@@ -469,6 +504,7 @@ const clearCart = async userId => {
 module.exports = {
   addCartItem,
   addEventCartItem,
+  addMembershipCartItem,
   addItemToPaidStoreItems,
   clearCart,
   getCartItems,
@@ -482,4 +518,5 @@ module.exports = {
   removeAllInstancesFromCart,
   removeCartItemInstance,
   updateCartItems,
+  deleteCartItems,
 };

@@ -586,6 +586,8 @@ export default {
     teams_unregister_success: 'Équipes désinscrites avec succès',
     teams: 'Équipes',
     terms_and_conditions: 'Termes et conditions',
+    this_organization_has_no_events:
+      "Cette organisation n'a pas d'événement",
     there_is_no_rosters_for_this_event:
       "Il n'y a pas d'alignements pour cet événement.",
     this_team_cannot_be_deleted:
@@ -655,6 +657,8 @@ export default {
       'Vous avez ajouté un joueur à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
     you_added_players_to_your_roster:
       'Vous avez ajouté {{length}} joueurs à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
+    you_are_not_a_member_of_this_organization:
+      "Vous n'êtes pas membre de cette organisation",
     you_can_always_change_your_team_name_in_your_team_profile:
       "Si vous hésitez pour votre nom d'équipe, sachez que vous pouvez le changer plus tard dans votre profil d'équipe.",
     you_can_click_on_a_game_to_change_score:

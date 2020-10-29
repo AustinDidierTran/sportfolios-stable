@@ -17,7 +17,6 @@ import {
   List,
   ContainerBottomFixed,
   LoadingSpinner,
-  IgContainer,
 } from '../../components/Custom';
 import DefaultCard from '../../components/MUI/Card';
 import { Typography } from '../../components/MUI';
@@ -76,13 +75,8 @@ export default function Cart() {
       payload: data,
     });
   };
-
   if (isLoading) {
-    return (
-      <IgContainer>
-        <LoadingSpinner />
-      </IgContainer>
-    );
+    return <LoadingSpinner />;
   }
 
   if (items.length < 1) {
@@ -100,28 +94,27 @@ export default function Cart() {
       <MessageAndButtons
         buttons={buttons}
         message={t('cart_empty_go_shop')}
+        withoutIgContainer
       />
     );
   }
   return (
     <>
-      <IgContainer>
-        <div className={styles.cart}>
-          <List
-            items={items.map((item, index) => ({
-              ...item,
-              updateQuantity,
-              type: LIST_ITEM_ENUM.CART,
-              key: index,
-            }))}
-          />
-          <DefaultCard className={styles.defaultCard}>
-            <Typography variant="h5" className={styles.typo}>
-              {`Total: ${formatPrice(total)}`}
-            </Typography>
-          </DefaultCard>
-        </div>
-      </IgContainer>
+      <div className={styles.cart}>
+        <List
+          items={items.map((item, index) => ({
+            ...item,
+            updateQuantity,
+            type: LIST_ITEM_ENUM.CART,
+            key: index,
+          }))}
+        />
+        <DefaultCard className={styles.defaultCard}>
+          <Typography variant="h5" className={styles.typo}>
+            {`Total: ${formatPrice(total)}`}
+          </Typography>
+        </DefaultCard>
+      </div>
 
       <ContainerBottomFixed>
         <div className={styles.buttonDiv}>

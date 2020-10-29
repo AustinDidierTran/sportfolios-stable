@@ -583,6 +583,8 @@ export default {
     teams_unregister_success: 'Teams unregistered successfully',
     teams: 'Teams',
     terms_and_conditions: 'Terms and conditions',
+    this_organization_has_no_events:
+      'This organization has no events',
     there_is_no_rosters_for_this_event:
       'There are no rosters for this event.',
     this_team_cannot_be_deleted:
@@ -650,6 +652,8 @@ export default {
       'You added one player to your roster! Choose your payment option.',
     you_added_players_to_your_roster:
       'You added {{length}} players to your roster! Choose your payment option.',
+    you_are_not_a_member_of_this_organization:
+      'You are not a member of this organization',
     you_can_always_change_your_team_name_in_your_team_profile:
       "If you are not sure about your team name, be aware that you can still change it later in your team's profile.",
     you_can_click_on_a_game_to_change_score:

@@ -154,7 +154,7 @@ router.get(`${BASE_URL}/roles`, async ctx => {
 
 router.get(`${BASE_URL}/members`, async ctx => {
   const entity = await queries.getMembers(
-    ctx.query.personsId,
+    ctx.query.personId,
     ctx.query.id,
   );
 
@@ -190,6 +190,23 @@ router.get(`${BASE_URL}/organizationMembers`, async ctx => {
 
 router.get(`${BASE_URL}/memberships`, async ctx => {
   const entity = await queries.getMemberships(ctx.query.id);
+
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/primaryPerson`, async ctx => {
+  const entity = await queries.getPrimaryPerson(ctx.body.userInfo.id);
 
   if (entity) {
     ctx.body = {
@@ -647,7 +664,10 @@ router.post(`${BASE_URL}/role`, async ctx => {
 });
 
 router.post(`${BASE_URL}/member`, async ctx => {
-  const entity = await queries.addMember(ctx.request.body);
+  const entity = await queries.addMember(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (entity) {
     ctx.status = 201;
     ctx.body = {
