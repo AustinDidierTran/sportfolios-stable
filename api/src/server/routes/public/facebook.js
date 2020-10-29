@@ -17,15 +17,28 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
       let webhookEvent = entry.messaging[0];
       // eslint-disable-next-line no-console
       console.log(webhookEvent);
-      //TODO: Get state in db
       const senderId = webhookEvent.sender.id;
-      const chatbotinfos = await queries.getChatbotInfos(senderId);
-      console.log({ chatbotinfos });
-      const state = CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT;
-      const chatbot = new Chatbot(state);
-      chatbot.handleEvent(webhookEvent);
-      console.log(chatbot.state);
-      //TODO: Set new state
+      if (
+        webhookEvent.message &&
+        webhookEvent.message.text &&
+        webhookEvent.message.text.includes('hardreset')
+      ) {
+        queries.setChatbotInfos(senderId, {
+          state: CHATBOT_STATES.NOT_LINKED,
+        });
+      } else {
+        const chatbotInfos = await queries.getChatbotInfos(senderId);
+        console.log({ chatbotInfos });
+        const initialState = chatbotInfos.state;
+        console.log({ StartState: initialState });
+        const chatbot = new Chatbot(initialState);
+        chatbot.handleEvent(webhookEvent);
+        const endState = chatbot.stateType;
+        console.log({ endState });
+        if (endState != initialState) {
+          queries.setChatbotInfos(senderId, { state: endState });
+        }
+      }
     });
     // Returns a '200 OK' response to all requests
     ctx.status = 200;

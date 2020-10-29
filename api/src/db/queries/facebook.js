@@ -6,6 +6,7 @@ const {
   setMessengerId,
   getChatbotInfos: getChatbotInfosHelper,
   setChatbotInfos: setChatbotInfosHelper,
+  addChatbotId,
 } = require('../helpers');
 const { MESSENGER_MESSAGES_FR } = require('../../../../common/enums');
 
@@ -37,7 +38,13 @@ const linkMessengerAccount = async (userId, messengerId) => {
 };
 
 const getChatbotInfos = async messengerId => {
-  return getChatbotInfosHelper(messengerId);
+  infos = await getChatbotInfosHelper(messengerId);
+
+  if (!infos) {
+    //New messengerId
+    infos = await addChatbotId(messengerId);
+  }
+  return infos;
 };
 
 const setChatbotInfos = async (messengerId, infos) => {

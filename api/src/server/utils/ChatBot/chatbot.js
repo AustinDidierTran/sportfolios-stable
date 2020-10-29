@@ -8,6 +8,7 @@ class Chatbot {
   setState(stateType) {
     const state = StateFactory(stateType);
     this.state = state;
+    this.stateType = stateType;
     this.state.setContext(this);
   }
 

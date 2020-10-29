@@ -6,6 +6,7 @@ const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
+  CHATBOT_STATES,
 } = require('../../../../common/enums');
 
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
@@ -47,7 +48,7 @@ const createUserEmail = async body => {
 };
 
 const createUserComplete = async body => {
-  const { password, email, name, surname } = body;
+  const { password, email, name, surname, facebook_id } = body;
 
   await knex.transaction(async trx => {
     // Create user
@@ -88,6 +89,12 @@ const createUserComplete = async body => {
     await knex('user_primary_person')
       .insert({ user_id, primary_person: entity_id })
       .transacting(trx);
+
+    //Set app connections
+    await knex('user_apps_id').insert({
+      user_id,
+      facebook_id,
+    });
   });
 };
 
@@ -584,20 +591,24 @@ const setFacebookData = async (user_id, data) => {
 };
 
 const getChatbotInfos = async messenger_id => {
-  const db = await knex('messenger_user_chatbot_state').select('*');
-  console.log({ db });
-  const [infos] = await knex('messenger_user_chatbot_state')
+  const infos = await knex('messenger_user_chatbot_state')
     .select('*')
     .first()
     .where({ messenger_id });
-  console.log({ infos });
   return infos;
 };
 
 const setChatbotInfos = async (messenger_id, infos) => {
   return knex('messenger_user_chatbot_state')
     .update({ ...infos })
-    .where({ messenger_id });
+    .where({ messenger_id })
+    .returning('*');
+};
+
+const addChatbotId = async messenger_id => {
+  return knex('messenger_user_chatbot_state')
+    .insert({ messenger_id })
+    .returning('*');
 };
 
 const getFacebookId = async user_id => {
@@ -628,8 +639,6 @@ const isLinkedFacebookAccount = async facebook_id => {
 };
 
 const setMessengerId = async (user_id, messenger_id) => {
-  const insertIfNotExist = `INSERT INTO messenger_user_chatbot_state(messenger_id) ${messenger_id} ON CONFLICT DO NOTHING`;
-  knex.raw(insertIfNotExist);
   return knex('user_apps_id')
     .where({ user_id })
     .update({ messenger_id })
@@ -644,6 +653,10 @@ const getMessengerId = async user_id => {
 };
 
 const deleteMessengerId = async user_id => {
+  //Reseting chatbot state
+  await setChatbotInfos(await getMessengerId(user_id), {
+    state: CHATBOT_STATES.NOT_LINKED,
+  });
   const res = await knex('user_apps_id')
     .update({ messenger_id: null })
     .where({ user_id })
@@ -693,4 +706,5 @@ module.exports = {
   deleteMessengerId,
   getChatbotInfos,
   setChatbotInfos,
+  addChatbotId,
 };

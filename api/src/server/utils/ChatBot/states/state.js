@@ -97,6 +97,15 @@ class State {
     return /^[0-9]+-[0-9]+$/i.test(text);
   }
 
+  getRef(webhookEvent) {
+    if (webhookEvent.postback && webhookEvent.postback.referral) {
+      return webhookEvent.postback.referral.ref;
+    }
+    if (webhookEvent.referral) {
+      return webhookEvent.referral.ref;
+    }
+  }
+
   getScores(webhookEvent) {
     const text = this.getText(webhookEvent);
     return text.split('-');
