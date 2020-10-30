@@ -13,6 +13,8 @@ class AwaitingScoreSubmission extends State {
       console.log(`MY SCORE ${score[0]} OPPONENT ${score[1]}`);
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION_CONFIRMATION;
+      this.context.chatbotInfos.myScore = score[0];
+      this.context.chatbotInfos.opponentScore = score[1];
       //TODO SAVE SCORE
     } else if (
       this.isStop(webhookEvent) ||

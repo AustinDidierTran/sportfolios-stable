@@ -11,6 +11,7 @@ const {
 const { MESSENGER_MESSAGES_FR } = require('../../../../common/enums');
 
 const sendMessage = (messengerId, message) => {
+  console.log({ messengerId });
   return sendMessageHelper(messengerId, message);
 };
 

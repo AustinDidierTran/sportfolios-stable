@@ -16,6 +16,7 @@ class AwaitingSpiritSubmissionConfirmation extends State {
       );
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else if (this.isNo(webhookEvent)) {
+      //TODO Newstate that ask which modification
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_RULES;
     } else if (

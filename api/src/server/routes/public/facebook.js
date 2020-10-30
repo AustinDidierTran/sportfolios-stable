@@ -31,21 +31,29 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
       ) {
         queries.setChatbotInfos(senderId, {
           state: BASIC_CHATBOT_STATES.NOT_LINKED,
+          chatbot_infos: JSON.stringify({}),
         });
       } else {
-        const initialChatbotInfos = await queries.getChatbotInfos(
-          senderId,
-        );
+        let {
+          state: initialState,
+          chatbotInfos: initialChatbotInfos,
+        } = await queries.getChatbotInfos(senderId);
+        //initialChatbotInfos = JSON.parse(initialChatbotInfos);
         console.log({ initialChatbotInfos });
-        const chatbot = new Chatbot({ ...initialChatbotInfos });
+        const chatbot = new Chatbot(senderId, initialState, {
+          ...initialChatbotInfos,
+        });
         chatbot.handleEvent(webhookEvent);
         const endChatbotInfos = chatbot.chatbotInfos;
+        const endState = chatbot.stateType;
         console.log({ endChatbotInfos });
-        console.log({ initialChatbotInfos });
-        if (!_.isEqual(initialChatbotInfos, endChatbotInfos)) {
+        if (
+          initialState !== endState ||
+          !_.isEqual(initialChatbotInfos, endChatbotInfos)
+        ) {
           queries.setChatbotInfos(senderId, {
-            state: endChatbotInfos.state,
-            game_in_submission: endChatbotInfos.gameInSubmission,
+            state: chatbot.stateType,
+            chatbot_infos: JSON.stringify(endChatbotInfos),
           });
         }
       }

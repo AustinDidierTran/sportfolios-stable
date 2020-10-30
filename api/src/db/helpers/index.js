@@ -598,7 +598,7 @@ const getChatbotInfos = async messenger_id => {
   return {
     messengerId: infos.messenger_id,
     state: infos.state,
-    gameInSubmission: infos.game_in_submission,
+    chatbotInfos: infos.chatbot_infos,
   };
 };
 
@@ -610,7 +610,7 @@ const setChatbotInfos = async (messenger_id, infos) => {
   return {
     messengerId: res.messenger_id,
     state: res.state,
-    gameInSubmission: res.game_in_submission,
+    chatbotInfos: res.chatbot_infos,
   };
 };
 

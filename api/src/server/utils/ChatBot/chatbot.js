@@ -1,22 +1,22 @@
 const { StateFactory } = require('./states');
 
 class Chatbot {
-  constructor(chatbotInfos) {
-    const { state } = chatbotInfos;
+  constructor(messengerId, stateType, chatbotInfos) {
+    this.messengerId = messengerId;
     this.chatbotInfos = chatbotInfos;
-    this.setState(state);
+    this.setState(stateType);
   }
 
   setState(stateType) {
     this.state = StateFactory(stateType);
     this.state.setContext(this);
-    this.chatbotInfos.state = stateType;
+    this.stateType = stateType;
   }
 
   changeState(stateType) {
     this.setState(stateType);
     this.state.sendMessages(
-      this.chatbotInfos.messengerId,
+      this.messengerId,
       this.state.getIntroMessages(),
     );
   }
