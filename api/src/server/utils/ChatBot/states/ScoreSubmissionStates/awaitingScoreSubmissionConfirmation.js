@@ -5,15 +5,16 @@ const {
   MESSENGER_MESSAGES_FR,
 } = require('../../../../../../../common/enums');
 
-class AwaitingScoreSubmission extends State {
+class AwaitingScoreSubmissionConfirmation extends State {
   handleEvent(webhookEvent) {
     let nextState;
-    if (this.isScore(webhookEvent)) {
-      const score = this.getScores(webhookEvent);
-      console.log(`MY SCORE ${score[0]} OPPONENT ${score[1]}`);
+    if (this.isYes(webhookEvent)) {
       nextState =
-        SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION_CONFIRMATION;
+        SCORE_SUBMISSION_CHATBOT_STATES.SPIRIT_SUBMISSION_REQUEST_SENT;
       //TODO SAVE SCORE
+    } else if (this.isNo(webhookEvent)) {
+      nextState =
+        SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION;
     } else if (
       this.isStop(webhookEvent) ||
       this.isStartOver(webhookEvent)
@@ -22,7 +23,7 @@ class AwaitingScoreSubmission extends State {
     } else {
       this.sendMessages(webhookEvent.sender.id, [
         MESSENGER_MESSAGES_FR.I_DONT_UNDERSTAND,
-        MESSENGER_MESSAGES_FR.SCORE_SUBMITION_EXPLAINATION,
+        this.getIntroMessages(),
       ]);
     }
     if (nextState) {
@@ -31,8 +32,9 @@ class AwaitingScoreSubmission extends State {
   }
 
   getIntroMessages() {
-    return MESSENGER_MESSAGES_FR.SCORE_SUBMITION_EXPLAINATION;
+    //TODO personalise if victory or defeat
+    return MESSENGER_MESSAGES_FR.SCORE_SUBMISSION_VICTORY;
   }
 }
 
-module.exports = AwaitingScoreSubmission;
+module.exports = AwaitingScoreSubmissionConfirmation;

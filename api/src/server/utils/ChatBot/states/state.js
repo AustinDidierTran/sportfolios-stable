@@ -139,7 +139,8 @@ class State {
   sendMessages(messengerId, messages) {
     if (Array.isArray(messages)) {
       let delay = 0;
-      for (let message of messages) {
+      for (const message of messages) {
+        //Sending with a delay so the messages arrives in the right order
         setTimeout(
           () => queries.sendMessage(messengerId, message),
           delay * 2000,

@@ -1,7 +1,9 @@
-const AwaitingScoreSubmissionState = require('./awaitingScoreSubmission');
+const AwaitingScoreSubmission = require('./awaitingScoreSubmission');
 const ScoreSubmissionRequestSent = require('./scoreSubmissionRequestSent');
+const AwaitingScoreSubmissionConfirmation = require('./awaitingScoreSubmissionConfirmation');
 
 module.exports = {
-  AwaitingScoreSubmissionState,
+  AwaitingScoreSubmission,
   ScoreSubmissionRequestSent,
+  AwaitingScoreSubmissionConfirmation,
 };

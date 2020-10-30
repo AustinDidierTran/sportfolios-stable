@@ -3,14 +3,16 @@ const {
   SCORE_SUBMISSION_CHATBOT_STATES,
 } = require('../../../../../../common/enums');
 const {
-  AwaitingScoreSubmissionState,
+  AwaitingScoreSubmission,
   ScoreSubmissionRequestSent,
+  AwaitingScoreSubmissionConfirmation,
 } = require('./ScoreSubmissionStates');
 const { Home, NotLinked } = require('./BasicStates');
 
 const stateMap = {
-  [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION]: AwaitingScoreSubmissionState,
+  [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION]: AwaitingScoreSubmission,
   [SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT]: ScoreSubmissionRequestSent,
+  [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION_CONFIRMATION]: AwaitingScoreSubmissionConfirmation,
   [BASIC_CHATBOT_STATES.HOME]: Home,
   [BASIC_CHATBOT_STATES.NOT_LINKED]: NotLinked,
 };

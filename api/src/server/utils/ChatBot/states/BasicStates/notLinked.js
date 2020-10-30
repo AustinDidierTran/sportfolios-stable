@@ -30,6 +30,10 @@ class NotLinked extends State {
       MESSENGER_MESSAGES_FR.GET_STARTED_NO_REF,
     );
   }
+
+  getIntroMessages() {
+    return MESSENGER_MESSAGES_FR.GET_STARTED_NO_REF;
+  }
 }
 
 module.exports = NotLinked;
