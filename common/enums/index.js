@@ -88,6 +88,7 @@ const FORM_DIALOG_TYPE_ENUM = {
   ADD_MEMBERSHIP: 'add membership',
   BECOME_MEMBER: 'become member',
   ADD_MEMBER: 'add member',
+  EDIT_MEMBERSHIP: 'edit membership',
 };
 
 const LANGUAGE_ENUM = {

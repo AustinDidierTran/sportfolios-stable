@@ -50,6 +50,7 @@ export default function MembersList() {
     const res = data.map((d, index) => ({
       ...d,
       type: LIST_ITEM_ENUM.MEMBER,
+      update: getMembers,
       key: index,
     }));
     setMembers(res);
@@ -80,7 +81,7 @@ export default function MembersList() {
           }}
           onClick={onOpen}
         >
-          {t('add_member')}
+          {t('add_membership')}
         </Button>
         <List items={members} />
         <FormDialog

@@ -181,6 +181,7 @@ export default {
     done: 'Terminé',
     //E
     edit_game: 'Modifier la partie',
+    edit_membership: 'Modifier une affiliation',
     edit_payment_option: "Modifier l'option de paiement",
     edit_infos: 'Modifier les infos',
     edit_your_primary_person: 'Changer de personne primaire',
@@ -308,6 +309,7 @@ export default {
     members_list: 'Liste des membres | {{organization}}',
     membership_added: 'Affiliation ajouté',
     membership_exist: 'Affiliation Existant',
+    membership_edited: 'Affiliation modifiée',
     membership: 'Affiliation',
     memberships: 'Affiliations',
     menu: 'Menu',

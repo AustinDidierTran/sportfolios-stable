@@ -172,6 +172,7 @@ export default {
     done: 'Done',
     //E
     edit_game: 'Edit game',
+    edit_membership: 'Edit membership',
     edit_payment_option: 'Edit payment option',
     edit_infos: 'Edit infos',
     edit_your_primary_person: 'Edit your primary person',
@@ -300,6 +301,7 @@ export default {
     members_list: 'Members list | {{organization}}',
     membership_added: 'Membership added',
     membership_exist: 'Membership Exist',
+    membership_edited: 'Membership edited',
     membership: 'Membership',
     memberships: 'Memberships',
     menu: 'Menu',

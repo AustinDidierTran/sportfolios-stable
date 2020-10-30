@@ -2259,6 +2259,21 @@ const deleteEntityMembership = async membershipId => {
     .del();
 };
 
+const deleteMembership = async (
+  memberType,
+  organizationId,
+  personId,
+) => {
+  console;
+  await knex('memberships')
+    .where({
+      member_type: memberType,
+      organization_id: organizationId,
+      person_id: personId,
+    })
+    .del();
+};
+
 const deleteOption = async id => {
   return knex('event_payment_options')
     .where({ id })
@@ -2389,6 +2404,7 @@ module.exports = {
   canUnregisterTeam,
   deleteEntity,
   deleteEntityMembership,
+  deleteMembership,
   deleteOption,
   deleteRegistration,
   getAllEntities,

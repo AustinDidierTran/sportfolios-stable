@@ -1,5 +1,5 @@
 import React from 'react';
-import { ListItem, TextField } from '../../MUI';
+import { ListItemText, TextField } from '../../MUI';
 import { Select, MultiSelect, Button, CheckBox } from '../../Custom';
 import { COMPONENT_TYPE_ENUM } from '../../../../../common/enums';
 import { InputAdornment } from '@material-ui/core';
@@ -58,7 +58,12 @@ export default function ComponentFactory(props) {
     );
   }
   if (component.componentType === COMPONENT_TYPE_ENUM.LIST_ITEM) {
-    return <ListItem primary={component.primary} />;
+    return (
+      <ListItemText
+        primary={component.primary}
+        secondary={component.secondary}
+      />
+    );
   }
   if (
     component.componentType === COMPONENT_TYPE_ENUM.PERSON_SEARCH_LIST

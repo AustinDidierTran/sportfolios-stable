@@ -31,6 +31,7 @@ const {
   canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
+  deleteMembership: deleteMembershipHelper,
   deleteGame: deleteGameHelper,
   deleteOption: deleteOptionHelper,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
@@ -821,6 +822,10 @@ async function deleteEntityMembership(query) {
 
   return deleteEntityMembershipHelper(membershipId);
 }
+async function deleteMembership(query) {
+  const { memberType, organizationId, personId } = query;
+  return deleteMembershipHelper(memberType, organizationId, personId);
+}
 
 async function deleteOption(id) {
   return deleteOptionHelper(id);
@@ -869,6 +874,7 @@ module.exports = {
   deleteEntityHelper,
   deleteEntityHelper,
   deleteEntityMembership,
+  deleteMembership,
   deleteGame,
   deleteGame,
   deleteOption,

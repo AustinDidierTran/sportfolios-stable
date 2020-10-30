@@ -5,6 +5,7 @@ import AddEditEventPaymentOption from './AddEditEventPaymentOption';
 import AddMembership from './AddMembership';
 import BecomeMember from './BecomeMember';
 import AddMember from './AddMember';
+import EditMembership from './EditMembership';
 
 const FormDialogMap = {
   [FORM_DIALOG_TYPE_ENUM.SUBMIT_SCORE_AND_SPIRIT]: SubmitScoreAndSpiritForm,
@@ -13,6 +14,7 @@ const FormDialogMap = {
   [FORM_DIALOG_TYPE_ENUM.ENTER_EMAIL]: EnterEmail,
   [FORM_DIALOG_TYPE_ENUM.BECOME_MEMBER]: BecomeMember,
   [FORM_DIALOG_TYPE_ENUM.ADD_MEMBER]: AddMember,
+  [FORM_DIALOG_TYPE_ENUM.EDIT_MEMBERSHIP]: EditMembership,
 };
 
 export default function FormDialogFactory(props) {

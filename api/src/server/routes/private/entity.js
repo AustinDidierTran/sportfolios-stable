@@ -962,6 +962,14 @@ router.del(BASE_URL, async ctx => {
 
 router.del(`${BASE_URL}/membership`, async ctx => {
   await queries.deleteEntityMembership(ctx.query);
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
+router.del(`${BASE_URL}/member`, async ctx => {
+  await queries.deleteMembership(ctx.query);
 
   ctx.status = 201;
   ctx.body = {
