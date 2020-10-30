@@ -581,18 +581,6 @@ const MESSENGER_MESSAGES_FR = {
   SUBMIT_CONFIRMATION: {
     text:
       'Le tout a été envoyé avec succès. Merci et à la prochaine!',
-    quick_replies: [
-      {
-        content_type: 'text',
-        title: 'Génial 🤩',
-        payload: MESSENGER_PAYLOADS.IGNORE,
-      },
-      {
-        content_type: 'text',
-        title: 'Simuler 🚀',
-        payload: MESSENGER_PAYLOADS.MOCK,
-      },
-    ],
   },
 };
 
