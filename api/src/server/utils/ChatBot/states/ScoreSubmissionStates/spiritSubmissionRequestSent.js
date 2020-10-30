@@ -5,22 +5,21 @@ const {
   MESSENGER_MESSAGES_FR,
 } = require('../../../../../../../common/enums');
 
-class AwaitingScoreSubmissionConfirmation extends State {
+class SpiritSubmissionRequestSent extends State {
   handleEvent(webhookEvent) {
     let nextState;
     if (this.isYes(webhookEvent)) {
-      //TODO SAVE SCORE
       nextState =
-        SCORE_SUBMISSION_CHATBOT_STATES.SPIRIT_SUBMISSION_REQUEST_SENT;
+        SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_RULES;
     } else if (this.isNo(webhookEvent)) {
-      nextState =
-        SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION;
+      nextState = BASIC_CHATBOT_STATES.HOME;
     } else if (
       this.isStop(webhookEvent) ||
       this.isStartOver(webhookEvent)
     ) {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
+      //TODO log event when I_DONT_UNDERSTAND is sent, to know wich behaviour could be better
       this.sendMessages(webhookEvent.sender.id, [
         MESSENGER_MESSAGES_FR.I_DONT_UNDERSTAND,
         this.getIntroMessages(),
@@ -33,8 +32,8 @@ class AwaitingScoreSubmissionConfirmation extends State {
 
   getIntroMessages() {
     //TODO personalise if victory or defeat
-    return MESSENGER_MESSAGES_FR.SCORE_SUBMISSION_VICTORY;
+    return MESSENGER_MESSAGES_FR.SCORE_CONFIRMED_VICTORY;
   }
 }
 
-module.exports = AwaitingScoreSubmissionConfirmation;
+module.exports = SpiritSubmissionRequestSent;

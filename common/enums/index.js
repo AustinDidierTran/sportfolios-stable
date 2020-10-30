@@ -359,7 +359,7 @@ const MESSENGER_MESSAGES_FR = {
   },
   I_DONT_UNDERSTAND: {
     text:
-      "Désolé, je ne peux pas encore prendre en compte votre message pour l'instant",
+      'Désolé, je n\'ai pas compris votre message. Si vous voulez revenir au menu principal dites "recommencer" ou "stop"',
   },
   WELCOME: {
     text: 'Bienvenue sur le chatbot Sportfolios!',
@@ -418,7 +418,7 @@ const MESSENGER_MESSAGES_FR = {
   },
   SCORE_CONFIRMED_VICTORY: {
     text:
-      'Félicitation pour votre belle victoire! Désirez-vous également soumettre votre pointage spirit?',
+      "C'est envoyé, félicitation pour votre belle victoire! Désirez-vous également soumettre votre pointage spirit?",
     quick_replies: [
       {
         content_type: 'text',
