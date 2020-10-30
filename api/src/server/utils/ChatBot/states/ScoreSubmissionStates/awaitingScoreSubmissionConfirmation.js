@@ -3,6 +3,7 @@ const {
   SCORE_SUBMISSION_CHATBOT_STATES,
   BASIC_CHATBOT_STATES,
   MESSENGER_MESSAGES_FR,
+  MESSENGER_PAYLOADS,
 } = require('../../../../../../../common/enums');
 
 class AwaitingScoreSubmissionConfirmation extends State {
@@ -33,7 +34,22 @@ class AwaitingScoreSubmissionConfirmation extends State {
 
   getIntroMessages() {
     //TODO personalise if victory or defeat
-    return MESSENGER_MESSAGES_FR.SCORE_SUBMISSION_VICTORY;
+    //return MESSENGER_MESSAGES_FR.SCORE_SUBMISSION_VICTORY;
+    return {
+      text: `Vous avez remporté votre partie contre A20 par le pointage de ${this.context.chatbotInfos.myScore} à ${this.context.chatbotInfos.opponentScore}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour ressoumettre votre pointage`,
+      quick_replies: [
+        {
+          content_type: 'text',
+          title: 'Oui',
+          payload: MESSENGER_PAYLOADS.YES,
+        },
+        {
+          content_type: 'text',
+          title: 'Non',
+          payload: MESSENGER_PAYLOADS.NO,
+        },
+      ],
+    };
   }
 }
 
