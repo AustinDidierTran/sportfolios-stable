@@ -171,7 +171,16 @@ async function getAllRolesEntity(id) {
 async function getMembers(persons, organizationId) {
   return getMembersHelper(persons, organizationId);
 }
-async function getOrganizationMembers(organizationId) {
+async function getOrganizationMembers(organizationId, userId) {
+  if (
+    !(await isAllowed(
+      organizationId,
+      userId,
+      ENTITIES_ROLE_ENUM.EDITOR,
+    ))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
   return getOrganizationMembersHelper(organizationId);
 }
 

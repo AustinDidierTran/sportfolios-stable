@@ -10,11 +10,12 @@ import {
 } from '../../components/Custom';
 import { useQuery } from '../../hooks/queries';
 import api from '../../actions/api';
-import { formatRoute } from '../../actions/goTo';
+import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
 import { List } from '../../components/Custom';
 import {
   FORM_DIALOG_TYPE_ENUM,
   LIST_ITEM_ENUM,
+  STATUS_ENUM,
 } from '../../../../common/enums';
 
 export default function MembersList() {
@@ -44,16 +45,20 @@ export default function MembersList() {
   };
 
   const getMembers = async () => {
-    const { data } = await api(
+    const { data, status } = await api(
       formatRoute('/api/entity/organizationMembers', null, { id }),
     );
-    const res = data.map((d, index) => ({
-      ...d,
-      type: LIST_ITEM_ENUM.MEMBER,
-      update: getMembers,
-      key: index,
-    }));
-    setMembers(res);
+    if (status === STATUS_ENUM.ERROR_STRING) {
+      goTo(ROUTES.entityNotFound);
+    } else {
+      const res = data.map((d, index) => ({
+        ...d,
+        type: LIST_ITEM_ENUM.MEMBER,
+        update: getMembers,
+        key: index,
+      }));
+      setMembers(res);
+    }
   };
 
   const onOpen = () => {

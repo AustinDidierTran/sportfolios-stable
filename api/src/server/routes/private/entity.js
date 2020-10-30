@@ -172,8 +172,10 @@ router.get(`${BASE_URL}/members`, async ctx => {
   }
 });
 router.get(`${BASE_URL}/organizationMembers`, async ctx => {
-  const entity = await queries.getOrganizationMembers(ctx.query.id);
-
+  const entity = await queries.getOrganizationMembers(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
   if (entity) {
     ctx.body = {
       status: 'success',

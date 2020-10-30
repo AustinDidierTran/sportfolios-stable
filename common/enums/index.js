@@ -123,6 +123,8 @@ const STATUS_ENUM = {
   SUCCESS: 201,
   FORBIDDEN: 403,
   ERROR: 404,
+  ERROR_STRING: 'error',
+  SUCCESS_STRING: 'success',
 };
 
 const PERSON_TRANSFER_STATUS_ENUM = {

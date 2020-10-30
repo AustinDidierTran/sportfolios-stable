@@ -159,11 +159,6 @@ export default function App() {
                   path={ROUTES.orderProcessed}
                   component={OrderProcessed}
                 />
-                <Route
-                  exact
-                  path={ROUTES.membersList}
-                  component={MembersList}
-                />
                 <Route path={ROUTES.sales} component={Sales} />
                 <Route
                   exact
@@ -230,6 +225,10 @@ export default function App() {
                   exact
                   path={ROUTES.shopDetails}
                   component={ShopDetails}
+                />
+                <PrivateRoute
+                  path={ROUTES.membersList}
+                  component={MembersList}
                 />
                 <PrivateRoute
                   path={ROUTES.search}
