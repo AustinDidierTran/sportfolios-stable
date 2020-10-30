@@ -48,12 +48,16 @@ export default function CartItem(props) {
               className={styles.name}
               primary={description}
               secondary={team.name}
-            ></ListItemText>
+            />
             <ListItemText
               className={styles.quantity}
-              primary={formatPrice(amount)}
+              primary={
+                metadata?.isIndividualOption
+                  ? `${formatPrice(amount)} - ${metadata?.name}`
+                  : formatPrice(amount)
+              }
               secondary={label}
-            ></ListItemText>
+            />
           </div>
         </ListItem>
         <Divider />

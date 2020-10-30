@@ -385,15 +385,6 @@ const getSales = async entityId => {
   return sales;
 };
 
-const addEventCartItem = async (body, userId) => {
-  const { stripePriceId, metadata } = body;
-  await knex('cart_items').insert({
-    stripe_price_id: stripePriceId,
-    user_id: userId,
-    metadata: { ...metadata, type: GLOBAL_ENUM.EVENT },
-  });
-};
-
 const addMembershipCartItem = async (body, userId) => {
   const { stripe_price_id } = body;
   await knex('cart_items').insert({
@@ -503,7 +494,6 @@ const clearCart = async userId => {
 
 module.exports = {
   addCartItem,
-  addEventCartItem,
   addMembershipCartItem,
   addItemToPaidStoreItems,
   clearCart,

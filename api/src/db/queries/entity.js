@@ -11,6 +11,7 @@ const { signS3Request } = require('../../server/utils/aws');
 
 const {
   addAlias: addAliasHelper,
+  addEventCartItem,
   addEntity: addEntityHelper,
   addEntityRole: addEntityRoleHelper,
   addField: addFieldHelper,
@@ -95,10 +96,7 @@ const {
   sendTeamRegistrationEmailToAdmin,
   sendAcceptedRegistrationEmail,
 } = require('../../server/utils/nodeMailer');
-const {
-  addEventCartItem,
-  addMembershipCartItem,
-} = require('../helpers/shop');
+const { addMembershipCartItem } = require('../helpers/shop');
 const {
   getEmailsFromUserId,
   getLanguageFromEmail,
@@ -359,15 +357,8 @@ async function addTeamToEvent(body, userId) {
 
   // Add roster
   if (roster) {
-    await addRosterHelper(
-      realEventId,
-      team,
-      rosterId,
-      roster,
-      userId,
-    );
+    await addRosterHelper(rosterId, roster, userId);
   }
-
   if (registrationStatus === STATUS_ENUM.ACCEPTED) {
     // wont be added to cart if free
     await addEventCartItem(
