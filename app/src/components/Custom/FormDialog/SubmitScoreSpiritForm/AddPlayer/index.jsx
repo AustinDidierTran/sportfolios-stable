@@ -12,11 +12,9 @@ import { Store, ACTION_ENUM } from '../../../../../Store';
 import {
   SEVERITY_ENUM,
   STATUS_ENUM,
-  COMPONENT_TYPE_ENUM,
 } from '../../../../../../../common/enums';
 import { useEffect } from 'react';
 import PersonSearchList from '../../../SearchList/PersonSearchList';
-import ComponentFactory from '../../../ComponentFactory';
 import { useFormInput } from '../../../../../hooks/forms';
 import PersonItem from '../../../List/PersonItem';
 
@@ -32,7 +30,6 @@ export default function AddPlayer(props) {
   } = props;
   const [open, setOpen] = useState(false);
   const [person, setPerson] = useState(null);
-  const [isSub, setIsSub] = useState(true);
   const query = useFormInput('');
 
   const blackList = useMemo(() => {
@@ -53,10 +50,6 @@ export default function AddPlayer(props) {
     }
   };
 
-  const onChange = value => {
-    setIsSub(value);
-  };
-
   const onClick = player => {
     setPerson(player);
   };
@@ -66,7 +59,7 @@ export default function AddPlayer(props) {
       method: 'POST',
       body: JSON.stringify({
         name: person.completeName || person.name,
-        isSub,
+        isSub: true,
         rosterId,
         personId: person.id,
       }),
@@ -102,14 +95,6 @@ export default function AddPlayer(props) {
     },
   ];
 
-  const field = {
-    componentType: COMPONENT_TYPE_ENUM.CHECKBOX,
-    name: 'isSub',
-    label: t('is_sub'),
-    checked: isSub,
-    onChange: onChange,
-    color: 'primary',
-  };
   return (
     <Dialog
       open={open}
@@ -140,15 +125,10 @@ export default function AddPlayer(props) {
             allowCreate
             withoutIcon
             autoFocus
-            isSub={isSub}
             onClick={onClick}
-            onChange={onChange}
             handleClose={handleClose}
             rosterId={rosterId}
           />
-          <div style={{ marginTop: '8px' }}>
-            <ComponentFactory component={{ ...field }} />
-          </div>
         </DialogContent>
         <DialogActions>
           {buttons.map((button, index) => (
