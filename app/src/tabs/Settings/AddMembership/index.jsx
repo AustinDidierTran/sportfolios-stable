@@ -16,7 +16,7 @@ import {
 } from '../../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
-import { formatRoute } from '../../../actions/goTo';
+import { formatRoute, goTo, ROUTES } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
 import { List } from '../../../components/Custom';
 
@@ -89,6 +89,16 @@ export default function AddMembership() {
         onClick={onOpen}
       >
         {t('add_membership')}
+      </Button>
+      <Button
+        size="small"
+        variant="contained"
+        style={{ margin: '8px' }}
+        onClick={() => {
+          goTo(ROUTES.membersList, null, { id });
+        }}
+      >
+        {t('member_list')}
       </Button>
       <FormDialog
         type={FORM_DIALOG_TYPE_ENUM.ADD_MEMBERSHIP}

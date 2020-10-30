@@ -299,6 +299,7 @@ export default {
     member: 'Member',
     member_added: 'Member added',
     members_list: 'Members list | {{organization}}',
+    member_list: "Members' list",
     membership_added: 'Membership added',
     membership_exist: 'Membership Exist',
     membership_edited: 'Membership edited',

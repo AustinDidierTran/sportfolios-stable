@@ -307,6 +307,7 @@ export default {
     maximum_spots: 'Nombre de places',
     member: 'Membre',
     members_list: 'Liste des membres | {{organization}}',
+    member_list: 'Liste des membres',
     membership_added: 'Affiliation ajouté',
     membership_exist: 'Affiliation Existant',
     membership_edited: 'Affiliation modifiée',

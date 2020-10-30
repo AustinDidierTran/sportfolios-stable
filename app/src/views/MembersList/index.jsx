@@ -10,7 +10,11 @@ import {
 } from '../../components/Custom';
 import { useQuery } from '../../hooks/queries';
 import api from '../../actions/api';
-import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
+import {
+  formatRoute,
+  goToAndReplace,
+  ROUTES,
+} from '../../actions/goTo';
 import { List } from '../../components/Custom';
 import {
   FORM_DIALOG_TYPE_ENUM,
@@ -49,7 +53,7 @@ export default function MembersList() {
       formatRoute('/api/entity/organizationMembers', null, { id }),
     );
     if (status === STATUS_ENUM.ERROR_STRING) {
-      goTo(ROUTES.entityNotFound);
+      goToAndReplace(ROUTES.entityNotFound);
     } else {
       const res = data.map((d, index) => ({
         ...d,
