@@ -16,7 +16,7 @@ import BasicFormDialog from '../BasicFormDialog';
 import moment from 'moment';
 
 export default function AddMember(props) {
-  const { open: openProps, onClose, update } = props;
+  const { open: openProps, onClose } = props;
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
   const { id: entityId } = useParams();
