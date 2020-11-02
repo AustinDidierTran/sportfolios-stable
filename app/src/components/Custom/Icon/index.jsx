@@ -48,6 +48,7 @@ import PersonAdd from '@material-ui/icons/PersonAdd';
 import PrintIcon from '@material-ui/icons/Print';
 import Publish from '@material-ui/icons/Publish';
 import Receipt from '@material-ui/icons/Receipt';
+import Remove from '@material-ui/icons/Remove';
 import RemoveShoppingCart from '@material-ui/icons/RemoveShoppingCart';
 import Reorder from '@material-ui/icons/Reorder';
 import SaveIcon from '@material-ui/icons/Save';
@@ -111,6 +112,7 @@ const icons = {
   PrintIcon,
   Publish,
   Receipt,
+  Remove,
   RemoveShoppingCart,
   Reorder,
   SaveIcon,

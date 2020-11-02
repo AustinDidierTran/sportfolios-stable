@@ -122,8 +122,10 @@ export default function PersonSearchList(props) {
   };
 
   const onEnter = e => {
-    if (e.key === 'Enter') {
-      openDialog(e.target.value);
+    if (allowCreate) {
+      if (e.key === 'Enter') {
+        openDialog(e.target.value);
+      }
     }
   };
 

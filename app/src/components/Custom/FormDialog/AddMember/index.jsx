@@ -1,4 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, {
+  useState,
+  useContext,
+  useEffect,
+  useMemo,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 
@@ -14,6 +19,7 @@ import {
 import BasicFormDialog from '../BasicFormDialog';
 import moment from 'moment';
 import { useQuery } from '../../../../hooks/queries';
+import { IconButton } from '../..';
 
 export default function AddMember(props) {
   const { open: openProps, onClose, update } = props;
@@ -22,13 +28,13 @@ export default function AddMember(props) {
   const { id: entityId } = useQuery();
 
   const [open, setOpen] = useState(false);
-  const [person, setPerson] = useState(null);
+  const [persons, setPersons] = useState([]);
 
   const validate = values => {
     const { expirationDate } = values;
     const errors = {};
-    if (!person) {
-      errors.person = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    if (!persons.length) {
+      errors.persons = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
     if (!expirationDate) {
       errors.expirationDate = t(ERROR_ENUM.VALUE_IS_REQUIRED);
@@ -38,7 +44,6 @@ export default function AddMember(props) {
 
   const formik = useFormik({
     initialValues: {
-      person: '',
       membership: '',
       expirationDate: '',
     },
@@ -47,17 +52,25 @@ export default function AddMember(props) {
     validateOnBlur: false,
     onSubmit: async values => {
       const { membership, expirationDate } = values;
-      const res = await api(`/api/entity/memberManually`, {
-        method: 'POST',
-        body: JSON.stringify({
-          membershipType: membership,
-          organizationId: entityId,
-          personId: person.id,
-          expirationDate: new Date(expirationDate),
+      const res = await Promise.all(
+        persons.map(async person => {
+          const res = await api(`/api/entity/memberManually`, {
+            method: 'POST',
+            body: JSON.stringify({
+              membershipType: membership,
+              organizationId: entityId,
+              personId: person.id,
+              expirationDate: new Date(expirationDate),
+            }),
+          });
+          return res;
         }),
-      });
+      );
 
-      if (res.status === STATUS_ENUM.ERROR || res.status >= 400) {
+      if (
+        res.some(r => r.status === STATUS_ENUM.ERROR) ||
+        res.some(r => r.status >= 400)
+      ) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: ERROR_ENUM.ERROR_OCCURED,
@@ -65,9 +78,12 @@ export default function AddMember(props) {
           duration: 4000,
         });
       } else {
+        const message = persons.length
+          ? 'members_added'
+          : 'member_added';
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
-          message: t('member_added'),
+          message: t(message),
           severity: SEVERITY_ENUM.SUCCESS,
           duration: 2000,
         });
@@ -92,32 +108,47 @@ export default function AddMember(props) {
   }, [openProps]);
 
   const handleClose = () => {
-    setPerson(null);
+    setPersons([]);
     onClose();
   };
 
-  useEffect(() => {
-    setPerson(formik.values.person);
-  }, [formik.values.person]);
-
-  const onClick = person => {
-    setPerson(person);
+  const onClick = newPerson => {
+    setPersons([...persons, newPerson]);
   };
-  const personComponent = person
-    ? {
+
+  const removePerson = person => {
+    const newPersons = persons.filter(p => p.id != person.id);
+    setPersons(newPersons);
+  };
+  const personComponent = useMemo(
+    () =>
+      persons.map(person => ({
         componentType: COMPONENT_TYPE_ENUM.PERSON_ITEM,
         person,
         secondary: t('player'),
         notClickable: true,
-      }
-    : { componentType: COMPONENT_TYPE_ENUM.EMPTY };
+        secondaryActions: [
+          <IconButton
+            icon="Remove"
+            style={{ color: 'secondary' }}
+            onClick={() => removePerson(person)}
+          />,
+        ],
+      })),
+    [persons],
+  );
+
+  const blackList = useMemo(() => persons.map(person => person.id), [
+    persons,
+  ]);
 
   const fields = [
-    personComponent,
+    ...personComponent,
     {
       componentType: COMPONENT_TYPE_ENUM.PERSON_SEARCH_LIST,
       namespace: 'person',
       label: t('player'),
+      blackList,
       onClick,
     },
     {

@@ -805,6 +805,7 @@ export default {
     elite_membership: 'Affiliation Élite',
     member: 'Membre',
     member_added: 'Membre ajouté',
+    members_added: 'Membres ajoutés',
     membership: 'Affiliation',
     membership_added: 'Affiliation ajouté',
     membership_exist: 'Affiliation Existant',
