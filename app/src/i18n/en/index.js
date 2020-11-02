@@ -417,6 +417,7 @@ export default {
     places_left: 'places left',
     player_added: 'Player added',
     player_name: 'Player name',
+    player_view: 'Player view',
     player: 'Player',
     players: 'Players',
     positive_attitude_and_self_control:

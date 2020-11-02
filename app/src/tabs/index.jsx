@@ -19,8 +19,6 @@ const Rosters = loadable(() => import('./Rosters'));
 const Schedule = loadable(() => import('./Schedule'));
 const Settings = loadable(() => import('./Settings'));
 const Shop = loadable(() => import('./Shop'));
-const SwitchToAdmin = loadable(() => import('./SwitchToAdmin'));
-const SwitchToUser = loadable(() => import('./SwitchToUser'));
 
 export const TABS_ENUM = {
   ABOUT: 'about',
@@ -40,8 +38,6 @@ export const TABS_ENUM = {
   SCHEDULE: 'schedule',
   SETTINGS: 'settings',
   SHOP: 'shop',
-  SWITCH_TO_ADMIN: 'switchToAdmin',
-  SWITCH_TO_USER: 'switchToUser',
 };
 
 export default function Tabs(props) {
@@ -169,44 +165,6 @@ export default function Tabs(props) {
           value: TABS_ENUM.SETTINGS,
         },
       ];
-    }
-    if (l === TABS_ENUM.SWITCH_TO_ADMIN) {
-      if (
-        [
-          ENTITIES_ROLE_ENUM.ADMIN,
-          ENTITIES_ROLE_ENUM.EDITOR,
-        ].includes(role)
-      ) {
-        return [
-          ...prev,
-          {
-            component: SwitchToAdmin,
-            label: t('admin'),
-            icon: 'Autorenew',
-            value: TABS_ENUM.SWITCH_TO_ADMIN,
-          },
-        ];
-      }
-      return prev;
-    }
-    if (l === TABS_ENUM.SWITCH_TO_USER) {
-      if (
-        [
-          ENTITIES_ROLE_ENUM.ADMIN,
-          ENTITIES_ROLE_ENUM.EDITOR,
-        ].includes(role)
-      ) {
-        return [
-          ...prev,
-          {
-            component: SwitchToUser,
-            label: t('player'),
-            icon: 'Autorenew',
-            value: TABS_ENUM.SWITCH_TO_USER,
-          },
-        ];
-      }
-      return prev;
     }
     if (l === TABS_ENUM.EDIT_PERSON_INFOS) {
       if (
