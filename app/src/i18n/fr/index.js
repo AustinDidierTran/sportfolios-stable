@@ -36,7 +36,7 @@ export default {
     add_phase: 'Ajouter une phase',
     add_player_with_no_account: 'Ajouter un joueur sans compte',
     add_player: 'Ajouter un joueur',
-    add_sub: 'Ajouter un remplacant',
+    add_sub: 'Ajouter un remplaçant',
     add_team: 'Ajouter une équipe',
     add_the_teams_you_want_in_your_tournament:
       'Ajouter les équipes à votre tournoi',
@@ -281,7 +281,7 @@ export default {
     invalid_input: 'Valeur incorrect',
     invite_this_player_to_join_your_team:
       'Inviter ce joueur à joindre votre équipe',
-    is_sub: 'Est un remplacant',
+    is_sub: 'Est un remplaçant',
     //J
     junior_member: 'Membre junior',
     junior: 'Junior',
