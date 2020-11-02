@@ -1,20 +1,26 @@
 const State = require('../state');
 const {
   SCORE_SUBMISSION_CHATBOT_STATES,
-  MESSENGER_MESSAGES_FR,
+  MESSENGER_QUICK_REPLIES,
 } = require('../../../../../../../common/enums');
+const Response = require('../../response');
+const i18n = require('../../../../../i18n.config');
 
 class Home extends State {
   handleEvent(webhookEvent) {
     let nextState;
     if (this.isStartMock(webhookEvent)) {
-      console.log('MOCK');
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT;
+      this.context.chatbotInfos.opponentTeamName =
+        'Didier et les fantastiques';
     } else {
       this.sendMessages(webhookEvent.sender.id, [
-        MESSENGER_MESSAGES_FR.I_DONT_UNDERSTAND,
-        MESSENGER_MESSAGES_FR.HELP,
+        Response.genText(i18n.__('i_dont_understand')),
+        Response.genQuickReply(
+          i18n.__('menu.help'),
+          MESSENGER_QUICK_REPLIES.MENU_ACTIONS,
+        ),
       ]);
     }
     if (nextState) {
@@ -24,8 +30,11 @@ class Home extends State {
 
   getIntroMessages() {
     return [
-      MESSENGER_MESSAGES_FR.WELCOME,
-      MESSENGER_MESSAGES_FR.HELP,
+      Response.genText(i18n.__('menu.welcome')),
+      Response.genQuickReply(
+        i18n.__('menu.help'),
+        MESSENGER_QUICK_REPLIES.MENU_ACTIONS,
+      ),
     ];
   }
 }

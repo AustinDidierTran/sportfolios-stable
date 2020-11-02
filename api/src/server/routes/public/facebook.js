@@ -3,9 +3,6 @@ const _ = require('lodash');
 const router = new Router();
 const BASE_URL = '/api/fb';
 const { Chatbot } = require('../../utils/ChatBot');
-const {
-  BASIC_CHATBOT_STATES,
-} = require('../../../../../common/enums');
 const queries = require('../../../db/queries/facebook');
 
 router.post(`${BASE_URL}/messengerHook`, async ctx => {
@@ -29,24 +26,18 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
           .toLowerCase()
           .includes('hardreset')
       ) {
-        queries.setChatbotInfos(senderId, {
-          state: BASIC_CHATBOT_STATES.NOT_LINKED,
-          chatbot_infos: JSON.stringify({}),
-        });
+        queries.deleteChatbotInfos(senderId);
       } else {
         let {
           state: initialState,
           chatbotInfos: initialChatbotInfos,
         } = await queries.getChatbotInfos(senderId);
-        //initialChatbotInfos = JSON.parse(initialChatbotInfos);
-        console.log({ initialChatbotInfos });
         const chatbot = new Chatbot(senderId, initialState, {
           ...initialChatbotInfos,
         });
         chatbot.handleEvent(webhookEvent);
         const endChatbotInfos = chatbot.chatbotInfos;
         const endState = chatbot.stateType;
-        console.log({ endChatbotInfos });
         if (
           initialState !== endState ||
           !_.isEqual(initialChatbotInfos, endChatbotInfos)

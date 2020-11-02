@@ -2,8 +2,6 @@ const State = require('../state');
 const {
   SCORE_SUBMISSION_CHATBOT_STATES,
   BASIC_CHATBOT_STATES,
-  MESSENGER_MESSAGES_FR,
-  MESSENGER_PAYLOADS,
   MESSENGER_QUICK_REPLIES,
 } = require('../../../../../../../common/enums');
 const i18n = require('../../../../../i18n.config');
@@ -26,7 +24,7 @@ class AwaitingScoreSubmissionConfirmation extends State {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
       this.sendMessages(webhookEvent.sender.id, [
-        MESSENGER_MESSAGES_FR.I_DONT_UNDERSTAND,
+        Response.genText(i18n.__('i_dont_understand')),
         this.getIntroMessages(),
       ]);
     }
@@ -36,13 +34,19 @@ class AwaitingScoreSubmissionConfirmation extends State {
   }
 
   getIntroMessages() {
-    //TODO personalise if victory or defeat
-    //return MESSENGER_MESSAGES_FR.SCORE_SUBMISSION_VICTORY;
+    const myScore = this.context.chatbotInfos.myScore;
+    const opponentScore = this.context.chatbotInfos.opponentScore;
+    const text =
+      myScore > opponentScore
+        ? 'score_submission.confirmation.victory'
+        : myScore == opponentScore
+        ? 'score_submission.confirmation.draw'
+        : 'score_submission.confirmation.defeat';
     return Response.genQuickReply(
-      i18n.__('score_submission.confirmation.victory', {
-        opponentTeamName: 'A20',
-        myScore: this.context.chatbotInfos.myScore,
-        opponentScore: this.context.chatbotInfos.opponentScore,
+      i18n.__(text, {
+        opponentTeamName: this.context.chatbotInfos.opponentTeamName,
+        myScore,
+        opponentScore,
       }),
       MESSENGER_QUICK_REPLIES.CONFIRMATION,
     );

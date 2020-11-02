@@ -39,7 +39,22 @@ const sendMessage = async (messengerId, message) => {
   return res;
 };
 
+const getNameFromPSID = async messengerId => {
+  const uri = `${FACEBOOK_BASE_URL}/${messengerId}?fields=first_name&access_token=${process.env.FACEBOOK_PAGE_TOKEN}`;
+  const res = await axios.get(uri).catch(function(error) {
+    // eslint-disable-next-line no-console
+    console.log(error.response.data);
+    return;
+  });
+  if (res && res.data && res.data.first_name) {
+    return res.data.first_name;
+  } else {
+    return;
+  }
+};
+
 module.exports = {
   getMessengerIdFromFbID,
   sendMessage,
+  getNameFromPSID,
 };

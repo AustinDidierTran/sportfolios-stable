@@ -2,8 +2,10 @@ const State = require('../state');
 const {
   SCORE_SUBMISSION_CHATBOT_STATES,
   BASIC_CHATBOT_STATES,
-  MESSENGER_MESSAGES_FR,
+  MESSENGER_QUICK_REPLIES,
 } = require('../../../../../../../common/enums');
+const Response = require('../../response');
+const i18n = require('../../../../../i18n.config');
 
 class SpiritSubmissionRequestSent extends State {
   handleEvent(webhookEvent) {
@@ -22,7 +24,7 @@ class SpiritSubmissionRequestSent extends State {
     } else {
       //TODO log event when I_DONT_UNDERSTAND is sent, to know wich behaviour could be better
       this.sendMessages(webhookEvent.sender.id, [
-        MESSENGER_MESSAGES_FR.I_DONT_UNDERSTAND,
+        Response.genText(i18n.__('i_dont_understand')),
         this.getIntroMessages(),
       ]);
     }
@@ -32,8 +34,16 @@ class SpiritSubmissionRequestSent extends State {
   }
 
   getIntroMessages() {
-    //TODO personalise if victory or defeat
-    return MESSENGER_MESSAGES_FR.SCORE_CONFIRMED_VICTORY;
+    const myScore = this.context.chatbotInfos.myScore;
+    const opponentScore = this.context.chatbotInfos.opponentScore;
+    const text =
+      myScore > opponentScore
+        ? 'score_submission.confirmed.victory'
+        : 'score_submission.confirmed.other';
+    return Response.genQuickReply(
+      i18n.__(text),
+      MESSENGER_QUICK_REPLIES.CONFIRMATION,
+    );
   }
 }
 

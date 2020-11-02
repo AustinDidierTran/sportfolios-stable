@@ -2,30 +2,43 @@ const State = require('../state');
 const {
   BASIC_CHATBOT_STATES,
   SCORE_SUBMISSION_CHATBOT_STATES,
-  MESSENGER_MESSAGES_FR,
+  MESSENGER_QUICK_REPLIES,
 } = require('../../../../../../../common/enums');
+const Response = require('../../response');
+const i18n = require('../../../../../i18n.config');
 
 class ScoreSubmissionRequestSent extends State {
   handleEvent(webhookEvent) {
     let nextState;
     if (this.isYes(webhookEvent)) {
-      console.log('YES');
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION;
     } else if (this.isNo(webhookEvent)) {
-      console.log('NO');
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else if (this.isStartOver(webhookEvent)) {
-      console.log('Start over');
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
-      console.log('DEFAULT');
+      this.sendMessages(webhookEvent.sender.id, [
+        Response.genText(i18n.__('i_dont_understand')),
+        this.getIntroMessages(),
+      ]);
     }
-    this.context.changeState(nextState);
+    if (nextState) {
+      this.context.changeState(nextState);
+    }
   }
 
   getIntroMessages() {
-    return MESSENGER_MESSAGES_FR.REQUEST_SCORE_SUBMISSION;
+    const userName = this.context.chatbotInfos.userName;
+    const opponentTeamName = this.context.chatbotInfos
+      .opponentTeamName;
+    return Response.genQuickReply(
+      i18n.__('score_submission.request', {
+        userName,
+        opponentTeamName,
+      }),
+      MESSENGER_QUICK_REPLIES.CONFIRMATION,
+    );
   }
 }
 

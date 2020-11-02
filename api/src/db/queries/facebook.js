@@ -7,15 +7,15 @@ const {
   getChatbotInfos: getChatbotInfosHelper,
   setChatbotInfos: setChatbotInfosHelper,
   addChatbotId,
+  deleteChatbotInfos: deleteChatbotInfosHelper,
 } = require('../helpers');
-const { MESSENGER_MESSAGES_FR } = require('../../../../common/enums');
+const i18n = require('../../i18n.config');
+const Response = require('../../server/utils/ChatBot/response');
 
 const sendMessage = (messengerId, message) => {
-  console.log({ messengerId });
   return sendMessageHelper(messengerId, message);
 };
 
-//TODO Remove this function
 const linkMessengerAccountAllIncluded = async (
   userId,
   messengerId,
@@ -24,12 +24,12 @@ const linkMessengerAccountAllIncluded = async (
   if (res) {
     sendMessageHelper(
       messengerId,
-      MESSENGER_MESSAGES_FR.CONNECTION_SUCCESS,
+      Response.genText(i18n.__('connection.success')),
     );
   } else {
     sendMessageHelper(
       messengerId,
-      MESSENGER_MESSAGES_FR.CONNECTION_ERROR,
+      Response.genText(i18n.__('connection.error')),
     );
   }
 };
@@ -52,10 +52,15 @@ const setChatbotInfos = async (messengerId, infos) => {
   return setChatbotInfosHelper(messengerId, infos);
 };
 
+const deleteChatbotInfos = async messengerId => {
+  return deleteChatbotInfosHelper(messengerId);
+};
+
 module.exports = {
   sendMessage,
   linkMessengerAccountAllIncluded,
   linkMessengerAccount,
   getChatbotInfos,
   setChatbotInfos,
+  deleteChatbotInfos,
 };

@@ -2,8 +2,10 @@ const State = require('../state');
 const {
   SCORE_SUBMISSION_CHATBOT_STATES,
   BASIC_CHATBOT_STATES,
-  MESSENGER_MESSAGES_FR,
+  MESSENGER_QUICK_REPLIES,
 } = require('../../../../../../../common/enums');
+const i18n = require('../../../../../i18n.config');
+const Response = require('../../response');
 
 class AwaitingSpiritSubmissionConfirmation extends State {
   handleEvent(webhookEvent) {
@@ -12,7 +14,7 @@ class AwaitingSpiritSubmissionConfirmation extends State {
       //TODO SAVE Spirit
       this.sendMessages(
         webhookEvent.sender.id,
-        MESSENGER_MESSAGES_FR.SUBMIT_CONFIRMATION,
+        Response.genText(i18n.__('spirit_submission.confirmed')),
       );
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else if (this.isNo(webhookEvent)) {
@@ -26,7 +28,7 @@ class AwaitingSpiritSubmissionConfirmation extends State {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
       this.sendMessages(webhookEvent.sender.id, [
-        MESSENGER_MESSAGES_FR.I_DONT_UNDERSTAND,
+        Response.genText(i18n.__('i_dont_understand')),
         this.getIntroMessages(),
       ]);
     }
@@ -36,8 +38,16 @@ class AwaitingSpiritSubmissionConfirmation extends State {
   }
 
   getIntroMessages() {
-    //TODO personalise if victory or defeat
-    return MESSENGER_MESSAGES_FR.SPIRIT_CONFIRMATION;
+    const total = Object.values(
+      this.context.chatbotInfos.spirit,
+    ).reduce((t, value) => t + value, 0);
+    return Response.genQuickReply(
+      i18n.__('spirit_submission.confirmation', {
+        ...this.context.chatbotInfos.spirit,
+        total,
+      }),
+      MESSENGER_QUICK_REPLIES.CONFIRMATION,
+    );
   }
 }
 

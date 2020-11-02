@@ -8,7 +8,6 @@ class State {
     this.context = context;
   }
 
-  // eslint-disable-next-line no-unused-vars
   getIntroMessages() {
     throw new Error(
       'You need to implement the method getIntroMessages',

@@ -2,8 +2,10 @@ const State = require('../state');
 const {
   SCORE_SUBMISSION_CHATBOT_STATES,
   BASIC_CHATBOT_STATES,
-  MESSENGER_MESSAGES_FR,
+  MESSENGER_QUICK_REPLIES,
 } = require('../../../../../../../common/enums');
+const i18n = require('../../../../../i18n.config');
+const Response = require('../../response');
 
 class AwaitingSpiritEquity extends State {
   handleEvent(webhookEvent) {
@@ -12,6 +14,7 @@ class AwaitingSpiritEquity extends State {
       const score = this.getNumber(webhookEvent);
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_SELF_CONTROL;
+      this.context.chatbotInfos.spirit.equity = score;
       //TODO SAVE SCORE
     } else if (
       this.isStop(webhookEvent) ||
@@ -20,7 +23,7 @@ class AwaitingSpiritEquity extends State {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
       this.sendMessages(webhookEvent.sender.id, [
-        MESSENGER_MESSAGES_FR.I_DONT_UNDERSTAND,
+        Response.genText(i18n.__('i_dont_understand')),
         this.getIntroMessages(),
       ]);
     }
@@ -30,7 +33,10 @@ class AwaitingSpiritEquity extends State {
   }
 
   getIntroMessages() {
-    return MESSENGER_MESSAGES_FR.SPIRIT_EQUITY;
+    return Response.genQuickReply(
+      i18n.__('spirit_submission.equity'),
+      MESSENGER_QUICK_REPLIES.SPIRIT,
+    );
   }
 }
 

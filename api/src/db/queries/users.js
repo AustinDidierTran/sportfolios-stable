@@ -2,7 +2,7 @@ const {
   GLOBAL_ENUM,
   ENTITIES_ROLE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
-  MESSENGER_MESSAGES_FR,
+  BASIC_CHATBOT_STATES,
 } = require('../../../../common/enums');
 const { ERROR_ENUM, errors } = require('../../../../common/errors');
 const bcrypt = require('bcrypt');
@@ -36,6 +36,7 @@ const {
   setMessengerId,
   getMessengerId,
   deleteMessengerId,
+  setChatbotInfos,
 } = require('../helpers');
 
 const {
@@ -49,6 +50,8 @@ const {
 } = require('../helpers/facebook');
 
 const { isAllowed } = require('./entity');
+const i18n = require('../../i18n.config');
+const Response = require('../../server/utils/ChatBot/response');
 
 const sendTransferPersonEmail = async (
   user_id,
@@ -300,7 +303,11 @@ const linkMessengerFromFBId = async (user_id, facebook_id) => {
   if (!messengerId) {
     throw new errors[ERROR_ENUM.VALUE_IS_INVALID]();
   }
-  sendMessage(messengerId, MESSENGER_MESSAGES_FR.CONNECTIONS_SUCCESS);
+  sendMessage(
+    messengerId,
+    Response.genText(i18n.__('connection.success')),
+  );
+  setChatbotInfos(messengerId, { state: BASIC_CHATBOT_STATES.HOME });
   return setMessengerId(user_id, messengerId);
 };
 

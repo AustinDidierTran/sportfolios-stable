@@ -17,6 +17,8 @@ const {
 } = require('../../server/utils/nodeMailer');
 const { ERROR_ENUM } = require('../../../../common/errors');
 
+const { getNameFromPSID } = require('./facebook');
+
 const sendTransferAddNewPlayer = async (
   user_id,
   { email, senderIsEventAdmin, sendedPersonId, teamName },
@@ -595,6 +597,9 @@ const getChatbotInfos = async messenger_id => {
     .select('*')
     .first()
     .where({ messenger_id });
+  if (!infos) {
+    return;
+  }
   return {
     messengerId: infos.messenger_id,
     state: infos.state,
@@ -615,9 +620,15 @@ const setChatbotInfos = async (messenger_id, infos) => {
 };
 
 const addChatbotId = async messenger_id => {
-  return knex('messenger_user_chatbot_state')
-    .insert({ messenger_id })
+  const name = await getNameFromPSID(messenger_id);
+  const [res] = await knex('messenger_user_chatbot_state')
+    .insert({ messenger_id, chatbot_infos: { userName: name } })
     .returning('*');
+  return {
+    messengerId: res.messenger_id,
+    state: res.state,
+    chatbotInfos: res.chatbot_infos,
+  };
 };
 
 const getFacebookId = async user_id => {
@@ -674,6 +685,16 @@ const deleteMessengerId = async user_id => {
   return res;
 };
 
+const deleteChatbotInfos = async messenger_id => {
+  await knex('user_apps_id')
+    .update({ messenger_id: null })
+    .where({ messenger_id });
+  return knex('messenger_user_chatbot_state')
+    .del()
+    .where({ messenger_id })
+    .returning('messenger_id');
+};
+
 module.exports = {
   confirmEmail,
   createUserEmail,
@@ -717,4 +738,5 @@ module.exports = {
   getChatbotInfos,
   setChatbotInfos,
   addChatbotId,
+  deleteChatbotInfos,
 };

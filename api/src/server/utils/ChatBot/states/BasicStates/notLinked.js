@@ -1,9 +1,10 @@
 const State = require('../state');
 const {
   BASIC_CHATBOT_STATES,
-  MESSENGER_MESSAGES_FR,
 } = require('../../../../../../../common/enums');
 const queries = require('../../../../../db/queries/facebook');
+const Response = require('../../response');
+const i18n = require('../../../../../i18n.config');
 
 class NotLinked extends State {
   handleEvent(webhookEvent) {
@@ -27,12 +28,12 @@ class NotLinked extends State {
   handleNoRef(messengerId) {
     this.sendMessages(
       messengerId,
-      MESSENGER_MESSAGES_FR.GET_STARTED_NO_REF,
+      Response.genText(i18n.__('connection.no_ref')),
     );
   }
 
   getIntroMessages() {
-    return MESSENGER_MESSAGES_FR.GET_STARTED_NO_REF;
+    return Response.genText(i18n.__('connection.no_ref'));
   }
 }
 

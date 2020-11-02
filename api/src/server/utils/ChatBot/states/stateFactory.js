@@ -35,8 +35,9 @@ function StateFactory(state) {
   const stateClass = stateMap[state];
   if (!stateClass) {
     // eslint-disable-next-line no-console
-    console.error(`State ${state} is not implemented in factory yet`);
-    return new Home();
+    throw new Error(
+      `State ${state} is not implemented in factory yet`,
+    );
   }
   return new stateClass();
 }
