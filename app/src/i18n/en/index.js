@@ -156,6 +156,9 @@ export default {
     delete_payment_option: 'Delete payment option',
     delete_payment_option_confirmation:
       'Are you sure you want to delete this payment option?',
+    delete_player_from_roster: 'Remove player',
+    delete_player_from_roster_confirmation:
+      "Are you sure you want to remove this player from the roster? The player will have his individual payment refunded if there's one.",
     delete_membership: 'Delete membership',
     delete: 'Delete',
     description_card_first_point:

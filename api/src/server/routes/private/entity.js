@@ -927,14 +927,24 @@ router.post(`${BASE_URL}/addNewPersonToRoster`, async ctx => {
 });
 
 router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
-  await queries.deletePlayerFromRoster(
+  const res = await queries.deletePlayerFromRoster(
     ctx.query.id,
+    ctx.query.deletedByEventAdmin,
     ctx.body.userInfo.id,
   );
-  ctx.status = 201;
-  ctx.body = {
-    status: 'success',
-  };
+
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
 });
 
 router.del(BASE_URL, async ctx => {

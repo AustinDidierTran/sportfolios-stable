@@ -3,7 +3,10 @@ import styles from './PlayerCard.module.css';
 import { ROSTER_ROLE_ENUM } from '../../../../../../../common/enums';
 import Chip from '@material-ui/core/Chip';
 import { useTranslation } from 'react-i18next';
-import { IconButton } from '../../../../../components/Custom';
+import {
+  AlertDialog,
+  IconButton,
+} from '../../../../../components/Custom';
 import PersonInfoDialog from '../../../../../components/Custom/Dialog/PersonInfosDialog';
 import { Typography } from '../../../../../components/MUI';
 import api from '../../../../../actions/api';
@@ -16,6 +19,7 @@ export default function PlayerCard(props) {
 
   const [playerInfos, setPlayerInfos] = useState(null);
   const [open, setOpen] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
 
   const closePlayerAcceptation = () => {
     setOpen(false);
@@ -40,7 +44,7 @@ export default function PlayerCard(props) {
   };
 
   const onPlayerDeleteFromRoster = () => {
-    onDelete(player.id);
+    onDelete(player.id, isEventAdmin);
   };
 
   const getPersonInfos = async () => {
@@ -92,7 +96,7 @@ export default function PlayerCard(props) {
           )}
           <div className={styles.icon}>
             <IconButton
-              onClick={onPlayerDeleteFromRoster}
+              onClick={() => setOpenDelete(true)}
               icon="Delete"
               style={{ color: 'grey' }}
               tooltip={t('delete')}
@@ -105,6 +109,13 @@ export default function PlayerCard(props) {
           onSubmit={onPlayerAccept}
           onDecline={onPlayerDecline}
           onClose={closePlayerAcceptation}
+        />
+        <AlertDialog
+          open={openDelete}
+          onSubmit={onPlayerDeleteFromRoster}
+          onCancel={() => setOpenDelete(false)}
+          description={t('delete_player_from_roster_confirmation')}
+          title={t('delete_player_from_roster')}
         />
       </div>
     );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
@@ -10,6 +10,8 @@ import Rosters from './Rosters';
 import { Typography } from '../../components/MUI';
 import { useTranslation } from 'react-i18next';
 import { LoadingSpinner } from '../../components/Custom';
+import { STATUS_ENUM, SEVERITY_ENUM } from '../../../../common/enums';
+import { Store, ACTION_ENUM } from '../../Store';
 
 const getRosters = async eventId => {
   const { data } = await api(
@@ -20,16 +22,29 @@ const getRosters = async eventId => {
   return data;
 };
 
-const deletePlayerFromRoster = async id => {
-  await api(
+const deletePlayerFromRoster = async (id, deletedByEventAdmin) => {
+  const res = await api(
     formatRoute('/api/entity/deletePlayerFromRoster', null, {
       id,
+      deletedByEventAdmin,
     }),
     {
       method: 'DELETE',
     },
   );
+
+  if (res.status === STATUS_ENUM.ERROR) {
+    dispatch({
+      type: ACTION_ENUM.SNACK_BAR,
+      message: t(
+        "can't delete this player since he already paid. Contact event admin for help.",
+      ),
+      severity: SEVERITY_ENUM.ERROR,
+      duration: 4000,
+    });
+  }
 };
+
 const addPlayerToRoster = async (player, rosterId) => {
   const { data } = await api(`/api/entity/addPlayerToRoster`, {
     method: 'POST',
@@ -45,11 +60,12 @@ export default function TabRosters(props) {
   const { isEventAdmin } = props;
   const { id: eventId } = useParams();
   const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
   const [rosters, setRosters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const onDelete = async id => {
-    await deletePlayerFromRoster(id);
+  const onDelete = async (id, deleteByAdmin) => {
+    await deletePlayerFromRoster(id, deleteByAdmin);
     await getData();
   };
 

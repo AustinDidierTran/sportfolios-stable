@@ -840,8 +840,30 @@ async function addPlayerToRoster(body, userId) {
   return addPlayerToRosterHelper(body, userId);
 }
 
-async function deletePlayerFromRoster(id, userId) {
-  return deletePlayerFromRosterHelper(id, userId);
+async function deletePlayerFromRoster(
+  id,
+  deletedByEventAdmin,
+  userId,
+) {
+  const {
+    invoiceItemId,
+    status,
+    rosterId,
+  } = await getPlayerInvoiceItemHelper({
+    id,
+  });
+
+  if (status === INVOICE_STATUS_ENUM.PAID && deletedByEventAdmin) {
+    await createRefund({ invoiceItemId });
+  } else if (status !== INVOICE_STATUS_ENUM.FREE) {
+    await removeIndividualPaymentCartItemHelper({ rosterId });
+  }
+
+  return deletePlayerFromRosterHelper(
+    id,
+    deletedByEventAdmin,
+    userId,
+  );
 }
 
 async function deleteGame(userId, query) {

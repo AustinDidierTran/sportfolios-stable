@@ -163,6 +163,9 @@ export default {
     delete_payment_option: "Supprimer l'option de paiement",
     delete_payment_option_confirmation:
       'Êtes-vous certain de vouloir supprimer cette option de paiement?',
+    delete_player_from_roster: 'Retirer joueur',
+    delete_player_from_roster_confirmation:
+      "Êtes-vous certain de vouloir retirer ce joueur de l'équipe? Le paiement individuel du joueur lui sera remboursé s'il y en a un.",
     delete_membership: "Supprimer l'affiliation",
     delete: 'Supprimer',
     description_card_first_point:

@@ -978,6 +978,20 @@ const getRosterInvoiceItem = async body => {
   return { invoiceItemId, status };
 };
 
+const getPlayerInvoiceItem = async id => {
+  const [
+    {
+      invoice_item_id: invoiceItemId,
+      payment_status: status,
+      roster_id: rosterId,
+    },
+  ] = await knex('team_players')
+    .select(['invoice_item_id', 'payment_status', 'roster_id'])
+    .where({ id });
+
+  return { invoiceItemId, status, rosterId };
+};
+
 const unregister = async body => {
   const { rosterId, eventId } = body;
   const realRosterId = await getRealId(rosterId);
@@ -1426,6 +1440,27 @@ const deleteRegistration = async (rosterId, eventId) => {
 };
 
 const removeEventCartItem = async ({ rosterId }) => {
+  const realId = await getRealId(rosterId);
+  const res = await knex
+    .select('id')
+    .from(
+      knex
+        .select(knex.raw("id, metadata ->> 'rosterId' AS rosterId"))
+        .from('cart_items')
+        .as('cartItems'),
+    )
+    .where('cartItems.rosterid', realId);
+
+  const ids = res.map(r => r.id);
+
+  await knex('cart_items')
+    .whereIn('id', ids)
+    .del();
+
+  return ids;
+};
+
+const removeIndividualPaymentCartItem = async ({ rosterId }) => {
   const realId = await getRealId(rosterId);
   const res = await knex
     .select('id')
@@ -2066,6 +2101,7 @@ async function addNewPersonToRoster(body, userId) {
 
 const addPlayerToRoster = async (body, userId) => {
   const { personId, name, id, rosterId, isSub } = body;
+  console.log(body);
   let paymentStatus = INVOICE_STATUS_ENUM.FREE;
   let cartItem;
 
@@ -2074,6 +2110,7 @@ const addPlayerToRoster = async (body, userId) => {
       rosterId,
     );
 
+    console.log({ paymentOption });
     if (paymentOption.individual_price > 0) {
       cartItem = {
         stripePriceId: paymentOption.individual_stripe_price_id,
@@ -2086,13 +2123,15 @@ const addPlayerToRoster = async (body, userId) => {
           team: await getEntity(paymentOption.teamId, userId),
         },
       };
+      console.log({ cartItem });
 
       paymentStatus = INVOICE_STATUS_ENUM.OPEN;
-
+      console.log(1);
       await addEventCartItem(
         cartItem,
         await getUserIdFromPersonId(personId),
       );
+      console.log(2);
     }
   }
 
@@ -2108,6 +2147,7 @@ const addPlayerToRoster = async (body, userId) => {
     })
     .returning('*');
 
+  console.log('done');
   return player;
 };
 
@@ -2559,6 +2599,7 @@ module.exports = {
   getGeneralInfos,
   getOptions,
   getPrimaryPerson,
+  getPlayerInvoiceItem,
   getRosterInvoiceItem,
   getWichTeamsCanUnregister,
   getPersonInfos,
