@@ -4,6 +4,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import Add from '@material-ui/icons/Add';
 import AddAPhoto from '@material-ui/icons/AddAPhoto';
 import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
+import ArrowBack from '@material-ui/icons/ArrowBack';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import Assignment from '@material-ui/icons/Assignment';
 import AttachMoney from '@material-ui/icons/AttachMoney';
@@ -68,6 +69,7 @@ const icons = {
   Add,
   AddAPhoto,
   AddShoppingCart,
+  ArrowBack,
   ArrowUpward,
   Assignment,
   AttachMoney,
