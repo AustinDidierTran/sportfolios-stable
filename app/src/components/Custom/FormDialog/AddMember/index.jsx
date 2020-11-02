@@ -16,7 +16,7 @@ import moment from 'moment';
 import { useQuery } from '../../../../hooks/queries';
 
 export default function AddMember(props) {
-  const { open: openProps, onClose, update } = props;
+  const { open: openProps, onClose } = props;
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
   const { id: entityId } = useQuery();
