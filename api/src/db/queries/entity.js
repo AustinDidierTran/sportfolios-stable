@@ -31,6 +31,7 @@ const {
   canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
+  deleteMembership: deleteMembershipHelper,
   deleteGame: deleteGameHelper,
   deleteOption: deleteOptionHelper,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
@@ -170,7 +171,16 @@ async function getAllRolesEntity(id) {
 async function getMembers(persons, organizationId) {
   return getMembersHelper(persons, organizationId);
 }
-async function getOrganizationMembers(organizationId) {
+async function getOrganizationMembers(organizationId, userId) {
+  if (
+    !(await isAllowed(
+      organizationId,
+      userId,
+      ENTITIES_ROLE_ENUM.EDITOR,
+    ))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
   return getOrganizationMembersHelper(organizationId);
 }
 
@@ -552,6 +562,23 @@ async function updateSuggestionStatus(body) {
   return res;
 }
 
+async function addMemberManually(body) {
+  const {
+    membershipType,
+    organizationId,
+    personId,
+    expirationDate,
+  } = body;
+
+  const res = await addMemberHelper(
+    membershipType,
+    organizationId,
+    personId,
+    expirationDate,
+  );
+  return res;
+}
+
 async function addMember(body, userId) {
   const {
     membershipId,
@@ -804,6 +831,10 @@ async function deleteEntityMembership(query) {
 
   return deleteEntityMembershipHelper(membershipId);
 }
+async function deleteMembership(query) {
+  const { memberType, organizationId, personId } = query;
+  return deleteMembershipHelper(memberType, organizationId, personId);
+}
 
 async function deleteOption(id) {
   return deleteOptionHelper(id);
@@ -834,6 +865,7 @@ module.exports = {
   addField,
   addGame,
   addMember,
+  addMemberManually,
   addMembership,
   addOption,
   addPhase,
@@ -851,6 +883,7 @@ module.exports = {
   deleteEntityHelper,
   deleteEntityHelper,
   deleteEntityMembership,
+  deleteMembership,
   deleteGame,
   deleteGame,
   deleteOption,

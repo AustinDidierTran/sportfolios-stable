@@ -82,12 +82,23 @@ export default function BecomeMember(props) {
       }
     }
     if (fixed_date) {
-      return `${t(name)} | ${price}$ (${formatDate(
+      let finalDate;
+      if (
         moment(new Date(fixed_date)).set(
           'year',
-          moment().get('year') + 1,
-        ),
-      )})`;
+          moment().get('year'),
+        ) < moment()
+      ) {
+        finalDate = moment(new Date(fixed_date))
+          .set('year', moment().get('year'))
+          .add(1, 'year');
+      } else {
+        finalDate = moment(new Date(fixed_date)).set(
+          'year',
+          moment().get('year'),
+        );
+      }
+      return `${t(name)} | ${price}$ (${formatDate(finalDate)})`;
     }
     return null;
   };

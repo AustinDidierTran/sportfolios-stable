@@ -30,6 +30,9 @@ const COMPONENT_TYPE_ENUM = {
   BUTTON: 'button',
   CHECKBOX: 'checkbox',
   LIST_ITEM: 'list item',
+  PERSON_SEARCH_LIST: 'person search list',
+  PERSON_ITEM: 'person item',
+  EMPTY: 'empty',
 };
 
 const ROSTER_ROLE_ENUM = {
@@ -84,6 +87,8 @@ const FORM_DIALOG_TYPE_ENUM = {
   ADD_EDIT_EVENT_PAYMENT_OPTION: 'add edit event payment option',
   ADD_MEMBERSHIP: 'add membership',
   BECOME_MEMBER: 'become member',
+  ADD_MEMBER: 'add member',
+  EDIT_MEMBERSHIP: 'edit membership',
 };
 
 const LANGUAGE_ENUM = {
@@ -118,6 +123,8 @@ const STATUS_ENUM = {
   SUCCESS: 201,
   FORBIDDEN: 403,
   ERROR: 404,
+  ERROR_STRING: 'error',
+  SUCCESS_STRING: 'success',
 };
 
 const PERSON_TRANSFER_STATUS_ENUM = {

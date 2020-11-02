@@ -9,27 +9,32 @@ import {
   SEVERITY_ENUM,
   STATUS_ENUM,
   COMPONENT_TYPE_ENUM,
-  MEMBERSHIP_TYPE_ENUM,
 } from '../../../../../../common/enums';
 import BasicFormDialog from '../BasicFormDialog';
 import moment from 'moment';
 import { useQuery } from '../../../../hooks/queries';
+import { getMembershipName } from '../../../../utils/stringFormats';
+import LoadingSpinner from '../../LoadingSpinner';
 
-export default function AddMember(props) {
-  const { open: openProps, onClose, update } = props;
+export default function EditMembership(props) {
+  const {
+    open: openProps,
+    onClose,
+    update,
+    person,
+    membership,
+    expirationDate,
+  } = props;
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
   const { id: entityId } = useQuery();
 
   const [open, setOpen] = useState(false);
-  const [person, setPerson] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const validate = values => {
     const { expirationDate } = values;
     const errors = {};
-    if (!person) {
-      errors.person = t(ERROR_ENUM.VALUE_IS_REQUIRED);
-    }
     if (!expirationDate) {
       errors.expirationDate = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
@@ -38,15 +43,14 @@ export default function AddMember(props) {
 
   const formik = useFormik({
     initialValues: {
-      person: '',
-      membership: '',
       expirationDate: '',
     },
     validate,
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
-      const { membership, expirationDate } = values;
+      setIsLoading(true);
+      const { expirationDate } = values;
       const res = await api(`/api/entity/memberManually`, {
         method: 'POST',
         body: JSON.stringify({
@@ -67,81 +71,37 @@ export default function AddMember(props) {
       } else {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
-          message: t('member_added'),
+          message: t('membership_edited'),
           severity: SEVERITY_ENUM.SUCCESS,
           duration: 2000,
         });
         update();
         handleClose();
+        setIsLoading(false);
       }
     },
   });
 
   useEffect(() => {
     setOpen(openProps);
-    formik.setFieldValue(
-      'membership',
-      MEMBERSHIP_TYPE_ENUM.RECREATIONAL,
-    );
-    formik.setFieldValue(
-      'expirationDate',
-      moment()
-        .add(1, 'year')
-        .format('YYYY-MM-DD'),
-    );
   }, [openProps]);
 
+  useEffect(() => {
+    formik.setFieldValue(
+      'expirationDate',
+      moment(expirationDate).format('YYYY-MM-DD'),
+    );
+  }, [expirationDate]);
+
   const handleClose = () => {
-    setPerson(null);
     onClose();
   };
 
-  useEffect(() => {
-    setPerson(formik.values.person);
-  }, [formik.values.person]);
-
-  const onClick = person => {
-    setPerson(person);
-  };
-  const personComponent = person
-    ? {
-        componentType: COMPONENT_TYPE_ENUM.PERSON_ITEM,
-        person,
-        secondary: t('player'),
-        notClickable: true,
-      }
-    : { componentType: COMPONENT_TYPE_ENUM.EMPTY };
-
   const fields = [
-    personComponent,
     {
-      componentType: COMPONENT_TYPE_ENUM.PERSON_SEARCH_LIST,
-      namespace: 'person',
-      label: t('player'),
-      onClick,
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.SELECT,
-      namespace: 'membership',
-      label: t('membership'),
-      options: [
-        {
-          display: t('recreational'),
-          value: MEMBERSHIP_TYPE_ENUM.RECREATIONAL,
-        },
-        {
-          display: t('competitive'),
-          value: MEMBERSHIP_TYPE_ENUM.COMPETITIVE,
-        },
-        {
-          display: t('elite'),
-          value: MEMBERSHIP_TYPE_ENUM.ELITE,
-        },
-        {
-          display: t('junior'),
-          value: MEMBERSHIP_TYPE_ENUM.JUNIOR,
-        },
-      ],
+      componentType: COMPONENT_TYPE_ENUM.LIST_ITEM,
+      primary: `${person?.name} ${person?.surname}`,
+      secondary: t(getMembershipName(membership)),
     },
     {
       namespace: 'expirationDate',
@@ -159,15 +119,18 @@ export default function AddMember(props) {
     },
     {
       type: 'submit',
-      name: t('add'),
+      name: t('edit'),
       color: 'primary',
     },
   ];
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
   return (
     <BasicFormDialog
       open={open}
-      title={t('add_membership')}
+      title={t('edit_membership')}
       buttons={buttons}
       fields={fields}
       formik={formik}

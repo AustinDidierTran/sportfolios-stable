@@ -2,12 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatPageTitle } from '../../utils/stringFormats';
 
-import { Paper, Button, IgContainer } from '../../components/Custom';
+import {
+  Paper,
+  Button,
+  IgContainer,
+  FormDialog,
+} from '../../components/Custom';
 import { useQuery } from '../../hooks/queries';
 import api from '../../actions/api';
-import { formatRoute } from '../../actions/goTo';
+import {
+  formatRoute,
+  goToAndReplace,
+  ROUTES,
+} from '../../actions/goTo';
 import { List } from '../../components/Custom';
-import { LIST_ITEM_ENUM } from '../../../../common/enums';
+import {
+  FORM_DIALOG_TYPE_ENUM,
+  LIST_ITEM_ENUM,
+  STATUS_ENUM,
+} from '../../../../common/enums';
 
 export default function MembersList() {
   const { id } = useQuery();
@@ -15,6 +28,7 @@ export default function MembersList() {
 
   const [organization, setOrganization] = useState(null);
   const [members, setMembers] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     document.title = formatPageTitle(
@@ -35,15 +49,28 @@ export default function MembersList() {
   };
 
   const getMembers = async () => {
-    const { data } = await api(
+    const { data, status } = await api(
       formatRoute('/api/entity/organizationMembers', null, { id }),
     );
-    const res = data.map((d, index) => ({
-      ...d,
-      type: LIST_ITEM_ENUM.MEMBER,
-      key: index,
-    }));
-    setMembers(res);
+    if (status === STATUS_ENUM.ERROR_STRING) {
+      goToAndReplace(ROUTES.entityNotFound);
+    } else {
+      const res = data.map((d, index) => ({
+        ...d,
+        type: LIST_ITEM_ENUM.MEMBER,
+        update: getMembers,
+        key: index,
+      }));
+      setMembers(res);
+    }
+  };
+
+  const onOpen = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -61,11 +88,19 @@ export default function MembersList() {
           style={{
             margin: '8px',
           }}
-          onClick={() => {}}
+          onClick={onOpen}
         >
-          {t('add_member')}
+          {t('add_membership')}
         </Button>
         <List items={members} />
+        <FormDialog
+          type={FORM_DIALOG_TYPE_ENUM.ADD_MEMBER}
+          items={{
+            open,
+            onClose,
+            update: getMembers,
+          }}
+        />
       </Paper>
     </IgContainer>
   );

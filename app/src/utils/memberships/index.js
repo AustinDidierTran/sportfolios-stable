@@ -62,7 +62,16 @@ export const getExpirationDate = (length, date) => {
       getMembershipUnit(length),
     );
   } else if (date) {
-    return moment(new Date(date));
+    if (
+      moment(new Date(date)).set('year', moment().get('year')) <
+      moment()
+    ) {
+      return moment(new Date(date))
+        .set('year', moment().get('year'))
+        .add(1, 'year');
+    } else {
+      return moment(new Date(date)).set('year', moment().get('year'));
+    }
   } else {
     return null;
   }

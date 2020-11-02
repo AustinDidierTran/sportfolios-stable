@@ -172,8 +172,10 @@ router.get(`${BASE_URL}/members`, async ctx => {
   }
 });
 router.get(`${BASE_URL}/organizationMembers`, async ctx => {
-  const entity = await queries.getOrganizationMembers(ctx.query.id);
-
+  const entity = await queries.getOrganizationMembers(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
   if (entity) {
     ctx.body = {
       status: 'success',
@@ -682,6 +684,22 @@ router.post(`${BASE_URL}/member`, async ctx => {
     };
   }
 });
+router.post(`${BASE_URL}/memberManually`, async ctx => {
+  const entity = await queries.addMemberManually(ctx.request.body);
+  if (entity) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
 
 router.post(`${BASE_URL}/alias`, async ctx => {
   const alias = await queries.addAlias(ctx.request.body);
@@ -946,6 +964,14 @@ router.del(BASE_URL, async ctx => {
 
 router.del(`${BASE_URL}/membership`, async ctx => {
   await queries.deleteEntityMembership(ctx.query);
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
+router.del(`${BASE_URL}/member`, async ctx => {
+  await queries.deleteMembership(ctx.query);
 
   ctx.status = 201;
   ctx.body = {
