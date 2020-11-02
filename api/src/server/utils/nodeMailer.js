@@ -318,9 +318,9 @@ async function sendAcceptedRegistrationEmail({
     title = `Inscription ${team.name}`;
     subject = `Inscription ${team.name} | Sportfolios`;
     if (isFreeOption) {
-      content = `Votre équipe ${team.name} est officiellement acceptée à l'événment ${event.name}.`;
+      content = `Votre équipe ${team.name} est officiellement acceptée à l'événement ${event.name}.`;
     } else {
-      content = `Votre équipe ${team.name} est officiellement acceptée à l'événment ${event.name}. L'événement est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant 👇`;
+      content = `Votre équipe ${team.name} est officiellement acceptée à l'événement ${event.name}. L'événement est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant 👇`;
       buttonName = 'Payez votre inscription';
     }
   }
