@@ -1,3 +1,4 @@
+const i18nbackEnd = require('../../api/src/i18n.config');
 const ENTITIES_ROLE_ENUM = {
   ADMIN: 1,
   EDITOR: 2,
@@ -332,6 +333,39 @@ const MESSENGER_MESSAGES_EN = {
   },
 };
 
+const MESSENGER_QUICK_REPLIES = {
+  CONFIRMATION: [
+    {
+      content_type: 'text',
+      title: i18nbackEnd.__('quick_replies.yes'),
+      payload: MESSENGER_PAYLOADS.YES,
+    },
+    {
+      content_type: 'text',
+      title: i18nbackEnd.__('quick_replies.no'),
+      payload: MESSENGER_PAYLOADS.NO,
+    },
+  ],
+  SPIRIT: [
+    {
+      content_type: 'text',
+      title: '1',
+    },
+    {
+      content_type: 'text',
+      title: '2',
+    },
+    {
+      content_type: 'text',
+      title: '3',
+    },
+    {
+      content_type: 'text',
+      title: '4',
+    },
+  ],
+};
+
 const MESSENGER_MESSAGES_FR = {
   CONNECTION_SUCCESS: {
     text:
@@ -622,4 +656,5 @@ module.exports = {
   MESSENGER_MESSAGES_FR,
   BASIC_CHATBOT_STATES,
   SCORE_SUBMISSION_CHATBOT_STATES,
+  MESSENGER_QUICK_REPLIES,
 };

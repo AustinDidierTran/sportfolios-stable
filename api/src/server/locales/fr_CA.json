@@ -1,4 +1,15 @@
 {
-  
-  
+  "score_submission":{
+    "confirmation": {
+      "victory":"Vous avez remporté votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour ressoumettre votre pointage",
+      "defeat":"Vous avez perdu votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour ressoumettre votre pointage",
+      "draw":"La partie contre {{opponentTeamName}} s'est terminée avec une égalité de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour ressoumettre votre pointage"
+    }
+      },
+
+
+  "quick_replies":{
+    "yes":"Oui",
+    "no":"Non"
+  }
 }
