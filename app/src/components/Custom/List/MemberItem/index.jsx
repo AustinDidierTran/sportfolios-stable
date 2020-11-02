@@ -112,7 +112,8 @@ export default function MemberItem(props) {
             expirationDate,
           }}
         />
-        {status === INVOICE_STATUS_ENUM.PAID ? (
+        {status === INVOICE_STATUS_ENUM.PAID ||
+        status === INVOICE_STATUS_ENUM.FREE ? (
           <Icon icon="AttachMoney" color="green" />
         ) : (
           <Icon icon="MoneyOff" color="red" />

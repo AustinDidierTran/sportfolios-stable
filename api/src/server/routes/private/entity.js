@@ -687,13 +687,13 @@ router.post(`${BASE_URL}/member`, async ctx => {
 router.post(`${BASE_URL}/memberManually`, async ctx => {
   const entity = await queries.addMemberManually(ctx.request.body);
   if (entity) {
-    ctx.status = 201;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'Something went wrong',

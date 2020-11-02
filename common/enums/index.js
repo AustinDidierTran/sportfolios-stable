@@ -116,6 +116,7 @@ const INVOICE_STATUS_ENUM = {
   REFUNDED: 'refunded',
   UNCOLLECTIBLE: 'uncollectible',
   VOID: 'void',
+  FREE: 'free',
 };
 
 const STATUS_ENUM = {

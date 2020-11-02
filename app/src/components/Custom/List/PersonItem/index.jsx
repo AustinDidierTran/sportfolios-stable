@@ -23,6 +23,7 @@ export default function PersonItem(props) {
     icon,
     inverseColor,
     secondaryActions, //secondaryAction is an array of components, this array should not contain more than 2 or 3 buttons
+    notClickable,
   } = props;
 
   const initials = useMemo(
@@ -44,12 +45,11 @@ export default function PersonItem(props) {
     },
     [id, onClick],
   );
-
   return (
     <ListItem
       button
-      onClick={handleClick}
       selected={selected}
+      onClick={notClickable ? null : handleClick}
       style={{
         width: '100%',
         secondaryAction: {
@@ -73,22 +73,22 @@ export default function PersonItem(props) {
           ></Avatar>
         )}
       </ListItemIcon>
-      <ListItemText
-        className={styles.text}
-        primary={completeName || name}
-        secondary={secondary || t('person')}
-      ></ListItemText>
-      {secondaryActions ? (
-        <ListItemSecondaryAction>
+      <ListItemSecondaryAction>
+        {secondaryActions ? (
           <div className={styles.secondaryActions}>
             {secondaryActions.map((action, index) => (
               <div key={index}>{action}</div>
             ))}
           </div>
-        </ListItemSecondaryAction>
-      ) : (
-        <></>
-      )}
+        ) : (
+          <></>
+        )}
+      </ListItemSecondaryAction>
+      <ListItemText
+        className={styles.text}
+        primary={completeName || name}
+        secondary={secondary || t('person')}
+      ></ListItemText>
     </ListItem>
   );
 }

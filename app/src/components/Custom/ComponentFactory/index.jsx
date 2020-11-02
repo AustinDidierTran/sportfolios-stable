@@ -74,7 +74,7 @@ export default function ComponentFactory(props) {
         blackList={component.blackList}
         label={component.label}
         query={component.query}
-        allowCreate
+        allowCreate={component.allowCreate}
         withoutIcon
         autoFocus
         isSub={component.isSub}
@@ -91,6 +91,7 @@ export default function ComponentFactory(props) {
         {...component.person}
         secondary={component.secondary}
         notClickable={component.notClickable}
+        secondaryActions={component.secondaryActions}
       />
     );
   }

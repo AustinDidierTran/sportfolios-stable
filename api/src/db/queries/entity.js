@@ -17,6 +17,7 @@ const {
   addField: addFieldHelper,
   addGame: addGameHelper,
   addMember: addMemberHelper,
+  addMemberManually: addMemberManuallyHelper,
   addMembership: addMembershipHelper,
   addOption: addOptionHelper,
   addPhase: addPhaseHelper,
@@ -570,7 +571,7 @@ async function addMemberManually(body) {
     expirationDate,
   } = body;
 
-  const res = await addMemberHelper(
+  const res = await addMemberManuallyHelper(
     membershipType,
     organizationId,
     personId,

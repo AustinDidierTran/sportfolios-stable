@@ -1510,6 +1510,46 @@ async function addEntityRole(entityId, entityIdAdmin, role) {
   return res;
 }
 
+async function addMemberManually(
+  memberType,
+  organizationId,
+  personId,
+  expirationDate,
+) {
+  const realId = await getRealId(organizationId);
+  const [member] = await knex('memberships')
+    .select('*')
+    .where({
+      member_type: memberType,
+      organization_id: realId,
+      person_id: personId,
+    });
+  if (member) {
+    const [res] = await knex('memberships')
+      .update({
+        expiration_date: expirationDate,
+        status: INVOICE_STATUS_ENUM.FREE,
+      })
+      .where({
+        member_type: memberType,
+        organization_id: realId,
+        person_id: personId,
+      })
+      .returning('*');
+    return res;
+  } else {
+    const [res] = await knex('memberships')
+      .insert({
+        member_type: memberType,
+        organization_id: realId,
+        person_id: personId,
+        expiration_date: expirationDate,
+        status: INVOICE_STATUS_ENUM.FREE,
+      })
+      .returning('*');
+    return res;
+  }
+}
 async function addMember(
   memberType,
   organizationId,
@@ -2460,6 +2500,7 @@ module.exports = {
   addEntity,
   addEntityRole,
   addMember,
+  addMemberManually,
   addAlias,
   addMembership,
   addGame,
