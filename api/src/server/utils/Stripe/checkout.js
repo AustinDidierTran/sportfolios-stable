@@ -2,6 +2,7 @@ const {
   addMember,
   deleteRegistration,
   updateRegistration,
+  updatePlayerPaymentStatus,
   updateMembershipInvoice,
 } = require('../../../db/helpers/entity');
 
@@ -32,13 +33,25 @@ const INVOICE_CREATED_ENUM = {
 };
 const INVOICE_PAID_ENUM = {
   EVENT: async body => {
-    const { rosterId, eventId, status, invoiceItemId } = body;
-    await updateRegistration(
+    const {
+      metadata,
       rosterId,
       eventId,
-      invoiceItemId,
       status,
-    );
+      invoiceItemId,
+    } = body;
+
+    if (metadata.isIndividualOption) {
+      updatePlayerPaymentStatus(metadata.buyerId, rosterId, status);
+    } else {
+      await updateRegistration(
+        rosterId,
+        eventId,
+        invoiceItemId,
+        status,
+      );
+    }
+
     await addItemToPaidStoreItems(body);
   },
   STORE: async body => {

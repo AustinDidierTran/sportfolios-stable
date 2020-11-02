@@ -13,6 +13,7 @@ export default function Tag(props) {
   const selectTag = useMemo(() => {
     switch (type) {
       case TAG_TYPE_ENUM.ACCEPTED:
+      case TAG_TYPE_ENUM.ACCEPTED_FREE:
         return {
           name: t('accepted'),
           backgroundColor: '#4fc947',

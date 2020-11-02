@@ -54,12 +54,16 @@ export default function PurchasesItem(props) {
               className={styles.name}
               primary={description}
               secondary={team.name}
-            ></ListItemText>
+            />
             <ListItemText
               className={styles.quantity}
-              primary={formatPrice(amount)}
+              primary={
+                metadata?.isIndividualOption
+                  ? `${formatPrice(amount)} - ${metadata?.name}`
+                  : formatPrice(amount)
+              }
               secondary={label}
-            ></ListItemText>
+            />
             {/* <MailtoButton
             edge="end"
             emails={email}

@@ -11,6 +11,7 @@ const { signS3Request } = require('../../server/utils/aws');
 
 const {
   addAlias: addAliasHelper,
+  addEventCartItem,
   addEntity: addEntityHelper,
   addEntityRole: addEntityRoleHelper,
   addField: addFieldHelper,
@@ -95,10 +96,7 @@ const {
   sendTeamRegistrationEmailToAdmin,
   sendAcceptedRegistrationEmail,
 } = require('../../server/utils/nodeMailer');
-const {
-  addEventCartItem,
-  addMembershipCartItem,
-} = require('../helpers/shop');
+const { addMembershipCartItem } = require('../helpers/shop');
 const {
   getEmailsFromUserId,
   getLanguageFromEmail,
@@ -321,6 +319,10 @@ async function addTeamToEvent(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
+  if (!paymentOption) {
+    throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
+  }
+
   // Reject team if there is already too many registered teams
   const remainingSpots = await getRemainingSpotsHelper(eventId);
 
@@ -330,19 +332,25 @@ async function addTeamToEvent(body, userId) {
     return { status: registrationStatus, reason };
   }
 
-  // TODO: Validate status of team
-  const registrationStatus = STATUS_ENUM.ACCEPTED;
-
   const team = await getEntity(teamId, userId);
 
   const event = await getEntity(eventId, userId);
 
   const realEventId = await (await getEntity(eventId, userId)).id;
 
+  const teamPaymentOption = await getRegistrationTeamPaymentOption(
+    paymentOption,
+  );
+  const isFreeOption = teamPaymentOption.team_price === 0;
+  // TODO: Validate status of team
+  const registrationStatus = isFreeOption
+    ? STATUS_ENUM.ACCEPTED_FREE
+    : STATUS_ENUM.ACCEPTED;
+
   const rosterId = await addTeamToEventHelper({
     teamId,
     eventId: realEventId,
-    status,
+    status: isFreeOption ? INVOICE_STATUS_ENUM.FREE : status,
     registrationStatus,
     paymentOption,
   });
@@ -351,58 +359,50 @@ async function addTeamToEvent(body, userId) {
   if (roster) {
     await addRosterHelper(rosterId, roster, userId);
   }
-
-  if (paymentOption) {
-    if (registrationStatus === STATUS_ENUM.ACCEPTED) {
-      // if team_price === 0, bypass
-      const teamPaymentOption = await getRegistrationTeamPaymentOption(
-        paymentOption,
-      );
-
-      if (teamPaymentOption.team_price > 0) {
-        // Add item to cart
-        await addEventCartItem(
-          {
-            stripePriceId: teamPaymentOption.team_stripe_price_id,
-            metadata: {
-              sellerEntityId: realEventId,
-              buyerId: teamId,
-              rosterId,
-              team,
-            },
-          },
-          userId,
-        );
-      }
-    }
-
-    // send mail to organization admin
-    // TODO find real event user creator
-    const creatorEmails = ['austindidier@sportfolios.app'];
-    creatorEmails.map(async email => {
-      const language = await getLanguageFromEmail(email);
-      sendTeamRegistrationEmailToAdmin({
-        email,
-        team,
-        event,
-        language,
-        placesLeft: await getRemainingSpotsHelper(event.id),
-      });
-    });
-
-    // Send accepted email to team captain
-    const captainEmails = await getEmailsFromUserId(userId);
-
-    captainEmails.map(async ({ email }) => {
-      const language = await getLanguageFromEmail(email);
-      sendAcceptedRegistrationEmail({
-        language,
-        team,
-        event,
-        email,
-      });
-    });
+  if (registrationStatus === STATUS_ENUM.ACCEPTED) {
+    // wont be added to cart if free
+    await addEventCartItem(
+      {
+        stripePriceId: teamPaymentOption.team_stripe_price_id,
+        metadata: {
+          sellerEntityId: realEventId,
+          buyerId: teamId,
+          rosterId,
+          team,
+        },
+      },
+      userId,
+    );
   }
+
+  // send mail to organization admin
+  // TODO find real event user creator
+  const creatorEmails = ['austindidier@sportfolios.app'];
+  creatorEmails.map(async email => {
+    const language = await getLanguageFromEmail(email);
+    sendTeamRegistrationEmailToAdmin({
+      email,
+      team,
+      event,
+      language,
+      placesLeft: await getRemainingSpotsHelper(event.id),
+    });
+  });
+
+  // Send accepted email to team captain
+  const captainEmails = await getEmailsFromUserId(userId);
+
+  captainEmails.map(async ({ email }) => {
+    const language = await getLanguageFromEmail(email);
+    sendAcceptedRegistrationEmail({
+      language,
+      team,
+      event,
+      email,
+      isFreeOption,
+    });
+  });
+
   // Handle other acceptation statuses
   return { status: registrationStatus, rosterId };
 }
@@ -746,11 +746,6 @@ async function addOption(body, userId) {
   return res;
 }
 
-async function addRoster(body) {
-  const { rosterId, roster } = body;
-  const res = await addRosterHelper(rosterId, roster);
-  return res;
-}
 async function addNewPersonToRoster(body, userId) {
   const res = await addNewPersonToRosterHelper(body, userId);
   return res;
@@ -871,7 +866,6 @@ module.exports = {
   addPhase,
   addPlayerToRoster,
   addRegisteredToSchedule,
-  addRoster,
   addNewPersonToRoster,
   addScoreAndSpirit,
   addScoreSuggestion,

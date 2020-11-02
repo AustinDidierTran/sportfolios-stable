@@ -833,6 +833,8 @@ export default {
     registrations_open_on: 'Les inscriptions ouvrent le',
     registration_accepted:
       "Félicitation! Vous avez été accepté à l'événement, vous pouvez aller à votre panier pour payer votre inscription!",
+    registration_accepted_free:
+      "Félicitation! Vous avez été accepté à l'événement",
     registration_pending:
       'Votre inscription est en attente, vous allez reçevoir un courriel pour vous avertir lorsque votre demande sera traitée ',
     registration_refused:

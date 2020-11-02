@@ -8,6 +8,7 @@ import PersonInfoDialog from '../../../../../components/Custom/Dialog/PersonInfo
 import { Typography } from '../../../../../components/MUI';
 import api from '../../../../../actions/api';
 import { formatRoute } from '../../../../../actions/goTo';
+import PaymentChip from '../../../../../tabs/Settings/TeamRegistered/PaymentChip';
 
 export default function PlayerCard(props) {
   const { isEventAdmin, player, role, onDelete } = props;
@@ -84,7 +85,10 @@ export default function PlayerCard(props) {
               />
             </div>
           ) : (
-            <></>
+            <PaymentChip
+              status={player.paymentStatus}
+              className={styles.chip}
+            />
           )}
           <div className={styles.icon}>
             <IconButton

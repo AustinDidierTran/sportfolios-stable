@@ -679,5 +679,239 @@ export default {
     your_total_is: 'Your total is',
     your_upcoming_events: 'Your Upcoming Events',
     //Z
+    payment_method: 'Payment Method',
+    review: 'Review & Pay',
+    name: 'Name',
+    email: 'Email',
+    phone_number: 'Phone Number',
+    line1: 'Line 1',
+    line2: 'Line 2',
+    city: 'City',
+    state: 'State',
+    postal_code: 'Zip Code',
+    address: 'Address',
+    account_already_exists: 'Account already exists',
+    complete_order: 'Complete order',
+    see_receipt: 'See Receipt',
+    redirect_to_event_registration:
+      'You will soon be redirected to the event registration. Click below to be redirected instantly.',
+    redirect_to_success_route:
+      'You are now well authenticated. You will soon be redirected to your requested page. Click below to be redirected instantly.',
+    redirect_to_home:
+      'You will soon be redirected to the home page. Click below to be redirected instantly.',
+    // Validation
+    confirm_new_password: 'Confirm New Password',
+    email_already_exist:
+      'There is already an existing account with this email',
+    email_already_used:
+      'Email is already in used. Please choose another one',
+    email_not_confirmed:
+      'Email has not been confirmed. A new confirmation email has been sent. Please look at your emails.',
+    email_not_found: 'There is no account with this email.',
+    email_password_no_match:
+      'Email and password do not match. Please try again.',
+    invalid_email: 'Invalid email address.',
+    invalid_input: 'Invalid input',
+    name_is_required: 'Name is required',
+    new_password: 'New Password',
+    old_password: 'Old password',
+    see_sales: 'See sales',
+    password_length:
+      'Password must be within 8 and 24 characters long.',
+    password_must_match: 'Passwords must match',
+    select_team: 'Select team',
+    something_went_wrong: 'Something went wrong, please try again',
+    token_expired:
+      'Token is no longer valid, please request a new one.',
+    account_number: 'Account number',
+    institution_number: 'Institution number',
+    transit_number: 'Transit number',
+    value_is_invalid: 'Value is invalid',
+    value_is_required: 'Value is required',
+    value_must_have_x_digits: 'Value must have {{digits}} digits.',
+
+    value_must_be_numeric: 'Value must be a number.',
+
+    value_is_too_long: 'Value is too long.',
+    wrong_password: 'Wrong password. Please try again',
+    invalid_date: 'Invalid date. It should follow: yyyy-mm-dd',
+    date_in_future: 'Date is in the future',
+    or: 'OR',
+    // DESCRIPTION CARD
+    description_card_title: 'Improve your amateur sport experience.',
+    description_card_first_point:
+      "Automate your league's organization workflow.",
+    description_card_second_point:
+      'Archive your results in your personal Sportfolio.',
+    description_card_third_point:
+      'Connect with your perfect teammates.',
+    // GOOGLE ANALYTICS EVENTS TABLE
+    ga_events_table_title: 'Google Analytics Events List',
+    // GOOGLE ANALYTICS PAGEVIEWS TABLE
+    ga_pageviews_table_title: 'Google Analytics Pageviews List',
+    // SPORTS TABLE
+    sports_table_title: 'Sports List',
+    // USERS TABLE
+    users_table_title: 'Users List',
+    // Page names
+    admin_panel: 'Admin Panel',
+    payment_option: 'Payment option',
+    profile: 'Profile',
+    user_settings: 'User Settings',
+    rosters: 'Rosters',
+    // Buttons
+    cancel: 'Cancel',
+    edit: 'Edit',
+    save: 'Save',
+    submit: 'Submit',
+    use_same_and_continue: 'Use same and continue',
+    personal_information: 'Personal Information',
+    create_new_account: 'Create new account',
+    email_confirm_success: 'Email successfully confirmed!',
+    go_to_login: 'Go to login',
+    go_to_event: 'Go to event',
+    go_to_page: 'Go to page',
+    email_confirm_failure:
+      'Email confirmation failed. To send a new email, try to login again. By doing so, we will send you a new confirmation email.',
+    recent_search_results: 'Recent search results',
+    users_found_query: 'Users found with query {{query}}',
+    no_users_found: 'No users found',
+    no_following: 'You are following no one',
+    follow: 'Follow',
+    following: 'Following',
+    follow_notification_text: ' is now following you.',
+    learn_more: 'Learn More',
+    close: 'Close',
+
+    //LENGTH
+    one_month: 'One Month',
+    six_month: 'Six Month',
+    one_year: 'One Year',
+
+    //MEMBERSHIP
+    add_membership: 'Add membership',
+    become_member: 'Become Member',
+    competitive: 'Competitive',
+    competitive_member: 'Competitive Member',
+    competitive_membership: 'Competitive Membership',
+    elite: 'Elite',
+    elite_member: 'Elite Member',
+    elite_membership: 'Elite Membership',
+    member: 'Member',
+    membership: 'Membership',
+    membership_added: 'Membership added',
+    membership_exist: 'Membership Exist',
+    memberships: 'Memberships',
+    recreational: 'Recreational',
+    recreational_member: 'Recreational Member',
+    recreational_membership: 'Recreational Membership',
+    renew_membership: 'Renew Membership',
+
+    //REGISTRATION
+    register: 'Register',
+    registered: 'Registered',
+    registration_can_be_payed_later:
+      'You only have to pay once you are accepted. When you will be, you will receive an email in order to complete your payment.',
+    registration_close_date: 'Date registrations close',
+    registration_close_time: 'Time registrations close',
+    registration_closes_before_opening:
+      'Registration closes before opening',
+    registration_open_date: 'Date registrations open',
+    registration_open_time: 'Time registrations open',
+    registration_status: 'Registration Status',
+    registration: 'Registration',
+    registrations_closed_for_now: 'Registrations are closed for now',
+    registrations_ended: 'Registrations ended',
+    registrations_ends_on: 'Registrations ends on',
+    registrations_open_on: 'Registrations open on',
+    accepted: 'Accepted',
+    registration_accepted:
+      'Congratulation! You have been accepted to the event you can now go to your cart to pay the registration for your team!',
+    registration_accepted_free:
+      'Congratulation! You have been accepted to the event',
+    registration_pending:
+      'Your acceptation is currently pending, you will receive an email when the event will adress your registration',
+    registration_refused:
+      'Sorry, your team is not elligible for this event your registration has been refused',
+
+    //SNACKBAR MESSAGE
+    you_have_no_account_with_this_email_create_one:
+      'You have no account with this email! Create one!',
+    team_selected_add_your_roster:
+      'Team {{name}} selected! Time to add your roster. Enter players name, if player already have an account he will appear below search bar.',
+    you_added_no_players_to_your_roster:
+      'You did not add players to your roster. Choose your payment option.',
+    you_added_one_player_to_your_roster:
+      'You added one player to your roster! Choose your payment option.',
+    you_added_players_to_your_roster:
+      'You added {{length}} players to your roster! Choose your payment option.',
+    no_bank_account_linked:
+      'You have no bank account linked, payment option needs to be free',
+    some_teams_cannot_be_deleted:
+      "Some teams can't be unregistered from the event since they are already in a game.",
+    this_team_cannot_be_deleted:
+      "This team can't be unregistered from the event since it is already in a game.",
+    team_unregister_success: 'Team unregistered successfully',
+    teams_unregister_success: 'Teams unregistered successfully',
+
+    //SIZES
+    sizes_enum: {
+      [SIZES_ENUM.XXXS]: '3X-Small',
+      [SIZES_ENUM.XXS]: '2X-Small',
+      [SIZES_ENUM.XS]: 'X-Small',
+      [SIZES_ENUM.SM]: 'Small',
+      [SIZES_ENUM.M]: 'Medium',
+      [SIZES_ENUM.L]: 'Large',
+      [SIZES_ENUM.XL]: 'X-Large',
+      [SIZES_ENUM.XXL]: '2X-Large',
+      [SIZES_ENUM.XXXL]: '3X-Large',
+    },
+    sizes_enum_xxxs: '3X-Small',
+    sizes_enum_xxs: '2X-Small',
+    sizes_enum_xs: 'X-Small',
+    sizes_enum_sm: 'Small',
+    sizes_enum_m: 'Medium',
+    sizes_enum_l: 'Large',
+    sizes_enum_xl: 'X-Large',
+    sizes_enum_xxl: '2X-Large',
+    sizes_enum_xxxl: '3X-Large',
+    xxxs: '3X-Small',
+    xxs: '2X-Small',
+    xs: 'X-Small',
+    s: 'Small',
+    m: 'Medium',
+    l: 'Large',
+    xl: 'X-Large',
+    xxl: '2X-Large',
+    xxxl: '3X-Large',
+    XXXS: '3X-Small',
+    XXS: '2X-Small',
+    XS: 'X-Small',
+    S: 'Small',
+    M: 'Medium',
+    L: 'Large',
+    XL: 'X-Large',
+    XXL: '2X-Large',
+    XXXL: '3X-Large',
+
+    //SPIRIT CATEGORY
+    rules_knowledge_and_use: 'Rules Knowledge and Use',
+    fouls_and_body_contact: 'Fouls and Body Contact',
+    fair_mindedness: 'Fair Mindedness',
+    positive_attitude_and_self_control:
+      'Positive Attitude and Self Control',
+    communication: 'Communication',
+    //PROTIP
+    you_can_click_on_your_game_to_submit_your_score:
+      'ProTip: You can click on your game to submit your result.',
+    you_can_click_on_a_game_to_change_score:
+      'ProTip: You can click on a game to change score.',
+
+    //APP DESCRIPTION
+    facebook_description:
+      'Connect with Facebook to find your friends on Sportfolios',
+    messenger_description:
+      "Connect with Messenger to enable Sportfolios' chatbot",
+    disconnect_app: 'Disconnect {{appName}} app from your account',
   },
 };

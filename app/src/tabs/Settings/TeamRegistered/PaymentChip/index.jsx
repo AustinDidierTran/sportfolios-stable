@@ -22,11 +22,14 @@ export default function PaymentChips(props) {
 
   const { status, mobile } = props;
 
-  if (status === INVOICE_STATUS_ENUM.PAID) {
+  if (
+    status === INVOICE_STATUS_ENUM.PAID ||
+    status === INVOICE_STATUS_ENUM.FREE
+  ) {
     return (
       <div className={classes.root}>
         <Chip
-          label={t('paid')}
+          label={t(status)}
           icon={<AttachMoney />}
           color="primary"
           variant="outlined"

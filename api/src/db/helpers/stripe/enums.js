@@ -8,6 +8,7 @@ const BUSINESS_TYPE_ENUM = {
 const INVOICE_STATUS_ENUM = {
   DRAFT: 'draft',
   DELETED: 'deleted',
+  FREE: 'free',
   OPEN: 'open',
   PAID: 'paid',
   REFUNDED: 'refunded',

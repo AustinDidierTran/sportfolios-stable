@@ -18,7 +18,7 @@ export default function Roster(props) {
   useEffect(() => {
     onClick(null, roster);
   }, [roster]);
-  const blackList = useMemo(() => roster.map(r => r.person_id), [
+  const blackList = useMemo(() => roster.map(r => r.personId), [
     roster,
   ]);
 
@@ -32,7 +32,7 @@ export default function Roster(props) {
       setRoster(oldRoster => [
         ...oldRoster,
         {
-          person_id: person.id,
+          personId: person.id,
           type: LIST_ITEM_ENUM.ROSTER_ITEM,
           name: person.completeName,
           photoUrl: data.photoUrl,
@@ -64,13 +64,13 @@ export default function Roster(props) {
   };
 
   const onDelete = body => {
-    const { id, person_id } = body;
+    const { id, personId } = body;
     setRoster(oldRoster => {
       if (id) {
         return oldRoster.filter(r => r.id !== id);
       }
-      if (person_id) {
-        return oldRoster.filter(r => r.person_id !== person_id);
+      if (personId) {
+        return oldRoster.filter(r => r.personId !== personId);
       }
       return oldRoster;
     });
