@@ -356,7 +356,7 @@ export default function SubmitScoreDialog(props) {
     {
       componentType: COMPONENT_TYPE_ENUM.BUTTON,
       namespace: 'addPlayer',
-      children: t('add_player'),
+      children: t('add_sub'),
       endIcon: 'Add',
       onClick: onAddPlayer,
       variant: 'contained',

@@ -60,10 +60,10 @@ export default function TabRosters(props) {
 
   const getData = async () => {
     const rosters = await getRosters(eventId);
-    const rostersUpdated = rosters.map(roster => ({
-      ...roster,
-      //position: position from db here,
-    }));
+    const rostersUpdated = rosters.map(roster => {
+      const players = roster.players.filter(player => !player.isSub);
+      return { ...roster, players };
+    });
     setRosters(rostersUpdated);
     setIsLoading(false);
   };
