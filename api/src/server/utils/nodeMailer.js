@@ -311,16 +311,16 @@ async function sendAcceptedRegistrationEmail({
     if (isFreeOption) {
       content = `Your team ${team.name} is officially registered to ${event.name}.`;
     } else {
-      content = `Your team ${team.name} is officially registered to ${event.name}. The tournament is awaiting your payment. You can pay by going on the following link 👇`;
+      content = `Your team ${team.name} is officially registered to ${event.name}. The event is awaiting your payment. You can pay by going on the following link 👇`;
       buttonName = 'Pay your registration';
     }
   } else {
     title = `Inscription ${team.name}`;
     subject = `Inscription ${team.name} | Sportfolios`;
     if (isFreeOption) {
-      content = `Votre équipe ${team.name} est officiellement acceptée au tournoi ${event.name}.`;
+      content = `Votre équipe ${team.name} est officiellement acceptée à l'événment ${event.name}.`;
     } else {
-      content = `Votre équipe ${team.name} est officiellement acceptée au tournoi ${event.name}. Le tournoi est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant 👇`;
+      content = `Votre équipe ${team.name} est officiellement acceptée à l'événment ${event.name}. L'événement est maintenant en attente de paiement. Vous pouvez payer en vous rendant au lien suivant 👇`;
       buttonName = 'Payez votre inscription';
     }
   }

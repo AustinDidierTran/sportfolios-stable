@@ -1466,7 +1466,7 @@ async function updateRegistration(
 }
 
 async function updatePlayerPaymentStatus(
-  buyerUserId,
+  buyerPersonId,
   rosterId,
   status,
 ) {
@@ -1474,7 +1474,7 @@ async function updatePlayerPaymentStatus(
   return knex('team_players')
     .update({ payment_status: status })
     .where({
-      person_id: buyerUserId,
+      person_id: buyerPersonId,
       roster_id: realRosterId,
     });
 }
@@ -1577,7 +1577,7 @@ async function getTeamName(team) {
 async function getUserIdFromPersonId(personId) {
   const [user] = await knex('user_entity_role')
     .select('user_id')
-    .where({ entity_id: personId });
+    .where({ entity_id: personId, role: ENTITIES_ROLE_ENUM.ADMIN });
   return user.user_id;
 }
 
@@ -2034,7 +2034,7 @@ const addPlayerToRoster = async (body, userId) => {
       rosterId,
     );
 
-    if (paymentOption.individual_price !== 0) {
+    if (paymentOption.individual_price > 0) {
       cartItem = {
         stripePriceId: paymentOption.individual_stripe_price_id,
         metadata: {
