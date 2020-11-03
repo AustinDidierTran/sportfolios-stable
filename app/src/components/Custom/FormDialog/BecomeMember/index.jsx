@@ -13,7 +13,7 @@ import {
 } from '../../../../../../common/enums';
 import { useParams } from 'react-router-dom';
 import BasicFormDialog from '../BasicFormDialog';
-import { formatRoute, goTo, ROUTES } from '../../../../actions/goTo';
+import { formatRoute } from '../../../../actions/goTo';
 import {
   formatDate,
   getMembershipName,
@@ -64,6 +64,7 @@ export default function BecomeMember(props) {
       value: d.id,
       display: formatMembership(d),
     }));
+    formik.setFieldValue('type', memberships[0].value);
     setMemberships(memberships);
   };
 
@@ -156,7 +157,6 @@ export default function BecomeMember(props) {
           severity: SEVERITY_ENUM.SUCCESS,
           duration: 4000,
         });
-        goTo(ROUTES.cart);
         handleClose();
       }
     },

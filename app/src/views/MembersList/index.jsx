@@ -7,6 +7,7 @@ import {
   Button,
   IgContainer,
   FormDialog,
+  IconButton,
 } from '../../components/Custom';
 import { useQuery } from '../../hooks/queries';
 import api from '../../actions/api';
@@ -21,6 +22,7 @@ import {
   LIST_ITEM_ENUM,
   STATUS_ENUM,
 } from '../../../../common/enums';
+import styles from './MembersList.module.css';
 
 export default function MembersList() {
   const { id } = useQuery();
@@ -31,9 +33,11 @@ export default function MembersList() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    document.title = formatPageTitle(
-      t('members_list', { organization: organization?.name }),
-    );
+    organization
+      ? (document.title = formatPageTitle(
+          t('members_list', { organization: organization?.name }),
+        ))
+      : '';
   }, [organization]);
 
   useEffect(() => {
@@ -81,17 +85,28 @@ export default function MembersList() {
           organization: organization?.name || '',
         })}
       >
-        <Button
-          size="small"
-          variant="contained"
-          endIcon="Add"
-          style={{
-            margin: '8px',
-          }}
-          onClick={onOpen}
-        >
-          {t('add_membership')}
-        </Button>
+        <div className={styles.button}>
+          <IconButton
+            icon="ArrowBack"
+            onClick={() => {
+              history.back();
+            }}
+            tooltip={t('back')}
+            style={{ color: 'primary', margin: '8px' }}
+          />
+          <Button
+            size="small"
+            variant="contained"
+            endIcon="Add"
+            style={{
+              margin: '8px',
+              width: 'fit-content',
+            }}
+            onClick={onOpen}
+          >
+            {t('add_membership')}
+          </Button>
+        </div>
         <List items={members} />
         <FormDialog
           type={FORM_DIALOG_TYPE_ENUM.ADD_MEMBER}

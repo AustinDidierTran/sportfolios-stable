@@ -1,0 +1,6 @@
+.button {
+  display: grid;
+  grid-template-columns: 1fr 31fr;
+  align-items: center;
+  justify-items: center;
+}

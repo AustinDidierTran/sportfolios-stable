@@ -96,6 +96,7 @@ export default function EntitySettings(props) {
       if (isAdmin) {
         return (
           <div className={styles.div}>
+            <BasicInfos basicInfos={basicInfos} />
             <Stripe id={id} />
             <AddMembership />
             <ManageRoles role={role} />

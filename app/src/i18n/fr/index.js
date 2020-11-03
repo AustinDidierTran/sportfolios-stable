@@ -159,7 +159,7 @@ export default {
     delete_game_confirmation:
       'Êtes-vous certain de vouloir supprimer cette partie?',
     delete_membership_confirmation:
-      'Êtes-vous certain de vouloir supprimer cette affilitation?',
+      'Êtes-vous certain de vouloir supprimer cette affilitation? Cette personne ne sera pas remboursée.',
     delete_payment_option: "Supprimer l'option de paiement",
     delete_payment_option_confirmation:
       'Êtes-vous certain de vouloir supprimer cette option de paiement?',

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 
-import TabsGenerator, { TABS_ENUM } from '../../tabs';
+import TabsGenerator from '../../tabs';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { Tab, Tabs } from '../../components/MUI';
 import { IgContainer, Paper } from '../../components/Custom';
 import { useQuery } from '../../hooks/queries';
+import { TABS_ENUM } from '../../../../common/enums';
 
 export default function Cart() {
   const query = useQuery();

@@ -152,7 +152,7 @@ export default {
     delete_game_confirmation:
       'Are you sure you want to delete this game?',
     delete_membership_confirmation:
-      'Are you sure you want to delete this membership?',
+      'Are you sure you want to delete this membership? This person will not be refunded.',
     delete_payment_option: 'Delete payment option',
     delete_payment_option_confirmation:
       'Are you sure you want to delete this payment option?',

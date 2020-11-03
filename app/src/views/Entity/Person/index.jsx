@@ -5,8 +5,9 @@ import { Paper, IgContainer, Icon } from '../../../components/Custom';
 import { formatPageTitle } from '../../../utils/stringFormats';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import TabsGenerator, { TABS_ENUM } from '../../../tabs';
+import TabsGenerator from '../../../tabs';
 import { goTo, ROUTES } from '../../../actions/goTo';
+import { TABS_ENUM } from '../../../../../common/enums';
 
 export default function Person(props) {
   const { basicInfos } = props;

@@ -5,20 +5,24 @@ import { Paper, IgContainer, Icon } from '../../../components/Custom';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '../../../hooks/queries';
 
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import {
+  Tabs,
+  Tab,
+  Tooltip,
+  Fab,
+  makeStyles,
+} from '@material-ui/core';
 import { goTo, ROUTES } from '../../../actions/goTo';
-import TabsGenerator, { TABS_ENUM } from '../../../tabs';
+import TabsGenerator from '../../../tabs';
 import { formatPageTitle } from '../../../utils/stringFormats';
 import { Helmet } from 'react-helmet';
-import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
+import {
+  ENTITIES_ROLE_ENUM,
+  TABS_ENUM,
+} from '../../../../../common/enums';
 import { AddGaEvent } from '../../../components/Custom/Analytics';
-import Fab from '@material-ui/core/Fab';
 import Div100vh from 'react-div-100vh';
-import { makeStyles } from '@material-ui/core/styles';
-import Tooltip from '@material-ui/core/Tooltip';
 import { useTranslation } from 'react-i18next';
-
 const useStyles = makeStyles(theme => ({
   fabMobile: {
     position: 'absolute',

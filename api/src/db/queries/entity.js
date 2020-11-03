@@ -589,6 +589,16 @@ async function addMember(body, userId) {
     expirationDate,
   } = body;
 
+  const membership = await getMembership(membershipId);
+  if (membership.price === 0) {
+    const res = await addMemberManuallyHelper(
+      membershipType,
+      organizationId,
+      personId,
+      expirationDate,
+    );
+    return res;
+  }
   const res = await addMemberHelper(
     membershipType,
     organizationId,
@@ -600,7 +610,6 @@ async function addMember(body, userId) {
 
   const organization = await getEntity(organizationId);
 
-  const membership = await getMembership(membershipId);
   await addMembershipCartItem(
     {
       ...membership,

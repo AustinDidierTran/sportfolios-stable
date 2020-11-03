@@ -118,7 +118,7 @@ export default function BasicInfos(props) {
   if (isEditMode) {
     return (
       <Paper style={{ textAlign: 'center' }} title={name.value}>
-        <Container className={styles.paper}>
+        <Container style={{ paddingBottom: '16px' }}>
           {isLoading ? (
             <LoadingSpinner isComponent />
           ) : (

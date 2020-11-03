@@ -1,0 +1,35 @@
+.div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.general {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.button {
+  flex: 1 1 auto;
+}
+
+.buttonDiv {
+  flex: 1 1 auto;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .button {
+    flex: 0 0 375px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .buttonDiv {
+    max-width: 1232px;
+  }
+}

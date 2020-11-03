@@ -1,5 +1,6 @@
 import loadable from '@loadable/component';
 import { useTranslation } from 'react-i18next';
+import { TABS_ENUM } from '../../../common/enums';
 import { ENTITIES_ROLE_ENUM } from '../Store';
 
 const About = loadable(() => import('./About'));
@@ -19,26 +20,7 @@ const Rosters = loadable(() => import('./Rosters'));
 const Schedule = loadable(() => import('./Schedule'));
 const Settings = loadable(() => import('./Settings'));
 const Shop = loadable(() => import('./Shop'));
-
-export const TABS_ENUM = {
-  ABOUT: 'about',
-  CART: 'cart',
-  EDIT_PERSON_INFOS: 'editPersonInfos',
-  EDIT_RANKINGS: 'editRankings',
-  EDIT_RESULTS: 'editResults',
-  EDIT_ROSTERS: 'editRosters',
-  EDIT_SCHEDULE: 'editSchedule',
-  EVENT_INFO: 'eventInfo',
-  EVENTS: 'events',
-  GENERAL: 'general',
-  PURCHASES: 'purchases',
-  RANKINGS: 'rankings',
-  RESULTS: 'results',
-  ROSTERS: 'roster',
-  SCHEDULE: 'schedule',
-  SETTINGS: 'settings',
-  SHOP: 'shop',
-};
+const EditEvents = loadable(() => import('./EditEvents'));
 
 export default function Tabs(props) {
   const { t } = useTranslation();
@@ -180,6 +162,25 @@ export default function Tabs(props) {
             label: t('edit_infos'),
             icon: 'Edit',
             value: TABS_ENUM.EDIT_PERSON_INFOS,
+          },
+        ];
+      }
+      return prev;
+    }
+    if (l === TABS_ENUM.EDIT_EVENTS) {
+      if (
+        [
+          ENTITIES_ROLE_ENUM.ADMIN,
+          ENTITIES_ROLE_ENUM.EDITOR,
+        ].includes(role)
+      ) {
+        return [
+          ...prev,
+          {
+            component: EditEvents,
+            label: t('events'),
+            icon: 'Event',
+            value: TABS_ENUM.EDIT_EVENTS,
           },
         ];
       }

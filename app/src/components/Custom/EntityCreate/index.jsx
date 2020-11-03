@@ -11,7 +11,7 @@ import styles from './Create.module.css';
 
 import { Paper, Button, Container } from '../../Custom';
 import { TextField, CardActions, CardContent } from '../../MUI';
-import { GLOBAL_ENUM } from '../../../../../common/enums';
+import { GLOBAL_ENUM, TABS_ENUM } from '../../../../../common/enums';
 import { useQuery, useApiRoute } from '../../../hooks/queries';
 import LoadingSpinner from '../LoadingSpinner';
 
@@ -74,7 +74,11 @@ export default function EntityCreate() {
             creator: id,
           }),
         });
-        goTo(ROUTES.entity, { id: res.data.id });
+        goTo(
+          ROUTES.entity,
+          { id: res.data.id },
+          { tab: TABS_ENUM.SETTINGS },
+        );
         setIsLoading(false);
       } catch (err) {
         setIsLoading(false);

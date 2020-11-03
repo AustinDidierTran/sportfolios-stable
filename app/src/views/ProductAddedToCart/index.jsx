@@ -5,7 +5,7 @@ import { formatPageTitle } from '../../utils/stringFormats';
 import { MessageAndButtons } from '../../components/Custom';
 import { useQuery } from '../../hooks/queries';
 import { goTo, ROUTES } from '../../actions/goTo';
-import { TABS_ENUM } from '../../tabs';
+import { TABS_ENUM } from '../../../../common/enums';
 
 export default function ProductAddedToCart() {
   const { name, total, amount, id } = useQuery();
