@@ -13,9 +13,32 @@ import { formatPageTitle } from '../../../utils/stringFormats';
 import { Helmet } from 'react-helmet';
 import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
 import { AddGaEvent } from '../../../components/Custom/Analytics';
+import Fab from '@material-ui/core/Fab';
 import Div100vh from 'react-div-100vh';
+import { makeStyles } from '@material-ui/core/styles';
+import Tooltip from '@material-ui/core/Tooltip';
+import { useTranslation } from 'react-i18next';
+
+const useStyles = makeStyles(theme => ({
+  fabMobile: {
+    position: 'absolute',
+    bottom: theme.spacing(2) + 58,
+    right: theme.spacing(2),
+    zIndex: 100,
+    color: 'white',
+  },
+  fab: {
+    position: 'absolute',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2) + (window.innerWidth - 700) / 2,
+    zIndex: 100,
+    color: 'white',
+  },
+}));
 
 export default function Event(props) {
+  const { t } = useTranslation();
+  const classes = useStyles();
   const { basicInfos } = props;
   const { id } = useParams();
   const query = useQuery();
@@ -37,7 +60,6 @@ export default function Event(props) {
       TABS_ENUM.RANKINGS,
       TABS_ENUM.ROSTERS,
       TABS_ENUM.EVENT_INFO,
-      TABS_ENUM.SWITCH_TO_ADMIN,
     ],
     role: basicInfos.role,
   });
@@ -48,7 +70,6 @@ export default function Event(props) {
       TABS_ENUM.EDIT_RANKINGS,
       TABS_ENUM.EDIT_ROSTERS,
       TABS_ENUM.SETTINGS,
-      TABS_ENUM.SWITCH_TO_USER,
     ],
     role: basicInfos.role,
   });
@@ -100,23 +121,20 @@ export default function Event(props) {
   }, [eventState, states]);
 
   const onClick = s => {
-    if (
-      s.value === TABS_ENUM.SWITCH_TO_USER ||
-      s.value === TABS_ENUM.SWITCH_TO_ADMIN
-    ) {
-      const newState = !isAdmin;
-      setIsAdmin(newState);
-      getStates(newState);
-      if (newState) {
-        goTo(ROUTES.entity, { id }, { tab: TABS_ENUM.EDIT_SCHEDULE });
-        setEventState(TABS_ENUM.EDIT_SCHEDULE);
-      } else {
-        goTo(ROUTES.entity, { id }, { tab: TABS_ENUM.SCHEDULE });
-        setEventState(TABS_ENUM.SCHEDULE);
-      }
+    goTo(ROUTES.entity, { id }, { tab: s.value });
+    setEventState(s.value);
+  };
+
+  const onSwitch = () => {
+    const newState = !isAdmin;
+    setIsAdmin(newState);
+    getStates(newState);
+    if (newState) {
+      goTo(ROUTES.entity, { id }, { tab: TABS_ENUM.EDIT_SCHEDULE });
+      setEventState(TABS_ENUM.EDIT_SCHEDULE);
     } else {
-      goTo(ROUTES.entity, { id }, { tab: s.value });
-      setEventState(s.value);
+      goTo(ROUTES.entity, { id }, { tab: TABS_ENUM.SCHEDULE });
+      setEventState(TABS_ENUM.SCHEDULE);
     }
   };
 
@@ -138,6 +156,10 @@ export default function Event(props) {
     return '';
   }, [basicInfos]);
 
+  const title = useMemo(() => {
+    return isAdmin ? t('player_view') : t('admin_view');
+  }, [isAdmin]);
+
   return (
     <Div100vh>
       <IgContainer>
@@ -149,41 +171,45 @@ export default function Event(props) {
           <meta property="og:locale" content="fr_CA" />
         </Helmet>
         <Paper>
-          {window.innerWidth < 768 ? (
-            <Tabs
-              value={states.findIndex(s => s.value === eventState)}
-              indicatorColor="primary"
-              textColor="primary"
-            >
-              {states.map((s, index) => (
-                <Tab
-                  key={index}
-                  onClick={() => onClick(s)}
-                  icon={<Icon icon={s.icon} />}
-                  style={{
-                    minWidth: window.innerWidth / states.length,
-                  }}
-                />
-              ))}
-            </Tabs>
-          ) : (
-            <Tabs
-              value={states.findIndex(s => s.value === eventState)}
-              indicatorColor="primary"
-              textColor="primary"
-            >
-              {states.map((s, index) => (
-                <Tab
-                  key={index}
-                  onClick={() => onClick(s)}
-                  label={s.label}
-                  icon={<Icon icon={s.icon} />}
-                  style={{ minWidth: 700 / states.length }}
-                />
-              ))}
-            </Tabs>
-          )}
+          <Tabs
+            value={states.findIndex(s => s.value === eventState)}
+            indicatorColor="primary"
+            textColor="primary"
+          >
+            {states.map((s, index) => (
+              <Tab
+                key={index}
+                onClick={() => onClick(s)}
+                label={window.innerWidth < 768 ? null : s.label}
+                icon={<Icon icon={s.icon} />}
+                style={{
+                  minWidth:
+                    window.innerWidth < 768
+                      ? window.innerWidth / states.length
+                      : 700 / states.length,
+                }}
+              />
+            ))}
+          </Tabs>
         </Paper>
+        {basicInfos.role === ENTITIES_ROLE_ENUM.ADMIN ||
+        basicInfos.role === ENTITIES_ROLE_ENUM.EDITOR ? (
+          <Tooltip title={title}>
+            <Fab
+              color="primary"
+              onClick={onSwitch}
+              className={
+                window.innerWidth < 768
+                  ? classes.fabMobile
+                  : classes.fab
+              }
+            >
+              <Icon icon="Autorenew" />
+            </Fab>
+          </Tooltip>
+        ) : (
+          <></>
+        )}
         <div style={{ marginBottom: '128px' }}>
           <OpenTab basicInfos={basicInfos} />
         </div>

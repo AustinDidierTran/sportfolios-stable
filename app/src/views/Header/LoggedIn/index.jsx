@@ -17,7 +17,6 @@ export default function LoggedIn() {
   const {
     state: { userInfo = {}, screenSize },
   } = useContext(Store);
-
   if (screenSize !== SCREENSIZE_ENUM.xs) {
     return (
       <div className={classes.grow}>
@@ -28,7 +27,6 @@ export default function LoggedIn() {
           <Toolbar>
             <Typography className={classes.title} variant="h6" noWrap>
               <Link to={'/'} className={classes.titleLink}>
-                {' '}
                 Sportfolios
               </Link>
             </Typography>
