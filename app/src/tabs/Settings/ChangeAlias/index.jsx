@@ -12,8 +12,8 @@ import { useFormik } from 'formik';
 import {
   STATUS_ENUM,
   SEVERITY_ENUM,
+  TABS_ENUM,
 } from '../../../../../common/enums';
-import { TABS_ENUM } from '../../../tabs';
 import { useContext } from 'react';
 import { Store, ACTION_ENUM } from '../../../Store';
 import { ERROR_ENUM } from '../../../../../common/errors';

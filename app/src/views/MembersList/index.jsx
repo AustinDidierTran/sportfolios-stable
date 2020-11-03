@@ -33,9 +33,11 @@ export default function MembersList() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    document.title = formatPageTitle(
-      t('members_list', { organization: organization?.name }),
-    );
+    organization
+      ? (document.title = formatPageTitle(
+          t('members_list', { organization: organization?.name }),
+        ))
+      : '';
   }, [organization]);
 
   useEffect(() => {

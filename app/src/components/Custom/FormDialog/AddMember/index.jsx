@@ -22,7 +22,7 @@ import { useQuery } from '../../../../hooks/queries';
 import { IconButton } from '../..';
 
 export default function AddMember(props) {
-  const { open: openProps, onClose } = props;
+  const { open: openProps, onClose, update } = props;
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
   const { id: entityId } = useQuery();

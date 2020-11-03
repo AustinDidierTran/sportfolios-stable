@@ -8,8 +8,9 @@ import styles from './Team.module.css';
 import { useParams } from 'react-router-dom';
 
 import { goTo, ROUTES } from '../../../actions/goTo';
-import TabsGenerator, { TABS_ENUM } from '../../../tabs';
+import TabsGenerator from '../../../tabs';
 import { formatPageTitle } from '../../../utils/stringFormats';
+import { TABS_ENUM } from '../../../../../common/enums';
 
 export default function Team(props) {
   const { basicInfos } = props;

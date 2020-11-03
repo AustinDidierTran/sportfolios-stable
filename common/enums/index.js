@@ -81,6 +81,27 @@ const CARD_TYPE_ENUM = {
   TWO_TEAM_GAME: 'twoTeamGame',
 };
 
+const TABS_ENUM = {
+  ABOUT: 'about',
+  CART: 'cart',
+  EDIT_EVENTS: 'editEvents',
+  EDIT_PERSON_INFOS: 'editPersonInfos',
+  EDIT_RANKINGS: 'editRankings',
+  EDIT_RESULTS: 'editResults',
+  EDIT_ROSTERS: 'editRosters',
+  EDIT_SCHEDULE: 'editSchedule',
+  EVENT_INFO: 'eventInfo',
+  EVENTS: 'events',
+  GENERAL: 'general',
+  PURCHASES: 'purchases',
+  RANKINGS: 'rankings',
+  RESULTS: 'results',
+  ROSTERS: 'roster',
+  SCHEDULE: 'schedule',
+  SETTINGS: 'settings',
+  SHOP: 'shop',
+};
+
 const FORM_DIALOG_TYPE_ENUM = {
   SUBMIT_SCORE: 'score',
   SUBMIT_SCORE_AND_SPIRIT: 'score and spirit',
@@ -584,6 +605,7 @@ module.exports = {
   SPIRIT_CATEGORY_ENUM,
   STATUS_ENUM,
   STRIPE_ERROR_ENUM,
+  TABS_ENUM,
   STRIPE_STATUS_ENUM,
   TAG_TYPE_ENUM,
   VIEW_ENUM,

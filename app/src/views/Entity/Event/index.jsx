@@ -13,14 +13,16 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { goTo, ROUTES } from '../../../actions/goTo';
-import TabsGenerator, { TABS_ENUM } from '../../../tabs';
+import TabsGenerator from '../../../tabs';
 import { formatPageTitle } from '../../../utils/stringFormats';
 import { Helmet } from 'react-helmet';
-import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
+import {
+  ENTITIES_ROLE_ENUM,
+  TABS_ENUM,
+} from '../../../../../common/enums';
 import { AddGaEvent } from '../../../components/Custom/Analytics';
 import Div100vh from 'react-div-100vh';
 import { useTranslation } from 'react-i18next';
-
 const useStyles = makeStyles(theme => ({
   fabMobile: {
     position: 'absolute',

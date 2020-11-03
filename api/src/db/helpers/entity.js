@@ -1568,6 +1568,7 @@ async function addMember(
     const [res] = await knex('memberships')
       .update({
         expiration_date: expirationDate,
+        status: INVOICE_STATUS_ENUM.OPEN,
       })
       .where({
         member_type: memberType,
@@ -1583,6 +1584,7 @@ async function addMember(
         organization_id: realId,
         person_id: personId,
         expiration_date: expirationDate,
+        status: INVOICE_STATUS_ENUM.OPEN,
       })
       .returning('*');
     return res;

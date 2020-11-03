@@ -47,7 +47,9 @@ export default function AddMembership(props) {
     const { price, date, type } = values;
     const errors = {};
     if (!price) {
-      errors.price = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+      if (price != 0) {
+        errors.price = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+      }
     }
     if (type === MEMBERSHIP_LENGTH_TYPE_ENUM.FIXED) {
       if (!date) {
@@ -65,7 +67,6 @@ export default function AddMembership(props) {
       type: '',
       date: '',
       length: '',
-      price: '',
     },
     validate,
     validateOnChange: false,

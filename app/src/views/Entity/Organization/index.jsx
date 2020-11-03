@@ -11,11 +11,14 @@ import {
 } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '../../../hooks/queries';
-import TabsGenerator, { TABS_ENUM } from '../../../tabs';
+import TabsGenerator from '../../../tabs';
 import Div100vh from 'react-div-100vh';
 import { goTo, ROUTES } from '../../../actions/goTo';
 import { formatPageTitle } from '../../../utils/stringFormats';
-import { ENTITIES_ROLE_ENUM } from '../../../../../common/enums';
+import {
+  ENTITIES_ROLE_ENUM,
+  TABS_ENUM,
+} from '../../../../../common/enums';
 import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles(theme => ({
@@ -65,11 +68,7 @@ export default function Organization(props) {
   const [states, setStates] = useState(userState);
 
   const getStates = isAdmin => {
-    if (isAdmin) {
-      setStates(adminState);
-    } else {
-      setStates(userState);
-    }
+    isAdmin ? setStates(adminState) : setStates(userState);
   };
 
   const OpenTab = useMemo(() => {
@@ -126,50 +125,6 @@ export default function Organization(props) {
     );
   }
 
-  if (window.innerWidth < 768) {
-    return (
-      <Div100vh>
-        <IgContainer>
-          <Paper>
-            <Tabs
-              value={states.findIndex(s => s.value === eventState)}
-              indicatorColor="primary"
-              textColor="primary"
-            >
-              {states.map((s, index) => (
-                <Tab
-                  key={index}
-                  onClick={() => onClick(s)}
-                  icon={<Icon icon={s.icon} />}
-                  style={{
-                    minWidth: window.innerWidth / states.length,
-                  }}
-                />
-              ))}
-            </Tabs>
-          </Paper>
-          {basicInfos.role === ENTITIES_ROLE_ENUM.ADMIN ||
-          basicInfos.role === ENTITIES_ROLE_ENUM.EDITOR ? (
-            <Tooltip title={title}>
-              <Fab
-                color="primary"
-                onClick={onSwitch}
-                className={classes.fabMobile}
-              >
-                <Icon icon="Autorenew" />
-              </Fab>
-            </Tooltip>
-          ) : (
-            <></>
-          )}
-          <div style={{ marginBottom: '128px' }}>
-            <OpenTab basicInfos={basicInfos} />
-          </div>
-        </IgContainer>
-      </Div100vh>
-    );
-  }
-
   return (
     <Div100vh>
       <IgContainer>
@@ -183,9 +138,14 @@ export default function Organization(props) {
               <Tab
                 key={index}
                 onClick={() => onClick(s)}
-                label={s.label}
+                label={window.innerWidth < 768 ? null : s.label}
                 icon={<Icon icon={s.icon} />}
-                style={{ minWidth: 700 / states.length }}
+                style={{
+                  minWidth:
+                    window.innerWidth < 768
+                      ? window.innerWidth / states.length
+                      : 700 / states.length,
+                }}
               />
             ))}
           </Tabs>
@@ -196,7 +156,11 @@ export default function Organization(props) {
             <Fab
               color="primary"
               onClick={onSwitch}
-              className={classes.fab}
+              className={
+                window.innerWidth < 768
+                  ? classes.fabMobile
+                  : classes.fab
+              }
             >
               <Icon icon="Autorenew" />
             </Fab>

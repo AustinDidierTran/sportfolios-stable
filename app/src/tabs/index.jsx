@@ -1,5 +1,6 @@
 import loadable from '@loadable/component';
 import { useTranslation } from 'react-i18next';
+import { TABS_ENUM } from '../../../common/enums';
 import { ENTITIES_ROLE_ENUM } from '../Store';
 
 const About = loadable(() => import('./About'));
@@ -20,27 +21,6 @@ const Schedule = loadable(() => import('./Schedule'));
 const Settings = loadable(() => import('./Settings'));
 const Shop = loadable(() => import('./Shop'));
 const EditEvents = loadable(() => import('./EditEvents'));
-
-export const TABS_ENUM = {
-  ABOUT: 'about',
-  CART: 'cart',
-  EDIT_EVENTS: 'editEvents',
-  EDIT_PERSON_INFOS: 'editPersonInfos',
-  EDIT_RANKINGS: 'editRankings',
-  EDIT_RESULTS: 'editResults',
-  EDIT_ROSTERS: 'editRosters',
-  EDIT_SCHEDULE: 'editSchedule',
-  EVENT_INFO: 'eventInfo',
-  EVENTS: 'events',
-  GENERAL: 'general',
-  PURCHASES: 'purchases',
-  RANKINGS: 'rankings',
-  RESULTS: 'results',
-  ROSTERS: 'roster',
-  SCHEDULE: 'schedule',
-  SETTINGS: 'settings',
-  SHOP: 'shop',
-};
 
 export default function Tabs(props) {
   const { t } = useTranslation();
