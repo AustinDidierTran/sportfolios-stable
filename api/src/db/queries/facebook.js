@@ -1,5 +1,6 @@
 const {
   sendMessage: sendMessageHelper,
+  logMessage: logMessageHelper,
 } = require('../helpers/facebook');
 
 const {
@@ -56,6 +57,10 @@ const deleteChatbotInfos = async messengerId => {
   return deleteChatbotInfosHelper(messengerId);
 };
 
+const logMessage = async infos => {
+  return logMessageHelper(infos);
+};
+
 module.exports = {
   sendMessage,
   linkMessengerAccountAllIncluded,
@@ -63,4 +68,5 @@ module.exports = {
   getChatbotInfos,
   setChatbotInfos,
   deleteChatbotInfos,
+  logMessage,
 };

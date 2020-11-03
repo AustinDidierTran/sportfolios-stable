@@ -131,6 +131,17 @@ class State {
     );
   }
 
+  sendIDontUnderstand(webhookEvent) {
+    const messengerId = webhookEvent.sender.id;
+    const message = webhookEvent.message.text;
+    const state = this.context.stateType;
+    this.sendMessages(messengerId, [
+      Response.genText(i18n.__('i_dont_understand')),
+      this.getIntroMessages(),
+    ]);
+    queries.logMessage({ messenger_id: messengerId, state, message });
+  }
+
   sendMessages(messengerId, messages) {
     if (Array.isArray(messages)) {
       let delay = 0;

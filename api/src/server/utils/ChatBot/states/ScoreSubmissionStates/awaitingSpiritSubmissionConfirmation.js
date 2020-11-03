@@ -27,10 +27,7 @@ class AwaitingSpiritSubmissionConfirmation extends State {
     ) {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
-      this.sendMessages(webhookEvent.sender.id, [
-        Response.genText(i18n.__('i_dont_understand')),
-        this.getIntroMessages(),
-      ]);
+      sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
       this.context.changeState(nextState);

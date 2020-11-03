@@ -26,11 +26,7 @@ class SpiritSubmissionRequestSent extends State {
     ) {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
-      //TODO log event when I_DONT_UNDERSTAND is sent, to know wich behaviour could be better
-      this.sendMessages(webhookEvent.sender.id, [
-        Response.genText(i18n.__('i_dont_understand')),
-        this.getIntroMessages(),
-      ]);
+      sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
       this.context.changeState(nextState);
