@@ -157,63 +157,8 @@ export default function Event(props) {
   }, [basicInfos]);
 
   const title = useMemo(() => {
-    if (isAdmin) {
-      return t('player_view');
-    } else {
-      return t('admin_view');
-    }
+    return isAdmin ? t('player_view') : t('admin_view');
   }, [isAdmin]);
-
-  if (window.innerWidth < 768) {
-    return (
-      <Div100vh>
-        <IgContainer>
-          <Helmet>
-            <meta property="og:title" content={basicInfos.name} />
-            <meta property="og:description" content={ogDescription} />
-            <meta property="og:image" content={basicInfos.photoUrl} />
-            <meta property="og:type" content="website" />
-            <meta property="og:locale" content="fr_CA" />
-          </Helmet>
-          <Paper>
-            <Tabs
-              value={states.findIndex(s => s.value === eventState)}
-              indicatorColor="primary"
-              textColor="primary"
-            >
-              {states.map((s, index) => (
-                <Tab
-                  key={index}
-                  onClick={() => onClick(s)}
-                  icon={<Icon icon={s.icon} />}
-                  style={{
-                    minWidth: window.innerWidth / states.length,
-                  }}
-                />
-              ))}
-            </Tabs>
-          </Paper>
-          {basicInfos.role === ENTITIES_ROLE_ENUM.ADMIN ||
-          basicInfos.role === ENTITIES_ROLE_ENUM.EDITOR ? (
-            <Tooltip title={title}>
-              <Fab
-                color="primary"
-                onClick={onSwitch}
-                className={classes.fabMobile}
-              >
-                <Icon icon="Autorenew" />
-              </Fab>
-            </Tooltip>
-          ) : (
-            <></>
-          )}
-          <div style={{ marginBottom: '128px' }}>
-            <OpenTab basicInfos={basicInfos} />
-          </div>
-        </IgContainer>
-      </Div100vh>
-    );
-  }
 
   return (
     <Div100vh>
@@ -235,9 +180,14 @@ export default function Event(props) {
               <Tab
                 key={index}
                 onClick={() => onClick(s)}
-                label={s.label}
+                label={window.innerWidth < 768 ? null : s.label}
                 icon={<Icon icon={s.icon} />}
-                style={{ minWidth: 700 / states.length }}
+                style={{
+                  minWidth:
+                    window.innerWidth < 768
+                      ? window.innerWidth / states.length
+                      : 700 / states.length,
+                }}
               />
             ))}
           </Tabs>
@@ -248,7 +198,11 @@ export default function Event(props) {
             <Fab
               color="primary"
               onClick={onSwitch}
-              className={classes.fab}
+              className={
+                window.innerWidth < 768
+                  ? classes.fabMobile
+                  : classes.fab
+              }
             >
               <Icon icon="Autorenew" />
             </Fab>
