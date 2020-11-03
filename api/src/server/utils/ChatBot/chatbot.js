@@ -15,9 +15,14 @@ class Chatbot {
 
   changeState(stateType) {
     this.setState(stateType);
-    this.state.sendMessages(
-      this.messengerId,
-      this.state.getIntroMessages(),
+    //We add a delay so these messages arrives after the ones sent before changing state
+    setTimeout(
+      () =>
+        this.state.sendMessages(
+          this.messengerId,
+          this.state.getIntroMessages(),
+        ),
+      1000,
     );
   }
 
