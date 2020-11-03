@@ -42,7 +42,7 @@ const INVOICE_PAID_ENUM = {
     } = body;
 
     if (metadata.isIndividualOption) {
-      updatePlayerPaymentStatus(metadata.buyerId, rosterId, status);
+      updatePlayerPaymentStatus(body);
     } else {
       await updateRegistration(
         rosterId,

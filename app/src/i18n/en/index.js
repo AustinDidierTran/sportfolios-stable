@@ -74,9 +74,9 @@ export default {
     anonymous: 'Anonymous',
     app_role: 'App Role',
     are_you_sure_you_want_to_unregister_all_teams:
-      'Are you sure you want to unregister all teams and refund them if they have already paid?',
+      'Are you sure you want to unregister all teams and refund all team and individual payments related to them (if applicable)?',
     are_you_sure_you_want_to_unregister_this_team:
-      'Are you sure you want to unregister this team and refund the team if the team has already paid?',
+      'Are you sure you want to unregister this team and refund all team and individual payments related ot it (if applicable)?',
     at: 'at',
     athlete_history: 'Athlete history',
     awaiting_payments: 'Awaiting payments',
@@ -98,6 +98,8 @@ export default {
     cancel: 'Cancel',
     cant_add_product_no_bank_account:
       "Can't add product admin has no bank account",
+    cant_delete_paid_player:
+      "You can't remove this player from the roster since he already has paid. Contact the event organizer for help.",
     cant_transfer_person_to_your_own_email:
       "You can't transfer someone to your own email",
     cant_unregister_all_teams:
@@ -158,6 +160,8 @@ export default {
       'Are you sure you want to delete this payment option?',
     delete_player_from_roster: 'Remove player',
     delete_player_from_roster_confirmation:
+      'Are you sure you want to remove this player from the roster?',
+    delete_player_from_roster_confirmation_admin:
       "Are you sure you want to remove this player from the roster? The player will have his individual payment refunded if there's one.",
     delete_membership: 'Delete membership',
     delete: 'Delete',
@@ -618,6 +622,8 @@ export default {
     unlink_facebook_account: 'Disconnect my Facebook account',
     unregister_all: 'Unregister all',
     unregister: 'Unregister',
+    unregister_pending:
+      'Unregistrations and refunds in progress, please wait...',
     unsupported_language: 'Unsupported language',
     upcoming_games: 'Upcoming games',
     upload: 'Upload',

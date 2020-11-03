@@ -114,7 +114,11 @@ export default function PlayerCard(props) {
           open={openDelete}
           onSubmit={onPlayerDeleteFromRoster}
           onCancel={() => setOpenDelete(false)}
-          description={t('delete_player_from_roster_confirmation')}
+          description={
+            isEventAdmin
+              ? t('delete_player_from_roster_confirmation_admin')
+              : t('delete_player_from_roster_confirmation')
+          }
           title={t('delete_player_from_roster')}
         />
       </div>

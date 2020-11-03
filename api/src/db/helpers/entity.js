@@ -910,10 +910,13 @@ async function getRoster(rosterId) {
     personId: player.person_id,
     isSub: player.is_sub,
     status: status,
+    paymentStatus: player.payment_status,
+    invoiceItemId: player.invoice_item_id,
   }));
 
   return props;
 }
+
 async function getRosterWithSub(rosterId) {
   const realId = await getRealId(rosterId);
   const roster = await knex('team_players')
@@ -930,6 +933,7 @@ async function getRosterWithSub(rosterId) {
     isSub: player.is_sub,
     status: status,
     paymentStatus: player.payment_status,
+    invoiceItemId: player.invoice_item_id,
   }));
 
   return props;
@@ -983,13 +987,19 @@ const getPlayerInvoiceItem = async id => {
     {
       invoice_item_id: invoiceItemId,
       payment_status: status,
+      person_id: personId,
       roster_id: rosterId,
     },
   ] = await knex('team_players')
-    .select(['invoice_item_id', 'payment_status', 'roster_id'])
+    .select([
+      'invoice_item_id',
+      'payment_status',
+      'person_id',
+      'roster_id',
+    ])
     .where({ id });
 
-  return { invoiceItemId, status, rosterId };
+  return { invoiceItemId, status, personId, rosterId };
 };
 
 const unregister = async body => {
@@ -1460,25 +1470,37 @@ const removeEventCartItem = async ({ rosterId }) => {
   return ids;
 };
 
-const removeIndividualPaymentCartItem = async ({ rosterId }) => {
-  const realId = await getRealId(rosterId);
-  const res = await knex
+const removeIndividualPaymentCartItem = async ({
+  buyerId,
+  rosterId,
+}) => {
+  const realBuyerId = await getRealId(buyerId);
+  const realRosterId = await getRealId(rosterId);
+  const [res] = await knex
     .select('id')
     .from(
       knex
-        .select(knex.raw("id, metadata ->> 'rosterId' AS rosterId"))
+        .select(
+          knex.raw(
+            "id, metadata ->> 'buyerId' AS buyerId, metadata ->> 'rosterId' AS rosterId, metadata ->> 'isIndividualOption' AS isIndividualOption",
+          ),
+        )
         .from('cart_items')
         .as('cartItems'),
     )
-    .where('cartItems.rosterid', realId);
+    .where({
+      'cartItems.buyerid': realBuyerId,
+      'cartItems.rosterid': realRosterId,
+      'cartItems.isindividualoption': true,
+    });
 
-  const ids = res.map(r => r.id);
+  if (res) {
+    await knex('cart_items')
+      .where({ id: res.id })
+      .del();
+  }
 
-  await knex('cart_items')
-    .whereIn('id', ids)
-    .del();
-
-  return ids;
+  return res ? res.id : null;
 };
 
 async function updateRegistration(
@@ -1500,14 +1522,19 @@ async function updateRegistration(
     });
 }
 
-async function updatePlayerPaymentStatus(
-  buyerPersonId,
-  rosterId,
-  status,
-) {
+async function updatePlayerPaymentStatus(body) {
+  const {
+    metadata: { buyerId: buyerPersonId },
+    rosterId,
+    status,
+    invoiceItemId,
+  } = body;
   const realRosterId = await getRealId(rosterId);
   return knex('team_players')
-    .update({ payment_status: status })
+    .update({
+      payment_status: status,
+      invoice_item_id: invoiceItemId,
+    })
     .where({
       person_id: buyerPersonId,
       roster_id: realRosterId,
@@ -2101,7 +2128,6 @@ async function addNewPersonToRoster(body, userId) {
 
 const addPlayerToRoster = async (body, userId) => {
   const { personId, name, id, rosterId, isSub } = body;
-  console.log(body);
   let paymentStatus = INVOICE_STATUS_ENUM.FREE;
   let cartItem;
 
@@ -2110,7 +2136,6 @@ const addPlayerToRoster = async (body, userId) => {
       rosterId,
     );
 
-    console.log({ paymentOption });
     if (paymentOption.individual_price > 0) {
       cartItem = {
         stripePriceId: paymentOption.individual_stripe_price_id,
@@ -2123,15 +2148,12 @@ const addPlayerToRoster = async (body, userId) => {
           team: await getEntity(paymentOption.teamId, userId),
         },
       };
-      console.log({ cartItem });
 
       paymentStatus = INVOICE_STATUS_ENUM.OPEN;
-      console.log(1);
       await addEventCartItem(
         cartItem,
         await getUserIdFromPersonId(personId),
       );
-      console.log(2);
     }
   }
 
@@ -2147,7 +2169,6 @@ const addPlayerToRoster = async (body, userId) => {
     })
     .returning('*');
 
-  console.log('done');
   return player;
 };
 
@@ -2169,7 +2190,7 @@ const deletePlayerFromRoster = async id => {
       id: realId,
     })
     .del();
-  return null;
+  return id;
 };
 
 async function updateMember(
@@ -2605,6 +2626,7 @@ module.exports = {
   getPersonInfos,
   removeEntityRole,
   removeEventCartItem,
+  removeIndividualPaymentCartItem,
   unregister,
   updateEntityName,
   updateEntityPhoto,

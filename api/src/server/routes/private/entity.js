@@ -933,7 +933,13 @@ router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
     ctx.body.userInfo.id,
   );
 
-  if (res) {
+  if (res === ERROR_ENUM.ACCESS_DENIED) {
+    ctx.status = STATUS_ENUM.FORBIDDEN;
+    ctx.body = {
+      status: 'error',
+      message: 'Not allowed to remove player that has paid',
+    };
+  } else if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',

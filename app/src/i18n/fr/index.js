@@ -71,9 +71,9 @@ export default {
     anonymous: 'Anonyme',
     app_role: 'App Role',
     are_you_sure_you_want_to_unregister_all_teams:
-      'Êtes-vous sûr de vouloir désinscrire toutes les équipes et les rembourser si elles ont déjà payé?',
+      "Êtes-vous sûr de vouloir désinscrire toutes les équipes et de rembourser tous les paiements d'équipes et individuels en lien evec celles-ci (si applicable)?",
     are_you_sure_you_want_to_unregister_this_team:
-      'Êtes-vous sûr de vouloir désinscrire cette équipe et la rembourser si elle à déjà payé?',
+      "Êtes-vous sûr de vouloir désinscrire cette équipe et de rembourser tous les paiements d'équipes et individuels en lien evec celle-ci (si applicable)?",
     all: 'Tous',
     all_teams: 'Toutes les équipes',
     all_phases: 'Toutes les phases',
@@ -103,6 +103,8 @@ export default {
     cancel: 'Annuler',
     cant_add_product_no_bank_account:
       "Vous ne pouvez pas ajouter de produit car l'administrateur n'a pas de compte banquaire",
+    cant_delete_paid_player:
+      "Vous ne pouvez pas retirer ce joueur de l'alignement puisqu'il a déjà payé. Contactez un organisateur de l'événement pour obtenir de l'aide.",
     cant_transfer_person_to_your_own_email:
       'Vous ne pouvez pas transférer une personne à votre propre adresse courriel',
     cant_unregister_all_teams:
@@ -165,7 +167,9 @@ export default {
       'Êtes-vous certain de vouloir supprimer cette option de paiement?',
     delete_player_from_roster: 'Retirer joueur',
     delete_player_from_roster_confirmation:
-      "Êtes-vous certain de vouloir retirer ce joueur de l'équipe? Le paiement individuel du joueur lui sera remboursé s'il y en a un.",
+      "Êtes-vous certain de vouloir retirer ce joueur de l'équipe?",
+    delete_player_from_roster_confirmation_admin:
+      "Êtes-vous certain de vouloir retirer ce joueur de l'équipe? Le paiement individuel du joueur lui sera remboursé s'il y en a un et qu'il a été payé.",
     delete_membership: "Supprimer l'affiliation",
     delete: 'Supprimer',
     description_card_first_point:
@@ -619,6 +623,8 @@ export default {
     unlink_facebook_account: 'Déconnecter mon compte Facebook',
     unregister_all: 'Tout désinscrire',
     unregister: 'Désinscrire',
+    unregister_pending:
+      'Désinscriptions et remboursements en cours, veuillez patienter...',
     unsupported_language: 'Langue non supportée',
     upcoming_games: 'Prochaines parties',
     upload: 'Téléverser',

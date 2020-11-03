@@ -37,7 +37,9 @@ export default function Roster(props) {
           name: person.completeName,
           photoUrl: data.photoUrl,
           secondary: t('player'),
-          onDelete,
+          onDelete: () => {
+            onDelete({ personId: person.id });
+          },
         },
       ]);
     } else {
@@ -57,7 +59,9 @@ export default function Roster(props) {
           surname: person.surname,
           secondary: t('player'),
           email: person.email,
-          onDelete,
+          onDelete: () => {
+            onDelete({ id: newId });
+          },
         },
       ]);
     }

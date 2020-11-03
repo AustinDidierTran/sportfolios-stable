@@ -60,9 +60,9 @@ export default function Players(props) {
     setBlackList([...blackList, person.id]);
     setisLoading(false);
   };
-  const handleDelete = async id => {
+  const handleDelete = async (id, deleteByEventAdmin) => {
     setisLoading(true);
-    await onDelete(id);
+    await onDelete(id, deleteByEventAdmin);
     await getBlackList();
     setisLoading(false);
   };

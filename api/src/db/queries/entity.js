@@ -1,7 +1,6 @@
 const {
   ENTITIES_ROLE_ENUM,
   INVOICE_STATUS_ENUM,
-  STRIPE_ERROR_ENUM,
   STATUS_ENUM,
   REJECTION_ENUM,
 } = require('../../../../common/enums');
@@ -66,6 +65,7 @@ const {
   getRegistrationTeamPaymentOption: getRegistrationTeamPaymentOptionHelper,
   getRemainingSpots: getRemainingSpotsHelper,
   getRoster: getRosterHelper,
+  getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getRosterInvoiceItem,
   getRosterWithSub: getRosterWithSubHelper,
   getSameSuggestions: getSameSuggestionsHelper,
@@ -76,6 +76,7 @@ const {
   getWichTeamsCanUnregister: getWichTeamsCanUnregisterHelper,
   removeEntityRole: removeEntityRoleHelper,
   removeEventCartItem: removeEventCartItemHelper,
+  removeIndividualPaymentCartItem: removeIndividualPaymentCartItemHelper,
   unregister: unregisterHelper,
   updateAlias: updateAliasHelper,
   updateEntityName: updateEntityNameHelper,
@@ -87,6 +88,7 @@ const {
   updatePersonInfosHelper,
   updateMember: updateMemberHelper,
   updateOption: updateOptionHelper,
+  updatePlayerPaymentStatus: updatePlayerPaymentStatusHelper,
   updatePreRanking: updatePreRankingHelper,
   updateRegistration: updateRegistrationHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
@@ -762,42 +764,68 @@ const canUnregisterTeamsList = async (rosterIds, eventId) => {
 const unregisterTeams = async (body, userId) => {
   const { eventId, rosterIds } = body;
   const result = { failed: false, data: [] };
-
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  for (const rosterId of rosterIds) {
-    if (await canUnregisterTeamHelper(rosterId, eventId)) {
-      const { invoiceItemId, status } = await getRosterInvoiceItem({
-        eventId,
-        rosterId,
-      });
+  try {
+    for (const rosterId of rosterIds) {
+      if (await canUnregisterTeamHelper(rosterId, eventId)) {
+        const { invoiceItemId, status } = await getRosterInvoiceItem({
+          eventId,
+          rosterId,
+        });
 
-      try {
         if (status === INVOICE_STATUS_ENUM.PAID) {
           // Registration paid, refund please
           await createRefund({ invoiceItemId });
-        } else {
+          await updateRegistrationHelper(
+            rosterId,
+            eventId,
+            invoiceItemId,
+            INVOICE_STATUS_ENUM.REFUNDED,
+          );
+        } else if (status === INVOICE_STATUS_ENUM.OPEN) {
           // Registration is not paid, remove from cart
           await removeEventCartItemHelper({ rosterId });
         }
 
-        await unregisterHelper({ rosterId, eventId });
-      } catch (err) {
-        if (err.code === STRIPE_ERROR_ENUM.CHARGE_ALREADY_REFUNDED) {
-          // Error is fine, keep unregistering
-          await unregisterHelper({ rosterId, eventId });
-        } else {
-          throw err;
+        const roster = await getRoster(rosterId);
+        for (const player of roster) {
+          if (player.paymentStatus === INVOICE_STATUS_ENUM.PAID) {
+            // Individual payment paid, refund please
+            await createRefund({
+              invoiceItemId: player.invoiceItemId,
+            });
+            await updatePlayerPaymentStatusHelper({
+              metadata: { buyerId: player.personId },
+              rosterId,
+              status: INVOICE_STATUS_ENUM.REFUNDED,
+              invoiceItemId: player.invoiceItemId,
+            });
+          } else if (
+            player.paymentStatus === INVOICE_STATUS_ENUM.OPEN
+          ) {
+            // Individual payment is not paid, remove from cart
+            await removeIndividualPaymentCartItemHelper({
+              buyerId: player.personId,
+              rosterId,
+            });
+          }
         }
+
+        // Remove all references to this this in this event and remove players.
+        await unregisterHelper({ rosterId, eventId });
+      } else {
+        // team is in a game, can't unregister and refund
+        result.failed = true;
       }
-    } else {
-      // team is in a game, can't unregister and refund
-      result.failed = true;
     }
+  } catch (error) {
+    // do not make api call fail, current teams state will be returned
+    result.failed = true;
   }
 
   result.data = await getAllRegisteredInfosHelper(eventId, userId);
@@ -848,15 +876,24 @@ async function deletePlayerFromRoster(
   const {
     invoiceItemId,
     status,
+    personId,
     rosterId,
-  } = await getPlayerInvoiceItemHelper({
-    id,
-  });
+  } = await getPlayerInvoiceItemHelper(id);
 
-  if (status === INVOICE_STATUS_ENUM.PAID && deletedByEventAdmin) {
-    await createRefund({ invoiceItemId });
-  } else if (status !== INVOICE_STATUS_ENUM.FREE) {
-    await removeIndividualPaymentCartItemHelper({ rosterId });
+  if (status === INVOICE_STATUS_ENUM.PAID) {
+    if (deletedByEventAdmin === 'true') {
+      // status is paid and event admin is removing
+      await createRefund({ invoiceItemId });
+    } else {
+      // captain tried to remove player that has already paid
+      return ERROR_ENUM.ACCESS_DENIED;
+    }
+  } else if (status === INVOICE_STATUS_ENUM.OPEN) {
+    // status is open, can remove from roster
+    await removeIndividualPaymentCartItemHelper({
+      buyerId: personId,
+      rosterId,
+    });
   }
 
   return deletePlayerFromRosterHelper(
