@@ -14,6 +14,10 @@ class SpiritSubmissionRequestSent extends State {
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_RULES;
     } else if (this.isNo(webhookEvent)) {
+      this.sendMessages(
+        webhookEvent.sender.id,
+        Response.genText(i18n.__('back_to_menu')),
+      );
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else if (
       //TODO start over could restart the score submission process

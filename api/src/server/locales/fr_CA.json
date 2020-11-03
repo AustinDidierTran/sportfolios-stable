@@ -29,6 +29,8 @@
     "no_ref": "Vous devez maintenant lier votre compte Sportfolios, veuillez suivre le lien suivant et connecter le chatbot: https://sportfolios.app/userSettings"
   },
 
+  "back_to_menu": "Très bien, je vous ramène au menu principal.",
+
   "menu": {
     "welcome": "Bienvenue sur le chatbot Sportfolios!",
     "help": "Voici les différentes actions que vous pouvez effectuer:\n• Dites \"test\" pour lancer un simulation de soumission de score\n• Dites \"partie\" pour connaître l'heure de votre prochaine partie\nÀ tout moment dites \"recommencer\" pour revenir à ce menu."
