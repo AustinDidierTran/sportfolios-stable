@@ -1,8 +1,8 @@
 const State = require('../state');
 const {
   SCORE_SUBMISSION_CHATBOT_STATES,
-  MESSENGER_QUICK_REPLIES,
 } = require('../../../../../../../common/enums');
+const { MESSENGER_QUICK_REPLIES } = require('../../../enums');
 const Response = require('../../response');
 const i18n = require('../../../../../i18n.config');
 

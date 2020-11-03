@@ -1,6 +1,4 @@
-const {
-  MESSENGER_PAYLOADS,
-} = require('../../../../../../common/enums');
+const { MESSENGER_PAYLOADS } = require('../../enums');
 const queries = require('../../../../db/queries/facebook');
 
 class State {
@@ -119,9 +117,7 @@ class State {
 
   isValidSpirit(webhookEvent) {
     const number = this.getNumber(webhookEvent);
-    return (
-      number && Number.isInteger(number) && number >= 0 && number <= 5
-    );
+    return Number.isInteger(number) && number >= 0 && number < 5;
   }
 
   isStop(webhookEvent) {

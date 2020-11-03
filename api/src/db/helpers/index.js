@@ -91,12 +91,13 @@ const createUserComplete = async body => {
     await knex('user_primary_person')
       .insert({ user_id, primary_person: entity_id })
       .transacting(trx);
-
     //Set app connections
-    await knex('user_apps_id').insert({
-      user_id,
-      facebook_id,
-    });
+    await knex('user_apps_id')
+      .insert({
+        user_id,
+        facebook_id,
+      })
+      .transacting(trx);
   });
 };
 

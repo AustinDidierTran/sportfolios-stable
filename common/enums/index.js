@@ -1,4 +1,3 @@
-const i18nbackEnd = require('../../api/src/i18n.config');
 const ENTITIES_ROLE_ENUM = {
   ADMIN: 1,
   EDITOR: 2,
@@ -141,22 +140,6 @@ const PERSON_TRANSFER_STATUS_ENUM = {
 const FACEBOOK_STATUS_ENUM = {
   CONNECTED: 'connected',
   NOT_AUTHORIZED: 'not_authorized',
-};
-
-const MESSENGER_PAYLOADS = {
-  GET_STARTED: 'GET_STARTED',
-  START_OVER: 'START_OVER',
-  STOP: 'stop',
-  IGNORE: 'IGNORE',
-  MOCK: 'mock',
-  YES: 'yes',
-  NO: 'no',
-  SPIRIT_RULES: 'sr',
-  SPIRIT_FOUL: 'sf',
-  SPIRIT_EQUITY: 'se',
-  SPIRIT_SELF_CONTROL: 'ssc',
-  SPIRIT_COMMUNICATION: 'sc',
-  NEXT_GAME: 'next_game',
 };
 
 const BASIC_CHATBOT_STATES = {
@@ -333,55 +316,6 @@ const MESSENGER_MESSAGES_EN = {
   },
 };
 
-const MESSENGER_QUICK_REPLIES = {
-  CONFIRMATION: [
-    {
-      content_type: 'text',
-      title: i18nbackEnd.__('quick_replies.yes'),
-      payload: MESSENGER_PAYLOADS.YES,
-    },
-    {
-      content_type: 'text',
-      title: i18nbackEnd.__('quick_replies.no'),
-      payload: MESSENGER_PAYLOADS.NO,
-    },
-  ],
-  SPIRIT: [
-    {
-      content_type: 'text',
-      title: '1',
-      payload: '1',
-    },
-    {
-      content_type: 'text',
-      title: '2',
-      payload: '2',
-    },
-    {
-      content_type: 'text',
-      title: '3',
-      payload: '3',
-    },
-    {
-      content_type: 'text',
-      title: '4',
-      payload: '4',
-    },
-  ],
-  MENU_ACTIONS: [
-    {
-      content_type: 'text',
-      title: i18nbackEnd.__('quick_replies.next_game'),
-      payload: MESSENGER_PAYLOADS.NEXT_GAME,
-    },
-    {
-      content_type: 'text',
-      title: i18nbackEnd.__('quick_replies.mock'),
-      payload: MESSENGER_PAYLOADS.MOCK,
-    },
-  ],
-};
-
 module.exports = {
   CARD_TYPE_ENUM,
   COMPONENT_TYPE_ENUM,
@@ -415,9 +349,7 @@ module.exports = {
   FACEBOOK_STATUS_ENUM,
   APP_ENUM,
   MEMBERSHIP_LENGTH_TYPE_ENUM,
-  MESSENGER_PAYLOADS,
   MESSENGER_MESSAGES_EN,
   BASIC_CHATBOT_STATES,
   SCORE_SUBMISSION_CHATBOT_STATES,
-  MESSENGER_QUICK_REPLIES,
 };
