@@ -46,10 +46,11 @@ export default function AddMembership(props) {
   const validate = values => {
     const { price, date, type } = values;
     const errors = {};
-    if (!price) {
-      if (price != 0) {
-        errors.price = t(ERROR_ENUM.VALUE_IS_REQUIRED);
-      }
+    if (!price && price !== 0) {
+      errors.price = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (price < 0) {
+      errors.price = t(ERROR_ENUM.VALUE_IS_INVALID);
     }
     if (type === MEMBERSHIP_LENGTH_TYPE_ENUM.FIXED) {
       if (!date) {
