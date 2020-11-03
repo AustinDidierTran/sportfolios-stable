@@ -15,7 +15,7 @@ class Home extends State {
       this.context.chatbotInfos.opponentTeamName =
         'Didier et les fantastiques';
     } else {
-      sendIDontUnderstand(webhookEvent);
+      this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
       this.context.changeState(nextState);

@@ -18,7 +18,7 @@ class ScoreSubmissionRequestSent extends State {
     } else if (this.isStartOver(webhookEvent)) {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
-      sendIDontUnderstand(webhookEvent);
+      this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
       this.context.changeState(nextState);
@@ -29,13 +29,15 @@ class ScoreSubmissionRequestSent extends State {
     const userName = this.context.chatbotInfos.userName;
     const opponentTeamName = this.context.chatbotInfos
       .opponentTeamName;
-    return Response.genQuickReply(
-      i18n.__('score_submission.request', {
-        userName,
-        opponentTeamName,
-      }),
-      MESSENGER_QUICK_REPLIES.CONFIRMATION,
-    );
+    return [
+      Response.genQuickReply(
+        i18n.__('score_submission.request', {
+          userName,
+          opponentTeamName,
+        }),
+        MESSENGER_QUICK_REPLIES.CONFIRMATION,
+      ),
+    ];
   }
 }
 

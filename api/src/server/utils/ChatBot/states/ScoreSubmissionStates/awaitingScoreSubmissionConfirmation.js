@@ -23,7 +23,7 @@ class AwaitingScoreSubmissionConfirmation extends State {
     ) {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
-      sendIDontUnderstand(webhookEvent);
+      this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
       this.context.changeState(nextState);
@@ -39,14 +39,17 @@ class AwaitingScoreSubmissionConfirmation extends State {
         : myScore == opponentScore
         ? 'score_submission.confirmation.draw'
         : 'score_submission.confirmation.defeat';
-    return Response.genQuickReply(
-      i18n.__(text, {
-        opponentTeamName: this.context.chatbotInfos.opponentTeamName,
-        myScore,
-        opponentScore,
-      }),
-      MESSENGER_QUICK_REPLIES.CONFIRMATION,
-    );
+    return [
+      Response.genQuickReply(
+        i18n.__(text, {
+          opponentTeamName: this.context.chatbotInfos
+            .opponentTeamName,
+          myScore,
+          opponentScore,
+        }),
+        MESSENGER_QUICK_REPLIES.CONFIRMATION,
+      ),
+    ];
   }
 }
 

@@ -1,5 +1,7 @@
 const { MESSENGER_PAYLOADS } = require('../../enums');
 const queries = require('../../../../db/queries/facebook');
+const Response = require('../response');
+const i18n = require('../../../../i18n.config');
 
 class State {
   setContext(context) {
@@ -137,7 +139,7 @@ class State {
     const state = this.context.stateType;
     this.sendMessages(messengerId, [
       Response.genText(i18n.__('i_dont_understand')),
-      this.getIntroMessages(),
+      ...this.getIntroMessages(),
     ]);
     queries.logMessage({ messenger_id: messengerId, state, message });
   }

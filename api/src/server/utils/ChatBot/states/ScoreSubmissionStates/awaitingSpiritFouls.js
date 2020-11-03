@@ -22,7 +22,7 @@ class AwaitingSpiritFouls extends State {
     ) {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
-      sendIDontUnderstand(webhookEvent);
+      this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
       this.context.changeState(nextState);
@@ -30,10 +30,12 @@ class AwaitingSpiritFouls extends State {
   }
 
   getIntroMessages() {
-    return Response.genQuickReply(
-      i18n.__('spirit_submission.fouls'),
-      MESSENGER_QUICK_REPLIES.SPIRIT,
-    );
+    return [
+      Response.genQuickReply(
+        i18n.__('spirit_submission.fouls'),
+        MESSENGER_QUICK_REPLIES.SPIRIT,
+      ),
+    ];
   }
 }
 

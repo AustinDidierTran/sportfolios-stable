@@ -27,7 +27,7 @@ class AwaitingSpiritSubmissionConfirmation extends State {
     ) {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
-      sendIDontUnderstand(webhookEvent);
+      this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
       this.context.changeState(nextState);
@@ -38,13 +38,15 @@ class AwaitingSpiritSubmissionConfirmation extends State {
     const total = Object.values(
       this.context.chatbotInfos.spirit,
     ).reduce((t, value) => t + value, 0);
-    return Response.genQuickReply(
-      i18n.__('spirit_submission.confirmation', {
-        ...this.context.chatbotInfos.spirit,
-        total,
-      }),
-      MESSENGER_QUICK_REPLIES.CONFIRMATION,
-    );
+    return [
+      Response.genQuickReply(
+        i18n.__('spirit_submission.confirmation', {
+          ...this.context.chatbotInfos.spirit,
+          total,
+        }),
+        MESSENGER_QUICK_REPLIES.CONFIRMATION,
+      ),
+    ];
   }
 }
 

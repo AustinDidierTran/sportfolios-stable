@@ -21,7 +21,7 @@ class AwaitingScoreSubmission extends State {
     ) {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
-      sendIDontUnderstand(webhookEvent);
+      this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
       this.context.changeState(nextState);
@@ -29,7 +29,9 @@ class AwaitingScoreSubmission extends State {
   }
 
   getIntroMessages() {
-    return Response.genText(i18n.__('score_submission.explaination'));
+    return [
+      Response.genText(i18n.__('score_submission.explaination')),
+    ];
   }
 }
 

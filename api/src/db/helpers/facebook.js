@@ -55,7 +55,7 @@ const getNameFromPSID = async messengerId => {
 };
 
 const logMessage = async infos => {
-  return knex(logs_chatbot).insert(infos);
+  return knex('logs_chatbot').insert(infos);
 };
 
 module.exports = {
