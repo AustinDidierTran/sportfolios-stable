@@ -2423,14 +2423,47 @@ const deleteMembership = async (
   organizationId,
   personId,
 ) => {
-  console;
-  await knex('memberships')
+  const [res] = await knex('memberships')
     .where({
       member_type: memberType,
       organization_id: organizationId,
       person_id: personId,
     })
-    .del();
+    .del()
+    .returning('*');
+  if (!res.status) {
+    const res2 = await knex
+      .select('*')
+      .from(
+        knex
+          .select(
+            knex.raw(
+              "id, metadata ->> 'membership_type' AS membership_type, metadata ->> 'entity_id' AS entity_id, metadata ->> 'organization' AS organization, metadata ->> 'person' AS person",
+            ),
+          )
+          .from('cart_items')
+          .as('cartItems'),
+      )
+      .where('cartItems.membership_type', memberType)
+      .andWhere('cartItems.entity_id', organizationId);
+    const res3 = res2.map(r => ({
+      organizationId: JSON.parse(r.organization).id,
+      personId: JSON.parse(r.person).id,
+      id: r.id,
+    }));
+    const res4 = res3.filter(r => {
+      return (
+        r.organizationId === organizationId && r.personId === personId
+      );
+    });
+    await Promise.all(
+      res4.map(async r => {
+        await knex('cart_items')
+          .where({ id: r.id })
+          .del();
+      }),
+    );
+  }
 };
 
 const deleteOption = async id => {
