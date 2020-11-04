@@ -598,14 +598,13 @@ const getChatbotInfos = async messenger_id => {
     .select('*')
     .first()
     .where({ messenger_id });
-  if (!infos) {
-    return;
+  if (infos) {
+    return {
+      messengerId: infos.messenger_id,
+      state: infos.state,
+      chatbotInfos: infos.chatbot_infos,
+    };
   }
-  return {
-    messengerId: infos.messenger_id,
-    state: infos.state,
-    chatbotInfos: infos.chatbot_infos,
-  };
 };
 
 const setChatbotInfos = async (messenger_id, infos) => {
@@ -613,11 +612,13 @@ const setChatbotInfos = async (messenger_id, infos) => {
     .update({ ...infos })
     .where({ messenger_id })
     .returning('*');
-  return {
-    messengerId: res.messenger_id,
-    state: res.state,
-    chatbotInfos: res.chatbot_infos,
-  };
+  if (res) {
+    return {
+      messengerId: res.messenger_id,
+      state: res.state,
+      chatbotInfos: res.chatbot_infos,
+    };
+  }
 };
 
 const addChatbotId = async messenger_id => {

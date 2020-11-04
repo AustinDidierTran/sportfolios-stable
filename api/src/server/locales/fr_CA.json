@@ -33,7 +33,7 @@
 
   "menu": {
     "welcome": "Bienvenue sur le chatbot Sportfolios!",
-    "help": "Voici les différentes actions que vous pouvez effectuer:\n• Dites \"test\" pour lancer un simulation de soumission de score\n• Dites \"partie\" pour connaître l'heure de votre prochaine partie\nÀ tout moment dites \"recommencer\" pour revenir à ce menu."
+    "help": "Voici les différentes actions que vous pouvez effectuer:\n• Dites \"test\" pour lancer une simulation de soumission de score\n• Dites \"partie\" pour connaître l'heure de votre prochaine partie\n• À tout moment dites \"recommencer\" pour revenir à ce menu."
   },
 
   "i_dont_understand": "Désolé, je n'ai pas compris votre message. Si vous voulez revenir au menu principal dites \"recommencer\" ou \"stop\"",
