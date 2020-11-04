@@ -44,7 +44,6 @@ export default {
     add: 'Ajouter',
     added_to_cart: 'Ajouté au panier',
     address: 'Adresse',
-    address: 'Adresse',
     admin_has_no_bank_account:
       "Vous ne pouvez pas ajouter une option de paiement car l'administrateur n'a pas de compte banquaire relié à son compte",
     admin_panel: 'Panneaux des administrateurs',
@@ -359,7 +358,6 @@ export default {
     options: 'Options',
     or: 'ou',
     or: 'OU',
-    or: 'OU',
     order_processed_title: 'Commande complétée',
     order_processed: 'Votre commande a été complétée avec succès',
     ordered: 'Commandé',
@@ -370,8 +368,6 @@ export default {
     paid_with: 'Payé avec',
     paid: 'Payé',
     password_changed: 'Mot de passe changé avec succès',
-    password_length:
-      'Votre mot de passe doit contenir entre 8 et 24 caractères',
     password_length:
       'Votre mot de passe doit contenir entre 8 et 24 caractères',
     password_must_match: 'Vos mots de passes doivent être identique',
@@ -477,7 +473,6 @@ export default {
     results: 'Résultats',
     return_home: "Retourner à la page d'accueil",
     review: 'Passer en revue et payer',
-    review: 'Passer en revue et payer',
     roster_doesnt_have_to_be_final_only_for_pre_ranking_purpose:
       "L'alignement aide le responsable du tournoi à classer ses équipes. Vous pouvez entrer votre alignement au meilleur de vos connaissances, mais il n'a pas de besoin d'être final.",
     roster: 'Alignement',
@@ -582,8 +577,6 @@ export default {
     to_see_your_receipt:
       'Une copie de votre reçu vous à été envoyé par courriel. Vous pouvez le consulter maintenant sur Stripe, notre plateforme de paiement sécuritaire.',
     to_transfer: 'Transférer',
-    token_expired:
-      "Le token n'est plus valide, svp en demander un autre.",
     token_expired:
       "Le token n'est plus valide, svp en demander un autre.",
     total: 'Total',
