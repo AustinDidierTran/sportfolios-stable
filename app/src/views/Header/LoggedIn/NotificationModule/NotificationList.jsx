@@ -9,6 +9,7 @@ import {
 import NotificationFactory from '../../../../components/Custom/NotificationFactory';
 
 import styles from './NotificationModule.module.css';
+import { Typography } from '../../../../components/MUI/';
 
 export default function NotificationList(props) {
   const { closeNotificationModule, notifications, open } = props;
@@ -27,13 +28,23 @@ export default function NotificationList(props) {
         }
         disablePadding
       >
-        {notifications.map((notification, index) => (
-          <NotificationFactory
-            key={index}
-            {...notification}
-            closeNotificationModule={closeNotificationModule}
-          />
-        ))}
+        {notifications.length > 0 ? (
+          notifications.map((notification, index) => (
+            <NotificationFactory
+              key={index}
+              {...notification}
+              closeNotificationModule={closeNotificationModule}
+            />
+          ))
+        ) : (
+          <>
+            <Typography align="center" variant="body2" paragraph>
+              <b>{t('no_notifications')}</b>
+              <br />
+              {t('no_notifications_message')}
+            </Typography>
+          </>
+        )}
       </List>
     </Paper>
   ) : (

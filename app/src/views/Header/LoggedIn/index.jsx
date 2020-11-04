@@ -33,7 +33,6 @@ export default function LoggedIn() {
             <SearchInput apiRoute="/api/data/search/previous" />
             <div className={classes.grow} />
             <div className={styles.sectionDesktop}>
-              <NotificationModule />
               <IconButton
                 color="inherit"
                 icon="Settings"
@@ -48,6 +47,7 @@ export default function LoggedIn() {
                   })
                 }
               />
+              <NotificationModule />
               <CartIcon />
             </div>
           </Toolbar>
