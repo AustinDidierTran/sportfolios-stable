@@ -1,9 +1,17 @@
-.timeSlot {
-  background-color: lightsalmon;
-  text-align: center;
+.gridLayout {
+  /*overflow: auto;*/
+  background-color: lightgrey;
 }
 
-.field {
-  background-color: lightgreen;
-  text-align: center;
+.labelDiv {
+  background-color: lightsalmon;
+  /*position: relative;*/
+}
+
+.label {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  margin: 0;
 }
