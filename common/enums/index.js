@@ -164,20 +164,22 @@ const FACEBOOK_STATUS_ENUM = {
   NOT_AUTHORIZED: 'not_authorized',
 };
 
-const MESSENGER_PAYLOADS = {
-  GET_STARTED: 'GET_STARTED',
-  IGNORE: 'IGNORE',
-  MOCK: 'mock',
-  YES1: 'yes1',
-  YES2: 'yes2',
-  YES3: 'yes3',
-  YES4: 'yes4',
-  NO: 'no',
-  SPIRIT_RULES: 'sr',
-  SPIRIT_FOUL: 'sf',
-  SPIRIT_EQUITY: 'se',
-  SPIRIT_SELF_CONTROL: 'ssc',
-  SPIRIT_COMMUNICATION: 'sc',
+const BASIC_CHATBOT_STATES = {
+  NOT_LINKED: 0,
+  HOME: 1,
+};
+
+const SCORE_SUBMISSION_CHATBOT_STATES = {
+  SCORE_SUBMISSION_REQUEST_SENT: 2,
+  AWAITING_SCORE_SUBMISSION: 3,
+  AWAITING_SCORE_SUBMISSION_CONFIRMATION: 4,
+  SPIRIT_SUBMISSION_REQUEST_SENT: 5,
+  AWAITING_SPIRIT_RULES: 6,
+  AWAITING_SPIRIT_FOULS: 7,
+  AWAITING_SPIRIT_EQUITY: 8,
+  AWAITING_SPIRIT_SELF_CONTROL: 9,
+  AWAITING_SPIRIT_COMMUNICATION: 10,
+  AWAITING_SPIRIT_CONFIRMATION: 11,
 };
 
 const REJECTION_ENUM = {
@@ -336,251 +338,6 @@ const MESSENGER_MESSAGES_EN = {
   },
 };
 
-const MESSENGER_MESSAGES_FR = {
-  CONNECTION_SUCCESS: {
-    text:
-      'Vous êtes maintenant inscrit au chatbot Sportfolios! Revenez après votre prochaine partie pour soumettre votre score facilement.',
-    quick_replies: [
-      {
-        content_type: 'text',
-        title: 'Génial 🤩',
-        payload: MESSENGER_PAYLOADS.IGNORE,
-      },
-      {
-        content_type: 'text',
-        title: 'Simuler 🚀',
-        payload: MESSENGER_PAYLOADS.MOCK,
-      },
-    ],
-  },
-  CONNECTION_ERROR: {
-    text:
-      'Une erreur est survenue en tentant de lier votre compte, veuillez réessayer plus tard',
-  },
-  GET_STARTED_NO_REF: {
-    text:
-      'Vous devez maintenant lier votre compte Sportfolios, veuillez suivre le lien suivant et connecter le chatbot: https://sportfolios.app/userSettings',
-  },
-  I_DONT_UNDERSTAND: {
-    text:
-      "Désolé, je ne peux pas encore prendre en compte votre message pour l'instant",
-  },
-  REQUEST_SCORE_SUBMISSION: {
-    text:
-      "Bonjour Austin-Didier, votre équipe vient tout juste d'affronter l'équipe A20. Désirez-vous soumettre votre pointage ici?",
-    quick_replies: [
-      {
-        content_type: 'text',
-        title: 'Oui',
-        payload: MESSENGER_PAYLOADS.YES1,
-      },
-      {
-        content_type: 'text',
-        title: 'Non',
-        payload: MESSENGER_PAYLOADS.NO,
-      },
-    ],
-  },
-  SCORE_SUBMITION_EXPLAINATION: {
-    text:
-      'Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-[leur pointage]. Par exemple, pour une victoire de 13 à 10 veuillez entrer 13-10',
-  },
-  SCORE_SUBMISSION_VICTORY: {
-    text:
-      'Vous avez remporté votre partie contre A20 par le pointage de 30 à 0, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour ressoumettre votre pointage',
-    quick_replies: [
-      {
-        content_type: 'text',
-        title: 'Oui',
-        payload: MESSENGER_PAYLOADS.YES2,
-      },
-      {
-        content_type: 'text',
-        title: 'Non',
-        payload: MESSENGER_PAYLOADS.NO,
-      },
-    ],
-  },
-  SCORE_CONFIRMED_VICTORY: {
-    text:
-      'Félicitation pour votre belle victoire! Désirez-vous également soumettre votre pointage spirit?',
-    quick_replies: [
-      {
-        content_type: 'text',
-        title: 'Oui',
-        payload: MESSENGER_PAYLOADS.YES3,
-      },
-      {
-        content_type: 'text',
-        title: 'Non',
-        payload: MESSENGER_PAYLOADS.NO,
-      },
-    ],
-  },
-  SPIRIT_RULES: {
-    text:
-      'Sur une échelle de 0 à 4, 0 étant mauvais, 2 étant la moyenne et 4 étant mémorable, à combien évalueriez-vous leur connaissance et application des réglements?',
-    quick_replies: [
-      {
-        content_type: 'text',
-        title: '1',
-        payload: MESSENGER_PAYLOADS.SPIRIT_RULES,
-      },
-      {
-        content_type: 'text',
-        title: '2',
-        payload: MESSENGER_PAYLOADS.SPIRIT_RULES,
-      },
-      {
-        content_type: 'text',
-        title: '3',
-        payload: MESSENGER_PAYLOADS.SPIRIT_RULES,
-      },
-      {
-        content_type: 'text',
-        title: '4',
-        payload: MESSENGER_PAYLOADS.SPIRIT_RULES,
-      },
-    ],
-  },
-  SPIRIT_FOUL: {
-    text:
-      'Selon la même échelle, à combien évalueriez-vous les fautes et les contacts?',
-    quick_replies: [
-      {
-        content_type: 'text',
-        title: '1',
-        payload: MESSENGER_PAYLOADS.SPIRIT_FOUL,
-      },
-      {
-        content_type: 'text',
-        title: '2',
-        payload: MESSENGER_PAYLOADS.SPIRIT_FOUL,
-      },
-      {
-        content_type: 'text',
-        title: '3',
-        payload: MESSENGER_PAYLOADS.SPIRIT_FOUL,
-      },
-      {
-        content_type: 'text',
-        title: '4',
-        payload: MESSENGER_PAYLOADS.SPIRIT_FOUL,
-      },
-    ],
-  },
-  SPIRIT_EQUITY: {
-    text:
-      "Selon la même échelle, à combien évalueriez-vous l'honnêteté et l'équité?",
-    quick_replies: [
-      {
-        content_type: 'text',
-        title: '1',
-        payload: MESSENGER_PAYLOADS.SPIRIT_EQUITY,
-      },
-      {
-        content_type: 'text',
-        title: '2',
-        payload: MESSENGER_PAYLOADS.SPIRIT_EQUITY,
-      },
-      {
-        content_type: 'text',
-        title: '3',
-        payload: MESSENGER_PAYLOADS.SPIRIT_EQUITY,
-      },
-      {
-        content_type: 'text',
-        title: '4',
-        payload: MESSENGER_PAYLOADS.SPIRIT_EQUITY,
-      },
-    ],
-  },
-  SPIRIT_SELF_CONTROL: {
-    text:
-      "Selon la même échelle, à combien évalueriez-vous l'attitude positive et la maîtrise de soi?",
-    quick_replies: [
-      {
-        content_type: 'text',
-        title: '1',
-        payload: MESSENGER_PAYLOADS.SPIRIT_SELF_CONTROL,
-      },
-      {
-        content_type: 'text',
-        title: '2',
-        payload: MESSENGER_PAYLOADS.SPIRIT_SELF_CONTROL,
-      },
-      {
-        content_type: 'text',
-        title: '3',
-        payload: MESSENGER_PAYLOADS.SPIRIT_SELF_CONTROL,
-      },
-      {
-        content_type: 'text',
-        title: '4',
-        payload: MESSENGER_PAYLOADS.SPIRIT_SELF_CONTROL,
-      },
-    ],
-  },
-  SPIRIT_COMMUNICATION: {
-    text:
-      'Selon la même échelle, à combien évalueriez-vous la communication?',
-    quick_replies: [
-      {
-        content_type: 'text',
-        title: '1',
-        payload: MESSENGER_PAYLOADS.SPIRIT_COMMUNICATION,
-      },
-      {
-        content_type: 'text',
-        title: '2',
-        payload: MESSENGER_PAYLOADS.SPIRIT_COMMUNICATION,
-      },
-      {
-        content_type: 'text',
-        title: '3',
-        payload: MESSENGER_PAYLOADS.SPIRIT_COMMUNICATION,
-      },
-      {
-        content_type: 'text',
-        title: '4',
-        payload: MESSENGER_PAYLOADS.SPIRIT_COMMUNICATION,
-      },
-    ],
-  },
-  SPIRIT_CONFIRMATION: {
-    text:
-      "Voici le sommaire de l'esprit sportif:\n\nConnaissance et application des réglements: 2/4\nFautes et contacts: 3/4\nHonnêteté et équité: 3/4\nAttitude positive et maîtrise de soi: 2/4\nCommunication: 2/4\n\nTotal: 12/20\n\nEst-ce que vous voulez confirmer l'envoi?",
-    quick_replies: [
-      {
-        content_type: 'text',
-        title: 'Oui',
-        payload: MESSENGER_PAYLOADS.YES4,
-      },
-      {
-        content_type: 'text',
-        title: 'Non',
-        payload: MESSENGER_PAYLOADS.NO,
-      },
-    ],
-  },
-  SUBMIT_CONFIRMATION: {
-    text:
-      'Le tout a été envoyé avec succès. Merci et à la prochaine!',
-    quick_replies: [
-      {
-        content_type: 'text',
-        title: 'Génial 🤩',
-        payload: MESSENGER_PAYLOADS.IGNORE,
-      },
-      {
-        content_type: 'text',
-        title: 'Simuler 🚀',
-        payload: MESSENGER_PAYLOADS.MOCK,
-      },
-    ],
-  },
-};
-
 module.exports = {
   CARD_TYPE_ENUM,
   COMPONENT_TYPE_ENUM,
@@ -615,7 +372,7 @@ module.exports = {
   FACEBOOK_STATUS_ENUM,
   APP_ENUM,
   MEMBERSHIP_LENGTH_TYPE_ENUM,
-  MESSENGER_PAYLOADS,
   MESSENGER_MESSAGES_EN,
-  MESSENGER_MESSAGES_FR,
+  BASIC_CHATBOT_STATES,
+  SCORE_SUBMISSION_CHATBOT_STATES,
 };

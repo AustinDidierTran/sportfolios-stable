@@ -1,6 +1,7 @@
 const FACEBOOK_BASE_URL = 'https://graph.facebook.com/v8.0';
 const crypto = require('crypto');
 const axios = require('axios');
+const knex = require('../connection');
 
 const getMessengerIdFromFbID = async facebook_id => {
   const hmac = crypto.createHmac(
@@ -39,7 +40,27 @@ const sendMessage = async (messengerId, message) => {
   return res;
 };
 
+const getNameFromPSID = async messengerId => {
+  const uri = `${FACEBOOK_BASE_URL}/${messengerId}?fields=first_name&access_token=${process.env.FACEBOOK_PAGE_TOKEN}`;
+  const res = await axios.get(uri).catch(function(error) {
+    // eslint-disable-next-line no-console
+    console.log(error.response.data);
+    return;
+  });
+  if (res && res.data && res.data.first_name) {
+    return res.data.first_name;
+  } else {
+    return;
+  }
+};
+
+const logMessage = async infos => {
+  return knex('logs_chatbot').insert(infos);
+};
+
 module.exports = {
   getMessengerIdFromFbID,
   sendMessage,
+  getNameFromPSID,
+  logMessage,
 };
