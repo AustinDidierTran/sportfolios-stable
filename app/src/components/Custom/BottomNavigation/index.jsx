@@ -1,15 +1,21 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, {
+  useContext,
+  useMemo,
+  useState,
+  useEffect,
+} from 'react';
 
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import styles from './BottomNavigation.module.css';
 import { Icon } from '../../Custom';
-// import { Badge } from '../../MUI';
+import { Badge } from '../../MUI';
 
 import { useTranslation } from 'react-i18next';
 
 import { ROUTES, goTo } from '../../../actions/goTo';
 import { Store, SCREENSIZE_ENUM } from '../../../Store';
+import api from '../../../actions/api';
 
 const TABS_ENUM = {
   HOME: 'home',
@@ -25,6 +31,7 @@ export default function CustomBottomNavigation() {
   } = useContext(Store);
 
   const [value, setValue] = useState(null);
+  const [notifications, setNotifications] = useState([]);
 
   const routeEnum = {
     [TABS_ENUM.HOME]: [ROUTES.home],
@@ -53,6 +60,24 @@ export default function CustomBottomNavigation() {
     [screenSize, userInfo && userInfo.user_id],
   );
 
+  const unreadNotificationsCount = useMemo(
+    () =>
+      (notifications &&
+        notifications.filter(n => !n.seen_at).length) ||
+      0,
+    [notifications],
+  );
+
+  const initializeNotifications = async () => {
+    const { data } = await api('/api/notifications/all');
+
+    setNotifications(data);
+  };
+
+  useEffect(() => {
+    initializeNotifications();
+  }, []);
+
   return displayNav ? (
     <BottomNavigation
       value={value}
@@ -69,15 +94,18 @@ export default function CustomBottomNavigation() {
         value={TABS_ENUM.PROFILE}
         icon={<Icon icon="Person" />}
       />
-      {/* <BottomNavigationAction
+      <BottomNavigationAction
         label={t('notifications')}
         value={TABS_ENUM.NOTIFICATIONS}
         icon={
-          <Badge badgeContent="2" color="secondary">
+          <Badge
+            badgeContent={unreadNotificationsCount}
+            color="error"
+          >
             <Icon icon="Notifications" />
           </Badge>
         }
-      /> */}
+      />
       <BottomNavigationAction
         label={t('menu')}
         value={TABS_ENUM.MENU}
