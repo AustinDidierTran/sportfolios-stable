@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
@@ -10,43 +10,64 @@ import Rosters from './Rosters';
 import { Typography } from '../../components/MUI';
 import { useTranslation } from 'react-i18next';
 import { LoadingSpinner } from '../../components/Custom';
-
-const getRosters = async eventId => {
-  const { data } = await api(
-    formatRoute('/api/entity/allTeamsRegisteredInfos', null, {
-      eventId,
-    }),
-  );
-  return data;
-};
-
-const deletePlayerFromRoster = async id => {
-  await api(
-    formatRoute('/api/entity/deletePlayerFromRoster', null, {
-      id,
-    }),
-    {
-      method: 'DELETE',
-    },
-  );
-};
-const addPlayerToRoster = async (player, rosterId) => {
-  const { data } = await api(`/api/entity/addPlayerToRoster`, {
-    method: 'POST',
-    body: JSON.stringify({
-      ...player,
-      rosterId,
-    }),
-  });
-  return data;
-};
+import { STATUS_ENUM, SEVERITY_ENUM } from '../../../../common/enums';
+import { Store, ACTION_ENUM } from '../../Store';
 
 export default function TabRosters(props) {
   const { isEventAdmin } = props;
   const { id: eventId } = useParams();
+  const { dispatch } = useContext(Store);
   const { t } = useTranslation();
   const [rosters, setRosters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const getRosters = async eventId => {
+    const { data } = await api(
+      formatRoute('/api/entity/allTeamsRegisteredInfos', null, {
+        eventId,
+      }),
+    );
+    return data;
+  };
+
+  const deletePlayerFromRoster = async id => {
+    const res = await api(
+      formatRoute('/api/entity/deletePlayerFromRoster', null, {
+        id,
+        eventId,
+      }),
+      {
+        method: 'DELETE',
+      },
+    );
+
+    if (res.status === STATUS_ENUM.FORBIDDEN) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('cant_delete_paid_player'),
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
+      });
+    } else if (res.status === STATUS_ENUM.ERROR) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('an_error_has_occured'),
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
+      });
+    }
+  };
+
+  const addPlayerToRoster = async (player, rosterId) => {
+    const { data } = await api(`/api/entity/addPlayerToRoster`, {
+      method: 'POST',
+      body: JSON.stringify({
+        ...player,
+        rosterId,
+      }),
+    });
+    return data;
+  };
 
   const onDelete = async id => {
     await deletePlayerFromRoster(id);

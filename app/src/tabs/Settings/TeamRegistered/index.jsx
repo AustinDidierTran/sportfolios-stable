@@ -5,6 +5,7 @@ import {
   MailToButton,
   AlertDialog,
   IconButton,
+  LoadingSpinner,
 } from '../../../components/Custom';
 import PaymentChip from './PaymentChip';
 
@@ -45,6 +46,7 @@ export default function TeamRegistered() {
   const [openUnregister, setOpenUnregister] = useState(false);
   const [openUnregisterAll, setOpenUnregisterAll] = useState(false);
   const [rosterId, setRosterId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onCloseUnregister = () => {
     setOpenUnregister(false);
@@ -114,10 +116,13 @@ export default function TeamRegistered() {
   };
 
   const onUnregisterTeam = async () => {
+    setOpenUnregister(false);
+    setIsLoading(true);
     const res = await unregisterTeams({
       eventId,
       rosterIds: [rosterId],
     });
+    setIsLoading(false);
 
     if (res.status === STATUS_ENUM.SUCCESS) {
       dispatch({
@@ -136,14 +141,16 @@ export default function TeamRegistered() {
     }
 
     setTeams(res.data);
-    setOpenUnregister(false);
   };
 
   const onUnregisterAll = async () => {
+    setOpenUnregisterAll(false);
+    setIsLoading(true);
     const res = await unregisterTeams({
       eventId,
       rosterIds: teamsThatCanBeUnregistered,
     });
+    setIsLoading(false);
 
     if (res.status === STATUS_ENUM.SUCCESS) {
       dispatch({
@@ -162,7 +169,6 @@ export default function TeamRegistered() {
     }
 
     setTeams(res.data);
-    setOpenUnregisterAll(false);
   };
 
   const getMaximumSpots = async () => {
@@ -256,7 +262,16 @@ export default function TeamRegistered() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {teams?.length > 0 ? (
+            {isLoading ? (
+              <StyledTableRow align="center">
+                <StyledTableCell colSpan={4}>
+                  {t('unregister_pending')}
+                </StyledTableCell>
+                <StyledTableCell>
+                  <LoadingSpinner isComponent />
+                </StyledTableCell>
+              </StyledTableRow>
+            ) : teams?.length > 0 ? (
               <>
                 {teams.map((team, index) => (
                   <StyledTableRow key={index}>
