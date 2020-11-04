@@ -2183,7 +2183,6 @@ const addEventCartItem = async (body, userId) => {
 
 const deletePlayerFromRoster = async id => {
   //TODO: Make sure userId deleting is team Admin
-  //check if can delete (is unpaid)
   const realId = await getRealId(id);
   await knex('team_players')
     .where({
