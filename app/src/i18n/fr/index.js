@@ -2,7 +2,6 @@ import { SIZES_ENUM } from '../../../../common/enums';
 
 export default {
   translations: {
-    //A
     about: 'À propos',
     accept_person_transfer_confirmation:
       'Êtes vous certain de vouloir accepter le transfert de {{name}}?',
@@ -51,42 +50,27 @@ export default {
     admin_view: "Vue de l'admin",
     admin: 'Admin',
     admins: 'Administrateurs',
-    advanced_filters: 'Filtres avancés',
-    adress: 'Adresse',
-    alias: 'Alias',
-    alias_is_already_used: "L'alias est déjà utilisé",
-    and_lowerCased: 'et',
-    an_error_has_occured: 'Une erreur est survenue',
     adress: 'Addresse',
     advanced_filters: 'Filtres avancés',
     alias_is_already_used: "L'alias est déjà utilisé",
     alias: 'Alias',
     all_fields: 'Tous les terrains',
     all_phases: 'Toutes les phases',
-    all_steps_completed: 'Tous les étapes sont complétées',
+    all_steps_completed: 'Toutes les étapes sont complétées',
     all_teams: 'Toutes les équipes',
     all_time_slots: 'Toutes les plages horaires',
     all: 'Tous',
     amount_to_pay: 'Montant à payer {{amount}}',
+    an_error_has_occured: 'Une erreur est survenue',
+    and_lowerCased: 'et',
     anonymous: 'Anonyme',
     app_role: 'App Role',
-    are_you_sure_you_want_to_unregister_all_teams:
-      "Êtes-vous sûr de vouloir désinscrire toutes les équipes et de rembourser tous les paiements d'équipes et individuels en lien evec celles-ci (si applicable)?",
     are_you_sure_you_want_to_unregister_this_team:
       "Êtes-vous sûr de vouloir désinscrire cette équipe et de rembourser tous les paiements d'équipes et individuels en lien evec celle-ci (si applicable)?",
-    all: 'Tous',
-    all_teams: 'Toutes les équipes',
-    all_phases: 'Toutes les phases',
-    all_fields: 'Tous les terrains',
-    all_time_slots: 'Toutes les plages horaires',
-    all_steps_completed: 'Toutes les étapes sont complétées',
-    amount_to_pay: 'Montant à payer {{amount}}',
-    app_role: 'App Role',
     at: 'à',
     athlete_history: "Historique de l'athlète",
     awaiting_payments: 'Paiements en attentes',
     awaiting_your_approval: 'En attente de votre approbation',
-    //B
     back_to_shop: 'Revenir au magasin',
     back: 'Revenir',
     basic_info: 'Information générales',
@@ -95,7 +79,6 @@ export default {
     birth_date_format: '{{date, LL}} ({{age}} ans)',
     birth_date: 'Date de naissance',
     by: 'Par',
-    //C
     canadian_dollar: 'Dollar Canadien',
     cancel_person_transfer_confirmation:
       'Êtes-vous certain de vouloir annuler le transfert de {{name}}?',
@@ -119,8 +102,8 @@ export default {
     category: 'Catégorie',
     change_password: 'Changer votre mot de passe',
     change_picture: 'Changer la photo',
-    changes_saved: 'Changements sauvegardés',
     change_team: "Changer l'équipe",
+    changes_saved: 'Changements sauvegardés',
     checkout: 'Procéder',
     choose_your_primary_person: 'Choisir votre personne principale',
     city: 'Ville',
@@ -138,6 +121,8 @@ export default {
     confirm: 'Confirmer',
     confirmation_email_sent:
       'Le courriel a été envoyé avec succès. Allez dans votre boîte de courriel pour réinitialiser votre mot de passe.',
+    confirmed_on: 'Confirmé le {{confirmedOn}}',
+    connect: 'Se connecter',
     connect_with_facebook: 'Se connecter avec Facebook',
     connection_failed:
       'La connexion au compte a échoué, veuillez réessayer',
@@ -155,22 +140,23 @@ export default {
     create_team: 'Créer une équipe',
     created_by: 'Créé par {{name}}',
     currency: 'Devise',
-    //D
     decline: 'Refuser',
     delete_confirmation_text: 'Pour supprimer, écrivez {{name}}',
     delete_game_confirmation:
       'Êtes-vous certain de vouloir supprimer cette partie?',
     delete_membership_confirmation:
       'Êtes-vous certain de vouloir supprimer cette affilitation? Cette personne ne sera pas remboursée.',
-    delete_payment_option: "Supprimer l'option de paiement",
+    delete_membership: "Supprimer l'affiliation",
     delete_payment_option_confirmation:
       'Êtes-vous certain de vouloir supprimer cette option de paiement?',
-    delete_player_from_roster: 'Retirer joueur',
-    delete_player_from_roster_confirmation:
-      "Êtes-vous certain de vouloir retirer ce joueur de l'équipe?",
+    delete_payment_option: "Supprimer l'option de paiement",
     delete_player_from_roster_confirmation_admin:
       "Êtes-vous certain de vouloir retirer ce joueur de l'équipe? Le paiement individuel du joueur lui sera remboursé s'il y en a un et qu'il a été payé.",
-    delete_membership: "Supprimer l'affiliation",
+    delete_player_from_roster_confirmation:
+      "Êtes-vous certain de vouloir retirer ce joueur de l'équipe?",
+    delete_player_from_roster: 'Retirer joueur',
+    delete_this_email_from_your_account:
+      'Supprimer ce courriel de votre compte',
     delete: 'Supprimer',
     description_card_first_point:
       'Automatisez la logistique de vos activités.',
@@ -186,11 +172,10 @@ export default {
     do_not_specify: 'Ne pas spécifier',
     donate: 'Faites un don',
     done: 'Terminé',
-    //E
     edit_game: 'Modifier la partie',
+    edit_infos: 'Modifier les infos',
     edit_membership: 'Modifier une affiliation',
     edit_payment_option: "Modifier l'option de paiement",
-    edit_infos: 'Modifier les infos',
     edit_your_primary_person: 'Changer de personne primaire',
     edit: 'Modifier',
     editor: 'Éditeur',
@@ -212,7 +197,6 @@ export default {
     email_password_no_match:
       'Erreur du courriel ou du mot de passe. Svp, réessayez.',
     email: 'Courriel',
-    email: 'Courriel',
     emails: 'Courriels',
     empty_roster_add_players:
       "Votre alignement est vide. Utilisez l'outil de recherche pour ajouter des joueurs à votre alignement.",
@@ -223,6 +207,8 @@ export default {
     enter_score: 'Entrez le pointage',
     enter_team_name: "Entrez votre nom d'équipe",
     entity_not_found: "Cette entité n'existe pas",
+    error_close_date_before_start_date:
+      "La date de fermeture doit être après la date d'ouverture",
     error_start_date_before_end:
       'La date de départ devrait être avant la date de fin.',
     event_creator: "Créateur d'événement",
@@ -239,7 +225,6 @@ export default {
     expiration_date: "Date d'expiration",
     expire_on: 'Expire le',
     expired_on: 'A expiré le',
-    //F
     facebook_description:
       'Connecte ton compte Facebook pour retrouver tes amis sur Sportfolios',
     fair_mindedness: 'Honnêteter et équité',
@@ -255,12 +240,11 @@ export default {
     follow: "S'abonner",
     following: 'Abonné(e)',
     forgot_password: 'Mot de passe oublié?',
-    free: 'Gratuit',
     fouls_and_body_contact: 'Fautes et contacts',
+    free: 'Gratuit',
     full_name: 'Nom complet',
     funding_goal: 'Objectif: {{goal}}$',
     funding: 'Financement',
-    //G
     ga_events_table_title: 'Liste des événements Google Analytics',
     ga_pageviews_table_title: 'Liste des chemins Google Analytics',
     game_added: 'Partie ajoutée',
@@ -274,12 +258,10 @@ export default {
     go_to_event: `Aller vers l'événement`,
     go_to_login: 'Aller vers la connexion',
     goal: 'Objectif',
-    //H
     have_an_account_signin:
       'Vous avez déjà un compte? Connectez-vous!',
     here: 'ici',
     home: 'Accueil',
-    //I
     in_cart: 'Dans le panier',
     informations_saved: 'Informations sauvegardées',
     infos: 'Info',
@@ -290,11 +272,8 @@ export default {
     invite_this_player_to_join_your_team:
       'Inviter ce joueur à joindre votre équipe',
     is_sub: 'Est un remplaçant',
-    //J
     junior_member: 'Membre junior',
     junior: 'Junior',
-    //K
-    //L
     l: 'Large',
     L: 'Large',
     last_name: 'Nom de famille',
@@ -306,18 +285,19 @@ export default {
     location_unspecified: 'Lieu non spécifié',
     login: 'Connexion',
     logout: 'Déconnexion',
-    //M
     m: 'Medium',
     M: 'Medium',
     male: 'Homme',
     max_length: 'Longueur maximum',
     maximum_spots: 'Nombre de places',
-    member: 'Membre',
-    members_list: 'Liste des membres | {{organization}}',
+    member_added: 'Membre ajouté',
     member_list: 'Liste des membres',
+    member: 'Membre',
+    members_added: 'Membres ajoutés',
+    members_list: 'Liste des membres | {{organization}}',
     membership_added: 'Affiliation ajouté',
-    membership_exist: 'Affiliation Existant',
     membership_edited: 'Affiliation modifiée',
+    membership_exist: 'Affiliation Existant',
     membership: 'Affiliation',
     memberships: 'Affiliations',
     menu: 'Menu',
@@ -328,11 +308,9 @@ export default {
     more_filters: 'Plus de filtre',
     my_apps: 'Mes applications',
     my_persons: 'Mes personnes',
-    //N
     name_and_x_other: '{{name}} et {{number}} autre',
     name_and_x_others: '{{name}} et {{number}} autres',
     name_is_required: 'Nom obligatoire',
-    name: 'Nom',
     name: 'Nom',
     new_email: 'Nouveau courriel',
     new_organization: 'Nouvelle Organisation',
@@ -362,20 +340,17 @@ export default {
     not_paid: 'Paiement dû',
     not_specified: 'Non spécifié',
     notifications: 'Notifications',
-    //O
     of_everyone: 'de tout le monde',
     of_team: "de l'équipe",
     of: 'du',
     old_password: 'Ancien mot de passe',
     on_going_events: 'Événements en cours',
-    only_available_on_desktop: 'Seulement disponible sur ordinateur',
-    open_from_to: 'Ouvert du {{startDate}} au {{endDate}}',
-    opposing_team: 'Équipe adverse',
     on_le_in_french: 'le',
     on: 'sur le',
     one_month: 'Un mois',
     one_year: 'Un an',
     only_available_on_desktop: 'Seulement disponible sur ordinateur',
+    open_from_to: 'Ouvert du {{startDate}} au {{endDate}}',
     opposing_team_score: "Pointage de l'équipe adverse",
     opposing_team_spirit: "Esprit de jeu de l'équipe adverse",
     opposing_team: 'Équipe adverse',
@@ -389,7 +364,6 @@ export default {
     organization: 'Organisation',
     organizations: 'Organisations',
     our_team: 'Notre Équipe',
-    //P
     page_not_found: 'Page non trouvée',
     paid_with: 'Payé avec',
     paid: 'Payé',
@@ -403,20 +377,19 @@ export default {
     past_games: 'Parties antérieurs',
     pathname: 'Chemin',
     pay: 'Payer',
+    payment_individual: 'Paiement individuel',
     payment_method_added:
       'Vous avez ajouté une nouvelle option de paiement!',
-    payment_team: "Paiement d'équipe",
-    payment_individual: 'Paiement individuel',
     payment_method: 'Méthode de paiement',
     payment_option_exist: 'Option de paiement existante',
     payment_option: 'Option de paiement',
     payment_options: 'Options de paiements',
+    payment_team: "Paiement d'équipe",
     payments: 'Paiements',
     pending: 'En attente',
-    pending: 'En attente',
     people: 'Personnes',
-    person_awaiting_transfer: 'Personne en cours de transfert',
     per_player: 'Par joueur',
+    person_awaiting_transfer: 'Personne en cours de transfert',
     person_transfer_canceled: 'Le transfert a été annulé',
     person_transfer_declined: 'Le transfert a été refusé',
     person_transfer_done: 'Le transfert a été complété',
@@ -429,7 +402,6 @@ export default {
     phase_added: 'Phase ajoutée',
     phase: 'Phase',
     phone_number: 'Numéro de téléphone',
-    phone_number: 'Numéro de téléphone',
     places_left: 'places restantes',
     player_added: 'Joueur ajouté',
     player_name: 'Nom du joueur',
@@ -441,10 +413,9 @@ export default {
     postal_code: 'Code postal',
     preranking_saved: 'Préclassement sauvegardé',
     preranking: 'Préclassement',
-    price: 'Prix',
     price_individual: 'Prix individuel',
     price_team: "Prix d'équipe",
-    primary_person: 'Personne principale',
+    price: 'Prix',
     primary_person_changed: 'Personne principale changée',
     primary_person: 'Personne principale',
     privacy_policy_and_legal_documents:
@@ -457,10 +428,8 @@ export default {
     profile: 'Profil',
     purchased_on: 'Acheté le',
     purchases: 'Achats',
-    //Q
     quantity: 'Quantité',
     quick_description: 'Description courte',
-    //R
     ranking: 'Classement',
     rankings: 'Classements',
     receipt: 'Reçu',
@@ -475,6 +444,8 @@ export default {
     refused: 'Refusé',
     register: "S'inscrire",
     registered: 'Inscrits',
+    registration_accepted_free:
+      "Félicitation! Vous avez été accepté à l'événement",
     registration_accepted:
       "Félicitation! Vous avez été accepté à l'événement, vous pouvez aller à votre panier pour payer votre inscription!",
     registration_can_be_payed_later:
@@ -508,7 +479,6 @@ export default {
     rosters: 'Alignements',
     rules_knowledge_and_use:
       'Connaissances et application des règlements',
-    //S
     s: 'Small',
     S: 'Small',
     save_basic_info: 'Sauvegarder informations',
@@ -563,7 +533,6 @@ export default {
     sizes: 'Grandeurs',
     some_teams_cannot_be_deleted:
       "Des équipes n'ont pas pu être désinscrites de l'événement puisqu'elles sont déjà dans des parties.",
-    something_went_wrong: 'Une erreur est survenue.',
     something_went_wrong:
       "Une erreur s'est produite. Veuillez réessayer.",
     spirit_chart_ligue_mardi:
@@ -582,7 +551,6 @@ export default {
     subscribed: 'Abonné',
     surname: 'Nom de famille',
     switch_view: 'Changer de vue',
-    //T
     team_1: 'Équipe 1',
     team_2: 'Équipe 2',
     team_added: 'Équipe ajoutée',
@@ -597,10 +565,10 @@ export default {
     teams_unregister_success: 'Équipes désinscrites avec succès',
     teams: 'Équipes',
     terms_and_conditions: 'Termes et conditions',
-    this_organization_has_no_events:
-      "Cette organisation n'a pas d'événement",
     there_is_no_rosters_for_this_event:
       "Il n'y a pas d'alignements pour cet événement.",
+    this_organization_has_no_events:
+      "Cette organisation n'a pas d'événement",
     this_team_cannot_be_deleted:
       "Cette équipe ne peut pas être désinscrite de l'événement puisqu'elle est déjà dans une partie.",
     time_slot_added: 'Plage horaire ajoutée',
@@ -620,12 +588,12 @@ export default {
     transit_number: 'Numéro de transit',
     type_address: 'Entrez une addresse',
     type: 'Type',
-    //U
+    unconfirmed_email: 'courriel non confirmé',
     unlink_facebook_account: 'Déconnecter mon compte Facebook',
     unregister_all: 'Tout désinscrire',
-    unregister: 'Désinscrire',
     unregister_pending:
       'Désinscriptions et remboursements en cours, veuillez patienter...',
+    unregister: 'Désinscrire',
     unsupported_language: 'Langue non supportée',
     upcoming_games: 'Prochaines parties',
     upload: 'Téléverser',
@@ -635,7 +603,6 @@ export default {
     users_found_query:
       'Utilisateurs trouvés avec la requête {{query}}',
     users_table_title: 'Liste des utilisateurs',
-    //V
     valid_until: "Valide jusqu'au",
     value_is_invalid: 'La valeur entrée est invalide',
     value_is_required: 'Une valeur est obligatoire',
@@ -644,11 +611,9 @@ export default {
     value_must_have_x_digits:
       'La valeur doit avoir {{digits}} chiffres.',
     viewer: 'Visiteur',
-    //W
     waiting_for_payment:
       'Votre paiement est en cours de traitement. Merci pour votre patience.',
     wrong_password: 'Mauvais mot de passe. Veuillez réessayer.',
-    //X
     xl: 'X-Large',
     XL: 'X-Large',
     xs: 'X-Small',
@@ -661,7 +626,6 @@ export default {
     XXXL: '3X-Large',
     xxxs: '3X-Small',
     XXXS: '3X-Small',
-    //Y
     yearly: 'Annuel',
     yes: 'oui',
     you_added_no_players_to_your_roster:
@@ -692,246 +656,5 @@ export default {
     your_team: 'Votre équipe',
     your_total_is: 'Votre total est de',
     your_upcoming_events: 'Vos prochains événements',
-    payment_method: 'Méthode de paiement',
-    review: 'Passer en revue et payer',
-    name: 'Nom',
-    name_and_x_others: '{{name}} et {{number}} autres',
-    name_and_x_other: '{{name}} et {{number}} autre',
-    select_payment_method: 'Sélectionner une méthode de paiement',
-    email: 'Courriel',
-    phone_number: 'Numéro de téléphone',
-    line1: 'Ligne 1',
-    line2: 'Ligne 2',
-    city: 'Ville',
-    state: 'Province',
-    refund: 'Remboursement',
-    postal_code: 'Code postal',
-    address: 'Adresse',
-    error_close_date_before_start_date:
-      "La date de fermeture doit être après la date d'ouverture",
-    error_start_date_before_end:
-      'La date de départ devrait être avant la date de fin.',
-    account_already_exists: 'Le compte existe déjà',
-    complete_order: 'Compléter la commande',
-    generate_account_link: 'Générer le lien du compte',
-    see_receipt: 'Voir le reçu',
-    redirect_to_success_route: `Vous êtes maintenant authentifié. Vous serez bientôt redirigé vers la page désirée. Cliquez ci-dessous pour être redirigé dès maintenant.`,
-    redirect_to_home: `Vous serez bientôt redirigez vers l'accueil. Cliquez ci-dessous pour être redirigé dès maintenant.`,
-    // Validation
-    confirm_new_password: 'Confirmer votre nouveau mot de passe',
-    email_already_exist:
-      'Il y a déjà un compte associé à ce courriel',
-    email_already_used:
-      'Courriel déjà utilisé. Veuillez en choisir un autre.',
-    email_not_confirmed:
-      'Adresse courriel non confirmé. Un nouveau courriel de confirmation a été envoyé. Svp, regardez vos courriels.',
-    email_not_found: "Il n'existe pas de compte avec ce courriel",
-    email_password_no_match:
-      'Erreur du courriel ou du mot de passe. Svp, réessayez.',
-    invalid_email: 'Courriel invalide.',
-    invalid_input: 'Valeur incorrect',
-    name_is_required: 'Nom obligatoire',
-    new_password: 'Nouveau mot de passe',
-    old_password: 'Ancien mot de passe',
-    account_number: 'Numéro de compte',
-    institution_number: "Numéro d'institution",
-    transit_number: 'Numéro de transit',
-    password_length:
-      'Votre mot de passe doit contenir entre 8 et 24 caractères',
-    password_must_match: 'Vos mots de passes doivent être identique',
-    something_went_wrong:
-      "Une erreur s'est produite. Veuillez réessayer.",
-    token_expired:
-      "Le token n'est plus valide, svp en demander un autre.",
-    value_is_invalid: 'La valeur entrée est invalide',
-    value_is_required: 'Une valeur est obligatoire',
-    value_must_have_x_digits:
-      'La valeur doit avoir {{digits}} chiffres.',
-
-    value_must_be_numeric: 'La valeur doit être numérique.',
-
-    value_is_too_long: 'La valeur est trop longue',
-    wrong_password: 'Mauvais mot de passe. Veuillez réessayer.',
-    or: 'OU',
-    // DESCRIPTION CARD
-    description_card_title:
-      'Améliorer votre expérience de sport amateur',
-    description_card_first_point:
-      'Automatisez la logistique de vos activités.',
-    description_card_second_point:
-      'Archivez les résultats dans votre Sportfolios personnel.',
-    description_card_third_point:
-      'Connectez avec vos communautés sportives.',
-    // GOOGLE ANALYTICS EVENTS TABLE
-    ga_events_table_title: 'Liste des événements Google Analytics',
-    // GOOGLE ANALYTICS PAGEVIEWS TABLE
-    ga_pageviews_table_title: 'Liste des chemins Google Analytics',
-    // SPORTS TABLE
-    sports_table_title: 'Liste des sports',
-    // USERS TABLE
-    users_table_title: 'Liste des utilisateurs',
-    // Page names
-    admin_panel: 'Panneaux des administrateurs',
-    profile: 'Profil',
-    user_settings: 'Paramètres utilisateur',
-    rosters: 'Alignements',
-    // Buttons
-    cancel: 'Annuler',
-    edit: 'Modifier',
-    save: 'Sauvegarder',
-    submit: 'Soumettre',
-    checkout: 'Procéder',
-    use_same_and_continue: 'Utiliser le même et continuer',
-    personal_information: 'Informations personnelles',
-    create_new_account: 'Créer un nouveau compte',
-    email_confirm_success: 'Courriel confirmé avec succès!',
-    go_to_login: 'Aller vers la connexion',
-    go_to_event: `Aller vers l'événement`,
-    email_confirm_failure:
-      'La confirmation du courriel a échoué. Veuillez réessayer de vous connecter et suite à cette tentative, nous allons vous renvoyer un nouveau courriel de confirmation.',
-    recent_search_results: 'Dernières recherches',
-    users_found_query:
-      'Utilisateurs trouvés avec la requête {{query}}',
-    no_users_found: 'Aucun utilisateur trouvé',
-    follow: "S'abonner",
-    following: 'Abonné(e)',
-    follow_notification_text: " s'est abonné à vous.",
-    learn_more: 'En apprendre plus',
-    close: 'Fermer',
-
-    //LENGTH
-    one_month: 'Un mois',
-    six_month: 'Six mois',
-    one_year: 'Un an',
-
-    //MEMBERSHIP
-    add_membership: 'Ajouter une affiliation',
-    become_member: 'Devenir membre',
-    competitive: 'Compétitif',
-    competitive_membership: 'Affiliation Compétitif',
-    competitive_member: 'Membre compétitif',
-    elite: 'Élite',
-    elite_member: 'Membre élite',
-    elite_membership: 'Affiliation Élite',
-    member: 'Membre',
-    member_added: 'Membre ajouté',
-    members_added: 'Membres ajoutés',
-    membership: 'Affiliation',
-    membership_added: 'Affiliation ajouté',
-    membership_exist: 'Affiliation Existant',
-    memberships: 'Affiliations',
-    recreational: 'Récréatif',
-    recreational_member: 'Membre récréatif',
-    recreational_membership: 'Affiliation Récréatif',
-    renew_membership: 'Renouveler',
-
-    //REGISTRATION
-    register: "S'inscrire",
-    registered: 'Inscrits',
-    registration_can_be_payed_later:
-      "Vous n'avez pas à payer tant que vous n'avez pas été officiellement accepté à l'événement. Lorsque vous serez accepté, vous recevrez un courriel afin de compléter le paiement.",
-    registration_open_date: 'Date ouverture inscriptions',
-    registration_open_time: 'Heure ouverture inscriptions',
-    registration_closes_before_opening:
-      "Les inscription ferment avant d'ouvrir",
-    registration_close_date: 'Date fermeture inscriptions',
-    registration_close_time: 'Heure fermeture inscriptions',
-    registration_status: 'État des inscriptions',
-    registration: 'Inscription',
-    registrations_closed_for_now: 'Inscriptions fermées',
-    registrations_ended: 'Inscriptions terminées le',
-    registrations_ends_on: 'Les inscriptions terminent le',
-    registrations_open_on: 'Les inscriptions ouvrent le',
-    registration_accepted:
-      "Félicitation! Vous avez été accepté à l'événement, vous pouvez aller à votre panier pour payer votre inscription!",
-    registration_accepted_free:
-      "Félicitation! Vous avez été accepté à l'événement",
-    registration_pending:
-      'Votre inscription est en attente, vous allez reçevoir un courriel pour vous avertir lorsque votre demande sera traitée ',
-    registration_refused:
-      "Désolé, votre équipe n'est pas éligible pour cet événement vous avez été refusé",
-
-    //SNACKBAR MESSAGE
-    you_have_no_account_with_this_email_create_one:
-      "Vous n'avez de compte associé avec ce courriel! Créez votre compte!",
-    team_selected_add_your_roster:
-      'Équipe {{name}} sélectionnée! Ajoutez votre alignement. Entrez le nom des joueurs. Si le joueur à déjà un compte, il apparaîtra sous la barre de recherche.',
-    you_added_no_players_to_your_roster:
-      "Vous n'avez ajouté aucun joueur à votre alignement! Vous pouvez maintenant choisir votre option de paiement.",
-    you_added_one_player_to_your_roster:
-      'Vous avez ajouté un joueur à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
-    you_added_players_to_your_roster:
-      'Vous avez ajouté {{length}} joueurs à votre alignement! Vous pouvez maintenant choisir votre option de paiement.',
-    no_bank_account_linked:
-      "Vous n'avez pas de compte en banque relié, l'option de paiement doit être gratuite.",
-    some_teams_cannot_be_deleted:
-      "Des équipes n'ont pas pu être désinscrites de l'événement puisqu'elles sont déjà dans des parties.",
-    this_team_cannot_be_deleted:
-      "Cette équipe ne peut pas être désinscrite de l'événement puisqu'elle est déjà dans une partie.",
-    team_unregister_success: 'Équipe désinscrite avec succès',
-    teams_unregister_success: 'Équipes désinscrites avec succès',
-
-    //SIZES
-    sizes_enum: {
-      [SIZES_ENUM.XXXS]: '3X-Small',
-      [SIZES_ENUM.XXS]: '2X-Small',
-      [SIZES_ENUM.XS]: 'X-Small',
-      [SIZES_ENUM.SM]: 'Small',
-      [SIZES_ENUM.M]: 'Medium',
-      [SIZES_ENUM.L]: 'Large',
-      [SIZES_ENUM.XL]: 'X-Large',
-      [SIZES_ENUM.XXL]: '2X-Large',
-      [SIZES_ENUM.XXXL]: '3X-Large',
-    },
-    sizes_enum_xxxs: '3X-Small',
-    sizes_enum_xxs: '2X-Small',
-    sizes_enum_xs: 'X-Small',
-    sizes_enum_sm: 'Small',
-    sizes_enum_m: 'Medium',
-    sizes_enum_l: 'Large',
-    sizes_enum_xl: 'X-Large',
-    sizes_enum_xxl: '2X-Large',
-    sizes_enum_xxxl: '3X-Large',
-    xxxs: '3X-Small',
-    xxs: '2X-Small',
-    xs: 'X-Small',
-    s: 'Small',
-    m: 'Medium',
-    l: 'Large',
-    xl: 'X-Large',
-    xxl: '2X-Large',
-    xxxl: '3X-Large',
-    XXXS: '3X-Small',
-    XXS: '2X-Small',
-    XS: 'X-Small',
-    S: 'Small',
-    M: 'Medium',
-    L: 'Large',
-    XL: 'X-Large',
-    XXL: '2X-Large',
-    XXXL: '3X-Large',
-
-    //SPIRIT CATEGORY
-    rules_knowledge_and_use:
-      'Connaissances et application des règlements',
-    fouls_and_body_contact: 'Fautes et contacts',
-    fair_mindedness: 'Honnêteter et équité',
-    positive_attitude_and_self_control:
-      'Attitude positive et maîtrise de soi',
-    communication: 'Communication',
-    //PROTIP
-    you_can_click_on_your_game_to_submit_your_score:
-      'ProTip: Vous pouvez cliquer sur votre partie pour entrer votre résultat.',
-    you_can_click_on_a_game_to_change_score:
-      'ProTip: Vous pouvez cliquer sur une partie pour changer le pointage.',
-
-    //APP DESCRIPTION
-    facebook_description:
-      'Connecte ton compte Facebook pour retrouver tes amis sur Sportfolios',
-    messenger_description:
-      'Connecte ton compte Messenger pour activer le chatbot Sportfolios',
-    disconnect_app:
-      "Déconnecter l'application {{appName}} de ton compte",
-    //Z
   },
 };
