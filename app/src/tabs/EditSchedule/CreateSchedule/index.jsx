@@ -7,9 +7,12 @@ import AddPhase from './AddPhase';
 import AddTimeSlot from './AddTimeSlot';
 import AddTeam from './AddTeam';
 import AddField from './AddField';
+import { goTo, ROUTES } from '../../../actions/goTo';
+import { useParams } from 'react-router-dom';
 
 export default function ScheduleTab(props) {
   const { t } = useTranslation();
+  const { id } = useParams();
   const { update } = props;
 
   const [game, setGame] = useState(false);
@@ -101,6 +104,16 @@ export default function ScheduleTab(props) {
         className={styles.button}
       >
         {t('add_game')}
+      </Button>
+      <Button
+        size="small"
+        variant="contained"
+        endIcon="BuildIcon"
+        style={{ margin: '8px' }}
+        onClick={() => goTo(ROUTES.scheduleInteractiveTool, { id })}
+        className={styles.button}
+      >
+        {t('Interactive tool')}
       </Button>
       <AddTimeSlot isOpen={time} onClose={closeTime} />
       <AddField isOpen={field} onClose={closeField} />
