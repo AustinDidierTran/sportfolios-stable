@@ -868,11 +868,7 @@ async function addPlayerToRoster(body, userId) {
   return addPlayerToRosterHelper(body, userId);
 }
 
-async function deletePlayerFromRoster(
-  id,
-  deletedByEventAdmin,
-  userId,
-) {
+async function deletePlayerFromRoster(id, eventId, userId) {
   const {
     invoiceItemId,
     status,
@@ -881,11 +877,16 @@ async function deletePlayerFromRoster(
   } = await getPlayerInvoiceItemHelper(id);
 
   if (status === INVOICE_STATUS_ENUM.PAID) {
-    if (deletedByEventAdmin === 'true') {
-      // status is paid and event admin is removing
+    // status is paid and event admin is removing
+    if (await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
       await createRefund({ invoiceItemId });
+      await updatePlayerPaymentStatusHelper({
+        metadata: { buyerId: personId },
+        rosterId,
+        status: INVOICE_STATUS_ENUM.REFUNDED,
+        invoiceItemId,
+      });
     } else {
-      // captain tried to remove player that has already paid
       return ERROR_ENUM.ACCESS_DENIED;
     }
   } else if (status === INVOICE_STATUS_ENUM.OPEN) {
@@ -896,11 +897,7 @@ async function deletePlayerFromRoster(
     });
   }
 
-  return deletePlayerFromRosterHelper(
-    id,
-    deletedByEventAdmin,
-    userId,
-  );
+  return deletePlayerFromRosterHelper(id);
 }
 
 async function deleteGame(userId, query) {

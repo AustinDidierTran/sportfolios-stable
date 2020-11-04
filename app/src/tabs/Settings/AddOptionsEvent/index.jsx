@@ -178,7 +178,11 @@ export default function AddOptionsEvent() {
   };
 
   if (isLoading) {
-    return <LoadingSpinner isComponent />;
+    return (
+      <Paper title={t('add_payment_options')}>
+        <LoadingSpinner isComponent />
+      </Paper>
+    );
   }
 
   return (

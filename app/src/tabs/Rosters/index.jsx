@@ -30,11 +30,11 @@ export default function TabRosters(props) {
     return data;
   };
 
-  const deletePlayerFromRoster = async (id, deletedByEventAdmin) => {
+  const deletePlayerFromRoster = async id => {
     const res = await api(
       formatRoute('/api/entity/deletePlayerFromRoster', null, {
         id,
-        deletedByEventAdmin,
+        eventId,
       }),
       {
         method: 'DELETE',
@@ -69,8 +69,8 @@ export default function TabRosters(props) {
     return data;
   };
 
-  const onDelete = async (id, deleteByAdmin) => {
-    await deletePlayerFromRoster(id, deleteByAdmin);
+  const onDelete = async id => {
+    await deletePlayerFromRoster(id);
     await getData();
   };
 

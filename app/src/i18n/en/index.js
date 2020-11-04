@@ -76,7 +76,7 @@ export default {
     are_you_sure_you_want_to_unregister_all_teams:
       'Are you sure you want to unregister all teams and refund all team and individual payments related to them (if applicable)?',
     are_you_sure_you_want_to_unregister_this_team:
-      'Are you sure you want to unregister this team and refund all team and individual payments related ot it (if applicable)?',
+      'Are you sure you want to unregister this team and refund all team and individual payments related to it (if applicable)?',
     at: 'at',
     athlete_history: 'Athlete history',
     awaiting_payments: 'Awaiting payments',
@@ -99,7 +99,7 @@ export default {
     cant_add_product_no_bank_account:
       "Can't add product admin has no bank account",
     cant_delete_paid_player:
-      "You can't remove this player from the roster since he already has paid. Contact the event organizer for help.",
+      "You can't remove this player from the roster since he already paid. Contact an event organizer for help.",
     cant_transfer_person_to_your_own_email:
       "You can't transfer someone to your own email",
     cant_unregister_all_teams:

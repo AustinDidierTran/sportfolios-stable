@@ -929,7 +929,7 @@ router.post(`${BASE_URL}/addNewPersonToRoster`, async ctx => {
 router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
   const res = await queries.deletePlayerFromRoster(
     ctx.query.id,
-    ctx.query.deletedByEventAdmin,
+    ctx.query.eventId,
     ctx.body.userInfo.id,
   );
 
