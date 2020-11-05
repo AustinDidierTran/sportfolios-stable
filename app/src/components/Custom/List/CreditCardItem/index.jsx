@@ -13,7 +13,7 @@ import { AlertDialog } from '../../Dialog';
 export default function CreditCardItem(props) {
   const { t } = useTranslation();
   const { last4, createdAt, isDefault, customerId, update } = props;
-  const [openDelete, setOpenDelete] = useState();
+  const [openDelete, setOpenDelete] = useState(false);
 
   const onChange = async () => {
     await api('/api/stripe/defaultCreditCard', {

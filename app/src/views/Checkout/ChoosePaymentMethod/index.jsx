@@ -103,14 +103,14 @@ export default function ChoosePaymentMethod(props) {
       {paymentMethods.length ? (
         <>
           <Button
-            color="lightGrey"
+            color="default"
             style={{ margin: '4px' }}
             onClick={() => goTo(ROUTES.userSettings)}
           >
             {t('edit_credit_cards')}
           </Button>
           <Button
-            color="lightGrey"
+            color="default"
             style={{ margin: '4px' }}
             onClick={() =>
               goTo(ROUTES.addPaymentMethod, null, {
