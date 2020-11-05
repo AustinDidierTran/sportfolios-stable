@@ -15,6 +15,7 @@ export default function DefaultHeader(props) {
     Item2 = () => <></>,
     Item3 = () => <></>,
     Item4 = () => <></>,
+    showBar = true,
   } = props;
 
   const It1 = () => {
@@ -52,11 +53,12 @@ export default function DefaultHeader(props) {
   };
 
   if (screenSize !== SCREENSIZE_ENUM.xs) {
-    return <LoggedIn />;
+    return <LoggedIn showBar={showBar} />;
   }
   return (
-    <div>
-      <AppBar position="static">
+    // mobile here
+    <div className={styles.barHeight}>
+      <AppBar position="static" className={styles.appBar}>
         <Toolbar>
           <div className={styles.container}>
             <It1 />

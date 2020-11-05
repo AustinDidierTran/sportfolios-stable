@@ -263,6 +263,7 @@ export default {
     informations_saved: 'Informations saved',
     infos: 'Infos',
     institution_number: 'Institution number',
+    interactive_tool: 'Interactive tool',
     invalid_date: 'Invalid date. It should follow: yyyy-mm-dd',
     invalid_email: 'Invalid email address.',
     invalid_input: 'Invalid input',

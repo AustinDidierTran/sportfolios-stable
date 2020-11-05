@@ -12,49 +12,56 @@ import styles from './LoggedIn.module.css';
 import useStyles from './useStyles';
 import CartIcon from '../../Cart/CartICon';
 
-export default function LoggedIn() {
+export default function LoggedIn(props) {
   const classes = useStyles();
   const {
     state: { userInfo = {}, screenSize },
   } = useContext(Store);
+  const { showBar = true } = props;
   if (screenSize !== SCREENSIZE_ENUM.xs) {
-    return (
-      <div className={classes.grow}>
-        <AppBar
-          position="static"
-          style={{ position: 'fixed', top: 0 }}
-        >
-          <Toolbar>
-            <Typography className={classes.title} variant="h6" noWrap>
-              <Link to={'/'} className={classes.titleLink}>
-                Sportfolios
-              </Link>
-            </Typography>
-            <SearchInput apiRoute="/api/data/search/previous" />
-            <div className={classes.grow} />
-            <div className={styles.sectionDesktop}>
-              <IconButton
-                color="inherit"
-                icon="Settings"
-                onClick={() => goTo(ROUTES.userSettings)}
-              />
-              <IconButton
-                color="inherit"
-                icon="AccountCircle"
-                onClick={() =>
-                  goTo(ROUTES.entity, {
-                    id: userInfo.primaryPerson.entity_id,
-                  })
-                }
-              />
-              <NotificationModule />
-              <CartIcon />
-            </div>
-          </Toolbar>
-        </AppBar>
-      </div>
-    );
+    {
+      return showBar ? (
+        <div className={classes.grow}>
+          <AppBar position="static" className={styles.appBar}>
+            <Toolbar>
+              <Typography
+                className={classes.title}
+                variant="h6"
+                noWrap
+              >
+                <Link to={'/'} className={classes.titleLink}>
+                  Sportfolios
+                </Link>
+              </Typography>
+              <SearchInput apiRoute="/api/data/search/previous" />
+              <div className={classes.grow} />
+              <div className={styles.sectionDesktop}>
+                <IconButton
+                  color="inherit"
+                  icon="Settings"
+                  onClick={() => goTo(ROUTES.userSettings)}
+                />
+                <IconButton
+                  color="inherit"
+                  icon="AccountCircle"
+                  onClick={() =>
+                    goTo(ROUTES.entity, {
+                      id: userInfo.primaryPerson.entity_id,
+                    })
+                  }
+                />
+                <NotificationModule />
+                <CartIcon />
+              </div>
+            </Toolbar>
+          </AppBar>
+        </div>
+      ) : (
+        <></>
+      );
+    }
   }
+  // mobile here
   return (
     <div className={classes.grow}>
       <AppBar position="static" className={styles.appBar}>

@@ -34,13 +34,14 @@ export default function Header() {
 
     if (
       [
-        'cart',
-        'menu',
-        'organizationList',
         'addPaymentMethod',
-        'orderProcessed',
+        'cart',
         'checkout',
+        'menu',
+        'orderProcessed',
+        'organizationList',
         'registrationStatus',
+        'scheduleInteractiveTool',
       ].includes(pth)
     ) {
       setPath(pth);
@@ -64,30 +65,9 @@ export default function Header() {
 
   if (isAuthenticated) {
     switch (path) {
-      case 'cart':
-        return (
-          <Default
-            Item1={() => (
-              <Typography style={{ fontSize: '24px' }}>
-                {'Cart'}
-              </Typography>
-            )}
-            Item4={() => <CartIcon />}
-          />
-        );
-
       case 'addPaymentMethod':
-        return (
-          <Default
-            Item1={() => (
-              <Typography style={{ fontSize: '24px' }}>
-                {'Checkout'}
-              </Typography>
-            )}
-            Item4={() => <CartIcon />}
-          />
-        );
-
+      case 'checkout':
+      case 'orderProcessed':
       case 'registrationStatus':
         return (
           <Default
@@ -100,12 +80,12 @@ export default function Header() {
           />
         );
 
-      case 'orderProcessed':
+      case 'cart':
         return (
           <Default
             Item1={() => (
               <Typography style={{ fontSize: '24px' }}>
-                {'Checkout'}
+                {'Cart'}
               </Typography>
             )}
             Item4={() => <CartIcon />}
@@ -124,55 +104,13 @@ export default function Header() {
           />
         );
 
-      case 'checkout':
-        return (
-          <Default
-            Item1={() => (
-              <Typography style={{ fontSize: '24px' }}>
-                {'Checkout'}
-              </Typography>
-            )}
-            Item4={() => <CartIcon />}
-          />
-        );
-
-      case GLOBAL_ENUM.PERSON:
-        return (
-          <Default
-            Item2={() => (
-              <Typography style={{ fontSize: '16px' }}>
-                {entity.name}
-              </Typography>
-            )}
-            Item4={() => <CartIcon />}
-          />
-        );
-
-      case GLOBAL_ENUM.ORGANIZATION:
-        return (
-          <Default
-            Item2={() => (
-              <Typography style={{ fontSize: '16px' }}>
-                {entity.name}
-              </Typography>
-            )}
-            Item4={() => <CartIcon />}
-          />
-        );
-
-      case GLOBAL_ENUM.TEAM:
-        return (
-          <Default
-            Item2={() => (
-              <Typography style={{ fontSize: '16px' }}>
-                {entity.name}
-              </Typography>
-            )}
-            Item4={() => <CartIcon />}
-          />
-        );
+      case 'scheduleInteractiveTool':
+        return <Default showBar={false} />;
 
       case GLOBAL_ENUM.EVENT:
+      case GLOBAL_ENUM.ORGANIZATION:
+      case GLOBAL_ENUM.PERSON:
+      case GLOBAL_ENUM.TEAM:
         return (
           <Default
             Item2={() => (

@@ -8,6 +8,10 @@ import { AppBar, Toolbar, Typography } from '../../../components/MUI';
 const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1,
+    height: '56px',
+    [theme.breakpoints.up('sm')]: {
+      height: '64px',
+    },
   },
   title: {
     display: 'block',
@@ -51,7 +55,7 @@ export default function LoggedOut() {
 
   return (
     <div className={classes.grow}>
-      <AppBar position="static">
+      <AppBar position="static" style={{ position: 'fixed', top: 0 }}>
         <Toolbar>
           <Typography
             className={classes.title}
