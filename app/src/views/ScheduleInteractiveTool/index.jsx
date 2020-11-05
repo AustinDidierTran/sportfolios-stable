@@ -157,9 +157,9 @@ export default function ScheduleInteractiveTool() {
     <div>
       <GridLayout
         className={styles.gridLayout}
-        cols={fields?.length + 2}
+        cols={fields?.length + 1}
         rowHeight={64}
-        width={window.screen.width}
+        width={(fields?.length + 1) * 192}
         preventCollision
         compactType={null}
         margin={[20, 20]}
