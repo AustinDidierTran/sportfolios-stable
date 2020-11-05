@@ -309,4 +309,35 @@ router.post(`${BASE_URL}/createRefund`, async ctx => {
   };
 });
 
+router.put(`${BASE_URL}/defaultCreditCard`, async ctx => {
+  const card = await queries.updateDefaultCreditCard(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (card) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: card,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.del(`${BASE_URL}/creditCard`, async ctx => {
+  const data = await queries.deleteCreditCard(
+    ctx.query,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 module.exports = router;

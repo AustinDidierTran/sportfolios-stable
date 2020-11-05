@@ -4,6 +4,7 @@ import {
 } from '../../../../../common/enums';
 import AppItem from './AppItem';
 import CartItem from './CartItem';
+import CreditCardItem from './CreditCardItem';
 import DefaultItem from './DefaultItem';
 import EventCreatorItem from './EventCreatorItem';
 import EventItem from './EventItem';
@@ -29,6 +30,7 @@ const ItemMap = {
   [GLOBAL_ENUM.TEAM]: TeamItem,
   [LIST_ITEM_ENUM.APP_ITEM]: AppItem,
   [LIST_ITEM_ENUM.CART]: CartItem,
+  [LIST_ITEM_ENUM.CREDIT_CARD]: CreditCardItem,
   [LIST_ITEM_ENUM.EVENT_CREATOR]: EventCreatorItem,
   [LIST_ITEM_ENUM.EVENT_PAYMENT_OPTION]: EventPaymentOptionItem,
   [LIST_ITEM_ENUM.MEMBER]: MemberItem,

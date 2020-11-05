@@ -10,7 +10,6 @@ import {
 } from '../../components/Custom';
 import CountrySelect from '../../tabs/Settings/Stripe/Form/CountrySelect';
 import CardSection from '../../utils/stripe/Payment/CardSection';
-
 import styles from './AddPaymentMethod.module.css';
 import { useTranslation } from 'react-i18next';
 import {
@@ -19,18 +18,19 @@ import {
   useStripe,
 } from '@stripe/react-stripe-js';
 import api from '../../actions/api';
-import { goTo, ROUTES } from '../../actions/goTo';
+import { goTo } from '../../actions/goTo';
 import { Store, ACTION_ENUM } from '../../Store';
 import { SEVERITY_ENUM } from '../../../../common/enums';
+import { useQuery } from '../../hooks/queries';
 
 export default function AddPaymentMethod() {
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
   const stripe = useStripe();
   const elements = useElements();
+  const { redirect } = useQuery();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const isANumber = number => isNaN(Number(number));
 
   const validate = values => {
@@ -77,7 +77,6 @@ export default function AddPaymentMethod() {
 
     return errors;
   };
-
   const formik = useFormik({
     initialValues: {},
     validate,
@@ -101,10 +100,10 @@ export default function AddPaymentMethod() {
           setIsLoading(false);
           dispatch({
             type: ACTION_ENUM.SNACK_BAR,
-            message: t('payment_method_added'),
+            message: t('credit_card_added'),
             severity: SEVERITY_ENUM.SUCCESS,
           });
-          goTo(ROUTES.checkout);
+          goTo(redirect);
         }
 
         setIsSubmitting(false);

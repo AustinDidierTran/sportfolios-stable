@@ -6,6 +6,7 @@ import BasicInfo from './BasicInfo';
 import ChangePassword from './ChangePassword';
 import Disconnect from './Disconnect';
 import Email from './Email';
+import CreditCards from './CreditCards';
 import { IgContainer, LoadingSpinner } from '../../components/Custom';
 import { formatPageTitle } from '../../utils/stringFormats';
 import { useTranslation } from 'react-i18next';
@@ -36,6 +37,7 @@ export default function UserSettings() {
         <Email />
         <MyPersons />
         <AppLinking />
+        <CreditCards />
         <Disconnect />
         <BottomPageLogo />
       </IgContainer>
