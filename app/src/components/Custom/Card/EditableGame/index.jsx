@@ -40,8 +40,12 @@ export default function EditableGameItem(props) {
     }
   };
 
-  useEffect(() => saveScore(), [theTeams]);
-  useEffect(() => save(), [fieldInput.value, timeInput.value]);
+  useEffect(() => {
+    saveScore();
+  }, [theTeams]);
+  useEffect(() => {
+    save();
+  }, [fieldInput.value, timeInput.value]);
 
   return (
     <Card className={styles.game}>

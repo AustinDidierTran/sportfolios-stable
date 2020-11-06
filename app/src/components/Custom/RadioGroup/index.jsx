@@ -6,10 +6,22 @@ import {
   RadioGroup,
   FormControlLabel,
 } from '@material-ui/core';
+import styles from './RadioGroup.module.css';
 
 export default function CustomRadioGroup(props) {
-  const { namespace, options, title, value, onChange } = props;
+  const {
+    namespace,
+    options,
+    title,
+    value,
+    onChange,
+    centered,
+  } = props;
 
+  let className = styles.radio;
+  if (centered) {
+    className = styles.centered;
+  }
   return (
     <FormControl component="fieldset">
       <FormLabel component="legend">{title}</FormLabel>
@@ -18,6 +30,7 @@ export default function CustomRadioGroup(props) {
         name={namespace}
         value={value}
         onChange={onChange}
+        className={className}
       >
         {options.map((option, index) => (
           <FormControlLabel

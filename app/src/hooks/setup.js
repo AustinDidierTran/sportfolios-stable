@@ -35,7 +35,7 @@ export const useFacebookSDK = () => {
     })(document, 'script', 'facebook-jssdk');
   };
 
-  useEffect(() => loadFbLoginApi(userInfo.language), [
-    userInfo.language,
-  ]);
+  useEffect(() => {
+    loadFbLoginApi(userInfo.language);
+  }, [userInfo.language]);
 };

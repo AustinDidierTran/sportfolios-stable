@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '../../../actions/api';
 import {
   Button,
@@ -15,64 +15,63 @@ import { LOGO_ENUM } from '../../../../../common/enums';
 import { formatPrice } from '../../../utils/stringFormats';
 
 export default function ChoosePaymentMethod(props) {
-  const { paymentMethod, response } = props;
+  const { response } = props;
   const { t } = useTranslation();
   const [paymentMethods, setPaymentMethods] = useState([]);
+  const [paymentMethod, setPaymentMethod] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [
-    isGettingPaymentMethod,
-    setIsGettingPaymentMethod,
-  ] = useState(false);
+  const [isPaying, setIsPaying] = useState(false);
 
   const getPaymentMethods = async () => {
-    setIsGettingPaymentMethod(true);
+    setIsLoading(true);
     const { data } = await api('/api/stripe/paymentMethods');
+    data.forEach(d => {
+      if (d.is_default) {
+        setPaymentMethod(d.payment_method_id);
+      }
+    });
     const pms = data.map(d => ({
       display: t('card_ending_with', { last4: d.last4 }),
       value: d.payment_method_id,
       last4: d.last4,
     }));
     setPaymentMethods(pms);
-    if (paymentMethod) paymentMethod.changeDefault(pms[0]?.value);
-    setIsGettingPaymentMethod(false);
+    setIsLoading(false);
   };
 
   useEffect(() => {
     getPaymentMethods();
   }, []);
 
-  const paymentDisabled = useMemo(
-    () => !Boolean(paymentMethod.value),
-    [paymentMethod.value],
-  );
-
   const pay = async () => {
-    setIsLoading(true);
+    setIsPaying(true);
     const {
       data: {
         invoice: { amount_paid: amountPaid },
         receiptUrl,
       },
       status,
-    } = await checkout(paymentMethod.value);
-
+    } = await checkout(paymentMethod);
     if (status === 200) {
       goTo(ROUTES.orderProcessed, null, {
         paid: amountPaid,
-        last4: paymentMethods.find(
-          p => p.value === paymentMethod.value,
-        ).last4,
+        last4: paymentMethods.find(p => p.value === paymentMethod)
+          .last4,
         receiptUrl,
       });
     }
-    setIsLoading(false);
+    setIsPaying(false);
   };
 
-  if (isGettingPaymentMethod) {
+  const onChange = event => {
+    setPaymentMethod(event.target.value);
+  };
+
+  if (isLoading) {
     return <LoadingSpinner />;
   }
 
-  if (isLoading) {
+  if (isPaying) {
     return (
       <div>
         <div className={styles.logo}>
@@ -82,37 +81,6 @@ export default function ChoosePaymentMethod(props) {
         <LoadingSpinner isComponent />
       </div>
     );
-  }
-
-  if (!paymentMethods.length) {
-    return (
-      <div style={{ textAlign: 'center' }}>
-        <div className={styles.logo}>
-          <img className={styles.img} src={LOGO_ENUM.LOGO} />
-        </div>
-        <Typography variant="h6">
-          {t('amount_to_pay', { amount: formatPrice(response) })}
-        </Typography>
-        <Typography
-          variant="body2"
-          color="textSecondary"
-          component="p"
-          style={{ margin: '8px' }}
-        >
-          {t('no_payment_method')}
-        </Typography>
-        <Button
-          style={{ textAlign: 'center' }}
-          onClick={() => goTo(ROUTES.addPaymentMethod)}
-        >
-          {t('add_payment_method')}
-        </Button>
-      </div>
-    );
-  }
-
-  if (!paymentMethod.value) {
-    return <></>;
   }
 
   return (
@@ -127,24 +95,49 @@ export default function ChoosePaymentMethod(props) {
         namespace="paymentMethod"
         options={paymentMethods}
         title={t('select_payment_method')}
-        {...paymentMethod.inputProps}
+        onChange={onChange}
+        value={paymentMethod}
+        centered
       />
       <br />
-      <Button
-        style={{
-          textAlign: 'center',
-          backgroundColor: paymentMethods.length
-            ? 'lightGrey'
-            : 'primary',
-        }}
-        onClick={() => goTo(ROUTES.addPaymentMethod)}
-      >
-        {t('add_payment_method')}
-      </Button>
+      {paymentMethods.length ? (
+        <>
+          <Button
+            color="default"
+            style={{ margin: '4px' }}
+            onClick={() => goTo(ROUTES.userSettings)}
+          >
+            {t('edit_credit_cards')}
+          </Button>
+          <Button
+            color="default"
+            style={{ margin: '4px' }}
+            onClick={() =>
+              goTo(ROUTES.addPaymentMethod, null, {
+                redirect: ROUTES.checkout,
+              })
+            }
+          >
+            {t('add_credit_card')}
+          </Button>
+        </>
+      ) : (
+        <Button
+          color="primary"
+          style={{ marginTop: '8px' }}
+          onClick={() =>
+            goTo(ROUTES.addPaymentMethod, null, {
+              redirect: ROUTES.checkout,
+            })
+          }
+        >
+          {t('add_credit_card')}
+        </Button>
+      )}
 
       <ContainerBottomFixed>
         <Button
-          disabled={paymentDisabled}
+          disabled={!paymentMethod}
           onClick={pay}
           style={{ margin: 8 }}
         >

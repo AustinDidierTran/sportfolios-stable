@@ -3,30 +3,32 @@ const {
   addPrice,
   addProduct,
   checkout: checkoutHelper,
-  createCustomer,
   createAccountLink,
+  createCustomer,
   createExternalAccount,
   createInvoice,
   createInvoiceItem,
   createItem: createItemHelper,
-  editItem: editItemHelper,
-  deleteItem: deleteItemHelper,
   createPaymentMethod: createPaymentMethodHelper,
   createRefund: createRefundHelper,
+  deleteItem: deleteItemHelper,
+  editItem: editItemHelper,
   eventHasBankAccount: eventHasBankAccountHelper,
   finalizeInvoice: finalizeInvoiceHelper,
   getCustomer: getCustomerHelper,
   getCustomerId: getCustomerIdHelper,
   getOrCreateCustomer,
+  getPaymentMethods: getPaymentMethodsHelper,
   getReceipt: getReceiptHelper,
   getStripeAccount: getStripeAccountHelper,
   hasStripeAccount: hasStripeAccountHelper,
   hasStripeBankAccount: hasStripeBankAccountHelper,
   payInvoice: payInvoiceHelper,
-  getPaymentMethods: getPaymentMethodsHelper,
   removePaymentMethodCustomer,
   sendReceiptEmail: sendReceiptEmailHelper,
   sendRegistrationEmail: sendRegistrationEmailHelper,
+  updateDefaultCreditCard: updateDefaultCreditCardHelper,
+  deleteCreditCard: deleteCreditCardHelper,
 } = require('../helpers/stripe');
 
 const getAccountLink = async (entity_id, ip) => {
@@ -146,6 +148,12 @@ const sendRegistrationEmail = async (body, userId) => {
 const createRefund = async (body, userId) => {
   return createRefundHelper(body, userId);
 };
+const updateDefaultCreditCard = async (body, userId) => {
+  return updateDefaultCreditCardHelper(body, userId);
+};
+const deleteCreditCard = async (body, userId) => {
+  return deleteCreditCardHelper(body, userId);
+};
 
 module.exports = {
   addCustomer,
@@ -155,12 +163,13 @@ module.exports = {
   attachPaymentMethod,
   checkout,
   createItem,
-  editItem,
-  deleteItem,
+  createPaymentMethod,
   createPrice,
   createProduct,
   createRefund,
+  deleteItem,
   detachPaymentMethod,
+  editItem,
   eventHasBankAccount,
   finalizeInvoice,
   getAccountLink,
@@ -172,7 +181,8 @@ module.exports = {
   hasStripeAccount,
   hasStripeBankAccount,
   payInvoice,
-  createPaymentMethod,
   sendReceiptEmail,
   sendRegistrationEmail,
+  updateDefaultCreditCard,
+  deleteCreditCard,
 };

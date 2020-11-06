@@ -1,4 +1,5 @@
 const Router = require('koa-router');
+const { STATUS_ENUM } = require('../../../../../common/enums');
 const queries = require('../../../db/queries/stripe');
 
 const router = new Router();
@@ -301,6 +302,37 @@ router.post(`${BASE_URL}/sendRegistrationEmail`, async ctx => {
 router.post(`${BASE_URL}/createRefund`, async ctx => {
   const data = await queries.createRefund(
     ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
+router.put(`${BASE_URL}/defaultCreditCard`, async ctx => {
+  const card = await queries.updateDefaultCreditCard(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (card) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: card,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.del(`${BASE_URL}/creditCard`, async ctx => {
+  const data = await queries.deleteCreditCard(
+    ctx.query,
     ctx.body.userInfo.id,
   );
   ctx.body = {

@@ -46,12 +46,16 @@ const createCustomer = async (body, userId, paymentMethod) => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   try {
+    await knex('stripe_customer')
+      .update({ is_default: false })
+      .where({ user_id: userId });
     await knex('stripe_customer').insert({
       user_id: userId,
       customer_id: customer.id,
       informations: customer,
       payment_method_id: paymentMethodId,
       last4,
+      is_default: true,
     });
   } catch (err) {
     stripeErrorLogger(
@@ -173,6 +177,37 @@ const removePaymentMethodCustomer = async body => {
   });
 };
 
+const updateDefaultCreditCard = async (body, userId) => {
+  const { customerId } = body;
+  await knex('stripe_customer')
+    .update({ is_default: false })
+    .where({ user_id: userId });
+  const res = await knex('stripe_customer')
+    .update({ is_default: true })
+    .where({ customer_id: customerId })
+    .returning('*');
+  return res;
+};
+
+const deleteCreditCard = async (body, userId) => {
+  const { customerId } = body;
+  const [res] = await knex('stripe_customer')
+    .where({ customer_id: customerId })
+    .del()
+    .returning('*');
+  if (res.is_default) {
+    const [creditCard] = await knex('stripe_customer')
+      .select('*')
+      .where({ user_id: userId });
+    if (creditCard) {
+      await knex('stripe_customer')
+        .update({ is_default: true })
+        .where({ customer_id: creditCard.customer_id });
+    }
+  }
+  return res;
+};
+
 module.exports = {
   addPaymentMethodCustomer,
   createCustomer,
@@ -183,4 +218,6 @@ module.exports = {
   getPaymentMethodId,
   getPaymentMethods,
   removePaymentMethodCustomer,
+  updateDefaultCreditCard,
+  deleteCreditCard,
 };

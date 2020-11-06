@@ -18,6 +18,7 @@ export default {
     actions: 'Actions',
     add_admin: 'Ajouter admin',
     add_bank_account: 'Ajouter le compte bancaire',
+    add_credit_card: 'Ajouter une carte de crédit',
     add_editor: 'Ajouter éditeur',
     add_existing_person: 'Ajouter une personne existante',
     add_field: 'Ajouter un terrain',
@@ -65,6 +66,8 @@ export default {
     and_lowerCased: 'et',
     anonymous: 'Anonyme',
     app_role: 'App Role',
+    are_you_sure_you_want_to_unregister_all_teams:
+      "Êtes-vous sûr de vouloir désinscrire toutes les équipes et de rembourser tous les paiements d'équipes et individuels en lien avec celles-ci (si applicable)?",
     are_you_sure_you_want_to_unregister_this_team:
       "Êtes-vous sûr de vouloir désinscrire cette équipe et de rembourser tous les paiements d'équipes et individuels en lien evec celle-ci (si applicable)?",
     at: 'à',
@@ -138,10 +141,17 @@ export default {
     create_organization: 'Créer une organisation',
     create_person: 'Créer une personne',
     create_team: 'Créer une équipe',
+    created_on: 'Créé le',
     created_by: 'Créé par {{name}}',
+    credit_card: 'Carte de crédit',
+    credit_cards: 'Cartes de crédits',
+    credit_card_added: 'Carte de crédit ajoutée',
     currency: 'Devise',
     decline: 'Refuser',
+    default: 'Par défaut',
     delete_confirmation_text: 'Pour supprimer, écrivez {{name}}',
+    delete_credit_card_confirmation:
+      'Êtes-vous certain de vouloir supprimer votre carte de crédit finissant par {{last4}}',
     delete_game_confirmation:
       'Êtes-vous certain de vouloir supprimer cette partie?',
     delete_membership_confirmation:
@@ -172,6 +182,7 @@ export default {
     do_not_specify: 'Ne pas spécifier',
     donate: 'Faites un don',
     done: 'Terminé',
+    edit_credit_cards: 'Modifier les cartes de crédits',
     edit_game: 'Modifier la partie',
     edit_infos: 'Modifier les infos',
     edit_membership: 'Modifier une affiliation',

@@ -237,7 +237,9 @@ const LIST_ITEM_ENUM = {
   APP_ITEM: 'app item',
   CART_ITEM: 'cart item',
   CART: 'cart',
+  CREDIT_CARD: 'credit card',
   EVENT_CREATOR: 'event creator',
+  EVENT_PAYMENT_OPTION: 'event_payment_option',
   MEMBER: 'member',
   MEMBERSHIP_DETAIL: 'membership detail',
   MEMBERSHIP_ORGANIZATION: 'membership organization',
@@ -249,7 +251,6 @@ const LIST_ITEM_ENUM = {
   ROSTER_ITEM: 'roster item',
   SALES: 'sales',
   SHOP_ITEM: 'shop item',
-  EVENT_PAYMENT_OPTION: 'event_payment_option',
 };
 
 const MILLIS_TIME_ENUM = {

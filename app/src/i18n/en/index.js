@@ -18,6 +18,7 @@ export default {
     actions: 'Actions',
     add_admin: 'Add Admin',
     add_bank_account: 'Add bank account',
+    add_credit_card: 'Add credit card',
     add_editor: 'Add editor',
     add_existing_person: 'Add existing person',
     add_field: 'Add field',
@@ -65,6 +66,8 @@ export default {
     and_lowerCased: 'and',
     anonymous: 'Anonymous',
     app_role: 'App Role',
+    are_you_sure_you_want_to_unregister_all_teams:
+      'Are you sure you want to unregister all teams and refund all team and individual payments related to them (if applicable)?',
     are_you_sure_you_want_to_unregister_this_team:
       'Are you sure you want to unregister this team and refund all team and individual payments related to it (if applicable)?',
     at: 'at',
@@ -135,11 +138,18 @@ export default {
     create_organization: 'Create Organization',
     create_person: 'Create Person',
     create_team: 'Create Team',
+    created_on: 'Created on',
     created_by: 'Created by {{name}}',
+    credit_card: 'Credit card',
+    credit_cards: 'Credit cards',
+    credit_card_added: 'Credit card added',
     currency: 'Currency',
     date_in_future: 'Date is in the future',
     decline: 'Decline',
+    default: 'Default',
     delete_confirmation_text: 'To delete, type {{name}}',
+    delete_credit_card_confirmation:
+      'Are you sure you want to delete your credit card ending with {{last4}}',
     delete_game_confirmation:
       'Are you sure you want to delete this game?',
     delete_membership_confirmation:
@@ -168,6 +178,7 @@ export default {
     do_not_specify: 'Do not specify',
     donate: 'Donate',
     done: 'Done',
+    edit_credit_cards: 'Edit credit cards',
     edit_game: 'Edit game',
     edit_infos: 'Edit infos',
     edit_membership: 'Edit membership',
