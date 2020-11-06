@@ -66,6 +66,8 @@ export default {
     and_lowerCased: 'and',
     anonymous: 'Anonymous',
     app_role: 'App Role',
+    are_you_sure_you_want_to_unregister_all_teams:
+      'Are you sure you want to unregister all teams and refund all team and individual payments related to them (if applicable)?',
     are_you_sure_you_want_to_unregister_this_team:
       'Are you sure you want to unregister this team and refund all team and individual payments related to it (if applicable)?',
     at: 'at',
