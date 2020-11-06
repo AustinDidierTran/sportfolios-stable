@@ -410,6 +410,18 @@ async function addTeamToEvent(body, userId) {
   return { status: registrationStatus, rosterId };
 }
 
+async function getInteractiveToolData(eventId, userId) {
+  if (!(await isAllowed(eventId, userId), ENTITIES_ROLE_ENUM.ADMIN)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return {
+    timeSlots: await getSlots(eventId),
+    fields: await getFields(eventId),
+    games: await getGames(eventId),
+  };
+}
+
 async function getOptions(eventId) {
   return getOptionsHelper(eventId);
 }
@@ -963,6 +975,7 @@ module.exports = {
   getEvent,
   getFields,
   getGames,
+  getInteractiveToolData,
   getTeamGames,
   getPhasesGameAndTeams,
   getGeneralInfos,

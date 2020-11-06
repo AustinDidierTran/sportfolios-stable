@@ -37,48 +37,32 @@ export default function ScheduleInteractiveTool() {
   const [fields, setFields] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getSlots = async () => {
-    const { data } = await api(
-      formatRoute('/api/entity/slots', null, { eventId }),
-    );
-    const res = data.map((d, index) => ({
-      ...d,
-      slotId: index + 1,
-    }));
-    //console.log(res);
-    setTimeslots(res);
-  };
-
-  const getFields = async () => {
-    const { data } = await api(
-      formatRoute('/api/entity/fields', null, { eventId }),
-    );
-    const res = data.map((f, index) => ({
-      ...f,
-      fieldId: index + 1,
-    }));
-    //console.log(res);
-    setFields(res);
-  };
-
-  const getGames = async () => {
-    const { data } = await api(
-      formatRoute('/api/entity/games', null, { eventId }),
-    );
-    //console.log(data);
-    setGames(data);
-  };
-
-  const getAll = async () => {
+  const getData = async () => {
     setIsLoading(true);
-    await getSlots();
-    await getFields();
-    await getGames();
+    const { data } = await api(
+      formatRoute('/api/entity/interactiveTool', null, { eventId }),
+    );
+
+    setFields(
+      data.fields.map((f, index) => ({
+        ...f,
+        fieldId: index + 1,
+      })),
+    );
+    setTimeslots(
+      data.timeSlots.map((ts, index) => ({
+        ...ts,
+        slotId: index + 1,
+      })),
+    );
+    setGames(data.games);
+    //console.log(data);
+
     setIsLoading(false);
   };
 
   useEffect(() => {
-    getAll();
+    getData();
   }, []);
 
   const Fields = fields.map((f, index) => (
@@ -128,23 +112,27 @@ export default function ScheduleInteractiveTool() {
       }}
     >
       <Card className={styles.gameCard}>
-        <div className={styles.gameDiv}>
-          <Tooltip title={g.teams[0].name}>
+        <Tooltip
+          title={`${g.teams[0].name} vs ${g.teams[1].name}, ${
+            g.field
+          }, ${formatDate(moment(g.start_time), 'DD MMM HH:mm')}`}
+          enterDelay={500}
+          //leaveDelay={200}
+        >
+          <div className={styles.gameDiv}>
             <div className={styles.team1}>
               <Avatar
                 initials={getInitialsFromName(g.teams[0].name)} // or team pic?
               ></Avatar>
             </div>
-          </Tooltip>
-          <Typography className={styles.vs}>vs</Typography>
-          <Tooltip title={g.teams[1].name}>
+            <Typography className={styles.vs}>vs</Typography>
             <div className={styles.team2}>
               <Avatar
                 initials={getInitialsFromName(g.teams[1].name)} // or team pic?
               ></Avatar>
             </div>
-          </Tooltip>
-        </div>
+          </div>
+        </Tooltip>
       </Card>
     </div>
   ));

@@ -116,7 +116,7 @@ export default function ScheduleTab(props) {
         <Button
           size="small"
           variant="contained"
-          endIcon="BuildIcon"
+          endIcon="Build"
           style={{ margin: '8px' }}
           onClick={() => goTo(ROUTES.scheduleInteractiveTool, { id })}
           className={styles.button}

@@ -9,7 +9,7 @@ import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import Assignment from '@material-ui/icons/Assignment';
 import AttachMoney from '@material-ui/icons/AttachMoney';
 import Autorenew from '@material-ui/icons/Autorenew';
-import BuildIcon from '@material-ui/icons/Build';
+import Build from '@material-ui/icons/Build';
 import Business from '@material-ui/icons/Business';
 import Cancel from '@material-ui/icons/Cancel';
 import CancelSend from '@material-ui/icons/CancelScheduleSend';
@@ -75,7 +75,7 @@ const icons = {
   Assignment,
   AttachMoney,
   Autorenew,
-  BuildIcon,
+  Build,
   Business,
   Check,
   Close,
