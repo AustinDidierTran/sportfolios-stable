@@ -28,7 +28,7 @@ export default function NotificationList(props) {
         }
         disablePadding
       >
-        {notifications.length > 0 ? (
+        {notifications?.length > 0 ? (
           notifications.map((notification, index) => (
             <NotificationFactory
               key={index}

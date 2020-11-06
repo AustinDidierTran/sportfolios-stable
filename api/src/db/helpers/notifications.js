@@ -22,7 +22,6 @@ const clickNotification = async notification_id => {
 
 const countUnseenNotifications = async user_id => {
   return knex('notifications')
-    .select('*')
     .where({ user_id, seen_at: null })
     .count('*');
 };
