@@ -10,9 +10,6 @@ body {
   flex-direction: column;
 }
 
-.header {
-  height: 56px;
-}
 .main {
   flex: 1;
   overflow-y: scroll;
@@ -37,7 +34,6 @@ body {
     display: none;
   }
   .main {
-    max-height: calc(100vh - 56px);
     padding-bottom: 0px;
   }
 }

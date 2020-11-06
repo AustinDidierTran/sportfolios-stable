@@ -50,6 +50,9 @@ const ProductAddedToCart = loadable(() =>
 const RegistrationStatus = loadable(() =>
   import('../RegistrationStatus'),
 );
+const ScheduleInteractiveTool = loadable(() =>
+  import('../ScheduleInteractiveTool'),
+);
 const ScheduleManager = loadable(() => import('../ScheduleManager'));
 const Search = loadable(() => import('../Search'));
 const Stripe = loadable(() =>
@@ -105,7 +108,7 @@ export default function App() {
       <ThemeProvider theme={theme}>
         <Router history={history}>
           <div className={styles.app}>
-            <div className={styles.header}>
+            <div>
               <Header />
             </div>
             <div
@@ -229,6 +232,10 @@ export default function App() {
                 <PrivateRoute
                   path={ROUTES.membersList}
                   component={MembersList}
+                />
+                <PrivateRoute
+                  path={ROUTES.scheduleInteractiveTool}
+                  component={ScheduleInteractiveTool}
                 />
                 <PrivateRoute
                   path={ROUTES.search}

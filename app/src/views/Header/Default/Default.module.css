@@ -13,6 +13,10 @@
   top: 0;
 }
 
+.barHeight {
+  height: 56px;
+}
+
 .container {
   display: grid;
   width: 100vw;

@@ -33,6 +33,7 @@ export const ROUTES = {
   recoveryEmail: '/recoveryEmail',
   registrationStatus: '/registrationStatus',
   sales: '/sales/:id',
+  scheduleInteractiveTool: '/scheduleInteractiveTool/:id',
   scheduleManager: '/scheduleManager',
   search: '/search',
   shopDetails: '/shopDetails/:id/:stripePriceId',

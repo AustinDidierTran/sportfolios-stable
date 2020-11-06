@@ -352,6 +352,26 @@ router.get(`${BASE_URL}/s3Signature`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/interactiveTool`, async ctx => {
+  const data = await queries.getInteractiveToolData(
+    ctx.query.eventId,
+    ctx.body.userInfo.id,
+  );
+
+  if (data) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+    };
+  }
+});
+
 router.put(`${BASE_URL}`, async ctx => {
   const entity = await queries.updateEntity(
     ctx.request.body,

@@ -278,6 +278,7 @@ export default {
     infos: 'Info',
     infos: 'Infos',
     institution_number: "Numéro d'institution",
+    interactive_tool: 'Outil interactif',
     invalid_email: 'Courriel invalide.',
     invalid_input: 'Valeur incorrect',
     invite_this_player_to_join_your_team:
