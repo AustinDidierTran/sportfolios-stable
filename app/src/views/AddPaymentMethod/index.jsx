@@ -1,12 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useFormik } from 'formik';
-
-import { TextField, Typography, Button } from '../../components/MUI';
-
+import { TextField, Typography } from '../../components/MUI';
 import {
   Paper,
   LoadingSpinner,
   IgContainer,
+  Button,
 } from '../../components/Custom';
 import CountrySelect from '../../tabs/Settings/Stripe/Form/CountrySelect';
 import CardSection from '../../utils/stripe/Payment/CardSection';
@@ -18,7 +17,7 @@ import {
   useStripe,
 } from '@stripe/react-stripe-js';
 import api from '../../actions/api';
-import { goTo } from '../../actions/goTo';
+import { goTo, ROUTES } from '../../actions/goTo';
 import { Store, ACTION_ENUM } from '../../Store';
 import { SEVERITY_ENUM } from '../../../../common/enums';
 import { useQuery } from '../../hooks/queries';
@@ -28,10 +27,18 @@ export default function AddPaymentMethod() {
   const { dispatch } = useContext(Store);
   const stripe = useStripe();
   const elements = useElements();
-  const { redirect } = useQuery();
+  const { redirect: redirectProps } = useQuery();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const isANumber = number => isNaN(Number(number));
+
+  const [redirect, setRedirect] = useState(ROUTES.userSettings);
+
+  useEffect(() => {
+    if (redirectProps) {
+      setRedirect(redirectProps);
+    }
+  }, [redirectProps]);
 
   const validate = values => {
     const errors = {};
@@ -192,11 +199,19 @@ export default function AddPaymentMethod() {
             <CardSection />
           </div>
           <Button
-            size="small"
+            color="secondary"
+            style={{ margin: '16px', width: '25%' }}
+            onClick={() => {
+              goTo(redirect);
+            }}
+          >
+            {t('cancel')}
+          </Button>
+          <Button
             color="primary"
-            variant="contained"
             type="submit"
             disabled={isSubmitting}
+            style={{ margin: '16px', width: '25%' }}
           >
             {t('submit')}
           </Button>

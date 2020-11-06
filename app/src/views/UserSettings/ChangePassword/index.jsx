@@ -1,9 +1,10 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-import { Button, TextField } from '../../../components/MUI';
-import { Paper } from '../../../components/Custom';
+import { TextField } from '../../../components/MUI';
+import { Button } from '../../../components/Custom';
 import styles from './ChangePassword.module.css';
+import { Card } from '@material-ui/core';
 
 import { Store, ACTION_ENUM } from '../../../Store';
 import api from '../../../actions/api';
@@ -83,47 +84,39 @@ export default function ChangePassword() {
   });
 
   return (
-    <Paper
-      className={styles.card}
-      childrenProps={{ className: styles.cardContent }}
-    >
-      <form onSubmit={formik.handleSubmit} className={styles.form}>
+    <Card className={styles.card}>
+      <form onSubmit={formik.handleSubmit}>
         <div className={styles.inputs}>
           <TextField
             formik={formik}
             namespace="oldPassword"
             label={t('old_password')}
             type="password"
-            fullWidth
+            className={styles.textField}
           />
           <TextField
             formik={formik}
             namespace="newPassword"
             label={t('new_password')}
             type="password"
-            fullWidth
+            className={styles.textField}
           />
           <TextField
             formik={formik}
             namespace="newPasswordConfirm"
             label={t('confirm_new_password')}
             type="password"
-            fullWidth
+            className={styles.textField}
           />
         </div>
-        <div className={styles.buttons}>
-          <Button
-            size="small"
-            color="primary"
-            variant="contained"
-            className={styles.button}
-            type="submit"
-            style={{ color: '#fff' }}
-          >
-            {t('change_password')}
-          </Button>
-        </div>
+        <Button
+          color="primary"
+          type="submit"
+          className={styles.button}
+        >
+          {t('change_password')}
+        </Button>
       </form>
-    </Paper>
+    </Card>
   );
 }

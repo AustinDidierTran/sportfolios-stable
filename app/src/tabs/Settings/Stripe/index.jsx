@@ -6,15 +6,14 @@ import ExternalAccountForm from './Form';
 import AccountLink from './AccountLink';
 import { useTranslation } from 'react-i18next';
 
-export default function Stripe(props) {
+export default function Stripe() {
   const { t } = useTranslation();
-  const { id } = props;
   const [next, setNext] = useState(false);
 
   const steps = [
     {
       label: t('add_personal_information'),
-      content: <AccountLink id={id} setNext={setNext} />,
+      content: <AccountLink setNext={setNext} />,
     },
     {
       label: t('add_bank_account'),

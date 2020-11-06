@@ -48,7 +48,6 @@ export default function CreditCards() {
         size="small"
         color="primary"
         variant="contained"
-        endIcon="Add"
         onClick={() =>
           goTo(ROUTES.addPaymentMethod, null, {
             redirect: ROUTES.userSettings,

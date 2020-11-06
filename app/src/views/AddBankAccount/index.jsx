@@ -2,25 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { useParams } from 'react-router-dom';
-import {
-  TextField,
-  Typography,
-  Button,
-} from '../../../../components/MUI';
-import styles from './form.module.css';
+import { TextField, Typography } from '../../components/MUI';
+import styles from './AddBankAccount.module.css';
 import CountrySelect from './CountrySelect';
 import CurrencySelect from './CurrencySelect';
-import api from '../../../../actions/api';
-import { formatRoute } from '../../../../actions/goTo';
-import { hasXDigits } from '../../../../utils/validators';
+import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
+import { hasXDigits } from '../../utils/validators';
+import { IgContainer, Paper, Button } from '../../components/Custom';
+import api from '../../actions/api';
+import { useQuery } from '../../hooks/queries';
 
-export default function ExternalAccountForm(props) {
+export default function AddBankAccount() {
   const { t } = useTranslation();
   const { id } = useParams();
+  const { redirect: redirectProps } = useQuery();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setNext } = props;
 
   const isANumber = number => !isNaN(Number(number));
+
+  const [redirect, setRedirect] = useState(ROUTES.userSettings);
+
+  useEffect(() => {
+    if (redirectProps) {
+      setRedirect(redirectProps);
+    }
+  }, [redirectProps]);
 
   const validate = values => {
     const errors = {};
@@ -110,7 +116,7 @@ export default function ExternalAccountForm(props) {
           // There has been an error with Stripe, handle it
         } else {
           setIsSubmitting(false);
-          setNext(true);
+          goTo(redirect);
         }
       } catch (err) {
         setIsSubmitting(false);
@@ -133,55 +139,65 @@ export default function ExternalAccountForm(props) {
   }, []);
 
   return (
-    <div className={styles.main}>
-      <form onSubmit={formik.handleSubmit}>
-        <div className={styles.content}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {t('link_bank_account')}
-          </Typography>
-          <CountrySelect formik={formik} />
-          <CurrencySelect formik={formik} />
-          <TextField
-            namespace="accountHolderName"
-            formik={formik}
-            type="accountHolderName"
-            label={t('account_holder_name')}
-            fullWidth
-          />
-          <TextField
-            namespace="transitNumber"
-            formik={formik}
-            type="number"
-            label={t('transit_number')}
-            fullWidth
-          />
-          <TextField
-            namespace="institutionNumber"
-            formik={formik}
-            type="number"
-            label={t('institution_number')}
-            fullWidth
-          />
-          <TextField
-            namespace="accountNumber"
-            formik={formik}
-            type="accountNumber"
-            label={t('account_number')}
-            fullWidth
-          />
+    <IgContainer className={styles.main}>
+      <Paper>
+        <div className={styles.main}>
+          <form onSubmit={formik.handleSubmit}>
+            <div className={styles.content}>
+              <Typography gutterBottom variant="h5" component="h2">
+                {t('add_bank_account')}
+              </Typography>
+              <CountrySelect formik={formik} />
+              <CurrencySelect formik={formik} />
+              <TextField
+                namespace="accountHolderName"
+                formik={formik}
+                type="accountHolderName"
+                label={t('account_holder_name')}
+                fullWidth
+              />
+              <TextField
+                namespace="transitNumber"
+                formik={formik}
+                type="number"
+                label={t('transit_number')}
+                fullWidth
+              />
+              <TextField
+                namespace="institutionNumber"
+                formik={formik}
+                type="number"
+                label={t('institution_number')}
+                fullWidth
+              />
+              <TextField
+                namespace="accountNumber"
+                formik={formik}
+                type="accountNumber"
+                label={t('account_number')}
+                fullWidth
+              />
+            </div>
+            <Button
+              color="secondary"
+              style={{ margin: '16px', width: '25%' }}
+              onClick={() => {
+                goTo(redirect);
+              }}
+            >
+              {t('cancel')}
+            </Button>
+            <Button
+              color="primary"
+              type="submit"
+              disabled={isSubmitting}
+              style={{ margin: '16px', width: '25%' }}
+            >
+              {t('submit')}
+            </Button>
+          </form>
         </div>
-        <div className={styles.actions}>
-          <Button
-            size="small"
-            color="primary"
-            variant="contained"
-            type="submit"
-            disabled={isSubmitting}
-          >
-            {t('submit')}
-          </Button>
-        </div>
-      </form>
-    </div>
+      </Paper>
+    </IgContainer>
   );
 }

@@ -5,23 +5,24 @@ import { formatRoute } from '../../../actions/goTo';
 import { useTranslation } from 'react-i18next';
 
 export default function AccountLink(props) {
-  const { disabled, setNext, id } = props;
+  const { disabled, setNext } = props;
   const { t } = useTranslation();
 
   const onClick = async () => {
     const { data } = await api(
-      formatRoute('/api/stripe/accountLink', null, { id }),
+      formatRoute('/api/stripe/accountLink'),
     );
-    setNext(true);
+    console.log({ data });
+    // setNext(true);
     window.location.href = data.url;
   };
 
   const verifyAccount = async () => {
     const { data: hasStripeAccount } = await api(
-      formatRoute('/api/stripe/hasStripeAccount', null, { id }),
+      formatRoute('/api/stripe/hasStripeAccount'),
     );
     if (hasStripeAccount) {
-      setNext(true);
+      // setNext(true);
     }
   };
 

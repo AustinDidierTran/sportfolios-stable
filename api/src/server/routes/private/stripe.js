@@ -7,8 +7,8 @@ const BASE_URL = '/api/stripe';
 
 router.get(`${BASE_URL}/accountLink`, async ctx => {
   const data = await queries.getAccountLink(
-    ctx.query.id,
     ctx.request.ip,
+    ctx.body.userInfo.id,
   );
   ctx.body = {
     status: 'success',
@@ -16,8 +16,16 @@ router.get(`${BASE_URL}/accountLink`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/bankAccounts`, async ctx => {
+  const data = await queries.getBankAccounts(ctx.body.userInfo.id);
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 router.get(`${BASE_URL}/getStripeAccount`, async ctx => {
-  const data = await queries.getStripeAccount(ctx.query.id);
+  const data = await queries.getStripeAccount(ctx.body.userInfo.id);
   ctx.body = {
     status: 'success',
     data,
@@ -25,14 +33,17 @@ router.get(`${BASE_URL}/getStripeAccount`, async ctx => {
 });
 
 router.get(`${BASE_URL}/hasStripeAccount`, async ctx => {
-  const data = await queries.hasStripeAccount(ctx.query.id);
+  const data = await queries.hasStripeAccount(ctx.body.userInfo.id);
   ctx.body = {
     status: 'success',
     data,
   };
 });
+
 router.get(`${BASE_URL}/hasStripeBankAccount`, async ctx => {
-  const data = await queries.hasStripeBankAccount(ctx.query.id);
+  const data = await queries.hasStripeBankAccount(
+    ctx.body.userInfo.id,
+  );
   ctx.body = {
     status: 'success',
     data,

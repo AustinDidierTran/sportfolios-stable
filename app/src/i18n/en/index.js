@@ -79,6 +79,8 @@ export default {
     awaiting_your_approval: 'Awaiting your approval',
     back_to_shop: 'Back to shop',
     back: 'Back',
+    bank_account: 'Bank account',
+    bank_accounts: 'Bank accounts',
     basic_info: 'Basic Info',
     become_member: 'Become Member',
     biannual: 'Biannual',
