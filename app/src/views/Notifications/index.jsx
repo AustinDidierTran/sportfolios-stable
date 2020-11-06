@@ -20,7 +20,7 @@ export default function Notifications() {
     updateNotifications();
   }, []);
 
-  return notifications.length > 0 ? (
+  return notifications?.length > 0 ? (
     <div className={styles.n2}>
       <Paper elevation={0} className={styles.card}>
         {notifications.map((notif, index) => (

@@ -40,7 +40,6 @@ export default function NotificationModule() {
 
   const initializeNotifications = async () => {
     const { data } = await api('/api/notifications/all');
-
     setNotifications(data);
   };
 
