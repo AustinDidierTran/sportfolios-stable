@@ -7,7 +7,11 @@ import api from '../../actions/api';
 import { formatRoute } from '../../actions/goTo';
 import { formatDate } from '../../utils/stringFormats';
 import { Typography } from '../../components/MUI';
-import { LoadingSpinner, Icon } from '../../components/Custom';
+import {
+  LoadingSpinner,
+  Icon,
+  AlertDialog,
+} from '../../components/Custom';
 import { Store, ACTION_ENUM } from '../../Store';
 import { STATUS_ENUM, SEVERITY_ENUM } from '../../../../common/enums';
 import { Fab, makeStyles, Tooltip } from '@material-ui/core';
@@ -52,6 +56,7 @@ export default function ScheduleInteractiveTool() {
   const [madeChanges, setMadeChanges] = useState(false);
   const [initialLayout, setInitialLayout] = useState([]);
   const [layout, setLayout] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const getData = async () => {
     setIsLoading(true);
@@ -64,17 +69,12 @@ export default function ScheduleInteractiveTool() {
     setGames(
       data.games.map(g => ({
         ...g,
-        x: data.fields.findIndex(f => f.field === g.field) + 1,
+        x: data.fields.findIndex(f => f.id === g.field_id) + 1,
         y:
-          data.timeSlots.findIndex(ts => ts.date === g.start_time) +
-          1,
-        field: undefined,
-        start_time: undefined,
+          data.timeSlots.findIndex(ts => ts.id === g.timeslot_id) + 1,
       })),
     );
-
-    console.log({ data });
-
+    //console.log({ data });
     setIsLoading(false);
   };
 
@@ -152,11 +152,19 @@ export default function ScheduleInteractiveTool() {
     });
 
     setLayout(layout);
-
     setMadeChanges(true);
   };
 
   const handleCancel = async () => {
+    // fix tooltips
+    setGames(
+      games.map(g => ({
+        ...g,
+        x: fields.findIndex(f => f.id === g.field_id) + 1,
+        y: timeslots.findIndex(ts => ts.id === g.timeslot_id) + 1,
+      })),
+    );
+
     setLayout(initialLayout);
     setMadeChanges(false);
   };
@@ -184,10 +192,7 @@ export default function ScheduleInteractiveTool() {
       [],
     );
 
-    //console.log(gamesToUpdate);
-
-    // to api zoop
-    /*const res = await api(`/api/entity/updateGamesInteractiveTool`, {
+    const res = await api(`/api/entity/updateGamesInteractiveTool`, {
       method: 'PUT',
       body: JSON.stringify({
         eventId,
@@ -195,21 +200,31 @@ export default function ScheduleInteractiveTool() {
       }),
     });
 
-    getData();*/
-
-    /*if (res.status === STATUS_ENUM.ERROR) {
+    if (res.status === STATUS_ENUM.ERROR) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('an_error_has_occured'),
         severity: SEVERITY_ENUM.ERROR,
       });
-    } else {*/
-    dispatch({
-      type: ACTION_ENUM.SNACK_BAR,
-      message: t('changes_saved'),
-      severity: SEVERITY_ENUM.SUCCESS,
-    });
-    //}
+    } else {
+      await getData();
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('changes_saved'),
+        severity: SEVERITY_ENUM.SUCCESS,
+      });
+      setMadeChanges(false);
+    }
+  };
+
+  const handleBack = () => {
+    madeChanges ? setOpen(true) : goBack();
+  };
+  const handleDialogSubmit = () => {
+    goBack();
+  };
+  const handleDialogCancel = () => {
+    setOpen(false);
   };
 
   const Fields = fields.map(f => (
@@ -265,38 +280,39 @@ export default function ScheduleInteractiveTool() {
       <Tooltip title={t('back')}>
         <Fab
           color="primary"
-          onClick={() => goBack()} // ask if want to save changes
+          onClick={handleBack}
           className={classes.fabBack}
         >
           <Icon icon="ArrowBack" />
         </Fab>
       </Tooltip>
-
-      <Tooltip title={t('cancel')}>
-        <div>
-          <Fab
-            color="secondary"
-            onClick={handleCancel}
-            className={classes.fabCancel}
-            disabled={!madeChanges}
-          >
-            <Icon icon="Cancel" />
-          </Fab>
-        </div>
+      <Tooltip title={madeChanges ? t('cancel') : ''}>
+        <Fab
+          color="secondary"
+          onClick={handleCancel}
+          className={classes.fabCancel}
+          disabled={!madeChanges}
+        >
+          <Icon icon="Cancel" />
+        </Fab>
       </Tooltip>
-
-      <Tooltip title={t('save')}>
-        <div>
-          <Fab
-            color="primary"
-            onClick={handleSave}
-            className={classes.fabSave}
-            disabled={!madeChanges}
-          >
-            <Icon icon="SaveIcon" />
-          </Fab>
-        </div>
+      <Tooltip title={madeChanges ? t('save') : ''}>
+        <Fab
+          color="primary"
+          onClick={handleSave}
+          className={classes.fabSave}
+          disabled={!madeChanges}
+        >
+          <Icon icon="SaveIcon" />
+        </Fab>
       </Tooltip>
+      <AlertDialog
+        open={open}
+        onSubmit={handleDialogSubmit}
+        onCancel={handleDialogCancel}
+        description={t('quit_interactive_tool_confirmation')}
+        title={t('quit_interactive_tool')}
+      />
     </div>
   );
 }

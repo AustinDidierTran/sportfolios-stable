@@ -24,7 +24,7 @@ export default function FieldSelect(props) {
       formatRoute('/api/entity/fields', null, { eventId }),
     );
     const res = data.map(d => ({
-      value: d.field,
+      value: d.id,
       display: d.field,
     }));
     setFields([

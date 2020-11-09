@@ -105,7 +105,6 @@ export default function ScoreSuggestion(props) {
       body: JSON.stringify({
         gameId: game.id,
         eventId: suggestion.event_id,
-        startTime: suggestion.start_time,
         yourRosterId: suggestion.your_roster_id,
         opposingRosterId: suggestion.opposing_roster_id,
         yourScore: suggestion.your_score,

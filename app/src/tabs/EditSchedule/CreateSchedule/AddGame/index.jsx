@@ -78,7 +78,6 @@ export default function AddGame(props) {
     validateOnBlur: false,
     onSubmit: async values => {
       const { phase, field, time, team1, team2 } = values;
-      let realTime = new Date(time).getTime();
       let rosterId1 = null;
       let rosterId2 = null;
       let name1 = null;
@@ -98,8 +97,8 @@ export default function AddGame(props) {
         body: JSON.stringify({
           eventId,
           phaseId: phase,
-          field,
-          time: realTime,
+          fieldId: field,
+          timeslotId: time,
           rosterId1,
           rosterId2,
           name1,

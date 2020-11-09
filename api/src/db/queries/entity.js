@@ -128,18 +128,13 @@ async function getAllForYouPagePosts() {
   return getAllForYouPagePostsHelper();
 }
 async function getScoreSuggestion(query) {
-  const { event_id, start_time, rosterId1, rosterId2 } = query;
-  return getScoreSuggestionHelper(
-    event_id,
-    start_time,
-    rosterId1,
-    rosterId2,
-  );
+  const { event_id, gameId } = query;
+  return getScoreSuggestionHelper(event_id, gameId);
 }
 async function getSameSuggestions(query) {
   const {
     eventId,
-    startTime,
+    gameId,
     yourRosterId,
     opposingRosterId,
     yourScore,
@@ -147,7 +142,7 @@ async function getSameSuggestions(query) {
   } = query;
   return getSameSuggestionsHelper(
     eventId,
-    startTime,
+    gameId,
     yourRosterId,
     opposingRosterId,
     yourScore,
@@ -530,8 +525,8 @@ async function updateGame(body) {
   const {
     gameId,
     phaseId,
-    field,
-    time,
+    fieldId,
+    timeslotId,
     rosterId1,
     rosterId2,
     name1,
@@ -542,8 +537,8 @@ async function updateGame(body) {
   const res = await updateGameHelper(
     gameId,
     phaseId,
-    field,
-    time,
+    fieldId,
+    timeslotId,
     rosterId1,
     rosterId2,
     name1,
@@ -562,14 +557,13 @@ async function updateGamesInteractiveTool(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  return updateGamesInteractiveToolHelper(eventId, games);
+  return updateGamesInteractiveToolHelper(games);
 }
 
 async function updateSuggestionStatus(body) {
   const {
     gameId,
     eventId,
-    startTime,
     yourRosterId,
     opposingRosterId,
     yourScore,
@@ -579,7 +573,6 @@ async function updateSuggestionStatus(body) {
   const res = await updateSuggestionStatusHelper(
     gameId,
     eventId,
-    startTime,
     yourRosterId,
     opposingRosterId,
     yourScore,
@@ -659,8 +652,8 @@ async function addGame(body) {
   const {
     eventId,
     phaseId,
-    field,
-    time,
+    fieldId,
+    timeslotId,
     rosterId1,
     rosterId2,
     name1,
@@ -669,8 +662,8 @@ async function addGame(body) {
   const res = await addGameHelper(
     eventId,
     phaseId,
-    field,
-    time,
+    fieldId,
+    timeslotId,
     rosterId1,
     rosterId2,
     name1,
@@ -688,7 +681,6 @@ async function addScoreSuggestion(body, userId) {
   const {
     gameId,
     eventId,
-    startTime,
     yourTeamName,
     yourTeamId,
     yourScore,
@@ -711,7 +703,6 @@ async function addScoreSuggestion(body, userId) {
   const res = await addScoreSuggestionHelper(
     gameId,
     eventId,
-    startTime,
     yourTeamName,
     yourTeamId,
     yourScore,

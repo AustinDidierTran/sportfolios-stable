@@ -370,11 +370,11 @@ router.get(`${BASE_URL}/interactiveTool`, async ctx => {
       status: 'error',
     };
   }
-}); 
+});
 
 router.put(`${BASE_URL}/updateGamesInteractiveTool`, async ctx => {
   const res = await queries.updateGamesInteractiveTool(
-    ctx.request.body, //eventId, games
+    ctx.request.body,
     ctx.body.userInfo.id,
   );
   if (res) {

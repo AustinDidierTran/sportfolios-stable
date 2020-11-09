@@ -44,9 +44,7 @@ export default function ScoreSuggestion(props) {
     }
   };
 
-  const { event_id, start_time, teams } = game;
-  const rosterId1 = teams[0].roster_id;
-  const rosterId2 = teams[1].roster_id;
+  const { event_id, id: gameId } = game;
 
   useEffect(() => {
     getSuggestions();
@@ -71,9 +69,7 @@ export default function ScoreSuggestion(props) {
     const { data } = await api(
       formatRoute('/api/entity/scoreSuggestion', null, {
         event_id,
-        start_time,
-        rosterId1,
-        rosterId2,
+        gameId,
       }),
     );
 

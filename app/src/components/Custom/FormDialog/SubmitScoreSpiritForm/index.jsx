@@ -12,12 +12,10 @@ import {
   COMPONENT_TYPE_ENUM,
 } from '../../../../../../common/enums';
 import { useParams } from 'react-router-dom';
-import {
-  getSlots,
-  getTeams,
-} from '../../../../tabs/Schedule/ScheduleFunctions';
+import { getTeams } from '../../../../tabs/Schedule/ScheduleFunctions';
 import moment from 'moment';
 import { formatRoute } from '../../../../actions/goTo';
+import { formatDate } from '../../../../utils/stringFormats';
 import BasicFormDialog from '../BasicFormDialog';
 import AddPlayer from './AddPlayer';
 import validator from 'validator';
@@ -33,11 +31,11 @@ export default function SubmitScoreDialog(props) {
 
   const [open, setOpen] = useState(false);
   const [addPlayer, setAddPlayer] = useState(false);
-  const [slots, setSlots] = useState([]);
   const [teams, setTeams] = useState([]);
   const [roster, setRoster] = useState([]);
   const [fullRoster, setFullRoster] = useState([]);
   const [total, setTotal] = useState(10);
+  const [opposingTeam, setOpposingTeam] = useState({});
 
   const onAddPlayer = () => {
     setAddPlayer(true);
@@ -99,9 +97,6 @@ export default function SubmitScoreDialog(props) {
   };
 
   const getOptions = async () => {
-    const s = await getSlots(eventId);
-    setSlots(s);
-
     if (game) {
       const t = game.teams.map(t => ({
         display: t.name,
@@ -109,28 +104,15 @@ export default function SubmitScoreDialog(props) {
       }));
       setTeams(t);
       formik.setFieldValue('yourTeam', game.teams[0].roster_id);
-      formik.setFieldValue('opposingTeam', game.teams[1].roster_id);
-      formik.setFieldValue('timeSlot', game.start_time);
+      setOpposingTeam({
+        rosterId: game.teams[1].roster_id,
+        name: game.teams[1].name,
+      });
     } else {
       const t = await getTeams(eventId, { withoutAll: true });
       setTeams(t);
       if (t[0]) {
         formik.setFieldValue('yourTeam', t[0].value);
-      }
-      if (t[1]) {
-        formik.setFieldValue('opposingTeam', t[1].value);
-      }
-
-      const pastSlots = s
-        .filter(slot => moment(slot.value) < moment())
-        .map(slot => moment(slot.value));
-      const date = moment.max(pastSlots);
-
-      const def = s.filter(slot => {
-        return moment(slot.value).isSame(date);
-      });
-      if (def[0]) {
-        formik.setFieldValue('timeSlot', def[0].value);
       }
     }
   };
@@ -146,10 +128,8 @@ export default function SubmitScoreDialog(props) {
 
   const validate = values => {
     const {
-      timeSlot,
       yourTeam,
       yourScore,
-      opposingTeam,
       opposingTeamScore,
       rulesKnowledgeAndUse,
       foulsAndBodyContact,
@@ -158,17 +138,11 @@ export default function SubmitScoreDialog(props) {
       communication,
     } = values;
     const errors = {};
-    if (!timeSlot.length) {
-      errors.timeSlot = t(ERROR_ENUM.VALUE_IS_REQUIRED);
-    }
     if (!yourTeam.length) {
       errors.yourTeam = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
     if (yourScore < 0) {
       errors.yourScore = t(ERROR_ENUM.VALUE_IS_REQUIRED);
-    }
-    if (!opposingTeam.length) {
-      errors.opposingTeam = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
     if (opposingTeamScore < 0) {
       errors.opposingTeamScore = t(ERROR_ENUM.VALUE_IS_REQUIRED);
@@ -202,7 +176,6 @@ export default function SubmitScoreDialog(props) {
 
   const formik = useFormik({
     initialValues: {
-      timeSlot: '',
       yourTeam: '',
       yourScore: 0,
       opposingTeam: '',
@@ -219,17 +192,13 @@ export default function SubmitScoreDialog(props) {
     validateOnBlur: false,
     onSubmit: async values => {
       const {
-        timeSlot,
         yourTeam,
         yourScore,
-        opposingTeam,
         opposingTeamScore,
         comments,
       } = values;
       let yourTeamName = null;
       let yourTeamId = null;
-      let opposingTeamName = null;
-      let opposingTeamId = null;
 
       const suggestedBy = userInfo.primaryPerson
         ? userInfo.primaryPerson.entity_id
@@ -240,22 +209,16 @@ export default function SubmitScoreDialog(props) {
       } else {
         yourTeamName = yourTeam;
       }
-      if (validator.isUUID(opposingTeam)) {
-        opposingTeamId = opposingTeam;
-      } else {
-        opposingTeamName = opposingTeam;
-      }
       const res = await api('/api/entity/suggestScore', {
         method: 'POST',
         body: JSON.stringify({
           gameId: game?.id,
           eventId,
-          startTime: timeSlot,
           yourTeamName,
           yourTeamId,
           yourScore,
-          opposingTeamName,
-          opposingTeamId,
+          opposingTeamName: opposingTeam.name,
+          opposingTeamId: opposingTeam.rosterId,
           opposingTeamScore: opposingTeamScore,
           opposingTeamSpirit: total,
           players: JSON.stringify(
@@ -293,23 +256,13 @@ export default function SubmitScoreDialog(props) {
 
   useEffect(() => {
     const team = formik.values.yourTeam;
-    if (team === formik.values.opposingTeam && teams.length && team) {
+    if (team === opposingTeam.rosterId && teams.length && team) {
       const t = teams.filter(t => t.value != team);
       if (t.length) {
-        formik.setFieldValue('opposingTeam', t[0].value);
+        setOpposingTeam({ rosterId: t[0].value, name: t[0].display });
       }
     }
   }, [formik.values.yourTeam]);
-
-  useEffect(() => {
-    const team = formik.values.opposingTeam;
-    if (team === formik.values.yourTeam && teams.length && team) {
-      const t = teams.filter(t => t.value != team);
-      if (t.length) {
-        formik.setFieldValue('yourTeam', t[0].value);
-      }
-    }
-  }, [formik.values.opposingTeam]);
 
   const spiritOptions = [
     { display: '0', value: 0 },
@@ -334,10 +287,8 @@ export default function SubmitScoreDialog(props) {
 
   const fields = [
     {
-      componentType: COMPONENT_TYPE_ENUM.SELECT,
-      namespace: 'timeSlot',
-      label: t('time_slot'),
-      options: slots,
+      defaultValue: formatDate(moment(game.start_time), 'DD MMM'),
+      disabled: true,
     },
     {
       componentType: COMPONENT_TYPE_ENUM.SELECT,
@@ -368,10 +319,8 @@ export default function SubmitScoreDialog(props) {
       type: 'number',
     },
     {
-      componentType: COMPONENT_TYPE_ENUM.SELECT,
-      namespace: 'opposingTeam',
-      label: t('opposing_team'),
-      options: teams,
+      defaultValue: `${t('opposing_team')}: ${opposingTeam.name}`,
+      disabled: true,
     },
     {
       namespace: 'opposingTeamScore',
