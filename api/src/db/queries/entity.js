@@ -84,6 +84,7 @@ const {
   updateEntityRole: updateEntityRoleHelper,
   updateEvent: updateEventHelper,
   updateGame: updateGameHelper,
+  updateGamesInteractiveTool: updateGamesInteractiveToolHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
   updatePersonInfosHelper,
   updateMember: updateMemberHelper,
@@ -553,6 +554,17 @@ async function updateGame(body) {
   return res;
 }
 
+async function updateGamesInteractiveTool(body, userId) {
+  const { eventId, games } = body;
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return updateGamesInteractiveToolHelper(eventId, games);
+}
+
 async function updateSuggestionStatus(body) {
   const {
     gameId,
@@ -1006,6 +1018,7 @@ module.exports = {
   updatePersonInfos,
   updatePreRanking,
   updateGame,
+  updateGamesInteractiveTool,
   updateSuggestionStatus,
   updateGeneralInfos,
   updateMember,

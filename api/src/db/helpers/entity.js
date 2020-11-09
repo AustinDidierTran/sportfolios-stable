@@ -2333,6 +2333,12 @@ async function updateGame(
   }
   return Promise.all(res);
 }
+
+async function updateGamesInteractiveTool(eventId, games) {
+  //const res = await knex('games')
+  //.where({id: games.gameId})
+}
+
 async function keepSameSuggestions(suggestions, suggestion) {
   return suggestions.filter(s => {
     return (
@@ -2673,6 +2679,7 @@ module.exports = {
   updateMember,
   updateAlias,
   updateGame,
+  updateGamesInteractiveTool,
   updateSuggestionStatus,
   updateRegistration,
   updatePlayerPaymentStatus,

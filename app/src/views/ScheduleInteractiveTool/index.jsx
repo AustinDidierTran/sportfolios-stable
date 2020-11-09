@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import GridLayout from 'react-grid-layout';
 import { useTranslation } from 'react-i18next';
@@ -8,13 +8,15 @@ import { formatRoute } from '../../actions/goTo';
 import { formatDate } from '../../utils/stringFormats';
 import { Typography } from '../../components/MUI';
 import { LoadingSpinner, Icon } from '../../components/Custom';
+import { Store, ACTION_ENUM } from '../../Store';
+import { STATUS_ENUM, SEVERITY_ENUM } from '../../../../common/enums';
 import { Fab, makeStyles, Tooltip } from '@material-ui/core';
 import styles from './ScheduleInteractiveTool.module.css';
 import { goBack } from '../../actions/goTo';
 import GameCard from './GameCard';
 
 const useStyles = makeStyles(theme => ({
-  fab: {
+  fabBack: {
     position: 'absolute',
     bottom: theme.spacing(2),
     right: theme.spacing(4),
@@ -41,6 +43,7 @@ export default function ScheduleInteractiveTool() {
   const { id: eventId } = useParams();
   const classes = useStyles();
   const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
 
   const [games, setGames] = useState([]);
   const [timeslots, setTimeslots] = useState([]);
@@ -49,7 +52,6 @@ export default function ScheduleInteractiveTool() {
   const [madeChanges, setMadeChanges] = useState(false);
   const [initialLayout, setInitialLayout] = useState([]);
   const [layout, setLayout] = useState([]);
-  const [changes, setChanges] = useState([]);
 
   const getData = async () => {
     setIsLoading(true);
@@ -57,18 +59,8 @@ export default function ScheduleInteractiveTool() {
       formatRoute('/api/entity/interactiveTool', null, { eventId }),
     );
 
-    setFields(
-      data.fields.map((f, index) => ({
-        ...f,
-        fieldId: index + 1,
-      })),
-    );
-    setTimeslots(
-      data.timeSlots.map((ts, index) => ({
-        ...ts,
-        slotId: index + 1,
-      })),
-    );
+    setFields(data.fields);
+    setTimeslots(data.timeSlots);
     setGames(
       data.games.map(g => ({
         ...g,
@@ -169,20 +161,55 @@ export default function ScheduleInteractiveTool() {
     setMadeChanges(false);
   };
 
-  const handleSave = () => {
-    console.log('save');
-
-    /*const gameIds = games.map(g => g.id);
-    const onlyGames = newLayout.filter(g => gameIds.includes(g.i));
-    const changedGame = onlyGames.filter(
+  const handleSave = async () => {
+    const gameIds = games.map(g => g.id);
+    const onlyGames = layout.filter(g => gameIds.includes(g.i));
+    const changedGames = onlyGames.filter(
       ({ x: x1, y: y1, i: i1 }) =>
         !initialLayout.some(
           ({ x: x2, y: y2, i: i2 }) =>
             x1 === x2 && y1 === y2 && i1 === i2,
         ),
-    );*/
+    );
+
+    const gamesToUpdate = changedGames.reduce(
+      (prev, game) => [
+        ...prev,
+        {
+          gameId: game.i,
+          timeSlotId: timeslots[game.y - 1].id,
+          fieldId: fields[game.x - 1].id,
+        },
+      ],
+      [],
+    );
+
+    //console.log(gamesToUpdate);
 
     // to api zoop
+    /*const res = await api(`/api/entity/updateGamesInteractiveTool`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        eventId,
+        games: gamesToUpdate,
+      }),
+    });
+
+    getData();*/
+
+    /*if (res.status === STATUS_ENUM.ERROR) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('an_error_has_occured'),
+        severity: SEVERITY_ENUM.ERROR,
+      });
+    } else {*/
+    dispatch({
+      type: ACTION_ENUM.SNACK_BAR,
+      message: t('changes_saved'),
+      severity: SEVERITY_ENUM.SUCCESS,
+    });
+    //}
   };
 
   const Fields = fields.map(f => (
@@ -222,6 +249,7 @@ export default function ScheduleInteractiveTool() {
         className={styles.gridLayout}
         cols={fields?.length + 1}
         rowHeight={64}
+        maxRows={timeslots?.length + 1}
         width={(fields?.length + 1) * 192}
         preventCollision
         compactType={null}
@@ -238,7 +266,7 @@ export default function ScheduleInteractiveTool() {
         <Fab
           color="primary"
           onClick={() => goBack()} // ask if want to save changes
-          className={classes.fab}
+          className={classes.fabBack}
         >
           <Icon icon="ArrowBack" />
         </Fab>
