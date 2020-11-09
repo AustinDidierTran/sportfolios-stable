@@ -370,6 +370,26 @@ router.get(`${BASE_URL}/interactiveTool`, async ctx => {
       status: 'error',
     };
   }
+}); 
+
+router.put(`${BASE_URL}/updateGamesInteractiveTool`, async ctx => {
+  const res = await queries.updateGamesInteractiveTool(
+    ctx.request.body, //eventId, games
+    ctx.body.userInfo.id,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
 });
 
 router.put(`${BASE_URL}`, async ctx => {
