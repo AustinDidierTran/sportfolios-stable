@@ -59,11 +59,15 @@ export default function TabRosters(props) {
   };
 
   const addPlayerToRoster = async (player, rosterId) => {
+    const roster = rosters.find(r => r.rosterId == rosterId);
     const { data } = await api(`/api/entity/addPlayerToRoster`, {
       method: 'POST',
       body: JSON.stringify({
         ...player,
         rosterId,
+        teamName: roster.name,
+        teamId: roster.teamId,
+        eventId,
       }),
     });
     return data;

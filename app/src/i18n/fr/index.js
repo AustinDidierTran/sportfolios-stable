@@ -44,6 +44,8 @@ export default {
     add_to_cart: 'Ajouter au panier',
     add: 'Ajouter',
     added_to_cart: 'Ajouté au panier',
+    added_to_roster_notif_title: 'Vous avez été ajouté à un alignement',
+    added_to_roster_notif_description: "Quelqu'un vous a ajouté à l'équipe {{teamName}}",
     address: 'Adresse',
     admin_has_no_bank_account:
       "Vous ne pouvez pas ajouter une option de paiement car l'administrateur n'a pas de compte banquaire relié à son compte",

@@ -2,11 +2,9 @@ DROP TABLE notification_follow;
 CREATE TABLE notifications(
 id int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
-type int,
+type varchar(127) NOT NULL,
 seen_at timestamp,
 clicked_at timestamp,
-title varchar(255),
-description varchar(500),
 entity_photo UUID REFERENCES entities(id) ON DELETE SET NULL,
 metadata json);
 

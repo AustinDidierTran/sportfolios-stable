@@ -44,6 +44,8 @@ export default {
     add_to_cart: 'Add to cart',
     add: 'Add',
     added_to_cart: 'Added to cart',
+    added_to_roster_notif_title: 'You have been added to a roster',
+    added_to_roster_notif_description: 'Somebody added you to the {{teamName}} team',
     address: 'Address',
     admin_has_no_bank_account:
       "You can't create a payment option if admin doesn't have a bank account",
