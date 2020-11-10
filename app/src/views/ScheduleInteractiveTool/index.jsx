@@ -192,6 +192,10 @@ export default function ScheduleInteractiveTool() {
     setMadeChanges(true);
   };
 
+  const onDrop = (layout, droppedItem, event) => {
+    console.log(droppedItem);
+  };
+
   const handleCancel = async () => {
     // fix tooltips
     setGames(
@@ -372,6 +376,7 @@ export default function ScheduleInteractiveTool() {
   const Games = games.map(g => (
     <div className={styles.itemDiv} key={g.id}>
       <GameCard
+        placed
         team1={g.teams[0].name}
         team2={g.teams[1].name}
         fields={fields}
