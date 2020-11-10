@@ -1,3 +1,22 @@
+.unplacedGames {
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+  overflow-y: hidden;
+  height: 90px;
+  padding: 5px;
+}
+
+.unplacedGames > div {
+  margin: 5px;
+  flex: none;
+}
+
+.divGrid {
+  overflow: auto;
+  max-height: calc(100vh - 100px);
+}
+
 .gridLayout {
   position: relative;
 }

@@ -1,4 +1,4 @@
-.gameCard {
+.gameCardPlaced {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -9,7 +9,17 @@
   padding: 4px;
 }
 
-.gameCard:hover {
+.gameCardPlaced:hover {
+  cursor: pointer;
+}
+
+.gameCardNotPlaced {
+  height: 54px;
+  width: 152px;
+  padding: 4px;
+}
+
+.gameCardNotPlaced:hover {
   cursor: pointer;
 }
 

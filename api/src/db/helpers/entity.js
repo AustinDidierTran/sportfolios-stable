@@ -1039,7 +1039,8 @@ async function getGames(eventId) {
   const realId = await getRealId(eventId);
   const games = await knex('games')
     .select('*')
-    .where({ event_id: realId });
+    .whereNotNull('timeslot_id', 'field_id')
+    .andWhere({ event_id: realId });
 
   const res = await Promise.all(
     games.map(async game => {
@@ -1062,6 +1063,29 @@ async function getGames(eventId) {
         teams,
         field: r1.field,
         start_time: r2.date,
+      };
+    }),
+  );
+  return res;
+}
+
+async function getUnplacedGames(eventId) {
+  const realId = await getRealId(eventId);
+  const unplacedGames = await knex('games')
+    .select('*')
+    .where({ event_id: realId, timeslot_id: null, field_id: null });
+
+  const res = await Promise.all(
+    unplacedGames.map(async game => {
+      const teams = await getTeams(game.id);
+      let phaseName = null;
+      if (game.phase_id) {
+        phaseName = await getPhaseName(game.phase_id);
+      }
+      return {
+        ...game,
+        phaseName,
+        teams,
       };
     }),
   );
@@ -2642,6 +2666,7 @@ module.exports = {
   getAlias,
   getPhases,
   getGames,
+  getUnplacedGames,
   getTeamGames,
   getPhasesGameAndTeams,
   getSlots,

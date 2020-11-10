@@ -18,6 +18,8 @@ import { Fab, makeStyles, Tooltip } from '@material-ui/core';
 import styles from './ScheduleInteractiveTool.module.css';
 import { goBack } from '../../actions/goTo';
 import GameCard from './GameCard';
+import 'react-grid-layout/css/styles.css';
+import './overridden-placeholder.css';
 
 const useStyles = makeStyles(theme => ({
   fabBack: {
@@ -49,6 +51,7 @@ export default function ScheduleInteractiveTool() {
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
 
+  const [unplacedGames, setUnplacedGames] = useState([]);
   const [games, setGames] = useState([]);
   const [timeslots, setTimeslots] = useState([]);
   const [fields, setFields] = useState([]);
@@ -74,7 +77,7 @@ export default function ScheduleInteractiveTool() {
           data.timeSlots.findIndex(ts => ts.id === g.timeslot_id) + 1,
       })),
     );
-    //console.log({ data });
+    setUnplacedGames(data.unplacedGames);
     setIsLoading(false);
   };
 
@@ -153,6 +156,10 @@ export default function ScheduleInteractiveTool() {
 
     setLayout(layout);
     setMadeChanges(true);
+  };
+
+  const onDrop = (layout, droppedItem, event) => {
+    console.log(droppedItem);
   };
 
   const handleCancel = async () => {
@@ -244,6 +251,7 @@ export default function ScheduleInteractiveTool() {
   const Games = games.map(g => (
     <div className={styles.itemDiv} key={g.id}>
       <GameCard
+        placed
         team1={g.teams[0].name}
         team2={g.teams[1].name}
         fields={fields}
@@ -260,23 +268,43 @@ export default function ScheduleInteractiveTool() {
 
   return (
     <div>
-      <GridLayout
-        className={styles.gridLayout}
-        cols={fields?.length + 1}
-        rowHeight={64}
-        maxRows={timeslots?.length + 1}
-        width={(fields?.length + 1) * 192}
-        preventCollision
-        compactType={null}
-        margin={[20, 20]}
-        onDragStop={onDragStop}
-        layout={layout}
-      >
-        <div className={styles.divAdd} key={'empty'}></div>
-        {Fields}
-        {Times}
-        {Games}
-      </GridLayout>
+      <div className={styles.unplacedGames}>
+        {unplacedGames.map(g => (
+          <GameCard
+            key={g.id}
+            team1={g.teams[0].name}
+            team2={g.teams[1].name}
+            fields={fields}
+            timeSlots={timeslots}
+            //x={g.x}
+            //y={g.y}
+          />
+        ))}
+      </div>
+
+      <div className={styles.divGrid}>
+        <GridLayout
+          className={styles.gridLayout}
+          width={(fields?.length + 1) * 192}
+          cols={fields?.length + 1}
+          rowHeight={64}
+          maxRows={timeslots?.length + 1}
+          compactType={null}
+          margin={[20, 20]}
+          onDragStop={onDragStop}
+          onDrop={onDrop}
+          layout={layout}
+          useCSSTransforms
+          preventCollision
+          isDroppable
+          isResizable={false}
+        >
+          <div className={styles.divAdd} key="empty" />
+          {Fields}
+          {Times}
+          {Games}
+        </GridLayout>
+      </div>
       <Tooltip title={t('back')}>
         <Fab
           color="primary"
