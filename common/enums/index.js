@@ -233,6 +233,10 @@ const GLOBAL_ENUM = {
   SHOP_ITEM: 'shop_item',
 };
 
+const NOTIFICATION_TYPE = {
+  ADDED_TO_ROSTER: 'added to roster',
+};
+
 const LIST_ITEM_ENUM = {
   APP_ITEM: 'app item',
   CART_ITEM: 'cart item',
@@ -251,6 +255,7 @@ const LIST_ITEM_ENUM = {
   ROSTER_ITEM: 'roster item',
   SALES: 'sales',
   SHOP_ITEM: 'shop item',
+  AVATAR_TEXT_SKELETON: 'avatar and text',
 };
 
 const MILLIS_TIME_ENUM = {
@@ -376,4 +381,5 @@ module.exports = {
   MESSENGER_MESSAGES_EN,
   BASIC_CHATBOT_STATES,
   SCORE_SUBMISSION_CHATBOT_STATES,
+  NOTIFICATION_TYPE,
 };

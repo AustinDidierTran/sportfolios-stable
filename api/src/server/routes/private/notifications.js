@@ -78,8 +78,9 @@ router.get(`${BASE_URL}/unseenCount`, async ctx => {
 });
 
 router.get(`${BASE_URL}/all`, async ctx => {
-  const notifications = await queries.getAllNotifications(
+  const notifications = await queries.getNotifications(
     ctx.body.userInfo.id,
+    ctx.query,
   );
   if (notifications) {
     ctx.status = STATUS_ENUM.SUCCESS;

@@ -5,5 +5,5 @@ CREATE TABLE notification_follow (
   seen_at timestamp,
   PRIMARY KEY(sender_id, target_id)
 );
-DROP VIEW notification_view;
+DROP VIEW notifications_view;
 DROP TABLE notifications;

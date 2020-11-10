@@ -1,5 +1,5 @@
 const {
-  getAllNotifications: getAllNotificationsHelper,
+  getNotifications: getNotificationsHelper,
   seeNotifications: seeNotificationsHelper,
   countUnseenNotifications: countUnseenNotificationsHelper,
   clickNotification: clickNotificationHelper,
@@ -22,12 +22,12 @@ const deleteNotification = async notification_id => {
   return deleteNotificationHelper(notification_id);
 };
 
-const getAllNotifications = async user_id => {
-  return getAllNotificationsHelper(user_id);
+const getNotifications = async (user_id, body) => {
+  return getNotificationsHelper(user_id, body);
 };
 
 module.exports = {
-  getAllNotifications,
+  getNotifications,
   seeNotifications,
   countUnseenNotifications,
   clickNotification,
