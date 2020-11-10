@@ -404,30 +404,14 @@ async function getAllForYouPagePosts() {
     (a, b) => b.createdAt - a.createdAt,
   );
 }
-async function getScoreSuggestion(
-  event_id,
-  start_time,
-  rosterId1,
-  rosterId2,
-) {
-  let realTime = new Date(start_time);
-  const suggestions1 = await knex('score_suggestion')
+async function getScoreSuggestion(event_id, gameId) {
+  const suggestions = await knex('score_suggestion')
     .select('*')
     .where({
       event_id,
-      start_time: realTime,
-      your_roster_id: rosterId1,
-      opposing_roster_id: rosterId2,
+      game_id: gameId,
     });
-  const suggestions2 = await knex('score_suggestion')
-    .select('*')
-    .where({
-      event_id,
-      start_time: realTime,
-      your_roster_id: rosterId2,
-      opposing_roster_id: rosterId1,
-    });
-  const suggestions = suggestions1.concat(suggestions2);
+
   const res = suggestions.sort(
     (a, b) => moment(a.created_at) - moment(b.created_at),
   );
@@ -436,7 +420,7 @@ async function getScoreSuggestion(
 }
 async function getSameSuggestions(
   eventId,
-  startTime,
+  gameId,
   yourRosterId,
   opposingRosterId,
   yourScore,
@@ -444,18 +428,13 @@ async function getSameSuggestions(
 ) {
   const suggestion = {
     eventId,
-    startTime,
+    gameId,
     yourRosterId,
     opposingRosterId,
     yourScore: Number(yourScore),
     opposingTeamScore: Number(opposingTeamScore),
   };
-  const suggestions = await getScoreSuggestion(
-    eventId,
-    startTime,
-    yourRosterId,
-    opposingRosterId,
-  );
+  const suggestions = await getScoreSuggestion(eventId, gameId);
   return keepSameSuggestions(suggestions, suggestion);
 }
 
@@ -1069,7 +1048,21 @@ async function getGames(eventId) {
       if (game.phase_id) {
         phaseName = await getPhaseName(game.phase_id);
       }
-      return { ...game, phaseName, teams };
+      const [r1] = await knex('event_fields')
+        .select('field')
+        .where({ id: game.field_id });
+      const [r2] = await knex('event_time_slots')
+        .select('date')
+        .where({ id: game.timeslot_id });
+      // field and start_time are temporary, this will change when all the schedule logic will be handled in backend.
+      // For now this is so it can still works even after adding the new ids to these fields.
+      return {
+        ...game,
+        phaseName,
+        teams,
+        field: r1.field,
+        start_time: r2.date,
+      };
     }),
   );
   return res;
@@ -1688,23 +1681,19 @@ async function getUserIdFromPersonId(personId) {
 async function addGame(
   eventId,
   phaseId,
-  field,
-  time,
+  fieldId,
+  timeslotId,
   rosterId1,
   rosterId2,
   name1,
   name2,
 ) {
   const realId = await getRealId(eventId);
-  let realTime = new Date(time);
-  if (!time) {
-    realTime = null;
-  }
   const [res] = await knex('games')
     .insert({
-      start_time: realTime,
+      timeslot_id: timeslotId,
       event_id: realId,
-      field,
+      field_id: fieldId,
       phase_id: phaseId,
     })
     .returning('*');
@@ -1756,7 +1745,6 @@ async function addScoreAndSpirit(props) {
 async function addScoreSuggestion(
   gameId,
   eventId,
-  startTime,
   yourTeamName,
   yourTeamId,
   yourScore,
@@ -1782,7 +1770,6 @@ async function addScoreSuggestion(
     .insert({
       game_id: gameId,
       event_id: realEventId,
-      start_time: new Date(startTime),
       your_team: yourName,
       your_roster_id: yourTeamId,
       your_score: yourScore,
@@ -2231,8 +2218,8 @@ async function updateAlias(entityId, alias) {
 async function updateGame(
   gameId,
   phaseId,
-  field,
-  time,
+  fieldId,
+  timeslotId,
   rosterId1,
   rosterId2,
   name1,
@@ -2240,10 +2227,6 @@ async function updateGame(
   teamId1,
   teamId2,
 ) {
-  let realTime = new Date(time);
-  if (!time) {
-    realTime = null;
-  }
   const res = [];
   if (phaseId.length) {
     const [r] = await knex('games')
@@ -2257,25 +2240,25 @@ async function updateGame(
     res.push(r);
   }
 
-  if (field.length) {
+  if (fieldId) {
     const [r] = await knex('games')
       .where({
         id: gameId,
       })
       .update({
-        field,
+        field_id: fieldId,
       })
       .returning('*');
     res.push(r);
   }
 
-  if (realTime) {
+  if (timeslotId) {
     const [r] = await knex('games')
       .where({
         id: gameId,
       })
       .update({
-        start_time: realTime,
+        timeslot_id: timeslotId,
       })
       .returning('*');
     res.push(r);
@@ -2334,9 +2317,22 @@ async function updateGame(
   return Promise.all(res);
 }
 
-async function updateGamesInteractiveTool(eventId, games) {
-  //const res = await knex('games')
-  //.where({id: games.gameId})
+async function updateGamesInteractiveTool(games) {
+  // TODO: do a real batch update
+  return knex.transaction(trx => {
+    const queries = games.map(game =>
+      knex('games')
+        .where('id', game.gameId)
+        .update({
+          timeslot_id: game.timeSlotId,
+          field_id: game.fieldId,
+        })
+        .transacting(trx),
+    );
+    return Promise.all(queries)
+      .then(trx.commit)
+      .catch(trx.rollback);
+  });
 }
 
 async function keepSameSuggestions(suggestions, suggestion) {
@@ -2371,7 +2367,6 @@ async function keepDifferentSuggestions(suggestions, suggestion) {
 async function updateSuggestionStatus(
   gameId,
   eventId,
-  startTime,
   yourRosterId,
   opposingRosterId,
   yourScore,
@@ -2380,14 +2375,13 @@ async function updateSuggestionStatus(
 ) {
   const suggestions = await getScoreSuggestion(
     eventId,
-    startTime,
+    gameId,
     yourRosterId,
     opposingRosterId,
   );
   const suggestion = {
     gameId,
     eventId,
-    startTime,
     yourRosterId,
     opposingRosterId,
     yourScore: Number(yourScore),
@@ -2405,7 +2399,7 @@ async function updateSuggestionStatus(
     same.map(async s => {
       const res = await knex('score_suggestion')
         .where({
-          start_time: s.start_time,
+          game_id: s.game_id,
           your_roster_id: s.your_roster_id,
           your_score: s.your_score,
           opposing_roster_id: s.opposing_roster_id,
@@ -2439,7 +2433,7 @@ async function updateSuggestionStatus(
     different.map(async d => {
       await knex('score_suggestion')
         .where({
-          start_time: d.start_time,
+          game_id: d.game_id,
           your_roster_id: d.your_roster_id,
           your_score: d.your_score,
           opposing_roster_id: d.opposing_roster_id,
@@ -2554,18 +2548,14 @@ const deleteGame = async id => {
     await knex('score_suggestion')
       .where({
         event_id: game.event_id,
-        start_time: game.start_time,
-        your_roster_id: game.teams[0].roster_id,
-        opposing_roster_id: game.teams[1].roster_id,
+        game_id: game.id,
       })
       .del()
       .transacting(trx);
     await knex('score_suggestion')
       .where({
         event_id: game.event_id,
-        start_time: game.start_time,
-        your_roster_id: game.teams[1].roster_id,
-        opposing_roster_id: game.teams[0].roster_id,
+        game_id: game.id,
       })
       .del()
       .transacting(trx);

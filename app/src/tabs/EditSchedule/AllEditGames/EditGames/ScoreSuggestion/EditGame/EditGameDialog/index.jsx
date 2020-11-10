@@ -40,8 +40,8 @@ export default function EditGameDialog(props) {
 
   useEffect(() => {
     formik.setFieldValue('phase', game.phase_id);
-    formik.setFieldValue('field', game.field);
-    formik.setFieldValue('time', game.start_time);
+    formik.setFieldValue('field', game.field_id);
+    formik.setFieldValue('time', game.timeslot_id);
     formik.setFieldValue('team1', game.teams[0].roster_id);
     formik.setFieldValue('team2', game.teams[1].roster_id);
   }, [game]);
@@ -62,7 +62,6 @@ export default function EditGameDialog(props) {
     validateOnBlur: false,
     onSubmit: async values => {
       const { phase, field, time, team1, team2 } = values;
-      let realTime = new Date(time).getTime();
       let rosterId1 = null;
       let rosterId2 = null;
       let name1 = null;
@@ -82,8 +81,8 @@ export default function EditGameDialog(props) {
         body: JSON.stringify({
           gameId: game.id,
           phaseId: phase,
-          field,
-          time: realTime,
+          fieldId: field,
+          timeslotId: time,
           rosterId1,
           rosterId2,
           name1,
