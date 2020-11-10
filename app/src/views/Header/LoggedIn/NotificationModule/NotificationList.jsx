@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Paper } from '../../../../components/MUI';
@@ -16,10 +16,10 @@ export default function NotificationList(props) {
   const [notifications, setNotifications] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMoreItem, setHasMoreItem] = useState(true);
-  const [currentPageMemo, setCurrentPageMemo] = useState(1);
-  let currentPage = currentPageMemo;
+  const currentPage = useRef(1);
+  const div = useRef();
 
-  function loadMoreItems(e) {
+  function scrollHandler(e) {
     let element = e.target;
     if (
       element.scrollHeight - element.scrollTop ===
@@ -27,10 +27,25 @@ export default function NotificationList(props) {
       hasMoreItem
     ) {
       //user is at the end of the list so load more items
-      setCurrentPageMemo(++currentPage);
-      getNotifications();
+      loadMoreItems();
     }
   }
+
+  function loadMoreItems() {
+    currentPage.current += 1;
+    getNotifications();
+  }
+
+  useEffect(() => {
+    const element = div.current;
+    if (element) {
+      const hasOverflowingChildren =
+        element.offsetHeight < element.scrollHeight;
+      if (!hasOverflowingChildren) {
+        loadMoreItems();
+      }
+    }
+  });
 
   const onOpen = async () => {
     if (open) {
@@ -38,7 +53,7 @@ export default function NotificationList(props) {
       await getNotifications();
       setIsLoading(false);
     } else {
-      setCurrentPageMemo(1);
+      currentPage.current = 1;
       setNotifications([]);
       setHasMoreItem(true);
     }
@@ -47,7 +62,7 @@ export default function NotificationList(props) {
   const getNotifications = async () => {
     const { data } = await api(
       formatRoute('/api/notifications/all', null, {
-        currentPage,
+        currentPage: currentPage.current,
         perPage: 5,
       }),
     );
@@ -87,14 +102,18 @@ export default function NotificationList(props) {
     onClick: closeNotificationModule,
   }));
   if (hasMoreItem) {
-    items.push({ type: LIST_ITEM_ENUM.AVATAR_TEXT_SKELETON });
+    items.push({
+      type: LIST_ITEM_ENUM.AVATAR_TEXT_SKELETON,
+      key: 'skeleton',
+    });
   }
 
   return open ? (
     <Paper className={styles.paper}>
       {notifications?.length > 0 ? (
         <div
-          onScroll={loadMoreItems}
+          ref={div}
+          onScroll={scrollHandler}
           className={styles.listContainer}
         >
           <List title={t('notifications')} items={items} />
