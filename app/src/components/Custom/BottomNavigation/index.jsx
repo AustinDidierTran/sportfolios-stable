@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { ROUTES, goTo } from '../../../actions/goTo';
 import { Store, SCREENSIZE_ENUM } from '../../../Store';
 import api from '../../../actions/api';
+import { STATUS_ENUM } from '../../../../../common/enums';
 
 const TABS_ENUM = {
   HOME: 'home',
@@ -66,7 +67,7 @@ export default function CustomBottomNavigation() {
   const fetchUnreadNotificationsCount = async () => {
     const res = await api('/api/notifications/unseenCount');
     if (res.status == STATUS_ENUM.SUCCESS_STRING) {
-      setUnreadNotificationCount(Number(res.data));
+      setUnreadNotificationsCount(Number(res.data));
     }
   };
 
