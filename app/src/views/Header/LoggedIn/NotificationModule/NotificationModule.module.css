@@ -4,6 +4,10 @@
 
 .listContainer {
   overflow: auto;
+  max-height: 100vh;
+}
+
+.module > .paper > .listContainer {
   max-height: 360px;
 }
 

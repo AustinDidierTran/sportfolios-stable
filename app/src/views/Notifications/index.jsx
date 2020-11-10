@@ -12,6 +12,9 @@ export default function Notifications() {
   };
 
   useEffect(() => {
+    api('/api/notifications/see', {
+      method: 'PUT',
+    });
     updateNotifications();
   }, []);
 
