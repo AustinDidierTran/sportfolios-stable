@@ -362,6 +362,7 @@ async function sendRecoveryEmail({ email, token, language }) {
     html,
   });
 }
+
 module.exports = {
   sendConfirmationEmail,
   sendRecoveryEmail,
@@ -370,4 +371,5 @@ module.exports = {
   sendTeamRegistrationEmailToAdmin,
   sendPersonTransferEmail,
   sendAddPersonToTeamEmail,
+  sendMail,
 };

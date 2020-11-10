@@ -43,5 +43,11 @@
     "no": "Non",
     "next_game": "Prochaine partie? 🕓",
     "mock": "Simuler 🚀"
+  },
+
+  "emails": {
+    "added_to_roster_text": "Bonjour {name}! Quelqu'un vous a ajouté à l'alignement de l'équipe {teamName} sur Sportfolios. Cliquez sur le lien suivant pour consulter l'alignement complet",
+    "added_to_roster_button": "Voir l'alignement",
+    "added_to_roster_subject": "Sportfolios | Ajouté à un alignement"
   }
 }
