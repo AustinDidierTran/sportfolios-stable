@@ -13,7 +13,6 @@ const { sendMail } = require('../../server/utils/nodeMailer');
 const emailFactory = require('../emails/emailFactory');
 const {
   getEmailsFromUserId,
-  getLanguageFromEmail,
   getLanguageFromUser,
 } = require('../helpers');
 
@@ -38,20 +37,24 @@ const sendNotification = async (notif, emailInfos) => {
   const { user_id } = notif;
   addNotification(notif);
   if (emailInfos) {
-    const emails = await getEmailsFromUserId(user_id);
-    const locale = await getLanguageFromUser(user_id);
-    if (emails) {
-      const { html, subject, text } = await emailFactory({
-        ...emailInfos,
-        locale,
-      });
-      emails.forEach(e => {
-        const { email, confirmed_email_at } = e;
-        if (confirmed_email_at) {
-          sendMail({ html, email, subject, text });
-        }
-      });
-    }
+    sendEmailNotification(user_id, emailInfos);
+  }
+};
+
+const sendEmailNotification = async (userId, emailInfos) => {
+  const emails = await getEmailsFromUserId(userId);
+  const locale = await getLanguageFromUser(userId);
+  if (emails) {
+    const { html, subject, text } = await emailFactory({
+      ...emailInfos,
+      locale,
+    });
+    emails.forEach(e => {
+      const { email, confirmed_email_at } = e;
+      if (confirmed_email_at) {
+        sendMail({ html, email, subject, text });
+      }
+    });
   }
 };
 
