@@ -295,8 +295,16 @@ const getLanguageFromEmail = async email => {
   if (!id) {
     return;
   }
-  const infos = await getBasicUserInfoFromId(id);
-  return infos.language;
+  return getLanguageFromUser(id);
+};
+
+const getLanguageFromUser = async id => {
+  return (
+    await knex('users')
+      .select('language')
+      .first()
+      .where({ id })
+  ).language;
 };
 
 const getUserIdFromRecoveryPasswordToken = async token => {
@@ -741,4 +749,5 @@ module.exports = {
   setChatbotInfos,
   addChatbotId,
   deleteChatbotInfos,
+  getLanguageFromUser,
 };

@@ -2,14 +2,23 @@ const ejs = require('ejs');
 const i18n = require('../../i18n.config');
 
 module.exports = async function AddedToRoster(infos) {
-  const { name, teamName, eventId } = infos;
+  const { name, teamName, eventId, locale } = infos;
   const buttonLink = `https://sportfolios.app/${eventId}?tab=roster`;
-  const text = i18n.__('emails.added_to_roster_text', {
-    name,
-    teamName,
+  const text = i18n.__(
+    { phrase: 'emails.added_to_roster_text', locale },
+    {
+      name,
+      teamName,
+    },
+  );
+  const buttonText = i18n.__({
+    phrase: 'emails.added_to_roster_button',
+    locale,
   });
-  const buttonText = i18n.__('emails.added_to_roster_button');
-  const subject = i18n.__('emails.added_to_roster_subject');
+  const subject = i18n.__({
+    phrase: 'emails.added_to_roster_subject',
+    locale,
+  });
   try {
     const html = await ejs.renderFile(
       __dirname + '/templates/textAndButton.ejs',

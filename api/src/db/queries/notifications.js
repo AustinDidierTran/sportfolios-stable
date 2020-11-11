@@ -11,7 +11,11 @@ const {
 const { sendMail } = require('../../server/utils/nodeMailer');
 
 const emailFactory = require('../emails/emailFactory');
-const { getEmailsFromUserId } = require('../helpers');
+const {
+  getEmailsFromUserId,
+  getLanguageFromEmail,
+  getLanguageFromUser,
+} = require('../helpers');
 
 const seeNotifications = async user_id => {
   return seeNotificationsHelper(user_id);
@@ -33,14 +37,22 @@ const sendNotification = async (notif, emailInfos) => {
   //TODO check for user notification permission
   const { user_id } = notif;
   addNotification(notif);
-  const emails = await getEmailsFromUserId(user_id);
-  const { html, subject, text } = await emailFactory(emailInfos);
-  emails.forEach(e => {
-    const { email, confirmed_email_at } = e;
-    if (confirmed_email_at) {
-      sendMail({ html, email, subject, text });
+  if (emailInfos) {
+    const emails = await getEmailsFromUserId(user_id);
+    const locale = await getLanguageFromUser(user_id);
+    if (emails) {
+      const { html, subject, text } = await emailFactory({
+        ...emailInfos,
+        locale,
+      });
+      emails.forEach(e => {
+        const { email, confirmed_email_at } = e;
+        if (confirmed_email_at) {
+          sendMail({ html, email, subject, text });
+        }
+      });
     }
-  });
+  }
 };
 
 const getNotifications = async (user_id, body) => {
