@@ -107,7 +107,7 @@ const {
   getLanguageFromEmail,
   validateEmailIsUnique: validateEmailIsUniqueHelper,
 } = require('../helpers');
-const { addNotification } = require('../helpers/notifications');
+const { sendNotification } = require('./notifications');
 
 async function isAllowed(
   entityId,
@@ -900,7 +900,7 @@ async function addPlayerToRoster(body, userId) {
       entity_photo: eventId || teamId,
       metadata: { eventId, teamName },
     };
-    addNotification(notif);
+    sendNotification(notif);
   }
   return res;
 }

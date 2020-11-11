@@ -1,3 +1,4 @@
+//The notifications queries must not import any of the other queries to prevent circular dependency
 const {
   getNotifications: getNotificationsHelper,
   seeNotifications: seeNotificationsHelper,
@@ -10,6 +11,7 @@ const {
 const { sendMail } = require('../../server/utils/nodeMailer');
 
 const emailFactory = require('../emails/emailFactory');
+const { getEmailsFromUserId } = require('../helpers');
 
 const seeNotifications = async user_id => {
   return seeNotificationsHelper(user_id);
@@ -27,12 +29,18 @@ const deleteNotification = async notification_id => {
   return deleteNotificationHelper(notification_id);
 };
 
-const sendNotification = async infos => {
+const sendNotification = async notif => {
   //TODO check for user notification permission
-  const { email, notif } = infos;
+  const { user_id } = notif;
+  const emails = await getEmailsFromUserId(user_id);
   addNotification(notif);
-  const { html, subject, text } = emailFactory(notif);
-  sendMail({ html, email, subject, text });
+  const { html, subject, text } = await emailFactory(notif);
+  emails.forEach(e => {
+    const { email, confirmed_email_at } = e;
+    if (confirmed_email_at) {
+      sendMail({ html, email, subject, text });
+    }
+  });
 };
 
 const getNotifications = async (user_id, body) => {
@@ -45,4 +53,5 @@ module.exports = {
   countUnseenNotifications,
   clickNotification,
   deleteNotification,
+  sendNotification,
 };

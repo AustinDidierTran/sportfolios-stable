@@ -1,53 +1,49 @@
 {
-  "score_submission": {
-    "request": "Bonjour {{userName}}, votre équipe vient tout juste d'affronter l'équipe {{opponentTeamName}}. Désirez-vous soumettre votre pointage ici?",
-    "explaination": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-[leur pointage]. Par exemple, pour une victoire de 13 à 10 veuillez entrer 13-10",
-    "confirmation": {
-      "victory": "Vous avez remporté votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
-      "defeat": "Vous avez perdu votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
-      "draw": "La partie contre {{opponentTeamName}} s'est terminée avec une égalité de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage"
-    },
-    "confirmed": {
-      "victory": "C'est envoyé, félicitation pour votre belle victoire! Désirez-vous également soumettre votre pointage spirit?",
-      "other": "C'est envoyé! Désirez-vous également soumettre votre pointage spirit?"
-    }
-  },
-
-  "spirit_submission": {
-    "rules": "Sur une échelle de 0 à 4, 0 étant mauvais, 2 étant la moyenne et 4 étant mémorable, à combien évalueriez-vous leur connaissance et application des réglements?",
-    "fouls": "Selon la même échelle, à combien évalueriez-vous les fautes et les contacts?",
-    "equity": "Selon la même échelle, à combien évalueriez-vous l'honnêteté et l'équité?",
-    "self_control": "Selon la même échelle, à combien évalueriez-vous l'attitude positive et la maîtrise de soi?",
-    "communication": "Selon la même échelle, à combien évalueriez-vous la communication?",
-    "confirmation": "Voici le sommaire de l'esprit sportif:\n\nConnaissance et application des réglements: {{rules}}\nFautes et contacts: {{fouls}}\nHonnêteté et équité: {{equity}}\nAttitude positive et maîtrise de soi: {{selfControl}}\nCommunication: {{communication}}\n\nTotal: {{total}}/20\n\nEst-ce que vous voulez confirmer l'envoi?",
-    "confirmed": "Le tout a été envoyé avec succès. Merci et à la prochaine!"
-  },
-
-  "connection": {
-    "success": "Vous êtes maintenant inscrit au chatbot Sportfolios! Revenez après votre prochaine partie pour soumettre votre score facilement.",
-    "error": "Une erreur est survenue en tentant de lier votre compte, veuillez réessayer plus tard",
-    "no_ref": "Vous devez maintenant lier votre compte Sportfolios, veuillez suivre le lien suivant et connecter le chatbot: https://sportfolios.app/userSettings"
-  },
-
-  "back_to_menu": "Très bien, je vous ramène au menu principal.",
-
-  "menu": {
-    "welcome": "Bienvenue sur le chatbot Sportfolios!",
-    "help": "Voici les différentes actions que vous pouvez effectuer:\n• Dites \"test\" pour lancer une simulation de soumission de score\n• Dites \"partie\" pour connaître l'heure de votre prochaine partie\n• À tout moment dites \"recommencer\" pour revenir à ce menu."
-  },
-
-  "i_dont_understand": "Désolé, je n'ai pas compris votre message. Si vous voulez revenir au menu principal dites \"recommencer\" ou \"stop\"",
-
-  "quick_replies": {
-    "yes": "Oui",
-    "no": "Non",
-    "next_game": "Prochaine partie? 🕓",
-    "mock": "Simuler 🚀"
-  },
-
-  "emails": {
-    "added_to_roster_text": "Bonjour {name}! Quelqu'un vous a ajouté à l'alignement de l'équipe {teamName} sur Sportfolios. Cliquez sur le lien suivant pour consulter l'alignement complet",
-    "added_to_roster_button": "Voir l'alignement",
-    "added_to_roster_subject": "Sportfolios | Ajouté à un alignement"
-  }
+	"score_submission": {
+		"request": "Bonjour {{userName}}, votre équipe vient tout juste d'affronter l'équipe {{opponentTeamName}}. Désirez-vous soumettre votre pointage ici?",
+		"explaination": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-[leur pointage]. Par exemple, pour une victoire de 13 à 10 veuillez entrer 13-10",
+		"confirmation": {
+			"victory": "Vous avez remporté votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
+			"defeat": "Vous avez perdu votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
+			"draw": "La partie contre {{opponentTeamName}} s'est terminée avec une égalité de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage"
+		},
+		"confirmed": {
+			"victory": "C'est envoyé, félicitation pour votre belle victoire! Désirez-vous également soumettre votre pointage spirit?",
+			"other": "C'est envoyé! Désirez-vous également soumettre votre pointage spirit?"
+		}
+	},
+	"spirit_submission": {
+		"rules": "Sur une échelle de 0 à 4, 0 étant mauvais, 2 étant la moyenne et 4 étant mémorable, à combien évalueriez-vous leur connaissance et application des réglements?",
+		"fouls": "Selon la même échelle, à combien évalueriez-vous les fautes et les contacts?",
+		"equity": "Selon la même échelle, à combien évalueriez-vous l'honnêteté et l'équité?",
+		"self_control": "Selon la même échelle, à combien évalueriez-vous l'attitude positive et la maîtrise de soi?",
+		"communication": "Selon la même échelle, à combien évalueriez-vous la communication?",
+		"confirmation": "Voici le sommaire de l'esprit sportif:\n\nConnaissance et application des réglements: {{rules}}\nFautes et contacts: {{fouls}}\nHonnêteté et équité: {{equity}}\nAttitude positive et maîtrise de soi: {{selfControl}}\nCommunication: {{communication}}\n\nTotal: {{total}}/20\n\nEst-ce que vous voulez confirmer l'envoi?",
+		"confirmed": "Le tout a été envoyé avec succès. Merci et à la prochaine!"
+	},
+	"connection": {
+		"success": "Vous êtes maintenant inscrit au chatbot Sportfolios! Revenez après votre prochaine partie pour soumettre votre score facilement.",
+		"error": "Une erreur est survenue en tentant de lier votre compte, veuillez réessayer plus tard",
+		"no_ref": "Vous devez maintenant lier votre compte Sportfolios, veuillez suivre le lien suivant et connecter le chatbot: https://sportfolios.app/userSettings"
+	},
+	"back_to_menu": "Très bien, je vous ramène au menu principal.",
+	"menu": {
+		"welcome": "Bienvenue sur le chatbot Sportfolios!",
+		"help": "Voici les différentes actions que vous pouvez effectuer:\n• Dites \"test\" pour lancer une simulation de soumission de score\n• Dites \"partie\" pour connaître l'heure de votre prochaine partie\n• À tout moment dites \"recommencer\" pour revenir à ce menu."
+	},
+	"i_dont_understand": "Désolé, je n'ai pas compris votre message. Si vous voulez revenir au menu principal dites \"recommencer\" ou \"stop\"",
+	"quick_replies": {
+		"yes": "Oui",
+		"no": "Non",
+		"next_game": "Prochaine partie? 🕓",
+		"mock": "Simuler 🚀"
+	},
+	"emails": {
+		"added_to_roster_text": "Bonjour {name}! Quelqu'un vous a ajouté à l'alignement de l'équipe {teamName} sur Sportfolios. Cliquez sur le lien suivant pour consulter l'alignement complet",
+		"added_to_roster_button": "Voir l'alignement",
+		"added_to_roster_subject": "Sportfolios | Ajouté à un alignement"
+	},
+	"email": {
+		"added_to_roster_button": "email.added_to_roster_button"
+	}
 }

@@ -5,8 +5,8 @@ const map = {
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: AddeddToRoster,
 };
 
-module.exports = function EmailFactory(infos) {
+module.exports = async function EmailFactory(infos) {
   const { type, ...otherInfos } = infos;
   const email = map[type];
-  return email(otherInfos);
+  return await email(otherInfos);
 };
