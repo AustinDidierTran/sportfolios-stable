@@ -29,12 +29,12 @@ const deleteNotification = async notification_id => {
   return deleteNotificationHelper(notification_id);
 };
 
-const sendNotification = async notif => {
+const sendNotification = async (notif, emailInfos) => {
   //TODO check for user notification permission
   const { user_id } = notif;
-  const emails = await getEmailsFromUserId(user_id);
   addNotification(notif);
-  const { html, subject, text } = await emailFactory(notif);
+  const emails = await getEmailsFromUserId(user_id);
+  const { html, subject, text } = await emailFactory(emailInfos);
   emails.forEach(e => {
     const { email, confirmed_email_at } = e;
     if (confirmed_email_at) {

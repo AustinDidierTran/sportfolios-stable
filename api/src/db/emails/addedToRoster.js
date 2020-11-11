@@ -8,7 +8,7 @@ module.exports = async function AddedToRoster(infos) {
     name,
     teamName,
   });
-  const buttonText = i18n.__('email.added_to_roster_button');
+  const buttonText = i18n.__('emails.added_to_roster_button');
   const subject = i18n.__('emails.added_to_roster_subject');
   try {
     const html = await ejs.renderFile(

@@ -891,8 +891,12 @@ async function deleteOption(id) {
 }
 
 async function addPlayerToRoster(body, userId) {
-  const { teamId, eventId, teamName, ...otherProps } = body;
-  const res = await addPlayerToRosterHelper(otherProps, userId);
+  const { teamId, eventId, teamName, personId, ...otherProps } = body;
+  const res = await addPlayerToRosterHelper(
+    { ...otherProps, personId },
+    userId,
+  );
+  const { name } = await getPersonInfos(personId);
   if (res && !body.isSub) {
     const notif = {
       user_id: userId,
@@ -900,7 +904,13 @@ async function addPlayerToRoster(body, userId) {
       entity_photo: eventId || teamId,
       metadata: { eventId, teamName },
     };
-    sendNotification(notif);
+    const emailInfos = {
+      type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+      eventId,
+      teamName,
+      name,
+    };
+    sendNotification(notif, emailInfos);
   }
   return res;
 }
