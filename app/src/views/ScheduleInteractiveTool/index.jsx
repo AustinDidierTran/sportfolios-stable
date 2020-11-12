@@ -10,6 +10,7 @@ import {
   LoadingSpinner,
   Icon,
   AlertDialog,
+  Button,
 } from '../../components/Custom';
 import { Store, ACTION_ENUM } from '../../Store';
 import { STATUS_ENUM, SEVERITY_ENUM } from '../../../../common/enums';
@@ -107,9 +108,8 @@ export default function ScheduleInteractiveTool() {
     setGames(
       data.games.map(g => ({
         ...g,
-        x: data.fields.findIndex(f => f.id === g.field_id) + 1,
-        y:
-          data.timeSlots.findIndex(ts => ts.id === g.timeslot_id) + 1,
+        x: data.fields.findIndex(f => f.id === g.field_id),
+        y: data.timeSlots.findIndex(ts => ts.id === g.timeslot_id),
       })),
     );
     setIsLoading(false);
@@ -121,12 +121,12 @@ export default function ScheduleInteractiveTool() {
 
   useEffect(() => {
     const timeArr = timeslots.reduce(
-      (prev, time, i) => [
+      (prev, time, index) => [
         ...prev,
         {
           i: time.id,
           x: 0,
-          y: i + 1,
+          y: index,
           w: 1,
           h: 1,
           static: true,
@@ -136,11 +136,11 @@ export default function ScheduleInteractiveTool() {
     );
 
     const fieldArr = fields.reduce(
-      (prev, field, i) => [
+      (prev, field, index) => [
         ...prev,
         {
           i: field.id,
-          x: i + 1,
+          x: index,
           y: 0,
           w: 1,
           h: 1,
@@ -169,8 +169,8 @@ export default function ScheduleInteractiveTool() {
       { i: 'empty', x: 0, y: 0, w: 1, h: 1, static: true },
     ]);
 
-    setInitialLayout(res);
-    setLayout(res);
+    setInitialLayout(gameArr);
+    setLayout(gameArr);
   }, [fields, timeslots, games]);
 
   const onDragStop = (layout, oldItem, newItem) => {
@@ -197,8 +197,8 @@ export default function ScheduleInteractiveTool() {
     setGames(
       games.map(g => ({
         ...g,
-        x: fields.findIndex(f => f.id === g.field_id) + 1,
-        y: timeslots.findIndex(ts => ts.id === g.timeslot_id) + 1,
+        x: fields.findIndex(f => f.id === g.field_id),
+        y: timeslots.findIndex(ts => ts.id === g.timeslot_id),
       })),
     );
 
@@ -225,8 +225,8 @@ export default function ScheduleInteractiveTool() {
         ...prev,
         {
           gameId: game.i,
-          timeSlotId: timeslots[game.y - 1].id,
-          fieldId: fields[game.x - 1].id,
+          timeSlotId: timeslots[game.y].id,
+          fieldId: fields[game.x].id,
         },
       ],
       [],
@@ -388,28 +388,48 @@ export default function ScheduleInteractiveTool() {
 
   return (
     <div>
-      <div className={styles.divGrid}>
+      <div className={styles.mainDiv}>
+        <div className={styles.divButtons}>
+          <Button
+            size="small"
+            color="primary"
+            variant="contained"
+            className={styles.button}
+            type="submit"
+            endIcon="Add"
+          >
+            {t('field')}
+          </Button>
+          <Button
+            size="small"
+            color="primary"
+            variant="contained"
+            className={styles.button}
+            type="submit"
+            endIcon="Add"
+          >
+            {t('time_slot')}
+          </Button>
+        </div>
+        <div className={styles.divFields}>{Fields}</div>
+        <div className={styles.divTimeslots}>{Times}</div>
         <ReactGridLayout
           className={styles.gridLayout}
-          width={(fields?.length + 1) * 192}
           cols={fields?.length + 1}
           rowHeight={64}
           maxRows={timeslots?.length + 1}
+          width={(fields?.length + 1) * 192}
+          preventCollision
           compactType={null}
           margin={[20, 20]}
           onDragStop={onDragStop}
           layout={layout}
-          useCSSTransforms
-          preventCollision
-          isResizable={false}
         >
-          <div className={styles.divAdd} key="empty" />
-          {Fields}
-          {Times}
           {Games}
           {AddGames}
         </ReactGridLayout>
       </div>
+
       <Tooltip title={t('back')}>
         <Fab
           color="primary"

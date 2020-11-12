@@ -18,7 +18,9 @@
 }
 
 .gridLayout {
+  grid-area: grid;
   position: relative;
+  background-color: lemonchiffon;
 }
 
 .divAdd {
@@ -40,21 +42,69 @@
 }
 
 .divField {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  max-width: 170px;
   border-bottom-width: 2px;
   border-bottom-style: solid;
   border-bottom-color: black;
 }
 
 .divTime {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  height: 100px;
   border-right-width: 2px;
   border-right-style: solid;
   border-right-color: black;
 }
 
 .label {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  position: absolute;
-  margin: 0;
+  margin: auto;
+}
+
+.mainDiv {
+  display: grid;
+  grid-template-columns: 170px auto;
+  grid-template-rows: 100px auto;
+  grid-template-areas:
+    'buttons fields'
+    'timeslots grid';
+}
+
+.divButtons {
+  grid-area: buttons;
+  display: flex;
+  flex-direction: column;
+  background-color: lightpink;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.divFields {
+  grid-area: fields;
+  display: flex;
+  flex-direction: row;
+  background-color: lightskyblue;
+  /*padding: 10px;*/
+}
+
+.divFields > div {
+  flex: 1 1;
+  margin: 10px;
+}
+
+.divTimeslots {
+  grid-area: timeslots;
+  display: flex;
+  flex-direction: column;
+  background-color: lightgreen;
+  /*padding: 10px;*/
+}
+
+.divTimeslots > div {
+  flex: 1 1;
+  margin: 10px;
 }
