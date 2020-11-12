@@ -9,6 +9,7 @@ import GameFilters from '../../Schedule/AllGames/GameFilters';
 import ProTip from './ProTip';
 import EditGames from './EditGames';
 import { useTranslation } from 'react-i18next';
+import { LoadingSpinner } from '../../../components/Custom';
 
 export default function AllEditGames(props) {
   const { t } = useTranslation();
@@ -16,6 +17,7 @@ export default function AllEditGames(props) {
   const { id: eventId } = useParams();
   const [games, setGames] = useState([]);
   const [pastGames, setPastGames] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getGames();
@@ -49,10 +51,11 @@ export default function AllEditGames(props) {
       formatRoute('/api/entity/games', null, { eventId }),
     );
     sortGames(data);
+    setIsLoading(false);
     return data;
   };
 
-  const filter = async (teamId, phaseId, field, timeSlot) => {
+  const filter = async (teamId, phaseId, fieldId, timeSlot) => {
     let games = await getGames();
     if (teamId != SELECT_ENUM.ALL) {
       games = games.filter(game =>
@@ -62,8 +65,8 @@ export default function AllEditGames(props) {
     if (phaseId != SELECT_ENUM.ALL) {
       games = games.filter(game => game.phase_id === phaseId);
     }
-    if (field != SELECT_ENUM.ALL) {
-      games = games.filter(game => game.field === field);
+    if (fieldId != SELECT_ENUM.ALL) {
+      games = games.filter(game => game.field_id === fieldId);
     }
     if (timeSlot != SELECT_ENUM.ALL) {
       games = games.filter(
@@ -78,6 +81,10 @@ export default function AllEditGames(props) {
   const update = () => {
     getGames();
   };
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>

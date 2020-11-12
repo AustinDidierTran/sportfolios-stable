@@ -4,11 +4,14 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { useTranslation } from 'react-i18next';
+import { FormHelperText } from '@material-ui/core';
+import { SELECT_ENUM } from '../../../../../common/enums';
 
 export default function CustomSelect(props) {
   const { t } = useTranslation();
   const {
     className,
+    error,
     formik,
     label,
     namespace,
@@ -42,7 +45,10 @@ export default function CustomSelect(props) {
         id={namespace}
         name={namespace}
         {...props}
-        value={value}
+        error={Boolean((formik && formik.errors[namespace]) || error)}
+        value={
+          !options?.length && value === SELECT_ENUM.ALL ? '' : value
+        }
         onChange={handleChange}
       >
         <MenuItem disabled value="">
@@ -55,9 +61,14 @@ export default function CustomSelect(props) {
             </MenuItem>
           ))
         ) : (
-          <></>
+          <div />
         )}
       </Select>
+      <FormHelperText
+        error={Boolean((formik && formik.errors[namespace]) || error)}
+      >
+        {(formik && formik.errors[namespace]) || error}
+      </FormHelperText>
     </FormControl>
   );
 }

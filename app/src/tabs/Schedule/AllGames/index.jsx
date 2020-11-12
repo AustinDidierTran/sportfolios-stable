@@ -58,7 +58,7 @@ export default function AllGames() {
     return data;
   };
 
-  const filter = async (teamId, phaseId, field, timeSlot) => {
+  const filter = async (teamId, phaseId, fieldId, timeSlot) => {
     let games = await getGames();
     if (teamId != SELECT_ENUM.ALL) {
       games = games.filter(game =>
@@ -68,8 +68,8 @@ export default function AllGames() {
     if (phaseId != SELECT_ENUM.ALL) {
       games = games.filter(game => game.phase_id === phaseId);
     }
-    if (field != SELECT_ENUM.ALL) {
-      games = games.filter(game => game.field === field);
+    if (fieldId != SELECT_ENUM.ALL) {
+      games = games.filter(game => game.field_id === fieldId);
     }
     if (timeSlot != SELECT_ENUM.ALL) {
       games = games.filter(

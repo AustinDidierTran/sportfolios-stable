@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Tooltip } from '@material-ui/core';
 import { Card, Typography } from '../../../components/MUI';
 import { Avatar } from '../../../components/Custom';
@@ -10,38 +10,20 @@ import {
 import moment from 'moment';
 
 export default function GamCard(props) {
-  const {
-    placed = false,
-    team1,
-    team2,
-    timeSlots,
-    fields,
-    x,
-    y,
-  } = props;
-
-  const [isPlaced, setIsPlaced] = useState(placed);
+  const { team1, team2, timeSlots, fields, x, y } = props;
 
   const tooltip = useMemo(
     () =>
-      isPlaced
-        ? `${team1} vs ${team2}, ${
-            fields[x - 1]?.field
-          }, ${formatDate(
-            moment(timeSlots[y - 1]?.date),
-            'DD MMM HH:mm',
-          )}`
-        : `${team1} vs ${team2}`,
+      `${team1} vs ${team2}, ${fields[x - 1]?.field}, ${formatDate(
+        moment(timeSlots[y - 1]?.date),
+        'DD MMM HH:mm',
+      )}`,
     [x, y],
   );
 
   return (
     <Card
-      className={
-        isPlaced ? styles.gameCardPlaced : styles.gameCardNotPlaced
-      }
-      draggable={!isPlaced}
-      //isResizable={false}
+      className={styles.gameCard}
       unselectable="on"
       // hack for firefox
       // Firefox requires some kind of initialization

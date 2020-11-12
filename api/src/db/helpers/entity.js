@@ -1722,6 +1722,8 @@ async function addGame(
     })
     .returning('*');
 
+  let team1;
+  let team2;
   if (name1) {
     await knex('game_teams').insert({
       game_id: res.id,
@@ -1729,11 +1731,13 @@ async function addGame(
     });
   } else {
     const teamName = await getTeamName(rosterId1);
-    await knex('game_teams').insert({
-      game_id: res.id,
-      name: teamName,
-      roster_id: rosterId1,
-    });
+    [team1] = await knex('game_teams')
+      .insert({
+        game_id: res.id,
+        name: teamName,
+        roster_id: rosterId1,
+      })
+      .returning('*');
   }
   if (name2) {
     await knex('game_teams').insert({
@@ -1742,13 +1746,20 @@ async function addGame(
     });
   } else {
     const teamName = await getTeamName(rosterId2);
-    await knex('game_teams').insert({
-      game_id: res.id,
-      name: teamName,
-      roster_id: rosterId2,
-    });
+    [team2] = await knex('game_teams')
+      .insert({
+        game_id: res.id,
+        name: teamName,
+        roster_id: rosterId2,
+      })
+      .returning('*');
   }
-  return res;
+  return {
+    game: {
+      ...res,
+      teams: [team1, team2],
+    },
+  };
 }
 
 async function addScoreAndSpirit(props) {

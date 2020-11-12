@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import { SELECT_ENUM } from '../../../../../../../common/enums';
 
 export default function FieldSelect(props) {
-  const { onChange, field } = props;
+  const { onChange, fieldId } = props;
   const { t } = useTranslation();
   const { id: eventId } = useParams();
 
@@ -33,6 +33,13 @@ export default function FieldSelect(props) {
     ]);
   };
 
+  const handleChange = fieldId => {
+    const field = fields.find(field => {
+      return field.value === fieldId;
+    });
+    onChange(field);
+  };
+
   return (
     <div className={styles.select}>
       <Select
@@ -42,8 +49,8 @@ export default function FieldSelect(props) {
         margin="dense"
         label={t('field')}
         fullWidth
-        onChange={onChange}
-        value={field}
+        onChange={handleChange}
+        value={fieldId}
       />
     </div>
   );

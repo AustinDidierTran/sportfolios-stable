@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import GridLayout from 'react-grid-layout';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import api from '../../actions/api';
@@ -18,8 +17,12 @@ import { Fab, makeStyles, Tooltip } from '@material-ui/core';
 import styles from './ScheduleInteractiveTool.module.css';
 import { goBack } from '../../actions/goTo';
 import GameCard from './GameCard';
+import AddGame from './AddGame';
+
+import RGL from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import './overridden-placeholder.css';
+const ReactGridLayout = RGL;
 
 const useStyles = makeStyles(theme => ({
   fabBack: {
@@ -29,16 +32,27 @@ const useStyles = makeStyles(theme => ({
     zIndex: 100,
     color: 'white',
   },
-  fabCancel: {
+  fabAdd: {
     position: 'absolute',
     bottom: theme.spacing(4) + 56,
+    right: theme.spacing(4),
+    zIndex: 100,
+    color: 'white',
+    backgroundColor: '#1c1cff',
+    '&:hover': {
+      background: '#0000b5',
+    },
+  },
+  fabCancel: {
+    position: 'absolute',
+    bottom: theme.spacing(6) + 112,
     right: theme.spacing(4),
     zIndex: 100,
     color: 'white',
   },
   fabSave: {
     position: 'absolute',
-    bottom: theme.spacing(6) + 112,
+    bottom: theme.spacing(8) + 168,
     right: theme.spacing(4),
     zIndex: 100,
     color: 'white',
@@ -51,15 +65,23 @@ export default function ScheduleInteractiveTool() {
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
 
-  const [unplacedGames, setUnplacedGames] = useState([]);
+  const [phases, setPhases] = useState([]);
+  const [teams, setTeams] = useState([]);
   const [games, setGames] = useState([]);
   const [timeslots, setTimeslots] = useState([]);
   const [fields, setFields] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+
   const [madeChanges, setMadeChanges] = useState(false);
-  const [initialLayout, setInitialLayout] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAddingGames, setIsAddingGames] = useState(false);
+
+  const [buttonsAdd, setButtonsAdd] = useState([]);
   const [layout, setLayout] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [initialLayout, setInitialLayout] = useState([]);
+
+  const [alertDialog, setAlertDialog] = useState(false);
+  const [addGameDialog, setAddGameDialog] = useState(false);
+  const [addGameData, setAddGameData] = useState({});
 
   const getData = async () => {
     setIsLoading(true);
@@ -67,6 +89,18 @@ export default function ScheduleInteractiveTool() {
       formatRoute('/api/entity/interactiveTool', null, { eventId }),
     );
 
+    setPhases(
+      data.phases.map(p => ({
+        value: p.id,
+        display: p.name,
+      })),
+    );
+    setTeams(
+      data.teams.map(t => ({
+        value: t.roster_id,
+        display: t.name,
+      })),
+    );
     setFields(data.fields);
     setTimeslots(data.timeSlots);
     setGames(
@@ -77,7 +111,6 @@ export default function ScheduleInteractiveTool() {
           data.timeSlots.findIndex(ts => ts.id === g.timeslot_id) + 1,
       })),
     );
-    setUnplacedGames(data.unplacedGames);
     setIsLoading(false);
   };
 
@@ -158,10 +191,6 @@ export default function ScheduleInteractiveTool() {
     setMadeChanges(true);
   };
 
-  const onDrop = (layout, droppedItem, event) => {
-    console.log(droppedItem);
-  };
-
   const handleCancel = async () => {
     // fix tooltips
     setGames(
@@ -171,6 +200,9 @@ export default function ScheduleInteractiveTool() {
         y: timeslots.findIndex(ts => ts.id === g.timeslot_id) + 1,
       })),
     );
+
+    setButtonsAdd([]);
+    setIsAddingGames(false);
 
     setLayout(initialLayout);
     setMadeChanges(false);
@@ -225,14 +257,104 @@ export default function ScheduleInteractiveTool() {
   };
 
   const handleBack = () => {
-    madeChanges ? setOpen(true) : goBack();
+    madeChanges ? setAlertDialog(true) : goBack();
   };
   const handleDialogSubmit = () => {
     goBack();
   };
   const handleDialogCancel = () => {
-    setOpen(false);
+    setAlertDialog(false);
   };
+
+  const handleEditMode = () => {
+    setIsAddingGames(false);
+    setButtonsAdd([]);
+    setLayout(layout.filter(item => item.i[0] !== '+'));
+  };
+
+  const handleAddMode = () => {
+    setIsAddingGames(true);
+    const buttonsToAdd = [];
+    for (let x = 1; x < fields.length + 1; x++) {
+      for (let y = 1; y < timeslots.length + 1; y++) {
+        if (!layout.find(item => item.x === x && item.y === y)) {
+          buttonsToAdd.push({
+            i: `+${x}:${y}`,
+            x: x,
+            y: y,
+            w: 1,
+            h: 1,
+            static: true,
+          });
+        }
+      }
+    }
+
+    setButtonsAdd(buttonsToAdd);
+    setLayout(layout.concat(buttonsToAdd));
+  };
+
+  const handleAddGameAt = (x, y) => {
+    setAddGameData({
+      field: {
+        id: fields[x - 1].id,
+        name: fields[x - 1].field,
+      },
+      timeslot: {
+        id: timeslots[y - 1].id,
+        date: timeslots[y - 1].date,
+      },
+    });
+    setAddGameDialog(true);
+  };
+
+  const createCard = game => {
+    const gridX = fields.findIndex(f => f.id === game.field_id) + 1;
+    const gridY =
+      timeslots.findIndex(ts => ts.id === game.timeslot_id) + 1;
+
+    // add game
+    setGames(
+      games.concat([
+        {
+          ...game,
+          x: gridX,
+          y: gridY,
+        },
+      ]),
+    );
+
+    // remove old "+" button
+    setButtonsAdd(
+      buttonsAdd.filter(btn => btn.i !== `+${gridX}:${gridY}`),
+    );
+
+    // set new layout
+    setLayout(
+      layout
+        .filter(item => item.i !== `+${gridX}:${gridY}`)
+        .concat([
+          {
+            i: game.id,
+            x: gridX,
+            y: gridY,
+            w: 1,
+            h: 1,
+            isBounded: true,
+          },
+        ]),
+    );
+  };
+
+  const AddGames = buttonsAdd.map(b => (
+    <div
+      className={styles.divAddGame}
+      key={b.i}
+      onClick={() => handleAddGameAt(b.x, b.y)}
+    >
+      <Icon icon="Add" color="#18b393" />
+    </div>
+  ));
 
   const Fields = fields.map(f => (
     <div className={styles.divField} key={f.id}>
@@ -251,7 +373,6 @@ export default function ScheduleInteractiveTool() {
   const Games = games.map(g => (
     <div className={styles.itemDiv} key={g.id}>
       <GameCard
-        placed
         team1={g.teams[0].name}
         team2={g.teams[1].name}
         fields={fields}
@@ -268,22 +389,8 @@ export default function ScheduleInteractiveTool() {
 
   return (
     <div>
-      <div className={styles.unplacedGames}>
-        {unplacedGames.map(g => (
-          <GameCard
-            key={g.id}
-            team1={g.teams[0].name}
-            team2={g.teams[1].name}
-            fields={fields}
-            timeSlots={timeslots}
-            //x={g.x}
-            //y={g.y}
-          />
-        ))}
-      </div>
-
       <div className={styles.divGrid}>
-        <GridLayout
+        <ReactGridLayout
           className={styles.gridLayout}
           width={(fields?.length + 1) * 192}
           cols={fields?.length + 1}
@@ -292,18 +399,17 @@ export default function ScheduleInteractiveTool() {
           compactType={null}
           margin={[20, 20]}
           onDragStop={onDragStop}
-          onDrop={onDrop}
           layout={layout}
           useCSSTransforms
           preventCollision
-          isDroppable
           isResizable={false}
         >
           <div className={styles.divAdd} key="empty" />
           {Fields}
           {Times}
           {Games}
-        </GridLayout>
+          {AddGames}
+        </ReactGridLayout>
       </div>
       <Tooltip title={t('back')}>
         <Fab
@@ -314,6 +420,19 @@ export default function ScheduleInteractiveTool() {
           <Icon icon="ArrowBack" />
         </Fab>
       </Tooltip>
+      {isAddingGames ? (
+        <Tooltip title={t('edit_mode')}>
+          <Fab onClick={handleEditMode} className={classes.fabAdd}>
+            <Icon icon="Edit" />
+          </Fab>
+        </Tooltip>
+      ) : (
+        <Tooltip title={t('add_mode')}>
+          <Fab onClick={handleAddMode} className={classes.fabAdd}>
+            <Icon icon="Add" />
+          </Fab>
+        </Tooltip>
+      )}
       <Tooltip title={madeChanges ? t('cancel') : ''}>
         <Fab
           color="secondary"
@@ -335,11 +454,20 @@ export default function ScheduleInteractiveTool() {
         </Fab>
       </Tooltip>
       <AlertDialog
-        open={open}
+        open={alertDialog}
         onSubmit={handleDialogSubmit}
         onCancel={handleDialogCancel}
         description={t('quit_interactive_tool_confirmation')}
         title={t('quit_interactive_tool')}
+      />
+      <AddGame
+        eventId={eventId}
+        isOpen={addGameDialog}
+        onClose={() => setAddGameDialog(false)}
+        createCard={createCard}
+        whereWhen={addGameData}
+        phases={phases}
+        teams={teams}
       />
     </div>
   );

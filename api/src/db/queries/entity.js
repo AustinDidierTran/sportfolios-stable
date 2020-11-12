@@ -424,6 +424,8 @@ async function getInteractiveToolData(eventId, userId) {
   }
 
   return {
+    phases: await getPhases(eventId),
+    teams: await getTeamsSchedule(eventId),
     timeSlots: await getSlots(eventId),
     fields: await getFields(eventId),
     games: await getGames(eventId),
