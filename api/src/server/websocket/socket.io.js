@@ -4,20 +4,22 @@ const socketToUserMap = new Map();
 const userToSocketMap = new Map();
 let io;
 const initialize = server => {
-  io = require('socket.io')(server, {
-    cors: {
-      origin: CLIENT_BASE_URL,
-      methods: ['GET', 'POST'],
-    },
-  });
-  io.on('connection', socket => {
-    socket.on(SOCKET_EVENT.CONNECTED_USER, userId => {
-      onUserConnected(socket, userId);
+  if (!io) {
+    io = require('socket.io')(server, {
+      cors: {
+        origin: CLIENT_BASE_URL,
+        methods: ['GET', 'POST'],
+      },
     });
-    socket.on('disconnect', reason =>
-      onSocketDisconnected(socket, reason),
-    );
-  });
+    io.on('connection', socket => {
+      socket.on(SOCKET_EVENT.CONNECTED_USER, userId => {
+        onUserConnected(socket, userId);
+      });
+      socket.on('disconnect', reason =>
+        onSocketDisconnected(socket, reason),
+      );
+    });
+  }
   return io;
 };
 
