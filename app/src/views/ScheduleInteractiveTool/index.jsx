@@ -79,6 +79,8 @@ export default function ScheduleInteractiveTool() {
   const [buttonsAdd, setButtonsAdd] = useState([]);
   const [layout, setLayout] = useState([]);
   const [initialLayout, setInitialLayout] = useState([]);
+  const [layoutTimes, setLayoutTimes] = useState([]);
+  const [layoutFields, setLayoutFields] = useState([]);
 
   const [alertDialog, setAlertDialog] = useState(false);
   const [addGameDialog, setAddGameDialog] = useState(false);
@@ -165,10 +167,8 @@ export default function ScheduleInteractiveTool() {
       [],
     );
 
-    const res = [].concat(timeArr, fieldArr, gameArr, [
-      { i: 'empty', x: 0, y: 0, w: 1, h: 1, static: true },
-    ]);
-
+    setLayoutFields(fieldArr);
+    setLayoutTimes(timeArr);
     setInitialLayout(gameArr);
     setLayout(gameArr);
   }, [fields, timeslots, games]);
@@ -276,8 +276,8 @@ export default function ScheduleInteractiveTool() {
   const handleAddMode = () => {
     setIsAddingGames(true);
     const buttonsToAdd = [];
-    for (let x = 1; x < fields.length + 1; x++) {
-      for (let y = 1; y < timeslots.length + 1; y++) {
+    for (let x = 0; x < fields.length; x++) {
+      for (let y = 0; y < timeslots.length; y++) {
         if (!layout.find(item => item.x === x && item.y === y)) {
           buttonsToAdd.push({
             i: `+${x}:${y}`,
@@ -297,20 +297,21 @@ export default function ScheduleInteractiveTool() {
 
   const handleAddGameAt = (x, y) => {
     setAddGameField({
-      id: fields[x - 1].id,
-      name: fields[x - 1].field,
+      id: fields[x].id,
+      name: fields[x].field,
     });
     setAddGameTimeslot({
-      id: timeslots[y - 1].id,
-      date: timeslots[y - 1].date,
+      id: timeslots[y].id,
+      date: timeslots[y].date,
     });
     setAddGameDialog(true);
   };
 
   const createCard = game => {
-    const gridX = fields.findIndex(f => f.id === game.field_id) + 1;
-    const gridY =
-      timeslots.findIndex(ts => ts.id === game.timeslot_id) + 1;
+    const gridX = fields.findIndex(f => f.id === game.field_id);
+    const gridY = timeslots.findIndex(
+      ts => ts.id === game.timeslot_id,
+    );
 
     // add game
     setGames(
@@ -391,7 +392,6 @@ export default function ScheduleInteractiveTool() {
       <div className={styles.mainDiv}>
         <div className={styles.divButtons}>
           <Button
-            size="small"
             color="primary"
             variant="contained"
             className={styles.button}
@@ -401,7 +401,6 @@ export default function ScheduleInteractiveTool() {
             {t('field')}
           </Button>
           <Button
-            size="small"
             color="primary"
             variant="contained"
             className={styles.button}
@@ -411,19 +410,41 @@ export default function ScheduleInteractiveTool() {
             {t('time_slot')}
           </Button>
         </div>
-        <div className={styles.divFields}>{Fields}</div>
-        <div className={styles.divTimeslots}>{Times}</div>
+        <ReactGridLayout
+          className={styles.gridLayoutFields}
+          width={fields?.length * 192}
+          cols={fields?.length}
+          rowHeight={84}
+          maxRows={1}
+          margin={[20, 0]}
+          layout={layoutFields}
+        >
+          {Fields}
+        </ReactGridLayout>
+        <ReactGridLayout
+          className={styles.gridLayoutTimes}
+          width={192}
+          cols={fields?.length}
+          rowHeight={64}
+          maxRows={timeslots?.length}
+          margin={[0, 20]}
+          layout={layoutTimes}
+        >
+          {Times}
+        </ReactGridLayout>
         <ReactGridLayout
           className={styles.gridLayout}
-          cols={fields?.length + 1}
+          width={fields?.length * 192}
+          cols={fields?.length}
           rowHeight={64}
-          maxRows={timeslots?.length + 1}
-          width={(fields?.length + 1) * 192}
-          preventCollision
+          maxRows={timeslots?.length}
           compactType={null}
           margin={[20, 20]}
           onDragStop={onDragStop}
           layout={layout}
+          useCSSTransforms
+          preventCollision
+          isResizable={false}
         >
           {Games}
           {AddGames}

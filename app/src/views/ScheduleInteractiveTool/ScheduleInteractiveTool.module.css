@@ -1,22 +1,3 @@
-.unplacedGames {
-  display: flex;
-  flex-direction: row;
-  overflow: auto;
-  overflow-y: hidden;
-  height: 90px;
-  padding: 5px;
-}
-
-.unplacedGames > div {
-  margin: 5px;
-  flex: none;
-}
-
-.divGrid {
-  overflow: auto;
-  max-height: calc(100vh - 100px);
-}
-
 .gridLayout {
   grid-area: grid;
   position: relative;
@@ -42,33 +23,32 @@
 }
 
 .divField {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  max-width: 170px;
+  height: 90% !important;
   border-bottom-width: 2px;
   border-bottom-style: solid;
   border-bottom-color: black;
 }
 
 .divTime {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  height: 100px;
+  width: 95% !important;
   border-right-width: 2px;
   border-right-style: solid;
   border-right-color: black;
 }
 
 .label {
-  margin: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  margin: 0;
+  text-align: center;
 }
 
 .mainDiv {
   display: grid;
-  grid-template-columns: 170px auto;
-  grid-template-rows: 100px auto;
+  grid-template-columns: 192px auto;
+  grid-template-rows: auto auto;
   grid-template-areas:
     'buttons fields'
     'timeslots grid';
@@ -88,7 +68,6 @@
   display: flex;
   flex-direction: row;
   background-color: lightskyblue;
-  /*padding: 10px;*/
 }
 
 .divFields > div {
@@ -101,10 +80,22 @@
   display: flex;
   flex-direction: column;
   background-color: lightgreen;
-  /*padding: 10px;*/
+  padding-top: 10px;
 }
 
 .divTimeslots > div {
   flex: 1 1;
   margin: 10px;
+}
+
+.gridLayoutTimes {
+  grid-area: timeslots;
+  position: relative;
+  background-color: lightgreen;
+}
+
+.gridLayoutFields {
+  grid-area: fields;
+  position: relative;
+  background-color: lightskyblue;
 }
