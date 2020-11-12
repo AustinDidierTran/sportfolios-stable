@@ -1,0 +1,7 @@
+{
+  "emails": {
+    "added_to_roster_text": "Hello {{name}}! Somebody added you to {{teamName}} team's roster on Sportfolios. Click on the following button to see the current roster.",
+    "added_to_roster_button": "See current roster",
+    "added_to_roster_subject": "You have been added to a roster"
+  }
+}

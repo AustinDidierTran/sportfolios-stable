@@ -1,14 +1,18 @@
-import React, { useRef, useMemo, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import api from '../../../../actions/api';
 import NotificationList from './NotificationList';
 
 import styles from './NotificationModule.module.css';
 import { IconButton } from '../../../../components/Custom';
 import { Badge } from '../../../../components/MUI';
+import { STATUS_ENUM } from '../../../../../../common/enums';
 
 export default function NotificationModule() {
-  const [notifications, setNotifications] = useState([]);
   const [open, setOpen] = useState(false);
+  const [
+    unreadNotificationsCount,
+    setUnreadNotificationCount,
+  ] = useState(0);
 
   const node = useRef();
 
@@ -26,26 +30,24 @@ export default function NotificationModule() {
     };
   }, []);
 
-  const toggleNotification = () => setOpen(!open);
+  const toggleNotification = () => {
+    api('/api/notifications/see', {
+      method: 'PUT',
+    });
+    setOpen(!open);
+  };
 
   const closeNotificationModule = () => setOpen(false);
 
-  const unreadNotificationsCount = useMemo(
-    () =>
-      (notifications &&
-        notifications.filter(n => !n.seen_at).length) ||
-      0,
-    [notifications],
-  );
-
-  const initializeNotifications = async () => {
-    const { data } = await api('/api/notifications/all');
-
-    setNotifications(data);
+  const getNotificationCount = async () => {
+    const res = await api('/api/notifications/unseenCount');
+    if (res.status == STATUS_ENUM.SUCCESS_STRING) {
+      setUnreadNotificationCount(Number(res.data));
+    }
   };
 
   useEffect(() => {
-    initializeNotifications();
+    getNotificationCount();
   }, []);
 
   return (
@@ -58,11 +60,12 @@ export default function NotificationModule() {
           icon="Notifications"
         />
       </Badge>
-      <NotificationList
-        closeNotificationModule={closeNotificationModule}
-        open={open}
-        notifications={notifications}
-      />
+      <div className={styles.module}>
+        <NotificationList
+          closeNotificationModule={closeNotificationModule}
+          open={open}
+        />
+      </div>
     </div>
   );
 }

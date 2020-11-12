@@ -3,6 +3,7 @@ const {
   INVOICE_STATUS_ENUM,
   STATUS_ENUM,
   REJECTION_ENUM,
+  NOTIFICATION_TYPE,
 } = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
@@ -106,6 +107,7 @@ const {
   getLanguageFromEmail,
   validateEmailIsUnique: validateEmailIsUniqueHelper,
 } = require('../helpers');
+const { sendNotification } = require('./notifications');
 
 async function isAllowed(
   entityId,
@@ -889,7 +891,28 @@ async function deleteOption(id) {
 }
 
 async function addPlayerToRoster(body, userId) {
-  return addPlayerToRosterHelper(body, userId);
+  const { teamId, eventId, teamName, personId, ...otherProps } = body;
+  const res = await addPlayerToRosterHelper(
+    { ...otherProps, personId },
+    userId,
+  );
+  const { name } = await getPersonInfos(personId);
+  if (res && !body.isSub) {
+    const notif = {
+      user_id: userId,
+      type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+      entity_photo: eventId || teamId,
+      metadata: { eventId, teamName },
+    };
+    const emailInfos = {
+      type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+      eventId,
+      teamName,
+      name,
+    };
+    sendNotification(notif, emailInfos);
+  }
+  return res;
 }
 
 async function deletePlayerFromRoster(id, eventId, userId) {

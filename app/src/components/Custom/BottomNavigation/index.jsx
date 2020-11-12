@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { ROUTES, goTo } from '../../../actions/goTo';
 import { Store, SCREENSIZE_ENUM } from '../../../Store';
 import api from '../../../actions/api';
+import { STATUS_ENUM } from '../../../../../common/enums';
 
 const TABS_ENUM = {
   HOME: 'home',
@@ -31,7 +32,10 @@ export default function CustomBottomNavigation() {
   } = useContext(Store);
 
   const [value, setValue] = useState(null);
-  const [notifications, setNotifications] = useState([]);
+  const [
+    unreadNotificationsCount,
+    setUnreadNotificationsCount,
+  ] = useState(0);
 
   const routeEnum = {
     [TABS_ENUM.HOME]: [ROUTES.home],
@@ -60,22 +64,15 @@ export default function CustomBottomNavigation() {
     [screenSize, userInfo && userInfo.user_id],
   );
 
-  const unreadNotificationsCount = useMemo(
-    () =>
-      (notifications &&
-        notifications.filter(n => !n.seen_at).length) ||
-      0,
-    [notifications],
-  );
-
-  const initializeNotifications = async () => {
-    const { data } = await api('/api/notifications/all');
-
-    setNotifications(data);
+  const fetchUnreadNotificationsCount = async () => {
+    const res = await api('/api/notifications/unseenCount');
+    if (res.status == STATUS_ENUM.SUCCESS_STRING) {
+      setUnreadNotificationsCount(Number(res.data));
+    }
   };
 
   useEffect(() => {
-    initializeNotifications();
+    fetchUnreadNotificationsCount();
   }, []);
 
   return displayNav ? (

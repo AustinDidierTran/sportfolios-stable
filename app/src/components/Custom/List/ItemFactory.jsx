@@ -1,6 +1,7 @@
 import {
   GLOBAL_ENUM,
   LIST_ITEM_ENUM,
+  NOTIFICATION_TYPE,
 } from '../../../../../common/enums';
 import AppItem from './AppItem';
 import CartItem from './CartItem';
@@ -22,6 +23,8 @@ import RankingWithStatsItem from './RankingWithStatsItem';
 import RosterItem from './RosterItem';
 import SalesItem from './SalesItem';
 import TeamItem from './TeamItem';
+import { RosterNotification } from './NotificationItems';
+import { AvatarAndTextSkeleton } from './SkeletonItems';
 
 const ItemMap = {
   [GLOBAL_ENUM.EVENT]: EventItem,
@@ -43,6 +46,8 @@ const ItemMap = {
   [LIST_ITEM_ENUM.RANKING]: RankingItem,
   [LIST_ITEM_ENUM.ROSTER_ITEM]: RosterItem,
   [LIST_ITEM_ENUM.SALES]: SalesItem,
+  [LIST_ITEM_ENUM.AVATAR_TEXT_SKELETON]: AvatarAndTextSkeleton,
+  [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: RosterNotification,
 };
 
 export default function ItemFactory(props) {

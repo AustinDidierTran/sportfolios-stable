@@ -19,7 +19,14 @@ const useStyles = makeStyles(theme => ({
 export { default as ItemFactory } from './ItemFactory';
 
 export default function CustomList(props) {
-  const { title, items, ref, rowRenderer, selectedIndex } = props;
+  const {
+    title,
+    items,
+    ref,
+    rowRenderer,
+    selectedIndex,
+    ...otherProps
+  } = props;
 
   const classes = useStyles();
 
@@ -31,6 +38,7 @@ export default function CustomList(props) {
 
   return (
     <List
+      {...otherProps}
       ref={ref}
       style={{ maxWidth: 'unset' }}
       aria-labelledby="nested-list-subheader"
