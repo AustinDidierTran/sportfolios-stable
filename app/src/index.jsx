@@ -5,6 +5,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n/index';
 import { StoreProvider } from './Store';
 import App from './views/App/index';
+import { io } from 'socket.io-client';
 
 import '../styles/global.css';
 
@@ -32,6 +33,12 @@ function main() {
 
   const app = document.createElement('div');
   document.body.appendChild(app);
+  const socket = io();
+  socket.on('connect', () => {
+    // either with send()
+    socket.send('Hello!');
+  });
+  localStorage.debug = '*';
 
   ReactDOM.render(
     <StoreProvider>

@@ -5,7 +5,7 @@ import { API_BASE_URL } from '../../conf';
 import i18n from './i18n';
 import api from './actions/api';
 import { errors, ERROR_ENUM } from '../../common/errors';
-
+import { io } from 'socket.io-client';
 export const Store = React.createContext();
 
 const localAuthToken = localStorage.getItem('authToken');
@@ -50,6 +50,7 @@ const initialState = {
     {},
   activeGaPageviews: [],
   activeGaEvents: [],
+  socket: io(API_BASE_URL),
 };
 
 export const ACTION_ENUM = {

@@ -15,9 +15,10 @@ import CartIcon from '../../Cart/CartICon';
 export default function LoggedIn(props) {
   const classes = useStyles();
   const {
-    state: { userInfo = {}, screenSize },
+    state: { userInfo = {}, screenSize, socket },
   } = useContext(Store);
   const { showBar = true } = props;
+  socket.emit('userConnected', userInfo.user_id);
   if (screenSize !== SCREENSIZE_ENUM.xs) {
     {
       return showBar ? (
