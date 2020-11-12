@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Store, SCREENSIZE_ENUM } from '../../../Store';
 import { ROUTES, goTo } from '../../../actions/goTo';
-import { LOGO_ENUM } from '../../../../../common/enums';
+import { LOGO_ENUM, SOCKET_EVENT } from '../../../../../common/enums';
 
 import { AppBar, Toolbar, Typography } from '../../../components/MUI';
 import { SearchInput, IconButton } from '../../../components/Custom';
@@ -18,7 +18,7 @@ export default function LoggedIn(props) {
     state: { userInfo = {}, screenSize, socket },
   } = useContext(Store);
   const { showBar = true } = props;
-  socket.emit('userConnected', userInfo.user_id);
+  socket.emit(SOCKET_EVENT.CONNECTED_USER, userInfo.user_id);
   if (screenSize !== SCREENSIZE_ENUM.xs) {
     {
       return showBar ? (

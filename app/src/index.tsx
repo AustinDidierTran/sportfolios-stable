@@ -30,11 +30,8 @@ function main() {
     }
   }
 
-
-
   const app = document.createElement('div');
   document.body.appendChild(app);
-  localStorage.debug = '*';
 
   ReactDOM.render(
     <StoreProvider>

@@ -281,6 +281,15 @@ async function getOwnedEvents(organizationId) {
   );
   return fullEvents;
 }
+async function getEntityOwners(
+  entity_id,
+  minimumRole = ENTITIES_ROLE_ENUM.ADMIN,
+) {
+  return knex('user_entity_role')
+    .select()
+    .where({ entity_id })
+    .andWhere('role', '<=', minimumRole);
+}
 async function getAllTypeEntities(type) {
   const entities = await knex('entities')
     .select('id', 'type', 'name', 'surname', 'photo_url')
@@ -2679,4 +2688,5 @@ module.exports = {
   deletePlayerFromRoster,
   deleteGame,
   personIsAwaitingTransfer,
+  getEntityOwners,
 };

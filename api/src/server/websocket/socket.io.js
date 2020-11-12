@@ -1,4 +1,5 @@
 const { CLIENT_BASE_URL } = require('../../../../conf');
+const { SOCKET_EVENT } = require('../../../../common/enums');
 const socketToUserMap = new Map();
 const userToSocketMap = new Map();
 let io;
@@ -10,13 +11,8 @@ const initialize = server => {
     },
   });
   io.on('connection', socket => {
-    console.log(`new connection: ${socket.id}`);
-
-    socket.on('userConnected', userId => {
+    socket.on(SOCKET_EVENT.CONNECTED_USER, userId => {
       onUserConnected(socket, userId);
-    });
-    socket.on('message', data => {
-      onMessage(socket, data);
     });
     socket.on('disconnect', reason =>
       onSocketDisconnected(socket, reason),
@@ -26,31 +22,27 @@ const initialize = server => {
 };
 
 const onUserConnected = (socket, userId) => {
-  console.log({ userId });
   const socketId = socket.id;
   socketToUserMap.set(socketId, userId);
   if (!userToSocketMap.has(userId)) {
-    userToSocketMap.set(userId, [socketId]);
+    userToSocketMap.set(userId, new Set([socketId]));
   } else {
     userToSocketMap.get(userId).add(socketId);
   }
 };
 
-const onSocketDisconnected = (socket, reason) => {
-  console.log(`${socket.id} disconnected because: ${reason}`);
+const onSocketDisconnected = socket => {
   const socketId = socket.id;
   const userId = socketToUserMap.get(socketId);
 
   socketToUserMap.delete(socketId);
   const sockets = userToSocketMap.get(userId);
-  sockets.delete(socketId);
-  if (sockets.size === 0) {
-    userToSocketMap.delete(userId);
+  if (sockets) {
+    sockets.delete(socketId);
+    if (sockets.size === 0) {
+      userToSocketMap.delete(userId);
+    }
   }
-};
-
-const onMessage = (socket, data) => {
-  console.log({ data });
 };
 
 const emit = (eventName, userId, message) => {
@@ -59,10 +51,11 @@ const emit = (eventName, userId, message) => {
     console.error('You need to call initialize before emitting!');
   } else {
     sockets = userToSocketMap.get(userId);
-    sockets.forEach(socket =>
-      io.to(socket.id).emit(eventName, message),
-    );
-    io.to();
+    if (sockets) {
+      sockets.forEach(socket =>
+        io.to(socket).emit(eventName, message),
+      );
+    }
   }
 };
 module.exports = { emit, initialize };

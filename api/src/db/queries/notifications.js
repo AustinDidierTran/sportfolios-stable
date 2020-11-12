@@ -8,6 +8,8 @@ const {
   addNotification,
 } = require('../helpers/notifications');
 
+const socket = require('../../server/websocket/socket.io');
+
 const { sendMail } = require('../../server/utils/nodeMailer');
 
 const emailFactory = require('../emails/emailFactory');
@@ -15,6 +17,8 @@ const {
   getEmailsFromUserId,
   getLanguageFromUser,
 } = require('../helpers');
+
+const { SOCKET_EVENT } = require('../../../../common/enums');
 
 const seeNotifications = async user_id => {
   return seeNotificationsHelper(user_id);
@@ -35,7 +39,9 @@ const deleteNotification = async notification_id => {
 const sendNotification = async (notif, emailInfos) => {
   //TODO check for user notification permission
   const { user_id } = notif;
-  addNotification(notif);
+  await addNotification(notif);
+  const unseenCount = await countUnseenNotifications(user_id);
+  socket.emit(SOCKET_EVENT.NOTIFICATIONS, user_id, unseenCount);
   if (emailInfos) {
     sendEmailNotification(user_id, emailInfos);
   }
