@@ -233,6 +233,11 @@ const GLOBAL_ENUM = {
   SHOP_ITEM: 'shop_item',
 };
 
+const SOCKET_EVENT = {
+  CONNECTED_USER: 'connectedUser',
+  NOTIFICATIONS: 'notifications',
+};
+
 const NOTIFICATION_TYPE = {
   ADDED_TO_ROSTER: 'added to roster',
 };
@@ -382,4 +387,5 @@ module.exports = {
   BASIC_CHATBOT_STATES,
   SCORE_SUBMISSION_CHATBOT_STATES,
   NOTIFICATION_TYPE,
+  SOCKET_EVENT,
 };

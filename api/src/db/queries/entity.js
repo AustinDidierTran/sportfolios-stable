@@ -96,6 +96,7 @@ const {
   updateRegistration: updateRegistrationHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
   getMembership,
+  getEntityOwners,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -909,21 +910,24 @@ async function addPlayerToRoster(body, userId) {
     { ...otherProps, personId },
     userId,
   );
+  const owners = await getEntityOwners(personId);
   const { name } = await getPersonInfos(personId);
-  if (res && !body.isSub) {
-    const notif = {
-      user_id: userId,
-      type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-      entity_photo: eventId || teamId,
-      metadata: { eventId, teamName },
-    };
-    const emailInfos = {
-      type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-      eventId,
-      teamName,
-      name,
-    };
-    sendNotification(notif, emailInfos);
+  if (res && !body.isSub && owners) {
+    owners.forEach(owner => {
+      const notif = {
+        user_id: owner.user_id,
+        type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+        entity_photo: eventId || teamId,
+        metadata: { eventId, teamName },
+      };
+      const emailInfos = {
+        type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+        eventId,
+        teamName,
+        name,
+      };
+      sendNotification(notif, emailInfos);
+    });
   }
   return res;
 }

@@ -209,6 +209,8 @@
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.7.0",
     "react-router-dom": "^5.1.2",
+    "socket.io": "^3.0.1",
+    "socket.io-client": "^3.0.1",
     "stripe": "^8.49.0",
     "uuid": "^3.4.0",
     "validator": "^13.1.17",

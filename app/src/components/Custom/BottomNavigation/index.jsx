@@ -16,7 +16,10 @@ import { useTranslation } from 'react-i18next';
 import { ROUTES, goTo } from '../../../actions/goTo';
 import { Store, SCREENSIZE_ENUM } from '../../../Store';
 import api from '../../../actions/api';
-import { STATUS_ENUM } from '../../../../../common/enums';
+import {
+  STATUS_ENUM,
+  SOCKET_EVENT,
+} from '../../../../../common/enums';
 
 const TABS_ENUM = {
   HOME: 'home',
@@ -28,7 +31,7 @@ const TABS_ENUM = {
 export default function CustomBottomNavigation() {
   const { t } = useTranslation();
   const {
-    state: { screenSize, userInfo },
+    state: { screenSize, userInfo, socket },
   } = useContext(Store);
 
   const [value, setValue] = useState(null);
@@ -36,6 +39,10 @@ export default function CustomBottomNavigation() {
     unreadNotificationsCount,
     setUnreadNotificationsCount,
   ] = useState(0);
+
+  socket.on(SOCKET_EVENT.NOTIFICATIONS, count => {
+    setUnreadNotificationsCount(count);
+  });
 
   const routeEnum = {
     [TABS_ENUM.HOME]: [ROUTES.home],
@@ -94,6 +101,7 @@ export default function CustomBottomNavigation() {
       <BottomNavigationAction
         label={t('notifications')}
         value={TABS_ENUM.NOTIFICATIONS}
+        onClick={() => setUnreadNotificationsCount(0)}
         icon={
           <Badge
             badgeContent={unreadNotificationsCount}

@@ -4,6 +4,7 @@ const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
 const { CLIENT_BASE_URL } = require('../../conf');
+const socket = require('./server/websocket/socket.io');
 
 // Middlewares
 const getUserInfo = require('./server/middleware/user-info');
@@ -51,5 +52,7 @@ const server = app.listen(PORT, () => {
   /* eslint-disable-next-line */
   console.log(`Server listening on port: ${PORT}`);
 });
+
+socket.initialize(server);
 
 module.exports = server;
