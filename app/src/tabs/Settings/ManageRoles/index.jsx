@@ -111,11 +111,6 @@ export default function ManageRoles() {
     { display: t('remove'), value: ENTITIES_ROLE_ENUM.VIEWER },
   ];
 
-  const eventItems = [
-    { display: t('editor'), value: ENTITIES_ROLE_ENUM.EDITOR },
-    { display: t('remove'), value: ENTITIES_ROLE_ENUM.VIEWER },
-  ];
-
   return (
     <Paper title={t('admins')}>
       {entities.map((e, index) => [
