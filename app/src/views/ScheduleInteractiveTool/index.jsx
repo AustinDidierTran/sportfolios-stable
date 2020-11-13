@@ -81,7 +81,8 @@ export default function ScheduleInteractiveTool() {
 
   const [alertDialog, setAlertDialog] = useState(false);
   const [addGameDialog, setAddGameDialog] = useState(false);
-  const [addGameData, setAddGameData] = useState({});
+  const [addGameField, setAddGameField] = useState({});
+  const [addGameTimeslot, setAddGameTimeslot] = useState({});
 
   const getData = async () => {
     setIsLoading(true);
@@ -266,7 +267,7 @@ export default function ScheduleInteractiveTool() {
     setAlertDialog(false);
   };
 
-  const handleEditMode = () => {
+  const handleMoveMode = () => {
     setIsAddingGames(false);
     setButtonsAdd([]);
     setLayout(layout.filter(item => item.i[0] !== '+'));
@@ -295,15 +296,13 @@ export default function ScheduleInteractiveTool() {
   };
 
   const handleAddGameAt = (x, y) => {
-    setAddGameData({
-      field: {
-        id: fields[x - 1].id,
-        name: fields[x - 1].field,
-      },
-      timeslot: {
-        id: timeslots[y - 1].id,
-        date: timeslots[y - 1].date,
-      },
+    setAddGameField({
+      id: fields[x - 1].id,
+      name: fields[x - 1].field,
+    });
+    setAddGameTimeslot({
+      id: timeslots[y - 1].id,
+      date: timeslots[y - 1].date,
     });
     setAddGameDialog(true);
   };
@@ -421,9 +420,9 @@ export default function ScheduleInteractiveTool() {
         </Fab>
       </Tooltip>
       {isAddingGames ? (
-        <Tooltip title={t('edit_mode')}>
-          <Fab onClick={handleEditMode} className={classes.fabAdd}>
-            <Icon icon="Edit" />
+        <Tooltip title={t('move_mode')}>
+          <Fab onClick={handleMoveMode} className={classes.fabAdd}>
+            <Icon icon="OpenWith" />
           </Fab>
         </Tooltip>
       ) : (
@@ -465,7 +464,8 @@ export default function ScheduleInteractiveTool() {
         isOpen={addGameDialog}
         onClose={() => setAddGameDialog(false)}
         createCard={createCard}
-        whereWhen={addGameData}
+        field={addGameField}
+        timeslot={addGameTimeslot}
         phases={phases}
         teams={teams}
       />

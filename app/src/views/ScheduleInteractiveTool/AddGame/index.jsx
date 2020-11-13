@@ -21,7 +21,8 @@ export default function AddGame(props) {
     isOpen,
     onClose,
     createCard,
-    whereWhen,
+    field,
+    timeslot,
     teams,
     phases,
   } = props;
@@ -69,8 +70,8 @@ export default function AddGame(props) {
         body: JSON.stringify({
           eventId,
           phaseId: phase,
-          fieldId: whereWhen.field.id,
-          timeslotId: whereWhen.timeslot.id,
+          fieldId: field.id,
+          timeslotId: timeslot.id,
           rosterId1: team1,
           rosterId2: team2,
         }),
@@ -136,8 +137,8 @@ export default function AddGame(props) {
     <FormDialog
       open={open}
       title={t('create_a_game')}
-      description={`${whereWhen.field?.name}, ${formatDate(
-        moment(whereWhen.timeslot?.date),
+      description={`${field?.name}, ${formatDate(
+        moment(timeslot?.date),
         'DD MMM HH:mm',
       )}`}
       buttons={buttons}

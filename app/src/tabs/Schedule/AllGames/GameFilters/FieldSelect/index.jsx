@@ -34,9 +34,7 @@ export default function FieldSelect(props) {
   };
 
   const handleChange = fieldId => {
-    const field = fields.find(field => {
-      return field.value === fieldId;
-    });
+    const field = fields.find(field => field.value === fieldId);
     onChange(field);
   };
 

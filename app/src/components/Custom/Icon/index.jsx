@@ -45,6 +45,7 @@ import Menu from '@material-ui/icons/Menu';
 import MoneyOff from '@material-ui/icons/MoneyOff';
 import NavigateNext from '@material-ui/icons/NavigateNext';
 import Notifications from '@material-ui/icons/Notifications';
+import OpenWith from '@material-ui/icons/OpenWith';
 import PeopleIcon from '@material-ui/icons/People';
 import Person from '@material-ui/icons/Person';
 import PersonAdd from '@material-ui/icons/PersonAdd';
@@ -112,6 +113,7 @@ const icons = {
   MoneyOff,
   NavigateNext,
   Notifications,
+  OpenWith,
   PeopleIcon,
   Person,
   PersonAdd,
