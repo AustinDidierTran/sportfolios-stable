@@ -25,15 +25,16 @@ export default function GameFilters(props) {
   const [teamName, setTeamName] = useState('');
   const [phaseId, setPhaseId] = useState(SELECT_ENUM.ALL);
   const [phaseName, setPhaseName] = useState('');
-  const [field, setField] = useState(SELECT_ENUM.ALL);
+  const [fieldId, setFieldId] = useState(SELECT_ENUM.ALL);
+  const [fieldName, setFieldName] = useState('');
   const [timeSlot, setTimeSlot] = useState(SELECT_ENUM.ALL);
   const [open, setOpen] = useState(false);
   const [description, setDescription] = useState(false);
 
   useEffect(() => {
-    update(teamId, phaseId, field, timeSlot);
+    update(teamId, phaseId, fieldId, timeSlot);
     getDescription();
-  }, [teamId, phaseId, field, timeSlot]);
+  }, [teamId, phaseId, fieldId, timeSlot]);
 
   const changeTeam = team => {
     const { value, display } = team;
@@ -47,8 +48,10 @@ export default function GameFilters(props) {
     setPhaseName(display);
   };
 
-  const changeField = field => {
-    setField(field);
+  const changeFieldId = field => {
+    const { value, display } = field;
+    setFieldId(value);
+    setFieldName(display);
   };
 
   const changeTimeSlot = timeSlot => {
@@ -60,7 +63,7 @@ export default function GameFilters(props) {
     if (
       teamId === SELECT_ENUM.ALL &&
       phaseId === SELECT_ENUM.ALL &&
-      field === SELECT_ENUM.ALL &&
+      fieldId === SELECT_ENUM.ALL &&
       timeSlot === SELECT_ENUM.ALL
     ) {
       description = null;
@@ -71,8 +74,8 @@ export default function GameFilters(props) {
     if (phaseId != SELECT_ENUM.ALL) {
       description = description + ` ${t('of')} ${phaseName}`;
     }
-    if (field != SELECT_ENUM.ALL) {
-      description = description + ` ${t('on')} ${field}`;
+    if (fieldId != SELECT_ENUM.ALL) {
+      description = description + ` ${t('on')} ${fieldName}`;
     }
     if (timeSlot != SELECT_ENUM.ALL) {
       description =
@@ -98,7 +101,8 @@ export default function GameFilters(props) {
     setTeamName('');
     setPhaseId(SELECT_ENUM.ALL);
     setPhaseName('');
-    setField(SELECT_ENUM.ALL);
+    setFieldId(SELECT_ENUM.ALL);
+    setFieldName('');
     setTimeSlot(SELECT_ENUM.ALL);
   };
 
@@ -127,7 +131,10 @@ export default function GameFilters(props) {
                 onChange={changePhaseId}
                 phaseId={phaseId}
               />
-              <FieldSelect onChange={changeField} field={field} />
+              <FieldSelect
+                onChange={changeFieldId}
+                fieldId={fieldId}
+              />
             </div>
             <DialogContentText className={styles.description}>
               {description}

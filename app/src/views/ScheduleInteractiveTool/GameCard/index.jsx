@@ -22,7 +22,15 @@ export default function GamCard(props) {
   );
 
   return (
-    <Card className={styles.gameCard}>
+    <Card
+      className={styles.gameCard}
+      unselectable="on"
+      // hack for firefox
+      // Firefox requires some kind of initialization
+      // which we can do by adding this attribute
+      // @see https://bugzilla.mozilla.org/show_bug.cgi?id=568313
+      onDragStart={e => e.dataTransfer.setData('text/plain', '')}
+    >
       <Tooltip title={tooltip} enterDelay={500}>
         <div className={styles.gameDiv}>
           <div className={styles.team1}>

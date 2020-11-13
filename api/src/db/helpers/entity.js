@@ -1039,7 +1039,8 @@ async function getGames(eventId) {
   const realId = await getRealId(eventId);
   const games = await knex('games')
     .select('*')
-    .where({ event_id: realId });
+    .whereNotNull('timeslot_id', 'field_id')
+    .andWhere({ event_id: realId });
 
   const res = await Promise.all(
     games.map(async game => {
@@ -1062,6 +1063,29 @@ async function getGames(eventId) {
         teams,
         field: r1.field,
         start_time: r2.date,
+      };
+    }),
+  );
+  return res;
+}
+
+async function getUnplacedGames(eventId) {
+  const realId = await getRealId(eventId);
+  const unplacedGames = await knex('games')
+    .select('*')
+    .where({ event_id: realId, timeslot_id: null, field_id: null });
+
+  const res = await Promise.all(
+    unplacedGames.map(async game => {
+      const teams = await getTeams(game.id);
+      let phaseName = null;
+      if (game.phase_id) {
+        phaseName = await getPhaseName(game.phase_id);
+      }
+      return {
+        ...game,
+        phaseName,
+        teams,
       };
     }),
   );
@@ -1698,6 +1722,8 @@ async function addGame(
     })
     .returning('*');
 
+  let team1;
+  let team2;
   if (name1) {
     await knex('game_teams').insert({
       game_id: res.id,
@@ -1705,11 +1731,13 @@ async function addGame(
     });
   } else {
     const teamName = await getTeamName(rosterId1);
-    await knex('game_teams').insert({
-      game_id: res.id,
-      name: teamName,
-      roster_id: rosterId1,
-    });
+    [team1] = await knex('game_teams')
+      .insert({
+        game_id: res.id,
+        name: teamName,
+        roster_id: rosterId1,
+      })
+      .returning('*');
   }
   if (name2) {
     await knex('game_teams').insert({
@@ -1718,13 +1746,20 @@ async function addGame(
     });
   } else {
     const teamName = await getTeamName(rosterId2);
-    await knex('game_teams').insert({
-      game_id: res.id,
-      name: teamName,
-      roster_id: rosterId2,
-    });
+    [team2] = await knex('game_teams')
+      .insert({
+        game_id: res.id,
+        name: teamName,
+        roster_id: rosterId2,
+      })
+      .returning('*');
   }
-  return res;
+  return {
+    game: {
+      ...res,
+      teams: [team1, team2],
+    },
+  };
 }
 
 async function addScoreAndSpirit(props) {
@@ -2642,6 +2677,7 @@ module.exports = {
   getAlias,
   getPhases,
   getGames,
+  getUnplacedGames,
   getTeamGames,
   getPhasesGameAndTeams,
   getSlots,

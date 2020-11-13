@@ -51,6 +51,7 @@ const {
   getEvent: getEventHelper,
   getFields: getFieldsHelper,
   getGames: getGamesHelper,
+  getUnplacedGames: getUnplacedGamesHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getMembers: getMembersHelper,
   getOrganizationMembers: getOrganizationMembersHelper,
@@ -217,6 +218,7 @@ async function getPrimaryPerson(userId) {
 async function getRoster(rosterId) {
   return getRosterHelper(rosterId);
 }
+
 async function getRosterWithSub(rosterId) {
   return getRosterWithSubHelper(rosterId);
 }
@@ -228,6 +230,7 @@ async function getEvent(eventId) {
 async function getAlias(entityId) {
   return getAliasHelper(entityId);
 }
+
 async function validateEmailIsUnique(email) {
   return validateEmailIsUniqueHelper(email);
 }
@@ -239,9 +242,15 @@ async function getPhases(eventId) {
 async function getGames(eventId) {
   return getGamesHelper(eventId);
 }
+
+async function getUnplacedGames(eventId) {
+  return getUnplacedGamesHelper(eventId);
+}
+
 async function getTeamGames(eventId) {
   return getTeamGamesHelper(eventId);
 }
+
 async function getPhasesGameAndTeams(eventId, phaseId) {
   return getPhasesGameAndTeamsHelper(eventId, phaseId);
 }
@@ -253,6 +262,7 @@ async function getSlots(eventId) {
 async function getTeamsSchedule(eventId) {
   return getTeamsScheduleHelper(eventId);
 }
+
 async function getFields(eventId) {
   return getFieldsHelper(eventId);
 }
@@ -414,9 +424,12 @@ async function getInteractiveToolData(eventId, userId) {
   }
 
   return {
+    phases: await getPhases(eventId),
+    teams: await getTeamsSchedule(eventId),
     timeSlots: await getSlots(eventId),
     fields: await getFields(eventId),
     games: await getGames(eventId),
+    unplacedGames: await getUnplacedGames(eventId),
   };
 }
 
