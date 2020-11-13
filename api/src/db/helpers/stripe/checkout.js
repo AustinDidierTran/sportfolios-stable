@@ -5,7 +5,6 @@ const {
   stripeErrorLogger,
   stripeLogger,
 } = require('../../../server/utils/logger');
-const { getCreator } = require('../entity');
 const {
   STRIPE_STATUS_ENUM,
   GLOBAL_ENUM,
@@ -149,27 +148,13 @@ const createTransfer = async (params, invoiceItemId) => {
   }
 };
 
-const getExternalAccount = async entityId => {
-  const [entity] = await knex('entities').where({ id: entityId });
-
-  if (Number(entity.type) === GLOBAL_ENUM.EVENT) {
-    const creator = await getCreator(entityId);
-
-    const [externalAccount] = await knex('stripe_accounts')
-      .select('*')
-      .where({
-        entity_id: creator.id,
-      });
-
-    return externalAccount;
-  }
-
+const getExternalAccount = async stripePriceId => {
+  const [{ owner_id: ownerId }] = await knex('stripe_price')
+    .select('owner_id')
+    .where({ stripe_price_id: stripePriceId });
   const [externalAccount] = await knex('stripe_accounts')
     .select('*')
-    .where({
-      entity_id: entityId,
-    });
-
+    .where({ entity_id: ownerId });
   return externalAccount;
 };
 
@@ -186,7 +171,7 @@ const createTransfers = async invoice => {
           .select('*')
           .where({ invoice_item_id: invoiceItemId });
         const externalAccount = await getExternalAccount(
-          invoiceItem.seller_entity_id,
+          invoiceItem.stripe_price_id,
         );
 
         const stripeFees = Math.ceil(amount * 0.029 + 30);

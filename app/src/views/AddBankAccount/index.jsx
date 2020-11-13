@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { useParams } from 'react-router-dom';
@@ -6,27 +6,23 @@ import { TextField, Typography } from '../../components/MUI';
 import styles from './AddBankAccount.module.css';
 import CountrySelect from './CountrySelect';
 import CurrencySelect from './CurrencySelect';
-import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
+import { goTo } from '../../actions/goTo';
 import { hasXDigits } from '../../utils/validators';
 import { IgContainer, Paper, Button } from '../../components/Custom';
 import api from '../../actions/api';
 import { useQuery } from '../../hooks/queries';
+import { ERROR_ENUM } from '../../../../common/errors';
+import { ACTION_ENUM, Store } from '../../Store';
+import { SEVERITY_ENUM, STATUS_ENUM } from '../../../../common/enums';
 
 export default function AddBankAccount() {
   const { t } = useTranslation();
   const { id } = useParams();
-  const { redirect: redirectProps } = useQuery();
+  const { entityId } = useQuery();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { dispatch } = useContext(Store);
 
   const isANumber = number => !isNaN(Number(number));
-
-  const [redirect, setRedirect] = useState(ROUTES.userSettings);
-
-  useEffect(() => {
-    if (redirectProps) {
-      setRedirect(redirectProps);
-    }
-  }, [redirectProps]);
 
   const validate = values => {
     const errors = {};
@@ -42,6 +38,7 @@ export default function AddBankAccount() {
     if (!country) {
       errors.country = t('value_is_required');
     }
+
     if (!currency) {
       errors.currency = t('value_is_required');
     }
@@ -74,15 +71,11 @@ export default function AddBankAccount() {
         digits: 7,
       });
     }
-
     return errors;
   };
 
   const formik = useFormik({
-    initialValues: {
-      country: 'CA',
-      currency: 'CAD',
-    },
+    initialValues: { country: 'CA', currency: 'CAD' },
     validate,
     validateOnChange: false,
     validateOnBlur: true,
@@ -99,6 +92,7 @@ export default function AddBankAccount() {
         } = values;
 
         const params = {
+          entityId,
           country: country,
           currency: currency,
           accountHolderName: accountHolderName,
@@ -111,12 +105,16 @@ export default function AddBankAccount() {
           method: 'POST',
           body: JSON.stringify(params),
         });
-
-        if (res.status === 403) {
-          // There has been an error with Stripe, handle it
+        if (res.status === STATUS_ENUM.ERROR) {
+          dispatch({
+            type: ACTION_ENUM.SNACK_BAR,
+            message: t(ERROR_ENUM.INVALID_INFORMATION),
+            severity: SEVERITY_ENUM.ERROR,
+          });
+          setIsSubmitting(false);
         } else {
           setIsSubmitting(false);
-          goTo(redirect);
+          goTo(`/${entityId}?tab=settings`);
         }
       } catch (err) {
         setIsSubmitting(false);
@@ -124,19 +122,6 @@ export default function AddBankAccount() {
       }
     },
   });
-
-  const fetchAccount = async () => {
-    const { data: hasStripeBankAccount } = await api(
-      formatRoute('/api/stripe/hasStripeBankAccount'),
-    );
-    if (hasStripeBankAccount) {
-      setNext(true);
-    }
-  };
-
-  useEffect(() => {
-    fetchAccount();
-  }, []);
 
   return (
     <IgContainer className={styles.main}>
@@ -182,7 +167,7 @@ export default function AddBankAccount() {
               color="secondary"
               style={{ margin: '16px', width: '25%' }}
               onClick={() => {
-                goTo(redirect);
+                goTo(entityId);
               }}
             >
               {t('cancel')}

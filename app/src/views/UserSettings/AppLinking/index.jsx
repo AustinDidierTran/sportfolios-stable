@@ -203,6 +203,7 @@ export default function AppLinking() {
       isConnected: isLinkedFB,
       type: LIST_ITEM_ENUM.APP_ITEM,
       description: t('facebook_description'),
+      key: APP_ENUM.FACEBOOK,
     },
     {
       onConnect: onMessengerConnect,
@@ -211,6 +212,7 @@ export default function AppLinking() {
       isConnected: isLinkedMessenger,
       type: LIST_ITEM_ENUM.APP_ITEM,
       description: t('messenger_description'),
+      key: APP_ENUM.MESSENGER,
     },
   ];
 

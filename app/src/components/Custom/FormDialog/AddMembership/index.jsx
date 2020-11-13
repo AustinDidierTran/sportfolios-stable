@@ -16,6 +16,7 @@ import {
 import { useParams } from 'react-router-dom';
 import BasicFormDialog from '../BasicFormDialog';
 import { validateDate } from '../../../../utils/stringFormats';
+import { formatRoute } from '../../../../actions/goTo';
 
 export default function AddMembership(props) {
   const { open: openProps, onClose, update } = props;
@@ -43,13 +44,30 @@ export default function AddMembership(props) {
     onClose();
   };
 
-  const validate = values => {
+  const hasBankAccount = async () => {
+    const { data: hasStripeBankAccount } = await api(
+      formatRoute('/api/stripe/hasStripeBankAccount', null, {
+        entityId,
+      }),
+    );
+    return hasStripeBankAccount;
+  };
+
+  const validate = async values => {
     const { price, date, type } = values;
     const errors = {};
     if (!price && price !== 0) {
       errors.price = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
     if (price < 0) {
+      errors.price = t(ERROR_ENUM.VALUE_IS_INVALID);
+    }
+    if (price > 0 && !(await hasBankAccount())) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('no_bank_account_linked'),
+        severity: SEVERITY_ENUM.ERROR,
+      });
       errors.price = t(ERROR_ENUM.VALUE_IS_INVALID);
     }
     if (type === MEMBERSHIP_LENGTH_TYPE_ENUM.FIXED) {

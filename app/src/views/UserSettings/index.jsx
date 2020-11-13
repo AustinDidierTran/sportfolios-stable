@@ -7,7 +7,6 @@ import { IgContainer, LoadingSpinner } from '../../components/Custom';
 import { Store } from '../../Store';
 import { useTranslation } from 'react-i18next';
 import AppLinking from './AppLinking';
-import BankAccounts from './BankAccounts';
 import BasicInfo from './BasicInfo';
 import BottomPageLogo from '../../components/Custom/BottomPageLogo';
 import ChangePassword from './ChangePassword';
@@ -40,7 +39,6 @@ export default function UserSettings() {
         <ChangePassword />
         <AppLinking />
         <CreditCards />
-        <BankAccounts />
         <Disconnect />
         <BottomPageLogo />
       </IgContainer>

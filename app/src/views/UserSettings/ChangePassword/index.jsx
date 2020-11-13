@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { TextField } from '../../../components/MUI';
-import { Button } from '../../../components/Custom';
+import { Button, List } from '../../../components/Custom';
 import styles from './ChangePassword.module.css';
 import { Card } from '@material-ui/core';
 
@@ -85,6 +85,7 @@ export default function ChangePassword() {
 
   return (
     <Card className={styles.card}>
+      <List title={t('change_password')} />
       <form onSubmit={formik.handleSubmit}>
         <div className={styles.inputs}>
           <TextField

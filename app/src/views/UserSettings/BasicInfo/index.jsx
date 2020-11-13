@@ -16,7 +16,9 @@ export default function BasicInfo() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    handleChange(basicInfos.language);
+    if (basicInfos.language) {
+      handleChange(basicInfos.language);
+    }
   }, [basicInfos.language]);
 
   const submit = async values => {

@@ -6,6 +6,7 @@ const {
 } = require('../../../server/utils/logger');
 const { ERROR_ENUM } = require('../../../../../common/errors');
 const { PAYMENT_METHOD_TYPE_ENUM } = require('./enums');
+const moment = require('moment');
 
 const getCustomerId = async paymentId => {
   const [{ customer_id = '' } = {}] = await knex
@@ -20,6 +21,19 @@ const getCustomer = async userId => {
     .select('*')
     .where({ user_id: userId });
   return customer;
+};
+const getBankAccounts = async entityId => {
+  const [{ account_id: accountId }] = await knex('stripe_accounts')
+    .select('account_id')
+    .where({ entity_id: entityId });
+  const bankAccounts = await knex('bank_accounts')
+    .select('*')
+    .whereNull('deleted_at')
+    .andWhere({ account_id: accountId });
+  const res = bankAccounts.sort(
+    (a, b) => moment(b.created_at) - moment(a.created_at),
+  );
+  return res;
 };
 
 const createCustomer = async (body, userId, paymentMethod) => {
@@ -189,6 +203,30 @@ const updateDefaultCreditCard = async (body, userId) => {
   return res;
 };
 
+const updateDefaultBankAccount = async body => {
+  const { bankAccountId } = body;
+
+  const [{ account_id: accountId }] = await knex('bank_accounts')
+    .select('account_id')
+    .where({ bank_account_id: bankAccountId });
+
+  await stripe.accounts.updateExternalAccount(
+    accountId,
+    bankAccountId,
+    { default_for_currency: true },
+  );
+
+  await knex('bank_accounts')
+    .update({ is_default: false })
+    .where({ account_id: accountId });
+
+  const res = await knex('bank_accounts')
+    .update({ is_default: true })
+    .where({ bank_account_id: bankAccountId })
+    .returning('*');
+  return res;
+};
+
 const deleteCreditCard = async (body, userId) => {
   const { customerId } = body;
   const [res] = await knex('stripe_customer')
@@ -208,10 +246,59 @@ const deleteCreditCard = async (body, userId) => {
   return res;
 };
 
+const deleteBankAccount = async body => {
+  const { bankAccountId } = body;
+
+  //Get accountId
+  const [{ account_id: accountId }] = await knex('bank_accounts')
+    .select('account_id')
+    .where({ bank_account_id: bankAccountId });
+
+  //Verify if there is more than one bank account
+  const bankAccounts = await knex('bank_accounts')
+    .select('*')
+    .whereNull('deleted_at')
+    .andWhere({ account_id: accountId });
+
+  if (bankAccounts.length < 2) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  //Select new default bank account
+  const [bankAccount] = await knex('bank_accounts')
+    .select('*')
+    .whereNull('deleted_at')
+    .andWhere({ account_id: accountId });
+
+  //update default bank account
+  await knex('bank_accounts')
+    .update({ is_default: false })
+    .where({ bank_account_id: bankAccountId });
+
+  //Delete bank account
+  const deleted = await knex('bank_accounts')
+    .where({ bank_account_id: bankAccountId })
+    .del();
+
+  //Set new default bank account
+  await knex('bank_accounts')
+    .update({ is_default: true })
+    .where({ bank_account_id: bankAccount.bank_account_id });
+
+  //Set new default bank account in stripe
+  await stripe.accounts.updateExternalAccount(
+    accountId,
+    bankAccount.bank_account_id,
+    { default_for_currency: true },
+  );
+  return deleted;
+};
+
 module.exports = {
   addPaymentMethodCustomer,
   createCustomer,
   createPaymentMethod,
+  getBankAccounts,
   getCustomer,
   getCustomerId,
   getOrCreateCustomer,
@@ -219,5 +306,7 @@ module.exports = {
   getPaymentMethods,
   removePaymentMethodCustomer,
   updateDefaultCreditCard,
+  updateDefaultBankAccount,
   deleteCreditCard,
+  deleteBankAccount,
 };

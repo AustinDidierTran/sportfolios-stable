@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { LIST_ITEM_ENUM } from '../../../../../common/enums';
 import api from '../../../actions/api';
 import { goTo, ROUTES } from '../../../actions/goTo';
+import moment from 'moment';
 
 export default function CreditCards() {
   const { t } = useTranslation();
@@ -24,7 +25,10 @@ export default function CreditCards() {
   const getPaymentMethods = async () => {
     setIsLoading(true);
     const { data } = await api('/api/stripe/paymentMethods');
-    const pms = data.map(d => ({
+    const sorted = data.sort(
+      (a, b) => moment(b.created_at) - moment(a.created_at),
+    );
+    const pms = sorted.map(d => ({
       last4: d.last4,
       customerId: d.customer_id,
       createdAt: d.created_at,

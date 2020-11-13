@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { CardContent } from '../../../components/MUI';
-import { Paper } from '../../../components/Custom';
+import { List, Paper } from '../../../components/Custom';
 import styles from './Email.module.css';
 import ConfirmedEmailField from './ConfirmedEmailField';
 import NewEmailField from './NewEmailField';
 import UnconfirmedEmailField from './UnconfirmedEmailField';
 import partition from 'lodash/partition';
 import api from '../../../actions/api';
+import { useTranslation } from 'react-i18next';
 
 export default function Email() {
+  const { t } = useTranslation();
   const [emails, setEmails] = useState([]);
 
   const fetchAllEmails = async () => {
@@ -27,7 +29,8 @@ export default function Email() {
 
   return (
     <Paper className={styles.card}>
-      <CardContent>
+      <List title={t('my_emails')} />
+      <CardContent style={{ paddingTop: '0px' }}>
         {confirmedEmails.map((email, index) => (
           <ConfirmedEmailField
             email={email}

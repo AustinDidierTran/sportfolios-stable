@@ -148,42 +148,16 @@ export default function ManageRoles() {
               ></ListItemText>
             )}
           </ListItem>
-          {entity.type === GLOBAL_ENUM.EVENT ? (
-            <>
-              {e.role === ENTITIES_ROLE_ENUM.ADMIN ? (
-                <Select
-                  key={`s${index}`}
-                  value={e.role}
-                  labelId="Role"
-                  disabled
-                  className={styles.select}
-                  options={items}
-                />
-              ) : (
-                <Select
-                  key={`s${index}`}
-                  value={e.role}
-                  labelId="Role"
-                  onChange={event =>
-                    handleChange(event, e.entity_id_admin)
-                  }
-                  className={styles.select}
-                  options={eventItems}
-                />
-              )}
-            </>
-          ) : (
-            <Select
-              key={`s${index}`}
-              value={e.role}
-              labelId="Role"
-              onChange={newRole =>
-                handleChange(newRole, e.entity_id_admin)
-              }
-              className={styles.select}
-              options={items}
-            />
-          )}
+          <Select
+            key={`s${index}`}
+            value={e.role}
+            labelId="Role"
+            onChange={newRole =>
+              handleChange(newRole, e.entity_id_admin)
+            }
+            className={styles.select}
+            options={items}
+          />
         </List>,
       ])}
       <hr />

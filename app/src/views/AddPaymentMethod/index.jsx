@@ -7,7 +7,7 @@ import {
   IgContainer,
   Button,
 } from '../../components/Custom';
-import CountrySelect from '../../tabs/Settings/Stripe/Form/CountrySelect';
+import CountrySelect from '../../views/AddBankAccount/CountrySelect';
 import CardSection from '../../utils/stripe/Payment/CardSection';
 import styles from './AddPaymentMethod.module.css';
 import { useTranslation } from 'react-i18next';
@@ -90,6 +90,7 @@ export default function AddPaymentMethod() {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async values => {
+      setIsSubmitting(true);
       const { token: stripeToken } = await stripe.createToken(
         elements.getElement(CardElement),
       );
@@ -101,7 +102,6 @@ export default function AddPaymentMethod() {
           method: 'POST',
           body: JSON.stringify(params),
         });
-        setIsSubmitting(true);
 
         if (res.status === 200) {
           setIsLoading(false);

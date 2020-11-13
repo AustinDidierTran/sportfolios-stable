@@ -767,6 +767,7 @@ async function addOption(body, userId) {
   const {
     eventId,
     name,
+    ownerId,
     teamPrice,
     playerPrice,
     endTime,
@@ -780,6 +781,7 @@ async function addOption(body, userId) {
   const res = await addOptionHelper(
     eventId,
     name,
+    ownerId,
     teamPrice,
     playerPrice,
     endTime,

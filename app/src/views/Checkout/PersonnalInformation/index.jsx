@@ -13,7 +13,7 @@ import {
   Typography,
   Button,
 } from '../../../components/MUI';
-import CountrySelect from '../../../tabs/Settings/Stripe/Form/CountrySelect';
+import CountrySelect from '../../../views/AddBankAccount/CountrySelect';
 
 export async function getCustomer() {
   const { data } = await api('/api/stripe/getCustomer');

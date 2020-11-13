@@ -333,14 +333,8 @@ const updateBasicUserInfoFromUserId = async ({
   user_id,
   language,
 }) => {
-  const update = {};
-
-  if (language) {
-    update.language = language;
-  }
-
   await knex('users')
-    .update(update)
+    .update({ language })
     .where({ id: user_id });
 };
 

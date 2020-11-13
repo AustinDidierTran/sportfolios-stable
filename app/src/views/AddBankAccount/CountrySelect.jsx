@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { Autocomplete } from '../../components/Custom';
+import { useTranslation } from 'react-i18next';
+import { Select } from '../../components/Custom';
 
 // ISO 3166-1 alpha-2
 // ⚠️ No support for IE 11
@@ -15,6 +16,7 @@ function countryToFlag(isoCode) {
 
 export default function CountrySelect(props) {
   const { formik } = props;
+  const { t } = useTranslation();
 
   const content = option => {
     return (
@@ -35,10 +37,12 @@ export default function CountrySelect(props) {
   );
 
   return (
-    <Autocomplete
+    <Select
+      style={{ textAlign: 'start' }}
       options={options}
       formik={formik}
       type="country"
+      label={t('country')}
       namespace="country"
       renderOption={content}
     />

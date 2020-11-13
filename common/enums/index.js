@@ -24,6 +24,7 @@ const SIZES_ENUM = {
 };
 
 const COMPONENT_TYPE_ENUM = {
+  LIST: 'list',
   SELECT: 'select',
   TEXTFIELD: 'textfield',
   MULTISELECT: 'multiselect',
@@ -244,6 +245,8 @@ const NOTIFICATION_TYPE = {
 
 const LIST_ITEM_ENUM = {
   APP_ITEM: 'app item',
+  BANK_ACCOUNT: 'bank account',
+  ENTITIY_BANK_ACCOUNT: 'entity bank account',
   CART_ITEM: 'cart item',
   CART: 'cart',
   CREDIT_CARD: 'credit card',

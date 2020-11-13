@@ -26,11 +26,13 @@ export default {
     add_member: 'Ajouter un membre',
     add_membership: 'Ajouter une affiliation',
     add_mode: 'Mode ajout',
+    add_new_bank_account: 'Add new bank account',
     add_new_person: 'Ajouter une nouvelle personne',
     add_new_player: 'Ajouter un nouveau joueur',
     add_new_product: 'Ajouter un nouveau produit',
     add_non_existing_person: 'Ajouter une personne non existante',
     add_payment_method: 'Ajouter une option de paiement',
+    add_payment_option: 'Ajouter une option de paiement',
     add_payment_options: 'Ajouter des options de paiements',
     add_person: 'Ajouter une personne',
     add_personal_information: 'Ajouter les informations personnelles',
@@ -62,6 +64,8 @@ export default {
     all_phases: 'Toutes les phases',
     all_steps_completed: 'Toutes les étapes sont complétées',
     all_teams: 'Toutes les équipes',
+    all_the_admins_of_the_event_that_have_a_bank_account_linked_to_their_account_will_appear_here: 
+    "Tous les administrateurs de l'événement ayant un compte bancaire peuvent être choisis comme propriétaire de l'option de paiement",
     all_time_slots: 'Toutes les plages horaires',
     all: 'Tous',
     amount_to_pay: 'Montant à payer {{amount}}',
@@ -81,6 +85,8 @@ export default {
     back: 'Revenir',
     bank_account: 'Compte bancaire',
     bank_accounts: 'Comptes bancaires',
+    bank_accounts_information:
+      'Dans les 7 prochains jours, vos revenues seront déposés dans votre compte bancaire par défaut',
     basic_info: 'Information générales',
     become_member: 'Devenir membre',
     biannual: 'Biannuel',
@@ -154,12 +160,16 @@ export default {
     currency: 'Devise',
     decline: 'Refuser',
     default: 'Par défaut',
+    delete_bank_account_confirmation:
+      'Êtes-vous certain de vouloir supprimer votre compte bancaire finissant par {{last4}}?',
     delete_confirmation_text: 'Pour supprimer, écrivez {{name}}',
     delete_credit_card_confirmation:
-      'Êtes-vous certain de vouloir supprimer votre carte de crédit finissant par {{last4}}',
+      'Êtes-vous certain de vouloir supprimer votre carte de crédit finissant par {{last4}}?',
     delete_game_confirmation:
       'Êtes-vous certain de vouloir supprimer cette partie?',
     delete_membership_confirmation:
+      'Êtes-vous certain de vouloir supprimer cette affilitation?',
+    delete_member_confirmation:
       'Êtes-vous certain de vouloir supprimer cette affilitation? Cette personne ne sera pas remboursée.',
     delete_membership: "Supprimer l'affiliation",
     delete_payment_option_confirmation:
@@ -238,6 +248,7 @@ export default {
     events_that_might_interest_you:
       'Événements qui pourrait vous intéresser',
     events: 'Événements',
+    existing_bank_accounts: 'Comptes bancaires existants',
     expiration_date: "Date d'expiration",
     expire_on: 'Expire le',
     expired_on: 'A expiré le',
@@ -285,6 +296,7 @@ export default {
     institution_number: "Numéro d'institution",
     interactive_tool: 'Outil interactif',
     invalid_email: 'Courriel invalide.',
+    invalid_information: 'Information non valide',
     invalid_input: 'Valeur incorrect',
     invite_this_player_to_join_your_team:
       'Inviter ce joueur à joindre votre équipe',
@@ -325,6 +337,7 @@ export default {
     more_filters: 'Plus de filtre',
     move_mode: 'Mode déplacement',
     my_apps: 'Mes applications',
+    my_emails: 'Mes courriels',
     my_persons: 'Mes personnes',
     name_and_x_other: '{{name}} et {{number}} autre',
     name_and_x_others: '{{name}} et {{number}} autres',
@@ -336,6 +349,7 @@ export default {
     new_team: 'Nouvelle Équipe',
     next: 'Prochain',
     no_account_signup: 'Pas de compte? Inscrivez-vous!',
+    no_admins_with_bank_account:'Aucun administrateurs avec un compte bancaire',
     no_alias: 'Aucun alias',
     no_bank_account_linked:
       "Vous n'avez pas de compte en banque relié, l'option de paiement doit etre gratuite.",
@@ -402,6 +416,7 @@ export default {
     payment_option_exist: 'Option de paiement existante',
     payment_option: 'Option de paiement',
     payment_options: 'Options de paiements',
+    payment_option_owner: "Propriétaire de l'option de paiement",
     payment_team: "Paiement d'équipe",
     payments: 'Paiements',
     pending: 'En attente',
@@ -488,6 +503,8 @@ export default {
     registrations_ends_on: 'Les inscriptions terminent le',
     registrations_open_on: 'Les inscriptions ouvrent le',
     remove: 'Retirer',
+    remove_bank_account_confirmation:
+      'Êtes-vous certain de vouloir retirer le compte bancaire finissant par {{last4}} de votre organisation?',
     renew_membership: 'Renouveler',
     reset_password: 'Réinitialiser le mot de passe',
     reset: 'Réinitialiser',
