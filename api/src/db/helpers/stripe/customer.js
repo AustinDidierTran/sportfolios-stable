@@ -23,17 +23,20 @@ const getCustomer = async userId => {
   return customer;
 };
 const getBankAccounts = async entityId => {
-  const [{ account_id: accountId }] = await knex('stripe_accounts')
+  const [account] = await knex('stripe_accounts')
     .select('account_id')
     .where({ entity_id: entityId });
-  const bankAccounts = await knex('bank_accounts')
-    .select('*')
-    .whereNull('deleted_at')
-    .andWhere({ account_id: accountId });
-  const res = bankAccounts.sort(
-    (a, b) => moment(b.created_at) - moment(a.created_at),
-  );
-  return res;
+  if (account) {
+    const bankAccounts = await knex('bank_accounts')
+      .select('*')
+      .whereNull('deleted_at')
+      .andWhere({ account_id: account.account_id });
+    const res = bankAccounts.sort(
+      (a, b) => moment(b.created_at) - moment(a.created_at),
+    );
+    return res;
+  }
+  return [];
 };
 
 const createCustomer = async (body, userId, paymentMethod) => {

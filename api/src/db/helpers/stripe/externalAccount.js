@@ -20,7 +20,22 @@ const getStripeAccount = async entityId => {
 
 const hasStripeAccount = async entityId => {
   const account = await getStripeAccount(entityId);
-  return account ? true : false;
+
+  if (account) {
+    const completeAccount = await stripe.accounts.retrieve(
+      account.account_id,
+    );
+    tosAcceptance = completeAccount.tos_acceptance;
+    if (
+      !tosAcceptance.date ||
+      !tosAcceptance.ip ||
+      !tosAcceptance.user_agent
+    ) {
+      return false;
+    }
+    return true;
+  }
+  return false;
 };
 
 const hasStripeBankAccount = async entityId => {
@@ -136,7 +151,7 @@ const createAccountLink = async props => {
   );
   const params = {
     account: accountId,
-    failure_url: `${CLIENT_BASE_URL}/${entityId}`,
+    failure_url: `${CLIENT_BASE_URL}/${entityId}?tab=settings`,
     success_url: `${CLIENT_BASE_URL}/addBankAccount?entityId=${entityId}`,
     type: 'custom_account_verification',
     collect: 'eventually_due',

@@ -14,6 +14,7 @@ ALTER TABLE event_payment_options
   DROP COLUMN individual_stripe_price_id,
   DROP COLUMN id;
 
+
 ALTER TABLE event_payment_options
   RENAME COLUMN team_stripe_price_id TO id;
 

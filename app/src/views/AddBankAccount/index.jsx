@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { useParams } from 'react-router-dom';
@@ -6,7 +6,7 @@ import { TextField, Typography } from '../../components/MUI';
 import styles from './AddBankAccount.module.css';
 import CountrySelect from './CountrySelect';
 import CurrencySelect from './CurrencySelect';
-import { goTo } from '../../actions/goTo';
+import { formatRoute, goTo } from '../../actions/goTo';
 import { hasXDigits } from '../../utils/validators';
 import { IgContainer, Paper, Button } from '../../components/Custom';
 import api from '../../actions/api';
@@ -21,6 +21,19 @@ export default function AddBankAccount() {
   const { entityId } = useQuery();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { dispatch } = useContext(Store);
+
+  useEffect(() => {
+    hasStripeAccount();
+  }, []);
+
+  const hasStripeAccount = async () => {
+    const { data: hasStripeAccount } = await api(
+      formatRoute('/api/stripe/hasStripeAccount', null, { entityId }),
+    );
+    if (!hasStripeAccount) {
+      goTo(`/${entityId}?tab=settings`);
+    }
+  };
 
   const isANumber = number => !isNaN(Number(number));
 
