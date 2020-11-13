@@ -98,6 +98,28 @@ const createUserComplete = async body => {
         facebook_id,
       })
       .transacting(trx);
+
+    //Create a column in user_notification_setting for every existing notification type for the user
+    //temp table for the cross join
+    await knex
+      .raw('CREATE TEMPORARY TABLE temp_user (user_id uuid)')
+      .transacting(trx);
+    await knex('temp_user')
+      .insert({ user_id })
+      .transacting(trx);
+    const t1 = knex('temp_user')
+      .select('user_id')
+      .as('t1');
+    const t2 = knex('notifications')
+      .distinct('type')
+      .as('t2');
+    const subquery = knex
+      .select('*')
+      .from(t1)
+      .crossJoin(t2);
+    await knex('user_notification_setting')
+      .insert(subquery)
+      .transacting(trx);
   });
 };
 

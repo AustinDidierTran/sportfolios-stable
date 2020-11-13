@@ -72,6 +72,56 @@ const getNotifications = async (user_id, body) => {
   }
 };
 
+const getNotificationsSettings = async (user_id, type) => {
+  return knex('user_notification_setting')
+    .select()
+    .where({ user_id, type });
+};
+
+const disableEmailNotification = async (user_id, type) => {
+  const [row] = knex('user_notification_setting')
+    .select()
+    .where({ user_id, type });
+  if (row) {
+    return knex('user_notification_setting')
+      .update({ email: false })
+      .where({ user_id, type });
+  }
+};
+
+const disableChatbotNotification = async (user_id, type) => {
+  const [row] = knex('user_notification_setting')
+    .select()
+    .where({ user_id, type });
+  if (row) {
+    return knex('user_notification_setting')
+      .update({ chatbot: false })
+      .where({ user_id, type });
+  }
+};
+
+const enableEmailNotification = async (user_id, type) => {
+  const [row] = knex('user_notification_setting')
+    .select()
+    .where({ user_id, type });
+  if (row) {
+    return knex('user_notification_setting')
+      .update({ email: true })
+      .where({ user_id, type });
+  }
+};
+
+const enableChatbotNotification = async (user_id, type) => {
+  const [row] = knex('user_notification_setting')
+    .select()
+    .where({ user_id, type });
+  if (row) {
+    return knex('user_notification_setting')
+      .update({ chatbot: true })
+      .where({ user_id, type });
+  }
+};
+
 module.exports = {
   getNotifications,
   seeNotifications,
@@ -79,4 +129,9 @@ module.exports = {
   clickNotification,
   deleteNotification,
   addNotification,
+  disableEmailNotification,
+  disableChatbotNotification,
+  getNotificationsSettings,
+  enableChatbotNotification,
+  enableEmailNotification,
 };
