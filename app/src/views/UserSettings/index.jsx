@@ -14,6 +14,7 @@ import CreditCards from './CreditCards';
 import Disconnect from './Disconnect';
 import Email from './Email';
 import MyPersons from './MyPersons';
+import Notifications from './Notifications';
 
 export default function UserSettings() {
   const { t } = useTranslation();
@@ -39,6 +40,7 @@ export default function UserSettings() {
         <ChangePassword />
         <AppLinking />
         <CreditCards />
+        <Notifications />
         <Disconnect />
         <BottomPageLogo />
       </IgContainer>

@@ -131,7 +131,7 @@ export default function TransferPerson(props) {
     <div>
       <Container className={styles.container}>
         <div className={styles.logo}>
-          <img className={styles.img} src={LOGO_ENUM.LOGO} />
+          <img className={styles.img} src={LOGO_ENUM.LOGO_256X256} />
         </div>
         <RegisterCard formik={formik} />
       </Container>

@@ -25,7 +25,7 @@ export default function MessageAndButtons(props) {
     return (
       <Paper style={{ textAlign: 'center', height: '100%' }}>
         <div className={styles.logo}>
-          <img className={styles.img} src={LOGO_ENUM.LOGO} />
+          <img className={styles.img} src={LOGO_ENUM.LOGO_256X256} />
         </div>
         <Typography style={{ paddingBottom: '16px' }}>
           {message}
@@ -59,7 +59,7 @@ export default function MessageAndButtons(props) {
     <IgContainer>
       <Paper style={{ textAlign: 'center', height: '100%' }}>
         <div className={styles.logo}>
-          <img className={styles.img} src={LOGO_ENUM.LOGO} />
+          <img className={styles.img} src={LOGO_ENUM.LOGO_256X256} />
         </div>
         <Typography style={{ paddingBottom: '16px' }}>
           {message}
