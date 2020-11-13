@@ -1,4 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  useRef,
+} from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
@@ -19,6 +24,8 @@ import styles from './ScheduleInteractiveTool.module.css';
 import { goBack } from '../../actions/goTo';
 import GameCard from './GameCard';
 import AddGame from './AddGame';
+import AddField from '../../tabs/EditSchedule/CreateSchedule/AddField';
+import AddTimeSlot from '../../tabs/EditSchedule/CreateSchedule/AddTimeSlot';
 
 import RGL from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
@@ -28,14 +35,14 @@ const ReactGridLayout = RGL;
 const useStyles = makeStyles(theme => ({
   fabBack: {
     position: 'absolute',
-    bottom: theme.spacing(2),
+    bottom: theme.spacing(3),
     right: theme.spacing(4),
     zIndex: 100,
     color: 'white',
   },
   fabAdd: {
     position: 'absolute',
-    bottom: theme.spacing(4) + 56,
+    bottom: theme.spacing(5) + 56,
     right: theme.spacing(4),
     zIndex: 100,
     color: 'white',
@@ -46,14 +53,14 @@ const useStyles = makeStyles(theme => ({
   },
   fabCancel: {
     position: 'absolute',
-    bottom: theme.spacing(6) + 112,
+    bottom: theme.spacing(7) + 112,
     right: theme.spacing(4),
     zIndex: 100,
     color: 'white',
   },
   fabSave: {
     position: 'absolute',
-    bottom: theme.spacing(8) + 168,
+    bottom: theme.spacing(9) + 168,
     right: theme.spacing(4),
     zIndex: 100,
     color: 'white',
@@ -86,6 +93,8 @@ export default function ScheduleInteractiveTool() {
   const [addGameDialog, setAddGameDialog] = useState(false);
   const [addGameField, setAddGameField] = useState({});
   const [addGameTimeslot, setAddGameTimeslot] = useState({});
+  const [addFieldDialog, setAddFieldDialog] = useState(false);
+  const [addTimeslotDialog, setAddTimeslotDialog] = useState(false);
 
   const getData = async () => {
     setIsLoading(true);
@@ -346,6 +355,22 @@ export default function ScheduleInteractiveTool() {
     );
   };
 
+  const handleAddField = () => {
+    setAddFieldDialog(true);
+  };
+
+  const handleAddTimeslot = () => {
+    setAddTimeslotDialog(true);
+  };
+
+  const addTimeslotToGrid = timeslot => {
+    setTimeslots(timeslots.concat([timeslot]));
+  };
+
+  const addFieldToGrid = field => {
+    setFields(fields.concat([field]));
+  };
+
   const AddGames = buttonsAdd.map(b => (
     <div
       className={styles.divAddGame}
@@ -383,6 +408,25 @@ export default function ScheduleInteractiveTool() {
     </div>
   ));
 
+  const ref = useRef(null);
+  const refFields = useRef(null);
+  const refTimeslots = useRef(null);
+  const [scrollX, setScrollX] = useState(0);
+  const [scrollY, setScrollY] = useState(0);
+
+  const gridScroll = () => {
+    setScrollX(ref.current.scrollLeft);
+    setScrollY(ref.current.scrollTop);
+  };
+
+  useEffect(() => {
+    refFields.current.scrollTo(scrollX, 0);
+  }, [scrollX]);
+
+  useEffect(() => {
+    refTimeslots.current.scrollTo(0, scrollY);
+  }, [scrollY]);
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
@@ -392,6 +436,7 @@ export default function ScheduleInteractiveTool() {
       <div className={styles.mainDiv}>
         <div className={styles.divButtons}>
           <Button
+            onClick={handleAddField}
             color="primary"
             variant="contained"
             className={styles.button}
@@ -401,6 +446,7 @@ export default function ScheduleInteractiveTool() {
             {t('field')}
           </Button>
           <Button
+            onClick={handleAddTimeslot}
             color="primary"
             variant="contained"
             className={styles.button}
@@ -410,45 +456,66 @@ export default function ScheduleInteractiveTool() {
             {t('time_slot')}
           </Button>
         </div>
-        <ReactGridLayout
-          className={styles.gridLayoutFields}
-          width={fields?.length * 192}
-          cols={fields?.length}
-          rowHeight={84}
-          maxRows={1}
-          margin={[20, 0]}
-          layout={layoutFields}
+        <div className={styles.displayFields} ref={refFields}>
+          <div style={{ width: `${fields?.length * 192 + 20}px` }}>
+            <ReactGridLayout
+              className={styles.gridLayoutFields}
+              width={fields?.length * 192}
+              cols={fields?.length}
+              rowHeight={84}
+              maxRows={1}
+              margin={[20, 0]}
+              layout={layoutFields}
+            >
+              {Fields}
+            </ReactGridLayout>
+          </div>
+        </div>
+        <div className={styles.displayTimeslots} ref={refTimeslots}>
+          <div style={{ height: `${timeslots?.length * 84 + 40}px` }}>
+            <ReactGridLayout
+              className={styles.gridLayoutTimes}
+              width={192}
+              cols={fields?.length}
+              rowHeight={64}
+              maxRows={timeslots?.length}
+              margin={[0, 20]}
+              layout={layoutTimes}
+            >
+              {Times}
+            </ReactGridLayout>
+          </div>
+        </div>
+        <div
+          className={styles.displayGrid}
+          onScroll={gridScroll}
+          ref={ref}
         >
-          {Fields}
-        </ReactGridLayout>
-        <ReactGridLayout
-          className={styles.gridLayoutTimes}
-          width={192}
-          cols={fields?.length}
-          rowHeight={64}
-          maxRows={timeslots?.length}
-          margin={[0, 20]}
-          layout={layoutTimes}
-        >
-          {Times}
-        </ReactGridLayout>
-        <ReactGridLayout
-          className={styles.gridLayout}
-          width={fields?.length * 192}
-          cols={fields?.length}
-          rowHeight={64}
-          maxRows={timeslots?.length}
-          compactType={null}
-          margin={[20, 20]}
-          onDragStop={onDragStop}
-          layout={layout}
-          useCSSTransforms
-          preventCollision
-          isResizable={false}
-        >
-          {Games}
-          {AddGames}
-        </ReactGridLayout>
+          <div
+            style={{
+              width: `${fields?.length * 192}px`,
+              height: `${timeslots?.length * 84}px`,
+            }}
+          >
+            <ReactGridLayout
+              className={styles.gridLayout}
+              width={fields?.length * 192}
+              cols={fields?.length}
+              rowHeight={64}
+              maxRows={timeslots?.length}
+              compactType={null}
+              margin={[20, 20]}
+              onDragStop={onDragStop}
+              layout={layout}
+              useCSSTransforms
+              preventCollision
+              isResizable={false}
+            >
+              {Games}
+              {AddGames}
+            </ReactGridLayout>
+          </div>
+        </div>
       </div>
 
       <Tooltip title={t('back')}>
@@ -509,6 +576,16 @@ export default function ScheduleInteractiveTool() {
         timeslot={addGameTimeslot}
         phases={phases}
         teams={teams}
+      />
+      <AddField
+        isOpen={addFieldDialog}
+        onClose={() => setAddFieldDialog(false)}
+        addFieldToGrid={addFieldToGrid}
+      />
+      <AddTimeSlot
+        isOpen={addTimeslotDialog}
+        onClose={() => setAddTimeslotDialog(false)}
+        addTimeslotToGrid={addTimeslotToGrid}
       />
     </div>
   );

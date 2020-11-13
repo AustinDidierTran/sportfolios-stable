@@ -1,39 +1,72 @@
+.mainDiv {
+  display: grid;
+  grid-template-columns: 192px auto;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    'buttons fields'
+    'timeslots grid';
+}
+
 .gridLayout {
   grid-area: grid;
-  position: relative;
-  background-color: lemonchiffon;
 }
 
-.divAdd {
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M1 0 L0 1 L99 100 L100 99' fill='black' /></svg>");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 100% 100%, auto;
+.gridLayoutTimes {
+  grid-area: timeslots;
 }
 
-.divAddGame {
+.gridLayoutFields {
+  grid-area: fields;
+}
+
+.divButtons {
+  grid-area: buttons;
   display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
   align-items: center;
-  justify-content: center;
+  background-color: gainsboro;
+
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-bottom-color: darkgray;
+  border-right-width: 2px;
+  border-right-style: solid;
+  border-right-color: darkgray;
 }
 
-.divAddGame:hover {
-  cursor: pointer;
-  background-color: #e8e8e8;
+.displayFields {
+  width: calc(100vw - 192px);
+  overflow: hidden;
+  background-color: gainsboro;
+  box-shadow: 0 8px 6px -8px black;
+
+  z-index: 1;
+  position: sticky;
+}
+
+.displayTimeslots {
+  height: calc(100vh - 84px);
+  overflow: hidden;
+  background-color: gainsboro;
+  box-shadow: 8px 0 6px -8px black;
+
+  z-index: 1;
+  position: sticky;
+}
+
+.displayGrid {
+  height: calc(100vh - 84px);
+  width: calc(100vw - 192px);
+  overflow: auto;
 }
 
 .divField {
-  height: 90% !important;
-  border-bottom-width: 2px;
-  border-bottom-style: solid;
-  border-bottom-color: black;
+  height: 98% !important;
 }
 
 .divTime {
-  width: 95% !important;
-  border-right-width: 2px;
-  border-right-style: solid;
-  border-right-color: black;
+  width: 99% !important;
 }
 
 .label {
@@ -45,57 +78,13 @@
   text-align: center;
 }
 
-.mainDiv {
-  display: grid;
-  grid-template-columns: 192px auto;
-  grid-template-rows: auto auto;
-  grid-template-areas:
-    'buttons fields'
-    'timeslots grid';
-}
-
-.divButtons {
-  grid-area: buttons;
+.divAddGame {
   display: flex;
-  flex-direction: column;
-  background-color: lightpink;
-  justify-content: space-evenly;
   align-items: center;
+  justify-content: center;
 }
 
-.divFields {
-  grid-area: fields;
-  display: flex;
-  flex-direction: row;
-  background-color: lightskyblue;
-}
-
-.divFields > div {
-  flex: 1 1;
-  margin: 10px;
-}
-
-.divTimeslots {
-  grid-area: timeslots;
-  display: flex;
-  flex-direction: column;
-  background-color: lightgreen;
-  padding-top: 10px;
-}
-
-.divTimeslots > div {
-  flex: 1 1;
-  margin: 10px;
-}
-
-.gridLayoutTimes {
-  grid-area: timeslots;
-  position: relative;
-  background-color: lightgreen;
-}
-
-.gridLayoutFields {
-  grid-area: fields;
-  position: relative;
-  background-color: lightskyblue;
+.divAddGame:hover {
+  cursor: pointer;
+  background-color: #e8e8e8;
 }

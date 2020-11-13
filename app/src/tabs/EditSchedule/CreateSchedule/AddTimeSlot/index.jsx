@@ -15,7 +15,7 @@ import moment from 'moment';
 
 export default function AddTimeSlot(props) {
   const { t } = useTranslation();
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, addTimeslotToGrid } = props;
   const { dispatch } = useContext(Store);
   const { id: eventId } = useParams();
 
@@ -53,14 +53,14 @@ export default function AddTimeSlot(props) {
     onSubmit: async values => {
       const { date, time } = values;
       const realDate = new Date(`${date} ${time}`).getTime();
-      const res = await api('/api/entity/timeSlots', {
+      const { status, data } = await api('/api/entity/timeSlots', {
         method: 'POST',
         body: JSON.stringify({
           date: realDate,
           eventId,
         }),
       });
-      if (res.status === STATUS_ENUM.ERROR) {
+      if (status === STATUS_ENUM.ERROR) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: ERROR_ENUM.ERROR_OCCURED,
@@ -74,6 +74,11 @@ export default function AddTimeSlot(props) {
           severity: SEVERITY_ENUM.SUCCESS,
           duration: 2000,
         });
+
+        // used in interactive tool
+        if (addTimeslotToGrid) {
+          addTimeslotToGrid(data);
+        }
       }
     },
   });
@@ -82,7 +87,7 @@ export default function AddTimeSlot(props) {
     {
       onClick: onFinish,
       name: t('finish'),
-      color: 'grey',
+      color: 'default',
     },
     {
       type: 'submit',
