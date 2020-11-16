@@ -34,6 +34,8 @@ import FiberManualRecord from '@material-ui/icons/FiberManualRecord';
 import Flag from '@material-ui/icons/Flag';
 import Folder from '@material-ui/icons/Folder';
 import FormatListNumbered from '@material-ui/icons/FormatListNumbered';
+import GetApp from '@material-ui/icons/GetApp';
+import GridOn from '@material-ui/icons/GridOn';
 import Group from '@material-ui/icons/Group';
 import Home from '@material-ui/icons/Home';
 import Help from '@material-ui/icons/Help';
@@ -103,6 +105,8 @@ const icons = {
   Flag,
   Folder,
   FormatListNumbered,
+  GetApp,
+  GridOn,
   Group,
   Home,
   Help,

@@ -727,7 +727,30 @@ async function getMembers(personId, organizationId) {
     .where('entities.id', '=', personId)
     .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
     .andWhere({ organization_id: realId });
-  return members.map(m => ({
+
+  const reduce = members.reduce((prev, curr) => {
+    let addCurr = true;
+    prev.filter(p => {
+      if (p.member_type != curr.member_type) {
+        return true;
+      } else {
+        if (
+          moment(p.expiration_date) > moment(curr.expiration_date)
+        ) {
+          addCurr = false;
+          return true;
+        } else {
+          return false;
+        }
+      }
+    });
+    if (addCurr) {
+      return [...prev, curr];
+    }
+    return prev;
+  }, []);
+
+  const res = reduce.map(m => ({
     organizationId: m.organization_id,
     personId: m.person_id,
     memberType: m.member_type,
@@ -735,7 +758,21 @@ async function getMembers(personId, organizationId) {
     id: m.id,
     status: m.status,
   }));
+  return res;
 }
+
+async function getReports(entityId) {
+  const realId = await getRealId(entityId);
+  const reports = await knex('reports')
+    .select('*')
+    .where({ entity_id: realId });
+
+  const sorted = reports.sort((a, b) => {
+    return moment(b.created_at) - moment(a.created_at);
+  });
+  return sorted;
+}
+
 async function getOrganizationMembers(organizationId) {
   const realId = await getRealId(organizationId);
   const members = await knex('memberships')
@@ -803,6 +840,14 @@ async function getMemberships(entityId) {
     ...m,
     price: formatPrice(m.price),
   }));
+}
+
+async function hasMemberships(organizationId) {
+  const realId = await getRealId(organizationId);
+  const memberships = await knex('entity_memberships')
+    .select('*')
+    .where({ entity_id: realId });
+  return Boolean(memberships.length);
 }
 
 async function getMembership(membershipId) {
@@ -1715,39 +1760,18 @@ async function addMemberManually(
   expirationDate,
 ) {
   const realId = await getRealId(organizationId);
-  const [member] = await knex('memberships')
-    .select('*')
-    .where({
+  const [res] = await knex('memberships')
+    .insert({
       member_type: memberType,
       organization_id: realId,
       person_id: personId,
-    });
-  if (member) {
-    const [res] = await knex('memberships')
-      .update({
-        expiration_date: expirationDate,
-        status: INVOICE_STATUS_ENUM.FREE,
-      })
-      .where({
-        member_type: memberType,
-        organization_id: realId,
-        person_id: personId,
-      })
-      .returning('*');
-    return res;
-  } else {
-    const [res] = await knex('memberships')
-      .insert({
-        member_type: memberType,
-        organization_id: realId,
-        person_id: personId,
-        expiration_date: expirationDate,
-        status: INVOICE_STATUS_ENUM.FREE,
-      })
-      .returning('*');
-    return res;
-  }
+      expiration_date: expirationDate,
+      status: INVOICE_STATUS_ENUM.FREE,
+    })
+    .returning('*');
+  return res;
 }
+
 async function addMember(
   memberType,
   organizationId,
@@ -1755,38 +1779,28 @@ async function addMember(
   expirationDate,
 ) {
   const realId = await getRealId(organizationId);
-  const [member] = await knex('memberships')
-    .select('*')
-    .where({
+  const [res] = await knex('memberships')
+    .insert({
       member_type: memberType,
       organization_id: realId,
       person_id: personId,
-    });
-  if (member) {
-    const [res] = await knex('memberships')
-      .update({
-        expiration_date: expirationDate,
-        status: INVOICE_STATUS_ENUM.OPEN,
-      })
-      .where({
-        member_type: memberType,
-        organization_id: realId,
-        person_id: personId,
-      })
-      .returning('*');
-    return res;
-  } else {
-    const [res] = await knex('memberships')
-      .insert({
-        member_type: memberType,
-        organization_id: realId,
-        person_id: personId,
-        expiration_date: expirationDate,
-        status: INVOICE_STATUS_ENUM.OPEN,
-      })
-      .returning('*');
-    return res;
-  }
+      expiration_date: expirationDate,
+      status: INVOICE_STATUS_ENUM.OPEN,
+    })
+    .returning('*');
+  return res;
+}
+
+async function addReport(type, organizationId, date) {
+  const realId = await getRealId(organizationId);
+  const [res] = await knex('reports')
+    .insert({
+      type: type,
+      entity_id: realId,
+      metadata: { date },
+    })
+    .returning('*');
+  return res;
 }
 
 async function addAlias(entityId, alias) {
@@ -2639,6 +2653,12 @@ const deleteEntityMembership = async membershipId => {
     .del();
 };
 
+const deleteReport = async reportId => {
+  return knex('reports')
+    .where({ report_id: reportId })
+    .del();
+};
+
 const deleteMembership = async (
   memberType,
   organizationId,
@@ -2750,6 +2770,7 @@ module.exports = {
   addEntity,
   addEntityRole,
   addMember,
+  addReport,
   addMemberManually,
   addAlias,
   addMembership,
@@ -2770,6 +2791,7 @@ module.exports = {
   deleteEntity,
   deleteEntityMembership,
   deleteMembership,
+  deleteReport,
   deleteOption,
   deleteRegistration,
   getAllEntities,
@@ -2786,6 +2808,8 @@ module.exports = {
   getEntityRole,
   getEmailsEntity,
   getMembers,
+  getReports,
+  hasMemberships,
   getOrganizationMembers,
   getMemberships,
   getMembership,

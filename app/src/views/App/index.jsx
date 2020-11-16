@@ -32,7 +32,6 @@ const ConfirmEmailSuccess = loadable(() =>
 );
 const Header = loadable(() => import('../Header'));
 const Main = loadable(() => import('../Main'));
-const Memberships = loadable(() => import('../Memberships'));
 const Menu = loadable(() => import('../Menu'));
 const Notifications = loadable(() =>
   import('../../views/Notifications'),
@@ -51,6 +50,7 @@ const ProductAddedToCart = loadable(() =>
 const RegistrationStatus = loadable(() =>
   import('../RegistrationStatus'),
 );
+const CreateReport = loadable(() => import('../CreateReport'));
 const ScheduleInteractiveTool = loadable(() =>
   import('../ScheduleInteractiveTool'),
 );
@@ -200,6 +200,11 @@ export default function App() {
                 />
                 <Route
                   exact
+                  path={ROUTES.createReport}
+                  component={CreateReport}
+                />
+                <Route
+                  exact
                   path={ROUTES.eventRegistration}
                   component={EventRegistration}
                 />
@@ -207,11 +212,6 @@ export default function App() {
                   exact
                   path={ROUTES.confirmationEmailSent}
                   component={ConfirmationEmailSent}
-                />
-                <Route
-                  exact
-                  path={ROUTES.memberships}
-                  component={Memberships}
                 />
                 <Route
                   exact
