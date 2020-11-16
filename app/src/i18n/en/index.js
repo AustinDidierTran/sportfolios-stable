@@ -47,6 +47,8 @@ export default {
     add_to_cart: 'Add to cart',
     add: 'Add',
     added_to_cart: 'Added to cart',
+    added_to_roster: 'Added to a roster',
+    added_to_roster_description: 'Notification sent when someone add one of your people to a roster',
     added_to_roster_notif_title: 'You have been added to a roster',
     added_to_roster_notif_description: 'Somebody added you to the {{teamName}} team',
     address: 'Address',
@@ -117,6 +119,7 @@ export default {
     change_picture: 'Change picture',
     change_team: 'Change team',
     changes_saved: 'Changes saved',
+    chatbot: 'Chatbot',
     checkout: 'Checkout',
     choose_date:'Choose date',
     choose_your_report:'Choose your report',
@@ -389,6 +392,7 @@ export default {
     not_paid: 'Not paid',
     not_specified: 'Not specified',
     notifications: 'Notifications',
+    notifications_disabled: 'Notifications disabled',
     of_everyone: 'of everyone',
     of_team: 'of team',
     of: 'of',
@@ -706,6 +710,7 @@ export default {
       'You can now change your password for the account having the email {{email}}',
     you_have_no_account_with_this_email_create_one:
       'You have no account with this email! Create one!',
+      you_need_to_connect_your_messenger_account : 'You need to connect your messenger account in the applications settings to enable this kind of notification',
     you_need_to_create_an_account:
       'You need to create your account first!',
     you_paid_with: 'You paid with',

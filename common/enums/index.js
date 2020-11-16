@@ -250,6 +250,11 @@ const NOTIFICATION_TYPE = {
   ADDED_TO_ROSTER: 'added to roster',
 };
 
+const NOTIFICATION_MEDIA = {
+  EMAIL: 'email',
+  CHATBOT: 'chatbot',
+};
+
 const LIST_ITEM_ENUM = {
   APP_ITEM: 'app item',
   BANK_ACCOUNT: 'bank account',
@@ -271,6 +276,7 @@ const LIST_ITEM_ENUM = {
   SALES: 'sales',
   SHOP_ITEM: 'shop item',
   AVATAR_TEXT_SKELETON: 'avatar and text',
+  NOTIFICATION_SETTING: 'notification setting',
 };
 
 const MILLIS_TIME_ENUM = {
@@ -381,6 +387,7 @@ module.exports = {
   MEMBERSHIP_TYPE_ENUM,
   MESSENGER_MESSAGES_EN,
   MILLIS_TIME_ENUM,
+  NOTIFICATION_MEDIA,
   NOTIFICATION_TYPE,
   PERSON_TRANSFER_STATUS_ENUM,
   POSITION_ENUM,

@@ -11,7 +11,7 @@ const {
   deleteChatbotInfos: deleteChatbotInfosHelper,
 } = require('../helpers');
 const {
-  enableChatbotNotification,
+  enableAllChatbotNotification,
 } = require('../helpers/notifications');
 const i18n = require('../../i18n.config');
 const Response = require('../../server/utils/ChatBot/response');
@@ -26,7 +26,7 @@ const linkMessengerAccountAllIncluded = async (
 ) => {
   const res = await setMessengerId(userId, messengerId);
   if (res) {
-    enableChatbotNotification(userId);
+    enableAllChatbotNotification(userId);
     sendMessageHelper(
       messengerId,
       Response.genText(i18n.__('connection.success')),

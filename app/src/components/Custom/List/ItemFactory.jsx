@@ -27,6 +27,7 @@ import SalesItem from './SalesItem';
 import TeamItem from './TeamItem';
 import { RosterNotification } from './NotificationItems';
 import { AvatarAndTextSkeleton } from './SkeletonItems';
+import NotificationSettingItem from './NotificationSettingItem';
 
 const ItemMap = {
   [GLOBAL_ENUM.EVENT]: EventItem,
@@ -51,6 +52,8 @@ const ItemMap = {
   [LIST_ITEM_ENUM.REPORT]: ReportItem,
   [LIST_ITEM_ENUM.ROSTER_ITEM]: RosterItem,
   [LIST_ITEM_ENUM.SALES]: SalesItem,
+  [LIST_ITEM_ENUM.AVATAR_TEXT_SKELETON]: AvatarAndTextSkeleton,
+  [LIST_ITEM_ENUM.NOTIFICATION_SETTING]: NotificationSettingItem,
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: RosterNotification,
 };
 
@@ -61,7 +64,7 @@ export default function ItemFactory(props) {
 
   if (!Item) {
     /* eslint-disable-next-line */
-    console.error(`${type} is not supported in ItemFactory`);
+    //console.error(`${type} is not supported in ItemFactory`);
     return DefaultItem;
   }
 

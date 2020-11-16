@@ -6,6 +6,9 @@ const {
   clickNotification: clickNotificationHelper,
   deleteNotification: deleteNotificationHelper,
   addNotification,
+  getNotificationsSettings: getNotificationsSettingsHelper,
+  editEmailNotificationSetting: editEmailNotificationSettingHelper,
+  editChatbotNotificationSetting: editChatbotNotificationSettingHelper,
 } = require('../helpers/notifications');
 
 const socket = require('../../server/websocket/socket.io');
@@ -16,7 +19,9 @@ const emailFactory = require('../emails/emailFactory');
 const {
   getEmailsFromUserId,
   getLanguageFromUser,
+  getMessengerId,
 } = require('../helpers');
+const { NOTIFICATION_MEDIA } = require('../../../../common/enums');
 
 const { SOCKET_EVENT } = require('../../../../common/enums');
 
@@ -68,6 +73,32 @@ const getNotifications = async (user_id, body) => {
   return getNotificationsHelper(user_id, body);
 };
 
+const getNotificationsSettings = async userId => {
+  const messengerLinked = Boolean(await getMessengerId(userId));
+  return {
+    chatbotDisabled: !messengerLinked,
+    notifications: await getNotificationsSettingsHelper(userId),
+  };
+};
+
+const setNotificationsSettings = async (
+  userId,
+  { type, media, enabled },
+) => {
+  if (media === NOTIFICATION_MEDIA.EMAIL) {
+    return editEmailNotificationSettingHelper(userId, {
+      type,
+      enabled,
+    });
+  }
+  if (media === NOTIFICATION_MEDIA.CHATBOT) {
+    return editChatbotNotificationSettingHelper(userId, {
+      type,
+      enabled,
+    });
+  }
+};
+
 module.exports = {
   getNotifications,
   seeNotifications,
@@ -75,4 +106,6 @@ module.exports = {
   clickNotification,
   deleteNotification,
   sendNotification,
+  getNotificationsSettings,
+  setNotificationsSettings,
 };
