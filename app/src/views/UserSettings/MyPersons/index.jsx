@@ -283,6 +283,7 @@ export default function MyPersons() {
       completeName: person.name + ' ' + person.surname,
       secondary: subtitle,
       secondaryActions: actions,
+      key: person.id,
     };
   });
 

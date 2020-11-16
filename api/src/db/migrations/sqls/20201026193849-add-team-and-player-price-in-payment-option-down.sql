@@ -3,9 +3,9 @@ ALTER TABLE event_rosters
 
 ALTER TABLE event_rosters ALTER COLUMN payment_option_id TYPE VARCHAR(255);
 
-UPDATE event_rosters SET 
-  payment_option_id = (SELECT event_payment_options.team_stripe_price_id 
-  FROM event_payment_options 
+UPDATE event_rosters SET
+  payment_option_id = (SELECT event_payment_options.team_stripe_price_id
+  FROM event_payment_options
   WHERE event_rosters.payment_option_id = event_payment_options.id::text);
 
 ALTER TABLE event_payment_options
@@ -13,6 +13,7 @@ ALTER TABLE event_payment_options
   DROP COLUMN individual_price,
   DROP COLUMN individual_stripe_price_id,
   DROP COLUMN id;
+
 
 ALTER TABLE event_payment_options
   RENAME COLUMN team_stripe_price_id TO id;

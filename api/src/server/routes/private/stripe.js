@@ -7,8 +7,9 @@ const BASE_URL = '/api/stripe';
 
 router.get(`${BASE_URL}/accountLink`, async ctx => {
   const data = await queries.getAccountLink(
-    ctx.query.id,
     ctx.request.ip,
+    ctx.query.entityId,
+    ctx.query.redirect,
   );
   ctx.body = {
     status: 'success',
@@ -16,8 +17,8 @@ router.get(`${BASE_URL}/accountLink`, async ctx => {
   };
 });
 
-router.get(`${BASE_URL}/getStripeAccount`, async ctx => {
-  const data = await queries.getStripeAccount(ctx.query.id);
+router.get(`${BASE_URL}/bankAccounts`, async ctx => {
+  const data = await queries.getBankAccounts(ctx.query.entityId);
   ctx.body = {
     status: 'success',
     data,
@@ -25,14 +26,15 @@ router.get(`${BASE_URL}/getStripeAccount`, async ctx => {
 });
 
 router.get(`${BASE_URL}/hasStripeAccount`, async ctx => {
-  const data = await queries.hasStripeAccount(ctx.query.id);
+  const data = await queries.hasStripeAccount(ctx.query.entityId);
   ctx.body = {
     status: 'success',
     data,
   };
 });
+
 router.get(`${BASE_URL}/hasStripeBankAccount`, async ctx => {
-  const data = await queries.hasStripeBankAccount(ctx.query.id);
+  const data = await queries.hasStripeBankAccount(ctx.query.entityId);
   ctx.body = {
     status: 'success',
     data,
@@ -40,10 +42,14 @@ router.get(`${BASE_URL}/hasStripeBankAccount`, async ctx => {
 });
 
 router.get(`${BASE_URL}/eventHasBankAccount`, async ctx => {
-  const data = await queries.eventHasBankAccount(
-    ctx.query.id,
-    ctx.body.userInfo.id,
-  );
+  const data = await queries.eventHasBankAccount(ctx.query.id);
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+router.get(`${BASE_URL}/eventAccounts`, async ctx => {
+  const data = await queries.getEventAccounts(ctx.query.eventId);
   ctx.body = {
     status: 'success',
     data,
@@ -53,7 +59,6 @@ router.get(`${BASE_URL}/eventHasBankAccount`, async ctx => {
 router.post(`${BASE_URL}/externalAccount`, async ctx => {
   const { data, status, error } = await queries.addExternalAccount(
     ctx.request.body,
-    ctx.body.userInfo.id,
     ctx.request.ip,
   );
 
@@ -69,17 +74,6 @@ router.post(`${BASE_URL}/externalAccount`, async ctx => {
       data,
     };
   }
-});
-
-router.get(`${BASE_URL}/getCustomerId`, async ctx => {
-  const data = await queries.getCustomerId(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-  );
-  ctx.body = {
-    status: 'success',
-    data,
-  };
 });
 
 router.get(`${BASE_URL}/getCustomer`, async ctx => {
@@ -330,11 +324,38 @@ router.put(`${BASE_URL}/defaultCreditCard`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/defaultBankAccount`, async ctx => {
+  const bankAccount = await queries.updateDefaultBankAccount(
+    ctx.request.body,
+  );
+  if (bankAccount) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: bankAccount,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.del(`${BASE_URL}/creditCard`, async ctx => {
   const data = await queries.deleteCreditCard(
     ctx.query,
     ctx.body.userInfo.id,
   );
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
+router.del(`${BASE_URL}/bankAccount`, async ctx => {
+  const data = await queries.deleteBankAccount(ctx.query);
   ctx.body = {
     status: 'success',
     data,

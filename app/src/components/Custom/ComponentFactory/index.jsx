@@ -1,6 +1,12 @@
 import React from 'react';
 import { ListItemText, TextField } from '../../MUI';
-import { Select, MultiSelect, Button, CheckBox } from '../../Custom';
+import {
+  Select,
+  MultiSelect,
+  Button,
+  CheckBox,
+  List,
+} from '../../Custom';
 import { COMPONENT_TYPE_ENUM } from '../../../../../common/enums';
 import { InputAdornment } from '@material-ui/core';
 import PersonSearchList from '../SearchList/PersonSearchList';
@@ -62,8 +68,12 @@ export default function ComponentFactory(props) {
       <ListItemText
         primary={component.primary}
         secondary={component.secondary}
+        style={{ overflowWrap: 'anywhere' }}
       />
     );
+  }
+  if (component.componentType === COMPONENT_TYPE_ENUM.LIST) {
+    return <List items={component.items} />;
   }
   if (
     component.componentType === COMPONENT_TYPE_ENUM.PERSON_SEARCH_LIST

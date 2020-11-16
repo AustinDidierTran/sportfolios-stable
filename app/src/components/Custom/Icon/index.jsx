@@ -1,5 +1,6 @@
 import React from 'react';
 
+import AccountBalance from '@material-ui/icons/AccountBalance';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Add from '@material-ui/icons/Add';
 import AddAPhoto from '@material-ui/icons/AddAPhoto';
@@ -68,6 +69,7 @@ import SupervisedUserCircle from '@material-ui/icons/SupervisedUserCircle';
 import Undo from '@material-ui/icons/Undo';
 
 const icons = {
+  AccountBalance,
   AccountCircle,
   Add,
   AddAPhoto,

@@ -2,18 +2,18 @@ import React, { useEffect, useContext, useMemo } from 'react';
 
 import styles from './UserSettings.module.css';
 
+import { formatPageTitle } from '../../utils/stringFormats';
+import { IgContainer, LoadingSpinner } from '../../components/Custom';
+import { Store } from '../../Store';
+import { useTranslation } from 'react-i18next';
+import AppLinking from './AppLinking';
 import BasicInfo from './BasicInfo';
+import BottomPageLogo from '../../components/Custom/BottomPageLogo';
 import ChangePassword from './ChangePassword';
+import CreditCards from './CreditCards';
 import Disconnect from './Disconnect';
 import Email from './Email';
-import CreditCards from './CreditCards';
-import { IgContainer, LoadingSpinner } from '../../components/Custom';
-import { formatPageTitle } from '../../utils/stringFormats';
-import { useTranslation } from 'react-i18next';
 import MyPersons from './MyPersons';
-import { Store } from '../../Store';
-import AppLinking from './AppLinking';
-import BottomPageLogo from '../../components/Custom/BottomPageLogo';
 
 export default function UserSettings() {
   const { t } = useTranslation();
@@ -29,13 +29,14 @@ export default function UserSettings() {
   if (!isLoggedIn) {
     return <LoadingSpinner />;
   }
+
   return (
     <div className={styles.main}>
       <IgContainer className={styles.container}>
         <BasicInfo />
-        <ChangePassword />
         <Email />
         <MyPersons />
+        <ChangePassword />
         <AppLinking />
         <CreditCards />
         <Disconnect />

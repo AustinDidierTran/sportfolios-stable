@@ -512,6 +512,19 @@ async function getCreator(id) {
   const data = await getEntity(creator.entity_id_admin);
   return data;
 }
+async function getCreators(id) {
+  const realId = await getRealId(id);
+  const creators = await knex('entities_role')
+    .select('*')
+    .where({ entity_id: realId, role: 1 });
+
+  const data = await Promise.all(
+    creators.map(async c => {
+      return getEntity(c.entity_id_admin);
+    }),
+  );
+  return data;
+}
 
 async function eventInfos(id, userId) {
   const entity = await getEntity(id);
@@ -1919,6 +1932,7 @@ async function addTimeSlot(date, eventId) {
 async function addOption(
   eventId,
   name,
+  ownerId,
   teamPrice,
   playerPrice,
   endTime,
@@ -1954,6 +1968,7 @@ async function addOption(
       stripePrice: stripePriceTeam,
       entityId: realId,
       photoUrl: entity.photoUrl,
+      ownerId,
     });
   }
 
@@ -1980,6 +1995,7 @@ async function addOption(
       stripePrice: stripePriceIndividual,
       entityId: realId,
       photoUrl: entity.photoUrl,
+      ownerId,
     });
   }
 
@@ -2031,6 +2047,7 @@ async function addMembership(
     stripePrice,
     entityId,
     photoUrl: entity.photoUrl,
+    ownerId: entityId,
   });
   if (type === MEMBERSHIP_LENGTH_TYPE_ENUM.FIXED) {
     const [res] = await knex('entity_memberships')
@@ -2666,6 +2683,7 @@ module.exports = {
   getAllRolesEntity,
   getAllTypeEntities,
   getCreator,
+  getCreators,
   getEntity,
   getEntityRole,
   getEmailsEntity,

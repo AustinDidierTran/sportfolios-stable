@@ -5,6 +5,7 @@ import loadable from '@loadable/component';
 import { Router, Switch, Route } from 'react-router-dom';
 const PrivacyPolicy = loadable(() => import('../PrivacyPolicy'));
 const Login = loadable(() => import('../Login'));
+const AddBankAccount = loadable(() => import('../AddBankAccount'));
 const AddPaymentMethod = loadable(() =>
   import('../AddPaymentMethod'),
 );
@@ -126,6 +127,10 @@ export default function App() {
                 <Route
                   path={ROUTES.addPaymentMethod}
                   component={AddPaymentMethod}
+                />
+                <Route
+                  path={ROUTES.addBankAccount}
+                  component={AddBankAccount}
                 />
                 <Route
                   path={ROUTES.confirmEmail}

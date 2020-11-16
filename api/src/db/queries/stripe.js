@@ -14,13 +14,14 @@ const {
   deleteItem: deleteItemHelper,
   editItem: editItemHelper,
   eventHasBankAccount: eventHasBankAccountHelper,
+  getEventAccounts: getEventAccountsHelper,
   finalizeInvoice: finalizeInvoiceHelper,
   getCustomer: getCustomerHelper,
   getCustomerId: getCustomerIdHelper,
   getOrCreateCustomer,
   getPaymentMethods: getPaymentMethodsHelper,
   getReceipt: getReceiptHelper,
-  getStripeAccount: getStripeAccountHelper,
+  getBankAccounts: getBankAccountsHelper,
   hasStripeAccount: hasStripeAccountHelper,
   hasStripeBankAccount: hasStripeBankAccountHelper,
   payInvoice: payInvoiceHelper,
@@ -28,11 +29,13 @@ const {
   sendReceiptEmail: sendReceiptEmailHelper,
   sendRegistrationEmail: sendRegistrationEmailHelper,
   updateDefaultCreditCard: updateDefaultCreditCardHelper,
+  updateDefaultBankAccount: updateDefaultBankAccountHelper,
   deleteCreditCard: deleteCreditCardHelper,
+  deleteBankAccount: deleteBankAccountHelper,
 } = require('../helpers/stripe');
 
-const getAccountLink = async (entity_id, ip) => {
-  return createAccountLink({ entity_id, ip });
+const getAccountLink = async (ip, entityId, redirect) => {
+  return createAccountLink({ ip, entityId, redirect });
 };
 
 const addExternalAccount = async (body, ip) => {
@@ -40,8 +43,8 @@ const addExternalAccount = async (body, ip) => {
   return createExternalAccount(body, ip);
 };
 
-const getStripeAccount = async entityId => {
-  return getStripeAccountHelper(entityId);
+const getBankAccounts = async entityId => {
+  return getBankAccountsHelper(entityId);
 };
 
 const hasStripeAccount = async entityId => {
@@ -50,8 +53,11 @@ const hasStripeAccount = async entityId => {
 const hasStripeBankAccount = async entityId => {
   return hasStripeBankAccountHelper(entityId);
 };
-const eventHasBankAccount = async adminId => {
-  return eventHasBankAccountHelper(adminId);
+const eventHasBankAccount = async eventId => {
+  return eventHasBankAccountHelper(eventId);
+};
+const getEventAccounts = async eventId => {
+  return getEventAccountsHelper(eventId);
 };
 
 const getPaymentMethods = async userId => {
@@ -151,8 +157,14 @@ const createRefund = async (body, userId) => {
 const updateDefaultCreditCard = async (body, userId) => {
   return updateDefaultCreditCardHelper(body, userId);
 };
+const updateDefaultBankAccount = async body => {
+  return updateDefaultBankAccountHelper(body);
+};
 const deleteCreditCard = async (body, userId) => {
   return deleteCreditCardHelper(body, userId);
+};
+const deleteBankAccount = async body => {
+  return deleteBankAccountHelper(body);
 };
 
 module.exports = {
@@ -171,18 +183,21 @@ module.exports = {
   detachPaymentMethod,
   editItem,
   eventHasBankAccount,
+  getEventAccounts,
   finalizeInvoice,
   getAccountLink,
   getCustomer,
   getCustomerId,
   getPaymentMethods,
   getReceipt,
-  getStripeAccount,
+  getBankAccounts,
   hasStripeAccount,
   hasStripeBankAccount,
   payInvoice,
   sendReceiptEmail,
   sendRegistrationEmail,
   updateDefaultCreditCard,
+  updateDefaultBankAccount,
+  deleteBankAccount,
   deleteCreditCard,
 };

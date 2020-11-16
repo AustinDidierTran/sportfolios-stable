@@ -26,11 +26,13 @@ export default {
     add_member: 'Add member',
     add_membership: 'Add membership',
     add_mode: 'Add mode',
+    add_new_bank_account: 'Add new bank account',
     add_new_person: 'Add new person',
     add_new_player: 'Add new player',
     add_new_product: 'Add new product',
     add_non_existing_person: 'Add non existing person',
     add_payment_method: 'Add payment method',
+    add_payment_option: 'Add payment option',
     add_payment_options: 'Add payment options',
     add_person: 'Add person',
     add_personal_information: 'Add personal information',
@@ -62,6 +64,8 @@ export default {
     all_phases: 'All Phases',
     all_steps_completed: 'All Steps Completed',
     all_teams: 'All Teams',
+    all_the_admins_of_the_event_that_have_a_bank_account_linked_to_their_account_will_appear_here:
+     'All the admins of the event that have a bank account can be chosen to be owner of the payment option',
     all_time_slots: 'All Time Slots',
     all: 'All',
     amount_to_pay: 'Amount to pay {{amount}}',
@@ -79,6 +83,10 @@ export default {
     awaiting_your_approval: 'Awaiting your approval',
     back_to_shop: 'Back to shop',
     back: 'Back',
+    bank_account: 'Bank account',
+    bank_accounts: 'Bank accounts',
+    bank_accounts_information:
+      'Every 7 days, your revenu will be deposit into your default bank account',
     basic_info: 'Basic Info',
     become_member: 'Become Member',
     biannual: 'Biannual',
@@ -150,12 +158,16 @@ export default {
     date_in_future: 'Date is in the future',
     decline: 'Decline',
     default: 'Default',
+    delete_bank_account_confirmation:
+      'Are you sure you want to delete your bank account ending with {{last4}}?',
     delete_confirmation_text: 'To delete, type {{name}}',
     delete_credit_card_confirmation:
-      'Are you sure you want to delete your credit card ending with {{last4}}',
+      'Are you sure you want to delete your credit card ending with {{last4}}?',
     delete_game_confirmation:
       'Are you sure you want to delete this game?',
     delete_membership_confirmation:
+      'Are you sure you want to delete this membership?',
+    delete_member_confirmation:
       'Are you sure you want to delete this membership? This person will not be refunded.',
     delete_membership: 'Delete membership',
     delete_payment_option_confirmation:
@@ -231,6 +243,7 @@ export default {
     event: 'Event',
     events_that_might_interest_you: 'Events that might interest you',
     events: 'Events',
+    existing_bank_accounts: 'Existing bank accounts',
     expiration_date: 'Expiration Date',
     expire_on: 'Expire on',
     expired_on: 'Expired on',
@@ -280,6 +293,7 @@ export default {
     interactive_tool: 'Interactive tool',
     invalid_date: 'Invalid date. It should follow: yyyy-mm-dd',
     invalid_email: 'Invalid email address.',
+    invalid_information: 'Invalid information',
     invalid_input: 'Invalid input',
     invite_this_player_to_join_your_team:
       'Invite this player to join your team',
@@ -320,6 +334,7 @@ export default {
     more_filters: 'More Filters',
     move_mode: 'Move mode',
     my_apps: 'My apps',
+    my_emails: 'My emails',
     my_persons: 'My persons',
     name_and_x_other: '{{name}} and {{number}} other',
     name_and_x_others: '{{name}} and {{number}} others',
@@ -331,6 +346,7 @@ export default {
     new_team: 'New team',
     next: 'Next',
     no_account_signup: "Don't have an account? Signup!",
+    no_admins_with_bank_account:'No admins with a bank account',
     no_alias: 'No alias',
     no_bank_account_linked:
       'You have no bank account linked, payment option needs to be free',
@@ -395,6 +411,7 @@ export default {
     payment_option_exist: 'Payment option exist',
     payment_option: 'Payment option',
     payment_options: 'Payment options',
+    payment_option_owner: 'Payment option owner',
     payment_team: 'Team payment',
     payments: 'Payments',
     pending: 'Pending',
@@ -487,6 +504,8 @@ export default {
     registrations_ends_on: 'Registrations ends on',
     registrations_open_on: 'Registrations open on',
     remove: 'Remove',
+    remove_bank_account_confirmation:
+      'Are you sure you want to remove bank account ending with {{last4}} from your organization?',
     renew_membership: 'Renew Membership',
     reset_password: 'Reset password',
     reset: 'Reset',

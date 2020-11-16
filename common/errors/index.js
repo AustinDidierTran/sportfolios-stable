@@ -4,6 +4,7 @@ const ERROR_ENUM = {
   EMAIL_ALREADY_EXIST: 'email_already_exist',
   ERROR_OCCURED: 'An error has occured',
   INVALID_EMAIL: 'invalid_email',
+  INVALID_INFORMATION: 'invalid_information',
   INVALID_TRANSIT_NUMBER:
     'Invalid transit number. The number should be in the format xxxxx-yyy or xxxxxyyy.',
   REGISTRATION_ERROR: 'There was an error with your registration',

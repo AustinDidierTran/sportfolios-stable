@@ -128,7 +128,6 @@ const changeUserInfo = async (user_id, { language }) => {
   if (!user_id) {
     return 402;
   }
-
   await updateBasicUserInfoFromUserId({
     user_id,
     language,

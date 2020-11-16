@@ -3,6 +3,7 @@ import { getFormattedMailTo } from '../../utils/stringFormats';
 import api from '../api';
 
 export const ROUTES = {
+  addBankAccount: '/addBankAccount',
   addPaymentMethod: '/addPaymentMethod',
   adminPanel: '/adminPanel',
   cart: '/cart',

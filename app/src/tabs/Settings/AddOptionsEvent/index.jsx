@@ -101,6 +101,7 @@ export default function AddOptionsEvent() {
       name,
       teamPrice,
       playerPrice,
+      ownerId,
       openDate,
       openTime,
       closeDate,
@@ -121,6 +122,7 @@ export default function AddOptionsEvent() {
       body: JSON.stringify({
         eventId,
         name,
+        ownerId,
         teamPrice: formattedTeamPrice,
         playerPrice: formattedPlayerPrice,
         startTime: start,
@@ -179,24 +181,22 @@ export default function AddOptionsEvent() {
 
   if (isLoading) {
     return (
-      <Paper title={t('add_payment_options')}>
+      <Paper title={t('payment_options')}>
         <LoadingSpinner isComponent />
       </Paper>
     );
   }
 
   return (
-    <Paper title={t('add_payment_options')}>
+    <Paper title={t('payment_options')}>
       <Button
         className={styles.addButton}
-        endIcon="Add"
         color="primary"
         onClick={() => setOpen(true)}
       >
-        {t('add')}
+        {t('add_payment_option')}
       </Button>
       <List items={options} />
-
       <FormDialog
         type={FORM_DIALOG_TYPE_ENUM.ADD_EDIT_EVENT_PAYMENT_OPTION}
         items={{

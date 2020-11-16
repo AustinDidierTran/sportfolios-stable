@@ -1,13 +1,18 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import moment from 'moment';
 import BasicFormDialog from '../BasicFormDialog';
-import { SEVERITY_ENUM } from '../../../../../../common/enums';
+import {
+  COMPONENT_TYPE_ENUM,
+  SEVERITY_ENUM,
+} from '../../../../../../common/enums';
 import { ERROR_ENUM } from '../../../../../../common/errors';
 import { Store, ACTION_ENUM } from '../../../../Store';
 import { formatPrice } from '../../../../utils/stringFormats';
-
+import api from '../../../../actions/api';
+import { formatRoute } from '../../../../actions/goTo';
+import { useParams } from 'react-router-dom';
 export default function AddEditEventPaymentOption(props) {
   const {
     open,
@@ -16,12 +21,29 @@ export default function AddEditEventPaymentOption(props) {
     isEdit,
     addOptionToEvent,
     editOptionEvent,
-    hasBankAccount,
   } = props;
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
+  const [ownersId, setOwnersId] = useState([]);
+  const { id: eventId } = useParams();
+
+  const getAccounts = async () => {
+    const { data } = await api(
+      formatRoute('/api/stripe/eventAccounts', null, { eventId }),
+    );
+    const res = data.map(r => ({
+      value: r.id,
+      display: `${r?.name} ${r?.surname}`,
+      key: r.id,
+    }));
+    setOwnersId(res);
+    if (res[0]) {
+      formik.setFieldValue('ownerId', res[0].value);
+    }
+  };
 
   useEffect(() => {
+    getAccounts();
     if (isEdit) {
       formik.setFieldValue(
         'openDate',
@@ -52,6 +74,7 @@ export default function AddEditEventPaymentOption(props) {
       name,
       teamPrice,
       playerPrice,
+      ownerId,
       openDate,
       openTime,
       closeDate,
@@ -65,7 +88,7 @@ export default function AddEditEventPaymentOption(props) {
       if (!teamPrice && teamPrice !== 0) {
         errors.teamPrice = t(ERROR_ENUM.VALUE_IS_REQUIRED);
       }
-      if (teamPrice > 0 && !hasBankAccount) {
+      if (teamPrice > 0 && !ownerId) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: t('no_bank_account_linked'),
@@ -79,7 +102,7 @@ export default function AddEditEventPaymentOption(props) {
       if (!playerPrice && playerPrice !== 0) {
         errors.playerPrice = t(ERROR_ENUM.VALUE_IS_REQUIRED);
       }
-      if (playerPrice > 0 && !hasBankAccount) {
+      if (playerPrice > 0 && !ownerId) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: t('no_bank_account_linked'),
@@ -118,6 +141,7 @@ export default function AddEditEventPaymentOption(props) {
       name: '',
       teamPrice: '',
       playerPrice: '',
+      ownerId: ``,
       openDate: moment().format('YYYY-MM-DD'),
       openTime: '00:00',
       closeDate: '',
@@ -153,6 +177,23 @@ export default function AddEditEventPaymentOption(props) {
       type: 'number',
       endAdorment: '$',
     },
+    {
+      componentType: COMPONENT_TYPE_ENUM.LIST_ITEM,
+      secondary: t(
+        'all_the_admins_of_the_event_that_have_a_bank_account_linked_to_their_account_will_appear_here',
+      ),
+    },
+    ownersId.length
+      ? {
+          namespace: 'ownerId',
+          label: t('payment_option_owner'),
+          componentType: COMPONENT_TYPE_ENUM.SELECT,
+          options: ownersId,
+        }
+      : {
+          componentType: COMPONENT_TYPE_ENUM.LIST_ITEM,
+          primary: t('no_admins_with_bank_account'),
+        },
   ];
 
   const editableFields = [

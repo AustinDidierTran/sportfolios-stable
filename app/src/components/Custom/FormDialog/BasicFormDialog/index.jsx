@@ -40,7 +40,7 @@ export default function BasicFormDialog(props) {
       fullWidth
     >
       <DialogTitle id="form-dialog-title">{title}</DialogTitle>
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={formik?.handleSubmit}>
         <div>
           <DialogContent>
             {description ? (

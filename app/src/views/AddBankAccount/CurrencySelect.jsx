@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 import React, { useMemo } from 'react';
-import { Autocomplete } from '../../../../components/Custom';
+import { Select } from '../../components/Custom';
 import { useTranslation } from 'react-i18next';
 // const currencies = require('currency-codes/data');
 
@@ -35,10 +35,12 @@ export default function CurrencySelect(props) {
   );
 
   return (
-    <Autocomplete
+    <Select
+      style={{ textAlign: 'start' }}
       formik={formik}
       options={options}
       type="currency"
+      label={t('currency')}
       renderOption={content}
       namespace="currency"
     />

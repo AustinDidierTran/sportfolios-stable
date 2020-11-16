@@ -9,62 +9,88 @@ const { stripeLogger } = require('../../../server/utils/logger');
 const {
   fillWithZeros,
 } = require('../../../../../common/utils/stringFormat');
-const { getCreator, getEntity } = require('../entity');
-const { GLOBAL_ENUM } = require('../../../../../common/enums');
+const { getCreators } = require('../entity');
 
-const getStripeAccount = async senderId => {
-  const [account = {}] = await knex('stripe_accounts')
+const getStripeAccount = async entityId => {
+  const [account] = await knex('stripe_accounts')
     .select('*')
-    .where({ entity_id: senderId });
+    .where({ entity_id: entityId });
   return account;
 };
 
-const hasStripeAccount = async senderId => {
-  const account = await getStripeAccount(senderId);
-  return Boolean(account.account_id);
-};
+const hasStripeAccount = async entityId => {
+  const account = await getStripeAccount(entityId);
 
-const hasStripeBankAccount = async senderId => {
-  const account = await getStripeAccount(senderId);
-  return Boolean(account.bank_account_id);
-};
-
-const eventHasBankAccount = async (adminId, userId) => {
-  const entity = await getEntity(adminId, userId);
-  if (entity.type === GLOBAL_ENUM.ORGANIZATION) {
-    const organizationAccount = await getStripeAccount(adminId);
-    return Boolean(organizationAccount.bank_account_id);
+  if (account) {
+    const completeAccount = await stripe.accounts.retrieve(
+      account.account_id,
+    );
+    tosAcceptance = completeAccount.tos_acceptance;
+    if (
+      !tosAcceptance.date ||
+      !tosAcceptance.ip ||
+      !tosAcceptance.user_agent
+    ) {
+      return false;
+    }
+    return true;
   }
-
-  // not an organization, check for creator's account
-  const admin = await getCreator(adminId);
-  const account = await getStripeAccount(admin.id);
-  return Boolean(account.bank_account_id);
+  return false;
 };
 
-const getStripeBankAccountId = async senderId => {
-  const [{ account_id: accountId } = {}] = await knex
-    .select('bank_account_id')
-    .where('entity_id', senderId)
-    .from('stripe_accounts');
-  return accountId;
+const hasStripeBankAccount = async entityId => {
+  const account = await getStripeAccount(entityId);
+  if (account) {
+    const bankAccounts = await knex('bank_accounts')
+      .select('*')
+      .whereNull('deleted_at')
+      .andWhere({
+        account_id: account.account_id,
+      });
+    return bankAccounts.length ? true : false;
+  }
+  return false;
 };
 
-const getOrCreateStripeConnectedAccountId = async (entity_id, ip) => {
-  let account = await getStripeAccount(entity_id);
-  let accountId = account.account_id;
+const eventHasBankAccount = async eventId => {
+  const admins = await getCreators(eventId);
+  const res = await Promise.all(
+    admins.map(async a => {
+      if (await hasStripeBankAccount(a.id)) {
+        return true;
+      }
+      return false;
+    }),
+  );
+  return res.includes(true);
+};
 
-  if (!accountId) {
+const getEventAccounts = async eventId => {
+  const admins = await getCreators(eventId);
+  const res = await Promise.all(
+    admins.map(async a => ({
+      hasBankAccount: await hasStripeBankAccount(a.id),
+      ...a,
+    })),
+  );
+  const res2 = res.filter(a => a.hasBankAccount);
+  return res2;
+};
+
+const getOrCreateStripeConnectedAccountId = async (entityId, ip) => {
+  let account = await getStripeAccount(entityId);
+  if (!account) {
     const account = await createStripeConnectedAccount({ ip }); // must return accountId
-    accountId = account.id;
+    const accountId = account.id;
+
     // Should store account inside DB
     await knex('stripe_accounts').insert({
-      entity_id,
+      entity_id: entityId,
       account_id: accountId,
     });
+    return accountId;
   }
-
-  return accountId;
+  return account.account_id;
 };
 
 // REF: https://stripe.com/docs/api/accounts/create?lang=node
@@ -118,26 +144,25 @@ const createAccountLink2 = async accountId => {
 };
 
 const createAccountLink = async props => {
-  const { entity_id, ip } = props;
+  const { ip, entityId } = props;
   const accountId = await getOrCreateStripeConnectedAccountId(
-    entity_id,
+    entityId,
     ip,
   );
   const params = {
     account: accountId,
-    failure_url: `${CLIENT_BASE_URL}/profile`,
-    success_url: `${CLIENT_BASE_URL}/${entity_id}?tab=settings`,
+    failure_url: `${CLIENT_BASE_URL}/${entityId}?tab=settings`,
+    success_url: `${CLIENT_BASE_URL}/addBankAccount?entityId=${entityId}`,
     type: 'custom_account_verification',
     collect: 'eventually_due',
   };
-
   return stripe.accountLinks.create(params);
 };
 
 const createExternalAccount = async (body, ip) => {
   const {
+    entityId,
     accountHolderName,
-    id,
     country,
     currency,
     transitNumber,
@@ -145,9 +170,8 @@ const createExternalAccount = async (body, ip) => {
     accountNumber,
   } = body;
 
-  const organizationId = id;
   const accountId = await getOrCreateStripeConnectedAccountId(
-    organizationId,
+    entityId,
     ip,
   );
 
@@ -175,15 +199,23 @@ const createExternalAccount = async (body, ip) => {
     },
   );
 
-  await knex('stripe_accounts')
+  await knex('bank_accounts')
     .update({
+      is_default: false,
+    })
+    .where({ account_id: accountId });
+
+  const [bankAccount] = await knex('bank_accounts')
+    .insert({
+      account_id: accountId,
       bank_account_id: account.id,
       last4: account.last4,
+      is_default: true,
     })
-    .where({ account_id: account.account });
+    .returning('*');
 
   stripeLogger('External Account Created', account.id);
-  return { status: 200, data: account.id };
+  return { status: 200, data: bankAccount };
 };
 
 module.exports = {
@@ -192,9 +224,9 @@ module.exports = {
   createAccountLink2,
   createStripeConnectedAccount,
   eventHasBankAccount,
+  getEventAccounts,
   getOrCreateStripeConnectedAccountId,
   hasStripeAccount,
   hasStripeBankAccount,
-  getStripeAccount,
-  getStripeBankAccountId,
+  hasStripeBankAccount,
 };

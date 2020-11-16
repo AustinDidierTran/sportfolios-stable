@@ -138,7 +138,7 @@ export default function MemberItem(props) {
           open={openDelete}
           onCancel={onCancel}
           onSubmit={confirmDelete}
-          title={t('delete_membership_confirmation')}
+          title={t('delete_member_confirmation')}
         />
       </ListItem>
       <Divider />

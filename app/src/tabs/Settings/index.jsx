@@ -12,7 +12,6 @@ import { useAdmin, useEditor } from '../../hooks/roles';
 import styles from './Settings.module.css';
 import BottomPageLogo from '../../components/Custom/BottomPageLogo';
 
-const Stripe = loadable(() => import('./Stripe'));
 const ManageRoles = loadable(() => import('./ManageRoles'));
 const AddMembership = loadable(() => import('./AddMembership'));
 const AddOptionsEvent = loadable(() => import('./AddOptionsEvent'));
@@ -22,6 +21,7 @@ const BasicInfos = loadable(() => import('./BasicInfos'));
 const Description = loadable(() => import('./Description'));
 const QuickDescription = loadable(() => import('./QuickDescription'));
 const ChangeAlias = loadable(() => import('./ChangeAlias'));
+const BankAccount = loadable(() => import('./BankAccount'));
 
 export default function EntitySettings(props) {
   const { id } = useParams();
@@ -39,7 +39,7 @@ export default function EntitySettings(props) {
       if (isAdmin) {
         return (
           <div className={styles.div}>
-            <Stripe id={id} />
+            <BankAccount />
             <ManageRoles role={role} />
             <Card
               items={{ id, name: basicInfos.name }}
@@ -53,7 +53,6 @@ export default function EntitySettings(props) {
       if (isEditor) {
         return (
           <div className={styles.div}>
-            <Stripe id={id} />
             <BottomPageLogo />
           </div>
         );
@@ -69,8 +68,8 @@ export default function EntitySettings(props) {
             <QuickDescription />
             <Description />
             <EventSettings />
-            <AddOptionsEvent />
             <TeamRegistered />
+            <AddOptionsEvent />
             <ManageRoles role={role} />
             <Card
               items={{ id, name: basicInfos.name }}
@@ -83,10 +82,13 @@ export default function EntitySettings(props) {
       if (isEditor) {
         return (
           <div className={styles.div}>
+            <BasicInfos basicInfos={basicInfos} />
+            <ChangeAlias />
+            <QuickDescription />
             <Description />
+            <EventSettings />
             <AddOptionsEvent />
             <TeamRegistered />
-            <EventSettings />
             <BottomPageLogo />
           </div>
         );
@@ -97,8 +99,8 @@ export default function EntitySettings(props) {
         return (
           <div className={styles.div}>
             <BasicInfos basicInfos={basicInfos} />
-            <Stripe id={id} />
             <AddMembership />
+            <BankAccount />
             <ManageRoles role={role} />
             <Card
               items={{ id, name: basicInfos.name }}
@@ -111,7 +113,7 @@ export default function EntitySettings(props) {
       if (isEditor) {
         return (
           <div className={styles.div}>
-            <Stripe id={id} />
+            <BasicInfos basicInfos={basicInfos} />
             <AddMembership />
             <BottomPageLogo />
           </div>
@@ -123,7 +125,7 @@ export default function EntitySettings(props) {
       if (isAdmin) {
         return (
           <div className={styles.div}>
-            <Stripe id={id} />
+            <BankAccount />
             <ManageRoles role={role} />
             <BottomPageLogo />
           </div>
@@ -132,7 +134,6 @@ export default function EntitySettings(props) {
       if (isEditor) {
         return (
           <div className={styles.div}>
-            <Stripe id={id} />
             <BottomPageLogo />
           </div>
         );
