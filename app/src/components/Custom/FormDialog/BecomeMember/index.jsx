@@ -64,7 +64,9 @@ export default function BecomeMember(props) {
       value: d.id,
       display: formatMembership(d),
     }));
-    formik.setFieldValue('type', memberships[0].value);
+    if (memberships[0]) {
+      formik.setFieldValue('type', memberships[0].value);
+    }
     setMemberships(memberships);
   };
 

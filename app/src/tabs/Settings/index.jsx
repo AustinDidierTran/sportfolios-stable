@@ -22,6 +22,7 @@ const Description = loadable(() => import('./Description'));
 const QuickDescription = loadable(() => import('./QuickDescription'));
 const ChangeAlias = loadable(() => import('./ChangeAlias'));
 const BankAccount = loadable(() => import('./BankAccount'));
+const Reports = loadable(() => import('./Reports'));
 
 export default function EntitySettings(props) {
   const { id } = useParams();
@@ -101,6 +102,7 @@ export default function EntitySettings(props) {
             <BasicInfos basicInfos={basicInfos} />
             <AddMembership />
             <BankAccount />
+            <Reports />
             <ManageRoles role={role} />
             <Card
               items={{ id, name: basicInfos.name }}

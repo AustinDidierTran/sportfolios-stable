@@ -67,6 +67,7 @@ export default {
     all_the_admins_of_the_event_that_have_a_bank_account_linked_to_their_account_will_appear_here: 
     "Tous les administrateurs de l'événement ayant un compte bancaire peuvent être choisis comme propriétaire de l'option de paiement",
     all_time_slots: 'Toutes les plages horaires',
+    all_your_members_on: 'Tous vos membres le',
     all: 'Tous',
     amount_to_pay: 'Montant à payer {{amount}}',
     an_error_has_occured: 'Une erreur est survenue',
@@ -119,6 +120,8 @@ export default {
     change_team: "Changer l'équipe",
     changes_saved: 'Changements sauvegardés',
     checkout: 'Procéder',
+    choose_date:'Choisir la date',
+    choose_report:'Choisir le rapport',
     choose_your_primary_person: 'Choisir votre personne principale',
     city: 'Ville',
     clear_all: 'Réinitialiser',
@@ -143,6 +146,7 @@ export default {
     contact_us: 'Contactez-nous',
     contact: 'Contact',
     country: 'Pays',
+    create:'Créer',
     create_a_game: 'Créer une partie',
     create_a_phase: 'Créer une phase',
     create_an_account_to_accept_person_transfer:
@@ -151,6 +155,7 @@ export default {
     create_new_account: 'Créer un nouveau compte',
     create_organization: 'Créer une organisation',
     create_person: 'Créer une personne',
+    create_report:'Créer un rapport',
     create_team: 'Créer une équipe',
     created_on: 'Créé le',
     created_by: 'Créé par {{name}}',
@@ -158,6 +163,8 @@ export default {
     credit_cards: 'Cartes de crédits',
     credit_card_added: 'Carte de crédit ajoutée',
     currency: 'Devise',
+    date:'Date',
+    date_in_future: 'La date est dans le futur',
     decline: 'Refuser',
     default: 'Par défaut',
     delete_bank_account_confirmation:
@@ -180,6 +187,8 @@ export default {
     delete_player_from_roster_confirmation:
       "Êtes-vous certain de vouloir retirer ce joueur de l'équipe?",
     delete_player_from_roster: 'Retirer joueur',
+    delete_report: 'Supprimer le rapport',
+    delete_report_confirmation: 'Êtes-vous certain de vouloir supprimer ce rapport?',
     delete_this_email_from_your_account:
       'Supprimer ce courriel de votre compte',
     delete: 'Supprimer',
@@ -197,6 +206,7 @@ export default {
     do_not_specify: 'Ne pas spécifier',
     donate: 'Faites un don',
     done: 'Terminé',
+    download_report:'Télécharger le rapport',
     edit_credit_cards: 'Modifier les cartes de crédits',
     edit_game: 'Modifier la partie',
     edit_infos: 'Modifier les infos',
@@ -281,6 +291,7 @@ export default {
     general_informations: 'Informations générales',
     general: 'Général',
     generate_account_link: 'Générer le lien du compte',
+    generate_report: 'Générer un rapport',
     go_back_to_login: 'Retourner à la connexion',
     go_to_event: `Aller vers l'événement`,
     go_to_login: 'Aller vers la connexion',
@@ -323,7 +334,10 @@ export default {
     member_list: 'Liste des membres',
     member: 'Membre',
     members_added: 'Membres ajoutés',
+    members_list_at_a_certain_date:'Liste des membres à une date précise',
+    members_list_on: 'Liste des membres le',
     members_list: 'Liste des membres | {{organization}}',
+    members_with_date_report_description:"Ce rapport vous permet d'accéder à la liste de vos membres à une date précise",
     membership_added: 'Affiliation ajouté',
     membership_edited: 'Affiliation modifiée',
     membership_exist: 'Affiliation Existant',
@@ -506,6 +520,9 @@ export default {
     remove_bank_account_confirmation:
       'Êtes-vous certain de vouloir retirer le compte bancaire finissant par {{last4}} de votre organisation?',
     renew_membership: 'Renouveler',
+    reports:'Rapports',
+    report:'Rapport',
+    report_created:'Rapport créé',
     reset_password: 'Réinitialiser le mot de passe',
     reset: 'Réinitialiser',
     results: 'Résultats',
@@ -607,6 +624,7 @@ export default {
       "Il n'y a pas d'alignements pour cet événement.",
     this_organization_has_no_events:
       "Cette organisation n'a pas d'événement",
+    this_organization_has_no_memberships_available: "Cette organisation n'a pas d'affilitations disponibles",
     this_team_cannot_be_deleted:
       "Cette équipe ne peut pas être désinscrite de l'événement puisqu'elle est déjà dans une partie.",
     time_slot_added: 'Plage horaire ajoutée',

@@ -17,6 +17,7 @@ const {
   addField: addFieldHelper,
   addGame: addGameHelper,
   addMember: addMemberHelper,
+  addReport: addReportHelper,
   addMemberManually: addMemberManuallyHelper,
   addMembership: addMembershipHelper,
   addOption: addOptionHelper,
@@ -34,6 +35,7 @@ const {
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
   deleteMembership: deleteMembershipHelper,
+  deleteReport: deleteReportHelper,
   deleteGame: deleteGameHelper,
   deleteOption: deleteOptionHelper,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
@@ -54,6 +56,8 @@ const {
   getUnplacedGames: getUnplacedGamesHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getMembers: getMembersHelper,
+  getReports: getReportsHelper,
+  hasMemberships: hasMembershipsHelper,
   getOrganizationMembers: getOrganizationMembersHelper,
   getMemberships: getMembershipsHelper,
   getOptions: getOptionsHelper,
@@ -171,6 +175,12 @@ async function getAllRolesEntity(id) {
 
 async function getMembers(persons, organizationId) {
   return getMembersHelper(persons, organizationId);
+}
+async function getReports(entityId) {
+  return getReportsHelper(entityId);
+}
+async function hasMemberships(organizationId) {
+  return hasMembershipsHelper(organizationId);
 }
 async function getOrganizationMembers(organizationId, userId) {
   if (
@@ -615,6 +625,10 @@ async function addMemberManually(body) {
   return res;
 }
 
+async function addReport(body) {
+  const { type, organizationId, date } = body;
+  return addReportHelper(type, organizationId, date);
+}
 async function addMember(body, userId) {
   const {
     membershipId,
@@ -901,6 +915,10 @@ async function deleteMembership(query) {
   const { memberType, organizationId, personId } = query;
   return deleteMembershipHelper(memberType, organizationId, personId);
 }
+async function deleteReport(query) {
+  const { reportId } = query;
+  return deleteReportHelper(reportId);
+}
 
 async function deleteOption(id) {
   return deleteOptionHelper(id);
@@ -982,6 +1000,7 @@ module.exports = {
   addEntityRole,
   addField,
   addGame,
+  addReport,
   addMember,
   addMemberManually,
   addMembership,
@@ -1001,6 +1020,7 @@ module.exports = {
   deleteEntityHelper,
   deleteEntityMembership,
   deleteMembership,
+  deleteReport,
   deleteGame,
   deleteGame,
   deleteOption,
@@ -1025,6 +1045,8 @@ module.exports = {
   getPhasesGameAndTeams,
   getGeneralInfos,
   getMembers,
+  getReports,
+  hasMemberships,
   getOrganizationMembers,
   getMemberships,
   getOptions,

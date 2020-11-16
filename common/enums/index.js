@@ -76,6 +76,7 @@ const CARD_TYPE_ENUM = {
   EVENT: 'event',
   GAME: 'game',
   INVOICE: 'invoice',
+  REPORT: 'report',
   SCORE_SUGGESTION: 'score suggestion',
   SHOP: 'shop',
   TWO_TEAM_GAME_EDITABLE: 'twoTeamGameEditable',
@@ -112,6 +113,11 @@ const FORM_DIALOG_TYPE_ENUM = {
   BECOME_MEMBER: 'become member',
   ADD_MEMBER: 'add member',
   EDIT_MEMBERSHIP: 'edit membership',
+  CREATE_MEMBERS_WITH_DATE_REPORT: 'create members with date report',
+};
+
+const REPORT_TYPE_ENUM = {
+  MEMBERS_WITH_DATE: 'members with date',
 };
 
 const LANGUAGE_ENUM = {
@@ -378,11 +384,13 @@ module.exports = {
   PERSON_TRANSFER_STATUS_ENUM,
   POSITION_ENUM,
   REJECTION_ENUM,
+  REPORT_TYPE_ENUM,
   ROSTER_ROLE_ENUM,
   SCORE_SUBMISSION_CHATBOT_STATES,
   SELECT_ENUM,
   SEVERITY_ENUM,
   SIZES_ENUM,
+  SOCKET_EVENT,
   SPIRIT_CATEGORY_ENUM,
   STATUS_ENUM,
   STRIPE_ERROR_ENUM,
@@ -390,5 +398,4 @@ module.exports = {
   TABS_ENUM,
   TAG_TYPE_ENUM,
   VIEW_ENUM,
-  SOCKET_EVENT,
 };

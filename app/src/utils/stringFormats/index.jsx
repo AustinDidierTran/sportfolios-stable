@@ -89,6 +89,7 @@ export const getMembershipName = type => {
     return '';
   }
 };
+
 export const getMembershipType = (length, date) => {
   if (length) {
     if (length === MEMBERSHIP_LENGTH_ENUM.ONE_YEAR) {
