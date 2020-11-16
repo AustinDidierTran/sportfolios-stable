@@ -12,7 +12,7 @@ import CartIcon from '../Cart/CartICon';
 
 const getEntity = async entityId => {
   const { data } = await api(`/api/entity?id=${entityId}`);
-  return data;
+  return data.basicInfos;
 };
 
 const uuidvalidate = uuid =>

@@ -46,9 +46,9 @@ export default function MembersList() {
   }, [id]);
 
   const getEntity = async () => {
-    const { data } = await api(
-      formatRoute('/api/entity', null, { id }),
-    );
+    const {
+      data: { basicInfos: data },
+    } = await api(formatRoute('/api/entity', null, { id }));
     setOrganization(data);
   };
 

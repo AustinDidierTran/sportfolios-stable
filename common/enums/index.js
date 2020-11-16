@@ -80,6 +80,7 @@ const CARD_TYPE_ENUM = {
   SHOP: 'shop',
   TWO_TEAM_GAME_EDITABLE: 'twoTeamGameEditable',
   TWO_TEAM_GAME: 'twoTeamGame',
+  TWO_TEAM_GAME_PROFILE: 'twoTeamGameProfile',
 };
 
 const TABS_ENUM = {

@@ -41,7 +41,9 @@ export default function ScoreSuggestion(props) {
     if (!suggestion.created_by) {
       return { name: t('anonymous') };
     }
-    const { data } = await api(
+    const {
+      data: { basicInfos: data },
+    } = await api(
       formatRoute('/api/entity', null, { id: suggestion.created_by }),
     );
     return { name: data.name, surname: data.surname };

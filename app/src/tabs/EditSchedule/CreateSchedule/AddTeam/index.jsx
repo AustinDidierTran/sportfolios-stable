@@ -51,7 +51,9 @@ export default function AddTeam(props) {
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       const { name } = values;
-      const { data: team } = await api('/api/entity', {
+      const {
+        data: { basicInfos: team },
+      } = await api('/api/entity', {
         method: 'POST',
         body: JSON.stringify({
           name: name,

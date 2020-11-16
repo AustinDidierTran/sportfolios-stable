@@ -23,7 +23,7 @@ const EntityMap = {
 export default function Entity() {
   const { id } = useParams();
 
-  const { response: basicInfos, isLoading } = useApiRoute(
+  const { response, isLoading } = useApiRoute(
     formatRoute('/api/entity', null, { id }),
     {
       defaultValue: {},
@@ -34,14 +34,14 @@ export default function Entity() {
     return <LoadingSpinner />;
   }
 
-  if (!basicInfos) {
+  if (!response) {
     return <EntityNotFound />;
   }
 
-  const EntityObject = EntityMap[basicInfos.type];
+  const EntityObject = EntityMap[response.basicInfos.type];
 
   if (!EntityObject) {
     return <EntityNotFound />;
   }
-  return <EntityObject basicInfos={basicInfos} />;
+  return <EntityObject {...response} />;
 }

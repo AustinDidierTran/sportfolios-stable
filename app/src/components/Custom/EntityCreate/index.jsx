@@ -34,7 +34,7 @@ export default function EntityCreate() {
     [type],
   );
 
-  const { response: creator } = useApiRoute(
+  const { response, isLoading } = useApiRoute(
     formatRoute('/api/entity', null, { id }),
   );
 
@@ -63,7 +63,7 @@ export default function EntityCreate() {
     validateOnBlur: false,
     onSubmit: async values => {
       const { name, surname } = values;
-      setIsLoading(true);
+      setIsSubmitting(true);
       try {
         const res = await api('/api/entity', {
           method: 'POST',
@@ -79,24 +79,26 @@ export default function EntityCreate() {
           { id: res.data.id },
           { tab: TABS_ENUM.SETTINGS },
         );
-        setIsLoading(false);
+        setIsSubmitting(false);
       } catch (err) {
-        setIsLoading(false);
+        setIsSubmitting(false);
         formik.setFieldError('name', t('something_went_wrong'));
         throw err;
       }
     },
   });
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleCancel = () => {
     history.back();
   };
 
-  if (isLoading) {
+  if (isLoading || isSubmitting) {
     return <LoadingSpinner />;
   }
+
+  const creator = response?.basicInfos;
 
   return (
     <Container>

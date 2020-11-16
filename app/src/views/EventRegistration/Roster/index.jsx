@@ -24,7 +24,9 @@ export default function Roster(props) {
 
   const addPerson = async person => {
     if (person.id) {
-      const { data } = await api(
+      const {
+        data: { basicInfos: data },
+      } = await api(
         formatRoute('/api/entity', null, {
           id: person.id,
         }),

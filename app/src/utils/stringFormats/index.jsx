@@ -10,17 +10,25 @@ import 'moment/locale/fr';
 import { formatRoute } from '../../actions/goTo';
 
 export const getInitialsFromName = completeName => {
-  return (
-    completeName &&
-    completeName
-      .split(/(?:-| )+/)
-      .reduce(
-        (prev, curr, index) =>
-          index <= 2 ? `${prev}${curr[0]}` : prev,
-        '',
-      )
-      .toUpperCase()
-  );
+  if (!completeName) {
+    return '';
+  }
+
+  if (typeof completeName === 'string') {
+    return (
+      completeName &&
+      completeName
+        .split(/(?:-| )+/)
+        .reduce(
+          (prev, curr, index) =>
+            index <= 2 ? `${prev}${curr[0]}` : prev,
+          '',
+        )
+        .toUpperCase()
+    );
+  }
+
+  return completeName?.name[0] + completeName?.surname[0];
 };
 
 export const formatDate = (moment, format = 'LL') => {

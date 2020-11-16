@@ -63,10 +63,10 @@ export default function Memberships() {
             items,
             person: [
               {
-                ...person.data,
-                completeName: `${person.data?.name} ${person.data?.surname}`,
+                ...person.data?.basicInfos,
+                completeName: `${person.data?.basicInfos?.name} ${person.data?.basicInfos?.surname}`,
                 type: GLOBAL_ENUM.PERSON,
-                key: person.data.id,
+                key: person.data?.basicInfos.id,
               },
             ],
           };

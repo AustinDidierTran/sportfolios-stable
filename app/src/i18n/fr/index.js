@@ -272,6 +272,7 @@ export default {
     full_name: 'Nom complet',
     funding_goal: 'Objectif: {{goal}}$',
     funding: 'Financement',
+    future_games: 'Prochaines parties',
     ga_events_table_title: 'Liste des événements Google Analytics',
     ga_pageviews_table_title: 'Liste des chemins Google Analytics',
     game_added: 'Partie ajoutée',

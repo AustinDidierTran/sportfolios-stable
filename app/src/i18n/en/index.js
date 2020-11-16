@@ -267,6 +267,7 @@ export default {
     full_name: 'Full name',
     funding_goal: 'Goal: {{goal}}$',
     funding: 'Funding',
+    future_games: 'Future games',
     ga_events_table_title: 'Google Analytics Events List',
     ga_pageviews_table_title: 'Google Analytics Pageviews List',
     game_added: 'Game added',
