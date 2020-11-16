@@ -26,7 +26,7 @@ export default {
     add_member: 'Ajouter un membre',
     add_membership: 'Ajouter une affiliation',
     add_mode: 'Mode ajout',
-    add_new_bank_account: 'Add new bank account',
+    add_new_bank_account: 'Ajouter un nouveau compte bancaire',
     add_new_person: 'Ajouter une nouvelle personne',
     add_new_player: 'Ajouter un nouveau joueur',
     add_new_product: 'Ajouter un nouveau produit',
