@@ -23,9 +23,9 @@ export default function TwoTeamGameProfile(props) {
   const classes = useStyles();
   const {
     event_id,
-    name: eventName,
+    event_name,
     field,
-    date,
+    timeslot,
     team_names,
     team_scores,
     playersinfos,
@@ -46,12 +46,12 @@ export default function TwoTeamGameProfile(props) {
     <Card className={styles.gameCard}>
       <div className={styles.main} onClick={() => onClick(event_id)}>
         <Typography className={styles.event} color="textSecondary">
-          {eventName}
+          {event_name}
         </Typography>
         <ListItemText
           className={styles.time}
-          primary={formatDate(moment(date), 'HH:mm')}
-          secondary={formatDate(moment(date), 'D MMM')}
+          primary={formatDate(moment(timeslot), 'HH:mm')}
+          secondary={formatDate(moment(timeslot), 'D MMM')}
         ></ListItemText>
         <Typography className={styles.field} color="textSecondary">
           {field}

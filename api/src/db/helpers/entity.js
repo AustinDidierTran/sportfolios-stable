@@ -492,124 +492,6 @@ async function getEntity(id, userId) {
 
   const role = await getEntityRole(realId, userId);
 
-  if (entity.type == GLOBAL_ENUM.PERSON) {
-    const gameIds = (
-      await knex('team_players')
-        .select('games.id')
-        .leftJoin(
-          'game_teams',
-          'game_teams.roster_id',
-          '=',
-          'team_players.roster_id',
-        )
-        .leftJoin('games', 'games.id', '=', 'game_teams.game_id')
-        .where({ person_id: id })
-    ).map(game => game.id);
-
-    const gamesInfos = await knex('games')
-      .select(
-        'games.event_id',
-        'games.id',
-        'entities_name.name',
-        'event_time_slots.date',
-        'event_fields.field',
-        'team_names',
-        'team_scores',
-        'teams.playersinfos',
-      )
-      .leftJoin(
-        'entities_name',
-        'entities_name.entity_id',
-        '=',
-        'games.event_id',
-      )
-      .leftJoin(
-        'event_time_slots',
-        'event_time_slots.id',
-        '=',
-        'games.timeslot_id',
-      )
-      .leftJoin(
-        'event_fields',
-        'event_fields.id',
-        '=',
-        'games.field_id',
-      )
-      .leftJoin(
-        knex('game_teams')
-          .select(
-            knex.raw('array_agg(game_teams.name) AS team_names'),
-            knex.raw('array_agg(game_teams.score) AS team_scores'),
-            knex.raw('array_agg(players.playerInfo) AS playersInfos'),
-            'game_id',
-          )
-          .leftJoin(
-            knex
-              .select(
-                knex.raw(
-                  "json_agg(json_build_object('name', pplayers.name, 'surname', pplayers.surname, 'photo', pplayers.photo_url)) AS playerInfo",
-                ),
-                'pplayers.roster_id',
-              )
-              .from(
-                knex('game_teams')
-                  .select(
-                    'entities_all_infos.name',
-                    'entities_all_infos.surname',
-                    'entities_all_infos.photo_url',
-                    'game_teams.roster_id',
-                  )
-                  .leftJoin(
-                    'team_players',
-                    'team_players.roster_id',
-                    '=',
-                    'game_teams.roster_id',
-                  )
-                  .leftJoin(
-                    'entities_all_infos',
-                    ' entities_all_infos.id',
-                    '=',
-                    'team_players.person_id',
-                  )
-                  .where('entities_all_infos.id', id)
-                  .groupBy(
-                    'game_teams.roster_id',
-                    'entities_all_infos.name',
-                    'entities_all_infos.surname',
-                    'entities_all_infos.photo_url',
-                  )
-                  .as('pplayers'),
-              )
-              .groupBy('pplayers.roster_id')
-              .as('players'),
-            'players.roster_id',
-            '=',
-            'game_teams.roster_id',
-          )
-          .whereIn('game_id', gameIds)
-          .groupBy('game_id')
-          .as('teams'),
-        'teams.game_id',
-        '=',
-        'games.id',
-      )
-      .whereIn('games.id', gameIds);
-
-    return {
-      basicInfos: {
-        description: entity.description,
-        id: entity.id,
-        type: entity.type,
-        name: entity.name,
-        quickDescription: entity.quick_description,
-        surname: entity.surname,
-        photoUrl: entity.photo_url,
-        role,
-      },
-      gamesInfos,
-    };
-  }
-
   return {
     basicInfos: {
       description: entity.description,
@@ -622,6 +504,100 @@ async function getEntity(id, userId) {
       role,
     },
   };
+}
+
+async function getPersonGames(id) {
+  const gameIds = (
+    await knex('team_players')
+      .select('games.id')
+      .leftJoin(
+        'game_teams',
+        'game_teams.roster_id',
+        '=',
+        'team_players.roster_id',
+      )
+      .leftJoin('games', 'games.id', '=', 'game_teams.game_id')
+      .where({ person_id: id })
+  ).map(game => game.id);
+
+  const gamesInfos = await knex('games_all_infos')
+    .select(
+      'games_all_infos.event_id',
+      'games_all_infos.event_name',
+      'games_all_infos.id',
+      'games_all_infos.timeslot',
+      'games_all_infos.field',
+      'team_names',
+      'team_scores',
+      'teams.playersinfos',
+    )
+    .leftJoin(
+      knex('game_teams')
+        .select(
+          knex.raw('array_agg(game_teams.name) AS team_names'),
+          knex.raw('array_agg(game_teams.score) AS team_scores'),
+          knex.raw('array_agg(players.playerInfo) AS playersInfos'),
+          'game_id',
+        )
+        .leftJoin(
+          knex
+            .select(
+              knex.raw(
+                "json_agg(json_build_object('name', person.name, 'surname', person.surname, 'photo', person.photo_url)) AS playerInfo",
+              ),
+              'person.roster_id',
+            )
+            .from(
+              knex('game_teams')
+                .select(
+                  'entities_all_infos.name',
+                  'entities_all_infos.surname',
+                  'entities_all_infos.photo_url',
+                  'game_teams.roster_id',
+                )
+                .leftJoin(
+                  'team_players',
+                  'team_players.roster_id',
+                  '=',
+                  'game_teams.roster_id',
+                )
+                .leftJoin(
+                  'entities_all_infos',
+                  ' entities_all_infos.id',
+                  '=',
+                  'team_players.person_id',
+                )
+                .where('entities_all_infos.id', id)
+                .groupBy(
+                  'game_teams.roster_id',
+                  'entities_all_infos.name',
+                  'entities_all_infos.surname',
+                  'entities_all_infos.photo_url',
+                )
+                .as('person'),
+            )
+            .groupBy('person.roster_id')
+            .as('players'),
+          'players.roster_id',
+          '=',
+          'game_teams.roster_id',
+        )
+        .whereIn('game_id', gameIds)
+        .groupBy('game_id')
+        .as('teams'),
+      'teams.game_id',
+      '=',
+      'games_all_infos.id',
+    )
+    .whereIn('games_all_infos.id', gameIds)
+    .andWhere(
+      'games_all_infos.timeslot',
+      '>',
+      knex.raw("NOW() - '12 HOUR'::INTERVAL"),
+    )
+    .orderBy('games_all_infos.timeslot', 'asc');
+
+  return gamesInfos;
 }
 
 async function getCreator(id) {
@@ -2813,6 +2789,7 @@ module.exports = {
   getOrganizationMembers,
   getMemberships,
   getMembership,
+  getPersonGames,
   getRegistered,
   getRegistrationTeamPaymentOption,
   getAllAcceptedRegistered,
