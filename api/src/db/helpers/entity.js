@@ -1044,7 +1044,7 @@ async function getAlias(entityId) {
     .select('*')
     .where({ id: realId });
   if (!res) {
-    return { alias: entityId };
+    return { entityId };
   }
   return res;
 }

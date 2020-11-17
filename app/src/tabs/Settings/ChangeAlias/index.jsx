@@ -42,11 +42,7 @@ export default function ChangeAlias() {
         entityId,
       }),
     );
-    if (data?.alias) {
-      setTheAlias(data.alias);
-    } else {
-      setTheAlias(null);
-    }
+    setTheAlias(data.alias || null);
   };
 
   const validate = values => {
