@@ -57,9 +57,8 @@ export default function ReportItem(props) {
       return t('not_paid');
     } else if (status === INVOICE_STATUS_ENUM.PAID) {
       return t('paid');
-    } else {
-      return '';
     }
+    return '';
   };
 
   const handleClick = async () => {
@@ -72,6 +71,7 @@ export default function ReportItem(props) {
         name: d.name,
         surname: d.surname,
         membership: t(getMembershipName(d.memberType)),
+        price: d.price,
         status: t(getStatusName(d.status)),
         paidOn: formatDate(moment(d.paidOn), 'YYYY-MM-DD'),
         createdAt: formatDate(moment(d.createdAt), 'YYYY-MM-DD'),
@@ -82,7 +82,9 @@ export default function ReportItem(props) {
         email: d.email,
         birthDate: d.birthDate,
         gender: t(d.gender),
-        address: d.formattedAddress,
+        city: d.city,
+        state: d.state,
+        zip: d.zip,
       }));
       setData(formattedData);
       setOpen(true);
@@ -97,11 +99,11 @@ export default function ReportItem(props) {
 
   const reportName = useMemo(() => {
     if (reportType === REPORT_TYPE_ENUM.MEMBERS_WITH_DATE) {
-      const { date } = metadata;
-      return `${t('members_list_on')} ${formatDate(moment(date))}`;
-    } else {
-      return '';
+      return `${t('members_list_on')} ${formatDate(
+        moment(metadata.date),
+      )}`;
     }
+    return '';
   }, []);
 
   const headers = useMemo(() => {
@@ -110,6 +112,7 @@ export default function ReportItem(props) {
         { label: t('name'), key: 'name' },
         { label: t('surname'), key: 'surname' },
         { label: t('membership'), key: 'membership' },
+        { label: t('price'), key: 'price' },
         { label: t('status'), key: 'status' },
         { label: t('payment_date'), key: 'paidOn' },
         { label: t('creation_date'), key: 'createdAt' },
@@ -117,7 +120,9 @@ export default function ReportItem(props) {
         { label: t('email'), key: 'email' },
         { label: t('birth_date'), key: 'birthDate' },
         { label: t('gender'), key: 'gender' },
-        { label: t('address'), key: 'address' },
+        { label: t('city'), key: 'city' },
+        { label: t('state'), key: 'state' },
+        { label: t('zip_code'), key: 'zip' },
       ];
     }
   }, []);
@@ -129,9 +134,8 @@ export default function ReportItem(props) {
         moment(date),
         'YYYY-MM-DD',
       )}.csv`;
-    } else {
-      return `${t('report')}`;
     }
+    return `${t('report')}`;
   }, []);
 
   return (

@@ -211,12 +211,13 @@ router.get(`${BASE_URL}/generateReport`, async ctx => {
 router.get(`${BASE_URL}/hasMemberships`, async ctx => {
   const entity = await queries.hasMemberships(ctx.query.id);
   if (entity || entity === false) {
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'That record does not exist.',

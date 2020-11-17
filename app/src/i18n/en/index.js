@@ -713,5 +713,6 @@ export default {
     your_team: 'Your team',
     your_total_is: 'Your total is',
     your_upcoming_events: 'Your Upcoming Events',
+    zip_code:'Zip code',
   },
 };
