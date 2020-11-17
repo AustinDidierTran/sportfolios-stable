@@ -57,6 +57,7 @@ const {
   getGeneralInfos: getGeneralInfosHelper,
   getMembers: getMembersHelper,
   getReports: getReportsHelper,
+  generateReport: generateReportHelper,
   hasMemberships: hasMembershipsHelper,
   getOrganizationMembers: getOrganizationMembersHelper,
   getMemberships: getMembershipsHelper,
@@ -178,6 +179,9 @@ async function getMembers(persons, organizationId) {
 }
 async function getReports(entityId) {
   return getReportsHelper(entityId);
+}
+async function generateReport(reportId) {
+  return generateReportHelper(reportId);
 }
 async function hasMemberships(organizationId) {
   return hasMembershipsHelper(organizationId);
@@ -1046,6 +1050,7 @@ module.exports = {
   getGeneralInfos,
   getMembers,
   getReports,
+  generateReport,
   hasMemberships,
   getOrganizationMembers,
   getMemberships,

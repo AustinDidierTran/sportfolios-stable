@@ -13,6 +13,7 @@ export { default as ComponentFactory } from './ComponentFactory';
 export { default as Container } from './Container';
 export { default as ContainerBottomFixed } from './ContainerBottomFixed';
 export { default as Dialog, AlertDialog } from './Dialog';
+export { default as DownloadReportDialog } from './Dialog/DownloadReportDialog';
 export { default as DnDSimpleList } from './DnDSimpleList';
 export { default as EntityList } from './EntityList';
 export { default as FacebookLoginButton } from './FacebookLoginButton';
