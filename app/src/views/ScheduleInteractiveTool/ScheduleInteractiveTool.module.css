@@ -1,31 +1,81 @@
-.unplacedGames {
-  display: flex;
-  flex-direction: row;
-  overflow: auto;
-  overflow-y: hidden;
-  height: 90px;
-  padding: 5px;
-}
-
-.unplacedGames > div {
-  margin: 5px;
-  flex: none;
-}
-
-.divGrid {
-  overflow: auto;
-  max-height: calc(100vh - 100px);
+.mainDiv {
+  display: grid;
+  grid-template-columns: 192px auto;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    'buttons fields'
+    'timeslots grid';
 }
 
 .gridLayout {
-  position: relative;
+  grid-area: grid;
 }
 
-.divAdd {
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' preserveAspectRatio='none' viewBox='0 0 100 100'><path d='M1 0 L0 1 L99 100 L100 99' fill='black' /></svg>");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: 100% 100%, auto;
+.gridLayoutTimes {
+  grid-area: timeslots;
+}
+
+.gridLayoutFields {
+  grid-area: fields;
+}
+
+.divButtons {
+  grid-area: buttons;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: gainsboro;
+
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+  border-bottom-color: darkgray;
+  border-right-width: 2px;
+  border-right-style: solid;
+  border-right-color: darkgray;
+}
+
+.displayFields {
+  width: calc(100vw - 192px);
+  overflow: hidden;
+  background-color: gainsboro;
+  box-shadow: 0 8px 6px -8px black;
+
+  z-index: 1;
+  position: sticky;
+}
+
+.displayTimeslots {
+  height: calc(100vh - 84px);
+  overflow: hidden;
+  background-color: gainsboro;
+  box-shadow: 8px 0 6px -8px black;
+
+  z-index: 1;
+  position: sticky;
+}
+
+.displayGrid {
+  height: calc(100vh - 84px);
+  width: calc(100vw - 192px);
+  overflow: auto;
+}
+
+.divField {
+  height: 98% !important;
+}
+
+.divTime {
+  width: 99% !important;
+}
+
+.label {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  margin: 0;
+  text-align: center;
 }
 
 .divAddGame {
@@ -37,24 +87,4 @@
 .divAddGame:hover {
   cursor: pointer;
   background-color: #e8e8e8;
-}
-
-.divField {
-  border-bottom-width: 2px;
-  border-bottom-style: solid;
-  border-bottom-color: black;
-}
-
-.divTime {
-  border-right-width: 2px;
-  border-right-style: solid;
-  border-right-color: black;
-}
-
-.label {
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  position: absolute;
-  margin: 0;
 }

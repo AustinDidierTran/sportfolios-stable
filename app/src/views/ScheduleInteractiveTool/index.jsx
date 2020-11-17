@@ -1,4 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  useRef,
+} from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
@@ -10,6 +15,7 @@ import {
   LoadingSpinner,
   Icon,
   AlertDialog,
+  Button,
 } from '../../components/Custom';
 import { Store, ACTION_ENUM } from '../../Store';
 import { STATUS_ENUM, SEVERITY_ENUM } from '../../../../common/enums';
@@ -18,6 +24,8 @@ import styles from './ScheduleInteractiveTool.module.css';
 import { goBack } from '../../actions/goTo';
 import GameCard from './GameCard';
 import AddGame from './AddGame';
+import AddField from '../../tabs/EditSchedule/CreateSchedule/AddField';
+import AddTimeSlot from '../../tabs/EditSchedule/CreateSchedule/AddTimeSlot';
 
 import RGL from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
@@ -27,14 +35,14 @@ const ReactGridLayout = RGL;
 const useStyles = makeStyles(theme => ({
   fabBack: {
     position: 'absolute',
-    bottom: theme.spacing(2),
+    bottom: theme.spacing(3),
     right: theme.spacing(4),
     zIndex: 100,
     color: 'white',
   },
   fabAdd: {
     position: 'absolute',
-    bottom: theme.spacing(4) + 56,
+    bottom: theme.spacing(5) + 56,
     right: theme.spacing(4),
     zIndex: 100,
     color: 'white',
@@ -45,14 +53,14 @@ const useStyles = makeStyles(theme => ({
   },
   fabCancel: {
     position: 'absolute',
-    bottom: theme.spacing(6) + 112,
+    bottom: theme.spacing(7) + 112,
     right: theme.spacing(4),
     zIndex: 100,
     color: 'white',
   },
   fabSave: {
     position: 'absolute',
-    bottom: theme.spacing(8) + 168,
+    bottom: theme.spacing(9) + 168,
     right: theme.spacing(4),
     zIndex: 100,
     color: 'white',
@@ -78,11 +86,15 @@ export default function ScheduleInteractiveTool() {
   const [buttonsAdd, setButtonsAdd] = useState([]);
   const [layout, setLayout] = useState([]);
   const [initialLayout, setInitialLayout] = useState([]);
+  const [layoutTimes, setLayoutTimes] = useState([]);
+  const [layoutFields, setLayoutFields] = useState([]);
 
   const [alertDialog, setAlertDialog] = useState(false);
   const [addGameDialog, setAddGameDialog] = useState(false);
   const [addGameField, setAddGameField] = useState({});
   const [addGameTimeslot, setAddGameTimeslot] = useState({});
+  const [addFieldDialog, setAddFieldDialog] = useState(false);
+  const [addTimeslotDialog, setAddTimeslotDialog] = useState(false);
 
   const getData = async () => {
     setIsLoading(true);
@@ -107,9 +119,8 @@ export default function ScheduleInteractiveTool() {
     setGames(
       data.games.map(g => ({
         ...g,
-        x: data.fields.findIndex(f => f.id === g.field_id) + 1,
-        y:
-          data.timeSlots.findIndex(ts => ts.id === g.timeslot_id) + 1,
+        x: data.fields.findIndex(f => f.id === g.field_id),
+        y: data.timeSlots.findIndex(ts => ts.id === g.timeslot_id),
       })),
     );
     setIsLoading(false);
@@ -121,12 +132,12 @@ export default function ScheduleInteractiveTool() {
 
   useEffect(() => {
     const timeArr = timeslots.reduce(
-      (prev, time, i) => [
+      (prev, time, index) => [
         ...prev,
         {
           i: time.id,
           x: 0,
-          y: i + 1,
+          y: index,
           w: 1,
           h: 1,
           static: true,
@@ -136,11 +147,11 @@ export default function ScheduleInteractiveTool() {
     );
 
     const fieldArr = fields.reduce(
-      (prev, field, i) => [
+      (prev, field, index) => [
         ...prev,
         {
           i: field.id,
-          x: i + 1,
+          x: index,
           y: 0,
           w: 1,
           h: 1,
@@ -165,12 +176,10 @@ export default function ScheduleInteractiveTool() {
       [],
     );
 
-    const res = [].concat(timeArr, fieldArr, gameArr, [
-      { i: 'empty', x: 0, y: 0, w: 1, h: 1, static: true },
-    ]);
-
-    setInitialLayout(res);
-    setLayout(res);
+    setLayoutFields(fieldArr);
+    setLayoutTimes(timeArr);
+    setInitialLayout(gameArr);
+    setLayout(gameArr);
   }, [fields, timeslots, games]);
 
   const onDragStop = (layout, oldItem, newItem) => {
@@ -197,8 +206,8 @@ export default function ScheduleInteractiveTool() {
     setGames(
       games.map(g => ({
         ...g,
-        x: fields.findIndex(f => f.id === g.field_id) + 1,
-        y: timeslots.findIndex(ts => ts.id === g.timeslot_id) + 1,
+        x: fields.findIndex(f => f.id === g.field_id),
+        y: timeslots.findIndex(ts => ts.id === g.timeslot_id),
       })),
     );
 
@@ -225,8 +234,8 @@ export default function ScheduleInteractiveTool() {
         ...prev,
         {
           gameId: game.i,
-          timeSlotId: timeslots[game.y - 1].id,
-          fieldId: fields[game.x - 1].id,
+          timeSlotId: timeslots[game.y].id,
+          fieldId: fields[game.x].id,
         },
       ],
       [],
@@ -276,8 +285,8 @@ export default function ScheduleInteractiveTool() {
   const handleAddMode = () => {
     setIsAddingGames(true);
     const buttonsToAdd = [];
-    for (let x = 1; x < fields.length + 1; x++) {
-      for (let y = 1; y < timeslots.length + 1; y++) {
+    for (let x = 0; x < fields.length; x++) {
+      for (let y = 0; y < timeslots.length; y++) {
         if (!layout.find(item => item.x === x && item.y === y)) {
           buttonsToAdd.push({
             i: `+${x}:${y}`,
@@ -297,20 +306,21 @@ export default function ScheduleInteractiveTool() {
 
   const handleAddGameAt = (x, y) => {
     setAddGameField({
-      id: fields[x - 1].id,
-      name: fields[x - 1].field,
+      id: fields[x].id,
+      name: fields[x].field,
     });
     setAddGameTimeslot({
-      id: timeslots[y - 1].id,
-      date: timeslots[y - 1].date,
+      id: timeslots[y].id,
+      date: timeslots[y].date,
     });
     setAddGameDialog(true);
   };
 
   const createCard = game => {
-    const gridX = fields.findIndex(f => f.id === game.field_id) + 1;
-    const gridY =
-      timeslots.findIndex(ts => ts.id === game.timeslot_id) + 1;
+    const gridX = fields.findIndex(f => f.id === game.field_id);
+    const gridY = timeslots.findIndex(
+      ts => ts.id === game.timeslot_id,
+    );
 
     // add game
     setGames(
@@ -343,6 +353,22 @@ export default function ScheduleInteractiveTool() {
           },
         ]),
     );
+  };
+
+  const handleAddField = () => {
+    setAddFieldDialog(true);
+  };
+
+  const handleAddTimeslot = () => {
+    setAddTimeslotDialog(true);
+  };
+
+  const addTimeslotToGrid = timeslot => {
+    setTimeslots(timeslots.concat([timeslot]));
+  };
+
+  const addFieldToGrid = field => {
+    setFields(fields.concat([field]));
   };
 
   const AddGames = buttonsAdd.map(b => (
@@ -382,34 +408,116 @@ export default function ScheduleInteractiveTool() {
     </div>
   ));
 
+  const ref = useRef(null);
+  const refFields = useRef(null);
+  const refTimeslots = useRef(null);
+  const [scrollX, setScrollX] = useState(0);
+  const [scrollY, setScrollY] = useState(0);
+
+  const gridScroll = () => {
+    setScrollX(ref.current.scrollLeft);
+    setScrollY(ref.current.scrollTop);
+  };
+
+  useEffect(() => {
+    refFields.current.scrollTo(scrollX, 0);
+  }, [scrollX]);
+
+  useEffect(() => {
+    refTimeslots.current.scrollTo(0, scrollY);
+  }, [scrollY]);
+
   if (isLoading) {
     return <LoadingSpinner />;
   }
 
   return (
     <div>
-      <div className={styles.divGrid}>
-        <ReactGridLayout
-          className={styles.gridLayout}
-          width={(fields?.length + 1) * 192}
-          cols={fields?.length + 1}
-          rowHeight={64}
-          maxRows={timeslots?.length + 1}
-          compactType={null}
-          margin={[20, 20]}
-          onDragStop={onDragStop}
-          layout={layout}
-          useCSSTransforms
-          preventCollision
-          isResizable={false}
+      <div className={styles.mainDiv}>
+        <div className={styles.divButtons}>
+          <Button
+            onClick={handleAddField}
+            color="primary"
+            variant="contained"
+            className={styles.button}
+            type="submit"
+            endIcon="Add"
+          >
+            {t('field')}
+          </Button>
+          <Button
+            onClick={handleAddTimeslot}
+            color="primary"
+            variant="contained"
+            className={styles.button}
+            type="submit"
+            endIcon="Add"
+          >
+            {t('time_slot')}
+          </Button>
+        </div>
+        <div className={styles.displayFields} ref={refFields}>
+          <div style={{ width: `${fields?.length * 192 + 20}px` }}>
+            <ReactGridLayout
+              className={styles.gridLayoutFields}
+              width={fields?.length * 192}
+              cols={fields?.length}
+              rowHeight={84}
+              maxRows={1}
+              margin={[20, 0]}
+              layout={layoutFields}
+            >
+              {Fields}
+            </ReactGridLayout>
+          </div>
+        </div>
+        <div className={styles.displayTimeslots} ref={refTimeslots}>
+          <div style={{ height: `${timeslots?.length * 84 + 40}px` }}>
+            <ReactGridLayout
+              className={styles.gridLayoutTimes}
+              width={192}
+              cols={fields?.length}
+              rowHeight={64}
+              maxRows={timeslots?.length}
+              margin={[0, 20]}
+              layout={layoutTimes}
+            >
+              {Times}
+            </ReactGridLayout>
+          </div>
+        </div>
+        <div
+          className={styles.displayGrid}
+          onScroll={gridScroll}
+          ref={ref}
         >
-          <div className={styles.divAdd} key="empty" />
-          {Fields}
-          {Times}
-          {Games}
-          {AddGames}
-        </ReactGridLayout>
+          <div
+            style={{
+              width: `${fields?.length * 192}px`,
+              height: `${timeslots?.length * 84}px`,
+            }}
+          >
+            <ReactGridLayout
+              className={styles.gridLayout}
+              width={fields?.length * 192}
+              cols={fields?.length}
+              rowHeight={64}
+              maxRows={timeslots?.length}
+              compactType={null}
+              margin={[20, 20]}
+              onDragStop={onDragStop}
+              layout={layout}
+              useCSSTransforms
+              preventCollision
+              isResizable={false}
+            >
+              {Games}
+              {AddGames}
+            </ReactGridLayout>
+          </div>
+        </div>
       </div>
+
       <Tooltip title={t('back')}>
         <Fab
           color="primary"
@@ -468,6 +576,16 @@ export default function ScheduleInteractiveTool() {
         timeslot={addGameTimeslot}
         phases={phases}
         teams={teams}
+      />
+      <AddField
+        isOpen={addFieldDialog}
+        onClose={() => setAddFieldDialog(false)}
+        addFieldToGrid={addFieldToGrid}
+      />
+      <AddTimeSlot
+        isOpen={addTimeslotDialog}
+        onClose={() => setAddTimeslotDialog(false)}
+        addTimeslotToGrid={addTimeslotToGrid}
       />
     </div>
   );

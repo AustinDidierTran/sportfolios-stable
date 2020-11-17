@@ -14,7 +14,7 @@ import { useParams } from 'react-router-dom';
 
 export default function AddField(props) {
   const { t } = useTranslation();
-  const { isOpen, onClose } = props;
+  const { isOpen, onClose, addFieldToGrid } = props;
   const { dispatch } = useContext(Store);
   const { id: eventId } = useParams();
 
@@ -50,7 +50,7 @@ export default function AddField(props) {
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       const { field } = values;
-      const res = await api('/api/entity/field', {
+      const { status, data } = await api('/api/entity/field', {
         method: 'POST',
         body: JSON.stringify({
           field,
@@ -59,7 +59,7 @@ export default function AddField(props) {
       });
 
       resetForm();
-      if (res.status === STATUS_ENUM.ERROR) {
+      if (status === STATUS_ENUM.ERROR) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: ERROR_ENUM.ERROR_OCCURED,
@@ -73,6 +73,11 @@ export default function AddField(props) {
           severity: SEVERITY_ENUM.SUCCESS,
           duration: 2000,
         });
+
+        // used in interactive tool
+        if (addFieldToGrid) {
+          addFieldToGrid(data);
+        }
       }
     },
   });
@@ -81,7 +86,7 @@ export default function AddField(props) {
     {
       onClick: onFinish,
       name: t('finish'),
-      color: 'grey',
+      color: 'default',
     },
     {
       type: 'submit',

@@ -14,8 +14,8 @@ export default function GamCard(props) {
 
   const tooltip = useMemo(
     () =>
-      `${team1} vs ${team2}, ${fields[x - 1]?.field}, ${formatDate(
-        moment(timeSlots[y - 1]?.date),
+      `${team1} vs ${team2}, ${fields[x]?.field}, ${formatDate(
+        moment(timeSlots[y]?.date),
         'DD MMM HH:mm',
       )}`,
     [x, y],

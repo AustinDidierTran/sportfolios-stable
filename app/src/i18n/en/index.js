@@ -197,6 +197,7 @@ export default {
     edit_game: 'Edit game',
     edit_infos: 'Edit infos',
     edit_membership: 'Edit membership',
+    edit_mode: 'Edit mode',
     edit_payment_option: 'Edit payment option',
     edit_your_primary_person: 'Edit your primary person',
     edit: 'Edit',

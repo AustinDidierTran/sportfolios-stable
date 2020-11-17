@@ -201,6 +201,7 @@ export default {
     edit_game: 'Modifier la partie',
     edit_infos: 'Modifier les infos',
     edit_membership: 'Modifier une affiliation',
+    edit_mode: 'Mode édition',
     edit_payment_option: "Modifier l'option de paiement",
     edit_your_primary_person: 'Changer de personne primaire',
     edit: 'Modifier',

@@ -12,14 +12,14 @@ body {
 
 .main {
   flex: 1;
-  overflow-y: scroll;
+  overflow-y: auto;
   height: 100%;
   padding-bottom: 120px;
 }
 
 .main1 {
   flex: 1;
-  overflow-y: scroll;
+  overflow-y: auto;
   height: 100%;
 }
 .footer {
