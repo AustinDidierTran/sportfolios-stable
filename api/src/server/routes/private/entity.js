@@ -178,13 +178,31 @@ router.get(`${BASE_URL}/reports`, async ctx => {
   if (reports) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
+      status: STATUS_ENUM.SUCCESS,
       data: reports,
     };
   } else {
     ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
-      status: 'error',
+      status: STATUS_ENUM.ERROR,
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/generateReport`, async ctx => {
+  const report = await queries.generateReport(ctx.query.reportId);
+
+  if (report) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS,
+      data: report,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR,
       message: 'That record does not exist.',
     };
   }

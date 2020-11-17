@@ -5,7 +5,6 @@ import {
 } from '../../../../../common/enums';
 import AppItem from './AppItem';
 import BankAccountItem from './BankAccountItem';
-import EntityBankAccountItem from './EntityBankAccountItem';
 import CartItem from './CartItem';
 import CreditCardItem from './CreditCardItem';
 import DefaultItem from './DefaultItem';
@@ -39,7 +38,6 @@ const ItemMap = {
   [LIST_ITEM_ENUM.BANK_ACCOUNT]: BankAccountItem,
   [LIST_ITEM_ENUM.CART]: CartItem,
   [LIST_ITEM_ENUM.CREDIT_CARD]: CreditCardItem,
-  [LIST_ITEM_ENUM.ENTITY_BANK_ACCOUNT]: EntityBankAccountItem,
   [LIST_ITEM_ENUM.EVENT_CREATOR]: EventCreatorItem,
   [LIST_ITEM_ENUM.EVENT_PAYMENT_OPTION]: EventPaymentOptionItem,
   [LIST_ITEM_ENUM.MEMBER]: MemberItem,

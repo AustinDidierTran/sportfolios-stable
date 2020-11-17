@@ -255,7 +255,6 @@ const NOTIFICATION_TYPE = {
 const LIST_ITEM_ENUM = {
   APP_ITEM: 'app item',
   BANK_ACCOUNT: 'bank account',
-  ENTITIY_BANK_ACCOUNT: 'entity bank account',
   CART_ITEM: 'cart item',
   CART: 'cart',
   CREDIT_CARD: 'credit card',
@@ -269,6 +268,7 @@ const LIST_ITEM_ENUM = {
   PURCHASES: 'pruchases',
   RANKING_WITH_STATS: 'ranking with stats',
   RANKING: 'ranking',
+  REPORT: 'report',
   ROSTER_ITEM: 'roster item',
   SALES: 'sales',
   SHOP_ITEM: 'shop item',

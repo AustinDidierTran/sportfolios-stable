@@ -16,9 +16,9 @@ export default function BankAccountItem(props) {
     last4,
     createdAt,
     isDefault,
-    accountId,
     bankAccountId,
     update,
+    removeDelete,
   } = props;
   const [openDelete, setOpenDelete] = useState(false);
 
@@ -27,7 +27,6 @@ export default function BankAccountItem(props) {
       method: 'PUT',
       body: JSON.stringify({
         bankAccountId,
-        accountId,
       }),
     });
     update();
@@ -37,7 +36,6 @@ export default function BankAccountItem(props) {
     await api(
       formatRoute('/api/stripe/bankAccount', null, {
         bankAccountId,
-        accountId,
       }),
       {
         method: 'DELETE',
@@ -68,14 +66,18 @@ export default function BankAccountItem(props) {
           color="primary"
           onClick={onChange}
         />
-        <IconButton
-          icon="Delete"
-          onClick={() => {
-            setOpenDelete(true);
-          }}
-          style={{ color: 'grey' }}
-          tooltip={t('delete')}
-        />
+        {removeDelete ? (
+          <></>
+        ) : (
+          <IconButton
+            icon="Delete"
+            onClick={() => {
+              setOpenDelete(true);
+            }}
+            style={{ color: 'grey' }}
+            tooltip={t('remove')}
+          />
+        )}
       </ListItem>
       <AlertDialog
         open={openDelete}
@@ -83,7 +85,7 @@ export default function BankAccountItem(props) {
           setOpenDelete(false);
         }}
         onSubmit={onDelete}
-        title={t('delete_bank_account_confirmation', { last4 })}
+        title={t('remove_bank_account_confirmation', { last4 })}
       />
     </>
   );

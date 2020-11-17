@@ -66,7 +66,7 @@ export default function EditGame(props) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('game_deleted'),
-        severity: SEVERITY_ENUM.SUCCES,
+        severity: SEVERITY_ENUM.SUCCESS,
         duration: 4000,
       });
     } else {
