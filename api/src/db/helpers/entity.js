@@ -761,6 +761,18 @@ async function getMembers(personId, organizationId) {
   }));
   return res;
 }
+async function getPriceFromInvoice(invoiceItemId) {
+  const [{ amount: price }] = await knex('stripe_invoice_item')
+    .select('amount')
+    .leftJoin(
+      'stripe_price',
+      'stripe_price.stripe_price_id',
+      '=',
+      'stripe_invoice_item.stripe_price_id',
+    )
+    .where({ invoice_item_id: invoiceItemId });
+  return price;
+}
 
 async function getReports(entityId) {
   const realId = await getRealId(entityId);
@@ -793,10 +805,15 @@ async function generateReport(reportId) {
       active.map(async a => {
         const person = await getPersonInfos(a.person_id);
         const { email } = await getEmailPerson(a.person_id);
+        let price = '';
+        if (a.status === INVOICE_STATUS_ENUM.PAID) {
+          price = await getPriceFromInvoice(a.invoice_item_id);
+        }
         return {
           name: person.name,
           surname: person.surname,
           memberType: a.member_type,
+          price: `${formatPrice(price)}`,
           status: a.status,
           paidOn: a.paid_on,
           createdAt: a.created_at,
@@ -804,7 +821,9 @@ async function generateReport(reportId) {
           email,
           birthDate: person.birthDate,
           gender: person.gender,
-          address: person.formattedAddress,
+          city: person.address.city,
+          state: person.address.state,
+          zip: person.address.zip,
         };
       }),
     );

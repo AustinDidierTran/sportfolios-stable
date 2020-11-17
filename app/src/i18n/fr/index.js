@@ -722,5 +722,6 @@ export default {
     your_team: 'Votre équipe',
     your_total_is: 'Votre total est de',
     your_upcoming_events: 'Vos prochains événements',
+    zip_code:'Code postal',
   },
 };
