@@ -7,8 +7,12 @@ import {
   IgContainer,
   IconButton,
 } from '../../components/Custom';
-import styles from './CreateReport.module.css';
 import MembersWithDateReport from './MembersWithDateReport';
+import {
+  ListItemText,
+  ListItem,
+  ListItemIcon,
+} from '@material-ui/core';
 
 export default function CreateReport() {
   const { t } = useTranslation();
@@ -21,18 +25,21 @@ export default function CreateReport() {
     <IgContainer>
       <Paper
         style={{ textAlign: 'center' }}
-        title={t('create_report')}
+        title={t('generate_report')}
       >
-        <div className={styles.button}>
-          <IconButton
-            icon="ArrowBack"
-            onClick={() => {
-              history.back();
-            }}
-            tooltip={t('back')}
-            style={{ color: 'primary', margin: '8px' }}
-          />
-        </div>
+        <ListItem>
+          <ListItemIcon>
+            <IconButton
+              icon="ArrowBack"
+              onClick={() => {
+                history.back();
+              }}
+              tooltip={t('back')}
+              style={{ color: 'primary', margin: '8px' }}
+            />
+          </ListItemIcon>
+          <ListItemText primary={t('choose_your_report')} />
+        </ListItem>
         <MembersWithDateReport />
       </Paper>
     </IgContainer>

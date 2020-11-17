@@ -66,7 +66,7 @@ export default function ReportItem(props) {
     const res = await api(
       formatRoute('/api/entity/generateReport', null, { reportId }),
     );
-    if (res.status === STATUS_ENUM.SUCCESS) {
+    if (res.status === STATUS_ENUM.SUCCESS_STRING) {
       const data = res.data.data;
       const formattedData = data.map(d => ({
         name: d.name,

@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-
 import { ERROR_ENUM } from '../../../../../../common/errors';
 import api from '../../../../actions/api';
 import { Store, ACTION_ENUM } from '../../../../Store';
@@ -12,6 +11,7 @@ import {
 } from '../../../../../../common/enums';
 import BasicFormDialog from '../BasicFormDialog';
 import { useQuery } from '../../../../hooks/queries';
+import moment from 'moment';
 
 export default function CreateMembersWithDateReport(props) {
   const { open: openProps, onClose, handleCreated } = props;
@@ -71,6 +71,7 @@ export default function CreateMembersWithDateReport(props) {
   });
 
   useEffect(() => {
+    formik.setFieldValue('date', moment().format('YYYY-MM-DD'));
     setOpen(openProps);
   }, [openProps]);
 

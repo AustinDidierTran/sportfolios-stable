@@ -121,7 +121,7 @@ export default {
     changes_saved: 'Changements sauvegardés',
     checkout: 'Procéder',
     choose_date:'Choisir la date',
-    choose_report:'Choisir le rapport',
+    choose_your_report:'Choisir votre rapport',
     choose_your_primary_person: 'Choisir votre personne principale',
     city: 'Ville',
     clear_all: 'Réinitialiser',
