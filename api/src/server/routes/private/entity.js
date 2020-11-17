@@ -178,13 +178,13 @@ router.get(`${BASE_URL}/reports`, async ctx => {
   if (reports) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: STATUS_ENUM.SUCCESS,
+      status: 'success',
       data: reports,
     };
   } else {
     ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
-      status: STATUS_ENUM.ERROR,
+      status: 'error',
       message: 'That record does not exist.',
     };
   }
@@ -196,13 +196,13 @@ router.get(`${BASE_URL}/generateReport`, async ctx => {
   if (report) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: STATUS_ENUM.SUCCESS,
+      status: 'success',
       data: report,
     };
   } else {
     ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
-      status: STATUS_ENUM.ERROR,
+      status: 'error',
       message: 'That record does not exist.',
     };
   }
@@ -1091,7 +1091,7 @@ router.del(`${BASE_URL}/member`, async ctx => {
 router.del(`${BASE_URL}/report`, async ctx => {
   await queries.deleteReport(ctx.query);
 
-  ctx.status = 201;
+  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: 'success',
   };

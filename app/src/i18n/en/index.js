@@ -119,7 +119,7 @@ export default {
     changes_saved: 'Changes saved',
     checkout: 'Checkout',
     choose_date:'Choose date',
-    choose_report:'Choose report',
+    choose_your_report:'Choose your report',
     choose_your_primary_person: 'Choose your primary person',
     city: 'City',
     clear_all: 'Clear all',
