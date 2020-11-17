@@ -25,7 +25,7 @@ export default function Login() {
   const { t } = useTranslation();
   const { successRoute, redirectUrl } = useQuery();
   const { dispatch } = useContext(Store);
-
+  console.log(redirectUrl);
   const validate = values => {
     const errors = {};
     if (formik.status.state === LOGIN_STATE_ENUM.SIGNUP) {

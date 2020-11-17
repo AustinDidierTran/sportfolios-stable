@@ -48,7 +48,7 @@ export default {
     add: 'Add',
     added_to_cart: 'Added to cart',
     added_to_roster: 'Added to a roster',
-    added_to_roster_description: 'Notification sent when someone add one of your people to a roster',
+    added_to_roster_description: 'Notifications sent when someone add one of your people to a roster',
     added_to_roster_notif_title: 'You have been added to a roster',
     added_to_roster_notif_description: 'Somebody added you to the {{teamName}} team',
     address: 'Address',

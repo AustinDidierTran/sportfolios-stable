@@ -27,6 +27,21 @@ export default function UserSettings() {
     state.userInfo,
   ]);
 
+  //Scroll to given section specified with # in the url
+  const scroll = () => {
+    const hash = window.location.hash.substr(1);
+    if (hash) {
+      const anchor = document.getElementById(hash);
+      setTimeout(() => {
+        anchor?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 500);
+    }
+  };
+  useEffect(scroll, []);
+
   if (!isLoggedIn) {
     return <LoadingSpinner />;
   }
@@ -40,7 +55,9 @@ export default function UserSettings() {
         <ChangePassword />
         <AppLinking />
         <CreditCards />
-        <Notifications />
+        <div id="notifications">
+          <Notifications />
+        </div>
         <Disconnect />
         <BottomPageLogo />
       </IgContainer>

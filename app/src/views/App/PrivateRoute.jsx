@@ -16,7 +16,11 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
           <Component {...props} />
         ) : (
           <Redirect
-            to={`/login?redirectUrl=${history.location.pathname}`}
+            to={`/login?redirectUrl=${encodeURIComponent(
+              history.location.pathname +
+                history.location.search +
+                history.location.hash,
+            )}`}
           />
         )
       }
