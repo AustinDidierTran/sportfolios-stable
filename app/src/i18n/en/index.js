@@ -305,6 +305,7 @@ export default {
     infos: 'Infos',
     institution_number: 'Institution number',
     interactive_tool: 'Interactive tool',
+    invalid_alias: 'The alias can only contain alphanumeric characters and dots',
     invalid_date: 'Invalid date. It should follow: yyyy-mm-dd',
     invalid_email: 'Invalid email address.',
     invalid_information: 'Invalid information',
