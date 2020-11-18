@@ -8,7 +8,7 @@ import { goTo } from '../../../actions/goTo';
 import { Card, FormDialog } from '../../../components/Custom';
 import { useQuery } from '../../../hooks/queries';
 
-export default function MembersWithDateReport() {
+export default function MembersReport() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const { id } = useQuery();
@@ -26,7 +26,7 @@ export default function MembersWithDateReport() {
       <Card
         items={{
           title: t('members_list_at_a_certain_date'),
-          description: t('members_with_date_report_description'),
+          description: t('members_report_description'),
           onClick: () => {
             setOpen(true);
           },
@@ -34,7 +34,7 @@ export default function MembersWithDateReport() {
         type={CARD_TYPE_ENUM.REPORT}
       ></Card>
       <FormDialog
-        type={FORM_DIALOG_TYPE_ENUM.CREATE_MEMBERS_WITH_DATE_REPORT}
+        type={FORM_DIALOG_TYPE_ENUM.MEMBERS_REPORT}
         items={{
           open,
           onClose,

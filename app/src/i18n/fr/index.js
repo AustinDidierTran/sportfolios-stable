@@ -341,7 +341,7 @@ export default {
     members_list_at_a_certain_date:'Liste des membres à une date précise',
     members_list_on: 'Liste des membres le',
     members_list: 'Liste des membres | {{organization}}',
-    members_with_date_report_description:"Ce rapport vous permet d'accéder à la liste de vos membres à une date précise",
+    members_report_description:"Ce rapport vous permet d'accéder à la liste de vos membres à une date précise",
     members: 'Membres',
     membership_added: 'Affiliation ajouté',
     membership_edited: 'Affiliation modifiée',

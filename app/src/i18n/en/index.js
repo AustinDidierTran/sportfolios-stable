@@ -337,7 +337,7 @@ export default {
     members_list_at_a_certain_date:"Members' list at a certain date",
     members_list_on: "Members' list on",
     members_list: "Members' list | {{organization}}",
-    members_with_date_report_description:"This report allows you to access your members' list at a certain date in the past",
+    members_report_description:"This report allows you to access your members' list at a certain date in the past",
     membership_added: 'Membership added',
     membership_edited: 'Membership edited',
     membership_exist: 'Membership Exist',

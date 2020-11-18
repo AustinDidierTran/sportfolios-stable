@@ -692,15 +692,15 @@ async function generateReport(reportId) {
   const [report] = await knex('reports')
     .select('*')
     .where({ report_id: reportId });
-  if (report.type === REPORT_TYPE_ENUM.MEMBERS_WITH_DATE) {
+  if (report.type === REPORT_TYPE_ENUM.MEMBERS) {
     const { date } = report.metadata;
     const members = await knex('memberships')
       .select('*')
       .where({ organization_id: report.entity_id });
     const active = members.filter(m => {
       return (
-        moment(m.created_at) < moment(date) &&
-        moment(m.expiration_date) > moment(date)
+        moment(m.created_at) < moment(date).add(1, 'day') &&
+        moment(m.expiration_date) >= moment(date)
       );
     });
     const organization = await getEntity(report.entity_id);
@@ -1782,7 +1782,10 @@ async function addReport(type, organizationId, date) {
     .insert({
       type: type,
       entity_id: realId,
-      metadata: { date, organizationName: organization.name },
+      metadata: {
+        date,
+        organizationName: organization.name,
+      },
     })
     .returning('*');
   return res;
