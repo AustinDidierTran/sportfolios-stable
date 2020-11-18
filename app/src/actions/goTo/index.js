@@ -89,8 +89,13 @@ export const goToAlias = async (entityId, params, queryParams) => {
       entityId,
     }),
   );
+
   history.push(
-    formatRoute(data.alias || data.entityId, params, queryParams),
+    formatRoute(
+      data ? data.alias || data.entityId : ROUTES.entityNotFound,
+      params,
+      queryParams,
+    ),
   );
 };
 

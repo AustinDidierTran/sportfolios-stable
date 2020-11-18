@@ -1693,6 +1693,10 @@ async function addMember(
 }
 
 async function addAlias(entityId, alias) {
+  if (!/^[\w.-]+$/.test(alias)) {
+    throw Error(ERROR_ENUM.VALUE_IS_INVALID);
+  }
+
   const realId = await getRealId(entityId);
   const [res] = await knex('alias')
     .insert({
@@ -2263,6 +2267,10 @@ async function updateMember(
 }
 
 async function updateAlias(entityId, alias) {
+  if (!/^[\w.-]+$/.test(alias)) {
+    throw Error(ERROR_ENUM.VALUE_IS_INVALID);
+  }
+
   const realId = await getRealId(entityId);
   const res = await knex('alias')
     .where({

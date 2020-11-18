@@ -42,7 +42,7 @@ export default function ChangeAlias() {
         entityId,
       }),
     );
-    setTheAlias(data.alias || null);
+    setTheAlias(data?.alias);
   };
 
   const validate = values => {
@@ -50,6 +50,9 @@ export default function ChangeAlias() {
     const errors = {};
     if (!alias.length) {
       errors.alias = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    }
+    if (!/^[\w.-]+$/.test(alias)) {
+      errors.alias = t('invalid_alias');
     }
     return errors;
   };
