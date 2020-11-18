@@ -7,12 +7,10 @@ WORKDIR /sportfolios
 ENV PATH /sportfolios/node_modules/.bin:$PATH
 
 # Copy file into container
-COPY ["package.json", "package-lock.json", "./"]
+COPY . ./
 
 # Install modules into container
 RUN npm install && npm cache clean --force
-
-COPY . ./
 
 # Start the api
 CMD npm run webserver

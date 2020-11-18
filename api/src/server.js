@@ -5,6 +5,8 @@ const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
 const { CLIENT_BASE_URL } = require('../../conf');
 const socket = require('./server/websocket/socket.io');
+//starts the cron jobs
+require('./server/cronjobs');
 
 // Middlewares
 const getUserInfo = require('./server/middleware/user-info');
