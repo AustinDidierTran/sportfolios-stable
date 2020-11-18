@@ -17,6 +17,7 @@ import {
 import { useContext } from 'react';
 import { Store, ACTION_ENUM } from '../../../Store';
 import { ERROR_ENUM } from '../../../../../common/errors';
+import validator from 'validator';
 
 export default function ChangeAlias() {
   const { t } = useTranslation();
@@ -53,6 +54,9 @@ export default function ChangeAlias() {
     }
     if (!/^[\w.-]+$/.test(alias)) {
       errors.alias = t('invalid_alias');
+    }
+    if (validator.isUUID(alias)) {
+      errors.alias = t(ERROR_ENUM.VALUE_IS_INVALID);
     }
     return errors;
   };

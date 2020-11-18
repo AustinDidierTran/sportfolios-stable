@@ -15,6 +15,7 @@ const {
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
+const validator = require('validator');
 const { sendTransferAddNewPlayer } = require('../helpers/index');
 const {
   formatPrice,
@@ -1693,7 +1694,7 @@ async function addMember(
 }
 
 async function addAlias(entityId, alias) {
-  if (!/^[\w.-]+$/.test(alias)) {
+  if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
     throw Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
 
@@ -2267,7 +2268,7 @@ async function updateMember(
 }
 
 async function updateAlias(entityId, alias) {
-  if (!/^[\w.-]+$/.test(alias)) {
+  if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
     throw Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
 
