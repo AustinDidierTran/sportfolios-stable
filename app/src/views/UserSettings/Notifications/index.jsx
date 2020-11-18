@@ -23,11 +23,23 @@ const descriptionMap = {
 export default function Notifications() {
   const { t } = useTranslation();
   const [switchesState, setSwitchesState] = useState({});
-  const [settings, setSettings] = useState([]);
-  const [chatbotDisabled, setChatbotDisabled] = useState(false);
+  const [chatbotDisabled, setChatbotDisabled] = useState(true);
 
   const getStateKey = (type, media) => {
     return type + ' ' + media;
+  };
+
+  const getDefaultState = chatbotDisabled => {
+    return Object.values(NOTIFICATION_TYPE).reduce(
+      (prev, current) => {
+        prev[getStateKey(current, NOTIFICATION_MEDIA.EMAIL)] = true;
+        prev[
+          getStateKey(current, NOTIFICATION_MEDIA.CHATBOT)
+        ] = !chatbotDisabled;
+        return prev;
+      },
+      {},
+    );
   };
 
   const handleChange = ({ type, media, enabled }) => {
@@ -37,12 +49,17 @@ export default function Notifications() {
         [getStateKey(type, media)]: enabled,
       };
     });
+    const body = { type };
+    if (media === NOTIFICATION_MEDIA.EMAIL) {
+      body.email = enabled;
+    }
+    if (media === NOTIFICATION_MEDIA.CHATBOT) {
+      body.chatbot = enabled;
+    }
     api('/api/notifications/settings', {
       method: 'PUT',
       body: JSON.stringify({
-        type,
-        media,
-        enabled,
+        ...body,
       }),
     });
   };
@@ -53,14 +70,13 @@ export default function Notifications() {
       return;
     }
     const { chatbotDisabled, notifications } = data;
-    const tempState = {};
+    const tempState = getDefaultState(chatbotDisabled);
     notifications.forEach(s => {
       tempState[getStateKey(s.type, NOTIFICATION_MEDIA.EMAIL)] =
         s.email;
       tempState[getStateKey(s.type, NOTIFICATION_MEDIA.CHATBOT)] =
         !chatbotDisabled && s.chatbot;
     });
-    setSettings(notifications);
     setSwitchesState(tempState);
     setChatbotDisabled(chatbotDisabled);
   };
@@ -72,24 +88,24 @@ export default function Notifications() {
     <Card className={styles.card}>
       <List
         title={t('notifications')}
-        items={settings.map(s => {
+        items={Object.values(NOTIFICATION_TYPE).map(notifType => {
           return {
             type: LIST_ITEM_ENUM.NOTIFICATION_SETTING,
             email:
               switchesState[
-                getStateKey(s.type, NOTIFICATION_MEDIA.EMAIL)
+                getStateKey(notifType, NOTIFICATION_MEDIA.EMAIL)
               ],
             chatbot:
               switchesState[
-                getStateKey(s.type, NOTIFICATION_MEDIA.CHATBOT)
+                getStateKey(notifType, NOTIFICATION_MEDIA.CHATBOT)
               ],
             chatbotDisabled: chatbotDisabled,
-            name: t(titleMap[s.type]),
-            description: t(descriptionMap[s.type]),
+            name: t(titleMap[notifType]) || notifType,
+            description: t(descriptionMap[notifType]),
             onChange: handleChange,
-            key: s.type,
-            icon: iconMap[s.type],
-            notificationType: s.type,
+            key: notifType,
+            icon: iconMap[notifType] || 'Notifications',
+            notificationType: notifType,
           };
         })}
       />

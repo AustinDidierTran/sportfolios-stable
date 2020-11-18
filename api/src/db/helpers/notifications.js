@@ -84,22 +84,11 @@ const getNotificationsSettings = async (user_id, type) => {
   }
 };
 
-const editEmailNotificationSetting = async (
-  user_id,
-  { type, enabled },
-) => {
+const upsertNotificationsSettings = async (user_id, body) => {
   return knex('user_notification_setting')
-    .update({ email: enabled })
-    .where({ user_id, type });
-};
-
-const editChatbotNotificationSetting = async (
-  user_id,
-  { type, enabled },
-) => {
-  return knex('user_notification_setting')
-    .update({ chatbot: enabled })
-    .where({ user_id, type });
+    .insert({ ...body, user_id })
+    .onConflict(['user_id', 'type'])
+    .merge();
 };
 
 const enableAllChatbotNotification = async user_id => {
@@ -117,6 +106,5 @@ module.exports = {
   addNotification,
   getNotificationsSettings,
   enableAllChatbotNotification,
-  editEmailNotificationSetting,
-  editChatbotNotificationSetting,
+  upsertNotificationsSettings,
 };
