@@ -6,6 +6,7 @@ import EventPost from './EventPost';
 import EventSettings from './EventSettings';
 import Game from './Game';
 import Invoice from './InvoiceItem';
+import Report from './Report';
 import ScoreSuggestion from './ScoreSuggestion';
 import Shop from './ShopItem';
 import TwoTeamGame from './TwoTeamGame';
@@ -19,6 +20,7 @@ const CardMap = {
   [CARD_TYPE_ENUM.EVENT]: EventPost,
   [CARD_TYPE_ENUM.GAME]: Game,
   [CARD_TYPE_ENUM.INVOICE]: Invoice,
+  [CARD_TYPE_ENUM.REPORT]: Report,
   [CARD_TYPE_ENUM.SCORE_SUGGESTION]: ScoreSuggestion,
   [CARD_TYPE_ENUM.SHOP]: Shop,
   [CARD_TYPE_ENUM.TWO_TEAM_GAME_EDITABLE]: TwoTeamGameEditable,

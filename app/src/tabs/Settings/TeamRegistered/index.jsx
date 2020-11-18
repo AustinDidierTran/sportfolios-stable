@@ -128,7 +128,7 @@ export default function TeamRegistered() {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('team_unregister_success'),
-        severity: SEVERITY_ENUM.SUCCES,
+        severity: SEVERITY_ENUM.SUCCESS,
         duration: 4000,
       });
     } else {
@@ -156,7 +156,7 @@ export default function TeamRegistered() {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('teams_unregister_success'),
-        severity: SEVERITY_ENUM.SUCCES,
+        severity: SEVERITY_ENUM.SUCCESS,
         duration: 4000,
       });
     } else {

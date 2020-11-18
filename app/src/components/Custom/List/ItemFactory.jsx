@@ -5,7 +5,6 @@ import {
 } from '../../../../../common/enums';
 import AppItem from './AppItem';
 import BankAccountItem from './BankAccountItem';
-import EntityBankAccountItem from './EntityBankAccountItem';
 import CartItem from './CartItem';
 import CreditCardItem from './CreditCardItem';
 import DefaultItem from './DefaultItem';
@@ -22,6 +21,7 @@ import PersonItem from './PersonItem';
 import PurchasesItem from './PurchasesItem';
 import RankingItem from './RankingItem';
 import RankingWithStatsItem from './RankingWithStatsItem';
+import ReportItem from './ReportItem';
 import RosterItem from './RosterItem';
 import SalesItem from './SalesItem';
 import TeamItem from './TeamItem';
@@ -34,8 +34,8 @@ const ItemMap = {
   [GLOBAL_ENUM.PERSON]: PersonItem,
   [GLOBAL_ENUM.TEAM]: TeamItem,
   [LIST_ITEM_ENUM.APP_ITEM]: AppItem,
+  [LIST_ITEM_ENUM.AVATAR_TEXT_SKELETON]: AvatarAndTextSkeleton,
   [LIST_ITEM_ENUM.BANK_ACCOUNT]: BankAccountItem,
-  [LIST_ITEM_ENUM.ENTITY_BANK_ACCOUNT]: EntityBankAccountItem,
   [LIST_ITEM_ENUM.CART]: CartItem,
   [LIST_ITEM_ENUM.CREDIT_CARD]: CreditCardItem,
   [LIST_ITEM_ENUM.EVENT_CREATOR]: EventCreatorItem,
@@ -48,9 +48,9 @@ const ItemMap = {
   [LIST_ITEM_ENUM.PURCHASES]: PurchasesItem,
   [LIST_ITEM_ENUM.RANKING_WITH_STATS]: RankingWithStatsItem,
   [LIST_ITEM_ENUM.RANKING]: RankingItem,
+  [LIST_ITEM_ENUM.REPORT]: ReportItem,
   [LIST_ITEM_ENUM.ROSTER_ITEM]: RosterItem,
   [LIST_ITEM_ENUM.SALES]: SalesItem,
-  [LIST_ITEM_ENUM.AVATAR_TEXT_SKELETON]: AvatarAndTextSkeleton,
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: RosterNotification,
 };
 

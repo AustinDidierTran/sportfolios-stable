@@ -76,6 +76,7 @@ const CARD_TYPE_ENUM = {
   EVENT: 'event',
   GAME: 'game',
   INVOICE: 'invoice',
+  REPORT: 'report',
   SCORE_SUGGESTION: 'score suggestion',
   SHOP: 'shop',
   TWO_TEAM_GAME_EDITABLE: 'twoTeamGameEditable',
@@ -113,6 +114,11 @@ const FORM_DIALOG_TYPE_ENUM = {
   BECOME_MEMBER: 'become member',
   ADD_MEMBER: 'add member',
   EDIT_MEMBERSHIP: 'edit membership',
+  MEMBERS_REPORT: 'members report',
+};
+
+const REPORT_TYPE_ENUM = {
+  MEMBERS: 'members',
 };
 
 const LANGUAGE_ENUM = {
@@ -247,7 +253,6 @@ const NOTIFICATION_TYPE = {
 const LIST_ITEM_ENUM = {
   APP_ITEM: 'app item',
   BANK_ACCOUNT: 'bank account',
-  ENTITIY_BANK_ACCOUNT: 'entity bank account',
   CART_ITEM: 'cart item',
   CART: 'cart',
   CREDIT_CARD: 'credit card',
@@ -261,6 +266,7 @@ const LIST_ITEM_ENUM = {
   PURCHASES: 'pruchases',
   RANKING_WITH_STATS: 'ranking with stats',
   RANKING: 'ranking',
+  REPORT: 'report',
   ROSTER_ITEM: 'roster item',
   SALES: 'sales',
   SHOP_ITEM: 'shop item',
@@ -379,11 +385,13 @@ module.exports = {
   PERSON_TRANSFER_STATUS_ENUM,
   POSITION_ENUM,
   REJECTION_ENUM,
+  REPORT_TYPE_ENUM,
   ROSTER_ROLE_ENUM,
   SCORE_SUBMISSION_CHATBOT_STATES,
   SELECT_ENUM,
   SEVERITY_ENUM,
   SIZES_ENUM,
+  SOCKET_EVENT,
   SPIRIT_CATEGORY_ENUM,
   STATUS_ENUM,
   STRIPE_ERROR_ENUM,
@@ -391,5 +399,4 @@ module.exports = {
   TABS_ENUM,
   TAG_TYPE_ENUM,
   VIEW_ENUM,
-  SOCKET_EVENT,
 };

@@ -97,7 +97,6 @@ export default function MembersList() {
           <Button
             size="small"
             variant="contained"
-            endIcon="Add"
             style={{
               margin: '8px',
               width: 'fit-content',

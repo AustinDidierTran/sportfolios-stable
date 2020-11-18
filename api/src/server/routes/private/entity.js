@@ -171,6 +171,60 @@ router.get(`${BASE_URL}/members`, async ctx => {
     };
   }
 });
+
+router.get(`${BASE_URL}/reports`, async ctx => {
+  const reports = await queries.getReports(ctx.query.id);
+
+  if (reports) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: reports,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/generateReport`, async ctx => {
+  const report = await queries.generateReport(ctx.query.reportId);
+
+  if (report) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: report,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/hasMemberships`, async ctx => {
+  const entity = await queries.hasMemberships(ctx.query.id);
+  if (entity || entity === false) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/organizationMembers`, async ctx => {
   const entity = await queries.getOrganizationMembers(
     ctx.query.id,
@@ -724,6 +778,23 @@ router.post(`${BASE_URL}/member`, async ctx => {
     };
   }
 });
+
+router.post(`${BASE_URL}/report`, async ctx => {
+  const report = await queries.addReport(ctx.request.body);
+  if (report) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: report,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
 router.post(`${BASE_URL}/memberManually`, async ctx => {
   const entity = await queries.addMemberManually(ctx.request.body);
   if (entity) {
@@ -1013,6 +1084,15 @@ router.del(`${BASE_URL}/member`, async ctx => {
   await queries.deleteMembership(ctx.query);
 
   ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
+router.del(`${BASE_URL}/report`, async ctx => {
+  await queries.deleteReport(ctx.query);
+
+  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: 'success',
   };

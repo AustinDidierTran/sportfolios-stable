@@ -6,26 +6,12 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Typography } from '../../../MUI';
 import { useTranslation } from 'react-i18next';
-import { GENDER_ENUM } from '../../../../../../common/enums';
 import { getMembershipName } from '../../../../utils/stringFormats';
 import { MEMBERSHIP_TYPE_ENUM } from '../../../../Store';
 
 export default function PersonInfosDialog(props) {
   const { personInfos, open, onDecline, onSubmit, onClose } = props;
   const { t } = useTranslation();
-
-  const printGender = gender => {
-    switch (gender) {
-      case GENDER_ENUM.MALE:
-        return t('male');
-      case GENDER_ENUM.FEMALE:
-        return t('female');
-      case GENDER_ENUM.NOT_SPECIFIED:
-        return t('not_specified');
-      default:
-        return '';
-    }
-  };
 
   return (
     <div>
@@ -49,7 +35,7 @@ export default function PersonInfosDialog(props) {
             color={personInfos?.gender ? 'textPrimary' : 'error'}
           >
             {t('gender')}:{' '}
-            {printGender(personInfos?.gender) || t('missing_info')}
+            {t(personInfos?.gender) || t('missing_info')}
           </Typography>
           <Typography
             color={

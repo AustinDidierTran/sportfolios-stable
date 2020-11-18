@@ -32,6 +32,9 @@ export const getInitialsFromName = completeName => {
 };
 
 export const formatDate = (moment, format = 'LL') => {
+  if (!moment.isValid()) {
+    return null;
+  }
   moment.locale(localStorage.getItem('i18nextLng'));
   return moment.format(format);
 };
@@ -97,6 +100,7 @@ export const getMembershipName = type => {
     return '';
   }
 };
+
 export const getMembershipType = (length, date) => {
   if (length) {
     if (length === MEMBERSHIP_LENGTH_ENUM.ONE_YEAR) {

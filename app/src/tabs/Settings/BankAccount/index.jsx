@@ -29,7 +29,7 @@ export default function BankAccount() {
       formatRoute('/api/stripe/bankAccounts', null, { entityId }),
     );
     const res = bankAccounts.map(b => ({
-      type: LIST_ITEM_ENUM.ENTITY_BANK_ACCOUNT,
+      type: LIST_ITEM_ENUM.BANK_ACCOUNT,
       last4: b.last4,
       createdAt: b.created_at,
       bankAccountId: b.bank_account_id,
@@ -55,7 +55,6 @@ export default function BankAccount() {
       });
     }
   };
-
   return (
     <Paper title={t('bank_accounts')}>
       <Button

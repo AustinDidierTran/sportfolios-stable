@@ -85,7 +85,7 @@ export default function AddPaymentMethod() {
     return errors;
   };
   const formik = useFormik({
-    initialValues: {},
+    initialValues: { country: 'CA' },
     validate,
     validateOnChange: false,
     validateOnBlur: false,

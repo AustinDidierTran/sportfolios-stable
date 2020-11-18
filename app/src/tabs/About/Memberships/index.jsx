@@ -30,10 +30,21 @@ export default function Memberships() {
   } = useContext(Store);
 
   const [members, setMembers] = useState([]);
+  const [hasMemberships, setHasMemberships] = useState(false);
 
   useEffect(() => {
     getMembers();
+    getHasMemberships();
   }, []);
+
+  const getHasMemberships = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/hasMemberships', null, {
+        id,
+      }),
+    );
+    setHasMemberships(data);
+  };
 
   const getMembers = async () => {
     const members = await Promise.all(
@@ -96,14 +107,20 @@ export default function Memberships() {
   };
   return (
     <>
-      <Button
-        size="small"
-        variant="contained"
-        style={{ margin: '8px' }}
-        onClick={onOpen}
-      >
-        {t('become_member')}
-      </Button>
+      {hasMemberships ? (
+        <Button
+          size="small"
+          variant="contained"
+          style={{ margin: '8px' }}
+          onClick={onOpen}
+        >
+          {t('become_member')}
+        </Button>
+      ) : (
+        <Typography style={{ margin: '16px' }}>
+          {t('this_organization_has_no_memberships_available')}
+        </Typography>
+      )}
       <Paper title={t('memberships')}>
         <FormDialog
           type={FORM_DIALOG_TYPE_ENUM.BECOME_MEMBER}
