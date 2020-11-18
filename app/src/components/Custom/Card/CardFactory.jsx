@@ -10,6 +10,7 @@ import ScoreSuggestion from './ScoreSuggestion';
 import Shop from './ShopItem';
 import TwoTeamGame from './TwoTeamGame';
 import TwoTeamGameEditable from './TwoTeamGameEditable';
+import TwoTeamGameProfile from './TwoTeamGameProfile';
 
 const CardMap = {
   [CARD_TYPE_ENUM.DELETE_ENTITY]: DeleteEntity,
@@ -22,6 +23,7 @@ const CardMap = {
   [CARD_TYPE_ENUM.SHOP]: Shop,
   [CARD_TYPE_ENUM.TWO_TEAM_GAME_EDITABLE]: TwoTeamGameEditable,
   [CARD_TYPE_ENUM.TWO_TEAM_GAME]: TwoTeamGame,
+  [CARD_TYPE_ENUM.TWO_TEAM_GAME_PROFILE]: TwoTeamGameProfile,
 };
 
 export default function CardFactory(props) {

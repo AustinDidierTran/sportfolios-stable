@@ -4,6 +4,7 @@ const {
   STATUS_ENUM,
   REJECTION_ENUM,
   NOTIFICATION_TYPE,
+  GLOBAL_ENUM,
 } = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
@@ -58,6 +59,7 @@ const {
   getMemberships: getMembershipsHelper,
   getOptions: getOptionsHelper,
   getOwnedEvents: getOwnedEventsHelper,
+  getPersonGames: getPersonGamesHelper,
   getPersonInfos: getPersonInfosHelper,
   getPhases: getPhasesHelper,
   getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
@@ -121,7 +123,13 @@ async function isAllowed(
 }
 
 async function getEntity(id, user_id) {
-  return getEntityHelper(id, user_id);
+  const res = await getEntityHelper(id, user_id);
+
+  if (res.basicInfos.type === GLOBAL_ENUM.PERSON) {
+    res.gamesInfos = await getPersonGamesHelper(id);
+  }
+
+  return res;
 }
 
 async function getAllEntities(params) {

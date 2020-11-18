@@ -118,7 +118,9 @@ export default function EventRegistration() {
           event_id: eventId,
         }),
       );
-      const { data: theTeam } = await api(
+      const {
+        data: { basicInfos: theTeam },
+      } = await api(
         formatRoute('/api/entity', null, {
           id: team.id,
         }),

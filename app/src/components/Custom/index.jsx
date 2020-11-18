@@ -28,6 +28,7 @@ export { default as LoadingSpinner } from './LoadingSpinner';
 export { default as MailToButton } from './MailToButton';
 export { default as MessageAndButtons } from './MessageAndButtons';
 export { default as MultiSelect } from './MultiSelect';
+export { default as MyGames } from './MyGames';
 export { default as Paper } from './Paper';
 export { default as PersonSearchList } from './SearchList/PersonSearchList';
 export { default as RadioGroup } from './RadioGroup';

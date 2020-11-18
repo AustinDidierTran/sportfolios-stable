@@ -73,7 +73,7 @@ export default function Person(props) {
         )}
       </Paper>
       <div style={{ marginBottom: '128px' }}>
-        <OpenTab basicInfos={basicInfos} />
+        <OpenTab {...props} />
       </div>
     </IgContainer>
   );

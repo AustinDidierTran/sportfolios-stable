@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper } from '../../components/Custom';
+import { Paper, MyGames } from '../../components/Custom';
 import styles from './About.module.css';
 import { GLOBAL_ENUM } from '../../../../common/enums';
 import loadable from '@loadable/component';
@@ -8,7 +8,7 @@ const BasicInfos = loadable(() => import('./BasicInfos'));
 const Memberships = loadable(() => import('./Memberships'));
 
 export default function TabAbout(props) {
-  const { basicInfos } = props;
+  const { basicInfos, gamesInfos } = props;
 
   const { type } = basicInfos;
 
@@ -37,9 +37,12 @@ export default function TabAbout(props) {
 
     case GLOBAL_ENUM.PERSON:
       return (
-        <Paper className={styles.card}>
-          <BasicInfos basicInfos={basicInfos} />
-        </Paper>
+        <>
+          <Paper className={styles.card}>
+            <BasicInfos basicInfos={basicInfos} />
+          </Paper>
+          <MyGames gamesInfos={gamesInfos} />
+        </>
       );
     default:
       throw 'type not defined';

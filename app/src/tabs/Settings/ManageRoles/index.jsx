@@ -29,7 +29,7 @@ export default function ManageRoles() {
 
   const getEntity = async () => {
     const res = await api(`/api/entity?id=${entity_id}`);
-    setEntity(res.data);
+    setEntity(res.data.basicInfos);
   };
 
   useEffect(() => {

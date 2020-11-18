@@ -19,7 +19,7 @@ export default function BasicInfos(props) {
     setPhotoUrl(initialPhotoUrl);
   }, [initialPhotoUrl]);
 
-  const initials = getInitialsFromName(nameProp);
+  const initials = getInitialsFromName({ name: nameProp, surname });
   const name = useFormInput(nameProp);
 
   return (
