@@ -808,7 +808,7 @@ async function generateReport(reportId) {
         moment(m.expiration_date)
           .set('hour', 0)
           .set('minute', 0)
-          .set('second', 0) >=
+          .set('second', 0) >
           moment(date)
             .set('hour', 0)
             .set('minute', 0)
