@@ -42,12 +42,17 @@ const deleteNotification = async notification_id => {
 };
 
 const sendNotification = async (notif, emailInfos) => {
-  //TODO check for user notification permission
-  const { user_id } = notif;
+  const { user_id, type } = notif;
   await addNotification(notif);
   const unseenCount = await countUnseenNotifications(user_id);
   socket.emit(SOCKET_EVENT.NOTIFICATIONS, user_id, unseenCount);
-  if (emailInfos) {
+
+  //TODO check for chatbot permissison and send message
+  const notifSettings = await getNotificationsSettingsHelper(
+    user_id,
+    type,
+  );
+  if (emailInfos && notifSettings && notifSettings.email) {
     sendEmailNotification(user_id, emailInfos);
   }
 };
