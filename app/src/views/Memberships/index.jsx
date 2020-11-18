@@ -29,7 +29,9 @@ export default function Memberships() {
   }, []);
 
   const getPerson = async () => {
-    const { data } = await api(`/api/entity/?id=${personId}`);
+    const {
+      data: { basicInfos: data },
+    } = await api(`/api/entity/?id=${personId}`);
     setPerson(data);
   };
 
@@ -38,7 +40,9 @@ export default function Memberships() {
   }, []);
 
   const getEntity = async () => {
-    const { data } = await api(`/api/entity/?id=${entityId}`);
+    const {
+      data: { basicInfos: data },
+    } = await api(`/api/entity/?id=${entityId}`);
     setEntity(data);
   };
 

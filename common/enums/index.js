@@ -38,6 +38,8 @@ const COMPONENT_TYPE_ENUM = {
 
 const ROSTER_ROLE_ENUM = {
   CAPTAIN: 'captain',
+  ASSISTANT_CAPTAIN: 'assistant-captain',
+  COACH: 'coach',
   PLAYER: 'player',
   VIEWER: 'viewer',
 };
