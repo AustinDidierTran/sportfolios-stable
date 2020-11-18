@@ -699,8 +699,24 @@ async function generateReport(reportId) {
       .where({ organization_id: report.entity_id });
     const active = members.filter(m => {
       return (
-        moment(m.created_at) < moment(date).add(1, 'day') &&
-        moment(m.expiration_date) >= moment(date)
+        moment(m.created_at)
+          .set('hour', 0)
+          .set('minute', 0)
+          .set('second', 0) <
+          moment(date)
+            .set('hour', 0)
+            .set('minute', 0)
+            .set('second', 0)
+            .add(1, 'day') &&
+        moment(m.expiration_date)
+          .set('hour', 0)
+          .set('minute', 0)
+          .set('second', 0)
+          .add(1, 'day') >
+          moment(date)
+            .set('hour', 0)
+            .set('minute', 0)
+            .set('second', 0)
       );
     });
     const organization = await getEntity(report.entity_id);
@@ -712,6 +728,13 @@ async function generateReport(reportId) {
         if (a.status === INVOICE_STATUS_ENUM.PAID) {
           price = await getPriceFromInvoice(a.invoice_item_id);
         }
+        const address = person.address
+          ? {
+              city: person.address.city,
+              state: person.address.state,
+              zip: person.address.zip,
+            }
+          : {};
         return {
           name: person.name,
           surname: person.surname,
@@ -724,9 +747,7 @@ async function generateReport(reportId) {
           email,
           birthDate: person.birthDate,
           gender: person.gender,
-          city: person.address.city,
-          state: person.address.state,
-          zip: person.address.zip,
+          ...address,
         };
       }),
     );
