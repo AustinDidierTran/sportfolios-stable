@@ -509,13 +509,13 @@ router.put(`${BASE_URL}/member`, async ctx => {
 router.put(`${BASE_URL}/alias`, async ctx => {
   const entity = await queries.updateAlias(ctx.request.body);
   if (entity) {
-    ctx.status = 201;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'That entity does not exist.',
@@ -815,13 +815,13 @@ router.post(`${BASE_URL}/memberManually`, async ctx => {
 router.post(`${BASE_URL}/alias`, async ctx => {
   const alias = await queries.addAlias(ctx.request.body);
   if (alias) {
-    ctx.status = 201;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: alias,
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'Something went wrong',

@@ -16,6 +16,7 @@ const {
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
+const validator = require('validator');
 const { sendTransferAddNewPlayer } = require('../helpers/index');
 const {
   formatPrice,
@@ -1286,7 +1287,7 @@ async function getAlias(entityId) {
     .select('*')
     .where({ id: realId });
   if (!res) {
-    return { alias: entityId };
+    return { entityId };
   }
   return res;
 }
@@ -1909,6 +1910,10 @@ async function addReport(type, organizationId, date) {
 }
 
 async function addAlias(entityId, alias) {
+  if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
+    throw Error(ERROR_ENUM.VALUE_IS_INVALID);
+  }
+
   const realId = await getRealId(entityId);
   const [res] = await knex('alias')
     .insert({
@@ -2480,6 +2485,10 @@ async function updateMember(
 }
 
 async function updateAlias(entityId, alias) {
+  if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
+    throw Error(ERROR_ENUM.VALUE_IS_INVALID);
+  }
+
   const realId = await getRealId(entityId);
   const res = await knex('alias')
     .where({

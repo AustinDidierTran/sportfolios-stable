@@ -311,6 +311,7 @@ export default {
     infos: 'Infos',
     institution_number: "Numéro d'institution",
     interactive_tool: 'Outil interactif',
+    invalid_alias: "L'alias peut seulement contenir des caractères alphanumérique et des points",
     invalid_email: 'Courriel invalide.',
     invalid_information: 'Information non valide',
     invalid_input: 'Valeur incorrect',
