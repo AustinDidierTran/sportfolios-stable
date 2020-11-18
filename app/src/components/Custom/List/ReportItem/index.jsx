@@ -98,7 +98,7 @@ export default function ReportItem(props) {
   };
 
   const reportName = useMemo(() => {
-    if (reportType === REPORT_TYPE_ENUM.MEMBERS_WITH_DATE) {
+    if (reportType === REPORT_TYPE_ENUM.MEMBERS) {
       return `${t('members_list_on')} ${formatDate(
         moment(metadata.date),
       )}`;
@@ -107,7 +107,7 @@ export default function ReportItem(props) {
   }, []);
 
   const headers = useMemo(() => {
-    if (reportType === REPORT_TYPE_ENUM.MEMBERS_WITH_DATE) {
+    if (reportType === REPORT_TYPE_ENUM.MEMBERS) {
       return [
         { label: t('name'), key: 'name' },
         { label: t('surname'), key: 'surname' },
@@ -128,7 +128,7 @@ export default function ReportItem(props) {
   }, []);
 
   const fileName = useMemo(() => {
-    if (reportType === REPORT_TYPE_ENUM.MEMBERS_WITH_DATE) {
+    if (reportType === REPORT_TYPE_ENUM.MEMBERS) {
       const { date, organizationName } = metadata;
       return `${organizationName} ${t('members')} ${formatDate(
         moment(date),

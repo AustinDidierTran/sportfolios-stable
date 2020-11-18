@@ -116,11 +116,11 @@ const FORM_DIALOG_TYPE_ENUM = {
   BECOME_MEMBER: 'become member',
   ADD_MEMBER: 'add member',
   EDIT_MEMBERSHIP: 'edit membership',
-  CREATE_MEMBERS_WITH_DATE_REPORT: 'create members with date report',
+  MEMBERS_REPORT: 'members report',
 };
 
 const REPORT_TYPE_ENUM = {
-  MEMBERS_WITH_DATE: 'members with date',
+  MEMBERS: 'members',
 };
 
 const LANGUAGE_ENUM = {

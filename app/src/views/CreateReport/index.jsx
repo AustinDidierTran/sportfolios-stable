@@ -1,18 +1,14 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatPageTitle } from '../../utils/stringFormats';
-
 import {
   Paper,
   IgContainer,
   IconButton,
 } from '../../components/Custom';
-import MembersWithDateReport from './MembersWithDateReport';
-import {
-  ListItemText,
-  ListItem,
-  ListItemIcon,
-} from '@material-ui/core';
+import MembersReport from './MembersReport';
+import { ListItemText } from '@material-ui/core';
+import styles from './CreateReport.module.css';
 
 export default function CreateReport() {
   const { t } = useTranslation();
@@ -27,20 +23,21 @@ export default function CreateReport() {
         style={{ textAlign: 'center' }}
         title={t('generate_report')}
       >
-        <ListItem>
-          <ListItemIcon>
-            <IconButton
-              icon="ArrowBack"
-              onClick={() => {
-                history.back();
-              }}
-              tooltip={t('back')}
-              style={{ color: 'primary', margin: '8px' }}
-            />
-          </ListItemIcon>
-          <ListItemText primary={t('choose_your_report')} />
-        </ListItem>
-        <MembersWithDateReport />
+        <div className={styles.header}>
+          <IconButton
+            icon="ArrowBack"
+            onClick={() => {
+              history.back();
+            }}
+            tooltip={t('back')}
+            style={{ color: 'primary', margin: '8px' }}
+          />
+          <ListItemText
+            primary={t('choose_your_report')}
+            className={styles.title}
+          />
+        </div>
+        <MembersReport />
       </Paper>
     </IgContainer>
   );

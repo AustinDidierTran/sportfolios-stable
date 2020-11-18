@@ -13,7 +13,7 @@ import BasicFormDialog from '../BasicFormDialog';
 import { useQuery } from '../../../../hooks/queries';
 import moment from 'moment';
 
-export default function CreateMembersWithDateReport(props) {
+export default function MembersReport(props) {
   const { open: openProps, onClose, handleCreated } = props;
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
@@ -44,9 +44,9 @@ export default function CreateMembersWithDateReport(props) {
       const res = await api(`/api/entity/report`, {
         method: 'POST',
         body: JSON.stringify({
-          type: REPORT_TYPE_ENUM.MEMBERS_WITH_DATE,
+          type: REPORT_TYPE_ENUM.MEMBERS,
           organizationId: entityId,
-          date: new Date(date),
+          date,
         }),
       });
       if (res.status === STATUS_ENUM.ERROR) {
