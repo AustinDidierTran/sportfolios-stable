@@ -4,7 +4,11 @@ import { Paper, Button } from '../../../components/Custom';
 import { Typography, TextField } from '../../../components/MUI';
 
 import { useTranslation } from 'react-i18next';
-import { formatRoute, goToAlias } from '../../../actions/goTo';
+import {
+  formatRoute,
+  goToAlias,
+  ROUTES,
+} from '../../../actions/goTo';
 import api from '../../../actions/api';
 import { useParams } from 'react-router-dom';
 import styles from './ChangeAlias.module.css';
@@ -49,13 +53,16 @@ export default function ChangeAlias() {
   const validate = values => {
     const { alias } = values;
     const errors = {};
-    if (!alias.length) {
+    if (!alias) {
       errors.alias = t(ERROR_ENUM.VALUE_IS_REQUIRED);
-    }
-    if (!/^[\w.-]+$/.test(alias)) {
+    } else if (!/^[\w.-]+$/.test(alias)) {
       errors.alias = t('invalid_alias');
-    }
-    if (validator.isUUID(alias)) {
+    } else if (
+      validator.isUUID(alias) ||
+      Object.values(ROUTES)
+        .map(r => r.split('/')[1].toLowerCase())
+        .includes(alias.toLowerCase())
+    ) {
       errors.alias = t(ERROR_ENUM.VALUE_IS_INVALID);
     }
     return errors;

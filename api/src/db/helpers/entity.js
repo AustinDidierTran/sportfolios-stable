@@ -12,6 +12,7 @@ const {
   MEMBERSHIP_LENGTH_TYPE_ENUM,
   INVOICE_STATUS_ENUM,
   REPORT_TYPE_ENUM,
+  ROUTES_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -1910,7 +1911,13 @@ async function addReport(type, organizationId, date) {
 }
 
 async function addAlias(entityId, alias) {
-  if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
+  if (
+    !/^[\w.-]+$/.test(alias) ||
+    validator.isUUID(alias) ||
+    Object.values(ROUTES_ENUM)
+      .map(r => r.split('/')[1].toLowerCase())
+      .includes(alias.toLowerCase())
+  ) {
     throw Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
 
@@ -2485,7 +2492,13 @@ async function updateMember(
 }
 
 async function updateAlias(entityId, alias) {
-  if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
+  if (
+    !/^[\w.-]+$/.test(alias) ||
+    validator.isUUID(alias) ||
+    Object.values(ROUTES_ENUM)
+      .map(r => r.split('/')[1].toLowerCase())
+      .includes(alias.toLowerCase())
+  ) {
     throw Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
 

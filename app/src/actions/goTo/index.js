@@ -1,47 +1,9 @@
 import history from '../../stores/history';
 import { getFormattedMailTo } from '../../utils/stringFormats';
 import api from '../api';
+import { ROUTES_ENUM } from '../../../../common/enums';
 
-export const ROUTES = {
-  addBankAccount: '/addBankAccount',
-  addPaymentMethod: '/addPaymentMethod',
-  adminPanel: '/adminPanel',
-  cart: '/cart',
-  checkout: '/checkout',
-  confirmationEmailSent: '/confirmationEmailSent/:email',
-  confirmEmail: '/confirmEmail/:token',
-  confirmEmailFailure: '/ConfirmEmailFailure',
-  confirmEmailSuccess: '/confirmEmailSuccess',
-  create: '/create',
-  createOrganization: '/organization/create',
-  createPerson: '/person/create',
-  createTeam: '/team/create',
-  entity: '/:id',
-  entityNotFound: '/entityNotFound',
-  eventRegistration: '/eventRegistration/:id',
-  home: '/',
-  login: '/login',
-  membersList: '/membersList',
-  menu: '/menu',
-  mockEvent: '/mock/Event/:openTab',
-  notifications: '/notifications',
-  orderProcessed: '/orderProcessed',
-  organizationList: '/organizationList',
-  privacyPolicy: '/privacy',
-  productAddedToCart: '/productAddedToCart',
-  recoveryEmail: '/recoveryEmail',
-  registrationStatus: '/registrationStatus',
-  createReport: '/createReport',
-  sales: '/sales/:id',
-  scheduleInteractiveTool: '/scheduleInteractiveTool/:id',
-  scheduleManager: '/scheduleManager',
-  search: '/search',
-  shopDetails: '/shopDetails/:id/:stripePriceId',
-  stripe: '/stripe',
-  transferPerson: '/transferPerson/:token',
-  transferPersonExpired: '/transferPersonExpired',
-  userSettings: '/userSettings',
-};
+export const ROUTES = ROUTES_ENUM;
 
 export const formatRoute = (route, params, queryParams) => {
   if (!route) {
