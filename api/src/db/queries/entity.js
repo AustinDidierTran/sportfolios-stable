@@ -366,11 +366,8 @@ async function addTeamToEvent(body, userId) {
     return { status: registrationStatus, reason };
   }
 
-  const team = await getEntity(teamId, userId);
-
-  const event = await getEntity(eventId, userId);
-
-  const realEventId = await (await getEntity(eventId, userId)).id;
+  const team = (await getEntity(teamId, userId)).basicInfos;
+  const event = (await getEntity(eventId, userId)).basicInfos;
 
   const teamPaymentOption = await getRegistrationTeamPaymentOption(
     paymentOption,
@@ -383,7 +380,7 @@ async function addTeamToEvent(body, userId) {
 
   const rosterId = await addTeamToEventHelper({
     teamId,
-    eventId: realEventId,
+    eventId: event.id,
     status: isFreeOption ? INVOICE_STATUS_ENUM.FREE : status,
     registrationStatus,
     paymentOption,
@@ -399,7 +396,7 @@ async function addTeamToEvent(body, userId) {
       {
         stripePriceId: teamPaymentOption.team_stripe_price_id,
         metadata: {
-          sellerEntityId: realEventId,
+          sellerEntityId: event.id,
           buyerId: teamId,
           rosterId,
           team,
@@ -667,9 +664,9 @@ async function addMember(body, userId) {
     expirationDate,
   );
 
-  const person = await getEntity(personId);
+  const person = (await getEntity(personId)).basicInfos;
 
-  const organization = await getEntity(organizationId);
+  const organization = (await getEntity(organizationId)).basicInfos;
 
   await addMembershipCartItem(
     {

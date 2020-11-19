@@ -40,7 +40,7 @@
   grid-template-columns: 5fr 1fr 1fr 1fr 5fr;
   grid-template-areas:
     'event time time time field'
-    'players1 . . . players2'
+    'players1 time time time players2'
     'name1 score1 union score2 name2';
   column-gap: 4px;
   padding: 8px;
@@ -69,12 +69,6 @@
   grid-area: players1;
   justify-content: center;
   justify-self: center;
-
-  font-size: 12px;
-  width: 24px !important;
-  height: 24px !important;
-  margin-right: auto;
-  margin-left: auto;
 }
 .players2 {
   grid-area: players2;
@@ -85,12 +79,4 @@
 .bubbleStack {
   width: 8px;
   height: 8px;
-}
-
-.bubblePlus {
-  font-size: 12px;
-  width: 24px !important;
-  height: 24px !important;
-  margin-right: auto;
-  margin-left: auto;
 }
