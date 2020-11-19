@@ -2981,4 +2981,5 @@ module.exports = {
   deleteGame,
   personIsAwaitingTransfer,
   getEntityOwners,
+  getRealId
 };

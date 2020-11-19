@@ -46,11 +46,11 @@ const sendNotification = async (notif, emailInfos) => {
   socket.emit(SOCKET_EVENT.NOTIFICATIONS, user_id, unseenCount);
 
   //TODO check for chatbot permissison and send message
-  const notifSettings = await getNotificationsSettingsHelper(
+  const notifSetting = await getNotificationsSettingsHelper(
     user_id,
     type,
   );
-  if (emailInfos && notifSettings && notifSettings.email) {
+  if (emailInfos && (!notifSetting || notifSetting.email)) {
     sendEmailNotification(user_id, emailInfos);
   }
 };

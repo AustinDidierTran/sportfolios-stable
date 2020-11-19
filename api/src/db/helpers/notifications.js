@@ -74,10 +74,12 @@ const getNotifications = async (user_id, body) => {
 
 const getNotificationsSettings = async (user_id, type) => {
   if (type) {
-    return knex('user_notification_setting')
+    const [res] = await knex('user_notification_setting')
       .select()
       .where({ user_id, type });
+    return res;
   } else {
+    //Return an array of every notification type setting
     return knex('user_notification_setting')
       .select()
       .where({ user_id });
