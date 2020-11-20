@@ -3011,4 +3011,5 @@ module.exports = {
   getEmailPerson,
   getGameTeams,
   isPlayerInRoster,
+  getRealId,
 };
