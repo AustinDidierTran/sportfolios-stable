@@ -1,0 +1,1 @@
+DROP view game_players_view
