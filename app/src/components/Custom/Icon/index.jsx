@@ -17,6 +17,7 @@ import CancelSend from '@material-ui/icons/CancelScheduleSend';
 import Check from '@material-ui/icons/Check';
 import Close from '@material-ui/icons/Close';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import Create from '@material-ui/icons/Create';
 import CreditCard from '@material-ui/icons/CreditCard';
 import Deck from '@material-ui/icons/Deck';
 import Delete from '@material-ui/icons/Delete';
@@ -54,6 +55,7 @@ import Person from '@material-ui/icons/Person';
 import PersonAdd from '@material-ui/icons/PersonAdd';
 import PrintIcon from '@material-ui/icons/Print';
 import Publish from '@material-ui/icons/Publish';
+import RateReview from '@material-ui/icons/RateReview';
 import Receipt from '@material-ui/icons/Receipt';
 import Remove from '@material-ui/icons/Remove';
 import RemoveShoppingCart from '@material-ui/icons/RemoveShoppingCart';
@@ -92,6 +94,7 @@ const icons = {
   CloudUploadIcon,
   Cancel,
   CancelSend,
+  Create,
   CreditCard,
   Deck,
   Delete,
@@ -129,6 +132,7 @@ const icons = {
   PersonAdd,
   PrintIcon,
   Publish,
+  RateReview,
   Receipt,
   Remove,
   RemoveShoppingCart,

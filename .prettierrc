@@ -2,5 +2,13 @@
   "semi": true,
   "trailingComma": "all",
   "singleQuote": true,
-  "printWidth": 70
+  "printWidth": 70,
+  "overrides": [
+    {
+      "files": ["**/*i18n/en/index.js", "**/*i18n/fr/index.js"],
+      "options": {
+        "printWidth": 100000
+      }
+    }
+  ]
 }

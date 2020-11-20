@@ -291,6 +291,7 @@ const SOCKET_EVENT = {
 
 const NOTIFICATION_TYPE = {
   ADDED_TO_ROSTER: 'added to roster',
+  SCORE_SUBMISSION_REQUEST: 'score submission request',
 };
 
 const NOTIFICATION_MEDIA = {
