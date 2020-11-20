@@ -5,14 +5,17 @@ import {
   ListItemIcon,
   Switch,
   Collapse,
-  Tooltip,
 } from '@material-ui/core';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NOTIFICATION_MEDIA } from '../../../../../../common/enums';
+import {
+  NOTIFICATION_MEDIA,
+  SEVERITY_ENUM,
+} from '../../../../../../common/enums';
 import { Icon } from '../../../Custom';
 import { Typography } from '../../../MUI';
+import { Store, ACTION_ENUM } from '../../../../Store';
 
 export default function NotificationSettingsItem(props) {
   const { t } = useTranslation();
@@ -32,6 +35,18 @@ export default function NotificationSettingsItem(props) {
   const handleClick = () => {
     setOpen(!open);
   };
+  const { dispatch } = useContext(Store);
+
+  function onChatbotClick() {
+    if (chatbotDisabled) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('you_need_to_connect_your_messenger_account'),
+        severity: SEVERITY_ENUM.INFO,
+        duration: 4000,
+      });
+    }
+  }
 
   return (
     <>
@@ -74,37 +89,29 @@ export default function NotificationSettingsItem(props) {
               }
             />
           </ListItem>
-          <Tooltip
-            enterTouchDelay={0}
-            leaveTouchDelay={3000}
-            placement="top"
-            arrow
-            title={
-              chatbotDisabled
-                ? t('you_need_to_connect_your_messenger_account')
-                : ''
-            }
+          <ListItem
+            dense
+            style={{ paddingLeft: 30 }}
+            onClick={onChatbotClick}
           >
-            <ListItem dense style={{ paddingLeft: 30 }}>
-              <ListItemIcon>
-                <Icon icon="Chat" />
-              </ListItemIcon>
-              <ListItemText primary={t('chatbot')} />
+            <ListItemIcon>
+              <Icon icon="Chat" />
+            </ListItemIcon>
+            <ListItemText primary={t('chatbot')} />
 
-              <Switch
-                disabled={chatbotDisabled}
-                checked={chatbot}
-                color="primary"
-                onChange={e =>
-                  onChange({
-                    type: notificationType,
-                    media: NOTIFICATION_MEDIA.CHATBOT,
-                    enabled: e.target.checked,
-                  })
-                }
-              />
-            </ListItem>
-          </Tooltip>
+            <Switch
+              disabled={chatbotDisabled}
+              checked={chatbot}
+              color="primary"
+              onChange={e =>
+                onChange({
+                  type: notificationType,
+                  media: NOTIFICATION_MEDIA.CHATBOT,
+                  enabled: e.target.checked,
+                })
+              }
+            />
+          </ListItem>
         </List>
       </Collapse>
     </>
