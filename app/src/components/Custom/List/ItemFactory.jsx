@@ -21,7 +21,7 @@ import PersonItem from './PersonItem';
 import PurchasesItem from './PurchasesItem';
 import RankingItem from './RankingItem';
 import RankingWithStatsItem from './RankingWithStatsItem';
-import ReportItem from './ReportItem';
+import ReportItemFactory from './ReportItemFactory';
 import RosterItem from './RosterItem';
 import SalesItem from './SalesItem';
 import TeamItem from './TeamItem';
@@ -52,7 +52,7 @@ const ItemMap = {
   [LIST_ITEM_ENUM.PURCHASES]: PurchasesItem,
   [LIST_ITEM_ENUM.RANKING_WITH_STATS]: RankingWithStatsItem,
   [LIST_ITEM_ENUM.RANKING]: RankingItem,
-  [LIST_ITEM_ENUM.REPORT]: ReportItem,
+  [LIST_ITEM_ENUM.REPORT]: ReportItemFactory,
   [LIST_ITEM_ENUM.ROSTER_ITEM]: RosterItem,
   [LIST_ITEM_ENUM.SALES]: SalesItem,
   [LIST_ITEM_ENUM.AVATAR_TEXT_SKELETON]: AvatarAndTextSkeleton,

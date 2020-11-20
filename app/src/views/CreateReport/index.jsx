@@ -7,6 +7,7 @@ import {
   IconButton,
 } from '../../components/Custom';
 import MembersReport from './MembersReport';
+import SalesReport from './SalesReport';
 import { ListItemText } from '@material-ui/core';
 import styles from './CreateReport.module.css';
 
@@ -38,6 +39,7 @@ export default function CreateReport() {
           />
         </div>
         <MembersReport />
+        <SalesReport />
       </Paper>
     </IgContainer>
   );

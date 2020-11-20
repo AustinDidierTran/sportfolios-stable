@@ -20,11 +20,3 @@ ALTER TABLE event_payment_options
 
 ALTER TABLE event_payment_options
   RENAME COLUMN team_price TO price;
-
-ALTER TABLE event_payment_options ALTER COLUMN id SET NOT NULL;
-
-ALTER TABLE event_payment_options
-  ADD PRIMARY KEY (id);
-
-ALTER TABLE event_rosters
-  ADD FOREIGN KEY (payment_option_id) REFERENCES event_payment_options (id);
