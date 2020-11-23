@@ -42,6 +42,9 @@
     "added_to_roster_text": "Bonjour {{name}}! Quelqu'un vous a ajouté à l'alignement de l'équipe {{teamName}} sur Sportfolios. Cliquez sur le bouton suivant pour consulter l'alignement complet.",
     "added_to_roster_button": "Voir l'alignement",
     "added_to_roster_subject": "Vous avez été ajouté à un alignement",
-    "unsubscribe_footer": "Modifier mes préférences de notifications"
+    "unsubscribe_footer": "Modifier mes préférences de notifications",
+    "score_submission_request_text": "Bonjour {{name}}! Une de vos partie de l'événement {{eventName}} vient de se terminer. Cliquez sur le lien afin de soumettre votre score sur Sportfolios",
+    "score_submission_request_button": "Soumettre le score",
+    "score_submission_request_subject": "Rappel de soumission de score"
   }
 }

@@ -1,8 +1,0 @@
-{
-	"quick_replies": {
-		"yes": "quick_replies.yes",
-		"no": "quick_replies.no",
-		"next_game": "quick_replies.next_game",
-		"mock": "quick_replies.mock"
-	}
-}

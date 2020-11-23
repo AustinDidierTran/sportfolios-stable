@@ -3,6 +3,9 @@
     "added_to_roster_text": "Hello {{name}}! Somebody added you to {{teamName}} team's roster on Sportfolios. Click on the following button to see the current roster.",
     "added_to_roster_button": "See current roster",
     "added_to_roster_subject": "You have been added to a roster",
-    "unsubscribe_footer": "Manage my notifications settings"
+    "unsubscribe_footer": "Manage my notifications settings",
+    "score_submission_request_text": "Hello {{name}}! One of your game from the event {{eventName}} just ended. Please submit your score on Sportfolios",
+    "score_submission_request_button": "Submit your score",
+    "score_submission_request_subject": "Score submission reminder"
   }
 }

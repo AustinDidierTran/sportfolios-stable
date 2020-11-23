@@ -4,6 +4,8 @@ const {
   sendNotification,
 } = require('../../db/queries/notifications');
 
+const { getPersonInfos } = require('../../db/queries/entity');
+
 const { NOTIFICATION_TYPE } = require('../../../../common/enums');
 
 /*
@@ -38,25 +40,44 @@ async function getAllPastHourGamesCaptain() {
 //Cron job for score submission reminder
 //Run every 15 minutes
 cron.schedule('0-59/1 * * * *', async () => {
+  // eslint-disable-next-line no-console
   console.log(
     '%s CRONJOB: executing score submission reminder',
     new Date().toUTCString(),
   );
   const res = await getAllPastHourGamesCaptain();
-  res.forEach(({ player_owner, game_id, event_id, event_name }) => {
-    const metadata = {
-      gameId: game_id,
-      eventId: event_id,
-      eventName: event_name,
-    };
-    sendNotification({
-      user_id: player_owner,
-      metadata,
-      type: NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST,
-      entity_photo: event_id,
-    });
-  });
-  console.log(res);
+  res.forEach(
+    async ({
+      player_owner,
+      player_id,
+      game_id,
+      event_id,
+      event_name,
+    }) => {
+      const metadata = {
+        gameId: game_id,
+        eventId: event_id,
+        eventName: event_name,
+      };
+      const emailInfos = {
+        name: (await getPersonInfos(player_id)).name,
+        eventName: event_name,
+        eventId: event_id,
+        type: NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST,
+        gameId: game_id,
+      };
+      sendNotification(
+        {
+          user_id: player_owner,
+          metadata,
+          type: NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST,
+          entity_photo: event_id,
+        },
+        emailInfos,
+      );
+    },
+  );
+  // eslint-disable-next-line no-console
   console.log(
     '%s CRONJOB: score submission reminder done, %d notifications sent',
     new Date().toUTCString(),
