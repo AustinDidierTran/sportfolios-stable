@@ -59,10 +59,14 @@ const sendEmailNotification = async (userId, emailInfos) => {
   const emails = await getEmailsFromUserId(userId);
   const locale = await getLanguageFromUser(userId);
   if (emails) {
-    const { html, subject, text } = await emailFactory({
+    const fullEmail = await emailFactory({
       ...emailInfos,
       locale,
     });
+    if (!fullEmail) {
+      return;
+    }
+    const { html, subject, text } = fullEmail;
     emails.forEach(e => {
       const { email, confirmed_email_at } = e;
       if (confirmed_email_at) {

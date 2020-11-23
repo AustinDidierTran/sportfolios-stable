@@ -8,6 +8,7 @@ import isArray from 'lodash/isArray';
 import moment from 'moment';
 import 'moment/locale/fr';
 import { formatRoute } from '../../actions/goTo';
+import i18n from '../../i18n';
 
 export const getInitialsFromName = completeName => {
   if (!completeName) {
@@ -223,3 +224,37 @@ export const validateEmail = email => {
     email && /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)
   );
 };
+
+export function timestampToRelativeTime(timeStamp) {
+  const msPerMinute = 60 * 1000;
+  const msPerHour = msPerMinute * 60;
+  const msPerDay = msPerHour * 24;
+  const msPerMonth = msPerDay * 30;
+  const msPerYear = msPerDay * 365;
+  const elapsed = new Date() - timeStamp;
+  if (elapsed < msPerMinute) {
+    return i18n.t('second_ago', {
+      count: Math.round(elapsed / 1000),
+    });
+  } else if (elapsed < msPerHour) {
+    return i18n.t('minute_ago', {
+      count: Math.round(elapsed / msPerMinute),
+    });
+  } else if (elapsed < msPerDay) {
+    return i18n.t('hour_ago', {
+      count: Math.round(elapsed / msPerHour),
+    });
+  } else if (elapsed < msPerMonth) {
+    return i18n.t('day_ago', {
+      count: Math.round(elapsed / msPerDay),
+    });
+  } else if (elapsed < msPerYear) {
+    return i18n.t('month_ago', {
+      count: Math.round(elapsed / msPerMonth),
+    });
+  } else {
+    return i18n.t('year_ago', {
+      count: Math.round(elapsed / msPerYear),
+    });
+  }
+}

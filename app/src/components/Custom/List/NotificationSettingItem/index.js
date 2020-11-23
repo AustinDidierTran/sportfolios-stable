@@ -31,7 +31,7 @@ export default function NotificationSettingsItem(props) {
   } = props;
   const [open, setOpen] = useState(false);
   const emailString = email ? t('email') : '';
-  const chatbotString = chatbot ? t('Chatbot') : '';
+  const chatbotString = chatbot ? t('chatbot') : '';
   const handleClick = () => {
     setOpen(!open);
   };

@@ -11,14 +11,19 @@ import {
 } from '../../../../../common/enums';
 const iconMap = {
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: 'PeopleIcon',
+  [NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST]: 'RateReview',
 };
 
 const titleMap = {
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: 'added_to_roster',
+  [NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST]:
+    'score_submission_request',
 };
 
 const descriptionMap = {
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: 'added_to_roster_description',
+  [NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST]:
+    'score_submission_request_description',
 };
 export default function Notifications() {
   const { t } = useTranslation();

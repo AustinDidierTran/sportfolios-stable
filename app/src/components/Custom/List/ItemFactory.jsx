@@ -25,7 +25,10 @@ import ReportItem from './ReportItem';
 import RosterItem from './RosterItem';
 import SalesItem from './SalesItem';
 import TeamItem from './TeamItem';
-import { RosterNotification } from './NotificationItems';
+import {
+  RosterNotification,
+  ScoreSubmissionRequestNotification,
+} from './NotificationItems';
 import { AvatarAndTextSkeleton } from './SkeletonItems';
 import NotificationSettingItem from './NotificationSettingItem';
 
@@ -55,6 +58,7 @@ const ItemMap = {
   [LIST_ITEM_ENUM.AVATAR_TEXT_SKELETON]: AvatarAndTextSkeleton,
   [LIST_ITEM_ENUM.NOTIFICATION_SETTING]: NotificationSettingItem,
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: RosterNotification,
+  [NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST]: ScoreSubmissionRequestNotification,
 };
 
 export default function ItemFactory(props) {
