@@ -19,12 +19,15 @@ const {
   getEmailsFromUserId,
   getLanguageFromUser,
   getMessengerId,
+  setChatbotInfos,
 } = require('../helpers');
 const { getGameTeams } = require('../helpers/entity');
 
 const {
   SOCKET_EVENT,
   NOTIFICATION_TYPE,
+  SCORE_SUBMISSION_CHATBOT_STATES,
+  MILLIS_TIME_ENUM,
 } = require('../../../../common/enums');
 
 const seeNotifications = async user_id => {
@@ -67,11 +70,44 @@ const sendChatbotNotification = async (user_id, notif) => {
   if (!messengerId) {
     return;
   }
-  const { chatbotInfos, state } = getChatbotInfos(messengerId);
+  const { chatbotInfos, updated_at } = getChatbotInfos(messengerId);
+  //Check if it was recently uptdated, wich would mean the user is chatting with the bot
+  if (updated_at > new Date().valueOf - MILLIS_TIME_ENUM.ONE_MINUTE) {
+    return;
+  }
   const { type, metadata } = notif;
   if (type === NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST) {
-    const { gameId } = metadata;
-    const teams = getGameTeams(gameId);
+    const { gameId, playerId } = metadata;
+    const teams = await getGameTeams(gameId);
+    let myTeamFound = false;
+    chatbotInfos.opponentTeams = [];
+    chatbotInfos.gameId = gameId;
+    chatbotInfos.playerId = playerId;
+    teams.forEach(async team => {
+      if (
+        !myTeamFound &&
+        (await isPlayerInRoster(playerId, team.roster_id))
+      ) {
+        myTeamFound = true;
+        chatbotInfos.myRosterId = team.roster_id;
+        chatbotInfos.myTeamName = team.name;
+      } else {
+        chatbotInfos.opponentTeams.push({
+          rosterId: team.roster_id,
+          teamName: team.name,
+        });
+      }
+    });
+    const chatbot = new Chatbot(
+      messengerId,
+      SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT,
+      chatbotInfos,
+    );
+    chatbot.sendIntroMessages();
+    setChatbotInfos(messengerId, {
+      chatbot_infos: chatbot.chatbotInfos,
+      state: chatbot.stateType,
+    });
   }
 };
 

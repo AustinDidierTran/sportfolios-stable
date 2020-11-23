@@ -622,11 +622,17 @@ const getChatbotInfos = async messenger_id => {
     .select('*')
     .first()
     .where({ messenger_id });
+
   if (infos) {
+    const {
+      messenger_id: messengerId,
+      chatbot_infos: chatbotInfos,
+      ...otherInfos
+    } = infos;
     return {
-      messengerId: infos.messenger_id,
-      state: infos.state,
-      chatbotInfos: infos.chatbot_infos,
+      messengerId,
+      chatbotInfos,
+      ...otherInfos,
     };
   }
 };

@@ -58,6 +58,7 @@ cron.schedule('0-59/15 * * * *', async () => {
         gameId: game_id,
         eventId: event_id,
         eventName: event_name,
+        playerId: player_id,
       };
       const emailInfos = {
         name: (await getPersonInfos(player_id)).name,

@@ -332,6 +332,7 @@ const LIST_ITEM_ENUM = {
 };
 
 const MILLIS_TIME_ENUM = {
+  ONE_MINUTE: 60 * 1000,
   ONE_HOUR: 60 * 60 * 1000,
   ONE_DAY: 24 * 60 * 60 * 1000,
   ONE_WEEK: 7 * 24 * 60 * 60 * 1000,
