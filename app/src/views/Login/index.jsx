@@ -25,7 +25,6 @@ export default function Login() {
   const { t } = useTranslation();
   const { successRoute, redirectUrl } = useQuery();
   const { dispatch } = useContext(Store);
-
   const validate = values => {
     const errors = {};
     if (formik.status.state === LOGIN_STATE_ENUM.SIGNUP) {
@@ -224,7 +223,10 @@ export default function Login() {
       <div className={styles.main}>
         <Container className={styles.container}>
           <div className={styles.logo}>
-            <img className={styles.img} src={LOGO_ENUM.LOGO} />
+            <img
+              className={styles.img}
+              src={LOGO_ENUM.LOGO_256X256}
+            />
           </div>
           <SignupCard successRoute={successRoute} formik={formik} />
         </Container>
@@ -237,7 +239,10 @@ export default function Login() {
       <div className={styles.main}>
         <Container className={styles.container}>
           <div className={styles.logo}>
-            <img className={styles.img} src={LOGO_ENUM.LOGO} />
+            <img
+              className={styles.img}
+              src={LOGO_ENUM.LOGO_256X256}
+            />
           </div>
           <ForgotPasswordCard formik={formik} />
         </Container>
@@ -249,7 +254,7 @@ export default function Login() {
     <div className={styles.main}>
       <Container className={styles.container}>
         <div className={styles.logo}>
-          <img className={styles.img} src={LOGO_ENUM.LOGO} />
+          <img className={styles.img} src={LOGO_ENUM.LOGO_256X256} />
         </div>
         <LoginCard formik={formik} />
         <div className={styles.or}>

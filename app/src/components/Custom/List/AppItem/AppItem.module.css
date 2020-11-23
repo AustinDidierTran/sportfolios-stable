@@ -1,6 +1,7 @@
 .button {
   max-height: 30px;
   padding-right: 96px;
+  width: 100%;
 }
 
 .main {

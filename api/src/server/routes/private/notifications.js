@@ -96,5 +96,41 @@ router.get(`${BASE_URL}/all`, async ctx => {
     };
   }
 });
+router.get(`${BASE_URL}/settings/all`, async ctx => {
+  const settings = await queries.getNotificationsSettings(
+    ctx.body.userInfo.id,
+  );
+  if (settings) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS_STRING,
+      data: settings,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
 
+router.put(`${BASE_URL}/settings`, async ctx => {
+  const res = await queries.setNotificationsSettings(
+    ctx.body.userInfo.id,
+    ctx.request.body,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS_STRING,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
 module.exports = router;

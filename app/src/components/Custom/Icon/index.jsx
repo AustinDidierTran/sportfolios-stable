@@ -70,6 +70,8 @@ import Stars from '@material-ui/icons/Stars';
 import Store from '@material-ui/icons/Store';
 import SupervisedUserCircle from '@material-ui/icons/SupervisedUserCircle';
 import Undo from '@material-ui/icons/Undo';
+import Chat from '@material-ui/icons/Chat';
+import ExpandLess from '@material-ui/icons/ExpandLess';
 
 const icons = {
   AccountBalance,
@@ -85,6 +87,7 @@ const icons = {
   Build,
   Business,
   Check,
+  Chat,
   Close,
   CloudUploadIcon,
   Cancel,
@@ -142,6 +145,8 @@ const icons = {
   Store,
   SupervisedUserCircle,
   Undo,
+  ExpandLess,
+  ExpandMore,
 };
 
 export default function CustomIcon(props) {

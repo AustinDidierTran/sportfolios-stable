@@ -2,13 +2,22 @@ import React from 'react';
 
 import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
 import { Icon } from '../..';
+import { ListItemSecondaryAction } from '@material-ui/core';
 
 export default function DefaultItem(props) {
-  const { onClick, selected, iconComponent, icon, value } = props;
+  const {
+    onClick,
+    selected,
+    iconComponent,
+    icon,
+    value,
+    secondaryAction,
+    description,
+  } = props;
 
   return (
     <ListItem
-      button
+      button={Boolean(onClick)}
       onClick={onClick}
       selected={selected}
       style={{ width: '100%' }}
@@ -20,7 +29,13 @@ export default function DefaultItem(props) {
           <Icon icon={icon}></Icon>
         </ListItemIcon>
       )}
-      <ListItemText primary={value}></ListItemText>
+      <ListItemText
+        primary={value}
+        secondary={description}
+      ></ListItemText>
+      <ListItemSecondaryAction>
+        <>{secondaryAction}</>
+      </ListItemSecondaryAction>
     </ListItem>
   );
 }

@@ -10,7 +10,7 @@ ENV PATH /sportfolios/node_modules/.bin:$PATH
 COPY ["package.json", "package-lock.json", "./"]
 
 # Install modules into container
-RUN npm install
+RUN npm install && npm cache clean --force
 
 COPY . ./
 

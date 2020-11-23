@@ -47,6 +47,8 @@ export default {
     add_to_cart: 'Ajouter au panier',
     add: 'Ajouter',
     added_to_cart: 'Ajouté au panier',
+    added_to_roster: 'Ajouté à un alignement',
+    added_to_roster_description: "Notification envoyée lorsqu'une de vos personnes est ajoutée à un alignement",
     added_to_roster_notif_title: 'Vous avez été ajouté à un alignement',
     added_to_roster_notif_description: "Quelqu'un vous a ajouté à l'équipe {{teamName}}",
     address: 'Adresse',
@@ -119,6 +121,7 @@ export default {
     change_picture: 'Changer la photo',
     change_team: "Changer l'équipe",
     changes_saved: 'Changements sauvegardés',
+    chatbot: 'Chatbot',
     checkout: 'Procéder',
     choose_date:'Choisir la date',
     choose_your_report:'Choisir votre rapport',
@@ -394,6 +397,7 @@ export default {
     not_paid: 'Non payé',
     not_specified: 'Non spécifié',
     notifications: 'Notifications',
+    notifications_disabled: 'Notifications désactivées',
     of_everyone: 'de tout le monde',
     of_team: "de l'équipe",
     of: 'du',
@@ -713,6 +717,7 @@ export default {
       'Vous pouvez maintenant changer votre mot de passe pour le compte ayant le courriel {{email}}',
     you_have_no_account_with_this_email_create_one:
       "Vous n'avez de compte associé avec ce courriel! Créez votre compte!",
+      you_need_to_connect_your_messenger_account: "Vous devez d'abord connecter votre compte avec messenger dans la section \"Applications\" afin de pouvoir activer les notifications du chatbot",
     you_need_to_create_an_account:
       'Avant de procéder, veuillez vous créer un compte.',
     you_paid_with: 'Vous avez payé avec',

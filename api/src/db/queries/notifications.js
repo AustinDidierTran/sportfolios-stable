@@ -6,6 +6,8 @@ const {
   clickNotification: clickNotificationHelper,
   deleteNotification: deleteNotificationHelper,
   addNotification,
+  getNotificationsSettings: getNotificationsSettingsHelper,
+  upsertNotificationsSettings,
 } = require('../helpers/notifications');
 
 const socket = require('../../server/websocket/socket.io');
@@ -16,6 +18,7 @@ const emailFactory = require('../emails/emailFactory');
 const {
   getEmailsFromUserId,
   getLanguageFromUser,
+  getMessengerId,
 } = require('../helpers');
 
 const { SOCKET_EVENT } = require('../../../../common/enums');
@@ -37,12 +40,17 @@ const deleteNotification = async notification_id => {
 };
 
 const sendNotification = async (notif, emailInfos) => {
-  //TODO check for user notification permission
-  const { user_id } = notif;
+  const { user_id, type } = notif;
   await addNotification(notif);
   const unseenCount = await countUnseenNotifications(user_id);
   socket.emit(SOCKET_EVENT.NOTIFICATIONS, user_id, unseenCount);
-  if (emailInfos) {
+
+  //TODO check for chatbot permissison and send message
+  const notifSetting = await getNotificationsSettingsHelper(
+    user_id,
+    type,
+  );
+  if (emailInfos && (!notifSetting || notifSetting.email)) {
     sendEmailNotification(user_id, emailInfos);
   }
 };
@@ -68,6 +76,18 @@ const getNotifications = async (user_id, body) => {
   return getNotificationsHelper(user_id, body);
 };
 
+const getNotificationsSettings = async userId => {
+  const messengerLinked = Boolean(await getMessengerId(userId));
+  return {
+    chatbotDisabled: !messengerLinked,
+    notifications: await getNotificationsSettingsHelper(userId),
+  };
+};
+
+const setNotificationsSettings = async (userId, body) => {
+  return upsertNotificationsSettings(userId, body);
+};
+
 module.exports = {
   getNotifications,
   seeNotifications,
@@ -75,4 +95,6 @@ module.exports = {
   clickNotification,
   deleteNotification,
   sendNotification,
+  getNotificationsSettings,
+  setNotificationsSettings,
 };

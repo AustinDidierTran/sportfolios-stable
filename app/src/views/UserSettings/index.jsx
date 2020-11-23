@@ -14,6 +14,7 @@ import CreditCards from './CreditCards';
 import Disconnect from './Disconnect';
 import Email from './Email';
 import MyPersons from './MyPersons';
+import Notifications from './Notifications';
 
 export default function UserSettings() {
   const { t } = useTranslation();
@@ -25,6 +26,21 @@ export default function UserSettings() {
   const isLoggedIn = useMemo(() => Boolean(state.userInfo), [
     state.userInfo,
   ]);
+
+  //Scroll to given section specified with # in the url
+  const scroll = () => {
+    const hash = window.location.hash.substr(1);
+    if (hash) {
+      const anchor = document.getElementById(hash);
+      setTimeout(() => {
+        anchor?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 500);
+    }
+  };
+  useEffect(scroll, []);
 
   if (!isLoggedIn) {
     return <LoadingSpinner />;
@@ -39,6 +55,9 @@ export default function UserSettings() {
         <ChangePassword />
         <AppLinking />
         <CreditCards />
+        <div id="notifications">
+          <Notifications />
+        </div>
         <Disconnect />
         <BottomPageLogo />
       </IgContainer>
