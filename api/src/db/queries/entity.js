@@ -949,7 +949,7 @@ async function addPlayerToRoster(body, userId) {
         user_id: owner.user_id,
         type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
         entity_photo: realEventId || teamId,
-        metadata: { realEventId, teamName },
+        metadata: { eventId: realEventId, teamName },
       };
       const emailInfos = {
         type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
