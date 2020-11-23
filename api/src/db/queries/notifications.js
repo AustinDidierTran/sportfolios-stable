@@ -20,8 +20,12 @@ const {
   getLanguageFromUser,
   getMessengerId,
 } = require('../helpers');
+const { getGameTeams } = require('../helpers/entity');
 
-const { SOCKET_EVENT } = require('../../../../common/enums');
+const {
+  SOCKET_EVENT,
+  NOTIFICATION_TYPE,
+} = require('../../../../common/enums');
 
 const seeNotifications = async user_id => {
   return seeNotificationsHelper(user_id);
@@ -52,6 +56,22 @@ const sendNotification = async (notif, emailInfos) => {
   );
   if (emailInfos && (!notifSetting || notifSetting.email)) {
     sendEmailNotification(user_id, emailInfos);
+  }
+  if (!notifSetting || notifSetting.chatbot) {
+    sendChatbotNotification(user_id, notif);
+  }
+};
+
+const sendChatbotNotification = async (user_id, notif) => {
+  const messengerId = await getMessengerId(user_id);
+  if (!messengerId) {
+    return;
+  }
+  const { chatbotInfos, state } = getChatbotInfos(messengerId);
+  const { type, metadata } = notif;
+  if (type === NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST) {
+    const { gameId } = metadata;
+    const teams = getGameTeams(gameId);
   }
 };
 

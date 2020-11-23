@@ -695,7 +695,9 @@ const getMessengerId = async user_id => {
   const [res] = await knex('user_apps_id')
     .where({ user_id })
     .select('messenger_id');
-  return res.messenger_id;
+  if (res) {
+    return res.messenger_id;
+  }
 };
 
 const deleteMessengerId = async user_id => {

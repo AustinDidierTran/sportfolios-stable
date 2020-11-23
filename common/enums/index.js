@@ -208,6 +208,11 @@ const STATUS_ENUM = {
   SUCCESS_STRING: 'success',
 };
 
+const PLAYER_ATTENDANCE_STATUS = {
+  PRESENT: 'present',
+  ABSENT: 'absent',
+};
+
 const PERSON_TRANSFER_STATUS_ENUM = {
   ACCEPTED: 'accepted',
   PENDING: 'pending',
@@ -455,4 +460,5 @@ module.exports = {
   TABS_ENUM,
   TAG_TYPE_ENUM,
   VIEW_ENUM,
+  PLAYER_ATTENDANCE_STATUS,
 };

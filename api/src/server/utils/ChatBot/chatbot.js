@@ -29,6 +29,13 @@ class Chatbot {
   handleEvent(webhookEvent) {
     this.state.handleEvent(webhookEvent);
   }
+
+  sendIntroMessages() {
+    this.state.sendMessages(
+      this.messengerId,
+      this.state.getIntroMessages(),
+    );
+  }
 }
 
 module.exports = Chatbot;
