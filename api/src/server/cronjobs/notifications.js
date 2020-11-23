@@ -39,7 +39,7 @@ async function getAllPastHourGamesCaptain() {
 }
 //Cron job for score submission reminder
 //Run every 15 minutes
-cron.schedule('0-59/1 * * * *', async () => {
+cron.schedule('0-59/15 * * * *', async () => {
   // eslint-disable-next-line no-console
   console.log(
     '%s CRONJOB: executing score submission reminder',
