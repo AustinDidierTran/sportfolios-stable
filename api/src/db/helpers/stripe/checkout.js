@@ -45,6 +45,7 @@ const createInvoiceItem = async (body, userId) => {
     metadata: formatMetadata(metadata),
     quantity,
   };
+  //FETCH TAXRATES
   try {
     const invoiceItem = await stripe.invoiceItems.create(params);
     await knex('stripe_invoice_item').insert({
