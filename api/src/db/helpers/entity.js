@@ -419,15 +419,11 @@ async function getScoreSuggestion(event_id, gameId) {
   const suggestions = await knex('score_suggestion')
     .select('*')
     .where({
-      event_id,
       game_id: gameId,
-    });
+    })
+    .orderBy('created_at', 'asc');
 
-  const res = suggestions.sort(
-    (a, b) => moment(a.created_at) - moment(b.created_at),
-  );
-
-  return res;
+  return suggestions;
 }
 async function getSameSuggestions(
   eventId,
@@ -1375,6 +1371,38 @@ async function getGames(eventId) {
   return res;
 }
 
+async function getGameTeams(game_id, player_id) {
+  if (!player_id)
+    return knex('game_teams')
+      .select()
+      .where({ game_id });
+  else {
+    //Will return the player id in player_id column if player is in team, null if he isn't
+    const players = knex('game_players_view')
+      .select('player_id', 'roster_id')
+      .where({ game_id, player_id })
+      .as('players');
+    return knex
+      .select(
+        'game_id',
+        'game_teams.roster_id',
+        'players.player_id',
+        'name',
+      )
+      .from('game_teams')
+      .where({ game_id })
+      .leftJoin(players, 'game_teams.roster_id', 'players.roster_id');
+  }
+}
+
+async function isPlayerInRoster(player_id, roster_id) {
+  const res = await knex('team_players').where({
+    roster_id,
+    person_id: player_id,
+  });
+  return Boolean(res);
+}
+
 async function getUnplacedGames(eventId) {
   const realId = await getRealId(eventId);
   const unplacedGames = await knex('games')
@@ -2061,44 +2089,10 @@ async function addScoreAndSpirit(props) {
   return res;
 }
 
-async function addScoreSuggestion(
-  gameId,
-  eventId,
-  yourTeamName,
-  yourTeamId,
-  yourScore,
-  opposingTeamName,
-  opposingTeamId,
-  opposingTeamScore,
-  opposingTeamSpirit,
-  players,
-  comments,
-  suggestedBy,
-) {
-  let yourName = yourTeamName;
-  if (yourTeamId) {
-    yourName = await getTeamName(yourTeamId);
-  }
-  let opposingName = opposingTeamName;
-  if (opposingTeamId) {
-    opposingName = await getTeamName(opposingTeamId);
-  }
-  const realEventId = await getRealId(eventId);
-
+async function addScoreSuggestion(infos) {
   const res = await knex('score_suggestion')
     .insert({
-      game_id: gameId,
-      event_id: realEventId,
-      your_team: yourName,
-      your_roster_id: yourTeamId,
-      your_score: yourScore,
-      opposing_team: opposingName,
-      opposing_roster_id: opposingTeamId,
-      opposing_team_score: opposingTeamScore,
-      opposing_team_spirit: opposingTeamSpirit,
-      players,
-      comments,
-      created_by: suggestedBy,
+      ...infos,
     })
     .returning('*');
   return res;
@@ -2730,10 +2724,8 @@ async function updateSuggestionStatus(
       const res = await knex('score_suggestion')
         .where({
           game_id: s.game_id,
-          your_roster_id: s.your_roster_id,
-          your_score: s.your_score,
-          opposing_roster_id: s.opposing_roster_id,
-          opposing_team_score: s.opposing_team_score,
+          submitted_by: s.your_roster_id,
+          score: s.score,
         })
         .update({
           status,
@@ -2764,10 +2756,8 @@ async function updateSuggestionStatus(
       await knex('score_suggestion')
         .where({
           game_id: d.game_id,
-          your_roster_id: d.your_roster_id,
-          your_score: d.your_score,
-          opposing_roster_id: d.opposing_roster_id,
-          opposing_team_score: d.opposing_team_score,
+          submitted_by: d.your_roster_id,
+          score: d.score,
         })
         .update({
           status: STATUS_ENUM.REFUSED,
@@ -2883,14 +2873,6 @@ const deleteGame = async id => {
   const [res] = await knex.transaction(async trx => {
     await knex('score_suggestion')
       .where({
-        event_id: game.event_id,
-        game_id: game.id,
-      })
-      .del()
-      .transacting(trx);
-    await knex('score_suggestion')
-      .where({
-        event_id: game.event_id,
         game_id: game.id,
       })
       .del()
@@ -3027,5 +3009,6 @@ module.exports = {
   getEntityOwners,
   getRealId,
   getEmailPerson,
-  getRealId,
+  getGameTeams,
+  isPlayerInRoster,
 };
