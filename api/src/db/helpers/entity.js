@@ -3009,7 +3009,10 @@ module.exports = {
   getEntityOwners,
   getRealId,
   getEmailPerson,
+<<<<<<< HEAD
   getGameTeams,
   isPlayerInRoster,
+=======
+>>>>>>> Requested changes
   getRealId,
 };
