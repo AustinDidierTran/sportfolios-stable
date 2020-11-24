@@ -117,10 +117,12 @@ const FORM_DIALOG_TYPE_ENUM = {
   ADD_MEMBER: 'add member',
   EDIT_MEMBERSHIP: 'edit membership',
   MEMBERS_REPORT: 'members report',
+  SALES_REPORT: 'sales_report',
 };
 
 const REPORT_TYPE_ENUM = {
   MEMBERS: 'members',
+  SALES: 'sales',
 };
 
 const LANGUAGE_ENUM = {
@@ -273,13 +275,11 @@ const LOGIN_STATE_ENUM = {
   FORGOT_PASSWORD: 'forgotPassword',
 };
 
-// Everything excluding roles
 const GLOBAL_ENUM = {
   PERSON: 1,
   ORGANIZATION: 2,
   TEAM: 3,
   EVENT: 4,
-  MEMBERSHIP_DETAIL: 'membership_detail',
   MEMBERSHIP: 'membership',
   SHOP_ITEM: 'shop_item',
 };

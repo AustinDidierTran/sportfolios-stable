@@ -25,8 +25,8 @@ export default function MembersReport() {
     <>
       <Card
         items={{
-          title: t('members'),
-          description: t('members_report_description'),
+          title: t('sales'),
+          description: t('sales_report_description'),
           onClick: () => {
             setOpen(true);
           },
@@ -34,7 +34,7 @@ export default function MembersReport() {
         type={CARD_TYPE_ENUM.REPORT}
       ></Card>
       <FormDialog
-        type={FORM_DIALOG_TYPE_ENUM.MEMBERS_REPORT}
+        type={FORM_DIALOG_TYPE_ENUM.SALES_REPORT}
         items={{
           open,
           onClose,

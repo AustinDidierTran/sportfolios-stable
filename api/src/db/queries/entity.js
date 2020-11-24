@@ -58,6 +58,7 @@ const {
   getGeneralInfos: getGeneralInfosHelper,
   getMembers: getMembersHelper,
   getReports: getReportsHelper,
+  getOwnerStripePrice,
   generateReport: generateReportHelper,
   hasMemberships: hasMembershipsHelper,
   getOrganizationMembers: getOrganizationMembersHelper,
@@ -393,11 +394,14 @@ async function addTeamToEvent(body, userId) {
   }
   if (registrationStatus === STATUS_ENUM.ACCEPTED) {
     // wont be added to cart if free
+    const ownerId = await getOwnerStripePrice(
+      teamPaymentOption.team_stripe_price_id,
+    );
     await addEventCartItem(
       {
         stripePriceId: teamPaymentOption.team_stripe_price_id,
         metadata: {
-          sellerEntityId: event.id,
+          sellerEntityId: ownerId,
           buyerId: teamId,
           rosterId,
           team,
