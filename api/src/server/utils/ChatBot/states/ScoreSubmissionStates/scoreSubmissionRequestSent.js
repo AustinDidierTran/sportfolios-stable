@@ -27,8 +27,21 @@ class ScoreSubmissionRequestSent extends State {
 
   getIntroMessages() {
     const userName = this.context.chatbotInfos.userName;
-    const opponentTeamName = this.context.chatbotInfos
-      .opponentTeamName;
+    const opponentTeams = this.context.chatbotInfos.opponentTeams;
+    const teamQuantity = opponentTeams.length;
+
+    const opponentTeamName =
+      teamQuantity === 1
+        ? opponentTeams[0].teamName
+        : opponentTeams.reduce(
+            (acc, cur, i) =>
+              acc +
+              (i < teamQuantity - 1
+                ? ', '
+                : ' ' + i18n.__('and') + ' ') +
+              cur.teamName,
+            '',
+          );
     return [
       Response.genQuickReply(
         i18n.__('score_submission.request', {

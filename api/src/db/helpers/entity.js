@@ -1450,14 +1450,6 @@ async function isPlayerInRoster(player_id, roster_id) {
   return Boolean(res);
 }
 
-async function isPlayerInRoster(player_id, roster_id) {
-  const res = await knex('team_players').where({
-    roster_id,
-    person_id: player_id,
-  });
-  return Boolean(res);
-}
-
 async function getUnplacedGames(eventId) {
   const realId = await getRealId(eventId);
   const unplacedGames = await knex('games')

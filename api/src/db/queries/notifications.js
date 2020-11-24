@@ -10,6 +10,8 @@ const {
   upsertNotificationsSettings,
 } = require('../helpers/notifications');
 
+const Chatbot = require('../../server/utils/ChatBot/chatbot');
+
 const socket = require('../../server/websocket/socket.io');
 
 const { sendMail } = require('../../server/utils/nodeMailer');
@@ -20,6 +22,7 @@ const {
   getLanguageFromUser,
   getMessengerId,
   setChatbotInfos,
+  getChatbotInfos,
 } = require('../helpers');
 const { getGameTeams } = require('../helpers/entity');
 
@@ -63,14 +66,18 @@ const sendNotification = async (notif, emailInfos) => {
   if (!notifSetting || notifSetting.chatbot) {
     sendChatbotNotification(user_id, notif);
   }
+  console.log(notifSetting);
 };
 
 const sendChatbotNotification = async (user_id, notif) => {
+  console.log('allo');
   const messengerId = await getMessengerId(user_id);
   if (!messengerId) {
     return;
   }
-  const { chatbotInfos, updated_at } = getChatbotInfos(messengerId);
+  const { chatbotInfos, updated_at } = await getChatbotInfos(
+    messengerId,
+  );
   //Check if it was recently uptdated, wich would mean the user is chatting with the bot
   if (updated_at > new Date().valueOf - MILLIS_TIME_ENUM.ONE_MINUTE) {
     return;
@@ -78,16 +85,13 @@ const sendChatbotNotification = async (user_id, notif) => {
   const { type, metadata } = notif;
   if (type === NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST) {
     const { gameId, playerId } = metadata;
-    const teams = await getGameTeams(gameId);
+    const teams = await getGameTeams(gameId, playerId);
     let myTeamFound = false;
     chatbotInfos.opponentTeams = [];
     chatbotInfos.gameId = gameId;
     chatbotInfos.playerId = playerId;
-    teams.forEach(async team => {
-      if (
-        !myTeamFound &&
-        (await isPlayerInRoster(playerId, team.roster_id))
-      ) {
+    teams.forEach(team => {
+      if (!myTeamFound && team.player_id) {
         myTeamFound = true;
         chatbotInfos.myRosterId = team.roster_id;
         chatbotInfos.myTeamName = team.name;
@@ -98,6 +102,7 @@ const sendChatbotNotification = async (user_id, notif) => {
         });
       }
     });
+    console.log(chatbotInfos);
     const chatbot = new Chatbot(
       messengerId,
       SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT,
@@ -105,7 +110,7 @@ const sendChatbotNotification = async (user_id, notif) => {
     );
     chatbot.sendIntroMessages();
     setChatbotInfos(messengerId, {
-      chatbot_infos: chatbot.chatbotInfos,
+      chatbot_infos: JSON.stringify(chatbot.chatbotInfos),
       state: chatbot.stateType,
     });
   }

@@ -5,6 +5,7 @@ class Chatbot {
     this.messengerId = messengerId;
     this.chatbotInfos = chatbotInfos;
     this.setState(stateType);
+    console.log(chatbotInfos);
   }
 
   setState(stateType) {
@@ -26,8 +27,8 @@ class Chatbot {
     );
   }
 
-  handleEvent(webhookEvent) {
-    this.state.handleEvent(webhookEvent);
+  async handleEvent(webhookEvent) {
+    await this.state.handleEvent(webhookEvent);
   }
 
   sendIntroMessages() {

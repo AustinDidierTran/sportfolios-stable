@@ -14,7 +14,7 @@ class AwaitingSpiritCommunication extends State {
       const score = this.getNumber(webhookEvent);
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_CONFIRMATION;
-      this.context.chatbotInfos.spirit.communication = score;
+      this.context.chatbotInfos.opponentTeams[0].spirit.communication = score;
       //TODO SAVE SCORE
     } else if (
       this.isStop(webhookEvent) ||

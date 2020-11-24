@@ -34,15 +34,9 @@ class SpiritSubmissionRequestSent extends State {
   }
 
   getIntroMessages() {
-    const myScore = this.context.chatbotInfos.myScore;
-    const opponentScore = this.context.chatbotInfos.opponentScore;
-    const text =
-      myScore > opponentScore
-        ? 'score_submission.confirmed.victory'
-        : 'score_submission.confirmed.other';
     return [
       Response.genQuickReply(
-        i18n.__(text),
+        i18n.__('spirit_submission.request'),
         MESSENGER_QUICK_REPLIES.CONFIRMATION,
       ),
     ];

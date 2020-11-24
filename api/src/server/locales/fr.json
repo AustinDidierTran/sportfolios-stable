@@ -2,17 +2,21 @@
   "score_submission": {
     "request": "Bonjour {{userName}}, votre équipe vient tout juste d'affronter l'équipe {{opponentTeamName}}. Désirez-vous soumettre votre pointage ici?",
     "explaination": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-[leur pointage]. Par exemple, pour une victoire de 13 à 10 veuillez entrer 13-10",
+    "explaination_many": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-{{teamNames}}. Par exemple: {{example}}",
     "confirmation": {
       "victory": "Vous avez remporté votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
       "defeat": "Vous avez perdu votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
-      "draw": "La partie contre {{opponentTeamName}} s'est terminée avec une égalité de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage"
+      "draw": "La partie contre {{opponentTeamName}} s'est terminée avec une égalité de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
+      "many": "La partie s'est terminée avec les scores suivant, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage.\n{{scores}} "
     },
     "confirmed": {
-      "victory": "C'est envoyé, félicitation pour votre belle victoire! Désirez-vous également soumettre votre pointage spirit?",
-      "other": "C'est envoyé! Désirez-vous également soumettre votre pointage spirit?"
-    }
+      "victory": "C'est envoyé, félicitation pour votre belle victoire!",
+      "other": "C'est envoyé!"
+    },
+    "failed": "Une erreur est survenue lors de l'enregistrement du score, voulez vous réessayer?"
   },
   "spirit_submission": {
+    "request": "Désirez-vous également soumettre le pointage spirit?",
     "rules": "Sur une échelle de 0 à 4, 0 étant mauvais, 2 étant la moyenne et 4 étant mémorable, à combien évalueriez-vous leur connaissance et application des réglements?",
     "fouls": "Selon la même échelle, à combien évalueriez-vous les fautes et les contacts?",
     "equity": "Selon la même échelle, à combien évalueriez-vous l'honnêteté et l'équité?",
@@ -46,5 +50,7 @@
     "score_submission_request_text": "Bonjour {{name}}! Une de vos partie de l'événement {{eventName}} vient de se terminer. Cliquez sur le lien afin de soumettre votre score sur Sportfolios",
     "score_submission_request_button": "Soumettre le score",
     "score_submission_request_subject": "Rappel de soumission de score"
-  }
+  },
+  "and": "et",
+  "your_team": "Votre équipe"
 }

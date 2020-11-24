@@ -14,8 +14,7 @@ class AwaitingSpiritEquity extends State {
       const score = this.getNumber(webhookEvent);
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_SELF_CONTROL;
-      this.context.chatbotInfos.spirit.equity = score;
-      //TODO SAVE SCORE
+      this.context.chatbotInfos.opponentTeams[0].spirit.equity = score;
     } else if (
       this.isStop(webhookEvent) ||
       this.isStartOver(webhookEvent)
