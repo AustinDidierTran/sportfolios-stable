@@ -93,6 +93,13 @@ const getOrCreateStripeConnectedAccountId = async (entityId, ip) => {
   return account.account_id;
 };
 
+const getTaxes = async () => {
+  return knex('tax_rates')
+    .select('*')
+    .whereNull('deleted_at')
+    .andWhere({ active: true });
+};
+
 // REF: https://stripe.com/docs/api/accounts/create?lang=node
 const createStripeConnectedAccount = async props => {
   const {
@@ -229,4 +236,5 @@ module.exports = {
   hasStripeAccount,
   hasStripeBankAccount,
   hasStripeBankAccount,
+  getTaxes,
 };

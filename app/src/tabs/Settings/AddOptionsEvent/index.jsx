@@ -29,18 +29,15 @@ export default function AddOptionsEvent() {
   const { id: eventId } = useParams();
 
   const [options, setOptions] = useState([]);
-  const [hasBankAccount, setHasBankAccount] = useState(false);
   const [open, setOpen] = useState(false);
   const [alertDialog, setAlertDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
   const [selectedOptionId, setSelectedOptionId] = useState('');
 
   const [selectedOption, setSelectedOption] = useState({});
 
   useEffect(() => {
     getOptions();
-    getHasBankAccount();
   }, [eventId]);
 
   const getOptions = async () => {
@@ -57,19 +54,9 @@ export default function AddOptionsEvent() {
     setOptions(dataOptions);
   };
 
-  const getHasBankAccount = async () => {
-    const res = await api(
-      formatRoute('/api/stripe/eventHasBankAccount', null, {
-        id: eventId,
-      }),
-    );
-    setHasBankAccount(res?.data || false);
-  };
-
   const onEdit = option => {
     setSelectedOption(option);
     setSelectedOptionId(option.id);
-    setIsEdit(true);
     setOpen(true);
   };
 
@@ -93,7 +80,6 @@ export default function AddOptionsEvent() {
 
   const onClose = () => {
     setOpen(false);
-    setIsEdit(false);
   };
 
   const addOptionToEvent = async values => {
@@ -198,15 +184,11 @@ export default function AddOptionsEvent() {
       </Button>
       <List items={options} />
       <FormDialog
-        type={FORM_DIALOG_TYPE_ENUM.ADD_EDIT_EVENT_PAYMENT_OPTION}
+        type={FORM_DIALOG_TYPE_ENUM.ADD_EVENT_PAYMENT_OPTION}
         items={{
           open,
           onClose,
-          isEdit,
           addOptionToEvent,
-          editOptionEvent,
-          selectedOption,
-          hasBankAccount,
         }}
       />
       <AlertDialog
