@@ -3,8 +3,9 @@ const i18n = require('../../i18n.config');
 const { CLIENT_BASE_URL } = require('../../../../conf');
 
 module.exports = async function AddedToRoster(infos) {
-  const { name, teamName, eventId, locale } = infos;
-  const buttonLink = `${CLIENT_BASE_URL}/${eventId}?tab=roster`;
+  const { name, teamName, realEventId, locale } = infos;
+
+  const buttonLink = `${CLIENT_BASE_URL}/${realEventId}?tab=roster`;
   const text = i18n.__(
     { phrase: 'emails.added_to_roster_text', locale },
     {

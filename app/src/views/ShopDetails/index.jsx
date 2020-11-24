@@ -101,7 +101,6 @@ export default function ShopDetails() {
       }
 
       /* eslint-disable-next-line */
-      console.log({ stripePriceId, metadata, quantity });
       const res = await api('/api/shop/addCartItem', {
         method: 'POST',
         body: JSON.stringify({
