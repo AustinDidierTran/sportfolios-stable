@@ -10,6 +10,7 @@ import SportsTable from './SportsTable';
 import UsersTable from './UsersTable';
 import GaEventsTable from './GoogleAnalyticsEventsTable';
 import GaPageviewsTable from './GoogleAnalyticsPageviewsTable';
+import TaxRatesTable from './TaxRatesTable';
 
 export default function AdminPanel() {
   const { t } = useTranslation();
@@ -27,6 +28,7 @@ export default function AdminPanel() {
       <SportsTable />
       <GaEventsTable />
       <GaPageviewsTable />
+      <TaxRatesTable />
     </Container>
   );
 }

@@ -8,11 +8,8 @@ import {
   TableRow,
   Typography,
 } from '../../../MUI';
-import { Button } from '../../../Custom';
+import TableFactory from './TableFactory';
 import styles from './ViewTable.module.css';
-import { goTo } from '../../../../actions/goTo';
-
-import Switch from '@material-ui/core/Switch';
 
 export default function ViewTable(props) {
   const { data, description, headers, onRowClick, title } = props;
@@ -43,32 +40,7 @@ export default function ViewTable(props) {
               onClick={onRowClick && onRowClick(d)}
             >
               {headers.map((h, index) => (
-                <>
-                  {h.type === 'button' ? (
-                    <TableCell key={index}>
-                      <Button
-                        className={styles.button}
-                        onClick={() => {
-                          goTo(d.buttonRoute, d.id);
-                        }}
-                      >
-                        {d[h.value]}
-                      </Button>
-                    </TableCell>
-                  ) : h.type === 'toggle' ? (
-                    <TableCell key={index}>
-                      <Switch
-                        name={d.name}
-                        checked={d.isChecked}
-                        onChange={d.handleChange}
-                        inputProps={d.inputProps}
-                        color={d.color}
-                      ></Switch>
-                    </TableCell>
-                  ) : (
-                    <TableCell key={index}>{d[h.value]}</TableCell>
-                  )}
-                </>
+                <TableFactory d={d} h={h} key={index} />
               ))}
             </TableRow>
           ))}

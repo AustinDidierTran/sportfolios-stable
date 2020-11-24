@@ -1,4 +1,5 @@
 const Router = require('koa-router');
+const { STATUS_ENUM } = require('../../../../../common/enums');
 const queries = require('../../../db/queries/admin');
 const gaQueries = require('../../../db/queries/googleAnalytics');
 
@@ -22,6 +23,14 @@ router.get(`${BASE_URL}/sports`, async ctx => {
       name: sport.name,
       scoreType: sport.score_type,
     })),
+  };
+});
+
+router.get(`${BASE_URL}/taxRates`, async ctx => {
+  const taxRates = await queries.getAllTaxRates();
+  ctx.body = {
+    status: 'success',
+    data: taxRates,
   };
 });
 
@@ -59,6 +68,22 @@ router.post(`${BASE_URL}/sport`, async ctx => {
     };
   } else {
     ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+router.post(`${BASE_URL}/taxRate`, async ctx => {
+  const tax = await queries.createTaxRate(ctx.request.body);
+  if (tax) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: tax,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'Something went wrong',
@@ -134,6 +159,25 @@ router.put(`${BASE_URL}/gaEvents/:id`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/updateActiveStatusTaxRate`, async ctx => {
+  const taxRate = await queries.updateActiveStatusTaxRate(
+    ctx.request.body,
+  );
+  if (taxRate) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: taxRate,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.put(`${BASE_URL}/gaPageviews/:id`, async ctx => {
   const [pageview] = await gaQueries.updatePageview(
     ctx.params.id,
@@ -156,6 +200,14 @@ router.put(`${BASE_URL}/gaPageviews/:id`, async ctx => {
       message: 'Something went wrong',
     };
   }
+});
+
+router.del(`${BASE_URL}/deleteTaxRate`, async ctx => {
+  const data = await queries.deleteTaxRate(ctx.query);
+  ctx.body = {
+    status: 'success',
+    data,
+  };
 });
 
 module.exports = router;

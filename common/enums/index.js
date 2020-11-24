@@ -118,6 +118,7 @@ const FORM_DIALOG_TYPE_ENUM = {
   EDIT_MEMBERSHIP: 'edit membership',
   MEMBERS_REPORT: 'members report',
   SALES_REPORT: 'sales_report',
+  CREATE_TAX_RATE: 'create tax rate',
 };
 
 const REPORT_TYPE_ENUM = {
