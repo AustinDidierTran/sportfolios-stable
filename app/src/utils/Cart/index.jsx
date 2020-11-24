@@ -45,20 +45,19 @@ const getProductName = type => {
 };
 
 const getProductDetail = metadata => {
-  if (metadata.type === GLOBAL_ENUM.MEMBERSHIP) {
-    const res = getMembershipName(metadata.membership_type);
-    return res;
+  switch (metadata.type) {
+    case GLOBAL_ENUM.MEMBERSHIP:
+      return getMembershipName(metadata.membership_type);
+    case GLOBAL_ENUM.SHOP_ITEM:
+      return '';
+    case GLOBAL_ENUM.EVENT:
+      if (metadata.isIndividualOption) {
+        return `${metadata.event.basicInfos.name} | registration for ${metadata.name} | ${metadata.team.name}`;
+      }
+      return `${metadata.event.basicInfos.name} | registration for ${metadata.team.name}`;
+    default:
+      return '';
   }
-  if (metadata.type === GLOBAL_ENUM.SHOP_ITEM) {
-    return '';
-  }
-  if (metadata.type === GLOBAL_ENUM.EVENT) {
-    if (metadata.isIndividualOption) {
-      return `${metadata.event.basicInfos.name} | registration for ${metadata.name} | ${metadata.team.name}`;
-    }
-    return `${metadata.event.basicInfos.name} | registration for ${metadata.team.name}`;
-  }
-  return '';
 };
 
 export {

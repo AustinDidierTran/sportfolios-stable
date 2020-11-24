@@ -830,7 +830,7 @@ async function generateMembersReport(report) {
   const res = await Promise.all(
     active.map(async a => {
       const person = await getPersonInfos(a.person_id);
-      const email = await getEmailUser(a.buyer_user_id);
+      const email = await getEmailPerson(a.person_id);
       let price = '';
       if (a.status === INVOICE_STATUS_ENUM.PAID) {
         price = await getPriceFromInvoice(a.invoice_item_id);
@@ -1299,7 +1299,7 @@ async function getEmailUser(userId) {
 
 async function getEmailPerson(person_id) {
   const realId = await getRealId(person_id);
-  const [email] = await knex('user_entity_role')
+  const [{ email }] = await knex('user_entity_role')
     .select('email')
     .leftJoin(
       'user_email',
@@ -2447,12 +2447,10 @@ const addPlayerToRoster = async (body, userId) => {
     const paymentOption = await getIndividualPaymentOptionFromRosterId(
       rosterId,
     );
-
-    const ownerId = await getOwnerStripePrice(
-      paymentOption.individual_stripe_price_id,
-    );
-
     if (paymentOption.individual_price > 0) {
+      const ownerId = await getOwnerStripePrice(
+        paymentOption.individual_stripe_price_id,
+      );
       cartItem = {
         stripePriceId: paymentOption.individual_stripe_price_id,
         metadata: {

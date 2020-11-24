@@ -51,12 +51,14 @@ export default function MembersReportItem(props) {
   };
 
   const getStatusName = status => {
-    if (status === INVOICE_STATUS_ENUM.OPEN) {
-      return t('not_paid');
-    } else if (status === INVOICE_STATUS_ENUM.PAID) {
-      return t('paid');
+    switch (status) {
+      case INVOICE_STATUS_ENUM.OPEN:
+        return t('not_paid');
+      case INVOICE_STATUS_ENUM.PAID:
+        return t('paid');
+      default:
+        return '';
     }
-    return '';
   };
 
   const handleClick = async () => {

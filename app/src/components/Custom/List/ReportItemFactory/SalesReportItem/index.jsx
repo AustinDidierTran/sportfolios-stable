@@ -59,7 +59,7 @@ export default function ReportItem(props) {
     if (res.status === STATUS_ENUM.SUCCESS_STRING) {
       const formattedData = res.data.map(d => ({
         type: t(getProductName(d.metadata.type)),
-        detail: t(getProductDetail(d.metadata)),
+        detail: getProductDetail(d.metadata),
         name: d.person.name,
         surname: d.person.surname,
         email: d.email,
@@ -88,7 +88,7 @@ export default function ReportItem(props) {
   const headers = [
     { label: t('type'), key: 'type' },
     { label: t('product_detail'), key: 'detail' },
-    { label: t('buyer_name'), key: 'name' },
+    { label: t('buyers_name'), key: 'name' },
     { label: t('surname'), key: 'surname' },
     { label: t('email'), key: 'email' },
     { label: t('price'), key: 'price' },

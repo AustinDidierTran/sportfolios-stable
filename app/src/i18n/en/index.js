@@ -88,7 +88,7 @@ export default {
     biannual: 'Biannual',
     birth_date_format: '{{date, LL}} ({{age}} years old)',
     birth_date: 'Birth date',
-    buyer_name: 'Buyer name',
+    buyers_name: "Buyer's name",
     by: 'By',
     canadian_dollar: 'Canadian Dollar',
     cancel_person_transfer_confirmation: 'Are you sure you want to cancel the transfer of {{name}}?',
