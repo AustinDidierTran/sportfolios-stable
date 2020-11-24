@@ -12,7 +12,6 @@ const {
   MEMBERSHIP_LENGTH_TYPE_ENUM,
   INVOICE_STATUS_ENUM,
   REPORT_TYPE_ENUM,
-  ROUTES_ENUM,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -787,76 +786,103 @@ async function getReports(entityId) {
   });
   return sorted;
 }
+
 async function generateReport(reportId) {
   const [report] = await knex('reports')
     .select('*')
     .where({ report_id: reportId });
-  if (report.type === REPORT_TYPE_ENUM.MEMBERS) {
-    const { date } = report.metadata;
-    const members = await knex('memberships')
-      .select('*')
-      .where({ organization_id: report.entity_id });
-    const active = members.filter(m => {
-      return (
-        moment(m.created_at)
+
+  const ReportMap = {
+    [REPORT_TYPE_ENUM.MEMBERS]: generateMembersReport,
+    [REPORT_TYPE_ENUM.SALES]: generateSalesReport,
+  };
+  const getReport = ReportMap[report.type];
+  const res = await getReport(report);
+  return res;
+}
+
+async function generateMembersReport(report) {
+  const { date } = report.metadata;
+  const members = await knex('memberships')
+    .select('*')
+    .where({ organization_id: report.entity_id });
+  const active = members.filter(m => {
+    return (
+      moment(m.created_at)
+        .set('hour', 0)
+        .set('minute', 0)
+        .set('second', 0) <
+        moment(date)
           .set('hour', 0)
           .set('minute', 0)
-          .set('second', 0) <
-          moment(date)
-            .set('hour', 0)
-            .set('minute', 0)
-            .set('second', 0)
-            .add(1, 'day') &&
-        moment(m.expiration_date)
+          .set('second', 0)
+          .add(1, 'day') &&
+      moment(m.expiration_date)
+        .set('hour', 0)
+        .set('minute', 0)
+        .set('second', 0) >
+        moment(date)
           .set('hour', 0)
           .set('minute', 0)
-          .set('second', 0) >
-          moment(date)
-            .set('hour', 0)
-            .set('minute', 0)
-            .set('second', 0)
-      );
-    });
-    const organization = await getEntity(report.entity_id);
-    const res = await Promise.all(
-      active.map(async a => {
-        const person = await getPersonInfos(a.person_id);
-        const { email } = await getEmailPerson(a.person_id);
-        let price = '';
-        if (a.status === INVOICE_STATUS_ENUM.PAID) {
-          price = await getPriceFromInvoice(a.invoice_item_id);
-        }
-        const address = person.address
-          ? {
-              city: person.address.city,
-              state: person.address.state,
-              zip: person.address.zip,
-            }
-          : {};
-        return {
-          name: person.name,
-          surname: person.surname,
-          memberType: a.member_type,
-          price: `${formatPrice(price)}`,
-          status: a.status,
-          paidOn: a.paid_on,
-          createdAt: a.created_at,
-          expirationDate: a.expiration_date,
-          email,
-          birthDate: person.birthDate,
-          gender: person.gender,
-          ...address,
-        };
-      }),
+          .set('second', 0)
     );
-    return {
-      data: res,
-      type: report.type,
-      date,
-      organizationName: organization.name,
-    };
-  }
-  return [];
+  });
+  const res = await Promise.all(
+    active.map(async a => {
+      const person = await getPersonInfos(a.person_id);
+      const email = await getEmailPerson(a.person_id);
+      let price = '';
+      if (a.status === INVOICE_STATUS_ENUM.PAID) {
+        price = await getPriceFromInvoice(a.invoice_item_id);
+      }
+      const address = person.address
+        ? {
+            city: person.address.city,
+            state: person.address.state,
+            zip: person.address.zip,
+          }
+        : {};
+      return {
+        ...a,
+        ...person,
+        ...address,
+        price,
+        email,
+      };
+    }),
+  );
+  return res;
+}
+
+async function generateSalesReport(report) {
+  const { date } = report.metadata;
+  const sales = await knex('store_items_paid')
+    .select('*')
+    .where({ seller_entity_id: report.entity_id });
+  const active = sales.filter(
+    s =>
+      moment(s.created_at)
+        .set('hour', 0)
+        .set('minute', 0)
+        .set('second', 0) <
+      moment(date)
+        .set('hour', 0)
+        .set('minute', 0)
+        .set('second', 0)
+        .add(1, 'day'),
+  );
+  const res = await Promise.all(
+    active.map(async a => {
+      const person = await getPrimaryPerson(a.buyer_user_id);
+      const email = await getEmailUser(a.buyer_user_id);
+      if (a.metadata.type === GLOBAL_ENUM.EVENT) {
+        const event = await getEntity(a.metadata.id);
+        a.metadata.event = event;
+      }
+      return { ...a, person, email };
+    }),
+  );
+  return res;
 }
 
 async function getOrganizationMembers(organizationId) {
@@ -965,6 +991,13 @@ async function getRegistrationTeamPaymentOption(paymentOptionId) {
     .where({ id: paymentOptionId });
 
   return teamPaymentOption;
+}
+
+async function getOwnerStripePrice(stripePriceId) {
+  const [{ owner_id: ownerId }] = await knex('stripe_price')
+    .select('owner_id')
+    .where({ stripe_price_id: stripePriceId });
+  return ownerId;
 }
 
 async function getIndividualPaymentOptionFromRosterId(rosterId) {
@@ -1257,9 +1290,16 @@ async function getEmailsEntity(entity_id) {
     .where('entities_role.entity_id', realId);
   return emails;
 }
+async function getEmailUser(userId) {
+  const [{ email }] = await knex('user_email')
+    .select('email')
+    .where({ user_id: userId });
+  return email;
+}
+
 async function getEmailPerson(person_id) {
   const realId = await getRealId(person_id);
-  const [email] = await knex('user_entity_role')
+  const [{ email }] = await knex('user_entity_role')
     .select('email')
     .leftJoin(
       'user_email',
@@ -1896,7 +1936,7 @@ async function addMember(
 
 async function addReport(type, organizationId, date) {
   const realId = await getRealId(organizationId);
-  const organization = await getEntity(organizationId);
+  const organization = (await getEntity(organizationId)).basicInfos;
   const [res] = await knex('reports')
     .insert({
       type: type,
@@ -1911,13 +1951,7 @@ async function addReport(type, organizationId, date) {
 }
 
 async function addAlias(entityId, alias) {
-  if (
-    !/^[\w.-]+$/.test(alias) ||
-    validator.isUUID(alias) ||
-    Object.values(ROUTES_ENUM)
-      .map(r => r.split('/')[1].toLowerCase())
-      .includes(alias.toLowerCase())
-  ) {
+  if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
     throw Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
 
@@ -2413,12 +2447,14 @@ const addPlayerToRoster = async (body, userId) => {
     const paymentOption = await getIndividualPaymentOptionFromRosterId(
       rosterId,
     );
-
     if (paymentOption.individual_price > 0) {
+      const ownerId = await getOwnerStripePrice(
+        paymentOption.individual_stripe_price_id,
+      );
       cartItem = {
         stripePriceId: paymentOption.individual_stripe_price_id,
         metadata: {
-          sellerEntityId: paymentOption.event_id,
+          sellerEntityId: ownerId,
           isIndividualOption: true,
           name,
           buyerId: personId,
@@ -2492,13 +2528,7 @@ async function updateMember(
 }
 
 async function updateAlias(entityId, alias) {
-  if (
-    !/^[\w.-]+$/.test(alias) ||
-    validator.isUUID(alias) ||
-    Object.values(ROUTES_ENUM)
-      .map(r => r.split('/')[1].toLowerCase())
-      .includes(alias.toLowerCase())
-  ) {
+  if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
     throw Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
 
@@ -2990,9 +3020,12 @@ module.exports = {
   updateMembershipInvoice,
   eventInfos,
   addPlayerToRoster,
+  getOwnerStripePrice,
   deletePlayerFromRoster,
   deleteGame,
   personIsAwaitingTransfer,
   getEntityOwners,
-  getRealId
+  getRealId,
+  getEmailPerson,
+  getRealId,
 };

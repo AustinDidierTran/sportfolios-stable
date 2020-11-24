@@ -23,7 +23,6 @@ export default function Reports() {
       formatRoute('/api/entity/reports', null, { id }),
     );
     const items = data.map(d => ({
-      createdAt: d.created_at,
       metadata: d.metadata,
       reportType: d.type,
       type: LIST_ITEM_ENUM.REPORT,
