@@ -1,3 +1,20 @@
+.item {
+  width: 100%;
+  padding: 4px 4px 4px 4px !important;
+}
+
+.item:hover {
+  background-color: whitesmoke;
+}
+
+.select {
+  width: 180px;
+  margin: 0 !important;
+}
+
 .text {
+  padding: 8px 16px 8px 16px;
   overflow: auto;
+  margin-right: auto;
+  width: 100%;
 }

@@ -48,6 +48,15 @@ export default function TabRosters(props) {
         severity: SEVERITY_ENUM.ERROR,
         duration: 4000,
       });
+      return false;
+    } else if (res.status === STATUS_ENUM.METHOD_NOT_ALLOWED) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('team_player_role_error'),
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
+      });
+      return false;
     } else if (res.status === STATUS_ENUM.ERROR) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
@@ -55,7 +64,9 @@ export default function TabRosters(props) {
         severity: SEVERITY_ENUM.ERROR,
         duration: 4000,
       });
+      return false;
     }
+    return true;
   };
 
   const addPlayerToRoster = async (player, rosterId) => {
@@ -73,14 +84,47 @@ export default function TabRosters(props) {
     return data;
   };
 
+  const updatePlayerRole = async (rosterId, playerId, role) => {
+    const res = await api(`/api/entity/rosterRole`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        rosterId,
+        playerId,
+        role,
+      }),
+    });
+
+    if (res.status === STATUS_ENUM.SUCCESS) {
+      await getData();
+    } else if (res.status === STATUS_ENUM.FORBIDDEN) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('team_player_role_error'),
+        severity: SEVERITY_ENUM.ERROR,
+      });
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('an_error_has_occured'),
+        severity: SEVERITY_ENUM.ERROR,
+      });
+    }
+  };
+
   const onDelete = async id => {
-    await deletePlayerFromRoster(id);
-    await getData();
+    const refresh = await deletePlayerFromRoster(id);
+    if (refresh) {
+      await getData();
+    }
   };
 
   const onAdd = async (player, rosterId) => {
     await addPlayerToRoster(player, rosterId);
     await getData();
+  };
+
+  const onRoleUpdate = async (rosterId, playerId, role) => {
+    await updatePlayerRole(rosterId, playerId, role);
   };
 
   const getData = async () => {
@@ -117,6 +161,7 @@ export default function TabRosters(props) {
           rosters={rosters}
           onAdd={onAdd}
           onDelete={onDelete}
+          onRoleUpdate={onRoleUpdate}
           update={getData}
         />
       </div>

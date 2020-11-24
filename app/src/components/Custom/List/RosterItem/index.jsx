@@ -1,57 +1,98 @@
-import React, { useMemo } from 'react';
-
-import { Icon } from '../../../Custom';
-import { ListItem, ListItemIcon, ListItemText } from '../../../MUI';
+import React, { useMemo, useContext } from 'react';
+import { Select, IconButton } from '../../../Custom';
+import { ListItem, ListItemIcon, Typography } from '../../../MUI';
 import { Avatar } from '../..';
 import { getInitialsFromName } from '../../../../utils/stringFormats/index';
 import { useTranslation } from 'react-i18next';
-import IconButton from '@material-ui/core/IconButton';
+import {
+  ROSTER_ROLE_ENUM,
+  SEVERITY_ENUM,
+} from '../../../../../../common/enums';
+import { ACTION_ENUM, Store } from '../../../../Store';
+
 import styles from './RosterItem.module.css';
 
 export default function RosterItem(props) {
   const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
 
   const {
-    id,
-    person_id,
-    secondary,
+    personId,
     photoUrl,
     name,
     surname,
     onDelete,
+    index,
+    formik,
   } = props;
   const initials = useMemo(() => getInitialsFromName(name), [name]);
+  const { roster } = formik.values;
 
-  const handleDelete = () => {
-    if (person_id) {
-      onDelete({ person_id });
+  const handleRoleChange = newRole => {
+    if (
+      newRole === ROSTER_ROLE_ENUM.PLAYER &&
+      !roster.some(
+        p =>
+          p.role !== ROSTER_ROLE_ENUM.PLAYER &&
+          p.personId !== personId,
+      )
+    ) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('team_player_role_error'),
+        severity: SEVERITY_ENUM.ERROR,
+      });
     } else {
-      onDelete({ id });
+      formik.setFieldValue(`roster[${index}].role`, newRole);
     }
   };
 
+  const RoleSelect = (
+    <div>
+      <Select
+        className={styles.select}
+        value={roster[index].role}
+        onChange={newRole => handleRoleChange(newRole)}
+        options={[
+          {
+            display: t('captain'),
+            value: ROSTER_ROLE_ENUM.CAPTAIN,
+          },
+          {
+            display: t('assistant_captain'),
+            value: ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN,
+          },
+          {
+            display: t('coach'),
+            value: ROSTER_ROLE_ENUM.COACH,
+          },
+          {
+            display: t('player'),
+            value: ROSTER_ROLE_ENUM.PLAYER,
+          },
+        ]}
+      />
+    </div>
+  );
+
   return (
-    <ListItem button style={{ width: '100%' }}>
+    <ListItem className={styles.item}>
       <ListItemIcon>
         <Avatar photoUrl={photoUrl} initials={initials}></Avatar>
       </ListItemIcon>
-      {surname ? (
-        <ListItemText
-          className={styles.text}
-          primary={`${name} ${surname}`}
-          secondary={secondary || t('person')}
-        ></ListItemText>
-      ) : (
-        <ListItemText
-          className={styles.text}
-          primary={name}
-          secondary={secondary || t('person')}
-        ></ListItemText>
-      )}
-
-      <IconButton edge="end" onClick={handleDelete}>
-        <Icon icon="Delete" />
-      </IconButton>
+      <div className={styles.text}>
+        <Typography>{`${name}${
+          surname ? ` ${surname}` : ''
+        }`}</Typography>
+        {RoleSelect}
+      </div>
+      <IconButton
+        icon="Delete"
+        style={{ color: 'grey' }}
+        tooltip={t('remove')}
+        edge="end"
+        onClick={onDelete}
+      />
     </ListItem>
   );
 }

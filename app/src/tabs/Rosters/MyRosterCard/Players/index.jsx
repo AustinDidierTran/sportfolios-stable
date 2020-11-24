@@ -23,6 +23,7 @@ export default function Players(props) {
     rosterId,
     onDelete,
     onAdd,
+    onRoleUpdate,
     update,
   } = props;
   const [blackList, setBlackList] = useState(null);
@@ -34,7 +35,10 @@ export default function Players(props) {
 
   const getBlackList = async () => {
     const { data } = await api(
-      formatRoute('/api/entity/getRosterWithSub', null, { rosterId }),
+      formatRoute('/api/entity/getRoster', null, {
+        rosterId,
+        withSub: true,
+      }),
     );
     setBlackList(data.map(d => d.personId));
   };
@@ -64,6 +68,13 @@ export default function Players(props) {
     setisLoading(true);
     await onDelete(id);
     await getBlackList();
+    setisLoading(false);
+  };
+
+  const handleRoleUpdate = async (playerId, role) => {
+    setisLoading(true);
+    await onRoleUpdate(rosterId, playerId, role);
+    //await getBlackList();
     setisLoading(false);
   };
 
@@ -102,6 +113,7 @@ export default function Players(props) {
                     player={player}
                     role={role}
                     onDelete={handleDelete}
+                    onRoleUpdate={handleRoleUpdate}
                     key={player.id}
                   />
                 ))}

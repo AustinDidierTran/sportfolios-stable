@@ -1,5 +1,9 @@
-import React, { useEffect, useMemo } from 'react';
-import { LIST_ITEM_ENUM } from '../../../../../common/enums';
+import React, { useContext, useEffect, useMemo } from 'react';
+import {
+  LIST_ITEM_ENUM,
+  ROSTER_ROLE_ENUM,
+  SEVERITY_ENUM,
+} from '../../../../../common/enums';
 import { List } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormInput } from '../../../hooks/forms';
@@ -8,21 +12,51 @@ import { Typography } from '@material-ui/core';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import PersonSearchListEventRegistration from './PersonSearchListEventRegistration';
+import { ACTION_ENUM, Store } from '../../../Store';
 
 export default function Roster(props) {
   const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
   const query = useFormInput('');
-  const { onClick, roster, setRoster } = props;
+  const {
+    state: { userInfo },
+  } = useContext(Store);
+  const { onClick, formik } = props;
 
-  //to allow user to go to next step without roster
+  const roster = useMemo(
+    () =>
+      formik.values.roster.map(p => ({
+        ...p,
+        key: p.personId,
+        type: LIST_ITEM_ENUM.ROSTER_ITEM,
+        onDelete: () => {
+          onDelete({ personId: p.personId });
+        },
+      })),
+    [formik.values.roster],
+  );
+
   useEffect(() => {
-    onClick(null, roster);
-  }, [roster]);
+    // Default behaviour: add creator of team as captain
+    addPerson({
+      id: userInfo.primaryPerson.entity_id,
+      completeName: `${userInfo.primaryPerson.name} ${userInfo.primaryPerson.surname}`,
+    });
+  }, []);
+
+  useEffect(() => {
+    onClick();
+  }, []);
+
   const blackList = useMemo(() => roster.map(r => r.personId), [
     roster,
   ]);
 
   const addPerson = async person => {
+    const role =
+      roster.length === 0
+        ? ROSTER_ROLE_ENUM.CAPTAIN
+        : ROSTER_ROLE_ENUM.PLAYER;
     if (person.id) {
       const {
         data: { basicInfos: data },
@@ -31,55 +65,54 @@ export default function Roster(props) {
           id: person.id,
         }),
       );
-      setRoster(oldRoster => [
-        ...oldRoster,
+
+      formik.setFieldValue('roster', [
+        ...roster,
         {
           personId: person.id,
-          type: LIST_ITEM_ENUM.ROSTER_ITEM,
           name: person.completeName,
           photoUrl: data.photoUrl,
-          secondary: t('player'),
-          onDelete: () => {
-            onDelete({ personId: person.id });
-          },
+          role,
         },
       ]);
     } else {
       const ids = roster.map(p => {
-        if (p.id) {
-          return p.id;
-        }
-        return 0;
+        return !isNaN(p.personId) ? p.personId : 0;
       });
+
       const newId = Math.max(...ids, 0) + 1;
-      setRoster(oldRoster => [
-        ...oldRoster,
+      formik.setFieldValue('roster', [
+        ...roster,
         {
-          id: newId,
-          type: LIST_ITEM_ENUM.ROSTER_ITEM,
+          personId: newId,
           name: person.name,
           surname: person.surname,
-          secondary: t('player'),
-          email: person.email,
-          onDelete: () => {
-            onDelete({ id: newId });
-          },
+          role,
         },
       ]);
     }
   };
 
   const onDelete = body => {
-    const { id, personId } = body;
-    setRoster(oldRoster => {
-      if (id) {
-        return oldRoster.filter(r => r.id !== id);
-      }
-      if (personId) {
-        return oldRoster.filter(r => r.personId !== personId);
-      }
-      return oldRoster;
-    });
+    const { personId } = body;
+    if (
+      !roster.some(
+        p =>
+          p.role !== ROSTER_ROLE_ENUM.PLAYER &&
+          p.personId !== personId,
+      )
+    ) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('team_player_role_error'),
+        severity: SEVERITY_ENUM.ERROR,
+      });
+    } else {
+      formik.setFieldValue(
+        'roster',
+        roster.filter(r => r.personId !== personId),
+      );
+    }
   };
 
   return (
@@ -116,7 +149,7 @@ export default function Roster(props) {
         </Typography>
       ) : (
         <div style={{ marginBottom: '16px' }}>
-          <List items={roster} />
+          <List formik={formik} items={roster} />
         </div>
       )}
     </div>

@@ -121,6 +121,7 @@ const FORM_DIALOG_TYPE_ENUM = {
   MEMBERS_REPORT: 'members report',
   SALES_REPORT: 'sales_report',
   CREATE_TAX_RATE: 'create tax rate',
+  ROSTER_PLAYER_OPTIONS: 'roster player options',
 };
 
 const REPORT_TYPE_ENUM = {
@@ -204,6 +205,7 @@ const STATUS_ENUM = {
   SUCCESS: 201,
   FORBIDDEN: 403,
   ERROR: 404,
+  METHOD_NOT_ALLOWED: 405,
   ERROR_STRING: 'error',
   SUCCESS_STRING: 'success',
 };

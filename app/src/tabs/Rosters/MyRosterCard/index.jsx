@@ -19,6 +19,7 @@ export default function MyRosterCard(props) {
     setExpandedIndex,
     onDelete,
     onAdd,
+    onRoleUpdate,
     index,
     update,
   } = props;
@@ -104,6 +105,7 @@ export default function MyRosterCard(props) {
                 rosterId={rosterId}
                 onDelete={onDelete}
                 onAdd={onAdd}
+                onRoleUpdate={onRoleUpdate}
               />
             </div>
           </div>

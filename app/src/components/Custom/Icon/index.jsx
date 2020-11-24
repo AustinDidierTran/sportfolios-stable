@@ -68,9 +68,11 @@ import ShareIcon from '@material-ui/icons/Share';
 import ShoppingCart from '@material-ui/icons/ShoppingCart';
 import ShoppingCartOutlined from '@material-ui/icons/ShoppingCartOutlined';
 import SportsKabaddi from '@material-ui/icons/SportsKabaddi';
+import SportsWhistle from '@material-ui/icons/Sports';
 import Stars from '@material-ui/icons/Stars';
 import Store from '@material-ui/icons/Store';
 import SupervisedUserCircle from '@material-ui/icons/SupervisedUserCircle';
+import TextFormat from '@material-ui/icons/TextFormat';
 import Undo from '@material-ui/icons/Undo';
 import Chat from '@material-ui/icons/Chat';
 import ExpandLess from '@material-ui/icons/ExpandLess';
@@ -145,9 +147,11 @@ const icons = {
   ShoppingCart,
   ShoppingCartOutlined,
   SportsKabaddi,
+  SportsWhistle,
   Stars,
   Store,
   SupervisedUserCircle,
+  TextFormat,
   Undo,
   ExpandLess,
   ExpandMore,

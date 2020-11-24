@@ -11,14 +11,45 @@ import { formatRoute } from '../../actions/goTo';
 
 export default function TeamSelect(props) {
   const { t } = useTranslation();
-  const { onClick, team, eventId, onTeamChange } = props;
+  const { onClick, formik, eventId, onTeamChange } = props;
   const query = useFormInput('');
 
-  const [selectedTeam, setSelectedTeam] = useState(team);
+  const { team } = formik.values;
   const [whiteList, setWhiteList] = useState([]);
 
+  /*const getExistingTeamIfItExists = async () => {
+    if (team.id) {
+      const { data } = await api(
+        formatRoute('/api/entity/registered', null, {
+          team_id: team.id,
+          event_id: eventId,
+        }),
+      );
+      const {
+        data: { basicInfos: theTeam },
+      } = await api(
+        formatRoute('/api/entity', null, {
+          id: team.id,
+        }),
+      );
+      if (data.length < 1) {
+        formik.setFieldValue('team', theTeam);
+      } else {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: t('team_already_registered'),
+          severity: SEVERITY_ENUM.ERROR,
+          vertical: POSITION_ENUM.TOP,
+        });
+      }
+    }
+  };*/
+
   useEffect(() => {
-    setSelectedTeam(team);
+    if (team) {
+      //   getExistingTeamIfItExists();
+      onClick();
+    }
   }, [team]);
 
   useEffect(() => {
@@ -26,7 +57,7 @@ export default function TeamSelect(props) {
   }, [eventId]);
 
   const onChange = () => {
-    setSelectedTeam(null);
+    formik.setFieldValue('team', null);
     onTeamChange();
   };
 
@@ -53,7 +84,8 @@ export default function TeamSelect(props) {
     });
     setWhiteList(entities.map(e => e.id));
   };
-  if (selectedTeam) {
+
+  if (team) {
     return (
       <div className={styles.main}>
         <Typography
@@ -66,21 +98,13 @@ export default function TeamSelect(props) {
             'you_can_always_change_your_team_name_in_your_team_profile',
           )}
         </Typography>
-        {team ? (
-          <TeamItem
-            {...team}
-            secondary="Selected Team"
-            className={styles.main}
-            notClickable
-          />
-        ) : (
-          <TeamItem
-            {...selectedTeam}
-            secondary="Selected Team"
-            className={styles.main}
-            notClickable
-          />
-        )}
+        <TeamItem
+          {...team}
+          secondary="Selected Team"
+          className={styles.main}
+          notClickable
+        />
+
         <Button
           className={styles.item}
           size="small"
@@ -116,6 +140,7 @@ export default function TeamSelect(props) {
         withoutIcon
         whiteList={whiteList}
         autoFocus
+        formik={formik}
       />
     </div>
   );

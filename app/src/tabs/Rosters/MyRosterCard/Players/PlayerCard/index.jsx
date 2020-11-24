@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import styles from './PlayerCard.module.css';
-import { ROSTER_ROLE_ENUM } from '../../../../../../../common/enums';
-import Chip from '@material-ui/core/Chip';
+import {
+  ROSTER_ROLE_ENUM,
+  FORM_DIALOG_TYPE_ENUM,
+} from '../../../../../../../common/enums';
+import { Tooltip } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import {
-  AlertDialog,
+  FormDialog,
+  Icon,
   IconButton,
 } from '../../../../../components/Custom';
 import PersonInfoDialog from '../../../../../components/Custom/Dialog/PersonInfosDialog';
@@ -14,12 +18,18 @@ import { formatRoute } from '../../../../../actions/goTo';
 import PaymentChip from '../../../../../tabs/Settings/TeamRegistered/PaymentChip';
 
 export default function PlayerCard(props) {
-  const { isEventAdmin, player, role, onDelete } = props;
+  const {
+    isEventAdmin,
+    player,
+    role,
+    onDelete,
+    onRoleUpdate,
+  } = props;
   const { t } = useTranslation();
 
   const [playerInfos, setPlayerInfos] = useState(null);
   const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
+  const [openOptions, setOpenOptions] = useState(false);
 
   const closePlayerAcceptation = () => {
     setOpen(false);
@@ -43,10 +53,6 @@ export default function PlayerCard(props) {
     closePlayerAcceptation();
   };
 
-  const onPlayerDeleteFromRoster = () => {
-    onDelete(player.id, isEventAdmin);
-  };
-
   const getPersonInfos = async () => {
     const { data } = await api(
       formatRoute('/api/entity/personInfos', null, {
@@ -61,65 +67,94 @@ export default function PlayerCard(props) {
     openPlayerAcceptation();
   };
 
-  if (isEventAdmin || role == ROSTER_ROLE_ENUM.CAPTAIN) {
+  const handleRoleChange = async (newRole, playerId) => {
+    onRoleUpdate(playerId, newRole);
+  };
+
+  const getIconFromRole = role => {
+    switch (role) {
+      case ROSTER_ROLE_ENUM.COACH:
+        return 'SportsWhistle';
+      case ROSTER_ROLE_ENUM.CAPTAIN:
+        return 'Stars';
+      case ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN:
+        return 'TextFormat';
+      default:
+        return 'Person';
+    }
+  };
+
+  if (
+    isEventAdmin ||
+    role == ROSTER_ROLE_ENUM.COACH ||
+    role == ROSTER_ROLE_ENUM.CAPTAIN ||
+    role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN
+  ) {
     return (
       <div className={styles.card}>
         <div className={styles.player}>
           <div className={styles.position}>
-            {isEventAdmin ? (
-              <IconButton
-                icon="Info"
-                style={{ color: 'grey' }}
-                onClick={onAboutClick}
-              />
-            ) : (
+            {!player.role ||
+            player.role === ROSTER_ROLE_ENUM.PLAYER ? (
               <></>
+            ) : (
+              <Tooltip
+                title={t(
+                  player.role === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN
+                    ? 'assistant_captain'
+                    : player.role,
+                )}
+              >
+                <div>
+                  <Icon icon={getIconFromRole(player.role)} />
+                </div>
+              </Tooltip>
             )}
           </div>
           <div className={styles.name}>
             <Typography>{player && player.name}</Typography>
           </div>
-          {player.isSub ? (
-            <div className={styles.isSub}>
-              <Chip
-                label={t('sub')}
-                color="primary"
-                variant="outlined"
-                className={styles.chip}
-              />
-            </div>
-          ) : (
-            <PaymentChip
-              status={player.paymentStatus}
-              className={styles.chip}
-            />
-          )}
+          <div className={styles.chip}>
+            <PaymentChip status={player.paymentStatus} />
+          </div>
+
           <div className={styles.icon}>
+            {isEventAdmin ? (
+              <IconButton
+                icon="Info"
+                style={{ color: 'grey' }}
+                onClick={onAboutClick}
+                tooltip={t('infos')}
+              />
+            ) : (
+              <></>
+            )}
             <IconButton
-              onClick={() => setOpenDelete(true)}
-              icon="Delete"
+              onClick={() => setOpenOptions(true)}
+              icon="Edit"
               style={{ color: 'grey' }}
-              tooltip={t('delete')}
+              tooltip={t('edit')}
             />
           </div>
         </div>
         <PersonInfoDialog
           open={open}
           personInfos={playerInfos}
-          onSubmit={onPlayerAccept}
-          onDecline={onPlayerDecline}
+          id
           onClose={closePlayerAcceptation}
+          onDecline={onPlayerDecline}
+          onSubmit={onPlayerAccept}
         />
-        <AlertDialog
-          open={openDelete}
-          onSubmit={onPlayerDeleteFromRoster}
-          onCancel={() => setOpenDelete(false)}
-          description={
-            isEventAdmin
-              ? t('delete_player_from_roster_confirmation_admin')
-              : t('delete_player_from_roster_confirmation')
-          }
-          title={t('delete_player_from_roster')}
+        <FormDialog
+          type={FORM_DIALOG_TYPE_ENUM.ROSTER_PLAYER_OPTIONS}
+          items={{
+            open: openOptions,
+            onClose: () => setOpenOptions(false),
+            onPlayerRemove: onDelete,
+            onRoleUpdate: handleRoleChange,
+            player,
+            isEventAdmin,
+          }}
         />
       </div>
     );
@@ -128,22 +163,26 @@ export default function PlayerCard(props) {
   return (
     <div className={styles.card}>
       <div className={styles.player}>
-        <div className={styles.position}>{}</div>
+        <div className={styles.position}>
+          {!player.role || player.role === ROSTER_ROLE_ENUM.PLAYER ? (
+            <></>
+          ) : (
+            <Tooltip
+              title={t(
+                player.role === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN
+                  ? 'assistant_captain'
+                  : player.role,
+              )}
+            >
+              <div>
+                <Icon icon={getIconFromRole(player.role)} />
+              </div>
+            </Tooltip>
+          )}
+        </div>
         <div className={styles.name}>
           <Typography>{player && player.name}</Typography>
         </div>
-        {player.isSub ? (
-          <div className={styles.isSub}>
-            <Chip
-              label={t('sub')}
-              color="primary"
-              variant="outlined"
-              className={styles.chip}
-            />
-          </div>
-        ) : (
-          <></>
-        )}
       </div>
     </div>
   );

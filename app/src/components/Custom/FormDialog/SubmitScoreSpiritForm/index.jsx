@@ -72,8 +72,9 @@ export default function SubmitScoreDialog(props) {
 
   const getRoster = async rosterId => {
     const { data } = await api(
-      formatRoute('/api/entity/getRosterWithSub', null, {
+      formatRoute('/api/entity/getRoster', null, {
         rosterId,
+        withSub: true,
       }),
     );
     if (data) {

@@ -798,8 +798,7 @@ async function generateReport(reportId) {
 
 async function generateMembersReport(report) {
   const { date } = report.metadata;
-  const members = await knex('memberships')
-    .select('*')
+  const members = await knex('memberships').select('*');
   const active = members.filter(m => {
     return (
       moment(m.created_at).isSameOrBefore(moment(date), 'day') &&
@@ -817,21 +816,21 @@ async function generateMembersReport(report) {
       }
       const address = person.address
         ? {
-          city: person.address.city,
-          state: person.address.state,
-          zip: person.address.zip,
-        }
+            city: person.address.city,
+            state: person.address.state,
+            zip: person.address.zip,
+          }
         : {};
-        return {
-          ...a,
-          ...person,
-          ...address,
-          price,
-          email,
-        };
-      }),
-      );
-      return res;
+      return {
+        ...a,
+        ...person,
+        ...address,
+        price,
+        email,
+      };
+    }),
+  );
+  return res;
 }
 
 const getTaxRates = async stripe_price_id => {
@@ -1125,7 +1124,7 @@ async function getAllRegisteredInfos(eventId, userId) {
     teams.map(async t => {
       const entity = (await getEntity(t.team_id, userId)).basicInfos;
       const emails = await getEmailsEntity(t.team_id);
-      const players = await getRosterWithSub(t.roster_id);
+      const players = await getRoster(t.roster_id, true);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.roster_id);
       const role = await getRole(captains, t.roster_id, userId);
@@ -1200,11 +1199,24 @@ async function getRegistrationStatus(eventId, rosterId) {
   return registration.registration_status;
 }
 
-async function getRoster(rosterId) {
+async function getRoster(rosterId, withSub) {
   const realId = await getRealId(rosterId);
-  const roster = await knex('team_players')
-    .select('*')
-    .where({ roster_id: realId, is_sub: false });
+  let roster;
+  if (withSub === 'true') {
+    roster = await knex('team_players')
+      .select('*')
+      .where({ roster_id: realId })
+      .orderByRaw(
+        "array_position(array['coach'::varchar, 'captain'::varchar, 'assistant-captain'::varchar, 'null'::varchar], role)",
+      );
+  } else {
+    roster = await knex('team_players')
+      .select('*')
+      .where({ roster_id: realId, is_sub: false })
+      .orderByRaw(
+        "array_position(array['coach'::varchar, 'captain'::varchar, 'assistant-captain'::varchar, 'null'::varchar], role)",
+      );
+  }
 
   //TODO: Make a call to know if has created an account or is child account
   const status = TAG_TYPE_ENUM.REGISTERED;
@@ -1213,28 +1225,7 @@ async function getRoster(rosterId) {
     id: player.id,
     name: player.name,
     personId: player.person_id,
-    isSub: player.is_sub,
-    status: status,
-    paymentStatus: player.payment_status,
-    invoiceItemId: player.invoice_item_id,
-  }));
-
-  return props;
-}
-
-async function getRosterWithSub(rosterId) {
-  const realId = await getRealId(rosterId);
-  const roster = await knex('team_players')
-    .select('*')
-    .where({ roster_id: realId });
-
-  //TODO: Make a call to know if has created an account or is child account
-  const status = TAG_TYPE_ENUM.REGISTERED;
-
-  const props = roster.map(player => ({
-    id: player.id,
-    name: player.name,
-    personId: player.person_id,
+    role: player.role,
     isSub: player.is_sub,
     status: status,
     paymentStatus: player.payment_status,
@@ -1784,6 +1775,49 @@ const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
   return list;
 };
 
+/*const canEditRosterRoles = async (rosterId, userId) => {
+  const [{ event_id, team_id }] = await knex('event_rosters')
+    .select('event_id')
+    .where({ roster_id: rosterId });
+
+  const personEditing = await getPrimaryPersonIdFromUserId(userId);
+
+  const [{ role }] = await knex('team_players')
+    .select('role')
+    .where({ roster_id: rosterId, person_id: personEditing });
+
+  return (
+    role != ROSTER_ROLE_ENUM.player ||
+    (await getEntityRoleHelper(event_id, userId)) <=
+      ENTITIES_ROLE_ENUM.ADMIN ||
+    (await getEntityRoleHelper(team_id, userId)) <=
+      ENTITIES_ROLE_ENUM.ADMIN
+  );
+};*/
+
+const canRemovePlayerFromRoster = async (rosterId, personId) => {
+  const realRosterId = await getRealId(rosterId);
+  const realPersonId = await getRealId(personId);
+
+  const presentRoles = await knex('team_players')
+    .select('person_id', 'role')
+    .where(
+      'roster_id',
+      knex('team_players')
+        .select('roster_id')
+        .where({ roster_id: realRosterId, person_id: realPersonId }),
+    );
+
+  return (
+    presentRoles.filter(
+      item =>
+        item.person_id !== personId &&
+        item.role !== null &&
+        item.role !== ROSTER_ROLE_ENUM.PLAYER,
+    ).length >= 1
+  );
+};
+
 const canUnregisterTeam = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
@@ -1918,6 +1952,31 @@ async function updateRegistration(
       event_id: realEventId,
       roster_id: realRosterId,
     });
+}
+
+async function updateRosterRole(playerId, role) {
+  if (role === ROSTER_ROLE_ENUM.PLAYER) {
+    const presentRoles = await knex('team_players')
+      .select('id', 'role')
+      .where(
+        'roster_id',
+        knex('team_players')
+          .select('roster_id')
+          .where({ id: playerId }),
+      );
+
+    if (
+      !presentRoles.some(
+        p => p.role !== ROSTER_ROLE_ENUM.PLAYER && p.id !== playerId,
+      )
+    ) {
+      return ERROR_ENUM.VALUE_IS_INVALID;
+    }
+  }
+
+  return knex('team_players')
+    .update({ role })
+    .where({ id: playerId });
 }
 
 async function updatePlayerPaymentStatus(body) {
@@ -2978,6 +3037,8 @@ module.exports = {
   addNewPersonToRoster,
   addTeamToEvent,
   addEventCartItem,
+  //canEditRosterRoles,
+  canRemovePlayerFromRoster,
   canUnregisterTeam,
   deleteEntity,
   deleteEntityMembership,
@@ -3014,7 +3075,6 @@ module.exports = {
   getRemainingSpots,
   getRankings,
   getRoster,
-  getRosterWithSub,
   getEvent,
   getAlias,
   getPhases,
@@ -3050,6 +3110,7 @@ module.exports = {
   updateGamesInteractiveTool,
   updateSuggestionStatus,
   updateRegistration,
+  updateRosterRole,
   updatePlayerPaymentStatus,
   updateMembershipInvoice,
   eventInfos,
