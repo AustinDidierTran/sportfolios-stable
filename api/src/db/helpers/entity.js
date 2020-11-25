@@ -2154,12 +2154,21 @@ async function addSpiritSubmission(infos) {
 }
 
 async function addScoreSuggestion(infos) {
+  const { game_id, submitted_by_roster } = infos;
   const res = await knex('score_suggestion')
+    .select()
+    .where({ game_id, submitted_by_roster });
+  if (!res) {
+    return;
+  }
+  if (res.length !== 0) {
+    throw new Error(ERROR_ENUM.VALUE_ALREADY_EXISTS);
+  }
+  return knex('score_suggestion')
     .insert({
       ...infos,
     })
     .returning('*');
-  return res;
 }
 
 async function addField(field, eventId) {

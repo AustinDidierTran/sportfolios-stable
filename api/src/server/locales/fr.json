@@ -13,7 +13,8 @@
       "victory": "C'est envoyé, félicitation pour votre belle victoire!",
       "other": "C'est envoyé!"
     },
-    "failed": "Une erreur est survenue lors de l'enregistrement du score, voulez vous réessayer?"
+    "failed": "Une erreur est survenue lors de l'enregistrement du score, voulez vous réessayer?",
+    "already_submitted": "Votre alignement a déjà soumis un pointage pour la même partie, vous ne pouvez donc pas en soumettre un nouveau."
   },
   "spirit_submission": {
     "request": "Désirez-vous également soumettre le pointage spirit?",

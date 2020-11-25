@@ -9,52 +9,68 @@ const Response = require('../../response');
 const {
   addScoreSuggestion,
 } = require('../../../../../db/helpers/entity');
+const { ERROR_ENUM } = require('../../../../../../../common/errors');
 
 class AwaitingScoreSubmissionConfirmation extends State {
   async handleEvent(webhookEvent) {
     let nextState;
     if (this.isYes(webhookEvent)) {
-      const chatbotInfos = this.context.chatbotInfos;
-      const score = {};
-      score[chatbotInfos.myRosterId] = chatbotInfos.myScore;
-      chatbotInfos.opponentTeams.forEach(
-        team => (score[team.rosterId] = team.score),
-      );
-      const res = await addScoreSuggestion({
-        game_id: chatbotInfos.game_id,
-        submitted_by_roster: chatbotInfos.myRosterId,
-        submitted_by_person: chatbotInfos.playerId,
-        score: JSON.stringify(score),
-      });
-      if (!res) {
+      try {
+        const chatbotInfos = this.context.chatbotInfos;
+        const score = {};
+        score[chatbotInfos.myRosterId] = chatbotInfos.myScore;
+        chatbotInfos.opponentTeams.forEach(
+          team => (score[team.rosterId] = team.score),
+        );
+        const res = await addScoreSuggestion({
+          game_id: chatbotInfos.game_id,
+          submitted_by_roster: chatbotInfos.myRosterId,
+          submitted_by_person: chatbotInfos.playerId,
+          score: JSON.stringify(score),
+        });
+        if (!res) {
+          this.sendMessages(
+            webhookEvent.sender.id,
+            Response.genQuickReply(
+              i18n.__('score_submission.failed'),
+              MESSENGER_QUICK_REPLIES.CONFIRMATION,
+            ),
+          );
+          return;
+        }
+        const myScore = chatbotInfos.myScore;
+        const maxOpponentScore = this.context.chatbotInfos.opponentTeams.reduce(
+          (acc, curr) => Math.max(acc, curr.score),
+          0,
+        );
+        const text =
+          myScore > maxOpponentScore
+            ? 'score_submission.confirmed.victory'
+            : 'score_submission.confirmed.other';
         this.sendMessages(
           webhookEvent.sender.id,
-          Response.genQuickReply(
-            i18n.__('score_submission.failed'),
-            MESSENGER_QUICK_REPLIES.CONFIRMATION,
-          ),
+          Response.genText(i18n.__(text)),
         );
-        return;
-      }
-      const myScore = chatbotInfos.myScore;
-      const maxOpponentScore = this.context.chatbotInfos.opponentTeams.reduce(
-        (acc, curr) => Math.max(acc, curr.score),
-        0,
-      );
-      const text =
-        myScore > maxOpponentScore
-          ? 'score_submission.confirmed.victory'
-          : 'score_submission.confirmed.other';
-      this.sendMessages(
-        webhookEvent.sender.id,
-        Response.genText(i18n.__(text)),
-      );
-      //TODO handle spirit for more than one team
-      if (this.context.chatbotInfos.opponentTeams.length > 1) {
-        nextState = BASIC_CHATBOT_STATES.HOME;
-      } else {
-        nextState =
-          SCORE_SUBMISSION_CHATBOT_STATES.SPIRIT_SUBMISSION_REQUEST_SENT;
+
+        //TODO handle spirit for more than one team
+        if (this.context.chatbotInfos.opponentTeams.length > 1) {
+          nextState = BASIC_CHATBOT_STATES.HOME;
+        } else {
+          nextState =
+            SCORE_SUBMISSION_CHATBOT_STATES.SPIRIT_SUBMISSION_REQUEST_SENT;
+        }
+      } catch (e) {
+        if (e.message == ERROR_ENUM.VALUE_ALREADY_EXISTS) {
+          this.sendMessages(webhookEvent.sender.id, [
+            Response.genText(
+              i18n.__('spirit_submission.already_submitted'),
+            ),
+            Response.genText(i18n.__('back_to_menu')),
+          ]);
+          nextState = BASIC_CHATBOT_STATES.HOME;
+        } else {
+          throw e;
+        }
       }
     } else if (this.isNo(webhookEvent)) {
       nextState =
