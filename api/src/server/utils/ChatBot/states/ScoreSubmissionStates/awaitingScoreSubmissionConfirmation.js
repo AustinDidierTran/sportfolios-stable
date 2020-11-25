@@ -23,7 +23,7 @@ class AwaitingScoreSubmissionConfirmation extends State {
           team => (score[team.rosterId] = team.score),
         );
         const res = await addScoreSuggestion({
-          game_id: chatbotInfos.game_id,
+          game_id: chatbotInfos.gameId,
           submitted_by_roster: chatbotInfos.myRosterId,
           submitted_by_person: chatbotInfos.playerId,
           score: JSON.stringify(score),
