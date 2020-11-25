@@ -35,10 +35,6 @@ export default function Cart() {
     document.title = formatPageTitle(t('cart'));
   }, []);
 
-  const onCheckout = () => {
-    goTo(ROUTES.checkout);
-  };
-
   const fetchItems = async () => {
     const data = await getCartItems();
     const { items: itemsProp, total: totalProp } = data;
@@ -65,7 +61,7 @@ export default function Cart() {
     });
     const { items: itemsProp, total: totalProp } = data;
     setItems(itemsProp);
-    setTotal(totalProp);
+    setTotal(totalProp.total);
     dispatch({
       type: ACTION_ENUM.UPDATE_CART,
       payload: data,
@@ -120,7 +116,9 @@ export default function Cart() {
             size="small"
             variant="contained"
             endIcon="Check"
-            onClick={onCheckout}
+            onClick={() => {
+              goTo(ROUTES.checkout);
+            }}
             style={{ margin: 8 }}
             className={styles.button}
           >

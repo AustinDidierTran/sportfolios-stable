@@ -257,11 +257,18 @@ const getCartTotal = async userId => {
     }
   }, []);
 
-  const total = items.reduce(
+  const subtotal = items.reduce(
     (prev, curr) => prev + curr.amount * curr.quantity,
     0,
   );
-  return { total, taxes };
+
+  const total =
+    subtotal +
+    taxes.reduce((prev, curr) => {
+      return prev + curr.amount;
+    }, 0);
+
+  return { total, subtotal, taxes };
 };
 
 const groupBy = (list, keyGetter) => {

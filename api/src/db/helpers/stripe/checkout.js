@@ -45,7 +45,6 @@ const createInvoiceItem = async (body, userId) => {
     tax_rates,
   } = body;
   const customerId = await getCustomerId(paymentMethodId);
-  console.log({ tax_rates });
   const params = {
     price,
     customer: customerId,
@@ -332,7 +331,6 @@ const checkout = async (body, userId) => {
         const tax_rates = await getTaxRatesFromStripePrice(
           stripePriceId,
         );
-        console.log('1');
         const invoiceItem = await createInvoiceItem(
           {
             price: stripePriceId,
@@ -347,35 +345,24 @@ const checkout = async (body, userId) => {
       }),
     );
 
-    console.log('2');
     const invoice = await createInvoice(
       { invoiceParams, paymentMethodId },
       userId,
     );
 
-    console.log('3');
     await stripe.customers.retrieve(invoice.customer);
-    console.log('4');
     const invoiceId = invoice.id;
-    console.log('5');
     await finalizeInvoice({ invoiceId }, userId);
-    console.log('6');
     const paidInvoice = await payInvoice(
       { invoiceId, paymentMethodId },
       userId,
     );
-    console.log('7');
 
     const chargeId = await paidInvoice.charge;
-    console.log('7.1');
     const receiptUrl = await getReceipt({ chargeId, invoiceId });
-    console.log('7.2');
     const transfers = await createTransfers(paidInvoice, userId);
-    console.log('7.3');
 
-    console.log('8');
     await sendReceiptEmail({ receipt: receiptUrl }, userId);
-    console.log('9');
     await Promise.all(
       invoicesAndMetadatas.map(async ({ invoiceItem, metadata }) => {
         if (Number(metadata.type) === GLOBAL_ENUM.EVENT) {
@@ -423,7 +410,6 @@ const checkout = async (body, userId) => {
         }
       }),
     );
-    console.log('10');
 
     await clearCart(userId);
     /* eslint-disable-next-line */

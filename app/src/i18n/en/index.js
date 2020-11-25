@@ -564,6 +564,7 @@ export default {
     submit: 'Submit',
     subscribe: 'Subscribe',
     subscribed: 'Subscribed',
+    subtotal: 'Subtotal',
     surname: 'Surname',
     switch_view: 'Switch view',
     tax: 'Tax',

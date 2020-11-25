@@ -558,6 +558,7 @@ export default {
     submit: 'Soumettre',
     subscribe: "S'abonner",
     subscribed: 'Abonné',
+    subtotal: 'Sous-total',
     surname: 'Nom de famille',
     switch_view: 'Changer de vue',
     tax: 'Taxe',
