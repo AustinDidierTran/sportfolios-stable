@@ -619,6 +619,8 @@ export default {
     value_must_have_x_digits: 'La valeur doit avoir {{digits}} chiffres.',
     viewer: 'Visiteur',
     waiting_for_payment: 'Votre paiement est en cours de traitement. Merci pour votre patience.',
+    with_taxes_the_total_for_a_player_is: 'Avec les taxes le total pour un joueur est {{total}}$',
+    with_taxes_the_total_for_a_team_is: 'Avec les taxes le total pour une équipe est {{total}}$',
     wrong_password: 'Mauvais mot de passe. Veuillez réessayer.',
     xl: 'X-Large',
     XL: 'X-Large',

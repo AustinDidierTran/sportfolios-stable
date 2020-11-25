@@ -12,6 +12,7 @@ const {
   MEMBERSHIP_LENGTH_TYPE_ENUM,
   INVOICE_STATUS_ENUM,
   REPORT_TYPE_ENUM,
+  PLATEFORM_FEES,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -2189,6 +2190,7 @@ async function addOption(
   eventId,
   name,
   ownerId,
+  taxRatesId,
   teamPrice,
   playerPrice,
   endTime,
@@ -2225,6 +2227,7 @@ async function addOption(
       entityId: realId,
       photoUrl: entity.photoUrl,
       ownerId,
+      taxRatesId,
     });
   }
 
@@ -2252,6 +2255,7 @@ async function addOption(
       entityId: realId,
       photoUrl: entity.photoUrl,
       ownerId,
+      taxRatesId,
     });
   }
 

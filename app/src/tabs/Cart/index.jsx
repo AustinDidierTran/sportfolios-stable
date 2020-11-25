@@ -1,25 +1,21 @@
 import React, { useState, useEffect } from 'react';
-
 import styles from './Cart.module.css';
 import api from '../../actions/api';
-
 import { goTo, ROUTES } from '../../actions/goTo';
-import { LIST_ITEM_ENUM } from '../../../../common/enums';
-import { useTranslation } from 'react-i18next';
 import {
-  formatPrice,
-  formatPageTitle,
-} from '../../utils/stringFormats';
-
+  CARD_TYPE_ENUM,
+  LIST_ITEM_ENUM,
+} from '../../../../common/enums';
+import { useTranslation } from 'react-i18next';
+import { formatPageTitle } from '../../utils/stringFormats';
 import {
   Button,
   MessageAndButtons,
   List,
   ContainerBottomFixed,
   LoadingSpinner,
+  Card,
 } from '../../components/Custom';
-import DefaultCard from '../../components/MUI/Card';
-import { Typography } from '../../components/MUI';
 import { useContext } from 'react';
 import { Store, ACTION_ENUM } from '../../Store';
 
@@ -98,6 +94,7 @@ export default function Cart() {
       />
     );
   }
+
   return (
     <>
       <div className={styles.cart}>
@@ -109,13 +106,14 @@ export default function Cart() {
             key: index,
           }))}
         />
-        <DefaultCard className={styles.defaultCard}>
-          <Typography variant="h5" className={styles.typo}>
-            {`Total: ${formatPrice(total)}`}
-          </Typography>
-        </DefaultCard>
+        <Card
+          items={{
+            items,
+            total,
+          }}
+          type={CARD_TYPE_ENUM.CART_SUMMARY}
+        />
       </div>
-
       <ContainerBottomFixed>
         <div className={styles.buttonDiv}>
           <Button

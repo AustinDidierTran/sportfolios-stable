@@ -1,19 +1,15 @@
 import React, { useEffect, useState, useContext } from 'react';
-
 import {
   Paper,
   Button,
   List,
   FormDialog,
-  AlertDialog,
   LoadingSpinner,
 } from '../../../components/Custom';
-
 import { useTranslation } from 'react-i18next';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
 import { useParams } from 'react-router-dom';
-
 import styles from './AddOptionsEvent.module.css';
 import {
   SEVERITY_ENUM,
@@ -30,11 +26,7 @@ export default function AddOptionsEvent() {
 
   const [options, setOptions] = useState([]);
   const [open, setOpen] = useState(false);
-  const [alertDialog, setAlertDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedOptionId, setSelectedOptionId] = useState('');
-
-  const [selectedOption, setSelectedOption] = useState({});
 
   useEffect(() => {
     getOptions();
@@ -45,37 +37,12 @@ export default function AddOptionsEvent() {
       formatRoute('/api/entity/options', null, { eventId }),
     );
     const dataOptions = data.map(o => ({
-      ...o,
+      option: o,
       type: LIST_ITEM_ENUM.EVENT_PAYMENT_OPTION,
-      onDelete: onDelete,
-      onEdit: onEdit,
+      update: getOptions,
       key: o.id,
     }));
     setOptions(dataOptions);
-  };
-
-  const onEdit = option => {
-    setSelectedOption(option);
-    setSelectedOptionId(option.id);
-    setOpen(true);
-  };
-
-  const onDelete = id => {
-    setSelectedOptionId(id);
-    setAlertDialog(true);
-  };
-
-  const deleteOption = async () => {
-    await api(
-      formatRoute('/api/entity/option', null, {
-        id: selectedOptionId,
-      }),
-      {
-        method: 'DELETE',
-      },
-    );
-    getOptions();
-    setAlertDialog(false);
   };
 
   const onClose = () => {
@@ -88,6 +55,7 @@ export default function AddOptionsEvent() {
       teamPrice,
       playerPrice,
       ownerId,
+      taxRatesId,
       openDate,
       openTime,
       closeDate,
@@ -102,13 +70,13 @@ export default function AddOptionsEvent() {
     const end = new Date(`${closeDate} ${closeTime}`).getTime();
 
     setIsLoading(true);
-
     const res = await api(`/api/entity/option`, {
       method: 'POST',
       body: JSON.stringify({
         eventId,
         name,
         ownerId,
+        taxRatesId,
         teamPrice: formattedTeamPrice,
         playerPrice: formattedPlayerPrice,
         startTime: start,
@@ -124,43 +92,6 @@ export default function AddOptionsEvent() {
       setIsLoading(false);
       return;
     }
-    getOptions();
-    setIsLoading(false);
-  };
-
-  const editOptionEvent = async values => {
-    const { openDate, openTime, closeDate, closeTime } = values;
-
-    const start = new Date(`${openDate} ${openTime}`).getTime();
-    const end = new Date(`${closeDate} ${closeTime}`).getTime();
-
-    setIsLoading(true);
-
-    const res = await api('/api/entity/updateOption', {
-      method: 'PUT',
-      body: JSON.stringify({
-        id: selectedOptionId,
-        start_time: start,
-        end_time: end,
-      }),
-    });
-
-    if (res.status === STATUS_ENUM.SUCCESS) {
-      dispatch({
-        type: ACTION_ENUM.SNACK_BAR,
-        message: t('changes_saved'),
-        severity: SEVERITY_ENUM.SUCCESS,
-      });
-    } else {
-      dispatch({
-        type: ACTION_ENUM.SNACK_BAR,
-        message: t('an_error_has_occured'),
-        severity: SEVERITY_ENUM.ERROR,
-      });
-      setIsLoading(false);
-      return;
-    }
-
     getOptions();
     setIsLoading(false);
   };
@@ -190,13 +121,6 @@ export default function AddOptionsEvent() {
           onClose,
           addOptionToEvent,
         }}
-      />
-      <AlertDialog
-        open={alertDialog}
-        onSubmit={deleteOption}
-        onCancel={() => setAlertDialog(false)}
-        description={t('delete_payment_option_confirmation')}
-        title={t('delete_payment_option')}
       />
     </Paper>
   );

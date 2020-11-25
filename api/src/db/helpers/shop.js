@@ -125,6 +125,23 @@ const getAllShopItems = async type => {
   }));
 };
 
+const getTaxRates = async stripe_price_id => {
+  const taxRates = await knex('tax_rates')
+    .select('*')
+    .leftJoin(
+      'tax_rates_stripe_price',
+      'tax_rates_stripe_price.tax_rate_id',
+      '=',
+      'tax_rates.id',
+    )
+    .where(
+      'tax_rates_stripe_price.stripe_price_id',
+      '=',
+      stripe_price_id,
+    );
+  return taxRates;
+};
+
 const getCartItems = async userId => {
   try {
     const cartItems = await knex('cart_items')
@@ -168,10 +185,10 @@ const getCartItems = async userId => {
         deleteCartItems(item.id, item.user_id);
       }
     });
-    return (
+    const res = await Promise.all(
       cartItems
         .filter(c => c.metadata.type)
-        .map(i => ({
+        .map(async i => ({
           active: i.active,
           amount: i.amount,
           description: i.description,
@@ -184,8 +201,10 @@ const getCartItems = async userId => {
           stripePriceMetadata: i.stripe_price_metadata,
           stripeProductId: i.stripe_product_id,
           userId: i.user_id,
-        })) || []
+          taxRates: getTaxRates(i.stripe_price_id),
+        })) || [],
     );
+    return res;
   } catch (err) {
     stripeErrorLogger('GetCartItem error', err);
     throw err;
@@ -198,6 +217,7 @@ const getCartTotal = async userId => {
       'stripe_price.amount',
       'cart_items.quantity',
       'cart_items.metadata',
+      'stripe_price.stripe_price_id',
     ])
     .leftJoin(
       'stripe_price',
@@ -206,11 +226,42 @@ const getCartTotal = async userId => {
       'stripe_price.stripe_price_id',
     )
     .where('cart_items.user_id', userId);
+
+  const withTaxes = await Promise.all(
+    items.map(async i => ({
+      taxes: await getTaxRates(i.stripe_price_id),
+      ...i,
+    })),
+  );
+
+  const res = withTaxes.reduce((prev, curr) => {
+    const res = curr.taxes.map(t => ({
+      id: t.id,
+      amount: curr.quantity * curr.amount * (t.percentage / 100),
+      displayName: t.display_name,
+      percentage: t.percentage,
+      description: t.description,
+    }));
+    return prev.concat(res);
+  }, []);
+
+  const taxes = res.reduce((prev, curr) => {
+    const index = prev.findIndex(p => {
+      return p.id === curr.id;
+    });
+    if (index === -1) {
+      return [...prev, curr];
+    } else {
+      prev[index].amount = prev[index].amount + curr.amount;
+      return prev;
+    }
+  }, []);
+
   const total = items.reduce(
     (prev, curr) => prev + curr.amount * curr.quantity,
     0,
   );
-  return total;
+  return { total, taxes };
 };
 
 const groupBy = (list, keyGetter) => {

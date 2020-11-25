@@ -625,6 +625,8 @@ export default {
     value_must_have_x_digits: 'Value must have {{digits}} digits.',
     viewer: 'Viewer',
     waiting_for_payment: 'Your payment is being processed. Thank you for your patience',
+    with_taxes_the_total_for_a_player_is: 'With taxes the total for a player is {{total}}$',
+    with_taxes_the_total_for_a_team_is: 'With taxes the total for a team is {{total}}$',
     wrong_password: 'Wrong password. Please try again',
     xl: 'X-Large',
     XL: 'X-Large',

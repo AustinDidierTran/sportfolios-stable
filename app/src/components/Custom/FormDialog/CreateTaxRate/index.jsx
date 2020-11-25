@@ -17,7 +17,7 @@ export default function CreateTaxRate(props) {
   const { dispatch } = useContext(Store);
 
   const [open, setOpen] = useState(false);
-  const [inclusive, setInclusive] = useState(true);
+  const [inclusive, setInclusive] = useState(false);
 
   const countDecimals = number => {
     if (Math.floor(number) === number) return 0;
@@ -93,7 +93,7 @@ export default function CreateTaxRate(props) {
 
   const handleClose = () => {
     formik.resetForm();
-    setInclusive(true);
+    setInclusive(false);
     onClose();
   };
 

@@ -72,6 +72,7 @@ const MEMBERSHIP_TYPE_ENUM = {
 
 const CARD_TYPE_ENUM = {
   CART: 'cart',
+  CART_SUMMARY: 'cart summary',
   DELETE_ENTITY: 'delete entity',
   EDITABLE_GAME: 'editable game',
   EVENT_SETTINGS: 'event settings',
@@ -106,7 +107,6 @@ const TABS_ENUM = {
   SETTINGS: 'settings',
   SHOP: 'shop',
 };
-
 const FORM_DIALOG_TYPE_ENUM = {
   SUBMIT_SCORE: 'score',
   SUBMIT_SCORE_AND_SPIRIT: 'score and spirit',

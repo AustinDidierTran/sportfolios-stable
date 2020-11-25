@@ -28,7 +28,13 @@ const addProduct = async body => {
 };
 
 const addPrice = async body => {
-  const { stripePrice, entityId, photoUrl, ownerId } = body;
+  const {
+    stripePrice,
+    entityId,
+    photoUrl,
+    ownerId,
+    taxRatesId,
+  } = body;
   try {
     const price = await stripe.prices.create(stripePrice);
 
@@ -41,6 +47,16 @@ const addPrice = async body => {
       metadata: price.metadata,
       owner_id: ownerId,
     });
+
+    await Promise.all(
+      taxRatesId.map(async taxRateId => {
+        await knex('tax_rates_stripe_price').insert({
+          stripe_price_id: price.id,
+          tax_rate_id: taxRateId,
+        });
+      }),
+    );
+
     await knex('store_items').insert({
       entity_id: entityId,
       stripe_price_id: price.id,

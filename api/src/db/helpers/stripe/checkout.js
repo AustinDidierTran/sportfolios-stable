@@ -37,15 +37,22 @@ const formatMetadata = metadata =>
   }, {});
 
 const createInvoiceItem = async (body, userId) => {
-  const { price, metadata, paymentMethodId, quantity } = body;
+  const {
+    price,
+    metadata,
+    paymentMethodId,
+    quantity,
+    tax_rates,
+  } = body;
   const customerId = await getCustomerId(paymentMethodId);
+  console.log({ tax_rates });
   const params = {
     price,
     customer: customerId,
     metadata: formatMetadata(metadata),
     quantity,
+    tax_rates,
   };
-  //FETCH TAXRATES
   try {
     const invoiceItem = await stripe.invoiceItems.create(params);
     await knex('stripe_invoice_item').insert({
@@ -159,6 +166,10 @@ const getExternalAccount = async stripePriceId => {
   return externalAccount;
 };
 
+const getTransferedAmount = amount => {
+  return Math.ceil(amount - amount * 0.05);
+};
+
 const createTransfers = async invoice => {
   try {
     const transfers = await Promise.all(
@@ -175,8 +186,7 @@ const createTransfers = async invoice => {
           invoiceItem.stripe_price_id,
         );
 
-        const stripeFees = Math.ceil(amount * 0.029 + 30);
-        const transferedAmount = amount - stripeFees;
+        const transferedAmount = getTransferedAmount(amount);
 
         const transfer = await createTransfer(
           {
@@ -271,6 +281,14 @@ const sendReceiptEmail = async (body, userId) => {
   return sendReceiptEmailHelper({ email, receipt, language });
 };
 
+const getTaxRatesFromStripePrice = async stripePriceId => {
+  const taxRatesId = await knex('tax_rates_stripe_price')
+    .select('tax_rate_id')
+    .where({ stripe_price_id: stripePriceId });
+
+  return taxRatesId.map(t => t.tax_rate_id);
+};
+
 const getMetadata = async (stripePriceId, cartItemId) => {
   const [stripePrice] = await knex('stripe_price')
     .select('*')
@@ -311,12 +329,17 @@ const checkout = async (body, userId) => {
         const stripePriceId = price.stripe_price_id;
         const quantity = price.quantity;
         const metadata = await getMetadata(stripePriceId, price.id);
+        const tax_rates = await getTaxRatesFromStripePrice(
+          stripePriceId,
+        );
+        console.log('1');
         const invoiceItem = await createInvoiceItem(
           {
             price: stripePriceId,
             metadata,
             paymentMethodId,
             quantity,
+            tax_rates,
           },
           userId,
         );
@@ -324,24 +347,35 @@ const checkout = async (body, userId) => {
       }),
     );
 
+    console.log('2');
     const invoice = await createInvoice(
       { invoiceParams, paymentMethodId },
       userId,
     );
 
+    console.log('3');
     await stripe.customers.retrieve(invoice.customer);
+    console.log('4');
     const invoiceId = invoice.id;
+    console.log('5');
     await finalizeInvoice({ invoiceId }, userId);
+    console.log('6');
     const paidInvoice = await payInvoice(
       { invoiceId, paymentMethodId },
       userId,
     );
+    console.log('7');
 
     const chargeId = await paidInvoice.charge;
+    console.log('7.1');
     const receiptUrl = await getReceipt({ chargeId, invoiceId });
+    console.log('7.2');
     const transfers = await createTransfers(paidInvoice, userId);
+    console.log('7.3');
 
+    console.log('8');
     await sendReceiptEmail({ receipt: receiptUrl }, userId);
+    console.log('9');
     await Promise.all(
       invoicesAndMetadatas.map(async ({ invoiceItem, metadata }) => {
         if (Number(metadata.type) === GLOBAL_ENUM.EVENT) {
@@ -389,6 +423,7 @@ const checkout = async (body, userId) => {
         }
       }),
     );
+    console.log('10');
 
     await clearCart(userId);
     /* eslint-disable-next-line */
