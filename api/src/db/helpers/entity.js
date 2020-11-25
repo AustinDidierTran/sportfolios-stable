@@ -798,8 +798,7 @@ async function generateReport(reportId) {
 
 async function generateMembersReport(report) {
   const { date } = report.metadata;
-  const members = await knex('memberships')
-    .select('*')
+  const members = await knex('memberships').select('*');
   const active = members.filter(m => {
     return (
       moment(m.created_at).isSameOrBefore(moment(date), 'day') &&
@@ -817,21 +816,21 @@ async function generateMembersReport(report) {
       }
       const address = person.address
         ? {
-          city: person.address.city,
-          state: person.address.state,
-          zip: person.address.zip,
-        }
+            city: person.address.city,
+            state: person.address.state,
+            zip: person.address.zip,
+          }
         : {};
-        return {
-          ...a,
-          ...person,
-          ...address,
-          price,
-          email,
-        };
-      }),
-      );
-      return res;
+      return {
+        ...a,
+        ...person,
+        ...address,
+        price,
+        email,
+      };
+    }),
+  );
+  return res;
 }
 
 const getTaxRates = async stripe_price_id => {
@@ -2136,6 +2135,24 @@ async function addScoreAndSpirit(props) {
   return res;
 }
 
+async function addSpiritSubmission(infos) {
+  const {
+    game_id,
+    submitted_by_roster,
+    submitted_for_roster,
+  } = infos;
+  const res = await knex('spirit_submission')
+    .select()
+    .where({ game_id, submitted_by_roster, submitted_for_roster });
+  if (!res) {
+    return;
+  }
+  if (res.length !== 0) {
+    throw new Error(ERROR_ENUM.VALUE_ALREADY_EXISTS);
+  }
+  return knex('spirit_submission').insert(infos);
+}
+
 async function addScoreSuggestion(infos) {
   const res = await knex('score_suggestion')
     .insert({
@@ -3064,4 +3081,5 @@ module.exports = {
   getGameTeams,
   isPlayerInRoster,
   getRealId,
+  addSpiritSubmission,
 };

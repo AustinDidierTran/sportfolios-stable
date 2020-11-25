@@ -5,7 +5,6 @@ class Chatbot {
     this.messengerId = messengerId;
     this.chatbotInfos = chatbotInfos;
     this.setState(stateType);
-    console.log(chatbotInfos);
   }
 
   setState(stateType) {

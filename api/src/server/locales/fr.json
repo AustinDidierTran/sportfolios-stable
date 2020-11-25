@@ -23,14 +23,17 @@
     "self_control": "Selon la même échelle, à combien évalueriez-vous l'attitude positive et la maîtrise de soi?",
     "communication": "Selon la même échelle, à combien évalueriez-vous la communication?",
     "confirmation": "Voici le sommaire de l'esprit sportif:\n\nConnaissance et application des réglements: {{rules}}\nFautes et contacts: {{fouls}}\nHonnêteté et équité: {{equity}}\nAttitude positive et maîtrise de soi: {{selfControl}}\nCommunication: {{communication}}\n\nTotal: {{total}}/20\n\nEst-ce que vous voulez confirmer l'envoi?",
-    "confirmed": "Le tout a été envoyé avec succès. Merci et à la prochaine!"
+    "confirmed": "Le tout a été envoyé avec succès. Merci et à la prochaine!",
+    "already_submitted": "Votre alignement a déjà soumis un pointage spirit pour la même équipe de la même partie, vous ne pouvez donc pas en soumettre un nouveau.",
+    "failed": "Une erreur est survenue lors de l'enregistrement du spirit, voulez vous réessayer?"
   },
   "connection": {
     "success": "Vous êtes maintenant inscrit au chatbot Sportfolios! Revenez après votre prochaine partie pour soumettre votre score facilement.",
     "error": "Une erreur est survenue en tentant de lier votre compte, veuillez réessayer plus tard",
     "no_ref": "Vous devez maintenant lier votre compte Sportfolios, veuillez suivre le lien suivant et connecter le chatbot: https://sportfolios.app/userSettings"
   },
-  "back_to_menu": "Très bien, je vous ramène au menu principal.",
+  "ok_back_to_menu": "Très bien, je vous ramène au menu principal.",
+  "back_to_menu": "Je vous ramène au menu principal",
   "menu": {
     "welcome": "Bienvenue sur le chatbot Sportfolios!",
     "help": "Voici les différentes actions que vous pouvez effectuer:\n• Dites \"test\" pour lancer une simulation de soumission de score\n• Dites \"partie\" pour connaître l'heure de votre prochaine partie\n• À tout moment dites \"recommencer\" pour revenir à ce menu."

@@ -47,7 +47,7 @@ class AwaitingScoreSubmissionConfirmation extends State {
           : 'score_submission.confirmed.other';
       this.sendMessages(
         webhookEvent.sender.id,
-        Response.genText(text),
+        Response.genText(i18n.__(text)),
       );
       //TODO handle spirit for more than one team
       if (this.context.chatbotInfos.opponentTeams.length > 1) {

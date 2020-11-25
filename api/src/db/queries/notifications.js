@@ -79,7 +79,11 @@ const sendChatbotNotification = async (user_id, notif) => {
     messengerId,
   );
   //Check if it was recently uptdated, wich would mean the user is chatting with the bot
-  if (updated_at > new Date().valueOf - MILLIS_TIME_ENUM.ONE_MINUTE) {
+  console.log({ updated_at });
+  if (
+    new Date(updated_at).valueOf() >
+    new Date().valueOf() - MILLIS_TIME_ENUM.ONE_MINUTE
+  ) {
     return;
   }
   const { type, metadata } = notif;
