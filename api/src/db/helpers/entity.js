@@ -413,7 +413,7 @@ async function getAllForYouPagePosts() {
     (a, b) => b.createdAt - a.createdAt,
   );
 }
-async function getScoreSuggestion(event_id, gameId) {
+async function getScoreSuggestion(gameId) {
   const suggestions = await knex('score_suggestion')
     .select('*')
     .where({
@@ -2136,6 +2136,17 @@ async function addScoreAndSpirit(props) {
 }
 
 async function addSpiritSubmission(infos) {
+  const submitted = await isSpiritAlreadySubmitted(infos);
+  if (typeof submitted === 'undefined') {
+    return;
+  }
+  if (submitted) {
+    throw new Error(ERROR_ENUM.VALUE_ALREADY_EXISTS);
+  }
+  return knex('spirit_submission').insert(infos);
+}
+
+async function isSpiritAlreadySubmitted(infos) {
   const {
     game_id,
     submitted_by_roster,
@@ -2147,13 +2158,23 @@ async function addSpiritSubmission(infos) {
   if (!res) {
     return;
   }
-  if (res.length !== 0) {
-    throw new Error(ERROR_ENUM.VALUE_ALREADY_EXISTS);
-  }
-  return knex('spirit_submission').insert(infos);
+  return res.length !== 0;
 }
 
 async function addScoreSuggestion(infos) {
+  const submitted = await isScoreSuggestionAlreadySubmitted(infos);
+  if (typeof submitted === 'undefined') {
+    return;
+  }
+  if (submitted) {
+    throw new Error(ERROR_ENUM.VALUE_ALREADY_EXISTS);
+  }
+  return knex('score_suggestion')
+    .insert(infos)
+    .returning('*');
+}
+
+async function isScoreSuggestionAlreadySubmitted(infos) {
   const { game_id, submitted_by_roster } = infos;
   const res = await knex('score_suggestion')
     .select()
@@ -2161,12 +2182,7 @@ async function addScoreSuggestion(infos) {
   if (!res) {
     return;
   }
-  if (res.length !== 0) {
-    throw new Error(ERROR_ENUM.VALUE_ALREADY_EXISTS);
-  }
-  return knex('score_suggestion')
-    .insert(infos)
-    .returning('*');
+  return res.length !== 0;
 }
 
 async function addField(field, eventId) {
@@ -3089,4 +3105,6 @@ module.exports = {
   isPlayerInRoster,
   getRealId,
   addSpiritSubmission,
+  isSpiritAlreadySubmitted,
+  isScoreSuggestionAlreadySubmitted,
 };

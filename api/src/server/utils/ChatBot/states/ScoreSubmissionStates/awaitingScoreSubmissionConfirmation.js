@@ -63,11 +63,12 @@ class AwaitingScoreSubmissionConfirmation extends State {
         if (e.message == ERROR_ENUM.VALUE_ALREADY_EXISTS) {
           this.sendMessages(webhookEvent.sender.id, [
             Response.genText(
-              i18n.__('spirit_submission.already_submitted'),
+              i18n.__('score_submission.already_submitted'),
             ),
             Response.genText(i18n.__('back_to_menu')),
           ]);
-          nextState = BASIC_CHATBOT_STATES.HOME;
+          nextState =
+            SCORE_SUBMISSION_CHATBOT_STATES.SPIRIT_SUBMISSION_REQUEST_SENT;
         } else {
           throw e;
         }

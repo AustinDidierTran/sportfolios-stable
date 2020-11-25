@@ -31,6 +31,7 @@ const {
   NOTIFICATION_TYPE,
   SCORE_SUBMISSION_CHATBOT_STATES,
   MILLIS_TIME_ENUM,
+  BASIC_CHATBOT_STATES,
 } = require('../../../../common/enums');
 
 const seeNotifications = async user_id => {
@@ -75,14 +76,14 @@ const sendChatbotNotification = async (user_id, notif) => {
   if (!messengerId) {
     return;
   }
-  const { chatbotInfos, updated_at } = await getChatbotInfos(
+  const { chatbotInfos, updated_at, state } = await getChatbotInfos(
     messengerId,
   );
-  //Check if it was recently uptdated, wich would mean the user is chatting with the bot
-  console.log({ updated_at });
+  //Check if state is not at home, or if no interaction has been made with the bot in past hours to prevent interruptin a conversation
   if (
-    new Date(updated_at).valueOf() >
-    new Date().valueOf() - MILLIS_TIME_ENUM.ONE_MINUTE
+    state != BASIC_CHATBOT_STATES.HOME ||
+    new Date(updated_at).valueOf() <
+      new Date().valueOf() - MILLIS_TIME_ENUM.ONE_HOUR * 3
   ) {
     return;
   }
@@ -106,14 +107,13 @@ const sendChatbotNotification = async (user_id, notif) => {
         });
       }
     });
-    console.log(chatbotInfos);
     const chatbot = new Chatbot(
       messengerId,
       SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT,
       chatbotInfos,
     );
     chatbot.sendIntroMessages();
-    setChatbotInfos(messengerId, {
+    await setChatbotInfos(messengerId, {
       chatbot_infos: JSON.stringify(chatbot.chatbotInfos),
       state: chatbot.stateType,
     });
