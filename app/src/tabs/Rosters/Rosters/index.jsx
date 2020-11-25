@@ -39,7 +39,9 @@ export default function Rosters(props) {
               setExpandedIndex={setExpandedIndex}
               onAdd={onAdd}
               onDelete={onDelete}
-              onRoleUpdate={onRoleUpdate}
+              onRoleUpdate={(...args) =>
+                onRoleUpdate(roster.teamId, ...args)
+              }
               index={index + 1}
               key={roster.rosterId}
               update={update}

@@ -55,16 +55,16 @@ export default function RosterItem(props) {
         onChange={newRole => handleRoleChange(newRole)}
         options={[
           {
+            display: t('coach'),
+            value: ROSTER_ROLE_ENUM.COACH,
+          },
+          {
             display: t('captain'),
             value: ROSTER_ROLE_ENUM.CAPTAIN,
           },
           {
             display: t('assistant_captain'),
             value: ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN,
-          },
-          {
-            display: t('coach'),
-            value: ROSTER_ROLE_ENUM.COACH,
           },
           {
             display: t('player'),

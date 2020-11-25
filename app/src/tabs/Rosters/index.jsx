@@ -84,11 +84,12 @@ export default function TabRosters(props) {
     return data;
   };
 
-  const updatePlayerRole = async (rosterId, playerId, role) => {
+  const updatePlayerRole = async (teamId, playerId, role) => {
     const res = await api(`/api/entity/rosterRole`, {
       method: 'PUT',
       body: JSON.stringify({
-        rosterId,
+        eventId,
+        teamId,
         playerId,
         role,
       }),
@@ -123,8 +124,8 @@ export default function TabRosters(props) {
     await getData();
   };
 
-  const onRoleUpdate = async (rosterId, playerId, role) => {
-    await updatePlayerRole(rosterId, playerId, role);
+  const onRoleUpdate = async (teamId, playerId, role) => {
+    await updatePlayerRole(teamId, playerId, role);
   };
 
   const getData = async () => {

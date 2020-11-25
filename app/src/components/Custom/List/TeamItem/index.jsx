@@ -18,6 +18,7 @@ export default function TeamItem(props) {
     selected,
     photoUrl,
     name,
+    isRegistered,
     icon,
     inverseColor,
     notClickable,
@@ -42,10 +43,12 @@ export default function TeamItem(props) {
 
   return (
     <ListItem
-      button
-      onClick={handleClick}
+      button={!isRegistered}
+      onClick={!isRegistered ? handleClick : null}
       selected={selected}
-      style={{ width: '100%' }}
+      style={{
+        opacity: isRegistered ? '0.4' : '1',
+      }}
     >
       <ListItemIcon>
         {inverseColor ? (

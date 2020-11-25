@@ -73,8 +73,7 @@ export default function Players(props) {
 
   const handleRoleUpdate = async (playerId, role) => {
     setisLoading(true);
-    await onRoleUpdate(rosterId, playerId, role);
-    //await getBlackList();
+    await onRoleUpdate(playerId, role);
     setisLoading(false);
   };
 

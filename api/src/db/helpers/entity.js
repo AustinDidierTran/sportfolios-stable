@@ -1158,8 +1158,11 @@ async function getRemainingSpots(eventId) {
     .count('team_id')
     .where({
       event_id: realId,
-      registration_status: STATUS_ENUM.ACCEPTED,
-    });
+    })
+    .whereIn('registration_status', [
+      STATUS_ENUM.ACCEPTED,
+      STATUS_ENUM.ACCEPTED_FREE,
+    ]);
 
   const [event] = await knex('events')
     .select('maximum_spots')
@@ -1774,26 +1777,6 @@ const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
 
   return list;
 };
-
-/*const canEditRosterRoles = async (rosterId, userId) => {
-  const [{ event_id, team_id }] = await knex('event_rosters')
-    .select('event_id')
-    .where({ roster_id: rosterId });
-
-  const personEditing = await getPrimaryPersonIdFromUserId(userId);
-
-  const [{ role }] = await knex('team_players')
-    .select('role')
-    .where({ roster_id: rosterId, person_id: personEditing });
-
-  return (
-    role != ROSTER_ROLE_ENUM.player ||
-    (await getEntityRoleHelper(event_id, userId)) <=
-      ENTITIES_ROLE_ENUM.ADMIN ||
-    (await getEntityRoleHelper(team_id, userId)) <=
-      ENTITIES_ROLE_ENUM.ADMIN
-  );
-};*/
 
 const canRemovePlayerFromRoster = async (rosterId, personId) => {
   const realRosterId = await getRealId(rosterId);
@@ -2516,6 +2499,7 @@ async function addNewPersonToRoster(body, userId) {
     email,
     isSub,
     rosterId,
+    role,
   } = body;
   const person = await addEntity(
     { name, surname, type: GLOBAL_ENUM.PERSON },
@@ -2528,6 +2512,7 @@ async function addNewPersonToRoster(body, userId) {
       name: `${name} ${surname}`,
       rosterId,
       isSub,
+      role,
     },
     userId,
   );
@@ -2544,7 +2529,7 @@ async function addNewPersonToRoster(body, userId) {
 }
 
 const addPlayerToRoster = async (body, userId) => {
-  const { personId, name, id, rosterId, isSub } = body;
+  const { personId, name, id, rosterId, role, isSub } = body;
   let paymentStatus = INVOICE_STATUS_ENUM.FREE;
   let cartItem;
 
@@ -2586,6 +2571,7 @@ const addPlayerToRoster = async (body, userId) => {
       id,
       is_sub: isSub,
       payment_status: paymentStatus,
+      role,
     })
     .returning('*');
 
@@ -3037,7 +3023,6 @@ module.exports = {
   addNewPersonToRoster,
   addTeamToEvent,
   addEventCartItem,
-  //canEditRosterRoles,
   canRemovePlayerFromRoster,
   canUnregisterTeam,
   deleteEntity,

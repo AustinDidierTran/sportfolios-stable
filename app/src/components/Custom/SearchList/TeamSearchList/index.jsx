@@ -10,8 +10,6 @@ import { GLOBAL_ENUM } from '../../../../../../common/enums';
 
 export default function TeamSearchList(props) {
   const {
-    blackList,
-    whiteList,
     label,
     onClick,
     rejectedTypes = [],
@@ -21,34 +19,14 @@ export default function TeamSearchList(props) {
     style,
     autoFocus,
     formik,
+    eventId,
   } = props;
   const { t } = useTranslation();
 
-  // change the way this global search is done
-  // return all person team. If already registered to the event, show it during team search (bool)
   const optionsRoute = useMemo(() => {
-    if (whiteList) {
-      const res = formatRoute('/api/data/search/global', null, {
-        whiteList: JSON.stringify(whiteList),
-        query: formik.values.teamSearchQuery,
-        type: GLOBAL_ENUM.TEAM,
-      });
-      return res;
-    }
-    if (blackList) {
-      if (blackList.length > 0) {
-        const res = formatRoute('/api/data/search/global', null, {
-          blackList: JSON.stringify(blackList),
-          query: formik.values.teamSearchQuery,
-          type: GLOBAL_ENUM.TEAM,
-        });
-        return res;
-      }
-    }
-
-    const res = formatRoute('/api/data/search/global', null, {
+    const res = formatRoute('/api/data/search/myTeamsSearch', null, {
       query: formik.values.teamSearchQuery,
-      type: GLOBAL_ENUM.TEAM,
+      eventId,
     });
     return res;
   }, [formik.values.teamSearchQuery]);
@@ -79,7 +57,9 @@ export default function TeamSearchList(props) {
           .filter(entity => !rejectedTypes.includes(entity.type))
           .map(e => ({
             ...e,
-            secondary,
+            secondary: e.isRegistered
+              ? t('team_already_registered')
+              : secondary,
             onClick: (...args) => {
               handleClick(...args);
             },
@@ -90,7 +70,9 @@ export default function TeamSearchList(props) {
       .filter(entity => !rejectedTypes.includes(entity.type))
       .map(e => ({
         ...e,
-        secondary,
+        secondary: e.isRegistered
+          ? t('already_registered')
+          : secondary,
         onClick: (...args) => {
           handleClick(...args);
         },

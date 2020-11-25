@@ -38,10 +38,12 @@ export default function Roster(props) {
 
   useEffect(() => {
     // Default behaviour: add creator of team as captain
-    addPerson({
-      id: userInfo.primaryPerson.entity_id,
-      completeName: `${userInfo.primaryPerson.name} ${userInfo.primaryPerson.surname}`,
-    });
+    if (!formik.values.roster.length) {
+      addPerson({
+        id: userInfo.primaryPerson.entity_id,
+        completeName: `${userInfo.primaryPerson.name} ${userInfo.primaryPerson.surname}`,
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -87,6 +89,7 @@ export default function Roster(props) {
           personId: newId,
           name: person.name,
           surname: person.surname,
+          email: person.email,
           role,
         },
       ]);

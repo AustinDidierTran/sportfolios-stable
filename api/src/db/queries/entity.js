@@ -32,7 +32,6 @@ const {
   addTeamToEvent: addTeamToEventHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
-  //canEditRosterRoles: canEditRosterRolesHelper,
   canRemovePlayerFromRoster: canRemovePlayerFromRosterHelper,
   canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
@@ -358,9 +357,7 @@ async function addTeamToEvent(body, userId) {
   }
 
   // Reject team if there is already too many registered teams
-  const remainingSpots = await getRemainingSpotsHelper(eventId);
-
-  if (remainingSpots === 0) {
+  if ((await getRemainingSpotsHelper(eventId)) === 0) {
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
@@ -524,11 +521,14 @@ async function updateRegistration(body, userId) {
 }
 
 async function updateRosterRole(body, userId) {
-  const { rosterId, playerId, role } = body;
+  const { eventId, teamId, playerId, role } = body;
 
-  /*if (!canEditRosterRolesHelper(rosterId, userId)) {
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.ADMIN)) &&
+    !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }*/
+  }
 
   return updateRosterRoleHelper(playerId, role);
 }

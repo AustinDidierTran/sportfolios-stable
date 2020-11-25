@@ -45,11 +45,6 @@ const getEvent = async eventId => {
 export default function EventRegistration() {
   const { t } = useTranslation();
   const { id: eventId } = useParams();
-  //const [paymentOptions, setPaymentOptions] = useState([]);
-  //const [team, setTeam] = useState();
-  //const [paymentOption, setPaymentOption] = useState();
-  //const [roster, setRoster] = useState([]);
-  //const [event, setEvent] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const {
     state: { authToken },
@@ -66,8 +61,8 @@ export default function EventRegistration() {
       teamSearchQuery: '',
     },
     onSubmit: async values => {
-      const { team, roster, paymentOption } = values;
-
+      const { event, team, roster, paymentOption } = values;
+      let newTeamId = null;
       setIsLoading(true);
       if (!team.id) {
         const tempTeam = await api('/api/entity', {
@@ -77,23 +72,23 @@ export default function EventRegistration() {
             type: GLOBAL_ENUM.TEAM,
           }),
         });
-        formik.setFieldValue('team.id', tempTeam.data.id);
+        newTeamId = tempTeam.data.id;
       }
-      //Check if teams is accepted here
+      //Check if team is accepted here
       const { status, data } = await api('/api/entity/register', {
         method: 'POST',
         body: JSON.stringify({
-          teamId: team.id,
-          eventId: eventId,
-          paymentOption: paymentOption,
-          roster: roster,
+          teamId: newTeamId || team.id,
+          eventId: event.id,
+          paymentOption,
+          roster,
           status: INVOICE_STATUS_ENUM.OPEN,
         }),
       });
       await api('/api/entity/addTeamToSchedule', {
         method: 'POST',
         body: JSON.stringify({
-          eventId,
+          eventId: event.id,
           name: team.name,
           rosterId: data.rosterId,
         }),
@@ -138,7 +133,6 @@ export default function EventRegistration() {
       );
 
     formik.setFieldValue('paymentOptions', options);
-    //setPaymentOptions(options);
   };
 
   const getPaymentOptionDisplay = option => {
@@ -238,7 +232,6 @@ export default function EventRegistration() {
         <PaymentOptionSelect
           onClick={onPaymentOptionSelect}
           formik={formik}
-          //paymentOptions={paymentOptions}
         />
       ),
     },

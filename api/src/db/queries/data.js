@@ -6,6 +6,7 @@ const {
   getOrganizationsFromQuery,
   getPersonsFromQuery,
   getPreviousSearchQueriesFromId,
+  getMyTeamsFromQuery,
   getTeamsFromQuery,
 } = require('../helpers/data');
 
@@ -32,6 +33,12 @@ const globalSearch = async (
   return { entities };
 };
 
+const myTeamsSearch = async (user_id, query, eventId) => {
+  const entities = await getMyTeamsFromQuery(user_id, eventId, query);
+
+  return { entities };
+};
+
 const getPreviousSearchQueries = async user_id => {
   return getPreviousSearchQueriesFromId(user_id);
 };
@@ -39,4 +46,5 @@ const getPreviousSearchQueries = async user_id => {
 module.exports = {
   getPreviousSearchQueries,
   globalSearch,
+  myTeamsSearch,
 };
