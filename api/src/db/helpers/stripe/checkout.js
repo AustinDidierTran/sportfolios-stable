@@ -8,6 +8,7 @@ const {
 const {
   STRIPE_STATUS_ENUM,
   GLOBAL_ENUM,
+  PLATEFORM_FEES,
 } = require('../../../../../common/enums');
 const { clearCart } = require('../shop');
 const {
@@ -166,7 +167,7 @@ const getExternalAccount = async stripePriceId => {
 };
 
 const getTransferedAmount = amount => {
-  return Math.ceil(amount - amount * 0.05);
+  return Math.ceil(amount - amount * PLATEFORM_FEES);
 };
 
 const createTransfers = async invoice => {

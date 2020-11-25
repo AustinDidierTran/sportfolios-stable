@@ -12,6 +12,7 @@ const {
   MEMBERSHIP_LENGTH_TYPE_ENUM,
   INVOICE_STATUS_ENUM,
   REPORT_TYPE_ENUM,
+  PLATEFORM_FEES,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -894,12 +895,22 @@ async function generateSalesReport(report) {
         return prev + (curr.percentage / 100) * a.amount;
       }, 0);
       const total = subtotal + totalTax;
+      const plateformFees = total * PLATEFORM_FEES;
+      const totalNet = total - plateformFees;
       if (a.metadata.type === GLOBAL_ENUM.EVENT) {
         const event = await getEntity(a.metadata.id);
         a.metadata.event = event;
       }
-      console.log({ total, subtotal, totalTax });
-      return { ...a, person, email, total, subtotal, totalTax };
+      return {
+        ...a,
+        person,
+        email,
+        total,
+        subtotal,
+        totalTax,
+        plateformFees,
+        totalNet,
+      };
     }),
   );
   return res;

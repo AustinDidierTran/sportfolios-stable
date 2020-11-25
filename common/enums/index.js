@@ -70,6 +70,7 @@ const MEMBERSHIP_TYPE_ENUM = {
   JUNIOR: 4,
 };
 
+const PLATEFORM_FEES = 0.05;
 const CARD_TYPE_ENUM = {
   CART: 'cart',
   CART_SUMMARY: 'cart summary',
@@ -450,6 +451,7 @@ module.exports = {
   STATUS_ENUM,
   STRIPE_ERROR_ENUM,
   STRIPE_STATUS_ENUM,
+  PLATEFORM_FEES,
   TABS_ENUM,
   TAG_TYPE_ENUM,
   VIEW_ENUM,
