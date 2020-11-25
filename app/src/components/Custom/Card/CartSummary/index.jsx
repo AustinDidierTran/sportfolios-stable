@@ -11,7 +11,7 @@ export default function CartSummary(props) {
 
   const { t } = useTranslation();
   return (
-    <Card margin>
+    <Card style={{ marginTop: '16px' }}>
       <div className={styles.div}>
         <ListItemText
           primary={t('subtotal')}
@@ -28,7 +28,7 @@ export default function CartSummary(props) {
           <ListItemText secondary={`${formatPrice(t.amount)} $`} />
         </div>
       ))}
-      <div className={styles.div}>
+      <div className={styles.total}>
         <ListItemText
           primary={t('total')}
           className={styles.primary}

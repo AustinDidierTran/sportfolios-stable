@@ -850,6 +850,23 @@ async function generateMembersReport(report) {
   return res;
 }
 
+const getTaxRates = async stripe_price_id => {
+  const taxRates = await knex('tax_rates')
+    .select('*')
+    .leftJoin(
+      'tax_rates_stripe_price',
+      'tax_rates_stripe_price.tax_rate_id',
+      '=',
+      'tax_rates.id',
+    )
+    .where(
+      'tax_rates_stripe_price.stripe_price_id',
+      '=',
+      stripe_price_id,
+    );
+  return taxRates;
+};
+
 async function generateSalesReport(report) {
   const { date } = report.metadata;
   const sales = await knex('store_items_paid')
@@ -871,11 +888,18 @@ async function generateSalesReport(report) {
     active.map(async a => {
       const person = await getPrimaryPerson(a.buyer_user_id);
       const email = await getEmailUser(a.buyer_user_id);
+      const taxes = await getTaxRates(a.stripe_price_id);
+      const subtotal = a.amount;
+      const totalTax = taxes.reduce((prev, curr) => {
+        return prev + (curr.percentage / 100) * a.amount;
+      }, 0);
+      const total = subtotal + totalTax;
       if (a.metadata.type === GLOBAL_ENUM.EVENT) {
         const event = await getEntity(a.metadata.id);
         a.metadata.event = event;
       }
-      return { ...a, person, email };
+      console.log({ total, subtotal, totalTax });
+      return { ...a, person, email, total, subtotal, totalTax };
     }),
   );
   return res;
@@ -2284,6 +2308,7 @@ async function addMembership(
   date,
   type,
   price,
+  taxRatesId,
   userId,
 ) {
   const realId = await getRealId(entityId);
@@ -2307,6 +2332,7 @@ async function addMembership(
     entityId,
     photoUrl: entity.photoUrl,
     ownerId: entityId,
+    taxRatesId,
   });
   if (type === MEMBERSHIP_LENGTH_TYPE_ENUM.FIXED) {
     const [res] = await knex('entity_memberships')
@@ -3012,10 +3038,7 @@ module.exports = {
   getEntityOwners,
   getRealId,
   getEmailPerson,
-<<<<<<< HEAD
   getGameTeams,
   isPlayerInRoster,
-=======
->>>>>>> Requested changes
   getRealId,
 };
