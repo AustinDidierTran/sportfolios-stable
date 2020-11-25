@@ -2165,9 +2165,7 @@ async function addScoreSuggestion(infos) {
     throw new Error(ERROR_ENUM.VALUE_ALREADY_EXISTS);
   }
   return knex('score_suggestion')
-    .insert({
-      ...infos,
-    })
+    .insert(infos)
     .returning('*');
 }
 
