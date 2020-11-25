@@ -21,12 +21,12 @@ class ScoreSubmissionRequestSent extends State {
           submitted_by_roster: chatbotInfos.myRosterId,
         })
       ) {
-        this.sendMessages(webhookEvent.sender.id, [
+        this.sendMessages(
+          webhookEvent.sender.id,
           Response.genText(
             i18n.__('score_submission.already_submitted'),
           ),
-          Response.genText(i18n.__('back_to_menu')),
-        ]);
+        );
         nextState =
           SCORE_SUBMISSION_CHATBOT_STATES.SPIRIT_SUBMISSION_REQUEST_SENT;
       } else {
