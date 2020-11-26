@@ -15,7 +15,9 @@ const {
 const {
   getTimezoneFromPSID,
 } = require('../../../../../db/helpers/facebook');
-
+const {
+  getUserIdFromMessengerId,
+} = require('../../../../../db/helpers');
 class NextGameInfos extends State {
   handleEvent(webhookEvent) {
     let nextState;
