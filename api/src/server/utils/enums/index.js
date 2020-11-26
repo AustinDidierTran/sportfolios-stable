@@ -13,6 +13,7 @@ const MESSENGER_PAYLOADS = {
   SPIRIT_SELF_CONTROL: 'ssc',
   SPIRIT_COMMUNICATION: 'sc',
   NEXT_GAME: 'next_game',
+  SUBMIT_A_SCORE: 'Submit a score',
 };
 const MESSENGER_QUICK_REPLIES = {
   CONFIRMATION: [
@@ -64,6 +65,11 @@ const MESSENGER_QUICK_REPLIES = {
       content_type: 'text',
       title: i18nbackEnd.__('quick_replies.mock'),
       payload: MESSENGER_PAYLOADS.MOCK,
+    },
+    {
+      content_type: 'text',
+      title: i18nbackEnd.__('quick_replies.submit_score'),
+      payload: MESSENGER_PAYLOADS.SUBMIT_A_SCORE,
     },
   ],
 };

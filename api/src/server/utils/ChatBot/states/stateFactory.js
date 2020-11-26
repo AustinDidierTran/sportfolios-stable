@@ -13,6 +13,7 @@ const {
   AwaitingSpiritEquity,
   AwaitingSpiritCommunication,
   AwaitingSpiritSelfControl,
+  GamesAwaitingScoreList,
 } = require('./ScoreSubmissionStates');
 const { Home, NotLinked } = require('./BasicStates');
 
@@ -29,6 +30,7 @@ const stateMap = {
   [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_EQUITY]: AwaitingSpiritEquity,
   [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_COMMUNICATION]: AwaitingSpiritCommunication,
   [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_SELF_CONTROL]: AwaitingSpiritSelfControl,
+  [SCORE_SUBMISSION_CHATBOT_STATES.GAMES_AWAITING_SCORE_LIST]: GamesAwaitingScoreList,
 };
 
 function StateFactory(state) {

@@ -1,3 +1,18 @@
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
 const ENTITIES_ROLE_ENUM = {
   ADMIN: 1,
   EDITOR: 2,
@@ -241,6 +256,7 @@ const SCORE_SUBMISSION_CHATBOT_STATES = {
   AWAITING_SPIRIT_SELF_CONTROL: 9,
   AWAITING_SPIRIT_COMMUNICATION: 10,
   AWAITING_SPIRIT_CONFIRMATION: 11,
+  GAMES_AWAITING_SCORE_LIST: 12,
 };
 
 const REJECTION_ENUM = {
@@ -462,4 +478,5 @@ module.exports = {
   TAG_TYPE_ENUM,
   VIEW_ENUM,
   PLAYER_ATTENDANCE_STATUS,
+  MONTH_NAMES,
 };

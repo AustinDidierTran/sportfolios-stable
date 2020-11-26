@@ -2185,6 +2185,44 @@ async function isScoreSuggestionAlreadySubmitted(infos) {
   return res.length !== 0;
 }
 
+async function getGamesWithAwaitingScore(user_id) {
+  const subquery = knex('score_suggestion')
+    .select()
+    .whereRaw(
+      'SCORE_SUGGESTION.GAME_ID = GAME_PLAYERS_VIEW.GAME_ID AND SCORE_SUGGESTION.SUBMITTED_BY_ROSTER = GAME_PLAYERS_VIEW.ROSTER_ID',
+    );
+  return knex
+    .select(
+      'player_id',
+      'game_players_view.game_id',
+      'game_players_view.roster_id',
+      'game_players_view.timeslot',
+      knex.raw('array_agg(name) as opponent_teams_names'),
+    )
+    .from('user_entity_role')
+    .join(
+      'game_players_view',
+      'user_entity_role.entity_id',
+      'game_players_view.player_id',
+    )
+    .join('game_teams', function() {
+      this.on(
+        'game_teams.roster_id',
+        '!=',
+        'game_players_view.roster_id',
+      ).andOn('game_teams.game_id', '=', 'game_players_view.game_id');
+    })
+    .where({ user_id, role: ENTITIES_ROLE_ENUM.ADMIN })
+    .whereNot('player_role', ROSTER_ROLE_ENUM.PLAYER)
+    .whereNotExists(subquery)
+    .groupBy(
+      'player_id',
+      'game_players_view.game_id',
+      'game_players_view.roster_id',
+      'game_players_view.timeslot',
+    );
+}
+
 async function addField(field, eventId) {
   const realId = await getRealId(eventId);
   const [res] = await knex('event_fields')
@@ -3107,4 +3145,5 @@ module.exports = {
   addSpiritSubmission,
   isSpiritAlreadySubmitted,
   isScoreSuggestionAlreadySubmitted,
+  getGamesWithAwaitingScore,
 };

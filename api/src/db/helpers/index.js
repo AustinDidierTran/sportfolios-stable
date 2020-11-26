@@ -345,6 +345,15 @@ const getUserIdFromRecoveryPasswordToken = async token => {
   return response.user_id;
 };
 
+const getUserIdFromMessengerId = async messenger_id => {
+  const [res] = await knex('user_apps_id')
+    .where({ messenger_id })
+    .select('user_id');
+  if (res) {
+    return res.user_id;
+  }
+};
+
 const setRecoveryTokenToUsed = async token => {
   await knex('recovery_email_token')
     .update({ used_at: new Date() })
@@ -774,4 +783,5 @@ module.exports = {
   addChatbotId,
   deleteChatbotInfos,
   getLanguageFromUser,
+  getUserIdFromMessengerId,
 };

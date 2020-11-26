@@ -92,12 +92,6 @@ class State {
     );
   }
 
-  isStartMock(webhookEvent) {
-    const payload = this.getPayload(webhookEvent);
-    const text = this.getText(webhookEvent);
-    return payload === MESSENGER_PAYLOADS.MOCK || text === 'test';
-  }
-
   isScore(webhookEvent) {
     const text = this.getText(webhookEvent);
     return /^[0-9]+-[0-9]+$/i.test(text);

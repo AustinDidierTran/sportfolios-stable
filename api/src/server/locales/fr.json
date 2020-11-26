@@ -1,5 +1,6 @@
 {
   "score_submission": {
+    "choose_game": "Voici vos parties en attente de soumission de score",
     "request": "Bonjour {{userName}}, votre équipe vient tout juste d'affronter l'équipe {{opponentTeamName}}. Désirez-vous soumettre votre pointage ici?",
     "explaination": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-[leur pointage]. Par exemple, pour une victoire de 13 à 10 veuillez entrer 13-10",
     "explaination_many": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-{{teamNames}}. Par exemple: {{example}}",
@@ -44,7 +45,9 @@
     "yes": "Oui",
     "no": "Non",
     "next_game": "Prochaine partie? 🕓",
-    "mock": "Simuler 🚀"
+    "mock": "Simuler 🚀",
+    "game_description": "Partie du {{date}} contre {{teams}}",
+    "submit_score": "Soumetre un score"
   },
   "emails": {
     "added_to_roster_text": "Bonjour {{name}}! Quelqu'un vous a ajouté à l'alignement de l'équipe {{teamName}} sur Sportfolios. Cliquez sur le bouton suivant pour consulter l'alignement complet.",
@@ -56,5 +59,17 @@
     "score_submission_request_subject": "Rappel de soumission de score"
   },
   "and": "et",
-  "your_team": "Votre équipe"
+  "your_team": "Votre équipe",
+  "January": "Janvier",
+  "February": "Février",
+  "March": "Mars",
+  "April": "Avril",
+  "May": "Mai",
+  "June": "Juin",
+  "July": "Juillet",
+  "August": "Août",
+  "September": "Septembre",
+  "October": "Octobre",
+  "November": "Novembre",
+  "December": "Décembre"
 }
