@@ -2185,7 +2185,7 @@ async function isScoreSuggestionAlreadySubmitted(infos) {
   return res.length !== 0;
 }
 
-async function getGamesWithAwaitingScore(user_id) {
+async function getGamesWithAwaitingScore(user_id, limit = 100) {
   const subquery = knex('score_suggestion')
     .select()
     .whereRaw(
@@ -2215,12 +2215,14 @@ async function getGamesWithAwaitingScore(user_id) {
     .where({ user_id, role: ENTITIES_ROLE_ENUM.ADMIN })
     .whereNot('player_role', ROSTER_ROLE_ENUM.PLAYER)
     .whereNotExists(subquery)
+    .orderBy('game_players_view.timeslot', desc)
     .groupBy(
       'player_id',
       'game_players_view.game_id',
       'game_players_view.roster_id',
       'game_players_view.timeslot',
-    );
+    )
+    .limit(limit);
 }
 
 async function addField(field, eventId) {

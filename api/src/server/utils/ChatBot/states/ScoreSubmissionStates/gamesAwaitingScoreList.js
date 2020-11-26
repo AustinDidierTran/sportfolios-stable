@@ -55,7 +55,8 @@ class gamesAwaitingScoreList extends State {
     const userId = await getUserIdFromMessengerId(
       this.context.messengerId,
     );
-    const games = await getGamesWithAwaitingScore(userId);
+    //Facebook limit the maximum quick replies amount to 13
+    const games = await getGamesWithAwaitingScore(userId, 13);
 
     const quickReplies = games.map(game => {
       const opponentTeamsString = game.opponent_teams_names.join(
