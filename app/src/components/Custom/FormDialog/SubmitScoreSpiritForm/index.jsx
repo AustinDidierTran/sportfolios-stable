@@ -1,402 +1,346 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  Button,
+  Collapse,
+  Icon,
+  IconButton,
+  MultiSelect,
+} from '../../../Custom';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-
+import { TextField, Typography } from '../../../MUI';
 import { ERROR_ENUM } from '../../../../../../common/errors';
-import api from '../../../../actions/api';
-import { Store, ACTION_ENUM } from '../../../../Store';
+
+import styles from './SubmitScoreSpiritForm.module.css';
 import {
-  SEVERITY_ENUM,
-  STATUS_ENUM,
-  SPIRIT_CATEGORY_ENUM,
-  COMPONENT_TYPE_ENUM,
-} from '../../../../../../common/enums';
-import { useParams } from 'react-router-dom';
-import { getTeams } from '../../../../tabs/Schedule/ScheduleFunctions';
-import moment from 'moment';
-import { formatRoute } from '../../../../actions/goTo';
-import { formatDate } from '../../../../utils/stringFormats';
-import BasicFormDialog from '../BasicFormDialog';
-import AddPlayer from './AddPlayer';
-import validator from 'validator';
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+} from '@material-ui/core';
 
 export default function SubmitScoreDialog(props) {
-  const { open: openProps, onClose, game } = props;
+  const { open, onClose, game } = props;
   const { t } = useTranslation();
-  const {
-    state: { userInfo },
-    dispatch,
-  } = useContext(Store);
-  const { id: eventId } = useParams();
-
-  const [open, setOpen] = useState(false);
-  const [addPlayer, setAddPlayer] = useState(false);
-  const [teams, setTeams] = useState([]);
-  const [roster, setRoster] = useState([]);
-  const [fullRoster, setFullRoster] = useState([]);
-  const [total, setTotal] = useState(10);
-  const [opposingTeam, setOpposingTeam] = useState({});
-
-  const onAddPlayer = () => {
-    setAddPlayer(true);
-  };
-
-  const onAddPlayerClose = () => {
-    setAddPlayer(false);
-  };
-  const updateRoster = player => {
-    let name = '';
-    if (player.is_sub) {
-      name = `${player.completeName || player.name} (${t('sub')})`;
-    } else {
-      name = player.completeName || player.name;
-    }
-    const newRoster = [...roster, name];
-    setRoster(newRoster);
-    const newFullRoster = [
-      ...fullRoster,
-      { display: name, value: player.person_id || player.id },
-    ];
-    setFullRoster(newFullRoster);
-  };
-
-  useEffect(() => {
-    if (open) {
-      getOptions();
-    }
-  }, [open]);
-
-  useEffect(() => {
-    setOpen(openProps);
-  }, [openProps]);
-
-  const getRoster = async rosterId => {
-    const { data } = await api(
-      formatRoute('/api/entity/getRoster', null, {
-        rosterId,
-        withSub: true,
-      }),
-    );
-    if (data) {
-      const fullRoster = data.map(d => {
-        if (d.isSub) {
-          return {
-            value: d.personId,
-            display: `${d.name} (${t('sub')})`,
-          };
-        }
-        return {
-          value: d.personId,
-          display: d.name,
-        };
-      });
-      setFullRoster(fullRoster);
-
-      const roster = data.filter(d => !d.isSub).map(d => d.name);
-      setRoster(roster);
-    }
-  };
-
-  const getOptions = async () => {
-    if (game) {
-      const t = game.teams.map(t => ({
-        display: t.name,
-        value: t.roster_id,
-      }));
-      setTeams(t);
-      formik.setFieldValue('yourTeam', game.teams[0].roster_id);
-      setOpposingTeam({
-        rosterId: game.teams[1].roster_id,
-        name: game.teams[1].name,
-      });
-    } else {
-      const t = await getTeams(eventId, { withoutAll: true });
-      setTeams(t);
-      if (t[0]) {
-        formik.setFieldValue('yourTeam', t[0].value);
-      }
-    }
-  };
-
-  const handleChange = value => {
-    setRoster(value);
-  };
-
-  const handleClose = () => {
-    formik.resetForm();
-    onClose();
-  };
 
   const validate = values => {
-    const {
-      yourTeam,
-      yourScore,
-      opposingTeamScore,
-      rulesKnowledgeAndUse,
-      foulsAndBodyContact,
-      fairMindedness,
-      positiveAttitudeAndSelfControl,
-      communication,
-    } = values;
+    const { teamScore1, teamScore2 } = values;
     const errors = {};
-    if (!yourTeam.length) {
-      errors.yourTeam = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    if (teamScore1 < 0) {
+      errors.teamScore1 = t(ERROR_ENUM.VALUE_IS_INVALID);
     }
-    if (yourScore < 0) {
-      errors.yourScore = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+    if (teamScore2 < 0) {
+      errors.teamScore2 = t(ERROR_ENUM.VALUE_IS_INVALID);
     }
-    if (opposingTeamScore < 0) {
-      errors.opposingTeamScore = t(ERROR_ENUM.VALUE_IS_REQUIRED);
-    }
-    if (rulesKnowledgeAndUse < 0) {
-      errors.rulesKnowledgeAndUse = t(ERROR_ENUM.VALUE_IS_REQUIRED);
-    }
-    if (foulsAndBodyContact < 0) {
-      errors.foulsAndBodyContact = t(ERROR_ENUM.VALUE_IS_REQUIRED);
-    }
-    if (fairMindedness < 0) {
-      errors.fairMindedness = t(ERROR_ENUM.VALUE_IS_REQUIRED);
-    }
-    if (positiveAttitudeAndSelfControl < 0) {
-      errors.positiveAttitudeAndSelfControl = t(
-        ERROR_ENUM.VALUE_IS_REQUIRED,
-      );
-    }
-    if (communication < 0) {
-      errors.communication = t(ERROR_ENUM.VALUE_IS_REQUIRED);
-    }
-    const total =
-      rulesKnowledgeAndUse +
-      foulsAndBodyContact +
-      fairMindedness +
-      positiveAttitudeAndSelfControl +
-      communication;
-    setTotal(total);
     return errors;
   };
 
   const formik = useFormik({
     initialValues: {
-      yourTeam: '',
-      yourScore: 0,
-      opposingTeam: '',
-      opposingTeamScore: 0,
-      rulesKnowledgeAndUse: 2,
-      foulsAndBodyContact: 2,
-      fairMindedness: 2,
-      positiveAttitudeAndSelfControl: 2,
-      communication: 2,
+      scoreTeam1: 0,
+      scoreTeam2: 0,
+      spirit: [2, 2, 2, 2, 2],
       comments: '',
+      rosterPresencesOptions: [],
+      rosterPresences: [],
     },
     validate,
-    validateOnChange: true,
+    validateOnChange: false,
     validateOnBlur: false,
-    onSubmit: async values => {
-      const {
-        yourTeam,
-        yourScore,
-        opposingTeamScore,
-        comments,
-      } = values;
-      let yourTeamName = null;
-      let yourTeamId = null;
-
-      const suggestedBy = userInfo.primaryPerson
-        ? userInfo.primaryPerson.entity_id
-        : null;
-
-      if (validator.isUUID(yourTeam)) {
-        yourTeamId = yourTeam;
-      } else {
-        yourTeamName = yourTeam;
-      }
-      const res = await api('/api/entity/suggestScore', {
-        method: 'POST',
-        body: JSON.stringify({
-          gameId: game?.id,
-          eventId,
-          yourTeamName,
-          yourTeamId,
-          yourScore,
-          opposingTeamName: opposingTeam.name,
-          opposingTeamId: opposingTeam.rosterId,
-          opposingTeamScore: opposingTeamScore,
-          opposingTeamSpirit: total,
-          players: JSON.stringify(
-            fullRoster.filter(full => roster.includes(full.display)),
-          ),
-          comments,
-          suggestedBy,
-        }),
-      });
-
-      if (res.status === STATUS_ENUM.ERROR || res.status >= 400) {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: ERROR_ENUM.ERROR_OCCURED,
-          severity: SEVERITY_ENUM.ERROR,
-          duration: 4000,
-        });
-      } else {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: t('score_submitted'),
-          severity: SEVERITY_ENUM.SUCCESS,
-          duration: 2000,
-        });
-        handleClose();
-      }
-    },
+    onSubmit: async values => {},
   });
 
-  useEffect(() => {
-    if (formik.values.yourTeam) {
-      getRoster(formik.values.yourTeam);
-    }
-  }, [formik.values.yourTeam]);
+  const [expandedScore, setExpandedScore] = useState(true);
+  const [expandedSpirit, setExpandedSpirit] = useState(true);
+  const [expandedPresences, setExpandedPresences] = useState(true);
 
-  useEffect(() => {
-    const team = formik.values.yourTeam;
-    if (team === opposingTeam.rosterId && teams.length && team) {
-      const t = teams.filter(t => t.value != team);
-      if (t.length) {
-        setOpposingTeam({ rosterId: t[0].value, name: t[0].display });
-      }
-    }
-  }, [formik.values.yourTeam]);
+  const [isSubmittedScore, setIsSubmittedScore] = useState(false);
+  const [isSubmittedSpirit, setIsSubmittedSpirit] = useState(false);
+  const [isSubmittedPresences, setIsSubmittedPresences] = useState(
+    false,
+  );
 
-  const spiritOptions = [
-    { display: '0', value: 0 },
-    { display: '1', value: 1 },
-    { display: '2', value: 2 },
-    { display: '3', value: 3 },
-    { display: '4', value: 4 },
+  const expandedIconScore = useMemo(
+    () => (!expandedScore ? 'KeyboardArrowDown' : 'KeyboardArrowUp'),
+    [expandedScore],
+  );
+  const expandedIconSpirit = useMemo(
+    () => (!expandedSpirit ? 'KeyboardArrowDown' : 'KeyboardArrowUp'),
+    [expandedSpirit],
+  );
+  const expandedIconPresences = useMemo(
+    () =>
+      !expandedPresences ? 'KeyboardArrowDown' : 'KeyboardArrowUp',
+    [expandedPresences],
+  );
+
+  const spiritTotal = useMemo(
+    () => formik.values.spirit.reduce((a, b) => a + b, 0),
+    [formik.values.spirit],
+  );
+
+  const onSubmitScore = () => {
+    console.log('submitting score');
+    setExpandedScore(false);
+    setIsSubmittedScore(true);
+  };
+
+  const onSubmitSpirit = () => {
+    console.log('submitting spirit');
+    setExpandedSpirit(false);
+    setIsSubmittedSpirit(true);
+  };
+
+  const onSubmitPresences = () => {
+    console.log('submitting presences');
+    setExpandedPresences(false);
+    setIsSubmittedPresences(true);
+  };
+
+  const handleRadioChange = event => {
+    console.log(event.target);
+    formik.setFieldValue(
+      `spirit[${event.target.name}]`,
+      Number(event.target.value),
+    );
+  };
+
+  const handleRosterPresencesChange = e => {
+    console.log(e);
+  };
+
+  const Submitted = (
+    <div className={styles.submitted}>
+      <Typography className={styles.submitText}>
+        {t('submitted')}
+      </Typography>
+      <Icon icon="CheckCircleOutline" color="#54AF51" />
+    </div>
+  );
+
+  const spiritCategories = [
+    'rules_knowledge_and_use',
+    'fouls_and_body_contact',
+    'fair_mindedness',
+    'positive_attitude_and_self_control',
+    'communication',
   ];
+  const RadioButtons = Array(5)
+    .fill(0)
+    .map((_, indexCategory) => (
+      <FormControl
+        className={styles.radioGroup}
+        component="fieldset"
+        key={indexCategory}
+        size="small"
+        fullWidth
+      >
+        <FormLabel component="legend">
+          {`${indexCategory}. ${t(spiritCategories[indexCategory])}`}
+        </FormLabel>
+        <RadioGroup
+          row
+          name={indexCategory}
+          onChange={handleRadioChange}
+          value={formik.values.spirit[indexCategory]}
+        >
+          {Array(5)
+            .fill(0)
+            .map((_, indexRadioButton) => (
+              <FormControlLabel
+                className={styles.radioGroupControlLabel}
+                key={indexRadioButton}
+                value={indexRadioButton}
+                control={
+                  <Radio
+                    color="primary"
+                    size="small"
+                    disabled={isSubmittedSpirit}
+                  />
+                }
+                label={indexRadioButton}
+                labelPlacement="bottom"
+              />
+            ))}
+        </RadioGroup>
+      </FormControl>
+    ));
 
-  const buttons = [
-    {
-      onClick: handleClose,
-      name: t('cancel'),
-      color: 'secondary',
-    },
-    {
-      type: 'submit',
-      name: t('done'),
-      color: 'primary',
-    },
-  ];
-
-  const fields = [
-    {
-      defaultValue: formatDate(moment(game.start_time), 'DD MMM'),
-      disabled: true,
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.SELECT,
-      namespace: 'yourTeam',
-      label: t('your_team'),
-      options: teams,
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.MULTISELECT,
-      namespace: 'roster',
-      label: t('roster'),
-      options: fullRoster.map(r => r.display),
-      values: roster,
-      onChange: handleChange,
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.BUTTON,
-      namespace: 'addPlayer',
-      children: t('add_sub'),
-      endIcon: 'Add',
-      onClick: onAddPlayer,
-      variant: 'contained',
-      color: 'primary',
-    },
-    {
-      namespace: 'yourScore',
-      label: t('your_score'),
-      type: 'number',
-    },
-    {
-      defaultValue: `${t('opposing_team')}: ${opposingTeam.name}`,
-      disabled: true,
-    },
-    {
-      namespace: 'opposingTeamScore',
-      label: t('opposing_team_score'),
-      type: 'number',
-    },
-    {
-      defaultValue: t('spirit'),
-      disabled: true,
-    },
-    {
-      defaultValue: t('spirit_chart_ligue_mardi'),
-      disabled: true,
-      color: 'textSecondary',
-      variant: 'body2',
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.SELECT,
-      namespace: 'rulesKnowledgeAndUse',
-      label: `1. ${t(SPIRIT_CATEGORY_ENUM.RULES_KNOWLEDGE_AND_USE)}`,
-      options: spiritOptions,
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.SELECT,
-      namespace: 'foulsAndBodyContact',
-      label: `2. ${t(SPIRIT_CATEGORY_ENUM.FOULS_AND_BODY_CONTACT)}`,
-      options: spiritOptions,
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.SELECT,
-      namespace: 'fairMindedness',
-      label: `3. ${t(SPIRIT_CATEGORY_ENUM.FAIR_MINDEDNESS)}`,
-      options: spiritOptions,
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.SELECT,
-      namespace: 'positiveAttitudeAndSelfControl',
-      label: `4. ${t(
-        SPIRIT_CATEGORY_ENUM.POSITIVE_ATTITUDE_AND_SELF_CONTROL,
-      )}`,
-      options: spiritOptions,
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.SELECT,
-      namespace: 'communication',
-      label: `5. ${t(SPIRIT_CATEGORY_ENUM.COMMUNICATION)}`,
-      options: spiritOptions,
-    },
-    {
-      defaultValue: `${t('total')}: ${total}`,
-      disabled: true,
-    },
-    {
-      namespace: 'comments',
-      label: t('comments'),
-      type: 'text',
-    },
-  ];
   return (
-    <>
-      <BasicFormDialog
-        open={open}
-        title={t('submit_score')}
-        buttons={buttons}
-        fields={fields}
-        formik={formik}
-        onClose={handleClose}
-      />
-      <AddPlayer
-        open={addPlayer}
-        onClose={onAddPlayerClose}
-        rosterId={formik.values.yourTeam}
-        fullRoster={fullRoster}
-        updateRoster={updateRoster}
-      />
-    </>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="form-dialog-title"
+      maxWidth={'xs'}
+      fullWidth
+    >
+      <DialogTitle id="form-dialog-title">
+        {t('submit_score')}
+      </DialogTitle>
+      <form onSubmit={formik.handleSubmit}>
+        <div>
+          <DialogContent>
+            {/*SCORE*/}
+            <div
+              className={styles.collapseHeader}
+              onClick={() => setExpandedScore(!expandedScore)}
+            >
+              <Typography>{t('score')}</Typography>
+              <div className={styles.expand}>
+                {isSubmittedScore ? Submitted : <></>}
+                <IconButton
+                  className={styles.arrowButton}
+                  aria-expanded={expandedScore}
+                  icon={expandedIconScore}
+                  style={{
+                    color: 'primary',
+                  }}
+                />
+              </div>
+            </div>
+            <Divider />
+            <Collapse in={expandedScore} timeout="auto" unmountOnExit>
+              <Typography
+                className={styles.teamName}
+              >{`${game.teams[0].name}:`}</Typography>
+              <TextField
+                type="number"
+                namespace="scoreTeam1"
+                formik={formik}
+                formikDisabled={isSubmittedScore}
+              />
+              <Typography
+                className={styles.teamName}
+              >{`${game.teams[1].name}:`}</Typography>
+              <TextField
+                type="number"
+                namespace="scoreTeam2"
+                formik={formik}
+                formikDisabled={isSubmittedScore}
+              />
+              <div className={styles.divSubmitButton}>
+                <Button
+                  className={styles.submitButton}
+                  onClick={onSubmitScore}
+                  color={'primary'}
+                  variant="text"
+                  disabled={isSubmittedScore}
+                >
+                  {t('submit')}
+                </Button>
+              </div>
+            </Collapse>
+
+            {/*SPIRIT*/}
+            <div
+              className={styles.collapseHeader}
+              onClick={() => setExpandedSpirit(!expandedSpirit)}
+            >
+              <Typography>{t('spirit')}</Typography>
+              <div className={styles.expand}>
+                {isSubmittedSpirit ? Submitted : <></>}
+                <IconButton
+                  className={styles.arrowButton}
+                  aria-expanded={expandedSpirit}
+                  icon={expandedIconSpirit}
+                  style={{ color: 'primary' }}
+                />
+              </div>
+            </div>
+            <Divider />
+            <Collapse
+              in={expandedSpirit}
+              timeout="auto"
+              unmountOnExit
+            >
+              <Typography
+                className={styles.spiritChart}
+                color="textSecondary"
+              >
+                {t('spirit_chart_ligue_mardi')}
+              </Typography>
+              {RadioButtons}
+              <Typography
+                className={styles.totalSpirit}
+              >{`Total: ${spiritTotal}`}</Typography>
+              <TextField
+                type="text"
+                namespace="comments"
+                placeholder={t('comments')}
+                formik={formik}
+                fullWidth
+                formikDisabled={isSubmittedSpirit}
+              />
+              <div className={styles.divSubmitButton}>
+                <Button
+                  className={styles.submitButton}
+                  onClick={onSubmitSpirit}
+                  color={'primary'}
+                  variant="text"
+                  disabled={isSubmittedSpirit}
+                >
+                  {t('submit')}
+                </Button>
+              </div>
+            </Collapse>
+
+            {/*PRESENCES*/}
+            <div
+              className={styles.collapseHeader}
+              onClick={() => setExpandedPresences(!expandedPresences)}
+            >
+              <Typography>{t('roster')}</Typography>
+              <div className={styles.expand}>
+                {isSubmittedPresences ? Submitted : <></>}
+                <IconButton
+                  className={styles.arrowButton}
+                  aria-expanded={expandedPresences}
+                  icon={expandedIconPresences}
+                  style={{ color: 'primary' }}
+                />
+              </div>
+            </div>
+            <Divider />
+            <Collapse
+              in={expandedPresences}
+              timeout="auto"
+              unmountOnExit
+            >
+              <MultiSelect
+                values={formik.values.rosterPresences}
+                onChange={handleRosterPresencesChange}
+                options={formik.values.rosterPresencesOptions}
+                disabled={isSubmittedPresences}
+              />
+              <div className={styles.divSubmitButton}>
+                <Button
+                  className={styles.submitButton}
+                  onClick={onSubmitPresences}
+                  color={'primary'}
+                  variant="text"
+                  disabled={isSubmittedPresences}
+                >
+                  {t('submit')}
+                </Button>
+              </div>
+            </Collapse>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={onClose} color="secondary">
+              {t('cancel')}
+            </Button>
+            <Button onClick="submit" color="primary">
+              {t('done')}
+            </Button>
+          </DialogActions>
+        </div>
+      </form>
+    </Dialog>
   );
 }
