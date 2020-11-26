@@ -17,6 +17,7 @@ const {
 
 class NextGameInfos extends State {
   handleEvent(webhookEvent) {
+    let nextState;
     if (this.isStop(webhookEvent) || this.isStartOver(webhookEvent)) {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
