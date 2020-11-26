@@ -1,6 +1,7 @@
 {
   "score_submission": {
     "choose_game": "Voici vos parties en attente de soumission de score",
+    "no_game_awaiting_score": "Vous n'avez aucune partie jouée en attente de score",
     "request": "Bonjour {{userName}}, votre équipe vient tout juste d'affronter l'équipe {{opponentTeamName}}. Désirez-vous soumettre votre pointage ici?",
     "explaination": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-[leur pointage]. Par exemple, pour une victoire de 13 à 10 veuillez entrer 13-10",
     "explaination_many": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-{{teamNames}}. Par exemple: {{example}}",
