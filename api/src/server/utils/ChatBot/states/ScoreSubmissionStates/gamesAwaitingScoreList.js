@@ -4,7 +4,6 @@ const {
   SCORE_SUBMISSION_CHATBOT_STATES,
   MONTH_NAMES,
 } = require('../../../../../../../common/enums');
-const { MESSENGER_QUICK_REPLIES } = require('../../../enums');
 const Response = require('../../response');
 const i18n = require('../../../../../i18n.config');
 const {
@@ -40,7 +39,10 @@ class gamesAwaitingScoreList extends State {
         nextState =
           SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION;
       });
-    } else if (this.isStartOver(webhookEvent)) {
+    } else if (
+      this.isStartOver(webhookEvent) ||
+      this.isStop(webhookEvent)
+    ) {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
       this.sendIDontUnderstand(webhookEvent);

@@ -18,14 +18,10 @@ class Home extends State {
 
   handleEvent(webhookEvent) {
     let nextState;
-    if (this.isStartMock(webhookEvent)) {
-      nextState =
-        SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT;
-      this.context.chatbotInfos.opponentTeamName =
-        'Didier et les fantastiques';
-    } else if (
+    if (
       this.getPayload(webhookEvent) ===
-      MESSENGER_PAYLOADS.SUBMIT_A_SCORE
+        MESSENGER_PAYLOADS.SUBMIT_A_SCORE ||
+      this.getText(webhookEvent) === 'score'
     ) {
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.GAMES_AWAITING_SCORE_LIST;
@@ -37,11 +33,13 @@ class Home extends State {
     }
   }
 
-  getIntroMessages() {
+  async getIntroMessages() {
+    const count = (await getGamesWithAwaitingScore).length;
     return [
       Response.genText(i18n.__('menu.welcome')),
+      Response.genText(i18n.__('menu.help')),
       Response.genQuickReply(
-        i18n.__('menu.help'),
+        i18n.__('games_awaiting_score_count', { count }),
         MESSENGER_QUICK_REPLIES.MENU_ACTIONS,
       ),
     ];

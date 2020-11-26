@@ -38,7 +38,8 @@
   "back_to_menu": "Je vous ramène au menu principal",
   "menu": {
     "welcome": "Bienvenue sur le chatbot Sportfolios!",
-    "help": "Voici les différentes actions que vous pouvez effectuer:\n• Dites \"test\" pour lancer une simulation de soumission de score\n• Dites \"partie\" pour connaître l'heure de votre prochaine partie\n• À tout moment dites \"recommencer\" pour revenir à ce menu."
+    "help": "Voici les différentes actions que vous pouvez effectuer:\n• Dîtes \"score\" pour soumettre un score\n• Dites \"partie\" pour connaître l'heure de votre prochaine partie\n• À tout moment dites \"recommencer\" pour revenir à ce menu.",
+    "games_awaiting_score_count": "Vous avez {{count}} parties en attente de score"
   },
   "i_dont_understand": "Désolé, je n'ai pas compris votre message. Si vous voulez revenir au menu principal dites \"recommencer\" ou \"stop\"",
   "quick_replies": {
@@ -46,8 +47,7 @@
     "no": "Non",
     "next_game": "Prochaine partie? 🕓",
     "mock": "Simuler 🚀",
-    "game_description": "Partie du {{date}} contre {{teams}}",
-    "submit_score": "Soumetre un score"
+    "submit_score": "Soumetre un score 📝"
   },
   "emails": {
     "added_to_roster_text": "Bonjour {{name}}! Quelqu'un vous a ajouté à l'alignement de l'équipe {{teamName}} sur Sportfolios. Cliquez sur le bouton suivant pour consulter l'alignement complet.",

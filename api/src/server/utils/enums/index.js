@@ -63,11 +63,6 @@ const MESSENGER_QUICK_REPLIES = {
     },
     {
       content_type: 'text',
-      title: i18nbackEnd.__('quick_replies.mock'),
-      payload: MESSENGER_PAYLOADS.MOCK,
-    },
-    {
-      content_type: 'text',
       title: i18nbackEnd.__('quick_replies.submit_score'),
       payload: MESSENGER_PAYLOADS.SUBMIT_A_SCORE,
     },
