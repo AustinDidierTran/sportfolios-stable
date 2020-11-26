@@ -41,6 +41,7 @@ export default function AddMembership() {
       membershipType: t(getMembershipType(d.length, d.fixed_date)),
       expirationDate: getExpirationDate(d.length, d.fixed_date),
       price: d.price,
+      taxRates: d.taxRates,
       type: LIST_ITEM_ENUM.MEMBERSHIP_ORGANIZATION,
       id: d.id,
       onDelete,

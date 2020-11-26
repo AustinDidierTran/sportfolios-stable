@@ -19,9 +19,6 @@ const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
 const validator = require('validator');
 const { sendTransferAddNewPlayer } = require('../helpers/index');
-const {
-  formatPrice,
-} = require('../../../../common/utils/stringFormat');
 
 const addEntity = async (body, userId) => {
   const { name, creator, surname, type } = body;
@@ -999,10 +996,16 @@ async function getMemberships(entityId) {
     .select('*')
     .where({ entity_id: realId });
 
-  return memberships.map(m => ({
-    ...m,
-    price: formatPrice(m.price),
-  }));
+  return Promise.all(
+    memberships.map(async m => {
+      const taxRates = await getTaxRates(m.stripe_price_id);
+      return {
+        ...m,
+        taxRates,
+        price: m.price,
+      };
+    }),
+  );
 }
 
 async function hasMemberships(organizationId) {

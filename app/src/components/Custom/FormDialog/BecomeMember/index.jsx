@@ -16,6 +16,7 @@ import BasicFormDialog from '../BasicFormDialog';
 import { formatRoute } from '../../../../actions/goTo';
 import {
   formatDate,
+  formatPrice,
   getMembershipName,
 } from '../../../../utils/stringFormats';
 import moment from 'moment';
@@ -75,13 +76,19 @@ export default function BecomeMember(props) {
     const name = getMembershipName(membership_type);
     if (length) {
       if (length === MEMBERSHIP_LENGTH_ENUM.ONE_YEAR) {
-        return `${t(name)} | ${price}$ (${t('one_year')})`;
+        return `${t(name)} | ${formatPrice(price)} (${t(
+          'one_year',
+        )})`;
       }
       if (length === MEMBERSHIP_LENGTH_ENUM.SIX_MONTH) {
-        return `${t(name)} | ${price}$ (${t('six_month')})`;
+        return `${t(name)} | ${formatPrice(price)} (${t(
+          'six_month',
+        )})`;
       }
       if (length === MEMBERSHIP_LENGTH_ENUM.ONE_MONTH) {
-        return `${t(name)} | ${price}$ (${t('one_month')})`;
+        return `${t(name)} | ${formatPrice(price)} (${t(
+          'one_month',
+        )})`;
       }
     }
     if (fixed_date) {
@@ -101,7 +108,9 @@ export default function BecomeMember(props) {
           moment().get('year'),
         );
       }
-      return `${t(name)} | ${price}$ (${formatDate(finalDate)})`;
+      return `${t(name)} | ${formatPrice(price)} (${formatDate(
+        finalDate,
+      )})`;
     }
     return null;
   };

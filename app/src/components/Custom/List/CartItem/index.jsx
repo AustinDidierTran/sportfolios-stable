@@ -23,6 +23,7 @@ export default function CartItem(props) {
     photoUrl,
     quantity,
     updateQuantity,
+    taxRates,
   } = props;
   const quantityOptions = Array(Math.max(101, quantity + 1))
     .fill(0)
@@ -53,8 +54,16 @@ export default function CartItem(props) {
               className={styles.quantity}
               primary={
                 metadata?.isIndividualOption
-                  ? `${formatPrice(amount)} - ${metadata?.name}`
-                  : formatPrice(amount)
+                  ? taxRates.length
+                    ? `${formatPrice(amount)} + ${t('taxes')} | ${
+                        metadata?.name
+                      }`
+                    : `${formatPrice(amount)} + ${t('taxes')} | ${
+                        metadata?.name
+                      }`
+                  : taxRates.length
+                  ? `${formatPrice(amount)} + ${t('taxes')}`
+                  : `${formatPrice(amount)} + ${t('taxes')}`
               }
               secondary={label}
             />
@@ -87,7 +96,11 @@ export default function CartItem(props) {
             ></ListItemText>
             <ListItemText
               className={styles.quantity}
-              primary={formatPrice(amount)}
+              primary={
+                taxRates.length
+                  ? `${formatPrice(amount)} + ${t('taxes')}`
+                  : formatPrice(amount)
+              }
               secondary={`${person?.name} ${person?.surname}`}
             ></ListItemText>
           </div>
@@ -116,7 +129,11 @@ export default function CartItem(props) {
             ></ListItemText>
             <ListItemText
               className={styles.quantity}
-              primary={formatPrice(amount)}
+              primary={
+                taxRates.length
+                  ? `${formatPrice(amount)} + ${t('taxes')}`
+                  : formatPrice(amount)
+              }
               secondary={`Qt: ${quantity}`}
             ></ListItemText>
             <Select

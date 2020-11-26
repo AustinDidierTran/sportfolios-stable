@@ -1,3 +1,4 @@
-.button {
-  min-width: 0px;
+.money {
+  display: grid !important;
+  grid-template-columns: 1fr 2fr;
 }

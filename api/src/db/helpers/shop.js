@@ -201,7 +201,7 @@ const getCartItems = async userId => {
           stripePriceMetadata: i.stripe_price_metadata,
           stripeProductId: i.stripe_product_id,
           userId: i.user_id,
-          taxRates: getTaxRates(i.stripe_price_id),
+          taxRates: await getTaxRates(i.stripe_price_id),
         })) || [],
     );
     return res;
