@@ -46,7 +46,6 @@ class Home extends State {
     const userId = await getUserIdFromMessengerId(
       this.context.messengerId,
     );
-    this.context.chatbotInfos.userId = userId;
     const count = (await getGamesWithAwaitingScore(userId)).length;
     return [
       Response.genText(i18n.__('menu.welcome')),

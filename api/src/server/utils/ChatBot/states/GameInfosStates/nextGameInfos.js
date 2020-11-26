@@ -30,7 +30,9 @@ class NextGameInfos extends State {
   }
 
   async getIntroMessages() {
-    const userId = this.context.chatbotInfos.userId;
+    const userId = await getUserIdFromMessengerId(
+      this.context.messengerId,
+    );
     const game = getUserNextGame(userId);
     const timeZone = getTimezoneFromPSID(this.context.messengerId);
     console.log(timeZone);
