@@ -951,7 +951,9 @@ async function getOptions(eventId) {
     .select(
       'event_payment_options.name',
       'team_price',
+      'team_stripe_price_id',
       'individual_price',
+      'individual_stripe_price_id',
       'start_time',
       'end_time',
       'id',
@@ -966,11 +968,29 @@ async function getOptions(eventId) {
     .andWhere({ event_id: realId })
     .orderBy('event_payment_options.created_at');
 
-  return res.map(r => ({
-    ...r,
-    start_time: new Date(r.start_time).getTime(),
-    end_time: new Date(r.end_time).getTime(),
-  }));
+  return Promise.all(
+    res.map(async r => {
+      let taxRates = [];
+      let ownerId = '';
+      if (r.team_stripe_price_id) {
+        taxRates = await getTaxRates(r.team_stripe_price_id);
+        ownerId = await getOwnerStripePrice(r.team_stripe_price_id);
+      } else {
+        taxRates = await getTaxRates(r.individual_stripe_price_id);
+        ownerId = await getOwnerStripePrice(
+          r.individual_stripe_price_id,
+        );
+      }
+
+      return {
+        ...r,
+        owner: await getEntity(ownerId),
+        taxRates,
+        startTime: new Date(r.start_time).getTime(),
+        endTime: new Date(r.end_time).getTime(),
+      };
+    }),
+  );
 }
 
 async function getMemberships(entityId) {
@@ -1751,12 +1771,12 @@ async function updateEntityPhoto(entityId, photo_url) {
 }
 
 async function updateOption(body) {
-  const { id, start_time, end_time } = body;
+  const { id, startTime, endTime } = body;
 
   return knex('event_payment_options')
     .update({
-      start_time: new Date(start_time),
-      end_time: new Date(end_time),
+      start_time: new Date(startTime),
+      end_time: new Date(endTime),
     })
     .where({ id });
 }

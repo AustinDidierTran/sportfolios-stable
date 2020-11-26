@@ -1,3 +1,4 @@
+import { Divider } from '@material-ui/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { formatPrice } from '../../../../../../common/utils/stringFormat';
@@ -28,12 +29,13 @@ export default function CartSummary(props) {
           <ListItemText secondary={`${formatPrice(t.amount)} $`} />
         </div>
       ))}
+      <Divider />
       <div className={styles.total}>
         <ListItemText
           primary={t('total')}
           className={styles.primary}
         />
-        <ListItemText secondary={`${formatPrice(total)} $`} />
+        <ListItemText primary={`${formatPrice(total)} $`} />
       </div>
     </Card>
   );

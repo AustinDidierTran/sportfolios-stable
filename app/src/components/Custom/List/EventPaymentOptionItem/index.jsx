@@ -1,6 +1,12 @@
-import React, { useMemo, useState, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { ListItem, ListItemText } from '../../../MUI';
-import { FormDialog, IconButton, AlertDialog } from '../../../Custom';
+import {
+  FormDialog,
+  IconButton,
+  AlertDialog,
+  Collapse,
+  Button,
+} from '../../../Custom';
 import { Divider } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import {
@@ -16,6 +22,7 @@ import {
 } from '../../../../../../common/enums';
 import api from '../../../../actions/api';
 import { formatRoute } from '../../../../actions/goTo';
+import styles from './EventPaymentOptionItem.module.css';
 
 export default function EventPaymentOptionItem(props) {
   const { t } = useTranslation();
@@ -25,21 +32,17 @@ export default function EventPaymentOptionItem(props) {
     name,
     team_price,
     individual_price,
-    start_time,
-    end_time,
+    startTime,
+    endTime,
+    owner,
+    taxRates,
   } = option;
 
   const { dispatch } = useContext(Store);
   const [alertDialog, setAlertDialog] = useState(false);
   const [edit, setEdit] = useState(false);
-
-  const startDate = useMemo(() => formatDate(moment(start_time)), [
-    start_time,
-  ]);
-
-  const endDate = useMemo(() => formatDate(moment(end_time)), [
-    end_time,
-  ]);
+  const [expanded, setExpanded] = useState(false);
+  const [icon, setIcon] = useState('KeyboardArrowDown');
 
   const onDelete = async () => {
     await api(formatRoute('/api/entity/option', null, { id }), {
@@ -47,6 +50,16 @@ export default function EventPaymentOptionItem(props) {
     });
     update();
     setAlertDialog(false);
+  };
+
+  const handleExpand = () => {
+    const newExpanded = !expanded;
+    setExpanded(newExpanded);
+    if (newExpanded === true) {
+      setIcon('KeyboardArrowUp');
+    } else {
+      setIcon('KeyboardArrowDown');
+    }
   };
 
   const editOptionEvent = async values => {
@@ -59,8 +72,8 @@ export default function EventPaymentOptionItem(props) {
       method: 'PUT',
       body: JSON.stringify({
         id,
-        start_time: start,
-        end_time: end,
+        startTime: start,
+        endTime: end,
       }),
     });
 
@@ -83,7 +96,7 @@ export default function EventPaymentOptionItem(props) {
 
   return (
     <div>
-      <ListItem>
+      <ListItem onClick={handleExpand}>
         <ListItemText
           primary={`${name} | ${t('price_team')} ${
             team_price === 0 ? t('free') : formatPrice(team_price)
@@ -93,25 +106,132 @@ export default function EventPaymentOptionItem(props) {
               : formatPrice(individual_price)
           }`}
           secondary={t('open_from_to', {
-            startDate,
-            endDate,
+            startDate: formatDate(moment(startTime), 'MMM D'),
+            endDate: formatDate(moment(endTime), 'MMM D'),
           })}
         />
         <IconButton
-          icon="Edit"
-          onClick={() => {
-            setEdit(true);
-          }}
-          style={{ color: 'primary' }}
-          tooltip={t('edit')}
-        />
-        <IconButton
-          icon="Delete"
-          onClick={() => setAlertDialog(true)}
-          style={{ color: 'primary' }}
-          tooltip={t('delete')}
+          onClick={handleExpand}
+          aria-expanded={expanded}
+          icon={icon}
+          style={{ color: 'grey' }}
         />
       </ListItem>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <div style={{ backgroundColor: '#F5F5F5' }}>
+          <ListItem>
+            <ListItemText
+              secondary={t('open_from_to', {
+                startDate: formatDate(moment(startTime), 'LLLL'),
+                endDate: formatDate(moment(endTime), 'LLLL'),
+              })}
+            />
+          </ListItem>
+          <ListItem>
+            <ListItemText
+              primary={owner.basicInfos.name}
+              secondary={t('payment_option_owner')}
+            />
+          </ListItem>
+          <Divider />
+          <>
+            <ListItem className={styles.money}>
+              <ListItemText primary={`${t('subtotal')}:`} />
+              {individual_price ? (
+                <ListItemText
+                  primary={`${formatPrice(individual_price)}`}
+                  secondary={t('price_individual')}
+                ></ListItemText>
+              ) : (
+                <></>
+              )}
+              {team_price ? (
+                <ListItemText
+                  primary={`${formatPrice(team_price)}`}
+                  secondary={t('price_team')}
+                ></ListItemText>
+              ) : (
+                <></>
+              )}
+            </ListItem>
+            {taxRates.map(t => (
+              <ListItem className={styles.money}>
+                <ListItemText
+                  primary={`${t.display_name} (${t.percentage}%)`}
+                  secondary={t.description}
+                />
+                {individual_price ? (
+                  <ListItemText
+                    primary={`${formatPrice(
+                      (individual_price * t.percentage) / 100,
+                    )}`}
+                  ></ListItemText>
+                ) : (
+                  <></>
+                )}
+                {team_price ? (
+                  <ListItemText
+                    primary={`${formatPrice(
+                      (team_price * t.percentage) / 100,
+                    )}`}
+                  ></ListItemText>
+                ) : (
+                  <></>
+                )}
+              </ListItem>
+            ))}
+            <Divider />
+            <ListItem className={styles.money}>
+              <ListItemText primary={`${t('total')}:`} />
+              {individual_price ? (
+                <ListItemText
+                  primary={`${formatPrice(
+                    taxRates.reduce((prev, curr) => {
+                      return (
+                        prev +
+                        (individual_price * curr.percentage) / 100
+                      );
+                    }, 0) + individual_price,
+                  )}`}
+                ></ListItemText>
+              ) : (
+                <></>
+              )}
+              {team_price ? (
+                <ListItemText
+                  primary={`${formatPrice(
+                    taxRates.reduce((prev, curr) => {
+                      return (
+                        prev + (team_price * curr.percentage) / 100
+                      );
+                    }, 0) + team_price,
+                  )}`}
+                ></ListItemText>
+              ) : (
+                <></>
+              )}
+            </ListItem>
+            <Divider />
+          </>
+          <Button
+            endIcon="Edit"
+            onClick={() => {
+              setEdit(true);
+            }}
+            style={{ margin: '8px' }}
+          >
+            {t('edit')}
+          </Button>
+          <Button
+            endIcon="Delete"
+            onClick={() => setAlertDialog(true)}
+            color="secondary"
+            style={{ margin: '8px' }}
+          >
+            {t('delete')}
+          </Button>
+        </div>
+      </Collapse>
       <Divider />
       <FormDialog
         type={FORM_DIALOG_TYPE_ENUM.EDIT_EVENT_PAYMENT_OPTION}

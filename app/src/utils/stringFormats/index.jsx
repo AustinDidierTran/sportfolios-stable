@@ -36,7 +36,12 @@ export const formatDate = (moment, format = 'LL') => {
   if (!moment.isValid()) {
     return null;
   }
-  moment.locale(localStorage.getItem('i18nextLng'));
+  const language = localStorage.getItem('i18nextLng');
+  moment.locale(language);
+  if (format === 'MMM D' && language === 'fr') {
+    return moment.format('D MMM');
+  }
+
   return moment.format(format);
 };
 
