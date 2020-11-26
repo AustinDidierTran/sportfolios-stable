@@ -30,7 +30,7 @@ class gamesAwaitingScoreList extends State {
     );
     const games = await getGamesWithAwaitingScore(userId);
 
-    const quickReplies = games.map(game => {
+    const buttons = games.map(game => {
       const opponentTeamsString = game.opponent_teams_names.concat(
         i18n.__('and'),
       );
@@ -38,6 +38,7 @@ class gamesAwaitingScoreList extends State {
       const dateString =
         date.getDate() + ' ' + i18n.__(MONTH_NAMES[date.getMonth()]);
       return {
+        type: 'postback',
         payload: game.game_id,
         title: i18n.__('quick_replies.game_description', {
           date: dateString,
@@ -46,9 +47,9 @@ class gamesAwaitingScoreList extends State {
       };
     });
     return [
-      Response.genQuickReply(
+      Response.genButtonTemplate(
         i18n.__('score_submission.choose_game'),
-        quickReplies,
+        buttons,
       ),
     ];
   }

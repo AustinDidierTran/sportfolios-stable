@@ -38,6 +38,12 @@ class State {
       webhookEvent.message.quick_reply.payload
     ) {
       return webhookEvent.message.quick_reply.payload;
+    } else if (
+      webhookEvent &&
+      webhookEvent.postback &&
+      webhookEvent.postback.payload
+    ) {
+      return webhookEvent.postback.payload;
     }
     return;
   }
