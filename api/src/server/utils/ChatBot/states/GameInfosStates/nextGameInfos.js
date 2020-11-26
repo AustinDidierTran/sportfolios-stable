@@ -1,6 +1,7 @@
 const State = require('../state');
 const {
   SCORE_SUBMISSION_CHATBOT_STATES,
+  BASIC_CHATBOT_STATES,
 } = require('../../../../../../../common/enums');
 const {
   MESSENGER_QUICK_REPLIES,
