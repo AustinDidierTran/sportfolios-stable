@@ -94,8 +94,7 @@ export default function PlayerCard(props) {
       <div className={styles.card}>
         <div className={styles.player}>
           <div className={styles.position}>
-            {!player.role ||
-            player.role === ROSTER_ROLE_ENUM.PLAYER ? (
+            {player.role === ROSTER_ROLE_ENUM.PLAYER ? (
               <></>
             ) : (
               <Tooltip
@@ -164,7 +163,7 @@ export default function PlayerCard(props) {
     <div className={styles.card}>
       <div className={styles.player}>
         <div className={styles.position}>
-          {!player.role || player.role === ROSTER_ROLE_ENUM.PLAYER ? (
+          {player.role === ROSTER_ROLE_ENUM.PLAYER ? (
             <></>
           ) : (
             <Tooltip

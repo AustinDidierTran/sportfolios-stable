@@ -10,7 +10,11 @@ import Rosters from './Rosters';
 import { Typography } from '../../components/MUI';
 import { useTranslation } from 'react-i18next';
 import { LoadingSpinner } from '../../components/Custom';
-import { STATUS_ENUM, SEVERITY_ENUM } from '../../../../common/enums';
+import {
+  STATUS_ENUM,
+  SEVERITY_ENUM,
+  ROSTER_ROLE_ENUM,
+} from '../../../../common/enums';
 import { Store, ACTION_ENUM } from '../../Store';
 
 export default function TabRosters(props) {
@@ -113,9 +117,25 @@ export default function TabRosters(props) {
   };
 
   const onDelete = async id => {
-    const refresh = await deletePlayerFromRoster(id);
-    if (refresh) {
-      await getData();
+    if (
+      rosters
+        .find(r => r.players.some(p => p.id === id))
+        .players.filter(
+          p => p.id !== id && p.role !== ROSTER_ROLE_ENUM.PLAYER,
+        ).length >= 1
+    ) {
+      const refresh = await deletePlayerFromRoster(id);
+      if (refresh) {
+        await getData();
+      }
+      return true;
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('team_player_role_error'),
+        severity: SEVERITY_ENUM.ERROR,
+      });
+      return false;
     }
   };
 
@@ -125,7 +145,23 @@ export default function TabRosters(props) {
   };
 
   const onRoleUpdate = async (teamId, playerId, role) => {
-    await updatePlayerRole(teamId, playerId, role);
+    if (
+      role !== ROSTER_ROLE_ENUM.PLAYER ||
+      rosters
+        .find(r => r.teamId === teamId)
+        .players.some(
+          p =>
+            p.id !== playerId && p.role !== ROSTER_ROLE_ENUM.PLAYER,
+        )
+    ) {
+      await updatePlayerRole(teamId, playerId, role);
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('team_player_role_error'),
+        severity: SEVERITY_ENUM.ERROR,
+      });
+    }
   };
 
   const getData = async () => {

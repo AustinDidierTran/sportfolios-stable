@@ -29,7 +29,7 @@ export default function TeamItem(props) {
 
   const handleClick = useCallback(
     e => {
-      if (notClickable) {
+      if (notClickable || isRegistered) {
         return;
       }
       if (onClick) {
@@ -44,7 +44,7 @@ export default function TeamItem(props) {
   return (
     <ListItem
       button={!isRegistered}
-      onClick={!isRegistered ? handleClick : null}
+      onClick={handleClick}
       selected={selected}
       style={{
         opacity: isRegistered ? '0.4' : '1',

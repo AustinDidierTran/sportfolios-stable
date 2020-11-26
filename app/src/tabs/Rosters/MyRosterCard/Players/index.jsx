@@ -66,8 +66,9 @@ export default function Players(props) {
   };
   const handleDelete = async id => {
     setisLoading(true);
-    await onDelete(id);
-    await getBlackList();
+    if (await onDelete(id)) {
+      await getBlackList();
+    }
     setisLoading(false);
   };
 

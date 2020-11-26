@@ -20,10 +20,7 @@ export default function RosterPlayersOptions(props) {
 
   useEffect(() => {
     setOpen(openProps);
-    formik.setFieldValue(
-      'role',
-      player.role ? player.role : ROSTER_ROLE_ENUM.PLAYER,
-    );
+    formik.setFieldValue('role', player.role);
   }, [openProps]);
 
   const handleClose = () => {
@@ -48,6 +45,8 @@ export default function RosterPlayersOptions(props) {
       } else {
         onRoleUpdate(role, player.id);
       }
+
+      handleClose();
     },
   });
 

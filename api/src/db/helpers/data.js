@@ -1,6 +1,5 @@
 const knex = require('../connection');
 const { GLOBAL_ENUM } = require('../../../../common/enums');
-const { getRealId } = require('./entity');
 
 const addQueryToRecentSearches = async (user_id, search_query) => {
   return knex('previous_search_queries')
@@ -229,21 +228,12 @@ const getTeamsFromQuery = async (query, blackList, whiteList) => {
 };
 
 const getMyTeamsFromQuery = async (userId, eventId, query) => {
-  const realEventId = await getRealId(eventId);
-
-  const isRegisteredInEvent = async teamId => {
-    const [res] = await knex('event_rosters')
-      .select('roster_id')
-      .where({ event_id: realEventId, team_id: teamId });
-    return res ? true : false;
-  };
-
   const mappingFunction = async e => ({
     id: e.id,
     type: e.type,
     photoUrl: e.photo_url,
     name: e.complete_name || e.name,
-    isRegistered: await isRegisteredInEvent(e.id),
+    isRegistered: await isTeamRegisteredInEvent(e.id, eventId),
   });
 
   // getPersons

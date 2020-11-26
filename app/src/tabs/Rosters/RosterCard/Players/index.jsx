@@ -48,8 +48,7 @@ export default function Players(props) {
         {playersUpdated.map(player => (
           <div className={styles.player} key={player.id}>
             <div className={styles.position}>
-              {!player.role ||
-              player.role === ROSTER_ROLE_ENUM.PLAYER ? (
+              {player.role === ROSTER_ROLE_ENUM.PLAYER ? (
                 <></>
               ) : (
                 <Tooltip
@@ -90,8 +89,7 @@ export default function Players(props) {
       {playersUpdated.map(player => (
         <div className={styles.player} key={player.id}>
           <div className={styles.position}>
-            {!player.role ||
-            player.role === ROSTER_ROLE_ENUM.PLAYER ? (
+            {player.role === ROSTER_ROLE_ENUM.PLAYER ? (
               <></>
             ) : (
               <Tooltip

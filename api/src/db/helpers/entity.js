@@ -1210,14 +1210,14 @@ async function getRoster(rosterId, withSub) {
       .select('*')
       .where({ roster_id: realId })
       .orderByRaw(
-        "array_position(array['coach'::varchar, 'captain'::varchar, 'assistant-captain'::varchar, 'null'::varchar], role)",
+        `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
       );
   } else {
     roster = await knex('team_players')
       .select('*')
       .where({ roster_id: realId, is_sub: false })
       .orderByRaw(
-        "array_position(array['coach'::varchar, 'captain'::varchar, 'assistant-captain'::varchar, 'null'::varchar], role)",
+        `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
       );
   }
 
@@ -1443,6 +1443,14 @@ async function isPlayerInRoster(player_id, roster_id) {
   });
   return Boolean(res);
 }
+
+const isTeamRegisteredInEvent = async (teamId, eventId) => {
+  const realEventId = await getRealId(eventId);
+  const [res] = await knex('event_rosters')
+    .select('roster_id')
+    .where({ event_id: realEventId, team_id: teamId });
+  return Boolean(res);
+};
 
 async function getUnplacedGames(eventId) {
   const realId = await getRealId(eventId);
@@ -1795,7 +1803,6 @@ const canRemovePlayerFromRoster = async (rosterId, personId) => {
     presentRoles.filter(
       item =>
         item.person_id !== personId &&
-        item.role !== null &&
         item.role !== ROSTER_ROLE_ENUM.PLAYER,
     ).length >= 1
   );
@@ -3109,5 +3116,5 @@ module.exports = {
   getEmailPerson,
   getGameTeams,
   isPlayerInRoster,
-  getRealId,
+  isTeamRegisteredInEvent,
 };
