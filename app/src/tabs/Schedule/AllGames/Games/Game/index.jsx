@@ -5,6 +5,7 @@ import {
   CARD_TYPE_ENUM,
   FORM_DIALOG_TYPE_ENUM,
 } from '../../../../../../../common/enums';
+import SubmitScoreDialog from '../../../../../components/Custom/FormDialog/SubmitScoreSpiritForm';
 
 export default function Game(props) {
   const { game, isPastGame } = props;
@@ -28,14 +29,19 @@ export default function Game(props) {
         }}
         type={CARD_TYPE_ENUM.TWO_TEAM_GAME}
       />
-      <FormDialog
+      <SubmitScoreDialog
+        open={submitScore}
+        onClose={closeSubmitScore}
+        game={game}
+      />
+      {/* <FormDialog
         type={FORM_DIALOG_TYPE_ENUM.SUBMIT_SCORE_AND_SPIRIT}
         items={{
           open: submitScore,
           onClose: closeSubmitScore,
           game: game,
         }}
-      />
+      /> */}
     </>
   );
 }

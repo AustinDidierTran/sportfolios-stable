@@ -15,6 +15,7 @@ import Business from '@material-ui/icons/Business';
 import Cancel from '@material-ui/icons/Cancel';
 import CancelSend from '@material-ui/icons/CancelScheduleSend';
 import Check from '@material-ui/icons/Check';
+import CheckCircleOutline from '@material-ui/icons/CheckCircleOutline';
 import Close from '@material-ui/icons/Close';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Create from '@material-ui/icons/Create';
@@ -91,6 +92,7 @@ const icons = {
   Build,
   Business,
   Check,
+  CheckCircleOutline,
   Chat,
   Close,
   CloudUploadIcon,

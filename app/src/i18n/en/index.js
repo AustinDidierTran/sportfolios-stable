@@ -573,6 +573,7 @@ export default {
     sub: 'Sub',
     submit_score: 'Submit Score',
     submit: 'Submit',
+    submitted: 'Submitted',
     subscribe: 'Subscribe',
     subscribed: 'Subscribed',
     subtotal: 'Subtotal',

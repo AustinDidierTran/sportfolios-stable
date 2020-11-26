@@ -568,6 +568,7 @@ export default {
     sub: 'Remplaçant',
     submit_score: 'Soumettre un résultat',
     submit: 'Soumettre',
+    submitted: 'Soumis',
     subscribe: "S'abonner",
     subscribed: 'Abonné',
     subtotal: 'Sous-total',

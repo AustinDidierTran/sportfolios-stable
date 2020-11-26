@@ -44,7 +44,14 @@ function getStyles(opt, options, theme) {
 export default function CustomMultiSelect(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const { formik, label, onChange, options, values } = props;
+  const {
+    formik,
+    label,
+    onChange,
+    options,
+    values,
+    disabled = false,
+  } = props;
 
   const handleChange = (event, ...args) => {
     if (formik) {
@@ -59,6 +66,7 @@ export default function CustomMultiSelect(props) {
       <FormControl className={classes.formControl}>
         <InputLabel>{label}</InputLabel>
         <Select
+          disabled={disabled}
           multiple
           value={values}
           onChange={handleChange}
