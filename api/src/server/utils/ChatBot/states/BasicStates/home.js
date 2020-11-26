@@ -8,6 +8,9 @@ const {
 } = require('../../../enums');
 const Response = require('../../response');
 const i18n = require('../../../../../i18n.config');
+const {
+  getGamesWithAwaitingScore,
+} = require('../../../../../db/helpers/entity');
 
 class Home extends State {
   isStartMock(webhookEvent) {
