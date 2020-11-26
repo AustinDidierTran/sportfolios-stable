@@ -74,6 +74,7 @@ const sendChatbotNotification = async (user_id, notif) => {
   console.log('allo');
   const messengerId = await getMessengerId(user_id);
   if (!messengerId) {
+    console.log('out1');
     return;
   }
   const { chatbotInfos, updated_at, state } = await getChatbotInfos(
@@ -85,6 +86,7 @@ const sendChatbotNotification = async (user_id, notif) => {
     new Date(updated_at).valueOf() <
       new Date().valueOf() - MILLIS_TIME_ENUM.ONE_HOUR * 3
   ) {
+    console.log('out: ' + state);
     return;
   }
   const { type, metadata } = notif;
@@ -112,6 +114,7 @@ const sendChatbotNotification = async (user_id, notif) => {
       SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT,
       chatbotInfos,
     );
+    console.log('Sending chatbot message');
     chatbot.sendIntroMessages();
     await setChatbotInfos(messengerId, {
       chatbot_infos: JSON.stringify(chatbot.chatbotInfos),
