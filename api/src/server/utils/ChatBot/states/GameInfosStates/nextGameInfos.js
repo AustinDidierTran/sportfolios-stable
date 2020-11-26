@@ -16,7 +16,16 @@ const {
 } = require('../../../../../db/helpers/facebook');
 
 class NextGameInfos extends State {
-  handleEvent(webhookEvent) {}
+  handleEvent(webhookEvent) {
+    if (this.isStop(webhookEvent) || this.isStartOver(webhookEvent)) {
+      nextState = BASIC_CHATBOT_STATES.HOME;
+    } else {
+      this.sendIDontUnderstand(webhookEvent);
+    }
+    if (nextState) {
+      this.context.changeState(nextState);
+    }
+  }
 
   async getIntroMessages() {
     const userId = this.context.chatbotInfos.userId;
