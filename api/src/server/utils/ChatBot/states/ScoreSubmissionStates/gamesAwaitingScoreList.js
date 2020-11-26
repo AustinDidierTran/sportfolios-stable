@@ -25,7 +25,6 @@ class gamesAwaitingScoreList extends State {
       this.context.chatbotInfos.opponentTeams = [];
       this.context.chatbotInfos.gameId = gameId;
       this.context.chatbotInfos.playerId = playerId;
-      chatbotInfos.playerId = playerId;
       let myTeamFound = false;
       teams.forEach(team => {
         if (!myTeamFound && team.player_id) {
