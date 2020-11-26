@@ -36,7 +36,10 @@ class gamesAwaitingScoreList extends State {
       );
       const date = new Date(game.timeslot);
       const dateString =
-        date.getDate() + ' ' + i18n.__(MONTH_NAMES[date.getMonth()]);
+        date.getDate() +
+        ' ' +
+        i18n.__(MONTH_NAMES[date.getMonth()]).substring(0, 3) +
+        '.';
       return {
         payload: game.game_id,
         title: dateString + ', VS ' + opponentTeamsString,
