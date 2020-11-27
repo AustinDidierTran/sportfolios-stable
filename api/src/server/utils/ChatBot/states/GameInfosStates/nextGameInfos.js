@@ -52,19 +52,7 @@ class NextGameInfos extends State {
     const infos = {
       event: game.event_name,
       field: game.field,
-      timeslot:
-        date.getDate() +
-        ' ' +
-        i18n.__(MONTH_NAMES[date.getMonth()]) +
-        ' ' +
-        date.getFullYear() +
-        ' - ' +
-        date.getHours() +
-        ':' +
-        date.getMinutes(),
-      opponentTeams: game.opponent_teams_names.join(
-        ' ' + i18n.__('and') + ' ',
-      ),
+      timeslot: moment(date).format('LLL'),
     };
     return [
       Response.genQuickReply(
