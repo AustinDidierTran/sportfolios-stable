@@ -3,6 +3,7 @@ const {
   SCORE_SUBMISSION_CHATBOT_STATES,
   BASIC_CHATBOT_STATES,
   MILLIS_TIME_ENUM,
+  MONTH_NAMES,
 } = require('../../../../../../../common/enums');
 const {
   MESSENGER_QUICK_REPLIES,
@@ -43,13 +44,23 @@ class NextGameInfos extends State {
     if (!game || game.length === 0) {
       return [Response.genText(i18n.__('game_infos.no_game'))];
     }
+    const date = new Date(
+      new Date(game.timeslot).valueOf() +
+        timeZone * MILLIS_TIME_ENUM.ONE_HOUR,
+    );
     const infos = {
       event: game.event_name,
       field: game.field,
-      timeslot: new Date(
-        new Date(game.timeslot).getTime +
-          timeZone * MILLIS_TIME_ENUM.ONE_HOUR,
-      ),
+      timeslot:
+        date.getDate +
+        ' ' +
+        i18n.__(MONTH_NAMES[date.getMonth()]) +
+        ' ' +
+        date.getFullYear() +
+        ' - ' +
+        date.getHours +
+        ':' +
+        date.getMinutes,
       opponentTeams: game.opponent_teams_names.join(
         ' ' + i18n.__('and') + ' ',
       ),
