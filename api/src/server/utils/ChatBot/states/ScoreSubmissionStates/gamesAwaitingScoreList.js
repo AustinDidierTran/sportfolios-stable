@@ -19,7 +19,9 @@ class gamesAwaitingScoreList extends State {
   async handleEvent(webhookEvent) {
     let nextState;
     const requestedGame = this.getPayload(webhookEvent);
-    if (requestedGame) {
+    if (this.isStartOver(webhookEvent) || this.isStop(webhookEvent)) {
+      nextState = BASIC_CHATBOT_STATES.HOME;
+    } else if (requestedGame) {
       const { gameId, playerId, myRosterId } = JSON.parse(
         requestedGame,
       );
@@ -40,11 +42,6 @@ class gamesAwaitingScoreList extends State {
         nextState =
           SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION;
       });
-    } else if (
-      this.isStartOver(webhookEvent) ||
-      this.isStop(webhookEvent)
-    ) {
-      nextState = BASIC_CHATBOT_STATES.HOME;
     } else {
       this.sendIDontUnderstand(webhookEvent);
     }
