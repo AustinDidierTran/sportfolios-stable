@@ -28,18 +28,18 @@ async function getAllPastHourGamesCaptain() {
       )
       .whereNotNull('player_role')
       .whereNull('notified_end');
-    /*await trx('games')
+    await trx('games')
       .update('notified_end', 'now()')
       .whereIn(
         'id',
         res.map(r => r.game_id),
-      );*/
+      );
     return res;
   });
 }
 //Cron job for score submission reminder
 //Run every 15 minutes
-cron.schedule('0-59/1 * * * *', async () => {
+cron.schedule('0-59/15 * * * *', async () => {
   // eslint-disable-next-line no-console
   console.log(
     '%s CRONJOB: executing score submission reminder',
