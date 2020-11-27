@@ -2,7 +2,6 @@ const State = require('../state');
 const {
   BASIC_CHATBOT_STATES,
   MILLIS_TIME_ENUM,
-  MONTH_NAMES,
 } = require('../../../../../../../common/enums');
 const { MESSENGER_QUICK_REPLIES } = require('../../../enums');
 const Response = require('../../response');
@@ -16,6 +15,7 @@ const {
 const {
   getUserIdFromMessengerId,
 } = require('../../../../../db/helpers');
+const moment = require('moment');
 class NextGameInfos extends State {
   handleEvent(webhookEvent) {
     let nextState;
