@@ -2239,11 +2239,11 @@ async function getUserNextGame(user_id) {
     )
     .from('user_entity_role')
     .join(
-      'GAME_PLAYERS_VIEW',
-      'USER_ENTITY_ROLE.ENTITY_ID',
-      'GAME_PLAYERS_VIEW.PLAYER_ID',
+      'game_players_view',
+      'user_entity_role.entity_id',
+      'game_players_view.player_id',
     )
-    .join('GAME_TEAMS', function() {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
