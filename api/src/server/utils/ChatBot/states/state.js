@@ -94,6 +94,8 @@ class State {
       isGreeting ||
       text === 'recommencer' ||
       text === 'start over' ||
+      text === 'home' ||
+      text === 'menu' ||
       payload === MESSENGER_PAYLOADS.START_OVER
     );
   }

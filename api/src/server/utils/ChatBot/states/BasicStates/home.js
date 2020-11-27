@@ -55,7 +55,10 @@ class Home extends State {
     i18n.setLocale('fr');
     const responses = [
       Response.genText(i18n.__('menu.welcome')),
-      Response.genText(i18n.__('menu.help')),
+      Response.genQuickReply(
+        i18n.__('menu.help'),
+        MESSENGER_QUICK_REPLIES.MENU_ACTIONS,
+      ),
     ];
     if (count) {
       responses.push(

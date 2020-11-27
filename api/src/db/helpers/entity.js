@@ -2227,7 +2227,8 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
 }
 
 async function getUserNextGame(user_id) {
-  const [res] = await knex()
+  const [res] = await knex
+    .queryBuilder()
     .select(
       'player_id',
       'game_players_view.game_id',
