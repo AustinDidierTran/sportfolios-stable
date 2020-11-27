@@ -24,7 +24,7 @@ class Chatbot {
   }
 
   async sendIntroMessages(delay = 0) {
-    const messages = await this.sendIntroMessages();
+    const messages = await this.state.getIntroMessages();
     this.state.sendMessages(this.messengerId, messages, delay);
   }
 }
