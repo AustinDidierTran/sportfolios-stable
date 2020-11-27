@@ -196,6 +196,7 @@ async function getAllOwnedEntities(type, userId, query = '') {
       .where({
         user_id: userId,
       })
+      .andWhere('role', '<=', ENTITIES_ROLE_ENUM.EDITOR)
   ).map(person => ({
     entity_id: person.entity_id,
     role: ENTITIES_ROLE_ENUM.ADMIN,
@@ -220,6 +221,7 @@ async function getAllOwnedEntities(type, userId, query = '') {
           'entity_id_admin',
           entityIds.map(e => e.entity_id),
         )
+        .andWhere('role', '<=', ENTITIES_ROLE_ENUM.EDITOR)
     ).map(entity => ({
       ...entity,
       role: Math.max(

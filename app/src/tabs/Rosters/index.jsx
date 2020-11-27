@@ -128,14 +128,12 @@ export default function TabRosters(props) {
       if (refresh) {
         await getData();
       }
-      return true;
     } else {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('team_player_role_error'),
         severity: SEVERITY_ENUM.ERROR,
       });
-      return false;
     }
   };
 
