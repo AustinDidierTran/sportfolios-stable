@@ -1,81 +1,81 @@
 {
-	"game_infos": {
-		"next_game": "Voici les informations sur votre prochaine partie:\n📅 Événement: {{event}}\n📍 Terrain: {{field}}\n⌚ Heure: {{timeslot}}\n🤺 Adversaire: {{opponentTeams}}",
-		"no_game": "Vous n'avez aucune partie à venir"
-	},
-	"score_submission": {
-		"choose_game": "Voici vos parties en attente de soumission de score",
-		"no_game_awaiting_score": "Vous n'avez aucune partie jouée en attente de score",
-		"request": "Bonjour {{userName}}, votre équipe vient tout juste d'affronter l'équipe {{opponentTeamName}}. Désirez-vous soumettre votre pointage ici?",
-		"explaination": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-[leur pointage]. Par exemple, pour une victoire de 13 à 10 veuillez entrer 13-10",
-		"explaination_many": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-{{teamNames}}. Par exemple: {{example}}",
-		"confirmation": {
-			"victory": "Vous avez remporté votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
-			"defeat": "Vous avez perdu votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
-			"draw": "La partie contre {{opponentTeamName}} s'est terminée avec une égalité de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
-			"many": "La partie s'est terminée avec les scores suivant, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage.\n{{scores}} "
-		},
-		"confirmed": {
-			"victory": "C'est envoyé, félicitation pour votre belle victoire!",
-			"other": "C'est envoyé!"
-		},
-		"failed": "Une erreur est survenue lors de l'enregistrement du score, voulez vous réessayer?",
-		"already_submitted": "Votre alignement a déjà soumis un pointage pour la même partie, vous ne pouvez donc pas en soumettre un nouveau."
-	},
-	"spirit_submission": {
-		"request": "Désirez-vous soumettre le pointage spirit?",
-		"rules": "Sur une échelle de 0 à 4, 0 étant mauvais, 2 étant la moyenne et 4 étant mémorable, à combien évalueriez-vous leur connaissance et application des réglements?",
-		"fouls": "Selon la même échelle, à combien évalueriez-vous les fautes et les contacts?",
-		"equity": "Selon la même échelle, à combien évalueriez-vous l'honnêteté et l'équité?",
-		"self_control": "Selon la même échelle, à combien évalueriez-vous l'attitude positive et la maîtrise de soi?",
-		"communication": "Selon la même échelle, à combien évalueriez-vous la communication?",
-		"confirmation": "Voici le sommaire de l'esprit sportif:\n\nConnaissance et application des réglements: {{rules}}\nFautes et contacts: {{fouls}}\nHonnêteté et équité: {{equity}}\nAttitude positive et maîtrise de soi: {{selfControl}}\nCommunication: {{communication}}\n\nTotal: {{total}}/20\n\nEst-ce que vous voulez confirmer l'envoi?",
-		"confirmed": "Le tout a été envoyé avec succès. Merci et à la prochaine!",
-		"already_submitted": "Votre alignement a déjà soumis un pointage spirit pour la même équipe de la même partie, vous ne pouvez donc pas en soumettre un nouveau.",
-		"failed": "Une erreur est survenue lors de l'enregistrement du spirit, voulez vous réessayer?"
-	},
-	"connection": {
-		"success": "Vous êtes maintenant inscrit au chatbot Sportfolios! Revenez après votre prochaine partie pour soumettre votre score facilement.",
-		"error": "Une erreur est survenue en tentant de lier votre compte, veuillez réessayer plus tard",
-		"no_ref": "Vous devez maintenant lier votre compte Sportfolios, veuillez suivre le lien suivant et connecter le chatbot: https://sportfolios.app/userSettings"
-	},
-	"ok_back_to_menu": "Très bien, je vous ramène au menu principal.",
-	"back_to_menu": "Je vous ramène au menu principal",
-	"menu": {
-		"welcome": "Bienvenue sur le chatbot Sportfolios!",
-		"help": "Voici les différentes actions que vous pouvez effectuer:\n• Dîtes \"score\" pour soumettre un score\n• Dites \"partie\" pour connaître l'heure de votre prochaine partie\n• À tout moment dites \"recommencer\" pour revenir à ce menu.",
-		"games_awaiting_score_count": "Vous avez {{count}} parties en attente de score"
-	},
-	"i_dont_understand": "Désolé, je n'ai pas compris votre message. Si vous voulez revenir au menu principal dites \"recommencer\" ou \"stop\"",
-	"quick_replies": {
-		"yes": "Oui",
-		"no": "Non",
-		"next_game": "Prochaine partie? 🕓",
-		"mock": "Simuler 🚀",
-		"submit_score": "Soumetre un score 📝",
-		"back_to_menu": "quick_replies.back_to_menu"
-	},
-	"emails": {
-		"added_to_roster_text": "Bonjour {{name}}! Quelqu'un vous a ajouté à l'alignement de l'équipe {{teamName}} sur Sportfolios. Cliquez sur le bouton suivant pour consulter l'alignement complet.",
-		"added_to_roster_button": "Voir l'alignement",
-		"added_to_roster_subject": "Vous avez été ajouté à un alignement",
-		"unsubscribe_footer": "Modifier mes préférences de notifications",
-		"score_submission_request_text": "Bonjour {{name}}! Une de vos partie de l'événement {{eventName}} vient de se terminer. Cliquez sur le lien afin de soumettre votre score sur Sportfolios",
-		"score_submission_request_button": "Soumettre le score",
-		"score_submission_request_subject": "Rappel de soumission de score"
-	},
-	"and": "et",
-	"your_team": "Votre équipe",
-	"January": "Janvier",
-	"February": "Février",
-	"March": "Mars",
-	"April": "Avril",
-	"May": "Mai",
-	"June": "Juin",
-	"July": "Juillet",
-	"August": "Août",
-	"September": "Septembre",
-	"October": "Octobre",
-	"November": "Novembre",
-	"December": "Décembre"
+  "game_infos": {
+    "next_game": "Voici les informations de votre prochaine partie:\n\n📅  Événement: {{event}}\n📍  Terrain: {{field}}\n⌚  Heure: {{timeslot}}\n🤺  Adversaire: {{opponentTeams}}",
+    "no_game": "Vous n'avez aucune partie à venir"
+  },
+  "score_submission": {
+    "choose_game": "Voici vos parties en attente de soumission de score",
+    "no_game_awaiting_score": "Vous n'avez aucune partie jouée en attente de score",
+    "request": "Bonjour {{userName}}, votre équipe vient tout juste d'affronter l'équipe {{opponentTeamName}}. Désirez-vous soumettre votre pointage ici?",
+    "explaination": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-[leur pointage]. Par exemple, pour une victoire de 13 à 10 veuillez entrer 13-10",
+    "explaination_many": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-{{teamNames}}. Par exemple: {{example}}",
+    "confirmation": {
+      "victory": "Vous avez remporté votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
+      "defeat": "Vous avez perdu votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
+      "draw": "La partie contre {{opponentTeamName}} s'est terminée avec une égalité de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
+      "many": "La partie s'est terminée avec les scores suivant, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage.\n{{scores}} "
+    },
+    "confirmed": {
+      "victory": "C'est envoyé, félicitation pour votre belle victoire!",
+      "other": "C'est envoyé!"
+    },
+    "failed": "Une erreur est survenue lors de l'enregistrement du score, voulez vous réessayer?",
+    "already_submitted": "Votre alignement a déjà soumis un pointage pour la même partie, vous ne pouvez donc pas en soumettre un nouveau."
+  },
+  "spirit_submission": {
+    "request": "Désirez-vous soumettre le pointage spirit?",
+    "rules": "Sur une échelle de 0 à 4, 0 étant mauvais, 2 étant la moyenne et 4 étant mémorable, à combien évalueriez-vous leur connaissance et application des réglements?",
+    "fouls": "Selon la même échelle, à combien évalueriez-vous les fautes et les contacts?",
+    "equity": "Selon la même échelle, à combien évalueriez-vous l'honnêteté et l'équité?",
+    "self_control": "Selon la même échelle, à combien évalueriez-vous l'attitude positive et la maîtrise de soi?",
+    "communication": "Selon la même échelle, à combien évalueriez-vous la communication?",
+    "confirmation": "Voici le sommaire de l'esprit sportif:\n\nConnaissance et application des réglements: {{rules}}\nFautes et contacts: {{fouls}}\nHonnêteté et équité: {{equity}}\nAttitude positive et maîtrise de soi: {{selfControl}}\nCommunication: {{communication}}\n\nTotal: {{total}}/20\n\nEst-ce que vous voulez confirmer l'envoi?",
+    "confirmed": "Le tout a été envoyé avec succès. Merci et à la prochaine!",
+    "already_submitted": "Votre alignement a déjà soumis un pointage spirit pour la même équipe de la même partie, vous ne pouvez donc pas en soumettre un nouveau.",
+    "failed": "Une erreur est survenue lors de l'enregistrement du spirit, voulez vous réessayer?"
+  },
+  "connection": {
+    "success": "Vous êtes maintenant inscrit au chatbot Sportfolios! Revenez après votre prochaine partie pour soumettre votre score facilement.",
+    "error": "Une erreur est survenue en tentant de lier votre compte, veuillez réessayer plus tard",
+    "no_ref": "Vous devez maintenant lier votre compte Sportfolios, veuillez suivre le lien suivant et connecter le chatbot: https://sportfolios.app/userSettings"
+  },
+  "ok_back_to_menu": "Très bien, je vous ramène au menu principal.",
+  "back_to_menu": "Je vous ramène au menu principal",
+  "menu": {
+    "welcome": "Bienvenue sur le chatbot Sportfolios!",
+    "help": "Voici les différentes actions que vous pouvez effectuer:\n• Dîtes \"score\" pour soumettre un score\n• Dites \"partie\" pour connaître l'heure de votre prochaine partie\n• À tout moment dites \"recommencer\" pour revenir à ce menu.",
+    "games_awaiting_score_count": "Vous avez {{count}} parties en attente de score"
+  },
+  "i_dont_understand": "Désolé, je n'ai pas compris votre message. Si vous voulez revenir au menu principal dites \"recommencer\" ou \"stop\"",
+  "quick_replies": {
+    "yes": "Oui",
+    "no": "Non",
+    "next_game": "Prochaine partie? 🕓",
+    "mock": "Simuler 🚀",
+    "submit_score": "Soumetre un score 📝",
+    "back_to_menu": "Revenir au menu principal"
+  },
+  "emails": {
+    "added_to_roster_text": "Bonjour {{name}}! Quelqu'un vous a ajouté à l'alignement de l'équipe {{teamName}} sur Sportfolios. Cliquez sur le bouton suivant pour consulter l'alignement complet.",
+    "added_to_roster_button": "Voir l'alignement",
+    "added_to_roster_subject": "Vous avez été ajouté à un alignement",
+    "unsubscribe_footer": "Modifier mes préférences de notifications",
+    "score_submission_request_text": "Bonjour {{name}}! Une de vos partie de l'événement {{eventName}} vient de se terminer. Cliquez sur le lien afin de soumettre votre score sur Sportfolios",
+    "score_submission_request_button": "Soumettre le score",
+    "score_submission_request_subject": "Rappel de soumission de score"
+  },
+  "and": "et",
+  "your_team": "Votre équipe",
+  "January": "Janvier",
+  "February": "Février",
+  "March": "Mars",
+  "April": "Avril",
+  "May": "Mai",
+  "June": "Juin",
+  "July": "Juillet",
+  "August": "Août",
+  "September": "Septembre",
+  "October": "Octobre",
+  "November": "Novembre",
+  "December": "Décembre"
 }
