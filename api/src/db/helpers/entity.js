@@ -943,7 +943,6 @@ async function getOrganizationMembers(organizationId) {
 
 async function getOptions(eventId) {
   const realId = await getRealId(eventId);
-
   const res = await knex('event_payment_options')
     .select(
       'event_payment_options.name',
@@ -968,20 +967,24 @@ async function getOptions(eventId) {
   return Promise.all(
     res.map(async r => {
       let taxRates = [];
-      let ownerId = '';
+      let owner = {};
       if (r.team_stripe_price_id) {
         taxRates = await getTaxRates(r.team_stripe_price_id);
-        ownerId = await getOwnerStripePrice(r.team_stripe_price_id);
-      } else {
+        const ownerId = await getOwnerStripePrice(
+          r.team_stripe_price_id,
+        );
+        owner = await getEntity(ownerId);
+      } else if (r.individual_stripe_price_id) {
         taxRates = await getTaxRates(r.individual_stripe_price_id);
-        ownerId = await getOwnerStripePrice(
+        const ownerId = await getOwnerStripePrice(
           r.individual_stripe_price_id,
         );
+        owner = await getEntity(ownerId);
       }
 
       return {
         ...r,
-        owner: await getEntity(ownerId),
+        owner,
         taxRates,
         startTime: new Date(r.start_time).getTime(),
         endTime: new Date(r.end_time).getTime(),
