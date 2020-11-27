@@ -44,7 +44,10 @@
   "menu": {
     "welcome": "Bienvenue sur le chatbot Sportfolios!",
     "help": "Voici les différentes actions que vous pouvez effectuer:\n• Dites \"score\" pour soumettre un score\n• Dites \"partie\" pour connaître l'heure de votre prochaine partie\n• À tout moment dites \"recommencer\" pour revenir à ce menu.",
-    "games_awaiting_score_count": "Vous avez {{count}} parties en attente de score"
+    "%s games_awaiting_score_count": {
+      "one": "Vous avez %s partie en attente de score",
+      "other": "Vous avez %s parties en attente de score"
+    }
   },
   "i_dont_understand": "Désolé, je n'ai pas compris votre message. Si vous voulez revenir au menu principal dites \"recommencer\" ou \"stop\"",
   "quick_replies": {
