@@ -961,6 +961,7 @@ async function addPlayerToRoster(body, userId) {
         teamName,
         name,
       };
+
       sendNotification(notif, emailInfos);
     });
   }

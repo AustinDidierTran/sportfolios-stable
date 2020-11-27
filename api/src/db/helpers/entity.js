@@ -793,6 +793,7 @@ async function generateReport(reportId) {
     [REPORT_TYPE_ENUM.SALES]: generateSalesReport,
   };
   const getReport = ReportMap[report.type];
+
   const res = await getReport(report);
   return res;
 }
@@ -801,28 +802,13 @@ async function generateMembersReport(report) {
   const { date } = report.metadata;
   const members = await knex('memberships')
     .select('*')
-    .where({ organization_id: report.entity_id });
   const active = members.filter(m => {
     return (
-      moment(m.created_at)
-        .set('hour', 0)
-        .set('minute', 0)
-        .set('second', 0) <
-        moment(date)
-          .set('hour', 0)
-          .set('minute', 0)
-          .set('second', 0)
-          .add(1, 'day') &&
-      moment(m.expiration_date)
-        .set('hour', 0)
-        .set('minute', 0)
-        .set('second', 0) >
-        moment(date)
-          .set('hour', 0)
-          .set('minute', 0)
-          .set('second', 0)
+      moment(m.created_at).isSameOrBefore(moment(date), 'day') &&
+      moment(m.expiration_date).isSameOrAfter(moment(date), 'day')
     );
   });
+
   const res = await Promise.all(
     active.map(async a => {
       const person = await getPersonInfos(a.person_id);
@@ -833,21 +819,21 @@ async function generateMembersReport(report) {
       }
       const address = person.address
         ? {
-            city: person.address.city,
-            state: person.address.state,
-            zip: person.address.zip,
-          }
+          city: person.address.city,
+          state: person.address.state,
+          zip: person.address.zip,
+        }
         : {};
-      return {
-        ...a,
-        ...person,
-        ...address,
-        price,
-        email,
-      };
-    }),
-  );
-  return res;
+        return {
+          ...a,
+          ...person,
+          ...address,
+          price,
+          email,
+        };
+      }),
+      );
+      return res;
 }
 
 async function generateSalesReport(report) {
