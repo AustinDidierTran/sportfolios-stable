@@ -663,7 +663,11 @@ const setChatbotInfos = async (messenger_id, infos) => {
 const addChatbotId = async messenger_id => {
   const name = await getNameFromPSID(messenger_id);
   const [res] = await knex('messenger_user_chatbot_state')
-    .insert({ messenger_id, chatbot_infos: { userName: name } })
+    .insert({
+      messenger_id,
+      chatbot_infos: { userName: name },
+      state: BASIC_CHATBOT_STATES.HOME,
+    })
     .returning('*');
   return {
     messengerId: res.messenger_id,
