@@ -38,7 +38,12 @@ class NextGameInfos extends State {
       this.context.messengerId,
     );
     if (!game || game.length === 0) {
-      return [Response.genText(i18n.__('game_infos.no_game'))];
+      return [
+        Response.genQuickReply(
+          i18n.__('game_infos.no_game'),
+          MESSENGER_QUICK_REPLIES.ENDPOINT_ACTIONS,
+        ),
+      ];
     }
     const date = new Date(
       new Date(game.timeslot).valueOf() +
