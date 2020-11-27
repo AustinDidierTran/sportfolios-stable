@@ -52,15 +52,15 @@ class NextGameInfos extends State {
       event: game.event_name,
       field: game.field,
       timeslot:
-        date.getDate +
+        date.getDate() +
         ' ' +
         i18n.__(MONTH_NAMES[date.getMonth()]) +
         ' ' +
         date.getFullYear() +
         ' - ' +
-        date.getHours +
+        date.getHours() +
         ':' +
-        date.getMinutes,
+        date.getMinutes(),
       opponentTeams: game.opponent_teams_names.join(
         ' ' + i18n.__('and') + ' ',
       ),
