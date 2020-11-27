@@ -666,7 +666,7 @@ const addChatbotId = async messenger_id => {
     .insert({
       messenger_id,
       chatbot_infos: { userName: name },
-      state: BASIC_CHATBOT_STATES.HOME,
+      state: BASIC_CHATBOT_STATES.NOT_LINKED,
     })
     .returning('*');
   return {
