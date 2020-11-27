@@ -189,6 +189,7 @@ const ROUTES_ENUM = {
   entityNotFound: '/entityNotFound',
   eventRegistration: '/eventRegistration/:id',
   home: '/',
+  importMembers: '/importMembers',
   login: '/login',
   membersList: '/membersList',
   menu: '/menu',

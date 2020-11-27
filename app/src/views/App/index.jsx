@@ -62,6 +62,7 @@ const Stripe = loadable(() =>
 const UserSettings = loadable(() => import('../UserSettings'));
 const Cart = loadable(() => import('../Cart'));
 const Checkout = loadable(() => import('../Checkout'));
+const ImportMembers = loadable(() => import('../ImportMembers'));
 const Sales = loadable(() => import('../Sales'));
 const ShopDetails = loadable(() => import('../ShopDetails'));
 const TransferPerson = loadable(() => import('../TransferPerson'));
@@ -223,6 +224,11 @@ export default function App() {
                   exact
                   path={ROUTES.checkout}
                   component={Checkout}
+                />
+                <Route
+                  exact
+                  path={ROUTES.importMembers}
+                  component={ImportMembers}
                 />
                 <Route
                   exact

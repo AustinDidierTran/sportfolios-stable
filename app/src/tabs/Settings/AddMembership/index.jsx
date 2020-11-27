@@ -101,6 +101,15 @@ export default function AddMembership() {
       >
         {t('member_list')}
       </Button>
+      <Button
+        variant="contained"
+        style={{ margin: '8px' }}
+        onClick={() => {
+          goTo(ROUTES.importMembers), null, { id };
+        }}
+      >
+        {t('import_members')}
+      </Button>
       <FormDialog
         type={FORM_DIALOG_TYPE_ENUM.ADD_MEMBERSHIP}
         items={{
