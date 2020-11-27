@@ -2266,7 +2266,7 @@ async function getUserNextGame(user_id) {
 
   return res;
 }
-getUserNextGame('03819b6b-b74e-4cb8-9a1a-299a9ee3b2fc');
+
 async function addField(field, eventId) {
   const realId = await getRealId(eventId);
   const [res] = await knex('event_fields')

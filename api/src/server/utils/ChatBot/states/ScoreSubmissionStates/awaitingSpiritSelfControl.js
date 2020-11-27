@@ -15,7 +15,6 @@ class AwaitingSpiritSelfControl extends State {
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_COMMUNICATION;
       this.context.chatbotInfos.opponentTeams[0].spirit.selfControl = score;
-      //TODO SAVE SCORE
     } else if (
       this.isStop(webhookEvent) ||
       this.isStartOver(webhookEvent)
