@@ -1,25 +1,21 @@
 import React, { useState, useEffect } from 'react';
-
 import styles from './Cart.module.css';
 import api from '../../actions/api';
-
 import { goTo, ROUTES } from '../../actions/goTo';
-import { LIST_ITEM_ENUM } from '../../../../common/enums';
-import { useTranslation } from 'react-i18next';
 import {
-  formatPrice,
-  formatPageTitle,
-} from '../../utils/stringFormats';
-
+  CARD_TYPE_ENUM,
+  LIST_ITEM_ENUM,
+} from '../../../../common/enums';
+import { useTranslation } from 'react-i18next';
+import { formatPageTitle } from '../../utils/stringFormats';
 import {
   Button,
   MessageAndButtons,
   List,
   ContainerBottomFixed,
   LoadingSpinner,
+  Card,
 } from '../../components/Custom';
-import DefaultCard from '../../components/MUI/Card';
-import { Typography } from '../../components/MUI';
 import { useContext } from 'react';
 import { Store, ACTION_ENUM } from '../../Store';
 
@@ -38,10 +34,6 @@ export default function Cart() {
   useEffect(() => {
     document.title = formatPageTitle(t('cart'));
   }, []);
-
-  const onCheckout = () => {
-    goTo(ROUTES.checkout);
-  };
 
   const fetchItems = async () => {
     const data = await getCartItems();
@@ -69,7 +61,7 @@ export default function Cart() {
     });
     const { items: itemsProp, total: totalProp } = data;
     setItems(itemsProp);
-    setTotal(totalProp);
+    setTotal(totalProp.total);
     dispatch({
       type: ACTION_ENUM.UPDATE_CART,
       payload: data,
@@ -98,6 +90,7 @@ export default function Cart() {
       />
     );
   }
+
   return (
     <>
       <div className={styles.cart}>
@@ -109,20 +102,23 @@ export default function Cart() {
             key: index,
           }))}
         />
-        <DefaultCard className={styles.defaultCard}>
-          <Typography variant="h5" className={styles.typo}>
-            {`Total: ${formatPrice(total)}`}
-          </Typography>
-        </DefaultCard>
+        <Card
+          items={{
+            items,
+            total,
+          }}
+          type={CARD_TYPE_ENUM.CART_SUMMARY}
+        />
       </div>
-
       <ContainerBottomFixed>
         <div className={styles.buttonDiv}>
           <Button
             size="small"
             variant="contained"
             endIcon="Check"
-            onClick={onCheckout}
+            onClick={() => {
+              goTo(ROUTES.checkout);
+            }}
             style={{ margin: 8 }}
             className={styles.button}
           >

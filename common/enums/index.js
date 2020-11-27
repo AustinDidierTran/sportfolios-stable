@@ -70,8 +70,10 @@ const MEMBERSHIP_TYPE_ENUM = {
   JUNIOR: 4,
 };
 
+const PLATEFORM_FEES = 0.05;
 const CARD_TYPE_ENUM = {
   CART: 'cart',
+  CART_SUMMARY: 'cart summary',
   DELETE_ENTITY: 'delete entity',
   EDITABLE_GAME: 'editable game',
   EVENT_SETTINGS: 'event settings',
@@ -106,12 +108,12 @@ const TABS_ENUM = {
   SETTINGS: 'settings',
   SHOP: 'shop',
 };
-
 const FORM_DIALOG_TYPE_ENUM = {
   SUBMIT_SCORE: 'score',
   SUBMIT_SCORE_AND_SPIRIT: 'score and spirit',
   ENTER_EMAIL: 'email',
-  ADD_EDIT_EVENT_PAYMENT_OPTION: 'add edit event payment option',
+  ADD_EVENT_PAYMENT_OPTION: 'add event payment option',
+  EDIT_EVENT_PAYMENT_OPTION: 'edit event payment option',
   ADD_MEMBERSHIP: 'add membership',
   BECOME_MEMBER: 'become member',
   ADD_MEMBER: 'add member',
@@ -449,6 +451,7 @@ module.exports = {
   STATUS_ENUM,
   STRIPE_ERROR_ENUM,
   STRIPE_STATUS_ENUM,
+  PLATEFORM_FEES,
   TABS_ENUM,
   TAG_TYPE_ENUM,
   VIEW_ENUM,

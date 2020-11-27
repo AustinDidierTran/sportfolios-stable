@@ -8,6 +8,7 @@ const {
 const {
   STRIPE_STATUS_ENUM,
   GLOBAL_ENUM,
+  PLATEFORM_FEES,
 } = require('../../../../../common/enums');
 const { clearCart } = require('../shop');
 const {
@@ -37,15 +38,21 @@ const formatMetadata = metadata =>
   }, {});
 
 const createInvoiceItem = async (body, userId) => {
-  const { price, metadata, paymentMethodId, quantity } = body;
+  const {
+    price,
+    metadata,
+    paymentMethodId,
+    quantity,
+    tax_rates,
+  } = body;
   const customerId = await getCustomerId(paymentMethodId);
   const params = {
     price,
     customer: customerId,
     metadata: formatMetadata(metadata),
     quantity,
+    tax_rates,
   };
-  //FETCH TAXRATES
   try {
     const invoiceItem = await stripe.invoiceItems.create(params);
     await knex('stripe_invoice_item').insert({
@@ -159,6 +166,10 @@ const getExternalAccount = async stripePriceId => {
   return externalAccount;
 };
 
+const getTransferedAmount = amount => {
+  return Math.ceil(amount - amount * PLATEFORM_FEES);
+};
+
 const createTransfers = async invoice => {
   try {
     const transfers = await Promise.all(
@@ -175,8 +186,7 @@ const createTransfers = async invoice => {
           invoiceItem.stripe_price_id,
         );
 
-        const stripeFees = Math.ceil(amount * 0.029 + 30);
-        const transferedAmount = amount - stripeFees;
+        const transferedAmount = getTransferedAmount(amount);
 
         const transfer = await createTransfer(
           {
@@ -271,6 +281,14 @@ const sendReceiptEmail = async (body, userId) => {
   return sendReceiptEmailHelper({ email, receipt, language });
 };
 
+const getTaxRatesFromStripePrice = async stripePriceId => {
+  const taxRatesId = await knex('tax_rates_stripe_price')
+    .select('tax_rate_id')
+    .where({ stripe_price_id: stripePriceId });
+
+  return taxRatesId.map(t => t.tax_rate_id);
+};
+
 const getMetadata = async (stripePriceId, cartItemId) => {
   const [stripePrice] = await knex('stripe_price')
     .select('*')
@@ -311,12 +329,16 @@ const checkout = async (body, userId) => {
         const stripePriceId = price.stripe_price_id;
         const quantity = price.quantity;
         const metadata = await getMetadata(stripePriceId, price.id);
+        const tax_rates = await getTaxRatesFromStripePrice(
+          stripePriceId,
+        );
         const invoiceItem = await createInvoiceItem(
           {
             price: stripePriceId,
             metadata,
             paymentMethodId,
             quantity,
+            tax_rates,
           },
           userId,
         );

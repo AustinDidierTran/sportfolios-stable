@@ -21,6 +21,7 @@ const {
   getOrCreateCustomer,
   getPaymentMethods: getPaymentMethodsHelper,
   getReceipt: getReceiptHelper,
+  getTaxes: getTaxesHelper,
   getBankAccounts: getBankAccountsHelper,
   hasStripeAccount: hasStripeAccountHelper,
   hasStripeBankAccount: hasStripeBankAccountHelper,
@@ -138,6 +139,9 @@ const deleteItem = async body => {
 const getReceipt = async (query, userId) => {
   return getReceiptHelper(query, userId);
 };
+const getTaxes = async () => {
+  return getTaxesHelper();
+};
 
 const checkout = async (body, userId) => {
   return checkoutHelper(body, userId);
@@ -190,6 +194,7 @@ module.exports = {
   getCustomerId,
   getPaymentMethods,
   getReceipt,
+  getTaxes,
   getBankAccounts,
   hasStripeAccount,
   hasStripeBankAccount,

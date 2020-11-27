@@ -259,6 +259,13 @@ router.get(`${BASE_URL}/getReceipt`, async ctx => {
     data,
   };
 });
+router.get(`${BASE_URL}/getTaxes`, async ctx => {
+  const data = await queries.getTaxes();
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
 
 router.post(`${BASE_URL}/checkout`, async ctx => {
   const data = await queries.checkout(

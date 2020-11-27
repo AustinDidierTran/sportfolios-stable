@@ -796,6 +796,7 @@ async function addOption(body, userId) {
     eventId,
     name,
     ownerId,
+    taxRatesId,
     teamPrice,
     playerPrice,
     endTime,
@@ -810,6 +811,7 @@ async function addOption(body, userId) {
     eventId,
     name,
     ownerId,
+    taxRatesId,
     teamPrice,
     playerPrice,
     endTime,
@@ -903,7 +905,15 @@ const unregisterTeams = async (body, userId) => {
 };
 
 async function addMembership(body, userId) {
-  const { entityId, membership, length, date, type, price } = body;
+  const {
+    entityId,
+    membership,
+    length,
+    date,
+    type,
+    price,
+    taxRatesId,
+  } = body;
   const res = await addMembershipHelper(
     entityId,
     membership,
@@ -911,6 +921,7 @@ async function addMembership(body, userId) {
     date,
     type,
     price,
+    taxRatesId,
     userId,
   );
   return res;

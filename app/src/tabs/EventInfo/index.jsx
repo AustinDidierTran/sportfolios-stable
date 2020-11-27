@@ -67,25 +67,25 @@ export default function TabEventInfo() {
 
   const isEarly = useMemo(() => {
     return options.every(
-      option => moment(option.start_time) > moment(),
+      option => moment(option.startTime) > moment(),
     );
   }, [options]);
 
   const isLate = useMemo(() => {
     return options.every(
-      option => moment(option.end_time).add(24, 'hours') < moment(),
+      option => moment(option.endTime).add(24, 'hours') < moment(),
     );
   }, [options]);
 
   const RegistrationStart = useMemo(() => {
     const startsDate = options.map(option =>
-      moment(option.start_time),
+      moment(option.startTime),
     );
     return formatDate(moment.min(startsDate));
   }, [options]);
 
   const registrationEnd = useMemo(() => {
-    const endsDate = options.map(option => moment(option.end_time));
+    const endsDate = options.map(option => moment(option.endTime));
     return formatDate(moment.max(endsDate));
   }, [options]);
 

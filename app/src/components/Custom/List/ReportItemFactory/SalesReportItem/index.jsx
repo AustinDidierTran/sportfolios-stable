@@ -57,21 +57,49 @@ export default function ReportItem(props) {
       formatRoute('/api/entity/generateReport', null, { reportId }),
     );
     if (res.status === STATUS_ENUM.SUCCESS_STRING) {
-      const formattedData = res.data.map(d => ({
-        type: t(getProductName(d.metadata.type)),
-        detail: getProductDetail(d.metadata),
-        name: d.person.name,
-        surname: d.person.surname,
-        email: d.email,
-        price: formatPrice(d.unit_amount),
-        quantity: d.quantity,
-        total: formatPrice(d.amount),
-        purchasedOn: formatDate(
-          moment(d.created_at),
-          'YYYY-MM-DD HH:mm',
-        ),
-      }));
-      setData(formattedData);
+      let sumSubTotal = 0;
+      let sumTotalTax = 0;
+      let sumTotal = 0;
+      let sumPlateformFees = 0;
+      let sumTotalNet = 0;
+      let sumQuantity = 0;
+      const formattedData = res.data.map(d => {
+        sumSubTotal = sumSubTotal + d.subtotal;
+        sumTotalTax = sumTotalTax + d.totalTax;
+        sumTotal = sumTotal + d.total;
+        sumPlateformFees = sumPlateformFees + d.plateformFees;
+        sumTotalNet = sumTotalNet + d.totalNet;
+        sumQuantity = sumQuantity + d.quantity;
+        return {
+          type: t(getProductName(d.metadata.type)),
+          detail: getProductDetail(d.metadata),
+          name: d.person.name,
+          surname: d.person.surname,
+          email: d.email,
+          purchasedOn: formatDate(
+            moment(d.created_at),
+            'YYYY-MM-DD HH:mm',
+          ),
+          price: formatPrice(d.unit_amount),
+          quantity: d.quantity,
+          subtotal: formatPrice(d.subtotal),
+          totalTax: formatPrice(d.totalTax),
+          total: formatPrice(d.total),
+          plateformFees: formatPrice(d.plateformFees),
+          totalNet: formatPrice(d.totalNet),
+        };
+      });
+      const totalRow = {
+        price: `${t('totals')}:`,
+        quantity: sumQuantity,
+        subtotal: formatPrice(sumSubTotal),
+        totalTax: formatPrice(sumTotalTax),
+        total: formatPrice(sumTotal),
+        plateformFees: formatPrice(sumPlateformFees),
+        totalNet: formatPrice(sumTotalNet),
+      };
+      const emptyRow = {};
+      setData([totalRow, emptyRow, ...formattedData]);
       setOpen(true);
     } else {
       dispatch({
@@ -91,10 +119,14 @@ export default function ReportItem(props) {
     { label: t('buyers_name'), key: 'name' },
     { label: t('surname'), key: 'surname' },
     { label: t('email'), key: 'email' },
+    { label: t('purchased_on'), key: 'purchasedOn' },
     { label: t('price'), key: 'price' },
     { label: t('quantity'), key: 'quantity' },
+    { label: t('subtotal'), key: 'subtotal' },
+    { label: t('tax_total'), key: 'totalTax' },
     { label: t('total'), key: 'total' },
-    { label: t('purchased_on'), key: 'purchasedOn' },
+    { label: t('plateform_fees'), key: 'plateformFees' },
+    { label: t('total_net'), key: 'totalNet' },
   ];
 
   const fileName = `${metadata.organizationName} ${t(

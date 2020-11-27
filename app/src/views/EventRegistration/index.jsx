@@ -63,8 +63,8 @@ export default function EventRegistration() {
     const options = data
       .filter(
         d =>
-          moment(d.start_time) <= moment() &&
-          moment(d.end_time) >= moment(),
+          moment(d.startTime) <= moment() &&
+          moment(d.endTime) >= moment(),
       )
       .reduce(
         (prev, d) => [

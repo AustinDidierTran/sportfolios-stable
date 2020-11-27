@@ -28,7 +28,7 @@ export default function Checkout() {
   return (
     <IgContainer className={styles.items}>
       <Paper className={styles.paper}>
-        <ChoosePaymentMethod response={response} />
+        <ChoosePaymentMethod response={response.total} />
       </Paper>
     </IgContainer>
   );

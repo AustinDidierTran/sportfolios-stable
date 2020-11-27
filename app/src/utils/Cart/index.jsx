@@ -1,5 +1,7 @@
-import { GLOBAL_ENUM } from '../../../../common/enums';
-import { getMembershipName } from '../../../../common/functions';
+import {
+  GLOBAL_ENUM,
+  MEMBERSHIP_TYPE_ENUM,
+} from '../../../../common/enums';
 
 const groupBy = (list, keyGetter) => {
   const map = new Map();
@@ -44,6 +46,19 @@ const getProductName = type => {
   return '';
 };
 
+const getMembershipName = type => {
+  if (type === MEMBERSHIP_TYPE_ENUM.RECREATIONAL) {
+    return 'Recreational member';
+  } else if (type === MEMBERSHIP_TYPE_ENUM.COMPETITIVE) {
+    return 'Competitive member';
+  } else if (type === MEMBERSHIP_TYPE_ENUM.ELITE) {
+    return 'Elite member';
+  } else if (type === MEMBERSHIP_TYPE_ENUM.JUNIOR) {
+    return 'Junior member';
+  } else {
+    return '';
+  }
+};
 const getProductDetail = metadata => {
   switch (metadata.type) {
     case GLOBAL_ENUM.MEMBERSHIP:

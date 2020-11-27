@@ -26,8 +26,11 @@ export default function AddMembership(props) {
 
   const [open, setOpen] = useState(false);
   const [fixedDate, setFixedDate] = useState(false);
+  const [taxes, setTaxes] = useState([]);
+  const [allTaxes, setAllTaxes] = useState([]);
 
   useEffect(() => {
+    getTaxes();
     setOpen(openProps);
     formik.setFieldValue(
       'membership',
@@ -42,6 +45,20 @@ export default function AddMembership(props) {
     formik.resetForm();
     update();
     onClose();
+  };
+
+  const handleChange = value => {
+    setTaxes(value);
+  };
+
+  const getTaxes = async () => {
+    const { data } = await api(formatRoute('/api/stripe/getTaxes'));
+    const res = data.map(d => ({
+      id: d.id,
+      percentage: d.percentage,
+      display: `${d.display_name} ${d.percentage} %`,
+    }));
+    setAllTaxes(res);
   };
 
   const hasBankAccount = async () => {
@@ -93,6 +110,10 @@ export default function AddMembership(props) {
     onSubmit: async values => {
       const { membership, date, type, length, price } = values;
       const correctPrice = Math.floor(price * 100);
+      const taxRatesId = allTaxes
+        .filter(t => taxes.includes(t.display))
+        .map(t => t.id);
+
       const res = await api(`/api/entity/membership`, {
         method: 'POST',
         body: JSON.stringify({
@@ -102,6 +123,7 @@ export default function AddMembership(props) {
           date,
           type,
           price: correctPrice,
+          taxRatesId,
         }),
       });
 
@@ -200,6 +222,14 @@ export default function AddMembership(props) {
       type: 'number',
       namespace: 'price',
       label: t('price'),
+    },
+    {
+      componentType: COMPONENT_TYPE_ENUM.MULTISELECT,
+      namespace: 'taxes',
+      label: t('taxes'),
+      options: allTaxes.map(a => a.display),
+      values: taxes,
+      onChange: handleChange,
     },
   ];
 

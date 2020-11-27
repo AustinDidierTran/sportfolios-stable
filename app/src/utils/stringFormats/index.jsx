@@ -36,7 +36,12 @@ export const formatDate = (moment, format = 'LL') => {
   if (!moment.isValid()) {
     return null;
   }
-  moment.locale(localStorage.getItem('i18nextLng'));
+  const language = localStorage.getItem('i18nextLng');
+  moment.locale(language);
+  if (format === 'MMM D' && language === 'fr') {
+    return moment.format('D MMM');
+  }
+
   return moment.format(format);
 };
 
@@ -170,7 +175,12 @@ export const getExpirationDate = (length, date) => {
   }
 };
 
-export const formatPrice = price => `${price / 100}$`;
+export const formatPrice = price => {
+  if (!price) {
+    return '0.00$';
+  }
+  return `${(price / 100).toFixed(2)}$`;
+};
 
 export const validateDate = dateProps => {
   //date format: 'MM/DD'

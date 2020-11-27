@@ -12,15 +12,13 @@ const {
   MEMBERSHIP_LENGTH_TYPE_ENUM,
   INVOICE_STATUS_ENUM,
   REPORT_TYPE_ENUM,
+  PLATEFORM_FEES,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
 const validator = require('validator');
 const { sendTransferAddNewPlayer } = require('../helpers/index');
-const {
-  formatPrice,
-} = require('../../../../common/utils/stringFormat');
 
 const addEntity = async (body, userId) => {
   const { name, creator, surname, type } = body;
@@ -836,6 +834,23 @@ async function generateMembersReport(report) {
       return res;
 }
 
+const getTaxRates = async stripe_price_id => {
+  const taxRates = await knex('tax_rates')
+    .select('*')
+    .leftJoin(
+      'tax_rates_stripe_price',
+      'tax_rates_stripe_price.tax_rate_id',
+      '=',
+      'tax_rates.id',
+    )
+    .where(
+      'tax_rates_stripe_price.stripe_price_id',
+      '=',
+      stripe_price_id,
+    );
+  return taxRates;
+};
+
 async function generateSalesReport(report) {
   const { date } = report.metadata;
   const sales = await knex('store_items_paid')
@@ -857,11 +872,28 @@ async function generateSalesReport(report) {
     active.map(async a => {
       const person = await getPrimaryPerson(a.buyer_user_id);
       const email = await getEmailUser(a.buyer_user_id);
+      const taxes = await getTaxRates(a.stripe_price_id);
+      const subtotal = a.amount;
+      const totalTax = taxes.reduce((prev, curr) => {
+        return prev + (curr.percentage / 100) * a.amount;
+      }, 0);
+      const total = subtotal + totalTax;
+      const plateformFees = total * PLATEFORM_FEES;
+      const totalNet = total - plateformFees;
       if (a.metadata.type === GLOBAL_ENUM.EVENT) {
         const event = await getEntity(a.metadata.id);
         a.metadata.event = event;
       }
-      return { ...a, person, email };
+      return {
+        ...a,
+        person,
+        email,
+        total,
+        subtotal,
+        totalTax,
+        plateformFees,
+        totalNet,
+      };
     }),
   );
   return res;
@@ -897,12 +929,13 @@ async function getOrganizationMembers(organizationId) {
 
 async function getOptions(eventId) {
   const realId = await getRealId(eventId);
-
   const res = await knex('event_payment_options')
     .select(
       'event_payment_options.name',
       'team_price',
+      'team_stripe_price_id',
       'individual_price',
+      'individual_stripe_price_id',
       'start_time',
       'end_time',
       'id',
@@ -917,11 +950,33 @@ async function getOptions(eventId) {
     .andWhere({ event_id: realId })
     .orderBy('event_payment_options.created_at');
 
-  return res.map(r => ({
-    ...r,
-    start_time: new Date(r.start_time).getTime(),
-    end_time: new Date(r.end_time).getTime(),
-  }));
+  return Promise.all(
+    res.map(async r => {
+      let taxRates = [];
+      let owner = {};
+      if (r.team_stripe_price_id) {
+        taxRates = await getTaxRates(r.team_stripe_price_id);
+        const ownerId = await getOwnerStripePrice(
+          r.team_stripe_price_id,
+        );
+        owner = await getEntity(ownerId);
+      } else if (r.individual_stripe_price_id) {
+        taxRates = await getTaxRates(r.individual_stripe_price_id);
+        const ownerId = await getOwnerStripePrice(
+          r.individual_stripe_price_id,
+        );
+        owner = await getEntity(ownerId);
+      }
+
+      return {
+        ...r,
+        owner,
+        taxRates,
+        startTime: new Date(r.start_time).getTime(),
+        endTime: new Date(r.end_time).getTime(),
+      };
+    }),
+  );
 }
 
 async function getMemberships(entityId) {
@@ -930,10 +985,16 @@ async function getMemberships(entityId) {
     .select('*')
     .where({ entity_id: realId });
 
-  return memberships.map(m => ({
-    ...m,
-    price: formatPrice(m.price),
-  }));
+  return Promise.all(
+    memberships.map(async m => {
+      const taxRates = await getTaxRates(m.stripe_price_id);
+      return {
+        ...m,
+        taxRates,
+        price: m.price,
+      };
+    }),
+  );
 }
 
 async function hasMemberships(organizationId) {
@@ -1702,12 +1763,12 @@ async function updateEntityPhoto(entityId, photo_url) {
 }
 
 async function updateOption(body) {
-  const { id, start_time, end_time } = body;
+  const { id, startTime, endTime } = body;
 
   return knex('event_payment_options')
     .update({
-      start_time: new Date(start_time),
-      end_time: new Date(end_time),
+      start_time: new Date(startTime),
+      end_time: new Date(endTime),
     })
     .where({ id });
 }
@@ -2175,6 +2236,7 @@ async function addOption(
   eventId,
   name,
   ownerId,
+  taxRatesId,
   teamPrice,
   playerPrice,
   endTime,
@@ -2211,6 +2273,7 @@ async function addOption(
       entityId: realId,
       photoUrl: entity.photoUrl,
       ownerId,
+      taxRatesId,
     });
   }
 
@@ -2238,6 +2301,7 @@ async function addOption(
       entityId: realId,
       photoUrl: entity.photoUrl,
       ownerId,
+      taxRatesId,
     });
   }
 
@@ -2267,6 +2331,7 @@ async function addMembership(
   date,
   type,
   price,
+  taxRatesId,
   userId,
 ) {
   const realId = await getRealId(entityId);
@@ -2290,6 +2355,7 @@ async function addMembership(
     entityId,
     photoUrl: entity.photoUrl,
     ownerId: entityId,
+    taxRatesId,
   });
   if (type === MEMBERSHIP_LENGTH_TYPE_ENUM.FIXED) {
     const [res] = await knex('entity_memberships')
@@ -2997,4 +3063,5 @@ module.exports = {
   getEmailPerson,
   getGameTeams,
   isPlayerInRoster,
+  getRealId,
 };
