@@ -19,16 +19,16 @@ class gamesAwaitingScoreList extends State {
     let nextState;
     const requestedGame = this.getPayload(webhookEvent);
     if (requestedGame) {
-      const { gameId, playerId } = JSON.parse(requestedGame);
+      const { gameId, playerId, myRosterId } = JSON.parse(
+        requestedGame,
+      );
       const teams = await getGameTeams(gameId, playerId);
       this.context.chatbotInfos.opponentTeams = [];
       this.context.chatbotInfos.gameId = gameId;
       this.context.chatbotInfos.playerId = playerId;
-      let myTeamFound = false;
+      this.context.chatbotInfos.myRosterId = myRosterId;
       teams.forEach(team => {
-        if (!myTeamFound && team.player_id) {
-          myTeamFound = true;
-          this.context.chatbotInfos.myRosterId = team.roster_id;
+        if (team.roster_id === myRosterId) {
           this.context.chatbotInfos.myTeamName = team.name;
         } else {
           this.context.chatbotInfos.opponentTeams.push({
@@ -77,6 +77,7 @@ class gamesAwaitingScoreList extends State {
         payload: JSON.stringify({
           gameId: game.game_id,
           playerId: game.player_id,
+          myRosterId: game.roster_id,
         }),
         title: dateString + ' VS ' + opponentTeamsString,
       };
