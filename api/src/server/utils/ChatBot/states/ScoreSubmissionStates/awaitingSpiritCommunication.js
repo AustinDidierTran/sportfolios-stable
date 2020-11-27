@@ -8,7 +8,7 @@ const i18n = require('../../../../../i18n.config');
 const Response = require('../../response');
 
 class AwaitingSpiritCommunication extends State {
-  handleEvent(webhookEvent) {
+  async handleEvent(webhookEvent) {
     let nextState;
     if (this.isValidSpirit(webhookEvent)) {
       const score = this.getNumber(webhookEvent);
@@ -25,7 +25,7 @@ class AwaitingSpiritCommunication extends State {
       this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
-      this.context.changeState(nextState);
+      await this.context.changeState(nextState);
     }
   }
 

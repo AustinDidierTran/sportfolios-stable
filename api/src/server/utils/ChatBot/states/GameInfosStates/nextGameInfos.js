@@ -17,7 +17,7 @@ const {
 } = require('../../../../../db/helpers');
 const moment = require('moment');
 class NextGameInfos extends State {
-  handleEvent(webhookEvent) {
+  async handleEvent(webhookEvent) {
     let nextState;
     if (this.isStop(webhookEvent) || this.isStartOver(webhookEvent)) {
       nextState = BASIC_CHATBOT_STATES.HOME;
@@ -25,7 +25,7 @@ class NextGameInfos extends State {
       this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
-      this.context.changeState(nextState);
+      await this.context.changeState(nextState);
     }
   }
 

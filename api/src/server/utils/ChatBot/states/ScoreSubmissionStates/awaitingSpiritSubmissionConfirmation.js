@@ -16,7 +16,7 @@ class AwaitingSpiritSubmissionConfirmation extends State {
     let nextState;
     if (this.isYes(webhookEvent)) {
       const chatbotInfos = this.context.chatbotInfos;
-      //TODO SAVE Spirit
+      //Saving spirit
       try {
         const spirit = {
           submitted_by_roster: chatbotInfos.myRosterId,
@@ -68,7 +68,7 @@ class AwaitingSpiritSubmissionConfirmation extends State {
       this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
-      this.context.changeState(nextState);
+      await this.context.changeState(nextState);
     }
   }
 

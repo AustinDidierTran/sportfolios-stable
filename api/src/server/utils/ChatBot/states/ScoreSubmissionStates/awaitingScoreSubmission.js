@@ -7,7 +7,7 @@ const i18n = require('../../../../../i18n.config');
 const Response = require('../../response');
 
 class AwaitingScoreSubmission extends State {
-  handleEvent(webhookEvent) {
+  async handleEvent(webhookEvent) {
     let nextState;
     if (this.isScore(webhookEvent)) {
       const score = this.getScores(webhookEvent);
@@ -26,7 +26,7 @@ class AwaitingScoreSubmission extends State {
       this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
-      this.context.changeState(nextState);
+      await this.context.changeState(nextState);
     }
   }
 

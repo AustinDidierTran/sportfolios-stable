@@ -13,21 +13,19 @@ class Chatbot {
     this.stateType = stateType;
   }
 
-  changeState(stateType) {
+  async changeState(stateType) {
     this.setState(stateType);
     //We add a delay so these messages arrives after the ones sent before changing state
-    setTimeout(() => this.sendIntroMessages(), 1000);
+    await this.sendIntroMessages(1000);
   }
 
   async handleEvent(webhookEvent) {
     await this.state.handleEvent(webhookEvent);
   }
 
-  async sendIntroMessages() {
-    this.state.sendMessages(
-      this.messengerId,
-      await this.state.getIntroMessages(),
-    );
+  async sendIntroMessages(delay = 0) {
+    const messages = await this.sendIntroMessages();
+    this.state.sendMessages(this.messengerId, messages, delay);
   }
 }
 

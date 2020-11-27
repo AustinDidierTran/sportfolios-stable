@@ -144,16 +144,16 @@ class State {
     queries.logMessage({ messenger_id: messengerId, state, message });
   }
 
-  sendMessages(messengerId, messages) {
+  sendMessages(messengerId, messages, delay = 0) {
     if (Array.isArray(messages)) {
-      let delay = 0;
+      let i = 0;
       for (const message of messages) {
         //Sending with a delay so the messages arrives in the right order
         setTimeout(
           () => queries.sendMessage(messengerId, message),
-          delay * 2000,
+          i * 2000 + delay,
         );
-        delay++;
+        i++;
       }
     } else {
       queries.sendMessage(messengerId, messages);

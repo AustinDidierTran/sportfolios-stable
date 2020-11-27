@@ -23,7 +23,7 @@ class Home extends State {
     return payload === MESSENGER_PAYLOADS.MOCK || text === 'test';
   }
 
-  handleEvent(webhookEvent) {
+  async handleEvent(webhookEvent) {
     let nextState;
     const payload = this.getPayload(webhookEvent);
     const text = this.getText(webhookEvent);
@@ -43,7 +43,7 @@ class Home extends State {
       this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
-      this.context.changeState(nextState);
+      await this.context.changeState(nextState);
     }
   }
 
