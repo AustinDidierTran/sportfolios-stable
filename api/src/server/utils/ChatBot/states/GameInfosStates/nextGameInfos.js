@@ -40,7 +40,7 @@ class NextGameInfos extends State {
       this.context.messengerId,
     );
     console.log(timeZone);
-    return Response.genText(JSON.stringify([game]));
+    return Response.genText(JSON.stringify([game]).substring(0, 800));
   }
 }
 

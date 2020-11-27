@@ -2215,6 +2215,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
     .where({ user_id, role: ENTITIES_ROLE_ENUM.ADMIN })
     .whereNot('player_role', ROSTER_ROLE_ENUM.PLAYER)
     .whereNotExists(subquery)
+    .where('game_players_view.timeslot', '<', 'now()')
     .orderBy('game_players_view.timeslot', 'desc')
     .groupBy(
       'player_id',
