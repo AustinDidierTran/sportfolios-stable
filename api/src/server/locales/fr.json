@@ -1,4 +1,8 @@
 {
+  "game_infos": {
+    "next_game": "Voici les informations sur votre prochaine partie:\n→ Événement: {{event}}\n→ Terrain: {{field}}\n→ Heure: {{timeslot}}\n→ Adversaire: {{opponentTeams}}",
+    "no_game_awaiting_score": "Vous n'avez aucune partie à venir"
+  },
   "score_submission": {
     "choose_game": "Voici vos parties en attente de soumission de score",
     "no_game_awaiting_score": "Vous n'avez aucune partie jouée en attente de score",

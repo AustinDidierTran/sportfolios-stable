@@ -2,6 +2,7 @@ const State = require('../state');
 const {
   SCORE_SUBMISSION_CHATBOT_STATES,
   BASIC_CHATBOT_STATES,
+  MILLIS_TIME_ENUM,
 } = require('../../../../../../../common/enums');
 const {
   MESSENGER_QUICK_REPLIES,
@@ -39,8 +40,21 @@ class NextGameInfos extends State {
     const timeZone = await getTimezoneFromPSID(
       this.context.messengerId,
     );
-    console.log(timeZone);
-    return Response.genText(JSON.stringify([game]).substring(0, 800));
+    if (game.length === 0) {
+      return [Response.genText(i18n.__('game_infos.no_game'))];
+    }
+    const infos = {
+      event: game.event_name,
+      field: game.field,
+      timeslot: new Date(
+        new Date(game.timeslot).getTime +
+          timeZone * MILLIS_TIME_ENUM.ONE_HOUR,
+      ),
+      opponentTeams: game.opponent_teams_names.join(
+        ' ' + i18n.__('and') + ' ',
+      ),
+    };
+    return [Response.genText(i18n.__('game_infos.next_game', infos))];
   }
 }
 
