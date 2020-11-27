@@ -56,10 +56,12 @@ class Home extends State {
     return [
       Response.genText(i18n.__('menu.welcome')),
       Response.genText(i18n.__('menu.help')),
-      Response.genQuickReply(
-        i18n.__n('menu.games_awaiting_score_count', count),
-        MESSENGER_QUICK_REPLIES.MENU_ACTIONS,
-      ),
+      count != 0
+        ? Response.genQuickReply(
+            i18n.__n('menu.games_awaiting_score_count', count),
+            MESSENGER_QUICK_REPLIES.MENU_ACTIONS,
+          )
+        : null,
     ];
   }
 }
