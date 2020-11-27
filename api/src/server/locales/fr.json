@@ -20,7 +20,7 @@
       "other": "C'est envoyé!"
     },
     "failed": "Une erreur est survenue lors de l'enregistrement du score, voulez vous réessayer?",
-    "already_submitted": "Votre alignement a déjà soumis un pointage pour la même partie, vous ne pouvez donc pas en soumettre un nouveau."
+    "already_submitted": "Votre équipe a déjà soumis un pointage pour la même partie, vous ne pouvez donc pas en soumettre un nouveau."
   },
   "spirit_submission": {
     "request": "Désirez-vous soumettre le pointage spirit?",
@@ -31,7 +31,7 @@
     "communication": "Selon la même échelle, à combien évalueriez-vous la communication?",
     "confirmation": "Voici le sommaire de l'esprit sportif:\n\nConnaissance et application des réglements: {{rules}}\nFautes et contacts: {{fouls}}\nHonnêteté et équité: {{equity}}\nAttitude positive et maîtrise de soi: {{selfControl}}\nCommunication: {{communication}}\n\nTotal: {{total}}/20\n\nEst-ce que vous voulez confirmer l'envoi?",
     "confirmed": "Le tout a été envoyé avec succès. Merci et à la prochaine!",
-    "already_submitted": "Votre alignement a déjà soumis un pointage spirit pour la même équipe de la même partie, vous ne pouvez donc pas en soumettre un nouveau.",
+    "already_submitted": "Votre équipe a déjà soumis un pointage spirit pour la même équipe de la même partie, vous ne pouvez donc pas en soumettre un nouveau.",
     "failed": "Une erreur est survenue lors de l'enregistrement du spirit, voulez vous réessayer?"
   },
   "connection": {
@@ -44,7 +44,10 @@
   "menu": {
     "welcome": "Bienvenue sur le chatbot Sportfolios!",
     "help": "Voici les différentes actions que vous pouvez effectuer:\n• Dites \"score\" pour soumettre un score\n• Dites \"partie\" pour connaître l'heure de votre prochaine partie\n• À tout moment dites \"recommencer\" pour revenir à ce menu.",
-    "games_awaiting_score_count": "Vous avez {{count}} parties en attente de score"
+    "games_awaiting_score_count": {
+      "one": "Vous avez %s partie en attente de score",
+      "other": "Vous avez %s parties en attente de score"
+    }
   },
   "i_dont_understand": "Désolé, je n'ai pas compris votre message. Si vous voulez revenir au menu principal dites \"recommencer\" ou \"stop\"",
   "quick_replies": {
@@ -52,7 +55,7 @@
     "no": "Non",
     "next_game": "Prochaine partie? 🕓",
     "mock": "Simuler 🚀",
-    "submit_score": "Soumetre un score 📝",
+    "submit_score": "Soumettre un score 📝",
     "back_to_menu": "Revenir au menu"
   },
   "emails": {
