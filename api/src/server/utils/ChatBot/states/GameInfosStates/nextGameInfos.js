@@ -35,8 +35,10 @@ class NextGameInfos extends State {
     const userId = await getUserIdFromMessengerId(
       this.context.messengerId,
     );
-    const game = getUserNextGame(userId);
-    const timeZone = getTimezoneFromPSID(this.context.messengerId);
+    const game = await getUserNextGame(userId);
+    const timeZone = await getTimezoneFromPSID(
+      this.context.messengerId,
+    );
     console.log(timeZone);
     return Response.genText(JSON.stringify([game]));
   }
