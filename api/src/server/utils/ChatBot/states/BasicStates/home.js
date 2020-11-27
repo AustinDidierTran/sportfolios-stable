@@ -53,16 +53,19 @@ class Home extends State {
     );
     const count = (await getGamesWithAwaitingScore(userId)).length;
     i18n.setLocale('fr');
-    return [
+    const responses = [
       Response.genText(i18n.__('menu.welcome')),
       Response.genText(i18n.__('menu.help')),
-      count != 0
-        ? Response.genQuickReply(
-            i18n.__n('menu.games_awaiting_score_count', count),
-            MESSENGER_QUICK_REPLIES.MENU_ACTIONS,
-          )
-        : null,
     ];
+    if (count) {
+      responses.push(
+        Response.genQuickReply(
+          i18n.__n('menu.games_awaiting_score_count', count),
+          MESSENGER_QUICK_REPLIES.MENU_ACTIONS,
+        ),
+      );
+    }
+    return responses;
   }
 }
 
