@@ -52,6 +52,7 @@ class Home extends State {
       this.context.messengerId,
     );
     const count = (await getGamesWithAwaitingScore(userId)).length;
+    i18n.setLocale('fr');
     return [
       Response.genText(i18n.__('menu.welcome')),
       Response.genText(i18n.__('menu.help')),
