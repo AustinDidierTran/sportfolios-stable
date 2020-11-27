@@ -53,6 +53,9 @@ class NextGameInfos extends State {
       event: game.event_name,
       field: game.field,
       timeslot: moment(date).format('LLL'),
+      opponentTeams: game.opponent_teams_names.join(
+        ' ' + i18n.__('and') + ' ',
+      ),
     };
     return [
       Response.genQuickReply(
