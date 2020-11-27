@@ -1,6 +1,6 @@
 {
   "game_infos": {
-    "next_game": "Voici les informations de votre prochaine partie:\n\n📅  Événement: {{event}}\n📍  Terrain: {{field}}\n⌚  Heure: {{timeslot}}\n🤺  Adversaire: {{opponentTeams}}",
+    "next_game": "Voici les informations de votre prochaine partie:\n\n📅  Événement: {{event}}\n📍  Terrain: {{field}}\n⌚  Date: {{timeslot}}\n🤺  Adversaire: {{opponentTeams}}",
     "no_game": "Vous n'avez aucune partie à venir"
   },
   "score_submission": {

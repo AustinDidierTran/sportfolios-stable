@@ -26,13 +26,18 @@ class Home extends State {
   handleEvent(webhookEvent) {
     let nextState;
     const payload = this.getPayload(webhookEvent);
+    const text = this.getText(webhookEvent);
     if (
       payload === MESSENGER_PAYLOADS.SUBMIT_A_SCORE ||
-      this.getText(webhookEvent) === 'score'
+      text === 'score'
     ) {
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.GAMES_AWAITING_SCORE_LIST;
-    } else if (payload === MESSENGER_PAYLOADS.NEXT_GAME) {
+    } else if (
+      payload === MESSENGER_PAYLOADS.NEXT_GAME ||
+      text === 'partie' ||
+      text === 'game'
+    ) {
       nextState = GAME_INFOS_CHATBOT_STATES.NEXT_GAME_INFOS;
     } else {
       this.sendIDontUnderstand(webhookEvent);
