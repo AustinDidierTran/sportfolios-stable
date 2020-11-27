@@ -40,7 +40,7 @@ class NextGameInfos extends State {
     const timeZone = await getTimezoneFromPSID(
       this.context.messengerId,
     );
-    if (game.length === 0) {
+    if (!game || game.length === 0) {
       return [Response.genText(i18n.__('game_infos.no_game'))];
     }
     const infos = {
