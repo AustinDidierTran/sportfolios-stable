@@ -2229,12 +2229,12 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
 async function getUserNextGame(user_id) {
   const [res] = await knex()
     .select(
-      'PLAYER_ID',
-      'GAME_PLAYERS_VIEW.GAME_ID',
-      'GAME_PLAYERS_VIEW.ROSTER_ID',
-      'GAME_PLAYERS_VIEW.TIMESLOT',
-      'GAME_PLAYERS_VIEW.EVENT_NAME',
-      'GAME_PLAYERS_VIEW.field',
+      'player_id',
+      'game_players_view.game_id',
+      'game_players_view.roster_id',
+      'game_players_view.timeslot',
+      'game_players_view.event_name',
+      'game_players_view.field',
       knex.raw('ARRAY_AGG(GAME_TEAMS.NAME) AS OPPONENT_TEAMS_NAMES'),
     )
     .from('user_entity_role')
@@ -2257,10 +2257,10 @@ async function getUserNextGame(user_id) {
       'game_players_view.game_id',
       'game_players_view.roster_id',
       'game_players_view.timeslot',
-      'GAME_PLAYERS_VIEW.EVENT_NAME',
-      'GAME_PLAYERS_VIEW.field',
+      'game_players_view.event_name',
+      'game_players_view.field',
     )
-    .orderBy('GAME_PLAYERS_VIEW.timeslot')
+    .orderBy('game_players_view.timeslot')
     .limit(1);
 
   return res;
