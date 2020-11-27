@@ -2237,7 +2237,7 @@ async function getUserNextGame(user_id) {
       'GAME_PLAYERS_VIEW.field',
       knex.raw('ARRAY_AGG(GAME_TEAMS.NAME) AS OPPONENT_TEAMS_NAMES'),
     )
-    .from('USER_ENTITY_ROLE')
+    .from('user_entity_role')
     .join(
       'GAME_PLAYERS_VIEW',
       'USER_ENTITY_ROLE.ENTITY_ID',
