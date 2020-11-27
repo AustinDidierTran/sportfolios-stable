@@ -2227,11 +2227,42 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
 }
 
 async function getUserNextGame(user_id) {
-  const [res] = await knex().select(
-    knex.raw(
-      `PLAYER_ID, GAME_PLAYERS_VIEW.GAME_ID, GAME_PLAYERS_VIEW.ROSTER_ID, GAME_PLAYERS_VIEW.TIMESLOT, GAME_PLAYERS_VIEW.EVENT_NAME, GAME_PLAYERS_VIEW.field, ARRAY_AGG(GAME_TEAMS.NAME) AS OPPONENT_TEAMS_NAMES FROM USER_ENTITY_ROLE JOIN GAME_PLAYERS_VIEW ON USER_ENTITY_ROLE.ENTITY_ID = GAME_PLAYERS_VIEW.PLAYER_ID JOIN GAME_TEAMS ON GAME_TEAMS.ROSTER_ID != GAME_PLAYERS_VIEW.ROSTER_ID AND GAME_TEAMS.GAME_ID = GAME_PLAYERS_VIEW.GAME_ID WHERE USER_ID = '${user_id}' AND ROLE = 1 AND GAME_PLAYERS_VIEW.timeslot>now() GROUP BY (PLAYER_ID, GAME_PLAYERS_VIEW.GAME_ID, GAME_PLAYERS_VIEW.ROSTER_ID, GAME_PLAYERS_VIEW.TIMESLOT, GAME_PLAYERS_VIEW.EVENT_NAME, GAME_PLAYERS_VIEW.field) ORDER BY GAME_PLAYERS_VIEW.timeslot LIMIT 1`,
-    ),
-  );
+  const [res] = await knex()
+    .select(
+      'PLAYER_ID',
+      'GAME_PLAYERS_VIEW.GAME_ID',
+      'GAME_PLAYERS_VIEW.ROSTER_ID',
+      'GAME_PLAYERS_VIEW.TIMESLOT',
+      'GAME_PLAYERS_VIEW.EVENT_NAME',
+      'GAME_PLAYERS_VIEW.field',
+      knex.raw('ARRAY_AGG(GAME_TEAMS.NAME) AS OPPONENT_TEAMS_NAMES'),
+    )
+    .from('USER_ENTITY_ROLE')
+    .join(
+      'GAME_PLAYERS_VIEW',
+      'USER_ENTITY_ROLE.ENTITY_ID',
+      'GAME_PLAYERS_VIEW.PLAYER_ID',
+    )
+    .join('GAME_TEAMS', function() {
+      this.on(
+        'game_teams.roster_id',
+        '!=',
+        'game_players_view.roster_id',
+      ).andOn('game_teams.game_id', '=', 'game_players_view.game_id');
+    })
+    .where({ user_id, role: ENTITIES_ROLE_ENUM.ADMIN })
+    .whereRaw('GAME_PLAYERS_VIEW.timeslot>now()')
+    .groupBy(
+      'player_id',
+      'game_players_view.game_id',
+      'game_players_view.roster_id',
+      'game_players_view.timeslot',
+      'GAME_PLAYERS_VIEW.EVENT_NAME',
+      'GAME_PLAYERS_VIEW.field',
+    )
+    .orderBy('GAME_PLAYERS_VIEW.timeslot')
+    .limit(1);
+
   return res;
 }
 getUserNextGame('03819b6b-b74e-4cb8-9a1a-299a9ee3b2fc');

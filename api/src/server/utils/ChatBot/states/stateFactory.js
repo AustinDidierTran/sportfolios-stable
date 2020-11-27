@@ -1,7 +1,7 @@
 const {
   BASIC_CHATBOT_STATES,
   SCORE_SUBMISSION_CHATBOT_STATES,
-  GAME_INFOS_STATES,
+  GAME_INFOS_CHATBOT_STATES,
 } = require('../../../../../../common/enums');
 const {
   AwaitingScoreSubmission,
@@ -33,7 +33,7 @@ const stateMap = {
   [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_COMMUNICATION]: AwaitingSpiritCommunication,
   [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_SELF_CONTROL]: AwaitingSpiritSelfControl,
   [SCORE_SUBMISSION_CHATBOT_STATES.GAMES_AWAITING_SCORE_LIST]: GamesAwaitingScoreList,
-  [GAME_INFOS_STATES.NEXT_GAME_INFOS]: NextGameInfos,
+  [GAME_INFOS_CHATBOT_STATES.NEXT_GAME_INFOS]: NextGameInfos,
 };
 
 function StateFactory(state) {

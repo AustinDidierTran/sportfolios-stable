@@ -1,7 +1,7 @@
 const State = require('../state');
 const {
   SCORE_SUBMISSION_CHATBOT_STATES,
-  GAME_INFOS_STATES,
+  GAME_INFOS_CHATBOT_STATES,
 } = require('../../../../../../../common/enums');
 const {
   MESSENGER_QUICK_REPLIES,
@@ -33,7 +33,7 @@ class Home extends State {
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.GAMES_AWAITING_SCORE_LIST;
     } else if (payload === MESSENGER_PAYLOADS.NEXT_GAME) {
-      nextState = GAME_INFOS_STATES.NEXT_GAME_INFOS;
+      nextState = GAME_INFOS_CHATBOT_STATES.NEXT_GAME_INFOS;
     } else {
       this.sendIDontUnderstand(webhookEvent);
     }

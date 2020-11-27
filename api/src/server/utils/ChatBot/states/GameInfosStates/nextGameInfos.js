@@ -1,14 +1,10 @@
 const State = require('../state');
 const {
-  SCORE_SUBMISSION_CHATBOT_STATES,
   BASIC_CHATBOT_STATES,
   MILLIS_TIME_ENUM,
   MONTH_NAMES,
 } = require('../../../../../../../common/enums');
-const {
-  MESSENGER_QUICK_REPLIES,
-  MESSENGER_PAYLOADS,
-} = require('../../../enums');
+const { MESSENGER_QUICK_REPLIES } = require('../../../enums');
 const Response = require('../../response');
 const i18n = require('../../../../../i18n.config');
 const {
@@ -65,7 +61,12 @@ class NextGameInfos extends State {
         ' ' + i18n.__('and') + ' ',
       ),
     };
-    return [Response.genText(i18n.__('game_infos.next_game', infos))];
+    return [
+      Response.genQuickReply(
+        i18n.__('game_infos.next_game', infos),
+        MESSENGER_QUICK_REPLIES.ENDPOINT_ACTIONS,
+      ),
+    ];
   }
 }
 

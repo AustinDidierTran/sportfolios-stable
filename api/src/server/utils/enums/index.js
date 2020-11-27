@@ -67,6 +67,13 @@ const MESSENGER_QUICK_REPLIES = {
       payload: MESSENGER_PAYLOADS.SUBMIT_A_SCORE,
     },
   ],
+  ENDPOINT_ACTIONS: [
+    {
+      content_type: 'text',
+      title: i18nbackEnd.__('quick_replies.back_to_menu'),
+      payload: MESSENGER_PAYLOADS.START_OVER,
+    },
+  ],
 };
 
 module.exports = {
