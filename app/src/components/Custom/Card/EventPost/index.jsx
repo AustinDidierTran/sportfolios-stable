@@ -73,6 +73,7 @@ export default function EventPost(props) {
     name,
     photoUrl,
   } = props;
+
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };

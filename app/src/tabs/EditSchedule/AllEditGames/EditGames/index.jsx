@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import styles from './EditGames.module.css';
 import { Collapse, IconButton } from '../../../../components/Custom';
 import { Typography } from '../../../../components/MUI';
@@ -11,23 +11,18 @@ export default function EditGames(props) {
   const { t } = useTranslation();
 
   const [expanded, setExpanded] = useState(isOpen);
-  const [icon, setIcon] = useState('KeyboardArrowDown');
 
   const handleExpand = () => {
-    const newExpanded = !expanded;
-    setExpanded(newExpanded);
-    if (newExpanded === true) {
-      setIcon('KeyboardArrowUp');
-    } else {
-      setIcon('KeyboardArrowDown');
-    }
+    setExpanded(!expanded);
   };
+
+  const icon = useMemo(
+    () => (expanded ? 'KeyboardArrowUp' : 'KeyboardArrowDown'),
+    [expanded],
+  );
 
   useEffect(() => {
     setExpanded(isOpen);
-    if (isOpen) {
-      setIcon('KeyboardArrowUp');
-    }
   }, [isOpen]);
 
   return (

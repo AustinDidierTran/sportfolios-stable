@@ -58,12 +58,10 @@ export default function CartItem(props) {
                     ? `${formatPrice(amount)} + ${t('taxes')} | ${
                         metadata?.name
                       }`
-                    : `${formatPrice(amount)} + ${t('taxes')} | ${
-                        metadata?.name
-                      }`
+                    : `${formatPrice(amount)}| ${metadata?.name}`
                   : taxRates.length
                   ? `${formatPrice(amount)} + ${t('taxes')}`
-                  : `${formatPrice(amount)} + ${t('taxes')}`
+                  : `${formatPrice(amount)}`
               }
               secondary={label}
             />

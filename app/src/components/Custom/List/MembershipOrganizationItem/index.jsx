@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ListItem, ListItemText } from '../../../MUI';
 import { Button, Collapse, IconButton } from '../../../Custom';
 import { useTranslation } from 'react-i18next';
@@ -19,17 +19,15 @@ export default function MembershipOrganizationItem(props) {
     taxRates,
   } = props;
   const [expanded, setExpanded] = useState(false);
-  const [icon, setIcon] = useState('KeyboardArrowDown');
 
   const handleExpand = () => {
-    const newExpanded = !expanded;
-    setExpanded(newExpanded);
-    if (newExpanded === true) {
-      setIcon('KeyboardArrowUp');
-    } else {
-      setIcon('KeyboardArrowDown');
-    }
+    setExpanded(!expanded);
   };
+
+  const icon = useMemo(
+    () => (expanded ? 'KeyboardArrowUp' : 'KeyboardArrowDown'),
+    [expanded],
+  );
 
   return (
     <>

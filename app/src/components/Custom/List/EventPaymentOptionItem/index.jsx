@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import { ListItem, ListItemText } from '../../../MUI';
 import {
   FormDialog,
@@ -42,7 +42,11 @@ export default function EventPaymentOptionItem(props) {
   const [alertDialog, setAlertDialog] = useState(false);
   const [edit, setEdit] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [icon, setIcon] = useState('KeyboardArrowDown');
+
+  const icon = useMemo(
+    () => (expanded ? 'KeyboardArrowUp' : 'KeyboardArrowDown'),
+    [expanded],
+  );
 
   const onDelete = async () => {
     await api(formatRoute('/api/entity/option', null, { id }), {
@@ -53,13 +57,7 @@ export default function EventPaymentOptionItem(props) {
   };
 
   const handleExpand = () => {
-    const newExpanded = !expanded;
-    setExpanded(newExpanded);
-    if (newExpanded === true) {
-      setIcon('KeyboardArrowUp');
-    } else {
-      setIcon('KeyboardArrowDown');
-    }
+    setExpanded(!expanded);
   };
 
   const editOptionEvent = async values => {

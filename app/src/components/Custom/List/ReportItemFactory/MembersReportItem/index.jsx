@@ -71,7 +71,7 @@ export default function MembersReportItem(props) {
         surname: d.surname,
         membership: t(getMembershipName(d.member_type)),
         price: formatPrice(d.price),
-        status: t(getStatusName(d.status)),
+        status: getStatusName(d.status),
         paidOn: formatDate(moment(d.paid_on), 'YYYY-MM-DD HH:mm'),
         createdAt: formatDate(
           moment(d.created_at),

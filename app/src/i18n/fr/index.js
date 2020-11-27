@@ -351,6 +351,7 @@ export default {
     no_notifications_message: 'Revenez plus tard.',
     no_notifications: 'Pas de notifications',
     no_option: 'Aucune option',
+    no_owner_free_payment_option: 'Pas de propriétaire, option de paiement gratuite',
     no_payment_method: "Il n'y a actuellement aucune méthode de paiement",
     no_remaining_spots: "Désolé, votre inscription a été refusé. L'événement est maintenant plein et il n'y a plus de place.",
     no_roster: 'Aucun alignement',

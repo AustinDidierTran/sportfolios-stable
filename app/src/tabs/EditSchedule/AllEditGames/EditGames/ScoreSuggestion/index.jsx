@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   CARD_TYPE_ENUM,
   STATUS_ENUM,
@@ -29,20 +29,20 @@ export default function ScoreSuggestion(props) {
 
   const [suggestions, setSuggestions] = useState([]);
   const [expanded, setExpanded] = useState(false);
-  const [icon, setIcon] = useState('KeyboardArrowDown');
-  const [message, setMessage] = useState('');
 
   const handleExpand = () => {
-    const newExpanded = !expanded;
-    setExpanded(newExpanded);
-    if (newExpanded === true) {
-      setIcon('KeyboardArrowUp');
-      setMessage('');
-    } else {
-      setIcon('KeyboardArrowDown');
-      setMessage(t('score_suggestions'));
-    }
+    setExpanded(!expanded);
   };
+
+  const icon = useMemo(
+    () => (expanded ? 'KeyboardArrowUp' : 'KeyboardArrowDown'),
+    [expanded],
+  );
+
+  const message = useMemo(
+    () => (expanded ? '' : t('score_suggestions')),
+    [expanded],
+  );
 
   const { event_id, id: gameId } = game;
 
