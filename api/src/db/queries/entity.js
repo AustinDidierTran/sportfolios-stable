@@ -36,6 +36,7 @@ const {
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
   canRemovePlayerFromRoster: canRemovePlayerFromRosterHelper,
+  getSubmissionerInfos: getSubmissionerInfosHelper,
   canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,

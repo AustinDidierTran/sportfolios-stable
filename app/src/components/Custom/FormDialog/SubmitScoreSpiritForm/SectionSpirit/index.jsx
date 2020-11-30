@@ -24,6 +24,12 @@ import { ACTION_ENUM, Store } from '../../../../../Store';
 import api from '../../../../../actions/api';
 
 import styles from '../SubmitScoreSpiritForm.module.css';
+import {
+  STATUS_ENUM,
+  SEVERITY_ENUM,
+} from '../../../../../../../common/enums';
+import { ACTION_ENUM, Store } from '../../../../../Store';
+import api from '../../../../../actions/api';
 
 export default function SectionSpirit(props) {
   const {
