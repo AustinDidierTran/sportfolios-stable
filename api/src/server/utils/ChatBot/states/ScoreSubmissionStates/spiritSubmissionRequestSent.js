@@ -6,13 +6,34 @@ const {
 const { MESSENGER_QUICK_REPLIES } = require('../../../enums');
 const Response = require('../../response');
 const i18n = require('../../../../../i18n.config');
+const {
+  isSpiritAlreadySubmitted,
+} = require('../../../../../db/helpers/entity');
 
 class SpiritSubmissionRequestSent extends State {
-  handleEvent(webhookEvent) {
+  async handleEvent(webhookEvent) {
     let nextState;
+    const chatbotInfos = this.context.chatbotInfos;
     if (this.isYes(webhookEvent)) {
-      nextState =
-        SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_RULES;
+      if (
+        await isSpiritAlreadySubmitted({
+          game_id: chatbotInfos.gameId,
+          submitted_by_roster: chatbotInfos.myRosterId,
+          submitted_for_roster:
+            chatbotInfos.opponentTeams[0].rosterId,
+        })
+      ) {
+        this.sendMessages(webhookEvent.sender.id, [
+          Response.genText(
+            i18n.__('spirit_submission.already_submitted'),
+          ),
+          Response.genText(i18n.__('back_to_menu')),
+        ]);
+        nextState = BASIC_CHATBOT_STATES.HOME;
+      } else {
+        nextState =
+          SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_RULES;
+      }
     } else if (this.isNo(webhookEvent)) {
       this.sendMessages(
         webhookEvent.sender.id,
@@ -29,20 +50,14 @@ class SpiritSubmissionRequestSent extends State {
       this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
-      this.context.changeState(nextState);
+      await this.context.changeState(nextState);
     }
   }
 
   getIntroMessages() {
-    const myScore = this.context.chatbotInfos.myScore;
-    const opponentScore = this.context.chatbotInfos.opponentScore;
-    const text =
-      myScore > opponentScore
-        ? 'score_submission.confirmed.victory'
-        : 'score_submission.confirmed.other';
     return [
       Response.genQuickReply(
-        i18n.__(text),
+        i18n.__('spirit_submission.request'),
         MESSENGER_QUICK_REPLIES.CONFIRMATION,
       ),
     ];

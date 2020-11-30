@@ -15,7 +15,7 @@ class State {
   }
 
   // eslint-disable-next-line no-unused-vars
-  handleEvent(webhookEvent) {
+  async handleEvent(webhookEvent) {
     throw new Error('You need to implement the method handleEvent');
   }
 
@@ -38,6 +38,12 @@ class State {
       webhookEvent.message.quick_reply.payload
     ) {
       return webhookEvent.message.quick_reply.payload;
+    } else if (
+      webhookEvent &&
+      webhookEvent.postback &&
+      webhookEvent.postback.payload
+    ) {
+      return webhookEvent.postback.payload;
     }
     return;
   }
@@ -88,14 +94,10 @@ class State {
       isGreeting ||
       text === 'recommencer' ||
       text === 'start over' ||
+      text === 'home' ||
+      text === 'menu' ||
       payload === MESSENGER_PAYLOADS.START_OVER
     );
-  }
-
-  isStartMock(webhookEvent) {
-    const payload = this.getPayload(webhookEvent);
-    const text = this.getText(webhookEvent);
-    return payload === MESSENGER_PAYLOADS.MOCK || text === 'test';
   }
 
   isScore(webhookEvent) {
@@ -133,27 +135,27 @@ class State {
     );
   }
 
-  sendIDontUnderstand(webhookEvent) {
+  async sendIDontUnderstand(webhookEvent) {
     const messengerId = webhookEvent.sender.id;
     const message = webhookEvent.message.text;
     const state = this.context.stateType;
     this.sendMessages(messengerId, [
       Response.genText(i18n.__('i_dont_understand')),
-      ...this.getIntroMessages(),
+      ...(await this.getIntroMessages()),
     ]);
     queries.logMessage({ messenger_id: messengerId, state, message });
   }
 
-  sendMessages(messengerId, messages) {
+  sendMessages(messengerId, messages, delay = 0) {
     if (Array.isArray(messages)) {
-      let delay = 0;
+      let i = 0;
       for (const message of messages) {
         //Sending with a delay so the messages arrives in the right order
         setTimeout(
           () => queries.sendMessage(messengerId, message),
-          delay * 2000,
+          i * 2000 + delay,
         );
-        delay++;
+        i++;
       }
     } else {
       queries.sendMessage(messengerId, messages);

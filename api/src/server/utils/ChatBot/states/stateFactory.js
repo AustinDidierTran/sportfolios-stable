@@ -1,6 +1,7 @@
 const {
   BASIC_CHATBOT_STATES,
   SCORE_SUBMISSION_CHATBOT_STATES,
+  GAME_INFOS_CHATBOT_STATES,
 } = require('../../../../../../common/enums');
 const {
   AwaitingScoreSubmission,
@@ -13,8 +14,10 @@ const {
   AwaitingSpiritEquity,
   AwaitingSpiritCommunication,
   AwaitingSpiritSelfControl,
+  GamesAwaitingScoreList,
 } = require('./ScoreSubmissionStates');
 const { Home, NotLinked } = require('./BasicStates');
+const { NextGameInfos } = require('./GameInfosStates');
 
 const stateMap = {
   [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION]: AwaitingScoreSubmission,
@@ -29,6 +32,8 @@ const stateMap = {
   [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_EQUITY]: AwaitingSpiritEquity,
   [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_COMMUNICATION]: AwaitingSpiritCommunication,
   [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_SELF_CONTROL]: AwaitingSpiritSelfControl,
+  [SCORE_SUBMISSION_CHATBOT_STATES.GAMES_AWAITING_SCORE_LIST]: GamesAwaitingScoreList,
+  [GAME_INFOS_CHATBOT_STATES.NEXT_GAME_INFOS]: NextGameInfos,
 };
 
 function StateFactory(state) {

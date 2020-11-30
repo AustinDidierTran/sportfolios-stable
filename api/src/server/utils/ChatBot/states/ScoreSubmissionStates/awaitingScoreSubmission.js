@@ -7,14 +7,16 @@ const i18n = require('../../../../../i18n.config');
 const Response = require('../../response');
 
 class AwaitingScoreSubmission extends State {
-  handleEvent(webhookEvent) {
+  async handleEvent(webhookEvent) {
     let nextState;
     if (this.isScore(webhookEvent)) {
       const score = this.getScores(webhookEvent);
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION_CONFIRMATION;
       this.context.chatbotInfos.myScore = Number(score[0]);
-      this.context.chatbotInfos.opponentScore = Number(score[1]);
+      this.context.chatbotInfos.opponentTeams.forEach(
+        (team, i) => (team.score = Number(score[i + 1])),
+      );
     } else if (
       this.isStop(webhookEvent) ||
       this.isStartOver(webhookEvent)
@@ -24,14 +26,36 @@ class AwaitingScoreSubmission extends State {
       this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
-      this.context.changeState(nextState);
+      await this.context.changeState(nextState);
     }
   }
 
   getIntroMessages() {
-    return [
-      Response.genText(i18n.__('score_submission.explaination')),
-    ];
+    const opponentTeams = this.context.chatbotInfos.opponentTeams;
+    const teamQuantity = opponentTeams.length;
+    if (teamQuantity > 1) {
+      const teamNames = opponentTeams.reduce(
+        (acc, cur, i) =>
+          acc +
+          `[${cur.teamName}]` +
+          (i < teamQuantity - 1 ? '-' : ''),
+        '',
+      );
+      const example = [...Array(teamQuantity).keys()].join('-');
+      return [
+        Response.genText(
+          i18n.__(
+            'score_submission.explaination_many',
+            teamNames,
+            example,
+          ),
+        ),
+      ];
+    } else {
+      return [
+        Response.genText(i18n.__('score_submission.explaination')),
+      ];
+    }
   }
 }
 

@@ -7,10 +7,8 @@ module.exports = async function AddedToRoster(infos) {
   const buttonLink = `${CLIENT_BASE_URL}/${eventId}?tab=schedule&game=${gameId}`;
   const text = i18n.__(
     { phrase: 'emails.score_submission_request_text', locale },
-    {
-      name,
-      eventName,
-    },
+    name,
+    eventName,
   );
   const buttonText = i18n.__({
     phrase: 'emails.score_submission_request_button',

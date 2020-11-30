@@ -8,16 +8,18 @@ const i18n = require('../../../../../i18n.config');
 const Response = require('../../response');
 
 class AwaitingSpiritRules extends State {
-  handleEvent(webhookEvent) {
+  async handleEvent(webhookEvent) {
     let nextState;
     if (this.isValidSpirit(webhookEvent)) {
       const score = this.getNumber(webhookEvent);
       nextState =
         SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_FOULS;
-      if (this.context.chatbotInfos.spirit) {
+      if (this.context.chatbotInfos.opponentTeams[0].spirit) {
         this.context.chatbotInfos.spirit.rules = score;
       } else {
-        this.context.chatbotInfos.spirit = { rules: score };
+        this.context.chatbotInfos.opponentTeams[0].spirit = {
+          rules: score,
+        };
       }
     } else if (
       this.isStop(webhookEvent) ||
@@ -28,7 +30,7 @@ class AwaitingSpiritRules extends State {
       this.sendIDontUnderstand(webhookEvent);
     }
     if (nextState) {
-      this.context.changeState(nextState);
+      await this.context.changeState(nextState);
     }
   }
 

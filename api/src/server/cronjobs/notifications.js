@@ -6,7 +6,10 @@ const {
 
 const { getPersonInfos } = require('../../db/queries/entity');
 
-const { NOTIFICATION_TYPE } = require('../../../../common/enums');
+const {
+  NOTIFICATION_TYPE,
+  ROSTER_ROLE_ENUM,
+} = require('../../../../common/enums');
 
 /*
  ┌────────────── second (optional)
@@ -26,7 +29,7 @@ async function getAllPastHourGamesCaptain() {
       .whereRaw(
         "timeslot between now() -INTERVAL '2 hours' and now() - INTERVAL '1 hour'",
       )
-      .whereNotNull('player_role')
+      .whereNot('player_role', ROSTER_ROLE_ENUM.PLAYER)
       .whereNull('notified_end');
     await trx('games')
       .update('notified_end', 'now()')
@@ -58,6 +61,7 @@ cron.schedule('0-59/15 * * * *', async () => {
         gameId: game_id,
         eventId: event_id,
         eventName: event_name,
+        playerId: player_id,
       };
       const emailInfos = {
         name: (await getPersonInfos(player_id)).name,

@@ -345,6 +345,15 @@ const getUserIdFromRecoveryPasswordToken = async token => {
   return response.user_id;
 };
 
+const getUserIdFromMessengerId = async messenger_id => {
+  const [res] = await knex('user_apps_id')
+    .where({ messenger_id })
+    .select('user_id');
+  if (res) {
+    return res.user_id;
+  }
+};
+
 const setRecoveryTokenToUsed = async token => {
   await knex('recovery_email_token')
     .update({ used_at: new Date() })
@@ -622,11 +631,17 @@ const getChatbotInfos = async messenger_id => {
     .select('*')
     .first()
     .where({ messenger_id });
+
   if (infos) {
+    const {
+      messenger_id: messengerId,
+      chatbot_infos: chatbotInfos,
+      ...otherInfos
+    } = infos;
     return {
-      messengerId: infos.messenger_id,
-      state: infos.state,
-      chatbotInfos: infos.chatbot_infos,
+      messengerId,
+      chatbotInfos,
+      ...otherInfos,
     };
   }
 };
@@ -648,7 +663,11 @@ const setChatbotInfos = async (messenger_id, infos) => {
 const addChatbotId = async messenger_id => {
   const name = await getNameFromPSID(messenger_id);
   const [res] = await knex('messenger_user_chatbot_state')
-    .insert({ messenger_id, chatbot_infos: { userName: name } })
+    .insert({
+      messenger_id,
+      chatbot_infos: { userName: name },
+      state: BASIC_CHATBOT_STATES.NOT_LINKED,
+    })
     .returning('*');
   return {
     messengerId: res.messenger_id,
@@ -695,7 +714,9 @@ const getMessengerId = async user_id => {
   const [res] = await knex('user_apps_id')
     .where({ user_id })
     .select('messenger_id');
-  return res.messenger_id;
+  if (res) {
+    return res.messenger_id;
+  }
 };
 
 const deleteMessengerId = async user_id => {
@@ -766,4 +787,5 @@ module.exports = {
   addChatbotId,
   deleteChatbotInfos,
   getLanguageFromUser,
+  getUserIdFromMessengerId,
 };

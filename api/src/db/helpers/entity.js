@@ -463,7 +463,7 @@ async function getAllForYouPagePosts() {
     (a, b) => b.createdAt - a.createdAt,
   );
 }
-async function getScoreSuggestion(event_id, gameId) {
+async function getScoreSuggestion(gameId) {
   const suggestions = await knex('score_suggestion')
     .select('*')
     .where({
@@ -2235,12 +2235,135 @@ async function addScoreAndSpirit(props) {
   return res;
 }
 
+async function addSpiritSubmission(infos) {
+  const submitted = await isSpiritAlreadySubmitted(infos);
+  if (typeof submitted === 'undefined') {
+    return;
+  }
+  if (submitted) {
+    throw new Error(ERROR_ENUM.VALUE_ALREADY_EXISTS);
+  }
+  return knex('spirit_submission').insert(infos);
+}
+
+async function isSpiritAlreadySubmitted(infos) {
+  const {
+    game_id,
+    submitted_by_roster,
+    submitted_for_roster,
+  } = infos;
+  const res = await knex('spirit_submission')
+    .select()
+    .where({ game_id, submitted_by_roster, submitted_for_roster });
+  if (!res) {
+    return;
+  }
+  return res.length !== 0;
+}
+
 async function addScoreSuggestion(infos) {
-  const res = await knex('score_suggestion')
-    .insert({
-      ...infos,
-    })
+  const submitted = await isScoreSuggestionAlreadySubmitted(infos);
+  if (typeof submitted === 'undefined') {
+    return;
+  }
+  if (submitted) {
+    throw new Error(ERROR_ENUM.VALUE_ALREADY_EXISTS);
+  }
+  return knex('score_suggestion')
+    .insert(infos)
     .returning('*');
+}
+
+async function isScoreSuggestionAlreadySubmitted(infos) {
+  const { game_id, submitted_by_roster } = infos;
+  const res = await knex('score_suggestion')
+    .select()
+    .where({ game_id, submitted_by_roster });
+  if (!res) {
+    return;
+  }
+  return res.length !== 0;
+}
+
+async function getGamesWithAwaitingScore(user_id, limit = 100) {
+  const subquery = knex('score_suggestion')
+    .select()
+    .whereRaw(
+      'SCORE_SUGGESTION.GAME_ID = GAME_PLAYERS_VIEW.GAME_ID AND SCORE_SUGGESTION.SUBMITTED_BY_ROSTER = GAME_PLAYERS_VIEW.ROSTER_ID',
+    );
+  return knex
+    .select(
+      'player_id',
+      'game_players_view.game_id',
+      'game_players_view.roster_id',
+      'game_players_view.timeslot',
+      knex.raw('array_agg(name) as opponent_teams_names'),
+    )
+    .from('user_entity_role')
+    .join(
+      'game_players_view',
+      'user_entity_role.entity_id',
+      'game_players_view.player_id',
+    )
+    .join('game_teams', function() {
+      this.on(
+        'game_teams.roster_id',
+        '!=',
+        'game_players_view.roster_id',
+      ).andOn('game_teams.game_id', '=', 'game_players_view.game_id');
+    })
+    .where({ user_id, role: ENTITIES_ROLE_ENUM.ADMIN })
+    .whereNot('player_role', ROSTER_ROLE_ENUM.PLAYER)
+    .whereNotExists(subquery)
+    .where('game_players_view.timeslot', '<', 'now()')
+    .orderBy('game_players_view.timeslot', 'desc')
+    .groupBy(
+      'player_id',
+      'game_players_view.game_id',
+      'game_players_view.roster_id',
+      'game_players_view.timeslot',
+    )
+    .limit(limit);
+}
+
+async function getUserNextGame(user_id) {
+  const [res] = await knex
+    .queryBuilder()
+    .select(
+      'player_id',
+      'game_players_view.game_id',
+      'game_players_view.roster_id',
+      'game_players_view.timeslot',
+      'game_players_view.event_name',
+      'game_players_view.field',
+      knex.raw('ARRAY_AGG(GAME_TEAMS.NAME) AS OPPONENT_TEAMS_NAMES'),
+    )
+    .from('user_entity_role')
+    .join(
+      'game_players_view',
+      'user_entity_role.entity_id',
+      'game_players_view.player_id',
+    )
+    .join('game_teams', function() {
+      this.on(
+        'game_teams.roster_id',
+        '!=',
+        'game_players_view.roster_id',
+      ).andOn('game_teams.game_id', '=', 'game_players_view.game_id');
+    })
+    .where({ user_id, role: ENTITIES_ROLE_ENUM.ADMIN })
+    .whereRaw('GAME_PLAYERS_VIEW.timeslot>now()')
+    .groupBy(
+      'player_id',
+      'game_players_view.game_id',
+      'game_players_view.roster_id',
+      'game_players_view.timeslot',
+      'game_players_view.event_name',
+      'game_players_view.field',
+    )
+    .orderBy('game_players_view.timeslot')
+    .limit(1);
+
   return res;
 }
 
@@ -3167,4 +3290,9 @@ module.exports = {
   getGameTeams,
   isPlayerInRoster,
   isTeamRegisteredInEvent,
+  addSpiritSubmission,
+  isSpiritAlreadySubmitted,
+  isScoreSuggestionAlreadySubmitted,
+  getGamesWithAwaitingScore,
+  getUserNextGame,
 };

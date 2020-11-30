@@ -58,9 +58,25 @@ const logMessage = async infos => {
   return knex('logs_chatbot').insert(infos);
 };
 
+//Return Timezone, number relative to GMT
+const getTimezoneFromPSID = async messengerId => {
+  const uri = `${FACEBOOK_BASE_URL}/${messengerId}?fields=timezone&access_token=${process.env.FACEBOOK_PAGE_TOKEN}`;
+  const res = await axios.get(uri).catch(function(error) {
+    // eslint-disable-next-line no-console
+    console.log(error.response.data);
+    return;
+  });
+  if (res && res.data && res.data.timezone) {
+    return res.data.timezone;
+  } else {
+    return;
+  }
+};
+
 module.exports = {
   getMessengerIdFromFbID,
   sendMessage,
   getNameFromPSID,
   logMessage,
+  getTimezoneFromPSID,
 };
