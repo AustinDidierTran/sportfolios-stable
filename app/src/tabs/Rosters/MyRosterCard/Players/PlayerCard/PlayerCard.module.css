@@ -7,7 +7,7 @@
 .player {
   flex: 1 1 auto;
   display: grid;
-  grid-template-columns: 50px 1fr 100px 50px;
+  grid-template-columns: 50px 1fr auto auto;
   grid-template-areas: 'position name chip icon';
   justify-content: center;
   margin: 4px 0;
@@ -15,10 +15,13 @@
 
 .position {
   grid-area: position;
+  display: flex;
   justify-self: center;
   align-self: center;
-  font-size: 12px;
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+.position > div {
+  display: flex;
 }
 
 .about {
@@ -33,13 +36,15 @@
   align-self: center;
 }
 
+.chip {
+  grid-area: chip;
+  align-self: center;
+}
+
 .icon {
   grid-area: icon;
-
+  display: flex;
   justify-self: end;
   align-self: center;
   width: 100%;
-}
-.chip {
-  grid-area: chip;
 }

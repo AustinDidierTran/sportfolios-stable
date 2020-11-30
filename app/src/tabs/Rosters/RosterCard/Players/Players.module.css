@@ -16,12 +16,11 @@
 
 .position {
   grid-area: position;
-
   justify-self: center;
-  align-self: center;
+}
 
-  font-size: 12px;
-  font-family: Arial, Helvetica, sans-serif;
+.position > div {
+  display: flex;
 }
 
 .name {

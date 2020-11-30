@@ -9,6 +9,7 @@ import SalesReport from './SalesReport';
 import EditMembership from './EditMembership';
 import EnterEmail from './EnterEmail';
 import CreateTaxRate from './CreateTaxRate';
+import RosterPlayerOptions from './RosterPlayerOptions';
 import SubmitScoreAndSpiritForm from './SubmitScoreSpiritForm';
 
 const FormDialogMap = {
@@ -21,6 +22,7 @@ const FormDialogMap = {
   [FORM_DIALOG_TYPE_ENUM.SALES_REPORT]: SalesReport,
   [FORM_DIALOG_TYPE_ENUM.EDIT_MEMBERSHIP]: EditMembership,
   [FORM_DIALOG_TYPE_ENUM.ENTER_EMAIL]: EnterEmail,
+  [FORM_DIALOG_TYPE_ENUM.ROSTER_PLAYER_OPTIONS]: RosterPlayerOptions,
   [FORM_DIALOG_TYPE_ENUM.SUBMIT_SCORE_AND_SPIRIT]: SubmitScoreAndSpiritForm,
   [FORM_DIALOG_TYPE_ENUM.CREATE_TAX_RATE]: CreateTaxRate,
 };

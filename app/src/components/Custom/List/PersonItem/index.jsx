@@ -73,6 +73,11 @@ export default function PersonItem(props) {
           ></Avatar>
         )}
       </ListItemIcon>
+      <ListItemText
+        className={styles.text}
+        primary={completeName || name}
+        secondary={secondary || t('person')}
+      ></ListItemText>
       <ListItemSecondaryAction>
         {secondaryActions ? (
           <div className={styles.secondaryActions}>
@@ -84,11 +89,6 @@ export default function PersonItem(props) {
           <></>
         )}
       </ListItemSecondaryAction>
-      <ListItemText
-        className={styles.text}
-        primary={completeName || name}
-        secondary={secondary || t('person')}
-      ></ListItemText>
     </ListItem>
   );
 }

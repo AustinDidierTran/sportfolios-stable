@@ -31,6 +31,7 @@ import { Typography } from '../../components/MUI';
 import { Container } from '@material-ui/core';
 import { Store, ACTION_ENUM } from '../../Store';
 import { ERROR_ENUM, errors } from '../../../../common/errors';
+import { useFormik } from 'formik';
 
 const getEvent = async eventId => {
   const { data } = await api(
@@ -44,16 +45,70 @@ const getEvent = async eventId => {
 export default function EventRegistration() {
   const { t } = useTranslation();
   const { id: eventId } = useParams();
-  const [team, setTeam] = useState();
-  const [paymentOption, setPaymentOption] = useState();
-  const [paymentOptions, setPaymentOptions] = useState([]);
-  const [roster, setRoster] = useState([]);
-  const [event, setEvent] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const {
     state: { authToken },
     dispatch,
   } = useContext(Store);
+
+  const formik = useFormik({
+    initialValues: {
+      event: {},
+      team: undefined,
+      roster: [],
+      paymentOption: '',
+      paymentOptions: [],
+      teamSearchQuery: '',
+    },
+    onSubmit: async values => {
+      const { event, team, roster, paymentOption } = values;
+      let newTeamId = null;
+      setIsLoading(true);
+      if (!team.id) {
+        const tempTeam = await api('/api/entity', {
+          method: 'POST',
+          body: JSON.stringify({
+            name: team.name,
+            type: GLOBAL_ENUM.TEAM,
+          }),
+        });
+        newTeamId = tempTeam.data.id;
+      }
+      //Check if team is accepted here
+      const { status, data } = await api('/api/entity/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          teamId: newTeamId || team.id,
+          eventId: event.id,
+          paymentOption,
+          roster,
+          status: INVOICE_STATUS_ENUM.OPEN,
+        }),
+      });
+      await api('/api/entity/addTeamToSchedule', {
+        method: 'POST',
+        body: JSON.stringify({
+          eventId: event.id,
+          name: team.name,
+          rosterId: data.rosterId,
+        }),
+      });
+
+      setIsLoading(false);
+      if (status < 300) {
+        goTo(ROUTES.registrationStatus, null, {
+          status: data.status,
+        });
+      } else if (
+        status === errors[ERROR_ENUM.REGISTRATION_ERROR].code
+      ) {
+        goTo(ROUTES.registrationStatus, null, {
+          status: data.status,
+          reason: data.reason,
+        });
+      }
+    },
+  });
 
   const getOptions = async () => {
     const { data } = await api(
@@ -77,7 +132,7 @@ export default function EventRegistration() {
         [],
       );
 
-    setPaymentOptions(options);
+    formik.setFieldValue('paymentOptions', options);
   };
 
   const getPaymentOptionDisplay = option => {
@@ -110,97 +165,17 @@ export default function EventRegistration() {
 
   const stepHook = useStepper();
 
-  const onTeamSelect = async (e, team) => {
-    if (team.id) {
-      const { data } = await api(
-        formatRoute('/api/entity/registered', null, {
-          team_id: team.id,
-          event_id: eventId,
-        }),
-      );
-      const {
-        data: { basicInfos: theTeam },
-      } = await api(
-        formatRoute('/api/entity', null, {
-          id: team.id,
-        }),
-      );
-      if (data.length < 1) {
-        setTeam(theTeam);
-        stepHook.handleCompleted(0);
-      } else {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: t('team_already_registered'),
-          severity: SEVERITY_ENUM.ERROR,
-          vertical: POSITION_ENUM.TOP,
-        });
-      }
-    } else {
-      setTeam(team);
-      stepHook.handleCompleted(0);
-    }
+  const onTeamSelect = async () => {
+    stepHook.handleCompleted(0);
   };
-
   const onTeamChange = () => {
     stepHook.handleNotCompleted(0);
   };
-
-  const onRosterSelect = (e, roster) => {
-    setRoster(roster);
+  const onRosterSelect = () => {
     stepHook.handleCompleted(1);
   };
-
-  const onPaymentOptionSelect = (e, paymentOptionProp) => {
-    setPaymentOption(paymentOptionProp);
+  const onPaymentOptionSelect = () => {
     stepHook.handleCompleted(2);
-  };
-
-  const finish = async () => {
-    setIsLoading(true);
-    if (!team.id) {
-      const tempTeam = await api('/api/entity', {
-        method: 'POST',
-        body: JSON.stringify({
-          name: team.name,
-          type: GLOBAL_ENUM.TEAM,
-        }),
-      });
-      team.id = tempTeam.data.id;
-    }
-    //Check if teams is accepted here
-    const { status, data } = await api('/api/entity/register', {
-      method: 'POST',
-      body: JSON.stringify({
-        teamId: team.id,
-        eventId: eventId,
-        paymentOption,
-        roster,
-        status: INVOICE_STATUS_ENUM.OPEN,
-      }),
-    });
-    await api('/api/entity/addTeamToSchedule', {
-      method: 'POST',
-      body: JSON.stringify({
-        eventId,
-        name: team.name,
-        rosterId: data.rosterId,
-      }),
-    });
-
-    setIsLoading(false);
-    if (status < 300) {
-      goTo(ROUTES.registrationStatus, null, {
-        status: data.status,
-      });
-    } else if (
-      status === errors[ERROR_ENUM.REGISTRATION_ERROR].code
-    ) {
-      goTo(ROUTES.registrationStatus, null, {
-        status: data.status,
-        reason: data.reason,
-      });
-    }
   };
 
   const handleNext = activeStep => {
@@ -208,7 +183,7 @@ export default function EventRegistration() {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('team_selected_add_your_roster', {
-          name: team.name,
+          name: formik.values.team.name,
         }),
         severity: SEVERITY_ENUM.SUCCESS,
         duration: 30000,
@@ -217,7 +192,7 @@ export default function EventRegistration() {
     }
     if (activeStep === 1) {
       let message = '';
-      const length = roster.length;
+      const length = formik.values.roster.length;
       if (!length) {
         message = t('you_added_no_players_to_your_roster');
       } else if (length === 1) {
@@ -242,30 +217,21 @@ export default function EventRegistration() {
         <TeamSelect
           onClick={onTeamSelect}
           onTeamChange={onTeamChange}
-          team={team}
+          formik={formik}
           eventId={eventId}
         />
       ),
     },
     {
       label: t('roster'),
-      content: (
-        <Roster
-          onClick={onRosterSelect}
-          roster={roster}
-          setRoster={setRoster}
-          team={team}
-        />
-      ),
+      content: <Roster onClick={onRosterSelect} formik={formik} />,
     },
     {
       label: t('payment_options'),
       content: (
         <PaymentOptionSelect
           onClick={onPaymentOptionSelect}
-          paymentOption={paymentOption}
-          paymentOptions={paymentOptions}
-          roster={roster}
+          formik={formik}
         />
       ),
     },
@@ -273,7 +239,7 @@ export default function EventRegistration() {
 
   const getData = async () => {
     const event = await getEvent(eventId);
-    setEvent(event);
+    formik.setFieldValue('event', event);
   };
 
   useEffect(() => {
@@ -300,12 +266,14 @@ export default function EventRegistration() {
     <IgContainer>
       <Paper className={styles.paper}>
         <div className={styles.typo}>
-          <Typography variant="h3">{event.name || ''}</Typography>
+          <Typography variant="h3">
+            {formik.values.event.name || ''}
+          </Typography>
         </div>
         <Container>
           <StepperWithHooks
             steps={steps}
-            finish={finish}
+            finish={formik.handleSubmit}
             Next={handleNext}
             {...stepHook.stepperProps}
           />

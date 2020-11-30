@@ -1,5 +1,9 @@
 const knex = require('../connection');
 const { GLOBAL_ENUM } = require('../../../../common/enums');
+const {
+  getAllOwnedEntities,
+  isTeamRegisteredInEvent,
+} = require('./entity');
 
 const addQueryToRecentSearches = async (user_id, search_query) => {
   return knex('previous_search_queries')
@@ -227,6 +231,23 @@ const getTeamsFromQuery = async (query, blackList, whiteList) => {
   return entities.map(mappingFunction);
 };
 
+const getMyTeamsFromQuery = async (userId, eventId, query) => {
+  const mappingFunction = async e => ({
+    ...e,
+    surname: undefined,
+    complete_name: undefined,
+    isRegistered: await isTeamRegisteredInEvent(e.id, eventId),
+  });
+
+  const entities = await getAllOwnedEntities(
+    GLOBAL_ENUM.TEAM,
+    userId,
+    query,
+  );
+
+  return Promise.all(entities.map(mappingFunction));
+};
+
 const getOrganizationsFromQuery = async query => {
   const mappingFunction = e => ({
     id: e.id,
@@ -332,4 +353,5 @@ module.exports = {
   getPersonsFromQuery,
   getPreviousSearchQueriesFromId,
   getTeamsFromQuery,
+  getMyTeamsFromQuery,
 };

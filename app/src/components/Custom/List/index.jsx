@@ -33,7 +33,15 @@ export default function CustomList(props) {
   const defaultRowRenderer = (item, index) => {
     const Item = ItemFactory({ type: item.type });
 
-    return <Item {...item} selected={selectedIndex === index} />;
+    return (
+      <Item
+        {...otherProps}
+        {...item}
+        index={index}
+        key={item?.key || index}
+        selected={selectedIndex === index}
+      />
+    );
   };
 
   return (

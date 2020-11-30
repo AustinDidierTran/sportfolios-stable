@@ -26,6 +26,26 @@ router.get(`${BASE_URL}/search/global`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/search/myTeamsSearch`, async ctx => {
+  try {
+    const previousSearchQueries = await queries.myTeamsSearch(
+      ctx.body.userInfo.id,
+      ctx.query.query,
+      ctx.query.eventId,
+    );
+    ctx.body = {
+      status: 'success',
+      data: previousSearchQueries,
+    };
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: err.message || 'Sorry, an error has occured',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/search/previous`, async ctx => {
   const previousSearchQueries = await queries.getPreviousSearchQueries(
     ctx.body.userInfo.id,

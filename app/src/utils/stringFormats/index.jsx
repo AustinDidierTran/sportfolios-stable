@@ -19,6 +19,7 @@ export const getInitialsFromName = completeName => {
     return (
       completeName &&
       completeName
+        .trim()
         .split(/(?:-| )+/)
         .reduce(
           (prev, curr, index) =>

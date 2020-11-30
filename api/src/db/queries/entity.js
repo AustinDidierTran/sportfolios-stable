@@ -32,6 +32,7 @@ const {
   addTeamToEvent: addTeamToEventHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
+  canRemovePlayerFromRoster: canRemovePlayerFromRosterHelper,
   canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
@@ -77,7 +78,6 @@ const {
   getRoster: getRosterHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getRosterInvoiceItem,
-  getRosterWithSub: getRosterWithSubHelper,
   getSameSuggestions: getSameSuggestionsHelper,
   getScoreSuggestion: getScoreSuggestionHelper,
   getSlots: getSlotsHelper,
@@ -102,6 +102,7 @@ const {
   updatePlayerPaymentStatus: updatePlayerPaymentStatusHelper,
   updatePreRanking: updatePreRankingHelper,
   updateRegistration: updateRegistrationHelper,
+  updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
   getMembership,
   getEntityOwners,
@@ -240,12 +241,8 @@ async function getPrimaryPerson(userId) {
   return getPrimaryPersonHelper(userId);
 }
 
-async function getRoster(rosterId) {
-  return getRosterHelper(rosterId);
-}
-
-async function getRosterWithSub(rosterId) {
-  return getRosterWithSubHelper(rosterId);
+async function getRoster(rosterId, withSub) {
+  return getRosterHelper(rosterId, withSub);
 }
 
 async function getEvent(eventId) {
@@ -360,9 +357,7 @@ async function addTeamToEvent(body, userId) {
   }
 
   // Reject team if there is already too many registered teams
-  const remainingSpots = await getRemainingSpotsHelper(eventId);
-
-  if (remainingSpots === 0) {
+  if ((await getRemainingSpotsHelper(eventId)) === 0) {
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
@@ -523,6 +518,19 @@ async function updateRegistration(body, userId) {
     invoiceItemId,
     status,
   );
+}
+
+async function updateRosterRole(body, userId) {
+  const { eventId, teamId, playerId, role } = body;
+
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.ADMIN)) &&
+    !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return updateRosterRoleHelper(playerId, role);
 }
 
 async function addEntityRole(body, userId) {
@@ -864,7 +872,7 @@ const unregisterTeams = async (body, userId) => {
           await removeEventCartItemHelper({ rosterId });
         }
 
-        const roster = await getRoster(rosterId);
+        const roster = await getRoster(rosterId, false);
         for (const player of roster) {
           if (player.paymentStatus === INVOICE_STATUS_ENUM.PAID) {
             // Individual payment paid, refund please
@@ -987,6 +995,10 @@ async function deletePlayerFromRoster(id, eventId, userId) {
     rosterId,
   } = await getPlayerInvoiceItemHelper(id);
 
+  if (!(await canRemovePlayerFromRosterHelper(rosterId, personId))) {
+    return ERROR_ENUM.VALUE_IS_INVALID;
+  }
+
   if (status === INVOICE_STATUS_ENUM.PAID) {
     // status is paid and event admin is removing
     if (await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
@@ -1086,7 +1098,6 @@ module.exports = {
   getRegistered,
   getRemainingSpots,
   getRoster,
-  getRosterWithSub,
   getS3Signature,
   getScoreSuggestion,
   getSameSuggestions,
@@ -1107,4 +1118,5 @@ module.exports = {
   updateMember,
   updateOption,
   updateRegistration,
+  updateRosterRole,
 };

@@ -5,7 +5,14 @@ import { ROSTER_ROLE_ENUM } from '../../../../../common/enums';
 import MyRosterCard from '../MyRosterCard';
 
 export default function Rosters(props) {
-  const { isEventAdmin, rosters, onAdd, onDelete, update } = props;
+  const {
+    isEventAdmin,
+    rosters,
+    onAdd,
+    onDelete,
+    onRoleUpdate,
+    update,
+  } = props;
   const [expandedIndex, setExpandedIndex] = useState(0);
 
   if (!rosters || !rosters.length) {
@@ -32,6 +39,9 @@ export default function Rosters(props) {
               setExpandedIndex={setExpandedIndex}
               onAdd={onAdd}
               onDelete={onDelete}
+              onRoleUpdate={(...args) =>
+                onRoleUpdate(roster.teamId, ...args)
+              }
               index={index + 1}
               key={roster.rosterId}
               update={update}

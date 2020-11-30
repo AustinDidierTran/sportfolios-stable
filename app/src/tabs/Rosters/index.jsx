@@ -10,7 +10,11 @@ import Rosters from './Rosters';
 import { Typography } from '../../components/MUI';
 import { useTranslation } from 'react-i18next';
 import { LoadingSpinner } from '../../components/Custom';
-import { STATUS_ENUM, SEVERITY_ENUM } from '../../../../common/enums';
+import {
+  STATUS_ENUM,
+  SEVERITY_ENUM,
+  ROSTER_ROLE_ENUM,
+} from '../../../../common/enums';
 import { Store, ACTION_ENUM } from '../../Store';
 
 export default function TabRosters(props) {
@@ -48,6 +52,15 @@ export default function TabRosters(props) {
         severity: SEVERITY_ENUM.ERROR,
         duration: 4000,
       });
+      return false;
+    } else if (res.status === STATUS_ENUM.METHOD_NOT_ALLOWED) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('team_player_role_error'),
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 4000,
+      });
+      return false;
     } else if (res.status === STATUS_ENUM.ERROR) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
@@ -55,7 +68,9 @@ export default function TabRosters(props) {
         severity: SEVERITY_ENUM.ERROR,
         duration: 4000,
       });
+      return false;
     }
+    return true;
   };
 
   const addPlayerToRoster = async (player, rosterId) => {
@@ -73,14 +88,78 @@ export default function TabRosters(props) {
     return data;
   };
 
+  const updatePlayerRole = async (teamId, playerId, role) => {
+    const res = await api(`/api/entity/rosterRole`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        eventId,
+        teamId,
+        playerId,
+        role,
+      }),
+    });
+
+    if (res.status === STATUS_ENUM.SUCCESS) {
+      await getData();
+    } else if (res.status === STATUS_ENUM.FORBIDDEN) {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('team_player_role_error'),
+        severity: SEVERITY_ENUM.ERROR,
+      });
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('an_error_has_occured'),
+        severity: SEVERITY_ENUM.ERROR,
+      });
+    }
+  };
+
   const onDelete = async id => {
-    await deletePlayerFromRoster(id);
-    await getData();
+    if (
+      rosters
+        .find(r => r.players.some(p => p.id === id))
+        .players.filter(
+          p => p.id !== id && p.role !== ROSTER_ROLE_ENUM.PLAYER,
+        ).length >= 1
+    ) {
+      const refresh = await deletePlayerFromRoster(id);
+      if (refresh) {
+        await getData();
+      }
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('team_player_role_error'),
+        severity: SEVERITY_ENUM.ERROR,
+      });
+    }
   };
 
   const onAdd = async (player, rosterId) => {
     await addPlayerToRoster(player, rosterId);
     await getData();
+  };
+
+  const onRoleUpdate = async (teamId, playerId, role) => {
+    if (
+      role !== ROSTER_ROLE_ENUM.PLAYER ||
+      rosters
+        .find(r => r.teamId === teamId)
+        .players.some(
+          p =>
+            p.id !== playerId && p.role !== ROSTER_ROLE_ENUM.PLAYER,
+        )
+    ) {
+      await updatePlayerRole(teamId, playerId, role);
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('team_player_role_error'),
+        severity: SEVERITY_ENUM.ERROR,
+      });
+    }
   };
 
   const getData = async () => {
@@ -117,6 +196,7 @@ export default function TabRosters(props) {
           rosters={rosters}
           onAdd={onAdd}
           onDelete={onDelete}
+          onRoleUpdate={onRoleUpdate}
           update={getData}
         />
       </div>

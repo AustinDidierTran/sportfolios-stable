@@ -426,26 +426,6 @@ router.get(`${BASE_URL}/interactiveTool`, async ctx => {
   }
 });
 
-router.put(`${BASE_URL}/updateGamesInteractiveTool`, async ctx => {
-  const res = await queries.updateGamesInteractiveTool(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-  );
-  if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: res,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
-  }
-});
-
 router.put(`${BASE_URL}`, async ctx => {
   const entity = await queries.updateEntity(
     ctx.request.body,
@@ -459,6 +439,26 @@ router.put(`${BASE_URL}`, async ctx => {
     };
   } else {
     ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/updateGamesInteractiveTool`, async ctx => {
+  const res = await queries.updateGamesInteractiveTool(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'That entity does not exist.',
@@ -482,6 +482,33 @@ router.put(`${BASE_URL}/role`, async ctx => {
     ctx.body = {
       status: 'error',
       message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/rosterRole`, async ctx => {
+  const res = await queries.updateRosterRole(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (!res) {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  } else if (res === ERROR_ENUM.VALUE_IS_INVALID) {
+    ctx.status = STATUS_ENUM.FORBIDDEN;
+    ctx.body = {
+      status: 'error',
+      message: 'At least one team admin must be set',
+    };
+  } else {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: res,
     };
   }
 });
@@ -1049,6 +1076,13 @@ router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
     ctx.body = {
       status: 'error',
       message: 'Not allowed to remove player that has paid',
+    };
+  } else if (res === ERROR_ENUM.VALUE_IS_INVALID) {
+    ctx.status = STATUS_ENUM.METHOD_NOT_ALLOWED;
+    ctx.body = {
+      status: 'error',
+      message:
+        'Team must have at least one coach, captain or assistant captain',
     };
   } else if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;

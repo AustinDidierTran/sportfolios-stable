@@ -4,6 +4,9 @@ import Tag from '../../Tag';
 import { ENTITIES_ROLE_ENUM } from '../../../../Store';
 import { Typography } from '../../../../components/MUI';
 import { useTranslation } from 'react-i18next';
+import { Tooltip } from '@material-ui/core';
+import { Icon } from '../../../../components/Custom';
+import { ROSTER_ROLE_ENUM } from '../../../../../../common/enums';
 
 export default function Players(props) {
   const { t } = useTranslation();
@@ -22,6 +25,19 @@ export default function Players(props) {
     getData();
   }, []);
 
+  const getIconFromRole = role => {
+    switch (role) {
+      case ROSTER_ROLE_ENUM.COACH:
+        return 'SportsWhistle';
+      case ROSTER_ROLE_ENUM.CAPTAIN:
+        return 'Stars';
+      case ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN:
+        return 'TextFormat';
+      default:
+        return 'Person';
+    }
+  };
+
   if (!playersUpdated) {
     return <></>;
   }
@@ -29,10 +45,24 @@ export default function Players(props) {
   if (role == ENTITIES_ROLE_ENUM.VIEWER) {
     return (
       <div className={styles.card}>
-        {playersUpdated.map((player, index) => (
+        {playersUpdated.map(player => (
           <div className={styles.player} key={player.id}>
             <div className={styles.position}>
-              <Typography>{`${index}`}</Typography>
+              {player.role === ROSTER_ROLE_ENUM.PLAYER ? (
+                <></>
+              ) : (
+                <Tooltip
+                  title={t(
+                    player.role === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN
+                      ? 'assistant_captain'
+                      : player.role,
+                  )}
+                >
+                  <div>
+                    <Icon icon={getIconFromRole(player.role)} />
+                  </div>
+                </Tooltip>
+              )}
             </div>
             <div className={styles.name}>
               <Typography>{player && player.name}</Typography>
@@ -56,10 +86,24 @@ export default function Players(props) {
 
   return (
     <div className={styles.card}>
-      {playersUpdated.map((player, index) => (
+      {playersUpdated.map(player => (
         <div className={styles.player} key={player.id}>
           <div className={styles.position}>
-            <Typography>{`${index}`}</Typography>
+            {player.role === ROSTER_ROLE_ENUM.PLAYER ? (
+              <></>
+            ) : (
+              <Tooltip
+                title={t(
+                  player.role === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN
+                    ? 'assistant_captain'
+                    : player.role,
+                )}
+              >
+                <div>
+                  <Icon icon={getIconFromRole(player.role)} />
+                </div>
+              </Tooltip>
+            )}
           </div>
           <div className={styles.name}>
             <Typography>{player.name}</Typography>

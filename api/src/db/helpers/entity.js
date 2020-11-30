@@ -188,47 +188,97 @@ async function getAllEntities(params) {
   }));
 }
 
-async function getAllOwnedEntities(type, userId) {
-  const entities = await knex('entities')
-    .select('id', 'type', 'name', 'surname', 'photo_url', 'role')
-    .leftJoin(
-      'entities_name',
-      'entities.id',
-      '=',
-      'entities_name.entity_id',
-    )
-    .leftJoin(
-      'entities_photo',
-      'entities.id',
-      '=',
-      'entities_photo.entity_id',
-    )
-    .leftJoin(
-      'entities_role',
-      'entities.id',
-      '=',
-      'entities_role.entity_id',
-    )
-    .whereNull('deleted_at')
-    .where({ type });
-  const res = await Promise.all(
-    entities.map(async entity => {
-      const role = await getEntityRole(entity.id, userId);
-      return { ...entity, role };
-    }),
+async function getAllOwnedEntities(type, userId, query = '') {
+  // getPersons
+  let entityIds = (
+    await knex('user_entity_role')
+      .select('entity_id')
+      .where({
+        user_id: userId,
+      })
+      .andWhere('role', '<=', ENTITIES_ROLE_ENUM.EDITOR)
+  ).map(person => ({
+    entity_id: person.entity_id,
+    role: ENTITIES_ROLE_ENUM.ADMIN,
+  }));
+
+  let count = 0;
+  let newEntityIds = [];
+
+  // get all entities owned by persons and sub persons
+  do {
+    entityIds = [...newEntityIds, ...entityIds];
+    entityIds = entityIds.filter(
+      (entity, index) =>
+        entityIds.findIndex(e => e.entity_id === entity.entity_id) ===
+        index,
+    );
+
+    newEntityIds = (
+      await knex('entities_role')
+        .select('entity_id', 'entity_id_admin', 'role')
+        .whereIn(
+          'entity_id_admin',
+          entityIds.map(e => e.entity_id),
+        )
+        .andWhere('role', '<=', ENTITIES_ROLE_ENUM.EDITOR)
+    ).map(entity => ({
+      ...entity,
+      role: Math.max(
+        entity.role,
+        entityIds.find(e => e.entity_id === entity.entity_id_admin)
+          .role,
+      ),
+    }));
+
+    count++;
+  } while (
+    newEntityIds.some(
+      id => !entityIds.find(e => e.entity_id === id),
+    ) &&
+    count < 5
   );
-  const res2 = res
-    .filter(({ role }) => {
-      return (
-        role === ENTITIES_ROLE_ENUM.ADMIN ||
-        role === ENTITIES_ROLE_ENUM.EDITOR
-      );
-    })
-    .map(e => {
-      const { photo_url: photoUrl, ...otherProps } = e;
-      return { ...otherProps, photoUrl };
-    });
-  return res2;
+
+  const entities = await knex
+    .select('*')
+    .from(
+      knex
+        .select(
+          'id',
+          'type',
+          'name',
+          'surname',
+          knex.raw(
+            "string_agg(entities_all_infos.name || ' ' || entities_all_infos.surname, ' ') AS complete_name",
+          ),
+          'photo_url',
+        )
+        .from('entities_all_infos')
+        .whereNull('deleted_at')
+        .whereIn(
+          'entities_all_infos.id',
+          entityIds.map(e => e.entity_id),
+        )
+
+        .groupBy(
+          'entities_all_infos.id',
+          'entities_all_infos.type',
+          'entities_all_infos.name',
+          'entities_all_infos.surname',
+          'entities_all_infos.photo_url',
+        )
+        .as('res'),
+    )
+    .where('complete_name', 'ILIKE', `%${query || ''}%`)
+    .where({ type });
+
+  return entities.map(entity => ({
+    ...entity,
+    role: entityIds.find(e => e.entity_id === entity.id).role,
+    photo_url: undefined,
+    photoUrl: entity.photo_url,
+    entity_id_admin: undefined,
+  }));
 }
 
 async function getEntitiesName(entityId) {
@@ -1124,7 +1174,7 @@ async function getAllRegisteredInfos(eventId, userId) {
     teams.map(async t => {
       const entity = (await getEntity(t.team_id, userId)).basicInfos;
       const emails = await getEmailsEntity(t.team_id);
-      const players = await getRosterWithSub(t.roster_id);
+      const players = await getRoster(t.roster_id, true);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.roster_id);
       const role = await getRole(captains, t.roster_id, userId);
@@ -1158,8 +1208,11 @@ async function getRemainingSpots(eventId) {
     .count('team_id')
     .where({
       event_id: realId,
-      registration_status: STATUS_ENUM.ACCEPTED,
-    });
+    })
+    .whereIn('registration_status', [
+      STATUS_ENUM.ACCEPTED,
+      STATUS_ENUM.ACCEPTED_FREE,
+    ]);
 
   const [event] = await knex('events')
     .select('maximum_spots')
@@ -1199,11 +1252,24 @@ async function getRegistrationStatus(eventId, rosterId) {
   return registration.registration_status;
 }
 
-async function getRoster(rosterId) {
+async function getRoster(rosterId, withSub) {
   const realId = await getRealId(rosterId);
-  const roster = await knex('team_players')
-    .select('*')
-    .where({ roster_id: realId, is_sub: false });
+  let roster;
+  if (withSub === 'true') {
+    roster = await knex('team_players')
+      .select('*')
+      .where({ roster_id: realId })
+      .orderByRaw(
+        `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
+      );
+  } else {
+    roster = await knex('team_players')
+      .select('*')
+      .where({ roster_id: realId, is_sub: false })
+      .orderByRaw(
+        `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
+      );
+  }
 
   //TODO: Make a call to know if has created an account or is child account
   const status = TAG_TYPE_ENUM.REGISTERED;
@@ -1212,28 +1278,7 @@ async function getRoster(rosterId) {
     id: player.id,
     name: player.name,
     personId: player.person_id,
-    isSub: player.is_sub,
-    status: status,
-    paymentStatus: player.payment_status,
-    invoiceItemId: player.invoice_item_id,
-  }));
-
-  return props;
-}
-
-async function getRosterWithSub(rosterId) {
-  const realId = await getRealId(rosterId);
-  const roster = await knex('team_players')
-    .select('*')
-    .where({ roster_id: realId });
-
-  //TODO: Make a call to know if has created an account or is child account
-  const status = TAG_TYPE_ENUM.REGISTERED;
-
-  const props = roster.map(player => ({
-    id: player.id,
-    name: player.name,
-    personId: player.person_id,
+    role: player.role,
     isSub: player.is_sub,
     status: status,
     paymentStatus: player.payment_status,
@@ -1448,6 +1493,14 @@ async function isPlayerInRoster(player_id, roster_id) {
   });
   return Boolean(res);
 }
+
+const isTeamRegisteredInEvent = async (teamId, eventId) => {
+  const realEventId = await getRealId(eventId);
+  const [res] = await knex('event_rosters')
+    .select('roster_id')
+    .where({ event_id: realEventId, team_id: teamId });
+  return Boolean(res);
+};
 
 async function getUnplacedGames(eventId) {
   const realId = await getRealId(eventId);
@@ -1783,6 +1836,28 @@ const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
   return list;
 };
 
+const canRemovePlayerFromRoster = async (rosterId, personId) => {
+  const realRosterId = await getRealId(rosterId);
+  const realPersonId = await getRealId(personId);
+
+  const presentRoles = await knex('team_players')
+    .select('person_id', 'role')
+    .where(
+      'roster_id',
+      knex('team_players')
+        .select('roster_id')
+        .where({ roster_id: realRosterId, person_id: realPersonId }),
+    );
+
+  return (
+    presentRoles.filter(
+      item =>
+        item.person_id !== personId &&
+        item.role !== ROSTER_ROLE_ENUM.PLAYER,
+    ).length >= 1
+  );
+};
+
 const canUnregisterTeam = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
@@ -1917,6 +1992,31 @@ async function updateRegistration(
       event_id: realEventId,
       roster_id: realRosterId,
     });
+}
+
+async function updateRosterRole(playerId, role) {
+  if (role === ROSTER_ROLE_ENUM.PLAYER) {
+    const presentRoles = await knex('team_players')
+      .select('id', 'role')
+      .where(
+        'roster_id',
+        knex('team_players')
+          .select('roster_id')
+          .where({ id: playerId }),
+      );
+
+    if (
+      !presentRoles.some(
+        p => p.role !== ROSTER_ROLE_ENUM.PLAYER && p.id !== playerId,
+      )
+    ) {
+      return ERROR_ENUM.VALUE_IS_INVALID;
+    }
+  }
+
+  return knex('team_players')
+    .update({ role })
+    .where({ id: playerId });
 }
 
 async function updatePlayerPaymentStatus(body) {
@@ -2579,6 +2679,7 @@ async function addNewPersonToRoster(body, userId) {
     email,
     isSub,
     rosterId,
+    role,
   } = body;
   const person = await addEntity(
     { name, surname, type: GLOBAL_ENUM.PERSON },
@@ -2591,6 +2692,7 @@ async function addNewPersonToRoster(body, userId) {
       name: `${name} ${surname}`,
       rosterId,
       isSub,
+      role,
     },
     userId,
   );
@@ -2607,7 +2709,7 @@ async function addNewPersonToRoster(body, userId) {
 }
 
 const addPlayerToRoster = async (body, userId) => {
-  const { personId, name, id, rosterId, isSub } = body;
+  const { personId, name, id, rosterId, role, isSub } = body;
   let paymentStatus = INVOICE_STATUS_ENUM.FREE;
   let cartItem;
 
@@ -2649,6 +2751,7 @@ const addPlayerToRoster = async (body, userId) => {
       id,
       is_sub: isSub,
       payment_status: paymentStatus,
+      role,
     })
     .returning('*');
 
@@ -3100,6 +3203,7 @@ module.exports = {
   addNewPersonToRoster,
   addTeamToEvent,
   addEventCartItem,
+  canRemovePlayerFromRoster,
   canUnregisterTeam,
   deleteEntity,
   deleteEntityMembership,
@@ -3136,7 +3240,6 @@ module.exports = {
   getRemainingSpots,
   getRankings,
   getRoster,
-  getRosterWithSub,
   getEvent,
   getAlias,
   getPhases,
@@ -3172,6 +3275,7 @@ module.exports = {
   updateGamesInteractiveTool,
   updateSuggestionStatus,
   updateRegistration,
+  updateRosterRole,
   updatePlayerPaymentStatus,
   updateMembershipInvoice,
   eventInfos,
@@ -3185,7 +3289,7 @@ module.exports = {
   getEmailPerson,
   getGameTeams,
   isPlayerInRoster,
-  getRealId,
+  isTeamRegisteredInEvent,
   addSpiritSubmission,
   isSpiritAlreadySubmitted,
   isScoreSuggestionAlreadySubmitted,
