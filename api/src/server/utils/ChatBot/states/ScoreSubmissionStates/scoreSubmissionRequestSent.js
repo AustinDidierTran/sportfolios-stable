@@ -61,16 +61,18 @@ class ScoreSubmissionRequestSent extends State {
               cur.teamName,
             '',
           );
-    return [
-      Response.genQuickReply(
-        i18n.__(
-          'score_submission.request',
-          userName,
-          opponentTeamName,
+    return {
+      messages: [
+        Response.genQuickReply(
+          i18n.__(
+            'score_submission.request',
+            userName,
+            opponentTeamName,
+          ),
+          MESSENGER_QUICK_REPLIES.CONFIRMATION,
         ),
-        MESSENGER_QUICK_REPLIES.CONFIRMATION,
-      ),
-    ];
+      ],
+    };
   }
 }
 

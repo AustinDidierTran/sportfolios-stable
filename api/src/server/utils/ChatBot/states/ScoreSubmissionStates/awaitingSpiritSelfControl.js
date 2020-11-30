@@ -29,12 +29,14 @@ class AwaitingSpiritSelfControl extends State {
   }
 
   getIntroMessages() {
-    return [
-      Response.genQuickReply(
-        i18n.__('spirit_submission.self_control'),
-        MESSENGER_QUICK_REPLIES.SPIRIT,
-      ),
-    ];
+    return {
+      messages: [
+        Response.genQuickReply(
+          i18n.__('spirit_submission.self_control'),
+          MESSENGER_QUICK_REPLIES.SPIRIT,
+        ),
+      ],
+    };
   }
 }
 

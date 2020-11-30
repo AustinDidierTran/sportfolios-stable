@@ -35,11 +35,7 @@ class SpiritSubmissionRequestSent extends State {
           SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_RULES;
       }
     } else if (this.isNo(webhookEvent)) {
-      this.sendMessages(
-        webhookEvent.sender.id,
-        Response.genText(i18n.__('back_to_menu')),
-      );
-      nextState = BASIC_CHATBOT_STATES.HOME;
+      nextState = SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_ATTENDANCE;
     } else if (
       //TODO start over could restart the score submission process
       this.isStop(webhookEvent) ||
@@ -55,12 +51,14 @@ class SpiritSubmissionRequestSent extends State {
   }
 
   getIntroMessages() {
-    return [
-      Response.genQuickReply(
-        i18n.__('spirit_submission.request'),
-        MESSENGER_QUICK_REPLIES.CONFIRMATION,
-      ),
-    ];
+    return {
+      messages: [
+        Response.genQuickReply(
+          i18n.__('spirit_submission.request'),
+          MESSENGER_QUICK_REPLIES.CONFIRMATION,
+        ),
+      ],
+    };
   }
 }
 

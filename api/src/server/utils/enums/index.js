@@ -14,6 +14,7 @@ const MESSENGER_PAYLOADS = {
   SPIRIT_COMMUNICATION: 'sc',
   NEXT_GAME: 'next_game',
   SUBMIT_A_SCORE: 'Submit a score',
+  SKIP: 'skip',
 };
 const MESSENGER_QUICK_REPLIES = {
   CONFIRMATION: [

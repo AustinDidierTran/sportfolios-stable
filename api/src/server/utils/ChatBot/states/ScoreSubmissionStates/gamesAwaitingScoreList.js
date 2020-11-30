@@ -57,12 +57,14 @@ class gamesAwaitingScoreList extends State {
     //Facebook limit the maximum quick replies amount to 13
     const games = await getGamesWithAwaitingScore(userId, 13);
     if (games.length === 0) {
-      return [
-        Response.genQuickReply(
-          i18n.__('score_submission.no_game_awaiting_score'),
-          MESSENGER_QUICK_REPLIES.ENDPOINT_ACTIONS,
-        ),
-      ];
+      return {
+        messages: [
+          Response.genQuickReply(
+            i18n.__('score_submission.no_game_awaiting_score'),
+            MESSENGER_QUICK_REPLIES.ENDPOINT_ACTIONS,
+          ),
+        ],
+      };
     }
     const quickReplies = games.map(game => {
       const opponentTeamsString = game.opponent_teams_names.join(
@@ -83,12 +85,14 @@ class gamesAwaitingScoreList extends State {
         title: dateString + ' VS ' + opponentTeamsString,
       };
     });
-    return [
-      Response.genQuickReply(
-        i18n.__('score_submission.choose_game'),
-        quickReplies,
-      ),
-    ];
+    return {
+      messages: [
+        Response.genQuickReply(
+          i18n.__('score_submission.choose_game'),
+          quickReplies,
+        ),
+      ],
+    };
   }
 }
 

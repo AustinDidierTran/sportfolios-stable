@@ -29,12 +29,14 @@ class AwaitingSpiritEquity extends State {
   }
 
   getIntroMessages() {
-    return [
-      Response.genQuickReply(
-        i18n.__('spirit_submission.equity'),
-        MESSENGER_QUICK_REPLIES.SPIRIT,
-      ),
-    ];
+    return {
+      messages: [
+        Response.genQuickReply(
+          i18n.__('spirit_submission.equity'),
+          MESSENGER_QUICK_REPLIES.SPIRIT,
+        ),
+      ],
+    };
   }
 }
 

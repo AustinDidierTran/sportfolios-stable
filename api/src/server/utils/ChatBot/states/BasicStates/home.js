@@ -68,7 +68,7 @@ class Home extends State {
         ),
       );
     }
-    return responses;
+    return { messages: responses };
   }
 }
 

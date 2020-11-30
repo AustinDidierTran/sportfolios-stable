@@ -258,6 +258,7 @@ const SCORE_SUBMISSION_CHATBOT_STATES = {
   AWAITING_SPIRIT_COMMUNICATION: 'awaiting_spirit_communication',
   AWAITING_SPIRIT_CONFIRMATION: 'awaiting_spirit_confirmation',
   GAMES_AWAITING_SCORE_LIST: 'games_awaiting_score_list',
+  AWAITING_ATTENDANCE: 'awaiting_attendance',
 };
 
 const GAME_INFOS_CHATBOT_STATES = {

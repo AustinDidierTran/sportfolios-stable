@@ -33,7 +33,9 @@ class NotLinked extends State {
   }
 
   getIntroMessages() {
-    return [Response.genText(i18n.__('connection.no_ref'))];
+    return {
+      messages: [Response.genText(i18n.__('connection.no_ref'))],
+    };
   }
 }
 

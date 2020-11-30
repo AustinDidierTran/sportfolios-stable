@@ -24,8 +24,18 @@ class Chatbot {
   }
 
   async sendIntroMessages(delay = 0) {
-    const messages = await this.state.getIntroMessages();
-    this.state.sendMessages(this.messengerId, messages, delay);
+    const finalMessages = [];
+    let state = this.stateType;
+    do {
+      this.setState(state);
+      const {
+        messages,
+        nextState,
+      } = await this.state.getIntroMessages();
+      finalMessages.concat(messages);
+      state = nextState;
+    } while (state);
+    this.state.sendMessages(this.messengerId, finalMessages, delay);
   }
 }
 

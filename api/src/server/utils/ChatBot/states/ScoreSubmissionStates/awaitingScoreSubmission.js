@@ -42,19 +42,23 @@ class AwaitingScoreSubmission extends State {
         '',
       );
       const example = [...Array(teamQuantity).keys()].join('-');
-      return [
-        Response.genText(
-          i18n.__(
-            'score_submission.explaination_many',
-            teamNames,
-            example,
+      return {
+        messages: [
+          Response.genText(
+            i18n.__(
+              'score_submission.explaination_many',
+              teamNames,
+              example,
+            ),
           ),
-        ),
-      ];
+        ],
+      };
     } else {
-      return [
-        Response.genText(i18n.__('score_submission.explaination')),
-      ];
+      return {
+        messages: [
+          Response.genText(i18n.__('score_submission.explaination')),
+        ],
+      };
     }
   }
 }

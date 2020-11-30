@@ -29,12 +29,14 @@ class AwaitingSpiritFouls extends State {
   }
 
   getIntroMessages() {
-    return [
-      Response.genQuickReply(
-        i18n.__('spirit_submission.fouls'),
-        MESSENGER_QUICK_REPLIES.SPIRIT,
-      ),
-    ];
+    return {
+      messages: [
+        Response.genQuickReply(
+          i18n.__('spirit_submission.fouls'),
+          MESSENGER_QUICK_REPLIES.SPIRIT,
+        ),
+      ],
+    };
   }
 }
 
