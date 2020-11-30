@@ -1287,6 +1287,26 @@ async function getRoster(rosterId, withSub) {
   return props;
 }
 
+async function getRosterFromGameIdAndUserId(gameId, userId) {
+  const [{ entity_id: userEntityId }] = await knex('user_entity_role')
+    .select('entity_id')
+    .where({ user_id: userId });
+
+  const teams = await knex('game_teams')
+    .select('roster_id')
+    .where({ game_id: gameId });
+
+  const [{ roster_id: myRosterId }] = await knex('team_players')
+    .select('roster_id')
+    .where({ person_id: userEntityId })
+    .whereIn(
+      'roster_id',
+      teams.map(t => t.roster_id),
+    );
+
+  return myRosterId;
+}
+
 const getPrimaryPerson = async user_id => {
   const [{ primary_person: id }] = await knex('user_primary_person')
     .select('primary_person')
