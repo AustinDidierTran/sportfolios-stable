@@ -35,7 +35,7 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
         const chatbot = new Chatbot(senderId, initialState, {
           ...initialChatbotInfos,
         });
-        chatbot.handleEvent(webhookEvent);
+        await chatbot.handleEvent(webhookEvent);
         const endChatbotInfos = chatbot.chatbotInfos;
         const endState = chatbot.stateType;
         if (

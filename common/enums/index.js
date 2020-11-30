@@ -1,3 +1,18 @@
+const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
 const ENTITIES_ROLE_ENUM = {
   ADMIN: 1,
   EDITOR: 2,
@@ -208,6 +223,11 @@ const STATUS_ENUM = {
   SUCCESS_STRING: 'success',
 };
 
+const PLAYER_ATTENDANCE_STATUS = {
+  PRESENT: 'present',
+  ABSENT: 'absent',
+};
+
 const PERSON_TRANSFER_STATUS_ENUM = {
   ACCEPTED: 'accepted',
   PENDING: 'pending',
@@ -221,21 +241,27 @@ const FACEBOOK_STATUS_ENUM = {
 };
 
 const BASIC_CHATBOT_STATES = {
-  NOT_LINKED: 0,
-  HOME: 1,
+  NOT_LINKED: 'not_linked',
+  HOME: 'home',
 };
 
 const SCORE_SUBMISSION_CHATBOT_STATES = {
-  SCORE_SUBMISSION_REQUEST_SENT: 2,
-  AWAITING_SCORE_SUBMISSION: 3,
-  AWAITING_SCORE_SUBMISSION_CONFIRMATION: 4,
-  SPIRIT_SUBMISSION_REQUEST_SENT: 5,
-  AWAITING_SPIRIT_RULES: 6,
-  AWAITING_SPIRIT_FOULS: 7,
-  AWAITING_SPIRIT_EQUITY: 8,
-  AWAITING_SPIRIT_SELF_CONTROL: 9,
-  AWAITING_SPIRIT_COMMUNICATION: 10,
-  AWAITING_SPIRIT_CONFIRMATION: 11,
+  SCORE_SUBMISSION_REQUEST_SENT: 'score_submission_request_sent',
+  AWAITING_SCORE_SUBMISSION: 'awaiting_score_submission',
+  AWAITING_SCORE_SUBMISSION_CONFIRMATION:
+    'awaiting_score_submission_confirmation',
+  SPIRIT_SUBMISSION_REQUEST_SENT: 'spirit_submission_request_sent',
+  AWAITING_SPIRIT_RULES: 'awaiting_spirit_rule',
+  AWAITING_SPIRIT_FOULS: 'awaiting_spirit_fouls',
+  AWAITING_SPIRIT_EQUITY: 'awaiting_spirit_equity',
+  AWAITING_SPIRIT_SELF_CONTROL: 'awaiting_spirit_self_control',
+  AWAITING_SPIRIT_COMMUNICATION: 'awaiting_spirit_communication',
+  AWAITING_SPIRIT_CONFIRMATION: 'awaiting_spirit_confirmation',
+  GAMES_AWAITING_SCORE_LIST: 'games_awaiting_score_list',
+};
+
+const GAME_INFOS_CHATBOT_STATES = {
+  NEXT_GAME_INFOS: 'next_games_infos',
 };
 
 const REJECTION_ENUM = {
@@ -327,6 +353,7 @@ const LIST_ITEM_ENUM = {
 };
 
 const MILLIS_TIME_ENUM = {
+  ONE_MINUTE: 60 * 1000,
   ONE_HOUR: 60 * 60 * 1000,
   ONE_DAY: 24 * 60 * 60 * 1000,
   ONE_WEEK: 7 * 24 * 60 * 60 * 1000,
@@ -455,4 +482,7 @@ module.exports = {
   TABS_ENUM,
   TAG_TYPE_ENUM,
   VIEW_ENUM,
+  PLAYER_ATTENDANCE_STATUS,
+  MONTH_NAMES,
+  GAME_INFOS_CHATBOT_STATES,
 };

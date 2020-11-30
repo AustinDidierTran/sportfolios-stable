@@ -12,9 +12,14 @@ const ERROR_ENUM = {
   VALUE_IS_INVALID: 'value_is_invalid',
   VALUE_IS_REQUIRED: 'value_is_required',
   VALUE_IS_TOO_LONG: 'value_is_too_long',
+  VALUE_ALREADY_EXISTS: 'Value already exist',
 };
 
 const errors = {
+  [ERROR_ENUM.VALUE_ALREADY_EXISTS]: {
+    message: ERROR_ENUM.VALUE_ALREADY_EXISTS,
+    code: 409,
+  },
   [ERROR_ENUM.ACCESS_DENIED]: {
     message: ERROR_ENUM.ACCESS_DENIED,
     code: 401,

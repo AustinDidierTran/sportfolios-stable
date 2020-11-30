@@ -10,6 +10,8 @@ const {
   upsertNotificationsSettings,
 } = require('../helpers/notifications');
 
+const Chatbot = require('../../server/utils/ChatBot/chatbot');
+
 const socket = require('../../server/websocket/socket.io');
 
 const { sendMail } = require('../../server/utils/nodeMailer');
@@ -19,9 +21,18 @@ const {
   getEmailsFromUserId,
   getLanguageFromUser,
   getMessengerId,
+  setChatbotInfos,
+  getChatbotInfos,
 } = require('../helpers');
+const { getGameTeams } = require('../helpers/entity');
 
-const { SOCKET_EVENT } = require('../../../../common/enums');
+const {
+  SOCKET_EVENT,
+  NOTIFICATION_TYPE,
+  SCORE_SUBMISSION_CHATBOT_STATES,
+  MILLIS_TIME_ENUM,
+  BASIC_CHATBOT_STATES,
+} = require('../../../../common/enums');
 
 const seeNotifications = async user_id => {
   return seeNotificationsHelper(user_id);
@@ -52,6 +63,58 @@ const sendNotification = async (notif, emailInfos) => {
   );
   if (emailInfos && (!notifSetting || notifSetting.email)) {
     sendEmailNotification(user_id, emailInfos);
+  }
+  if (!notifSetting || notifSetting.chatbot) {
+    sendChatbotNotification(user_id, notif);
+  }
+};
+
+const sendChatbotNotification = async (user_id, notif) => {
+  const messengerId = await getMessengerId(user_id);
+  if (!messengerId) {
+    return;
+  }
+  const { chatbotInfos, updated_at, state } = await getChatbotInfos(
+    messengerId,
+  );
+  //Check if state is not at home, or if no interaction has been made with the bot in past hours to prevent interruptin a conversation
+  if (
+    state != BASIC_CHATBOT_STATES.HOME &&
+    new Date(updated_at).valueOf() >
+      new Date().valueOf() - MILLIS_TIME_ENUM.ONE_HOUR * 3
+  ) {
+    return;
+  }
+  const { type, metadata } = notif;
+  if (type === NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST) {
+    const { gameId, playerId } = metadata;
+    const teams = await getGameTeams(gameId, playerId);
+    let myTeamFound = false;
+    chatbotInfos.opponentTeams = [];
+    chatbotInfos.gameId = gameId;
+    chatbotInfos.playerId = playerId;
+    teams.forEach(team => {
+      if (!myTeamFound && team.player_id) {
+        myTeamFound = true;
+        chatbotInfos.myRosterId = team.roster_id;
+        chatbotInfos.myTeamName = team.name;
+      } else {
+        chatbotInfos.opponentTeams.push({
+          rosterId: team.roster_id,
+          teamName: team.name,
+        });
+      }
+    });
+    const chatbot = new Chatbot(
+      messengerId,
+      SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT,
+      chatbotInfos,
+    );
+    chatbot.sendIntroMessages();
+    await setChatbotInfos(messengerId, {
+      chatbot_infos: JSON.stringify(chatbot.chatbotInfos),
+      state: chatbot.stateType,
+    });
   }
 };
 

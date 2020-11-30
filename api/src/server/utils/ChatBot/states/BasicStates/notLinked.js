@@ -7,7 +7,7 @@ const Response = require('../../response');
 const i18n = require('../../../../../i18n.config');
 
 class NotLinked extends State {
-  handleEvent(webhookEvent) {
+  async handleEvent(webhookEvent) {
     let nextState;
     const ref = this.getRef(webhookEvent);
     if (ref) {
@@ -17,7 +17,7 @@ class NotLinked extends State {
       this.handleNoRef(webhookEvent.sender.id);
     }
     if (nextState) {
-      this.context.changeState(nextState);
+      await this.context.changeState(nextState);
     }
   }
 
