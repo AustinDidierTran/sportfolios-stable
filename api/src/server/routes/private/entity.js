@@ -426,6 +426,27 @@ router.get(`${BASE_URL}/interactiveTool`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/gameSubmissionInfos`, async ctx => {
+  const data = await queries.getGameSubmissionInfos(
+    ctx.query.gameId,
+    ctx.body.userInfo.id,
+  );
+
+  if (data) {
+    console.log('ALLO');
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+    };
+  }
+});
+
 router.put(`${BASE_URL}`, async ctx => {
   const entity = await queries.updateEntity(
     ctx.request.body,

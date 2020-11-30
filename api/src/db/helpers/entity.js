@@ -1288,6 +1288,26 @@ async function getRoster(rosterId, withSub) {
   return props;
 }
 
+async function getRosterFromGameIdAndUserId(gameId, userId) {
+  const [{ entity_id: userEntityId }] = await knex('user_entity_role')
+    .select('entity_id')
+    .where({ user_id: userId });
+
+  const teams = await knex('game_teams')
+    .select('roster_id')
+    .where({ game_id: gameId });
+
+  const [{ roster_id: myRosterId }] = await knex('team_players')
+    .select('roster_id')
+    .where({ person_id: userEntityId })
+    .whereIn(
+      'roster_id',
+      teams.map(t => t.roster_id),
+    );
+
+  return myRosterId;
+}
+
 const getPrimaryPerson = async user_id => {
   const [{ primary_person: id }] = await knex('user_primary_person')
     .select('primary_person')
@@ -1488,6 +1508,30 @@ async function getGameTeams(game_id, player_id) {
       .where({ game_id })
       .leftJoin(players, 'game_teams.roster_id', 'players.roster_id');
   }
+}
+
+async function getGameSubmissionInfos(gameId, myRosterId) {
+  const [scoreSuggestion] = await knex('score_suggestion')
+    .select('*')
+    .where({ game_id: gameId });
+  console.log({ scoreSuggestion });
+
+  const [spiritSubmission] = await knex('spirit_submission')
+    .select('spirit_score', 'comment')
+    .where({ game_id: gameId, submitted_by_roster: myRosterId });
+  console.log({ spiritSubmission });
+
+  const presences = await knex('game_players_attendance')
+    .select('player_id', 'status')
+    .where({ game_id: gameId, roster_id: myRosterId })
+    .andWhere('status', '=', 'present');
+  console.log({ presences });
+
+  return {
+    scoreSuggestion,
+    spiritSubmission,
+    presences,
+  };
 }
 
 async function isPlayerInRoster(player_id, roster_id) {
@@ -3246,10 +3290,16 @@ module.exports = {
   getRemainingSpots,
   getRankings,
   getRoster,
+<<<<<<< HEAD
+=======
+  getRosterWithSub,
+  getRosterFromGameIdAndUserId,
+>>>>>>> wip fix
   getEvent,
   getAlias,
   getPhases,
   getGames,
+  getGameSubmissionInfos,
   getUnplacedGames,
   getTeamGames,
   getPhasesGameAndTeams,
