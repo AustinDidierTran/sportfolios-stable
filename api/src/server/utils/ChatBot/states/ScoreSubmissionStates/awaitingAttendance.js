@@ -14,6 +14,7 @@ const { MESSENGER_PAYLOADS } = require('../../../enums');
 const {
   getAttendanceSheet,
 } = require('../../../../../db/helpers/entity');
+const { CLIENT_BASE_URL } = require('../../../../../../../conf');
 
 class AwaitingAttendance extends State {
   async handleEvent(webhookEvent) {
@@ -41,7 +42,7 @@ class AwaitingAttendance extends State {
             [
               genWebUrlButton(
                 i18n.__('Fill the attendance sheet'),
-                `https://sportfolios.app/${chatbotInfos.eventId}?tab=${TABS_ENUM.SCHEDULE}&gameId=${chatbotInfos.gameId}`,
+                `${CLIENT_BASE_URL}/${chatbotInfos.eventId}?tab=${TABS_ENUM.SCHEDULE}&gameId=${chatbotInfos.gameId}`,
               ),
               genPostbackButton(
                 i18n.__('Skip'),
