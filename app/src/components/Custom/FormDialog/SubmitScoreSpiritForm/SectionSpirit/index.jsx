@@ -1,4 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   Divider,
   FormControl,
@@ -13,26 +18,57 @@ import { Button, Collapse, IconButton } from '../../..';
 import { TextField, Typography } from '../../../../MUI';
 
 import styles from '../SubmitScoreSpiritForm.module.css';
+import {
+  STATUS_ENUM,
+  SEVERITY_ENUM,
+} from '../../../../../../../common/enums';
+import { ACTION_ENUM, Store } from '../../../../../Store';
+import api from '../../../../../actions/api';
 
 export default function SectionSpirit(props) {
-  const { spiritSubmission, game, IsSubmittedCheck } = props;
+  const {
+    submissioner,
+    submittedSpirit,
+    game,
+    IsSubmittedCheck,
+  } = props;
   const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
 
   const formik = useFormik({
     initialValues: {
       spirit: [2, 2, 2, 2, 2],
-      comments: '',
+      comment: '',
     },
-    //validate,
-    //validateOnChange: false,
-    //validateOnBlur: false,
-    onSubmit: async values => {},
+    onSubmit: async values => {
+      const { spirit, comment } = values;
+
+      const { status } = await api('/api/entity/spirit', {
+        method: 'POST',
+        body: JSON.stringify({
+          submitted_by_roster: submissioner.myRosterId,
+          submitted_by_person: submissioner.myEntityId,
+          game_id: game.id,
+          submitted_for_roster: submissioner.enemyRosterId,
+          spirit_score: spirit.reduce((a, b) => a + b, 0),
+          comment,
+        }),
+      });
+
+      if (status === STATUS_ENUM.SUCCESS) {
+        submittedState(true);
+      } else {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: t('an_error_has_occured'),
+          severity: SEVERITY_ENUM.INFO,
+        });
+      }
+    },
   });
 
   const [expanded, setExpanded] = useState(true);
-  const [isSubmitted, setIsSubmitted] = useState(
-    Boolean(spiritSubmission),
-  );
+  const [isSubmitted, setIsSubmitted] = useState(true);
   const expandedIcon = useMemo(
     () => (!expanded ? 'KeyboardArrowDown' : 'KeyboardArrowUp'),
     [expanded],
@@ -42,10 +78,13 @@ export default function SectionSpirit(props) {
     [formik.values.spirit],
   );
 
-  const onSubmitSpirit = () => {
-    console.log('submitting spirit');
-    setExpanded(false);
-    setIsSubmitted(true);
+  useEffect(() => {
+    submittedState(Boolean(submittedSpirit?.spirit_score));
+  }, [submittedSpirit]);
+
+  const submittedState = submitted => {
+    setExpanded(!submitted);
+    setIsSubmitted(submitted);
   };
 
   const handleRadioChange = event => {
@@ -126,12 +165,15 @@ export default function SectionSpirit(props) {
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         {isSubmitted ? (
           <div>
-            <Typography>{`Total: ${spiritSubmission?.spirit_score}`}</Typography>
+            <Typography
+              className={styles.totalSpirit}
+            >{`Total: ${submittedSpirit?.spirit_score ||
+              spiritTotal}`}</Typography>
             <TextField
               type="text"
-              disabled
-              value={spiritSubmission?.comment}
+              value={submittedSpirit?.comment}
               fullWidth
+              formikDisabled
             />
           </div>
         ) : (
@@ -143,22 +185,22 @@ export default function SectionSpirit(props) {
               {t('spirit_chart_ligue_mardi')}
             </Typography>
             {RadioButtons}
+            <Typography
+              className={styles.totalSpirit}
+            >{`Total: ${spiritTotal}`}</Typography>
+            <TextField
+              type="text"
+              namespace="comment"
+              placeholder={t('comments')}
+              formik={formik}
+              fullWidth
+            />
           </div>
         )}
-        <Typography
-          className={styles.totalSpirit}
-        >{`Total: ${spiritTotal}`}</Typography>
-        <TextField
-          type="text"
-          namespace="comments"
-          placeholder={t('comments')}
-          formik={formik}
-          fullWidth
-        />
         <div className={styles.divSubmitButton}>
           <Button
             className={styles.submitButton}
-            onClick={onSubmitSpirit}
+            onClick={() => formik.handleSubmit()}
             color={'primary'}
             variant="text"
             disabled={isSubmitted}

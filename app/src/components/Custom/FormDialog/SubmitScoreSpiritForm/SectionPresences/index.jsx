@@ -8,7 +8,12 @@ import { Typography } from '../../../../MUI';
 import styles from '../SubmitScoreSpiritForm.module.css';
 
 export default function SectionSpirit(props) {
-  const { game, IsSubmittedCheck } = props;
+  const {
+    submissioner,
+    submittedPresences,
+    game,
+    IsSubmittedCheck,
+  } = props;
   const { t } = useTranslation();
 
   const [

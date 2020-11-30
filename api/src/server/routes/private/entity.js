@@ -5,6 +5,7 @@ const {
   ERROR_ENUM,
   errors,
 } = require('../../../../../common/errors');
+const { reset } = require('nodemon');
 
 const router = new Router();
 const BASE_URL = '/api/entity';
@@ -59,6 +60,54 @@ router.get(`${BASE_URL}/forYouPage`, async ctx => {
     ctx.body = {
       status: 'error',
       message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
+  const res = await queries.canUnregisterTeamsList(
+    ctx.query.rosterIds,
+    ctx.query.eventId,
+  );
+
+  if (res) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/getSubmissionerInfos`, async ctx => {
+  const res = await queries.getSubmissionerInfos(
+    ctx.query.gameId,
+    ctx.body.userInfo.id,
+  );
+
+  if (res === ERROR_ENUM.ACCESS_DENIED) {
+    ctx.status = STATUS_ENUM.FORBIDDEN;
+    ctx.body = {
+      status: 'error',
+      message: 'player not in team',
+    };
+  } else if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
     };
   }
 });
@@ -432,8 +481,7 @@ router.get(`${BASE_URL}/gameSubmissionInfos`, async ctx => {
     ctx.body.userInfo.id,
   );
 
-  if (data) {
-    console.log('ALLO');
+  if (data !== ERROR_ENUM.ACCESS_DENIED) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
@@ -744,27 +792,6 @@ router.post(BASE_URL, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
-  const res = await queries.canUnregisterTeamsList(
-    ctx.query.rosterIds,
-    ctx.query.eventId,
-  );
-
-  if (res) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: res,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
-});
-
 router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
   const res = await queries.unregisterTeams(
     ctx.request.body,
@@ -887,6 +914,23 @@ router.post(`${BASE_URL}/game`, async ctx => {
     };
   } else {
     ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/spirit`, async ctx => {
+  const res = await queries.addSpiritSubmission(ctx.request.body);
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'Something went wrong',

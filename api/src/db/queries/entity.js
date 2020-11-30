@@ -27,12 +27,14 @@ const {
   addRegisteredToSchedule: addRegisteredToScheduleHelper,
   addRoster: addRosterHelper,
   addNewPersonToRoster: addNewPersonToRosterHelper,
+  addSpiritSubmission: addSpiritSubmissionHelper,
   addScoreAndSpirit: addScoreAndSpiritHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
   addTeamToEvent: addTeamToEventHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
   canRemovePlayerFromRoster: canRemovePlayerFromRosterHelper,
+  getSubmissionerInfos: getSubmissionerInfosHelper,
   canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
@@ -77,7 +79,7 @@ const {
   getRegistrationTeamPaymentOption: getRegistrationTeamPaymentOptionHelper,
   getRemainingSpots: getRemainingSpotsHelper,
   getRoster: getRosterHelper,
-  getRosterFromGameIdAndUserId: getRosterFromGameIdAndUserIdHelper,
+  getGameInfosFromGameIdAndUserId: getGameInfosFromGameIdAndUserIdHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getRosterInvoiceItem,
   getSameSuggestions: getSameSuggestionsHelper,
@@ -268,11 +270,17 @@ async function getGames(eventId) {
 }
 
 async function getGameSubmissionInfos(gameId, userId) {
-  const myRosterId = await getRosterFromGameIdAndUserIdHelper(
+  const infos = await getGameInfosFromGameIdAndUserIdHelper(
     gameId,
     userId,
   );
-  return getGameSubmissionInfosHelper(gameId, myRosterId);
+
+  if (infos.myRosterId) {
+    return getGameSubmissionInfosHelper(gameId, infos.myRosterId);
+  }
+
+  // user is not in any of the teams
+  return ERROR_ENUM.ACCESS_DENIED;
 }
 
 async function getUnplacedGames(eventId) {
@@ -309,6 +317,20 @@ async function getPersonInfos(entityId) {
 
 async function getRegistrationTeamPaymentOption(paymentOptionId) {
   return getRegistrationTeamPaymentOptionHelper(paymentOptionId);
+}
+
+async function getSubmissionerInfos(gameId, userId) {
+  const gameInfos = await getGameInfosFromGameIdAndUserIdHelper(
+    gameId,
+    userId,
+  );
+
+  if (gameInfos.myRosterId) {
+    return getSubmissionerInfosHelper(gameInfos);
+  }
+
+  // user is not in any of the teams
+  return ERROR_ENUM.ACCESS_DENIED;
 }
 
 async function updateEvent(body, userId) {
@@ -734,6 +756,10 @@ async function addGame(body) {
   return res;
 }
 
+async function addSpiritSubmission(body) {
+  return addSpiritSubmissionHelper(body);
+}
+
 async function addScoreAndSpirit(body) {
   const res = await addScoreAndSpiritHelper(body);
   return res;
@@ -840,8 +866,7 @@ async function addOption(body, userId) {
 }
 
 async function addNewPersonToRoster(body, userId) {
-  const res = await addNewPersonToRosterHelper(body, userId);
-  return res;
+  return addNewPersonToRosterHelper(body, userId);
 }
 
 const canUnregisterTeamsList = async (rosterIds, eventId) => {
@@ -1058,6 +1083,7 @@ module.exports = {
   addPlayerToRoster,
   addRegisteredToSchedule,
   addNewPersonToRoster,
+  addSpiritSubmission,
   addScoreAndSpirit,
   addScoreSuggestion,
   addTeamToEvent,
@@ -1109,6 +1135,7 @@ module.exports = {
   getRegistered,
   getRemainingSpots,
   getRoster,
+  getSubmissionerInfos,
   getS3Signature,
   getScoreSuggestion,
   getSameSuggestions,
