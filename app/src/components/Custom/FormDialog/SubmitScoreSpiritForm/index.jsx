@@ -18,7 +18,7 @@ import api from '../../../../actions/api';
 import { formatRoute } from '../../../../actions/goTo';
 
 export default function SubmitScoreDialog(props) {
-  const { open, onClose, game } = props;
+  const { open, onClose, game, submissionerGameInfos } = props;
   const { t } = useTranslation();
 
   const getData = async () => {
@@ -27,15 +27,17 @@ export default function SubmitScoreDialog(props) {
         gameId: game.id,
       }),
     );
-    console.log({ data });
+    //console.log({ data });
     setsubmissionInfos(data);
   };
 
   const [submissionInfos, setsubmissionInfos] = useState({});
 
   useEffect(() => {
-    getData();
-  }, []);
+    if (open) {
+      getData();
+    }
+  }, [open]);
 
   const SubmittedCheck = (
     <div className={styles.submitted}>
@@ -63,16 +65,19 @@ export default function SubmitScoreDialog(props) {
             game={game}
             IsSubmittedCheck={SubmittedCheck}
             suggestion={submissionInfos?.scoreSuggestion}
+            submissioner={submissionerGameInfos}
           />
           <SectionSpirit
             game={game}
             IsSubmittedCheck={SubmittedCheck}
             submittedSpirit={submissionInfos?.spiritSubmission}
+            submissioner={submissionerGameInfos}
           />
           <SectionPresences
             game={game}
             IsSubmittedCheck={SubmittedCheck}
             submittedPresences={submissionInfos?.presences}
+            submissioner={submissionerGameInfos}
           />
         </DialogContent>
         <DialogActions>

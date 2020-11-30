@@ -49,6 +49,18 @@ const api = async (route, { method, body } = {}) => {
     return { status };
   }
 
+  if (method === 'GET') {
+    const res = await fetch(`${API_BASE_URL}${route}`, {
+      headers: {
+        Authorization: authToken,
+      },
+    });
+    const status = res.status;
+    const { data } = await res.json();
+
+    return { data, status };
+  }
+
   // Then, it is a get
 
   const res = await fetch(`${API_BASE_URL}${route}`, {

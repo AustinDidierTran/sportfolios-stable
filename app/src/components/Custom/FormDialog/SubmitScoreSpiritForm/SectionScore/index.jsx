@@ -10,7 +10,7 @@ import styles from '../SubmitScoreSpiritForm.module.css';
 import { STATUS_ENUM } from '../../../../../../../common/enums';
 
 export default function SectionScore(props) {
-  const { suggestion, game, IsSubmittedCheck } = props;
+  const { submissioner, suggestion, game, IsSubmittedCheck } = props;
   const { t } = useTranslation();
 
   const validate = values => {
