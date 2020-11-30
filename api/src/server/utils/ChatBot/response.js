@@ -74,7 +74,7 @@ module.exports = class Response {
 
   static genText(text) {
     let response = {
-      text: utf8.encode(text),
+      text: text,
     };
 
     return response;
