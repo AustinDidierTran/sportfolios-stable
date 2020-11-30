@@ -59,7 +59,7 @@ class NextGameInfos extends State {
     };
     return [
       Response.genQuickReply(
-        i18n.__('game_infos.next_game', infos),
+        i18n.__('game_infos.next_game', ...infos),
         MESSENGER_QUICK_REPLIES.ENDPOINT_ACTIONS,
       ),
     ];

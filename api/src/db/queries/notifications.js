@@ -79,8 +79,8 @@ const sendChatbotNotification = async (user_id, notif) => {
   );
   //Check if state is not at home, or if no interaction has been made with the bot in past hours to prevent interruptin a conversation
   if (
-    state != BASIC_CHATBOT_STATES.HOME ||
-    new Date(updated_at).valueOf() <
+    state != BASIC_CHATBOT_STATES.HOME &&
+    new Date(updated_at).valueOf() >
       new Date().valueOf() - MILLIS_TIME_ENUM.ONE_HOUR * 3
   ) {
     return;

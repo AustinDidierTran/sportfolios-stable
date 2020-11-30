@@ -44,10 +44,11 @@ class AwaitingScoreSubmission extends State {
       const example = [...Array(teamQuantity).keys()].join('-');
       return [
         Response.genText(
-          i18n.__('score_submission.explaination_many', {
+          i18n.__(
+            'score_submission.explaination_many',
             teamNames,
             example,
-          }),
+          ),
         ),
       ];
     } else {

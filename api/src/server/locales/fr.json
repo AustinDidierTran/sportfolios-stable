@@ -1,19 +1,19 @@
 {
   "game_infos": {
-    "next_game": "Voici les informations de votre prochaine partie:\n\n📅  Événement: {{event}}\n📍  Terrain: {{field}}\n⌚  Date: {{timeslot}}\n🤺  Adversaire: {{opponentTeams}}",
+    "next_game": "Voici les informations de votre prochaine partie:\n\n📅  Événement: %s\n📍  Terrain: %s\n⌚  Date: %s\n🤺  Adversaire: %s",
     "no_game": "Vous n'avez aucune partie à venir"
   },
   "score_submission": {
     "choose_game": "Voici vos parties en attente de soumission de score",
     "no_game_awaiting_score": "Vous n'avez aucune partie jouée en attente de score",
-    "request": "Bonjour {{userName}}, votre équipe vient tout juste d'affronter l'équipe {{opponentTeamName}}. Désirez-vous soumettre votre pointage ici?",
+    "request": "Bonjour %s, votre équipe vient tout juste d'affronter l'équipe %s. Désirez-vous soumettre votre pointage ici?",
     "explaination": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-[leur pointage]. Par exemple, pour une victoire de 13 à 10 veuillez entrer 13-10",
-    "explaination_many": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-{{teamNames}}. Par exemple: {{example}}",
+    "explaination_many": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-%s. Par exemple: %s",
     "confirmation": {
-      "victory": "Vous avez remporté votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
-      "defeat": "Vous avez perdu votre partie contre {{opponentTeamName}} par le pointage de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
-      "draw": "La partie contre {{opponentTeamName}} s'est terminée avec une égalité de {{myScore}} à {{opponentScore}}, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
-      "many": "La partie s'est terminée avec les scores suivant, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage.\n{{scores}} "
+      "victory": "Vous avez remporté votre partie contre %s par le pointage de %s à %s, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
+      "defeat": "Vous avez perdu votre partie contre %s par le pointage de %s à %s, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
+      "draw": "La partie contre %s s'est terminée avec une égalité de %s à %s, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
+      "many": "La partie s'est terminée avec les scores suivant, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage.\n%s "
     },
     "confirmed": {
       "victory": "C'est envoyé, félicitation pour votre belle victoire!",
@@ -59,11 +59,11 @@
     "back_to_menu": "Revenir au menu"
   },
   "emails": {
-    "added_to_roster_text": "Bonjour {{name}}! Quelqu'un vous a ajouté à l'alignement de l'équipe {{teamName}} sur Sportfolios. Cliquez sur le bouton suivant pour consulter l'alignement complet.",
+    "added_to_roster_text": "Bonjour %s! Quelqu'un vous a ajouté à l'alignement de l'équipe %s sur Sportfolios. Cliquez sur le bouton suivant pour consulter l'alignement complet.",
     "added_to_roster_button": "Voir l'alignement",
     "added_to_roster_subject": "Vous avez été ajouté à un alignement",
     "unsubscribe_footer": "Modifier mes préférences de notifications",
-    "score_submission_request_text": "Bonjour {{name}}! Une de vos partie de l'événement {{eventName}} vient de se terminer. Cliquez sur le lien afin de soumettre votre score sur Sportfolios",
+    "score_submission_request_text": "Bonjour %s! Une de vos partie de l'événement %s vient de se terminer. Cliquez sur le lien afin de soumettre votre score sur Sportfolios",
     "score_submission_request_button": "Soumettre le score",
     "score_submission_request_subject": "Rappel de soumission de score"
   },

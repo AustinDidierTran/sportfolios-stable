@@ -49,7 +49,6 @@ class ScoreSubmissionRequestSent extends State {
     const userName = this.context.chatbotInfos.userName;
     const opponentTeams = this.context.chatbotInfos.opponentTeams;
     const teamQuantity = opponentTeams.length;
-
     const opponentTeamName =
       teamQuantity === 1
         ? opponentTeams[0].teamName
@@ -64,10 +63,11 @@ class ScoreSubmissionRequestSent extends State {
           );
     return [
       Response.genQuickReply(
-        i18n.__('score_submission.request', {
+        i18n.__(
+          'score_submission.request',
           userName,
           opponentTeamName,
-        }),
+        ),
         MESSENGER_QUICK_REPLIES.CONFIRMATION,
       ),
     ];

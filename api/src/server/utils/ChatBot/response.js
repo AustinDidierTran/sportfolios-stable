@@ -1,5 +1,3 @@
-const i18n = require('../../../i18n.config');
-
 module.exports = class Response {
   static genQuickReply(text, quickReplies) {
     let response = {
@@ -76,7 +74,7 @@ module.exports = class Response {
 
   static genText(text) {
     let response = {
-      text: text,
+      text: utf8.encode(text),
     };
 
     return response;

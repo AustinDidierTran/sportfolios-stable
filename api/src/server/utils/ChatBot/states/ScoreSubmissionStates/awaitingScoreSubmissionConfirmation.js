@@ -102,12 +102,12 @@ class AwaitingScoreSubmissionConfirmation extends State {
           : 'score_submission.confirmation.defeat';
       return [
         Response.genQuickReply(
-          i18n.__(text, {
-            opponentTeamName: this.context.chatbotInfos
-              .opponentTeams[0].teamName,
+          i18n.__(
+            text,
+            this.context.chatbotInfos.opponentTeams[0].teamName,
             myScore,
-            opponentScore: opponentTeams[0].score,
-          }),
+            opponentTeams[0].score,
+          ),
           MESSENGER_QUICK_REPLIES.CONFIRMATION,
         ),
       ];
@@ -121,9 +121,7 @@ class AwaitingScoreSubmissionConfirmation extends State {
       );
       return [
         Response.genQuickReply(
-          i18n.__('confirmation.many', {
-            scores,
-          }),
+          i18n.__('confirmation.many', scores),
           MESSENGER_QUICK_REPLIES.CONFIRMATION,
         ),
       ];
