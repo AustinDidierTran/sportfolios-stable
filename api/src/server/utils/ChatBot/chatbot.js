@@ -24,7 +24,7 @@ class Chatbot {
   }
 
   async sendIntroMessages(delay = 0) {
-    const finalMessages = [];
+    let finalMessages = [];
     let state = this.stateType;
     do {
       this.setState(state);
@@ -32,9 +32,10 @@ class Chatbot {
         messages,
         nextState,
       } = await this.state.getIntroMessages();
-      finalMessages.concat(messages);
+      finalMessages = finalMessages.concat(messages);
       state = nextState;
     } while (state);
+
     this.state.sendMessages(this.messengerId, finalMessages, delay);
   }
 }

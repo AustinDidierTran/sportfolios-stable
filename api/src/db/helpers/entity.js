@@ -1416,7 +1416,11 @@ async function getGames(eventId) {
   );
   return res;
 }
-
+async function getAttendanceSheet(infos) {
+  return knex('game_players_attendance')
+    .select()
+    .where(infos);
+}
 async function getGameTeams(game_id, player_id) {
   if (!player_id)
     return knex('game_teams')
@@ -3191,4 +3195,5 @@ module.exports = {
   isScoreSuggestionAlreadySubmitted,
   getGamesWithAwaitingScore,
   getUserNextGame,
+  getAttendanceSheet
 };

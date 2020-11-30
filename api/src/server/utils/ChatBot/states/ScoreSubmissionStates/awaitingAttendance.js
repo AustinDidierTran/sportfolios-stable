@@ -11,6 +11,9 @@ const {
   genText,
 } = require('../../response');
 const { MESSENGER_PAYLOADS } = require('../../../enums');
+const {
+  getAttendanceSheet,
+} = require('../../../../../db/helpers/entity');
 
 class AwaitingAttendance extends State {
   async handleEvent(webhookEvent) {
