@@ -22,7 +22,7 @@ class gamesAwaitingScoreList extends State {
     if (this.isStartOver(webhookEvent) || this.isStop(webhookEvent)) {
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else if (requestedGame) {
-      const { gameId, playerId, myRosterId } = JSON.parse(
+      const { gameId, playerId, myRosterId, eventId } = JSON.parse(
         requestedGame,
       );
       const teams = await getGameTeams(gameId, playerId);
@@ -30,6 +30,7 @@ class gamesAwaitingScoreList extends State {
       this.context.chatbotInfos.gameId = gameId;
       this.context.chatbotInfos.playerId = playerId;
       this.context.chatbotInfos.myRosterId = myRosterId;
+      this.context.chatbotInfos.eventId = eventId;
       teams.forEach(team => {
         if (team.roster_id === myRosterId) {
           this.context.chatbotInfos.myTeamName = team.name;
@@ -81,6 +82,7 @@ class gamesAwaitingScoreList extends State {
           gameId: game.game_id,
           playerId: game.player_id,
           myRosterId: game.roster_id,
+          eventId: game.event_id,
         }),
         title: dateString + ' VS ' + opponentTeamsString,
       };
