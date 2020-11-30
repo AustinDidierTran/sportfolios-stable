@@ -17,8 +17,34 @@
   padding: 1px !important;
 }
 
+.teamsScore {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: auto auto;
+  grid-template-areas:
+    'scores acceptRefuse'
+    '. button';
+}
+
+.scores {
+  grid-area: scores;
+}
+
 .teamName {
   margin-top: 8px !important;
+}
+
+.acceptRefuseScore {
+  grid-area: acceptRefuse;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+}
+
+.divSubmitScoreButton {
+  grid-area: button;
+  display: flex;
+  margin: 8px 0px 8px 0px;
 }
 
 .spiritChart {

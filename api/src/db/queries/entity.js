@@ -55,6 +55,7 @@ const {
   getEvent: getEventHelper,
   getFields: getFieldsHelper,
   getGames: getGamesHelper,
+  getGameSubmissionInfos: getGameSubmissionInfosHelper,
   getUnplacedGames: getUnplacedGamesHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getMembers: getMembersHelper,
@@ -76,6 +77,7 @@ const {
   getRegistrationTeamPaymentOption: getRegistrationTeamPaymentOptionHelper,
   getRemainingSpots: getRemainingSpotsHelper,
   getRoster: getRosterHelper,
+  getRosterFromGameIdAndUserId: getRosterFromGameIdAndUserIdHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getRosterInvoiceItem,
   getSameSuggestions: getSameSuggestionsHelper,
@@ -263,6 +265,14 @@ async function getPhases(eventId) {
 
 async function getGames(eventId) {
   return getGamesHelper(eventId);
+}
+
+async function getGameSubmissionInfos(gameId, userId) {
+  const myRosterId = await getRosterFromGameIdAndUserIdHelper(
+    gameId,
+    userId,
+  );
+  return getGameSubmissionInfosHelper(gameId, myRosterId);
 }
 
 async function getUnplacedGames(eventId) {
@@ -1079,6 +1089,7 @@ module.exports = {
   getEvent,
   getFields,
   getGames,
+  getGameSubmissionInfos,
   getInteractiveToolData,
   getTeamGames,
   getPhasesGameAndTeams,
