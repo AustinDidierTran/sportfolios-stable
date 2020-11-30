@@ -34,6 +34,10 @@ class ScoreSubmissionRequestSent extends State {
           SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION;
       }
     } else if (this.isNo(webhookEvent)) {
+      this.sendMessages(
+        webhookEvent.sender.id,
+        Response.genText(i18n.__('ok_back_to_menu')),
+      );
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else if (this.isStartOver(webhookEvent)) {
       nextState = BASIC_CHATBOT_STATES.HOME;
