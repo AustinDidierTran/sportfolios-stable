@@ -766,7 +766,8 @@ async function addScoreAndSpirit(body) {
 }
 
 async function addScoreSuggestion(body, userId) {
-  const { submitted_by_person } = body;
+  const { submitted_by_person, submitted_by_roster } = body;
+
   if (
     submitted_by_person &&
     !(await isAllowed(
@@ -777,7 +778,44 @@ async function addScoreSuggestion(body, userId) {
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
+
   const res = await addScoreSuggestionHelper(body);
+  //Send notification to other rosters member to accept/decline the score
+  if (res) {
+    const gamePlayers = await getGamePlayersWithRole(body.game_id);
+    if (gamePlayers && gamePlayers.length) {
+      const event_id = gamePlayers[0].event_id;
+      const event_name = gamePlayers[0].event_name;
+      //Get each opponent teams user only once
+      const opponentsPlayers = gamePlayers.filter(
+        (value, index, array) =>
+          value.roster_id != submitted_by_roster &&
+          array.findIndex(
+            value2 =>
+              value.player_owner_id === value2.player_owner_id,
+          ) === index,
+      );
+      const metadata = {
+        score: body.score,
+        gameId: body.game_id,
+        eventId: event_id,
+        eventName: event_name,
+      };
+      const notif = {
+        type: NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE,
+        entity_photo: event_id,
+      };
+      opponentsPlayers.forEach(p => {
+        const fullMetadata = { ...metadata, rosterId: p.roster_id };
+        //TODO Add email infos
+        sendNotification({
+          ...notif,
+          user_id: p.player_owner_id,
+          metadata: fullMetadata,
+        });
+      });
+    }
+  }
   return res;
 }
 

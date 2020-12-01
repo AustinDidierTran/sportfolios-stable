@@ -2,6 +2,7 @@ import {
   ListItem,
   ListItemText,
   ListItemAvatar,
+  ListItemSecondaryAction,
 } from '@material-ui/core';
 import { Avatar } from '../..';
 import React from 'react';
@@ -18,6 +19,7 @@ export default function NotificationItem(props) {
     initials,
     id,
     created_at,
+    buttons,
   } = props;
 
   function handleClick() {
@@ -47,6 +49,7 @@ export default function NotificationItem(props) {
           primary={description}
           secondary={timestampToRelativeTime(new Date(created_at))}
         />
+        <ListItemSecondaryAction>{buttons}</ListItemSecondaryAction>
       </ListItem>
     </>
   );

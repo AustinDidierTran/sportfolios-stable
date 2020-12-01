@@ -1489,11 +1489,20 @@ async function getGames(eventId) {
   );
   return res;
 }
+
 async function getAttendanceSheet(infos) {
   return knex('game_players_attendance')
     .select()
     .where(infos);
 }
+
+async function getGamePlayersWithRole(game_id) {
+  return knex('game_players_view')
+    .select('player_id', 'event_id', 'player_owner')
+    .where({ game_id })
+    .whereNot({ player_role: ROSTER_ROLE_ENUM.PLAYER });
+}
+
 async function getGameTeams(game_id, player_id) {
   if (!player_id)
     return knex('game_teams')
@@ -1540,7 +1549,7 @@ async function getGameSubmissionInfos(gameId, myRosterId) {
 }
 
 async function isPlayerInRoster(player_id, roster_id) {
-  const res = await knex('team_players').where({
+  const [res] = await knex('team_players').where({
     roster_id,
     person_id: player_id,
   });
@@ -3372,4 +3381,5 @@ module.exports = {
   getGamesWithAwaitingScore,
   getUserNextGame,
   getAttendanceSheet,
+  getGamePlayersWithRole,
 };
