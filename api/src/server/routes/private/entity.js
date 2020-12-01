@@ -5,7 +5,6 @@ const {
   ERROR_ENUM,
   errors,
 } = require('../../../../../common/errors');
-const { reset } = require('nodemon');
 
 const router = new Router();
 const BASE_URL = '/api/entity';

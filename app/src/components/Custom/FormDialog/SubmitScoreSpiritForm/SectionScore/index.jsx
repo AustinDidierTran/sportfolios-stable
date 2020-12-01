@@ -180,6 +180,39 @@ export default function SectionScore(props) {
     }
   };
 
+  useEffect(() => {
+    if (Boolean(suggestion?.score)) {
+      submittedState(
+        suggestion?.submitted_by_roster === submissioner.myRosterId,
+      );
+      formik.setFieldValue(
+        'scoreTeam1',
+        suggestion.score[submissioner.myRosterId],
+      );
+      formik.setFieldValue(
+        'scoreTeam2',
+        suggestion.score[submissioner.enemyRosterId],
+      );
+    }
+    /*if (
+      Boolean(
+        suggestion?.submitted_by_roster === submissioner.myRosterId,
+      )
+    ) {
+      submittedState(true);
+      formik.setFieldValue(
+        'scoreTeam1',
+        suggestion.score[submissioner.myRosterId],
+      );
+      formik.setFieldValue(
+        'scoreTeam2',
+        suggestion.score[submissioner.enemyRosterId],
+      );
+    } else if (suggestion?.score) {
+      formik.setFieldValue('scoreTeam1', )
+    }*/
+  }, [suggestion]);
+
   return (
     <div>
       <div
