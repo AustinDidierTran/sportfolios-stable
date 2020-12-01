@@ -17,17 +17,23 @@
   padding: 1px !important;
 }
 
-.teamsScore {
+/*.teamsScore {
   display: grid;
   gap: 8px;
   grid-template-columns: auto auto;
   grid-template-areas:
-    'scores acceptRefuse'
+    'suggestedBy suggestedBy'
+    'scores scores'
     '. button';
-}
+}*/
 
 .scores {
   grid-area: scores;
+}
+
+.suggestedBy {
+  grid-area: suggestedBy;
+  margin-top: 8px !important;
 }
 
 .teamName {
@@ -35,10 +41,10 @@
 }
 
 .acceptRefuseScore {
-  grid-area: acceptRefuse;
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-items: center;
+  justify-content: flex-end;
 }
 
 .divSubmitScoreButton {
@@ -53,11 +59,16 @@
 
 .radioGroup {
   margin-top: 8px !important;
+  width: 100%;
+}
+
+.radioGroupContainer {
+  justify-content: space-between;
 }
 
 .radioGroupControlLabel {
-  margin-left: 8px !important;
-  margin-right: 8px !important;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
 }
 
 .totalSpirit {

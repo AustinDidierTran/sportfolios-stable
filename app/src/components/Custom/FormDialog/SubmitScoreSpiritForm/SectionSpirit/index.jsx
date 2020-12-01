@@ -109,7 +109,6 @@ export default function SectionSpirit(props) {
         component="fieldset"
         key={indexCategory}
         size="small"
-        fullWidth
       >
         <FormLabel component="legend">
           {`${indexCategory + 1}. ${t(
@@ -117,6 +116,7 @@ export default function SectionSpirit(props) {
           )}`}
         </FormLabel>
         <RadioGroup
+          className={styles.radioGroupContainer}
           row
           name={`r${indexCategory}`}
           onChange={handleRadioChange}
