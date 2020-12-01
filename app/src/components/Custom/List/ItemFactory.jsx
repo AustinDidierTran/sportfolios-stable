@@ -28,6 +28,7 @@ import TeamItem from './TeamItem';
 import {
   RosterNotification,
   ScoreSubmissionRequestNotification,
+  ConfirmOrDeclineScoreNotification,
 } from './NotificationItems';
 import { AvatarAndTextSkeleton } from './SkeletonItems';
 import NotificationSettingItem from './NotificationSettingItem';
@@ -59,6 +60,7 @@ const ItemMap = {
   [LIST_ITEM_ENUM.NOTIFICATION_SETTING]: NotificationSettingItem,
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: RosterNotification,
   [NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST]: ScoreSubmissionRequestNotification,
+  [NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE]: ConfirmOrDeclineScoreNotification,
 };
 
 export default function ItemFactory(props) {
