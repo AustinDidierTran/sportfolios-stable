@@ -766,42 +766,18 @@ async function addScoreAndSpirit(body) {
 }
 
 async function addScoreSuggestion(body, userId) {
-  const {
-    gameId,
-    eventId,
-    yourTeamName,
-    yourTeamId,
-    yourScore,
-    opposingTeamName,
-    opposingTeamId,
-    opposingTeamScore,
-    opposingTeamSpirit,
-    players,
-    comments,
-    suggestedBy,
-  } = body;
-
+  const { submitted_by_person } = body;
   if (
-    suggestedBy &&
-    !(await isAllowed(suggestedBy, userId, ENTITIES_ROLE_ENUM.EDITOR))
+    submitted_by_person &&
+    !(await isAllowed(
+      submitted_by_person,
+      userId,
+      ENTITIES_ROLE_ENUM.EDITOR,
+    ))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-
-  const res = await addScoreSuggestionHelper(
-    gameId,
-    eventId,
-    yourTeamName,
-    yourTeamId,
-    yourScore,
-    opposingTeamName,
-    opposingTeamId,
-    opposingTeamScore,
-    opposingTeamSpirit,
-    players,
-    comments,
-    suggestedBy,
-  );
+  const res = await addScoreSuggestionHelper(body);
   return res;
 }
 

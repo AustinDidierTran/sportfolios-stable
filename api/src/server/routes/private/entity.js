@@ -5,7 +5,6 @@ const {
   ERROR_ENUM,
   errors,
 } = require('../../../../../common/errors');
-const { reset } = require('nodemon');
 
 const router = new Router();
 const BASE_URL = '/api/entity';
@@ -914,6 +913,26 @@ router.post(`${BASE_URL}/game`, async ctx => {
     };
   } else {
     ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/suggestScore`, async ctx => {
+  const game = await queries.addScoreSuggestion(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (game) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: game,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'Something went wrong',
