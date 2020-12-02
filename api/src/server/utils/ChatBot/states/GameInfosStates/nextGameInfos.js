@@ -38,12 +38,14 @@ class NextGameInfos extends State {
       this.context.messengerId,
     );
     if (!game || game.length === 0) {
-      return [
-        Response.genQuickReply(
-          i18n.__('game_infos.no_game'),
-          MESSENGER_QUICK_REPLIES.ENDPOINT_ACTIONS,
-        ),
-      ];
+      return {
+        messages: [
+          Response.genQuickReply(
+            i18n.__('game_infos.no_game'),
+            MESSENGER_QUICK_REPLIES.ENDPOINT_ACTIONS,
+          ),
+        ],
+      };
     }
     const date = new Date(
       new Date(game.timeslot).valueOf() +
@@ -57,12 +59,14 @@ class NextGameInfos extends State {
         ' ' + i18n.__('and') + ' ',
       ),
     };
-    return [
-      Response.genQuickReply(
-        i18n.__('game_infos.next_game', ...infos),
-        MESSENGER_QUICK_REPLIES.ENDPOINT_ACTIONS,
-      ),
-    ];
+    return {
+      messages: [
+        Response.genQuickReply(
+          i18n.__('game_infos.next_game', ...infos),
+          MESSENGER_QUICK_REPLIES.ENDPOINT_ACTIONS,
+        ),
+      ],
+    };
   }
 }
 

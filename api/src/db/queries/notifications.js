@@ -87,12 +87,13 @@ const sendChatbotNotification = async (user_id, notif) => {
   }
   const { type, metadata } = notif;
   if (type === NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST) {
-    const { gameId, playerId } = metadata;
+    const { gameId, playerId, eventId } = metadata;
     const teams = await getGameTeams(gameId, playerId);
     let myTeamFound = false;
     chatbotInfos.opponentTeams = [];
     chatbotInfos.gameId = gameId;
     chatbotInfos.playerId = playerId;
+    chatbotInfos.eventId = eventId;
     teams.forEach(team => {
       if (!myTeamFound && team.player_id) {
         myTeamFound = true;

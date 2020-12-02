@@ -1461,7 +1461,11 @@ async function getGames(eventId) {
   );
   return res;
 }
-
+async function getAttendanceSheet(infos) {
+  return knex('game_players_attendance')
+    .select()
+    .where(infos);
+}
 async function getGameTeams(game_id, player_id) {
   if (!player_id)
     return knex('game_teams')
@@ -2297,6 +2301,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'game_players_view.game_id',
       'game_players_view.roster_id',
       'game_players_view.timeslot',
+      'game_players_view.event_id',
       knex.raw('array_agg(name) as opponent_teams_names'),
     )
     .from('user_entity_role')
@@ -2322,6 +2327,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'game_players_view.game_id',
       'game_players_view.roster_id',
       'game_players_view.timeslot',
+      'game_players_view.event_id',
     )
     .limit(limit);
 }
@@ -3295,4 +3301,5 @@ module.exports = {
   isScoreSuggestionAlreadySubmitted,
   getGamesWithAwaitingScore,
   getUserNextGame,
+  getAttendanceSheet,
 };

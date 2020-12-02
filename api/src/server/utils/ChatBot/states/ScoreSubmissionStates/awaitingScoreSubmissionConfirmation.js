@@ -100,17 +100,19 @@ class AwaitingScoreSubmissionConfirmation extends State {
           : myScore == opponentTeams[0].score
           ? 'score_submission.confirmation.draw'
           : 'score_submission.confirmation.defeat';
-      return [
-        Response.genQuickReply(
-          i18n.__(
-            text,
-            this.context.chatbotInfos.opponentTeams[0].teamName,
-            myScore,
-            opponentTeams[0].score,
+      return {
+        messages: [
+          Response.genQuickReply(
+            i18n.__(
+              text,
+              this.context.chatbotInfos.opponentTeams[0].teamName,
+              myScore,
+              opponentTeams[0].score,
+            ),
+            MESSENGER_QUICK_REPLIES.CONFIRMATION,
           ),
-          MESSENGER_QUICK_REPLIES.CONFIRMATION,
-        ),
-      ];
+        ],
+      };
     } else {
       let scores = `${i18n.__('your_team')} (${
         this.context.chatbotInfos.myTeamName
@@ -119,12 +121,14 @@ class AwaitingScoreSubmissionConfirmation extends State {
         (acc, cur) => acc + `${cur.teamName}: ${cur.score}`,
         scores,
       );
-      return [
-        Response.genQuickReply(
-          i18n.__('confirmation.many', scores),
-          MESSENGER_QUICK_REPLIES.CONFIRMATION,
-        ),
-      ];
+      return {
+        messages: [
+          Response.genQuickReply(
+            i18n.__('confirmation.many', scores),
+            MESSENGER_QUICK_REPLIES.CONFIRMATION,
+          ),
+        ],
+      };
     }
   }
 }

@@ -34,6 +34,10 @@ class ScoreSubmissionRequestSent extends State {
           SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION;
       }
     } else if (this.isNo(webhookEvent)) {
+      this.sendMessages(
+        webhookEvent.sender.id,
+        Response.genText(i18n.__('ok_back_to_menu')),
+      );
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else if (this.isStartOver(webhookEvent)) {
       nextState = BASIC_CHATBOT_STATES.HOME;
@@ -61,16 +65,18 @@ class ScoreSubmissionRequestSent extends State {
               cur.teamName,
             '',
           );
-    return [
-      Response.genQuickReply(
-        i18n.__(
-          'score_submission.request',
-          userName,
-          opponentTeamName,
+    return {
+      messages: [
+        Response.genQuickReply(
+          i18n.__(
+            'score_submission.request',
+            userName,
+            opponentTeamName,
+          ),
+          MESSENGER_QUICK_REPLIES.CONFIRMATION,
         ),
-        MESSENGER_QUICK_REPLIES.CONFIRMATION,
-      ),
-    ];
+      ],
+    };
   }
 }
 

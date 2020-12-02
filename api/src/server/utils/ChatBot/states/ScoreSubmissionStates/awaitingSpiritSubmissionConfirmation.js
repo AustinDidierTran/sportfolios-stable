@@ -41,7 +41,8 @@ class AwaitingSpiritSubmissionConfirmation extends State {
           webhookEvent.sender.id,
           Response.genText(i18n.__('spirit_submission.confirmed')),
         );
-        nextState = BASIC_CHATBOT_STATES.HOME;
+        nextState =
+          SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_ATTENDANCE;
       } catch (e) {
         if (e.message == ERROR_ENUM.VALUE_ALREADY_EXISTS) {
           this.sendMessages(webhookEvent.sender.id, [
@@ -77,15 +78,17 @@ class AwaitingSpiritSubmissionConfirmation extends State {
       this.context.chatbotInfos.opponentTeams[0].spirit,
     ).reduce((t, value) => t + value, 0);
     this.context.chatbotInfos.opponentTeams[0].spirit.total = total;
-    return [
-      Response.genQuickReply(
-        i18n.__('spirit_submission.confirmation', {
-          ...this.context.chatbotInfos.opponentTeams[0].spirit,
-          total,
-        }),
-        MESSENGER_QUICK_REPLIES.CONFIRMATION,
-      ),
-    ];
+    return {
+      messages: [
+        Response.genQuickReply(
+          i18n.__('spirit_submission.confirmation', {
+            ...this.context.chatbotInfos.opponentTeams[0].spirit,
+            total,
+          }),
+          MESSENGER_QUICK_REPLIES.CONFIRMATION,
+        ),
+      ],
+    };
   }
 }
 

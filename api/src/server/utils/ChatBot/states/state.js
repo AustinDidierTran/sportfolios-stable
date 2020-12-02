@@ -139,9 +139,10 @@ class State {
     const messengerId = webhookEvent.sender.id;
     const message = webhookEvent.message.text;
     const state = this.context.stateType;
+    const { messages } = await this.getIntroMessages();
     this.sendMessages(messengerId, [
       Response.genText(i18n.__('i_dont_understand')),
-      ...(await this.getIntroMessages()),
+      ...messages,
     ]);
     queries.logMessage({ messenger_id: messengerId, state, message });
   }
