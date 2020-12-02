@@ -1,144 +1,129 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { ListItem, ListItemText } from '../../../MUI';
-import { FormDialog, Icon } from '../..';
-
+import { FormDialog } from '../..';
 import { useTranslation } from 'react-i18next';
 import styles from './MemberImportItem.module.css';
 import {
   formatDate,
-  getMembershipName,
+  validateDateWithYear,
+  validateEmail,
 } from '../../../../utils/stringFormats';
 import { IconButton } from '../..';
 import moment from 'moment';
 import { Divider } from '@material-ui/core';
 import {
   FORM_DIALOG_TYPE_ENUM,
-  INVOICE_STATUS_ENUM,
+  LIST_ITEM_ENUM,
 } from '../../../../../../common/enums';
-import { useQuery } from '../../../../hooks/queries';
-import { AlertDialog } from '../../Dialog';
-import api from '../../../../actions/api';
-import { formatRoute, goTo, ROUTES } from '../../../../actions/goTo';
 
 export default function MemberImportItem(props) {
   const { t } = useTranslation();
+  const { email, day, formik, month, year } = props;
 
-  const {
-    person,
-    memberType,
-    expirationDate,
-    update,
-    status,
-  } = props;
-  const { id: entityId } = useQuery();
   const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+
+  const updateMember = (newEmail, day, month, year) => {
+    const tempMembers = formik.values.members;
+    const index = tempMembers.findIndex(t => t.email === email);
+    tempMembers[index] = {
+      email: newEmail,
+      day: Number(day),
+      month: Number(month),
+      year: Number(year),
+      type: LIST_ITEM_ENUM.MEMBER_IMPORT,
+      key: index,
+    };
+    formik.setFieldValue('members', tempMembers);
+  };
+
+  const expirationDate = useMemo(() => {
+    if (!validateDateWithYear(`${day}/${month}/${year}`)) {
+      return;
+    }
+    const mom = moment();
+    mom.set('year', year);
+    mom.set('month', month - 1);
+    mom.set('date', day);
+    if (!mom.isValid()) {
+      return;
+    }
+    return mom;
+  }, [day, month, year]);
 
   const onOpen = () => {
     setOpen(true);
   };
+
   const onClose = () => {
     setOpen(false);
   };
 
-  const onCancel = () => {
-    setOpenDelete(false);
-  };
-
-  const onDelete = () => {
-    setOpenDelete(true);
-  };
-
-  const confirmDelete = async () => {
-    await api(
-      formatRoute('/api/entity/member', null, {
-        memberType,
-        organizationId: entityId,
-        personId: person.id,
-      }),
-      {
-        method: 'DELETE',
-      },
+  const handleDelete = () => {
+    setDisabled(disabled);
+    formik.setFieldValue(
+      'members',
+      formik.values.members.filter(member => member.email !== email),
     );
-    setOpenDelete(false);
-    update();
   };
 
   return (
     <>
-      <ListItem
-        style={{ width: '100%' }}
-        className={styles.listItem}
-        button
-      >
+      <ListItem style={{ width: '100%' }} className={styles.listItem}>
         <ListItemText
           className={styles.item1}
-          primary={`${person?.name} ${person?.surname}`}
-          onClick={() => {
-            goTo(ROUTES.entity, { id: person.id });
-          }}
-        ></ListItemText>
-        {moment(expirationDate) < moment() ? (
+          primary={email}
+          secondaryTypographyProps={{ color: 'secondary' }}
+          secondary={validateEmail(email) ? '' : t('invalid_email')}
+        />
+        {!expirationDate ? (
           <ListItemText
-            secondaryTypographyProps={{ color: 'secondary' }}
+            className={styles.date}
+            primaryTypographyProps={{ color: 'secondary' }}
             className={styles.item2}
-            primary={t(getMembershipName(memberType))}
-            secondary={`${t('expired_on')}
-              ${formatDate(moment(expirationDate))}`}
-            onClick={() => {
-              goTo(ROUTES.entity, { id: person.id });
-            }}
-          ></ListItemText>
+            primary={`${t('invalid_date')}: ${day}-${month}-${year}`}
+            secondary="dd-mm-yyyy"
+          />
         ) : (
-          <ListItemText
-            className={styles.item2}
-            primary={t(getMembershipName(memberType))}
-            secondary={`${t('valid_until')}
-              ${formatDate(moment(expirationDate))}`}
-            onClick={() => {
-              goTo(ROUTES.entity, { id: person.id });
-            }}
-          ></ListItemText>
+          <>
+            {expirationDate < moment() ? (
+              <ListItemText
+                className={styles.date}
+                secondaryTypographyProps={{ color: 'secondary' }}
+                primary={formatDate(expirationDate)}
+                secondary={t('expired')}
+              />
+            ) : (
+              <ListItemText
+                className={styles.date}
+                primary={formatDate(expirationDate)}
+              />
+            )}
+          </>
         )}
         <FormDialog
-          type={FORM_DIALOG_TYPE_ENUM.EDIT_MEMBERSHIP}
+          type={FORM_DIALOG_TYPE_ENUM.EDIT_MEMBER_IMPORT}
           items={{
             open,
             onClose,
-            update,
-            membership: memberType,
-            person,
+            email,
             expirationDate,
+            updateMember,
           }}
         />
-        {status === INVOICE_STATUS_ENUM.PAID ||
-        status === INVOICE_STATUS_ENUM.FREE ? (
-          <Icon icon="AttachMoney" color="green" />
-        ) : (
-          <Icon icon="MoneyOff" color="red" />
-        )}
         <IconButton
-          className={styles.iconButton}
-          variant="contained"
           icon="Edit"
           tooltip={t('edit')}
           onClick={onOpen}
           style={{ color: 'primary' }}
         />
         <IconButton
-          className={styles.iconButton}
-          variant="contained"
+          disabled={disabled}
           icon="Delete"
           tooltip={t('delete')}
-          onClick={onDelete}
+          onClick={handleDelete}
           style={{ color: 'primary' }}
-        />
-        <AlertDialog
-          open={openDelete}
-          onCancel={onCancel}
-          onSubmit={confirmDelete}
-          title={t('delete_member_confirmation')}
         />
       </ListItem>
       <Divider />

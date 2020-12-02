@@ -13,7 +13,7 @@ export default function CustomDateInput(props) {
     var date = moment(value);
 
     if (!date.isValid()) {
-      setInputError(t('invalid_date'));
+      setInputError(t('invalid_date_it_should_follow'));
     } else if (date > moment()) {
       setInputError(t('date_in_future'));
     } else {

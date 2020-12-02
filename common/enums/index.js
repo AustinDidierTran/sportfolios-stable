@@ -137,6 +137,7 @@ const FORM_DIALOG_TYPE_ENUM = {
   SALES_REPORT: 'sales_report',
   CREATE_TAX_RATE: 'create tax rate',
   ROSTER_PLAYER_OPTIONS: 'roster player options',
+  EDIT_MEMBER_IMPORT: 'edit member import',
 };
 
 const REPORT_TYPE_ENUM = {
@@ -343,6 +344,7 @@ const LIST_ITEM_ENUM = {
   EVENT_PAYMENT_OPTION: 'event_payment_option',
   MEMBER: 'member',
   MEMBERSHIP_DETAIL: 'membership detail',
+  MEMBER_IMPORT: 'member_import',
   MEMBERSHIP_ORGANIZATION: 'membership organization',
   MEMBERSHIP: 'membership',
   PAYMENT_OPTION: 'payment option',
