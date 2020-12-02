@@ -1566,6 +1566,11 @@ async function getGamePlayersWithRole(game_id) {
     .whereNot({ player_role: ROSTER_ROLE_ENUM.PLAYER });
 }
 
+async function getAttendanceSheet(infos) {
+  return knex('game_players_attendance')
+    .select()
+    .where(infos);
+}
 async function getGameTeams(game_id, player_id) {
   if (!player_id)
     return knex('game_teams')
@@ -3614,4 +3619,5 @@ module.exports = {
   getGamePlayersWithRole,
   getRosterName,
   getRostersNames,
+  getAttendanceSheet,
 };
