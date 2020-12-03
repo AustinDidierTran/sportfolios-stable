@@ -22,7 +22,6 @@
 }
 
 .suggestedBy {
-  grid-area: suggestedBy;
   margin-top: 8px !important;
 }
 
@@ -38,7 +37,6 @@
 }
 
 .divSubmitScoreButton {
-  grid-area: button;
   display: flex;
   margin: 8px 0px 8px 0px;
 }

@@ -61,7 +61,7 @@ export default function SectionSpirit(props) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: t('an_error_has_occured'),
-          severity: SEVERITY_ENUM.INFO,
+          severity: SEVERITY_ENUM.ERROR,
         });
       }
     },
@@ -201,17 +201,20 @@ export default function SectionSpirit(props) {
             />
           </div>
         )}
-        <div className={styles.divSubmitButton}>
-          <Button
-            className={styles.submitButton}
-            onClick={() => formik.handleSubmit()}
-            color={'primary'}
-            variant="text"
-            disabled={isSubmitted}
-          >
-            {t('submit')}
-          </Button>
-        </div>
+        {!isSubmitted ? (
+          <div className={styles.divSubmitButton}>
+            <Button
+              className={styles.submitButton}
+              onClick={() => formik.handleSubmit()}
+              color={'primary'}
+              variant="text"
+            >
+              {t('submit')}
+            </Button>
+          </div>
+        ) : (
+          <></>
+        )}
       </Collapse>
     </div>
   );

@@ -1580,7 +1580,7 @@ async function getMyPersonsAdminsOfTeam(rosterId, teams, userId) {
 }
 
 async function getGameSubmissionInfos(gameId, myRosterId) {
-  const [scoreSuggestion] = await knex('score_suggestion')
+  const scoreSuggestions = await knex('score_suggestion')
     .select('*')
     .where({ game_id: gameId });
 
@@ -1594,7 +1594,6 @@ async function getGameSubmissionInfos(gameId, myRosterId) {
         "string_agg(entities_name.name || ' ' || entities_name.surname, ' ') AS complete_name",
       ),
       'game_players_attendance.player_id',
-      //'game_players_attendance.status',
       'game_players_attendance.is_sub',
     )
     .leftJoin(
@@ -1609,12 +1608,11 @@ async function getGameSubmissionInfos(gameId, myRosterId) {
       'entities_name.name',
       'entities_name.surname',
       'game_players_attendance.player_id',
-      //'game_players_attendance.status',
       'game_players_attendance.is_sub',
     );
 
   return {
-    scoreSuggestion,
+    scoreSuggestions,
     spiritSubmission,
     presences: presences.map(p => ({
       value: p.player_id,
@@ -2440,12 +2438,56 @@ async function acceptScoreSuggestion(infos) {
     return;
   }
   const { game_id, score } = res[0];
-  return addScoreSuggestion({
+  const res2 = await addScoreSuggestion({
     submitted_by_roster,
     submitted_by_person,
     game_id,
     score,
   });
+
+  return {
+    ...res2,
+    game_id,
+  };
+}
+
+async function acceptScoreSuggestionIfPossible(gameId) {
+  const allSuggestions = await knex('score_suggestion')
+    .select('*')
+    .where({ game_id: gameId });
+
+  const [{ nbOfTeams: numberOfTeams }] = await knex('game_teams')
+    .count('roster_id as nbOfTeams')
+    .where({ game_id: gameId });
+
+  if (allSuggestions.length === Number(numberOfTeams)) {
+    // all score suggestions are the same, accept them
+    const model = allSuggestions[0].score;
+    const teams = Object.keys(allSuggestions[0].score);
+
+    if (
+      allSuggestions.every(
+        s =>
+          s.score[teams[0]] === model[teams[0]] &&
+          s.score[teams[1]] === model[teams[1]],
+      )
+    ) {
+      // update to accepted
+      await knex('score_suggestion')
+        .where({ game_id: gameId })
+        .update({ status: STATUS_ENUM.ACCEPTED });
+
+      return {
+        canUpdateScore: true,
+        score: model,
+      };
+    } else {
+      // TODO: conflict, send notification to event admin
+      return {
+        canUpdateScore: false,
+      };
+    }
+  }
 }
 
 async function addScoreSuggestion(infos) {
@@ -3383,6 +3425,7 @@ module.exports = {
   addGameAttendances,
   addScoreSuggestion,
   acceptScoreSuggestion,
+  acceptScoreSuggestionIfPossible,
   addScoreAndSpirit,
   addField,
   addTeamToSchedule,

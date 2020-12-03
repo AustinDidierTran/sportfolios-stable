@@ -148,7 +148,7 @@ export default function SectionSpirit(props) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: t('an_error_has_occured'),
-          severity: SEVERITY_ENUM.INFO,
+          severity: SEVERITY_ENUM.ERROR,
         });
       }
     },

@@ -80,7 +80,7 @@ export default function SubmitScoreDialog(props) {
           <SectionScore
             gameId={gameId}
             IsSubmittedCheck={SubmittedCheck}
-            suggestion={submissionInfos?.scoreSuggestion}
+            suggestions={submissionInfos?.scoreSuggestions}
             submissionerInfos={submissionerInfos}
           />
           <SectionSpirit
