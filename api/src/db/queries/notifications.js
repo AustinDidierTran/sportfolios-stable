@@ -129,7 +129,11 @@ const sendChatbotNotification = async (user_id, notif) => {
       acc[name] = score[roster_id];
       return acc;
     }, {});
-    chatbotInfos.submittedBy = names[submittedBy];
+    console.log({ submittedBy });
+    console.log(names);
+    chatbotInfos.submittedBy = names.find(
+      n => n.roster_id == submittedBy,
+    ).name;
     chatbotInfos.suggestionId = suggestionId;
     chatbotInfos.eventName = eventName;
     chatbotInfos.myRosterId = myRosterId;
