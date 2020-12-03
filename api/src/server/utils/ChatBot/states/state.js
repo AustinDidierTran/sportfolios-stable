@@ -8,12 +8,23 @@ class State {
     this.context = context;
   }
 
+  /*
+   *Returns an object in this pattern:
+   * {
+   *   messages: [array containing state entrance messages]
+   *   nextState: (optional) defined if state needs to be changed
+   * }
+   *
+   */
   getIntroMessages() {
     throw new Error(
       'You need to implement the method getIntroMessages',
     );
   }
-
+  /*
+   * Called on message reception
+   * And must define how to handle this event
+   */
   // eslint-disable-next-line no-unused-vars
   async handleEvent(webhookEvent) {
     throw new Error('You need to implement the method handleEvent');

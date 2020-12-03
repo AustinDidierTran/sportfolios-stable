@@ -8,6 +8,7 @@ const {
   addNotification,
   getNotificationsSettings: getNotificationsSettingsHelper,
   upsertNotificationsSettings,
+  getRostersNames,
 } = require('../helpers/notifications');
 
 const Chatbot = require('../../server/utils/ChatBot/chatbot');
@@ -85,7 +86,10 @@ const sendChatbotNotification = async (user_id, notif) => {
     return;
   }
   const { type, metadata } = notif;
+  let newState;
   if (type === NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST) {
+    newState =
+      SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT;
     const { gameId, playerId, eventId } = metadata;
     const teams = await getGameTeams(gameId, playerId);
     let myTeamFound = false;
@@ -105,11 +109,34 @@ const sendChatbotNotification = async (user_id, notif) => {
         });
       }
     });
-    const chatbot = new Chatbot(
-      messengerId,
-      SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT,
-      chatbotInfos,
-    );
+  } else if (
+    type === NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE
+  ) {
+    newState =
+      SCORE_SUBMISSION_CHATBOT_STATES.OTHER_TEAM_SUBMITTED_A_SCORE;
+    const {
+      suggestionId,
+      eventName,
+      myRosterId,
+      myPlayerId,
+      submittedBy,
+      score,
+    } = metadata;
+    const names = await getRostersNames(rostersId);
+    chatbotInfos.score = names.reduce((acc, curr) => {
+      const { roster_id, name } = curr;
+      acc[name] = score[roster_id];
+      return acc;
+    }, {});
+    chatbotInfos.submittedBy = submittedBy;
+    chatbotInfos.suggestionId = suggestionId;
+    chatbotInfos.eventName = eventName;
+    chatbotInfos.myRosterId = myRosterId;
+    chatbotInfos.playerId = myPlayerId;
+  }
+  //Sending the notif and updating db
+  if (newState) {
+    const chatbot = new Chatbot(messengerId, newState, chatbotInfos);
     chatbot.sendIntroMessages();
     await setChatbotInfos(messengerId, {
       chatbot_infos: JSON.stringify(chatbot.chatbotInfos),

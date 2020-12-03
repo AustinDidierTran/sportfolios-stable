@@ -273,6 +273,7 @@ const SCORE_SUBMISSION_CHATBOT_STATES = {
   AWAITING_SPIRIT_CONFIRMATION: 'awaiting_spirit_confirmation',
   GAMES_AWAITING_SCORE_LIST: 'games_awaiting_score_list',
   AWAITING_ATTENDANCE: 'awaiting_attendance',
+  OTHER_TEAM_SUBMITTED_A_SCORE: 'other_team_submitted_a_score',
 };
 
 const GAME_INFOS_CHATBOT_STATES = {
