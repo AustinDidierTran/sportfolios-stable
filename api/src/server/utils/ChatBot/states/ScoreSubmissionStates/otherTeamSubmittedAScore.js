@@ -1,5 +1,8 @@
 const i18n = require('../../../../../i18n.config');
 const { MESSENGER_QUICK_REPLIES } = require('../../../enums');
+const {
+  BASIC_CHATBOT_STATES,
+} = require('../../../../../../../common/enums');
 const { genQuickReply, genText } = require('../../response');
 const State = require('../state');
 
@@ -9,7 +12,7 @@ class otherTeamSubmittedAScore extends State {
     if (this.isNo(webhookEvent)) {
       this.sendMessages(
         webhookEvent.sender.id,
-        Response.genText(i18n.__('ok_back_to_menu')),
+        genText(i18n.__('ok_back_to_menu')),
       );
       nextState = BASIC_CHATBOT_STATES.HOME;
     } else if (this.isStartOver(webhookEvent)) {
@@ -36,6 +39,7 @@ class otherTeamSubmittedAScore extends State {
     const score = this.formatScore(chatbotInfos.score);
     const submittedBy = chatbotInfos.submittedBy;
     const eventName = chatbotInfos.eventName;
+    console.log({ submittedBy, score, eventName });
     return {
       messages: [
         genText(
