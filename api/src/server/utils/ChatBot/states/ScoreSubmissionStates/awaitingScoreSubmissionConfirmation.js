@@ -47,6 +47,7 @@ class AwaitingScoreSubmissionConfirmation extends State {
           myScore > maxOpponentScore
             ? 'score_submission.confirmed.victory'
             : 'score_submission.confirmed.other';
+        clearScoreInfos();
         this.sendMessages(
           webhookEvent.sender.id,
           Response.genText(i18n.__(text)),
@@ -87,6 +88,10 @@ class AwaitingScoreSubmissionConfirmation extends State {
     if (nextState) {
       await this.context.changeState(nextState);
     }
+  }
+
+  clearScoreInfos() {
+    delete this.context.chatbotInfos.myScore;
   }
 
   getIntroMessages() {

@@ -182,4 +182,5 @@ module.exports = {
   getNotificationsSettings,
   enableAllChatbotNotification,
   upsertNotificationsSettings,
+  getRostersNames,
 };
