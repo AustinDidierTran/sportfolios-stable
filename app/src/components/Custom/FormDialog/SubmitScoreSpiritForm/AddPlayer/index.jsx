@@ -46,7 +46,7 @@ export default function AddPlayer(props) {
     setPerson(null);
     onClose();
     if (player.id) {
-      updateRoster(player);
+      updateRoster({ ...player, is_sub: true });
     }
   };
 
@@ -128,6 +128,7 @@ export default function AddPlayer(props) {
             onClick={onClick}
             handleClose={handleClose}
             rosterId={rosterId}
+            isSub
           />
         </DialogContent>
         <DialogActions>

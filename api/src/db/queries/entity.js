@@ -17,6 +17,7 @@ const {
   addEntityRole: addEntityRoleHelper,
   addField: addFieldHelper,
   addGame: addGameHelper,
+  addGameAttendances: addGameAttendancesHelper,
   addMember: addMemberHelper,
   addReport: addReportHelper,
   addMemberManually: addMemberManuallyHelper,
@@ -35,7 +36,6 @@ const {
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
   canRemovePlayerFromRoster: canRemovePlayerFromRosterHelper,
-  getSubmissionerInfos: getSubmissionerInfosHelper,
   canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
@@ -68,6 +68,7 @@ const {
   hasMemberships: hasMembershipsHelper,
   getOrganizationMembers: getOrganizationMembersHelper,
   getMemberships: getMembershipsHelper,
+  getMyPersonsAdminsOfTeam: getMyPersonsAdminsOfTeamHelper,
   getOptions: getOptionsHelper,
   getOwnedEvents: getOwnedEventsHelper,
   getPersonGames: getPersonGamesHelper,
@@ -80,7 +81,6 @@ const {
   getRegistrationTeamPaymentOption: getRegistrationTeamPaymentOptionHelper,
   getRemainingSpots: getRemainingSpotsHelper,
   getRoster: getRosterHelper,
-  getGameInfosFromGameIdAndUserId: getGameInfosFromGameIdAndUserIdHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getRosterInvoiceItem,
   getSameSuggestions: getSameSuggestionsHelper,
@@ -272,18 +272,8 @@ async function getGames(eventId) {
   return getGamesHelper(eventId);
 }
 
-async function getGameSubmissionInfos(gameId, userId) {
-  const infos = await getGameInfosFromGameIdAndUserIdHelper(
-    gameId,
-    userId,
-  );
-
-  if (infos.myRosterId) {
-    return getGameSubmissionInfosHelper(gameId, infos.myRosterId);
-  }
-
-  // user is not in any of the teams
-  return ERROR_ENUM.ACCESS_DENIED;
+async function getGameSubmissionInfos(gameId, rosterId) {
+  return getGameSubmissionInfosHelper(gameId, rosterId);
 }
 
 async function getUnplacedGames(eventId) {
@@ -322,18 +312,25 @@ async function getRegistrationTeamPaymentOption(paymentOptionId) {
   return getRegistrationTeamPaymentOptionHelper(paymentOptionId);
 }
 
-async function getSubmissionerInfos(gameId, userId) {
-  const gameInfos = await getGameInfosFromGameIdAndUserIdHelper(
-    gameId,
-    userId,
+async function getPossibleSubmissionerInfos(gameId, teams, userId) {
+  const teamsList = JSON.parse(teams);
+  const adminsOfTeams = await Promise.all(
+    teamsList.map(
+      async t =>
+        await getMyPersonsAdminsOfTeamHelper(
+          t.rosterId,
+          teamsList,
+          userId,
+        ),
+    ),
   );
 
-  if (gameInfos.myRosterId) {
-    return getSubmissionerInfosHelper(gameInfos);
+  const validTeams = adminsOfTeams.filter(res => res !== undefined);
+  if (validTeams.length === 0) {
+    return ERROR_ENUM.ACCESS_DENIED;
   }
 
-  // user is not in any of the teams
-  return ERROR_ENUM.ACCESS_DENIED;
+  return validTeams;
 }
 
 async function updateEvent(body, userId) {
@@ -759,7 +756,30 @@ async function addGame(body) {
   return res;
 }
 
-async function addSpiritSubmission(body) {
+async function addGameAttendances(body, userId) {
+  const { editedBy } = body;
+  if (
+    editedBy &&
+    !(await isAllowed(editedBy, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return addGameAttendancesHelper(body);
+}
+
+async function addSpiritSubmission(body, userId) {
+  const { submitted_by_person } = body;
+  if (
+    submitted_by_person &&
+    !(await isAllowed(
+      submitted_by_person,
+      userId,
+      ENTITIES_ROLE_ENUM.EDITOR,
+    ))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
   return addSpiritSubmissionHelper(body);
 }
 
@@ -1037,14 +1057,16 @@ async function deleteOption(id) {
 
 async function addPlayerToRoster(body, userId) {
   const { teamId, eventId, teamName, personId, ...otherProps } = body;
+
   const res = await addPlayerToRosterHelper(
     { ...otherProps, personId },
     userId,
   );
-  const realEventId = await getRealId(eventId);
+
   const owners = await getEntityOwners(personId);
-  const { name } = await getPersonInfos(personId);
   if (res && !body.isSub && owners) {
+    const realEventId = await getRealId(eventId);
+    const { name } = await getPersonInfos(personId);
     owners.forEach(owner => {
       const notif = {
         user_id: owner.user_id,
@@ -1117,6 +1139,7 @@ module.exports = {
   addEntityRole,
   addField,
   addGame,
+  addGameAttendances,
   addReport,
   addMember,
   addMemberManually,
@@ -1178,7 +1201,7 @@ module.exports = {
   getRegistered,
   getRemainingSpots,
   getRoster,
-  getSubmissionerInfos,
+  getPossibleSubmissionerInfos,
   getS3Signature,
   getScoreSuggestion,
   getSameSuggestions,

@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Icon } from '../../../Custom';
 import { useTranslation } from 'react-i18next';
-import { TextField, Typography } from '../../../MUI';
-import { ERROR_ENUM } from '../../../../../../common/errors';
+import { Typography } from '../../../MUI';
 import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
 } from '@material-ui/core';
 
@@ -18,20 +18,29 @@ import api from '../../../../actions/api';
 import { formatRoute } from '../../../../actions/goTo';
 
 export default function SubmitScoreDialog(props) {
-  const { open, onClose, game, submissionerGameInfos } = props;
+  const { open, onClose, gameId, submissionerInfos } = props;
   const { t } = useTranslation();
 
   const getData = async () => {
     const { data } = await api(
       formatRoute('/api/entity/gameSubmissionInfos', null, {
-        gameId: game.id,
+        gameId,
+        rosterId: submissionerInfos.myTeam.rosterId,
       }),
     );
-    //console.log({ data });
     setsubmissionInfos(data);
   };
 
   const [submissionInfos, setsubmissionInfos] = useState({});
+
+  const personName = useMemo(
+    () => submissionerInfos?.person?.completeName || '',
+    [submissionerInfos?.person],
+  );
+  const teamName = useMemo(
+    () => submissionerInfos?.myTeam?.name || '',
+    [submissionerInfos?.myTeam],
+  );
 
   useEffect(() => {
     if (open) {
@@ -61,23 +70,30 @@ export default function SubmitScoreDialog(props) {
       </DialogTitle>
       <div>
         <DialogContent>
+          <DialogContentText>
+            {t('submitting_as_for', {
+              person: personName,
+              team: teamName,
+            })}
+          </DialogContentText>
+
           <SectionScore
-            game={game}
+            gameId={gameId}
             IsSubmittedCheck={SubmittedCheck}
             suggestion={submissionInfos?.scoreSuggestion}
-            submissioner={submissionerGameInfos}
+            submissionerInfos={submissionerInfos}
           />
           <SectionSpirit
-            game={game}
+            gameId={gameId}
             IsSubmittedCheck={SubmittedCheck}
             submittedSpirit={submissionInfos?.spiritSubmission}
-            submissioner={submissionerGameInfos}
+            submissionerInfos={submissionerInfos}
           />
           <SectionPresences
-            game={game}
+            gameId={gameId}
             IsSubmittedCheck={SubmittedCheck}
-            submittedPresences={submissionInfos?.presences}
-            submissioner={submissionerGameInfos}
+            submittedAttendances={submissionInfos?.presences}
+            submissionerInfos={submissionerInfos}
           />
         </DialogContent>
         <DialogActions>

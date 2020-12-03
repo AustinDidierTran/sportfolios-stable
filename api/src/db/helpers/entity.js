@@ -13,6 +13,7 @@ const {
   INVOICE_STATUS_ENUM,
   REPORT_TYPE_ENUM,
   PLATEFORM_FEES,
+  PLAYER_ATTENDANCE_STATUS,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -1254,22 +1255,19 @@ async function getRegistrationStatus(eventId, rosterId) {
 
 async function getRoster(rosterId, withSub) {
   const realId = await getRealId(rosterId);
-  let roster;
-  if (withSub === 'true') {
-    roster = await knex('team_players')
-      .select('*')
-      .where({ roster_id: realId })
-      .orderByRaw(
-        `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
-      );
-  } else {
-    roster = await knex('team_players')
-      .select('*')
-      .where({ roster_id: realId, is_sub: false })
-      .orderByRaw(
-        `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
-      );
+
+  let whereCond = { roster_id: realId };
+  if (!withSub) {
+    whereCond.is_sub = false;
   }
+
+  const roster = await knex('team_players')
+    .select('*')
+    .where(whereCond)
+    .orderByRaw(
+      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
+    );
+  //}
 
   //TODO: Make a call to know if has created an account or is child account
   const status = TAG_TYPE_ENUM.REGISTERED;
@@ -1286,34 +1284,6 @@ async function getRoster(rosterId, withSub) {
   }));
 
   return props;
-}
-
-async function getGameInfosFromGameIdAndUserId(gameId, userId) {
-  const [{ entity_id: myEntityId }] = await knex('user_entity_role')
-    .select('entity_id')
-    .where({ user_id: userId });
-
-  const teams = await knex('game_teams')
-    .select('roster_id')
-    .where({ game_id: gameId });
-
-  const myRosterId = await knex('team_players')
-    .select('roster_id')
-    .where({ person_id: myEntityId })
-    .whereIn(
-      'roster_id',
-      teams.map(t => t.roster_id),
-    );
-
-  let res = { myEntityId };
-  if (myRosterId.length) {
-    res.myRosterId = myRosterId[0].roster_id;
-    res.enemyRosterId = teams.filter(
-      t => t.roster_id !== myRosterId[0].roster_id,
-    )[0].roster_id;
-  }
-
-  return res;
 }
 
 const getPrimaryPerson = async user_id => {
@@ -1562,6 +1532,53 @@ async function getGameTeams(game_id, player_id) {
   }
 }
 
+async function getMyPersonsAdminsOfTeam(rosterId, teams, userId) {
+  const res = await knex('user_entity_role')
+    .select(
+      'user_entity_role.entity_id',
+      'entities_name.name',
+      'entities_name.surname',
+    )
+    .leftJoin(
+      'team_players',
+      'team_players.person_id',
+      '=',
+      'user_entity_role.entity_id',
+    )
+    .leftJoin(
+      'entities_name',
+      'entities_name.entity_id',
+      '=',
+      'user_entity_role.entity_id',
+    )
+    .where({ user_id: userId })
+    .whereIn('team_players.role', [
+      ROSTER_ROLE_ENUM.COACH,
+      ROSTER_ROLE_ENUM.CAPTAIN,
+      ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN,
+    ])
+    .andWhere('team_players.roster_id', '=', rosterId);
+
+  const myTeam = teams.find(t => t.rosterId === rosterId);
+  const enemyTeam = teams.find(t => t.rosterId !== rosterId);
+  return res.length
+    ? {
+        myTeam: {
+          rosterId: myTeam.rosterId,
+          name: myTeam.name,
+        },
+        enemyTeam: {
+          rosterId: enemyTeam.rosterId,
+          name: enemyTeam.name,
+        },
+        myAdminPersons: res.map(p => ({
+          entityId: p.entity_id,
+          completeName: `${p.name} ${p.surname}`,
+        })),
+      }
+    : undefined;
+}
+
 async function getGameSubmissionInfos(gameId, myRosterId) {
   const [scoreSuggestion] = await knex('score_suggestion')
     .select('*')
@@ -1572,14 +1589,38 @@ async function getGameSubmissionInfos(gameId, myRosterId) {
     .where({ game_id: gameId, submitted_by_roster: myRosterId });
 
   const presences = await knex('game_players_attendance')
-    .select('player_id', 'status')
+    .select(
+      knex.raw(
+        "string_agg(entities_name.name || ' ' || entities_name.surname, ' ') AS complete_name",
+      ),
+      'game_players_attendance.player_id',
+      //'game_players_attendance.status',
+      'game_players_attendance.is_sub',
+    )
+    .leftJoin(
+      'entities_name',
+      'entities_name.entity_id',
+      '=',
+      'game_players_attendance.player_id',
+    )
     .where({ game_id: gameId, roster_id: myRosterId })
-    .andWhere('status', '=', 'present');
+    .andWhere('status', '=', PLAYER_ATTENDANCE_STATUS.PRESENT)
+    .groupBy(
+      'entities_name.name',
+      'entities_name.surname',
+      'game_players_attendance.player_id',
+      //'game_players_attendance.status',
+      'game_players_attendance.is_sub',
+    );
 
   return {
     scoreSuggestion,
     spiritSubmission,
-    presences,
+    presences: presences.map(p => ({
+      value: p.player_id,
+      display: p.complete_name,
+      isSub: p.is_sub,
+    })),
   };
 }
 
@@ -1955,24 +1996,6 @@ const canRemovePlayerFromRoster = async (rosterId, personId) => {
   );
 };
 
-const getSubmissionerInfos = async gameInfos => {
-  const [{ role: myRole }] = await knex('team_players')
-    .select('role')
-    .where({
-      roster_id: gameInfos.myRosterId,
-      person_id: gameInfos.myEntityId,
-    });
-
-  return {
-    gameInfos,
-    canSubmitScore:
-      myRole &&
-      (myRole === ROSTER_ROLE_ENUM.COACH ||
-        myRole === ROSTER_ROLE_ENUM.CAPTAIN ||
-        myRole === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN),
-  };
-};
-
 const canUnregisterTeam = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
@@ -2333,6 +2356,38 @@ async function addGame(
       teams: [team1, team2],
     },
   };
+}
+
+async function addGameAttendances(body) {
+  const { gameId, rosterId, editedBy, attendances } = body;
+
+  // upsert the attendances
+  const res = await Promise.all(
+    attendances.map(player => {
+      return knex('game_players_attendance')
+        .insert({
+          game_id: gameId,
+          roster_id: rosterId,
+          edited_by: editedBy,
+          player_id: player.value,
+          status: player.status,
+          is_sub: player.isSub,
+        })
+        .onConflict(['game_id', 'roster_id', 'player_id'])
+        .merge()
+        .returning('*');
+    }),
+  );
+
+  await knex('game_players_attendance')
+    .where({ game_id: gameId, roster_id: rosterId })
+    .whereNotIn(
+      'player_id',
+      attendances.map(a => a.value),
+    )
+    .del();
+
+  return res;
 }
 
 async function addScoreAndSpirit(props) {
@@ -3325,6 +3380,7 @@ module.exports = {
   addAlias,
   addMembership,
   addGame,
+  addGameAttendances,
   addScoreSuggestion,
   acceptScoreSuggestion,
   addScoreAndSpirit,
@@ -3369,14 +3425,12 @@ module.exports = {
   getPersonGames,
   getRegistered,
   getRegistrationTeamPaymentOption,
-  getSubmissionerInfos,
   getAllAcceptedRegistered,
   getAllRegistered,
   getAllRegisteredInfos,
   getRemainingSpots,
   getRankings,
   getRoster,
-  getGameInfosFromGameIdAndUserId,
   getEvent,
   getAlias,
   getPhases,
@@ -3389,6 +3443,7 @@ module.exports = {
   getTeamsSchedule,
   getFields,
   getGeneralInfos,
+  getMyPersonsAdminsOfTeam,
   getOptions,
   getPrimaryPerson,
   getPlayerInvoiceItem,

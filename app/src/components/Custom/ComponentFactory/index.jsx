@@ -23,6 +23,9 @@ export default function ComponentFactory(props) {
         label={component.label}
         value={component.defaultValue}
         style={component.style}
+        showtextifonlyoneoption={
+          component?.showTextIfOnlyOneOption?.toString() || 'false'
+        }
       />
     );
   }

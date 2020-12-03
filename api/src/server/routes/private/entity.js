@@ -84,9 +84,10 @@ router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/getSubmissionerInfos`, async ctx => {
-  const res = await queries.getSubmissionerInfos(
+router.get(`${BASE_URL}/getPossibleSubmissionerInfos`, async ctx => {
+  const res = await queries.getPossibleSubmissionerInfos(
     ctx.query.gameId,
+    ctx.query.teamsIds,
     ctx.body.userInfo.id,
   );
 
@@ -477,10 +478,10 @@ router.get(`${BASE_URL}/interactiveTool`, async ctx => {
 router.get(`${BASE_URL}/gameSubmissionInfos`, async ctx => {
   const data = await queries.getGameSubmissionInfos(
     ctx.query.gameId,
-    ctx.body.userInfo.id,
+    ctx.query.rosterId,
   );
 
-  if (data !== ERROR_ENUM.ACCESS_DENIED) {
+  if (data) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
@@ -961,7 +962,30 @@ router.post(`${BASE_URL}/acceptScore`, async ctx => {
 });
 
 router.post(`${BASE_URL}/spirit`, async ctx => {
-  const res = await queries.addSpiritSubmission(ctx.request.body);
+  const res = await queries.addSpiritSubmission(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/gameAttendances`, async ctx => {
+  const res = await queries.addGameAttendances(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {

@@ -17,16 +17,6 @@
   padding: 1px !important;
 }
 
-/*.teamsScore {
-  display: grid;
-  gap: 8px;
-  grid-template-columns: auto auto;
-  grid-template-areas:
-    'suggestedBy suggestedBy'
-    'scores scores'
-    '. button';
-}*/
-
 .scores {
   grid-area: scores;
 }
@@ -86,4 +76,12 @@
 
 .submitText {
   margin-right: 4px !important;
+}
+
+.attendances {
+  margin-top: 8px !important;
+}
+
+.addSubButton {
+  margin-top: 8px !important;
 }

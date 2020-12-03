@@ -16,8 +16,6 @@ import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Button, Collapse, IconButton } from '../../..';
 import { TextField, Typography } from '../../../../MUI';
-
-import styles from '../SubmitScoreSpiritForm.module.css';
 import {
   STATUS_ENUM,
   SEVERITY_ENUM,
@@ -25,12 +23,14 @@ import {
 import { ACTION_ENUM, Store } from '../../../../../Store';
 import api from '../../../../../actions/api';
 
+import styles from '../SubmitScoreSpiritForm.module.css';
+
 export default function SectionSpirit(props) {
   const {
-    submissioner,
     submittedSpirit,
-    game,
+    gameId,
     IsSubmittedCheck,
+    submissionerInfos,
   } = props;
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
@@ -46,10 +46,10 @@ export default function SectionSpirit(props) {
       const { status } = await api('/api/entity/spirit', {
         method: 'POST',
         body: JSON.stringify({
-          submitted_by_roster: submissioner.myRosterId,
-          submitted_by_person: submissioner.myEntityId,
-          game_id: game.id,
-          submitted_for_roster: submissioner.enemyRosterId,
+          submitted_by_roster: submissionerInfos.myTeam.rosterId,
+          submitted_by_person: submissionerInfos.person.entityId,
+          game_id: gameId,
+          submitted_for_roster: submissionerInfos.enemyTeam.rosterId,
           spirit_score: spirit.reduce((a, b) => a + b, 0),
           comment,
         }),
@@ -169,12 +169,16 @@ export default function SectionSpirit(props) {
               className={styles.totalSpirit}
             >{`Total: ${submittedSpirit?.spirit_score ||
               spiritTotal}`}</Typography>
-            <TextField
-              type="text"
-              value={submittedSpirit?.comment}
-              fullWidth
-              formikDisabled
-            />
+            {formik.values.comment ? (
+              <TextField
+                type="text"
+                value={submittedSpirit?.comment}
+                fullWidth
+                formikDisabled
+              />
+            ) : (
+              <></>
+            )}
           </div>
         ) : (
           <div>

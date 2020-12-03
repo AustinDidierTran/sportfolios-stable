@@ -61,6 +61,9 @@ export default function CustomMultiSelect(props) {
       onChange(event.target.value);
     }
   };
+
+  //console.log({ values });
+  //console.log({ options });
   return (
     <div {...props}>
       <FormControl className={classes.formControl}>
@@ -73,24 +76,26 @@ export default function CustomMultiSelect(props) {
           input={<Input />}
           renderValue={selected => (
             <div className={classes.chips}>
-              {selected.map(value => (
-                <Chip
-                  key={value}
-                  label={value}
-                  className={classes.chip}
-                />
-              ))}
+              {selected.map(item => {
+                return (
+                  <Chip
+                    key={item?.value || item}
+                    label={item?.display || item}
+                    className={classes.chip}
+                  />
+                );
+              })}
             </div>
           )}
           MenuProps={MenuProps}
         >
           {options.map(opt => (
             <MenuItem
-              key={opt}
+              key={opt?.value || opt}
               value={opt}
               style={getStyles(opt, options, theme)}
             >
-              {opt}
+              {opt?.display || opt}
             </MenuItem>
           ))}
         </Select>

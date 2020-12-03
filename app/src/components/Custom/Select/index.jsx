@@ -6,6 +6,7 @@ import Select from '@material-ui/core/Select';
 import { useTranslation } from 'react-i18next';
 import { FormHelperText } from '@material-ui/core';
 import { SELECT_ENUM } from '../../../../../common/enums';
+import { Typography } from '../../MUI';
 
 export default function CustomSelect(props) {
   const { t } = useTranslation();
@@ -17,6 +18,7 @@ export default function CustomSelect(props) {
     namespace,
     onChange,
     options,
+    showtextifonlyoneoption = 'false',
     value: valueProp,
   } = props;
 
@@ -37,6 +39,12 @@ export default function CustomSelect(props) {
       onChange(event.target.value);
     }
   };
+
+  if (showtextifonlyoneoption === 'true') {
+    return (
+      <Typography>{`${label}: ${options[0].display}`}</Typography>
+    );
+  }
 
   return (
     <FormControl className={className} style={{ width: '100%' }}>
