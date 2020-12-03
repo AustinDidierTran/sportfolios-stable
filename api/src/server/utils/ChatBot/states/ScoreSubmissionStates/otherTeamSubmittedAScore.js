@@ -5,7 +5,21 @@ const State = require('../state');
 
 class otherTeamSubmittedAScore extends State {
   async handleEvent(webhookEvent) {
-    this.sendIDontUnderstand(webhookEvent);
+    let nextState;
+    if (this.isNo(webhookEvent)) {
+      this.sendMessages(
+        webhookEvent.sender.id,
+        Response.genText(i18n.__('ok_back_to_menu')),
+      );
+      nextState = BASIC_CHATBOT_STATES.HOME;
+    } else if (this.isStartOver(webhookEvent)) {
+      nextState = BASIC_CHATBOT_STATES.HOME;
+    } else {
+      this.sendIDontUnderstand(webhookEvent);
+    }
+    if (nextState) {
+      await this.context.changeState(nextState);
+    }
   }
 
   formatScore(scoreObj) {
@@ -26,14 +40,12 @@ class otherTeamSubmittedAScore extends State {
       messages: [
         genText(
           i18n.__(
-            '%s submitted the score: %s for your game of the event %s',
-            submittedBy,
-            score,
-            eventName,
+            '{{submittedBy}} submitted the score: {{score}} for your game of the event {{eventName}}',
+            { submittedBy, score, eventName },
           ),
         ),
         genQuickReply(
-          i18n.__('do you want to confirm?'),
+          i18n.__('Do you want to confirm?'),
           MESSENGER_QUICK_REPLIES.CONFIRMATION,
         ),
       ],
