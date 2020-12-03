@@ -1523,6 +1523,34 @@ async function getAttendanceSheet(infos) {
   return knex('game_players_attendance')
     .select()
     .where(infos);
+async function getRostersNames(rostersArray) {
+  const res = await knex
+    .queryBuilder()
+    .select('name', 'roster_id')
+    .from('event_rosters')
+    .join(
+      'entities_name',
+      'entities_name.entity_id',
+      'event_rosters.team_id',
+    )
+    .whereIn('roster_id', rostersArray);
+  return res;
+}
+async function getRosterName(roster_id) {
+  const [res] = await knex
+    .queryBuilder()
+    .select('name')
+    .from('event_rosters')
+    .join(
+      'entities_name',
+      'entities_name.entity_id',
+      'event_rosters.team_id',
+    )
+    .where({ roster_id });
+  if (!res) {
+    return;
+  }
+  return res.name;
 }
 
 async function getGamePlayersWithRole(game_id) {
