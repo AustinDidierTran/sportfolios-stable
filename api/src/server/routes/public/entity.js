@@ -302,4 +302,20 @@ router.get(`${BASE_URL}/fields`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/rostersNames`, async ctx => {
+  const res = await queries.getRostersNames(ctx.query.id);
+  if (res) {
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 module.exports = router;

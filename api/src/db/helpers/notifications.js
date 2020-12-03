@@ -1,5 +1,6 @@
 const knex = require('../connection');
 const { attachPaginate } = require('knex-paginate');
+const { NOTIFICATION_TYPE } = require('../../../../common/enums');
 attachPaginate();
 
 const addNotification = async infos => {
@@ -40,9 +41,9 @@ const seeNotifications = async user_id => {
 };
 
 const getNotifications = async (user_id, body) => {
-  const { perPage, currentPage } = body;
   let res;
-  if (perPage && currentPage) {
+  if (body) {
+    const { perPage, currentPage } = body;
     const { data } = await knex('notifications_view')
       .where({ user_id })
       .orderBy('created_at', 'desc')
@@ -56,21 +57,93 @@ const getNotifications = async (user_id, body) => {
       .orderBy('created_at', 'desc');
   }
   if (res) {
-    const map = res.map(notif => {
-      const {
-        photo_url: photoUrl,
-        clicked_at,
-        ...otherProps
-      } = notif;
-      return {
-        photoUrl,
-        clicked: Boolean(clicked_at),
-        ...otherProps,
-      };
-    });
+    const map = Promise.all(
+      res.map(async notif => {
+        const {
+          photo_url: photoUrl,
+          clicked_at,
+          metadata,
+          ...otherProps
+        } = notif;
+        return {
+          photoUrl,
+          clicked: Boolean(clicked_at),
+          metadata: await formatNotificationMetadata(
+            metadata,
+            notif.type,
+          ),
+          ...otherProps,
+        };
+      }),
+    );
     return map;
   }
 };
+
+async function formatNotificationMetadata(metadata, type) {
+  if (type === NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE) {
+    const submittedBy = getRosterName(metadata.submittedBy);
+    const submitted = isScoreSubmittedByRoster(
+      metadata.myRosterId,
+      metadata.gameId,
+    );
+    const score = JSON.parse(metadata.score);
+    const rostersId = Object.keys(score);
+    const names = await getRostersNames(rostersId);
+    const newScore = names.reduce((acc, curr) => {
+      const { roster_id, name } = curr;
+      acc[name] = score[roster_id];
+      return acc;
+    }, {});
+    return {
+      ...metadata,
+      score: JSON.stringify(newScore),
+      submittedBy: await submittedBy,
+      submitted: await submitted,
+    };
+  }
+  return metadata;
+}
+async function isScoreSubmittedByRoster(myRosterId, game_id) {
+  const res = await knex('score_suggestion')
+    .select('id')
+    .where({ submitted_by_roster: myRosterId, game_id })
+    .limit(1);
+  if (!res) {
+    return;
+  }
+  return res.length != 0;
+}
+async function getRostersNames(rostersArray) {
+  const res = await knex
+    .queryBuilder()
+    .select('name', 'roster_id')
+    .from('event_rosters')
+    .join(
+      'entities_name',
+      'entities_name.entity_id',
+      'event_rosters.team_id',
+    )
+    .whereIn('roster_id', rostersArray);
+  return res;
+}
+
+async function getRosterName(roster_id) {
+  const [res] = await knex
+    .queryBuilder()
+    .select('name')
+    .from('event_rosters')
+    .join(
+      'entities_name',
+      'entities_name.entity_id',
+      'event_rosters.team_id',
+    )
+    .where({ roster_id });
+  if (!res) {
+    return;
+  }
+  return res.name;
+}
 
 const getNotificationsSettings = async (user_id, type) => {
   if (type) {

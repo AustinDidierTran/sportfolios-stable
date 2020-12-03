@@ -30,6 +30,7 @@ const {
   addSpiritSubmission: addSpiritSubmissionHelper,
   addScoreAndSpirit: addScoreAndSpiritHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
+  acceptScoreSuggestion: acceptScoreSuggestionHelper,
   addTeamToEvent: addTeamToEventHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
@@ -111,6 +112,8 @@ const {
   getMembership,
   getEntityOwners,
   getRealId,
+  getGamePlayersWithRole,
+  getRostersNames: getRostersNamesHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -765,6 +768,25 @@ async function addScoreAndSpirit(body) {
   return res;
 }
 
+async function getRostersNames(rosterArray) {
+  return getRostersNamesHelper(rosterArray);
+}
+
+async function acceptScoreSuggestion(body, userId) {
+  const { submitted_by_person } = body;
+  if (
+    submitted_by_person &&
+    !(await isAllowed(
+      submitted_by_person,
+      userId,
+      ENTITIES_ROLE_ENUM.EDITOR,
+    ))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return acceptScoreSuggestionHelper(body);
+}
+
 async function addScoreSuggestion(body, userId) {
   const { submitted_by_person, submitted_by_roster } = body;
 
@@ -792,6 +814,7 @@ async function addScoreSuggestion(body, userId) {
           value.roster_id != submitted_by_roster &&
           array.findIndex(
             value2 =>
+              value2.roster_id != submitted_by_roster &&
               value.player_owner_id === value2.player_owner_id,
           ) === index,
       );
@@ -800,17 +823,23 @@ async function addScoreSuggestion(body, userId) {
         gameId: body.game_id,
         eventId: event_id,
         eventName: event_name,
+        submittedBy: submitted_by_roster,
+        suggestionId: res[0].id,
       };
       const notif = {
         type: NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE,
         entity_photo: event_id,
       };
       opponentsPlayers.forEach(p => {
-        const fullMetadata = { ...metadata, rosterId: p.roster_id };
+        const fullMetadata = {
+          ...metadata,
+          myRosterId: p.roster_id,
+          myPlayerId: p.player_id,
+        };
         //TODO Add email infos
         sendNotification({
           ...notif,
-          user_id: p.player_owner_id,
+          user_id: p.player_owner,
           metadata: fullMetadata,
         });
       });
@@ -1171,4 +1200,6 @@ module.exports = {
   updateOption,
   updateRegistration,
   updateRosterRole,
+  getRostersNames,
+  acceptScoreSuggestion,
 };

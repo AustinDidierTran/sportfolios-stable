@@ -35,22 +35,30 @@ export default function NotificationItem(props) {
   }
 
   return (
-    <>
-      <ListItem
-        className={clicked ? styles.old : styles.new}
-        onClick={handleClick}
-        button
+    <ListItem
+      classes={{ container: clicked ? styles.old : styles.new }}
+      ContainerProps={{ onClick: handleClick }}
+    >
+      <ListItemAvatar>
+        <Avatar photoUrl={photoUrl} initials={initials} />
+      </ListItemAvatar>
+      <ListItemText
+        className={styles.text}
+        style={{ whiteSpace: 'pre-line' }}
+        primary={description}
+        secondary={timestampToRelativeTime(new Date(created_at))}
+      />
+      <ListItemSecondaryAction
+        style={{
+          justifyContent: 'flex-end',
+          display: 'flex',
+          position: 'relative',
+          transform: 'translateY(-25%)',
+          right: '0',
+        }}
       >
-        <ListItemAvatar>
-          <Avatar photoUrl={photoUrl} initials={initials} />
-        </ListItemAvatar>
-        <ListItemText
-          className={styles.text}
-          primary={description}
-          secondary={timestampToRelativeTime(new Date(created_at))}
-        />
-        <ListItemSecondaryAction>{buttons}</ListItemSecondaryAction>
-      </ListItem>
-    </>
+        {buttons}
+      </ListItemSecondaryAction>
+    </ListItem>
   );
 }

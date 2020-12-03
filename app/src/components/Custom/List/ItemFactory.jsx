@@ -65,7 +65,6 @@ const ItemMap = {
 
 export default function ItemFactory(props) {
   const { type } = props;
-
   const Item = ItemMap[type];
 
   if (!Item) {

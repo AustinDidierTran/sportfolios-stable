@@ -2,6 +2,9 @@ import { SIZES_ENUM } from '../../../../common/enums';
 
 export default {
   translations: {
+    confirmed: 'Confirmé',
+    confirm_or_decline_score_notif_description: "L'équipe {{teamName}} a soumis le score: {{score}} pour votre partie de l'événement {{eventName}}. Voulez vous confirmer le résultat?",
+    see_more: 'Voir plus',
     about: 'À propos',
     accept_person_transfer_confirmation: 'Êtes vous certain de vouloir accepter le transfert de {{name}}?',
     accept: 'Accepter',
