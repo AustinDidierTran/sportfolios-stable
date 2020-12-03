@@ -120,8 +120,8 @@ const sendChatbotNotification = async (user_id, notif) => {
       myRosterId,
       myPlayerId,
       submittedBy,
-      score,
     } = metadata;
+    const score = JSON.parse(metadata.score);
     const rostersId = Object.keys(score);
     const names = await getRostersNames(rostersId);
     chatbotInfos.score = names.reduce((acc, curr) => {

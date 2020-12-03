@@ -5,7 +5,7 @@ const State = require('../state');
 
 class otherTeamSubmittedAScore extends State {
   async handleEvent(webhookEvent) {
-    throw new Error('You need to implement the method handleEvent');
+    this.sendIDontUnderstand(webhookEvent);
   }
 
   formatScore(scoreObj) {
@@ -19,7 +19,7 @@ class otherTeamSubmittedAScore extends State {
 
   async getIntroMessages() {
     const chatbotInfos = this.context.chatbotInfos;
-    const score = formatScore(chatbotInfos.score);
+    const score = this.formatScore(chatbotInfos.score);
     const submittedBy = chatbotInfos.submittedBy;
     const eventName = chatbotInfos.eventName;
     return {
