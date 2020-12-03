@@ -1489,10 +1489,45 @@ async function getGames(eventId) {
   );
   return res;
 }
+async function getRostersNames(rostersArray) {
+  const res = await knex
+    .queryBuilder()
+    .select('name', 'roster_id')
+    .from('event_rosters')
+    .join(
+      'entities_name',
+      'entities_name.entity_id',
+      'event_rosters.team_id',
+    )
+    .whereIn('roster_id', rostersArray);
+  return res;
+}
+async function getRosterName(roster_id) {
+  const [res] = await knex
+    .queryBuilder()
+    .select('name')
+    .from('event_rosters')
+    .join(
+      'entities_name',
+      'entities_name.entity_id',
+      'event_rosters.team_id',
+    )
+    .where({ roster_id });
+  if (!res) {
+    return;
+  }
+  return res.name;
+}
 
 async function getGamePlayersWithRole(game_id) {
   return knex('game_players_view')
-    .select('player_id', 'event_id', 'player_owner')
+    .select(
+      'player_id',
+      'event_id',
+      'player_owner',
+      'event_name',
+      'roster_id',
+    )
     .where({ game_id })
     .whereNot({ player_role: ROSTER_ROLE_ENUM.PLAYER });
 }
@@ -2333,6 +2368,23 @@ async function isSpiritAlreadySubmitted(infos) {
     return;
   }
   return res.length !== 0;
+}
+
+async function acceptScoreSuggestion(infos) {
+  const { id, submitted_by_roster, submitted_by_person } = infos;
+  const res = await knex('score_suggestion')
+    .select('score', 'game_id')
+    .where({ id });
+  if (!res || res.length === 0) {
+    return;
+  }
+  const { game_id, score } = res[0];
+  return addScoreSuggestion({
+    submitted_by_roster,
+    submitted_by_person,
+    game_id,
+    score,
+  });
 }
 
 async function addScoreSuggestion(infos) {
@@ -3266,6 +3318,7 @@ module.exports = {
   addMembership,
   addGame,
   addScoreSuggestion,
+  acceptScoreSuggestion,
   addScoreAndSpirit,
   addField,
   addTeamToSchedule,
@@ -3373,4 +3426,6 @@ module.exports = {
   getGamesWithAwaitingScore,
   getUserNextGame,
   getGamePlayersWithRole,
+  getRosterName,
+  getRostersNames,
 };

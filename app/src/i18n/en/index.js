@@ -2,6 +2,9 @@ import { SIZES_ENUM } from '../../../../common/enums';
 
 export default {
   translations: {
+    confirmed: 'Confirmed',
+    confirm_or_decline_score_notif_description: 'The team {{teamName}} submitted the score: {{score}} for your match of the event {{eventName}}. Do you want to confirm this result?',
+    see_more: 'See more',
     score_submission_request: 'Score submission reminder',
     score_submission_request_description: 'Notification sent after your games if you are a team captain to remind you to submit your score',
     score_submission_request_notif_description: 'A game from the event {{eventName}} is awaiting your score submission',

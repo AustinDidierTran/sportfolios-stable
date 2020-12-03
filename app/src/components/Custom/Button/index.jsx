@@ -4,27 +4,32 @@ import Button from '@material-ui/core/Button';
 import { Icon } from '../../Custom';
 
 export default function CustomButton(props) {
-  const { color, variant } = props;
+  const {
+    color,
+    variant,
+    textColor,
+    style,
+    size,
+    ...otherProps
+  } = props;
 
-  let textColor = 'white';
+  let defaultTextColor = 'white';
   if (variant === 'outlined' || variant === 'text') {
-    textColor = 'primary';
+    defaultTextColor = 'primary';
   }
 
   const endIcon = props.endIcon ? (
     <Icon icon={props.endIcon} />
-  ) : (
-    <></>
-  );
+  ) : null;
   return (
     <Button
-      size={props.size || 'small'}
-      variant="contained"
+      size={size || 'small'}
+      variant={variant || 'contained'}
       color={color || 'primary'}
-      {...props}
+      {...otherProps}
       style={{
-        color: textColor,
-        ...props.style,
+        color: textColor || defaultTextColor,
+        ...style,
       }}
       endIcon={endIcon}
     />

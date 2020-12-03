@@ -1,7 +1,16 @@
 .new {
   background-color: #99f1df59 !important;
+  cursor: pointer;
 }
 
 .new:hover {
   background-color: #99f1df !important;
+}
+
+.old {
+  cursor: pointer;
+}
+
+.old:hover {
+  background-color: #99f1df;
 }

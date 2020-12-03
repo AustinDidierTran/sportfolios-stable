@@ -22,7 +22,7 @@ export default function NotificationList(props) {
   function scrollHandler(e) {
     let element = e.target;
     if (
-      element.scrollHeight - element.scrollTop ===
+      element.scrollHeight - Math.ceil(element.scrollTop) <=
         element.clientHeight &&
       hasMoreItem
     ) {
