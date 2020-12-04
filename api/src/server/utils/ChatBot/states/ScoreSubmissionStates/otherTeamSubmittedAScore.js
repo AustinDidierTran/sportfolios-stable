@@ -26,12 +26,10 @@ class otherTeamSubmittedAScore extends State {
   }
 
   formatScore(scoreObj) {
-    return (
-      Object.entries(scoreObj).reduce((acc, curr) => {
-        const [name, score] = curr;
-        return `${acc}${name}: ${score} `;
-      }, '\n') + '\n'
-    );
+    return Object.entries(scoreObj).reduce((acc, curr) => {
+      const [name, score] = curr;
+      return `${acc}${name}: ${score} `;
+    }, '\n');
   }
 
   async getIntroMessages() {
