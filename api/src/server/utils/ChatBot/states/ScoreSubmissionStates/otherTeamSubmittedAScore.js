@@ -44,7 +44,7 @@ class otherTeamSubmittedAScore extends State {
       messages: [
         genText(
           i18n.__(
-            '{{submittedBy}} submitted the score: {{score}} for your game of the event {{eventName}}',
+            '{{submittedBy}} submitted the score {{score}} for your game of the event {{eventName}}',
             { submittedBy, score, eventName },
           ),
         ),
