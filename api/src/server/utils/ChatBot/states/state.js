@@ -2,6 +2,9 @@ const { MESSENGER_PAYLOADS } = require('../../enums');
 const queries = require('../../../../db/queries/facebook');
 const Response = require('../response');
 const i18n = require('../../../../i18n.config');
+const {
+  BASIC_CHATBOT_STATES,
+} = require('../../../../../../common/enums');
 
 class State {
   setContext(context) {
@@ -25,9 +28,12 @@ class State {
    * Called on message reception
    * And must define how to handle this event
    */
-  // eslint-disable-next-line no-unused-vars
   async handleEvent(webhookEvent) {
-    throw new Error('You need to implement the method handleEvent');
+    if (this.isStop(webhookEvent) || this.isStartOver(webhookEvent)) {
+      this.context.changeState(BASIC_CHATBOT_STATES.HOME);
+    } else {
+      this.sendIDontUnderstand(webhookEvent);
+    }
   }
 
   getText(webhookEvent) {
