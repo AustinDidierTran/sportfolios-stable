@@ -124,9 +124,12 @@ const sendChatbotNotification = async (user_id, notif) => {
     const score = JSON.parse(metadata.score);
     const rostersId = Object.keys(score);
     const names = await getRostersNames(rostersId);
-    chatbotInfos.score = names.reduce((acc, curr) => {
+    const myTeam = names.find(n => n.roster_id == myRosterId);
+    chatbotInfos.myTeamName = myTeam.name;
+    delete names[myRosterId];
+    chatbotInfos.opponentTeams = names.reduce((acc, curr) => {
       const { roster_id, name } = curr;
-      acc[name] = score[roster_id];
+      acc[roster_id] = { score: score[roster_id], teamName: name };
       return acc;
     }, {});
     console.log({ submittedBy });
