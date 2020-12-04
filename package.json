@@ -201,6 +201,7 @@
     "node-cron": "^2.0.3",
     "nodemailer": "^6.4.16",
     "pg": "^8.5.1",
+    "rand-token": "^1.0.1",
     "react": "^16.14.0",
     "react-csv": "^2.0.3",
     "react-div-100vh": "^0.5.6",

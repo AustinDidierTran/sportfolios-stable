@@ -21,8 +21,10 @@ const {
   sendPersonTransferEmailAllIncluded,
   confirmEmail,
   updatePrimaryPerson: updatePrimaryPersonHelper,
+  useToken: useTokenHelper,
   getPeopleTransferedToUser: getPeopleTransferedToUserHelper,
   transferPerson: transferPersonHelper,
+  getTokenPromoCode: getTokenPromoCodeHelper,
   cancelPersonTransfer: cancelPersonTransferHelper,
   declinePersonTransfer: declinePersonTransferHelper,
   getTransferInfosFromToken: getTransferInfosHelper,
@@ -211,6 +213,10 @@ const updatePrimaryPerson = async (body, userId) => {
 
   return updatePrimaryPersonHelper(userId, primaryPersonId);
 };
+const useToken = async body => {
+  const { tokenId } = body;
+  return useTokenHelper(tokenId);
+};
 
 const getPeopleTransferedToUser = async userId => {
   return (await getPeopleTransferedToUserHelper(userId)).map(
@@ -223,6 +229,11 @@ const getPeopleTransferedToUser = async userId => {
 
 const transferPerson = async (personId, userId) => {
   return transferPersonHelper(personId, userId);
+};
+
+const getTokenPromoCode = async body => {
+  const { token } = body;
+  return getTokenPromoCodeHelper(token);
 };
 
 const declinePersonTransfer = async personId => {
@@ -323,10 +334,12 @@ module.exports = {
   getPrimaryPersonId,
   getOwnedPersons,
   updatePrimaryPerson,
+  useToken,
   sendTransferPersonEmail,
   cancelPersonTransfer,
   getPeopleTransferedToUser,
   transferPerson,
+  getTokenPromoCode,
   declinePersonTransfer,
   getOwnedAndTransferedPersons,
   getTransferInfos,

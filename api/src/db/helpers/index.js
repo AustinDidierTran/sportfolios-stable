@@ -7,6 +7,7 @@ const {
   GLOBAL_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
   BASIC_CHATBOT_STATES,
+  COUPON_CODE_ENUM,
 } = require('../../../../common/enums');
 
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
@@ -16,7 +17,7 @@ const {
   sendAddPersonToTeamEmail,
 } = require('../../server/utils/nodeMailer');
 const { ERROR_ENUM } = require('../../../../common/errors');
-
+const randtoken = require('rand-token');
 const { getNameFromPSID } = require('./facebook');
 
 const sendTransferAddNewPlayer = async (
@@ -179,6 +180,10 @@ const generateHashedPassword = async password => {
 const generateToken = () => {
   return uuidv1();
 };
+const generatePromoCodeToken = () => {
+  const token = randtoken.generate(6);
+  return token;
+};
 
 const generateAuthToken = async userId => {
   const token = generateToken();
@@ -186,6 +191,25 @@ const generateAuthToken = async userId => {
     user_id: userId,
     token_id: token,
     expires_at: new Date(Date.now() + EXPIRATION_TIMES.AUTH_TOKEN),
+  });
+  return token;
+};
+
+const generateMemberImportToken = async (
+  organizationId,
+  expirationDate,
+  membershipType,
+) => {
+  const token = generatePromoCodeToken();
+  await knex('token_promo_code').insert({
+    token_id: token,
+    expires_at: new Date(Date.now() + EXPIRATION_TIMES.IMPORT_MEMBER),
+    metadata: {
+      type: COUPON_CODE_ENUM.BECOME_MEMBER,
+      organizationId,
+      expirationDate: new Date(expirationDate),
+      membershipType,
+    },
   });
   return token;
 };
@@ -382,6 +406,13 @@ const updatePrimaryPerson = async (user_id, primary_person) => {
     .returning('*');
 };
 
+const useToken = async tokenId => {
+  return knex('token_promo_code')
+    .update({ used: true })
+    .where({ token_id: tokenId })
+    .returning('*');
+};
+
 const validateEmailIsConfirmed = async email => {
   const response = await knex('user_email')
     .where({ email })
@@ -548,6 +579,15 @@ const transferPerson = async (person_id, user_id) => {
       .transacting(trx);
     return id;
   });
+};
+
+const getTokenPromoCode = async tokenId => {
+  const [res] = await knex('token_promo_code')
+    .select('*')
+    .where({
+      token_id: tokenId,
+    });
+  return res;
 };
 
 const cancelPersonTransfer = async person_id => {
@@ -751,6 +791,7 @@ module.exports = {
   generateHashedPassword,
   generateToken,
   generateAuthToken,
+  generateMemberImportToken,
   getBasicUserInfoFromId,
   getEmailFromToken,
   getEmailsFromUserId,
@@ -766,12 +807,14 @@ module.exports = {
   validateEmailIsUnique,
   getPrimaryPersonIdFromUserId,
   updatePrimaryPerson,
+  useToken,
   sendPersonTransferEmailAllIncluded,
   sendPlayerTransfer,
   sendTransferAddNewPlayer,
   getPeopleTransferedToUser,
   getPeopleTransferedToEmails,
   transferPerson,
+  getTokenPromoCode,
   cancelPersonTransfer,
   declinePersonTransfer,
   getTransferInfosFromToken,

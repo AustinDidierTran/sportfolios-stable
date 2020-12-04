@@ -119,12 +119,14 @@ const { createRefund } = require('../helpers/stripe/checkout');
 const {
   sendTeamRegistrationEmailToAdmin,
   sendAcceptedRegistrationEmail,
+  sendImportMemberEmail,
 } = require('../../server/utils/nodeMailer');
 const { addMembershipCartItem } = require('../helpers/shop');
 const {
   getEmailsFromUserId,
   getLanguageFromEmail,
   validateEmailIsUnique: validateEmailIsUniqueHelper,
+  generateMemberImportToken,
 } = require('../helpers');
 const { sendNotification } = require('./notifications');
 
@@ -683,6 +685,29 @@ async function addReport(body) {
   const { type, organizationId, date } = body;
   return addReportHelper(type, organizationId, date);
 }
+
+async function importMembers(body) {
+  const { membershipType, organizationId, language, members } = body;
+  const res = await Promise.all(
+    members.map(async m => {
+      const token = await generateMemberImportToken(
+        organizationId,
+        m.expirationDate,
+        membershipType,
+      );
+      const organization = await getEntityHelper(organizationId);
+      sendImportMemberEmail({
+        email: m.email,
+        token,
+        language,
+        organizationName: organization.basicInfos.name,
+      });
+      return m;
+    }),
+  );
+  return res;
+}
+
 async function addMember(body, userId) {
   const {
     membershipId,
@@ -1207,6 +1232,7 @@ module.exports = {
   getSameSuggestions,
   getSlots,
   getTeamsSchedule,
+  importMembers,
   isAllowed,
   unregisterTeams,
   updateAlias,

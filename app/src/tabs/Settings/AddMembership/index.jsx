@@ -105,7 +105,7 @@ export default function AddMembership() {
         variant="contained"
         style={{ margin: '8px' }}
         onClick={() => {
-          goTo(ROUTES.importMembers), null, { id };
+          goTo(ROUTES.importMembers, null, { id });
         }}
       >
         {t('import_members')}

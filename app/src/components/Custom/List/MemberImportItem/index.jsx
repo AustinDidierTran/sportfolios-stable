@@ -22,12 +22,12 @@ export default function MemberImportItem(props) {
   const { email, day, formik, month, year } = props;
 
   const [open, setOpen] = useState(false);
-  const [disabled, setDisabled] = useState(false);
 
   const updateMember = (newEmail, day, month, year) => {
-    const tempMembers = formik.values.members;
-    const index = tempMembers.findIndex(t => t.email === email);
-    tempMembers[index] = {
+    const index = formik.values.members.findIndex(
+      t => t.email === email,
+    );
+    const editedMember = {
       email: newEmail,
       day: Number(day),
       month: Number(month),
@@ -35,7 +35,7 @@ export default function MemberImportItem(props) {
       type: LIST_ITEM_ENUM.MEMBER_IMPORT,
       key: index,
     };
-    formik.setFieldValue('members', tempMembers);
+    formik.setFieldValue(`members[${index}]`, editedMember);
   };
 
   const expirationDate = useMemo(() => {
@@ -61,7 +61,6 @@ export default function MemberImportItem(props) {
   };
 
   const handleDelete = () => {
-    setDisabled(disabled);
     formik.setFieldValue(
       'members',
       formik.values.members.filter(member => member.email !== email),
@@ -119,7 +118,6 @@ export default function MemberImportItem(props) {
           style={{ color: 'primary' }}
         />
         <IconButton
-          disabled={disabled}
           icon="Delete"
           tooltip={t('delete')}
           onClick={handleDelete}

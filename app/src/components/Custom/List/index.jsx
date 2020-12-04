@@ -22,7 +22,6 @@ export default function CustomList(props) {
   const {
     title,
     items,
-    itemHelpers,
     ref,
     rowRenderer,
     selectedIndex,

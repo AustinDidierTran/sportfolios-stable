@@ -83,6 +83,7 @@ const MEMBERSHIP_TYPE_ENUM = {
   COMPETITIVE: 2,
   RECREATIONAL: 3,
   JUNIOR: 4,
+  NOT_SPECIFIED: 5,
 };
 
 const PLATEFORM_FEES = 0.05;
@@ -131,6 +132,7 @@ const FORM_DIALOG_TYPE_ENUM = {
   EDIT_EVENT_PAYMENT_OPTION: 'edit event payment option',
   ADD_MEMBERSHIP: 'add membership',
   BECOME_MEMBER: 'become member',
+  BECOME_MEMBER_COUPON: 'become member coupon',
   ADD_MEMBER: 'add member',
   EDIT_MEMBERSHIP: 'edit membership',
   MEMBERS_REPORT: 'members report',
@@ -170,6 +172,10 @@ const INVOICE_STATUS_ENUM = {
   UNCOLLECTIBLE: 'uncollectible',
   VOID: 'void',
   FREE: 'free',
+};
+
+const COUPON_CODE_ENUM = {
+  BECOME_MEMBER: 'become member',
 };
 
 const ROUTES_ENUM = {
@@ -364,6 +370,7 @@ const MILLIS_TIME_ENUM = {
   ONE_HOUR: 60 * 60 * 1000,
   ONE_DAY: 24 * 60 * 60 * 1000,
   ONE_WEEK: 7 * 24 * 60 * 60 * 1000,
+  ONE_MONTH: 31 * 24 * 60 * 60 * 1000,
 };
 
 const LOGGER_ENUM = {
@@ -472,6 +479,7 @@ module.exports = {
   NOTIFICATION_TYPE,
   PERSON_TRANSFER_STATUS_ENUM,
   POSITION_ENUM,
+  COUPON_CODE_ENUM,
   REJECTION_ENUM,
   REPORT_TYPE_ENUM,
   ROUTES_ENUM,

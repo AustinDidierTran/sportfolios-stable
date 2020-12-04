@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const { STATUS_ENUM } = require('../../../../../common/enums');
+const { ERROR_ENUM } = require('../../../../../common/errors');
 const queries = require('../../../db/queries/users');
 const router = new Router();
 const BASE_URL = '/api/user';
@@ -134,6 +135,27 @@ router.get(`${BASE_URL}/emails`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/getTokenPromoCode`, async ctx => {
+  try {
+    const token = await queries.getTokenPromoCode(ctx.query);
+    if (token) {
+      ctx.status = STATUS_ENUM.SUCCESS;
+      ctx.body = {
+        status: 'success',
+        data: token,
+      };
+    } else {
+      ctx.status = STATUS_ENUM.ERROR;
+      ctx.body = {
+        status: 'error',
+        message: 'Something went wrong',
+      };
+    }
+  } catch (e) {
+    throw e;
+  }
+});
+
 //Owned persons
 router.get(`${BASE_URL}/ownedPersons`, async ctx => {
   const persons = await queries.getOwnedAndTransferedPersons(
@@ -169,6 +191,23 @@ router.put(`${BASE_URL}/primaryPerson`, async ctx => {
     ctx.body = {
       status: 'error',
       message: 'That person does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/useToken`, async ctx => {
+  const token = await queries.useToken(ctx.request.body);
+  if (token) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      data: token,
+      status: 'token',
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: ERROR_ENUM.ERROR_OCCURED,
     };
   }
 });
