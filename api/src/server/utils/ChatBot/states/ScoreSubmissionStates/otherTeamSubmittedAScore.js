@@ -6,13 +6,10 @@ const {
 } = require('../../../../../../../common/enums');
 const { genQuickReply, genText } = require('../../response');
 const State = require('../state');
-const {
-  acceptScoreSuggestion,
-} = require('../../../../../db/queries/entity');
 
 class otherTeamSubmittedAScore extends State {
   async handleEvent(webhookEvent) {
-    let nextState;
+    /*let nextState;
     const chatbotInfos = this.context.chatbotInfos;
     if (this.isYes(webhookEvent)) {
       try {
@@ -26,8 +23,8 @@ class otherTeamSubmittedAScore extends State {
         }
         nextState =
           SCORE_SUBMISSION_CHATBOT_STATES.SPIRIT_SUBMISSION_REQUEST_SENT;
-          delete chatbotInfos.suggestionId;
-          delete chatbotInfos.
+        delete chatbotInfos.suggestionId;
+        delete chatbotInfos.submittedBy;
       } catch (e) {
         this.sendMessages(
           webhookEvent.sender.id,
@@ -49,7 +46,7 @@ class otherTeamSubmittedAScore extends State {
     }
     if (nextState) {
       await this.context.changeState(nextState);
-    }
+    }*/
   }
 
   formatScore(scoreObj) {
@@ -61,12 +58,11 @@ class otherTeamSubmittedAScore extends State {
 
   async getIntroMessages() {
     const chatbotInfos = this.context.chatbotInfos;
-    /*const score = this.formatScore(chatbotInfos.score);
+    //const score = this.formatScore(chatbotInfos.score);
     const submittedBy = chatbotInfos.submittedBy;
     const eventName = chatbotInfos.eventName;
-    
-  }*/
-  return {
+
+    return {
       messages: [
         genText(
           i18n.__(
@@ -74,9 +70,11 @@ class otherTeamSubmittedAScore extends State {
             { submittedBy, eventName },
           ),
         ),
-       
-      ], nextState: SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION_CONFIRMATION
+      ],
+      nextState:
+        SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION_CONFIRMATION,
     };
+  }
 }
 
 module.exports = otherTeamSubmittedAScore;
