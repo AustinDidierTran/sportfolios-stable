@@ -115,7 +115,8 @@ const sendChatbotNotification = async (user_id, notif) => {
     newState =
       SCORE_SUBMISSION_CHATBOT_STATES.OTHER_TEAM_SUBMITTED_A_SCORE;
     const {
-      suggestionId,
+      gameId,
+      eventId,
       eventName,
       myRosterId,
       myPlayerId,
@@ -128,6 +129,7 @@ const sendChatbotNotification = async (user_id, notif) => {
       names.splice(names.findIndex(n => n.roster_id == myRosterId)),
     ];
     chatbotInfos.myTeamName = myTeam.name;
+    chatbotInfos.myScore = score[myRosterId];
     delete names[myRosterId];
     chatbotInfos.opponentTeams = names.map(team => {
       const { roster_id, name } = team;
@@ -137,15 +139,14 @@ const sendChatbotNotification = async (user_id, notif) => {
         teamName: name,
       };
     }, {});
-    console.log({ submittedBy });
-    console.log(names);
     chatbotInfos.submittedBy = names.find(
       n => n.roster_id == submittedBy,
     ).name;
-    chatbotInfos.suggestionId = suggestionId;
+    chatbotInfos.gameId = gameId;
     chatbotInfos.eventName = eventName;
     chatbotInfos.myRosterId = myRosterId;
     chatbotInfos.playerId = myPlayerId;
+    chatbotInfos.eventId = eventId;
   }
   //Sending the notif and updating db
   if (newState) {
