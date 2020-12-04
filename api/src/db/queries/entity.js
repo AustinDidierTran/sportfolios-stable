@@ -32,7 +32,6 @@ const {
   addScoreAndSpirit: addScoreAndSpiritHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
   acceptScoreSuggestion: acceptScoreSuggestionHelper,
-  acceptScoreSuggestionIfPossible: acceptScoreSuggestionIfPossibleHelper,
   addTeamToEvent: addTeamToEventHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
@@ -805,17 +804,7 @@ async function acceptScoreSuggestion(body, userId) {
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-
-  const res1 = await acceptScoreSuggestionHelper(body);
-  const res2 = await acceptScoreSuggestionIfPossibleHelper(
-    res1.game_id,
-  );
-
-  if (res2.canUpdateScore) {
-    //TODO: update game score
-  }
-
-  return res2;
+  return acceptScoreSuggestionHelper(body);
 }
 
 async function addScoreSuggestion(body, userId) {

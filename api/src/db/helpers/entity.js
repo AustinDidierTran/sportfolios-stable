@@ -2438,17 +2438,45 @@ async function acceptScoreSuggestion(infos) {
     return;
   }
   const { game_id, score } = res[0];
-  const res2 = await addScoreSuggestion({
+  return addScoreSuggestion({
     submitted_by_roster,
     submitted_by_person,
     game_id,
     score,
   });
+}
+
+async function addScoreSuggestion(infos) {
+  const submitted = await isScoreSuggestionAlreadySubmitted(infos);
+  if (typeof submitted === 'undefined') {
+    return;
+  }
+  if (submitted) {
+    throw new Error(ERROR_ENUM.VALUE_ALREADY_EXISTS);
+  }
+  const newSuggestion = await knex('score_suggestion')
+    .insert(infos)
+    .returning('*');
+
+  const suggestionStatus = await acceptScoreSuggestionIfPossible(
+    infos.game_id,
+  );
 
   return {
-    ...res2,
-    game_id,
+    ...newSuggestion,
+    status: suggestionStatus,
   };
+}
+
+async function isScoreSuggestionAlreadySubmitted(infos) {
+  const { game_id, submitted_by_roster } = infos;
+  const res = await knex('score_suggestion')
+    .select()
+    .where({ game_id, submitted_by_roster });
+  if (!res) {
+    return;
+  }
+  return res.length !== 0;
 }
 
 async function acceptScoreSuggestionIfPossible(gameId) {
@@ -2472,46 +2500,25 @@ async function acceptScoreSuggestionIfPossible(gameId) {
           s.score[teams[1]] === model[teams[1]],
       )
     ) {
-      // update to accepted
       await knex('score_suggestion')
         .where({ game_id: gameId })
         .update({ status: STATUS_ENUM.ACCEPTED });
 
-      return {
-        canUpdateScore: true,
-        score: model,
-      };
-    } else {
-      // TODO: conflict, send notification to event admin
-      return {
-        canUpdateScore: false,
-      };
+      await setGameScore(gameId, model);
+      return STATUS_ENUM.ACCEPTED;
     }
+
+    // TODO: conflict, send notification to event admin
+    return STATUS_ENUM.PENDING;
   }
 }
 
-async function addScoreSuggestion(infos) {
-  const submitted = await isScoreSuggestionAlreadySubmitted(infos);
-  if (typeof submitted === 'undefined') {
-    return;
+async function setGameScore(gameId, scores) {
+  for (let team in scores) {
+    await knex('game_teams')
+      .where({ game_id: gameId, roster_id: team })
+      .update({ score: scores[team] });
   }
-  if (submitted) {
-    throw new Error(ERROR_ENUM.VALUE_ALREADY_EXISTS);
-  }
-  return knex('score_suggestion')
-    .insert(infos)
-    .returning('*');
-}
-
-async function isScoreSuggestionAlreadySubmitted(infos) {
-  const { game_id, submitted_by_roster } = infos;
-  const res = await knex('score_suggestion')
-    .select()
-    .where({ game_id, submitted_by_roster });
-  if (!res) {
-    return;
-  }
-  return res.length !== 0;
 }
 
 async function getGamesWithAwaitingScore(user_id, limit = 100) {

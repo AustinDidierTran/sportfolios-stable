@@ -156,7 +156,6 @@ export default function SectionScore(props) {
         myScoreSuggestion.score[submissionerInfos.enemyTeam.rosterId],
       );
     } else if (enemyScoreSuggestion) {
-      //set need to accept or refuse
       formik.setFieldValue(
         'scoreTeam1',
         enemyScoreSuggestion.score[submissionerInfos.myTeam.rosterId],
