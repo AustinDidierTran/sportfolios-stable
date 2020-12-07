@@ -36,7 +36,6 @@ const {
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
   canRemovePlayerFromRoster: canRemovePlayerFromRosterHelper,
-  getSubmissionerInfos: getSubmissionerInfosHelper,
   canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
@@ -691,11 +690,14 @@ async function importMembers(body) {
   const { membershipType, organizationId, language, members } = body;
   const res = await Promise.all(
     members.map(async m => {
-      const token = await generateMemberImportToken(
-        organizationId,
-        m.expirationDate,
-        membershipType,
-      );
+      let token = null;
+      do {
+        token = await generateMemberImportToken(
+          organizationId,
+          m.expirationDate,
+          membershipType,
+        );
+      } while (!token);
       const organization = await getEntityHelper(organizationId);
       sendImportMemberEmail({
         email: m.email,
