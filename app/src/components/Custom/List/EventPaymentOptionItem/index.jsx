@@ -36,6 +36,7 @@ export default function EventPaymentOptionItem(props) {
     endTime,
     owner,
     taxRates,
+    team_activity,
   } = option;
 
   const { dispatch } = useContext(Store);
@@ -119,6 +120,11 @@ export default function EventPaymentOptionItem(props) {
         <div style={{ backgroundColor: '#F5F5F5' }}>
           <ListItem>
             <ListItemText
+              primary={
+                team_activity
+                  ? t('team_activity')
+                  : t('individual_activity')
+              }
               secondary={t('open_from_to', {
                 startDate: formatDate(moment(startTime), 'LLLL'),
                 endDate: formatDate(moment(endTime), 'LLLL'),

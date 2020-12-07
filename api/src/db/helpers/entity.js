@@ -990,6 +990,7 @@ async function getOptions(eventId) {
       'start_time',
       'end_time',
       'id',
+      'team_activity',
     )
     .leftJoin(
       'entities_name',
@@ -2696,6 +2697,7 @@ async function addOption(
   endTime,
   startTime,
   userId,
+  teamActivity,
 ) {
   const realId = await getRealId(eventId);
   const entity = (await getEntity(eventId, userId)).basicInfos;
@@ -2773,6 +2775,7 @@ async function addOption(
       individual_price: playerPrice,
       end_time: new Date(endTime),
       start_time: new Date(startTime),
+      team_activity: teamActivity,
     })
     .returning('*');
   return res;

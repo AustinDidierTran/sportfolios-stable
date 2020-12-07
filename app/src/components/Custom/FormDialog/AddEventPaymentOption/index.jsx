@@ -25,7 +25,9 @@ export default function AddEventPaymentOption(props) {
   const [ownersId, setOwnersId] = useState([]);
   const [taxes, setTaxes] = useState([]);
   const [allTaxes, setAllTaxes] = useState([]);
+  const [teamActivity, setTeamActivity] = useState(true);
   const { id: eventId } = useParams();
+
   const getAccounts = async () => {
     const { data } = await api(
       formatRoute('/api/stripe/eventAccounts', null, { eventId }),
@@ -40,6 +42,7 @@ export default function AddEventPaymentOption(props) {
       formik.setFieldValue('ownerId', res[0].value);
     }
   };
+
   const getTaxes = async () => {
     const { data } = await api(formatRoute('/api/stripe/getTaxes'));
     const res = data.map(d => ({
@@ -146,10 +149,20 @@ export default function AddEventPaymentOption(props) {
       const taxRatesId = allTaxes
         .filter(t => taxes.includes(t.display))
         .map(t => t.id);
-      addOptionToEvent({ ...values, taxRatesId });
+      addOptionToEvent({ ...values, taxRatesId, teamActivity });
       onClose();
     },
   });
+
+  useEffect(() => {
+    if (!teamActivity) {
+      formik.setFieldValue('teamPrice', 0);
+    }
+  }, [teamActivity]);
+
+  const onChange = () => {
+    setTeamActivity(!teamActivity);
+  };
 
   const getPriceWithTax = (amount, taxes) => {
     return Math.ceil(
@@ -185,6 +198,41 @@ export default function AddEventPaymentOption(props) {
       label: t('name'),
       type: 'text',
     },
+    {
+      componentType: COMPONENT_TYPE_ENUM.CHECKBOX,
+      checked: teamActivity,
+      namespace: 'teamActivity',
+      label: t('team_activity'),
+      onChange: onChange,
+    },
+    teamActivity
+      ? {
+          namespace: 'teamPrice',
+          label: t('price_team'),
+          type: 'number',
+          endAdorment: '$',
+        }
+      : { componentType: COMPONENT_TYPE_ENUM.EMPTY },
+    teamActivity
+      ? {
+          componentType: COMPONENT_TYPE_ENUM.LIST_ITEM,
+          secondary: t('with_taxes_the_total_for_a_team_is', {
+            total: teamPriceTotal,
+          }),
+        }
+      : { componentType: COMPONENT_TYPE_ENUM.EMPTY },
+    {
+      namespace: 'playerPrice',
+      label: t('price_individual'),
+      type: 'number',
+      endAdorment: '$',
+    },
+    {
+      componentType: COMPONENT_TYPE_ENUM.LIST_ITEM,
+      secondary: t('with_taxes_the_total_for_a_player_is', {
+        total: playerPriceTotal,
+      }),
+    },
     ownersId.length
       ? {
           namespace: 'ownerId',
@@ -209,30 +257,6 @@ export default function AddEventPaymentOption(props) {
       options: allTaxes.map(a => a.display),
       values: taxes,
       onChange: handleChange,
-    },
-    {
-      namespace: 'teamPrice',
-      label: t('price_team'),
-      type: 'number',
-      endAdorment: '$',
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.LIST_ITEM,
-      secondary: t('with_taxes_the_total_for_a_team_is', {
-        total: teamPriceTotal,
-      }),
-    },
-    {
-      namespace: 'playerPrice',
-      label: t('price_individual'),
-      type: 'number',
-      endAdorment: '$',
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.LIST_ITEM,
-      secondary: t('with_taxes_the_total_for_a_player_is', {
-        total: playerPriceTotal,
-      }),
     },
     {
       namespace: 'openDate',
