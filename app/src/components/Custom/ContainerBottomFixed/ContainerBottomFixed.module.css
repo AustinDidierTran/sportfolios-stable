@@ -7,7 +7,7 @@
   justify-content: center;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .container {
     bottom: 0px;
     width: 700px;

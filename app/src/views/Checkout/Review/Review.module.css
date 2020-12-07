@@ -6,7 +6,7 @@
   padding: 0px !important;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .items {
     grid-template-columns: 1fr 1fr;
   }

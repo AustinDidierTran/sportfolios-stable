@@ -27,7 +27,7 @@
   grid-area: photo;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .photo {
     height: 64px !important;
     width: 64px !important;

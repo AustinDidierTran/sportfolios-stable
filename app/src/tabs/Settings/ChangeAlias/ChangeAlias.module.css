@@ -15,7 +15,7 @@
   margin: 8px !important;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .buttons {
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-areas: '. save cancel .';

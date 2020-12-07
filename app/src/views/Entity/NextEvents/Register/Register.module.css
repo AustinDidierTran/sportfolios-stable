@@ -3,7 +3,7 @@
   font-size: xx-small !important;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .button {
     font-size: small !important;
   }

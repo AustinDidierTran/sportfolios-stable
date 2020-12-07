@@ -22,7 +22,7 @@
   justify-content: center;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .button {
     flex: 0 0 375px;
   }

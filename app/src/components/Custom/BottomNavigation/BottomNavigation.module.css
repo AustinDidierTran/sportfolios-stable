@@ -6,4 +6,5 @@
   border-top-color: grey;
   border-width: thin;
   border-style: solid;
+  z-index: 99;
 }
