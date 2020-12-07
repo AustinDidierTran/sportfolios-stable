@@ -201,16 +201,22 @@ const generateMemberImportToken = async (
   membershipType,
 ) => {
   const token = generatePromoCodeToken();
-  await knex('token_promo_code').insert({
-    token_id: token,
-    expires_at: new Date(Date.now() + EXPIRATION_TIMES.IMPORT_MEMBER),
-    metadata: {
-      type: COUPON_CODE_ENUM.BECOME_MEMBER,
-      organizationId,
-      expirationDate: new Date(expirationDate),
-      membershipType,
-    },
-  });
+  try {
+    await knex('token_promo_code').insert({
+      token_id: token,
+      expires_at: new Date(
+        Date.now() + EXPIRATION_TIMES.IMPORT_MEMBER,
+      ),
+      metadata: {
+        type: COUPON_CODE_ENUM.BECOME_MEMBER,
+        organizationId,
+        expirationDate: new Date(expirationDate),
+        membershipType,
+      },
+    });
+  } catch (err) {
+    return;
+  }
   return token;
 };
 
