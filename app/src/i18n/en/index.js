@@ -313,6 +313,7 @@ export default {
     invalid_date: 'Invalid date',
     invalid_date_it_should_follow: 'Invalid date. It should follow: yyyy-mm-dd',
     invalid_email: 'Invalid email address.',
+    invalid_file_format: 'Invalid file format. Only csv files are accepted.',
     invalid_information: 'Invalid information',
     invalid_input: 'Invalid input',
     invalid_roster_role_to_submit_score: 'You must be a coach, captain or assistant captain to be able to submit a result',

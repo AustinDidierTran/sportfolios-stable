@@ -24,38 +24,35 @@ export default function Coupons() {
     setOpen(false);
   };
 
-  const validate = async () => {};
-
   const formik = useFormik({
     initialValues: {
       token: '',
     },
-    validate,
-    validateOnChange: false,
-    validateOnBlur: false,
     onSubmit: async values => {
       const { token } = values;
-      const res = await api(
+      const { data, status } = await api(
         formatRoute('/api/user/getTokenPromoCode', null, { token }),
       );
-      if (res?.data?.used) {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: t('coupon_already_used'),
-          severity: SEVERITY_ENUM.ERROR,
-          duration: 4000,
-        });
-      } else if (res.status === STATUS_ENUM.ERROR_STRING) {
+      if (status === STATUS_ENUM.SUCCESS_STRING) {
+        if (data?.used) {
+          dispatch({
+            type: ACTION_ENUM.SNACK_BAR,
+            message: t('coupon_already_used'),
+            severity: SEVERITY_ENUM.ERROR,
+            duration: 4000,
+          });
+        } else {
+          setItems(data);
+          setOpen(true);
+          setType(data.metadata.type);
+        }
+      } else {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: t('invalid_coupon'),
           severity: SEVERITY_ENUM.ERROR,
           duration: 4000,
         });
-      } else {
-        setItems(res.data);
-        setOpen(true);
-        setType(res.data.metadata.type);
       }
     },
   });

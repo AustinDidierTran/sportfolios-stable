@@ -44,9 +44,7 @@ export default function ImportMembers() {
   const getMemberships = async () => {
     const res = await api(`/api/entity/memberships/?id=${id}`);
     const data = res.data.reduce((prev, curr) => {
-      if (
-        prev.findIndex(p => p.value === curr.membership_type) === -1
-      ) {
+      if (!prev.some(p => p.value === curr.membership_type)) {
         const res = {
           display: t(getMembershipName(curr.membership_type)),
           value: curr.membership_type,
@@ -111,8 +109,17 @@ export default function ImportMembers() {
     if (!event.target.files.length) {
       return;
     }
-    setIsLoading(true);
     let fileObj = event.target.files[0];
+    if (fileObj.type != 'text/csv') {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('invalid_file_format'),
+        severity: SEVERITY_ENUM.ERROR,
+        duration: 5000,
+      });
+      return;
+    }
+    setIsLoading(true);
     try {
       formik.setFieldValue('fileName', fileObj.name);
       const resp = await ExcelRenderer(fileObj);
@@ -137,7 +144,7 @@ export default function ImportMembers() {
         type: ACTION_ENUM.SNACK_BAR,
         message: err,
         severity: SEVERITY_ENUM.ERROR,
-        duration: 2000,
+        duration: 4000,
       });
     }
     setIsLoading(false);

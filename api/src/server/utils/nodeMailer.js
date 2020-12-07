@@ -376,7 +376,7 @@ async function sendImportMemberEmail({
   let buttonName = '';
   if (language === LANGUAGE_ENUM.ENGLISH) {
     title = `Membership ${organizationName}`;
-    content = `${organizationName} has invited you to become a member of their organization Enter this code in your settings: ${token}`;
+    content = `${organizationName} has invited you to become a member of their organization. Enter this code in your settings: ${token}`;
     subject = `${organizationName} Membership | Sportfolios`;
     buttonName = 'Become member';
   } else {

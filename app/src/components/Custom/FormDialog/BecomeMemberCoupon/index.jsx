@@ -94,14 +94,7 @@ export default function BecomeMemberCoupon(props) {
           expirationDate: new Date(expirationDate),
         }),
       });
-      if (res.status === STATUS_ENUM.ERROR) {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: ERROR_ENUM.ERROR_OCCURED,
-          severity: SEVERITY_ENUM.ERROR,
-          duration: 4000,
-        });
-      } else {
+      if (res.status === STATUS_ENUM.SUCCESS) {
         await api(`/api/user/useToken`, {
           method: 'PUT',
           body: JSON.stringify({
@@ -114,6 +107,13 @@ export default function BecomeMemberCoupon(props) {
           { id: organizationId },
           { tab: TABS_ENUM.ABOUT },
         );
+      } else {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: ERROR_ENUM.ERROR_OCCURED,
+          severity: SEVERITY_ENUM.ERROR,
+          duration: 4000,
+        });
       }
     },
   });
