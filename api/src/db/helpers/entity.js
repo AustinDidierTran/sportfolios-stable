@@ -1287,34 +1287,6 @@ async function getRoster(rosterId, withSub) {
   return props;
 }
 
-async function getGameInfosFromGameIdAndUserId(gameId, userId) {
-  const [{ entity_id: myEntityId }] = await knex('user_entity_role')
-    .select('entity_id')
-    .where({ user_id: userId });
-
-  const teams = await knex('game_teams')
-    .select('roster_id')
-    .where({ game_id: gameId });
-
-  const myRosterId = await knex('team_players')
-    .select('roster_id')
-    .where({ person_id: myEntityId })
-    .whereIn(
-      'roster_id',
-      teams.map(t => t.roster_id),
-    );
-
-  let res = { myEntityId };
-  if (myRosterId.length) {
-    res.myRosterId = myRosterId[0].roster_id;
-    res.enemyRosterId = teams.filter(
-      t => t.roster_id !== myRosterId[0].roster_id,
-    )[0].roster_id;
-  }
-
-  return res;
-}
-
 const getPrimaryPerson = async user_id => {
   const [{ primary_person: id }] = await knex('user_primary_person')
     .select('primary_person')
@@ -1522,35 +1494,6 @@ async function getAttendanceSheet(infos) {
   return knex('game_players_attendance')
     .select()
     .where(infos);
-}
-async function getRostersNames(rostersArray) {
-  const res = await knex
-    .queryBuilder()
-    .select('name', 'roster_id')
-    .from('event_rosters')
-    .join(
-      'entities_name',
-      'entities_name.entity_id',
-      'event_rosters.team_id',
-    )
-    .whereIn('roster_id', rostersArray);
-  return res;
-}
-async function getRosterName(roster_id) {
-  const [res] = await knex
-    .queryBuilder()
-    .select('name')
-    .from('event_rosters')
-    .join(
-      'entities_name',
-      'entities_name.entity_id',
-      'event_rosters.team_id',
-    )
-    .where({ roster_id });
-  if (!res) {
-    return;
-  }
-  return res.name;
 }
 
 async function getGamePlayersWithRole(game_id) {
