@@ -20,6 +20,7 @@ const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
 const validator = require('validator');
 const { sendTransferAddNewPlayer } = require('../helpers/index');
+const _ = require('lodash');
 
 const addEntity = async (body, userId) => {
   const { name, creator, surname, type } = body;
@@ -2489,17 +2490,10 @@ async function acceptScoreSuggestionIfPossible(gameId) {
     .where({ game_id: gameId });
 
   if (allSuggestions.length === Number(numberOfTeams)) {
-    // all score suggestions are the same, accept them
+    // all score suggestions are made
     const model = allSuggestions[0].score;
-    const teams = Object.keys(allSuggestions[0].score);
-
-    if (
-      allSuggestions.every(
-        s =>
-          s.score[teams[0]] === model[teams[0]] &&
-          s.score[teams[1]] === model[teams[1]],
-      )
-    ) {
+    if (allSuggestions.every(s => _.isEqual(s.score, model))) {
+      // all score suggestions are the same, accept them
       await knex('score_suggestion')
         .where({ game_id: gameId })
         .update({ status: STATUS_ENUM.ACCEPTED });

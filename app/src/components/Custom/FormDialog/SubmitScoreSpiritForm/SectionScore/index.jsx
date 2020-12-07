@@ -110,7 +110,6 @@ export default function SectionScore(props) {
   };
 
   const handleRefuseSuggestion = () => {
-    //console.log('refuse');
     setAcceptedOrRefused(true);
   };
 

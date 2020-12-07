@@ -62,8 +62,6 @@ export default function CustomMultiSelect(props) {
     }
   };
 
-  //console.log({ values });
-  //console.log({ options });
   return (
     <div {...props}>
       <FormControl className={classes.formControl}>
