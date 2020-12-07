@@ -62,6 +62,7 @@ import Receipt from '@material-ui/icons/Receipt';
 import Remove from '@material-ui/icons/Remove';
 import RemoveShoppingCart from '@material-ui/icons/RemoveShoppingCart';
 import Reorder from '@material-ui/icons/Reorder';
+import Replay from '@material-ui/icons/Replay';
 import SaveIcon from '@material-ui/icons/Save';
 import Search from '@material-ui/icons/Search';
 import Send from '@material-ui/icons/Send';
@@ -143,6 +144,7 @@ const icons = {
   Remove,
   RemoveShoppingCart,
   Reorder,
+  Replay,
   SaveIcon,
   Search,
   Send,

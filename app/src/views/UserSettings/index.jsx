@@ -15,6 +15,7 @@ import Disconnect from './Disconnect';
 import Email from './Email';
 import MyPersons from './MyPersons';
 import Notifications from './Notifications';
+import Coupons from './Coupons';
 
 export default function UserSettings() {
   const { t } = useTranslation();
@@ -49,6 +50,7 @@ export default function UserSettings() {
   return (
     <div className={styles.main}>
       <IgContainer className={styles.container}>
+        <Coupons />
         <BasicInfo />
         <Email />
         <MyPersons />

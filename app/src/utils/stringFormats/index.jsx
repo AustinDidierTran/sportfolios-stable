@@ -201,6 +201,29 @@ export const validateDate = dateProps => {
   }
   return true;
 };
+export const validateDateWithYear = dateProps => {
+  //date format: 'DD/MM/YYYY'
+  const days = [31, 28, 31, 30, 31, 30, 31, 30, 31, 31, 30, 31];
+  const date = dateProps.split('/');
+  const day = Number(date[0]);
+  const month = Number(date[1]);
+  const year = Number(date[2]);
+  if (month < 1 || month > 12 || isNaN(month) || month === null) {
+    return false;
+  }
+  if (
+    day > days[month - 1] ||
+    day < 1 ||
+    isNaN(day) ||
+    day === null
+  ) {
+    return false;
+  }
+  if (isNaN(year) || year === null) {
+    return false;
+  }
+  return true;
+};
 
 export const getFormattedMailTo = (emails, subject, body) => {
   if (!emails) {

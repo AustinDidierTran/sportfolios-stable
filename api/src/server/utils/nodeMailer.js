@@ -362,6 +362,36 @@ async function sendRecoveryEmail({ email, token, language }) {
     html,
   });
 }
+async function sendImportMemberEmail({
+  email,
+  token,
+  language,
+  organizationName,
+}) {
+  let html = '';
+  let subject = '';
+  let title = '';
+  let content = '';
+  let link = `${CLIENT_BASE_URL}/userSettings`;
+  let buttonName = '';
+  if (language === LANGUAGE_ENUM.ENGLISH) {
+    title = `Membership ${organizationName}`;
+    content = `${organizationName} has invited you to become a member of their organization. Enter this code in your settings: ${token}`;
+    subject = `${organizationName} Membership | Sportfolios`;
+    buttonName = 'Become member';
+  } else {
+    title = `Affiliation ${organizationName}`;
+    content = `${organizationName} vous a invité à devenir membre. Entrez ce code dans vos paramètres: ${token}`;
+    subject = `${organizationName} Affiliation | Sportfolios`;
+    buttonName = 'Devenir membre';
+  }
+  html = await getHtml(title, content, link, buttonName);
+  await sendMail({
+    email,
+    subject,
+    html,
+  });
+}
 
 module.exports = {
   sendConfirmationEmail,
@@ -371,5 +401,6 @@ module.exports = {
   sendTeamRegistrationEmailToAdmin,
   sendPersonTransferEmail,
   sendAddPersonToTeamEmail,
+  sendImportMemberEmail,
   sendMail,
 };

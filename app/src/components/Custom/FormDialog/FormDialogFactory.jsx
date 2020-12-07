@@ -4,9 +4,11 @@ import EditEventPaymentOption from './EditEventPaymentOption';
 import AddMember from './AddMember';
 import AddMembership from './AddMembership';
 import BecomeMember from './BecomeMember';
+import BecomeMemberCoupon from './BecomeMemberCoupon';
 import MembersReport from './MembersReport';
 import SalesReport from './SalesReport';
 import EditMembership from './EditMembership';
+import EditMemberImport from './EditMemberImport';
 import EnterEmail from './EnterEmail';
 import CreateTaxRate from './CreateTaxRate';
 import RosterPlayerOptions from './RosterPlayerOptions';
@@ -18,8 +20,11 @@ const FormDialogMap = {
   [FORM_DIALOG_TYPE_ENUM.ADD_MEMBER]: AddMember,
   [FORM_DIALOG_TYPE_ENUM.ADD_MEMBERSHIP]: AddMembership,
   [FORM_DIALOG_TYPE_ENUM.BECOME_MEMBER]: BecomeMember,
+  [FORM_DIALOG_TYPE_ENUM.BECOME_MEMBER_COUPON]: BecomeMemberCoupon,
   [FORM_DIALOG_TYPE_ENUM.MEMBERS_REPORT]: MembersReport,
   [FORM_DIALOG_TYPE_ENUM.SALES_REPORT]: SalesReport,
+  [FORM_DIALOG_TYPE_ENUM.EDIT_MEMBERSHIP]: EditMembership,
+  [FORM_DIALOG_TYPE_ENUM.EDIT_MEMBER_IMPORT]: EditMemberImport,
   [FORM_DIALOG_TYPE_ENUM.EDIT_MEMBERSHIP]: EditMembership,
   [FORM_DIALOG_TYPE_ENUM.ENTER_EMAIL]: EnterEmail,
   [FORM_DIALOG_TYPE_ENUM.ROSTER_PLAYER_OPTIONS]: RosterPlayerOptions,

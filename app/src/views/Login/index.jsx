@@ -86,7 +86,6 @@ export default function Login() {
         errors.email = t('invalid_email');
       }
     }
-
     return errors;
   };
 

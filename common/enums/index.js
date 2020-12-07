@@ -83,6 +83,7 @@ const MEMBERSHIP_TYPE_ENUM = {
   COMPETITIVE: 2,
   RECREATIONAL: 3,
   JUNIOR: 4,
+  NOT_SPECIFIED: 5,
 };
 
 const PLATEFORM_FEES = 0.05;
@@ -131,12 +132,14 @@ const FORM_DIALOG_TYPE_ENUM = {
   EDIT_EVENT_PAYMENT_OPTION: 'edit event payment option',
   ADD_MEMBERSHIP: 'add membership',
   BECOME_MEMBER: 'become member',
+  BECOME_MEMBER_COUPON: 'become member coupon',
   ADD_MEMBER: 'add member',
   EDIT_MEMBERSHIP: 'edit membership',
   MEMBERS_REPORT: 'members report',
   SALES_REPORT: 'sales_report',
   CREATE_TAX_RATE: 'create tax rate',
   ROSTER_PLAYER_OPTIONS: 'roster player options',
+  EDIT_MEMBER_IMPORT: 'edit member import',
 };
 
 const REPORT_TYPE_ENUM = {
@@ -171,6 +174,10 @@ const INVOICE_STATUS_ENUM = {
   FREE: 'free',
 };
 
+const COUPON_CODE_ENUM = {
+  BECOME_MEMBER: 'become member',
+};
+
 const ROUTES_ENUM = {
   addBankAccount: '/addBankAccount',
   addPaymentMethod: '/addPaymentMethod',
@@ -189,6 +196,7 @@ const ROUTES_ENUM = {
   entityNotFound: '/entityNotFound',
   eventRegistration: '/eventRegistration/:id',
   home: '/',
+  importMembers: '/importMembers',
   login: '/login',
   membersList: '/membersList',
   menu: '/menu',
@@ -342,6 +350,7 @@ const LIST_ITEM_ENUM = {
   EVENT_PAYMENT_OPTION: 'event_payment_option',
   MEMBER: 'member',
   MEMBERSHIP_DETAIL: 'membership detail',
+  MEMBER_IMPORT: 'member_import',
   MEMBERSHIP_ORGANIZATION: 'membership organization',
   MEMBERSHIP: 'membership',
   PAYMENT_OPTION: 'payment option',
@@ -361,6 +370,7 @@ const MILLIS_TIME_ENUM = {
   ONE_HOUR: 60 * 60 * 1000,
   ONE_DAY: 24 * 60 * 60 * 1000,
   ONE_WEEK: 7 * 24 * 60 * 60 * 1000,
+  ONE_MONTH: 31 * 24 * 60 * 60 * 1000,
 };
 
 const LOGGER_ENUM = {
@@ -469,6 +479,7 @@ module.exports = {
   NOTIFICATION_TYPE,
   PERSON_TRANSFER_STATUS_ENUM,
   POSITION_ENUM,
+  COUPON_CODE_ENUM,
   REJECTION_ENUM,
   REPORT_TYPE_ENUM,
   ROUTES_ENUM,

@@ -26,6 +26,7 @@ export default function ComponentFactory(props) {
         showtextifonlyoneoption={
           component?.showTextIfOnlyOneOption?.toString() || 'false'
         }
+        disabled={component.disabled}
       />
     );
   }
