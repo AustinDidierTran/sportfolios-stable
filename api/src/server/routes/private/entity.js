@@ -63,6 +63,55 @@ router.get(`${BASE_URL}/forYouPage`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
+  const res = await queries.canUnregisterTeamsList(
+    ctx.query.rosterIds,
+    ctx.query.eventId,
+  );
+
+  if (res) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/getPossibleSubmissionerInfos`, async ctx => {
+  const res = await queries.getPossibleSubmissionerInfos(
+    ctx.query.gameId,
+    ctx.query.teamsIds,
+    ctx.body.userInfo.id,
+  );
+
+  if (res === ERROR_ENUM.ACCESS_DENIED) {
+    ctx.status = STATUS_ENUM.FORBIDDEN;
+    ctx.body = {
+      status: 'error',
+      message: 'player not in team',
+    };
+  } else if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/scoreSuggestion`, async ctx => {
   const suggestion = await queries.getScoreSuggestion(ctx.query);
 
@@ -426,6 +475,26 @@ router.get(`${BASE_URL}/interactiveTool`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/gameSubmissionInfos`, async ctx => {
+  const data = await queries.getGameSubmissionInfos(
+    ctx.query.gameId,
+    ctx.query.rosterId,
+  );
+
+  if (data) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+    };
+  }
+});
+
 router.put(`${BASE_URL}`, async ctx => {
   const entity = await queries.updateEntity(
     ctx.request.body,
@@ -723,27 +792,6 @@ router.post(BASE_URL, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
-  const res = await queries.canUnregisterTeamsList(
-    ctx.query.rosterIds,
-    ctx.query.eventId,
-  );
-
-  if (res) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: res,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
-});
-
 router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
   const res = await queries.unregisterTeams(
     ctx.request.body,
@@ -866,6 +914,86 @@ router.post(`${BASE_URL}/game`, async ctx => {
     };
   } else {
     ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/suggestScore`, async ctx => {
+  const game = await queries.addScoreSuggestion(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (game) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: game,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/acceptScore`, async ctx => {
+  const res = await queries.acceptScoreSuggestion(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/spirit`, async ctx => {
+  const res = await queries.addSpiritSubmission(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/gameAttendances`, async ctx => {
+  const res = await queries.addGameAttendances(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'Something went wrong',

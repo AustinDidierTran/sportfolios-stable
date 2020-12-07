@@ -13,12 +13,14 @@ const {
   INVOICE_STATUS_ENUM,
   REPORT_TYPE_ENUM,
   PLATEFORM_FEES,
+  PLAYER_ATTENDANCE_STATUS,
 } = require('../../../../common/enums');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
 const validator = require('validator');
 const { sendTransferAddNewPlayer } = require('../helpers/index');
+const _ = require('lodash');
 
 const addEntity = async (body, userId) => {
   const { name, creator, surname, type } = body;
@@ -1254,22 +1256,19 @@ async function getRegistrationStatus(eventId, rosterId) {
 
 async function getRoster(rosterId, withSub) {
   const realId = await getRealId(rosterId);
-  let roster;
-  if (withSub === 'true') {
-    roster = await knex('team_players')
-      .select('*')
-      .where({ roster_id: realId })
-      .orderByRaw(
-        `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
-      );
-  } else {
-    roster = await knex('team_players')
-      .select('*')
-      .where({ roster_id: realId, is_sub: false })
-      .orderByRaw(
-        `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
-      );
+
+  let whereCond = { roster_id: realId };
+  if (!withSub) {
+    whereCond.is_sub = false;
   }
+
+  const roster = await knex('team_players')
+    .select('*')
+    .where(whereCond)
+    .orderByRaw(
+      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
+    );
+  //}
 
   //TODO: Make a call to know if has created an account or is child account
   const status = TAG_TYPE_ENUM.REGISTERED;
@@ -1461,11 +1460,55 @@ async function getGames(eventId) {
   );
   return res;
 }
+async function getRostersNames(rostersArray) {
+  const res = await knex
+    .queryBuilder()
+    .select('name', 'roster_id')
+    .from('event_rosters')
+    .join(
+      'entities_name',
+      'entities_name.entity_id',
+      'event_rosters.team_id',
+    )
+    .whereIn('roster_id', rostersArray);
+  return res;
+}
+async function getRosterName(roster_id) {
+  const [res] = await knex
+    .queryBuilder()
+    .select('name')
+    .from('event_rosters')
+    .join(
+      'entities_name',
+      'entities_name.entity_id',
+      'event_rosters.team_id',
+    )
+    .where({ roster_id });
+  if (!res) {
+    return;
+  }
+  return res.name;
+}
+
 async function getAttendanceSheet(infos) {
   return knex('game_players_attendance')
     .select()
     .where(infos);
 }
+
+async function getGamePlayersWithRole(game_id) {
+  return knex('game_players_view')
+    .select(
+      'player_id',
+      'event_id',
+      'player_owner',
+      'event_name',
+      'roster_id',
+    )
+    .where({ game_id })
+    .whereNot({ player_role: ROSTER_ROLE_ENUM.PLAYER });
+}
+
 async function getGameTeams(game_id, player_id) {
   if (!player_id)
     return knex('game_teams')
@@ -1490,8 +1533,98 @@ async function getGameTeams(game_id, player_id) {
   }
 }
 
+async function getMyPersonsAdminsOfTeam(rosterId, teams, userId) {
+  const res = await knex('user_entity_role')
+    .select(
+      'user_entity_role.entity_id',
+      'entities_name.name',
+      'entities_name.surname',
+    )
+    .leftJoin(
+      'team_players',
+      'team_players.person_id',
+      '=',
+      'user_entity_role.entity_id',
+    )
+    .leftJoin(
+      'entities_name',
+      'entities_name.entity_id',
+      '=',
+      'user_entity_role.entity_id',
+    )
+    .where({ user_id: userId })
+    .whereIn('team_players.role', [
+      ROSTER_ROLE_ENUM.COACH,
+      ROSTER_ROLE_ENUM.CAPTAIN,
+      ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN,
+    ])
+    .andWhere('team_players.roster_id', '=', rosterId);
+
+  const myTeam = teams.find(t => t.rosterId === rosterId);
+  const enemyTeam = teams.find(t => t.rosterId !== rosterId);
+  return res.length
+    ? {
+        myTeam: {
+          rosterId: myTeam.rosterId,
+          name: myTeam.name,
+        },
+        enemyTeam: {
+          rosterId: enemyTeam.rosterId,
+          name: enemyTeam.name,
+        },
+        myAdminPersons: res.map(p => ({
+          entityId: p.entity_id,
+          completeName: `${p.name} ${p.surname}`,
+        })),
+      }
+    : undefined;
+}
+
+async function getGameSubmissionInfos(gameId, myRosterId) {
+  const scoreSuggestions = await knex('score_suggestion')
+    .select('*')
+    .where({ game_id: gameId });
+
+  const [spiritSubmission] = await knex('spirit_submission')
+    .select('spirit_score', 'comment')
+    .where({ game_id: gameId, submitted_by_roster: myRosterId });
+
+  const presences = await knex('game_players_attendance')
+    .select(
+      knex.raw(
+        "string_agg(entities_name.name || ' ' || entities_name.surname, ' ') AS complete_name",
+      ),
+      'game_players_attendance.player_id',
+      'game_players_attendance.is_sub',
+    )
+    .leftJoin(
+      'entities_name',
+      'entities_name.entity_id',
+      '=',
+      'game_players_attendance.player_id',
+    )
+    .where({ game_id: gameId, roster_id: myRosterId })
+    .andWhere('status', '=', PLAYER_ATTENDANCE_STATUS.PRESENT)
+    .groupBy(
+      'entities_name.name',
+      'entities_name.surname',
+      'game_players_attendance.player_id',
+      'game_players_attendance.is_sub',
+    );
+
+  return {
+    scoreSuggestions,
+    spiritSubmission,
+    presences: presences.map(p => ({
+      value: p.player_id,
+      display: p.complete_name,
+      isSub: p.is_sub,
+    })),
+  };
+}
+
 async function isPlayerInRoster(player_id, roster_id) {
-  const res = await knex('team_players').where({
+  const [res] = await knex('team_players').where({
     roster_id,
     person_id: player_id,
   });
@@ -2224,6 +2357,38 @@ async function addGame(
   };
 }
 
+async function addGameAttendances(body) {
+  const { gameId, rosterId, editedBy, attendances } = body;
+
+  // upsert the attendances
+  const res = await Promise.all(
+    attendances.map(player => {
+      return knex('game_players_attendance')
+        .insert({
+          game_id: gameId,
+          roster_id: rosterId,
+          edited_by: editedBy,
+          player_id: player.value,
+          status: player.status,
+          is_sub: player.isSub,
+        })
+        .onConflict(['game_id', 'roster_id', 'player_id'])
+        .merge()
+        .returning('*');
+    }),
+  );
+
+  await knex('game_players_attendance')
+    .where({ game_id: gameId, roster_id: rosterId })
+    .whereNotIn(
+      'player_id',
+      attendances.map(a => a.value),
+    )
+    .del();
+
+  return res;
+}
+
 async function addScoreAndSpirit(props) {
   const { score, spirit, teamId, gameId } = props;
   const res = await knex('game_teams')
@@ -2265,6 +2430,23 @@ async function isSpiritAlreadySubmitted(infos) {
   return res.length !== 0;
 }
 
+async function acceptScoreSuggestion(infos) {
+  const { id, submitted_by_roster, submitted_by_person } = infos;
+  const res = await knex('score_suggestion')
+    .select('score', 'game_id')
+    .where({ id });
+  if (!res || res.length === 0) {
+    return;
+  }
+  const { game_id, score } = res[0];
+  return addScoreSuggestion({
+    submitted_by_roster,
+    submitted_by_person,
+    game_id,
+    score,
+  });
+}
+
 async function addScoreSuggestion(infos) {
   const submitted = await isScoreSuggestionAlreadySubmitted(infos);
   if (typeof submitted === 'undefined') {
@@ -2273,9 +2455,18 @@ async function addScoreSuggestion(infos) {
   if (submitted) {
     throw new Error(ERROR_ENUM.VALUE_ALREADY_EXISTS);
   }
-  return knex('score_suggestion')
+  const newSuggestion = await knex('score_suggestion')
     .insert(infos)
     .returning('*');
+
+  const suggestionStatus = await acceptScoreSuggestionIfPossible(
+    infos.game_id,
+  );
+
+  return {
+    ...newSuggestion,
+    status: suggestionStatus,
+  };
 }
 
 async function isScoreSuggestionAlreadySubmitted(infos) {
@@ -2287,6 +2478,41 @@ async function isScoreSuggestionAlreadySubmitted(infos) {
     return;
   }
   return res.length !== 0;
+}
+
+async function acceptScoreSuggestionIfPossible(gameId) {
+  const allSuggestions = await knex('score_suggestion')
+    .select('*')
+    .where({ game_id: gameId });
+
+  const [{ nbOfTeams: numberOfTeams }] = await knex('game_teams')
+    .count('roster_id as nbOfTeams')
+    .where({ game_id: gameId });
+
+  if (allSuggestions.length === Number(numberOfTeams)) {
+    // all score suggestions are made
+    const model = allSuggestions[0].score;
+    if (allSuggestions.every(s => _.isEqual(s.score, model))) {
+      // all score suggestions are the same, accept them
+      await knex('score_suggestion')
+        .where({ game_id: gameId })
+        .update({ status: STATUS_ENUM.ACCEPTED });
+
+      await setGameScore(gameId, model);
+      return STATUS_ENUM.ACCEPTED;
+    }
+
+    // TODO: conflict, send notification to event admin
+    return STATUS_ENUM.PENDING;
+  }
+}
+
+async function setGameScore(gameId, scores) {
+  for (let team in scores) {
+    await knex('game_teams')
+      .where({ game_id: gameId, roster_id: team })
+      .update({ score: scores[team] });
+  }
 }
 
 async function getGamesWithAwaitingScore(user_id, limit = 100) {
@@ -3197,7 +3423,10 @@ module.exports = {
   addAlias,
   addMembership,
   addGame,
+  addGameAttendances,
   addScoreSuggestion,
+  acceptScoreSuggestion,
+  acceptScoreSuggestionIfPossible,
   addScoreAndSpirit,
   addField,
   addTeamToSchedule,
@@ -3250,6 +3479,7 @@ module.exports = {
   getAlias,
   getPhases,
   getGames,
+  getGameSubmissionInfos,
   getUnplacedGames,
   getTeamGames,
   getPhasesGameAndTeams,
@@ -3257,6 +3487,7 @@ module.exports = {
   getTeamsSchedule,
   getFields,
   getGeneralInfos,
+  getMyPersonsAdminsOfTeam,
   getOptions,
   getPrimaryPerson,
   getPlayerInvoiceItem,
@@ -3302,4 +3533,7 @@ module.exports = {
   getGamesWithAwaitingScore,
   getUserNextGame,
   getAttendanceSheet,
+  getGamePlayersWithRole,
+  getRosterName,
+  getRostersNames,
 };

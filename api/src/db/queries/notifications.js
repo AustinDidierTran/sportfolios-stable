@@ -56,7 +56,6 @@ const sendNotification = async (notif, emailInfos) => {
   const unseenCount = await countUnseenNotifications(user_id);
   socket.emit(SOCKET_EVENT.NOTIFICATIONS, user_id, unseenCount);
 
-  //TODO check for chatbot permissison and send message
   const notifSetting = await getNotificationsSettingsHelper(
     user_id,
     type,

@@ -17,6 +17,7 @@ const {
   addEntityRole: addEntityRoleHelper,
   addField: addFieldHelper,
   addGame: addGameHelper,
+  addGameAttendances: addGameAttendancesHelper,
   addMember: addMemberHelper,
   addReport: addReportHelper,
   addMemberManually: addMemberManuallyHelper,
@@ -27,8 +28,10 @@ const {
   addRegisteredToSchedule: addRegisteredToScheduleHelper,
   addRoster: addRosterHelper,
   addNewPersonToRoster: addNewPersonToRosterHelper,
+  addSpiritSubmission: addSpiritSubmissionHelper,
   addScoreAndSpirit: addScoreAndSpiritHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
+  acceptScoreSuggestion: acceptScoreSuggestionHelper,
   addTeamToEvent: addTeamToEventHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
@@ -55,6 +58,7 @@ const {
   getEvent: getEventHelper,
   getFields: getFieldsHelper,
   getGames: getGamesHelper,
+  getGameSubmissionInfos: getGameSubmissionInfosHelper,
   getUnplacedGames: getUnplacedGamesHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getMembers: getMembersHelper,
@@ -64,6 +68,7 @@ const {
   hasMemberships: hasMembershipsHelper,
   getOrganizationMembers: getOrganizationMembersHelper,
   getMemberships: getMembershipsHelper,
+  getMyPersonsAdminsOfTeam: getMyPersonsAdminsOfTeamHelper,
   getOptions: getOptionsHelper,
   getOwnedEvents: getOwnedEventsHelper,
   getPersonGames: getPersonGamesHelper,
@@ -107,6 +112,8 @@ const {
   getMembership,
   getEntityOwners,
   getRealId,
+  getGamePlayersWithRole,
+  getRostersNames: getRostersNamesHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -265,6 +272,10 @@ async function getGames(eventId) {
   return getGamesHelper(eventId);
 }
 
+async function getGameSubmissionInfos(gameId, rosterId) {
+  return getGameSubmissionInfosHelper(gameId, rosterId);
+}
+
 async function getUnplacedGames(eventId) {
   return getUnplacedGamesHelper(eventId);
 }
@@ -299,6 +310,27 @@ async function getPersonInfos(entityId) {
 
 async function getRegistrationTeamPaymentOption(paymentOptionId) {
   return getRegistrationTeamPaymentOptionHelper(paymentOptionId);
+}
+
+async function getPossibleSubmissionerInfos(gameId, teams, userId) {
+  const teamsList = JSON.parse(teams);
+  const adminsOfTeams = await Promise.all(
+    teamsList.map(
+      async t =>
+        await getMyPersonsAdminsOfTeamHelper(
+          t.rosterId,
+          teamsList,
+          userId,
+        ),
+    ),
+  );
+
+  const validTeams = adminsOfTeams.filter(res => res !== undefined);
+  if (validTeams.length === 0) {
+    return ERROR_ENUM.ACCESS_DENIED;
+  }
+
+  return validTeams;
 }
 
 async function updateEvent(body, userId) {
@@ -724,48 +756,115 @@ async function addGame(body) {
   return res;
 }
 
+async function addGameAttendances(body, userId) {
+  const { editedBy } = body;
+  if (
+    editedBy &&
+    !(await isAllowed(editedBy, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return addGameAttendancesHelper(body);
+}
+
+async function addSpiritSubmission(body, userId) {
+  const { submitted_by_person } = body;
+  if (
+    submitted_by_person &&
+    !(await isAllowed(
+      submitted_by_person,
+      userId,
+      ENTITIES_ROLE_ENUM.EDITOR,
+    ))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return addSpiritSubmissionHelper(body);
+}
+
 async function addScoreAndSpirit(body) {
   const res = await addScoreAndSpiritHelper(body);
   return res;
 }
 
+async function getRostersNames(rosterArray) {
+  return getRostersNamesHelper(rosterArray);
+}
+
+async function acceptScoreSuggestion(body, userId) {
+  const { submitted_by_person } = body;
+  if (
+    submitted_by_person &&
+    !(await isAllowed(
+      submitted_by_person,
+      userId,
+      ENTITIES_ROLE_ENUM.EDITOR,
+    ))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return acceptScoreSuggestionHelper(body);
+}
+
 async function addScoreSuggestion(body, userId) {
-  const {
-    gameId,
-    eventId,
-    yourTeamName,
-    yourTeamId,
-    yourScore,
-    opposingTeamName,
-    opposingTeamId,
-    opposingTeamScore,
-    opposingTeamSpirit,
-    players,
-    comments,
-    suggestedBy,
-  } = body;
+  const { submitted_by_person, submitted_by_roster } = body;
 
   if (
-    suggestedBy &&
-    !(await isAllowed(suggestedBy, userId, ENTITIES_ROLE_ENUM.EDITOR))
+    submitted_by_person &&
+    !(await isAllowed(
+      submitted_by_person,
+      userId,
+      ENTITIES_ROLE_ENUM.EDITOR,
+    ))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  const res = await addScoreSuggestionHelper(
-    gameId,
-    eventId,
-    yourTeamName,
-    yourTeamId,
-    yourScore,
-    opposingTeamName,
-    opposingTeamId,
-    opposingTeamScore,
-    opposingTeamSpirit,
-    players,
-    comments,
-    suggestedBy,
-  );
+  const res = await addScoreSuggestionHelper(body);
+  //Send notification to other rosters member to accept/decline the score
+  if (res) {
+    const gamePlayers = await getGamePlayersWithRole(body.game_id);
+    if (gamePlayers && gamePlayers.length) {
+      const event_id = gamePlayers[0].event_id;
+      const event_name = gamePlayers[0].event_name;
+      //Get each opponent teams user only once
+      const opponentsPlayers = gamePlayers.filter(
+        (value, index, array) =>
+          value.roster_id != submitted_by_roster &&
+          array.findIndex(
+            value2 =>
+              value2.roster_id != submitted_by_roster &&
+              value.player_owner_id === value2.player_owner_id,
+          ) === index,
+      );
+      const metadata = {
+        score: body.score,
+        gameId: body.game_id,
+        eventId: event_id,
+        eventName: event_name,
+        submittedBy: submitted_by_roster,
+        suggestionId: res[0].id,
+      };
+      const notif = {
+        type: NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE,
+        entity_photo: event_id,
+      };
+      opponentsPlayers.forEach(p => {
+        const fullMetadata = {
+          ...metadata,
+          myRosterId: p.roster_id,
+          myPlayerId: p.player_id,
+        };
+        //TODO Add email infos
+        sendNotification({
+          ...notif,
+          user_id: p.player_owner,
+          metadata: fullMetadata,
+        });
+      });
+    }
+  }
   return res;
 }
 
@@ -830,8 +929,7 @@ async function addOption(body, userId) {
 }
 
 async function addNewPersonToRoster(body, userId) {
-  const res = await addNewPersonToRosterHelper(body, userId);
-  return res;
+  return addNewPersonToRosterHelper(body, userId);
 }
 
 const canUnregisterTeamsList = async (rosterIds, eventId) => {
@@ -959,14 +1057,16 @@ async function deleteOption(id) {
 
 async function addPlayerToRoster(body, userId) {
   const { teamId, eventId, teamName, personId, ...otherProps } = body;
+
   const res = await addPlayerToRosterHelper(
     { ...otherProps, personId },
     userId,
   );
-  const realEventId = await getRealId(eventId);
+
   const owners = await getEntityOwners(personId);
-  const { name } = await getPersonInfos(personId);
   if (res && !body.isSub && owners) {
+    const realEventId = await getRealId(eventId);
+    const { name } = await getPersonInfos(personId);
     owners.forEach(owner => {
       const notif = {
         user_id: owner.user_id,
@@ -1039,6 +1139,7 @@ module.exports = {
   addEntityRole,
   addField,
   addGame,
+  addGameAttendances,
   addReport,
   addMember,
   addMemberManually,
@@ -1048,6 +1149,7 @@ module.exports = {
   addPlayerToRoster,
   addRegisteredToSchedule,
   addNewPersonToRoster,
+  addSpiritSubmission,
   addScoreAndSpirit,
   addScoreSuggestion,
   addTeamToEvent,
@@ -1079,6 +1181,7 @@ module.exports = {
   getEvent,
   getFields,
   getGames,
+  getGameSubmissionInfos,
   getInteractiveToolData,
   getTeamGames,
   getPhasesGameAndTeams,
@@ -1098,6 +1201,7 @@ module.exports = {
   getRegistered,
   getRemainingSpots,
   getRoster,
+  getPossibleSubmissionerInfos,
   getS3Signature,
   getScoreSuggestion,
   getSameSuggestions,
@@ -1119,4 +1223,6 @@ module.exports = {
   updateOption,
   updateRegistration,
   updateRosterRole,
+  getRostersNames,
+  acceptScoreSuggestion,
 };

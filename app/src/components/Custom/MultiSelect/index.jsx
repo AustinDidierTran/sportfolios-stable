@@ -44,7 +44,14 @@ function getStyles(opt, options, theme) {
 export default function CustomMultiSelect(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const { formik, label, onChange, options, values } = props;
+  const {
+    formik,
+    label,
+    onChange,
+    options,
+    values,
+    disabled = false,
+  } = props;
 
   const handleChange = (event, ...args) => {
     if (formik) {
@@ -54,35 +61,39 @@ export default function CustomMultiSelect(props) {
       onChange(event.target.value);
     }
   };
+
   return (
     <div {...props}>
       <FormControl className={classes.formControl}>
         <InputLabel>{label}</InputLabel>
         <Select
+          disabled={disabled}
           multiple
           value={values}
           onChange={handleChange}
           input={<Input />}
           renderValue={selected => (
             <div className={classes.chips}>
-              {selected.map(value => (
-                <Chip
-                  key={value}
-                  label={value}
-                  className={classes.chip}
-                />
-              ))}
+              {selected.map(item => {
+                return (
+                  <Chip
+                    key={item?.value || item}
+                    label={item?.display || item}
+                    className={classes.chip}
+                  />
+                );
+              })}
             </div>
           )}
           MenuProps={MenuProps}
         >
           {options.map(opt => (
             <MenuItem
-              key={opt}
+              key={opt?.value || opt}
               value={opt}
               style={getStyles(opt, options, theme)}
             >
-              {opt}
+              {opt?.display || opt}
             </MenuItem>
           ))}
         </Select>

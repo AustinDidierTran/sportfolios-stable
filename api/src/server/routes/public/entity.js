@@ -133,29 +133,6 @@ router.get(`${BASE_URL}/remainingSpots`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/suggestScore`, async ctx => {
-  const userId =
-    ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
-
-  const game = await queries.addScoreSuggestion(
-    ctx.request.body,
-    userId,
-  );
-  if (game) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: game,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
-});
-
 router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
   const player = await queries.addPlayerToRoster(
     ctx.request.body,
@@ -315,6 +292,22 @@ router.get(`${BASE_URL}/fields`, async ctx => {
     ctx.body = {
       status: 'success',
       data: field,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/rostersNames`, async ctx => {
+  const res = await queries.getRostersNames(ctx.query.id);
+  if (res) {
+    ctx.body = {
+      status: 'success',
+      data: res,
     };
   } else {
     ctx.status = 404;

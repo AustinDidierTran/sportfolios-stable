@@ -96,13 +96,9 @@ export default function ScoreSuggestion(props) {
     if (!expanded) {
       setTimeout(() => {
         setExpanded(expanded);
-        setIcon('KeyboardArrowDown');
-        setMessage(t('score_suggestions'));
       }, 1000);
     } else {
       setExpanded(expanded);
-      setIcon('KeyboardArrowUp');
-      setMessage('');
     }
   };
 

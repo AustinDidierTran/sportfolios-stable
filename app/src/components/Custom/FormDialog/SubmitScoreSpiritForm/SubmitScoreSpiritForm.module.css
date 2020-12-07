@@ -1,0 +1,85 @@
+.collapseHeader {
+  display: flex;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+.submitted {
+  display: flex;
+}
+
+.expand {
+  margin-left: auto;
+  display: flex;
+}
+
+.arrowButton {
+  padding: 1px !important;
+}
+
+.scores {
+  grid-area: scores;
+}
+
+.suggestedBy {
+  margin-top: 8px !important;
+}
+
+.teamName {
+  margin-top: 8px !important;
+}
+
+.acceptRefuseScore {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.divSubmitScoreButton {
+  display: flex;
+  margin: 8px 0px 8px 0px;
+}
+
+.spiritChart {
+  margin-top: 8px !important;
+}
+
+.radioGroup {
+  margin-top: 8px !important;
+  width: 100%;
+}
+
+.radioGroupContainer {
+  justify-content: space-between;
+}
+
+.radioGroupControlLabel {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
+.totalSpirit {
+  margin-top: 8px !important;
+}
+
+.divSubmitButton {
+  display: flex;
+  margin: 8px 0px 8px 0px;
+}
+
+.submitButton {
+  margin-left: auto !important;
+}
+
+.submitText {
+  margin-right: 4px !important;
+}
+
+.attendances {
+  margin-top: 8px !important;
+}
+
+.addSubButton {
+  margin-top: 8px !important;
+}
