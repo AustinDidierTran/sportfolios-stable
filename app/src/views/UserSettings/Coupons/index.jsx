@@ -30,10 +30,14 @@ export default function Coupons() {
     },
     onSubmit: async values => {
       const { token } = values;
-      const { data, status } = await api(
+      const {
+        data,
+        status,
+      } = await api(
         formatRoute('/api/user/getTokenPromoCode', null, { token }),
+        { method: 'GET' },
       );
-      if (status === STATUS_ENUM.SUCCESS_STRING) {
+      if (status === STATUS_ENUM.SUCCESS) {
         if (data?.used) {
           dispatch({
             type: ACTION_ENUM.SNACK_BAR,
