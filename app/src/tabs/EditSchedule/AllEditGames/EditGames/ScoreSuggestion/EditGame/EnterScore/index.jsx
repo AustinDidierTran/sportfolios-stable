@@ -31,10 +31,10 @@ export default function EnterScore(props) {
   const validate = values => {
     const { score1, score2 } = values;
     const errors = {};
-    if (score1 < 0) {
+    if (isNaN(score1)) {
       errors.score1 = t(ERROR_ENUM.VALUE_IS_INVALID);
     }
-    if (score2 < 0) {
+    if (isNaN(score2)) {
       errors.score2 = t(ERROR_ENUM.VALUE_IS_INVALID);
     }
     return errors;

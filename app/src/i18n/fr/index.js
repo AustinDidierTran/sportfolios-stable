@@ -546,6 +546,8 @@ export default {
     save_basic_info: 'Sauvegarder informations',
     save: 'Sauvegarder',
     schedule: 'Horaire',
+    score_submission_conflict: 'Conflit de score',
+    score_submission_conflict_description: "Notification reçue si vous êtes admin d'un événement et qu'il y a un conflit de score",
     score_submission_conflict_notif_description: "Une partie de l'événement {{eventName}} a des conflits de score.",
     score_submission_request_description: 'Notification reçue après vos partie si vous êtes le capitaine afin de vous rappeler de soumettre le score',
     score_submission_request_notif_description: "Une de vos partie de l'événement {{eventName}} est en attente de la soumission de votre score",

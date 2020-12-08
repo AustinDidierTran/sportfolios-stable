@@ -11,12 +11,15 @@ import {
 } from '../../../../../common/enums';
 const iconMap = {
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: 'PeopleIcon',
+  [NOTIFICATION_TYPE.SCORE_SUBMISSION_CONFLICT]: 'Notifications',
   [NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST]: 'RateReview',
   [NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE]: 'RateReview',
 };
 
 const titleMap = {
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: 'added_to_roster',
+  [NOTIFICATION_TYPE.SCORE_SUBMISSION_CONFLICT]:
+    'score_submission_conflict',
   [NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST]:
     'score_submission_request',
   [NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE]:
@@ -25,6 +28,8 @@ const titleMap = {
 
 const descriptionMap = {
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: 'added_to_roster_description',
+  [NOTIFICATION_TYPE.SCORE_SUBMISSION_CONFLICT]:
+    'score_submission_conflict_description',
   [NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST]:
     'score_submission_request_description',
   [NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE]:

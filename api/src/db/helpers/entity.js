@@ -474,12 +474,12 @@ async function getScoreSuggestion(gameId) {
     .leftJoin(
       knex('game_teams')
         .select('roster_id', 'name')
+        .where({ game_id: gameId })
         .as('team'),
       'team.roster_id',
       'score_suggestion.submitted_by_roster',
     )
-    .orderBy('created_at', 'asc')
-    .groupBy('id', 'team.roster_id', 'team.name');
+    .orderBy('created_at', 'asc');
 
   return suggestions;
 }
@@ -1401,15 +1401,17 @@ async function getEvent(eventId) {
 async function getEventAdmins(eventId) {
   const realEventId = await getRealId(eventId);
   const admins = await knex('entities_role')
-    .select('entity_id_admin')
-    .where({ entity_id: realEventId })
-    .andWhere('role', '<=', ENTITIES_ROLE_ENUM.EDITOR);
+    .select('user_entity_role.user_id')
+    .leftJoin(
+      'user_entity_role',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_role.entity_id_admin',
+    )
+    .where('entities_role.entity_id', '=', realEventId)
+    .andWhere('entities_role.role', '<=', ENTITIES_ROLE_ENUM.EDITOR);
 
-  return Promise.all(
-    admins.map(
-      async a => await getUserIdFromPersonId(a.entity_id_admin),
-    ),
-  );
+  return admins.map(a => a.user_id);
 }
 
 async function getAlias(entityId) {
@@ -3211,16 +3213,25 @@ async function updateSuggestionStatus(body) {
     .andWhereNot({ id });
 
   // change status of other suggestions
+  const toBeUpdatedSame = [];
+  const toBeUpdatedRefused = [];
   for (let suggestion of allSuggestions) {
     if (_.isEqual(suggestion.score, scores)) {
-      updatedCount += await knex('score_suggestion')
-        .update({ status })
-        .where({ id: suggestion.id });
+      toBeUpdatedSame.push(suggestion.id);
     } else if (status === STATUS_ENUM.ACCEPTED) {
-      updatedCount += await knex('score_suggestion')
-        .update({ status: STATUS_ENUM.REFUSED })
-        .where({ id: suggestion.id });
+      toBeUpdatedRefused.push(suggestion.id);
     }
+  }
+
+  if (toBeUpdatedSame.length) {
+    updatedCount += await knex('score_suggestion')
+      .update({ status })
+      .whereIn('id', toBeUpdatedSame);
+  }
+  if (toBeUpdatedRefused.length) {
+    updatedCount += await knex('score_suggestion')
+      .update({ status: STATUS_ENUM.REFUSED })
+      .whereIn('id', toBeUpdatedRefused);
   }
 
   if (status === STATUS_ENUM.ACCEPTED) {

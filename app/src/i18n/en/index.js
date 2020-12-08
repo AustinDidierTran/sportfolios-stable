@@ -553,6 +553,8 @@ export default {
     save_basic_info: 'Save new basic infos',
     save: 'Save',
     schedule: 'Schedule',
+    score_submission_conflict: 'Score conflict',
+    score_submission_conflict_description: 'Notification received if you are the admin of an event and there is a score conflict',
     score_submission_conflict_notif_description: 'A game from the event {{eventName}} has score conflicts.',
     score_submission_request: 'Score submission reminder',
     score_submission_request_description: 'Notification sent after your games if you are a team captain to remind you to submit your score',
