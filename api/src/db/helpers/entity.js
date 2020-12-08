@@ -1398,6 +1398,20 @@ async function getEvent(eventId) {
   return res;
 }
 
+async function getEventAdmins(eventId) {
+  const realEventId = await getRealId(eventId);
+  const admins = await knex('entities_role')
+    .select('entity_id_admin')
+    .where({ entity_id: realEventId })
+    .andWhere('role', '<=', ENTITIES_ROLE_ENUM.EDITOR);
+
+  return Promise.all(
+    admins.map(
+      async a => await getUserIdFromPersonId(a.entity_id_admin),
+    ),
+  );
+}
+
 async function getAlias(entityId) {
   const realId = await getRealId(entityId);
   const [res] = await knex('alias')
@@ -2452,13 +2466,14 @@ async function addScoreSuggestion(infos) {
     .insert(infos)
     .returning('*');
 
-  const suggestionStatus = await acceptScoreSuggestionIfPossible(
+  const suggestion = await acceptScoreSuggestionIfPossible(
     infos.game_id,
   );
 
   return {
     ...newSuggestion,
-    status: suggestionStatus,
+    status: suggestion.status,
+    conflict: suggestion.conflict,
   };
 }
 
@@ -2492,12 +2507,11 @@ async function acceptScoreSuggestionIfPossible(gameId) {
         .update({ status: STATUS_ENUM.ACCEPTED });
 
       await setGameScore(gameId, model);
-      return STATUS_ENUM.ACCEPTED;
+      return { status: STATUS_ENUM.ACCEPTED, conflict: false };
     }
-
-    // TODO: conflict, send notification to event admin
-    return STATUS_ENUM.PENDING;
+    return { status: STATUS_ENUM.PENDING, conflict: true };
   }
+  return { status: STATUS_ENUM.PENDING, conflict: false };
 }
 
 async function setGameScore(gameId, score, isManualAdd = false) {
@@ -3428,6 +3442,7 @@ module.exports = {
   getRankings,
   getRoster,
   getEvent,
+  getEventAdmins,
   getAlias,
   getPhases,
   getGames,

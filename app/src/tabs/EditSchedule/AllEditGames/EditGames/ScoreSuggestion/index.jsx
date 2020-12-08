@@ -60,7 +60,7 @@ export default function ScoreSuggestion(props) {
     if (!expanded) {
       setTimeout(() => {
         setExpanded(expanded);
-      }, 1000);
+      }, 500);
     } else {
       setExpanded(expanded);
     }

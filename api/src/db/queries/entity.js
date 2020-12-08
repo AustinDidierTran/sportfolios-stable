@@ -56,6 +56,7 @@ const {
   getEntity: getEntityHelper,
   getEntityRole: getEntityRoleHelper,
   getEvent: getEventHelper,
+  getEventAdmins: getEventAdminsHelper,
   getFields: getFieldsHelper,
   getGames: getGamesHelper,
   getGameSubmissionInfos: getGameSubmissionInfosHelper,
@@ -865,6 +866,28 @@ async function addScoreSuggestion(body, userId) {
           metadata: fullMetadata,
         });
       });
+
+      // send notifications to event admins in case of score conflict
+      if (res.conflict) {
+        const conflictNotif = {
+          type: NOTIFICATION_TYPE.SCORE_SUBMISSION_CONFLICT,
+          entity_photo: event_id,
+        };
+        const conflictMetadata = {
+          eventId: event_id,
+          eventName: event_name,
+          gameId: body.game_id,
+        };
+
+        const adminsUserIds = await getEventAdminsHelper(event_id);
+        adminsUserIds.forEach(adminUserId => {
+          sendNotification({
+            ...conflictNotif,
+            user_id: adminUserId,
+            metadata: conflictMetadata,
+          });
+        });
+      }
     }
   }
   return res;

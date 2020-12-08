@@ -2,6 +2,8 @@ import { SIZES_ENUM } from '../../../../common/enums';
 
 export default {
   translations: {
+    confirmed: 'Confirmed',
+    confirm_or_decline_score_notif_description: 'The team {{teamName}} submitted the score: {{score}} for your match of the event {{eventName}}. Do you want to confirm this result?',
     about: 'About',
     accept_person_transfer_confirmation: 'Are you sure you want to accept the transfer of {{name}}?',
     accept: 'Accept',
@@ -551,9 +553,10 @@ export default {
     save_basic_info: 'Save new basic infos',
     save: 'Save',
     schedule: 'Schedule',
+    score_submission_conflict_notif_description: 'A game from the event {{eventName}} has score conflicts.',
+    score_submission_request: 'Score submission reminder',
     score_submission_request_description: 'Notification sent after your games if you are a team captain to remind you to submit your score',
     score_submission_request_notif_description: 'A game from the event {{eventName}} is awaiting your score submission',
-    score_submission_request: 'Score submission reminder',
     score_submitted: 'Score submitted',
     score_suggestion: 'Score suggestion',
     score_suggestions: 'Score suggestions',

@@ -39,6 +39,17 @@ export const goTo = (route, params, queryParams) => {
   history.push(formatRoute(route, params, queryParams));
 };
 
+export const goToScrollTo = (
+  route,
+  params,
+  queryParams,
+  scrollTo,
+) => {
+  history.push(
+    formatRoute(route, params, queryParams) + `#${scrollTo}`,
+  );
+};
+
 export const goToLink = route => {
   history.push(route);
 };

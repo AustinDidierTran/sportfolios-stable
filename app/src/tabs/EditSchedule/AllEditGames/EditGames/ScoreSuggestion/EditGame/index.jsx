@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import {
   Card,
@@ -80,8 +80,23 @@ export default function EditGame(props) {
     }
   };
 
+  //Scroll to given section specified with # in the url
+  const scroll = () => {
+    const hash = window.location.hash.substr(1);
+    if (hash) {
+      const anchor = document.getElementById(hash);
+      setTimeout(() => {
+        anchor?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 500);
+    }
+  };
+  useEffect(scroll, []);
+
   return (
-    <>
+    <div id={game.id}>
       {withoutEdit ? (
         <Card
           items={{
@@ -121,6 +136,6 @@ export default function EditGame(props) {
         onSubmit={onDeleteConfirmed}
         title={t('delete_game_confirmation')}
       />
-    </>
+    </div>
   );
 }

@@ -336,6 +336,7 @@ const SOCKET_EVENT = {
 
 const NOTIFICATION_TYPE = {
   ADDED_TO_ROSTER: 'added to roster',
+  SCORE_SUBMISSION_CONFLICT: 'score submission conflict',
   SCORE_SUBMISSION_REQUEST: 'score submission request',
   OTHER_TEAM_SUBMITTED_A_SCORE: 'other team submitted a score',
 };
