@@ -2,38 +2,9 @@ import history from '../../stores/history';
 import { getFormattedMailTo } from '../../utils/stringFormats';
 import api from '../api';
 import { ROUTES_ENUM } from '../../../../common/enums';
-
+import { formatRoute } from '../../../../common/utils/stringFormat';
+export { formatRoute } from '../../../../common/utils/stringFormat';
 export const ROUTES = ROUTES_ENUM;
-
-export const formatRoute = (route, params, queryParams) => {
-  if (!route) {
-    /* eslint-disable-next-line */
-    console.error('Route is undefined');
-  }
-
-  if (!params && !queryParams) {
-    return route;
-  }
-
-  const withParams = params
-    ? Object.keys(params).reduce(
-        (prev, curr) => prev.replace(`:${curr}`, params[curr]),
-        route,
-      )
-    : route;
-
-  if (!queryParams) {
-    return withParams;
-  }
-
-  return Object.keys(queryParams).reduce(
-    (prev, key, index) =>
-      index === 0
-        ? `${prev}?${key}=${queryParams[key]}`
-        : `${prev}&${key}=${queryParams[key]}`,
-    withParams,
-  );
-};
 
 export const goTo = (route, params, queryParams) => {
   history.push(formatRoute(route, params, queryParams));

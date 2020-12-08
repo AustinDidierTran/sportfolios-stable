@@ -165,6 +165,7 @@ const sendEmailNotification = async (userId, emailInfos) => {
   if (emails) {
     const fullEmail = await emailFactory({
       ...emailInfos,
+      userId,
       locale,
     });
     if (!fullEmail) {

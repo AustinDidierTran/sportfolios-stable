@@ -1,10 +1,13 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
-const { CLIENT_BASE_URL } = require('../../../../conf');
-
+const { formatLinkWithAuthToken } = require('./utils');
+const { TABS_ENUM } = require('../../../../common/enums');
 module.exports = async function AddedToRoster(infos) {
-  const { name, eventName, eventId, gameId, locale } = infos;
-  const buttonLink = `${CLIENT_BASE_URL}/${eventId}?tab=schedule&game=${gameId}`;
+  const { name, eventName, eventId, gameId, locale, userId } = infos;
+  const buttonLink = await formatLinkWithAuthToken(
+    userId,
+    `/${eventId}?tab=${TABS_ENUM.SCHEDULE}&game=${gameId}`,
+  );
   const text = i18n.__(
     { phrase: 'emails.score_submission_request_text', locale },
     name,

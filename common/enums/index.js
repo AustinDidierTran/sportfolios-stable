@@ -218,6 +218,7 @@ const ROUTES_ENUM = {
   transferPerson: '/transferPerson/:token',
   transferPersonExpired: '/transferPersonExpired',
   userSettings: '/userSettings',
+  redirectWithToken: '/redirect',
 };
 
 const STATUS_ENUM = {
