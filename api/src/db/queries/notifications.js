@@ -87,17 +87,21 @@ const sendChatbotNotification = async (user_id, notif) => {
   }
   const { type, metadata } = notif;
   let newState;
+  console.log({ type, metadata });
   if (type === NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST) {
     newState =
       SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT;
     const { gameId, playerId, eventId } = metadata;
+    console.log({ gameId, playerId, eventId });
     const teams = await getGameTeams(gameId, playerId);
+    console.log({ teams });
     let myTeamFound = false;
     chatbotInfos.opponentTeams = [];
     chatbotInfos.gameId = gameId;
     chatbotInfos.playerId = playerId;
     chatbotInfos.eventId = eventId;
     teams.forEach(team => {
+      console.log({ team });
       if (!myTeamFound && team.player_id) {
         myTeamFound = true;
         chatbotInfos.myRosterId = team.roster_id;
@@ -122,12 +126,30 @@ const sendChatbotNotification = async (user_id, notif) => {
       myPlayerId,
       submittedBy,
     } = metadata;
+    console.log({
+      gameId,
+      eventId,
+      eventName,
+      myRosterId,
+      myPlayerId,
+      submittedBy,
+    });
     const score = JSON.parse(metadata.score);
+    console.log({ score });
     const rostersId = Object.keys(score);
+    console.log({ rostersId });
     const names = await getRostersNames(rostersId);
+    console.log({ names });
+
     const myTeam = [
-      names.splice(names.findIndex(n => n.roster_id == myRosterId)),
+      names.splice(
+        names.findIndex(n => {
+          console.log({ n, myRosterId });
+          return n.roster_id == myRosterId;
+        }),
+      ),
     ];
+    console.log({ myTeam });
     chatbotInfos.myTeamName = myTeam.name;
     chatbotInfos.myScore = score[myRosterId];
     delete names[myRosterId];
@@ -139,9 +161,14 @@ const sendChatbotNotification = async (user_id, notif) => {
         teamName: name,
       };
     }, {});
-    chatbotInfos.submittedBy = names.find(
-      n => n.roster_id == submittedBy,
-    ).name;
+    console.log({ names });
+    const theName = names.find(n => {
+      console.log({ n, submittedBy });
+      console.log({ return: n.roster_id == submittedBy });
+      return n.roster_id == submittedBy;
+    });
+    console.log({ theName });
+    chatbotInfos.submittedBy = theName.name;
     chatbotInfos.gameId = gameId;
     chatbotInfos.eventName = eventName;
     chatbotInfos.myRosterId = myRosterId;
