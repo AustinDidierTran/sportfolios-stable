@@ -13,6 +13,10 @@ const MONTH_NAMES = [
   'December',
 ];
 
+const FIELD_GROUP_ENUM = {
+  ADD_PAYMENT_OPTION: 'add payment option',
+};
+
 const ENTITIES_ROLE_ENUM = {
   ADMIN: 1,
   EDITOR: 2,
@@ -459,6 +463,7 @@ module.exports = {
   CARD_TYPE_ENUM,
   COMPONENT_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,
+  FIELD_GROUP_ENUM,
   FACEBOOK_STATUS_ENUM,
   FORM_DIALOG_TYPE_ENUM,
   GENDER_ENUM,

@@ -1,12 +1,6 @@
 import React, { useState, useContext, useMemo } from 'react';
 import { ListItem, ListItemText } from '../../../MUI';
-import {
-  FormDialog,
-  IconButton,
-  AlertDialog,
-  Collapse,
-  Button,
-} from '../../../Custom';
+import { FormDialog, IconButton, AlertDialog } from '../../../Custom';
 import { Divider } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import {
@@ -22,7 +16,7 @@ import {
 } from '../../../../../../common/enums';
 import api from '../../../../actions/api';
 import { formatRoute } from '../../../../actions/goTo';
-import styles from './EventPaymentOptionItem.module.css';
+import CollapsePaymentOption from './CollapsePaymentOption';
 
 export default function EventPaymentOptionItem(props) {
   const { t } = useTranslation();
@@ -116,109 +110,18 @@ export default function EventPaymentOptionItem(props) {
           style={{ color: 'grey' }}
         />
       </ListItem>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <div style={{ backgroundColor: '#F5F5F5' }}>
-          <ListItem>
-            <ListItemText
-              primary={
-                team_activity
-                  ? t('team_activity')
-                  : t('individual_activity')
-              }
-              secondary={t('open_from_to', {
-                startDate: formatDate(moment(startTime), 'LLLL'),
-                endDate: formatDate(moment(endTime), 'LLLL'),
-              })}
-            />
-          </ListItem>
-          <ListItem>
-            {owner.basicInfos ? (
-              <ListItemText
-                primary={owner.basicInfos.name}
-                secondary={t('payment_option_owner')}
-              />
-            ) : (
-              <ListItemText
-                primary={t('no_owner_free_payment_option')}
-                secondary={t('payment_option_owner')}
-              />
-            )}
-          </ListItem>
-          <Divider />
-          <>
-            <ListItem className={styles.money}>
-              <ListItemText primary={`${t('subtotal')}:`} />
-              <ListItemText
-                primary={`${formatPrice(individual_price)}`}
-                secondary={t('price_individual')}
-              ></ListItemText>
-              <ListItemText
-                primary={`${formatPrice(team_price)}`}
-                secondary={t('price_team')}
-              ></ListItemText>
-            </ListItem>
-            {taxRates.map(t => (
-              <ListItem className={styles.money}>
-                <ListItemText
-                  primary={`${t.display_name} (${t.percentage}%)`}
-                  secondary={t.description}
-                />
-                <ListItemText
-                  primary={`${formatPrice(
-                    (individual_price * t.percentage) / 100,
-                  )}`}
-                ></ListItemText>
-                <ListItemText
-                  primary={`${formatPrice(
-                    (team_price * t.percentage) / 100,
-                  )}`}
-                ></ListItemText>
-              </ListItem>
-            ))}
-            <Divider />
-            <ListItem className={styles.money}>
-              <ListItemText primary={`${t('total')}:`} />
-              <ListItemText
-                primary={`${formatPrice(
-                  taxRates.reduce((prev, curr) => {
-                    return (
-                      prev +
-                      (individual_price * curr.percentage) / 100
-                    );
-                  }, 0) + individual_price,
-                )}`}
-              ></ListItemText>
-              <ListItemText
-                primary={`${formatPrice(
-                  taxRates.reduce((prev, curr) => {
-                    return (
-                      prev + (team_price * curr.percentage) / 100
-                    );
-                  }, 0) + team_price,
-                )}`}
-              ></ListItemText>
-            </ListItem>
-            <Divider />
-          </>
-          <Button
-            endIcon="Edit"
-            onClick={() => {
-              setEdit(true);
-            }}
-            style={{ margin: '8px' }}
-          >
-            {t('edit')}
-          </Button>
-          <Button
-            endIcon="Delete"
-            onClick={() => setAlertDialog(true)}
-            color="secondary"
-            style={{ margin: '8px' }}
-          >
-            {t('delete')}
-          </Button>
-        </div>
-      </Collapse>
+      <CollapsePaymentOption
+        teamPrice={team_price}
+        individualPrice={individual_price}
+        startTime={startTime}
+        endTime={endTime}
+        owner={owner}
+        taxRates={taxRates}
+        teamActivity={team_activity}
+        expanded={expanded}
+        setEdit={setEdit}
+        setAlertDialog={setAlertDialog}
+      />
       <Divider />
       <FormDialog
         type={FORM_DIALOG_TYPE_ENUM.EDIT_EVENT_PAYMENT_OPTION}
