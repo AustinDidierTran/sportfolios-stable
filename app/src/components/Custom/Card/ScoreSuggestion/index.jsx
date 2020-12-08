@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 
 import styles from './ScoreSuggestion.module.css';
 
 import { IconButton } from '../../';
 import { Typography, ListItemText, Card } from '../../../MUI';
 import { formatDate } from '../../../../utils/stringFormats';
-import moment from 'moment';
-import { makeStyles } from '@material-ui/core/styles';
 import { STATUS_ENUM } from '../../../../../../common/enums';
-import Chip from '@material-ui/core/Chip';
+import { Chip, makeStyles } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
+import moment from 'moment';
 import api from '../../../../actions/api';
-import { formatRoute } from '../../../../actions/goTo';
 
 const useStyles = makeStyles(() => ({
   secondary: {
@@ -35,82 +33,30 @@ export default function ScoreSuggestion(props) {
   const { t } = useTranslation();
   const classes = useStyles();
 
-  const [message, setMessage] = useState(t('anonymous'));
-
-  const getPersonName = async () => {
-    if (!suggestion.created_by) {
-      return { name: t('anonymous') };
-    }
-    const {
-      data: { basicInfos: data },
-    } = await api(
-      formatRoute('/api/entity', null, { id: suggestion.created_by }),
-    );
-    return { name: data.name, surname: data.surname };
-  };
-
-  const getMessage = async () => {
-    const name = await getPersonName();
-    if (suggestion.number === 2) {
-      setMessage(
-        t('name_and_x_other', {
-          name: name.name,
-          number: suggestion.number - 1,
-        }),
-      );
-    } else if (suggestion.number > 2) {
-      setMessage(
-        t('name_and_x_others', {
-          name: name.name,
-          number: suggestion.number - 1,
-        }),
-      );
-    } else {
-      if (name.surname) {
-        setMessage(`${name.name} ${name.surname}`);
-      } else {
-        setMessage(name.name);
-      }
-    }
-  };
-
-  useEffect(() => {
-    getMessage();
-  }, [suggestion]);
-
   let className = classes.odd;
   if (index % 2 === 0) {
     className = classes.even;
   }
 
-  let chipColor = 'primary';
-  if (suggestion.status === STATUS_ENUM.PENDING) {
-    chipColor = 'default';
-  }
-  if (suggestion.status === STATUS_ENUM.REFUSED) {
-    chipColor = 'secondary';
-  }
-
-  let score1;
-  let score2;
-  if (game.teams[0].roster_id === suggestion.your_roster_id) {
-    score1 = suggestion.your_score;
-    score2 = suggestion.opposing_team_score;
-  } else {
-    score1 = suggestion.opposing_team_score;
-    score2 = suggestion.your_score;
-  }
+  const chipColor = useMemo(() => {
+    switch (suggestion.status) {
+      case STATUS_ENUM.ACCEPTED:
+        return 'primary';
+      case STATUS_ENUM.REFUSED:
+        return 'secondary';
+      default:
+        return 'default';
+    }
+  }, [suggestion]);
 
   const updateStatus = async status => {
     await api('/api/entity/updateSuggestionStatus', {
       method: 'PUT',
       body: JSON.stringify({
+        eventId: game.event_id,
+        id: suggestion.id,
         gameId: game.id,
-        eventId: suggestion.event_id,
-        yourRosterId: suggestion.your_roster_id,
-        opposingRosterId: suggestion.opposing_roster_id,
-        yourScore: suggestion.your_score,
-        opposingTeamScore: suggestion.opposing_team_score,
+        scores: suggestion.score,
         status,
       }),
     });
@@ -130,15 +76,19 @@ export default function ScoreSuggestion(props) {
         <div className={styles.game}>
           <ListItemText
             className={styles.person}
-            primary={message}
+            primary={suggestion.name}
             secondary={formatDate(
               moment(suggestion.created_at),
               'D MMM H:mm',
             )}
           ></ListItemText>
-          <Typography className={styles.score1}>{score1}</Typography>
+          <Typography className={styles.score1}>
+            {suggestion.score[game.teams[0].roster_id]}
+          </Typography>
           <Typography className={styles.union}>-</Typography>
-          <Typography className={styles.score2}>{score2}</Typography>
+          <Typography className={styles.score2}>
+            {suggestion.score[game.teams[1].roster_id]}
+          </Typography>
           <Chip
             label={t(suggestion.status)}
             color={chipColor}
@@ -154,6 +104,7 @@ export default function ScoreSuggestion(props) {
             color="inherit"
             onClick={accept}
             style={{ margin: '4px' }}
+            tooltip={t('accept')}
           />
           <IconButton
             className={classes.secondary}
@@ -161,6 +112,7 @@ export default function ScoreSuggestion(props) {
             icon="Close"
             onClick={refuse}
             style={{ margin: '4px' }}
+            tooltip={t('refuse')}
           />
         </div>
       </div>

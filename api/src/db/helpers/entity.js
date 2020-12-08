@@ -471,28 +471,17 @@ async function getScoreSuggestion(gameId) {
     .where({
       game_id: gameId,
     })
-    .orderBy('created_at', 'asc');
+    .leftJoin(
+      knex('game_teams')
+        .select('roster_id', 'name')
+        .as('team'),
+      'team.roster_id',
+      'score_suggestion.submitted_by_roster',
+    )
+    .orderBy('created_at', 'asc')
+    .groupBy('id', 'team.roster_id', 'team.name');
 
   return suggestions;
-}
-async function getSameSuggestions(
-  eventId,
-  gameId,
-  yourRosterId,
-  opposingRosterId,
-  yourScore,
-  opposingTeamScore,
-) {
-  const suggestion = {
-    eventId,
-    gameId,
-    yourRosterId,
-    opposingRosterId,
-    yourScore: Number(yourScore),
-    opposingTeamScore: Number(opposingTeamScore),
-  };
-  const suggestions = await getScoreSuggestion(eventId, gameId);
-  return keepSameSuggestions(suggestions, suggestion);
 }
 
 async function getRealId(id) {
@@ -2408,21 +2397,6 @@ async function addGameAttendances(body) {
   return res;
 }
 
-async function addScoreAndSpirit(props) {
-  const { score, spirit, teamId, gameId } = props;
-  const res = await knex('game_teams')
-    .where({
-      id: teamId,
-      game_id: gameId,
-    })
-    .update({
-      score: score,
-      spirit: spirit,
-    })
-    .returning('*');
-  return res;
-}
-
 async function addSpiritSubmission(infos) {
   const submitted = await isSpiritAlreadySubmitted(infos);
   if (typeof submitted === 'undefined') {
@@ -2526,12 +2500,31 @@ async function acceptScoreSuggestionIfPossible(gameId) {
   }
 }
 
-async function setGameScore(gameId, scores) {
-  for (let team in scores) {
+async function setGameScore(gameId, score, isManualAdd = false) {
+  for (let team in score) {
     await knex('game_teams')
       .where({ game_id: gameId, roster_id: team })
-      .update({ score: scores[team] });
+      .update({ score: score[team] });
   }
+
+  if (isManualAdd) {
+    // update score suggestion status if score was added manually
+    const allSuggestions = await knex('score_suggestion')
+      .select('*')
+      .where({ game_id: gameId });
+
+    for (let suggestion of allSuggestions) {
+      await knex('score_suggestion')
+        .update({
+          status: _.isEqual(suggestion.score, score)
+            ? STATUS_ENUM.ACCEPTED
+            : STATUS_ENUM.REFUSED,
+        })
+        .where({ id: suggestion.id });
+    }
+  }
+
+  return { gameId, score };
 }
 
 async function getGamesWithAwaitingScore(user_id, limit = 100) {
@@ -3189,114 +3182,53 @@ async function updateGamesInteractiveTool(games) {
   });
 }
 
-async function keepSameSuggestions(suggestions, suggestion) {
-  return suggestions.filter(s => {
-    return (
-      (s.your_roster_id === suggestion.yourRosterId &&
-        s.opposing_roster_id === suggestion.opposingRosterId &&
-        s.your_score === suggestion.yourScore &&
-        s.opposing_team_score === suggestion.opposingTeamScore) ||
-      (s.your_roster_id === suggestion.opposingRosterId &&
-        s.opposing_roster_id === suggestion.yourRosterId &&
-        s.yourScore === suggestion.opposingTeamScore &&
-        s.opposing_team_score === suggestion.your_score)
-    );
-  });
-}
-async function keepDifferentSuggestions(suggestions, suggestion) {
-  return suggestions.filter(s => {
-    return (
-      (s.your_roster_id != suggestion.yourRosterId ||
-        s.opposing_roster_id != suggestion.opposingRosterId ||
-        s.your_score != suggestion.yourScore ||
-        s.opposing_team_score != suggestion.opposingTeamScore) &&
-      (s.your_roster_id != suggestion.opposingRosterId ||
-        s.opposing_roster_id != suggestion.yourRosterId ||
-        s.your_score != suggestion.opposingTeamScore ||
-        s.opposing_team_score != suggestion.yourScore)
-    );
-  });
-}
+async function updateSuggestionStatus(body) {
+  const { id, gameId, scores, status } = body;
+  let updatedCount = 0;
+  // update all suggestions with the same scores to thesame status
+  updatedCount += await knex('score_suggestion')
+    .update({ status })
+    .where({ id });
 
-async function updateSuggestionStatus(
-  gameId,
-  eventId,
-  yourRosterId,
-  opposingRosterId,
-  yourScore,
-  opposingTeamScore,
-  status,
-) {
-  const suggestions = await getScoreSuggestion(
-    eventId,
-    gameId,
-    yourRosterId,
-    opposingRosterId,
-  );
-  const suggestion = {
-    gameId,
-    eventId,
-    yourRosterId,
-    opposingRosterId,
-    yourScore: Number(yourScore),
-    opposingTeamScore: Number(opposingTeamScore),
-    status,
-  };
+  // get other suggestions
+  const allSuggestions = await knex('score_suggestion')
+    .select('*')
+    .where({ game_id: gameId })
+    .andWhereNot({ id });
 
-  const same = await keepSameSuggestions(suggestions, suggestion);
-  const different = await keepDifferentSuggestions(
-    suggestions,
-    suggestion,
-  );
-
-  const [res] = await Promise.all(
-    same.map(async s => {
-      const res = await knex('score_suggestion')
-        .where({
-          game_id: s.game_id,
-          submitted_by: s.your_roster_id,
-          score: s.score,
-        })
-        .update({
-          status,
-        })
-        .returning('*');
-      return res;
-    }),
-  );
-
-  if (status === STATUS_ENUM.ACCEPTED) {
-    await knex('game_teams')
-      .where({
-        game_id: gameId,
-        roster_id: yourRosterId,
-      })
-      .update({
-        score: yourScore,
-      });
-    await knex('game_teams')
-      .where({
-        game_id: gameId,
-        roster_id: opposingRosterId,
-      })
-      .update({
-        score: opposingTeamScore,
-      });
-    different.map(async d => {
-      await knex('score_suggestion')
-        .where({
-          game_id: d.game_id,
-          submitted_by: d.your_roster_id,
-          score: d.score,
-        })
-        .update({
-          status: STATUS_ENUM.REFUSED,
-        })
-        .returning('*');
-    });
+  // change status of other suggestions
+  for (let suggestion of allSuggestions) {
+    if (_.isEqual(suggestion.score, scores)) {
+      updatedCount += await knex('score_suggestion')
+        .update({ status })
+        .where({ id: suggestion.id });
+    } else if (status === STATUS_ENUM.ACCEPTED) {
+      updatedCount += await knex('score_suggestion')
+        .update({ status: STATUS_ENUM.REFUSED })
+        .where({ id: suggestion.id });
+    }
   }
 
-  return res;
+  if (status === STATUS_ENUM.ACCEPTED) {
+    await setGameScore(gameId, scores);
+  } else {
+    const [{ count }] = await knex('score_suggestion')
+      .count('submitted_by_roster')
+      .where({
+        game_id: gameId,
+        status: STATUS_ENUM.ACCEPTED,
+      });
+
+    if (count == 0) {
+      let resetScore = scores;
+      Object.keys(scores).forEach(key => {
+        resetScore[key] = 0;
+      });
+      await setGameScore(gameId, resetScore);
+    }
+  }
+
+  return updatedCount;
 }
 
 async function removeEntityRole(entityId, entityIdAdmin) {
@@ -3448,7 +3380,6 @@ module.exports = {
   addScoreSuggestion,
   acceptScoreSuggestion,
   acceptScoreSuggestionIfPossible,
-  addScoreAndSpirit,
   addField,
   addTeamToSchedule,
   addRegisteredToSchedule,
@@ -3470,7 +3401,6 @@ module.exports = {
   getAllEntities,
   getAllForYouPagePosts,
   getScoreSuggestion,
-  getSameSuggestions,
   getAllOwnedEntities,
   getOwnedEvents,
   getAllRolesEntity,
@@ -3519,6 +3449,7 @@ module.exports = {
   removeEntityRole,
   removeEventCartItem,
   removeIndividualPaymentCartItem,
+  setGameScore,
   unregister,
   updateEntityName,
   updateEntityPhoto,

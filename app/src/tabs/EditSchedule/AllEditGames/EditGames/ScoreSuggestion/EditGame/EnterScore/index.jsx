@@ -31,10 +31,10 @@ export default function EnterScore(props) {
   const validate = values => {
     const { score1, score2 } = values;
     const errors = {};
-    if (isNaN(score1)) {
+    if (score1 < 0) {
       errors.score1 = t(ERROR_ENUM.VALUE_IS_INVALID);
     }
-    if (isNaN(score2)) {
+    if (score2 < 0) {
       errors.score2 = t(ERROR_ENUM.VALUE_IS_INVALID);
     }
     return errors;
@@ -50,36 +50,29 @@ export default function EnterScore(props) {
     validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       const { score1, score2 } = values;
-      const res = await api('/api/entity/scoreAndSpirit', {
+      const res = await api('/api/entity/gameScore', {
         method: 'POST',
         body: JSON.stringify({
-          score: score1,
-          teamId: game.teams[0].id,
+          eventId: game.event_id,
           gameId: game.id,
-        }),
-      });
-      const res1 = await api('/api/entity/scoreAndSpirit', {
-        method: 'POST',
-        body: JSON.stringify({
-          score: score2,
-          teamId: game.teams[1].id,
-          gameId: game.id,
+          score: {
+            [game.teams[0].roster_id]: score1,
+            [game.teams[1].roster_id]: score2,
+          },
+          isManualAdd: true,
         }),
       });
       resetForm();
-      if (
-        res.status === STATUS_ENUM.ERROR ||
-        res1.status === STATUS_ENUM.ERROR
-      ) {
+      if (res.status === STATUS_ENUM.SUCCESS) {
+        update();
+        onClose();
+      } else {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: ERROR_ENUM.ERROR_OCCURED,
           severity: SEVERITY_ENUM.ERROR,
           duration: 4000,
         });
-      } else {
-        update();
-        onClose();
       }
     },
   });
@@ -104,6 +97,7 @@ export default function EnterScore(props) {
         type: 'number',
         namespace: `score${index + 1}`,
         label: `${t('score')} ${curr.name}`,
+        autoFocus: index === 0,
       },
     ],
     [],

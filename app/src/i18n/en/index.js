@@ -365,8 +365,6 @@ export default {
     my_apps: 'My apps',
     my_emails: 'My emails',
     my_persons: 'My persons',
-    name_and_x_other: '{{name}} and {{number}} other',
-    name_and_x_others: '{{name}} and {{number}} others',
     name_is_required: 'Name is required',
     name: 'Name',
     new_email: 'New email',

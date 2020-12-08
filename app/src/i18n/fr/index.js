@@ -363,8 +363,6 @@ export default {
     my_apps: 'Mes applications',
     my_emails: 'Mes courriels',
     my_persons: 'Mes personnes',
-    name_and_x_other: '{{name}} et {{number}} autre',
-    name_and_x_others: '{{name}} et {{number}} autres',
     name_is_required: 'Nom obligatoire',
     name: 'Nom',
     new_email: 'Nouveau courriel',
