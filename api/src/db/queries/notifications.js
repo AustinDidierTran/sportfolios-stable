@@ -126,7 +126,12 @@ const sendChatbotNotification = async (user_id, notif) => {
     const rostersId = Object.keys(score);
     const names = await getRostersNames(rostersId);
     const myTeam = [
-      names.splice(names.findIndex(n => n.roster_id == myRosterId)),
+      names.splice(
+        names.findIndex(n => {
+          return n.roster_id == myRosterId;
+        }),
+        1,
+      ),
     ];
     chatbotInfos.myTeamName = myTeam.name;
     chatbotInfos.myScore = score[myRosterId];
@@ -139,9 +144,10 @@ const sendChatbotNotification = async (user_id, notif) => {
         teamName: name,
       };
     }, {});
-    chatbotInfos.submittedBy = names.find(
-      n => n.roster_id == submittedBy,
-    ).name;
+    const theName = names.find(n => {
+      return n.roster_id == submittedBy;
+    });
+    chatbotInfos.submittedBy = theName.name;
     chatbotInfos.gameId = gameId;
     chatbotInfos.eventName = eventName;
     chatbotInfos.myRosterId = myRosterId;
