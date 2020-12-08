@@ -9,7 +9,7 @@ import { useFormik } from 'formik';
 import moment from 'moment';
 import BasicFormDialog from '../BasicFormDialog';
 import {
-  COMPONENT_TYPE_ENUM,
+  FIELD_GROUP_ENUM,
   SEVERITY_ENUM,
 } from '../../../../../../common/enums';
 import { ERROR_ENUM } from '../../../../../../common/errors';
@@ -17,6 +17,7 @@ import { Store, ACTION_ENUM } from '../../../../Store';
 import api from '../../../../actions/api';
 import { formatRoute } from '../../../../actions/goTo';
 import { useParams } from 'react-router-dom';
+import { useFields } from '../../../../hooks/fields';
 
 export default function AddEventPaymentOption(props) {
   const { open, onClose, addOptionToEvent } = props;
@@ -25,7 +26,9 @@ export default function AddEventPaymentOption(props) {
   const [ownersId, setOwnersId] = useState([]);
   const [taxes, setTaxes] = useState([]);
   const [allTaxes, setAllTaxes] = useState([]);
+  const [teamActivity, setTeamActivity] = useState(true);
   const { id: eventId } = useParams();
+
   const getAccounts = async () => {
     const { data } = await api(
       formatRoute('/api/stripe/eventAccounts', null, { eventId }),
@@ -40,6 +43,7 @@ export default function AddEventPaymentOption(props) {
       formik.setFieldValue('ownerId', res[0].value);
     }
   };
+
   const getTaxes = async () => {
     const { data } = await api(formatRoute('/api/stripe/getTaxes'));
     const res = data.map(d => ({
@@ -79,19 +83,21 @@ export default function AddEventPaymentOption(props) {
     if (!name) {
       errors.name = t(ERROR_ENUM.VALUE_IS_REQUIRED);
     }
-    if (!teamPrice && teamPrice !== 0) {
-      errors.teamPrice = t(ERROR_ENUM.VALUE_IS_REQUIRED);
-    }
-    if (teamPrice > 0 && !ownerId) {
-      dispatch({
-        type: ACTION_ENUM.SNACK_BAR,
-        message: t('no_bank_account_linked'),
-        severity: SEVERITY_ENUM.ERROR,
-      });
-      errors.teamPrice = t(ERROR_ENUM.VALUE_IS_INVALID);
-    }
-    if (teamPrice < 0) {
-      errors.teamPrice = t(ERROR_ENUM.VALUE_IS_INVALID);
+    if (teamActivity) {
+      if (!teamPrice && teamPrice !== 0) {
+        errors.teamPrice = t(ERROR_ENUM.VALUE_IS_REQUIRED);
+      }
+      if (teamPrice > 0 && !ownerId) {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: t('no_bank_account_linked'),
+          severity: SEVERITY_ENUM.ERROR,
+        });
+        errors.teamPrice = t(ERROR_ENUM.VALUE_IS_INVALID);
+      }
+      if (teamPrice < 0) {
+        errors.teamPrice = t(ERROR_ENUM.VALUE_IS_INVALID);
+      }
     }
     if (!playerPrice && playerPrice !== 0) {
       errors.playerPrice = t(ERROR_ENUM.VALUE_IS_REQUIRED);
@@ -146,10 +152,17 @@ export default function AddEventPaymentOption(props) {
       const taxRatesId = allTaxes
         .filter(t => taxes.includes(t.display))
         .map(t => t.id);
-      addOptionToEvent({ ...values, taxRatesId });
+      if (!teamActivity) {
+        values.teamPrice = 0;
+      }
+      addOptionToEvent({ ...values, taxRatesId, teamActivity });
       onClose();
     },
   });
+
+  const onChange = () => {
+    setTeamActivity(!teamActivity);
+  };
 
   const getPriceWithTax = (amount, taxes) => {
     return Math.ceil(
@@ -179,89 +192,16 @@ export default function AddEventPaymentOption(props) {
     );
   }, [formik.values.playerPrice, taxes]);
 
-  const fields = [
-    {
-      namespace: 'name',
-      label: t('name'),
-      type: 'text',
-    },
-    ownersId.length
-      ? {
-          namespace: 'ownerId',
-          label: t('payment_option_owner'),
-          componentType: COMPONENT_TYPE_ENUM.SELECT,
-          options: ownersId,
-        }
-      : {
-          componentType: COMPONENT_TYPE_ENUM.LIST_ITEM,
-          primary: t('no_admins_with_bank_account'),
-        },
-    {
-      componentType: COMPONENT_TYPE_ENUM.LIST_ITEM,
-      secondary: t(
-        'all_the_admins_of_the_event_that_have_a_bank_account_linked_to_their_account_will_appear_here',
-      ),
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.MULTISELECT,
-      namespace: 'taxes',
-      label: t('taxes'),
-      options: allTaxes.map(a => a.display),
-      values: taxes,
-      onChange: handleChange,
-    },
-    {
-      namespace: 'teamPrice',
-      label: t('price_team'),
-      type: 'number',
-      endAdorment: '$',
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.LIST_ITEM,
-      secondary: t('with_taxes_the_total_for_a_team_is', {
-        total: teamPriceTotal,
-      }),
-    },
-    {
-      namespace: 'playerPrice',
-      label: t('price_individual'),
-      type: 'number',
-      endAdorment: '$',
-    },
-    {
-      componentType: COMPONENT_TYPE_ENUM.LIST_ITEM,
-      secondary: t('with_taxes_the_total_for_a_player_is', {
-        total: playerPriceTotal,
-      }),
-    },
-    {
-      namespace: 'openDate',
-      label: t('registration_open_date'),
-      type: 'date',
-      initialValue: moment().format('YYYY-MM-DD'),
-      shrink: true,
-    },
-    {
-      namespace: 'openTime',
-      label: t('registration_open_time'),
-      type: 'time',
-      initialValue: '00:00',
-      shrink: true,
-    },
-    {
-      namespace: 'closeDate',
-      label: t('registration_close_date'),
-      type: 'date',
-      shrink: true,
-    },
-    {
-      namespace: 'closeTime',
-      label: t('registration_close_time'),
-      type: 'time',
-      initialValue: '23:59',
-      shrink: true,
-    },
-  ];
+  const fields = useFields(FIELD_GROUP_ENUM.ADD_PAYMENT_OPTION, {
+    teamActivity,
+    ownersId,
+    allTaxes,
+    onChange,
+    teamPriceTotal,
+    playerPriceTotal,
+    taxes,
+    handleChange,
+  });
   const buttons = [
     {
       onClick: handleClose,

@@ -60,6 +60,7 @@ export default function AddOptionsEvent() {
       openTime,
       closeDate,
       closeTime,
+      teamActivity,
     } = values;
 
     const formattedTeamPrice = Math.floor(Number(teamPrice) * 100);
@@ -81,6 +82,7 @@ export default function AddOptionsEvent() {
         playerPrice: formattedPlayerPrice,
         startTime: start,
         endTime: end,
+        teamActivity,
       }),
     });
     if (res.status === STATUS_ENUM.ERROR) {

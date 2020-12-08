@@ -933,6 +933,7 @@ async function addOption(body, userId) {
     playerPrice,
     endTime,
     startTime,
+    teamActivity,
   } = body;
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
@@ -949,6 +950,7 @@ async function addOption(body, userId) {
     endTime,
     startTime,
     userId,
+    teamActivity,
   );
   return res;
 }
