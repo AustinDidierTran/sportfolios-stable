@@ -13,4 +13,4 @@ COPY . ./
 RUN npm install && npm cache clean --force
 
 # Start the api
-CMD npm run webserver
+CMD npm run webserver --trace-warnings

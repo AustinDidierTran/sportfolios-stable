@@ -22,7 +22,6 @@ import {
 } from '../../../../../../../common/enums';
 import { ACTION_ENUM, Store } from '../../../../../Store';
 import api from '../../../../../actions/api';
-
 import styles from '../SubmitScoreSpiritForm.module.css';
 
 export default function SectionSpirit(props) {

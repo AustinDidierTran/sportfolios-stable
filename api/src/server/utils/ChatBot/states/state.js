@@ -2,21 +2,38 @@ const { MESSENGER_PAYLOADS } = require('../../enums');
 const queries = require('../../../../db/queries/facebook');
 const Response = require('../response');
 const i18n = require('../../../../i18n.config');
+const {
+  BASIC_CHATBOT_STATES,
+} = require('../../../../../../common/enums');
 
 class State {
   setContext(context) {
     this.context = context;
   }
 
+  /*
+   *Returns an object in this pattern:
+   * {
+   *   messages: [array containing state entrance messages]
+   *   nextState: (optional) defined if state needs to be changed
+   * }
+   *
+   */
   getIntroMessages() {
     throw new Error(
       'You need to implement the method getIntroMessages',
     );
   }
-
-  // eslint-disable-next-line no-unused-vars
+  /*
+   * Called on message reception
+   * And must define how to handle this event
+   */
   async handleEvent(webhookEvent) {
-    throw new Error('You need to implement the method handleEvent');
+    if (this.isStop(webhookEvent) || this.isStartOver(webhookEvent)) {
+      this.context.changeState(BASIC_CHATBOT_STATES.HOME);
+    } else {
+      this.sendIDontUnderstand(webhookEvent);
+    }
   }
 
   getText(webhookEvent) {

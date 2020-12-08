@@ -1996,6 +1996,24 @@ const canRemovePlayerFromRoster = async (rosterId, personId) => {
   );
 };
 
+const getSubmissionerInfos = async gameInfos => {
+  const [{ role: myRole }] = await knex('team_players')
+    .select('role')
+    .where({
+      roster_id: gameInfos.myRosterId,
+      person_id: gameInfos.myEntityId,
+    });
+
+  return {
+    gameInfos,
+    canSubmitScore:
+      myRole &&
+      (myRole === ROSTER_ROLE_ENUM.COACH ||
+        myRole === ROSTER_ROLE_ENUM.CAPTAIN ||
+        myRole === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN),
+  };
+};
+
 const canUnregisterTeam = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
@@ -3472,6 +3490,7 @@ module.exports = {
   getPersonGames,
   getRegistered,
   getRegistrationTeamPaymentOption,
+  getSubmissionerInfos,
   getAllAcceptedRegistered,
   getAllRegistered,
   getAllRegisteredInfos,
@@ -3539,4 +3558,5 @@ module.exports = {
   getGamePlayersWithRole,
   getRosterName,
   getRostersNames,
+  getAttendanceSheet,
 };

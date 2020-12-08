@@ -10,6 +10,7 @@ const AwaitingSpiritCommunication = require('./awaitingSpiritCommunication');
 const AwaitingSpiritSelfControl = require('./awaitingSpiritSelfControl');
 const GamesAwaitingScoreList = require('./gamesAwaitingScoreList');
 const AwaitingAttendance = require('./awaitingAttendance');
+const OtherTeamSubmittedAScore = require('./otherTeamSubmittedAScore');
 
 module.exports = {
   AwaitingScoreSubmission,
@@ -24,4 +25,5 @@ module.exports = {
   AwaitingSpiritSelfControl,
   GamesAwaitingScoreList,
   AwaitingAttendance,
+  OtherTeamSubmittedAScore,
 };
