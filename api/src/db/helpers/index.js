@@ -180,9 +180,17 @@ const generateHashedPassword = async password => {
 const generateToken = () => {
   return uuidv1();
 };
-const generatePromoCodeToken = () => {
+
+const generatePromoCodeToken = async () => {
   const token = randtoken.generate(6);
-  return token;
+  const [exist] = await knex('token_promo_code')
+    .select('*')
+    .where({ token_id: token });
+  if (exist) {
+    return generatePromoCodeToken();
+  } else {
+    return token;
+  }
 };
 
 const generateAuthToken = async userId => {
@@ -200,7 +208,7 @@ const generateMemberImportToken = async (
   expirationDate,
   membershipType,
 ) => {
-  const token = generatePromoCodeToken();
+  const token = await generatePromoCodeToken();
   try {
     await knex('token_promo_code').insert({
       token_id: token,
