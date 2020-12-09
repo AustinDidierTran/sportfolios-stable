@@ -183,14 +183,7 @@ const generateToken = () => {
 
 const generatePromoCodeToken = async () => {
   const token = randtoken.generate(6);
-  const [exist] = await knex('token_promo_code')
-    .select('*')
-    .where({ token_id: token });
-  if (exist) {
-    return generatePromoCodeToken();
-  } else {
-    return token;
-  }
+  return token;
 };
 
 const generateAuthToken = async userId => {
@@ -223,7 +216,11 @@ const generateMemberImportToken = async (
       },
     });
   } catch (err) {
-    return;
+    return generateMemberImportToken(
+      organizationId,
+      expirationDate,
+      membershipType,
+    );
   }
   return token;
 };
