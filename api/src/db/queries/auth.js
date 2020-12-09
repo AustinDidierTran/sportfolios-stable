@@ -23,6 +23,7 @@ const {
   updatePasswordFromUserId,
   validateEmailIsConfirmed,
   validateEmailIsUnique,
+  getUserIdFromAuthToken,
 } = require('../helpers');
 const {
   ENTITIES_ROLE_ENUM,
@@ -95,6 +96,14 @@ const login = async ({ email, password }) => {
   } else {
     return { status: 403 };
   }
+};
+
+const loginWithToken = async token => {
+  const userId = await getUserIdFromAuthToken(token);
+  if (!userId) {
+    return;
+  }
+  return getBasicUserInfoFromId(userId);
 };
 
 const confirmEmail = async ({ token }) => {
@@ -250,4 +259,5 @@ module.exports = {
   resendConfirmationEmail,
   signup,
   transferPersonSignup,
+  loginWithToken,
 };
