@@ -47,6 +47,9 @@ const PasswordRecovery = loadable(() =>
 const ProductAddedToCart = loadable(() =>
   import('../ProductAddedToCart'),
 );
+const RedirectWithToken = loadable(() =>
+  import('../RedirectWithToken'),
+);
 const RegistrationStatus = loadable(() =>
   import('../RegistrationStatus'),
 );
@@ -120,6 +123,10 @@ export default function App() {
                 <AdminRoute
                   path={ROUTES.adminPanel}
                   component={AdminPanel}
+                />
+                <Route
+                  path={ROUTES.redirectWithToken}
+                  component={RedirectWithToken}
                 />
                 <Route
                   path={ROUTES.privacyPolicy}

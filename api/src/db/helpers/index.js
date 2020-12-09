@@ -788,6 +788,18 @@ const deleteChatbotInfos = async messenger_id => {
     .returning('messenger_id');
 };
 
+const getUserIdFromAuthToken = async token => {
+  const query = knex('user_token')
+    .select('user_id')
+    .where('token_id', token)
+    .whereRaw('expires_at > now()');
+  const res = await query;
+  if (!res || !res.length) {
+    return;
+  }
+  return res[0].user_id;
+};
+
 module.exports = {
   confirmEmail,
   createUserEmail,
@@ -837,4 +849,5 @@ module.exports = {
   deleteChatbotInfos,
   getLanguageFromUser,
   getUserIdFromMessengerId,
+  getUserIdFromAuthToken,
 };

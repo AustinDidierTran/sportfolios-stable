@@ -177,7 +177,7 @@ export default function Login() {
               payload: userInfo,
             });
             if (redirectUrl) {
-              goTo(redirectUrl);
+              goTo(decodeURI(redirectUrl));
             } else if (successRoute) {
               goTo(ROUTES.confirmEmailSuccess, null, {
                 successRoute,
