@@ -682,14 +682,11 @@ async function importMembers(body) {
   const { membershipType, organizationId, language, members } = body;
   const res = await Promise.all(
     members.map(async m => {
-      let token = null;
-      do {
-        token = await generateMemberImportToken(
-          organizationId,
-          m.expirationDate,
-          membershipType,
-        );
-      } while (!token);
+      const token = await generateMemberImportToken(
+        organizationId,
+        m.expirationDate,
+        membershipType,
+      );
       const organization = await getEntityHelper(organizationId);
       sendImportMemberEmail({
         email: m.email,
