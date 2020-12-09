@@ -135,6 +135,7 @@ export default function ComponentFactory(props) {
       variant={component.variant}
       fullWidth
       style={component.style}
+      autoFocus={component.autoFocus}
     />
   );
 }
