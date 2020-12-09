@@ -180,7 +180,8 @@ const generateHashedPassword = async password => {
 const generateToken = () => {
   return uuidv1();
 };
-const generatePromoCodeToken = () => {
+
+const generatePromoCodeToken = async () => {
   const token = randtoken.generate(6);
   return token;
 };
@@ -200,17 +201,27 @@ const generateMemberImportToken = async (
   expirationDate,
   membershipType,
 ) => {
-  const token = generatePromoCodeToken();
-  await knex('token_promo_code').insert({
-    token_id: token,
-    expires_at: new Date(Date.now() + EXPIRATION_TIMES.IMPORT_MEMBER),
-    metadata: {
-      type: COUPON_CODE_ENUM.BECOME_MEMBER,
+  const token = await generatePromoCodeToken();
+  try {
+    await knex('token_promo_code').insert({
+      token_id: token,
+      expires_at: new Date(
+        Date.now() + EXPIRATION_TIMES.IMPORT_MEMBER,
+      ),
+      metadata: {
+        type: COUPON_CODE_ENUM.BECOME_MEMBER,
+        organizationId,
+        expirationDate: new Date(expirationDate),
+        membershipType,
+      },
+    });
+  } catch (err) {
+    return generateMemberImportToken(
       organizationId,
-      expirationDate: new Date(expirationDate),
+      expirationDate,
       membershipType,
-    },
-  });
+    );
+  }
   return token;
 };
 
