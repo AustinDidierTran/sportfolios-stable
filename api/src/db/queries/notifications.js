@@ -144,10 +144,9 @@ const sendChatbotNotification = async (user_id, notif) => {
         teamName: name,
       };
     }, {});
-    const theName = names.find(n => {
-      return n.roster_id == submittedBy;
-    });
-    chatbotInfos.submittedBy = theName.name;
+    chatbotInfos.submittedBy = names.find(
+      n => n.roster_id == submittedBy,
+    ).name;
     chatbotInfos.gameId = gameId;
     chatbotInfos.eventName = eventName;
     chatbotInfos.myRosterId = myRosterId;
