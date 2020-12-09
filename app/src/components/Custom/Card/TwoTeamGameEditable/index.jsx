@@ -17,14 +17,14 @@ export default function TwoTeamGameEditable(props) {
     field,
     start_time,
     phaseName,
-    //onClick, TODO : uncomment when scoreSubmission is fixed
+    onClick,
     onEdit,
     onDelete,
   } = props;
 
   const team1 = teams[0];
   const team2 = teams[1];
-  const onClick = () => {}; //TODO : remove when scoreSubmission is fixed
+
   return (
     <Card className={styles.gameEdit}>
       <div onClick={onClick}>

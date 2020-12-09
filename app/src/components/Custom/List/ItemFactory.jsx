@@ -28,6 +28,7 @@ import SalesItem from './SalesItem';
 import TeamItem from './TeamItem';
 import {
   RosterNotification,
+  ScoreSubmissionConflictNotification,
   ScoreSubmissionRequestNotification,
   ConfirmOrDeclineScoreNotification,
 } from './NotificationItems';
@@ -61,6 +62,7 @@ const ItemMap = {
   [LIST_ITEM_ENUM.AVATAR_TEXT_SKELETON]: AvatarAndTextSkeleton,
   [LIST_ITEM_ENUM.NOTIFICATION_SETTING]: NotificationSettingItem,
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: RosterNotification,
+  [NOTIFICATION_TYPE.SCORE_SUBMISSION_CONFLICT]: ScoreSubmissionConflictNotification,
   [NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST]: ScoreSubmissionRequestNotification,
   [NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE]: ConfirmOrDeclineScoreNotification,
 };

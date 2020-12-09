@@ -38,65 +38,29 @@ export default function ScoreSuggestion(props) {
     () => (expanded ? 'KeyboardArrowUp' : 'KeyboardArrowDown'),
     [expanded],
   );
-
   const message = useMemo(
     () => (expanded ? '' : t('score_suggestions')),
     [expanded],
   );
 
-  const { event_id, id: gameId } = game;
-
   useEffect(() => {
     getSuggestions();
   }, []);
 
-  const getSameSuggestions = (suggestions, suggestion) => {
-    return suggestions.filter(s => {
-      return (
-        (s.your_roster_id === suggestion.your_roster_id &&
-          s.opposing_roster_id === suggestion.opposing_roster_id &&
-          s.your_score === suggestion.your_score &&
-          s.opposing_team_score === suggestion.opposing_team_score) ||
-        (s.your_roster_id === suggestion.opposing_roster_id &&
-          s.opposing_roster_id === suggestion.your_roster_id &&
-          s.your_score === suggestion.opposing_team_score &&
-          s.opposing_team_score === suggestion.your_score)
-      );
-    });
-  };
-
   const getSuggestions = async () => {
     const { data } = await api(
       formatRoute('/api/entity/scoreSuggestion', null, {
-        event_id,
-        gameId,
+        gameId: game.id,
       }),
     );
 
-    const res = data.reduce((prev, curr) => {
-      if (prev.length < 1) {
-        return [...prev, curr];
-      }
-      const samesugg = getSameSuggestions(prev, curr);
-      if (samesugg.length < 1) {
-        return [...prev, curr];
-      }
-      return [...prev];
-    }, []);
+    setSuggestions(data);
 
-    const res2 = res
-      .map(m => ({
-        ...m,
-        number: getSameSuggestions(data, m).length,
-      }))
-      .sort((a, b) => b.number - a.number);
-
-    setSuggestions(res2);
-    const expanded = res2.some(s => s.status === STATUS_ENUM.PENDING);
+    const expanded = data.some(s => s.status === STATUS_ENUM.PENDING);
     if (!expanded) {
       setTimeout(() => {
         setExpanded(expanded);
-      }, 1000);
+      }, 500);
     } else {
       setExpanded(expanded);
     }
@@ -110,22 +74,20 @@ export default function ScoreSuggestion(props) {
   return (
     <>
       <EditGame
-        update={update}
+        update={updateSuggestions}
         game={game}
         withoutEdit={withoutEdit || suggestions.length}
       />
       {suggestions.length ? (
         <>
-          <div className={styles.collapse}>
+          <div className={styles.collapse} onClick={handleExpand}>
             <Typography
               className={styles.seeScore}
               color="textSecondary"
-              onClick={handleExpand}
             >
               {message}
             </Typography>
             <IconButton
-              onClick={handleExpand}
               aria-expanded={expanded}
               icon={icon}
               className={classes.primary}
