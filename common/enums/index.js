@@ -223,6 +223,7 @@ const ROUTES_ENUM = {
   transferPersonExpired: '/transferPersonExpired',
   userSettings: '/userSettings',
   redirectWithToken: '/redirect',
+  rosterInviteLink: '/invite/roster/:token',
 };
 
 const STATUS_ENUM = {

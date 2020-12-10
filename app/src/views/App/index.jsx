@@ -72,6 +72,7 @@ const TransferPerson = loadable(() => import('../TransferPerson'));
 const TransferPersonExpired = loadable(() =>
   import('../TransferPerson/TransferPersonExpired'),
 );
+const RosterInvite = loadable(() => import('../RosterInvite'));
 
 import {
   AddGaPageView,
@@ -123,6 +124,11 @@ export default function App() {
                 <AdminRoute
                   path={ROUTES.adminPanel}
                   component={AdminPanel}
+                />
+                <PrivateRoute
+                  exact
+                  path={ROUTES.rosterInviteLink}
+                  component={RosterInvite}
                 />
                 <Route
                   path={ROUTES.redirectWithToken}
