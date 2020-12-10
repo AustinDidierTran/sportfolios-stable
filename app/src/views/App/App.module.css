@@ -33,6 +33,7 @@ body {
 .footer {
   z-index: 99;
   height: 56px;
+  position: sticky;
 }
 
 @media (min-width: 600px) {
