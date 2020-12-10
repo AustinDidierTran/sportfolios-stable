@@ -5,9 +5,9 @@ import {
   STATUS_ENUM,
 } from '../../../../common/enums/index.js';
 import api from '../../actions/api/index.js';
-import { formatRoute, goTo } from '../../actions/goTo/index.js';
-import { LoadingSpinner } from '../../components/Custom/index.jsx';
-import Rosters from '../../tabs/Rosters/Roster/index.jsx';
+import { formatRoute, goTo } from '../../actions/goTo';
+import { IgContainer, LoadingSpinner } from '../../components/Custom';
+import Rosters from '../../tabs/Rosters/Rosters';
 
 export default function RosterInvite() {
   const [rosters, setRosters] = useState();
@@ -15,10 +15,14 @@ export default function RosterInvite() {
 
   const fetchRoster = async () => {
     const res = await api(
-      formatRoute('/api/entity/getRosterFromToken', null, { token }),
+      formatRoute('/api/entity/rosterFromInviteToken', null, {
+        token,
+      }),
     );
+    console.log({ token });
+    console.log({ res });
     if (res && res.status == STATUS_ENUM.SUCCESS_STRING) {
-      setRosters(res.data);
+      setRosters([{ players: res.data, name: 'test' }]);
     } else {
       goTo(ROUTES_ENUM.entityNotFound);
     }
@@ -30,12 +34,14 @@ export default function RosterInvite() {
     return <LoadingSpinner />;
   }
   return (
-    <Rosters
-      rosters={rosters}
-      onAdd={() => {}}
-      onDelete={() => {}}
-      onRoleUpdate={() => {}}
-      update={() => {}}
-    />
+    <IgContainer>
+      <Rosters
+        rosters={rosters}
+        onAdd={() => {}}
+        onDelete={() => {}}
+        onRoleUpdate={() => {}}
+        update={() => {}}
+      />
+    </IgContainer>
   );
 }
