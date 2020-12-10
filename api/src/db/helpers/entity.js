@@ -1168,7 +1168,7 @@ async function getAllRegisteredInfos(eventId, userId) {
       const players = await getRoster(t.roster_id, true);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.roster_id);
-      const role = await getRole( t.roster_id, userId);
+      const role = await getRole(t.roster_id, userId);
       const registrationStatus = await getRegistrationStatus(
         eventId,
         t.roster_id,
@@ -1286,24 +1286,23 @@ const getPrimaryPerson = async user_id => {
 
 async function getRole(rosterId, userId) {
   const realId = await getRealId(rosterId);
-  if (!userId) {
+  const [role] = await knex('team_players')
+    .select('team_players.role')
+    .join(
+      'user_entity_role',
+      'user_entity_role.entity_id',
+      'team_players.person_id',
+    )
+    .where({ roster_id: realId, user_id: userId })
+    .orderByRaw(
+      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], team_players.role)`,
+    )
+    .limit(1);
+  if (role) {
+    return role.role;
+  } else {
     return ROSTER_ROLE_ENUM.VIEWER;
   }
-
-  const person = await getPrimaryPerson(userId);
-  const personId = person.id;
-
-  const admins = await getMyPersonsAdminsOfTeamHelper(rosterId, userId);
-  if(admins && admins.length){
-    return ROSTER_ROLE_ENUM.CAPTAIN
-  }
-
-  const [role] = await knex('team_players')
-    .select('*')
-    .where({ roster_id: realId, person_id: personId });
-
-  if (!role) return ROSTER_ROLE_ENUM.VIEWER;
-  return ROSTER_ROLE_ENUM.PLAYER;
 }
 
 const getRosterInvoiceItem = async body => {
