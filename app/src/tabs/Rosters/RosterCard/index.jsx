@@ -6,7 +6,6 @@ import Players from './Players';
 import { Typography } from '../../../components/MUI';
 import Tag from '../Tag';
 import { ROSTER_ROLE_ENUM } from '../../../../../common/enums';
-import { RotateLeft } from '@material-ui/icons';
 
 const isEven = n => {
   return n % 2 == 0;
@@ -46,8 +45,7 @@ export default function RosterCard(props) {
     role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
     role == ROSTER_ROLE_ENUM.COACH;
   const greenBackground =
-    isEventAdmin || canEditRoster || role === ROSTER_ROLE_ENUM.PLAYER;
-  console.log(role);
+    isEventAdmin || role != ROSTER_ROLE_ENUM.VIEWER;
   let style = {};
   if (greenBackground && isEven(index)) {
     style = { backgroundColor: '#19bf9d', color: '#fff' };
@@ -93,7 +91,6 @@ export default function RosterCard(props) {
           editableRole={canEditRoster}
           players={players}
           update={update}
-          role={role}
           rosterId={rosterId}
           onDelete={onDelete}
           onAdd={onAdd}

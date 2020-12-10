@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import styles from './Rosters.module.css';
 import RosterCard from '../RosterCard';
-import { ROSTER_ROLE_ENUM } from '../../../../../common/enums';
-import MyRosterCard from '../MyRosterCard';
 
 export default function Rosters(props) {
   const {

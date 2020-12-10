@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import styles from './Players.module.css';
 
 import { useTranslation } from 'react-i18next';
-import { ROSTER_ROLE_ENUM } from '../../../../../../common/enums';
 import uuid from 'uuid';
 
 import PlayerCard from './PlayerCard';
@@ -22,7 +21,6 @@ export default function Players(props) {
     editableRoster,
     whiteList,
     players,
-    role,
     rosterId,
     onDelete,
     onAdd,
@@ -90,9 +88,7 @@ export default function Players(props) {
       {isEventAdmin || editableRoster ? (
         <div className={styles.searchList}>
           <PersonSearchList
-            addedByEventAdmin={
-              isEventAdmin && role !== ROSTER_ROLE_ENUM.CAPTAIN //TODOV check for removing role
-            }
+            addedByEventAdmin={isEventAdmin && !editableRoster}
             clearOnSelect={false}
             blackList={blackList}
             whiteList={whiteList}
