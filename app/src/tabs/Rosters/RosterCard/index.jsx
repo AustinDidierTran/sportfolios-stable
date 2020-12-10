@@ -14,16 +14,23 @@ const isEven = n => {
 export default function RosterCard(props) {
   const {
     isEventAdmin,
-    editableRoster,
     roster,
     expandedIndex,
     setExpandedIndex,
     onDelete,
+    whiteList,
     onAdd,
     onRoleUpdate,
     index,
     update,
   } = props;
+  let { editableRoster, editableRole } = props;
+  const isTeamEditor =
+    role == ROSTER_ROLE_ENUM.CAPTAIN ||
+    role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
+    role == ROSTER_ROLE_ENUM.COACH;
+  editableRoster = editableRoster || isTeamEditor;
+  editableRole = editableRole || isTeamEditor;
   const {
     position,
     name,
@@ -40,10 +47,7 @@ export default function RosterCard(props) {
   const onExpand = () => {
     setExpandedIndex(oldIndex => (oldIndex === index ? 0 : index));
   };
-  const canEditRoster =
-    role == ROSTER_ROLE_ENUM.CAPTAIN ||
-    role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
-    role == ROSTER_ROLE_ENUM.COACH;
+
   const greenBackground =
     isEventAdmin || role != ROSTER_ROLE_ENUM.VIEWER;
   let style = {};
@@ -87,8 +91,9 @@ export default function RosterCard(props) {
       <div className={styles.expanded} hidden={!expanded}>
         <Players
           isEventAdmin={isEventAdmin}
-          editableRoster={editableRoster || canEditRoster}
-          editableRole={canEditRoster}
+          editableRoster={editableRoster}
+          editableRole={editableRole}
+          whiteList={whiteList}
           players={players}
           update={update}
           rosterId={rosterId}
