@@ -1,5 +1,5 @@
 .bottomnavigation {
-  position: absolute;
+  position: sticky;
   width: 100vw;
   bottom: 0;
   border-color: white;
