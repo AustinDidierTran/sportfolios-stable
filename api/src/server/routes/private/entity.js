@@ -1296,4 +1296,62 @@ router.del(`${BASE_URL}/game`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/rosterInviteToken`, async ctx => {
+  const token = await queries.getRosterInviteToken(
+    ctx.body.userInfo.id,
+    ctx.query.rosterId,
+  );
+  if (token) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS_STRING,
+      data: token,
+    };
+  } else {
+    (ctx.status = STATUS_ENUM.ERROR),
+      (ctx.body = {
+        status: STATUS_ENUM.ERROR_STRING,
+        message: 'Something went wrong',
+      });
+  }
+});
+
+router.del(`${BASE_URL}/rosterInviteToken`, async ctx => {
+  const res = await queries.cancelRosterInviteToken(
+    ctx.body.userInfo.id,
+    ctx.query.rosterId,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS_STRING,
+    };
+  } else {
+    (ctx.status = STATUS_ENUM.ERROR),
+      (ctx.body = {
+        status: STATUS_ENUM.ERROR_STRING,
+        message: 'Something went wrong',
+      });
+  }
+});
+
+router.get(`${BASE_URL}/rosterFromInviteToken`, async ctx => {
+  const roster = await queries.getRosterFromInviteToken(
+    ctx.query.token,
+  );
+  if (roster) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS_STRING,
+      data: roster,
+    };
+  } else {
+    (ctx.status = STATUS_ENUM.ERROR),
+      (ctx.body = {
+        status: STATUS_ENUM.ERROR_STRING,
+        message: 'Something went wrong',
+      });
+  }
+});
+
 module.exports = router;

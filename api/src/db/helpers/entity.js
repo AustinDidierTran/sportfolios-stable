@@ -1539,7 +1539,7 @@ async function getGameTeams(game_id, player_id) {
   }
 }
 
-async function getMyPersonsAdminsOfTeam(rosterId, teams, userId) {
+async function getMyPersonsAdminsOfTeam(rosterId, userId) {
   const res = await knex('user_entity_role')
     .select(
       'user_entity_role.entity_id',
@@ -1566,23 +1566,11 @@ async function getMyPersonsAdminsOfTeam(rosterId, teams, userId) {
     ])
     .andWhere('team_players.roster_id', '=', rosterId);
 
-  const myTeam = teams.find(t => t.rosterId === rosterId);
-  const enemyTeam = teams.find(t => t.rosterId !== rosterId);
   return res.length
-    ? {
-        myTeam: {
-          rosterId: myTeam.rosterId,
-          name: myTeam.name,
-        },
-        enemyTeam: {
-          rosterId: enemyTeam.rosterId,
-          name: enemyTeam.name,
-        },
-        myAdminPersons: res.map(p => ({
-          entityId: p.entity_id,
-          completeName: `${p.name} ${p.surname}`,
-        })),
-      }
+    ? res.map(p => ({
+        entityId: p.entity_id,
+        completeName: `${p.name} ${p.surname}`,
+      }))
     : undefined;
 }
 
@@ -3392,6 +3380,43 @@ const personIsAwaitingTransfer = async personId => {
   ).exists;
 };
 
+const insertRosterInviteToken = async roster_id => {
+  const [res] = await knex('token_roster_invite')
+    .insert({ roster_id })
+    .returning('token');
+  return res;
+};
+
+async function getRosterInviteToken(roster_id) {
+  const res = await knex('token_roster_invite')
+    .select('token')
+    .where({ roster_id })
+    .whereRaw('expires_at > now()')
+    .orderBy('expires_at', 'desc')
+    .limit(1);
+  if (res && res.length) {
+    return res[0].token;
+  }
+}
+
+async function cancelRosterInviteToken(roster_id) {
+  return knex('token_roster_invite')
+    .update('expires_at', knex.raw('now()'))
+    .where({ roster_id })
+    .whereRaw('expires_at > now()');
+}
+
+async function getRosterIdFromInviteToken(token) {
+  const res = await knex('token_roster_invite')
+    .select('roster_id')
+    .where({ token })
+    .whereRaw('expires_at > now()')
+    .limit(1);
+  if (res && res.length) {
+    return res[0].roster_id;
+  }
+}
+
 module.exports = {
   addEntity,
   addEntityRole,
@@ -3516,4 +3541,8 @@ module.exports = {
   getRosterName,
   getRostersNames,
   getAttendanceSheet,
+  insertRosterInviteToken,
+  getRosterInviteToken,
+  cancelRosterInviteToken,
+  getRosterIdFromInviteToken,
 };
