@@ -1,115 +1,134 @@
 import React, { useEffect, useState } from 'react';
 import styles from './Players.module.css';
-import Tag from '../../Tag';
-import { ENTITIES_ROLE_ENUM } from '../../../../Store';
-import { Typography } from '../../../../components/MUI';
+
 import { useTranslation } from 'react-i18next';
-import { Tooltip } from '@material-ui/core';
-import { Icon } from '../../../../components/Custom';
 import { ROSTER_ROLE_ENUM } from '../../../../../../common/enums';
+import uuid from 'uuid';
+
+import PlayerCard from './PlayerCard';
+import { Typography } from '@material-ui/core';
+import {
+  LoadingSpinner,
+  PersonSearchList,
+} from '../../../../components/Custom';
+import api from '../../../../actions/api';
+import { formatRoute } from '../../../../actions/goTo';
 
 export default function Players(props) {
   const { t } = useTranslation();
-  const { players, role } = props;
-  const [playersUpdated, setPlayersUpdated] = useState([]);
-
-  const getData = async () => {
-    const playersUpdated = players.map(p => {
-      //TODO: Api call to know if player has an account
-      return { ...p, status: 'registered' };
-    });
-    setPlayersUpdated(playersUpdated);
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const getIconFromRole = role => {
-    switch (role) {
-      case ROSTER_ROLE_ENUM.COACH:
-        return 'SportsWhistle';
-      case ROSTER_ROLE_ENUM.CAPTAIN:
-        return 'Stars';
-      case ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN:
-        return 'TextFormat';
-      default:
-        return 'Person';
-    }
-  };
-
-  if (!playersUpdated) {
-    return <></>;
+  const {
+    isEventAdmin,
+    editableRole,
+    editableRoster,
+    whiteList,
+    players,
+    role,
+    rosterId,
+    onDelete,
+    onAdd,
+    onRoleUpdate,
+    update,
+  } = props;
+  const [blackList, setBlackList] = useState(null);
+  const [isLoading, setisLoading] = useState(false);
+  if (isEventAdmin || editableRoster) {
+    useEffect(() => {
+      getBlackList();
+    }, [rosterId]);
   }
 
-  if (role == ENTITIES_ROLE_ENUM.VIEWER) {
-    return (
-      <div className={styles.card}>
-        {playersUpdated.map(player => (
-          <div className={styles.player} key={player.id}>
-            <div className={styles.position}>
-              {player.role === ROSTER_ROLE_ENUM.PLAYER ? (
-                <></>
-              ) : (
-                <Tooltip
-                  title={t(
-                    player.role === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN
-                      ? 'assistant_captain'
-                      : player.role,
-                  )}
-                >
-                  <div>
-                    <Icon icon={getIconFromRole(player.role)} />
-                  </div>
-                </Tooltip>
-              )}
-            </div>
-            <div className={styles.name}>
-              <Typography>{player && player.name}</Typography>
-            </div>
-            <div className={styles.pod}>
-              <Tag type={player.status} />
-            </div>
-          </div>
-        ))}
-      </div>
+  const getBlackList = async () => {
+    const { data } = await api(
+      formatRoute('/api/entity/getRoster', null, {
+        rosterId,
+        withSub: true,
+      }),
     );
-  }
+    setBlackList(data.map(d => d.personId));
+  };
 
-  if (!playersUpdated.length) {
-    return (
-      <div className={styles.card}>
-        <Typography>{t('empty_roster')}</Typography>
-      </div>
-    );
+  const onPlayerAddToRoster = async person => {
+    setisLoading(true);
+    const player = person.id
+      ? {
+          personId: person.id,
+          name: person.completeName || person.name,
+          id: uuid.v1(),
+        }
+      : { name: person.completeName || person.name, id: uuid.v1() };
+
+    await onAdd(player, rosterId);
+    setBlackList([...blackList, player.personId]);
+    setisLoading(false);
+  };
+
+  const handleClose = async person => {
+    setisLoading(true);
+    await update();
+    setBlackList([...blackList, person.id]);
+    setisLoading(false);
+  };
+  const handleDelete = async id => {
+    setisLoading(true);
+    await onDelete(id);
+    //TODO: handle blacklist in frontend and backend
+    await getBlackList();
+    setisLoading(false);
+  };
+
+  const handleRoleUpdate = async (playerId, role) => {
+    setisLoading(true);
+    await onRoleUpdate(playerId, role);
+    setisLoading(false);
+  };
+  if (!players) {
+    return null;
   }
 
   return (
     <div className={styles.card}>
-      {playersUpdated.map(player => (
-        <div className={styles.player} key={player.id}>
-          <div className={styles.position}>
-            {player.role === ROSTER_ROLE_ENUM.PLAYER ? (
-              <></>
-            ) : (
-              <Tooltip
-                title={t(
-                  player.role === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN
-                    ? 'assistant_captain'
-                    : player.role,
-                )}
-              >
-                <div>
-                  <Icon icon={getIconFromRole(player.role)} />
-                </div>
-              </Tooltip>
-            )}
-          </div>
-          <div className={styles.name}>
-            <Typography>{player.name}</Typography>
-          </div>
+      {isEventAdmin || editableRoster ? (
+        <div className={styles.searchList}>
+          <PersonSearchList
+            addedByEventAdmin={
+              isEventAdmin && role !== ROSTER_ROLE_ENUM.CAPTAIN //TODOV check for removing role
+            }
+            clearOnSelect={false}
+            blackList={blackList}
+            whiteList={whiteList}
+            label={t('enter_player_name')}
+            onClick={onPlayerAddToRoster}
+            secondary={t('player')}
+            allowCreate
+            withoutIcon
+            autoFocus
+            rosterId={rosterId}
+            handleClose={handleClose}
+          />
         </div>
-      ))}
+      ) : null}
+      {isLoading ? (
+        <LoadingSpinner isComponent />
+      ) : (
+        <>
+          {players.length ? (
+            <div className={styles.player}>
+              {players.map(player => (
+                <PlayerCard
+                  isEventAdmin={isEventAdmin}
+                  player={player}
+                  isEditable={editableRole}
+                  onDelete={handleDelete}
+                  onRoleUpdate={handleRoleUpdate}
+                  key={player.id}
+                />
+              ))}
+            </div>
+          ) : (
+            <Typography>{t('empty_roster_add_players')}</Typography>
+          )}
+        </>
+      )}
     </div>
   );
 }

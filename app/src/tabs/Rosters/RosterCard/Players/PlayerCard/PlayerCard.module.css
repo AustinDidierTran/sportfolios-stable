@@ -1,0 +1,50 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  margin: 0 16px;
+}
+
+.player {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 50px 1fr auto auto;
+  grid-template-areas: 'position name chip icon';
+  justify-content: center;
+  margin: 4px 0;
+}
+
+.position {
+  grid-area: position;
+  display: flex;
+  justify-self: center;
+  align-self: center;
+}
+
+.position > div {
+  display: flex;
+}
+
+.about {
+  grid-area: position;
+  justify-self: center;
+  align-self: center;
+}
+
+.name {
+  grid-area: name;
+  justify-self: start;
+  align-self: center;
+}
+
+.chip {
+  grid-area: chip;
+  align-self: center;
+}
+
+.icon {
+  grid-area: icon;
+  display: flex;
+  justify-self: end;
+  align-self: center;
+  width: 100%;
+}

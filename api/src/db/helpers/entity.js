@@ -1168,7 +1168,7 @@ async function getAllRegisteredInfos(eventId, userId) {
       const players = await getRoster(t.roster_id, true);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.roster_id);
-      const role = await getRole(captains, t.roster_id, userId);
+      const role = await getRole( t.roster_id, userId);
       const registrationStatus = await getRegistrationStatus(
         eventId,
         t.roster_id,
@@ -1284,7 +1284,7 @@ const getPrimaryPerson = async user_id => {
   return primaryPerson;
 };
 
-async function getRole(captains, rosterId, userId) {
+async function getRole(rosterId, userId) {
   const realId = await getRealId(rosterId);
   if (!userId) {
     return ROSTER_ROLE_ENUM.VIEWER;
@@ -1293,8 +1293,9 @@ async function getRole(captains, rosterId, userId) {
   const person = await getPrimaryPerson(userId);
   const personId = person.id;
 
-  if (captains.some(c => c.id === personId)) {
-    return ROSTER_ROLE_ENUM.CAPTAIN;
+  const admins = await getMyPersonsAdminsOfTeamHelper(rosterId, userId);
+  if(admins && admins.length){
+    return ROSTER_ROLE_ENUM.CAPTAIN
   }
 
   const [role] = await knex('team_players')

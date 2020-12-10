@@ -1,42 +1,24 @@
 .card {
   display: flex;
   flex-direction: column;
-  margin: 0 16px;
+}
+
+.add {
+  display: flex;
+  flex-direction: row;
+}
+
+.button {
+  flex: 1 1 auto;
+}
+
+.searchList {
+  margin: 8px;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .player {
   flex: 1 1 auto;
-
-  display: grid;
-  grid-template-columns: 50px 1fr 100px;
-  grid-template-areas: 'position name pod';
-  justify-content: center;
-  margin: 4px 0;
-}
-
-.position {
-  grid-area: position;
-  justify-self: center;
-}
-
-.position > div {
-  display: flex;
-}
-
-.name {
-  grid-area: name;
-
-  justify-self: start;
-  align-self: center;
-}
-
-.pod {
-  grid-area: pod;
-
-  justify-self: end;
-  align-self: center;
-  width: 100%;
-}
-
-@media (min-width: 768px) {
 }

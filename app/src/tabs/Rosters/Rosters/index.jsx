@@ -23,42 +23,22 @@ export default function Rosters(props) {
 
   return (
     <div className={styles.contain}>
-      {rosters.map((roster, index) => {
-        if (
-          isEventAdmin ||
-          [
-            ROSTER_ROLE_ENUM.CAPTAIN,
-            ROSTER_ROLE_ENUM.PLAYER,
-          ].includes(roster.role)
-        ) {
-          return (
-            <MyRosterCard
-              isEventAdmin={isEventAdmin}
-              roster={roster}
-              expandedIndex={expandedIndex}
-              setExpandedIndex={setExpandedIndex}
-              onAdd={onAdd}
-              onDelete={onDelete}
-              onRoleUpdate={(...args) =>
-                onRoleUpdate(roster.teamId, ...args)
-              }
-              index={index + 1}
-              key={roster.rosterId}
-              update={update}
-            />
-          );
-        }
-
-        return (
-          <RosterCard
-            roster={roster}
-            expandedIndex={expandedIndex}
-            setExpandedIndex={setExpandedIndex}
-            index={index + 1}
-            key={roster.rosterId}
-          />
-        );
-      })}
+      {rosters.map((roster, index) => (
+        <RosterCard
+          isEventAdmin={isEventAdmin}
+          roster={roster}
+          expandedIndex={expandedIndex}
+          setExpandedIndex={setExpandedIndex}
+          onAdd={onAdd}
+          onDelete={onDelete}
+          onRoleUpdate={(...args) =>
+            onRoleUpdate(roster.teamId, ...args)
+          }
+          index={index + 1}
+          key={roster.rosterId}
+          update={update}
+        />
+      ))}
     </div>
   );
 }
