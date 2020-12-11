@@ -16,15 +16,17 @@ DROP COLUMN PLAYERS,
 DROP COLUMN COMMENTS;
 
 
-ALTER TABLE SCORE_SUGGESTION ADD SCORE JSON,
-                                 ADD ID UUID NOT NULL DEFAULT UUID_GENERATE_V4() PRIMARY KEY;
+ALTER TABLE SCORE_SUGGESTION 
+  ADD SCORE JSON,
+  ADD ID UUID NOT NULL DEFAULT UUID_GENERATE_V4() PRIMARY KEY;
 
 
-CREATE TABLE SPIRIT_SUBMISSION(ID UUID NOT NULL DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
-                                                                                   SUBMITTED_BY_ROSTER UUID REFERENCES TEAM_ROSTERS(ID),
-                                                                                                                       SUBMITTED_BY_PERSON UUID REFERENCES ENTITIES(ID),
-                                                                                                                                                           GAME_ID UUID REFERENCES GAMES(ID),
-                                                                                                                                                                                   COMMENT text, SPIRIT_SCORE integer, SUBMITTED_FOR_ROSTER UUID REFERENCES TEAM_ROSTERS(ID));
+CREATE TABLE SPIRIT_SUBMISSION(
+  ID UUID NOT NULL DEFAULT UUID_GENERATE_V4() PRIMARY KEY,
+  SUBMITTED_BY_ROSTER UUID REFERENCES TEAM_ROSTERS(ID),
+  SUBMITTED_BY_PERSON UUID REFERENCES ENTITIES(ID),
+  GAME_ID UUID REFERENCES GAMES(ID),
+  COMMENT text, SPIRIT_SCORE integer, SUBMITTED_FOR_ROSTER UUID REFERENCES TEAM_ROSTERS(ID));
 
 
 CREATE TABLE GAME_PLAYERS_ATTENDANCE AS
@@ -35,5 +37,5 @@ FROM GAME_PLAYERS_VIEW;
 
 
 ALTER TABLE GAME_PLAYERS_ATTENDANCE ADD COLUMN STATUS varchar DEFAULT 'present',
-                                                                      ADD COLUMN EDITED_BY UUID REFERENCES ENTITIES(ID),
-                                                                                                           ADD COLUMN ID UUID NOT NULL DEFAULT UUID_GENERATE_V4() PRIMARY KEY;
+  ADD COLUMN EDITED_BY UUID REFERENCES ENTITIES(ID),
+  ADD COLUMN ID UUID NOT NULL DEFAULT UUID_GENERATE_V4() PRIMARY KEY;

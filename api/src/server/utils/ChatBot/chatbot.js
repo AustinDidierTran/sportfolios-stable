@@ -1,5 +1,5 @@
 const { StateFactory } = require('./states');
-
+const { setChatbotInfos } = require('../../../db/queries/facebook');
 class Chatbot {
   constructor(messengerId, stateType, chatbotInfos) {
     this.messengerId = messengerId;
@@ -23,6 +23,13 @@ class Chatbot {
     await this.state.handleEvent(webhookEvent);
   }
 
+  async saveState() {
+    setChatbotInfos(this.messengerId, {
+      state: this.stateType,
+      chatbot_infos: JSON.stringify(this.chatbotInfos),
+    });
+  }
+
   async sendIntroMessages(delay = 0) {
     let finalMessages = [];
     let state = this.stateType;
@@ -35,7 +42,7 @@ class Chatbot {
       finalMessages = finalMessages.concat(messages);
       state = nextState;
     } while (state);
-
+    this.saveState();
     this.state.sendMessages(this.messengerId, finalMessages, delay);
   }
 }

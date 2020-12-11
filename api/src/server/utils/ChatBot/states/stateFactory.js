@@ -16,6 +16,7 @@ const {
   AwaitingSpiritSelfControl,
   GamesAwaitingScoreList,
   AwaitingAttendance,
+  OtherTeamSubmittedAScore,
 } = require('./ScoreSubmissionStates');
 const { Home, NotLinked } = require('./BasicStates');
 const { NextGameInfos } = require('./GameInfosStates');
@@ -35,6 +36,7 @@ const stateMap = {
   [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SPIRIT_SELF_CONTROL]: AwaitingSpiritSelfControl,
   [SCORE_SUBMISSION_CHATBOT_STATES.GAMES_AWAITING_SCORE_LIST]: GamesAwaitingScoreList,
   [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_ATTENDANCE]: AwaitingAttendance,
+  [SCORE_SUBMISSION_CHATBOT_STATES.OTHER_TEAM_SUBMITTED_A_SCORE]: OtherTeamSubmittedAScore,
   [GAME_INFOS_CHATBOT_STATES.NEXT_GAME_INFOS]: NextGameInfos,
 };
 

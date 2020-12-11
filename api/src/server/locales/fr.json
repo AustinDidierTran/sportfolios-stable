@@ -67,6 +67,9 @@
     "score_submission_request_button": "Soumettre le score",
     "score_submission_request_subject": "Rappel de soumission de score"
   },
+  "{{submittedBy}} submitted the following score for your game of the event {{eventName}}": "{{submittedBy}} a soumis le score suivant pour votre partie de l'événement {{eventName}}",
+  "Do you want to confirm?": "Voulez vous confirmer?",
+  "An error happened, do you want to try again?": "Une erreur est survenue, voulez vous réessayer?",
   "and": "et",
   "your_team": "Votre équipe",
   "January": "Janvier",

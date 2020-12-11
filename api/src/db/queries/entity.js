@@ -29,13 +29,13 @@ const {
   addRoster: addRosterHelper,
   addNewPersonToRoster: addNewPersonToRosterHelper,
   addSpiritSubmission: addSpiritSubmissionHelper,
-  addScoreAndSpirit: addScoreAndSpiritHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
   acceptScoreSuggestion: acceptScoreSuggestionHelper,
   addTeamToEvent: addTeamToEventHelper,
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
   canRemovePlayerFromRoster: canRemovePlayerFromRosterHelper,
+  getSubmissionerInfos: getSubmissionerInfosHelper,
   canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
@@ -56,6 +56,7 @@ const {
   getEntity: getEntityHelper,
   getEntityRole: getEntityRoleHelper,
   getEvent: getEventHelper,
+  getEventAdmins: getEventAdminsHelper,
   getFields: getFieldsHelper,
   getGames: getGamesHelper,
   getGameSubmissionInfos: getGameSubmissionInfosHelper,
@@ -83,7 +84,6 @@ const {
   getRoster: getRosterHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getRosterInvoiceItem,
-  getSameSuggestions: getSameSuggestionsHelper,
   getScoreSuggestion: getScoreSuggestionHelper,
   getSlots: getSlotsHelper,
   getTeamGames: getTeamGamesHelper,
@@ -92,6 +92,7 @@ const {
   removeEntityRole: removeEntityRoleHelper,
   removeEventCartItem: removeEventCartItemHelper,
   removeIndividualPaymentCartItem: removeIndividualPaymentCartItemHelper,
+  setGameScore: setGameScoreHelper,
   unregister: unregisterHelper,
   updateAlias: updateAliasHelper,
   updateEntityName: updateEntityNameHelper,
@@ -156,28 +157,11 @@ async function getAllEntities(params) {
 async function getAllForYouPagePosts() {
   return getAllForYouPagePostsHelper();
 }
-async function getScoreSuggestion(query) {
-  const { event_id, gameId } = query;
-  return getScoreSuggestionHelper(event_id, gameId);
+
+async function getScoreSuggestion(gameId) {
+  return getScoreSuggestionHelper(gameId);
 }
-async function getSameSuggestions(query) {
-  const {
-    eventId,
-    gameId,
-    yourRosterId,
-    opposingRosterId,
-    yourScore,
-    opposingTeamScore,
-  } = query;
-  return getSameSuggestionsHelper(
-    eventId,
-    gameId,
-    yourRosterId,
-    opposingRosterId,
-    yourScore,
-    opposingTeamScore,
-  );
-}
+
 async function getAllOwnedEntities(type, userId) {
   return getAllOwnedEntitiesHelper(type, userId);
 }
@@ -642,26 +626,15 @@ async function updateGamesInteractiveTool(body, userId) {
   return updateGamesInteractiveToolHelper(games);
 }
 
-async function updateSuggestionStatus(body) {
-  const {
-    gameId,
-    eventId,
-    yourRosterId,
-    opposingRosterId,
-    yourScore,
-    opposingTeamScore,
-    status,
-  } = body;
-  const res = await updateSuggestionStatusHelper(
-    gameId,
-    eventId,
-    yourRosterId,
-    opposingRosterId,
-    yourScore,
-    opposingTeamScore,
-    status,
-  );
-  return res;
+async function updateSuggestionStatus(body, userId) {
+  const { eventId } = body;
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return await updateSuggestionStatusHelper(body);
 }
 
 async function addMemberManually(body) {
@@ -690,7 +663,7 @@ async function importMembers(body) {
   const { membershipType, organizationId, language, members } = body;
   const res = await Promise.all(
     members.map(async m => {
-      const token = await generateMemberImportToken(
+      token = await generateMemberImportToken(
         organizationId,
         m.expirationDate,
         membershipType,
@@ -808,13 +781,18 @@ async function addSpiritSubmission(body, userId) {
   return addSpiritSubmissionHelper(body);
 }
 
-async function addScoreAndSpirit(body) {
-  const res = await addScoreAndSpiritHelper(body);
-  return res;
-}
-
 async function getRostersNames(rosterArray) {
   return getRostersNamesHelper(rosterArray);
+}
+
+async function setGameScore(body, userId) {
+  const { eventId, gameId, score, isManualAdd } = body;
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return setGameScoreHelper(gameId, score, isManualAdd);
 }
 
 async function acceptScoreSuggestion(body, userId) {
@@ -888,6 +866,28 @@ async function addScoreSuggestion(body, userId) {
           metadata: fullMetadata,
         });
       });
+
+      // send notifications to event admins in case of score conflict
+      if (res.conflict) {
+        const conflictNotif = {
+          type: NOTIFICATION_TYPE.SCORE_SUBMISSION_CONFLICT,
+          entity_photo: event_id,
+        };
+        const conflictMetadata = {
+          eventId: event_id,
+          eventName: event_name,
+          gameId: body.game_id,
+        };
+
+        const adminsUserIds = await getEventAdminsHelper(event_id);
+        adminsUserIds.forEach(adminUserId => {
+          sendNotification({
+            ...conflictNotif,
+            user_id: adminUserId,
+            metadata: conflictMetadata,
+          });
+        });
+      }
     }
   }
   return res;
@@ -933,6 +933,7 @@ async function addOption(body, userId) {
     playerPrice,
     endTime,
     startTime,
+    teamActivity,
   } = body;
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
@@ -949,6 +950,7 @@ async function addOption(body, userId) {
     endTime,
     startTime,
     userId,
+    teamActivity,
   );
   return res;
 }
@@ -1175,7 +1177,6 @@ module.exports = {
   addRegisteredToSchedule,
   addNewPersonToRoster,
   addSpiritSubmission,
-  addScoreAndSpirit,
   addScoreSuggestion,
   addTeamToEvent,
   addTeamToSchedule,
@@ -1229,11 +1230,11 @@ module.exports = {
   getPossibleSubmissionerInfos,
   getS3Signature,
   getScoreSuggestion,
-  getSameSuggestions,
   getSlots,
   getTeamsSchedule,
   importMembers,
   isAllowed,
+  setGameScore,
   unregisterTeams,
   updateAlias,
   updateEntity,

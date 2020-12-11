@@ -113,23 +113,9 @@ router.get(`${BASE_URL}/getPossibleSubmissionerInfos`, async ctx => {
 });
 
 router.get(`${BASE_URL}/scoreSuggestion`, async ctx => {
-  const suggestion = await queries.getScoreSuggestion(ctx.query);
-
-  if (suggestion) {
-    ctx.body = {
-      status: 'success',
-      data: suggestion,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
-});
-router.get(`${BASE_URL}/sameSuggestions`, async ctx => {
-  const suggestion = await queries.getSameSuggestions(ctx.query);
+  const suggestion = await queries.getScoreSuggestion(
+    ctx.query.gameId,
+  );
 
   if (suggestion) {
     ctx.body = {
@@ -638,15 +624,16 @@ router.put(`${BASE_URL}/game`, async ctx => {
 router.put(`${BASE_URL}/updateSuggestionStatus`, async ctx => {
   const suggestion = await queries.updateSuggestionStatus(
     ctx.request.body,
+    ctx.body.userInfo.id,
   );
   if (suggestion) {
-    ctx.status = 201;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: suggestion,
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'That entity does not exist.',
@@ -939,6 +926,26 @@ router.post(`${BASE_URL}/game`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/gameScore`, async ctx => {
+  const game = await queries.setGameScore(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (game) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: game,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/suggestScore`, async ctx => {
   const game = await queries.addScoreSuggestion(
     ctx.request.body,
@@ -1012,23 +1019,6 @@ router.post(`${BASE_URL}/gameAttendances`, async ctx => {
     };
   } else {
     ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
-});
-
-router.post(`${BASE_URL}/scoreAndSpirit`, async ctx => {
-  const game = await queries.addScoreAndSpirit(ctx.request.body);
-  if (game) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: game,
-    };
-  } else {
-    ctx.status = 404;
     ctx.body = {
       status: 'error',
       message: 'Something went wrong',

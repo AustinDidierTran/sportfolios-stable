@@ -43,6 +43,22 @@ router.post(`${BASE_URL}/login`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/loginWithToken`, async ctx => {
+  const res = await queries.loginWithToken(ctx.query.token);
+  if (!res) {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+    };
+  } else {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  }
+});
+
 router.post(`${BASE_URL}/transferPersonSignup`, async ctx => {
   const res = await queries.transferPersonSignup(ctx.request.body);
   if (res) {

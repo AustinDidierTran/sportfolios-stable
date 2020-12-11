@@ -13,6 +13,10 @@ const MONTH_NAMES = [
   'December',
 ];
 
+const FIELD_GROUP_ENUM = {
+  ADD_PAYMENT_OPTION: 'add payment option',
+};
+
 const ENTITIES_ROLE_ENUM = {
   ADMIN: 1,
   EDITOR: 2,
@@ -218,6 +222,7 @@ const ROUTES_ENUM = {
   transferPerson: '/transferPerson/:token',
   transferPersonExpired: '/transferPersonExpired',
   userSettings: '/userSettings',
+  redirectWithToken: '/redirect',
 };
 
 const STATUS_ENUM = {
@@ -269,6 +274,7 @@ const SCORE_SUBMISSION_CHATBOT_STATES = {
   AWAITING_SPIRIT_CONFIRMATION: 'awaiting_spirit_confirmation',
   GAMES_AWAITING_SCORE_LIST: 'games_awaiting_score_list',
   AWAITING_ATTENDANCE: 'awaiting_attendance',
+  OTHER_TEAM_SUBMITTED_A_SCORE: 'other_team_submitted_a_score',
 };
 
 const GAME_INFOS_CHATBOT_STATES = {
@@ -331,6 +337,7 @@ const SOCKET_EVENT = {
 
 const NOTIFICATION_TYPE = {
   ADDED_TO_ROSTER: 'added to roster',
+  SCORE_SUBMISSION_CONFLICT: 'score submission conflict',
   SCORE_SUBMISSION_REQUEST: 'score submission request',
   OTHER_TEAM_SUBMITTED_A_SCORE: 'other team submitted a score',
 };
@@ -459,6 +466,7 @@ module.exports = {
   CARD_TYPE_ENUM,
   COMPONENT_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,
+  FIELD_GROUP_ENUM,
   FACEBOOK_STATUS_ENUM,
   FORM_DIALOG_TYPE_ENUM,
   GENDER_ENUM,

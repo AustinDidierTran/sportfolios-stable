@@ -8,6 +8,7 @@ const {
   addNotification,
   getNotificationsSettings: getNotificationsSettingsHelper,
   upsertNotificationsSettings,
+  getRostersNames,
 } = require('../helpers/notifications');
 
 const Chatbot = require('../../server/utils/ChatBot/chatbot');
@@ -85,7 +86,10 @@ const sendChatbotNotification = async (user_id, notif) => {
     return;
   }
   const { type, metadata } = notif;
+  let newState;
   if (type === NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST) {
+    newState =
+      SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT;
     const { gameId, playerId, eventId } = metadata;
     const teams = await getGameTeams(gameId, playerId);
     let myTeamFound = false;
@@ -105,11 +109,53 @@ const sendChatbotNotification = async (user_id, notif) => {
         });
       }
     });
-    const chatbot = new Chatbot(
-      messengerId,
-      SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT,
-      chatbotInfos,
-    );
+  } else if (
+    type === NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE
+  ) {
+    newState =
+      SCORE_SUBMISSION_CHATBOT_STATES.OTHER_TEAM_SUBMITTED_A_SCORE;
+    const {
+      gameId,
+      eventId,
+      eventName,
+      myRosterId,
+      myPlayerId,
+      submittedBy,
+    } = metadata;
+    const score = JSON.parse(metadata.score);
+    const rostersId = Object.keys(score);
+    const names = await getRostersNames(rostersId);
+    const myTeam = [
+      names.splice(
+        names.findIndex(n => {
+          return n.roster_id == myRosterId;
+        }),
+        1,
+      ),
+    ];
+    chatbotInfos.myTeamName = myTeam.name;
+    chatbotInfos.myScore = score[myRosterId];
+    delete names[myRosterId];
+    chatbotInfos.opponentTeams = names.map(team => {
+      const { roster_id, name } = team;
+      return {
+        rosterId: roster_id,
+        score: score[roster_id],
+        teamName: name,
+      };
+    }, {});
+    chatbotInfos.submittedBy = names.find(
+      n => n.roster_id == submittedBy,
+    ).name;
+    chatbotInfos.gameId = gameId;
+    chatbotInfos.eventName = eventName;
+    chatbotInfos.myRosterId = myRosterId;
+    chatbotInfos.playerId = myPlayerId;
+    chatbotInfos.eventId = eventId;
+  }
+  //Sending the notif and updating db
+  if (newState) {
+    const chatbot = new Chatbot(messengerId, newState, chatbotInfos);
     chatbot.sendIntroMessages();
     await setChatbotInfos(messengerId, {
       chatbot_infos: JSON.stringify(chatbot.chatbotInfos),
@@ -124,6 +170,7 @@ const sendEmailNotification = async (userId, emailInfos) => {
   if (emails) {
     const fullEmail = await emailFactory({
       ...emailInfos,
+      userId,
       locale,
     });
     if (!fullEmail) {

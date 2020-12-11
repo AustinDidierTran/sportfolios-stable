@@ -42,10 +42,7 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
           initialState !== endState ||
           !_.isEqual(initialChatbotInfos, endChatbotInfos)
         ) {
-          queries.setChatbotInfos(senderId, {
-            state: chatbot.stateType,
-            chatbot_infos: JSON.stringify(endChatbotInfos),
-          });
+          chatbot.saveState();
         }
       }
     });
