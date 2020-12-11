@@ -21,7 +21,7 @@ const globalSearch = async (
   let entities;
 
   if (type === GLOBAL_ENUM.PERSON) {
-    entities = await getPersonsFromQuery(query, blackList);
+    entities = await getPersonsFromQuery(query, blackList, whiteList);
   } else if (type === GLOBAL_ENUM.ORGANIZATION) {
     entities = await getOrganizationsFromQuery(query);
   } else if (type === GLOBAL_ENUM.TEAM) {
