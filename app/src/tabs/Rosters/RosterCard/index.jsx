@@ -25,12 +25,6 @@ export default function RosterCard(props) {
     update,
   } = props;
   let { editableRoster, editableRole } = props;
-  const isTeamEditor =
-    role == ROSTER_ROLE_ENUM.CAPTAIN ||
-    role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
-    role == ROSTER_ROLE_ENUM.COACH;
-  editableRoster = editableRoster || isTeamEditor;
-  editableRole = editableRole || isTeamEditor;
   const {
     position,
     name,
@@ -39,6 +33,12 @@ export default function RosterCard(props) {
     role,
     registrationStatus,
   } = roster;
+  const isTeamEditor =
+    role == ROSTER_ROLE_ENUM.CAPTAIN ||
+    role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
+    role == ROSTER_ROLE_ENUM.COACH;
+  editableRoster = editableRoster || isTeamEditor;
+  editableRole = editableRole || isTeamEditor;
   const expanded = useMemo(() => expandedIndex === index, [
     expandedIndex,
     index,

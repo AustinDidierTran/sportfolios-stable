@@ -1338,6 +1338,7 @@ router.del(`${BASE_URL}/rosterInviteToken`, async ctx => {
 router.get(`${BASE_URL}/rosterFromInviteToken`, async ctx => {
   const roster = await queries.getRosterFromInviteToken(
     ctx.query.token,
+    ctx.body.userInfo.id,
   );
   if (roster) {
     ctx.status = STATUS_ENUM.SUCCESS;

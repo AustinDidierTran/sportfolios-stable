@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   ROUTES_ENUM,
@@ -7,10 +7,14 @@ import {
 import api from '../../actions/api/index.js';
 import { formatRoute, goTo } from '../../actions/goTo';
 import { IgContainer, LoadingSpinner } from '../../components/Custom';
-import Rosters from '../../tabs/Rosters/Rosters';
+import { Store } from '../../Store.js';
+import RosterCard from '../../tabs/Rosters/RosterCard/index.jsx';
 
 export default function RosterInvite() {
-  const [rosters, setRosters] = useState();
+  const {
+    state: { userInfo },
+  } = useContext(Store);
+  const [roster, setRoster] = useState();
   const { token } = useParams();
 
   const fetchRoster = async () => {
@@ -19,10 +23,8 @@ export default function RosterInvite() {
         token,
       }),
     );
-    console.log({ token });
-    console.log({ res });
     if (res && res.status == STATUS_ENUM.SUCCESS_STRING) {
-      setRosters([{ players: res.data, name: 'test' }]);
+      setRoster({ ...res.data, name: 'test' });
     } else {
       goTo(ROUTES_ENUM.entityNotFound);
     }
@@ -30,17 +32,20 @@ export default function RosterInvite() {
   useEffect(() => {
     fetchRoster();
   }, []);
-  if (!rosters) {
+  if (!roster) {
     return <LoadingSpinner />;
   }
   return (
     <IgContainer>
-      <Rosters
-        rosters={rosters}
+      <RosterCard
+        roster={roster}
         onAdd={() => {}}
         onDelete={() => {}}
         onRoleUpdate={() => {}}
         update={() => {}}
+        setExpandedIndex={() => {}}
+        whiteList={userInfo.persons.map(p => p.entity_id)}
+        editableRoster
       />
     </IgContainer>
   );

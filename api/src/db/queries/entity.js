@@ -118,6 +118,7 @@ const {
   insertRosterInviteToken,
   cancelRosterInviteToken: cancelRosterInviteTokenHelper,
   getRosterIdFromInviteToken,
+  getRole,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -239,6 +240,16 @@ async function getPrimaryPerson(userId) {
 
 async function getRoster(rosterId, withSub) {
   return getRosterHelper(rosterId, withSub);
+}
+
+async function getRosterAllIncluded(rosterId, userId, withSub) {
+  const players = getRoster(rosterId, withSub);
+  const role = getRole(rosterId, userId);
+  return {
+    players: await players,
+    role: await role,
+    rosterId,
+  };
 }
 
 async function getEvent(eventId) {
@@ -1217,12 +1228,12 @@ async function cancelRosterInviteToken(userId, rosterId) {
   return cancelRosterInviteTokenHelper(rosterId);
 }
 
-async function getRosterFromInviteToken(token) {
+async function getRosterFromInviteToken(token, userId) {
   const rosterId = await getRosterIdFromInviteToken(token);
   if (!rosterId) {
     return;
   }
-  return getRoster(rosterId);
+  return getRosterAllIncluded(rosterId, userId);
 }
 
 module.exports = {
@@ -1321,4 +1332,5 @@ module.exports = {
   createRosterInviteToken,
   cancelRosterInviteToken,
   getRosterFromInviteToken,
+  getRosterAllIncluded,
 };

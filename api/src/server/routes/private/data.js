@@ -18,6 +18,7 @@ router.get(`${BASE_URL}/search/global`, async ctx => {
       data: previousSearchQueries,
     };
   } catch (err) {
+    console.log(err);
     ctx.status = 400;
     ctx.body = {
       status: 'error',

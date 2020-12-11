@@ -1245,7 +1245,6 @@ async function getRegistrationStatus(eventId, rosterId) {
 
 async function getRoster(rosterId, withSub) {
   const realId = await getRealId(rosterId);
-
   let whereCond = { roster_id: realId };
   if (!withSub) {
     whereCond.is_sub = false;
@@ -3544,4 +3543,5 @@ module.exports = {
   getRosterInviteToken,
   cancelRosterInviteToken,
   getRosterIdFromInviteToken,
+  getRole,
 };
