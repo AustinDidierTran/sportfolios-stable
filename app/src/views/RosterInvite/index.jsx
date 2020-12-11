@@ -45,7 +45,7 @@ export default function RosterInvite() {
         update={() => {}}
         setExpandedIndex={() => {}}
         whiteList={userInfo.persons.map(p => p.entity_id)}
-        editableRoster
+        withMyPersonsQuickAdd
       />
     </IgContainer>
   );

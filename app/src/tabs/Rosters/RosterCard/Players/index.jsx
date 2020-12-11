@@ -1,25 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import styles from './Players.module.css';
 
 import { useTranslation } from 'react-i18next';
 import uuid from 'uuid';
 
 import PlayerCard from './PlayerCard';
-import { Typography } from '@material-ui/core';
+import { Divider, Typography } from '@material-ui/core';
 import {
+  List,
   LoadingSpinner,
   PersonSearchList,
+  Button,
 } from '../../../../components/Custom';
 import api from '../../../../actions/api';
 import { formatRoute } from '../../../../actions/goTo';
+import { Store } from '../../../../Store';
+import { GLOBAL_ENUM } from '../../../../../../common/enums';
 
 export default function Players(props) {
+  const {
+    state: { userInfo },
+  } = useContext(Store);
   const { t } = useTranslation();
   const {
     isEventAdmin,
     editableRole,
     editableRoster,
     whiteList,
+    withMyPersonsQuickAdd,
     players,
     rosterId,
     onDelete,
@@ -27,9 +35,9 @@ export default function Players(props) {
     onRoleUpdate,
     update,
   } = props;
-  const [blackList, setBlackList] = useState(null);
+  const [blackList, setBlackList] = useState([]);
   const [isLoading, setisLoading] = useState(false);
-  if (isEventAdmin || editableRoster) {
+  if (isEventAdmin || editableRoster || withMyPersonsQuickAdd) {
     useEffect(() => {
       getBlackList();
     }, [rosterId]);
@@ -46,6 +54,7 @@ export default function Players(props) {
   };
 
   const onPlayerAddToRoster = async person => {
+    console.log({ person });
     setisLoading(true);
     const player = person.id
       ? {
@@ -82,6 +91,12 @@ export default function Players(props) {
   if (!players) {
     return null;
   }
+  console.log({ blackList });
+  console.log({
+    persons: userInfo.persons.filter(
+      p => !blackList.includes(p.entity_id),
+    ),
+  });
 
   return (
     <div className={styles.card}>
@@ -107,8 +122,44 @@ export default function Players(props) {
         <LoadingSpinner isComponent />
       ) : (
         <>
+          {withMyPersonsQuickAdd ? (
+            <>
+              <Typography align="left" variant="subtitle1">
+                Vos personnes
+              </Typography>
+              <List
+                items={userInfo.persons
+                  .filter(p => !blackList.includes(p.entity_id))
+                  .map(p => ({
+                    ...p,
+                    type: GLOBAL_ENUM.PERSON,
+                    completeName: p.name + ' ' + p.surname,
+                    secondaryActions: [
+                      <Button
+                        endIcon="Add"
+                        onClick={() =>
+                          onPlayerAddToRoster({
+                            id: p.entity_id,
+                            name: p.name,
+                          })
+                        }
+                      >
+                        {t('add')}
+                      </Button>,
+                    ],
+                    notClickable: true,
+                  }))}
+              />
+              <Divider variant="middle" />
+            </>
+          ) : (
+            <></>
+          )}
           {players.length ? (
             <div className={styles.player}>
+              <Typography align="left" variant="subtitle2">
+                {t('roster')}
+              </Typography>
               {players.map(player => (
                 <PlayerCard
                   isEventAdmin={isEventAdmin}

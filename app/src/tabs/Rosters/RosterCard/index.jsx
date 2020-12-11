@@ -23,6 +23,7 @@ export default function RosterCard(props) {
     onRoleUpdate,
     index,
     update,
+    withMyPersonsQuickAdd,
   } = props;
   let { editableRoster, editableRole } = props;
   const {
@@ -100,6 +101,7 @@ export default function RosterCard(props) {
           onDelete={onDelete}
           onAdd={onAdd}
           onRoleUpdate={onRoleUpdate}
+          withMyPersonsQuickAdd={withMyPersonsQuickAdd}
         />
       </div>
     </Paper>
