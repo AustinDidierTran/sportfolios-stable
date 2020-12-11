@@ -4,7 +4,7 @@
 
 .listContainer {
   overflow: auto;
-  max-height: 100vh;
+  max-height: 100%;
 }
 
 .module > .paper > .listContainer {

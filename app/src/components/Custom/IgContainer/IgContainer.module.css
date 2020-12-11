@@ -1,15 +1,16 @@
 .main {
   display: flex;
   flex-direction: column;
-  margin: 0 auto;
+  margin: 0 auto 120px auto;
   background-color: rgb(0, 0, 0, 0.05);
   text-align: center;
   min-height: calc(100vh - 115px);
+  width: 100vw;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .main {
-    width: 700px !important;
+    max-width: 700px !important;
     min-height: calc(100vh - 60px);
   }
 }

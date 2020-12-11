@@ -1008,6 +1008,7 @@ async function getOptions(eventId) {
         );
         owner = await getEntity(ownerId);
       }
+
       return {
         ...r,
         owner,

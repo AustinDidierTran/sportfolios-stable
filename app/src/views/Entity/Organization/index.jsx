@@ -168,7 +168,7 @@ export default function Organization(props) {
         ) : (
           <></>
         )}
-        <div style={{ marginBottom: '128px' }}>
+        <div>
           <OpenTab basicInfos={basicInfos} />
         </div>
       </IgContainer>
