@@ -493,6 +493,93 @@ async function addTeamToEvent(body, userId) {
   // Handle other acceptation statuses
   return { status: registrationStatus, rosterId };
 }
+async function addPersonsToEvent(body, userId) {
+  const { eventId, paymentOption, persons, status } = body;
+
+  if (!paymentOption) {
+    throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
+  }
+
+  // Reject team if there is already too many registered teams
+  if ((await getRemainingSpotsHelper(eventId)) === 0) {
+    const registrationStatus = STATUS_ENUM.REFUSED;
+    const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
+    return { status: registrationStatus, reason };
+  }
+
+  const event = (await getEntity(eventId, userId)).basicInfos;
+
+  const teamPaymentOption = await getRegistrationTeamPaymentOption(
+    paymentOption,
+  );
+  const isFreeOption = teamPaymentOption.team_price === 0;
+  // TODO: Validate status of team
+  const registrationStatus = isFreeOption
+    ? STATUS_ENUM.ACCEPTED_FREE
+    : STATUS_ENUM.ACCEPTED;
+
+  const rosterId = await addTeamToEventHelper({
+    teamId,
+    eventId: event.id,
+    status: isFreeOption ? INVOICE_STATUS_ENUM.FREE : status,
+    registrationStatus,
+    paymentOption,
+  });
+
+  // Add roster
+  if (roster) {
+    await addRosterHelper(rosterId, roster, userId);
+  }
+  if (registrationStatus === STATUS_ENUM.ACCEPTED) {
+    // wont be added to cart if free
+    const ownerId = await getOwnerStripePrice(
+      teamPaymentOption.team_stripe_price_id,
+    );
+    await addEventCartItem(
+      {
+        stripePriceId: teamPaymentOption.team_stripe_price_id,
+        metadata: {
+          sellerEntityId: ownerId,
+          buyerId: teamId,
+          rosterId,
+          team,
+        },
+      },
+      userId,
+    );
+  }
+
+  // send mail to organization admin
+  // TODO find real event user creator
+  const creatorEmails = ['austindidier@sportfolios.app'];
+  creatorEmails.map(async email => {
+    const language = await getLanguageFromEmail(email);
+    sendTeamRegistrationEmailToAdmin({
+      email,
+      team,
+      event,
+      language,
+      placesLeft: await getRemainingSpotsHelper(event.id),
+    });
+  });
+
+  // Send accepted email to team captain
+  const captainEmails = await getEmailsFromUserId(userId);
+
+  captainEmails.map(async ({ email }) => {
+    const language = await getLanguageFromEmail(email);
+    sendAcceptedRegistrationEmail({
+      language,
+      team,
+      event,
+      email,
+      isFreeOption,
+    });
+  });
+
+  // Handle other acceptation statuses
+  return { status: registrationStatus, rosterId };
+}
 
 async function getInteractiveToolData(eventId, userId) {
   if (!(await isAllowed(eventId, userId), ENTITIES_ROLE_ENUM.ADMIN)) {
@@ -1275,6 +1362,7 @@ module.exports = {
   addScoreSuggestion,
   addSpiritSubmission,
   addTeamToEvent,
+  addPersonsToEvent,
   addTeamToSchedule,
   addTimeSlot,
   cancelRosterInviteToken,

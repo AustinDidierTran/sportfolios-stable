@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import {
   LIST_ITEM_ENUM,
   ROSTER_ROLE_ENUM,
@@ -17,11 +17,12 @@ import { ACTION_ENUM, Store } from '../../../Store';
 export default function Roster(props) {
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
+  const inputRef = useRef();
   const query = useFormInput('');
   const {
     state: { userInfo },
   } = useContext(Store);
-  const { onClick, formik } = props;
+  const { stepHook, formik } = props;
 
   const roster = useMemo(
     () =>
@@ -47,7 +48,7 @@ export default function Roster(props) {
   }, []);
 
   useEffect(() => {
-    onClick();
+    stepHook.handleCompleted(2);
   }, []);
 
   const blackList = useMemo(() => roster.map(r => r.personId), [
@@ -94,6 +95,7 @@ export default function Roster(props) {
         },
       ]);
     }
+    inputRef.current.focus();
   };
 
   const onDelete = body => {
@@ -131,6 +133,7 @@ export default function Roster(props) {
         )}
       </Typography>
       <PersonSearchListEventRegistration
+        inputRef={inputRef}
         className={styles.item}
         clearOnSelect={false}
         label={t('enter_player_name')}

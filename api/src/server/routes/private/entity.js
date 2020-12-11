@@ -1176,6 +1176,32 @@ router.post(`${BASE_URL}/register`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/registerIndividual`, async ctx => {
+  const { status, reason, persons } = await queries.addPersonsToEvent(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (status === STATUS_ENUM.REFUSED) {
+    ctx.status = errors[ERROR_ENUM.REGISTRATION_ERROR].code;
+    ctx.body = {
+      status: 'error',
+      data: { status, reason },
+    };
+  } else if (status) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: { status, persons },
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/addNewPersonToRoster`, async ctx => {
   const person = await queries.addNewPersonToRoster(
     ctx.request.body,

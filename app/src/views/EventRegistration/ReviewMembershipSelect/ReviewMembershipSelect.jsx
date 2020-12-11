@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
-import { RadioGroup } from '../../components/Custom';
+import { RadioGroup } from '../../../components/Custom';
 import { useTranslation } from 'react-i18next';
-import { useFormInput } from '../../hooks/forms';
+import { useFormInput } from '../../../hooks/forms';
 
 export default function ReviewMembershipSelect(props) {
   const { t } = useTranslation();
