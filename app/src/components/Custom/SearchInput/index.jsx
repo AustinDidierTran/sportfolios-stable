@@ -1,25 +1,24 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { Autocomplete } from '../../Custom';
 import { goTo, goToAndReplace, ROUTES } from '../../../actions/goTo';
 import { useApiRoute, useQuery } from '../../../hooks/queries';
 import { useLocation } from 'react-router-dom';
 
+import styles from './SearchInput.module.css';
+
 const useStyles = makeStyles(theme => ({
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.85),
+  inputRoot: {
     color: theme.palette.common.white,
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
       width: '100%',
       minWidth: 240,
     },
+  },
+  clearIndicator: {
+    color: theme.palette.common.white,
   },
 }));
 
@@ -56,13 +55,15 @@ export default function SearchInput(props) {
 
   return (
     <Autocomplete
+      classes={classes}
       options={options}
       onChange={onChange}
       freeSolo
       inputProps={{
-        className: classes.search,
+        className: styles.searchBox,
       }}
       icon="Search"
+      iconColor="white"
     />
   );
 }

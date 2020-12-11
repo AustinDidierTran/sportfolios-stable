@@ -1,0 +1,16 @@
+.chip {
+  height: 100% !important;
+  border-radius: 22px !important;
+  border-color: transparent !important;
+}
+
+.chip > span {
+  color: white;
+  font-size: large;
+  font-weight: 600;
+}
+
+.chip:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.05);
+}

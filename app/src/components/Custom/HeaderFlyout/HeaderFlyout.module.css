@@ -1,0 +1,34 @@
+.flyout {
+  position: absolute;
+  right: 24px;
+  top: 60px;
+  width: 360px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  margin: 16px 16px 0 16px;
+}
+
+.createContainer {
+  margin: 8px;
+}
+
+.notificationsContainer {
+  flex: 1;
+  margin-left: 8px;
+  overflow-y: auto;
+}
+
+.notificationsContainer::-webkit-scrollbar {
+  width: 4px;
+}
+.notificationsContainer::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+.notificationsContainer::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
+}

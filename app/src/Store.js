@@ -6,6 +6,7 @@ import i18n from './i18n';
 import api from './actions/api';
 import { errors, ERROR_ENUM } from '../../common/errors';
 import { io } from 'socket.io-client';
+import { HEADER_FLYOUT_TYPE_ENUM } from '../../common/enums';
 export const Store = React.createContext();
 
 const localAuthToken = localStorage.getItem('authToken');
@@ -55,6 +56,7 @@ const initialState = {
 
 export const ACTION_ENUM = {
   CLEAR_USER_INFO: 'clear_user_info',
+  HEADER_FLYOUT: 'header_flyout',
   LOGIN: 'login',
   LOGOUT: 'logout',
   SNACK_BAR: 'snack_bar',
@@ -193,6 +195,15 @@ function reducer(state, action) {
         JSON.stringify(action.payload),
       );
       return { ...state, activeGaPageviews: action.payload };
+    }
+    case ACTION_ENUM.HEADER_FLYOUT: {
+      if (state.flyoutType === action.flyoutType) {
+        return {
+          ...state,
+          flyoutType: HEADER_FLYOUT_TYPE_ENUM.CLOSED,
+        };
+      }
+      return { ...state, flyoutType: action.flyoutType };
     }
     default:
       return state;
