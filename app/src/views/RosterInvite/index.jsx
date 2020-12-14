@@ -16,6 +16,7 @@ export default function RosterInvite() {
   } = useContext(Store);
   const [roster, setRoster] = useState();
   const { token } = useParams();
+  const [expanded, setExpanded] = useState(true);
 
   const fetchRoster = async () => {
     const res = await api(
@@ -43,7 +44,8 @@ export default function RosterInvite() {
         onDelete={() => {}}
         onRoleUpdate={() => {}}
         update={() => {}}
-        setExpandedIndex={() => {}}
+        onExpand={() => setExpanded(!expanded)}
+        expanded={expanded}
         whiteList={userInfo.persons.map(p => p.entity_id)}
         withMyPersonsQuickAdd
       />

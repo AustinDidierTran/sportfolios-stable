@@ -3411,6 +3411,31 @@ async function getRosterIdFromInviteToken(token) {
   return roster_id;
 }
 
+async function getRosterEventInfos(roster_id) {
+  const [res] = await knex('event_rosters')
+    .select(
+      'event_id',
+      'event_rosters.team_id',
+      'registration_status',
+      knex.raw('name as teamName'),
+    )
+    .leftJoin(
+      'entities_name',
+      'event_rosters.team_id',
+      'entities_name.entity_id',
+    )
+    .where({ roster_id });
+  if (!res) {
+    return;
+  }
+  return {
+    eventId: res.event_id,
+    teamId: res.team_id,
+    registrationStatus: res.registrationStatus,
+    teamName: res.teamName,
+  };
+}
+
 module.exports = {
   addEntity,
   addEntityRole,
@@ -3541,4 +3566,5 @@ module.exports = {
   getRosterIdFromInviteToken,
   getRole,
   getRegistrationStatus,
+  getRosterEventInfos,
 };

@@ -112,7 +112,7 @@ const {
   updateSuggestionStatus: updateSuggestionStatusHelper,
   getMembership,
   getEntityOwners,
-  getRealId,
+  getRosterEventInfos,
   getGamePlayersWithRole,
   getRostersNames: getRostersNamesHelper,
   getRosterInviteToken: getRosterInviteTokenHelper,
@@ -1127,27 +1127,33 @@ async function deleteOption(id) {
 }
 
 async function addPlayerToRoster(body, userId) {
-  const { teamId, eventId, teamName, personId, ...otherProps } = body;
-
+  const { personId, role, isSub, rosterId } = body;
+  const { name, surname } = await getPersonInfos(personId);
   const res = await addPlayerToRosterHelper(
-    { ...otherProps, personId },
+    { name: name + ' ' + surname, role, isSub, personId, rosterId },
     userId,
   );
-
+  if (!res) {
+    return;
+  }
+  if (isSub) {
+    return res;
+  }
   const owners = await getEntityOwners(personId);
-  if (res && !body.isSub && owners) {
-    const realEventId = await getRealId(eventId);
-    const { name } = await getPersonInfos(personId);
+  const { eventId, teamId, teamName } = await getRosterEventInfos(
+    rosterId,
+  );
+  if (owners) {
     owners.forEach(owner => {
       const notif = {
         user_id: owner.user_id,
         type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-        entity_photo: realEventId || teamId,
-        metadata: { eventId: realEventId, teamName },
+        entity_photo: eventId || teamId,
+        metadata: { eventId, teamName },
       };
       const emailInfos = {
         type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-        realEventId,
+        eventId,
         teamName,
         name,
       };

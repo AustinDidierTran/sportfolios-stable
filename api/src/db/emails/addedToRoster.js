@@ -3,11 +3,11 @@ const i18n = require('../../i18n.config');
 const { formatLinkWithAuthToken } = require('./utils');
 const { TABS_ENUM } = require('../../../../common/enums');
 module.exports = async function AddedToRoster(infos) {
-  const { name, teamName, realEventId, locale, userId } = infos;
+  const { name, teamName, eventId, locale, userId } = infos;
 
   const buttonLink = await formatLinkWithAuthToken(
     userId,
-    `/${realEventId}?tab=${TABS_ENUM.ROSTERS}`,
+    `/${eventId}?tab=${TABS_ENUM.ROSTERS}`,
   );
   const text = i18n.__(
     { phrase: 'emails.added_to_roster_text', locale },

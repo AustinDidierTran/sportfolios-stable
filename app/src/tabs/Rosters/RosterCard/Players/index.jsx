@@ -19,6 +19,7 @@ import api from '../../../../actions/api';
 import { formatRoute } from '../../../../actions/goTo';
 import PlayersQuickAdd from './PlayersQuickAdd';
 import { Store } from '../../../../Store';
+import { ROSTER_ROLE_ENUM } from '../../../../../../common/enums';
 
 export default function Players(props) {
   const { t } = useTranslation();
@@ -64,6 +65,8 @@ export default function Players(props) {
           personId: person.id,
           name: person.completeName || person.name,
           id: uuid.v1(),
+          role: ROSTER_ROLE_ENUM.PLAYER,
+          isSub: false,
         }
       : { name: person.completeName || person.name, id: uuid.v1() };
 
@@ -91,13 +94,6 @@ export default function Players(props) {
     await onRoleUpdate(playerId, role);
     setisLoading(false);
   };
-  if (!players) {
-    return null;
-  }
-  if (isLoading) {
-    return <LoadingSpinner isComponent />;
-  }
-
   const playersQuickAdd = useMemo(() => {
     if (withMyPersonsQuickAdd) {
       return userInfo.persons.filter(
@@ -105,6 +101,13 @@ export default function Players(props) {
       );
     }
   }, [blackList]);
+
+  if (!players) {
+    return null;
+  }
+  if (isLoading) {
+    return <LoadingSpinner isComponent />;
+  }
 
   if (isEventAdmin || editableRoster) {
     return (

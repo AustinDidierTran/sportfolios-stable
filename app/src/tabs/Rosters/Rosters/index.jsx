@@ -12,7 +12,9 @@ export default function Rosters(props) {
     update,
   } = props;
   const [expandedIndex, setExpandedIndex] = useState(0);
-
+  const onExpand = index => {
+    setExpandedIndex(index);
+  };
   if (!rosters || !rosters.length) {
     // TODO: It should say there are no rosters [WCS-372]
 
@@ -23,10 +25,10 @@ export default function Rosters(props) {
     <div className={styles.contain}>
       {rosters.map((roster, index) => (
         <RosterCard
+          onExpand={onExpand}
+          expanded={expandedIndex === index}
           isEventAdmin={isEventAdmin}
           roster={roster}
-          expandedIndex={expandedIndex}
-          setExpandedIndex={setExpandedIndex}
           onAdd={onAdd}
           onDelete={onDelete}
           onRoleUpdate={(...args) =>
