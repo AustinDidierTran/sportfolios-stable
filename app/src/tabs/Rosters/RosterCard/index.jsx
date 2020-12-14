@@ -23,15 +23,22 @@ export default function RosterCard(props) {
     onRoleUpdate,
     index,
     update,
-    editableRoster: editableRosterProp, editableRole: editableRoleProp
+    editableRoster: editableRosterProp,
+    editableRole: editableRoleProp,
   } = props;
-  const isTeamEditor = useMemo(()=> {
+  const isTeamEditor = useMemo(() => {
     role == ROSTER_ROLE_ENUM.CAPTAIN ||
-    role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
-    role == ROSTER_ROLE_ENUM.COACH;
+      role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
+      role == ROSTER_ROLE_ENUM.COACH;
   }, [role]);
-    const editableRoster = useMemo(() => editableRoster || isTeamEditor, [editableRoster, isTeamEditor]);
-    const editableRole = useMemo(() => editableRole || isTeamEditor, [editableRole, isTeamEditor]);
+  const editableRoster = useMemo(
+    () => editableRosterProp || isTeamEditor,
+    [editableRosterProp, isTeamEditor],
+  );
+  const editableRole = useMemo(
+    () => editableRoleProp || isTeamEditor,
+    [editableRoleProp, isTeamEditor],
+  );
   const {
     position,
     name,
@@ -51,25 +58,23 @@ export default function RosterCard(props) {
 
   const greenBackground =
     isEventAdmin || role != ROSTER_ROLE_ENUM.VIEWER;
-    const style = useMemo(() => {
-      if (greenBackground && isEven(index)) {
-          return { backgroundColor: '#19bf9d', color: '#fff' };
-      }
-      if (greenBackground && !isEven(index)) {
-          return { backgroundColor: '#18B393', color: '#fff' };
-      }
-      if ((!greenBackground && isEven(index)) {
-          return { backgroundColor: '#f2f2f2' };
-      }
+  const style = useMemo(() => {
+    if (greenBackground && isEven(index)) {
+      return { backgroundColor: '#19bf9d', color: '#fff' };
+    }
+    if (greenBackground && !isEven(index)) {
+      return { backgroundColor: '#18B393', color: '#fff' };
+    }
+    if (!greenBackground && isEven(index)) {
+      return { backgroundColor: '#f2f2f2' };
+    }
   }, [greenBackground, index]);
 
   return (
     <Paper className={styles.paper}>
       <div className={styles.card} style={style} onClick={onExpand}>
         <div className={styles.default}>
-          <div className={styles.position}>
-          {position || '-'}
-          </div>
+          <div className={styles.position}>{position || '-'}</div>
           <div className={styles.title}>
             <div className={styles.name}>
               <Typography>{name.toUpperCase()}</Typography>
