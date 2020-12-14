@@ -5,7 +5,7 @@ import React, {
   useContext,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { List } from '../..';
+import { List } from '../../../../components/Custom';
 import {
   LIST_ITEM_ENUM,
   HEADER_FLYOUT_TYPE_ENUM,
@@ -13,7 +13,7 @@ import {
 import api from '../../../../actions/api';
 import { formatRoute } from '../../../../actions/goTo';
 import { ACTION_ENUM, Store } from '../../../../Store';
-import { Typography } from '../../../MUI';
+import { Typography } from '../../../../components/MUI';
 
 import styles from '../HeaderFlyout.module.css';
 

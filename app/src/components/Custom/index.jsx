@@ -20,7 +20,6 @@ export { default as EntityList } from './EntityList';
 export { default as FacebookLoginButton } from './FacebookLoginButton';
 export { default as FeatureContainer } from './FeatureContainer';
 export { default as FormDialog } from './FormDialog';
-export { default as HeaderFlyout } from './HeaderFlyout';
 export { default as Icon } from './Icon';
 export { default as IconButton } from './IconButton';
 export { default as IgContainer } from './IgContainer';

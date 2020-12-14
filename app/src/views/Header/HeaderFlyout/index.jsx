@@ -10,7 +10,7 @@ import { Paper, Typography } from '@material-ui/core';
 
 import Create from './Create';
 import Notifications from './Notifications';
-//import Plus from './Plus';
+import Account from './Account';
 
 import { ACTION_ENUM, Store } from '../../../Store';
 import { HEADER_FLYOUT_TYPE_ENUM } from '../../../../../common/enums';
@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './HeaderFlyout.module.css';
 
 export default function HeaderFlyout(props) {
-  const { refCreateEntity, refNotifications, refPlus } = props;
+  const { refCreateEntity, refNotifications, refAccount } = props;
   const {
     state: { flyoutType },
     dispatch,
@@ -38,7 +38,7 @@ export default function HeaderFlyout(props) {
         refNotifications.current &&
         !refNotifications.current.contains(e.target) &&
         refNotifications.current &&
-        !refPlus.current.contains(e.target)
+        !refAccount.current.contains(e.target)
       ) {
         dispatch({
           type: ACTION_ENUM.HEADER_FLYOUT,
@@ -73,9 +73,8 @@ export default function HeaderFlyout(props) {
         return <Create />;
       case HEADER_FLYOUT_TYPE_ENUM.NOTIFICATIONS:
         return <Notifications />;
-      case HEADER_FLYOUT_TYPE_ENUM.PLUS:
-        //return <Plus />
-        return;
+      case HEADER_FLYOUT_TYPE_ENUM.ACCOUNT:
+        return <Account />;
 
       default:
         return;

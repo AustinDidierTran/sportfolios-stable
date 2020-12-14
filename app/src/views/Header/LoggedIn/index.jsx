@@ -1,9 +1,7 @@
 import React, { useContext, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Store, SCREENSIZE_ENUM, ACTION_ENUM } from '../../../Store';
-import { ROUTES, goTo } from '../../../actions/goTo';
 import {
-  LOGO_ENUM,
   SOCKET_EVENT,
   HEADER_FLYOUT_TYPE_ENUM,
 } from '../../../../../common/enums';
@@ -13,18 +11,22 @@ import {
   IconButton,
   SearchInput,
   ProfileChip,
-  HeaderFlyout,
 } from '../../../components/Custom';
+import HeaderFlyout from '../HeaderFlyout';
 import NotificationModule from './NotificationModule';
+import useStyles from './useStyles';
+import { useTranslation } from 'react-i18next';
 
 import styles from './LoggedIn.module.css';
-import useStyles from './useStyles';
-import CartIcon from '../../Cart/CartICon';
-import { useTranslation } from 'react-i18next';
 
 export default function LoggedIn(props) {
   const {
-    state: { userInfo = {}, screenSize, socket },
+    state: {
+      userInfo = {},
+      screenSize,
+      socket,
+      cart: { items },
+    },
     dispatch,
   } = useContext(Store);
   const { showBar = true } = props;
@@ -42,6 +44,13 @@ export default function LoggedIn(props) {
       surname: userInfo.primaryPerson?.surname,
     };
   }, [userInfo.primaryPerson]);
+  const totalCartItems = useMemo(
+    () =>
+      Array.isArray(items)
+        ? items.reduce((prev, item) => prev + item.quantity, 0)
+        : null,
+    [items],
+  );
 
   const handleCreateClick = () => {
     dispatch({
@@ -58,13 +67,13 @@ export default function LoggedIn(props) {
   const handlePlusClick = () => {
     dispatch({
       type: ACTION_ENUM.HEADER_FLYOUT,
-      flyoutType: HEADER_FLYOUT_TYPE_ENUM.PLUS,
+      flyoutType: HEADER_FLYOUT_TYPE_ENUM.ACCOUNT,
     });
   };
 
   const refCreateEntity = useRef(null);
   const refNotifications = useRef(null);
-  const refPlus = useRef(null);
+  const refAccount = useRef(null);
 
   if (screenSize !== SCREENSIZE_ENUM.xs) {
     {
@@ -105,28 +114,23 @@ export default function LoggedIn(props) {
                     onClick={handleNotificationClick}
                   />
                 </div>
-                <div ref={refPlus}>
+                <div ref={refAccount}>
                   <IconButton
                     className={styles.iconButton}
                     icon="ArrowDropDown"
                     size="medium"
                     onClick={handlePlusClick}
                     style={{ color: 'white' }}
-                    tooltip={t('plus')}
+                    tooltip={t('account')}
+                    withBadge
+                    badgeContent={totalCartItems}
                   />
                 </div>
                 <HeaderFlyout
                   refCreateEntity={refCreateEntity}
                   refNotifications={refNotifications}
-                  refPlus={refPlus}
+                  refAccount={refAccount}
                 />
-
-                {/*<IconButton
-                  color="inherit"
-                  icon="Settings"
-                  onClick={() => goTo(ROUTES.userSettings)}
-                />
-                <CartIcon />*/}
               </div>
             </Toolbar>
           </AppBar>

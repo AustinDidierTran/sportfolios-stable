@@ -15,7 +15,7 @@ export default function CustomIconButton(props) {
 
     // badge props
     withBadge = false,
-    badgeColor = 'secondary',
+    badgeColor = 'error',
     badgeContent = 0,
 
     ...otherProps

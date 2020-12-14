@@ -8,8 +8,9 @@ import { goTo, ROUTES } from '../../../actions/goTo';
 
 const useStyles = makeStyles({
   avatar: {
-    width: '34px !important',
-    height: '34px !important',
+    width: '30px !important',
+    height: '30px !important',
+    borderWidth: '3px !important',
   },
   noBorder: {
     border: 'none',

@@ -57,6 +57,7 @@ import OpenWith from '@material-ui/icons/OpenWith';
 import PeopleIcon from '@material-ui/icons/People';
 import Person from '@material-ui/icons/Person';
 import PersonAdd from '@material-ui/icons/PersonAdd';
+import Power from '@material-ui/icons/PowerSettingsNew';
 import PrintIcon from '@material-ui/icons/Print';
 import Publish from '@material-ui/icons/Publish';
 import RateReview from '@material-ui/icons/RateReview';
@@ -141,6 +142,7 @@ const icons = {
   PeopleIcon,
   Person,
   PersonAdd,
+  Power,
   PrintIcon,
   Publish,
   RateReview,

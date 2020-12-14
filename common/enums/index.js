@@ -148,6 +148,7 @@ const FORM_DIALOG_TYPE_ENUM = {
 };
 
 const HEADER_FLYOUT_TYPE_ENUM = {
+  ACCOUNT: 'account',
   CLOSED: 'closed',
   CREATE: 'create',
   NOTIFICATIONS: 'notifications',
@@ -369,6 +370,7 @@ const LIST_ITEM_ENUM = {
   MEMBER_IMPORT: 'member_import',
   MEMBERSHIP_ORGANIZATION: 'membership organization',
   MEMBERSHIP: 'membership',
+  MORE: 'more',
   PAYMENT_OPTION: 'payment option',
   PURCHASES: 'pruchases',
   RANKING_WITH_STATS: 'ranking with stats',

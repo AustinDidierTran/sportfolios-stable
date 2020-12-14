@@ -21,6 +21,11 @@ export default function CustomButton(props) {
   const endIcon = props.endIcon ? (
     <Icon icon={props.endIcon} />
   ) : null;
+
+  const startIcon = props.startIcon ? (
+    <Icon icon={props.startIcon} />
+  ) : null;
+
   return (
     <Button
       size={size || 'small'}
@@ -31,6 +36,7 @@ export default function CustomButton(props) {
         color: textColor || defaultTextColor,
         ...style,
       }}
+      startIcon={startIcon}
       endIcon={endIcon}
     />
   );

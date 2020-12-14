@@ -7,6 +7,8 @@ import { Store, ACTION_ENUM } from '../../Store';
 
 import { Paper } from '../../components/Custom';
 import { Typography } from '@material-ui/core';
+import { GLOBAL_ENUM } from '../../../../common/enums';
+import { formatRoute } from '../../../../common/utils/stringFormat';
 
 export default function Menu() {
   const { dispatch } = useContext(Store);
@@ -19,6 +21,38 @@ export default function Menu() {
     {
       name: t('settings'),
       route: ROUTES.userSettings,
+    },
+    {
+      name: t('create_person'),
+      route: formatRoute(
+        ROUTES.create,
+        {},
+        { type: GLOBAL_ENUM.PERSON },
+      ),
+    },
+    {
+      name: t('create_event'),
+      route: formatRoute(
+        ROUTES.create,
+        {},
+        { type: GLOBAL_ENUM.EVENT },
+      ),
+    },
+    {
+      name: t('create_team'),
+      route: formatRoute(
+        ROUTES.create,
+        {},
+        { type: GLOBAL_ENUM.TEAM },
+      ),
+    },
+    {
+      name: t('create_organization'),
+      route: formatRoute(
+        ROUTES.create,
+        {},
+        { type: GLOBAL_ENUM.ORGANIZATION },
+      ),
     },
     {
       name: t('logout'),

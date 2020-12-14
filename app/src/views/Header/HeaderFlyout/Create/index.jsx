@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { List } from '../..';
+import { List } from '../../../../components/Custom';
 import {
   GLOBAL_ENUM,
   LIST_ITEM_ENUM,

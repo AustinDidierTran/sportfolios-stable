@@ -6,6 +6,7 @@
   max-height: 90vh;
   display: flex;
   flex-direction: column;
+  z-index: 100;
 }
 
 .title {
@@ -31,4 +32,20 @@
 .notificationsContainer::-webkit-scrollbar-thumb {
   background-color: darkgrey;
   outline: 1px solid slategrey;
+}
+
+.plusContainer {
+  margin: 8px;
+}
+
+.plusDivider {
+  margin: 8px 16px;
+}
+
+.plusItem {
+  border-radius: 4px;
+}
+
+.plusLogout {
+  width: 100%;
 }
