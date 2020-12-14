@@ -11,7 +11,7 @@
   margin: 16px !important;
   width: fit-content !important;
 }
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .container {
     grid-template-columns: 1fr 2fr 1fr;
   }

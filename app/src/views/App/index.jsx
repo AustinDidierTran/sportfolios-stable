@@ -113,7 +113,7 @@ export default function App() {
       <ThemeProvider theme={theme}>
         <Router history={history}>
           <div className={styles.app}>
-            <div>
+            <div className={styles.header}>
               <Header />
             </div>
             <div

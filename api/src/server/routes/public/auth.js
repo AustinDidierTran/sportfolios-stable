@@ -47,13 +47,12 @@ router.get(`${BASE_URL}/loginWithToken`, async ctx => {
   const res = await queries.loginWithToken(ctx.query.token);
   if (!res) {
     throw new Error(STATUS_ENUM.ERROR_STRING);
-  } else {
-    ctx.status = 200;
-    ctx.body = {
-      status: 'success',
-      data: res,
-    };
   }
+  ctx.status = 200;
+  ctx.body = {
+    status: 'success',
+    data: res,
+  };
 });
 
 router.post(`${BASE_URL}/transferPersonSignup`, async ctx => {

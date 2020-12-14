@@ -61,7 +61,7 @@
   height: 250px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .media {
     height: 400px;
   }

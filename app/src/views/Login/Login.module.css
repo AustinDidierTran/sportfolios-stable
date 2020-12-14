@@ -43,7 +43,7 @@
   row-gap: 8px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .container {
     margin-top: 64px;
     display: grid !important;
