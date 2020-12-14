@@ -16,11 +16,7 @@ export default function RedirectWithToken() {
         token,
       }),
     );
-    if (
-      res &&
-      res.data &&
-      res.status === STATUS_ENUM.SUCCESS_STRING
-    ) {
+    if (res.status === STATUS_ENUM.SUCCESS_STRING) {
       dispatch({
         type: ACTION_ENUM.LOGIN,
         payload: {

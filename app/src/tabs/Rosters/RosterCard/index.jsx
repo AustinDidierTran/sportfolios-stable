@@ -23,14 +23,15 @@ export default function RosterCard(props) {
     onRoleUpdate,
     index,
     update,
+    editableRoster: editableRosterProp, editableRole: editableRoleProp
   } = props;
-  let { editableRoster, editableRole } = props;
-  const isTeamEditor =
+  const isTeamEditor = useMemo(()=> {
     role == ROSTER_ROLE_ENUM.CAPTAIN ||
     role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
     role == ROSTER_ROLE_ENUM.COACH;
-  editableRoster = editableRoster || isTeamEditor;
-  editableRole = editableRole || isTeamEditor;
+  }, [role]);
+    const editableRoster = useMemo(() => editableRoster || isTeamEditor, [editableRoster, isTeamEditor]);
+    const editableRole = useMemo(() => editableRole || isTeamEditor, [editableRole, isTeamEditor]);
   const {
     position,
     name,
@@ -50,21 +51,24 @@ export default function RosterCard(props) {
 
   const greenBackground =
     isEventAdmin || role != ROSTER_ROLE_ENUM.VIEWER;
-  let style = {};
-  if (greenBackground && isEven(index)) {
-    style = { backgroundColor: '#19bf9d', color: '#fff' };
-  } else if (greenBackground && !isEven(index)) {
-    style = { backgroundColor: '#18B393', color: '#fff' };
-  } else if (!greenBackground && isEven(index)) {
-    style = { backgroundColor: '#f2f2f2' };
-  }
+    const style = useMemo(() => {
+      if (greenBackground && isEven(index)) {
+          return { backgroundColor: '#19bf9d', color: '#fff' };
+      }
+      if (greenBackground && !isEven(index)) {
+          return { backgroundColor: '#18B393', color: '#fff' };
+      }
+      if ((!greenBackground && isEven(index)) {
+          return { backgroundColor: '#f2f2f2' };
+      }
+  }, [greenBackground, index]);
 
   return (
     <Paper className={styles.paper}>
       <div className={styles.card} style={style} onClick={onExpand}>
         <div className={styles.default}>
           <div className={styles.position}>
-            {position ? position : '-'}
+          {position || '-'}
           </div>
           <div className={styles.title}>
             <div className={styles.name}>

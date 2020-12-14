@@ -3387,15 +3387,13 @@ const insertRosterInviteToken = async roster_id => {
 };
 
 async function getRosterInviteToken(roster_id) {
-  const res = await knex('token_roster_invite')
+  const [{ token } = {}] = await knex('token_roster_invite')
     .select('token')
     .where({ roster_id })
     .whereRaw('expires_at > now()')
     .orderBy('expires_at', 'desc')
     .limit(1);
-  if (res && res.length) {
-    return res[0].token;
-  }
+  return token;
 }
 
 async function cancelRosterInviteToken(roster_id) {
@@ -3406,14 +3404,12 @@ async function cancelRosterInviteToken(roster_id) {
 }
 
 async function getRosterIdFromInviteToken(token) {
-  const res = await knex('token_roster_invite')
+  const [{ roster_id } = {}] = await knex('token_roster_invite')
     .select('roster_id')
     .where({ token })
     .whereRaw('expires_at > now()')
     .limit(1);
-  if (res && res.length) {
-    return res[0].roster_id;
-  }
+  return roster_id;
 }
 
 module.exports = {

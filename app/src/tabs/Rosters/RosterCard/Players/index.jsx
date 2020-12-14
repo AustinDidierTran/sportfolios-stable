@@ -29,20 +29,21 @@ export default function Players(props) {
   } = props;
   const [blackList, setBlackList] = useState(null);
   const [isLoading, setisLoading] = useState(false);
-  if (isEventAdmin || editableRoster) {
-    useEffect(() => {
-      getBlackList();
-    }, [rosterId]);
-  }
+
+  useEffect(() => {
+    getBlackList();
+  }, [rosterId, isEventAdmin, editableRoster]);
 
   const getBlackList = async () => {
-    const { data } = await api(
-      formatRoute('/api/entity/getRoster', null, {
-        rosterId,
-        withSub: true,
-      }),
-    );
-    setBlackList(data.map(d => d.personId));
+    if (isEventAdmin || editableRoster) {
+      const { data } = await api(
+        formatRoute('/api/entity/getRoster', null, {
+          rosterId,
+          withSub: true,
+        }),
+      );
+      setBlackList(data.map(d => d.personId));
+    }
   };
 
   const onPlayerAddToRoster = async person => {
@@ -82,6 +83,9 @@ export default function Players(props) {
   if (!players) {
     return null;
   }
+  if (isLoading) {
+    return <LoadingSpinner isComponent />;
+  }
 
   return (
     <div className={styles.card}>
@@ -103,9 +107,7 @@ export default function Players(props) {
           />
         </div>
       ) : null}
-      {isLoading ? (
-        <LoadingSpinner isComponent />
-      ) : (
+      {
         <>
           {players.length ? (
             <div className={styles.player}>
@@ -124,7 +126,7 @@ export default function Players(props) {
             <Typography>{t('empty_roster_add_players')}</Typography>
           )}
         </>
-      )}
+      }
     </div>
   );
 }

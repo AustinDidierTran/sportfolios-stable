@@ -46,10 +46,7 @@ router.post(`${BASE_URL}/login`, async ctx => {
 router.get(`${BASE_URL}/loginWithToken`, async ctx => {
   const res = await queries.loginWithToken(ctx.query.token);
   if (!res) {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(STATUS_ENUM.ERROR_STRING);
   } else {
     ctx.status = 200;
     ctx.body = {
