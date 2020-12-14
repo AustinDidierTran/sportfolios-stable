@@ -1296,4 +1296,47 @@ router.del(`${BASE_URL}/game`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/rosterInviteToken`, async ctx => {
+  const token = await queries.getRosterInviteToken(
+    ctx.body.userInfo.id,
+    ctx.query.rosterId,
+  );
+  if (!token) {
+    throw new Error(STATUS_ENUM.ERROR_STRING);
+  }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS_STRING,
+    data: token,
+  };
+});
+
+router.del(`${BASE_URL}/rosterInviteToken`, async ctx => {
+  const res = await queries.cancelRosterInviteToken(
+    ctx.body.userInfo.id,
+    ctx.query.rosterId,
+  );
+  if (!res) {
+    throw new Error(STATUS_ENUM.ERROR_STRING);
+  }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS_STRING,
+  };
+});
+
+router.get(`${BASE_URL}/rosterFromInviteToken`, async ctx => {
+  const roster = await queries.getRosterFromInviteToken(
+    ctx.query.token,
+  );
+  if (!roster) {
+    throw new Error(STATUS_ENUM.ERROR_STRING);
+  }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS_STRING,
+    data: roster,
+  };
+});
+
 module.exports = router;

@@ -1,0 +1,1 @@
+DROP table token_roster_invite;

@@ -34,29 +34,17 @@ export default function PersonSearchList(props) {
   const [name, setName] = useState('');
 
   const optionsRoute = useMemo(() => {
-    if (whiteList) {
-      const res = formatRoute('/api/data/search/global', null, {
-        whiteList: JSON.stringify(whiteList),
-        query: query.value,
-        type: GLOBAL_ENUM.PERSON,
-      });
-      return res;
-    }
-    if (blackList) {
-      if (blackList.length > 0) {
-        const res = formatRoute('/api/data/search/global', null, {
-          blackList: JSON.stringify(blackList),
-          query: query.value,
-          type: GLOBAL_ENUM.PERSON,
-        });
-        return res;
-      }
-    }
-
-    const res = formatRoute('/api/data/search/global', null, {
+    const body = {
       query: query.value,
       type: GLOBAL_ENUM.PERSON,
-    });
+    };
+    if (whiteList) {
+      body.whiteList = JSON.stringify(whiteList);
+    }
+    if (blackList) {
+      body.blackList = JSON.stringify(blackList);
+    }
+    const res = formatRoute('/api/data/search/global', null, body);
     return res;
   }, [query]);
 

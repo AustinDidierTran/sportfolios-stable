@@ -20,13 +20,12 @@ import PaymentChip from '../../../../../tabs/Settings/TeamRegistered/PaymentChip
 export default function PlayerCard(props) {
   const {
     isEventAdmin,
+    isEditable,
     player,
-    role,
     onDelete,
     onRoleUpdate,
   } = props;
   const { t } = useTranslation();
-
   const [playerInfos, setPlayerInfos] = useState(null);
   const [open, setOpen] = useState(false);
   const [openOptions, setOpenOptions] = useState(false);
@@ -84,12 +83,7 @@ export default function PlayerCard(props) {
     }
   };
 
-  if (
-    isEventAdmin ||
-    role == ROSTER_ROLE_ENUM.COACH ||
-    role == ROSTER_ROLE_ENUM.CAPTAIN ||
-    role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN
-  ) {
+  if (isEventAdmin || isEditable) {
     return (
       <div className={styles.card}>
         <div className={styles.player}>

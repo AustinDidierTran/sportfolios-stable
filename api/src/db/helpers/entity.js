@@ -1008,7 +1008,6 @@ async function getOptions(eventId) {
         );
         owner = await getEntity(ownerId);
       }
-
       return {
         ...r,
         owner,
@@ -1169,7 +1168,7 @@ async function getAllRegisteredInfos(eventId, userId) {
       const players = await getRoster(t.roster_id, true);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.roster_id);
-      const role = await getRole(captains, t.roster_id, userId);
+      const role = await getRole(t.roster_id, userId);
       const registrationStatus = await getRegistrationStatus(
         eventId,
         t.roster_id,
@@ -1258,7 +1257,6 @@ async function getRoster(rosterId, withSub) {
     .orderByRaw(
       `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
     );
-  //}
 
   //TODO: Make a call to know if has created an account or is child account
   const status = TAG_TYPE_ENUM.REGISTERED;
@@ -1285,25 +1283,25 @@ const getPrimaryPerson = async user_id => {
   return primaryPerson;
 };
 
-async function getRole(captains, rosterId, userId) {
+async function getRole(rosterId, userId) {
   const realId = await getRealId(rosterId);
-  if (!userId) {
+  const [role] = await knex('team_players')
+    .select('team_players.role')
+    .join(
+      'user_entity_role',
+      'user_entity_role.entity_id',
+      'team_players.person_id',
+    )
+    .where({ roster_id: realId, user_id: userId })
+    .orderByRaw(
+      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], team_players.role)`,
+    )
+    .limit(1);
+  if (role) {
+    return role.role;
+  } else {
     return ROSTER_ROLE_ENUM.VIEWER;
   }
-
-  const person = await getPrimaryPerson(userId);
-  const personId = person.id;
-
-  if (captains.some(c => c.id === personId)) {
-    return ROSTER_ROLE_ENUM.CAPTAIN;
-  }
-
-  const [role] = await knex('team_players')
-    .select('*')
-    .where({ roster_id: realId, person_id: personId });
-
-  if (!role) return ROSTER_ROLE_ENUM.VIEWER;
-  return ROSTER_ROLE_ENUM.PLAYER;
 }
 
 const getRosterInvoiceItem = async body => {
@@ -1539,7 +1537,7 @@ async function getGameTeams(game_id, player_id) {
   }
 }
 
-async function getMyPersonsAdminsOfTeam(rosterId, teams, userId) {
+async function getMyPersonsAdminsOfTeam(rosterId, userId) {
   const res = await knex('user_entity_role')
     .select(
       'user_entity_role.entity_id',
@@ -1566,23 +1564,11 @@ async function getMyPersonsAdminsOfTeam(rosterId, teams, userId) {
     ])
     .andWhere('team_players.roster_id', '=', rosterId);
 
-  const myTeam = teams.find(t => t.rosterId === rosterId);
-  const enemyTeam = teams.find(t => t.rosterId !== rosterId);
   return res.length
-    ? {
-        myTeam: {
-          rosterId: myTeam.rosterId,
-          name: myTeam.name,
-        },
-        enemyTeam: {
-          rosterId: enemyTeam.rosterId,
-          name: enemyTeam.name,
-        },
-        myAdminPersons: res.map(p => ({
-          entityId: p.entity_id,
-          completeName: `${p.name} ${p.surname}`,
-        })),
-      }
+    ? res.map(p => ({
+        entityId: p.entity_id,
+        completeName: `${p.name} ${p.surname}`,
+      }))
     : undefined;
 }
 
@@ -3392,6 +3378,39 @@ const personIsAwaitingTransfer = async personId => {
   ).exists;
 };
 
+const insertRosterInviteToken = async roster_id => {
+  const [res] = await knex('token_roster_invite')
+    .insert({ roster_id })
+    .returning('token');
+  return res;
+};
+
+async function getRosterInviteToken(roster_id) {
+  const [{ token } = {}] = await knex('token_roster_invite')
+    .select('token')
+    .where({ roster_id })
+    .whereRaw('expires_at > now()')
+    .orderBy('expires_at', 'desc')
+    .limit(1);
+  return token;
+}
+
+async function cancelRosterInviteToken(roster_id) {
+  return knex('token_roster_invite')
+    .update('expires_at', knex.raw('now()'))
+    .where({ roster_id })
+    .whereRaw('expires_at > now()');
+}
+
+async function getRosterIdFromInviteToken(token) {
+  const [{ roster_id } = {}] = await knex('token_roster_invite')
+    .select('roster_id')
+    .where({ token })
+    .whereRaw('expires_at > now()')
+    .limit(1);
+  return roster_id;
+}
+
 module.exports = {
   addEntity,
   addEntityRole,
@@ -3516,4 +3535,9 @@ module.exports = {
   getRosterName,
   getRostersNames,
   getAttendanceSheet,
+  insertRosterInviteToken,
+  getRosterInviteToken,
+  cancelRosterInviteToken,
+  getRosterIdFromInviteToken,
+  getRole,
 };

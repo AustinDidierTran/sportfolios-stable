@@ -35,7 +35,6 @@ const {
   addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
   canRemovePlayerFromRoster: canRemovePlayerFromRosterHelper,
-  getSubmissionerInfos: getSubmissionerInfosHelper,
   canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
@@ -115,6 +114,10 @@ const {
   getRealId,
   getGamePlayersWithRole,
   getRostersNames: getRostersNamesHelper,
+  getRosterInviteToken: getRosterInviteTokenHelper,
+  insertRosterInviteToken,
+  cancelRosterInviteToken: cancelRosterInviteTokenHelper,
+  getRosterIdFromInviteToken,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -301,16 +304,33 @@ async function getRegistrationTeamPaymentOption(paymentOptionId) {
 async function getPossibleSubmissionerInfos(gameId, teams, userId) {
   const teamsList = JSON.parse(teams);
   const adminsOfTeams = await Promise.all(
-    teamsList.map(
-      async t =>
-        await getMyPersonsAdminsOfTeamHelper(
-          t.rosterId,
-          teamsList,
-          userId,
-        ),
-    ),
+    teamsList.map(async t => {
+      const admins = await getMyPersonsAdminsOfTeamHelper(
+        t.rosterId,
+        userId,
+      );
+      if (!admins) {
+        return;
+      }
+      const myTeam = teamsList.find(
+        team => team.rosterId === t.rosterId,
+      );
+      const enemyTeam = teamsList.find(
+        team => team.rosterId !== t.rosterId,
+      );
+      return {
+        myTeam: {
+          rosterId: myTeam.rosterId,
+          name: myTeam.name,
+        },
+        enemyTeam: {
+          rosterId: enemyTeam.rosterId,
+          name: enemyTeam.name,
+        },
+        myAdminPersons: admins,
+      };
+    }),
   );
-
   const validTeams = adminsOfTeams.filter(res => res !== undefined);
   if (validTeams.length === 0) {
     return ERROR_ENUM.ACCESS_DENIED;
@@ -1160,6 +1180,52 @@ async function deleteGame(userId, query) {
   return deleteGameHelper(gameId);
 }
 
+async function createRosterInviteToken(userId, rosterId) {
+  const admins = await getMyPersonsAdminsOfTeamHelper(
+    rosterId,
+    userId,
+  );
+  if (!admins) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  const token = await insertRosterInviteToken(rosterId);
+  return token;
+}
+
+async function getRosterInviteToken(userId, rosterId) {
+  const admins = await getMyPersonsAdminsOfTeamHelper(
+    rosterId,
+    userId,
+  );
+  if (!admins) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  const token = await getRosterInviteTokenHelper(rosterId);
+  if (!token) {
+    return insertRosterInviteToken(rosterId);
+  }
+  return token;
+}
+
+async function cancelRosterInviteToken(userId, rosterId) {
+  const admins = await getMyPersonsAdminsOfTeamHelper(
+    rosterId,
+    userId,
+  );
+  if (!admins) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return cancelRosterInviteTokenHelper(rosterId);
+}
+
+async function getRosterFromInviteToken(token) {
+  const rosterId = await getRosterIdFromInviteToken(token);
+  if (!rosterId) {
+    return;
+  }
+  return getRoster(rosterId);
+}
+
 module.exports = {
   addAlias,
   addEntity,
@@ -1252,4 +1318,8 @@ module.exports = {
   updateRosterRole,
   getRostersNames,
   acceptScoreSuggestion,
+  getRosterInviteToken,
+  createRosterInviteToken,
+  cancelRosterInviteToken,
+  getRosterFromInviteToken,
 };
