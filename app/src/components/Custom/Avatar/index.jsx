@@ -5,9 +5,17 @@ import { Icon } from '../../Custom';
 import clsx from 'clsx';
 
 import styles from './Avatar.module.css';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles({
+  avatarNoBackgroundColor: {
+    backgroundColor: 'transparent !important',
+  },
+});
 
 export default function CustomAvatar(props) {
   const { initials, photoUrl, icon, ...otherProps } = props;
+  const classes = useStyles();
 
   let className = clsx(styles.avatar, props.className);
   if (props.size === 'sm') {
@@ -22,7 +30,9 @@ export default function CustomAvatar(props) {
     return (
       <Avatar
         {...otherProps}
-        className={className}
+        className={[className, classes.avatarNoBackgroundColor].join(
+          ' ',
+        )}
         src={photoUrl}
         alt={initials}
       >

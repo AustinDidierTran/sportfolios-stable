@@ -1,9 +1,15 @@
 .sectionDesktop {
   display: flex;
+  height: calc(100% - 20px);
+  align-items: center;
 }
 
 .appBar {
   top: 0;
+}
+
+.toolbarDesktop {
+  height: 64px;
 }
 
 .toolBar {
@@ -40,27 +46,32 @@
 }
 
 .container {
-  display: grid;
   width: 100vw;
-  grid-template-columns: 50px 1fr 50px;
-  grid-template-areas: 'item1 item2 item3';
 }
 
-.item1 {
-  grid-area: item1;
-  justify-self: center;
-  align-self: center;
+.circleButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+  height: 44px;
+  width: 44px;
+  margin-left: 4px;
 }
 
-.item2 {
-  grid-area: item2;
-  justify-self: center;
-  align-self: center;
-  width: 90%;
+.circleButton:hover {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-.item3 {
-  grid-area: item3;
-  justify-self: center;
-  align-self: center;
+.iconButton {
+  background-color: rgba(0, 0, 0, 0.05);
+  height: 44px;
+  width: 44px;
+  margin-left: 4px;
+}
+
+.iconButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }

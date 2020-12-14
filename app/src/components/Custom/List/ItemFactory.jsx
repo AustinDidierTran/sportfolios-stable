@@ -6,6 +6,7 @@ import {
 import AppItem from './AppItem';
 import BankAccountItem from './BankAccountItem';
 import CartItem from './CartItem';
+import CreateEntityItem from './CreateEntityItem';
 import CreditCardItem from './CreditCardItem';
 import DefaultItem from './DefaultItem';
 import EventCreatorItem from './EventCreatorItem';
@@ -44,14 +45,16 @@ const ItemMap = {
   [LIST_ITEM_ENUM.AVATAR_TEXT_SKELETON]: AvatarAndTextSkeleton,
   [LIST_ITEM_ENUM.BANK_ACCOUNT]: BankAccountItem,
   [LIST_ITEM_ENUM.CART]: CartItem,
+  [LIST_ITEM_ENUM.CREATE_ENTITY]: CreateEntityItem,
   [LIST_ITEM_ENUM.CREDIT_CARD]: CreditCardItem,
   [LIST_ITEM_ENUM.EVENT_CREATOR]: EventCreatorItem,
   [LIST_ITEM_ENUM.EVENT_PAYMENT_OPTION]: EventPaymentOptionItem,
-  [LIST_ITEM_ENUM.MEMBER]: MemberItem,
   [LIST_ITEM_ENUM.MEMBER_IMPORT]: MemberImportItem,
+  [LIST_ITEM_ENUM.MEMBER]: MemberItem,
   [LIST_ITEM_ENUM.MEMBERSHIP_DETAIL]: MembershipDetailItem,
   [LIST_ITEM_ENUM.MEMBERSHIP_ORGANIZATION]: MembershipOrganizationItem,
   [LIST_ITEM_ENUM.MEMBERSHIP]: MembershipItem,
+  [LIST_ITEM_ENUM.NOTIFICATION_SETTING]: NotificationSettingItem,
   [LIST_ITEM_ENUM.PAYMENT_OPTION]: PaymentOptionItem,
   [LIST_ITEM_ENUM.PURCHASES]: PurchasesItem,
   [LIST_ITEM_ENUM.RANKING_WITH_STATS]: RankingWithStatsItem,
@@ -59,12 +62,10 @@ const ItemMap = {
   [LIST_ITEM_ENUM.REPORT]: ReportItemFactory,
   [LIST_ITEM_ENUM.ROSTER_ITEM]: RosterItem,
   [LIST_ITEM_ENUM.SALES]: SalesItem,
-  [LIST_ITEM_ENUM.AVATAR_TEXT_SKELETON]: AvatarAndTextSkeleton,
-  [LIST_ITEM_ENUM.NOTIFICATION_SETTING]: NotificationSettingItem,
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: RosterNotification,
+  [NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE]: ConfirmOrDeclineScoreNotification,
   [NOTIFICATION_TYPE.SCORE_SUBMISSION_CONFLICT]: ScoreSubmissionConflictNotification,
   [NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST]: ScoreSubmissionRequestNotification,
-  [NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE]: ConfirmOrDeclineScoreNotification,
 };
 
 export default function ItemFactory(props) {

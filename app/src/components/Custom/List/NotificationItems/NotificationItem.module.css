@@ -1,16 +1,25 @@
 .new {
-  background-color: #99f1df59 !important;
   cursor: pointer;
+  border-radius: 4px;
 }
 
 .new:hover {
-  background-color: #99f1df !important;
+  background-color: whitesmoke;
 }
 
 .old {
   cursor: pointer;
+  border-radius: 4px;
 }
 
 .old:hover {
-  background-color: #99f1df;
+  background-color: whitesmoke;
+}
+
+.dot {
+  left: 28px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

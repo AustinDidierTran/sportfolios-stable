@@ -1,14 +1,15 @@
+import React from 'react';
 import {
   ListItem,
   ListItemText,
   ListItemAvatar,
   ListItemSecondaryAction,
 } from '@material-ui/core';
-import { Avatar } from '../..';
-import React from 'react';
+import { Avatar, Icon } from '../..';
 import styles from './NotificationItem.module.css';
 import api from '../../../../actions/api';
 import { timestampToRelativeTime } from '../../../../utils/stringFormats';
+import { Typography } from '../../../MUI';
 
 export default function NotificationItem(props) {
   const {
@@ -45,9 +46,25 @@ export default function NotificationItem(props) {
       <ListItemText
         className={styles.text}
         style={{ whiteSpace: 'pre-line' }}
-        primary={description}
-        secondary={timestampToRelativeTime(new Date(created_at))}
+        disableTypography
+        primary={<Typography>{description}</Typography>}
+        secondary={
+          <Typography
+            color="textSecondary"
+            style={{ color: clicked ? 'textSecondary' : '#18b393' }}
+          >
+            {timestampToRelativeTime(new Date(created_at))}
+          </Typography>
+        }
       />
+      {clicked ? (
+        <></>
+      ) : (
+        <div className={styles.dot}>
+          <Icon icon="Dot" color="#18b393" />
+        </div>
+      )}
+
       <ListItemSecondaryAction
         style={{
           justifyContent: 'flex-end',

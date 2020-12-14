@@ -30,7 +30,9 @@ export const getInitialsFromName = completeName => {
     );
   }
 
-  return completeName?.name[0] + completeName?.surname[0];
+  return `${completeName?.name ? completeName?.name[0] : ''}${
+    completeName?.surname ? completeName?.surname[0] : ''
+  }`;
 };
 
 export const formatDate = (moment, format = 'LL') => {
