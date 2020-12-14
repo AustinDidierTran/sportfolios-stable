@@ -1256,7 +1256,6 @@ async function getRoster(rosterId, withSub) {
     .orderByRaw(
       `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
     );
-  //}
 
   //TODO: Make a call to know if has created an account or is child account
   const status = TAG_TYPE_ENUM.REGISTERED;
@@ -1285,7 +1284,8 @@ const getPrimaryPerson = async user_id => {
 
 async function getRole(rosterId, userId) {
   const realId = await getRealId(rosterId);
-  const [role] = await knex('team_players')
+  console.log({ roster_id: realId, user_id: userId });
+  const [{ role } = {}] = await knex('team_players')
     .select('team_players.role')
     .join(
       'user_entity_role',
@@ -1298,7 +1298,7 @@ async function getRole(rosterId, userId) {
     )
     .limit(1);
   if (role) {
-    return role.role;
+    return role;
   } else {
     return ROSTER_ROLE_ENUM.VIEWER;
   }
@@ -3386,15 +3386,13 @@ const insertRosterInviteToken = async roster_id => {
 };
 
 async function getRosterInviteToken(roster_id) {
-  const res = await knex('token_roster_invite')
+  const [{ token } = {}] = await knex('token_roster_invite')
     .select('token')
     .where({ roster_id })
     .whereRaw('expires_at > now()')
     .orderBy('expires_at', 'desc')
     .limit(1);
-  if (res && res.length) {
-    return res[0].token;
-  }
+  return token;
 }
 
 async function cancelRosterInviteToken(roster_id) {
@@ -3405,14 +3403,12 @@ async function cancelRosterInviteToken(roster_id) {
 }
 
 async function getRosterIdFromInviteToken(token) {
-  const res = await knex('token_roster_invite')
+  const [{ roster_id } = {}] = await knex('token_roster_invite')
     .select('roster_id')
     .where({ token })
     .whereRaw('expires_at > now()')
     .limit(1);
-  if (res && res.length) {
-    return res[0].roster_id;
-  }
+  return roster_id;
 }
 
 module.exports = {

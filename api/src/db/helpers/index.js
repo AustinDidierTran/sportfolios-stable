@@ -181,7 +181,7 @@ const generateToken = () => {
   return uuidv1();
 };
 
-const generatePromoCodeToken = async () => {
+const generatePromoCodeToken = () => {
   const token = randtoken.generate(6);
   return token;
 };
@@ -794,15 +794,12 @@ const deleteChatbotInfos = async messenger_id => {
 };
 
 const getUserIdFromAuthToken = async token => {
-  const query = knex('user_token')
+  const [{ user_id } = {}] = await knex('user_token')
     .select('user_id')
     .where('token_id', token)
     .whereRaw('expires_at > now()');
-  const res = await query;
-  if (!res || !res.length) {
-    return;
-  }
-  return res[0].user_id;
+
+  return user_id;
 };
 
 module.exports = {

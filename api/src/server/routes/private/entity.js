@@ -1301,19 +1301,14 @@ router.get(`${BASE_URL}/rosterInviteToken`, async ctx => {
     ctx.body.userInfo.id,
     ctx.query.rosterId,
   );
-  if (token) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-      data: token,
-    };
-  } else {
-    (ctx.status = STATUS_ENUM.ERROR),
-      (ctx.body = {
-        status: STATUS_ENUM.ERROR_STRING,
-        message: 'Something went wrong',
-      });
+  if (!token) {
+    throw new Error(STATUS_ENUM.ERROR_STRING);
   }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS_STRING,
+    data: token,
+  };
 });
 
 router.del(`${BASE_URL}/rosterInviteToken`, async ctx => {
@@ -1321,18 +1316,13 @@ router.del(`${BASE_URL}/rosterInviteToken`, async ctx => {
     ctx.body.userInfo.id,
     ctx.query.rosterId,
   );
-  if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-    };
-  } else {
-    (ctx.status = STATUS_ENUM.ERROR),
-      (ctx.body = {
-        status: STATUS_ENUM.ERROR_STRING,
-        message: 'Something went wrong',
-      });
+  if (!res) {
+    throw new Error(STATUS_ENUM.ERROR_STRING);
   }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS_STRING,
+  };
 });
 
 router.get(`${BASE_URL}/rosterFromInviteToken`, async ctx => {
@@ -1340,19 +1330,14 @@ router.get(`${BASE_URL}/rosterFromInviteToken`, async ctx => {
     ctx.query.token,
     ctx.body.userInfo.id,
   );
-  if (roster) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-      data: roster,
-    };
-  } else {
-    (ctx.status = STATUS_ENUM.ERROR),
-      (ctx.body = {
-        status: STATUS_ENUM.ERROR_STRING,
-        message: 'Something went wrong',
-      });
+  if (!roster) {
+    throw new Error(STATUS_ENUM.ERROR_STRING);
   }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS_STRING,
+    data: roster,
+  };
 });
 
 module.exports = router;

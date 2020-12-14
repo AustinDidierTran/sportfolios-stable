@@ -1,9 +1,17 @@
 .bottomnavigation {
-  position: fixed;
+  position: sticky;
   width: 100vw;
   bottom: 0;
   border-color: white;
   border-top-color: grey;
   border-width: thin;
   border-style: solid;
+  z-index: 99;
+}
+
+@supports (-webkit-touch-callout: none) {
+  /* CSS specific to iOS devices */
+  .bottomnavigation {
+    position: absolute;
+  }
 }

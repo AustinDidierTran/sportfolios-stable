@@ -1,26 +1,26 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import styles from './Players.module.css';
 
 import { useTranslation } from 'react-i18next';
 import uuid from 'uuid';
 
 import PlayerCard from './PlayerCard';
-import { Divider, Typography } from '@material-ui/core';
+import { Typography, Divider } from '@material-ui/core';
 import {
-  List,
   LoadingSpinner,
   PersonSearchList,
-  Button,
 } from '../../../../components/Custom';
 import api from '../../../../actions/api';
 import { formatRoute } from '../../../../actions/goTo';
+import PlayersQuickAdd from './PlayersQuickAdd';
 import { Store } from '../../../../Store';
-import { GLOBAL_ENUM } from '../../../../../../common/enums';
 
 export default function Players(props) {
-  const {
-    state: { userInfo },
-  } = useContext(Store);
   const { t } = useTranslation();
   const {
     isEventAdmin,
@@ -37,20 +37,23 @@ export default function Players(props) {
   } = props;
   const [blackList, setBlackList] = useState([]);
   const [isLoading, setisLoading] = useState(false);
-  if (isEventAdmin || editableRoster || withMyPersonsQuickAdd) {
-    useEffect(() => {
-      getBlackList();
-    }, [rosterId]);
-  }
+  const {
+    state: { userInfo },
+  } = useContext(Store);
+  useEffect(() => {
+    getBlackList();
+  }, [rosterId, isEventAdmin, editableRoster, withMyPersonsQuickAdd]);
 
   const getBlackList = async () => {
-    const { data } = await api(
-      formatRoute('/api/entity/getRoster', null, {
-        rosterId,
-        withSub: true,
-      }),
-    );
-    setBlackList(data.map(d => d.personId));
+    if (isEventAdmin || editableRoster || withMyPersonsQuickAdd) {
+      const { data } = await api(
+        formatRoute('/api/entity/getRoster', null, {
+          rosterId,
+          withSub: true,
+        }),
+      );
+      setBlackList(data.map(d => d.personId));
+    }
   };
 
   const onPlayerAddToRoster = async person => {
@@ -91,16 +94,21 @@ export default function Players(props) {
   if (!players) {
     return null;
   }
-  console.log({ blackList });
-  console.log({
-    persons: userInfo.persons.filter(
-      p => !blackList.includes(p.entity_id),
-    ),
-  });
+  if (isLoading) {
+    return <LoadingSpinner isComponent />;
+  }
 
-  return (
-    <div className={styles.card}>
-      {isEventAdmin || editableRoster ? (
+  const playersQuickAdd = useMemo(() => {
+    if (withMyPersonsQuickAdd) {
+      return userInfo.persons.filter(
+        p => !blackList.includes(p.entity_id),
+      );
+    }
+  }, [blackList]);
+
+  if (isEventAdmin || editableRoster) {
+    return (
+      <div className={styles.card}>
         <div className={styles.searchList}>
           <PersonSearchList
             addedByEventAdmin={isEventAdmin && !editableRoster}
@@ -117,47 +125,16 @@ export default function Players(props) {
             handleClose={handleClose}
           />
         </div>
-      ) : null}
-      {isLoading ? (
-        <LoadingSpinner isComponent />
-      ) : (
+        <PlayersQuickAdd
+          title={t('my_persons')}
+          onAdd={onPlayerAddToRoster}
+          persons={playersQuickAdd}
+        />
+        <Divider variant="middle" />
         <>
-          {withMyPersonsQuickAdd ? (
-            <>
-              <Typography align="left" variant="subtitle1">
-                Vos personnes
-              </Typography>
-              <List
-                items={userInfo.persons
-                  .filter(p => !blackList.includes(p.entity_id))
-                  .map(p => ({
-                    ...p,
-                    type: GLOBAL_ENUM.PERSON,
-                    completeName: p.name + ' ' + p.surname,
-                    secondaryActions: [
-                      <Button
-                        endIcon="Add"
-                        onClick={() =>
-                          onPlayerAddToRoster({
-                            id: p.entity_id,
-                            name: p.name,
-                          })
-                        }
-                      >
-                        {t('add')}
-                      </Button>,
-                    ],
-                    notClickable: true,
-                  }))}
-              />
-              <Divider variant="middle" />
-            </>
-          ) : (
-            <></>
-          )}
           {players.length ? (
             <div className={styles.player}>
-              <Typography align="left" variant="subtitle2">
+              <Typography align="left" variant="subtitle1">
                 {t('roster')}
               </Typography>
               {players.map(player => (
@@ -175,7 +152,38 @@ export default function Players(props) {
             <Typography>{t('empty_roster_add_players')}</Typography>
           )}
         </>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.card}>
+      <PlayersQuickAdd
+        title={t('my_persons')}
+        onAdd={onPlayerAddToRoster}
+        persons={playersQuickAdd}
+      />
+      <Divider variant="middle" />
+      {
+        <>
+          {players.length ? (
+            <div className={styles.player}>
+              {players.map(player => (
+                <PlayerCard
+                  isEventAdmin={isEventAdmin}
+                  player={player}
+                  isEditable={editableRole}
+                  onDelete={handleDelete}
+                  onRoleUpdate={handleRoleUpdate}
+                  key={player.id}
+                />
+              ))}
+            </div>
+          ) : (
+            <Typography>{t('empty_roster_add_players')}</Typography>
+          )}
+        </>
+      }
     </div>
   );
 }

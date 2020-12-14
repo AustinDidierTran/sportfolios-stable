@@ -1,6 +1,7 @@
 body {
   margin: 0;
   overflow: hidden;
+  min-height: 100vh;
 }
 
 .app {
@@ -10,23 +11,35 @@ body {
   flex-direction: column;
 }
 
+.main,
+.main1 {
+  height: calc(100% - 128px);
+}
+
 .main {
   flex: 1;
   overflow-y: auto;
-  height: 100%;
-  padding-bottom: 120px;
+  padding-bottom: 64px;
+}
+
+.header {
+  height: 64px;
 }
 
 .main1 {
   flex: 1;
   overflow-y: auto;
-  height: 100%;
 }
 .footer {
+  z-index: 99;
   height: 56px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
+  .app {
+    grid-template-rows: 64px auto 0;
+  }
+
   .header {
     height: 64px;
   }
@@ -35,5 +48,15 @@ body {
   }
   .main {
     padding-bottom: 0px;
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  /* CSS specific to iOS devices */
+  body {
+    min-height: -webkit-fill-available;
+  }
+  .app {
+    height: -webkit-fill-available;
   }
 }

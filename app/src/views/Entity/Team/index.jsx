@@ -72,7 +72,7 @@ export default function Team(props) {
           </Tabs>
         )}
       </Paper>
-      <div style={{ marginBottom: '128px' }}>
+      <div>
         <OpenTab basicInfos={basicInfos} />
       </div>
     </IgContainer>

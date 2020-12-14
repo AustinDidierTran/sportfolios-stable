@@ -24,8 +24,9 @@ export default function RosterCard(props) {
     index,
     update,
     withMyPersonsQuickAdd,
+    editableRoster: editableRosterProp,
+    editableRole: editableRoleProp,
   } = props;
-  let { editableRoster, editableRole } = props;
   const {
     position,
     name,
@@ -34,16 +35,25 @@ export default function RosterCard(props) {
     role,
     registrationStatus,
   } = roster;
-  const isTeamEditor =
-    role == ROSTER_ROLE_ENUM.CAPTAIN ||
-    role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
-    role == ROSTER_ROLE_ENUM.COACH;
-  editableRoster = editableRoster || isTeamEditor;
-  editableRole = editableRole || isTeamEditor;
   const expanded = useMemo(() => expandedIndex === index, [
     expandedIndex,
     index,
   ]);
+  const isTeamEditor = useMemo(
+    () =>
+      role == ROSTER_ROLE_ENUM.CAPTAIN ||
+      role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
+      role == ROSTER_ROLE_ENUM.COACH,
+    [role],
+  );
+  const editableRoster = useMemo(
+    () => editableRosterProp || isTeamEditor,
+    [editableRosterProp, isTeamEditor],
+  );
+  const editableRole = useMemo(
+    () => editableRoleProp || isTeamEditor,
+    [editableRoleProp, isTeamEditor],
+  );
 
   const onExpand = () => {
     setExpandedIndex(oldIndex => (oldIndex === index ? 0 : index));
@@ -51,22 +61,23 @@ export default function RosterCard(props) {
 
   const greenBackground =
     isEventAdmin || role != ROSTER_ROLE_ENUM.VIEWER;
-  let style = {};
-  if (greenBackground && isEven(index)) {
-    style = { backgroundColor: '#19bf9d', color: '#fff' };
-  } else if (greenBackground && !isEven(index)) {
-    style = { backgroundColor: '#18B393', color: '#fff' };
-  } else if (!greenBackground && isEven(index)) {
-    style = { backgroundColor: '#f2f2f2' };
-  }
+  const style = useMemo(() => {
+    if (greenBackground && isEven(index)) {
+      return { backgroundColor: '#19bf9d', color: '#fff' };
+    }
+    if (greenBackground && !isEven(index)) {
+      return { backgroundColor: '#18B393', color: '#fff' };
+    }
+    if (!greenBackground && isEven(index)) {
+      return { backgroundColor: '#f2f2f2' };
+    }
+  }, [greenBackground, index]);
 
   return (
     <Paper className={styles.paper}>
       <div className={styles.card} style={style} onClick={onExpand}>
         <div className={styles.default}>
-          <div className={styles.position}>
-            {position ? position : '-'}
-          </div>
+          <div className={styles.position}>{position || '-'}</div>
           <div className={styles.title}>
             <div className={styles.name}>
               <Typography>{name.toUpperCase()}</Typography>

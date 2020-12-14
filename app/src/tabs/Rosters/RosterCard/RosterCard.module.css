@@ -80,7 +80,7 @@
   padding-bottom: 8px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .paper {
     margin: 4px 0;
   }

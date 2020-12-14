@@ -329,29 +329,30 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
   const teamsList = JSON.parse(teams);
   const adminsOfTeams = await Promise.all(
     teamsList.map(async t => {
-      const admins = getMyPersonsAdminsOfTeamHelper(
+      const admins = await getMyPersonsAdminsOfTeamHelper(
         t.rosterId,
         userId,
       );
+      if (!admins) {
+        return;
+      }
       const myTeam = teamsList.find(
         team => team.rosterId === t.rosterId,
       );
       const enemyTeam = teamsList.find(
         team => team.rosterId !== t.rosterId,
       );
-      return (await admins)
-        ? {
-            myTeam: {
-              rosterId: myTeam.rosterId,
-              name: myTeam.name,
-            },
-            enemyTeam: {
-              rosterId: enemyTeam.rosterId,
-              name: enemyTeam.name,
-            },
-            myAdminPersons: await admins,
-          }
-        : undefined;
+      return {
+        myTeam: {
+          rosterId: myTeam.rosterId,
+          name: myTeam.name,
+        },
+        enemyTeam: {
+          rosterId: enemyTeam.rosterId,
+          name: enemyTeam.name,
+        },
+        myAdminPersons: admins,
+      };
     }),
   );
   const validTeams = adminsOfTeams.filter(res => res !== undefined);

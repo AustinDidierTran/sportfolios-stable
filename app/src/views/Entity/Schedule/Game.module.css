@@ -70,7 +70,7 @@
   padding-bottom: 8px !important;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .game {
     grid-template-columns: 152px 24px 1fr 54px 1fr 24px 152px;
     grid-template-areas: ' time leftTeamScore leftTeam VS rightTeam rightTeamScore field';

@@ -214,7 +214,7 @@ export default function Event(props) {
         ) : (
           <></>
         )}
-        <div style={{ marginBottom: '128px' }}>
+        <div>
           <OpenTab basicInfos={basicInfos} />
         </div>
       </IgContainer>
