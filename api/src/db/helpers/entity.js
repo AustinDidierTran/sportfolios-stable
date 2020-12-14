@@ -3544,4 +3544,5 @@ module.exports = {
   cancelRosterInviteToken,
   getRosterIdFromInviteToken,
   getRole,
+  getRegistrationStatus,
 };

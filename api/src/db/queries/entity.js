@@ -11,6 +11,7 @@ const moment = require('moment');
 const { signS3Request } = require('../../server/utils/aws');
 
 const {
+  getRegistrationStatus,
   addAlias: addAliasHelper,
   addEventCartItem,
   addEntity: addEntityHelper,
@@ -242,13 +243,25 @@ async function getRoster(rosterId, withSub) {
   return getRosterHelper(rosterId, withSub);
 }
 
-async function getRosterAllIncluded(rosterId, userId, withSub) {
+async function getRosterAllIncluded(
+  rosterId,
+  userId,
+  eventId,
+  withSub,
+) {
   const players = getRoster(rosterId, withSub);
   const role = getRole(rosterId, userId);
+  let registrationStatus;
+  if (eventId) {
+    registrationStatus = getRegistrationStatus(eventId, rosterId);
+  }
+  const [{ name } = {}] = await getRostersNames([rosterId]);
   return {
     players: await players,
     role: await role,
     rosterId,
+    name: name,
+    registrationStatus: await registrationStatus,
   };
 }
 

@@ -24,7 +24,7 @@ export default function RosterInvite() {
       }),
     );
     if (res && res.status == STATUS_ENUM.SUCCESS_STRING) {
-      setRoster({ ...res.data, name: 'test' });
+      setRoster({ ...res.data });
     } else {
       goTo(ROUTES_ENUM.entityNotFound);
     }
