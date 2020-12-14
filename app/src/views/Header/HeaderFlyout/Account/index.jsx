@@ -45,18 +45,17 @@ export default function Plus() {
   const photoUrl = useMemo(() => userInfo.primaryPerson?.photo_url, [
     userInfo.primaryPerson,
   ]);
-  const nameObj = useMemo(() => {
-    return {
+
+  const nameObj = useMemo(
+    () => ({
       name: userInfo.primaryPerson?.name,
       surname: userInfo.primaryPerson?.surname,
-    };
-  }, [userInfo.primaryPerson]);
+    }),
+    [userInfo.primaryPerson],
+  );
 
   const totalCartItems = useMemo(
-    () =>
-      Array.isArray(items)
-        ? items.reduce((prev, item) => prev + item.quantity, 0)
-        : null,
+    () => items.reduce((prev, item) => prev + item.quantity, 0),
     [items],
   );
 
@@ -84,6 +83,21 @@ export default function Plus() {
     dispatch({ type: ACTION_ENUM.LOGOUT });
   };
 
+  const listItems = [
+    {
+      primary: t('cart'),
+      icon: 'ShoppingCartOutlined',
+      onClick: () => handleViewCartClick(),
+      badgeContent: totalCartItems,
+    },
+    {
+      primary: t('settings'),
+      icon: 'Settings',
+      onClick: () => handleViewSettingsClick(),
+      badgeContent: 0,
+    },
+  ];
+
   return (
     <div className={styles.plusContainer}>
       <List>
@@ -108,30 +122,27 @@ export default function Plus() {
             secondary={t('view_your_profile')}
           />
         </ListItem>
+
         <Divider className={styles.plusDivider} />
-        <ListItem
-          className={styles.plusItem}
-          button
-          onClick={handleViewCartClick}
-        >
-          <ListItemIcon>
-            <Badge badgeContent={totalCartItems} color="error">
-              <Icon icon="ShoppingCartOutlined" />
-            </Badge>
-          </ListItemIcon>
-          <ListItemText primary={t('cart')} />
-        </ListItem>
-        <ListItem
-          className={styles.plusItem}
-          button
-          onClick={handleViewSettingsClick}
-        >
-          <ListItemIcon>
-            <Icon icon="Settings" />
-          </ListItemIcon>
-          <ListItemText primary={t('settings')} />
-        </ListItem>
+
+        {listItems.map((item, index) => (
+          <ListItem
+            key={index}
+            className={styles.plusItem}
+            button
+            onClick={item.onClick}
+          >
+            <ListItemIcon>
+              <Badge badgeContent={item.badgeContent} color="error">
+                <Icon icon={item.icon} />
+              </Badge>
+            </ListItemIcon>
+            <ListItemText primary={item.primary} />
+          </ListItem>
+        ))}
+
         <Divider className={styles.plusDivider} />
+
         <ListItem
           className={styles.plusItem}
           onClick={handleLogoutClick}

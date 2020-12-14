@@ -17,6 +17,11 @@
   margin: 8px;
 }
 
+.mobileNotificationsContainer {
+  flex: 1;
+  overflow-y: auto;
+}
+
 .notificationsContainer {
   flex: 1;
   margin-left: 8px;

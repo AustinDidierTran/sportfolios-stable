@@ -4,7 +4,6 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState,
 } from 'react';
 import { Paper, Typography } from '@material-ui/core';
 
@@ -25,9 +24,8 @@ export default function HeaderFlyout(props) {
   } = useContext(Store);
   const { t } = useTranslation();
 
-  const [open, setOpen] = useState(false);
-
   const ref = useRef(null);
+
   const handleClick = useCallback(
     e => {
       if (
@@ -56,17 +54,6 @@ export default function HeaderFlyout(props) {
     };
   }, []);
 
-  useEffect(() => {
-    if (flyoutType) {
-      if (flyoutType === HEADER_FLYOUT_TYPE_ENUM.CLOSED) {
-        handleClose();
-        return;
-      } else if (!open) {
-        setOpen(true);
-      }
-    }
-  }, [flyoutType]);
-
   const flyout = useMemo(() => {
     switch (flyoutType) {
       case HEADER_FLYOUT_TYPE_ENUM.CREATE:
@@ -81,11 +68,7 @@ export default function HeaderFlyout(props) {
     }
   }, [flyoutType]);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  if (open && flyoutType !== HEADER_FLYOUT_TYPE_ENUM.CLOSED) {
+  if (flyoutType !== HEADER_FLYOUT_TYPE_ENUM.CLOSED) {
     return (
       <Paper ref={ref} className={styles.flyout}>
         <div className={styles.title}>

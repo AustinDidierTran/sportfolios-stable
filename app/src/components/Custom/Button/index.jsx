@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import Button from '@material-ui/core/Button';
 import { Icon } from '../../Custom';
@@ -18,13 +18,19 @@ export default function CustomButton(props) {
     defaultTextColor = 'primary';
   }
 
-  const endIcon = props.endIcon ? (
-    <Icon icon={props.endIcon} />
-  ) : null;
+  const startIcon = useMemo(() => {
+    if (!props.startIcon) {
+      return null;
+    }
+    return <Icon icon={props.startIcon} />;
+  }, [props.startIcon]);
 
-  const startIcon = props.startIcon ? (
-    <Icon icon={props.startIcon} />
-  ) : null;
+  const endIcon = useMemo(() => {
+    if (!props.endIcon) {
+      return null;
+    }
+    return <Icon icon={props.endIcon} />;
+  }, [props.endIcon]);
 
   return (
     <Button

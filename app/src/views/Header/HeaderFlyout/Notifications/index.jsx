@@ -9,6 +9,7 @@ import { List } from '../../../../components/Custom';
 import {
   LIST_ITEM_ENUM,
   HEADER_FLYOUT_TYPE_ENUM,
+  STATUS_ENUM,
 } from '../../../../../../common/enums';
 import api from '../../../../actions/api';
 import { formatRoute } from '../../../../actions/goTo';
@@ -17,7 +18,8 @@ import { Typography } from '../../../../components/MUI';
 
 import styles from '../HeaderFlyout.module.css';
 
-export default function Notifications() {
+export default function Notifications(props) {
+  const { isMobileView } = props;
   const { t } = useTranslation();
   const { dispatch } = useContext(Store);
 
@@ -55,31 +57,33 @@ export default function Notifications() {
 
   useEffect(() => {
     const element = div.current;
-    if (element) {
-      const hasOverflowingChildren =
-        element.offsetHeight < element.scrollHeight;
-      if (!hasOverflowingChildren) {
-        loadMoreItems();
-      }
+    if (!element) {
+      return;
     }
-  });
+
+    const hasOverflowingChildren =
+      element.offsetHeight < element.scrollHeight;
+    if (!hasOverflowingChildren) {
+      loadMoreItems();
+    }
+  }, [div.current]);
 
   const getNotifications = async () => {
-    const { data } = await api(
+    const { status, data } = await api(
       formatRoute('/api/notifications/all', null, {
         currentPage: currentPage.current,
         perPage: 5,
       }),
     );
-    if (data) {
-      if (data.length > 0) {
-        setNotifications(notifications => [
-          ...notifications,
-          ...data,
-        ]);
-      } else {
-        setHasMoreItem(false);
-      }
+
+    if (status === STATUS_ENUM.ERROR) {
+      return;
+    }
+
+    if (data.length) {
+      setNotifications(notifications => [...notifications, ...data]);
+    } else {
+      setHasMoreItem(false);
     }
   };
 
@@ -117,25 +121,45 @@ export default function Notifications() {
       type: LIST_ITEM_ENUM.AVATAR_TEXT_SKELETON,
       key: 'skeleton',
     });
+    if (isMobileView) {
+      for (let i = 1; i < 5; i++) {
+        items.push({
+          type: LIST_ITEM_ENUM.AVATAR_TEXT_SKELETON,
+          key: `skeleton${i}`,
+        });
+      }
+    }
   }
 
-  return (
-    <div
-      className={styles.notificationsContainer}
-      ref={div}
-      onScroll={scrollHandler}
-    >
-      {notifications?.length > 0 ? (
-        <div>
-          <List items={items} />
-        </div>
-      ) : (
+  if (!notifications || !notifications.length) {
+    return (
+      <div
+        className={
+          isMobileView
+            ? styles.mobileNotificationsContainer
+            : styles.notificationsContainer
+        }
+      >
         <Typography align="center" variant="body2">
           <b>{t('no_notifications')}</b>
           <br />
           {t('no_notifications_message')}
         </Typography>
-      )}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={
+        isMobileView
+          ? styles.mobileNotificationsContainer
+          : styles.notificationsContainer
+      }
+      ref={div}
+      onScroll={scrollHandler}
+    >
+      <List items={items} />
     </div>
   );
 }

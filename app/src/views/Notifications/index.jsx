@@ -1,29 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import api from '../../actions/api';
 import { IgContainer } from '../../components/Custom';
-import NotificationList from '../Header/LoggedIn/NotificationModule/NotificationList';
 
-export default function Notifications() {
-  const [notifications, setNotifications] = useState([]);
+import Notifications from '../Header/HeaderFlyout/Notifications';
 
-  const updateNotifications = async () => {
-    const { data } = await api(`/api/notifications/all`);
-    setNotifications(data);
-  };
+import styles from './Notifications.module.css';
 
+export default function NotificationsMobile() {
   useEffect(() => {
     api('/api/notifications/see', {
       method: 'PUT',
     });
-    updateNotifications();
   }, []);
 
   return (
-    <IgContainer>
-      <NotificationList
-        notifications={notifications}
-        open
-      ></NotificationList>
+    <IgContainer className={styles.mobileContainer}>
+      <Notifications isMobileView />
     </IgContainer>
   );
 }

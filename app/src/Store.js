@@ -42,7 +42,10 @@ export const BREAKPOINTS = [
 const initialState = {
   authToken: handleLocalAuthToken(localAuthToken),
   screenSize: SCREENSIZE_ENUM.xs,
-  cart: [],
+  cart: {
+    items: [],
+  },
+  flyoutType: HEADER_FLYOUT_TYPE_ENUM.CLOSED,
   userInfo:
     (localUserInfo &&
       localUserInfo !== 'undefined' &&

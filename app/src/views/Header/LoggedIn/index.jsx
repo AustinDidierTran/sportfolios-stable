@@ -38,17 +38,17 @@ export default function LoggedIn(props) {
   const photoUrl = useMemo(() => userInfo.primaryPerson?.photo_url, [
     userInfo.primaryPerson,
   ]);
-  const nameObj = useMemo(() => {
-    return {
+
+  const nameObj = useMemo(
+    () => ({
       name: userInfo.primaryPerson?.name,
       surname: userInfo.primaryPerson?.surname,
-    };
-  }, [userInfo.primaryPerson]);
+    }),
+    [userInfo.primaryPerson],
+  );
+
   const totalCartItems = useMemo(
-    () =>
-      Array.isArray(items)
-        ? items.reduce((prev, item) => prev + item.quantity, 0)
-        : null,
+    () => items.reduce((prev, item) => prev + item.quantity, 0),
     [items],
   );
 
