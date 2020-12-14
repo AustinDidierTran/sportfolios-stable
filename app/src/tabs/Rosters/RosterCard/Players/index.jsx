@@ -87,9 +87,9 @@ export default function Players(props) {
     return <LoadingSpinner isComponent />;
   }
 
-  return (
-    <div className={styles.card}>
-      {isEventAdmin || editableRoster ? (
+  if (isEventAdmin || editableRoster) {
+    return (
+      <div className={styles.card}>
         <div className={styles.searchList}>
           <PersonSearchList
             addedByEventAdmin={isEventAdmin && !editableRoster}
@@ -106,7 +106,30 @@ export default function Players(props) {
             handleClose={handleClose}
           />
         </div>
-      ) : null}
+        <>
+          {players.length ? (
+            <div className={styles.player}>
+              {players.map(player => (
+                <PlayerCard
+                  isEventAdmin={isEventAdmin}
+                  player={player}
+                  isEditable={editableRole}
+                  onDelete={handleDelete}
+                  onRoleUpdate={handleRoleUpdate}
+                  key={player.id}
+                />
+              ))}
+            </div>
+          ) : (
+            <Typography>{t('empty_roster_add_players')}</Typography>
+          )}
+        </>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.card}>
       {
         <>
           {players.length ? (

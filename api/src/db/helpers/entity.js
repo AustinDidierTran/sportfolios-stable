@@ -1257,7 +1257,6 @@ async function getRoster(rosterId, withSub) {
     .orderByRaw(
       `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
     );
-  //}
 
   //TODO: Make a call to know if has created an account or is child account
   const status = TAG_TYPE_ENUM.REGISTERED;
@@ -3540,4 +3539,5 @@ module.exports = {
   getRosterInviteToken,
   cancelRosterInviteToken,
   getRosterIdFromInviteToken,
+  getRole,
 };

@@ -26,19 +26,6 @@ export default function RosterCard(props) {
     editableRoster: editableRosterProp,
     editableRole: editableRoleProp,
   } = props;
-  const isTeamEditor = useMemo(() => {
-    role == ROSTER_ROLE_ENUM.CAPTAIN ||
-      role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
-      role == ROSTER_ROLE_ENUM.COACH;
-  }, [role]);
-  const editableRoster = useMemo(
-    () => editableRosterProp || isTeamEditor,
-    [editableRosterProp, isTeamEditor],
-  );
-  const editableRole = useMemo(
-    () => editableRoleProp || isTeamEditor,
-    [editableRoleProp, isTeamEditor],
-  );
   const {
     position,
     name,
@@ -51,6 +38,21 @@ export default function RosterCard(props) {
     expandedIndex,
     index,
   ]);
+  const isTeamEditor = useMemo(
+    () =>
+      role == ROSTER_ROLE_ENUM.CAPTAIN ||
+      role == ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
+      role == ROSTER_ROLE_ENUM.COACH,
+    [role],
+  );
+  const editableRoster = useMemo(
+    () => editableRosterProp || isTeamEditor,
+    [editableRosterProp, isTeamEditor],
+  );
+  const editableRole = useMemo(
+    () => editableRoleProp || isTeamEditor,
+    [editableRoleProp, isTeamEditor],
+  );
 
   const onExpand = () => {
     setExpandedIndex(oldIndex => (oldIndex === index ? 0 : index));
