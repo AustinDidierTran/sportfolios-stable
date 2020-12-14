@@ -646,6 +646,29 @@ async function getCreators(id) {
   return data;
 }
 
+async function getCreatorsEmail(id) {
+  const realId = await getRealId(id);
+  const creators = await knex('entities_role')
+    .select('*')
+    .where({ entity_id: realId, role: 1 });
+
+  const emails = await Promise.all(
+    creators.map(async c => {
+      const res = await getEmailsEntity(c.entity_id_admin);
+      return res.map(r => r.email);
+    }),
+  );
+  const res = emails.reduce((prev, curr) => {
+    curr.forEach(c => {
+      if (!prev.find(p => p === c)) {
+        prev.push(c);
+      }
+    });
+    return prev;
+  }, []);
+  return res;
+}
+
 async function eventInfos(id, userId) {
   const entity = (await getEntity(id)).basicInfos;
   const role = await getEntityRole(id, userId);
@@ -1061,6 +1084,17 @@ async function getRegistrationTeamPaymentOption(paymentOptionId) {
 
   return teamPaymentOption;
 }
+async function getRegistrationIndividualPaymentOption(
+  paymentOptionId,
+) {
+  const [individualPaymentOption] = await knex(
+    'event_payment_options',
+  )
+    .select('individual_price', 'individual_stripe_price_id')
+    .where({ id: paymentOptionId });
+
+  return individualPaymentOption;
+}
 
 async function getOwnerStripePrice(stripePriceId) {
   const [{ owner_id: ownerId }] = await knex('stripe_price')
@@ -1180,7 +1214,7 @@ async function getAllRegisteredInfos(eventId, userId) {
 
 async function getRemainingSpots(eventId) {
   const realId = await getRealId(eventId);
-  const [{ count }] = await knex('event_rosters')
+  const [{ count: countRosters }] = await knex('event_rosters')
     .count('team_id')
     .where({
       event_id: realId,
@@ -1189,6 +1223,18 @@ async function getRemainingSpots(eventId) {
       STATUS_ENUM.ACCEPTED,
       STATUS_ENUM.ACCEPTED_FREE,
     ]);
+  console.log({ countRosters });
+
+  const [{ count: countPersons }] = await knex('event_persons')
+    .count('person_id')
+    .where({
+      event_id: realId,
+    })
+    .whereIn('registration_status', [
+      STATUS_ENUM.ACCEPTED,
+      STATUS_ENUM.ACCEPTED_FREE,
+    ]);
+  console.log({ countPersons });
 
   const [event] = await knex('events')
     .select('maximum_spots')
@@ -1197,7 +1243,9 @@ async function getRemainingSpots(eventId) {
   if (!event.maximum_spots) {
     return null;
   }
-  return event.maximum_spots - Number(count);
+  return (
+    event.maximum_spots - Number(countRosters) - Number(countPersons)
+  );
 }
 
 async function getRankings(eventId) {
@@ -2843,6 +2891,13 @@ async function addTeamToEvent(body) {
     registrationStatus,
     paymentOption,
   } = body;
+  console.log({
+    teamId,
+    eventId,
+    status,
+    registrationStatus,
+    paymentOption,
+  });
   const realTeamId = await getRealId(teamId);
   const realEventId = await getRealId(eventId);
 
@@ -2872,6 +2927,57 @@ async function addTeamToEvent(body) {
       .transacting(trx);
     return res.roster_id;
   });
+}
+
+async function getRegisteredPersons(persons, eventId) {
+  const registered = await Promise.all(
+    persons.map(async person => {
+      const res = await knex('event_persons')
+        .select('person_id')
+        .where({ person_id: person.value, event_id: eventId });
+      return res;
+    }),
+  );
+  console.log({ registered });
+  const res = registered.reduce((prev, curr) => {
+    if (!curr) {
+      return prev;
+    } else {
+      prev.push(curr);
+      return prev;
+    }
+  }, []);
+  console.log({ res });
+  return res;
+}
+
+async function addPersonToEvent(body) {
+  const {
+    personId,
+    eventId,
+    status,
+    registrationStatus,
+    paymentOption,
+  } = body;
+  console.log({
+    personId,
+    eventId,
+    status,
+    registrationStatus,
+    paymentOption,
+  });
+  const realEventId = await getRealId(eventId);
+  const [res] = await knex('event_persons')
+    .insert({
+      person_id: personId,
+      event_id: realEventId,
+      status,
+      registration_status: registrationStatus,
+      payment_option_id: paymentOption,
+    })
+    .returning('*');
+  console.log({ res });
+  return res;
 }
 
 async function addRoster(rosterId, roster, userId) {
@@ -3444,6 +3550,9 @@ module.exports = {
   addTeamToSchedule,
   addTimeSlot,
   cancelRosterInviteToken,
+  addPersonToEvent,
+  getRegisteredPersons,
+  addEventCartItem,
   canRemovePlayerFromRoster,
   canUnregisterTeam,
   deleteEntity,
@@ -3470,10 +3579,29 @@ module.exports = {
   getCreator,
   getCreators,
   getEmailPerson,
-  getEmailsEntity,
+  getCreatorsEmail,
   getEntity,
   getEntityOwners,
   getEntityRole,
+  getEmailsEntity,
+  getMembers,
+  getReports,
+  generateReport,
+  hasMemberships,
+  getOrganizationMembers,
+  getMemberships,
+  getMembership,
+  getPersonGames,
+  getRegistered,
+  getRegistrationTeamPaymentOption,
+  getRegistrationIndividualPaymentOption,
+  getSubmissionerInfos,
+  getAllAcceptedRegistered,
+  getAllRegistered,
+  getAllRegisteredInfos,
+  getRemainingSpots,
+  getRankings,
+  getRoster,
   getEvent,
   getEventAdmins,
   getFields,

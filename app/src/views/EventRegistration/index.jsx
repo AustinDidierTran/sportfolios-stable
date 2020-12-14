@@ -119,6 +119,7 @@ export default function EventRegistration() {
           });
         }
       } else {
+        console.log({ persons });
         const { status, data } = await api(
           '/api/entity/registerIndividual',
           {
@@ -126,7 +127,7 @@ export default function EventRegistration() {
             body: JSON.stringify({
               eventId: event.id,
               paymentOption,
-              persons,
+              persons: persons,
               status: INVOICE_STATUS_ENUM.OPEN,
             }),
           },

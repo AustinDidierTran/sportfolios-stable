@@ -1177,7 +1177,7 @@ router.post(`${BASE_URL}/register`, async ctx => {
 });
 
 router.post(`${BASE_URL}/registerIndividual`, async ctx => {
-  const { status, reason, persons } = await queries.addPersonsToEvent(
+  const { status, reason, person } = await queries.addPersonToEvent(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
@@ -1191,7 +1191,7 @@ router.post(`${BASE_URL}/registerIndividual`, async ctx => {
     ctx.status = 201;
     ctx.body = {
       status: 'success',
-      data: { status, persons },
+      data: { status, person },
     };
   } else {
     ctx.status = 404;
