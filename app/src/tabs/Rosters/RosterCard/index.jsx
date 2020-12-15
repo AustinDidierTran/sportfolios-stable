@@ -142,11 +142,10 @@ export default function RosterCard(props) {
         severity: SEVERITY_ENUM.ERROR,
       });
       return;
-    } 
-      const refresh = await deletePlayerFromRoster(id);
-      if (refresh) {
-        update();
-      }
+    }
+    const refresh = await deletePlayerFromRoster(id);
+    if (refresh) {
+      update();
     }
   };
 

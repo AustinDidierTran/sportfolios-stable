@@ -308,22 +308,22 @@ async function sendPersonRegistrationEmailToAdmin({
   if (language === LANGUAGE_ENUM.ENGLISH) {
     title = 'New registration!';
     if (placesLeft > 1) {
-      content = `A new person named ${person.name} has registered to your event ${event.name} with success, ${placesLeft} spots remaining. You can access to your event here 👇`;
+      content = `${person.completeName} has registered to your event ${event.name} with success, ${placesLeft} spots remaining. You can access to your event here 👇`;
     } else if (placesLeft === 1) {
-      content = `A new person named ${person.name} has registered to your event ${event.name} with success, only one spot remaining. You can access to your event here 👇`;
+      content = `${person.completeName} has registered to your event ${event.name} with success, only one spot remaining. You can access to your event here 👇`;
     } else if (placesLeft === 0) {
-      content = `A new person named ${person.name} has registered to your event ${event.name} with success, no more spots remaining. You can access to your event here 👇`;
+      content = `${person.completeName} has registered to your event ${event.name} with success, no more spots remaining. You can access to your event here 👇`;
     }
     buttonName = 'Event';
     subject = 'New registration to your tournament | Sportfolios';
   } else {
     title = 'Nouvelle inscription!';
     if (placesLeft > 1) {
-      content = `Une personne nommée ${person.name} s'est inscrite à votre événement ${event.name} avec succès, plus que ${placesLeft} places disponibles. Vous pouvez accéder au status de votre événement ici 👇`;
+      content = `${person.completeName} s'est inscrite à votre événement ${event.name} avec succès, plus que ${placesLeft} places disponibles. Vous pouvez accéder au status de votre événement ici 👇`;
     } else if (placesLeft === 1) {
-      content = `Une personne nommée ${person.name} s'est inscrite à votre événement ${event.name} avec succès, plus qu'une seule place disponible. Vous pouvez accéder au status de votre événement ici 👇`;
+      content = `${person.completeName} s'est inscrite à votre événement ${event.name} avec succès, plus qu'une seule place disponible. Vous pouvez accéder au status de votre événement ici 👇`;
     } else if (placesLeft === 0) {
-      content = `Une personne nommée ${person.name} s'est inscrite à votre événement ${event.name} avec succès, plus de place disponible. Vous pouvez accéder au status de votre événement ici 👇`;
+      content = `${person.completeName} s'est inscrite à votre événement ${event.name} avec succès, plus de place disponible. Vous pouvez accéder au status de votre événement ici 👇`;
     }
     buttonName = 'Événement';
     subject = 'Nouvelle inscription à votre tournoi | Sportfolios';

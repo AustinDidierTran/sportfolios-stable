@@ -9,3 +9,7 @@
 .secondaryActions {
   display: inline-flex;
 }
+
+.listItem {
+  list-style-type: none !important;
+}

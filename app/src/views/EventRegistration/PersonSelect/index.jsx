@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
-import { MultiSelect } from '../../../components/Custom';
+import { IconButton } from '../../../components/Custom';
 import { Typography } from '../../../components/MUI';
 import { useTranslation } from 'react-i18next';
 import styles from './PersonSelect.module.css';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
-import { GLOBAL_ENUM } from '../../../../../common/enums';
+import PersonItem from '../../../components/Custom/List/PersonItem';
+import { useParams } from 'react-router-dom';
 
 export default function PersonSelect(props) {
   const { t } = useTranslation();
   const { formik, stepHook } = props;
+  const { id: eventId } = useParams();
 
   useEffect(() => {
     getPersons();
@@ -18,8 +20,8 @@ export default function PersonSelect(props) {
 
   const getPersons = async () => {
     const { data } = await api(
-      formatRoute('/api/user/ownedPersons', null, {
-        type: GLOBAL_ENUM.PERSON,
+      formatRoute('/api/user/ownedPersonsRegistration', null, {
+        eventId,
       }),
     );
     //Permet de mettre la primary person comme 1er élément de la liste
@@ -29,21 +31,43 @@ export default function PersonSelect(props) {
         break;
       }
     }
-    const res = data.map(d => ({
-      display: d.complete_name,
-      value: d.id,
-    }));
-    formik.setFieldValue('allPersons', res);
-    formik.setFieldValue('persons', [res[0]]);
+    if (!data[0].registered) {
+      formik.setFieldValue('persons', [data[0]]);
+      data.shift();
+    }
+    formik.setFieldValue('allPersons', data);
   };
 
-  const handleChange = value => {
-    if (value.length < 1) {
+  const addPerson = person => {
+    const persons = formik.values.persons;
+    persons.push(person);
+    formik.setFieldValue('persons', persons);
+    formik.setFieldValue(
+      'allPersons',
+      formik.values.allPersons.filter(p => {
+        if (p.id === person.id) {
+          return false;
+        }
+        return true;
+      }),
+    );
+    stepHook.handleCompleted(1);
+  };
+
+  const removePerson = person => {
+    const allPersons = formik.values.allPersons;
+    allPersons.push(person);
+    formik.setFieldValue('allPersons', allPersons);
+    const persons = formik.values.persons.filter(p => {
+      if (p.id === person.id) {
+        return false;
+      }
+      return true;
+    });
+    formik.setFieldValue('persons', persons);
+    if (persons.length < 1) {
       stepHook.handleNotCompleted(1);
-    } else {
-      stepHook.handleCompleted(1);
     }
-    formik.setFieldValue('persons', value);
   };
 
   return (
@@ -56,12 +80,69 @@ export default function PersonSelect(props) {
       >
         {t('choose_person_you_can_choose_more_than_one_person')}
       </Typography>
-      <MultiSelect
-        label={t('persons')}
-        options={formik.values.allPersons}
-        values={formik.values.persons}
-        onChange={handleChange}
-      />
+      <Typography
+        variant="body2"
+        component="p"
+        style={{ marginBottom: '8px' }}
+      >
+        {t('selected_persons')}
+      </Typography>
+      {formik.values.persons < 1 ? (
+        <Typography component="p" style={{ marginBottom: '8px' }}>
+          {t('no_person_selected')}
+        </Typography>
+      ) : (
+        <></>
+      )}
+      {formik.values.persons.map(p => (
+        <PersonItem
+          key={p.id}
+          completeName={p.complete_name}
+          onClick={() => {
+            removePerson(p);
+          }}
+          secondaryActions={[
+            <IconButton
+              icon="Remove"
+              toolTip={t('remove')}
+              style={{ color: 'secondary' }}
+            />,
+          ]}
+        />
+      ))}
+      {formik.values.allPersons.length ? (
+        <>
+          <Typography
+            variant="body2"
+            component="p"
+            style={{ marginBottom: '8px' }}
+          >
+            {t('my_persons')}
+          </Typography>
+          {formik.values.allPersons.map(p => (
+            <PersonItem
+              key={p.id}
+              completeName={p.complete_name}
+              onClick={() => {
+                addPerson(p);
+              }}
+              disabled={p.registered}
+              secondary={
+                p.registered ? t('registered_singular') : null
+              }
+              secondaryActions={[
+                <IconButton
+                  icon="Add"
+                  toolTip={t('add')}
+                  style={{ color: 'primary' }}
+                />,
+              ]}
+            />
+          ))}
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

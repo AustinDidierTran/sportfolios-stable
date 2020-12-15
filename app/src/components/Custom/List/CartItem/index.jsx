@@ -34,42 +34,87 @@ export default function CartItem(props) {
   const { type } = metadata;
   if (type === GLOBAL_ENUM.TEAM || type === GLOBAL_ENUM.EVENT) {
     const { team } = metadata;
-    return (
-      <>
-        <ListItem style={{ width: '100%' }}>
-          <div className={styles.div}>
-            <ListItemIcon>
-              <Avatar
-                photoUrl={photoUrl || IMAGE_ENUM.ULTIMATE_TOURNAMENT}
-                variant="square"
-                className={styles.photo}
-              ></Avatar>
-            </ListItemIcon>
-            <ListItemText
-              className={styles.name}
-              primary={description}
-              secondary={team.name}
-            />
-            <ListItemText
-              className={styles.quantity}
-              primary={
-                metadata?.isIndividualOption
-                  ? taxRates.length
-                    ? `${formatPrice(amount)} + ${t('taxes')} | ${
-                        metadata?.name
-                      }`
-                    : `${formatPrice(amount)}| ${metadata?.name}`
-                  : taxRates.length
-                  ? `${formatPrice(amount)} + ${t('taxes')}`
-                  : `${formatPrice(amount)}`
-              }
-              secondary={label}
-            />
-          </div>
-        </ListItem>
-        <Divider />
-      </>
-    );
+    if (team) {
+      return (
+        <>
+          <ListItem style={{ width: '100%' }}>
+            <div className={styles.div}>
+              <ListItemIcon>
+                <Avatar
+                  photoUrl={
+                    photoUrl || IMAGE_ENUM.ULTIMATE_TOURNAMENT
+                  }
+                  variant="square"
+                  className={styles.photo}
+                ></Avatar>
+              </ListItemIcon>
+              <ListItemText
+                className={styles.name}
+                primary={description}
+                secondary={team.name}
+              />
+              <ListItemText
+                className={styles.quantity}
+                primary={
+                  metadata?.isIndividualOption
+                    ? taxRates.length
+                      ? `${formatPrice(amount)} + ${t('taxes')} | ${
+                          metadata?.name
+                        }`
+                      : `${formatPrice(amount)}| ${metadata?.name}`
+                    : taxRates.length
+                    ? `${formatPrice(amount)} + ${t('taxes')}`
+                    : `${formatPrice(amount)}`
+                }
+                secondary={label}
+              />
+            </div>
+          </ListItem>
+          <Divider />
+        </>
+      );
+    }
+    const { person } = metadata;
+    if (person) {
+      return (
+        <>
+          <ListItem style={{ width: '100%' }}>
+            <div className={styles.div}>
+              <ListItemIcon>
+                <Avatar
+                  photoUrl={
+                    photoUrl || IMAGE_ENUM.ULTIMATE_TOURNAMENT
+                  }
+                  variant="square"
+                  className={styles.photo}
+                ></Avatar>
+              </ListItemIcon>
+              <ListItemText
+                className={styles.name}
+                primary={description}
+                secondary={person.complete_name}
+              />
+              <ListItemText
+                className={styles.quantity}
+                primary={
+                  metadata?.isIndividualOption
+                    ? taxRates.length
+                      ? `${formatPrice(amount)} + ${t('taxes')} | ${
+                          metadata?.name
+                        }`
+                      : `${formatPrice(amount)}| ${metadata?.name}`
+                    : taxRates.length
+                    ? `${formatPrice(amount)} + ${t('taxes')}`
+                    : `${formatPrice(amount)}`
+                }
+                secondary={label}
+              />
+            </div>
+          </ListItem>
+          <Divider />
+        </>
+      );
+    }
   }
   if (type === GLOBAL_ENUM.MEMBERSHIP) {
     const { person, organization } = metadata;

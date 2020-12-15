@@ -1223,7 +1223,6 @@ async function getRemainingSpots(eventId) {
       STATUS_ENUM.ACCEPTED,
       STATUS_ENUM.ACCEPTED_FREE,
     ]);
-  console.log({ countRosters });
 
   const [{ count: countPersons }] = await knex('event_persons')
     .count('person_id')
@@ -1234,7 +1233,6 @@ async function getRemainingSpots(eventId) {
       STATUS_ENUM.ACCEPTED,
       STATUS_ENUM.ACCEPTED_FREE,
     ]);
-  console.log({ countPersons });
 
   const [event] = await knex('events')
     .select('maximum_spots')
@@ -2170,6 +2168,23 @@ async function updateRegistration(
       roster_id: realRosterId,
     });
 }
+async function updateRegistrationPerson(
+  personId,
+  eventId,
+  invoiceItemId,
+  status,
+) {
+  const realEventId = await getRealId(eventId);
+  return knex('event_persons')
+    .update({
+      invoice_item_id: invoiceItemId,
+      status,
+    })
+    .where({
+      event_id: realEventId,
+      person_id: personId,
+    });
+}
 
 async function updateRosterRole(playerId, role) {
   if (role === ROSTER_ROLE_ENUM.PLAYER) {
@@ -2891,13 +2906,6 @@ async function addTeamToEvent(body) {
     registrationStatus,
     paymentOption,
   } = body;
-  console.log({
-    teamId,
-    eventId,
-    status,
-    registrationStatus,
-    paymentOption,
-  });
   const realTeamId = await getRealId(teamId);
   const realEventId = await getRealId(eventId);
 
@@ -2930,24 +2938,15 @@ async function addTeamToEvent(body) {
 }
 
 async function getRegisteredPersons(persons, eventId) {
-  const registered = await Promise.all(
-    persons.map(async person => {
-      const res = await knex('event_persons')
-        .select('person_id')
-        .where({ person_id: person.value, event_id: eventId });
-      return res;
-    }),
+  const ids = persons.map(p => p.id);
+  const registered = await knex('event_persons')
+    .select('person_id')
+    .whereIn('person_id', ids)
+    .andWhere({ event_id: eventId });
+
+  const res = persons.filter(p =>
+    registered.some(r => r.person_id === p.id),
   );
-  console.log({ registered });
-  const res = registered.reduce((prev, curr) => {
-    if (!curr) {
-      return prev;
-    } else {
-      prev.push(curr);
-      return prev;
-    }
-  }, []);
-  console.log({ res });
   return res;
 }
 
@@ -2959,13 +2958,6 @@ async function addPersonToEvent(body) {
     registrationStatus,
     paymentOption,
   } = body;
-  console.log({
-    personId,
-    eventId,
-    status,
-    registrationStatus,
-    paymentOption,
-  });
   const realEventId = await getRealId(eventId);
   const [res] = await knex('event_persons')
     .insert({
@@ -2976,7 +2968,6 @@ async function addPersonToEvent(body) {
       payment_option_id: paymentOption,
     })
     .returning('*');
-  console.log({ res });
   return res;
 }
 
@@ -3673,6 +3664,7 @@ module.exports = {
   updatePlayerPaymentStatus,
   updatePreRanking,
   updateRegistration,
+  updateRegistrationPerson,
   updateRosterRole,
   updatePlayerPaymentStatus,
   updateMembershipInvoice,

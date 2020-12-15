@@ -499,97 +499,82 @@ async function addTeamToEvent(body, userId) {
 
 async function addPersonToEvent(body, userId) {
   const { eventId, paymentOption, persons, status } = body;
-  console.log({ eventId, paymentOption, personId, status });
 
   if (!paymentOption) {
     throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
   }
 
+  const remainingSpots = await getRemainingSpotsHelper(eventId);
   // Reject team if there is already too many registered teams
-  if ((await getRemainingSpotsHelper(eventId)) < persons.length) {
+  if (remainingSpots && remainingSpots < persons.length) {
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
   }
 
   const event = (await getEntity(eventId, userId)).basicInfos;
-  console.log({ event });
 
   const individualPaymentOption = await getRegistrationIndividualPaymentOptionHelper(
     paymentOption,
   );
-  console.log({ individualPaymentOption });
 
   const isFreeOption = individualPaymentOption.individual_price === 0;
-  console.log({ isFreeOption });
   // TODO: Validate status of team
   const registrationStatus = isFreeOption
     ? STATUS_ENUM.ACCEPTED_FREE
     : STATUS_ENUM.ACCEPTED;
-  console.log({ registrationStatus });
 
-  const registeredPerson = await getRegisteredPersons(
+  const registeredPersons = await getRegisteredPersons(
     persons,
     eventId,
   );
-  console.log({ registeredPerson });
-  if (registeredPerson.length > 0) {
+  if (registeredPersons.length > 0) {
     return {
       status: STATUS_ENUM.REFUSED,
       reason: REJECTION_ENUM.ALREADY_REGISTERED,
+      persons: registeredPersons,
     };
   }
-
-  await Promise.all(
-    persons.forEach(async person => {
-      await addPersonToEventHelper({
-        personId: person.value,
-        eventId: event.id,
-        status: isFreeOption ? INVOICE_STATUS_ENUM.FREE : status,
-        registrationStatus,
-        paymentOption,
-      });
-      console.log('1');
-      if (registrationStatus === STATUS_ENUM.ACCEPTED) {
-        // wont be added to cart if free
-        const ownerId = await getOwnerStripePrice(
-          individualPaymentOption.individual_stripe_price_id,
-        );
-        console.log('2');
-        await addEventCartItem(
-          {
-            stripePriceId:
-              individualPaymentOption.individual_stripe_price_id,
-            metadata: {
-              sellerEntityId: ownerId,
-              buyerId: person.value,
-            },
+  await persons.forEach(async person => {
+    await addPersonToEventHelper({
+      personId: person.id,
+      eventId: event.id,
+      status: isFreeOption ? INVOICE_STATUS_ENUM.FREE : status,
+      registrationStatus,
+      paymentOption,
+    });
+    if (registrationStatus === STATUS_ENUM.ACCEPTED) {
+      // wont be added to cart if free
+      const ownerId = await getOwnerStripePrice(
+        individualPaymentOption.individual_stripe_price_id,
+      );
+      await addEventCartItem(
+        {
+          stripePriceId:
+            individualPaymentOption.individual_stripe_price_id,
+          metadata: {
+            sellerEntityId: ownerId,
+            buyerId: person.id,
+            person: person,
           },
-          userId,
-        );
-        console.log('3');
-      }
-
-      // send mail to organization admin
-      // TODO find real event user creator
-      const creatorEmails = await getCreatorsEmail(eventId);
-      console.log({ creatorEmails });
-      const personEntity = (await getEntity(person.value)).basicInfos;
-      console.log({ personEntity });
-      creatorEmails.map(async email => {
-        const language = await getLanguageFromEmail(email);
-        sendPersonRegistrationEmailToAdmin({
-          email,
-          person: personEntity,
-          event,
-          language,
-          placesLeft: await getRemainingSpotsHelper(event.id),
-        });
+        },
+        userId,
+      );
+    }
+    // send mail to organization admin
+    const creatorEmails = await getCreatorsEmail(eventId);
+    await creatorEmails.forEach(async email => {
+      const language = await getLanguageFromEmail(email);
+      sendPersonRegistrationEmailToAdmin({
+        email,
+        person,
+        event,
+        language,
+        placesLeft: remainingSpots,
       });
-    }),
-  );
-
-  return { status: registrationStatus, rosterId };
+    });
+  });
+  return { status: registrationStatus, persons };
 }
 
 async function getInteractiveToolData(eventId, userId) {

@@ -39,6 +39,7 @@ const {
   getMessengerId,
   deleteMessengerId,
   setChatbotInfos,
+  isRegistered,
 } = require('../helpers');
 
 const {
@@ -175,6 +176,23 @@ const getOwnedAndTransferedPersons = async userId => {
     getPeopleTransferedToUser(userId),
   ]);
   return owned.concat(transfered);
+};
+
+const getOwnedPersonsRegistration = async (eventId, userId) => {
+  const [owned, transfered] = await Promise.all([
+    (await getOwnedPersons(userId)).filter(
+      person => person.role === ENTITIES_ROLE_ENUM.ADMIN,
+    ),
+    getPeopleTransferedToUser(userId),
+  ]);
+  const concat = owned.concat(transfered);
+  const registered = await Promise.all(
+    concat.map(async c => ({
+      ...c,
+      registered: await isRegistered(c.id, eventId),
+    })),
+  );
+  return registered;
 };
 
 const getOwnedPersons = async userId => {
@@ -342,6 +360,7 @@ module.exports = {
   getTokenPromoCode,
   declinePersonTransfer,
   getOwnedAndTransferedPersons,
+  getOwnedPersonsRegistration,
   getTransferInfos,
   setFacebookData,
   getConnectedApps,

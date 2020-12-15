@@ -20,6 +20,8 @@ import {
   INVOICE_STATUS_ENUM,
   GLOBAL_ENUM,
   SEVERITY_ENUM,
+  STATUS_ENUM,
+  REJECTION_ENUM,
 } from '../../../../common/enums';
 import styles from './EventRegistration.module.css';
 import { Typography } from '../../components/MUI';
@@ -73,7 +75,6 @@ export default function EventRegistration() {
       } = values;
       let newTeamId = null;
       setIsLoading(true);
-      console.log({ event, team, roster, paymentOption, persons });
       if (teamActivity) {
         if (!team.id) {
           const tempTeam = await api('/api/entity', {
@@ -119,7 +120,6 @@ export default function EventRegistration() {
           });
         }
       } else {
-        console.log({ persons });
         const { status, data } = await api(
           '/api/entity/registerIndividual',
           {
@@ -127,11 +127,41 @@ export default function EventRegistration() {
             body: JSON.stringify({
               eventId: event.id,
               paymentOption,
-              persons: persons,
+              persons,
               status: INVOICE_STATUS_ENUM.OPEN,
             }),
           },
         );
+        if (status === STATUS_ENUM.SUCCESS) {
+          goTo(ROUTES.registrationStatus, null, {
+            status: data.status,
+          });
+        } else {
+          if (data.reason === REJECTION_ENUM.ALREADY_REGISTERED) {
+            const names = data.persons.reduce((prev, curr, index) => {
+              if (index === 0) {
+                return prev + curr.name;
+              } else {
+                return `${prev} ${t('and_lowerCased')} ${curr.name}`;
+              }
+            }, '');
+            dispatch({
+              type: ACTION_ENUM.SNACK_BAR,
+              message:
+                data.persons.length === 1
+                  ? t('already_registered_singular', { names })
+                  : t('already_registered', { names }),
+              severity: SEVERITY_ENUM.ERROR,
+              duration: 6000,
+            });
+          } else {
+            goTo(ROUTES.registrationStatus, null, {
+              status: data.status,
+              reason: data.reason,
+            });
+          }
+        }
+        setIsLoading(false);
       }
     },
   });

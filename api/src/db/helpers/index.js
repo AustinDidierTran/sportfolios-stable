@@ -300,6 +300,13 @@ const getBasicUserInfoFromId = async user_id => {
   };
 };
 
+const isRegistered = async (personId, eventId) => {
+  const [res] = await knex('event_persons')
+    .select('*')
+    .where({ person_id: personId, event_id: eventId });
+  return Boolean(res);
+};
+
 const getEmailsFromUserId = async userId => {
   if (!userId) {
     return [];
@@ -829,6 +836,7 @@ module.exports = {
   updatePrimaryPerson,
   useToken,
   sendPersonTransferEmailAllIncluded,
+  isRegistered,
   sendPlayerTransfer,
   sendTransferAddNewPlayer,
   getPeopleTransferedToUser,

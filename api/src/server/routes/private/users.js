@@ -175,6 +175,25 @@ router.get(`${BASE_URL}/ownedPersons`, async ctx => {
     };
   }
 });
+router.get(`${BASE_URL}/ownedPersonsRegistration`, async ctx => {
+  const persons = await queries.getOwnedPersonsRegistration(
+    ctx.query.eventId,
+    ctx.body.userInfo.id,
+  );
+  if (persons) {
+    ctx.status = 200;
+    ctx.body = {
+      status: 'success',
+      data: persons,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
 
 router.put(`${BASE_URL}/primaryPerson`, async ctx => {
   const success = await queries.updatePrimaryPerson(

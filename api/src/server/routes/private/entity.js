@@ -1177,7 +1177,7 @@ router.post(`${BASE_URL}/register`, async ctx => {
 });
 
 router.post(`${BASE_URL}/registerIndividual`, async ctx => {
-  const { status, reason, person } = await queries.addPersonToEvent(
+  const { status, reason, persons } = await queries.addPersonToEvent(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
@@ -1185,13 +1185,13 @@ router.post(`${BASE_URL}/registerIndividual`, async ctx => {
     ctx.status = errors[ERROR_ENUM.REGISTRATION_ERROR].code;
     ctx.body = {
       status: 'error',
-      data: { status, reason },
+      data: { status, reason, persons },
     };
   } else if (status) {
     ctx.status = 201;
     ctx.body = {
       status: 'success',
-      data: { status, person },
+      data: { status, persons },
     };
   } else {
     ctx.status = 404;
