@@ -16,7 +16,7 @@ import {
 } from '../../../../components/Custom';
 import api from '../../../../actions/api';
 import { formatRoute } from '../../../../actions/goTo';
-import PlayersQuickAdd from './PlayersQuickAdd';
+import PersonsQuickAdd from './PersonsQuickAdd';
 import { Store } from '../../../../Store';
 import { ROSTER_ROLE_ENUM } from '../../../../../../common/enums';
 
@@ -92,14 +92,15 @@ export default function Players(props) {
   };
   const playersQuickAdd = useMemo(() => {
     if (withMyPersonsQuickAdd) {
-      const validPlayers = userInfo.persons.filter(
-        p =>
-          !blackList.includes(p.entity_id) &&
-          (!whiteList || whiteList.includes(p.entity_id)),
-      );
-      return validPlayers;
+      return userInfo.persons
+        .filter(p => !whiteList || whiteList.includes(p.entity_id))
+        .map(p => ({
+          ...p,
+          teamPlayerId: players.find(q => p.entity_id === q.personId)
+            ?.id,
+        }));
     }
-  }, [blackList, withMyPersonsQuickAdd]);
+  }, [players, withMyPersonsQuickAdd, whiteList]);
 
   if (!players) {
     return null;
@@ -127,11 +128,12 @@ export default function Players(props) {
             handleClose={handleClose}
           />
         </div>
-        <PlayersQuickAdd
+        <PersonsQuickAdd
           title={t('my_persons')}
           titleClassName={styles.listTitle}
           onAdd={onPlayerAddToRoster}
           persons={playersQuickAdd}
+          onRemove={handleDelete}
         />
         <Divider variant="middle" />
         <>
@@ -161,11 +163,12 @@ export default function Players(props) {
 
   return (
     <div className={styles.card}>
-      <PlayersQuickAdd
+      <PersonsQuickAdd
         title={t('my_persons')}
         onAdd={onPlayerAddToRoster}
         persons={playersQuickAdd}
         titleClassName={styles.listTitle}
+        onRemove={handleDelete}
       />
       <Divider variant="middle" />
       {
