@@ -1170,7 +1170,6 @@ async function getAllRegisteredInfos(eventId, userId) {
       const option = await getPaymentOption(t.roster_id);
       const role = await getRole(t.roster_id, userId);
       const registrationStatus = await getRegistrationStatus(
-        eventId,
         t.roster_id,
       );
       return {
@@ -1230,14 +1229,12 @@ async function getRankings(eventId) {
   return res;
 }
 
-async function getRegistrationStatus(eventId, rosterId) {
-  const realEventId = await getRealId(eventId);
+async function getRegistrationStatus(rosterId) {
   const realRosterId = await getRealId(rosterId);
   const [registration] = await knex('event_rosters')
     .select('registration_status')
     .where({
       roster_id: realRosterId,
-      event_id: realEventId,
     });
 
   return registration.registration_status;

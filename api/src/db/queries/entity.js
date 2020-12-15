@@ -243,18 +243,12 @@ async function getRoster(rosterId, withSub) {
   return getRosterHelper(rosterId, withSub);
 }
 
-async function getRosterAllIncluded(
-  rosterId,
-  userId,
-  eventId,
-  withSub,
-) {
+async function getRosterAllIncluded(rosterId, userId, withSub) {
   const players = getRoster(rosterId, withSub);
   const role = getRole(rosterId, userId);
-  let registrationStatus;
-  if (eventId) {
-    registrationStatus = getRegistrationStatus(eventId, rosterId);
-  }
+
+  const registrationStatus = getRegistrationStatus(rosterId);
+
   const [{ name } = {}] = await getRostersNames([rosterId]);
   return {
     players: await players,
@@ -1258,7 +1252,7 @@ async function getRosterFromInviteToken(token, userId) {
   if (!rosterId) {
     return;
   }
-  return getRosterAllIncluded(rosterId, userId);
+  return getRosterAllIncluded(rosterId, userId, true);
 }
 
 module.exports = {

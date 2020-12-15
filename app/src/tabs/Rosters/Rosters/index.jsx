@@ -11,9 +11,13 @@ export default function Rosters(props) {
     onRoleUpdate,
     update,
   } = props;
-  const [expandedIndex, setExpandedIndex] = useState(0);
+  const [expandedIndex, setExpandedIndex] = useState();
   const onExpand = index => {
-    setExpandedIndex(index);
+    if (expandedIndex === index) {
+      setExpandedIndex(null);
+    } else {
+      setExpandedIndex(index);
+    }
   };
   if (!rosters || !rosters.length) {
     // TODO: It should say there are no rosters [WCS-372]
