@@ -1156,7 +1156,6 @@ async function getAllRegisteredInfos(eventId, userId) {
       const option = await getPaymentOption(t.roster_id);
       const role = await getRole(t.roster_id, userId);
       const registrationStatus = await getRegistrationStatus(
-        eventId,
         t.roster_id,
       );
       return {
@@ -1216,14 +1215,12 @@ async function getRankings(eventId) {
   return res;
 }
 
-async function getRegistrationStatus(eventId, rosterId) {
-  const realEventId = await getRealId(eventId);
+async function getRegistrationStatus(rosterId) {
   const realRosterId = await getRealId(rosterId);
   const [registration] = await knex('event_rosters')
     .select('registration_status')
     .where({
       roster_id: realRosterId,
-      event_id: realEventId,
     });
 
   return registration.registration_status;
@@ -1231,7 +1228,6 @@ async function getRegistrationStatus(eventId, rosterId) {
 
 async function getRoster(rosterId, withSub) {
   const realId = await getRealId(rosterId);
-
   let whereCond = { roster_id: realId };
   if (!withSub) {
     whereCond.is_sub = false;
@@ -1271,7 +1267,7 @@ const getPrimaryPerson = async user_id => {
 
 async function getRole(rosterId, userId) {
   const realId = await getRealId(rosterId);
-  const [role] = await knex('team_players')
+  const [{ role } = {}] = await knex('team_players')
     .select('team_players.role')
     .join(
       'user_entity_role',
@@ -1284,7 +1280,7 @@ async function getRole(rosterId, userId) {
     )
     .limit(1);
   if (role) {
-    return role.role;
+    return role;
   } else {
     return ROSTER_ROLE_ENUM.VIEWER;
   }
@@ -3397,6 +3393,31 @@ async function getRosterIdFromInviteToken(token) {
   return roster_id;
 }
 
+async function getRosterEventInfos(roster_id) {
+  const [res] = await knex('event_rosters')
+    .select(
+      'event_id',
+      'event_rosters.team_id',
+      'registration_status',
+      knex.raw('name as teamname'),
+    )
+    .leftJoin(
+      'entities_name',
+      'event_rosters.team_id',
+      'entities_name.entity_id',
+    )
+    .where({ roster_id });
+  if (!res) {
+    return;
+  }
+  return {
+    eventId: res.event_id,
+    teamId: res.team_id,
+    registrationStatus: res.registrationStatus,
+    teamName: res.teamname,
+  };
+}
+
 module.exports = {
   acceptScoreSuggestion,
   acceptScoreSuggestionIfPossible,
@@ -3525,5 +3546,36 @@ module.exports = {
   updatePreRanking,
   updateRegistration,
   updateRosterRole,
+  updatePlayerPaymentStatus,
+  updateMembershipInvoice,
+  eventInfos,
+  addPlayerToRoster,
+  getOwnerStripePrice,
+  deletePlayerFromRoster,
+  deleteGame,
+  personIsAwaitingTransfer,
+  getEntityOwners,
+  getRealId,
+  getEmailPerson,
+  getGameTeams,
+  isPlayerInRoster,
+  isTeamRegisteredInEvent,
+  addSpiritSubmission,
+  isSpiritAlreadySubmitted,
+  isScoreSuggestionAlreadySubmitted,
+  getGamesWithAwaitingScore,
+  getUserNextGame,
+  getAttendanceSheet,
+  getGamePlayersWithRole,
+  getRosterName,
+  getRostersNames,
+  getAttendanceSheet,
+  insertRosterInviteToken,
+  getRosterInviteToken,
+  cancelRosterInviteToken,
+  getRosterIdFromInviteToken,
+  getRole,
+  getRegistrationStatus,
+  getRosterEventInfos,
   updateSuggestionStatus,
 };

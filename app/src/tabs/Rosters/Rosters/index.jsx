@@ -11,8 +11,14 @@ export default function Rosters(props) {
     onRoleUpdate,
     update,
   } = props;
-  const [expandedIndex, setExpandedIndex] = useState(0);
-
+  const [expandedIndex, setExpandedIndex] = useState();
+  const onExpand = index => {
+    if (expandedIndex === index) {
+      setExpandedIndex(null);
+    } else {
+      setExpandedIndex(index);
+    }
+  };
   if (!rosters || !rosters.length) {
     // TODO: It should say there are no rosters [WCS-372]
 
@@ -23,16 +29,16 @@ export default function Rosters(props) {
     <div className={styles.contain}>
       {rosters.map((roster, index) => (
         <RosterCard
+          onExpand={onExpand}
+          expanded={expandedIndex === index}
           isEventAdmin={isEventAdmin}
           roster={roster}
-          expandedIndex={expandedIndex}
-          setExpandedIndex={setExpandedIndex}
           onAdd={onAdd}
           onDelete={onDelete}
           onRoleUpdate={(...args) =>
             onRoleUpdate(roster.teamId, ...args)
           }
-          index={index + 1}
+          index={index}
           key={roster.rosterId}
           update={update}
         />

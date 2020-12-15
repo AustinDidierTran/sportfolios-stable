@@ -22,3 +22,9 @@
 .player {
   flex: 1 1 auto;
 }
+
+.listTitle {
+  padding-left: 10px;
+  padding-top: 10px;
+  text-align: left;
+}

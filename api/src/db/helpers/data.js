@@ -142,21 +142,17 @@ const getPersonsFromQuery = async (query, blackList, whiteList) => {
     .orWhere('name', 'ILIKE', `%${query}%`)
     .orWhere('surname', 'ILIKE', `%${query}%`)
     .limit(15);
+  let finalList = entities;
   if (whiteList) {
     const parsed = JSON.parse(whiteList);
-    return entities
-      .filter(t => parsed.includes(t.id))
-      .map(mappingFunction);
+    finalList = finalList.filter(t => parsed.includes(t.id));
   }
 
   if (blackList) {
     const parsed = JSON.parse(blackList);
-    return entities
-      .filter(e => !parsed.includes(e.id))
-      .map(mappingFunction);
+    finalList = finalList.filter(e => !parsed.includes(e.id));
   }
-
-  return entities.map(mappingFunction);
+  return finalList.map(mappingFunction);
 };
 
 const getTeamsFromQuery = async (query, blackList, whiteList) => {

@@ -11,6 +11,7 @@ const moment = require('moment');
 const { signS3Request } = require('../../server/utils/aws');
 
 const {
+  getRegistrationStatus,
   acceptScoreSuggestion: acceptScoreSuggestionHelper,
   addAlias: addAliasHelper,
   addEntity: addEntityHelper,
@@ -79,7 +80,6 @@ const {
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getPrimaryPerson: getPrimaryPersonHelper,
   getRankings: getRankingsHelper,
-  getRealId,
   getRegistered: getRegisteredHelper,
   getRegistrationTeamPaymentOption: getRegistrationTeamPaymentOptionHelper,
   getRemainingSpots: getRemainingSpotsHelper,
@@ -118,6 +118,8 @@ const {
   updateRegistration: updateRegistrationHelper,
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
+  getRosterEventInfos,
+  getRole,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -239,6 +241,22 @@ async function getPrimaryPerson(userId) {
 
 async function getRoster(rosterId, withSub) {
   return getRosterHelper(rosterId, withSub);
+}
+
+async function getRosterAllIncluded(rosterId, userId, withSub) {
+  const players = getRoster(rosterId, withSub);
+  const role = getRole(rosterId, userId);
+
+  const registrationStatus = getRegistrationStatus(rosterId);
+
+  const [{ name } = {}] = await getRostersNames([rosterId]);
+  return {
+    players: await players,
+    role: await role,
+    rosterId,
+    name: name,
+    registrationStatus: await registrationStatus,
+  };
 }
 
 async function getEvent(eventId) {
@@ -559,8 +577,8 @@ async function updateRegistration(body, userId) {
 }
 
 async function updateRosterRole(body, userId) {
-  const { eventId, teamId, playerId, role } = body;
-
+  const { rosterId, playerId, role } = body;
+  const { teamId, eventId } = await getRosterEventInfos(rosterId);
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.ADMIN)) &&
     !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))
@@ -1103,27 +1121,37 @@ async function deleteOption(id) {
 }
 
 async function addPlayerToRoster(body, userId) {
-  const { teamId, eventId, teamName, personId, ...otherProps } = body;
-
+  const { personId, role, isSub, rosterId } = body;
+  const { name, surname } = await getPersonInfos(personId);
   const res = await addPlayerToRosterHelper(
-    { ...otherProps, personId },
+    { name: name + ' ' + surname, role, isSub, personId, rosterId },
     userId,
   );
-
+  if (!res) {
+    return;
+  }
+  if (isSub) {
+    return res;
+  }
   const owners = await getEntityOwners(personId);
-  if (res && !body.isSub && owners) {
-    const realEventId = await getRealId(eventId);
-    const { name } = await getPersonInfos(personId);
+  const { eventId, teamId, teamName } = await getRosterEventInfos(
+    rosterId,
+  );
+  if (owners) {
     owners.forEach(owner => {
+      //Not sending the notification if the user added himself
+      if (owner.user_id === userId) {
+        return;
+      }
       const notif = {
         user_id: owner.user_id,
         type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-        entity_photo: realEventId || teamId,
-        metadata: { eventId: realEventId, teamName },
+        entity_photo: eventId || teamId,
+        metadata: { eventId, teamName },
       };
       const emailInfos = {
         type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-        realEventId,
+        eventId,
         teamName,
         name,
       };
@@ -1134,7 +1162,7 @@ async function addPlayerToRoster(body, userId) {
   return res;
 }
 
-async function deletePlayerFromRoster(id, eventId, userId) {
+async function deletePlayerFromRoster(id, userId) {
   const {
     invoiceItemId,
     status,
@@ -1148,6 +1176,7 @@ async function deletePlayerFromRoster(id, eventId, userId) {
 
   if (status === INVOICE_STATUS_ENUM.PAID) {
     // status is paid and event admin is removing
+    const { eventId } = await getRosterEventInfos(rosterId);
     if (await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
       await createRefund({ invoiceItemId });
       await updatePlayerPaymentStatusHelper({
@@ -1218,12 +1247,12 @@ async function cancelRosterInviteToken(userId, rosterId) {
   return cancelRosterInviteTokenHelper(rosterId);
 }
 
-async function getRosterFromInviteToken(token) {
+async function getRosterFromInviteToken(token, userId) {
   const rosterId = await getRosterIdFromInviteToken(token);
   if (!rosterId) {
     return;
   }
-  return getRoster(rosterId);
+  return getRosterAllIncluded(rosterId, userId, true);
 }
 
 module.exports = {
@@ -1320,6 +1349,13 @@ module.exports = {
   updatePreRanking,
   updateRegistration,
   updateRosterRole,
+  getRostersNames,
+  acceptScoreSuggestion,
+  getRosterInviteToken,
+  createRosterInviteToken,
+  cancelRosterInviteToken,
+  getRosterFromInviteToken,
+  getRosterAllIncluded,
   updateSuggestionStatus,
   validateEmailIsUnique,
 };

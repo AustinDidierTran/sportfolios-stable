@@ -42,6 +42,8 @@ export const useApiRoute = (route, options = {}) => {
   useEffect(() => {
     if (route) {
       updateResponse();
+    } else {
+      setResponse(defaultValue);
     }
   }, [route]);
 

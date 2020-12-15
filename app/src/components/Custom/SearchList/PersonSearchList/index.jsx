@@ -34,6 +34,9 @@ export default function PersonSearchList(props) {
   const [name, setName] = useState('');
 
   const optionsRoute = useMemo(() => {
+    if (!query.value) {
+      return;
+    }
     const body = {
       query: query.value,
       type: GLOBAL_ENUM.PERSON,
