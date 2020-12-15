@@ -1,13 +1,23 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
 const { formatLinkWithAuthToken } = require('./utils');
-const { TABS_ENUM } = require('../../../../common/enums');
+const {
+  TABS_ENUM,
+  ROUTES_ENUM,
+} = require('../../../../common/enums');
+const {
+  formatRoute,
+} = require('../../../../common/utils/stringFormat');
 module.exports = async function AddedToRoster(infos) {
   const { name, teamName, eventId, locale, userId } = infos;
 
   const buttonLink = await formatLinkWithAuthToken(
     userId,
-    `/${eventId}?tab=${TABS_ENUM.ROSTERS}`,
+    formatRoute(
+      ROUTES_ENUM.entity,
+      { id: eventId },
+      { tab: TABS_ENUM.ROSTERS },
+    ),
   );
   const text = i18n.__(
     { phrase: 'emails.added_to_roster_text', locale },

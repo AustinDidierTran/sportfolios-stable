@@ -60,23 +60,25 @@ export default function RosterCard(props) {
         severity: SEVERITY_ENUM.ERROR,
         duration: 4000,
       });
-      return false;
-    } else if (res.status === STATUS_ENUM.METHOD_NOT_ALLOWED) {
+      return;
+    }
+    if (res.status === STATUS_ENUM.METHOD_NOT_ALLOWED) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('team_player_role_error'),
         severity: SEVERITY_ENUM.ERROR,
         duration: 4000,
       });
-      return false;
-    } else if (res.status === STATUS_ENUM.ERROR) {
+      return;
+    }
+    if (res.status === STATUS_ENUM.ERROR) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('an_error_has_occured'),
         severity: SEVERITY_ENUM.ERROR,
         duration: 4000,
       });
-      return false;
+      return;
     }
     return true;
   };
@@ -126,12 +128,14 @@ export default function RosterCard(props) {
       });
     }
   };
+  function remainsOtherPlayerWithRole(teamPlayerId) {
+    return roster.players.some(
+      p =>
+        p.id !== teamPlayerId && p.role !== ROSTER_ROLE_ENUM.PLAYER,
+    );
+  }
   const onDelete = async id => {
-    if (
-      roster.players.filter(
-        p => p.id !== id && p.role !== ROSTER_ROLE_ENUM.PLAYER,
-      ).length >= 1
-    ) {
+    if (remainsOtherPlayerWithRole(id)) {
       const refresh = await deletePlayerFromRoster(id);
       if (refresh) {
         update();

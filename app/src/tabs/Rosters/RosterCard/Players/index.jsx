@@ -45,17 +45,18 @@ export default function Players(props) {
   }, [rosterId, isEventAdmin, editableRoster, withMyPersonsQuickAdd]);
 
   const getBlackList = async () => {
-    if (isEventAdmin || editableRoster || withMyPersonsQuickAdd) {
-      setIsLoading(true);
-      const { data } = await api(
-        formatRoute('/api/entity/getRoster', null, {
-          rosterId,
-          withSub: true,
-        }),
-      );
-      setBlackList(data.map(d => d.personId));
-      setIsLoading(false);
+    if (!(isEventAdmin || editableRoster || withMyPersonsQuickAdd)) {
+      return;
     }
+    setIsLoading(true);
+    const { data } = await api(
+      formatRoute('/api/entity/getRoster', null, {
+        rosterId,
+        withSub: true,
+      }),
+    );
+    setBlackList(data.map(d => d.personId));
+    setIsLoading(false);
   };
 
   const onPlayerAddToRoster = async person => {
@@ -91,15 +92,20 @@ export default function Players(props) {
     setIsLoading(false);
   };
   const playersQuickAdd = useMemo(() => {
-    if (withMyPersonsQuickAdd) {
-      return userInfo.persons
-        .filter(p => !whiteList || whiteList.includes(p.entity_id))
-        .map(p => ({
-          ...p,
-          teamPlayerId: players.find(q => p.entity_id === q.personId)
-            ?.id,
-        }));
+    if (!withMyPersonsQuickAdd) {
+      return;
     }
+    const mapFunction = p => ({
+      ...p,
+      teamPlayerId: players.find(q => p.entity_id === q.personId)?.id,
+    });
+
+    if (!whiteList) {
+      return userInfo.persons.map(mapFunction);
+    }
+    return userInfo.persons
+      .filter(p => whiteList.includes(p.entity_id))
+      .map(mapFunction);
   }, [players, withMyPersonsQuickAdd, whiteList]);
 
   if (!players) {

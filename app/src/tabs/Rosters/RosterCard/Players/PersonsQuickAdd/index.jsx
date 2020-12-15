@@ -7,7 +7,7 @@ import { Button, List } from '../../../../../components/Custom';
 export default function PersonsQuickAdd(props) {
   const { t } = useTranslation();
   const { persons, title, onAdd, titleClassName, onRemove } = props;
-  if (!persons || !persons.length) {
+  if (!persons?.length) {
     return <> </>;
   }
 

@@ -1344,19 +1344,14 @@ router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  if (player) {
-    ctx.status = 201;
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-      data: player,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+  if (!player) {
+    throw new Error(STATUS_ENUM.ERROR_STRING);
   }
+  ctx.status = 201;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS_STRING,
+    data: player,
+  };
 });
 
 module.exports = router;
