@@ -128,6 +128,7 @@ const TABS_ENUM = {
   SETTINGS: 'settings',
   SHOP: 'shop',
 };
+
 const FORM_DIALOG_TYPE_ENUM = {
   SUBMIT_SCORE: 'score',
   SUBMIT_SCORE_AND_SPIRIT: 'score and spirit',
@@ -144,6 +145,14 @@ const FORM_DIALOG_TYPE_ENUM = {
   CREATE_TAX_RATE: 'create tax rate',
   ROSTER_PLAYER_OPTIONS: 'roster player options',
   EDIT_MEMBER_IMPORT: 'edit member import',
+};
+
+const HEADER_FLYOUT_TYPE_ENUM = {
+  ACCOUNT: 'account',
+  CLOSED: 'closed',
+  CREATE: 'create',
+  NOTIFICATIONS: 'notifications',
+  PLUS: 'plus',
 };
 
 const REPORT_TYPE_ENUM = {
@@ -353,6 +362,7 @@ const LIST_ITEM_ENUM = {
   BANK_ACCOUNT: 'bank account',
   CART_ITEM: 'cart item',
   CART: 'cart',
+  CREATE_ENTITY: 'create entity',
   CREDIT_CARD: 'credit card',
   EVENT_CREATOR: 'event creator',
   EVENT_PAYMENT_OPTION: 'event_payment_option',
@@ -361,6 +371,7 @@ const LIST_ITEM_ENUM = {
   MEMBER_IMPORT: 'member_import',
   MEMBERSHIP_ORGANIZATION: 'membership organization',
   MEMBERSHIP: 'membership',
+  MORE: 'more',
   PAYMENT_OPTION: 'payment option',
   PURCHASES: 'pruchases',
   RANKING_WITH_STATS: 'ranking with stats',
@@ -472,6 +483,7 @@ module.exports = {
   FORM_DIALOG_TYPE_ENUM,
   GENDER_ENUM,
   GLOBAL_ENUM,
+  HEADER_FLYOUT_TYPE_ENUM,
   IMAGE_ENUM,
   INVOICE_STATUS_ENUM,
   LANGUAGE_ENUM,

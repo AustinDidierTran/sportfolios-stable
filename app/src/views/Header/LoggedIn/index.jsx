@@ -1,30 +1,86 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Store, SCREENSIZE_ENUM } from '../../../Store';
-import { ROUTES, goTo } from '../../../actions/goTo';
-import { LOGO_ENUM, SOCKET_EVENT } from '../../../../../common/enums';
+import { Store, SCREENSIZE_ENUM, ACTION_ENUM } from '../../../Store';
+import {
+  SOCKET_EVENT,
+  HEADER_FLYOUT_TYPE_ENUM,
+} from '../../../../../common/enums';
 
 import { AppBar, Toolbar, Typography } from '../../../components/MUI';
-import { SearchInput, IconButton } from '../../../components/Custom';
+import {
+  IconButton,
+  SearchInput,
+  ProfileChip,
+} from '../../../components/Custom';
+import HeaderFlyout from '../HeaderFlyout';
 import NotificationModule from './NotificationModule';
+import useStyles from './useStyles';
+import { useTranslation } from 'react-i18next';
 
 import styles from './LoggedIn.module.css';
-import useStyles from './useStyles';
-import CartIcon from '../../Cart/CartICon';
 
 export default function LoggedIn(props) {
-  const classes = useStyles();
   const {
-    state: { userInfo = {}, screenSize, socket },
+    state: {
+      userInfo = {},
+      screenSize,
+      socket,
+      cart: { items },
+    },
+    dispatch,
   } = useContext(Store);
   const { showBar = true } = props;
+  const classes = useStyles();
+  const { t } = useTranslation();
+
   socket.emit(SOCKET_EVENT.CONNECTED_USER, userInfo.user_id);
+
+  const photoUrl = useMemo(() => userInfo.primaryPerson?.photo_url, [
+    userInfo.primaryPerson,
+  ]);
+
+  const nameObj = useMemo(
+    () => ({
+      name: userInfo.primaryPerson?.name,
+      surname: userInfo.primaryPerson?.surname,
+    }),
+    [userInfo.primaryPerson],
+  );
+
+  const totalCartItems = useMemo(
+    () => items.reduce((prev, item) => prev + item.quantity, 0),
+    [items],
+  );
+
+  const handleCreateClick = () => {
+    dispatch({
+      type: ACTION_ENUM.HEADER_FLYOUT,
+      flyoutType: HEADER_FLYOUT_TYPE_ENUM.CREATE,
+    });
+  };
+  const handleNotificationClick = () => {
+    dispatch({
+      type: ACTION_ENUM.HEADER_FLYOUT,
+      flyoutType: HEADER_FLYOUT_TYPE_ENUM.NOTIFICATIONS,
+    });
+  };
+  const handlePlusClick = () => {
+    dispatch({
+      type: ACTION_ENUM.HEADER_FLYOUT,
+      flyoutType: HEADER_FLYOUT_TYPE_ENUM.ACCOUNT,
+    });
+  };
+
+  const refCreateEntity = useRef(null);
+  const refNotifications = useRef(null);
+  const refAccount = useRef(null);
+
   if (screenSize !== SCREENSIZE_ENUM.xs) {
     {
       return showBar ? (
         <div className={classes.grow}>
           <AppBar position="static" className={styles.appBar}>
-            <Toolbar>
+            <Toolbar className={styles.toolbarDesktop}>
               <Typography
                 className={classes.title}
                 variant="h6"
@@ -37,22 +93,44 @@ export default function LoggedIn(props) {
               <SearchInput apiRoute="/api/data/search/previous" />
               <div className={classes.grow} />
               <div className={styles.sectionDesktop}>
-                <IconButton
-                  color="inherit"
-                  icon="Settings"
-                  onClick={() => goTo(ROUTES.userSettings)}
+                <ProfileChip
+                  photoUrl={photoUrl}
+                  nameObj={nameObj}
+                  entityId={userInfo.primaryPerson?.entity_id}
                 />
-                <IconButton
-                  color="inherit"
-                  icon="AccountCircle"
-                  onClick={() =>
-                    goTo(ROUTES.entity, {
-                      id: userInfo.primaryPerson.entity_id,
-                    })
-                  }
+                <div ref={refCreateEntity}>
+                  <IconButton
+                    className={styles.iconButton}
+                    icon="Add"
+                    size="medium"
+                    onClick={handleCreateClick}
+                    style={{ color: 'white' }}
+                    tooltip={t('create')}
+                  />
+                </div>
+                <div ref={refNotifications}>
+                  <NotificationModule
+                    className={styles.iconButton}
+                    onClick={handleNotificationClick}
+                  />
+                </div>
+                <div ref={refAccount}>
+                  <IconButton
+                    className={styles.iconButton}
+                    icon="ArrowDropDown"
+                    size="medium"
+                    onClick={handlePlusClick}
+                    style={{ color: 'white' }}
+                    tooltip={t('account')}
+                    withBadge
+                    badgeContent={totalCartItems}
+                  />
+                </div>
+                <HeaderFlyout
+                  refCreateEntity={refCreateEntity}
+                  refNotifications={refNotifications}
+                  refAccount={refAccount}
                 />
-                <NotificationModule />
-                <CartIcon />
               </div>
             </Toolbar>
           </AppBar>
@@ -68,19 +146,8 @@ export default function LoggedIn(props) {
       <AppBar position="static" className={styles.appBar}>
         <Toolbar className="toolBar">
           <div className={styles.container}>
-            <div className={styles.item1}>
-              <Link to={ROUTES.home} className={styles.link}>
-                <img
-                  src={LOGO_ENUM.WHITE_ICON_180X180}
-                  className={styles.img}
-                />
-              </Link>
-            </div>
-            <div className={styles.item2}>
+            <div>
               <SearchInput apiRoute="/api/data/search/previous" />
-            </div>
-            <div className={styles.item3}>
-              <CartIcon />
             </div>
           </div>
         </Toolbar>

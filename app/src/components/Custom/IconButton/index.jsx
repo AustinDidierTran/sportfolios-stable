@@ -3,7 +3,7 @@ import React from 'react';
 import { Tooltip } from '@material-ui/core';
 
 import { Icon } from '../../Custom';
-import { IconButton } from '../../MUI';
+import { Badge, IconButton } from '../../MUI';
 
 export default function CustomIconButton(props) {
   const {
@@ -12,6 +12,12 @@ export default function CustomIconButton(props) {
     size = 'small',
     tooltip = '',
     fontSize = 'default',
+
+    // badge props
+    withBadge = false,
+    badgeColor = 'error',
+    badgeContent = 0,
+
     ...otherProps
   } = props;
 
@@ -24,7 +30,13 @@ export default function CustomIconButton(props) {
           {...otherProps}
           style={{ color: '#fff', ...props.style }}
         >
-          <Icon icon={icon} fontSize={fontSize} />
+          <Badge
+            invisible={!withBadge || !badgeContent}
+            badgeContent={badgeContent}
+            color={badgeColor}
+          >
+            <Icon icon={icon} fontSize={fontSize} />
+          </Badge>
         </IconButton>
       </div>
     </Tooltip>

@@ -20,6 +20,7 @@ export default function CustomAutocomplete(props) {
     optionsRoute,
     type,
     icon,
+    iconColor,
     ...otherProps
   } = props;
 
@@ -52,6 +53,7 @@ export default function CustomAutocomplete(props) {
       getOptionLabel={option => option.display}
       options={options}
       getOptionSelected={isEqual}
+      clearOnEscape
       renderInput={params => {
         return (
           <TextField
@@ -63,6 +65,7 @@ export default function CustomAutocomplete(props) {
             type={type}
             label={t(namespace)}
             fullWidth
+            placeholder={t('search_sportfolios')}
             inputProps={{
               ...params.inputProps,
               classes: inputProps.classes,
@@ -71,11 +74,13 @@ export default function CustomAutocomplete(props) {
             InputProps={{
               ...params.InputProps,
               ...inputProps.InputProps,
+              disableUnderline: true,
+
               startAdornment: (
                 <>
                   {icon ? (
                     <InputAdornment>
-                      <Icon icon={icon} />
+                      <Icon icon={icon} color={iconColor} />
                     </InputAdornment>
                   ) : (
                     <></>

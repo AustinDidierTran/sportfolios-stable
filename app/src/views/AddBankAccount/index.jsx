@@ -137,7 +137,7 @@ export default function AddBankAccount() {
   });
 
   return (
-    <IgContainer className={styles.main}>
+    <IgContainer>
       <Paper>
         <div className={styles.main}>
           <form onSubmit={formik.handleSubmit}>

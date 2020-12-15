@@ -6,6 +6,7 @@ import Add from '@material-ui/icons/Add';
 import AddAPhoto from '@material-ui/icons/AddAPhoto';
 import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import ArrowBack from '@material-ui/icons/ArrowBack';
+import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import Assignment from '@material-ui/icons/Assignment';
 import AttachMoney from '@material-ui/icons/AttachMoney';
@@ -23,6 +24,7 @@ import Create from '@material-ui/icons/Create';
 import CreditCard from '@material-ui/icons/CreditCard';
 import Deck from '@material-ui/icons/Deck';
 import Delete from '@material-ui/icons/Delete';
+import Dot from '@material-ui/icons/FiberManualRecord';
 import DragIndicator from '@material-ui/icons/DragIndicator';
 import Edit from '@material-ui/icons/Edit';
 import EditIcon from '@material-ui/icons/Edit';
@@ -55,6 +57,7 @@ import OpenWith from '@material-ui/icons/OpenWith';
 import PeopleIcon from '@material-ui/icons/People';
 import Person from '@material-ui/icons/Person';
 import PersonAdd from '@material-ui/icons/PersonAdd';
+import Power from '@material-ui/icons/PowerSettingsNew';
 import PrintIcon from '@material-ui/icons/Print';
 import Publish from '@material-ui/icons/Publish';
 import RateReview from '@material-ui/icons/RateReview';
@@ -87,6 +90,7 @@ const icons = {
   AddAPhoto,
   AddShoppingCart,
   ArrowBack,
+  ArrowDropDown,
   ArrowUpward,
   Assignment,
   AttachMoney,
@@ -105,6 +109,7 @@ const icons = {
   CreditCard,
   Deck,
   Delete,
+  Dot,
   DragIndicator,
   Edit,
   EditIcon,
@@ -137,6 +142,7 @@ const icons = {
   PeopleIcon,
   Person,
   PersonAdd,
+  Power,
   PrintIcon,
   Publish,
   RateReview,

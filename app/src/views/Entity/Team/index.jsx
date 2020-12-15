@@ -35,7 +35,7 @@ export default function Team(props) {
   };
 
   return (
-    <IgContainer className={styles.container}>
+    <IgContainer>
       <Paper>
         {window.innerWidth < 768 ? (
           <Tabs

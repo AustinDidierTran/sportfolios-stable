@@ -125,7 +125,7 @@ export default function AddPaymentMethod() {
     return <LoadingSpinner />;
   }
   return (
-    <IgContainer className={styles.main}>
+    <IgContainer>
       <Paper>
         <form onSubmit={formik.handleSubmit}>
           <div className={styles.content}>

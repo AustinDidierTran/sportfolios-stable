@@ -9,16 +9,12 @@ import { Typography } from '../../components/MUI';
 import api from '../../actions/api';
 import { GLOBAL_ENUM } from '../../../../common/enums';
 import CartIcon from '../Cart/CartICon';
+import validator from 'validator';
 
 const getEntity = async entityId => {
   const { data } = await api(`/api/entity?id=${entityId}`);
   return data.basicInfos;
 };
-
-const uuidvalidate = uuid =>
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-    uuid,
-  );
 
 export default function Header() {
   const {
@@ -50,7 +46,7 @@ export default function Header() {
       const ent = await getEntity(id);
       setPath(ent.type);
       setEntity(ent);
-    } else if (uuidvalidate(pth)) {
+    } else if (validator.isUUID(pth)) {
       const ent = await getEntity(pth);
       setPath(ent.type);
       setEntity(ent);

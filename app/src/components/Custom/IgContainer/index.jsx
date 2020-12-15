@@ -1,11 +1,16 @@
 import React from 'react';
 
 import styles from './IgContainer.module.css';
-import { Container } from '..';
 
 export default function IgContainer(props) {
-  const { children } = props;
+  const { className, children } = props;
   return (
-    <div className={styles.main}>{children}</div>
+    <div
+      className={
+        className ? [className, styles.main].join(' ') : styles.main
+      }
+    >
+      {children}
+    </div>
   );
 }
