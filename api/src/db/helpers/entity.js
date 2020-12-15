@@ -57,31 +57,26 @@ const addEntity = async (body, userId) => {
       })
       .transacting(trx);
 
+    let creatorId;
+    if (creator) {
+      creatorId = creator;
+    } else {
+      const [{ id: entityIdAdmin } = {}] = await knex('entities')
+        .select('id')
+        .leftJoin(
+          'user_entity_role',
+          'user_entity_role.entity_id',
+          '=',
+          'entities.id',
+        )
+        .where('user_entity_role.user_id', userId)
+        .andWhere('entities.type', GLOBAL_ENUM.PERSON)
+        .transacting(trx);
+
+      creatorId = entityIdAdmin;
+    }
+
     switch (Number(type)) {
-      case GLOBAL_ENUM.TEAM:
-      case GLOBAL_ENUM.ORGANIZATION: {
-        const [{ id: entityIdAdmin } = {}] = await knex('entities')
-          .select('id')
-          .leftJoin(
-            'user_entity_role',
-            'user_entity_role.entity_id',
-            '=',
-            'entities.id',
-          )
-          .where('user_entity_role.user_id', userId)
-          .andWhere('entities.type', GLOBAL_ENUM.PERSON)
-          .transacting(trx);
-
-        await knex('entities_role')
-          .insert({
-            entity_id: entityId,
-            entity_id_admin: entityIdAdmin,
-            role: ENTITIES_ROLE_ENUM.ADMIN,
-          })
-          .transacting(trx);
-
-        return { id: entityId };
-      }
       case GLOBAL_ENUM.PERSON: {
         const [id] = await knex('user_entity_role')
           .insert({
@@ -93,33 +88,24 @@ const addEntity = async (body, userId) => {
           .transacting(trx);
         return { id };
       }
-      case GLOBAL_ENUM.EVENT: {
-        let entity_id_admin;
-        if (creator) {
-          entity_id_admin = creator;
-        } else {
-          const [{ id: entityIdAdmin } = {}] = await knex('entities')
-            .select('id')
-            .leftJoin(
-              'user_entity_role',
-              'user_entity_role.entity_id',
-              '=',
-              'entities.id',
-            )
-            .where('user_entity_role.user_id', userId)
-            .andWhere('entities.type', GLOBAL_ENUM.PERSON)
-            .transacting(trx);
-
-          entity_id_admin = entityIdAdmin;
-        }
-        const insertObj = {
-          entity_id: entityId,
-          role: ENTITIES_ROLE_ENUM.ADMIN,
-          entity_id_admin,
-        };
-
+      case GLOBAL_ENUM.TEAM:
+      case GLOBAL_ENUM.ORGANIZATION: {
         await knex('entities_role')
-          .insert(insertObj)
+          .insert({
+            entity_id: entityId,
+            entity_id_admin: creatorId,
+            role: ENTITIES_ROLE_ENUM.ADMIN,
+          })
+          .transacting(trx);
+        return { id: entityId };
+      }
+      case GLOBAL_ENUM.EVENT: {
+        await knex('entities_role')
+          .insert({
+            entity_id: entityId,
+            role: ENTITIES_ROLE_ENUM.ADMIN,
+            entity_id_admin: creatorId,
+          })
           .transacting(trx);
 
         const [event] = await knex('events')
@@ -3412,132 +3398,132 @@ async function getRosterIdFromInviteToken(token) {
 }
 
 module.exports = {
-  addEntity,
-  addEntityRole,
-  addMember,
-  addReport,
-  addMemberManually,
-  addAlias,
-  addMembership,
-  addGame,
-  addGameAttendances,
-  addScoreSuggestion,
   acceptScoreSuggestion,
   acceptScoreSuggestionIfPossible,
-  addField,
-  addTeamToSchedule,
-  addRegisteredToSchedule,
-  addPhase,
-  addTimeSlot,
-  addOption,
-  addRoster,
-  addNewPersonToRoster,
-  addTeamToEvent,
+  addAlias,
+  addEntity,
+  addEntityRole,
   addEventCartItem,
+  addField,
+  addGame,
+  addGameAttendances,
+  addMember,
+  addMemberManually,
+  addMembership,
+  addNewPersonToRoster,
+  addOption,
+  addPhase,
+  addPlayerToRoster,
+  addRegisteredToSchedule,
+  addReport,
+  addRoster,
+  addScoreSuggestion,
+  addSpiritSubmission,
+  addTeamToEvent,
+  addTeamToSchedule,
+  addTimeSlot,
+  cancelRosterInviteToken,
   canRemovePlayerFromRoster,
   canUnregisterTeam,
   deleteEntity,
   deleteEntityMembership,
+  deleteGame,
   deleteMembership,
-  deleteReport,
   deleteOption,
+  deletePlayerFromRoster,
   deleteRegistration,
+  deleteReport,
+  eventInfos,
+  generateReport,
+  getAlias,
+  getAllAcceptedRegistered,
   getAllEntities,
   getAllForYouPagePosts,
-  getScoreSuggestion,
   getAllOwnedEntities,
-  getOwnedEvents,
-  getAllRolesEntity,
-  getAllTypeEntities,
-  getCreator,
-  getCreators,
-  getEntity,
-  getEntityRole,
-  getEmailsEntity,
-  getMembers,
-  getReports,
-  generateReport,
-  hasMemberships,
-  getOrganizationMembers,
-  getMemberships,
-  getMembership,
-  getPersonGames,
-  getRegistered,
-  getRegistrationTeamPaymentOption,
-  getSubmissionerInfos,
-  getAllAcceptedRegistered,
   getAllRegistered,
   getAllRegisteredInfos,
-  getRemainingSpots,
-  getRankings,
-  getRoster,
+  getAllRolesEntity,
+  getAllTypeEntities,
+  getAttendanceSheet,
+  getAttendanceSheet,
+  getCreator,
+  getCreators,
+  getEmailPerson,
+  getEmailsEntity,
+  getEntity,
+  getEntityOwners,
+  getEntityRole,
   getEvent,
   getEventAdmins,
-  getAlias,
-  getPhases,
+  getFields,
+  getGamePlayersWithRole,
   getGames,
   getGameSubmissionInfos,
-  getUnplacedGames,
-  getTeamGames,
-  getPhasesGameAndTeams,
-  getSlots,
-  getTeamsSchedule,
-  getFields,
+  getGamesWithAwaitingScore,
+  getGameTeams,
   getGeneralInfos,
+  getMembers,
+  getMembership,
+  getMemberships,
   getMyPersonsAdminsOfTeam,
   getOptions,
-  getPrimaryPerson,
-  getPlayerInvoiceItem,
-  getRosterInvoiceItem,
-  getWichTeamsCanUnregister,
+  getOrganizationMembers,
+  getOwnedEvents,
+  getOwnerStripePrice,
+  getPersonGames,
   getPersonInfos,
+  getPhases,
+  getPhasesGameAndTeams,
+  getPlayerInvoiceItem,
+  getPrimaryPerson,
+  getRankings,
+  getRealId,
+  getRegistered,
+  getRegistrationTeamPaymentOption,
+  getRemainingSpots,
+  getReports,
+  getRole,
+  getRoster,
+  getRosterIdFromInviteToken,
+  getRosterInviteToken,
+  getRosterInvoiceItem,
+  getRosterName,
+  getRostersNames,
+  getScoreSuggestion,
+  getSlots,
+  getSubmissionerInfos,
+  getTeamGames,
+  getTeamsSchedule,
+  getUnplacedGames,
+  getUserNextGame,
+  getWichTeamsCanUnregister,
+  hasMemberships,
+  insertRosterInviteToken,
+  isPlayerInRoster,
+  isScoreSuggestionAlreadySubmitted,
+  isSpiritAlreadySubmitted,
+  isTeamRegisteredInEvent,
+  personIsAwaitingTransfer,
   removeEntityRole,
   removeEventCartItem,
   removeIndividualPaymentCartItem,
   setGameScore,
   unregister,
+  updateAlias,
   updateEntityName,
   updateEntityPhoto,
   updateEntityRole,
   updateEvent,
-  updateOption,
-  updatePreRanking,
-  updateGeneralInfos,
-  updatePersonInfosHelper,
-  updateMember,
-  updateAlias,
   updateGame,
   updateGamesInteractiveTool,
-  updateSuggestionStatus,
+  updateGeneralInfos,
+  updateMember,
+  updateMembershipInvoice,
+  updateOption,
+  updatePersonInfosHelper,
+  updatePlayerPaymentStatus,
+  updatePreRanking,
   updateRegistration,
   updateRosterRole,
-  updatePlayerPaymentStatus,
-  updateMembershipInvoice,
-  eventInfos,
-  addPlayerToRoster,
-  getOwnerStripePrice,
-  deletePlayerFromRoster,
-  deleteGame,
-  personIsAwaitingTransfer,
-  getEntityOwners,
-  getRealId,
-  getEmailPerson,
-  getGameTeams,
-  isPlayerInRoster,
-  isTeamRegisteredInEvent,
-  addSpiritSubmission,
-  isSpiritAlreadySubmitted,
-  isScoreSuggestionAlreadySubmitted,
-  getGamesWithAwaitingScore,
-  getUserNextGame,
-  getAttendanceSheet,
-  getGamePlayersWithRole,
-  getRosterName,
-  getRostersNames,
-  getAttendanceSheet,
-  insertRosterInviteToken,
-  getRosterInviteToken,
-  cancelRosterInviteToken,
-  getRosterIdFromInviteToken,
-  getRole,
+  updateSuggestionStatus,
 };

@@ -152,6 +152,7 @@ export default {
     country: 'Country',
     coupon_already_used: 'Coupon already used',
     coupon_code: 'Coupon code',
+    create_as: 'Create as',
     create_a_game: 'Create a game',
     create_a_phase: 'Create a phase',
     create_an_account_to_accept_person_transfer: 'Please choose a password to create an account and accept the person transfer',
