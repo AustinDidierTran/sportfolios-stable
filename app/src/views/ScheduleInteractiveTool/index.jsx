@@ -442,6 +442,7 @@ export default function ScheduleInteractiveTool() {
             className={styles.button}
             type="submit"
             endIcon="Add"
+            disabled={isAddingGames}
           >
             {t('field')}
           </Button>
@@ -452,6 +453,7 @@ export default function ScheduleInteractiveTool() {
             className={styles.button}
             type="submit"
             endIcon="Add"
+            disabled={isAddingGames}
           >
             {t('time_slot')}
           </Button>
