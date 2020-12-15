@@ -1,7 +1,5 @@
 import React, { useEffect, useContext, useMemo } from 'react';
 
-import styles from './UserSettings.module.css';
-
 import { formatPageTitle } from '../../utils/stringFormats';
 import { IgContainer, LoadingSpinner } from '../../components/Custom';
 import { Store } from '../../Store';
@@ -48,21 +46,19 @@ export default function UserSettings() {
   }
 
   return (
-    <div className={styles.main}>
-      <IgContainer className={styles.container}>
-        <Coupons />
-        <BasicInfo />
-        <Email />
-        <MyPersons />
-        <ChangePassword />
-        <AppLinking />
-        <CreditCards />
-        <div id="notifications">
-          <Notifications />
-        </div>
-        <Disconnect />
-        <BottomPageLogo />
-      </IgContainer>
-    </div>
+    <IgContainer>
+      <Coupons />
+      <BasicInfo />
+      <Email />
+      <MyPersons />
+      <ChangePassword />
+      <AppLinking />
+      <CreditCards />
+      <div id="notifications">
+        <Notifications />
+      </div>
+      <Disconnect />
+      <BottomPageLogo />
+    </IgContainer>
   );
 }

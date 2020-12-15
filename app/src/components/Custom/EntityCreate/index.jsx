@@ -165,7 +165,7 @@ export default function EntityCreate() {
   });
 
   const handleCancel = () => {
-    history.back();
+    goTo(ROUTES.home);
   };
 
   if (!type) {
@@ -175,45 +175,6 @@ export default function EntityCreate() {
   if (isSubmitting) {
     return <LoadingSpinner />;
   }
-
-  // const fields = useMemo(() => {
-  //   if (creatingEntity === GLOBAL_ENUM.PERSON) {
-  //     return [
-  //       {
-  //         namespace: 'name',
-  //         label: t('name'),
-  //         type: 'text',
-  //         disabled: isLoading,
-  //       },
-  //       {
-  //         namespace: 'surname',
-  //         label: t('surname'),
-  //         type: 'text',
-  //         disabled: isLoading,
-  //       },
-  //     ];
-  //   }
-
-  //   return [
-  //     {
-  //       namespace: 'name',
-  //       label: t('name'),
-  //       type: 'text',
-  //       disabled: isLoading,
-  //     },
-  //     {
-  //       namespace: 'creator',
-  //       label: t('creator'),
-  //       componentType: COMPONENT_TYPE_ENUM.SELECT,
-  //       disabled: isLoading,
-  //       showTextIfOnlyOneOption: true,
-  //       options: creatorOptions.map(c => ({
-  //         value: c.id,
-  //         display: `${c.name}${c.surname || ''}`,
-  //       })),
-  //     },
-  //   ];
-  // }, [type]);
 
   const fields =
     creatingEntity === GLOBAL_ENUM.PERSON
@@ -237,11 +198,7 @@ export default function EntityCreate() {
           },
           {
             namespace: 'creator',
-            label: `${t('create_as')} (${t(
-              creatingEntity === GLOBAL_ENUM.EVENT
-                ? 'organization'
-                : 'person',
-            )})`,
+            label: t('create_as'),
             componentType: COMPONENT_TYPE_ENUM.SELECT,
             showTextIfOnlyOneOption: creatorOptions.length === 1,
             options: creatorOptions.map(c => ({

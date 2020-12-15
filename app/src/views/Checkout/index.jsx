@@ -26,7 +26,7 @@ export default function Checkout() {
   }
 
   return (
-    <IgContainer className={styles.items}>
+    <IgContainer>
       <Paper className={styles.paper}>
         <ChoosePaymentMethod response={response.total} />
       </Paper>
