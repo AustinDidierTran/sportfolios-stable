@@ -907,15 +907,18 @@ router.post(`${BASE_URL}/alias`, async ctx => {
 });
 
 router.post(`${BASE_URL}/game`, async ctx => {
-  const game = await queries.addGame(ctx.request.body);
+  const game = await queries.addGame(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (game) {
-    ctx.status = 201;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: game,
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'Something went wrong',
@@ -1024,15 +1027,18 @@ router.post(`${BASE_URL}/gameAttendances`, async ctx => {
 });
 
 router.post(`${BASE_URL}/field`, async ctx => {
-  const field = await queries.addField(ctx.request.body);
+  const field = await queries.addField(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (field) {
-    ctx.status = 201;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: field,
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'Something went wrong',
@@ -1077,15 +1083,18 @@ router.post(`${BASE_URL}/addRegisteredToSchedule`, async ctx => {
 });
 
 router.post(`${BASE_URL}/phase`, async ctx => {
-  const phase = await queries.addPhase(ctx.request.body);
+  const phase = await queries.addPhase(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (phase) {
-    ctx.status = 201;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: phase,
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'Something went wrong',
@@ -1094,15 +1103,18 @@ router.post(`${BASE_URL}/phase`, async ctx => {
 });
 
 router.post(`${BASE_URL}/timeSlots`, async ctx => {
-  const slots = await queries.addTimeSlot(ctx.request.body);
+  const slots = await queries.addTimeSlot(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (slots) {
-    ctx.status = 201;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'success',
       data: slots,
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'Something went wrong',

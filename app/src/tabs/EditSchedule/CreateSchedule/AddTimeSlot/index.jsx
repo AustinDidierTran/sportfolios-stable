@@ -60,14 +60,7 @@ export default function AddTimeSlot(props) {
           eventId,
         }),
       });
-      if (status === STATUS_ENUM.ERROR) {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: ERROR_ENUM.ERROR_OCCURED,
-          severity: SEVERITY_ENUM.ERROR,
-          duration: 4000,
-        });
-      } else {
+      if (status === STATUS_ENUM.SUCCESS) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: t('time_slot_added'),
@@ -79,6 +72,13 @@ export default function AddTimeSlot(props) {
         if (addTimeslotToGrid) {
           addTimeslotToGrid(data);
         }
+      } else {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: ERROR_ENUM.ERROR_OCCURED,
+          severity: SEVERITY_ENUM.ERROR,
+          duration: 4000,
+        });
       }
     },
   });

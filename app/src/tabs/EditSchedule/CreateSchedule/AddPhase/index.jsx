@@ -58,18 +58,18 @@ export default function AddPhase(props) {
         }),
       });
       resetForm();
-      if (res.status === STATUS_ENUM.ERROR) {
+      if (res.status === STATUS_ENUM.SUCCESS) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
-          message: ERROR_ENUM.ERROR_OCCURED,
-          severity: SEVERITY_ENUM.ERROR,
+          message: t('phase_added'),
+          severity: SEVERITY_ENUM.SUCCESS,
           duration: 2000,
         });
       } else {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
-          message: t('phase_added'),
-          severity: SEVERITY_ENUM.SUCCESS,
+          message: ERROR_ENUM.ERROR_OCCURED,
+          severity: SEVERITY_ENUM.ERROR,
           duration: 2000,
         });
       }

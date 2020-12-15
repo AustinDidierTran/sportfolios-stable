@@ -105,14 +105,7 @@ export default function AddGame(props) {
           name2,
         }),
       });
-      if (res.status === STATUS_ENUM.ERROR) {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: ERROR_ENUM.ERROR_OCCURED,
-          severity: SEVERITY_ENUM.ERROR,
-          duration: 4000,
-        });
-      } else {
+      if (res.status === STATUS_ENUM.SUCCESS) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: t('game_added'),
@@ -120,6 +113,13 @@ export default function AddGame(props) {
           duration: 2000,
         });
         update();
+      } else {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: ERROR_ENUM.ERROR_OCCURED,
+          severity: SEVERITY_ENUM.ERROR,
+          duration: 4000,
+        });
       }
     },
   });

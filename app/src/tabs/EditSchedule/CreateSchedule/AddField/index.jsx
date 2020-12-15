@@ -59,14 +59,7 @@ export default function AddField(props) {
       });
 
       resetForm();
-      if (status === STATUS_ENUM.ERROR) {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: ERROR_ENUM.ERROR_OCCURED,
-          severity: SEVERITY_ENUM.ERROR,
-          duration: 4000,
-        });
-      } else {
+      if (status === STATUS_ENUM.SUCCESS) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: t('field_added'),
@@ -78,6 +71,13 @@ export default function AddField(props) {
         if (addFieldToGrid) {
           addFieldToGrid(data);
         }
+      } else {
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message: ERROR_ENUM.ERROR_OCCURED,
+          severity: SEVERITY_ENUM.ERROR,
+          duration: 4000,
+        });
       }
     },
   });
