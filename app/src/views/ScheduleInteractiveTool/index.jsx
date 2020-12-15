@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import api from '../../actions/api';
-import { formatRoute } from '../../actions/goTo';
+import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
 import { formatDate } from '../../utils/stringFormats';
 import { Typography } from '../../components/MUI';
 import {
@@ -18,10 +18,13 @@ import {
   Button,
 } from '../../components/Custom';
 import { Store, ACTION_ENUM } from '../../Store';
-import { STATUS_ENUM, SEVERITY_ENUM } from '../../../../common/enums';
+import {
+  STATUS_ENUM,
+  SEVERITY_ENUM,
+  TABS_ENUM,
+} from '../../../../common/enums';
 import { Fab, makeStyles, Tooltip } from '@material-ui/core';
 import styles from './ScheduleInteractiveTool.module.css';
-import { goBack } from '../../actions/goTo';
 import GameCard from './GameCard';
 import AddGame from './AddGame';
 import AddField from '../../tabs/EditSchedule/CreateSchedule/AddField';
@@ -266,11 +269,18 @@ export default function ScheduleInteractiveTool() {
     }
   };
 
+  const goBackToEvent = () => {
+    goTo(
+      ROUTES.entity,
+      { id: eventId },
+      { tab: TABS_ENUM.EDIT_SCHEDULE },
+    );
+  };
   const handleBack = () => {
-    madeChanges ? setAlertDialog(true) : goBack();
+    madeChanges ? setAlertDialog(true) : goBackToEvent();
   };
   const handleDialogSubmit = () => {
-    goBack();
+    goBackToEvent();
   };
   const handleDialogCancel = () => {
     setAlertDialog(false);
