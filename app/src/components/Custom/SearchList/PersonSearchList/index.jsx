@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import { List, Icon } from '../..';
 import { TextField } from '../../../MUI';
@@ -8,7 +8,6 @@ import { useFormInput } from '../../../../hooks/forms';
 import { InputAdornment } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { GLOBAL_ENUM } from '../../../../../../common/enums';
-import AddNonExistingPlayer from './AddNonExistingPlayer';
 
 export default function PersonSearchList(props) {
   const {
@@ -17,21 +16,13 @@ export default function PersonSearchList(props) {
     label,
     onClick,
     rejectedTypes = [],
-    allowCreate,
     withoutIcon,
     secondary,
     style,
     autoFocus,
-    isSub,
-    onChange,
-    handleClose,
-    rosterId,
-    addedByEventAdmin,
   } = props;
   const { t } = useTranslation();
   const query = useFormInput('');
-  const [open, setOpen] = useState(false);
-  const [name, setName] = useState('');
 
   const optionsRoute = useMemo(() => {
     if (!query.value) {
@@ -54,43 +45,12 @@ export default function PersonSearchList(props) {
   const { response } = useApiRoute(optionsRoute, {
     defaultValue: { entities: [] },
   });
-  const handleClick = (...args) => {
-    onClick(args[0]);
+  const handleClick = e => {
+    onClick(e);
     query.reset();
   };
 
-  const openDialog = name => {
-    setName(name);
-    setOpen(true);
-  };
   const options = useMemo(() => {
-    if (allowCreate) {
-      return [
-        {
-          name: query.value,
-          type: GLOBAL_ENUM.PERSON,
-          secondary: t('add_player_with_no_account'),
-          onClick: (...args) => {
-            openDialog(args[1].name);
-          },
-          icon: 'Add',
-          inverseColor: true,
-          key: 'create',
-        },
-        ...response.entities
-          .filter(entity => !rejectedTypes.includes(entity.type))
-          .map(e => {
-            return {
-              ...e,
-              secondary,
-              onClick: () => {
-                handleClick(e);
-              },
-              key: e.id,
-            };
-          }),
-      ];
-    }
     return response.entities
       .filter(entity => !rejectedTypes.includes(entity.type))
       .map(e => ({
@@ -113,22 +73,10 @@ export default function PersonSearchList(props) {
   };
 
   const onEnter = e => {
-    if (allowCreate) {
-      if (e.key === 'Enter') {
-        openDialog(e.target.value);
-      }
+    if (e.key === 'Enter' && options?.length) {
+      onClick(options[0]);
     }
   };
-
-  const onClose = () => {
-    setOpen(false);
-  };
-
-  const close = id => {
-    query.reset();
-    handleClose(id);
-  };
-
   return (
     <>
       {withoutIcon ? (
@@ -165,17 +113,6 @@ export default function PersonSearchList(props) {
       ) : (
         <List items={options}></List>
       )}
-      <AddNonExistingPlayer
-        addedByEventAdmin={addedByEventAdmin}
-        open={open}
-        onClose={onClose}
-        name={name}
-        isSub={isSub}
-        onChange={onChange}
-        onClick={onClick}
-        handleClose={close}
-        rosterId={rosterId}
-      />
     </>
   );
 }

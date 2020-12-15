@@ -23,7 +23,6 @@ import { ROSTER_ROLE_ENUM } from '../../../../../../common/enums';
 export default function Players(props) {
   const { t } = useTranslation();
   const {
-    isEventAdmin,
     editableRole,
     editableRoster,
     whiteList,
@@ -33,7 +32,7 @@ export default function Players(props) {
     onDelete,
     onAdd,
     onRoleUpdate,
-    update,
+    withPlayersInfos,
   } = props;
   const [blackList, setBlackList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -72,12 +71,6 @@ export default function Players(props) {
     setIsLoading(false);
   };
 
-  const handleClose = async person => {
-    setIsLoading(true);
-    await update();
-    setBlackList([...blackList, person.id]);
-    setIsLoading(false);
-  };
   const handleDelete = async id => {
     setIsLoading(true);
     await onDelete(id);
@@ -115,23 +108,19 @@ export default function Players(props) {
     return <LoadingSpinner isComponent />;
   }
 
-  if (isEventAdmin || editableRoster) {
+  if (editableRoster) {
     return (
       <div className={styles.card}>
         <div className={styles.searchList}>
           <PersonSearchList
-            addedByEventAdmin={isEventAdmin && !editableRoster}
-            clearOnSelect={false}
             blackList={blackList}
             whiteList={whiteList}
             label={t('enter_player_name')}
             onClick={onPlayerAddToRoster}
             secondary={t('player')}
-            allowCreate
             withoutIcon
             autoFocus
             rosterId={rosterId}
-            handleClose={handleClose}
           />
         </div>
         <PersonsQuickAdd
@@ -150,7 +139,6 @@ export default function Players(props) {
               </Typography>
               {players.map(player => (
                 <PlayerCard
-                  isEventAdmin={isEventAdmin}
                   player={player}
                   isEditable={editableRole}
                   onDelete={handleDelete}
@@ -186,11 +174,11 @@ export default function Players(props) {
             <div className={styles.player}>
               {players.map(player => (
                 <PlayerCard
-                  isEventAdmin={isEventAdmin}
                   player={player}
                   isEditable={editableRole}
                   onDelete={handleDelete}
                   onRoleUpdate={handleRoleUpdate}
+                  withInfos={withPlayersInfos}
                   key={player.id}
                 />
               ))}
