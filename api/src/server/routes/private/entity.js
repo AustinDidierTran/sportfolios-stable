@@ -156,19 +156,15 @@ router.get(`${BASE_URL}/allOwned`, async ctx => {
     ctx.body.userInfo.id,
   );
 
-  if (entity) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
 });
 
 router.get(`${BASE_URL}/roles`, async ctx => {

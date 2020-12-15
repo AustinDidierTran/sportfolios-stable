@@ -80,7 +80,12 @@ export default function EntityCreate() {
     );
 
     if (status === STATUS_ENUM.SUCCESS) {
-      setCreatorOptions(data);
+      setCreatorOptions(
+        data.map(c => ({
+          value: c.id,
+          display: `${c.name}${c.surname ? ` ${c.surname}` : ''}`,
+        })),
+      );
     }
   };
 
@@ -95,7 +100,7 @@ export default function EntityCreate() {
     }
 
     if (creatingEntity === GLOBAL_ENUM.EVENT) {
-      formik.setFieldValue('creator', creatorOptions[0].id);
+      formik.setFieldValue('creator', creatorOptions[0].value);
     } else if (
       creatingEntity === GLOBAL_ENUM.TEAM ||
       creatingEntity === GLOBAL_ENUM.ORGANIZATION
@@ -106,6 +111,37 @@ export default function EntityCreate() {
       );
     }
   }, [creatorOptions]);
+
+  const fields = useMemo(() => {
+    if (creatingEntity === GLOBAL_ENUM.PERSON) {
+      return [
+        {
+          namespace: 'name',
+          label: t('name'),
+          type: 'text',
+        },
+        {
+          namespace: 'surname',
+          label: t('surname'),
+          type: 'text',
+        },
+      ];
+    }
+    return [
+      {
+        namespace: 'name',
+        label: t('name'),
+        type: 'text',
+      },
+      {
+        namespace: 'creator',
+        label: t('create_as'),
+        componentType: COMPONENT_TYPE_ENUM.SELECT,
+        showTextIfOnlyOneOption: creatorOptions.length === 1,
+        options: creatorOptions,
+      },
+    ];
+  }, [type, creatorOptions]);
 
   const validate = values => {
     const errors = {};
@@ -175,38 +211,6 @@ export default function EntityCreate() {
   if (isSubmitting) {
     return <LoadingSpinner />;
   }
-
-  const fields =
-    creatingEntity === GLOBAL_ENUM.PERSON
-      ? [
-          {
-            namespace: 'name',
-            label: t('name'),
-            type: 'text',
-          },
-          {
-            namespace: 'surname',
-            label: t('surname'),
-            type: 'text',
-          },
-        ]
-      : [
-          {
-            namespace: 'name',
-            label: t('name'),
-            type: 'text',
-          },
-          {
-            namespace: 'creator',
-            label: t('create_as'),
-            componentType: COMPONENT_TYPE_ENUM.SELECT,
-            showTextIfOnlyOneOption: creatorOptions.length === 1,
-            options: creatorOptions.map(c => ({
-              value: c.id,
-              display: `${c.name}${c.surname ? ` ${c.surname}` : ''}`,
-            })),
-          },
-        ];
 
   return (
     <IgContainer>
