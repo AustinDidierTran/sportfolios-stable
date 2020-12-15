@@ -119,86 +119,56 @@ export default function EventRegistration() {
             reason: data.reason,
           });
         }
-      } else {
-        const { status, data } = await api(
-          '/api/entity/registerIndividual',
-          {
-            method: 'POST',
-            body: JSON.stringify({
-              eventId: event.id,
-              paymentOption,
-              persons,
-              status: INVOICE_STATUS_ENUM.OPEN,
-            }),
-          },
-        );
-        if (status === STATUS_ENUM.SUCCESS) {
-          goTo(ROUTES.registrationStatus, null, {
-            status: data.status,
-          });
-        } else {
-          if (data.reason === REJECTION_ENUM.ALREADY_REGISTERED) {
-            const names = data.persons.reduce((prev, curr, index) => {
-              if (index === 0) {
-                return prev + curr.name;
-              } else {
-                return `${prev} ${t('and_lowerCased')} ${curr.name}`;
-              }
-            }, '');
-            dispatch({
-              type: ACTION_ENUM.SNACK_BAR,
-              message:
-                data.persons.length === 1
-                  ? t('already_registered_singular', { names })
-                  : t('already_registered', { names }),
-              severity: SEVERITY_ENUM.ERROR,
-              duration: 6000,
-            });
-          } else {
-            goTo(ROUTES.registrationStatus, null, {
-              status: data.status,
-              reason: data.reason,
-            });
-          }
-        }
-        setIsLoading(false);
+        return;
       }
+      const { status, data } = await api(
+        '/api/entity/registerIndividual',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            eventId: event.id,
+            paymentOption,
+            persons,
+            status: INVOICE_STATUS_ENUM.OPEN,
+          }),
+        },
+      );
+      if (status === STATUS_ENUM.SUCCESS) {
+        goTo(ROUTES.registrationStatus, null, {
+          status: data.status,
+        });
+        return;
+      }
+      if (data.reason === REJECTION_ENUM.ALREADY_REGISTERED) {
+        const names = data.persons.reduce((prev, curr, index) => {
+          if (index === 0) {
+            return prev + curr.name;
+          } else {
+            return `${prev} ${t('and_lowerCased')} ${curr.name}`;
+          }
+        }, '');
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message:
+            data.persons.length === 1
+              ? t('already_registered_singular', { names })
+              : t('already_registered', { names }),
+          severity: SEVERITY_ENUM.ERROR,
+          duration: 6000,
+        });
+        setIsLoading(false);
+        return;
+      }
+      goTo(ROUTES.registrationStatus, null, {
+        status: data.status,
+        reason: data.reason,
+      });
+
+      setIsLoading(false);
     },
   });
 
   const stepHook = useStepper();
-
-  // const handleNext = activeStep => {
-  //   if (activeStep === 0) {
-  //     dispatch({
-  //       type: ACTION_ENUM.SNACK_BAR,
-  //       message: t('team_selected_add_your_roster', {
-  //         name: formik.values.team.name,
-  //       }),
-  //       severity: SEVERITY_ENUM.SUCCESS,
-  //       duration: 30000,
-  //       vertical: POSITION_ENUM.TOP,
-  //     });
-  //   }
-  //   if (activeStep === 1) {
-  //     let message = '';
-  //     const length = formik.values.roster.length;
-  //     if (!length) {
-  //       message = t('you_added_no_players_to_your_roster');
-  //     } else if (length === 1) {
-  //       message = t('you_added_one_player_to_your_roster');
-  //     } else {
-  //       message = t('you_added_players_to_your_roster', { length });
-  //     }
-  //     dispatch({
-  //       type: ACTION_ENUM.SNACK_BAR,
-  //       message,
-  //       severity: SEVERITY_ENUM.SUCCESS,
-  //       duration: 30000,
-  //       vertical: POSITION_ENUM.TOP,
-  //     });
-  //   }
-  // };
 
   useEffect(() => {
     const paymentOption = formik.values.paymentOptions.find(

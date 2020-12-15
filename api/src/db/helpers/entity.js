@@ -647,6 +647,7 @@ async function getCreators(id) {
 }
 
 async function getCreatorsEmail(id) {
+  //Could be done in one query
   const realId = await getRealId(id);
   const creators = await knex('entities_role')
     .select('*')
@@ -658,7 +659,8 @@ async function getCreatorsEmail(id) {
       return res.map(r => r.email);
     }),
   );
-  const res = emails.reduce((prev, curr) => {
+
+  const uniqueEmails = emails.reduce((prev, curr) => {
     curr.forEach(c => {
       if (!prev.find(p => p === c)) {
         prev.push(c);
@@ -666,7 +668,7 @@ async function getCreatorsEmail(id) {
     });
     return prev;
   }, []);
-  return res;
+  return uniqueEmails;
 }
 
 async function eventInfos(id, userId) {

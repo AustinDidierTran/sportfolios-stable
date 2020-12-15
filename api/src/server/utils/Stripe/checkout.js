@@ -49,7 +49,7 @@ const INVOICE_PAID_ENUM = {
         );
       }
       if (person) {
-        updateRegistrationPerson(
+        await updateRegistrationPerson(
           person.id,
           eventId,
           invoiceItemId,

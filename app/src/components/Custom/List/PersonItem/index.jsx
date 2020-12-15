@@ -46,6 +46,14 @@ export default function PersonItem(props) {
     },
     [id, onClick],
   );
+
+  const className = useMemo(() => {
+    if (inverseColor) {
+      return styles.avatar;
+    }
+    return null;
+  }, [inverseColor]);
+
   return (
     <div className={styles.listItem}>
       <ListItem
@@ -61,20 +69,12 @@ export default function PersonItem(props) {
         disabled={disabled}
       >
         <ListItemIcon>
-          {inverseColor ? (
-            <Avatar
-              className={styles.avatar}
-              photoUrl={photoUrl}
-              icon={icon}
-              initials={initials}
-            ></Avatar>
-          ) : (
-            <Avatar
-              photoUrl={photoUrl}
-              icon={icon}
-              initials={initials}
-            ></Avatar>
-          )}
+          <Avatar
+            className={className}
+            photoUrl={photoUrl}
+            icon={icon}
+            initials={initials}
+          ></Avatar>
         </ListItemIcon>
         <ListItemText
           className={styles.text}

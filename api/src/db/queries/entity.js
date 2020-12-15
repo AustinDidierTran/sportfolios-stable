@@ -563,16 +563,18 @@ async function addPersonToEvent(body, userId) {
     }
     // send mail to organization admin
     const creatorEmails = await getCreatorsEmail(eventId);
-    await creatorEmails.forEach(async email => {
-      const language = await getLanguageFromEmail(email);
-      sendPersonRegistrationEmailToAdmin({
-        email,
-        person,
-        event,
-        language,
-        placesLeft: remainingSpots,
-      });
-    });
+    await Promise.all(
+      creatorEmails.forEach(async email => {
+        const language = await getLanguageFromEmail(email);
+        sendPersonRegistrationEmailToAdmin({
+          email,
+          person,
+          event,
+          language,
+          placesLeft: remainingSpots,
+        });
+      }),
+    );
   });
   return { status: registrationStatus, persons };
 }

@@ -24,13 +24,7 @@ export default function PersonSelect(props) {
         eventId,
       }),
     );
-    //Permet de mettre la primary person comme 1er élément de la liste
-    for (var i = 0; i < data.length; i++) {
-      if (data[i].isPrimaryPerson) {
-        data.unshift(data.splice(i, 1)[0]);
-        break;
-      }
-    }
+
     if (!data[0].registered) {
       formik.setFieldValue('persons', [data[0]]);
       data.shift();
@@ -44,26 +38,17 @@ export default function PersonSelect(props) {
     formik.setFieldValue('persons', persons);
     formik.setFieldValue(
       'allPersons',
-      formik.values.allPersons.filter(p => {
-        if (p.id === person.id) {
-          return false;
-        }
-        return true;
-      }),
+      formik.values.allPersons.filter(p => p.id !== person.id),
     );
     stepHook.handleCompleted(1);
   };
 
   const removePerson = person => {
-    const allPersons = formik.values.allPersons;
-    allPersons.push(person);
+    const allPersons = [...formik.values.allPersons, person];
     formik.setFieldValue('allPersons', allPersons);
-    const persons = formik.values.persons.filter(p => {
-      if (p.id === person.id) {
-        return false;
-      }
-      return true;
-    });
+    const persons = formik.values.persons.filter(
+      p => p.id !== person.id,
+    );
     formik.setFieldValue('persons', persons);
     if (persons.length < 1) {
       stepHook.handleNotCompleted(1);
@@ -87,7 +72,7 @@ export default function PersonSelect(props) {
       >
         {t('selected_persons')}
       </Typography>
-      {formik.values.persons < 1 ? (
+      {formik.values.persons.length < 1 ? (
         <Typography component="p" style={{ marginBottom: '8px' }}>
           {t('no_person_selected')}
         </Typography>
