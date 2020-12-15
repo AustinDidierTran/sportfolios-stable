@@ -1284,7 +1284,6 @@ const getPrimaryPerson = async user_id => {
 
 async function getRole(rosterId, userId) {
   const realId = await getRealId(rosterId);
-  console.log({ roster_id: realId, user_id: userId });
   const [{ role } = {}] = await knex('team_players')
     .select('team_players.role')
     .join(
@@ -3417,7 +3416,7 @@ async function getRosterEventInfos(roster_id) {
       'event_id',
       'event_rosters.team_id',
       'registration_status',
-      knex.raw('name as teamName'),
+      knex.raw('name as teamname'),
     )
     .leftJoin(
       'entities_name',
@@ -3432,7 +3431,7 @@ async function getRosterEventInfos(roster_id) {
     eventId: res.event_id,
     teamId: res.team_id,
     registrationStatus: res.registrationStatus,
-    teamName: res.teamName,
+    teamName: res.teamname,
   };
 }
 

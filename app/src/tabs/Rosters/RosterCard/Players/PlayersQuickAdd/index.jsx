@@ -6,14 +6,14 @@ import { Button, List } from '../../../../../components/Custom';
 
 export default function PersonsQuickAdd(props) {
   const { t } = useTranslation();
-  const { persons, title, onAdd } = props;
+  const { persons, title, onAdd, titleClassName } = props;
   if (!persons || !persons.length) {
     return <> </>;
   }
 
   return (
     <>
-      <Typography align="left" variant="subtitle1">
+      <Typography className={titleClassName} variant="h6">
         {title}
       </Typography>
       <List

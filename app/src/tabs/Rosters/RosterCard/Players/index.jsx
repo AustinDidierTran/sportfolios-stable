@@ -7,7 +7,6 @@ import React, {
 import styles from './Players.module.css';
 
 import { useTranslation } from 'react-i18next';
-import uuid from 'uuid';
 
 import PlayerCard from './PlayerCard';
 import { Typography, Divider } from '@material-ui/core';
@@ -37,7 +36,7 @@ export default function Players(props) {
     update,
   } = props;
   const [blackList, setBlackList] = useState([]);
-  const [isLoading, setisLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const {
     state: { userInfo },
   } = useContext(Store);
@@ -47,6 +46,7 @@ export default function Players(props) {
 
   const getBlackList = async () => {
     if (isEventAdmin || editableRoster || withMyPersonsQuickAdd) {
+      setIsLoading(true);
       const { data } = await api(
         formatRoute('/api/entity/getRoster', null, {
           rosterId,
@@ -54,53 +54,52 @@ export default function Players(props) {
         }),
       );
       setBlackList(data.map(d => d.personId));
+      setIsLoading(false);
     }
   };
 
   const onPlayerAddToRoster = async person => {
-    console.log({ person });
-    setisLoading(true);
-    const player = person.id
-      ? {
-          personId: person.id,
-          name: person.completeName || person.name,
-          id: uuid.v1(),
-          role: ROSTER_ROLE_ENUM.PLAYER,
-          isSub: false,
-        }
-      : { name: person.completeName || person.name, id: uuid.v1() };
+    setIsLoading(true);
+    const player = {
+      personId: person.id,
+      role: ROSTER_ROLE_ENUM.PLAYER,
+      isSub: false,
+    };
 
     await onAdd(player, rosterId);
     setBlackList([...blackList, player.personId]);
-    setisLoading(false);
+    setIsLoading(false);
   };
 
   const handleClose = async person => {
-    setisLoading(true);
+    setIsLoading(true);
     await update();
     setBlackList([...blackList, person.id]);
-    setisLoading(false);
+    setIsLoading(false);
   };
   const handleDelete = async id => {
-    setisLoading(true);
+    setIsLoading(true);
     await onDelete(id);
     //TODO: handle blacklist in frontend and backend
     await getBlackList();
-    setisLoading(false);
+    setIsLoading(false);
   };
 
   const handleRoleUpdate = async (playerId, role) => {
-    setisLoading(true);
+    setIsLoading(true);
     await onRoleUpdate(playerId, role);
-    setisLoading(false);
+    setIsLoading(false);
   };
   const playersQuickAdd = useMemo(() => {
     if (withMyPersonsQuickAdd) {
-      return userInfo.persons.filter(
-        p => !blackList.includes(p.entity_id),
+      const validPlayers = userInfo.persons.filter(
+        p =>
+          !blackList.includes(p.entity_id) &&
+          (!whiteList || whiteList.includes(p.entity_id)),
       );
+      return validPlayers;
     }
-  }, [blackList]);
+  }, [blackList, withMyPersonsQuickAdd]);
 
   if (!players) {
     return null;
@@ -130,6 +129,7 @@ export default function Players(props) {
         </div>
         <PlayersQuickAdd
           title={t('my_persons')}
+          titleClassName={styles.listTitle}
           onAdd={onPlayerAddToRoster}
           persons={playersQuickAdd}
         />
@@ -137,7 +137,7 @@ export default function Players(props) {
         <>
           {players.length ? (
             <div className={styles.player}>
-              <Typography align="left" variant="subtitle1">
+              <Typography className={styles.listTitle} variant="h6">
                 {t('roster')}
               </Typography>
               {players.map(player => (
@@ -165,10 +165,14 @@ export default function Players(props) {
         title={t('my_persons')}
         onAdd={onPlayerAddToRoster}
         persons={playersQuickAdd}
+        titleClassName={styles.listTitle}
       />
       <Divider variant="middle" />
       {
         <>
+          <Typography className={styles.listTitle} variant="h6">
+            {t('roster')}
+          </Typography>
           {players.length ? (
             <div className={styles.player}>
               {players.map(player => (

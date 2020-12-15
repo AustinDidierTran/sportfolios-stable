@@ -34,7 +34,7 @@ export default function Rosters(props) {
           onRoleUpdate={(...args) =>
             onRoleUpdate(roster.teamId, ...args)
           }
-          index={index + 1}
+          index={index}
           key={roster.rosterId}
           update={update}
         />

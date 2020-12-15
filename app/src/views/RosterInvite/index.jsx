@@ -24,7 +24,7 @@ export default function RosterInvite() {
         token,
       }),
     );
-    if (res && res.status == STATUS_ENUM.SUCCESS_STRING) {
+    if (res.status == STATUS_ENUM.SUCCESS_STRING) {
       setRoster({ ...res.data });
     } else {
       goTo(ROUTES_ENUM.entityNotFound);
@@ -40,10 +40,7 @@ export default function RosterInvite() {
     <IgContainer>
       <RosterCard
         roster={roster}
-        onAdd={() => {}}
-        onDelete={() => {}}
-        onRoleUpdate={() => {}}
-        update={() => {}}
+        update={fetchRoster}
         onExpand={() => setExpanded(!expanded)}
         expanded={expanded}
         whiteList={userInfo.persons.map(p => p.entity_id)}

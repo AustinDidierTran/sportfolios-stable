@@ -583,8 +583,8 @@ async function updateRegistration(body, userId) {
 }
 
 async function updateRosterRole(body, userId) {
-  const { eventId, teamId, playerId, role } = body;
-
+  const { rosterId, playerId, role } = body;
+  const { teamId, eventId } = await getRosterEventInfos(rosterId);
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.ADMIN)) &&
     !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))
@@ -1145,6 +1145,10 @@ async function addPlayerToRoster(body, userId) {
   );
   if (owners) {
     owners.forEach(owner => {
+      //Not sending the notification if the user added himself
+      if (owner.user_id === userId) {
+        return;
+      }
       const notif = {
         user_id: owner.user_id,
         type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
@@ -1164,7 +1168,7 @@ async function addPlayerToRoster(body, userId) {
   return res;
 }
 
-async function deletePlayerFromRoster(id, eventId, userId) {
+async function deletePlayerFromRoster(id, userId) {
   const {
     invoiceItemId,
     status,
@@ -1178,6 +1182,7 @@ async function deletePlayerFromRoster(id, eventId, userId) {
 
   if (status === INVOICE_STATUS_ENUM.PAID) {
     // status is paid and event admin is removing
+    const { eventId } = await getRosterEventInfos(rosterId);
     if (await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
       await createRefund({ invoiceItemId });
       await updatePlayerPaymentStatusHelper({

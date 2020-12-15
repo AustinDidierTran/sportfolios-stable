@@ -1,28 +1,35 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import styles from './RosterCard.module.css';
 import { Paper, Icon, Avatar } from '../../../components/Custom';
 
 import Players from './Players';
 import { Typography } from '../../../components/MUI';
 import Tag from '../Tag';
-import { ROSTER_ROLE_ENUM } from '../../../../../common/enums';
+import {
+  ROSTER_ROLE_ENUM,
+  STATUS_ENUM,
+  SEVERITY_ENUM,
+} from '../../../../../common/enums';
 import api from '../../../actions/api';
+import { ACTION_ENUM, Store } from '../../../Store';
+import { formatRoute } from '../../../actions/goTo';
+import { useTranslation } from 'react-i18next';
 
 const isEven = n => {
   return n % 2 == 0;
 };
 
 export default function RosterCard(props) {
+  const { t } = useTranslation();
+  const { dispatch } = useContext(Store);
   const {
     isEventAdmin,
     roster,
     expanded,
     onExpand: onExpandProp,
-
     whiteList,
-
     index = 0,
-    update,
+    update = () => {},
     withMyPersonsQuickAdd,
     editableRoster: editableRosterProp,
     editableRole: editableRoleProp,
@@ -40,7 +47,6 @@ export default function RosterCard(props) {
     const res = await api(
       formatRoute('/api/entity/deletePlayerFromRoster', null, {
         id,
-        rosterId,
       }),
       {
         method: 'DELETE',
@@ -76,14 +82,22 @@ export default function RosterCard(props) {
   };
 
   const addPlayerToRoster = async player => {
-    const { data } = await api(`/api/entity/addPlayerToRoster`, {
+    const res = await api(`/api/entity/addPlayerToRoster`, {
       method: 'POST',
       body: JSON.stringify({
         ...player,
         rosterId,
       }),
     });
-    return data;
+    if (res.status === STATUS_ENUM.SUCCESS) {
+      update();
+    } else {
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('an_error_has_occured'),
+        severity: SEVERITY_ENUM.ERROR,
+      });
+    }
   };
 
   const updatePlayerRole = async (playerId, role) => {
@@ -97,7 +111,7 @@ export default function RosterCard(props) {
     });
 
     if (res.status === STATUS_ENUM.SUCCESS) {
-      await getData();
+      update();
     } else if (res.status === STATUS_ENUM.FORBIDDEN) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
@@ -112,16 +126,15 @@ export default function RosterCard(props) {
       });
     }
   };
-
   const onDelete = async id => {
     if (
-      roster.filter(
+      roster.players.filter(
         p => p.id !== id && p.role !== ROSTER_ROLE_ENUM.PLAYER,
       ).length >= 1
     ) {
       const refresh = await deletePlayerFromRoster(id);
       if (refresh) {
-        await getData();
+        update();
       }
     } else {
       dispatch({

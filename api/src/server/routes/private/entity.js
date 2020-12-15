@@ -1203,7 +1203,6 @@ router.post(`${BASE_URL}/addNewPersonToRoster`, async ctx => {
 router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
   const res = await queries.deletePlayerFromRoster(
     ctx.query.id,
-    ctx.query.eventId,
     ctx.body.userInfo.id,
   );
 
@@ -1338,6 +1337,26 @@ router.get(`${BASE_URL}/rosterFromInviteToken`, async ctx => {
     status: STATUS_ENUM.SUCCESS_STRING,
     data: roster,
   };
+});
+
+router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
+  const player = await queries.addPlayerToRoster(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (player) {
+    ctx.status = 201;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS_STRING,
+      data: player,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
 });
 
 module.exports = router;

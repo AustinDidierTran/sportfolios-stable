@@ -133,26 +133,6 @@ router.get(`${BASE_URL}/remainingSpots`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
-  const player = await queries.addPlayerToRoster(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-  );
-  if (player) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: player,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
-});
-
 router.get(`${BASE_URL}/getRoster`, async ctx => {
   const entity = await queries.getRoster(
     ctx.query.rosterId,
