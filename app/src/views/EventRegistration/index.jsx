@@ -5,13 +5,10 @@ import {
   IgContainer,
   LoadingSpinner,
 } from '../../components/Custom';
-import PaymentOptionSelect from './PaymentOptionSelect';
-import TeamSelect from './TeamSelect';
 import Roster from './Roster';
 import { useStepper } from '../../hooks/forms';
 import { useParams } from 'react-router-dom';
 import api from '../../actions/api';
-import moment from 'moment';
 import {
   formatRoute,
   ROUTES,
@@ -22,16 +19,20 @@ import { useTranslation } from 'react-i18next';
 import {
   INVOICE_STATUS_ENUM,
   GLOBAL_ENUM,
-  POSITION_ENUM,
   SEVERITY_ENUM,
+  STATUS_ENUM,
+  REJECTION_ENUM,
 } from '../../../../common/enums';
-import { formatPrice } from '../../utils/stringFormats';
 import styles from './EventRegistration.module.css';
 import { Typography } from '../../components/MUI';
 import { Container } from '@material-ui/core';
 import { Store, ACTION_ENUM } from '../../Store';
 import { ERROR_ENUM, errors } from '../../../../common/errors';
 import { useFormik } from 'formik';
+
+import PersonSelect from './PersonSelect';
+import PaymentOptionSelect from './PaymentOptionSelect/index';
+import TeamSelect from './TeamSelect/index';
 
 const getEvent = async eventId => {
   const { data } = await api(
@@ -55,185 +56,161 @@ export default function EventRegistration() {
     initialValues: {
       event: {},
       team: undefined,
+      persons: [],
+      allPersons: [],
       roster: [],
       paymentOption: '',
       paymentOptions: [],
       teamSearchQuery: '',
+      teamActivity: '',
     },
     onSubmit: async values => {
-      const { event, team, roster, paymentOption } = values;
+      const {
+        event,
+        team,
+        roster,
+        paymentOption,
+        persons,
+        teamActivity,
+      } = values;
       let newTeamId = null;
       setIsLoading(true);
-      if (!team.id) {
-        const tempTeam = await api('/api/entity', {
+      if (teamActivity) {
+        if (!team.id) {
+          const tempTeam = await api('/api/entity', {
+            method: 'POST',
+            body: JSON.stringify({
+              name: team.name,
+              type: GLOBAL_ENUM.TEAM,
+            }),
+          });
+          newTeamId = tempTeam.data.id;
+        }
+        //Check if team is accepted here
+        const { status, data } = await api('/api/entity/register', {
           method: 'POST',
           body: JSON.stringify({
-            name: team.name,
-            type: GLOBAL_ENUM.TEAM,
+            teamId: newTeamId || team.id,
+            eventId: event.id,
+            paymentOption,
+            roster,
+            status: INVOICE_STATUS_ENUM.OPEN,
           }),
         });
-        newTeamId = tempTeam.data.id;
+        await api('/api/entity/addTeamToSchedule', {
+          method: 'POST',
+          body: JSON.stringify({
+            eventId: event.id,
+            name: team.name,
+            rosterId: data.rosterId,
+          }),
+        });
+
+        setIsLoading(false);
+        if (status < 300) {
+          goTo(ROUTES.registrationStatus, null, {
+            status: data.status,
+          });
+        } else if (
+          status === errors[ERROR_ENUM.REGISTRATION_ERROR].code
+        ) {
+          goTo(ROUTES.registrationStatus, null, {
+            status: data.status,
+            reason: data.reason,
+          });
+        }
+        return;
       }
-      //Check if team is accepted here
-      const { status, data } = await api('/api/entity/register', {
-        method: 'POST',
-        body: JSON.stringify({
-          teamId: newTeamId || team.id,
-          eventId: event.id,
-          paymentOption,
-          roster,
-          status: INVOICE_STATUS_ENUM.OPEN,
-        }),
-      });
-      await api('/api/entity/addTeamToSchedule', {
-        method: 'POST',
-        body: JSON.stringify({
-          eventId: event.id,
-          name: team.name,
-          rosterId: data.rosterId,
-        }),
+      const { status, data } = await api(
+        '/api/entity/registerIndividual',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            eventId: event.id,
+            paymentOption,
+            persons,
+            status: INVOICE_STATUS_ENUM.OPEN,
+          }),
+        },
+      );
+      if (status === STATUS_ENUM.SUCCESS) {
+        goTo(ROUTES.registrationStatus, null, {
+          status: data.status,
+        });
+        return;
+      }
+      if (data.reason === REJECTION_ENUM.ALREADY_REGISTERED) {
+        const names = data.persons.reduce((prev, curr, index) => {
+          if (index === 0) {
+            return prev + curr.name;
+          } else {
+            return `${prev} ${t('and_lowerCased')} ${curr.name}`;
+          }
+        }, '');
+        dispatch({
+          type: ACTION_ENUM.SNACK_BAR,
+          message:
+            data.persons.length === 1
+              ? t('already_registered_singular', { names })
+              : t('already_registered', { names }),
+          severity: SEVERITY_ENUM.ERROR,
+          duration: 6000,
+        });
+        setIsLoading(false);
+        return;
+      }
+      goTo(ROUTES.registrationStatus, null, {
+        status: data.status,
+        reason: data.reason,
       });
 
       setIsLoading(false);
-      if (status < 300) {
-        goTo(ROUTES.registrationStatus, null, {
-          status: data.status,
-        });
-      } else if (
-        status === errors[ERROR_ENUM.REGISTRATION_ERROR].code
-      ) {
-        goTo(ROUTES.registrationStatus, null, {
-          status: data.status,
-          reason: data.reason,
-        });
-      }
     },
   });
 
-  const getOptions = async () => {
-    const { data } = await api(
-      formatRoute('/api/entity/options', null, { eventId }),
-    );
-
-    const options = data
-      .filter(
-        d =>
-          moment(d.startTime) <= moment() &&
-          moment(d.endTime) >= moment(),
-      )
-      .reduce(
-        (prev, d) => [
-          ...prev,
-          {
-            display: `${d.name} | ${getPaymentOptionDisplay(d)}`,
-            value: d.id,
-          },
-        ],
-        [],
-      );
-
-    formik.setFieldValue('paymentOptions', options);
-  };
-
-  const getPaymentOptionDisplay = option => {
-    if (option.team_price === 0 && option.individual_price === 0) {
-      return t('free');
-    } else if (
-      option.team_price === 0 &&
-      option.individual_price !== 0
-    ) {
-      return `${formatPrice(option.individual_price)} (${t(
-        'per_player',
-      )})`;
-    } else if (
-      option.team_price !== 0 &&
-      option.individual_price === 0
-    ) {
-      return `${formatPrice(option.team_price)} (${t('team')})`;
-    } else {
-      return `${formatPrice(option.team_price)} (${t('team')}) ${t(
-        'and_lowerCased',
-      )} ${formatPrice(option.individual_price)} (${t(
-        'per_player',
-      )})`;
-    }
-  };
-
-  useEffect(() => {
-    getOptions();
-  }, [eventId]);
-
   const stepHook = useStepper();
 
-  const onTeamSelect = async () => {
-    stepHook.handleCompleted(0);
-  };
-  const onTeamChange = () => {
-    stepHook.handleNotCompleted(0);
-  };
-  const onRosterSelect = () => {
-    stepHook.handleCompleted(1);
-  };
-  const onPaymentOptionSelect = () => {
-    stepHook.handleCompleted(2);
-  };
+  useEffect(() => {
+    const paymentOption = formik.values.paymentOptions.find(
+      p => p.value === formik.values.paymentOption,
+    );
+    formik.setFieldValue('teamActivity', paymentOption?.teamActivity);
+  }, [formik.values.paymentOption]);
 
-  const handleNext = activeStep => {
-    if (activeStep === 0) {
-      dispatch({
-        type: ACTION_ENUM.SNACK_BAR,
-        message: t('team_selected_add_your_roster', {
-          name: formik.values.team.name,
-        }),
-        severity: SEVERITY_ENUM.SUCCESS,
-        duration: 30000,
-        vertical: POSITION_ENUM.TOP,
-      });
-    }
-    if (activeStep === 1) {
-      let message = '';
-      const length = formik.values.roster.length;
-      if (!length) {
-        message = t('you_added_no_players_to_your_roster');
-      } else if (length === 1) {
-        message = t('you_added_one_player_to_your_roster');
-      } else {
-        message = t('you_added_players_to_your_roster', { length });
-      }
-      dispatch({
-        type: ACTION_ENUM.SNACK_BAR,
-        message,
-        severity: SEVERITY_ENUM.SUCCESS,
-        duration: 30000,
-        vertical: POSITION_ENUM.TOP,
-      });
-    }
+  useEffect(() => {
+    formik.setFieldValue('teamActivity', true);
+  }, []);
+
+  const handleBack = activeStep => {
+    stepHook.handleNotCompleted(activeStep);
   };
 
   const steps = [
     {
-      label: t('team_select'),
+      label: t('payment_options'),
       content: (
-        <TeamSelect
-          onClick={onTeamSelect}
-          onTeamChange={onTeamChange}
-          formik={formik}
-          eventId={eventId}
-        />
+        <PaymentOptionSelect stepHook={stepHook} formik={formik} />
       ),
+    },
+    {
+      label: t('team_select'),
+      content: <TeamSelect stepHook={stepHook} formik={formik} />,
     },
     {
       label: t('roster'),
-      content: <Roster onClick={onRosterSelect} formik={formik} />,
+      content: <Roster stepHook={stepHook} formik={formik} />,
     },
+  ];
+  const individualSteps = [
     {
       label: t('payment_options'),
       content: (
-        <PaymentOptionSelect
-          onClick={onPaymentOptionSelect}
-          formik={formik}
-        />
+        <PaymentOptionSelect stepHook={stepHook} formik={formik} />
       ),
+    },
+    {
+      label: t('person_select'),
+      content: <PersonSelect formik={formik} stepHook={stepHook} />,
     },
   ];
 
@@ -272,9 +249,12 @@ export default function EventRegistration() {
         </div>
         <Container>
           <StepperWithHooks
-            steps={steps}
+            steps={
+              formik.values.teamActivity ? steps : individualSteps
+            }
             finish={formik.handleSubmit}
-            Next={handleNext}
+            Next={() => {}}
+            Back={handleBack}
             {...stepHook.stepperProps}
           />
         </Container>

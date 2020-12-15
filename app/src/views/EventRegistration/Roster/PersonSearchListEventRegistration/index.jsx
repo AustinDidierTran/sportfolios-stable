@@ -23,6 +23,7 @@ export default function PersonSearchListEventRegistration(props) {
     style,
     autoFocus,
     rosterId,
+    inputRef,
   } = props;
   const { t } = useTranslation();
   const query = useFormInput('');
@@ -141,6 +142,7 @@ export default function PersonSearchListEventRegistration(props) {
           autoFocus={autoFocus}
           style={{ width: '100%', ...style }}
           onKeyPress={onEnter}
+          inputRef={inputRef}
         />
       ) : (
         <TextField
@@ -151,6 +153,7 @@ export default function PersonSearchListEventRegistration(props) {
           size="small"
           autoFocus={autoFocus}
           onKeyPress={onEnter}
+          inputRef={inputRef}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">

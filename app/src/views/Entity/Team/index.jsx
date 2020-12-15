@@ -4,7 +4,6 @@ import { Paper, IgContainer, Icon } from '../../../components/Custom';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import styles from './Team.module.css';
 import { useParams } from 'react-router-dom';
 
 import { goTo, ROUTES } from '../../../actions/goTo';

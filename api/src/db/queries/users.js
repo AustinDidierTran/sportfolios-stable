@@ -39,6 +39,7 @@ const {
   getMessengerId,
   deleteMessengerId,
   setChatbotInfos,
+  isRegistered,
 } = require('../helpers');
 
 const {
@@ -174,7 +175,41 @@ const getOwnedAndTransferedPersons = async userId => {
     ),
     getPeopleTransferedToUser(userId),
   ]);
-  return owned.concat(transfered);
+  const concat = owned.concat(transfered);
+
+  //Permet de mettre la primary person comme 1er élément de la liste
+  for (var i = 0; i < concat.length; i++) {
+    if (concat[i].isPrimaryPerson) {
+      concat.unshift(concat.splice(i, 1)[0]);
+      break;
+    }
+  }
+  return concat;
+};
+
+const getOwnedPersonsRegistration = async (eventId, userId) => {
+  const [owned, transfered] = await Promise.all([
+    (await getOwnedPersons(userId)).filter(
+      person => person.role === ENTITIES_ROLE_ENUM.ADMIN,
+    ),
+    getPeopleTransferedToUser(userId),
+  ]);
+  const concat = owned.concat(transfered);
+  //Permet de mettre la primary person comme 1er élément de la liste
+  for (var i = 0; i < concat.length; i++) {
+    if (concat[i].isPrimaryPerson) {
+      concat.unshift(concat.splice(i, 1)[0]);
+      break;
+    }
+  }
+
+  const registered = await Promise.all(
+    concat.map(async c => ({
+      ...c,
+      registered: await isRegistered(c.id, eventId),
+    })),
+  );
+  return registered;
 };
 
 const getOwnedPersons = async userId => {
@@ -342,6 +377,7 @@ module.exports = {
   getTokenPromoCode,
   declinePersonTransfer,
   getOwnedAndTransferedPersons,
+  getOwnedPersonsRegistration,
   getTransferInfos,
   setFacebookData,
   getConnectedApps,

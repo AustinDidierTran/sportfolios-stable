@@ -25,6 +25,7 @@ const {
   addMembership: addMembershipHelper,
   addNewPersonToRoster: addNewPersonToRosterHelper,
   addOption: addOptionHelper,
+  addPersonToEvent: addPersonToEventHelper,
   addPhase: addPhaseHelper,
   addPlayerToRoster: addPlayerToRosterHelper,
   addRegisteredToSchedule: addRegisteredToScheduleHelper,
@@ -82,6 +83,7 @@ const {
   getRankings: getRankingsHelper,
   getRegistered: getRegisteredHelper,
   getRegistrationTeamPaymentOption: getRegistrationTeamPaymentOptionHelper,
+  getRegistrationIndividualPaymentOption: getRegistrationIndividualPaymentOptionHelper,
   getRemainingSpots: getRemainingSpotsHelper,
   getReports: getReportsHelper,
   getRoster: getRosterHelper,
@@ -120,10 +122,13 @@ const {
   updateSuggestionStatus: updateSuggestionStatusHelper,
   getRosterEventInfos,
   getRole,
+  getRegisteredPersons,
+  getCreatorsEmail,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
   sendTeamRegistrationEmailToAdmin,
+  sendPersonRegistrationEmailToAdmin,
   sendAcceptedRegistrationEmail,
   sendImportMemberEmail,
 } = require('../../server/utils/nodeMailer');
@@ -407,7 +412,6 @@ async function addTeamToEvent(body, userId) {
   if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-
   if (!paymentOption) {
     throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
   }
@@ -438,7 +442,6 @@ async function addTeamToEvent(body, userId) {
     registrationStatus,
     paymentOption,
   });
-
   // Add roster
   if (roster) {
     await addRosterHelper(rosterId, roster, userId);
@@ -464,7 +467,7 @@ async function addTeamToEvent(body, userId) {
 
   // send mail to organization admin
   // TODO find real event user creator
-  const creatorEmails = ['austindidier@sportfolios.app'];
+  const creatorEmails = await getCreatorsEmail(eventId);
   creatorEmails.map(async email => {
     const language = await getLanguageFromEmail(email);
     sendTeamRegistrationEmailToAdmin({
@@ -492,6 +495,88 @@ async function addTeamToEvent(body, userId) {
 
   // Handle other acceptation statuses
   return { status: registrationStatus, rosterId };
+}
+
+async function addPersonToEvent(body, userId) {
+  const { eventId, paymentOption, persons, status } = body;
+
+  if (!paymentOption) {
+    throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
+  }
+
+  const remainingSpots = await getRemainingSpotsHelper(eventId);
+  // Reject team if there is already too many registered teams
+  if (remainingSpots && remainingSpots < persons.length) {
+    const registrationStatus = STATUS_ENUM.REFUSED;
+    const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
+    return { status: registrationStatus, reason };
+  }
+
+  const event = (await getEntity(eventId, userId)).basicInfos;
+
+  const individualPaymentOption = await getRegistrationIndividualPaymentOptionHelper(
+    paymentOption,
+  );
+
+  const isFreeOption = individualPaymentOption.individual_price === 0;
+  // TODO: Validate status of team
+  const registrationStatus = isFreeOption
+    ? STATUS_ENUM.ACCEPTED_FREE
+    : STATUS_ENUM.ACCEPTED;
+
+  const registeredPersons = await getRegisteredPersons(
+    persons,
+    eventId,
+  );
+  if (registeredPersons.length > 0) {
+    return {
+      status: STATUS_ENUM.REFUSED,
+      reason: REJECTION_ENUM.ALREADY_REGISTERED,
+      persons: registeredPersons,
+    };
+  }
+  await persons.forEach(async person => {
+    await addPersonToEventHelper({
+      personId: person.id,
+      eventId: event.id,
+      status: isFreeOption ? INVOICE_STATUS_ENUM.FREE : status,
+      registrationStatus,
+      paymentOption,
+    });
+    if (registrationStatus === STATUS_ENUM.ACCEPTED) {
+      // wont be added to cart if free
+      const ownerId = await getOwnerStripePrice(
+        individualPaymentOption.individual_stripe_price_id,
+      );
+      await addEventCartItem(
+        {
+          stripePriceId:
+            individualPaymentOption.individual_stripe_price_id,
+          metadata: {
+            sellerEntityId: ownerId,
+            buyerId: person.id,
+            person: person,
+          },
+        },
+        userId,
+      );
+    }
+    // send mail to organization admin
+    const creatorEmails = await getCreatorsEmail(eventId);
+    await Promise.all(
+      creatorEmails.forEach(async email => {
+        const language = await getLanguageFromEmail(email);
+        sendPersonRegistrationEmailToAdmin({
+          email,
+          person,
+          event,
+          language,
+          placesLeft: remainingSpots,
+        });
+      }),
+    );
+  });
+  return { status: registrationStatus, persons };
 }
 
 async function getInteractiveToolData(eventId, userId) {
@@ -1275,6 +1360,7 @@ module.exports = {
   addScoreSuggestion,
   addSpiritSubmission,
   addTeamToEvent,
+  addPersonToEvent,
   addTeamToSchedule,
   addTimeSlot,
   cancelRosterInviteToken,

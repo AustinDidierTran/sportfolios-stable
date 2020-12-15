@@ -35,57 +35,110 @@ export default function PurchasesItem(props) {
   };
   const { type } = metadata;
   if (type === GLOBAL_ENUM.EVENT) {
-    const { team } = metadata;
-    if (!team) {
-      return <></>;
-    }
-    return (
-      <>
-        <ListItem style={{ width: '100%' }}>
-          <div className={styles.div}>
-            <ListItemIcon>
-              <Avatar
-                photoUrl={photoUrl || IMAGE_ENUM.ULTIMATE_TOURNAMENT}
-                variant="square"
-                className={styles.photo}
-              ></Avatar>
-            </ListItemIcon>
-            <ListItemText
-              className={styles.name}
-              primary={description}
-              secondary={team.name}
-            />
-            <ListItemText
-              className={styles.quantity}
-              primary={
-                metadata?.isIndividualOption
-                  ? `${formatPrice(amount)} - ${metadata?.name}`
-                  : formatPrice(amount)
-              }
-              secondary={label}
-            />
-            {/* <MailtoButton
+    const { team, person } = metadata;
+    if (team) {
+      return (
+        <>
+          <ListItem style={{ width: '100%' }}>
+            <div className={styles.div}>
+              <ListItemIcon>
+                <Avatar
+                  photoUrl={
+                    photoUrl || IMAGE_ENUM.ULTIMATE_TOURNAMENT
+                  }
+                  variant="square"
+                  className={styles.photo}
+                ></Avatar>
+              </ListItemIcon>
+              <ListItemText
+                className={styles.name}
+                primary={description}
+                secondary={team.name}
+              />
+              <ListItemText
+                className={styles.quantity}
+                primary={
+                  metadata?.isIndividualOption
+                    ? `${formatPrice(amount)} - ${metadata?.name}`
+                    : formatPrice(amount)
+                }
+                secondary={label}
+              />
+              {/* <MailtoButton
             edge="end"
             emails={email}
             className={styles.mail}
           /> */}
-            <IconButton
-              onClick={goToReceipt}
-              tooltip={t('receipt')}
-              icon="Receipt"
-              style={{ color: 'primary' }}
-            />
-            <ListItemText
-              className={styles.date}
-              secondary={`${t('purchased_on')}: ${formatDate(
-                moment(createdAt),
-              )}`}
-            ></ListItemText>
-          </div>
-        </ListItem>
-        <Divider />
-      </>
-    );
+              <IconButton
+                onClick={goToReceipt}
+                tooltip={t('receipt')}
+                icon="Receipt"
+                style={{ color: 'primary' }}
+              />
+              <ListItemText
+                className={styles.date}
+                secondary={`${t('purchased_on')}: ${formatDate(
+                  moment(createdAt),
+                )}`}
+              ></ListItemText>
+            </div>
+          </ListItem>
+          <Divider />
+        </>
+      );
+    }
+    if (person) {
+      return (
+        <>
+          <ListItem style={{ width: '100%' }}>
+            <div className={styles.div}>
+              <ListItemIcon>
+                <Avatar
+                  photoUrl={
+                    photoUrl || IMAGE_ENUM.ULTIMATE_TOURNAMENT
+                  }
+                  variant="square"
+                  className={styles.photo}
+                ></Avatar>
+              </ListItemIcon>
+              <ListItemText
+                className={styles.name}
+                primary={description}
+                secondary={person.complete_name}
+              />
+              <ListItemText
+                className={styles.quantity}
+                primary={
+                  metadata?.isIndividualOption
+                    ? `${formatPrice(amount)} - ${metadata?.name}`
+                    : formatPrice(amount)
+                }
+                secondary={label}
+              />
+              {/* <MailtoButton
+            edge="end"
+            emails={email}
+            className={styles.mail}
+          /> */}
+              <IconButton
+                onClick={goToReceipt}
+                tooltip={t('receipt')}
+                icon="Receipt"
+                style={{ color: 'primary' }}
+              />
+              <ListItemText
+                className={styles.date}
+                secondary={`${t('purchased_on')}: ${formatDate(
+                  moment(createdAt),
+                )}`}
+              ></ListItemText>
+            </div>
+          </ListItem>
+          <Divider />
+        </>
+      );
+    }
+    return <></>;
   }
   if (type === GLOBAL_ENUM.MEMBERSHIP) {
     const { organization, person } = metadata;

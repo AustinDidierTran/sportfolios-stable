@@ -1,27 +1,37 @@
 import React, { useEffect } from 'react';
-import { Button, TeamSearchList } from '../../components/Custom';
-import { Typography } from '../../components/MUI';
+import { Button, TeamSearchList } from '../../../components/Custom';
+import { Typography } from '../../../components/MUI';
 import { useTranslation } from 'react-i18next';
-import { useFormInput } from '../../hooks/forms';
-import TeamItem from '../../components/Custom/List/TeamItem';
+import { useFormInput } from '../../../hooks/forms';
+import TeamItem from '../../../components/Custom/List/TeamItem';
 import styles from './TeamSelect.module.css';
+import { useParams } from 'react-router-dom';
 
 export default function TeamSelect(props) {
   const { t } = useTranslation();
-  const { onClick, formik, eventId, onTeamChange } = props;
+  const { id: eventId } = useParams();
+  const { stepHook, formik } = props;
   const query = useFormInput('');
 
   const { team } = formik.values;
 
   useEffect(() => {
     if (team) {
-      onClick();
+      stepHook.handleCompleted(1);
     }
   }, [team]);
 
+  const handleClick = e => {
+    formik.setFieldValue('team', {
+      id: undefined,
+      name: e.target.value,
+    });
+    stepHook.handleCompleted(1);
+  };
+
   const onChange = () => {
     formik.setFieldValue('team', null);
-    onTeamChange();
+    stepHook.handleNotCompleted(1);
   };
 
   if (team) {
@@ -73,7 +83,7 @@ export default function TeamSelect(props) {
         className={styles.item}
         clearOnSelect={false}
         label={t('enter_team_name')}
-        onClick={onClick}
+        onClick={handleClick}
         query={query}
         allowCreate
         withoutIcon

@@ -12,6 +12,7 @@ export default function CustomStepperWithHooks(props) {
   const {
     activeStep,
     completed,
+    Back,
     handleBack,
     handleNext,
     Next,
@@ -58,7 +59,10 @@ export default function CustomStepperWithHooks(props) {
                 <div className={styles.button}>
                   <Button
                     disabled={activeStep === 0}
-                    onClick={handleBack}
+                    onClick={() => {
+                      Back(activeStep);
+                      handleBack();
+                    }}
                     variant="contained"
                     color="primary"
                     style={{ color: 'white' }}

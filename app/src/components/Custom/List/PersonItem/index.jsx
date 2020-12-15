@@ -24,6 +24,7 @@ export default function PersonItem(props) {
     inverseColor,
     secondaryActions, //secondaryAction is an array of components, this array should not contain more than 2 or 3 buttons
     notClickable,
+    disabled,
   } = props;
 
   const initials = useMemo(
@@ -45,50 +46,53 @@ export default function PersonItem(props) {
     },
     [id, onClick],
   );
+
+  const className = useMemo(() => {
+    if (inverseColor) {
+      return styles.avatar;
+    }
+    return null;
+  }, [inverseColor]);
+
   return (
-    <ListItem
-      button
-      selected={selected}
-      onClick={notClickable ? null : handleClick}
-      style={{
-        width: '100%',
-        secondaryAction: {
-          paddingRight: 96,
-        },
-      }}
-    >
-      <ListItemIcon>
-        {inverseColor ? (
+    <div className={styles.listItem}>
+      <ListItem
+        button
+        selected={selected}
+        onClick={notClickable ? null : handleClick}
+        style={{
+          width: '100%',
+          secondaryAction: {
+            paddingRight: 96,
+          },
+        }}
+        disabled={disabled}
+      >
+        <ListItemIcon>
           <Avatar
-            className={styles.avatar}
+            className={className}
             photoUrl={photoUrl}
             icon={icon}
             initials={initials}
           ></Avatar>
-        ) : (
-          <Avatar
-            photoUrl={photoUrl}
-            icon={icon}
-            initials={initials}
-          ></Avatar>
-        )}
-      </ListItemIcon>
-      <ListItemText
-        className={styles.text}
-        primary={completeName || name}
-        secondary={secondary || t('person')}
-      ></ListItemText>
-      <ListItemSecondaryAction>
-        {secondaryActions ? (
-          <div className={styles.secondaryActions}>
-            {secondaryActions.map((action, index) => (
-              <div key={index}>{action}</div>
-            ))}
-          </div>
-        ) : (
-          <></>
-        )}
-      </ListItemSecondaryAction>
-    </ListItem>
+        </ListItemIcon>
+        <ListItemText
+          className={styles.text}
+          primary={completeName || name}
+          secondary={secondary || t('person')}
+        ></ListItemText>
+        <ListItemSecondaryAction>
+          {secondaryActions ? (
+            <div className={styles.secondaryActions}>
+              {secondaryActions.map((action, index) => (
+                <div key={index}>{action}</div>
+              ))}
+            </div>
+          ) : (
+            <></>
+          )}
+        </ListItemSecondaryAction>
+      </ListItem>
+    </div>
   );
 }
