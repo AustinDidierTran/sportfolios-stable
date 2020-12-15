@@ -136,6 +136,7 @@ export default function ComponentFactory(props) {
       fullWidth
       style={component.style}
       autoFocus={component.autoFocus}
+      hidden={component.hidden}
     />
   );
 }

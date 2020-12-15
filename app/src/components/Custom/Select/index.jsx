@@ -40,9 +40,9 @@ export default function CustomSelect(props) {
     }
   };
 
-  if (showtextifonlyoneoption === 'true') {
+  if (showtextifonlyoneoption === 'true' && options.length) {
     return (
-      <Typography>{`${label}: ${options[0].display}`}</Typography>
+      <Typography align="left">{`${label}: ${options[0].display}`}</Typography>
     );
   }
 
