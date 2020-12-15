@@ -180,19 +180,14 @@ router.get(`${BASE_URL}/ownedPersonsRegistration`, async ctx => {
     ctx.query.eventId,
     ctx.body.userInfo.id,
   );
-  if (persons) {
-    ctx.status = 200;
-    ctx.body = {
-      status: 'success',
-      data: persons,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+  if (!persons) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.status = 200;
+  ctx.body = {
+    status: 'success',
+    data: persons,
+  };
 });
 
 router.put(`${BASE_URL}/primaryPerson`, async ctx => {
