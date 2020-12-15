@@ -36,6 +36,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Facebook from '@material-ui/icons/Facebook';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FiberManualRecord from '@material-ui/icons/FiberManualRecord';
+import FileCopy from '@material-ui/icons/FileCopy';
 import Flag from '@material-ui/icons/Flag';
 import Folder from '@material-ui/icons/Folder';
 import FormatListNumbered from '@material-ui/icons/FormatListNumbered';
@@ -121,6 +122,7 @@ const icons = {
   Facebook,
   FavoriteIcon,
   FiberManualRecord,
+  FileCopy,
   Flag,
   Folder,
   FormatListNumbered,

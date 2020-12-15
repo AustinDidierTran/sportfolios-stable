@@ -6,7 +6,10 @@ import {
   STATUS_ENUM,
   ROUTES_ENUM,
 } from '../../../../../../common/enums';
-import { Button } from '../../../../components/Custom';
+import { IconButton } from '../../../../components/Custom';
+import { Typography } from '@material-ui/core';
+import styles from './RosterInviteLink.module.css';
+import CopyToClipBoard from '../../../../components/Custom/IconButton/CopyToClipboard';
 
 export default function RosterInviteLink(props) {
   const [link, setLink] = useState();
@@ -32,5 +35,16 @@ export default function RosterInviteLink(props) {
     fetchLink();
   }, [rosterId]);
 
-  return <Button>{link}</Button>;
+  return (
+    <div>
+      <Typography variant="body1">
+        Laisse tes amis s'ajouter eux mêmes à ton alignement en leur
+        partageant ce lien.
+      </Typography>
+      <div className={styles.linkDiv}>
+        <Typography variant="body2">{link}</Typography>
+        <CopyToClipBoard text={link} style={{ color: 'secondary' }} />
+      </div>
+    </div>
+  );
 }
