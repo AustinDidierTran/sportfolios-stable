@@ -135,17 +135,18 @@ export default function RosterCard(props) {
     );
   }
   const onDelete = async id => {
-    if (remainsOtherPlayerWithRole(id)) {
-      const refresh = await deletePlayerFromRoster(id);
-      if (refresh) {
-        update();
-      }
-    } else {
+    if (!remainsOtherPlayerWithRole(id)) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('team_player_role_error'),
         severity: SEVERITY_ENUM.ERROR,
       });
+      return;
+    } 
+      const refresh = await deletePlayerFromRoster(id);
+      if (refresh) {
+        update();
+      }
     }
   };
 
