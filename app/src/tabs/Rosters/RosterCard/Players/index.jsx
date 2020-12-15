@@ -42,10 +42,10 @@ export default function Players(props) {
   } = useContext(Store);
   useEffect(() => {
     getBlackList();
-  }, [rosterId, isEventAdmin, editableRoster, withMyPersonsQuickAdd]);
+  }, [rosterId, editableRoster, withMyPersonsQuickAdd]);
 
   const getBlackList = async () => {
-    if (!(isEventAdmin || editableRoster || withMyPersonsQuickAdd)) {
+    if (!(editableRoster || withMyPersonsQuickAdd)) {
       return;
     }
     setIsLoading(true);
@@ -124,6 +124,9 @@ export default function Players(props) {
             rosterId={rosterId}
           />
         </div>
+        <Typography variant={'h6'}>{t('or')}</Typography>
+        <RosterInviteLink rosterId={rosterId} />
+        <Divider variant="middle" light />
         <PersonsQuickAdd
           title={t('my_persons')}
           titleClassName={styles.listTitle}
