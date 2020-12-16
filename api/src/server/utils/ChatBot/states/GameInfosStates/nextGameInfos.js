@@ -30,50 +30,43 @@ class NextGameInfos extends State {
   }
 
   async getIntroMessages() {
-    try {
-      const userId = await getUserIdFromMessengerId(
-        this.context.messengerId,
-      );
-      console.log({ userId });
-      const game = await getUserNextGame(userId);
-      console.log({ game });
-      const timeZone = await getTimezoneFromPSID(
-        this.context.messengerId,
-      );
-      console.log({ timeZone });
-      if (!game || game.length === 0) {
-        return {
-          messages: [
-            Response.genQuickReply(
-              i18n.__('game_infos.no_game'),
-              MESSENGER_QUICK_REPLIES.ENDPOINT_ACTIONS,
-            ),
-          ],
-        };
-      }
-      const date = new Date(
-        new Date(game.timeslot).valueOf() +
-          timeZone * MILLIS_TIME_ENUM.ONE_HOUR,
-      );
-      const infos = {
-        event: game.event_name,
-        field: game.field,
-        timeslot: moment(date).format('LLL'),
-        opponentTeams: game.opponent_teams_names.join(
-          ' ' + i18n.__('and') + ' ',
-        ),
-      };
+    const userId = await getUserIdFromMessengerId(
+      this.context.messengerId,
+    );
+    const game = await getUserNextGame(userId);
+    const timeZone = await getTimezoneFromPSID(
+      this.context.messengerId,
+    );
+    if (!game || game.length === 0) {
       return {
         messages: [
           Response.genQuickReply(
-            i18n.__('game_infos.next_game', infos),
+            i18n.__('game_infos.no_game'),
             MESSENGER_QUICK_REPLIES.ENDPOINT_ACTIONS,
           ),
         ],
       };
-    } catch (err) {
-      console.log(err);
     }
+    const date = new Date(
+      new Date(game.timeslot).valueOf() +
+        timeZone * MILLIS_TIME_ENUM.ONE_HOUR,
+    );
+    const infos = {
+      event: game.event_name,
+      field: game.field,
+      timeslot: moment(date).format('LLL'),
+      opponentTeams: game.opponent_teams_names.join(
+        ' ' + i18n.__('and') + ' ',
+      ),
+    };
+    return {
+      messages: [
+        Response.genQuickReply(
+          i18n.__('game_infos.next_game', infos),
+          MESSENGER_QUICK_REPLIES.ENDPOINT_ACTIONS,
+        ),
+      ],
+    };
   }
 }
 
