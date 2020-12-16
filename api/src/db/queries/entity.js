@@ -5,6 +5,7 @@ const {
   REJECTION_ENUM,
   NOTIFICATION_TYPE,
   GLOBAL_ENUM,
+  ROSTER_ROLE_ENUM,
 } = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
@@ -663,10 +664,15 @@ async function updateRegistration(body, userId) {
 
 async function updateRosterRole(body, userId) {
   const { rosterId, playerId, role } = body;
-  const { teamId, eventId } = await getRosterEventInfos(rosterId);
+  const { eventId } = await getRosterEventInfos(rosterId);
+  const userRole = await getRole(rosterId, userId);
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.ADMIN)) &&
-    !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))
+    !(
+      userRole === ROSTER_ROLE_ENUM.CAPTAIN ||
+      userRole === ROSTER_ROLE_ENUM.COACH ||
+      userRole === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN
+    )
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }

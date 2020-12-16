@@ -3696,7 +3696,6 @@ module.exports = {
   getRosterInviteToken,
   cancelRosterInviteToken,
   getRosterIdFromInviteToken,
-  getRole,
   getRegistrationStatus,
   getRosterEventInfos,
   updateSuggestionStatus,
