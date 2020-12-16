@@ -4,7 +4,7 @@ const router = new Router();
 const BASE_URL = '/api/fb';
 const { Chatbot } = require('../../utils/ChatBot');
 const queries = require('../../../db/queries/facebook');
-
+const { FACEBOOK_VERIFY_TOKEN } = require('../../../../../conf');
 router.post(`${BASE_URL}/messengerHook`, async ctx => {
   let body = ctx.request.body;
 
@@ -59,7 +59,6 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
 
 router.get(`${BASE_URL}/messengerHook`, async ctx => {
   // Your verify token. Should be a random string.
-  let VERIFY_TOKEN = '7noYUm%z@vsOpi3pYUY6BPwre3!@7';
 
   // Parse the query params
   let mode = ctx.request.query['hub.mode'];
@@ -69,7 +68,7 @@ router.get(`${BASE_URL}/messengerHook`, async ctx => {
   // Checks if a token and mode is in the query string of the request
   if (mode && token) {
     // Checks the mode and token sent is correct
-    if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+    if (mode === 'subscribe' && token === FACEBOOK_VERIFY_TOKEN) {
       // Responds with the challenge token from the request
       ctx.status = 200;
       ctx.message = challenge;
