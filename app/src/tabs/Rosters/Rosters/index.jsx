@@ -3,14 +3,7 @@ import styles from './Rosters.module.css';
 import RosterCard from '../RosterCard';
 
 export default function Rosters(props) {
-  const {
-    isEventAdmin,
-    rosters,
-    onAdd,
-    onDelete,
-    onRoleUpdate,
-    update,
-  } = props;
+  const { isEventAdmin, rosters, update } = props;
   const [expandedIndex, setExpandedIndex] = useState();
   const onExpand = index => {
     if (expandedIndex === index) {
@@ -33,11 +26,6 @@ export default function Rosters(props) {
           expanded={expandedIndex === index}
           isEventAdmin={isEventAdmin}
           roster={roster}
-          onAdd={onAdd}
-          onDelete={onDelete}
-          onRoleUpdate={(...args) =>
-            onRoleUpdate(roster.teamId, ...args)
-          }
           index={index}
           key={roster.rosterId}
           update={update}
