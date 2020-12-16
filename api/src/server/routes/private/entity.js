@@ -503,19 +503,16 @@ router.put(`${BASE_URL}/updateGamesInteractiveTool`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: res,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: res,
+  };
 });
 
 router.put(`${BASE_URL}/role`, async ctx => {
@@ -907,20 +904,20 @@ router.post(`${BASE_URL}/alias`, async ctx => {
 });
 
 router.post(`${BASE_URL}/game`, async ctx => {
-  const game = await queries.addGame(ctx.request.body);
-  if (game) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: game,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+  const game = await queries.addGame(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (!game) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: game,
+  };
 });
 
 router.post(`${BASE_URL}/gameScore`, async ctx => {
@@ -1024,20 +1021,20 @@ router.post(`${BASE_URL}/gameAttendances`, async ctx => {
 });
 
 router.post(`${BASE_URL}/field`, async ctx => {
-  const field = await queries.addField(ctx.request.body);
-  if (field) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: field,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+  const field = await queries.addField(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (!field) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: field,
+  };
 });
 
 router.post(`${BASE_URL}/addTeamToSchedule`, async ctx => {
@@ -1077,37 +1074,37 @@ router.post(`${BASE_URL}/addRegisteredToSchedule`, async ctx => {
 });
 
 router.post(`${BASE_URL}/phase`, async ctx => {
-  const phase = await queries.addPhase(ctx.request.body);
-  if (phase) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: phase,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+  const phase = await queries.addPhase(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (!phase) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: phase,
+  };
 });
 
 router.post(`${BASE_URL}/timeSlots`, async ctx => {
-  const slots = await queries.addTimeSlot(ctx.request.body);
-  if (slots) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: slots,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+  const slots = await queries.addTimeSlot(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (!slots) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: slots,
+  };
 });
 
 router.post(`${BASE_URL}/option`, async ctx => {

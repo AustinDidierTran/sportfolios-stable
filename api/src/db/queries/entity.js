@@ -859,7 +859,7 @@ async function addAlias(body) {
   return res;
 }
 
-async function addGame(body) {
+async function addGame(body, userId) {
   const {
     eventId,
     phaseId,
@@ -870,7 +870,14 @@ async function addGame(body) {
     name1,
     name2,
   } = body;
-  const res = await addGameHelper(
+
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return addGameHelper(
     eventId,
     phaseId,
     fieldId,
@@ -880,7 +887,6 @@ async function addGame(body) {
     name1,
     name2,
   );
-  return res;
 }
 
 async function addGameAttendances(body, userId) {
@@ -1022,10 +1028,14 @@ async function addScoreSuggestion(body, userId) {
   return res;
 }
 
-async function addField(body) {
+async function addField(body, userId) {
   const { field, eventId } = body;
-  const res = await addFieldHelper(field, eventId);
-  return res;
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return addFieldHelper(field, eventId);
 }
 
 async function addTeamToSchedule(body) {
@@ -1040,16 +1050,24 @@ async function addRegisteredToSchedule(body) {
   return res;
 }
 
-async function addPhase(body) {
+async function addPhase(body, userId) {
   const { phase, eventId } = body;
-  const res = await addPhaseHelper(phase, eventId);
-  return res;
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return addPhaseHelper(phase, eventId);
 }
 
-async function addTimeSlot(body) {
+async function addTimeSlot(body, userId) {
   const { date, eventId } = body;
-  const res = await addTimeSlotHelper(date, eventId);
-  return res;
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return addTimeSlotHelper(date, eventId);
 }
 
 async function addOption(body, userId) {

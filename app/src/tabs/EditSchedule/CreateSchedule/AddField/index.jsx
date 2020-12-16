@@ -59,25 +59,30 @@ export default function AddField(props) {
       });
 
       resetForm();
-      if (status === STATUS_ENUM.ERROR) {
+
+      if (
+        status === STATUS_ENUM.ERROR ||
+        status === STATUS_ENUM.UNAUTHORIZED
+      ) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: ERROR_ENUM.ERROR_OCCURED,
           severity: SEVERITY_ENUM.ERROR,
           duration: 4000,
         });
-      } else {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: t('field_added'),
-          severity: SEVERITY_ENUM.SUCCESS,
-          duration: 2000,
-        });
+        return;
+      }
 
-        // used in interactive tool
-        if (addFieldToGrid) {
-          addFieldToGrid(data);
-        }
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('field_added'),
+        severity: SEVERITY_ENUM.SUCCESS,
+        duration: 2000,
+      });
+
+      // used in interactive tool
+      if (addFieldToGrid) {
+        addFieldToGrid(data);
       }
     },
   });

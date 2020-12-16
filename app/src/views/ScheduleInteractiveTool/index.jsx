@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import api from '../../actions/api';
-import { formatRoute } from '../../actions/goTo';
+import { formatRoute, goTo, ROUTES } from '../../actions/goTo';
 import { formatDate } from '../../utils/stringFormats';
 import { Typography } from '../../components/MUI';
 import {
@@ -18,10 +18,13 @@ import {
   Button,
 } from '../../components/Custom';
 import { Store, ACTION_ENUM } from '../../Store';
-import { STATUS_ENUM, SEVERITY_ENUM } from '../../../../common/enums';
+import {
+  STATUS_ENUM,
+  SEVERITY_ENUM,
+  TABS_ENUM,
+} from '../../../../common/enums';
 import { Fab, makeStyles, Tooltip } from '@material-ui/core';
 import styles from './ScheduleInteractiveTool.module.css';
-import { goBack } from '../../actions/goTo';
 import GameCard from './GameCard';
 import AddGame from './AddGame';
 import AddField from '../../tabs/EditSchedule/CreateSchedule/AddField';
@@ -249,28 +252,41 @@ export default function ScheduleInteractiveTool() {
       }),
     });
 
-    if (res.status === STATUS_ENUM.ERROR) {
+    if (
+      res.status === STATUS_ENUM.ERROR ||
+      res.status === STATUS_ENUM.UNAUTHORIZED
+    ) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('an_error_has_occured'),
         severity: SEVERITY_ENUM.ERROR,
       });
-    } else {
-      await getData();
-      dispatch({
-        type: ACTION_ENUM.SNACK_BAR,
-        message: t('changes_saved'),
-        severity: SEVERITY_ENUM.SUCCESS,
-      });
-      setMadeChanges(false);
+      return;
     }
+
+    await getData();
+
+    dispatch({
+      type: ACTION_ENUM.SNACK_BAR,
+      message: t('changes_saved'),
+      severity: SEVERITY_ENUM.SUCCESS,
+    });
+
+    setMadeChanges(false);
   };
 
+  const goBackToEvent = () => {
+    goTo(
+      ROUTES.entity,
+      { id: eventId },
+      { tab: TABS_ENUM.EDIT_SCHEDULE },
+    );
+  };
   const handleBack = () => {
-    madeChanges ? setAlertDialog(true) : goBack();
+    madeChanges ? setAlertDialog(true) : goBackToEvent();
   };
   const handleDialogSubmit = () => {
-    goBack();
+    goBackToEvent();
   };
   const handleDialogCancel = () => {
     setAlertDialog(false);
@@ -442,6 +458,7 @@ export default function ScheduleInteractiveTool() {
             className={styles.button}
             type="submit"
             endIcon="Add"
+            disabled={isAddingGames}
           >
             {t('field')}
           </Button>
@@ -452,6 +469,7 @@ export default function ScheduleInteractiveTool() {
             className={styles.button}
             type="submit"
             endIcon="Add"
+            disabled={isAddingGames}
           >
             {t('time_slot')}
           </Button>

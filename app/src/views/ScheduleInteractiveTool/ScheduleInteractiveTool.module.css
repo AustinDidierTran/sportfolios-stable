@@ -1,4 +1,6 @@
 .mainDiv {
+  top: 0;
+  position: fixed;
   display: grid;
   grid-template-columns: 192px auto;
   grid-template-rows: auto auto;
