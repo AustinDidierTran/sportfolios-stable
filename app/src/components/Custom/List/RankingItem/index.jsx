@@ -20,7 +20,7 @@ export default function RankingItem(props) {
           <div className={styles.main} style={{ width: '100%' }}>
             <ListItemText
               className={styles.position}
-              secondary={index}
+              secondary={index + 1}
             />
             <ListItemText className={styles.name} primary={name} />
           </div>
@@ -41,7 +41,7 @@ export default function RankingItem(props) {
         <div className={styles.main} style={{ width: '100%' }}>
           <ListItemText
             className={styles.position}
-            secondary={index}
+            secondary={index + 1}
           />
           <ListItemText className={styles.name} primary={name} />
         </div>

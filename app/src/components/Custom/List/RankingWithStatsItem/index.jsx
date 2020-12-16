@@ -24,7 +24,7 @@ export default function RankingWithStatsItem(props) {
           ) : (
             <ListItemText
               className={styles.position}
-              secondary={index}
+              secondary={index + 1}
             />
           )}
 
