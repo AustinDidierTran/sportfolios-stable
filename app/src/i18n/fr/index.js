@@ -2,6 +2,14 @@ import { SIZES_ENUM } from '../../../../common/enums';
 
 export default {
   translations: {
+    to_invite_people_to_your_roster_share_the_invite_link: "Pour inviter des amis à rejoindre votre équipe, partagez le lien d'invitation",
+    link_has_been_copied_and_will_expire: 'Le lien a été copié et expirera le {{expireDate}}',
+    share_the_invite_link: "Partager le lien d'invitation",
+    copy_invite_link: "Copier le lien d'invitation",
+    by_getting_a_new_link_the_old_one_will_expires: "En générant un nouveau lien, l'ancien deviendra invalide.",
+    get_a_new_link: 'Obtenir un nouveau lien',
+    copied: 'Copié',
+    copy_to_clipboard: 'Copier vers le presse-papier',
     about: 'À propos',
     accept_person_transfer_confirmation: 'Êtes vous certain de vouloir accepter le transfert de {{name}}?',
     accept: 'Accepter',

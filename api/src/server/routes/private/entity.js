@@ -1331,6 +1331,20 @@ router.get(`${BASE_URL}/rosterInviteToken`, async ctx => {
     data: token,
   };
 });
+router.get(`${BASE_URL}/newRosterInviteToken`, async ctx => {
+  const token = await queries.getNewRosterInviteToken(
+    ctx.body.userInfo.id,
+    ctx.query.rosterId,
+  );
+  if (!token) {
+    throw new Error(STATUS_ENUM.ERROR_STRING);
+  }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS_STRING,
+    data: token,
+  };
+});
 
 router.del(`${BASE_URL}/rosterInviteToken`, async ctx => {
   const res = await queries.cancelRosterInviteToken(

@@ -136,6 +136,7 @@ export default function EventRegistration() {
       if (status === STATUS_ENUM.SUCCESS) {
         goTo(ROUTES.registrationStatus, null, {
           status: data.status,
+          rosterId: data.rosterId,
         });
         return;
       }

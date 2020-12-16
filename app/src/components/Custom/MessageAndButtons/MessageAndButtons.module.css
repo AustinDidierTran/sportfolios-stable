@@ -19,3 +19,7 @@
   margin-left: auto !important;
   margin-right: auto !important;
 }
+
+.content {
+  padding-bottom: 16px;
+}

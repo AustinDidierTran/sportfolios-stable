@@ -11,7 +11,7 @@ import styles from './Roster.module.css';
 import { Typography } from '@material-ui/core';
 import api from '../../../actions/api';
 import { formatRoute } from '../../../actions/goTo';
-import PersonSearchListEventRegistration from './PersonSearchListEventRegistration';
+import PersonSearchList from '../../../components/Custom/SearchList/PersonSearchList';
 import { ACTION_ENUM, Store } from '../../../Store';
 
 export default function Roster(props) {
@@ -132,8 +132,7 @@ export default function Roster(props) {
           'roster_doesnt_have_to_be_final_only_for_pre_ranking_purpose',
         )}
       </Typography>
-      <PersonSearchListEventRegistration
-        inputRef={inputRef}
+      <PersonSearchList
         className={styles.item}
         clearOnSelect={false}
         label={t('enter_player_name')}
@@ -141,7 +140,6 @@ export default function Roster(props) {
         query={query}
         blackList={blackList}
         secondary={t('player')}
-        allowCreate
         withoutIcon
         autoFocus
       />

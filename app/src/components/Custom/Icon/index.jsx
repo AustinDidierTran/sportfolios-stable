@@ -48,6 +48,7 @@ import Help from '@material-ui/icons/Help';
 import Info from '@material-ui/icons/Info';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
+import Link from '@material-ui/icons/Link';
 import Lock from '@material-ui/icons/Lock';
 import Mail from '@material-ui/icons/Mail';
 import Menu from '@material-ui/icons/Menu';
@@ -134,6 +135,7 @@ const icons = {
   Info,
   KeyboardArrowDown,
   KeyboardArrowUp,
+  Link,
   Lock,
   Mail,
   Menu,

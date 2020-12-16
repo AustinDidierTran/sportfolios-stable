@@ -8,11 +8,12 @@ import {
 } from '../../../../common/enums';
 import { goTo, ROUTES } from '../../actions/goTo';
 import { useQuery } from '../../hooks/queries';
+import RosterInviteLink from '../../tabs/Rosters/RosterCard/RosterInviteLink';
 
 export default function RegistrationStatus() {
   const { t } = useTranslation();
 
-  const { reason, status } = useQuery();
+  const { reason, status, rosterId } = useQuery();
 
   const goToCart = () => {
     goTo(ROUTES.cart);
@@ -28,6 +29,14 @@ export default function RegistrationStatus() {
     case STATUS_ENUM.ACCEPTED_FREE:
       values = {
         message: t('registration_accepted_free'),
+        children: (
+          <RosterInviteLink
+            message={t(
+              'to_invite_people_to_your_roster_share_the_invite_link',
+            )}
+            rosterId={rosterId}
+          />
+        ),
         onClick: returnHome,
         button: t('home'),
         endIcon: 'Home',
@@ -36,6 +45,14 @@ export default function RegistrationStatus() {
     case STATUS_ENUM.ACCEPTED:
       values = {
         message: t('registration_accepted'),
+        children: (
+          <RosterInviteLink
+            message={t(
+              'to_invite_people_to_your_roster_share_the_invite_link',
+            )}
+            rosterId={rosterId}
+          />
+        ),
         onClick: goToCart,
         button: t('cart'),
         endIcon: 'ShoppingCart',
@@ -85,6 +102,8 @@ export default function RegistrationStatus() {
   ];
 
   return (
-    <MessageAndButtons buttons={buttons} message={values.message} />
+    <MessageAndButtons buttons={buttons} message={values.message}>
+      {values.children}
+    </MessageAndButtons>
   );
 }

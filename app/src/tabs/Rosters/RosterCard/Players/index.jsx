@@ -91,6 +91,7 @@ export default function Players(props) {
     }
     const mapFunction = p => ({
       ...p,
+      photoUrl: p.photo_url,
       teamPlayerId: players.find(q => p.entity_id === q.personId)?.id,
     });
 
@@ -101,6 +102,16 @@ export default function Players(props) {
       .filter(p => whiteList.includes(p.entity_id))
       .map(mapFunction);
   }, [players, withMyPersonsQuickAdd, whiteList]);
+
+  const playersSortingFunction = (a, b) => {
+    if (a.entity_id === userInfo.primaryPerson.entity_id) {
+      return -1;
+    }
+    if (b.entity_id === userInfo.primaryPerson.entity_id) {
+      return 1;
+    }
+    return a.name.localeCompare(b.name);
+  };
 
   if (!players) {
     return null;
@@ -124,7 +135,6 @@ export default function Players(props) {
             rosterId={rosterId}
           />
         </div>
-        <Typography variant={'h6'}>{t('or')}</Typography>
         <RosterInviteLink rosterId={rosterId} />
         <Divider variant="middle" light />
         <PersonsQuickAdd
@@ -133,6 +143,7 @@ export default function Players(props) {
           onAdd={onPlayerAddToRoster}
           persons={playersQuickAdd}
           onRemove={handleDelete}
+          personsSortingFunction={playersSortingFunction}
         />
         <Divider variant="middle" />
         <>
@@ -167,6 +178,7 @@ export default function Players(props) {
         persons={playersQuickAdd}
         titleClassName={styles.listTitle}
         onRemove={handleDelete}
+        personsSortingFunction={playersSortingFunction}
       />
       <Divider variant="middle" />
       {

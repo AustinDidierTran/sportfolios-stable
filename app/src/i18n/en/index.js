@@ -2,6 +2,14 @@ import { SIZES_ENUM } from '../../../../common/enums';
 
 export default {
   translations: {
+    to_invite_people_to_your_roster_share_the_invite_link: 'To invite people to join your team, share the invite link',
+    link_has_been_copied_and_will_expire: 'Link has been copied and will expire on {{expireDate}}',
+    share_the_invite_link: 'Share the invite link',
+    copy_link: 'Copy invite link',
+    by_getting_a_new_link_the_old_one_will_expires: 'By getting a new link, the old one will expire',
+    get_a_new_link: 'Get a new link',
+    copied: 'Copied',
+    copy_to_clipboard: 'Copy to clipboard',
     confirmed: 'Confirmed',
     confirm_or_decline_score_notif_description: 'The team {{teamName}} submitted the score: {{score}} for your match of the event {{eventName}}. Do you want to confirm this result?',
     about: 'About',
