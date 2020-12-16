@@ -252,21 +252,27 @@ export default function ScheduleInteractiveTool() {
       }),
     });
 
-    if (res.status === STATUS_ENUM.ERROR) {
+    if (
+      res.status === STATUS_ENUM.ERROR ||
+      res.status === STATUS_ENUM.UNAUTHORIZED
+    ) {
       dispatch({
         type: ACTION_ENUM.SNACK_BAR,
         message: t('an_error_has_occured'),
         severity: SEVERITY_ENUM.ERROR,
       });
-    } else {
-      await getData();
-      dispatch({
-        type: ACTION_ENUM.SNACK_BAR,
-        message: t('changes_saved'),
-        severity: SEVERITY_ENUM.SUCCESS,
-      });
-      setMadeChanges(false);
+      return;
     }
+
+    await getData();
+
+    dispatch({
+      type: ACTION_ENUM.SNACK_BAR,
+      message: t('changes_saved'),
+      severity: SEVERITY_ENUM.SUCCESS,
+    });
+
+    setMadeChanges(false);
   };
 
   const goBackToEvent = () => {

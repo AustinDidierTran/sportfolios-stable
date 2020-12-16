@@ -77,23 +77,27 @@ export default function AddGame(props) {
         }),
       });
 
-      if (status === STATUS_ENUM.ERROR) {
+      if (
+        status === STATUS_ENUM.ERROR ||
+        status === STATUS_ENUM.UNAUTHORIZED
+      ) {
         dispatch({
           type: ACTION_ENUM.SNACK_BAR,
           message: ERROR_ENUM.ERROR_OCCURED,
           severity: SEVERITY_ENUM.ERROR,
           duration: 4000,
         });
-      } else {
-        dispatch({
-          type: ACTION_ENUM.SNACK_BAR,
-          message: t('game_added'),
-          severity: SEVERITY_ENUM.SUCCESS,
-          duration: 2000,
-        });
-
-        createCard(data.game);
+        return;
       }
+
+      dispatch({
+        type: ACTION_ENUM.SNACK_BAR,
+        message: t('game_added'),
+        severity: SEVERITY_ENUM.SUCCESS,
+        duration: 2000,
+      });
+
+      createCard(data.game);
 
       onFinish();
     },

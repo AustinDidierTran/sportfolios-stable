@@ -503,19 +503,16 @@ router.put(`${BASE_URL}/updateGamesInteractiveTool`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: res,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: res,
+  };
 });
 
 router.put(`${BASE_URL}/role`, async ctx => {
@@ -911,19 +908,16 @@ router.post(`${BASE_URL}/game`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  if (game) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: game,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+
+  if (!game) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: game,
+  };
 });
 
 router.post(`${BASE_URL}/gameScore`, async ctx => {
@@ -1031,19 +1025,16 @@ router.post(`${BASE_URL}/field`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  if (field) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: field,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+
+  if (!field) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: field,
+  };
 });
 
 router.post(`${BASE_URL}/addTeamToSchedule`, async ctx => {
@@ -1087,19 +1078,16 @@ router.post(`${BASE_URL}/phase`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  if (phase) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: phase,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+
+  if (!phase) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: phase,
+  };
 });
 
 router.post(`${BASE_URL}/timeSlots`, async ctx => {
@@ -1107,19 +1095,16 @@ router.post(`${BASE_URL}/timeSlots`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  if (slots) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: slots,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+
+  if (!slots) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: slots,
+  };
 });
 
 router.post(`${BASE_URL}/option`, async ctx => {
