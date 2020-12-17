@@ -28,7 +28,7 @@ class NotLinked extends State {
       );
       return;
     }
-    this.context.changeState(BASIC_CHATBOT_STATES.HOME);
+    await this.context.changeState(BASIC_CHATBOT_STATES.HOME);
   }
 
   handleNoRef(messengerId) {
