@@ -239,7 +239,7 @@ You will also need to create a new file at `api/src/db` called `database.json`. 
 
 Don't forget to change `username` and `password` for the right parameters.
 
-Finally, you will need to edit one line in the files `docker-compose.dev.yml` and `docker-compose.prod.yml` to match the previously chosen databse `password`:
+Finally, you will need to edit one line in the files `docker-compose.dev.yml` and `docker-compose.prod.yml` to match the previously chosen database `password`:
 
 ```yml
 POSTGRES_PASSWORD: password
@@ -275,51 +275,54 @@ For more info about db-migrate, you can look at the documentation: https://db-mi
 
 ## How to run the application
 
-To run the application in development mode, simply run in sportfolios-stable the following command:
+To run the application in development mode, you need to build the Docker containers and run them in sportfolios-stable:
+
+Build containers:
 
 ```
-docker-compose -f docker-compose.dev.yml up --build
+docker-compose build
 ```
 
-To run the application in production mode, simply run in sportfolios-stable these following commands in 3 separate terminals:
+Run containers:
 
 ```
-docker-compose -f docker-compose.prod.yml up --build db
-docker-compose -f docker-compose.prod.yml up --build api
-docker-compose -f docker-compose.prod.yml up --build app
+docker-compose up
 ```
 
-Compose can also be used in detached mode (run containers in the background):
+Both at the same time:
 
 ```
-docker-compose -f <docker-compose file> up -d --build
+docker-compose up --build
 ```
 
-Once the containers are up and running for the first time, don't forget to do the migration:
+To run the application in production mode, simply run in sportfolios-stable this command:
 
 ```
-cd api/src/db
-db-migrate up
+docker-compose -f docker-compose.prod.yml up --build
 ```
 
-These are useful commands for use with Docker in the project:
+These are useful commands to use with Docker in the project:
 
 ```
 docker ps (list active containers and show id)
-docker logs <container id or name>
-docker stop <container id or name>
+docker logs <container id or name> (not needed if started in "attached mode")
+docker stop <container id or name> (stop a specific container)
 ctrl+c (stop all containers started by the compose up command in "attached mode")
 ```
 
-container id can be only the first 3 characters of the id.
+**Important notes:**
 
-If a postgresql server is already running locally on the pc, simply stop it with this command:
+- If a postgresql server is already running locally on the pc, simply stop it with this command:
 
 ```
 sudo service postgresql stop
 ```
 
-If there are some errors about `node_modules/.staging` when launching compose, try deleting `package-lock.json`.
+- If you need to do a db migration, just run the db-migrate command while the db container is up and running.
+
+- If there are some errors about `node_modules/.staging` when launching compose, try deleting `package-lock.json`.
+
+- Whenever a new node module is installed, you need to stop the containers and rebuild them (know problem, could probably be improved so we could skip this step).
 
 ### How email are displayed
 
