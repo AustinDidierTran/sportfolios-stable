@@ -1,14 +1,14 @@
 {
   "game_infos": {
-    "next_game": "Voici les informations de votre prochaine partie:\n\n📅  Événement: %s\n📍  Terrain: %s\n⌚  Date: %s\n🤺  Adversaire: %s",
+    "next_game": "Voici les informations de votre prochaine partie:\n\n📅  Événement: {{event}}\n📍  Terrain: {{field}}\n⌚  Date: {{timeslot}}\n🤺  Adversaire: {{opponentTeams}}",
     "no_game": "Vous n'avez aucune partie à venir"
   },
   "score_submission": {
     "choose_game": "Voici vos parties en attente de soumission de score",
     "no_game_awaiting_score": "Vous n'avez aucune partie jouée en attente de score",
     "request": "Bonjour %s, votre équipe vient tout juste d'affronter l'équipe %s. Désirez-vous soumettre votre pointage ici?",
-    "explaination": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-[leur pointage]. Par exemple, pour une victoire de 13 à 10 veuillez entrer 13-10",
-    "explaination_many": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage]-%s. Par exemple: %s",
+    "explaination": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage (%s)]-[leur pointage (%s)]. Par exemple, pour une victoire de 13 à 10 veuillez entrer 13-10",
+    "explaination_many": "Veuillez entrer le pointage de votre partie selon le format suivant: [votre pointage (%s)]-%s. Par exemple: %s",
     "confirmation": {
       "victory": "Vous avez remporté votre partie contre %s par le pointage de %s à %s, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",
       "defeat": "Vous avez perdu votre partie contre %s par le pointage de %s à %s, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage",

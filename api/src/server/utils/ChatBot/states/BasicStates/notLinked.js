@@ -8,21 +8,27 @@ const i18n = require('../../../../../i18n.config');
 
 class NotLinked extends State {
   async handleEvent(webhookEvent) {
-    let nextState;
     const ref = this.getRef(webhookEvent);
     if (ref) {
-      this.handleLinking(ref, webhookEvent.sender.id);
-      nextState = BASIC_CHATBOT_STATES.HOME;
+      await this.handleLinking(ref, webhookEvent.sender.id);
     } else {
       this.handleNoRef(webhookEvent.sender.id);
     }
-    if (nextState) {
-      await this.context.changeState(nextState);
-    }
   }
 
-  handleLinking(userId, messengerId) {
-    queries.linkMessengerAccountAllIncluded(userId, messengerId);
+  async handleLinking(userId, messengerId) {
+    const success = await queries.linkMessengerAccountAllIncluded(
+      userId,
+      messengerId,
+    );
+    if (!success) {
+      this.sendMessages(
+        messengerId,
+        Response.genText(i18n.__('connection.error')),
+      );
+      return;
+    }
+    this.context.changeState(BASIC_CHATBOT_STATES.HOME);
   }
 
   handleNoRef(messengerId) {
