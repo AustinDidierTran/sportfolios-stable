@@ -1356,6 +1356,22 @@ async function cancelRosterInviteToken(userId, rosterId) {
   return cancelRosterInviteTokenHelper(rosterId);
 }
 
+async function getNewRosterInviteToken(userId, rosterId) {
+  const admins = await getMyPersonsAdminsOfTeamHelper(
+    rosterId,
+    userId,
+  );
+  if (!admins) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  //Making the old one expire
+  const res = await cancelRosterInviteTokenHelper(rosterId);
+  if (!res) {
+    return;
+  }
+  return insertRosterInviteToken(rosterId);
+}
+
 async function getRosterFromInviteToken(token, userId) {
   const rosterId = await getRosterIdFromInviteToken(token);
   if (!rosterId) {
@@ -1468,4 +1484,5 @@ module.exports = {
   getRosterAllIncluded,
   updateSuggestionStatus,
   validateEmailIsUnique,
+  getNewRosterInviteToken,
 };

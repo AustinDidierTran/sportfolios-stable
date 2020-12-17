@@ -157,12 +157,12 @@ export default function RosterCard(props) {
     [role],
   );
   const editableRoster = useMemo(
-    () => editableRosterProp || isTeamEditor,
-    [editableRosterProp, isTeamEditor],
+    () => editableRosterProp || isTeamEditor || isEventAdmin,
+    [editableRosterProp, isTeamEditor, isEventAdmin],
   );
   const editableRole = useMemo(
-    () => editableRoleProp || isTeamEditor,
-    [editableRoleProp, isTeamEditor],
+    () => editableRoleProp || isTeamEditor || isEventAdmin,
+    [editableRoleProp, isTeamEditor, isEventAdmin],
   );
 
   const onExpand = () => {
@@ -212,12 +212,11 @@ export default function RosterCard(props) {
       </div>
       <div className={styles.expanded} hidden={!expanded}>
         <Players
-          isEventAdmin={isEventAdmin}
+          withPlayersInfos={isEventAdmin}
           editableRoster={editableRoster}
           editableRole={editableRole}
           whiteList={whiteList}
           players={players}
-          update={update}
           rosterId={rosterId}
           onDelete={onDelete}
           onAdd={addPlayerToRoster}

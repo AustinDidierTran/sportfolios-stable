@@ -19,11 +19,11 @@ import PaymentChip from '../../../../../tabs/Settings/TeamRegistered/PaymentChip
 
 export default function PlayerCard(props) {
   const {
-    isEventAdmin,
     isEditable,
     player,
     onDelete,
     onRoleUpdate,
+    withInfos,
   } = props;
   const { t } = useTranslation();
   const [playerInfos, setPlayerInfos] = useState(null);
@@ -83,7 +83,7 @@ export default function PlayerCard(props) {
     }
   };
 
-  if (isEventAdmin || isEditable) {
+  if (isEditable) {
     return (
       <div className={styles.card}>
         <div className={styles.player}>
@@ -112,7 +112,7 @@ export default function PlayerCard(props) {
           </div>
 
           <div className={styles.icon}>
-            {isEventAdmin ? (
+            {withInfos ? (
               <IconButton
                 icon="Info"
                 style={{ color: 'grey' }}
@@ -146,7 +146,6 @@ export default function PlayerCard(props) {
             onPlayerRemove: onDelete,
             onRoleUpdate: handleRoleChange,
             player,
-            isEventAdmin,
           }}
         />
       </div>

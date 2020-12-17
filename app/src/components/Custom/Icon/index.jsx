@@ -36,6 +36,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import Facebook from '@material-ui/icons/Facebook';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FiberManualRecord from '@material-ui/icons/FiberManualRecord';
+import FileCopy from '@material-ui/icons/FileCopy';
 import Flag from '@material-ui/icons/Flag';
 import Folder from '@material-ui/icons/Folder';
 import FormatListNumbered from '@material-ui/icons/FormatListNumbered';
@@ -47,6 +48,7 @@ import Help from '@material-ui/icons/Help';
 import Info from '@material-ui/icons/Info';
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
+import Link from '@material-ui/icons/Link';
 import Lock from '@material-ui/icons/Lock';
 import Mail from '@material-ui/icons/Mail';
 import Menu from '@material-ui/icons/Menu';
@@ -121,6 +123,7 @@ const icons = {
   Facebook,
   FavoriteIcon,
   FiberManualRecord,
+  FileCopy,
   Flag,
   Folder,
   FormatListNumbered,
@@ -132,6 +135,7 @@ const icons = {
   Info,
   KeyboardArrowDown,
   KeyboardArrowUp,
+  Link,
   Lock,
   Mail,
   Menu,

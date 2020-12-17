@@ -3462,13 +3462,13 @@ const personIsAwaitingTransfer = async personId => {
 const insertRosterInviteToken = async roster_id => {
   const [res] = await knex('token_roster_invite')
     .insert({ roster_id })
-    .returning('token');
+    .returning(['token', 'expires_at']);
   return res;
 };
 
 async function getRosterInviteToken(roster_id) {
-  const [{ token } = {}] = await knex('token_roster_invite')
-    .select('token')
+  const [token] = await knex('token_roster_invite')
+    .select('token', 'expires_at')
     .where({ roster_id })
     .whereRaw('expires_at > now()')
     .orderBy('expires_at', 'desc')

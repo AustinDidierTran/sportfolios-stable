@@ -6,23 +6,21 @@ import { Button, List } from '../../../../../components/Custom';
 
 export default function PersonsQuickAdd(props) {
   const { t } = useTranslation();
-  const { persons, title, onAdd, titleClassName, onRemove } = props;
+  const {
+    persons,
+    title,
+    onAdd,
+    titleClassName,
+    onRemove,
+    personsSortingFunction = () => {},
+  } = props;
   if (!persons?.length) {
-    return <> </>;
+    return null;
   }
-
-  const playersSortingFunction = (a, b) => {
-    if (Boolean(a.teamPlayerId) === Boolean(b.teamPlayerId)) {
-      return a.name.localeCompare(b.name);
-    } else if (a.teamPlayerId) {
-      return 1;
-    }
-    return -1;
-  };
 
   const items = useMemo(
     () =>
-      persons.sort(playersSortingFunction).map(p => ({
+      persons.sort(personsSortingFunction).map(p => ({
         ...p,
         type: GLOBAL_ENUM.PERSON,
         completeName: p.name + ' ' + p.surname,

@@ -21,6 +21,29 @@ export default function CustomIconButton(props) {
     ...otherProps
   } = props;
 
+  if (withBadge) {
+    return (
+      <Tooltip title={tooltip}>
+        <div>
+          <IconButton
+            size={size}
+            onClick={onClick}
+            {...otherProps}
+            style={{ color: '#fff', ...props.style }}
+          >
+            <Badge
+              invisible={!badgeContent}
+              badgeContent={badgeContent}
+              color={badgeColor}
+            >
+              <Icon icon={icon} fontSize={fontSize} />
+            </Badge>
+          </IconButton>
+        </div>
+      </Tooltip>
+    );
+  }
+
   return (
     <Tooltip title={tooltip}>
       <div>
@@ -30,13 +53,7 @@ export default function CustomIconButton(props) {
           {...otherProps}
           style={{ color: '#fff', ...props.style }}
         >
-          <Badge
-            invisible={!withBadge || !badgeContent}
-            badgeContent={badgeContent}
-            color={badgeColor}
-          >
-            <Icon icon={icon} fontSize={fontSize} />
-          </Badge>
+          <Icon icon={icon} fontSize={fontSize} />
         </IconButton>
       </div>
     </Tooltip>

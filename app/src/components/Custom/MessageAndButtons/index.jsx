@@ -61,9 +61,8 @@ export default function MessageAndButtons(props) {
         <div className={styles.logo}>
           <img className={styles.img} src={LOGO_ENUM.LOGO_256X256} />
         </div>
-        <Typography style={{ paddingBottom: '16px' }}>
-          {message}
-        </Typography>
+        <Typography className={styles.content}>{message}</Typography>
+        <div className={styles.content}>{props.children}</div>
         <div className={styles.buttons}>
           {buttons.map((button, index) => (
             <Button

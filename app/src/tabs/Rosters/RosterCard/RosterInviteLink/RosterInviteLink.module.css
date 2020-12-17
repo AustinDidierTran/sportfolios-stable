@@ -1,0 +1,9 @@
+.linkDiv {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.linkDiv * {
+  padding-right: 5px;
+}
