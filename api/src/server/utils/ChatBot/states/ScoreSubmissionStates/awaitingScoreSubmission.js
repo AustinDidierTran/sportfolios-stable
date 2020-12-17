@@ -32,6 +32,7 @@ class AwaitingScoreSubmission extends State {
 
   getIntroMessages() {
     const opponentTeams = this.context.chatbotInfos.opponentTeams;
+    const myTeamName = this.context.chatbotInfos.myTeamName;
     const teamQuantity = opponentTeams.length;
     if (teamQuantity > 1) {
       const teamNames = opponentTeams.reduce(
@@ -47,6 +48,7 @@ class AwaitingScoreSubmission extends State {
           Response.genText(
             i18n.__(
               'score_submission.explaination_many',
+              myTeamName,
               teamNames,
               example,
             ),
@@ -56,7 +58,13 @@ class AwaitingScoreSubmission extends State {
     } else {
       return {
         messages: [
-          Response.genText(i18n.__('score_submission.explaination')),
+          Response.genText(
+            i18n.__(
+              'score_submission.explaination',
+              myTeamName,
+              opponentTeams[0].teamName,
+            ),
+          ),
         ],
       };
     }
