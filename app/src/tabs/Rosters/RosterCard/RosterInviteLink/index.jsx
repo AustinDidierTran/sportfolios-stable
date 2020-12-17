@@ -47,6 +47,7 @@ export default function RosterInviteLink(props) {
       }),
     );
     if (res.status !== STATUS_ENUM.SUCCESS_STRING) {
+      setLink(null);
       return;
     }
     updateTokenInfos(res.data);
