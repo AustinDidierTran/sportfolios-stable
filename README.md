@@ -5,16 +5,26 @@ A sport platform looking to generate sport portfolios (Sportfolios) automaticall
 ## Table of content
 
 - [Project setup](#project-setup)
-- [Install node,npm,nvm](#install-node-npm-nvm)
-- [Install Docker](#install-docker)
-- [Setup the project with the mock server](#setup-the-project-with-the-mock-server)
-- [Setup the project with a server](#setup-the-project-with-a-server)
+- [Install node, npm, nvm](#install-node-npm-nvm)
+- [Install db migrate](#install-db-migrate)
+- [Setup the project](#setup-the-project)
+- [Using Docker](#using-docker)
+  - [Install Docker](#install-docker)
+  - [Setup db migration](#setup-db-migration-docker)
+  - [How to run the application](#how-to-run-the-application-docker)
+- [Using pm2](#using-pm2)
+  - [Install pm2](#install-pm2)
+  - [Install postgresql](#install-postgresql)
+  - [Setup db migration](#setup-db-migration-pm2)
+  - [How to run the application](#how-to-run-the-application-pm2)
 - [How to run migrations](#how-to-run-migrations)
 - [How to run the application](#how-to-run-the-application)
-  - [How email are displayed](#how-email-are-displayed)
+- [How email are displayed](#how-email-are-displayed)
+  - [With Docker](#with-docker)
+  - [With pm2](#with-pm2)
 - [How to follow git flow and make standard pull requests](#how-to-follow-git-flow-and-make-standard-pull-requests)
 - [FAQ](#faq)
-  - [What to do if you can't connect to SSH](#what-to-do-if-you-can-t-connect-to-ssh)
+  - [What to do if you can't connect to SSH](#what-to-do-if-you-can't-connect-to-ssh)
 - [References](#references)
   - [Webpack setup](#webpack-setup)
   - [How to create SSL certificates](#how-to-create-ssl-certificates)
@@ -64,7 +74,7 @@ npm install
 
 So there it is, you have installed the project! If you only need to do client-side development, setup the project with the mock server
 
-## Install node,npm,nvm
+## Install node, npm, nvm
 
 In order to install and use npm, we recommend you use nvm (node version manager). You can install it with the following command:
 
@@ -79,28 +89,15 @@ nvm install 14.2
 nvm use 14.2
 ```
 
-## Install Docker
+## Install db migrate
 
-On Linux:
-
-```
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-sudo usermod -aG docker your-user (no need to use sudo for each docker command)
-```
-
-Change 1.27.1 with the latest version of compose found here: https://docs.docker.com/compose/release-notes/
+You will then need to run migrations, to run migrations, you will need the package db-migrate. If it hasn’t been installed, install it with npm:
 
 ```
-sudo curl -L "https://github.com/docker/compose/releases/download/1.27.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+npm install -g db-migrate
 ```
 
-On Mac:
-
-Install Docker Desktop from https://hub.docker.com/editions/community/docker-ce-desktop-mac
-
-## Setup the project with the mock server
+## Setup the project
 
 First, create a copy of _conf-template.js_ and name it _conf.js_ at the root.
 
@@ -114,7 +111,179 @@ AWS_SECRET_ACCESS_KEY=PeyJcktCAfq9avEpPTK1K/UPPhl0g2eNcFnQUwLb
 AWS_S3_BUCKET=sportfolios-images
 ```
 
-Then, install pm2:
+There are 2 ways to run the application:
+
+- With [Docker](#using-docker) (works really well on Linux!)
+- With [pm2](#using-pm2) (more used for mac)
+
+#
+
+## Using Docker
+
+### Install Docker
+
+Linux:
+
+```
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker your-user (no need to use sudo for each docker command)
+```
+
+Change 1.27.4 with the latest version of compose found here: https://docs.docker.com/compose/release-notes/
+
+```
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+Mac:
+
+Install Docker Desktop from https://hub.docker.com/editions/community/docker-ce-desktop-mac
+
+### Setup db migration Docker
+
+Edit one line in the files `docker-compose.yml` and `docker-compose.prod.yml` to change your postgres password (optional):
+
+```yml
+POSTGRES_PASSWORD: password
+```
+
+In sportfolios-stable, create a knexfile.js with your own configuration. It should look like this:
+
+```javascript
+const path = require('path');
+
+const BASE_PATH = path.join(__dirname, 'api', 'src', 'db');
+
+module.exports = {
+  test: {
+    client: 'pg',
+    connection:
+      'postgres://postgres:password@localhost/sportfolios_api_test',
+    migrations: {
+      directory: path.join(BASE_PATH, 'migrations'),
+    },
+    seeds: {
+      directory: path.join(BASE_PATH, 'seeds'),
+    },
+  },
+  development: {
+    client: 'pg',
+    connection:
+      'postgres://postgres:password@localhost/sportfolios_api_dev',
+    migrations: {
+      directory: path.join(BASE_PATH, 'migrations'),
+    },
+    seeds: {
+      directory: path.join(BASE_PATH, 'seeds'),
+    },
+  },
+  production: {
+    client: 'pg',
+    connection:
+      'postgres://postgres:password@localhost/sportfolios_api',
+    migrations: {
+      directory: path.join(BASE_PATH, 'migrations'),
+    },
+    seeds: {
+      directory: path.join(BASE_PATH, 'seeds'),
+    },
+  },
+};
+```
+
+Where sportfolios_api_test is our test database, sportfolios_api_dev is our development and sportfolios_api is our production api. Don't forget to change `password` for the right arguments in the connection parameters
+
+You will also need to create a new file at `api/src/db` called `database.json`. Its content will look like this:
+
+```json
+{
+  "dev": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "password",
+    "host": "localhost",
+    "database": "sportfolios_api_dev"
+  },
+  "test": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "password",
+    "host": "localhost",
+    "database": "sportfolios_api_test"
+  },
+  "prod": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "password",
+    "host": "localhost",
+    "database": "sportfolios_api"
+  },
+
+  "other": "postgres://uname:pw@server.com/dbname"
+}
+```
+
+Don't forget to change `password` for the right parameters (in Docker, the default postgresql user is `postgres`).
+
+### How to run the application Docker
+
+To run the application in development mode, you need to build the Docker containers and run them in sportfolios-stable:
+
+Build containers:
+
+```
+docker-compose build
+```
+
+Run containers:
+
+```
+docker-compose up
+```
+
+Both at the same time:
+
+```
+docker-compose up --build
+```
+
+To run the application in production mode, simply run in sportfolios-stable this command:
+
+```
+docker-compose -f docker-compose.prod.yml up --build
+```
+
+These are useful commands to use with Docker in the project:
+
+```
+docker ps (list active containers and show id)
+docker stop <container id or name> (stop a specific container)
+ctrl+c (stop all containers started by the compose up command in "attached mode")
+```
+
+[Docker documentation](https://docs.docker.com/) for more infos
+
+**Important notes:**
+
+- If a postgresql server is already running locally on the pc, simply stop it with this command:
+
+```
+sudo service postgresql stop
+```
+
+- If you need to do a db migration, just run the db-migrate command while the db container is up and running.
+
+- If there are some errors about `node_modules/.staging` when launching compose, try deleting `package-lock.json`.
+
+- Whenever a new node module is installed, you need to stop the containers and rebuild them (know problem, could probably be improved so we could skip this step).
+
+#
+
+## Using pm2
+
+### Install pm2
 
 ```
 npm install pm2 -g
@@ -126,19 +295,25 @@ Then, at the root, simply run:
 pm2 start pm2-dev.json
 ```
 
-There it is, you have a running project pointing to the mock-server! Note that all your requests won't affect the data as it is all mocked.
+### Install postgresql
 
-## Setup the project with a server
+Linux:
 
-To install postgres, you will need homebrew:
+```
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/ap (lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+sudo apt-get update
+
+sudo apt-get -y install postgresql-12
+```
+
+Mac:
 
 ```
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
 
-Then, install postgres:
-
-```
 brew install postgres
 ```
 
@@ -161,7 +336,9 @@ CREATE DATABASE sportfolios_api_test;
 \q
 ```
 
-Once this is done, you will need to create a knexfile.js with your own configuration. It should look like this:
+### Setup db migration pm2
+
+In sportfolios-stable, create a knexfile.js with your own configuration. It should look like this:
 
 ```javascript
 const path = require('path');
@@ -239,21 +416,19 @@ You will also need to create a new file at `api/src/db` called `database.json`. 
 
 Don't forget to change `username` and `password` for the right parameters.
 
-Finally, you will need to edit one line in the files `docker-compose.dev.yml` and `docker-compose.prod.yml` to match the previously chosen database `password`:
+### How to run the application pm2
 
-```yml
-POSTGRES_PASSWORD: password
 ```
+TODO: tell how to run the app when using pm2
+```
+
+#
 
 ## How to run migrations
 
-You will then need to run migrations, to run migrations, you will need the package db-migrate. If it hasn’t been installed, install it with npm:
+The first time you run the app and each time there is a migration to do, you need to do a migration.
 
-```
-npm install -g db-migrate
-```
-
-Once it is installed, make sure you are in the db folder.
+Make sure you are in the db folder and that db is running (Docker or pm2 si up).
 
 ```
 cd api/src/db
@@ -273,63 +448,22 @@ db-migrate create <migration name> --sql-file
 
 For more info about db-migrate, you can look at the documentation: https://db-migrate.readthedocs.io/en/latest/Getting%20Started/commands/#up
 
-## How to run the application
-
-To run the application in development mode, you need to build the Docker containers and run them in sportfolios-stable:
-
-Build containers:
-
-```
-docker-compose build
-```
-
-Run containers:
-
-```
-docker-compose up
-```
-
-Both at the same time:
-
-```
-docker-compose up --build
-```
-
-To run the application in production mode, simply run in sportfolios-stable this command:
-
-```
-docker-compose -f docker-compose.prod.yml up --build
-```
-
-These are useful commands to use with Docker in the project:
-
-```
-docker ps (list active containers and show id)
-docker logs <container id or name> (not needed if started in "attached mode")
-docker stop <container id or name> (stop a specific container)
-ctrl+c (stop all containers started by the compose up command in "attached mode")
-```
-
-**Important notes:**
-
-- If a postgresql server is already running locally on the pc, simply stop it with this command:
-
-```
-sudo service postgresql stop
-```
-
-- If you need to do a db migration, just run the db-migrate command while the db container is up and running.
-
-- If there are some errors about `node_modules/.staging` when launching compose, try deleting `package-lock.json`.
-
-- Whenever a new node module is installed, you need to stop the containers and rebuild them (know problem, could probably be improved so we could skip this step).
-
-### How email are displayed
+## How email are displayed
 
 As you won’t have access to the Google API Keys, you won’t receive any emails. The content of these emails will be logged into the terminal, which you will be able to access via this command:
 
+### With Docker
+
+The containers logs will be printed in the terminal in which you did `docker-compose up`, you can always do:
+
 ```
 docker logs sportfolios_api_dev
+```
+
+### With pm2
+
+```
+pm2 logs api
 ```
 
 ## How to follow git flow and make standard pull requests
@@ -427,6 +561,8 @@ This project is built using [Webpack](https://survivejs.com/webpack/what-is-webp
 I have tried using [Next.js](https://nextjs.org/) instead to simplify the setup process, but decided not too. Since the application is already all set up, using next would require lots of changes in the current codebase. It uses a different router, and doesn’t treat pages in the same way as react-router. The api part seemed also pretty different, but I did not look into it that much.
 
 The reason I would use Next.js in a new project is for the SSR (Server-side rendering), built-in typescript and sass-modules integration, easy routing and api integration when started from scratch. Next.js is built on top of webpack, so most web pack features can be added to the project using a web pack config file.
+
+#
 
 ## PWA
 
