@@ -321,7 +321,9 @@ const checkout = async (body, userId) => {
     },
   };
 
-  const prices = await knex('cart_items').where({ user_id: userId });
+  const prices = await knex('cart_items')
+    .where({ user_id: userId })
+    .andWhere({ selected: true });
 
   try {
     const invoicesAndMetadatas = await Promise.all(
