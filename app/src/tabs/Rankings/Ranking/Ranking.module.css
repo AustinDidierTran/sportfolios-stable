@@ -1,9 +1,0 @@
-.div {
-  margin-top: 8px;
-}
-
-@media (min-width: 600px) {
-  .div {
-    margin: 8px;
-  }
-}
