@@ -151,6 +151,7 @@ const getCartItems = async userId => {
         'cart_items.user_id',
         'cart_items.id',
         'cart_items.quantity',
+        'cart_items.selected',
         'stripe_price.stripe_price_id',
         'stripe_price.stripe_product_id',
         'stripe_price.metadata AS stripe_price_metadata',
@@ -196,6 +197,7 @@ const getCartItems = async userId => {
           label: i.label,
           metadata: i.metadata,
           quantity: i.quantity,
+          selected: i.selected,
           photoUrl: i.photo_url,
           stripePriceId: i.stripe_price_id,
           stripePriceMetadata: i.stripe_price_metadata,
@@ -225,7 +227,8 @@ const getCartTotal = async userId => {
       '=',
       'stripe_price.stripe_price_id',
     )
-    .where('cart_items.user_id', userId);
+    .where('cart_items.user_id', userId)
+    .andWhere('cart_items.selected', true);
 
   const withTaxes = await Promise.all(
     items.map(async i => ({
@@ -453,25 +456,35 @@ const addMembershipCartItem = async (body, userId) => {
 };
 
 const updateCartItems = async (body, userId) => {
-  const { cartItemId, quantity } = body;
-
-  let nbChanged;
-
-  if (quantity < 1) {
+  const { cartItemId, quantity, selected } = body;
+  if (selected === true || selected === false) {
     await knex('cart_items')
-      .where({ id: cartItemId, user_id: userId })
-      .del();
-  } else {
-    nbChanged = await knex('cart_items')
-      .update({ quantity })
+      .update({ selected })
       .where({
         id: cartItemId,
         user_id: userId,
       });
   }
 
-  if (nbChanged === 0) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  if (quantity) {
+    let nbChanged;
+
+    if (quantity < 1) {
+      await knex('cart_items')
+        .where({ id: cartItemId, user_id: userId })
+        .del();
+    } else {
+      nbChanged = await knex('cart_items')
+        .update({ quantity })
+        .where({
+          id: cartItemId,
+          user_id: userId,
+        });
+    }
+
+    if (nbChanged === 0) {
+      throw new Error(ERROR_ENUM.ACCESS_DENIED);
+    }
   }
 };
 
@@ -543,6 +556,7 @@ const clearCart = async userId => {
   try {
     await knex('cart_items')
       .where({ user_id: userId })
+      .andWhere({ selected: true })
       .del();
   } catch (err) {
     stripeErrorLogger('removeCartItems error', err);
