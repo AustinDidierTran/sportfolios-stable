@@ -148,5 +148,12 @@ router.delete(`${BASE_URL}/clearCart`, async ctx => {
     data,
   };
 });
+router.delete(`${BASE_URL}/deleteCartItem`, async ctx => {
+  const data = await queries.deleteCartItem(ctx.query);
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
 
 module.exports = router;

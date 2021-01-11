@@ -7,7 +7,9 @@ const {
   removeCartItemInstance: removeCartItemInstanceHelper,
   removeAllInstancesFromCart: removeAllInstancesFromCartHelper,
   clearCart: clearCartHelper,
+  deleteCartItem: deleteCartItemHelper,
   getCartItems,
+  getCartItem,
   getCartTotal: getCartTotalHelper,
   getCartItemsOrdered: getCartItemsOrderedHelper,
   getPurchases: getPurchasesHelper,
@@ -16,8 +18,15 @@ const {
 
 const {
   getEntityRole: getEntityRoleHelper,
+  deleteTeamFromEvent,
+  deletePersonFromEvent,
+  deletePlayerFromRoster,
+  deleteMembership,
 } = require('../helpers/entity');
-const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
+const {
+  ENTITIES_ROLE_ENUM,
+  GLOBAL_ENUM,
+} = require('../../../../common/enums');
 
 async function isAllowed(entityId, userId, acceptationRole) {
   const role = await getEntityRoleHelper(entityId, userId);
@@ -89,6 +98,47 @@ const clearCart = async (query, userId) => {
   await clearCartHelper(query, userId);
 };
 
+const deleteCartItem = async query => {
+  const { cartItemId } = query;
+  const cartItem = await getCartItem(cartItemId);
+  const { metadata } = cartItem;
+  const { type } = metadata;
+
+  if (type === GLOBAL_ENUM.TEAM || type === GLOBAL_ENUM.EVENT) {
+    const { team, person } = metadata;
+
+    if (team) {
+      const { isIndividualOption } = metadata;
+      if (isIndividualOption) {
+        await deletePlayerFromRoster({
+          personId: metadata.personId,
+          rosterId: metadata.rosterId,
+        });
+      } else {
+        await deleteTeamFromEvent({
+          teamId: team.id,
+          eventId: metadata.eventId,
+          rosterId: metadata.rosterId,
+        });
+      }
+    }
+    if (person) {
+      await deletePersonFromEvent({
+        personId: person.id,
+        eventId: metadata.eventId,
+      });
+    }
+  }
+  if (type === GLOBAL_ENUM.MEMBERSHIP) {
+    await deleteMembership(
+      metadata.membership_type,
+      metadata.organization.id,
+      metadata.person.id,
+    );
+  }
+  await deleteCartItemHelper(cartItemId);
+};
+
 module.exports = {
   getItem,
   getItems,
@@ -103,4 +153,5 @@ module.exports = {
   removeCartItemInstance,
   removeAllInstancesFromCart,
   clearCart,
+  deleteCartItem,
 };

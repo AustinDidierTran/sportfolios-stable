@@ -212,6 +212,69 @@ const getCartItems = async userId => {
     throw err;
   }
 };
+const getCartItem = async cartItemId => {
+  try {
+    const [cartItem] = await knex('cart_items')
+      .select(
+        'cart_items.stripe_price_id',
+        'cart_items.metadata',
+        'cart_items.user_id',
+        'cart_items.id',
+        'cart_items.quantity',
+        'cart_items.selected',
+        'stripe_price.stripe_price_id',
+        'stripe_price.stripe_product_id',
+        'stripe_price.metadata AS stripe_price_metadata',
+        'stripe_product.label',
+        'stripe_product.description',
+        'stripe_price.amount',
+        'stripe_price.active',
+        'store_items.photo_url',
+      )
+      .leftJoin(
+        'stripe_price',
+        'stripe_price.stripe_price_id',
+        '=',
+        'cart_items.stripe_price_id',
+      )
+      .leftJoin(
+        'stripe_product',
+        'stripe_product.stripe_product_id',
+        '=',
+        'stripe_price.stripe_product_id',
+      )
+      .leftJoin(
+        'store_items',
+        'store_items.stripe_price_id',
+        '=',
+        'stripe_price.stripe_price_id',
+      )
+      .where('cart_items.id', cartItemId);
+
+    const taxRates = await getTaxRates(cartItem.stripe_price_id);
+
+    const res = {
+      active: cartItem.active,
+      amount: cartItem.amount,
+      description: cartItem.description,
+      id: cartItem.id,
+      label: cartItem.label,
+      metadata: cartItem.metadata,
+      quantity: cartItem.quantity,
+      selected: cartItem.selected,
+      photoUrl: cartItem.photo_url,
+      stripePriceId: cartItem.stripe_price_id,
+      stripePriceMetadata: cartItem.stripe_price_metadata,
+      stripeProductId: cartItem.stripe_product_id,
+      userId: cartItem.user_id,
+      taxRates,
+    };
+    return res;
+  } catch (err) {
+    stripeErrorLogger('GetCartItem error', err);
+    throw err;
+  }
+};
 
 const getCartTotal = async userId => {
   const items = await knex('cart_items')
@@ -564,12 +627,22 @@ const clearCart = async userId => {
   }
 };
 
+const deleteCartItem = async cartItemId => {
+  const cartItem = await knex('cart_items')
+    .del()
+    .where({ id: cartItemId })
+    .returning('*');
+  return cartItem;
+};
+
 module.exports = {
   addCartItem,
   addMembershipCartItem,
   addItemToPaidStoreItems,
   clearCart,
+  deleteCartItem,
   getCartItems,
+  getCartItem,
   getCartItemsOrdered,
   getCartTotal,
   getItem,
