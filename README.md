@@ -450,18 +450,20 @@ For more info about db-migrate, you can look at the documentation: https://db-mi
 
 If the migration doesn't end with `[done]`, there is an error, first thing to do is to close your docker, after you can delete the node_module folder and package-lock.json file.
 
- Then, run the following command at the root folder:
+Then, run the following command at the root folder:
 
- ```
-npm install
- ```
+```
+yarn
+```
 
 After you have to rebuild your container and go back in the db folder
+
 ```
 api/src/db
 ```
 
-And then run 
+And then run
+
 ```
 db-migrate up
 ```
