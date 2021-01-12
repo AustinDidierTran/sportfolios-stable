@@ -448,6 +448,24 @@ db-migrate create <migration name> --sql-file
 
 For more info about db-migrate, you can look at the documentation: https://db-migrate.readthedocs.io/en/latest/Getting%20Started/commands/#up
 
+If the migration doesn't end with `[done]`, there is an error, first thing to do is to close your docker, after you can delete the node_module folder and package-lock.json file.
+
+ Then, run the following command at the root folder:
+
+ ```
+ yarn
+ ```
+
+After you have to rebuild your container and go back in the db folder
+```
+api/src/db
+```
+
+And then run 
+```
+db-migrate up
+```
+
 ## How email are displayed
 
 As you won’t have access to the Google API Keys, you won’t receive any emails. The content of these emails will be logged into the terminal, which you will be able to access via this command:
