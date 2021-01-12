@@ -3,7 +3,11 @@ const { CLIENT_BASE_URL } = require('../../../../conf');
 const {
   LOGO_ENUM,
   LANGUAGE_ENUM,
+  NOTIFICATION_TYPE,
 } = require('../../../../common/enums');
+const {
+  default: emailFactory,
+} = require('../../db/emails/emailFactory');
 
 let key;
 
@@ -74,36 +78,17 @@ async function sendConfirmationEmail({
   token,
   successRoute,
 }) {
-  let html = '';
-  let subject = '';
-  let title = '';
-  let content = '';
-  let link = '';
-  let buttonName = '';
-  if (language === LANGUAGE_ENUM.ENGLISH) {
-    subject = 'Confirm your email address. | Sportfolios';
-    title = 'Email confirmation';
-    content =
-      'To confirm your email, please click on the following link 👇';
-    buttonName = 'Confirmation';
-  } else {
-    subject = `Confirmation de l'adresse courriel | Sportfolios`;
-    title = 'Confirmation du courriel';
-    content =
-      'Pour confirmer votre addresse courriel cliquez sur le lien suivant 👇';
-    buttonName = 'Confirmation';
-  }
-  if (successRoute) {
-    link = `${CLIENT_BASE_URL}/confirmEmail/${token}?successRoute=${successRoute}`;
-  } else {
-    link = `${CLIENT_BASE_URL}/confirmEmail/${token}`;
-  }
-  html = await getHtml(title, content, link, buttonName);
-  await sendMail({
-    email,
-    subject,
-    html,
+  const fullEmail = await emailFactory({
+    type: NOTIFICATION_TYPE.EMAIL_CONFIRMATION,
+    token,
+    successRoute,
+    locale: language,
   });
+  if (!fullEmail) {
+    return;
+  }
+  const { html, subject, text } = fullEmail;
+  sendMail({ html, email, subject, text });
 }
 
 const sendPersonTransferEmail = async ({

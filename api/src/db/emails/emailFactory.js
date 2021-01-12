@@ -1,5 +1,6 @@
 const AddeddToRoster = require('./addedToRoster');
 const ScoreSubmissionRequest = require('./scoreSubmissionRequest');
+const EmailConfirmation = require('./emailConfirmation');
 const {
   NOTIFICATION_TYPE,
   ROUTES_ENUM,
@@ -10,6 +11,7 @@ const { formatLinkWithAuthToken } = require('./utils');
 const map = {
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: AddeddToRoster,
   [NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST]: ScoreSubmissionRequest,
+  [NOTIFICATION_TYPE.EMAIL_CONFIRMATION]: EmailConfirmation,
 };
 
 module.exports = async function EmailFactory(infos) {

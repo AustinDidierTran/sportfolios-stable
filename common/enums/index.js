@@ -352,6 +352,7 @@ const NOTIFICATION_TYPE = {
   SCORE_SUBMISSION_CONFLICT: 'score submission conflict',
   SCORE_SUBMISSION_REQUEST: 'score submission request',
   OTHER_TEAM_SUBMITTED_A_SCORE: 'other team submitted a score',
+  EMAIL_CONFIRMATION: 'email confirmation',
 };
 
 const NOTIFICATION_MEDIA = {

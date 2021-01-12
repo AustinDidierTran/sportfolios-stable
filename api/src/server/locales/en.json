@@ -6,7 +6,10 @@
     "unsubscribe_footer": "Manage my notifications settings",
     "score_submission_request_text": "Hello {{name}}! One of your game from the event {{eventName}} just ended. Please submit your score on Sportfolios",
     "score_submission_request_button": "Submit your score",
-    "score_submission_request_subject": "Score submission reminder"
+    "score_submission_request_subject": "Score submission reminder",
+    "email_confirmation_text": "To confirm your email, please click on the following button",
+    "email_confirmation_button": "Confirmation",
+    "email_confirmation_subject": "Confirm your email address. | Sportfolios"
   },
   "and": "and"
 }

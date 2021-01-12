@@ -65,7 +65,10 @@
     "unsubscribe_footer": "Modifier mes préférences de notifications",
     "score_submission_request_text": "Bonjour %s! Une de vos partie de l'événement %s vient de se terminer. Cliquez sur le lien afin de soumettre votre score sur Sportfolios",
     "score_submission_request_button": "Soumettre le score",
-    "score_submission_request_subject": "Rappel de soumission de score"
+    "score_submission_request_subject": "Rappel de soumission de score",
+    "email_confirmation_text": "Pour confirmer votre addresse courriel cliquez sur le bouton suivant",
+    "email_confirmation_button": "Confirmation",
+    "email_confirmation_subject": "Confirmation de l'adresse courriel | Sportfolios"
   },
   "{{submittedBy}} submitted the following score for your game of the event {{eventName}}": "{{submittedBy}} a soumis le score suivant pour votre partie de l'événement {{eventName}}",
   "Do you want to confirm?": "Voulez vous confirmer?",
