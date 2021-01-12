@@ -2938,6 +2938,7 @@ async function addTeamToEvent(body) {
     return res.roster_id;
   });
 }
+
 async function deleteTeamFromEvent(body) {
   const { teamId, eventId, rosterId } = body;
 
@@ -3094,41 +3095,8 @@ async function addNewPersonToRoster(body, userId) {
   return { is_sub: isSub, name: `${name} ${surname}`, id: person.id };
 }
 
-const addPlayerToRoster = async (body, userId) => {
-  const { personId, name, id, rosterId, role, isSub, eventId } = body;
-  let paymentStatus = INVOICE_STATUS_ENUM.FREE;
-  let cartItem;
-
-  if (!isSub) {
-    const paymentOption = await getIndividualPaymentOptionFromRosterId(
-      rosterId,
-    );
-    if (paymentOption.individual_price > 0) {
-      const ownerId = await getOwnerStripePrice(
-        paymentOption.individual_stripe_price_id,
-      );
-      cartItem = {
-        stripePriceId: paymentOption.individual_stripe_price_id,
-        metadata: {
-          eventId,
-          sellerEntityId: ownerId,
-          isIndividualOption: true,
-          personId,
-          name,
-          buyerId: personId,
-          rosterId,
-          team: (await getEntity(paymentOption.teamId, userId))
-            .basicInfos,
-        },
-      };
-
-      paymentStatus = INVOICE_STATUS_ENUM.OPEN;
-      await addEventCartItem(
-        cartItem,
-        await getUserIdFromPersonId(personId),
-      );
-    }
-  }
+const addPlayerToRoster = async body => {
+  const { personId, name, id, rosterId, role, isSub } = body;
 
   //TODO: Make sure userId adding is team Admin
   const player = await knex('team_players')
@@ -3138,12 +3106,56 @@ const addPlayerToRoster = async (body, userId) => {
       name,
       id,
       is_sub: isSub,
-      payment_status: paymentStatus,
+      payment_status: INVOICE_STATUS_ENUM.OPEN,
       role,
     })
     .returning('*');
 
   return player;
+};
+
+const addPlayersCartItems = async (rosterId, eventId) => {
+  const rosters = await knex('team_players')
+    .select('*')
+    .where({ roster_id: rosterId });
+
+  rosters.forEach(async r => {
+    const {
+      person_id: personId,
+      name,
+      roster_id: rosterId,
+      is_sub: isSub,
+    } = r;
+
+    const userId = await getUserIdFromPersonId(personId);
+
+    if (!isSub) {
+      const paymentOption = await getIndividualPaymentOptionFromRosterId(
+        rosterId,
+      );
+      if (paymentOption.individual_price > 0) {
+        const ownerId = await getOwnerStripePrice(
+          paymentOption.individual_stripe_price_id,
+        );
+        const cartItem = {
+          stripePriceId: paymentOption.individual_stripe_price_id,
+          metadata: {
+            eventId,
+            sellerEntityId: ownerId,
+            isIndividualOption: true,
+            personId,
+            name,
+            buyerId: personId,
+            rosterId,
+            team: (await getEntity(paymentOption.teamId, userId))
+              .basicInfos,
+          },
+        };
+
+        await addEventCartItem(cartItem, userId);
+      }
+    }
+  });
 };
 
 const addEventCartItem = async (body, userId) => {
@@ -3587,6 +3599,7 @@ module.exports = {
   acceptScoreSuggestionIfPossible,
   addAlias,
   addEntity,
+  addPlayersCartItems,
   addEntityRole,
   addEventCartItem,
   addField,

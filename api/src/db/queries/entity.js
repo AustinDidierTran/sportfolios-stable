@@ -125,6 +125,7 @@ const {
   getRole,
   getRegisteredPersons,
   getCreatorsEmail,
+  addPlayersCartItems,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -446,6 +447,9 @@ async function addTeamToEvent(body, userId) {
   // Add roster
   if (roster) {
     await addRosterHelper(rosterId, roster, event.id, userId);
+  }
+  if (registrationStatus === STATUS_ENUM.ACCEPTED_FREE) {
+    await addPlayersCartItems(rosterId, eventId);
   }
   if (registrationStatus === STATUS_ENUM.ACCEPTED) {
     // wont be added to cart if free
