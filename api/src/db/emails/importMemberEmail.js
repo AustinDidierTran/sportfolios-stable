@@ -1,25 +1,30 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
 const { formatLinkWithAuthToken } = require('./utils');
-const { TABS_ENUM } = require('../../../../common/enums');
-module.exports = async function AddedToRoster(infos) {
-  const { name, eventName, eventId, gameId, locale, userId } = infos;
+const { CLIENT_BASE_URL } = require('../../../../conf');
+
+module.exports = async function importMemberEmail(infos) {
+  const { organizationName, token, locale, userId } = infos;
+
   const buttonLink = await formatLinkWithAuthToken(
     userId,
-    `/${eventId}?tab=${TABS_ENUM.SCHEDULE}&game=${gameId}`,
+    `${CLIENT_BASE_URL}/userSettings`,
   );
-  const text = i18n.__(
-    { phrase: 'emails.score_submission_request_text', locale },
-    name,
-    eventName,
-  );
+
+  const text = i18n.__({
+    phrase: 'emails.import_member_text',
+    locale,
+    organizationName,
+    token,
+  });
   const buttonText = i18n.__({
-    phrase: 'emails.score_submission_request_button',
+    phrase: 'emails.import_member_button',
     locale,
   });
   const subject = i18n.__({
-    phrase: 'emails.score_submission_request_subject',
+    phrase: 'emails.import_member_subject',
     locale,
+    organizationName,
   });
   try {
     const html = await ejs.renderFile(

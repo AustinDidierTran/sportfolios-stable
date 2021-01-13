@@ -1,11 +1,11 @@
 const { CLIENT_BASE_URL } = require('../../../../conf');
-const { generateAuthToken } = require('../helpers');
 const {
   formatRoute,
 } = require('../../../../common/utils/stringFormat');
 const { ROUTES_ENUM } = require('../../../../common/enums');
+const { generateAuthToken } = require('../helpers/entity');
 
-async function formatLinkWithAuthToken(userId, route) {
+const formatLinkWithAuthToken = async (userId, route) => {
   const token = await generateAuthToken(userId);
   const link = formatRoute(
     CLIENT_BASE_URL + ROUTES_ENUM.redirectWithToken,
@@ -16,6 +16,6 @@ async function formatLinkWithAuthToken(userId, route) {
     },
   );
   return link;
-}
+};
 
 module.exports = { formatLinkWithAuthToken };

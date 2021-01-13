@@ -1,8 +1,8 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
-const { formatLinkWithAuthToken } = require('./utils');
-const { TABS_ENUM } = require('../../../../common/enums');
-module.exports = async function AddedToRoster(infos) {
+const { CLIENT_BASE_URL } = require('../../../../conf');
+
+module.exports = async function emailConfirmationEmail(infos) {
   const { token, successRoute, locale } = infos;
   let buttonLink = '';
   if (successRoute) {

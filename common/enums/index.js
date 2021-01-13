@@ -349,10 +349,17 @@ const SOCKET_EVENT = {
 
 const NOTIFICATION_TYPE = {
   ADDED_TO_ROSTER: 'added to roster',
+  EMAIL_CONFIRMATION: 'email confirmation',
+  IMPORT_MEMBER: 'import member',
+  OTHER_TEAM_SUBMITTED_A_SCORE: 'other team submitted a score',
+  PERSON_REGISTRATION_TO_ADMIN: 'person registration to admin',
+  RECOVERY_EMAIL: 'recovery email',
   SCORE_SUBMISSION_CONFLICT: 'score submission conflict',
   SCORE_SUBMISSION_REQUEST: 'score submission request',
-  OTHER_TEAM_SUBMITTED_A_SCORE: 'other team submitted a score',
-  EMAIL_CONFIRMATION: 'email confirmation',
+  SEND_RECEIPT: 'send receipt',
+  TEAM_REGISTRATION_TO_ADMIN: 'team registration to admin',
+  TEAM_REGISTRATION: 'team registration',
+  TRANSFER_PERSON: 'transfer person',
 };
 
 const NOTIFICATION_MEDIA = {

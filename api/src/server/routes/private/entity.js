@@ -853,7 +853,10 @@ router.post(`${BASE_URL}/report`, async ctx => {
 });
 
 router.post(`${BASE_URL}/importMembers`, async ctx => {
-  const members = await queries.importMembers(ctx.request.body);
+  const members = await queries.importMembers(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (members) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
