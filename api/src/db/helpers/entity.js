@@ -2938,6 +2938,49 @@ async function addTeamToEvent(body) {
     return res.roster_id;
   });
 }
+async function deleteTeamFromEvent(body) {
+  const { teamId, eventId, rosterId } = body;
+
+  return knex.transaction(async trx => {
+    await knex('schedule_teams')
+      .del()
+      .where({
+        roster_id: rosterId,
+        event_id: eventId,
+      })
+      .transacting(trx);
+
+    await knex('team_players')
+      .del()
+      .where({
+        roster_id: rosterId,
+      })
+      .transacting(trx);
+
+    await knex('division_ranking')
+      .del()
+      .where({
+        team_id: teamId,
+        event_id: eventId,
+      })
+      .transacting(trx);
+
+    await knex('event_rosters')
+      .del()
+      .where({
+        roster_id: rosterId,
+        event_id: eventId,
+      })
+      .transacting(trx);
+
+    const [res] = await knex('team_rosters')
+      .del()
+      .where({ id: rosterId })
+      .returning('roster_id')
+      .transacting(trx);
+    return res;
+  });
+}
 
 async function getRegisteredPersons(persons, eventId) {
   const ids = persons.map(p => p.id);
@@ -2972,8 +3015,18 @@ async function addPersonToEvent(body) {
     .returning('*');
   return res;
 }
+async function deletePersonFromEvent(body) {
+  const { personId, eventId } = body;
 
-async function addRoster(rosterId, roster, userId) {
+  await knex('event_persons')
+    .del()
+    .where({
+      person_id: personId,
+      event_id: eventId,
+    });
+}
+
+async function addRoster(rosterId, roster, eventId, userId) {
   const players = await Promise.all(
     roster.map(async r => {
       if (r.email) {
@@ -2981,6 +3034,7 @@ async function addRoster(rosterId, roster, userId) {
           {
             ...r,
             rosterId,
+            eventId,
           },
           userId,
         );
@@ -2990,6 +3044,7 @@ async function addRoster(rosterId, roster, userId) {
           {
             ...r,
             rosterId,
+            eventId,
           },
           userId,
         );
@@ -3009,6 +3064,7 @@ async function addNewPersonToRoster(body, userId) {
     isSub,
     rosterId,
     role,
+    eventId,
   } = body;
   const person = await addEntity(
     { name, surname, type: GLOBAL_ENUM.PERSON },
@@ -3022,6 +3078,7 @@ async function addNewPersonToRoster(body, userId) {
       rosterId,
       isSub,
       role,
+      eventId,
     },
     userId,
   );
@@ -3038,7 +3095,7 @@ async function addNewPersonToRoster(body, userId) {
 }
 
 const addPlayerToRoster = async (body, userId) => {
-  const { personId, name, id, rosterId, role, isSub } = body;
+  const { personId, name, id, rosterId, role, isSub, eventId } = body;
   let paymentStatus = INVOICE_STATUS_ENUM.FREE;
   let cartItem;
 
@@ -3053,8 +3110,10 @@ const addPlayerToRoster = async (body, userId) => {
       cartItem = {
         stripePriceId: paymentOption.individual_stripe_price_id,
         metadata: {
+          eventId,
           sellerEntityId: ownerId,
           isIndividualOption: true,
+          personId,
           name,
           buyerId: personId,
           rosterId,
@@ -3096,15 +3155,21 @@ const addEventCartItem = async (body, userId) => {
   });
 };
 
-const deletePlayerFromRoster = async id => {
-  //TODO: Make sure userId deleting is team Admin
-  const realId = await getRealId(id);
-  await knex('team_players')
-    .where({
-      id: realId,
-    })
-    .del();
-  return id;
+const deletePlayerFromRoster = async body => {
+  const { id, personId, rosterId } = body;
+  if (id) {
+    const [res] = await knex('team_players')
+      .del()
+      .where({ id })
+      .returning('id');
+    return res;
+  } else {
+    const [res] = await knex('team_players')
+      .del()
+      .where({ person_id: personId, roster_id: rosterId })
+      .returning('id');
+    return res;
+  }
 };
 
 async function updateMember(
@@ -3540,6 +3605,8 @@ module.exports = {
   addScoreSuggestion,
   addSpiritSubmission,
   addTeamToEvent,
+  deleteTeamFromEvent,
+  deletePersonFromEvent,
   addTeamToSchedule,
   addTimeSlot,
   cancelRosterInviteToken,

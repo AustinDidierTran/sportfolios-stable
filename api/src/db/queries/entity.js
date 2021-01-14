@@ -445,7 +445,7 @@ async function addTeamToEvent(body, userId) {
   });
   // Add roster
   if (roster) {
-    await addRosterHelper(rosterId, roster, userId);
+    await addRosterHelper(rosterId, roster, event.id, userId);
   }
   if (registrationStatus === STATUS_ENUM.ACCEPTED) {
     // wont be added to cart if free
@@ -456,6 +456,7 @@ async function addTeamToEvent(body, userId) {
       {
         stripePriceId: teamPaymentOption.team_stripe_price_id,
         metadata: {
+          eventId: event.id,
           sellerEntityId: ownerId,
           buyerId: teamId,
           rosterId,
@@ -554,6 +555,7 @@ async function addPersonToEvent(body, userId) {
           stripePriceId:
             individualPaymentOption.individual_stripe_price_id,
           metadata: {
+            eventId: event.id,
             sellerEntityId: ownerId,
             buyerId: person.id,
             person: person,
@@ -1305,7 +1307,7 @@ async function deletePlayerFromRoster(id, userId) {
     });
   }
 
-  return deletePlayerFromRosterHelper(id);
+  return deletePlayerFromRosterHelper({ id });
 }
 
 async function deleteGame(userId, query) {
