@@ -3018,15 +3018,12 @@ async function addPersonToEvent(body) {
 async function deletePersonFromEvent(body) {
   const { personId, eventId } = body;
 
-  const [res] = await knex('event_persons')
+  await knex('event_persons')
     .del()
     .where({
       person_id: personId,
       event_id: eventId,
-    })
-    .returning('*');
-
-  return res;
+    });
 }
 
 async function addRoster(rosterId, roster, eventId, userId) {
