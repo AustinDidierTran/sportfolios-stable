@@ -16,14 +16,9 @@ module.exports = async function SendReceiptEmail(infos) {
     phrase: 'emails.send_receipt_subject',
     locale,
   });
-  try {
-    const html = await ejs.renderFile(
-      __dirname + '/templates/textAndButton.ejs',
-      { buttonLink, text, buttonText },
-    );
-    return { html, subject };
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-  }
+  const html = await ejs.renderFile(
+    __dirname + '/templates/textAndButton.ejs',
+    { buttonLink, text, buttonText },
+  );
+  return { html, subject };
 };

@@ -74,14 +74,9 @@ module.exports = async function personRegistrationToAdminEmail(
     phrase: 'emails.person_registration_to_admin_subject',
     locale,
   });
-  try {
-    const html = await ejs.renderFile(
-      __dirname + '/templates/textAndButton.ejs',
-      { buttonLink, text, buttonText },
-    );
-    return { html, subject };
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-  }
+  const html = await ejs.renderFile(
+    __dirname + '/templates/textAndButton.ejs',
+    { buttonLink, text, buttonText },
+  );
+  return { html, subject };
 };

@@ -44,7 +44,7 @@ module.exports = async function TeamRegistrationEmail(infos) {
   } else {
     buttonLink = await formatLinkWithAuthToken(
       userId,
-      formatRoute('/page' + ROUTES_ENUM.cart),
+      formatRoute(ROUTES_ENUM.cart),
     );
     text = i18n.__(
       { phrase: 'emails.team_registration_text', locale },
@@ -64,14 +64,9 @@ module.exports = async function TeamRegistrationEmail(infos) {
     },
     teamName,
   );
-  try {
-    const html = await ejs.renderFile(
-      __dirname + '/templates/textAndButton.ejs',
-      { buttonLink, text, buttonText },
-    );
-    return { html, subject };
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-  }
+  const html = await ejs.renderFile(
+    __dirname + '/templates/textAndButton.ejs',
+    { buttonLink, text, buttonText },
+  );
+  return { html, subject };
 };

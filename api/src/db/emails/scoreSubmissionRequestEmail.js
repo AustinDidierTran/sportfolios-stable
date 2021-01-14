@@ -6,7 +6,11 @@ module.exports = async function AddedToRosterEmail(infos) {
   const { name, eventName, eventId, gameId, locale, userId } = infos;
   const buttonLink = await formatLinkWithAuthToken(
     userId,
-    `/${eventId}?tab=${TABS_ENUM.SCHEDULE}&game=${gameId}`,
+    formatRoute(
+      ROUTES_ENUM.entity,
+      { id: eventId },
+      { tab: TABS_ENUM.SCHEDULE, game: gameId },
+    ),
   );
   const text = i18n.__(
     { phrase: 'emails.score_submission_request_text', locale },
@@ -21,14 +25,9 @@ module.exports = async function AddedToRosterEmail(infos) {
     phrase: 'emails.score_submission_request_subject',
     locale,
   });
-  try {
-    const html = await ejs.renderFile(
-      __dirname + '/templates/textAndButton.ejs',
-      { buttonLink, text, buttonText },
-    );
-    return { html, subject };
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-  }
+  const html = await ejs.renderFile(
+    __dirname + '/templates/textAndButton.ejs',
+    { buttonLink, text, buttonText },
+  );
+  return { html, subject };
 };

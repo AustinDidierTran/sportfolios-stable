@@ -4,11 +4,12 @@ const {
   formatRoute,
 } = require('../../../../common/utils/stringFormat');
 const { CLIENT_BASE_URL } = require('../../../../conf');
+const { ROUTES_ENUM } = require('../../../../common/enums');
 
 module.exports = async function transferPersonEmail(infos) {
   const { token, sendedName, senderName, locale } = infos;
-  let buttonLink = formatRoute(
-    CLIENT_BASE_URL + `/page/transferPerson/${token}`,
+  const buttonLink = formatRoute(
+    `${CLIENT_BASE_URL}${ROUTES_ENUM.transferPerson}/${token}`,
   );
 
   const text = i18n.__(
@@ -30,14 +31,9 @@ module.exports = async function transferPersonEmail(infos) {
     },
     senderName,
   );
-  try {
-    const html = await ejs.renderFile(
-      __dirname + '/templates/textAndButton.ejs',
-      { buttonLink, text, buttonText },
-    );
-    return { html, subject };
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-  }
+  const html = await ejs.renderFile(
+    __dirname + '/templates/textAndButton.ejs',
+    { buttonLink, text, buttonText },
+  );
+  return { html, subject };
 };

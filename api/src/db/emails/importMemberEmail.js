@@ -8,7 +8,7 @@ module.exports = async function importMemberEmail(infos) {
 
   const buttonLink = await formatLinkWithAuthToken(
     userId,
-    `/page${ROUTES_ENUM.userSettings}`,
+    `${ROUTES_ENUM.userSettings}`,
   );
 
   const text = i18n.__(
@@ -30,14 +30,9 @@ module.exports = async function importMemberEmail(infos) {
     },
     organizationName,
   );
-  try {
-    const html = await ejs.renderFile(
-      __dirname + '/templates/textAndButton.ejs',
-      { buttonLink, text, buttonText },
-    );
-    return { html, subject };
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-  }
+  const html = await ejs.renderFile(
+    __dirname + '/templates/textAndButton.ejs',
+    { buttonLink, text, buttonText },
+  );
+  return { html, subject };
 };

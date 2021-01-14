@@ -1,11 +1,11 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
 const { CLIENT_BASE_URL } = require('../../../../conf');
+const { ROUTES_ENUM } = require('../../../../common/enums');
 
 module.exports = async function RecoveryEmail(infos) {
   const { token, locale, email } = infos;
-
-  const buttonLink = `${CLIENT_BASE_URL}/page/recoveryEmail?token=${token}&email=${email}`;
+  const buttonLink = `${CLIENT_BASE_URL}${ROUTES_ENUM.recoveryEmail}?token=${token}&email=${email}`;
 
   const text = i18n.__({
     phrase: 'emails.recovery_email_text',
@@ -19,14 +19,9 @@ module.exports = async function RecoveryEmail(infos) {
     phrase: 'emails.recovery_email_subject',
     locale,
   });
-  try {
-    const html = await ejs.renderFile(
-      __dirname + '/templates/textAndButton.ejs',
-      { buttonLink, text, buttonText },
-    );
-    return { html, subject };
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-  }
+  const html = await ejs.renderFile(
+    __dirname + '/templates/textAndButton.ejs',
+    { buttonLink, text, buttonText },
+  );
+  return { html, subject };
 };
