@@ -23,26 +23,33 @@ module.exports = async function TeamRegistrationToAdminEmail(infos) {
         phrase: 'emails.team_registration_to_admin_text_no_spot',
         locale,
       },
-      eventName,
       teamName,
+      eventName,
     );
-  }
-  if (placesLeft === 1) {
+  } else if (placesLeft === 1) {
     text = i18n.__(
       {
         phrase: 'emails.team_registration_to_admin_text_one_spot',
         locale,
       },
-      eventName,
       teamName,
+      eventName,
     );
-  }
-  if (placesLeft > 1) {
+  } else if (placesLeft > 1) {
     text = i18n.__(
       { phrase: 'emails.team_registration_to_admin_text', locale },
-      eventName,
       teamName,
+      eventName,
       placesLeft,
+    );
+  } else {
+    text = i18n.__(
+      {
+        phrase: 'emails.team_registration_to_admin_no_places_text',
+        locale,
+      },
+      teamName,
+      eventName,
     );
   }
   const buttonText = i18n.__({

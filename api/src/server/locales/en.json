@@ -33,6 +33,7 @@
     "team_registration_to_admin_text_no_spot": "A new team named {{teamName}} has registered to your event {{eventName}} with success, no more spots remaining. You can access to your event here",
     "team_registration_to_admin_text_one_spot": "A new team named {{teamName}} has registered to your event {{eventName}} with success, only one spot remaining. You can access to your event here ",
     "team_registration_to_admin_text": "A new team named {{teamName}} has registered to your event {{eventName}} with success, {{placesLeft}} spots remaining. You can access to your event here",
+    "team_registration_to_admin_no_places_text":"A new team named {{teamName}} has registered to your event {{eventName}} with success. You can access to your event here",
     "transfer_person_button": "Accept the transfer",
     "transfer_person_subject": "{{senderName}} wants to transfer a person to your account | Sportfolios",
     "transfer_person_text": "{{senderName}} wants to transfer the person{{sendedName}} on Sportfolios. Click on the following button to sign in and complete the transfer",

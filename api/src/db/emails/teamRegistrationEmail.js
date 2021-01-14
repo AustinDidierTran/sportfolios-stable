@@ -23,8 +23,8 @@ module.exports = async function TeamRegistrationEmail(infos) {
     );
     text = i18n.__(
       { phrase: 'emails.team_registration_free_text', locale },
-      eventName,
       teamName,
+      eventName,
     );
     buttonText = i18n.__({
       phrase: 'emails.team_registration_free_button',
@@ -37,8 +37,8 @@ module.exports = async function TeamRegistrationEmail(infos) {
     );
     text = i18n.__(
       { phrase: 'emails.team_registration_text', locale },
-      eventName,
       teamName,
+      eventName,
     );
     buttonText = i18n.__({
       phrase: 'emails.team_registration_button',
