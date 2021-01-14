@@ -1,7 +1,14 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
 const { formatLinkWithAuthToken } = require('./utils');
-const { CLIENT_BASE_URL } = require('../../../../conf');
+const {
+  ROUTES_ENUM,
+  TABS_ENUM,
+} = require('../../../../common/enums');
+const {
+  formatRoute,
+} = require('../../../../common/utils/stringFormat');
+
 module.exports = async function TeamRegistrationEmail(infos) {
   const {
     teamName,
@@ -19,7 +26,11 @@ module.exports = async function TeamRegistrationEmail(infos) {
   if (isFreeOption) {
     buttonLink = await formatLinkWithAuthToken(
       userId,
-      `${CLIENT_BASE_URL}/cart`,
+      formatRoute(
+        ROUTES_ENUM.entity,
+        { id: eventId },
+        { tab: TABS_ENUM.ROSTERS },
+      ),
     );
     text = i18n.__(
       { phrase: 'emails.team_registration_free_text', locale },
@@ -33,7 +44,7 @@ module.exports = async function TeamRegistrationEmail(infos) {
   } else {
     buttonLink = await formatLinkWithAuthToken(
       userId,
-      `${CLIENT_BASE_URL}/${eventId}`,
+      formatRoute('/page' + ROUTES_ENUM.cart),
     );
     text = i18n.__(
       { phrase: 'emails.team_registration_text', locale },
@@ -46,11 +57,13 @@ module.exports = async function TeamRegistrationEmail(infos) {
     });
   }
 
-  const subject = i18n.__({
-    phrase: 'emails.team_registration_subject',
-    locale,
+  const subject = i18n.__(
+    {
+      phrase: 'emails.team_registration_subject',
+      locale,
+    },
     teamName,
-  });
+  );
   try {
     const html = await ejs.renderFile(
       __dirname + '/templates/textAndButton.ejs',

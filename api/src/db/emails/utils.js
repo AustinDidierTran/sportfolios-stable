@@ -8,7 +8,7 @@ const { generateAuthToken } = require('../helpers/entity');
 const formatLinkWithAuthToken = async (userId, route) => {
   const token = await generateAuthToken(userId);
   const link = formatRoute(
-    CLIENT_BASE_URL + ROUTES_ENUM.redirectWithToken,
+    CLIENT_BASE_URL + '/page' + ROUTES_ENUM.redirectWithToken,
     null,
     {
       token,

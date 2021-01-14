@@ -13,6 +13,7 @@
     "person_registration_to_admin_subject": "New registration to your tournament | Sportfolios",
     "person_registration_to_admin_text_no_spot": "{{completeName}} has registered to your event {{eventName}} with success, no more spots remaining. You can access to your event here",
     "person_registration_to_admin_text_one_spot": "{{completeName}} has registered to your event {{eventName}} with success, only one spot remaining. You can access to your event here ",
+    "person_registration_to_admin_no_places_text": "{{completeName}} has registered to your event {{eventName}} with success. You can access to your event here ",
     "person_registration_to_admin_text": "{{completeName}} has registered to your event {{eventName}} with success, {{placesLeft}} spots remaining. You can access to your event here",
     "recovery_email_button": "Recover password",
     "recovery_email_subject": "Recover your password | Sportfolios",

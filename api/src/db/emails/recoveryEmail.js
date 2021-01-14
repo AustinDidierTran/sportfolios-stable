@@ -5,7 +5,7 @@ const { CLIENT_BASE_URL } = require('../../../../conf');
 module.exports = async function RecoveryEmail(infos) {
   const { token, locale, email } = infos;
 
-  const buttonLink = `${CLIENT_BASE_URL}/recoveryEmail?token=${token}&email=${email}`;
+  const buttonLink = `${CLIENT_BASE_URL}/page/recoveryEmail?token=${token}&email=${email}`;
 
   const text = i18n.__({
     phrase: 'emails.recovery_email_text',

@@ -1,12 +1,18 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
 const { formatLinkWithAuthToken } = require('./utils');
-const { CLIENT_BASE_URL } = require('../../../../conf');
+const {
+  TABS_ENUM,
+  ROUTES_ENUM,
+} = require('../../../../common/enums');
+const {
+  formatRoute,
+} = require('../../../../common/utils/stringFormat');
 module.exports = async function personRegistrationToAdminEmail(
   infos,
 ) {
   const {
-    teamName,
+    completeName,
     eventName,
     eventId,
     placesLeft,
@@ -16,7 +22,11 @@ module.exports = async function personRegistrationToAdminEmail(
 
   const buttonLink = await formatLinkWithAuthToken(
     userId,
-    `${CLIENT_BASE_URL}/${eventId}?tab=settings`,
+    formatRoute(
+      ROUTES_ENUM.entity,
+      { id: eventId },
+      { tab: TABS_ENUM.SETTINGS },
+    ),
   );
   let text = '';
   if (placesLeft === 0) {
@@ -25,32 +35,41 @@ module.exports = async function personRegistrationToAdminEmail(
         phrase: 'emails.person_registration_to_admin_text_no_spot',
         locale,
       },
+      completeName,
       eventName,
-      teamName,
     );
-  }
-  if (placesLeft === 1) {
+  } else if (placesLeft === 1) {
     text = i18n.__(
       {
         phrase: 'emails.person_registration_to_admin_text_one_spot',
         locale,
       },
+      completeName,
       eventName,
-      teamName,
     );
-  }
-  if (placesLeft > 1) {
+  } else if (placesLeft > 1) {
     text = i18n.__(
       { phrase: 'emails.person_registration_to_admin_text', locale },
+      completeName,
       eventName,
-      teamName,
       placesLeft,
     );
+  } else {
+    text = i18n.__(
+      {
+        phrase: 'emails.person_registration_to_admin_no_places_text',
+        locale,
+      },
+      completeName,
+      eventName,
+    );
   }
+
   const buttonText = i18n.__({
     phrase: 'emails.person_registration_to_admin_button',
     locale,
   });
+
   const subject = i18n.__({
     phrase: 'emails.person_registration_to_admin_subject',
     locale,

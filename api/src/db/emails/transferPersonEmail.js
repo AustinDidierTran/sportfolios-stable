@@ -1,10 +1,15 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
+const {
+  formatRoute,
+} = require('../../../../common/utils/stringFormat');
 const { CLIENT_BASE_URL } = require('../../../../conf');
 
 module.exports = async function transferPersonEmail(infos) {
   const { token, sendedName, senderName, locale } = infos;
-  let buttonLink = `${CLIENT_BASE_URL}/transferPerson/${token}`;
+  let buttonLink = formatRoute(
+    CLIENT_BASE_URL + `/page/transferPerson/${token}`,
+  );
 
   const text = i18n.__(
     {

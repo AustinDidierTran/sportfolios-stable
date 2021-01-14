@@ -48,7 +48,7 @@ module.exports = async function EmailFactory(infos) {
   }
   const link = await formatLinkWithAuthToken(
     infos.userId,
-    `${ROUTES_ENUM.userSettings}#notifications`,
+    `/page${ROUTES_ENUM.userSettings}#notifications`,
   );
   const unsubscribeFooter = await ejs.renderFile(
     __dirname + '/templates/unsubscribeFooter.ejs',

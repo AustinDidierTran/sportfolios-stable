@@ -16,7 +16,7 @@ try {
 const YOUR_EMAIL_ADDRESS = 'info@sportfolios.app';
 
 // Do not export this function. Create your own who uses it, then export this one
-async function sendMail({ email, subject, text, html }) {
+async function sendMail({ email: emailProps, subject, text, html }) {
   if (!key) {
     /* eslint-disable-next-line */
     console.log(
@@ -44,6 +44,10 @@ async function sendMail({ email, subject, text, html }) {
   });
   try {
     await transporter.verify();
+    let email = emailProps;
+    if (process.env.NODE_ENV === 'development') {
+      email = process.env.YOUR_EMAIL;
+    }
     return await transporter.sendMail({
       from: YOUR_EMAIL_ADDRESS,
       to: email,
@@ -183,7 +187,7 @@ async function sendPersonRegistrationEmailToAdmin({
 }) {
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.PERSON_REGISTRATION_TO_ADMIN,
-    completeName: person.completeName,
+    completeName: person.complete_name,
     eventName: event.name,
     eventId: event.id,
     placesLeft,
