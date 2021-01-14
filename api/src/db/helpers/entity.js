@@ -3027,7 +3027,14 @@ async function deletePersonFromEvent(body) {
     });
 }
 
-async function addRoster(rosterId, roster, eventId, userId) {
+async function getEventIdFromRosterid(rosterId) {
+  const [res] = await knex('event_rosters')
+    .select('event_id')
+    .where({ roster_id: rosterId });
+  return res.event_id;
+}
+async function addRoster(rosterId, roster, userId) {
+  const eventId = await getEventIdFromRosterid(rosterId);
   const players = await Promise.all(
     roster.map(async r => {
       if (r.email) {
@@ -3114,48 +3121,57 @@ const addPlayerToRoster = async body => {
   return player;
 };
 
-const addPlayersCartItems = async (rosterId, eventId) => {
+const addPlayersCartItems = async rosterId => {
   const rosters = await knex('team_players')
     .select('*')
     .where({ roster_id: rosterId });
 
-  rosters.forEach(async r => {
-    const {
-      person_id: personId,
-      name,
-      roster_id: rosterId,
-      is_sub: isSub,
-    } = r;
+  const eventId = await getEventIdFromRosterid(rosterId);
 
-    const userId = await getUserIdFromPersonId(personId);
+  await Promise.all(
+    rosters.forEach(async r => {
+      const {
+        person_id: personId,
+        name,
+        roster_id: rosterId,
+        is_sub: isSub,
+      } = r;
 
-    if (!isSub) {
-      const paymentOption = await getIndividualPaymentOptionFromRosterId(
-        rosterId,
-      );
-      if (paymentOption.individual_price > 0) {
-        const ownerId = await getOwnerStripePrice(
-          paymentOption.individual_stripe_price_id,
-        );
-        const cartItem = {
-          stripePriceId: paymentOption.individual_stripe_price_id,
-          metadata: {
-            eventId,
-            sellerEntityId: ownerId,
-            isIndividualOption: true,
-            personId,
-            name,
-            buyerId: personId,
-            rosterId,
-            team: (await getEntity(paymentOption.teamId, userId))
-              .basicInfos,
-          },
-        };
-
-        await addEventCartItem(cartItem, userId);
+      if (isSub) {
+        return;
       }
-    }
-  });
+      const userId = await getUserIdFromPersonId(personId);
+
+      if (!isSub) {
+        const paymentOption = await getIndividualPaymentOptionFromRosterId(
+          rosterId,
+        );
+        if (paymentOption.individual_price <= 0) {
+          return;
+        }
+        if (paymentOption.individual_price > 0) {
+          const ownerId = await getOwnerStripePrice(
+            paymentOption.individual_stripe_price_id,
+          );
+          const cartItem = {
+            stripePriceId: paymentOption.individual_stripe_price_id,
+            metadata: {
+              eventId,
+              sellerEntityId: ownerId,
+              isIndividualOption: true,
+              personId,
+              name,
+              buyerId: personId,
+              rosterId,
+              team: (await getEntity(paymentOption.teamId, userId))
+                .basicInfos,
+            },
+          };
+          await addEventCartItem(cartItem, userId);
+        }
+      }
+    }),
+  );
 };
 
 const addEventCartItem = async (body, userId) => {
@@ -3175,13 +3191,12 @@ const deletePlayerFromRoster = async body => {
       .where({ id })
       .returning('id');
     return res;
-  } else {
-    const [res] = await knex('team_players')
-      .del()
-      .where({ person_id: personId, roster_id: rosterId })
-      .returning('id');
-    return res;
   }
+  const [res] = await knex('team_players')
+    .del()
+    .where({ person_id: personId, roster_id: rosterId })
+    .returning('id');
+  return res;
 };
 
 async function updateMember(

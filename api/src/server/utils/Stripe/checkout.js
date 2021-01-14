@@ -48,7 +48,7 @@ const INVOICE_PAID_ENUM = {
           invoiceItemId,
           status,
         );
-        await addPlayersCartItems(metadata.rosterId, eventId);
+        await addPlayersCartItems(rosterId);
       }
       if (person) {
         await updateRegistrationPerson(

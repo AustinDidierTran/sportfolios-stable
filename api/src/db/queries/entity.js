@@ -446,10 +446,10 @@ async function addTeamToEvent(body, userId) {
   });
   // Add roster
   if (roster) {
-    await addRosterHelper(rosterId, roster, event.id, userId);
+    await addRosterHelper(rosterId, roster, userId);
   }
   if (registrationStatus === STATUS_ENUM.ACCEPTED_FREE) {
-    await addPlayersCartItems(rosterId, eventId);
+    await addPlayersCartItems(rosterId);
   }
   if (registrationStatus === STATUS_ENUM.ACCEPTED) {
     // wont be added to cart if free
