@@ -2938,6 +2938,7 @@ async function addTeamToEvent(body) {
     return res.roster_id;
   });
 }
+
 async function deleteTeamFromEvent(body) {
   const { teamId, eventId, rosterId } = body;
 
@@ -3026,7 +3027,14 @@ async function deletePersonFromEvent(body) {
     });
 }
 
-async function addRoster(rosterId, roster, eventId, userId) {
+async function getEventIdFromRosterid(rosterId) {
+  const [res] = await knex('event_rosters')
+    .select('event_id')
+    .where({ roster_id: rosterId });
+  return res.event_id;
+}
+async function addRoster(rosterId, roster, userId) {
+  const eventId = await getEventIdFromRosterid(rosterId);
   const players = await Promise.all(
     roster.map(async r => {
       if (r.email) {
@@ -3094,20 +3102,56 @@ async function addNewPersonToRoster(body, userId) {
   return { is_sub: isSub, name: `${name} ${surname}`, id: person.id };
 }
 
-const addPlayerToRoster = async (body, userId) => {
-  const { personId, name, id, rosterId, role, isSub, eventId } = body;
-  let paymentStatus = INVOICE_STATUS_ENUM.FREE;
-  let cartItem;
+const addPlayerToRoster = async body => {
+  const { personId, name, id, rosterId, role, isSub } = body;
 
-  if (!isSub) {
-    const paymentOption = await getIndividualPaymentOptionFromRosterId(
-      rosterId,
-    );
-    if (paymentOption.individual_price > 0) {
+  //TODO: Make sure userId adding is team Admin
+  const player = await knex('team_players')
+    .insert({
+      roster_id: rosterId,
+      person_id: personId,
+      name,
+      id,
+      is_sub: isSub,
+      payment_status: INVOICE_STATUS_ENUM.OPEN,
+      role,
+    })
+    .returning('*');
+
+  return player;
+};
+
+const addPlayersCartItems = async rosterId => {
+  const rosters = await knex('team_players')
+    .select('*')
+    .where({ roster_id: rosterId });
+
+  const eventId = await getEventIdFromRosterid(rosterId);
+
+  await Promise.all(
+    rosters.map(async r => {
+      const {
+        person_id: personId,
+        name,
+        roster_id: rosterId,
+        is_sub: isSub,
+      } = r;
+
+      if (isSub) {
+        return;
+      }
+      const userId = await getUserIdFromPersonId(personId);
+
+      const paymentOption = await getIndividualPaymentOptionFromRosterId(
+        rosterId,
+      );
+      if (paymentOption.individual_price <= 0) {
+        return;
+      }
       const ownerId = await getOwnerStripePrice(
         paymentOption.individual_stripe_price_id,
       );
-      cartItem = {
+      const cartItem = {
         stripePriceId: paymentOption.individual_stripe_price_id,
         metadata: {
           eventId,
@@ -3121,29 +3165,9 @@ const addPlayerToRoster = async (body, userId) => {
             .basicInfos,
         },
       };
-
-      paymentStatus = INVOICE_STATUS_ENUM.OPEN;
-      await addEventCartItem(
-        cartItem,
-        await getUserIdFromPersonId(personId),
-      );
-    }
-  }
-
-  //TODO: Make sure userId adding is team Admin
-  const player = await knex('team_players')
-    .insert({
-      roster_id: rosterId,
-      person_id: personId,
-      name,
-      id,
-      is_sub: isSub,
-      payment_status: paymentStatus,
-      role,
-    })
-    .returning('*');
-
-  return player;
+      await addEventCartItem(cartItem, userId);
+    }),
+  );
 };
 
 const addEventCartItem = async (body, userId) => {
@@ -3163,13 +3187,12 @@ const deletePlayerFromRoster = async body => {
       .where({ id })
       .returning('id');
     return res;
-  } else {
-    const [res] = await knex('team_players')
-      .del()
-      .where({ person_id: personId, roster_id: rosterId })
-      .returning('id');
-    return res;
   }
+  const [res] = await knex('team_players')
+    .del()
+    .where({ person_id: personId, roster_id: rosterId })
+    .returning('id');
+  return res;
 };
 
 async function updateMember(
@@ -3587,6 +3610,7 @@ module.exports = {
   acceptScoreSuggestionIfPossible,
   addAlias,
   addEntity,
+  addPlayersCartItems,
   addEntityRole,
   addEventCartItem,
   addField,

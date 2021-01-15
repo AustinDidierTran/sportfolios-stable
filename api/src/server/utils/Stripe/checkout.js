@@ -5,6 +5,7 @@ const {
   updateRegistrationPerson,
   updatePlayerPaymentStatus,
   updateMembershipInvoice,
+  addPlayersCartItems,
 } = require('../../../db/helpers/entity');
 
 const {
@@ -47,6 +48,7 @@ const INVOICE_PAID_ENUM = {
           invoiceItemId,
           status,
         );
+        await addPlayersCartItems(rosterId);
       }
       if (person) {
         await updateRegistrationPerson(
