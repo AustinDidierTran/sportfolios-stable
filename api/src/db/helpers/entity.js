@@ -2994,7 +2994,7 @@ async function deleteTeamFromEvent(body) {
     const [res] = await knex('team_rosters')
       .del()
       .where({ id: rosterId })
-      .returning('roster_id')
+      .returning('id')
       .transacting(trx);
     return res;
   });

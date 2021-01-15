@@ -6,16 +6,16 @@ const {
 } = require('../../../../common/utils/stringFormat');
 
 module.exports = async function emailConfirmationEmail(infos) {
-  const { token, successRoute, locale } = infos;
+  const { token, redirectUrl, locale } = infos;
   let buttonLink = '';
-  if (successRoute) {
+  if (redirectUrl) {
     buttonlink = formatClientRoute(
       ROUTES_ENUM.confirmEmail,
       { token },
-      { successRoute },
+      { redirectUrl },
     );
   } else {
-    buttonlink = formatClientRoute(ROUTES_ENUM.confirmEmail, {
+    buttonLink = formatClientRoute(ROUTES_ENUM.confirmEmail, {
       token,
     });
   }

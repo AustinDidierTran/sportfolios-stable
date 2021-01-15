@@ -65,12 +65,12 @@ async function sendConfirmationEmail({
   email,
   language,
   token,
-  successRoute,
+  redirectUrl,
 }) {
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.EMAIL_CONFIRMATION,
     token,
-    successRoute,
+    redirectUrl,
     locale: language,
     withoutFooter: true,
   });
