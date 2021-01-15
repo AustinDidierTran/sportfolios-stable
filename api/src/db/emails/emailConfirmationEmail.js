@@ -1,15 +1,23 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
-const { CLIENT_BASE_URL } = require('../../../../conf');
 const { ROUTES_ENUM } = require('../../../../common/enums');
+const {
+  formatClientRoute,
+} = require('../../../../common/utils/stringFormat');
 
 module.exports = async function emailConfirmationEmail(infos) {
   const { token, successRoute, locale } = infos;
   let buttonLink = '';
   if (successRoute) {
-    buttonlink = `${CLIENT_BASE_URL}${ROUTES_ENUM.confirmEmail}/${token}?successRoute=${successRoute}`;
+    buttonlink = formatClientRoute(
+      ROUTES_ENUM.confirmEmail,
+      { token },
+      { successRoute },
+    );
   } else {
-    buttonlink = `${CLIENT_BASE_URL}${ROUTES_ENUM.confirmEmail}/${token}`;
+    buttonlink = formatClientRoute(ROUTES_ENUM.confirmEmail, {
+      token,
+    });
   }
   const text = i18n.__({
     phrase: 'emails.email_confirmation_text',

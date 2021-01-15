@@ -1,11 +1,16 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
-const { CLIENT_BASE_URL } = require('../../../../conf');
-const { ROUTES_ENUM } = require('../../../../common/enums');
+const {
+  formatClientRoute,
+} = require('../../../../common/utils/stringFormat');
 
 module.exports = async function RecoveryEmail(infos) {
   const { token, locale, email } = infos;
-  const buttonLink = `${CLIENT_BASE_URL}${ROUTES_ENUM.recoveryEmail}?token=${token}&email=${email}`;
+  const buttonLink = formatClientRoute(
+    ROUTES_ENUM.recoveryEmail,
+    null,
+    { token, email },
+  );
 
   const text = i18n.__({
     phrase: 'emails.recovery_email_text',
