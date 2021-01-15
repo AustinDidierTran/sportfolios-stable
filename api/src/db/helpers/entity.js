@@ -15,12 +15,29 @@ const {
   PLATEFORM_FEES,
   PLAYER_ATTENDANCE_STATUS,
 } = require('../../../../common/enums');
+const { v1: uuidv1 } = require('uuid');
 const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
 const validator = require('validator');
 const { sendTransferAddNewPlayer } = require('../helpers/index');
+
 const _ = require('lodash');
+const { EXPIRATION_TIMES } = require('../../../../common/constants');
+
+const generateToken = () => {
+  return uuidv1();
+};
+
+const generateAuthToken = async userId => {
+  const token = generateToken();
+  await knex('user_token').insert({
+    user_id: userId,
+    token_id: token,
+    expires_at: new Date(Date.now() + EXPIRATION_TIMES.AUTH_TOKEN),
+  });
+  return token;
+};
 
 const addEntity = async (body, userId) => {
   const { name, creator, surname, type } = body;
@@ -3018,7 +3035,6 @@ async function addPersonToEvent(body) {
 }
 async function deletePersonFromEvent(body) {
   const { personId, eventId } = body;
-
   await knex('event_persons')
     .del()
     .where({
@@ -3065,7 +3081,6 @@ async function addRoster(rosterId, roster, userId) {
 
 async function addNewPersonToRoster(body, userId) {
   const {
-    addedByEventAdmin,
     name,
     surname,
     email,
@@ -3094,9 +3109,9 @@ async function addNewPersonToRoster(body, userId) {
   const teamName = await getTeamName(rosterId);
   await sendTransferAddNewPlayer(userId, {
     email,
-    senderIsEventAdmin: addedByEventAdmin,
     sendedPersonId: person.id,
     teamName,
+    eventId,
   });
 
   return { is_sub: isSub, name: `${name} ${surname}`, id: person.id };
@@ -3606,6 +3621,7 @@ async function getRosterEventInfos(roster_id) {
 }
 
 module.exports = {
+  generateAuthToken,
   acceptScoreSuggestion,
   acceptScoreSuggestionIfPossible,
   addAlias,

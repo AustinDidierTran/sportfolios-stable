@@ -482,6 +482,7 @@ async function addTeamToEvent(body, userId) {
       event,
       language,
       placesLeft: await getRemainingSpotsHelper(event.id),
+      userId,
     });
   });
 
@@ -496,6 +497,7 @@ async function addTeamToEvent(body, userId) {
       event,
       email,
       isFreeOption,
+      userId,
     });
   });
 
@@ -579,6 +581,7 @@ async function addPersonToEvent(body, userId) {
           event,
           language,
           placesLeft: remainingSpots,
+          userId,
         });
       }),
     );
@@ -794,7 +797,7 @@ async function addReport(body) {
   return addReportHelper(type, organizationId, date);
 }
 
-async function importMembers(body) {
+async function importMembers(body, userId) {
   const { membershipType, organizationId, language, members } = body;
   const res = await Promise.all(
     members.map(async m => {
@@ -809,6 +812,7 @@ async function importMembers(body) {
         token,
         language,
         organizationName: organization.basicInfos.name,
+        userId,
       });
       return m;
     }),

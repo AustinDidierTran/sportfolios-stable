@@ -1,6 +1,5 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
-const { formatLinkWithAuthToken } = require('./utils');
 const {
   TABS_ENUM,
   ROUTES_ENUM,
@@ -8,7 +7,9 @@ const {
 const {
   formatRoute,
 } = require('../../../../common/utils/stringFormat');
-module.exports = async function AddedToRoster(infos) {
+const { formatLinkWithAuthToken } = require('./utils');
+
+module.exports = async function AddedToRosterEmail(infos) {
   const { name, teamName, eventId, locale, userId } = infos;
 
   const buttonLink = await formatLinkWithAuthToken(
@@ -21,7 +22,6 @@ module.exports = async function AddedToRoster(infos) {
   );
   const text = i18n.__(
     { phrase: 'emails.added_to_roster_text', locale },
-
     name,
     teamName,
   );
@@ -33,14 +33,9 @@ module.exports = async function AddedToRoster(infos) {
     phrase: 'emails.added_to_roster_subject',
     locale,
   });
-  try {
-    const html = await ejs.renderFile(
-      __dirname + '/templates/textAndButton.ejs',
-      { buttonLink, text, buttonText },
-    );
-    return { html, subject };
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.log(err);
-  }
+  const html = await ejs.renderFile(
+    __dirname + '/templates/textAndButton.ejs',
+    { buttonLink, text, buttonText },
+  );
+  return { html, subject };
 };

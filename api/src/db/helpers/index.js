@@ -22,7 +22,7 @@ const { getNameFromPSID } = require('./facebook');
 
 const sendTransferAddNewPlayer = async (
   user_id,
-  { email, senderIsEventAdmin, sendedPersonId, teamName },
+  { email, sendedPersonId, teamName, eventId },
 ) => {
   if (
     (await getEmailsFromUserId(user_id)).find(e => e.email == email)
@@ -31,10 +31,10 @@ const sendTransferAddNewPlayer = async (
   }
   return sendPlayerTransfer({
     email,
-    senderIsEventAdmin,
     sendedPersonId,
     senderUserId: user_id,
     teamName,
+    eventId,
   });
 };
 
@@ -350,7 +350,6 @@ const getUserIdFromEmail = async email => {
   const [{ user_id } = {}] = await knex('user_email')
     .select(['user_id'])
     .where({ email });
-
   return user_id;
 };
 
@@ -516,10 +515,10 @@ const sendPersonTransferEmailAllIncluded = async ({
 };
 const sendPlayerTransfer = async ({
   email,
-  senderIsEventAdmin,
   sendedPersonId,
   senderUserId,
   teamName,
+  eventId,
 }) => {
   const personTransferToken = generateToken();
   const sender = await getBasicUserInfoFromId(senderUserId);
@@ -544,14 +543,16 @@ const sendPlayerTransfer = async ({
   if (!res) {
     return;
   }
+  const userId = await getUserIdFromEmail(email);
 
   await sendAddPersonToTeamEmail({
     email,
     teamName,
-    senderIsEventAdmin,
     senderName,
     language,
     token: personTransferToken,
+    eventId,
+    userId,
   });
 
   //Reversing the insert in db if the email can't be sent

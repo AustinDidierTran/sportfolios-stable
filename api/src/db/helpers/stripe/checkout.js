@@ -278,7 +278,7 @@ const sendReceiptEmail = async (body, userId) => {
   const [person] = await getEmailsFromUserId(userId);
   const email = person.email;
   const language = await getLanguageFromEmail(email);
-  return sendReceiptEmailHelper({ email, receipt, language });
+  return sendReceiptEmailHelper({ email, receipt, language, userId });
 };
 
 const getTaxRatesFromStripePrice = async stripePriceId => {
@@ -364,7 +364,6 @@ const checkout = async (body, userId) => {
     const chargeId = await paidInvoice.charge;
     const receiptUrl = await getReceipt({ chargeId, invoiceId });
     const transfers = await createTransfers(paidInvoice, userId);
-
     await sendReceiptEmail({ receipt: receiptUrl }, userId);
     await Promise.all(
       invoicesAndMetadatas.map(async ({ invoiceItem, metadata }) => {
