@@ -3129,7 +3129,7 @@ const addPlayersCartItems = async rosterId => {
   const eventId = await getEventIdFromRosterid(rosterId);
 
   await Promise.all(
-    rosters.forEach(async r => {
+    rosters.map(async r => {
       const {
         person_id: personId,
         name,
@@ -3142,34 +3142,30 @@ const addPlayersCartItems = async rosterId => {
       }
       const userId = await getUserIdFromPersonId(personId);
 
-      if (!isSub) {
-        const paymentOption = await getIndividualPaymentOptionFromRosterId(
-          rosterId,
-        );
-        if (paymentOption.individual_price <= 0) {
-          return;
-        }
-        if (paymentOption.individual_price > 0) {
-          const ownerId = await getOwnerStripePrice(
-            paymentOption.individual_stripe_price_id,
-          );
-          const cartItem = {
-            stripePriceId: paymentOption.individual_stripe_price_id,
-            metadata: {
-              eventId,
-              sellerEntityId: ownerId,
-              isIndividualOption: true,
-              personId,
-              name,
-              buyerId: personId,
-              rosterId,
-              team: (await getEntity(paymentOption.teamId, userId))
-                .basicInfos,
-            },
-          };
-          await addEventCartItem(cartItem, userId);
-        }
+      const paymentOption = await getIndividualPaymentOptionFromRosterId(
+        rosterId,
+      );
+      if (paymentOption.individual_price <= 0) {
+        return;
       }
+      const ownerId = await getOwnerStripePrice(
+        paymentOption.individual_stripe_price_id,
+      );
+      const cartItem = {
+        stripePriceId: paymentOption.individual_stripe_price_id,
+        metadata: {
+          eventId,
+          sellerEntityId: ownerId,
+          isIndividualOption: true,
+          personId,
+          name,
+          buyerId: personId,
+          rosterId,
+          team: (await getEntity(paymentOption.teamId, userId))
+            .basicInfos,
+        },
+      };
+      await addEventCartItem(cartItem, userId);
     }),
   );
 };

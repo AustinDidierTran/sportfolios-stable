@@ -452,15 +452,9 @@ If the migration doesn't end with `[done]`, there is an error, first thing to do
 
 Then, run the following command at the root folder:
 
-<<<<<<< HEAD
 ```
 yarn
 ```
-=======
- ```
-npm install
- ```
->>>>>>> Update README.md
 
 After you have to rebuild your container and go back in the db folder
 
