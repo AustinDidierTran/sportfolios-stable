@@ -12,7 +12,7 @@ ALTER TABLE event_payment_options
   DROP CONSTRAINT event_payment_options_pkey,
   DROP COLUMN individual_price,
   DROP COLUMN individual_stripe_price_id,
-  DROP COLUMN id;
+  DROP COLUMN id CASCADE;
 
 
 ALTER TABLE event_payment_options

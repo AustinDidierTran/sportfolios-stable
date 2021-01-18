@@ -1,13 +1,14 @@
----[HOW TO USE]-------------------------------------------------|
--- first copy paste execute the create function in postgres     |
--- then execute SELECT create_event_template('Name of event');  |
--- that's it, new event created!                                |
-----------------------------------------------------------------|
+---[HOW TO USE]-----------------------------------------------------------------------|
+-- first copy paste execute the create function in postgres                           |
+-- then execute SELECT create_event_template('Name of event','Name of organization');  |
+-- that's it, new event created!                                                      |
+--------------------------------------------------------------------------------------|
 
-CREATE OR REPLACE FUNCTION create_event_template(eventName CHARACTER VARYING)
+CREATE OR REPLACE FUNCTION create_event_template(eventName CHARACTER VARYING, organizationName CHARACTER VARYING)
     RETURNS UUID AS
 $BODY$
 DECLARE didierEntityId UUID;
+DECLARE organizationEntityId UUID;
 DECLARE eventEntityId UUID;
 DECLARE eventId UUID;
 DECLARE paymentOptionId UUID;
@@ -40,6 +41,15 @@ BEGIN
     -- get Didier's entityId
     SELECT (entity_id) FROM user_entity_role WHERE user_id = (SELECT (user_id) FROM user_app_role WHERE app_role = 1) INTO didierEntityId;
 
+    --create organization entity 
+    INSERT INTO entities (type) VALUES (2) RETURNING id INTO organizationEntityId;
+
+    --create organization
+    INSERT INTO entities_general_infos (entity_id, description, quick_description) VALUES (organizationEntityId, null, null);
+    INSERT INTO entities_name (entity_id, name, surname) VALUES (organizationEntityId, organizationName, '');
+    INSERT INTO entities_photo (entity_id, photo_url) VALUES (organizationEntityId, null);
+    INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (organizationEntityId, 1, didierEntityId);
+
     -- create event entity
     INSERT INTO entities (type) VALUES (4) RETURNING id INTO eventEntityId;
 
@@ -48,7 +58,7 @@ BEGIN
     INSERT INTO entities_general_infos (entity_id, description, quick_description) VALUES (eventId, null, null);
     INSERT INTO entities_name (entity_id, name, surname) VALUES (eventId, eventName, '');
     INSERT INTO entities_photo (entity_id, photo_url) VALUES (eventId, null);
-    INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (eventId, 1, didierEntityId);
+    INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (eventId, 1, organizationEntityId);
 
     -- create payment option
     INSERT INTO event_payment_options (team_stripe_price_id, event_id, name, team_price, start_time, end_time, individual_price, individual_stripe_price_id) VALUES (null, eventId, 'Base', 0, NOW(), NOW() + interval '1 year', 0, null) RETURNING id INTO paymentOptionId; 

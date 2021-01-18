@@ -176,15 +176,14 @@ const GENDER_ENUM = {
 };
 
 const INVOICE_STATUS_ENUM = {
-  DRAFT: 'draft',
   DELETED: 'deleted',
+  DRAFT: 'draft',
   FREE: 'free',
   OPEN: 'open',
   PAID: 'paid',
   REFUNDED: 'refunded',
   UNCOLLECTIBLE: 'uncollectible',
   VOID: 'void',
-  FREE: 'free',
 };
 
 const COUPON_CODE_ENUM = {

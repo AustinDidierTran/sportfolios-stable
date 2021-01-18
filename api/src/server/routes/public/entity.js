@@ -62,7 +62,7 @@ router.get(`${BASE_URL}/eventInfos`, async ctx => {
 router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
   const userId =
     ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
-  const entity = await queries.getAllRegisteredInfos(
+  const entity = await queries.getAllTeamsRegisteredInfos(
     ctx.query.eventId,
     userId,
   );
@@ -81,15 +81,18 @@ router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/allTeamsAcceptedRegistered`, async ctx => {
-  const acceptedRegistration = await queries.getAllAcceptedRegistered(
+router.get(`${BASE_URL}/allPeopleRegisteredInfos`, async ctx => {
+  const userId =
+    ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
+  const entity = await queries.getAllPeopleRegisteredInfos(
     ctx.query.eventId,
+    userId,
   );
 
-  if (acceptedRegistration) {
+  if (entity) {
     ctx.body = {
       status: 'success',
-      data: acceptedRegistration,
+      data: entity,
     };
   } else {
     ctx.status = 404;
