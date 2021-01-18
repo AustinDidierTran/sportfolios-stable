@@ -29,12 +29,13 @@ const {
   ENTITIES_ROLE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
 } = require('../../../../common/enums');
+
 const signup = async ({
   firstName,
   lastName,
   email,
   password,
-  successRoute,
+  redirectUrl,
 }) => {
   // Validate email is not already taken
   const isUnique = await validateEmailIsUnique(email);
@@ -62,7 +63,7 @@ const signup = async ({
     email,
     language,
     token: confirmationEmailToken,
-    successRoute,
+    redirectUrl,
   });
   return { code: 200 };
 };
