@@ -159,7 +159,7 @@ const createAccountLink = async props => {
   const params = {
     account: accountId,
     failure_url: `${CLIENT_BASE_URL}/${entityId}?tab=settings`,
-    success_url: `${CLIENT_BASE_URL}/addBankAccount?entityId=${entityId}`,
+    success_url: `${CLIENT_BASE_URL}/page/addBankAccount?entityId=${entityId}`,
     type: 'custom_account_verification',
     collect: 'eventually_due',
   };

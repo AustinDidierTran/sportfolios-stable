@@ -330,6 +330,43 @@ router.get(`${BASE_URL}/registered`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/allTeamsAcceptedRegistered`, async ctx => {
+  const acceptedRegistration = await queries.getAllTeamsAcceptedRegistered(
+    ctx.query.eventId,
+  );
+
+  if (acceptedRegistration) {
+    ctx.body = {
+      status: 'success',
+      data: acceptedRegistration,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+router.get(`${BASE_URL}/allPlayersAcceptedRegistered`, async ctx => {
+  const acceptedRegistration = await queries.getAllPlayersAcceptedRegistered(
+    ctx.query.eventId,
+  );
+
+  if (acceptedRegistration) {
+    ctx.body = {
+      status: 'success',
+      data: acceptedRegistration,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/event`, async ctx => {
   const event = await queries.getEvent(ctx.query.eventId);
 
@@ -775,6 +812,27 @@ router.post(BASE_URL, async ctx => {
 
 router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
   const res = await queries.unregisterTeams(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (res.failed) {
+    ctx.status = 403;
+    ctx.body = {
+      status: 'error',
+      data: res.data,
+      message: 'Something went wrong',
+    };
+  } else {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: res.data,
+    };
+  }
+});
+router.post(`${BASE_URL}/unregisterPeople`, async ctx => {
+  const res = await queries.unregisterPeople(
     ctx.request.body,
     ctx.body.userInfo.id,
   );

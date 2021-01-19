@@ -12,7 +12,6 @@ const moment = require('moment');
 const { signS3Request } = require('../../server/utils/aws');
 
 const {
-  getRegistrationStatus,
   acceptScoreSuggestion: acceptScoreSuggestionHelper,
   addAlias: addAliasHelper,
   addEntity: addEntityHelper,
@@ -28,6 +27,7 @@ const {
   addOption: addOptionHelper,
   addPersonToEvent: addPersonToEventHelper,
   addPhase: addPhaseHelper,
+  addPlayersCartItems,
   addPlayerToRoster: addPlayerToRosterHelper,
   addRegisteredToSchedule: addRegisteredToScheduleHelper,
   addReport: addReportHelper,
@@ -50,13 +50,16 @@ const {
   eventInfos: eventInfosHelper,
   generateReport: generateReportHelper,
   getAlias: getAliasHelper,
-  getAllAcceptedRegistered: getAllAcceptedRegisteredHelper,
+  getAllTeamsAcceptedRegistered: getAllTeamsAcceptedRegisteredHelper,
+  getAllPlayersAcceptedRegistered: getAllPlayersAcceptedRegisteredHelper,
   getAllEntities: getAllEntitiesHelper,
   getAllForYouPagePosts: getAllForYouPagePostsHelper,
   getAllOwnedEntities: getAllOwnedEntitiesHelper,
-  getAllRegisteredInfos: getAllRegisteredInfosHelper,
+  getAllPeopleRegisteredInfos: getAllPeopleRegisteredInfosHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
+  getAllTeamsRegisteredInfos: getAllTeamsRegisteredInfosHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
+  getCreatorsEmail,
   getEntity: getEntityHelper,
   getEntityOwners,
   getEntityRole: getEntityRoleHelper,
@@ -83,14 +86,19 @@ const {
   getPrimaryPerson: getPrimaryPersonHelper,
   getRankings: getRankingsHelper,
   getRegistered: getRegisteredHelper,
-  getRegistrationTeamPaymentOption: getRegistrationTeamPaymentOptionHelper,
+  getRegisteredPersons,
   getRegistrationIndividualPaymentOption: getRegistrationIndividualPaymentOptionHelper,
+  getRegistrationStatus,
+  getRegistrationTeamPaymentOption: getRegistrationTeamPaymentOptionHelper,
   getRemainingSpots: getRemainingSpotsHelper,
   getReports: getReportsHelper,
+  getRole,
   getRoster: getRosterHelper,
+  getRosterEventInfos,
   getRosterIdFromInviteToken,
   getRosterInviteToken: getRosterInviteTokenHelper,
   getRosterInvoiceItem,
+  getPersonInvoiceItem,
   getRostersNames: getRostersNamesHelper,
   getScoreSuggestion: getScoreSuggestionHelper,
   getSlots: getSlotsHelper,
@@ -102,6 +110,7 @@ const {
   insertRosterInviteToken,
   removeEntityRole: removeEntityRoleHelper,
   removeEventCartItem: removeEventCartItemHelper,
+  removeIndividualEventCartItem: removeIndividualEventCartItemHelper,
   removeIndividualPaymentCartItem: removeIndividualPaymentCartItemHelper,
   setGameScore: setGameScoreHelper,
   unregister: unregisterHelper,
@@ -119,13 +128,10 @@ const {
   updatePlayerPaymentStatus: updatePlayerPaymentStatusHelper,
   updatePreRanking: updatePreRankingHelper,
   updateRegistration: updateRegistrationHelper,
+  updateRegistrationPerson: updateRegistrationPersonHelper,
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
-  getRosterEventInfos,
-  getRole,
-  getRegisteredPersons,
-  getCreatorsEmail,
-  addPlayersCartItems,
+  deletePersonFromEvent,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -227,12 +233,18 @@ async function getRegistered(team_id, event_id) {
   return getRegisteredHelper(team_id, event_id);
 }
 
-async function getAllRegisteredInfos(eventId, userId) {
-  return getAllRegisteredInfosHelper(eventId, userId);
+async function getAllTeamsRegisteredInfos(eventId, userId) {
+  return getAllTeamsRegisteredInfosHelper(eventId, userId);
+}
+async function getAllPeopleRegisteredInfos(eventId, userId) {
+  return getAllPeopleRegisteredInfosHelper(eventId, userId);
 }
 
-async function getAllAcceptedRegistered(eventId) {
-  return getAllAcceptedRegisteredHelper(eventId);
+async function getAllTeamsAcceptedRegistered(eventId) {
+  return getAllTeamsAcceptedRegisteredHelper(eventId);
+}
+async function getAllPlayersAcceptedRegistered(eventId) {
+  return getAllPlayersAcceptedRegisteredHelper(eventId);
 }
 
 async function getRemainingSpots(eventId) {
@@ -543,49 +555,51 @@ async function addPersonToEvent(body, userId) {
       persons: registeredPersons,
     };
   }
-  await persons.forEach(async person => {
-    await addPersonToEventHelper({
-      personId: person.id,
-      eventId: event.id,
-      status: isFreeOption ? INVOICE_STATUS_ENUM.FREE : status,
-      registrationStatus,
-      paymentOption,
-    });
-    if (registrationStatus === STATUS_ENUM.ACCEPTED) {
-      // wont be added to cart if free
-      const ownerId = await getOwnerStripePrice(
-        individualPaymentOption.individual_stripe_price_id,
-      );
-      await addEventCartItem(
-        {
-          stripePriceId:
-            individualPaymentOption.individual_stripe_price_id,
-          metadata: {
-            eventId: event.id,
-            sellerEntityId: ownerId,
-            buyerId: person.id,
-            person: person,
+  await Promise.all(
+    persons.map(async person => {
+      await addPersonToEventHelper({
+        personId: person.id,
+        eventId: event.id,
+        status: isFreeOption ? INVOICE_STATUS_ENUM.FREE : status,
+        registrationStatus,
+        paymentOption,
+      });
+      if (registrationStatus === STATUS_ENUM.ACCEPTED) {
+        // wont be added to cart if free
+        const ownerId = await getOwnerStripePrice(
+          individualPaymentOption.individual_stripe_price_id,
+        );
+        await addEventCartItem(
+          {
+            stripePriceId:
+              individualPaymentOption.individual_stripe_price_id,
+            metadata: {
+              eventId: event.id,
+              sellerEntityId: ownerId,
+              buyerId: person.id,
+              person: person,
+            },
           },
-        },
-        userId,
-      );
-    }
-    // send mail to organization admin
-    const creatorEmails = await getCreatorsEmail(eventId);
-    await Promise.all(
-      creatorEmails.forEach(async email => {
-        const language = await getLanguageFromEmail(email);
-        sendPersonRegistrationEmailToAdmin({
-          email,
-          person,
-          event,
-          language,
-          placesLeft: remainingSpots,
           userId,
-        });
-      }),
-    );
-  });
+        );
+      }
+      // send mail to organization admin
+      const creatorEmails = await getCreatorsEmail(eventId);
+      await Promise.all(
+        creatorEmails.forEach(async email => {
+          const language = await getLanguageFromEmail(email);
+          sendPersonRegistrationEmailToAdmin({
+            email,
+            person,
+            event,
+            language,
+            placesLeft: remainingSpots,
+            userId,
+          });
+        }),
+      );
+    }),
+  );
   return { status: registrationStatus, persons };
 }
 
@@ -1190,7 +1204,57 @@ const unregisterTeams = async (body, userId) => {
     result.failed = true;
   }
 
-  result.data = await getAllRegisteredInfosHelper(eventId, userId);
+  result.data = await getAllTeamsRegisteredInfosHelper(
+    eventId,
+    userId,
+  );
+  return result;
+};
+const unregisterPeople = async (body, userId) => {
+  const { eventId, people } = body;
+  const result = { failed: false, data: [] };
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  try {
+    for (const person of people) {
+      const { personId, stripePrice } = person;
+      const { invoiceItemId, status } = await getPersonInvoiceItem({
+        eventId,
+        personId,
+      });
+
+      if (status === INVOICE_STATUS_ENUM.PAID) {
+        // Registration paid, refund please
+        await createRefund({ invoiceItemId });
+        await updateRegistrationPersonHelper(
+          personId,
+          eventId,
+          invoiceItemId,
+          INVOICE_STATUS_ENUM.REFUNDED,
+        );
+      } else if (status === INVOICE_STATUS_ENUM.OPEN) {
+        // Registration is not paid, remove from cart
+        await removeIndividualEventCartItemHelper({
+          personId,
+          eventId,
+          stripePrice,
+        });
+        await deletePersonFromEvent({ personId, eventId });
+      }
+    }
+  } catch (error) {
+    // do not make api call fail, current teams state will be returned
+    result.failed = true;
+  }
+
+  result.data = await getAllPeopleRegisteredInfosHelper(
+    eventId,
+    userId,
+  );
   return result;
 };
 
@@ -1392,6 +1456,7 @@ async function getRosterFromInviteToken(token, userId) {
 
 module.exports = {
   acceptScoreSuggestion,
+  acceptScoreSuggestion,
   addAlias,
   addEntity,
   addEntityRole,
@@ -1403,6 +1468,7 @@ module.exports = {
   addMembership,
   addNewPersonToRoster,
   addOption,
+  addPersonToEvent,
   addPhase,
   addPlayerToRoster,
   addRegisteredToSchedule,
@@ -1410,11 +1476,12 @@ module.exports = {
   addScoreSuggestion,
   addSpiritSubmission,
   addTeamToEvent,
-  addPersonToEvent,
   addTeamToSchedule,
   addTimeSlot,
   cancelRosterInviteToken,
+  cancelRosterInviteToken,
   canUnregisterTeamsList,
+  createRosterInviteToken,
   createRosterInviteToken,
   deleteEntity,
   deleteEntityHelper,
@@ -1430,12 +1497,14 @@ module.exports = {
   eventInfos,
   generateReport,
   getAlias,
-  getAllAcceptedRegistered,
+  getAllTeamsAcceptedRegistered,
+  getAllPlayersAcceptedRegistered,
   getAllEntities,
   getAllForYouPagePosts,
   getAllOwnedEntities,
-  getAllRegisteredInfos,
+  getAllPeopleRegisteredInfos,
   getAllRolesEntity,
+  getAllTeamsRegisteredInfos,
   getAllTypeEntities,
   getEntity,
   getEvent,
@@ -1446,6 +1515,7 @@ module.exports = {
   getInteractiveToolData,
   getMembers,
   getMemberships,
+  getNewRosterInviteToken,
   getOptions,
   getOrganizationMembers,
   getOwnedEvents,
@@ -1459,8 +1529,12 @@ module.exports = {
   getRemainingSpots,
   getReports,
   getRoster,
+  getRosterAllIncluded,
+  getRosterFromInviteToken,
   getRosterFromInviteToken,
   getRosterInviteToken,
+  getRosterInviteToken,
+  getRostersNames,
   getRostersNames,
   getS3Signature,
   getScoreSuggestion,
@@ -1472,6 +1546,7 @@ module.exports = {
   isAllowed,
   setGameScore,
   unregisterTeams,
+  unregisterPeople,
   updateAlias,
   updateEntity,
   updateEntityRole,
@@ -1485,14 +1560,6 @@ module.exports = {
   updatePreRanking,
   updateRegistration,
   updateRosterRole,
-  getRostersNames,
-  acceptScoreSuggestion,
-  getRosterInviteToken,
-  createRosterInviteToken,
-  cancelRosterInviteToken,
-  getRosterFromInviteToken,
-  getRosterAllIncluded,
   updateSuggestionStatus,
   validateEmailIsUnique,
-  getNewRosterInviteToken,
 };
