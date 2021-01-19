@@ -45,21 +45,23 @@ const {
   deleteGame: deleteGameHelper,
   deleteMembership: deleteMembershipHelper,
   deleteOption: deleteOptionHelper,
+  deletePersonFromEvent,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
   deleteReport: deleteReportHelper,
   eventInfos: eventInfosHelper,
   generateReport: generateReportHelper,
   getAlias: getAliasHelper,
-  getAllTeamsAcceptedRegistered: getAllTeamsAcceptedRegisteredHelper,
-  getAllPlayersAcceptedRegistered: getAllPlayersAcceptedRegisteredHelper,
   getAllEntities: getAllEntitiesHelper,
   getAllForYouPagePosts: getAllForYouPagePostsHelper,
   getAllOwnedEntities: getAllOwnedEntitiesHelper,
   getAllPeopleRegisteredInfos: getAllPeopleRegisteredInfosHelper,
+  getAllPlayersAcceptedRegistered: getAllPlayersAcceptedRegisteredHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
+  getAllTeamsAcceptedRegistered: getAllTeamsAcceptedRegisteredHelper,
   getAllTeamsRegisteredInfos: getAllTeamsRegisteredInfosHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
   getCreatorsEmail,
+  getEmailPerson,
   getEntity: getEntityHelper,
   getEntityOwners,
   getEntityRole: getEntityRoleHelper,
@@ -80,6 +82,7 @@ const {
   getOwnerStripePrice,
   getPersonGames: getPersonGamesHelper,
   getPersonInfos: getPersonInfosHelper,
+  getPersonInvoiceItem,
   getPhases: getPhasesHelper,
   getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
@@ -98,7 +101,6 @@ const {
   getRosterIdFromInviteToken,
   getRosterInviteToken: getRosterInviteTokenHelper,
   getRosterInvoiceItem,
-  getPersonInvoiceItem,
   getRostersNames: getRostersNamesHelper,
   getScoreSuggestion: getScoreSuggestionHelper,
   getSlots: getSlotsHelper,
@@ -131,13 +133,13 @@ const {
   updateRegistrationPerson: updateRegistrationPersonHelper,
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
-  deletePersonFromEvent,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
   sendTeamRegistrationEmailToAdmin,
   sendPersonRegistrationEmailToAdmin,
-  sendAcceptedRegistrationEmail,
+  sendPersonRegistrationEmail,
+  sendTeamRegistrationEmail,
   sendImportMemberEmail,
 } = require('../../server/utils/nodeMailer');
 const { addMembershipCartItem } = require('../helpers/shop');
@@ -503,7 +505,7 @@ async function addTeamToEvent(body, userId) {
 
   captainEmails.map(async ({ email }) => {
     const language = await getLanguageFromEmail(email);
-    sendAcceptedRegistrationEmail({
+    sendTeamRegistrationEmail({
       language,
       team,
       event,
@@ -583,6 +585,16 @@ async function addPersonToEvent(body, userId) {
           userId,
         );
       }
+      const email = await getEmailPerson(person.id);
+      const language = await getLanguageFromEmail(email);
+      //send mail to person
+      await sendPersonRegistrationEmail({
+        email,
+        person,
+        event,
+        language,
+        userId,
+      });
       // send mail to organization admin
       const creatorEmails = await getCreatorsEmail(eventId);
       await Promise.all(
