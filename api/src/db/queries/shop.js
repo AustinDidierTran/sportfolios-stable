@@ -1,27 +1,27 @@
 const {
-  getItem: getItemHelper,
-  getAllShopItems,
-  getShopItems,
   addCartItem,
-  updateCartItems: updateCartItemsHelper,
-  removeCartItemInstance: removeCartItemInstanceHelper,
-  removeAllInstancesFromCart: removeAllInstancesFromCartHelper,
   clearCart: clearCartHelper,
   deleteCartItem: deleteCartItemHelper,
-  getCartItems,
+  getAllShopItems,
   getCartItem,
-  getCartTotal: getCartTotalHelper,
+  getCartItems,
   getCartItemsOrdered: getCartItemsOrderedHelper,
+  getCartTotal: getCartTotalHelper,
+  getItem: getItemHelper,
   getPurchases: getPurchasesHelper,
   getSales: getSalesHelper,
+  getShopItems,
+  removeAllInstancesFromCart: removeAllInstancesFromCartHelper,
+  removeCartItemInstance: removeCartItemInstanceHelper,
+  updateCartItems: updateCartItemsHelper,
 } = require('../helpers/shop');
 
 const {
-  getEntityRole: getEntityRoleHelper,
-  deleteTeamFromEvent,
+  deleteMembership,
   deletePersonFromEvent,
   deletePlayerFromRoster,
-  deleteMembership,
+  deleteTeamFromEvent,
+  getEntityRole: getEntityRoleHelper,
 } = require('../helpers/entity');
 const {
   ENTITIES_ROLE_ENUM,
@@ -139,19 +139,29 @@ const deleteCartItem = async query => {
   await deleteCartItemHelper(cartItemId);
 };
 
+const deleteAllCartItems = async userId => {
+  const cartItems = await getCartItems(userId);
+  await Promise.all(
+    cartItems.map(async c => {
+      await deleteCartItem({ cartItemId: c.id });
+    }),
+  );
+};
+
 module.exports = {
-  getItem,
-  getItems,
+  addToCart,
+  clearCart,
+  deleteAllCartItems,
+  deleteCartItem,
   getAllItems,
   getCart,
   getCartItemsOrdered,
   getCartTotal,
+  getItem,
+  getItems,
   getPurchases,
   getSales,
-  addToCart,
-  updateCartItems,
-  removeCartItemInstance,
   removeAllInstancesFromCart,
-  clearCart,
-  deleteCartItem,
+  removeCartItemInstance,
+  updateCartItems,
 };
