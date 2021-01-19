@@ -202,7 +202,7 @@ async function sendPersonRegistrationEmailToAdmin({
   sendMail({ html, email, subject, text });
 }
 
-async function sendAcceptedRegistrationEmail({
+async function sendTeamRegistrationEmail({
   email,
   team,
   event,
@@ -216,6 +216,29 @@ async function sendAcceptedRegistrationEmail({
     eventName: event.name,
     eventId: event.id,
     isFreeOption,
+    locale: language,
+    userId,
+  });
+
+  if (!fullEmail) {
+    return;
+  }
+  const { html, subject, text } = fullEmail;
+  sendMail({ html, email, subject, text });
+}
+
+async function sendPersonRegistrationEmail({
+  email,
+  person,
+  event,
+  language,
+  userId,
+}) {
+  const fullEmail = await emailFactory({
+    type: NOTIFICATION_TYPE.PERSON_REGISTRATION,
+    completeName: person.complete_name,
+    eventName: event.name,
+    eventId: event.id,
     locale: language,
     userId,
   });
@@ -268,7 +291,8 @@ module.exports = {
   sendConfirmationEmail,
   sendRecoveryEmail,
   sendReceiptEmail,
-  sendAcceptedRegistrationEmail,
+  sendTeamRegistrationEmail,
+  sendPersonRegistrationEmail,
   sendTeamRegistrationEmailToAdmin,
   sendPersonRegistrationEmailToAdmin,
   sendPersonTransferEmail,
