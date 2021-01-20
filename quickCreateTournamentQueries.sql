@@ -111,6 +111,12 @@ BEGIN
     INSERT INTO team_rosters (team_id) VALUES (teamEntityId3) RETURNING id INTO teamId3;
     INSERT INTO team_rosters (team_id) VALUES (teamEntityId4) RETURNING id INTO teamId4;
 
+    -- add captain
+    INSERT INTO team_players (roster_id,person_id,name,role) VALUES (teamId1,didierEntityId,'Austin-Didier Tran','captain'); 
+    INSERT INTO team_players (roster_id,person_id,name,role) VALUES (teamId2,didierEntityId,'Austin-Didier Tran','captain'); 
+    INSERT INTO team_players (roster_id,person_id,name,role) VALUES (teamId3,didierEntityId,'Austin-Didier Tran','captain'); 
+    INSERT INTO team_players (roster_id,person_id,name,role) VALUES (teamId4,didierEntityId,'Austin-Didier Tran','captain'); 
+
     -- add rosters to event
     INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId1, eventId, teamEntityId1, 'free', 'accepted free', null, paymentOptionId);
     INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId2, eventId, teamEntityId2, 'free', 'accepted free', null, paymentOptionId);
