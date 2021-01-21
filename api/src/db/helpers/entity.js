@@ -1823,9 +1823,19 @@ async function getSlots(eventId) {
 
 async function getTeamsSchedule(eventId) {
   const realId = await getRealId(eventId);
-  const res = await knex('schedule_teams')
-    .select('*')
-    .where({ event_id: realId });
+  const res = await knex('event_rosters')
+    .select('team_id', 'roster_id', 'event_id', 'name')
+    .leftJoin(
+      'entities_name',
+      'entities_name.entity_id',
+      '=',
+      'event_rosters.team_id',
+    )
+    .whereIn('registration_status', [
+      STATUS_ENUM.ACCEPTED_FREE,
+      STATUS_ENUM.ACCEPTED,
+    ])
+    .andWhere({ event_id: realId });
   return res;
 }
 
@@ -2133,15 +2143,6 @@ const deleteRegistration = async (rosterId, eventId) => {
     .where({ id: realRosterId });
 
   return knex.transaction(async trx => {
-    // temporary, table will probably be removed
-    await knex('schedule_teams')
-      .where({
-        event_id: realEventId,
-        roster_id: realRosterId,
-      })
-      .del()
-      .transacting(trx);
-
     await knex('event_rosters')
       .where({
         roster_id: realRosterId,
@@ -2774,66 +2775,6 @@ async function addField(field, eventId) {
   return res;
 }
 
-async function addTeamToSchedule(eventId, name, rosterId) {
-  const realId = await getRealId(eventId);
-  if (
-    !(await isInSchedule(realId, rosterId)) &&
-    (await isAcceptedToEvent(realId, rosterId))
-  ) {
-    if (rosterId) {
-      const [res] = await knex('schedule_teams')
-        .insert({
-          event_id: realId,
-          name,
-          roster_id: rosterId,
-        })
-        .returning('*');
-      return res;
-    }
-    const [res] = await knex('schedule_teams')
-      .insert({
-        event_id: realId,
-        name,
-      })
-      .returning('*');
-    return res;
-  }
-}
-
-async function isInSchedule(eventId, rosterId) {
-  const [team] = await knex('schedule_teams')
-    .select('*')
-    .where({
-      event_id: eventId,
-      roster_id: rosterId,
-    });
-  return Boolean(team);
-}
-
-async function isAcceptedToEvent(eventId, rosterId) {
-  const [status] = await knex('event_rosters')
-    .select('registration_status')
-    .where({
-      event_id: eventId,
-      roster_id: rosterId,
-    });
-  return (
-    status.registration_status === STATUS_ENUM.ACCEPTED ||
-    status.registration_status === STATUS_ENUM.ACCEPTED_FREE
-  );
-}
-
-async function addRegisteredToSchedule(eventId) {
-  const teams = await getAllTeamsAcceptedRegistered(eventId);
-  await Promise.all(
-    teams.map(async t => {
-      const name = await getEntitiesName(t.team_id);
-      await addTeamToSchedule(eventId, name.name, t.roster_id);
-    }),
-  );
-  return teams;
-}
-
 async function addPhase(phase, eventId) {
   const realId = await getRealId(eventId);
   const [res] = await knex('phase')
@@ -3031,7 +2972,6 @@ async function addTeamToEvent(body) {
       })
       .returning('*')
       .transacting(trx);
-
     await knex('division_ranking')
       .insert({
         team_id: roster.team_id,
@@ -3046,14 +2986,6 @@ async function deleteTeamFromEvent(body) {
   const { teamId, eventId, rosterId } = body;
 
   return knex.transaction(async trx => {
-    await knex('schedule_teams')
-      .del()
-      .where({
-        roster_id: rosterId,
-        event_id: eventId,
-      })
-      .transacting(trx);
-
     await knex('team_players')
       .del()
       .where({
@@ -3146,27 +3078,26 @@ async function addRoster(rosterId, roster, userId) {
   const eventId = await getEventIdFromRosterid(rosterId);
   const players = await Promise.all(
     roster.map(async r => {
-      if (r.email) {
-        const res = await addNewPersonToRoster(
-          {
-            ...r,
-            rosterId,
-            eventId,
-          },
-          userId,
-        );
-        return res;
-      } else {
-        const res = await addPlayerToRoster(
-          {
-            ...r,
-            rosterId,
-            eventId,
-          },
-          userId,
-        );
-        return res;
-      }
+      // if (r.email) {
+      //   const res = await addNewPersonToRoster(
+      //     {
+      //       ...r,
+      //       rosterId,
+      //       eventId,
+      //     },
+      //     userId,
+      //   );
+      //   return res;
+      // } else {}
+      const res = await addPlayerToRoster(
+        {
+          ...r,
+          rosterId,
+          eventId,
+        },
+        userId,
+      );
+      return res;
     }),
   );
   return players;
@@ -3732,13 +3663,11 @@ module.exports = {
   addPhase,
   addPlayersCartItems,
   addPlayerToRoster,
-  addRegisteredToSchedule,
   addReport,
   addRoster,
   addScoreSuggestion,
   addSpiritSubmission,
   addTeamToEvent,
-  addTeamToSchedule,
   addTimeSlot,
   cancelRosterInviteToken,
   canRemovePlayerFromRoster,

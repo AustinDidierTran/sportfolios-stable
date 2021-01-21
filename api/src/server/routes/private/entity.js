@@ -1098,42 +1098,6 @@ router.post(`${BASE_URL}/field`, async ctx => {
   };
 });
 
-router.post(`${BASE_URL}/addTeamToSchedule`, async ctx => {
-  const team = await queries.addTeamToSchedule(ctx.request.body);
-  if (team) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: team,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
-});
-
-router.post(`${BASE_URL}/addRegisteredToSchedule`, async ctx => {
-  const teams = await queries.addRegisteredToSchedule(
-    ctx.request.body,
-  );
-  if (teams) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: teams,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
-});
-
 router.post(`${BASE_URL}/phase`, async ctx => {
   const phase = await queries.addPhase(
     ctx.request.body,
@@ -1230,6 +1194,32 @@ router.post(`${BASE_URL}/register`, async ctx => {
     ctx.body = {
       status: 'error',
       message: 'Something went wrong',
+    };
+  }
+});
+router.post(`${BASE_URL}/addTeamAsAdmin`, async ctx => {
+  const { status, reason, rosterId } = await queries.addTeamAsAdmin(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (status === STATUS_ENUM.REFUSED) {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      data: { status, reason },
+    };
+  } else if (status) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: { status, rosterId },
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      data: { status, reason },
     };
   }
 });

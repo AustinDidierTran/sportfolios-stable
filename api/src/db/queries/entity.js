@@ -29,13 +29,11 @@ const {
   addPhase: addPhaseHelper,
   addPlayersCartItems,
   addPlayerToRoster: addPlayerToRosterHelper,
-  addRegisteredToSchedule: addRegisteredToScheduleHelper,
   addReport: addReportHelper,
   addRoster: addRosterHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
   addSpiritSubmission: addSpiritSubmissionHelper,
   addTeamToEvent: addTeamToEventHelper,
-  addTeamToSchedule: addTeamToScheduleHelper,
   addTimeSlot: addTimeSlotHelper,
   cancelRosterInviteToken: cancelRosterInviteTokenHelper,
   canRemovePlayerFromRoster: canRemovePlayerFromRosterHelper,
@@ -433,7 +431,7 @@ async function addTeamToEvent(body, userId) {
   }
 
   // Reject team if there is already too many registered teams
-  if ((await getRemainingSpotsHelper(eventId)) === 0) {
+  if ((await getRemainingSpotsHelper(eventId)) < 1) {
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
@@ -514,6 +512,55 @@ async function addTeamToEvent(body, userId) {
       userId,
     });
   });
+
+  // Handle other acceptation statuses
+  return { status: registrationStatus, rosterId };
+}
+
+async function addTeamAsAdmin(body, userId) {
+  const { eventId, name } = body;
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  // Reject team if there is already too many registered teams
+  if ((await getRemainingSpotsHelper(eventId)) < 1) {
+    return {
+      status: STATUS_ENUM.REFUSED,
+      reason: REJECTION_ENUM.NO_REMAINING_SPOTS,
+    };
+  }
+
+  const person = await getPrimaryPerson(userId);
+  const team = await addEntityHelper({
+    name,
+    creator: person.id,
+    type: GLOBAL_ENUM.TEAM,
+  });
+
+  const event = (await getEntity(eventId, userId)).basicInfos;
+
+  const registrationStatus = STATUS_ENUM.ACCEPTED_FREE;
+
+  const rosterId = await addTeamToEventHelper({
+    teamId: team.id,
+    eventId: event.id,
+    status: INVOICE_STATUS_ENUM.FREE,
+    registrationStatus,
+  });
+
+  const roster = [
+    {
+      personId: person.id,
+      name: `${person.name} ${person.surname}`,
+      rosterId,
+      role: ROSTER_ROLE_ENUM.CAPTAIN,
+    },
+  ];
+
+  // Add roster
+  await addRosterHelper(rosterId, roster, userId);
 
   // Handle other acceptation statuses
   return { status: registrationStatus, rosterId };
@@ -1074,18 +1121,6 @@ async function addField(body, userId) {
   return addFieldHelper(field, eventId);
 }
 
-async function addTeamToSchedule(body) {
-  const { eventId, name, rosterId } = body;
-  const res = await addTeamToScheduleHelper(eventId, name, rosterId);
-  return res;
-}
-
-async function addRegisteredToSchedule(body) {
-  const { eventId } = body;
-  const res = await addRegisteredToScheduleHelper(eventId);
-  return res;
-}
-
 async function addPhase(body, userId) {
   const { phase, eventId } = body;
   if (
@@ -1483,12 +1518,11 @@ module.exports = {
   addPersonToEvent,
   addPhase,
   addPlayerToRoster,
-  addRegisteredToSchedule,
   addReport,
   addScoreSuggestion,
   addSpiritSubmission,
   addTeamToEvent,
-  addTeamToSchedule,
+  addTeamAsAdmin,
   addTimeSlot,
   cancelRosterInviteToken,
   cancelRosterInviteToken,
