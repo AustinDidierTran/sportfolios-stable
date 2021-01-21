@@ -1202,6 +1202,7 @@ router.post(`${BASE_URL}/addTeamAsAdmin`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
+
   if (status === STATUS_ENUM.REFUSED) {
     ctx.status = 404;
     ctx.body = {

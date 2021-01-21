@@ -431,7 +431,7 @@ async function addTeamToEvent(body, userId) {
   }
 
   // Reject team if there is already too many registered teams
-  if ((await getRemainingSpotsHelper(eventId)) === 0) {
+  if ((await getRemainingSpotsHelper(eventId)) < 1) {
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
@@ -525,7 +525,7 @@ async function addTeamAsAdmin(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   // Reject team if there is already too many registered teams
-  if ((await getRemainingSpotsHelper(eventId)) === 0) {
+  if ((await getRemainingSpotsHelper(eventId)) < 1) {
     return {
       status: STATUS_ENUM.REFUSED,
       reason: REJECTION_ENUM.NO_REMAINING_SPOTS,
