@@ -96,6 +96,7 @@ const {
   getRole,
   getRoster: getRosterHelper,
   getRosterEventInfos,
+  getEventIdFromRosterId,
   getRosterIdFromInviteToken,
   getRosterInviteToken: getRosterInviteTokenHelper,
   getRosterInvoiceItem,
@@ -266,15 +267,19 @@ async function getRosterAllIncluded(rosterId, userId, withSub) {
   const players = getRoster(rosterId, withSub);
   const role = getRole(rosterId, userId);
 
+  const eventId = await getEventIdFromRosterId(rosterId);
   const registrationStatus = getRegistrationStatus(rosterId);
 
   const [{ name } = {}] = await getRostersNames([rosterId]);
   return {
-    players: await players,
-    role: await role,
-    rosterId,
-    name: name,
-    registrationStatus: await registrationStatus,
+    roster: {
+      players: await players,
+      role: await role,
+      rosterId,
+      name: name,
+      registrationStatus: await registrationStatus,
+    },
+    eventId,
   };
 }
 
@@ -1367,6 +1372,7 @@ async function addPlayerToRoster(body, userId) {
   const { eventId, teamId, teamName } = await getRosterEventInfos(
     rosterId,
   );
+
   if (owners) {
     owners.forEach(owner => {
       //Not sending the notification if the user added himself
