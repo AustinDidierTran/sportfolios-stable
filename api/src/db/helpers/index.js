@@ -82,7 +82,7 @@ const createUserComplete = async body => {
       })
       .transacting(trx);
 
-    await knex('entities_photo')
+      await knex('entities_photo')
       .insert({
         entity_id
       })
