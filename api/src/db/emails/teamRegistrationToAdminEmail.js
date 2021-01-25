@@ -1,32 +1,15 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
-const { formatLinkWithAuthToken } = require('./utils');
-const {
-  TABS_ENUM,
-  ROUTES_ENUM,
-} = require('../../../../common/enums');
-const {
-  formatRoute,
-} = require('../../../../common/utils/stringFormat');
 
 module.exports = async function TeamRegistrationToAdminEmail(infos) {
   const {
     teamName,
     eventName,
-    eventId,
     placesLeft,
     locale,
-    userId,
+    buttonLink,
   } = infos;
 
-  const buttonLink = await formatLinkWithAuthToken(
-    userId,
-    formatRoute(
-      ROUTES_ENUM.entity,
-      { id: eventId },
-      { tab: TABS_ENUM.SETTINGS },
-    ),
-  );
   let text = '';
   if (placesLeft === 0) {
     text = i18n.__(

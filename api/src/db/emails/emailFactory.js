@@ -9,13 +9,9 @@ const TeamRegistrationEmail = require('./teamRegistrationEmail');
 const PersonRegistrationEmail = require('./personRegistrationEmail');
 const TransferPersonEmail = require('./transferPersonEmail');
 const ImportMemberEmail = require('./importMemberEmail');
-const {
-  NOTIFICATION_TYPE,
-  ROUTES_ENUM,
-} = require('./../../../../common/enums');
+const { NOTIFICATION_TYPE } = require('./../../../../common/enums');
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
-const { formatLinkWithAuthToken } = require('./utils');
 const map = {
   [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: AddeddToRosterEmail,
   [NOTIFICATION_TYPE.EMAIL_CONFIRMATION]: EmailConfirmationEmail,
@@ -48,13 +44,10 @@ module.exports = async function EmailFactory(infos) {
   if (infos.withoutFooter) {
     return { html, subject };
   }
-  const link = await formatLinkWithAuthToken(
-    infos.userId,
-    `${ROUTES_ENUM.userSettings}#notifications`,
-  );
+
   const unsubscribeFooter = await ejs.renderFile(
     __dirname + '/templates/unsubscribeFooter.ejs',
-    { link, text },
+    { link: infos.footerLink, text },
   );
   return { html: html + unsubscribeFooter, subject };
 };

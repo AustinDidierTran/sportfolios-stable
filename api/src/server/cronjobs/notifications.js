@@ -9,7 +9,13 @@ const { getPersonInfos } = require('../../db/queries/entity');
 const {
   NOTIFICATION_TYPE,
   ROSTER_ROLE_ENUM,
+  ROUTES_ENUM,
+  TABS_ENUM,
 } = require('../../../../common/enums');
+const { formatLinkWithAuthToken } = require('../../db/emails/utils');
+const {
+  formatRoute,
+} = require('../../../../common/utils/stringFormat');
 
 /*
  ┌────────────── second (optional)
@@ -63,12 +69,19 @@ cron.schedule('0-59/15 * * * *', async () => {
         eventName: event_name,
         playerId: player_id,
       };
+      const buttonLink = await formatLinkWithAuthToken(
+        userId,
+        formatRoute(
+          ROUTES_ENUM.entity,
+          { id: event_id },
+          { tab: TABS_ENUM.SCHEDULE, game: game_id },
+        ),
+      );
       const emailInfos = {
         name: (await getPersonInfos(player_id)).name,
         eventName: event_name,
-        eventId: event_id,
         type: NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST,
-        gameId: game_id,
+        buttonLink,
       };
       sendNotification(
         {

@@ -1249,27 +1249,6 @@ router.post(`${BASE_URL}/registerIndividual`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/addNewPersonToRoster`, async ctx => {
-  const person = await queries.addNewPersonToRoster(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-  );
-
-  if (person) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: person,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
-});
-
 router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
   const res = await queries.deletePlayerFromRoster(
     ctx.query.id,

@@ -81,9 +81,9 @@ const createUserComplete = async body => {
       })
       .transacting(trx);
 
-      await knex('entities_photo')
+    await knex('entities_photo')
       .insert({
-        entity_id
+        entity_id,
       })
       .transacting(trx);
 
@@ -519,6 +519,7 @@ const sendPersonTransferEmailAllIncluded = async ({
   }
   return res;
 };
+
 const sendPlayerTransfer = async ({
   email,
   sendedPersonId,
@@ -556,7 +557,6 @@ const sendPlayerTransfer = async ({
     teamName,
     senderName,
     language,
-    token: personTransferToken,
     eventId,
     userId,
   });

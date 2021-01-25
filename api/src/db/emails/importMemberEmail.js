@@ -1,15 +1,8 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
-const { formatLinkWithAuthToken } = require('./utils');
-const { ROUTES_ENUM } = require('../../../../common/enums');
 
 module.exports = async function importMemberEmail(infos) {
-  const { organizationName, token, locale, userId } = infos;
-
-  const buttonLink = await formatLinkWithAuthToken(
-    userId,
-    `${ROUTES_ENUM.userSettings}`,
-  );
+  const { organizationName, token, locale, buttonLink } = infos;
 
   const text = i18n.__(
     {

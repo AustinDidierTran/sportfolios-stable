@@ -1,7 +1,19 @@
 const nodemailer = require('nodemailer');
-const { NOTIFICATION_TYPE } = require('../../../../common/enums');
+const {
+  NOTIFICATION_TYPE,
+  ROUTES_ENUM,
+  TABS_ENUM,
+} = require('../../../../common/enums');
+const {
+  formatRoute,
+  formatClientRoute,
+} = require('../../../../common/utils/stringFormat');
 const emailFactory = require('../../db/emails/emailFactory');
 
+const {
+  formatLinkWithAuthToken,
+  formatFooterLink,
+} = require('../../db/emails/utils');
 let key;
 
 try {
@@ -67,11 +79,22 @@ async function sendConfirmationEmail({
   token,
   redirectUrl,
 }) {
+  let buttonLink = '';
+  if (redirectUrl) {
+    buttonlink = formatClientRoute(
+      ROUTES_ENUM.confirmEmail,
+      { token },
+      { redirectUrl },
+    );
+  } else {
+    buttonLink = formatClientRoute(ROUTES_ENUM.confirmEmail, {
+      token,
+    });
+  }
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.EMAIL_CONFIRMATION,
-    token,
-    redirectUrl,
     locale: language,
+    buttonLink,
     withoutFooter: true,
   });
 
@@ -89,12 +112,17 @@ const sendPersonTransferEmail = async ({
   language,
   token,
 }) => {
+  const buttonLink = formatClientRoute(ROUTES_ENUM.transferPerson, {
+    token,
+  });
+
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.TRANSFER_PERSON,
     token,
     sendedName,
     senderName,
     locale: language,
+    buttonLink,
     withoutFooter: true,
   });
 
@@ -111,18 +139,27 @@ const sendAddPersonToTeamEmail = async ({
   teamName,
   senderName,
   language,
-  token,
   eventId,
   userId,
 }) => {
+  const footerLink = formatFooterLink(userId);
+
+  const buttonLink = await formatLinkWithAuthToken(
+    userId,
+    formatRoute(
+      ROUTES_ENUM.entity,
+      { id: eventId },
+      { tab: TABS_ENUM.ROSTERS },
+    ),
+  );
+
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
     name: senderName,
     teamName,
     locale: language,
-    token,
-    eventId,
-    userId,
+    buttonLink,
+    footerLink,
   });
 
   if (!fullEmail) {
@@ -139,11 +176,13 @@ async function sendReceiptEmail({
   language,
   userId,
 }) {
+  const footerLink = formatFooterLink(userId);
+
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.SEND_RECEIPT,
     receipt,
     locale: language,
-    userId,
+    footerLink,
   });
   if (!fullEmail) {
     return;
@@ -160,14 +199,24 @@ async function sendTeamRegistrationEmailToAdmin({
   language,
   userId,
 }) {
+  const footerLink = formatFooterLink(userId);
+
+  const buttonLink = await formatLinkWithAuthToken(
+    userId,
+    formatRoute(
+      ROUTES_ENUM.entity,
+      { id: event.id },
+      { tab: TABS_ENUM.SETTINGS },
+    ),
+  );
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.TEAM_REGISTRATION_TO_ADMIN,
     teamName: team.name,
     eventName: event.name,
-    eventId: event.id,
     placesLeft,
     locale: language,
-    userId,
+    buttonLink,
+    footerLink,
   });
 
   if (!fullEmail) {
@@ -185,14 +234,24 @@ async function sendPersonRegistrationEmailToAdmin({
   language,
   userId,
 }) {
+  const footerLink = formatFooterLink(userId);
+
+  const buttonLink = await formatLinkWithAuthToken(
+    userId,
+    formatRoute(
+      ROUTES_ENUM.entity,
+      { id: event.id },
+      { tab: TABS_ENUM.SETTINGS },
+    ),
+  );
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.PERSON_REGISTRATION_TO_ADMIN,
     completeName: person.complete_name,
     eventName: event.name,
-    eventId: event.id,
     placesLeft,
     locale: language,
-    userId,
+    buttonLink,
+    footerLink,
   });
 
   if (!fullEmail) {
@@ -210,14 +269,32 @@ async function sendTeamRegistrationEmail({
   isFreeOption,
   userId,
 }) {
+  const footerLink = formatFooterLink(userId);
+
+  let buttonLink = '';
+  if (isFreeOption) {
+    buttonLink = await formatLinkWithAuthToken(
+      userId,
+      formatRoute(
+        ROUTES_ENUM.entity,
+        { id: event.id },
+        { tab: TABS_ENUM.ROSTERS },
+      ),
+    );
+  } else {
+    buttonLink = await formatLinkWithAuthToken(
+      userId,
+      formatRoute(ROUTES_ENUM.cart),
+    );
+  }
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.TEAM_REGISTRATION,
     teamName: team.name,
     eventName: event.name,
-    eventId: event.id,
     isFreeOption,
     locale: language,
-    userId,
+    buttonLink,
+    footerLink,
   });
 
   if (!fullEmail) {
@@ -234,13 +311,20 @@ async function sendPersonRegistrationEmail({
   language,
   userId,
 }) {
+  const footerLink = formatFooterLink(userId);
+
+  const buttonLink = await formatLinkWithAuthToken(
+    userId,
+    formatRoute(ROUTES_ENUM.entity, { id: event.id }),
+  );
+
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.PERSON_REGISTRATION,
     completeName: person.complete_name,
     eventName: event.name,
-    eventId: event.id,
     locale: language,
-    userId,
+    buttonLink,
+    footerLink,
   });
 
   if (!fullEmail) {
@@ -251,11 +335,16 @@ async function sendPersonRegistrationEmail({
 }
 
 async function sendRecoveryEmail({ email, token, language }) {
+  const buttonLink = formatClientRoute(
+    ROUTES_ENUM.recoveryEmail,
+    null,
+    { token, email },
+  );
+
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.RECOVERY_EMAIL,
     locale: language,
-    token,
-    email,
+    buttonLink,
     withoutFooter: true,
   });
 
@@ -272,12 +361,19 @@ async function sendImportMemberEmail({
   organizationName,
   userId,
 }) {
+  const footerLink = formatFooterLink(userId);
+
+  const buttonLink = await formatLinkWithAuthToken(
+    userId,
+    `${ROUTES_ENUM.userSettings}`,
+  );
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.IMPORT_MEMBER,
     locale: language,
     organizationName,
     token,
-    userId,
+    buttonLink,
+    footerLink,
   });
 
   if (!fullEmail) {
@@ -299,4 +395,5 @@ module.exports = {
   sendAddPersonToTeamEmail,
   sendImportMemberEmail,
   sendMail,
+  formatLinkWithAuthToken,
 };

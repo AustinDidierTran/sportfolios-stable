@@ -6,6 +6,8 @@ const {
   NOTIFICATION_TYPE,
   GLOBAL_ENUM,
   ROSTER_ROLE_ENUM,
+  ROUTES_ENUM,
+  TABS_ENUM,
 } = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
@@ -23,7 +25,6 @@ const {
   addMember: addMemberHelper,
   addMemberManually: addMemberManuallyHelper,
   addMembership: addMembershipHelper,
-  addNewPersonToRoster: addNewPersonToRosterHelper,
   addOption: addOptionHelper,
   addPersonToEvent: addPersonToEventHelper,
   addPhase: addPhaseHelper,
@@ -149,6 +150,10 @@ const {
   generateMemberImportToken,
 } = require('../helpers');
 const { sendNotification } = require('./notifications');
+const { formatLinkWithAuthToken } = require('../emails/utils');
+const {
+  formatRoute,
+} = require('../../../../common/utils/stringFormat');
 
 async function isAllowed(
   entityId,
@@ -1178,10 +1183,6 @@ async function addOption(body, userId) {
   return res;
 }
 
-async function addNewPersonToRoster(body, userId) {
-  return addNewPersonToRosterHelper(body, userId);
-}
-
 const canUnregisterTeamsList = async (rosterIds, eventId) => {
   return getWichTeamsCanUnregisterHelper(
     JSON.parse(rosterIds),
@@ -1374,26 +1375,39 @@ async function addPlayerToRoster(body, userId) {
   );
 
   if (owners) {
-    owners.forEach(owner => {
-      //Not sending the notification if the user added himself
-      if (owner.user_id === userId) {
-        return;
-      }
-      const notif = {
-        user_id: owner.user_id,
-        type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-        entity_photo: eventId || teamId,
-        metadata: { eventId, teamName },
-      };
-      const emailInfos = {
-        type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-        eventId,
-        teamName,
-        name,
-      };
+    Promise.all(
+      owners.map(async owner => {
+        //Not sending the notification if the user added himself
+        if (owner.user_id === userId) {
+          return;
+        }
 
-      sendNotification(notif, emailInfos);
-    });
+        const buttonLink = await formatLinkWithAuthToken(
+          userId,
+          formatRoute(
+            ROUTES_ENUM.entity,
+            { id: eventId },
+            { tab: TABS_ENUM.ROSTERS },
+          ),
+        );
+
+        const notif = {
+          user_id: owner.user_id,
+          type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+          entity_photo: eventId || teamId,
+          metadata: { eventId, teamName },
+        };
+        const emailInfos = {
+          type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+          eventId,
+          teamName,
+          name,
+          buttonLink,
+        };
+
+        sendNotification(notif, emailInfos);
+      }),
+    );
   }
   return res;
 }
@@ -1519,7 +1533,6 @@ module.exports = {
   addMember,
   addMemberManually,
   addMembership,
-  addNewPersonToRoster,
   addOption,
   addPersonToEvent,
   addPhase,
