@@ -1,17 +1,8 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
-const { formatLinkWithAuthToken } = require('./utils');
-const { ROUTES_ENUM } = require('../../../../common/enums');
-const {
-  formatRoute,
-} = require('../../../../common/utils/stringFormat');
-module.exports = async function personRegistrationEmail(infos) {
-  const { completeName, eventName, eventId, locale, userId } = infos;
 
-  const buttonLink = await formatLinkWithAuthToken(
-    userId,
-    formatRoute(ROUTES_ENUM.entity, { id: eventId }),
-  );
+module.exports = async function personRegistrationEmail(infos) {
+  const { completeName, eventName, locale, buttonLink } = infos;
 
   const text = i18n.__(
     {

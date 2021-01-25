@@ -34,6 +34,7 @@ const {
   MILLIS_TIME_ENUM,
   BASIC_CHATBOT_STATES,
 } = require('../../../../common/enums');
+const { formatFooterLink } = require('../emails/utils');
 
 const seeNotifications = async user_id => {
   return seeNotificationsHelper(user_id);
@@ -167,10 +168,11 @@ const sendChatbotNotification = async (user_id, notif) => {
 const sendEmailNotification = async (userId, emailInfos) => {
   const emails = await getEmailsFromUserId(userId);
   const locale = await getLanguageFromUser(userId);
+  const footerLink = await formatFooterLink(userId);
   if (emails) {
     const fullEmail = await emailFactory({
       ...emailInfos,
-      userId,
+      footerLink,
       locale,
     });
     if (!fullEmail) {

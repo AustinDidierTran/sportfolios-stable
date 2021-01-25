@@ -1,16 +1,8 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
-const {
-  formatClientRoute,
-} = require('../../../../common/utils/stringFormat');
 
 module.exports = async function RecoveryEmail(infos) {
-  const { token, locale, email } = infos;
-  const buttonLink = formatClientRoute(
-    ROUTES_ENUM.recoveryEmail,
-    null,
-    { token, email },
-  );
+  const { locale, buttonLink } = infos;
 
   const text = i18n.__({
     phrase: 'emails.recovery_email_text',

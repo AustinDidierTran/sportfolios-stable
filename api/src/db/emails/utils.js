@@ -18,4 +18,12 @@ const formatLinkWithAuthToken = async (userId, route) => {
   return link;
 };
 
-module.exports = { formatLinkWithAuthToken };
+const formatFooterLink = async userId => {
+  const res = await formatLinkWithAuthToken(
+    userId,
+    `${ROUTES_ENUM.userSettings}#notifications`,
+  );
+  return res;
+};
+
+module.exports = { formatLinkWithAuthToken, formatFooterLink };
