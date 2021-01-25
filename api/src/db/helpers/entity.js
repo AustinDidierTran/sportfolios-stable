@@ -20,7 +20,6 @@ const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
 const validator = require('validator');
-const { sendTransferAddNewPlayer } = require('../helpers/index');
 
 const _ = require('lodash');
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
@@ -3078,17 +3077,6 @@ async function addRoster(rosterId, roster, userId) {
   const eventId = await getEventIdFromRosterId(rosterId);
   const players = await Promise.all(
     roster.map(async r => {
-      // if (r.email) {
-      //   const res = await addNewPersonToRoster(
-      //     {
-      //       ...r,
-      //       rosterId,
-      //       eventId,
-      //     },
-      //     userId,
-      //   );
-      //   return res;
-      // } else {}
       const res = await addPlayerToRoster(
         {
           ...r,
@@ -3101,44 +3089,6 @@ async function addRoster(rosterId, roster, userId) {
     }),
   );
   return players;
-}
-
-async function addNewPersonToRoster(body, userId) {
-  const {
-    name,
-    surname,
-    email,
-    isSub,
-    rosterId,
-    role,
-    eventId,
-  } = body;
-  const person = await addEntity(
-    { name, surname, type: GLOBAL_ENUM.PERSON },
-    userId,
-  );
-
-  await addPlayerToRoster(
-    {
-      personId: person.id,
-      name: `${name} ${surname}`,
-      rosterId,
-      isSub,
-      role,
-      eventId,
-    },
-    userId,
-  );
-
-  const teamName = await getTeamName(rosterId);
-  await sendTransferAddNewPlayer(userId, {
-    email,
-    sendedPersonId: person.id,
-    teamName,
-    eventId,
-  });
-
-  return { is_sub: isSub, name: `${name} ${surname}`, id: person.id };
 }
 
 const addPlayerToRoster = async body => {
@@ -3687,7 +3637,6 @@ module.exports = {
   addMember,
   addMemberManually,
   addMembership,
-  addNewPersonToRoster,
   addOption,
   addPersonToEvent,
   addPhase,
