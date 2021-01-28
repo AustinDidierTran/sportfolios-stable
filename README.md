@@ -468,6 +468,24 @@ And then run
 db-migrate up
 ```
 
+## How to access your local DB with pgAdmin4
+
+First, install pgAdmin 4.
+
+```
+https://www.pgadmin.org/download/
+```
+
+Once installed create a server (right click on server then create) with those information:
+
+![](pgAdminGeneral.png)
+
+Change your username for your postgres username. If you don't have one try 'postgres' as username.
+
+![](pgAdminConnection.png)
+
+You're all set! Go to Servers -> Sportfolios -> Database -> sportfolios_api_dev -> Schemas -> Tables to see all your tables.
+
 ## How email are displayed
 
 As you won’t have access to the Google API Keys, you won’t receive any emails. The content of these emails will be logged into the terminal, which you will be able to access via this command:
