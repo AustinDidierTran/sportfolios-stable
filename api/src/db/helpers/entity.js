@@ -3467,6 +3467,14 @@ const deleteReport = async reportId => {
     .del();
 };
 
+const deleteTimeSlot = async timeSlotId => {
+  return knex('event_time_slots')
+    .where({
+      id: timeSlotId,
+    })
+    .del();
+};
+
 const deleteMembership = async (
   memberType,
   organizationId,
@@ -3661,6 +3669,7 @@ module.exports = {
   deleteRegistration,
   deleteReport,
   deleteTeamFromEvent,
+  deleteTimeSlot,
   eventInfos,
   generateAuthToken,
   generateReport,

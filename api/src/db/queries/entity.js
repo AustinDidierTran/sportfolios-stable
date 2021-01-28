@@ -47,6 +47,7 @@ const {
   deletePersonFromEvent,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
   deleteReport: deleteReportHelper,
+  deleteTimeSlot: deleteTimeSlotHelper,
   eventInfos: eventInfosHelper,
   generateReport: generateReportHelper,
   getAlias: getAliasHelper,
@@ -1459,6 +1460,12 @@ async function deleteGame(userId, query) {
   return deleteGameHelper(gameId);
 }
 
+async function deleteTimeSlot(query) {
+  const { timeSlotId } = query;
+
+  return deleteTimeSlotHelper(timeSlotId);
+}
+
 async function createRosterInviteToken(userId, rosterId) {
   const admins = await getMyPersonsAdminsOfTeamHelper(
     rosterId,
@@ -1561,6 +1568,7 @@ module.exports = {
   eventInfos,
   eventInfos,
   generateReport,
+  deleteTimeSlot,
   getAlias,
   getAllTeamsAcceptedRegistered,
   getAllPlayersAcceptedRegistered,

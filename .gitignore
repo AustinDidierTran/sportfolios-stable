@@ -11,3 +11,7 @@ pm2.json
 api/src/db/connect_to_db.sh
 .env
 postgres-data/
+get-docker.sh
+api/src/db/migrations/20210114135650-achilleMigration.js
+api/src/db/migrations/sqls/20210114135650-achilleMigration-down.sql
+api/src/db/migrations/sqls/20210114135650-achilleMigration-up.sql
