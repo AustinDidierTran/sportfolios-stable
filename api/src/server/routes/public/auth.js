@@ -7,7 +7,6 @@ const BASE_URL = '/api/auth';
 
 router.post(`${BASE_URL}/signup`, async ctx => {
   const res = await queries.signup(ctx.request.body);
-
   if (res.code === 200) {
     ctx.status = 200;
     ctx.body = {
