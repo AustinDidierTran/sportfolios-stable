@@ -3475,6 +3475,14 @@ const deleteTimeSlot = async timeSlotId => {
     .del();
 };
 
+const deleteField = async fieldId => {
+  return knex('event_fields')
+    .where({
+      id: fieldId,
+    })
+    .del();
+};
+
 const deleteMembership = async (
   memberType,
   organizationId,
@@ -3661,6 +3669,7 @@ module.exports = {
   canUnregisterTeam,
   deleteEntity,
   deleteEntityMembership,
+  deleteField,
   deleteGame,
   deleteMembership,
   deleteOption,

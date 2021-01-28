@@ -41,6 +41,7 @@ const {
   canUnregisterTeam: canUnregisterTeamHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
+  deleteField: deleteFieldHelper,
   deleteGame: deleteGameHelper,
   deleteMembership: deleteMembershipHelper,
   deleteOption: deleteOptionHelper,
@@ -1466,6 +1467,12 @@ async function deleteTimeSlot(query) {
   return deleteTimeSlotHelper(timeSlotId);
 }
 
+async function deleteField(query) {
+  const { fieldId } = query;
+
+  return deleteFieldHelper(fieldId);
+}
+
 async function createRosterInviteToken(userId, rosterId) {
   const admins = await getMyPersonsAdminsOfTeamHelper(
     rosterId,
@@ -1559,6 +1566,7 @@ module.exports = {
   deleteEntityHelper,
   deleteEntityHelper,
   deleteEntityMembership,
+  deleteField,
   deleteGame,
   deleteGame,
   deleteMembership,
