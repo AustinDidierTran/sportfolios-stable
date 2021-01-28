@@ -362,6 +362,13 @@ const NOTIFICATION_TYPE = {
   TRANSFER_PERSON: 'transfer person',
 };
 
+const NOTIFICATION_ARRAY = [
+  'added to roster',
+  'other team submitted a score',
+  'score submission conflict',
+  'score submission request',
+];
+
 const NOTIFICATION_MEDIA = {
   EMAIL: 'email',
   CHATBOT: 'chatbot',
@@ -506,6 +513,7 @@ module.exports = {
   MEMBERSHIP_TYPE_ENUM,
   MESSENGER_MESSAGES_EN,
   MILLIS_TIME_ENUM,
+  NOTIFICATION_ARRAY,
   NOTIFICATION_MEDIA,
   NOTIFICATION_TYPE,
   PERSON_TRANSFER_STATUS_ENUM,

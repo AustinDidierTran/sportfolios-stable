@@ -8,6 +8,7 @@ const {
   PERSON_TRANSFER_STATUS_ENUM,
   BASIC_CHATBOT_STATES,
   COUPON_CODE_ENUM,
+  NOTIFICATION_ARRAY,
 } = require('../../../../common/enums');
 
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
@@ -106,27 +107,13 @@ const createUserComplete = async body => {
       })
       .transacting(trx);
 
-    //Create a column in user_notification_setting for every existing notification type for the user
-    //temp table for the cross join
-    await knex
-      .raw('CREATE TEMPORARY TABLE temp_user (user_id uuid)')
-      .transacting(trx);
-    await knex('temp_user')
-      .insert({ user_id })
-      .transacting(trx);
-    const t1 = knex('temp_user')
-      .select('user_id')
-      .as('t1');
-    const t2 = knex('notifications')
-      .distinct('type')
-      .as('t2');
-    const subquery = knex
-      .select('*')
-      .from(t1)
-      .crossJoin(t2);
-    await knex('user_notification_setting')
-      .insert(subquery)
-      .transacting(trx);
+    await Promise.all(
+      NOTIFICATION_ARRAY.map(async notif => {
+        await knex('user_notification_setting')
+          .insert({ type: notif, user_id })
+          .transacting(trx);
+      }),
+    );
   });
 };
 
