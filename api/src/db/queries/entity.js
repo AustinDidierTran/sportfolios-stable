@@ -655,7 +655,7 @@ async function addPersonToEvent(body, userId) {
       // send mail to organization admin
       const creatorEmails = await getCreatorsEmail(eventId);
       await Promise.all(
-        creatorEmails.forEach(async email => {
+        creatorEmails.map(async email => {
           const language = await getLanguageFromEmail(email);
           sendPersonRegistrationEmailToAdmin({
             email,
