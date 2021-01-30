@@ -9,7 +9,6 @@ router.get(`${BASE_URL}/accountLink`, async ctx => {
   const data = await queries.getAccountLink(
     ctx.request.ip,
     ctx.query.entityId,
-    ctx.query.redirect,
   );
   ctx.body = {
     status: 'success',
@@ -77,10 +76,7 @@ router.post(`${BASE_URL}/externalAccount`, async ctx => {
 });
 
 router.get(`${BASE_URL}/getCustomer`, async ctx => {
-  const data = await queries.getCustomer(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-  );
+  const data = await queries.getCustomer(ctx.body.userInfo.id);
   ctx.body = {
     status: 'success',
     data,
