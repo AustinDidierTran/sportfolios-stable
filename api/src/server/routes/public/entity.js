@@ -1,8 +1,7 @@
 const Router = require('koa-router');
 const queries = require('../../../db/queries/entity');
-const OrgController = require('../../../../../controllers/organization');
 const { OrganizationController } = require('../../../../../controllers/organization');
-
+const { GLOBAL_ENUM } = require('../../../../../common/enums');
 const router = new Router();
 const BASE_URL = '/api/entity';
 
@@ -11,7 +10,7 @@ router.get(BASE_URL, async ctx => {
     ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
   const entity = await queries.getEntity(ctx.query.id, userId);
 
-  if(entity.basicInfos.type == 2){
+  if(entity.basicInfos.type == GLOBAL_ENUM.ORGANIZATION){
     entity.navBar = OrganizationController.getNavBar();
   }
 

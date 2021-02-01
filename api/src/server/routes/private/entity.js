@@ -1,6 +1,5 @@
 const Router = require('koa-router');
 const queries = require('../../../db/queries/entity');
-const OrgController = require('../../../../../controllers/organization')
 const { STATUS_ENUM } = require('../../../../../common/enums');
 const {
   ERROR_ENUM,
