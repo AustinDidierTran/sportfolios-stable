@@ -35,8 +35,8 @@ const {
   deleteBankAccount: deleteBankAccountHelper,
 } = require('../helpers/stripe');
 
-const getAccountLink = async (ip, entityId, redirect) => {
-  return createAccountLink({ ip, entityId, redirect });
+const getAccountLink = async (ip, entityId) => {
+  return createAccountLink({ ip, entityId });
 };
 
 const addExternalAccount = async (body, ip) => {
@@ -65,7 +65,7 @@ const getPaymentMethods = async userId => {
   return getPaymentMethodsHelper(userId);
 };
 
-const getCustomerId = async (body, userId) => {
+const getCustomerId = async userId => {
   return getCustomerIdHelper(userId);
 };
 
