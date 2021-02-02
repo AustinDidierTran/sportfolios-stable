@@ -1153,15 +1153,17 @@ async function addTimeSlot(body, userId) {
 
 async function addOption(body, userId) {
   const {
+    endTime,
     eventId,
     name,
     ownerId,
-    taxRatesId,
-    teamPrice,
+    playerAcceptation,
     playerPrice,
-    endTime,
     startTime,
+    taxRatesId,
+    teamAcceptation,
     teamActivity,
+    teamPrice,
   } = body;
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
@@ -1169,16 +1171,18 @@ async function addOption(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   const res = await addOptionHelper(
+    endTime,
     eventId,
     name,
     ownerId,
-    taxRatesId,
-    teamPrice,
+    playerAcceptation,
     playerPrice,
-    endTime,
     startTime,
-    userId,
+    taxRatesId,
+    teamAcceptation,
     teamActivity,
+    teamPrice,
+    userId,
   );
   return res;
 }

@@ -824,6 +824,7 @@ async function getMembers(personId, organizationId) {
   }));
   return res;
 }
+
 async function getPriceFromInvoice(invoiceItemId) {
   const [{ amount: price }] = await knex('stripe_invoice_item')
     .select('amount')
@@ -2791,16 +2792,18 @@ async function addTimeSlot(date, eventId) {
 }
 
 async function addOption(
+  endTime,
   eventId,
   name,
   ownerId,
-  taxRatesId,
-  teamPrice,
+  playerAcceptation,
   playerPrice,
-  endTime,
   startTime,
-  userId,
+  taxRatesId,
+  teamAcceptation,
   teamActivity,
+  teamPrice,
+  userId,
 ) {
   const realId = await getRealId(eventId);
   const entity = (await getEntity(eventId, userId)).basicInfos;
@@ -2879,6 +2882,8 @@ async function addOption(
       end_time: new Date(endTime),
       start_time: new Date(startTime),
       team_activity: teamActivity,
+      team_acceptation: teamAcceptation,
+      player_acceptation: playerAcceptation,
     })
     .returning('*');
   return res;
