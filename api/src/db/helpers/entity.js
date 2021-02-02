@@ -23,7 +23,11 @@ const validator = require('validator');
 
 const _ = require('lodash');
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
-
+const { getLanguageFromEmail } = require('.');
+const { sendNotification } = require('../queries/notifications');
+const {
+  sendCartItemAddedPlayerEmail,
+} = require('../../server/utils/nodeMailer');
 const generateToken = () => {
   return uuidv1();
 };
@@ -1106,7 +1110,7 @@ async function getRegistered(teamId, eventId) {
 
 async function getRegistrationTeamPaymentOption(paymentOptionId) {
   const [teamPaymentOption] = await knex('event_payment_options')
-    .select('team_price', 'team_stripe_price_id')
+    .select('team_price', 'team_stripe_price_id', 'team_acceptation')
     .where({ id: paymentOptionId });
 
   return teamPaymentOption;
@@ -3107,6 +3111,8 @@ async function addRoster(rosterId, roster, userId) {
 const addPlayerToRoster = async body => {
   const { personId, name, id, rosterId, role, isSub } = body;
 
+  const userId = await getUserIdFromPersonId(personId);
+
   //TODO: Make sure userId adding is team Admin
   const player = await knex('team_players')
     .insert({
@@ -3120,36 +3126,40 @@ const addPlayerToRoster = async body => {
     })
     .returning('*');
 
-  const userId = await getUserIdFromPersonId(personId);
+  const roster = await getRosterEventInfos(rosterId);
 
-  const paymentOption = await getIndividualPaymentOptionFromRosterId(
-    rosterId,
-  );
-
-  if (paymentOption.individual_price <= 0) {
-    return player;
+  if (
+    roster.status === INVOICE_STATUS_ENUM.FREE ||
+    roster.status === INVOICE_STATUS_ENUM.PAID
+  ) {
+    await addPlayerCartItem({ name, rosterId, personId, isSub });
   }
 
-  const ownerId = await getOwnerStripePrice(
-    paymentOption.individual_stripe_price_id,
+  const notif = {
+    user_id: userId,
+    type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+    entity_photo: eventId || team.Id,
+    metadata: { eventId, teamName: team.name },
+  };
+
+  const buttonLink = await formatLinkWithAuthToken(
+    userId,
+    formatRoute(
+      ROUTES_ENUM.entity,
+      { id: eventId },
+      { tab: TABS_ENUM.ROSTERS },
+    ),
   );
 
-  const cartItem = {
-    stripePriceId: paymentOption.individual_stripe_price_id,
-    metadata: {
-      eventId: paymentOption.event_id,
-      sellerEntityId: ownerId,
-      isIndividualOption: true,
-      personId,
-      name,
-      buyerId: personId,
-      rosterId,
-      team: (await getEntity(paymentOption.teamId, userId))
-        .basicInfos,
-    },
+  const emailInfos = {
+    type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+    eventId,
+    teamName: team.name,
+    name,
+    buttonLink,
   };
-  await addEventCartItem(cartItem, userId);
 
+  sendNotification(notif, emailInfos);
   return player;
 };
 
@@ -3167,39 +3177,63 @@ const addPlayersCartItems = async rosterId => {
         name,
         roster_id: rosterId,
         is_sub: isSub,
+        payment_status: paymentStatus,
       } = r;
 
-      if (isSub) {
-        return;
+      if (paymentStatus == INVOICE_STATUS_ENUM.OPEN) {
+        await addPlayerCartItem({ personId, name, rosterId, isSub });
       }
-      const userId = await getUserIdFromPersonId(personId);
-
-      const paymentOption = await getIndividualPaymentOptionFromRosterId(
-        rosterId,
-      );
-      if (paymentOption.individual_price <= 0) {
-        return;
-      }
-      const ownerId = await getOwnerStripePrice(
-        paymentOption.individual_stripe_price_id,
-      );
-      const cartItem = {
-        stripePriceId: paymentOption.individual_stripe_price_id,
-        metadata: {
-          eventId,
-          sellerEntityId: ownerId,
-          isIndividualOption: true,
-          personId,
-          name,
-          buyerId: personId,
-          rosterId,
-          team: (await getEntity(paymentOption.teamId, userId))
-            .basicInfos,
-        },
-      };
-      await addEventCartItem(cartItem, userId);
     }),
   );
+};
+
+const addPlayerCartItem = async body => {
+  const { personId, rosterId, name, isSub } = body;
+
+  if (isSub) {
+    return;
+  }
+  const paymentOption = await getIndividualPaymentOptionFromRosterId(
+    rosterId,
+  );
+
+  if (paymentOption.individual_price <= 0) {
+    return;
+  }
+
+  const eventId = await getEventIdFromRosterId(rosterId);
+  const userId = await getUserIdFromPersonId(personId);
+  const email = await getEmailPerson(personId);
+  const language = await getLanguageFromEmail(email);
+  const event = (await getEntity(eventId, userId)).basicInfos;
+  const team = (await getEntity(paymentOption.teamId, userId))
+    .basicInfos;
+
+  const ownerId = await getOwnerStripePrice(
+    paymentOption.individual_stripe_price_id,
+  );
+
+  const cartItem = {
+    stripePriceId: paymentOption.individual_stripe_price_id,
+    metadata: {
+      eventId,
+      sellerEntityId: ownerId,
+      isIndividualOption: true,
+      personId,
+      name,
+      buyerId: personId,
+      rosterId,
+      team,
+    },
+  };
+  await addEventCartItem(cartItem, userId);
+  sendCartItemAddedPlayerEmail({
+    email,
+    teamName: team.name,
+    eventName: event.name,
+    language,
+    userId,
+  });
 };
 
 const addEventCartItem = async (body, userId) => {
@@ -3618,6 +3652,7 @@ async function getRosterEventInfos(roster_id) {
       'event_id',
       'event_rosters.team_id',
       'registration_status',
+      'status',
       knex.raw('name as teamname'),
     )
     .leftJoin(
@@ -3632,6 +3667,7 @@ async function getRosterEventInfos(roster_id) {
   return {
     eventId: res.event_id,
     teamId: res.team_id,
+    status: res.status,
     registrationStatus: res.registrationStatus,
     teamName: res.teamname,
   };

@@ -170,6 +170,37 @@ const sendAddPersonToTeamEmail = async ({
   sendMail({ html, email, subject, text });
 };
 
+const sendCartItemAddedPlayerEmail = async ({
+  email,
+  teamName,
+  eventName,
+  language,
+  userId,
+}) => {
+  const footerLink = formatFooterLink(userId);
+
+  const buttonLink = await formatLinkWithAuthToken(
+    userId,
+    formatRoute(ROUTES_ENUM.cart),
+  );
+
+  const fullEmail = await emailFactory({
+    type: NOTIFICATION_TYPE.CART_ITEM_ADDED_PLAYER,
+    teamName,
+    eventName,
+    locale: language,
+    buttonLink,
+    footerLink,
+  });
+
+  if (!fullEmail) {
+    return;
+  }
+
+  const { html, subject, text } = fullEmail;
+  sendMail({ html, email, subject, text });
+};
+
 async function sendReceiptEmail({
   email,
   receipt,
@@ -261,7 +292,7 @@ async function sendPersonRegistrationEmailToAdmin({
   sendMail({ html, email, subject, text });
 }
 
-async function sendTeamRegistrationEmail({
+async function sendTeamAcceptedRegistrationEmail({
   email,
   team,
   event,
@@ -292,6 +323,46 @@ async function sendTeamRegistrationEmail({
     teamName: team.name,
     eventName: event.name,
     isFreeOption,
+    locale: language,
+    buttonLink,
+    footerLink,
+  });
+
+  if (!fullEmail) {
+    return;
+  }
+  const { html, subject, text } = fullEmail;
+  sendMail({ html, email, subject, text });
+}
+async function sendTeamPendingRegistrationEmailToAdmin({
+  email,
+  team,
+  event,
+  language,
+  userId,
+}) {
+  const footerLink = formatFooterLink(userId);
+
+  let buttonLink = '';
+  if (isFreeOption) {
+    buttonLink = await formatLinkWithAuthToken(
+      userId,
+      formatRoute(
+        ROUTES_ENUM.entity,
+        { id: event.id },
+        { tab: TABS_ENUM.ROSTERS },
+      ),
+    );
+  } else {
+    buttonLink = await formatLinkWithAuthToken(
+      userId,
+      formatRoute(ROUTES_ENUM.cart),
+    );
+  }
+  const fullEmail = await emailFactory({
+    type: NOTIFICATION_TYPE.TEAM_PENDING_REGISTRATION_ADMIN,
+    teamName: team.name,
+    eventName: event.name,
     locale: language,
     buttonLink,
     footerLink,
@@ -384,16 +455,16 @@ async function sendImportMemberEmail({
 }
 
 module.exports = {
-  sendConfirmationEmail,
-  sendRecoveryEmail,
-  sendReceiptEmail,
-  sendTeamRegistrationEmail,
-  sendPersonRegistrationEmail,
-  sendTeamRegistrationEmailToAdmin,
-  sendPersonRegistrationEmailToAdmin,
-  sendPersonTransferEmail,
   sendAddPersonToTeamEmail,
+  sendConfirmationEmail,
   sendImportMemberEmail,
   sendMail,
-  formatLinkWithAuthToken,
+  sendPersonRegistrationEmail,
+  sendPersonRegistrationEmailToAdmin,
+  sendPersonTransferEmail,
+  sendReceiptEmail,
+  sendRecoveryEmail,
+  sendTeamAcceptedRegistrationEmail,
+  sendTeamPendingRegistrationEmailToAdmin,
+  sendTeamRegistrationEmailToAdmin,
 };
