@@ -15,29 +15,10 @@ const { EXPIRATION_TIMES } = require('../../../../common/constants');
 const {
   sendConfirmationEmail,
   sendPersonTransferEmail,
-  sendAddPersonToTeamEmail,
 } = require('../../server/utils/nodeMailer');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const randtoken = require('rand-token');
 const { getNameFromPSID } = require('./facebook');
-
-const sendTransferAddNewPlayer = async (
-  user_id,
-  { email, sendedPersonId, teamName, eventId },
-) => {
-  if (
-    (await getEmailsFromUserId(user_id)).find(e => e.email == email)
-  ) {
-    throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
-  }
-  return sendPlayerTransfer({
-    email,
-    sendedPersonId,
-    senderUserId: user_id,
-    teamName,
-    eventId,
-  });
-};
 
 const confirmEmail = async ({ email }) => {
   await knex('user_email')
@@ -507,55 +488,6 @@ const sendPersonTransferEmailAllIncluded = async ({
   return res;
 };
 
-const sendPlayerTransfer = async ({
-  email,
-  sendedPersonId,
-  senderUserId,
-  teamName,
-  eventId,
-}) => {
-  const personTransferToken = generateToken();
-  const sender = await getBasicUserInfoFromId(senderUserId);
-  const language =
-    (await getLanguageFromEmail(email)) || sender.language;
-  const senderPrimaryPersonId = await getPrimaryPersonIdFromUserId(
-    senderUserId,
-  );
-  const senderPrimaryPerson = sender.persons.find(
-    person => person.entity_id === senderPrimaryPersonId,
-  );
-  const senderName =
-    senderPrimaryPerson.name + ' ' + senderPrimaryPerson.surname;
-
-  //TODO Save token in db with person id and email
-  const res = await createPersonTransferToken({
-    email,
-    token: personTransferToken,
-    person_id: sendedPersonId,
-    sender_id: senderUserId,
-  });
-  if (!res) {
-    return;
-  }
-  const userId = await getUserIdFromEmail(email);
-
-  await sendAddPersonToTeamEmail({
-    email,
-    teamName,
-    senderName,
-    language,
-    eventId,
-    userId,
-  });
-
-  //Reversing the insert in db if the email can't be sent
-  // if (!res2) {
-  //   await cancelPersonTransfer(sendedPersonId);
-  //   return;
-  // }
-  return res;
-};
-
 const getPeopleTransferedToUser = async userId => {
   const emailsAndConfirmed = await getEmailsFromUserId(userId);
   const emails = emailsAndConfirmed
@@ -831,8 +763,6 @@ module.exports = {
   useToken,
   sendPersonTransferEmailAllIncluded,
   isRegistered,
-  sendPlayerTransfer,
-  sendTransferAddNewPlayer,
   getPeopleTransferedToUser,
   getPeopleTransferedToEmails,
   transferPerson,
