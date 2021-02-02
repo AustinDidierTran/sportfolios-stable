@@ -26,8 +26,8 @@ const TABS_ENUM = {
 
 class OrganizationController {
 
-  static getNavBar(){
-    return  [
+  static getNavBar() {
+    return [
       {
         value: 'home',
         label: 'home',
@@ -47,7 +47,16 @@ class OrganizationController {
     ];
   }
 
-  static async about(orgId, userId){
+  static async about(orgId, userId) {
+
+    let res = await getEntityHelper(orgId, userId);
+    return {
+      basicInfos: res.basicInfos,
+      navBar: this.getNavBar(),
+    };
+  }
+
+  static async events(orgId, userId) {
 
     let res = await getEntityHelper(orgId, userId);
 
@@ -57,7 +66,7 @@ class OrganizationController {
     };
   }
 
-  static async events(orgId, userId){
+  static async home(orgId, userId) {
 
     let res = await getEntityHelper(orgId, userId);
 
@@ -67,17 +76,7 @@ class OrganizationController {
     };
   }
 
-  static async home(orgId, userId){
-
-    let res = await getEntityHelper(orgId, userId);
-
-    return {
-      basicInfos: res.basicInfos,
-      navBar: this.getNavBar(),
-    };
-  }
-
-  static async league(orgId, userId){
+  static async league(orgId, userId) {
 
     let res = await getEntityHelper(orgId, userId);
 
