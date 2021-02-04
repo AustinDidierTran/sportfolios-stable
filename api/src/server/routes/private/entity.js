@@ -5,6 +5,7 @@ const {
   ERROR_ENUM,
   errors,
 } = require('../../../../../common/errors');
+const { OrganizationController } = require('../../../../../controllers/organization');
 
 const router = new Router();
 const BASE_URL = '/api/entity';
@@ -27,6 +28,66 @@ router.get(`${BASE_URL}`, async ctx => {
       message: 'That record does not exist.',
     };
   }
+});
+
+router.get(`${BASE_URL}/about`, async ctx => {
+
+  const entity = await OrganizationController.about(ctx.query.id, ctx.body.userInfo.id);
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  } 
+  
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+  
+});
+
+router.get(`${BASE_URL}/events`, async ctx => {
+
+  const entity = await OrganizationController.events(ctx.query.id, ctx.body.userInfo.id);
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  } 
+  
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+  
+});
+
+router.get(`${BASE_URL}/home`, async ctx => {
+
+  const entity = await OrganizationController.home(ctx.query.id, ctx.body.userInfo.id);
+  
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  } 
+  
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+  
+});
+
+router.get(`${BASE_URL}/league`, async ctx => {
+
+  const entity = await OrganizationController.league(ctx.query.id, ctx.body.userInfo.id);
+  
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  } 
+  
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+  
 });
 
 router.get(`${BASE_URL}/all`, async ctx => {

@@ -503,6 +503,7 @@ async function getEntity(id, userId) {
       'id',
       'type',
       'name',
+      'city',
       'surname',
       'photo_url',
       'description',
@@ -526,6 +527,12 @@ async function getEntity(id, userId) {
       '=',
       'entities.id',
     )
+    .leftJoin(
+      'entities_address',
+      'entities_address.entity_id',
+      '=',
+      'entities.id',
+    )
     .whereNull('deleted_at')
     .andWhere({ id: realId });
 
@@ -535,6 +542,7 @@ async function getEntity(id, userId) {
     basicInfos: {
       description: entity.description,
       id: entity.id,
+      city: entity.city,
       type: entity.type,
       name: entity.name,
       quickDescription: entity.quick_description,
@@ -885,10 +893,10 @@ async function generateMembersReport(report) {
       }
       const address = person.address
         ? {
-            city: person.address.city,
-            state: person.address.state,
-            zip: person.address.zip,
-          }
+          city: person.address.city,
+          state: person.address.state,
+          zip: person.address.zip,
+        }
         : {};
       return {
         ...a,
@@ -1667,9 +1675,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-        entityId: p.entity_id,
-        completeName: `${p.name} ${p.surname}`,
-      }))
+      entityId: p.entity_id,
+      completeName: `${p.name} ${p.surname}`,
+    }))
     : undefined;
 }
 
@@ -2701,7 +2709,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -2741,7 +2749,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
