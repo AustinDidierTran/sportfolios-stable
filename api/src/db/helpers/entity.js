@@ -2363,33 +2363,45 @@ async function updateMembershipInvoice(body) {
   return res;
 }
 
-// async function addAllGAmes(eventId, gamesArray) {
-
-// }
-
 async function addAllFields(eventId, fieldsArray) {
   const realId = await getRealId(eventId);
-  const fields = fieldsArray.map((f) => ({ event_id: eventId, field: f.field, id: f.id }))
+  const fields = fieldsArray.map((f) => ({ event_id: realId, field: f.field, id: f.id }))
 
-  console.log('passe dans le field helper');
   const res = await knex('event_fields')
     .insert(fields).returning('*');
 
-  console.log('fields saved');
   return res; 
 }
 
 async function addAllTimeslots(eventId, timeslotsArray) {
   const realId = await getRealId(eventId);
-  const timeslots = timeslotsArray.map((t) => ({ event_id: eventId, date: new Date(t.date), id: t.id}))
-
-  console.log('passe dans timeslots helper');
+  const timeslots = timeslotsArray.map((t) => ({ event_id: realId, date: new Date(t.date), id: t.id}))
 
   const res = await knex('event_time_slots')
     .insert(timeslots).returning('*');
 
-  console.log('timeslots saved');
   return res; 
+}
+
+async function addAllGames(eventId, gamesArray) {
+  const realId = await getRealId(eventId);
+  const games = gamesArray.map((g) => ({ event_id: realId, phase_id: g.phase_id, field_id: g.field_id, timeslot_id: g.timeslot_id, id: g.id }));
+
+  const res = await knex('games').insert(games).returning('*');
+
+  let gamesTeamArray = [];
+
+  gamesArray.forEach((g) => {
+    gamesTeamArray.push({game_id: g.id, roster_id: g.teams[0].value, name: g.teams[0].name});
+    gamesTeamArray.push({game_id: g.id, roster_id: g.teams[1].value, name: g.teams[1].name});
+  });
+
+  const teams = await knex('game_teams').insert(gamesTeamArray).returning('*');
+
+  return {
+    ...res,
+    teams: teams
+  };
 }
 
 async function addEntityRole(entityId, entityIdAdmin, role) {
@@ -3671,6 +3683,7 @@ module.exports = {
   acceptScoreSuggestionIfPossible,
   addAllFields,
   addAllTimeslots,
+  addAllGames,
   addAlias,
   addEntity,
   addEntityRole,

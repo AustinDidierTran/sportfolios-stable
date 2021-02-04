@@ -1011,9 +1011,7 @@ router.post(`${BASE_URL}/memberManually`, async ctx => {
 });
 
 router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {
-  console.log('passe dans la route');
   const res = await InteractiveToolController.addAll(ctx.request.body, ctx.body.userInfo.id);
-  // console.log('hassfaosdhf');
   if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
