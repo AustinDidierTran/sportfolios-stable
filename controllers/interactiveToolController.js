@@ -11,6 +11,10 @@ const {
 } = require('../api/src/db/helpers/entity');
 
 const {
+    addAllGames: addAllGamesHelper
+} = require('../api/src/db/helpers/entity');
+
+const {
     ENTITIES_ROLE_ENUM,
     INVOICE_STATUS_ENUM,
     STATUS_ENUM,
@@ -28,26 +32,28 @@ const {
 class InteractiveToolController {
 
     static async addAll(body, userId) {
-        // console.log('ok ok ok oko kok ok ok ok oko k k');
-        console.log('passe dans le controlleur');
         const { eventId, fieldsArray, timeslotsArray, gamesArray } = body;
-        const fields = [];
-        const games = [];
-        const timeslots = [];
+        let fields = [];
+        let games = [];
+        let timeslots = [];
 
-        
+        if (
+            !(await this.isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+          ) {
+            throw new Error(ERROR_ENUM.ACCESS_DENIED);
+          }
+
         if (fieldsArray.length !== 0) {
-            fields = addAllFieldsHelper(eventId, fieldsArray);
+            fields = await addAllFieldsHelper(eventId, fieldsArray);
         }
 
-        console.log(timeslotsArray);
         if (timeslotsArray.length !== 0) {
-            timeslots = addAllTimeslotsHelper(eventId, timeslotsArray);
+            timeslots = await addAllTimeslotsHelper(eventId, timeslotsArray);
         }
 
-        // if (gamesArray.lenght !== 0) {
-        //     games = addAllGamesHelper(eventId, gamesArray);
-        // }
+        if (gamesArray.lenght !== 0) {
+            games = await addAllGamesHelper(eventId, gamesArray);
+        }
 
         const res = {
             fieldsSaved: fields,
@@ -55,7 +61,6 @@ class InteractiveToolController {
             gamesSaved: games,
         }
 
-        console.log('voici le resultat:' + res);  
         return res;
     }
 
