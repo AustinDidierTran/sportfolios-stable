@@ -23,11 +23,11 @@ const validator = require('validator');
 
 const _ = require('lodash');
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
-const { getLanguageFromEmail } = require('.');
-const { sendNotification } = require('../queries/notifications');
-const {
-  sendCartItemAddedPlayerEmail,
-} = require('../../server/utils/nodeMailer');
+// const { getLanguageFromEmail } = require('.');
+// const { sendNotification } = require('../queries/notifications');
+// const {
+//   sendCartItemAddedPlayerEmail,
+// } = require('../../server/utils/nodeMailer');
 const generateToken = () => {
   return uuidv1();
 };
@@ -1921,16 +1921,22 @@ async function updateEvent(
   eventStart,
   eventEnd,
 ) {
+  console.log({ eventId, maximumSpots, eventStart, eventEnd });
   const realId = await getRealId(eventId);
   const maximum_spots = Number(maximumSpots);
-  const [entity] = await knex('events')
-    .update({
-      maximum_spots,
-      start_date: eventStart,
-      end_date: eventEnd,
-    })
-    .where({ id: realId })
-    .returning('*');
+  try {
+    const [entity] = await knex('events')
+      .update({
+        maximum_spots,
+        start_date: eventStart,
+        end_date: eventEnd,
+      })
+      .where({ id: realId })
+      .returning('*');
+  } catch (e) {
+    console.log({ e });
+  }
+  console.log({ entity });
   return entity;
 }
 
@@ -3181,31 +3187,31 @@ const addPlayerToRoster = async body => {
     await addPlayerCartItem({ name, rosterId, personId, isSub });
   }
 
-  const notif = {
-    user_id: userId,
-    type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-    entity_photo: eventId || team.Id,
-    metadata: { eventId, teamName: team.name },
-  };
+  // const notif = {
+  //   user_id: userId,
+  //   type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+  //   entity_photo: eventId || team.Id,
+  //   metadata: { eventId, teamName: team.name },
+  // };
 
-  const buttonLink = await formatLinkWithAuthToken(
-    userId,
-    formatRoute(
-      ROUTES_ENUM.entity,
-      { id: eventId },
-      { tab: TABS_ENUM.ROSTERS },
-    ),
-  );
+  // const buttonLink = await formatLinkWithAuthToken(
+  //   userId,
+  //   formatRoute(
+  //     ROUTES_ENUM.entity,
+  //     { id: eventId },
+  //     { tab: TABS_ENUM.ROSTERS },
+  //   ),
+  // );
 
-  const emailInfos = {
-    type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-    eventId,
-    teamName: team.name,
-    name,
-    buttonLink,
-  };
+  // const emailInfos = {
+  //   type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+  //   eventId,
+  //   teamName: team.name,
+  //   name,
+  //   buttonLink,
+  // };
 
-  sendNotification(notif, emailInfos);
+  // sendNotification(notif, emailInfos);
   return player;
 };
 
