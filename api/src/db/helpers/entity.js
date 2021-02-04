@@ -2380,12 +2380,11 @@ async function addAllGames(eventId, gamesArray) {
 
   const res = await knex('games').insert(games).returning('*');
 
-  let gamesTeamArray = [];
-
-  gamesArray.forEach((g) => {
-    gamesTeamArray.push({game_id: g.id, roster_id: g.teams[0].value, name: g.teams[0].name});
-    gamesTeamArray.push({game_id: g.id, roster_id: g.teams[1].value, name: g.teams[1].name});
-  });
+  const gamesTeamArray = gamesArray.reduce((prev, curr) => [
+    ...prev, 
+    { game_id: g.id, roster_id: g.teams[0].value, name: g.teams[0].name },
+    { game_id: g.id, roster_id: g.teams[1].value, name: g.teams[1].name }
+ ], []);
 
   const teams = await knex('game_teams').insert(gamesTeamArray).returning('*');
 
