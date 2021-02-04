@@ -437,24 +437,31 @@ async function addTeamToEvent(body, userId) {
   if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
+  console.log('1');
   if (!paymentOption) {
     throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
   }
 
+  console.log('2');
   // Reject team if there is already too many registered teams
   if ((await getRemainingSpotsHelper(eventId)) < 1) {
+    console.log('3');
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
   }
 
+  console.log('4');
   const team = (await getEntity(teamId, userId)).basicInfos;
   const event = (await getEntity(eventId, userId)).basicInfos;
 
+  console.log('5');
   const teamPaymentOption = await getRegistrationTeamPaymentOption(
     paymentOption,
   );
+  console.log('6');
   const isFreeOption = teamPaymentOption.team_price === 0;
+  console.log('7');
   // TODO: Validate status of team
   console.log({ teamPaymentOption });
 
@@ -462,24 +469,67 @@ async function addTeamToEvent(body, userId) {
     ? STATUS_ENUM.ACCEPTED_FREE
     : STATUS_ENUM.ACCEPTED;
 
+  console.log('8');
   if (teamPaymentOption.team_acceptation) {
+    console.log('9');
     registrationStatus = STATUS_ENUM.PENDING;
   }
+  console.log('10');
 
   const rosterId = await addTeamToEventHelper({
     teamId,
-    eventId: event.id,
+    eventId,
     status: isFreeOption ? INVOICE_STATUS_ENUM.FREE : status,
     registrationStatus,
     paymentOption,
   });
+  console.log('11');
   // Add roster
   if (roster) {
-    await addRosterHelper(rosterId, roster, userId);
+    console.log('12');
+    // await addRosterHelper(rosterId, roster, userId);
+
+    const rosterInfos = await getRosterEventInfos(rosterId);
+    console.log({ rosterInfos });
+
+    await Promise.all(
+      roster.map(async r => {
+        console.log({ r });
+
+        const player = await addPlayerToRoster(r);
+        const notif = {
+          user_id: r.userId,
+          type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+          entity_photo: eventId || teamId,
+          metadata: { eventId, teamName: team.name },
+        };
+
+        const buttonLink = await formatLinkWithAuthToken(
+          userId,
+          formatRoute(
+            ROUTES_ENUM.entity,
+            { id: eventId },
+            { tab: TABS_ENUM.ROSTERS },
+          ),
+        );
+
+        const emailInfos = {
+          type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+          eventId,
+          teamName: team.name,
+          name: r.name,
+          buttonLink,
+        };
+
+        sendNotification(notif, emailInfos);
+      }),
+    );
   }
 
+  console.log('13');
   const captainEmails = await getEmailsFromUserId(userId);
   const creatorEmails = await getCreatorsEmail(eventId);
+  console.log('14');
 
   if (registrationStatus === STATUS_ENUM.PENDING) {
     creatorEmails.map(async email => {
@@ -492,13 +542,17 @@ async function addTeamToEvent(body, userId) {
         placesLeft: await getRemainingSpotsHelper(event.id),
         userId,
       });
+      console.log('16');
     });
   } else {
+    console.log('17');
     if (registrationStatus === STATUS_ENUM.ACCEPTED) {
+      console.log('18');
       // wont be added to cart if free
       const ownerId = await getOwnerStripePrice(
         teamPaymentOption.team_stripe_price_id,
       );
+      console.log('19');
       await addEventCartItem(
         {
           stripePriceId: teamPaymentOption.team_stripe_price_id,
@@ -512,6 +566,7 @@ async function addTeamToEvent(body, userId) {
         },
         userId,
       );
+      console.log('20');
     }
     captainEmails.map(async ({ email }) => {
       const language = await getLanguageFromEmail(email);
@@ -1380,6 +1435,31 @@ async function addPlayerToRoster(body, userId) {
     { name: name + ' ' + surname, role, isSub, personId, rosterId },
     userId,
   );
+  const notif = {
+    user_id: userId,
+    type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+    entity_photo: eventId || team.Id,
+    metadata: { eventId, teamName: team.name },
+  };
+
+  const buttonLink = await formatLinkWithAuthToken(
+    userId,
+    formatRoute(
+      ROUTES_ENUM.entity,
+      { id: eventId },
+      { tab: TABS_ENUM.ROSTERS },
+    ),
+  );
+
+  const emailInfos = {
+    type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+    eventId,
+    teamName: team.name,
+    name,
+    buttonLink,
+  };
+
+  sendNotification(notif, emailInfos);
   return res;
 }
 
@@ -1393,6 +1473,7 @@ async function deletePlayerFromRoster(id, userId) {
 
   if (!(await canRemovePlayerFromRosterHelper(rosterId, personId))) {
     return ERROR_ENUM.VALUE_IS_INVALID;
+    a;
   }
 
   if (status === INVOICE_STATUS_ENUM.PAID) {
