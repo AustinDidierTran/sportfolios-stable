@@ -2354,6 +2354,35 @@ async function updateMembershipInvoice(body) {
   return res;
 }
 
+// async function addAllGAmes(eventId, gamesArray) {
+
+// }
+
+async function addAllFields(eventId, fieldsArray) {
+  const realId = await getRealId(eventId);
+  const fields = fieldsArray.map((f) => ({ event_id: eventId, field: f.field, id: f.id }))
+
+  console.log('passe dans le field helper');
+  const res = await knex('event_fields')
+    .insert(fields).returning('*');
+
+  console.log('fields saved');
+  return res; 
+}
+
+async function addAllTimeslots(eventId, timeslotsArray) {
+  const realId = await getRealId(eventId);
+  const timeslots = timeslotsArray.map((t) => ({ event_id: eventId, date: new Date(t.date), id: t.id}))
+
+  console.log('passe dans timeslots helper');
+
+  const res = await knex('event_time_slots')
+    .insert(timeslots).returning('*');
+
+  console.log('timeslots saved');
+  return res; 
+}
+
 async function addEntityRole(entityId, entityIdAdmin, role) {
   const realEntityId = await getRealId(entityId);
   const realAdminId = await getRealId(entityIdAdmin);
@@ -3627,6 +3656,8 @@ async function getRosterEventInfos(roster_id) {
 module.exports = {
   acceptScoreSuggestion,
   acceptScoreSuggestionIfPossible,
+  addAllFields,
+  addAllTimeslots,
   addAlias,
   addEntity,
   addEntityRole,
