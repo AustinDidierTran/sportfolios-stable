@@ -343,22 +343,14 @@ async function sendTeamPendingRegistrationEmailToAdmin({
 }) {
   const footerLink = formatFooterLink(userId);
 
-  let buttonLink = '';
-  if (isFreeOption) {
-    buttonLink = await formatLinkWithAuthToken(
-      userId,
-      formatRoute(
-        ROUTES_ENUM.entity,
-        { id: event.id },
-        { tab: TABS_ENUM.ROSTERS },
-      ),
-    );
-  } else {
-    buttonLink = await formatLinkWithAuthToken(
-      userId,
-      formatRoute(ROUTES_ENUM.cart),
-    );
-  }
+  const buttonLink = await formatLinkWithAuthToken(
+    userId,
+    formatRoute(
+      ROUTES_ENUM.entity,
+      { id: event.id },
+      { tab: TABS_ENUM.ROSTERS },
+    ),
+  );
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.TEAM_PENDING_REGISTRATION_ADMIN,
     teamName: team.name,
@@ -456,6 +448,7 @@ async function sendImportMemberEmail({
 
 module.exports = {
   sendAddPersonToTeamEmail,
+  sendCartItemAddedPlayerEmail,
   sendConfirmationEmail,
   sendImportMemberEmail,
   sendMail,

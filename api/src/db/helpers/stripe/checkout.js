@@ -10,7 +10,7 @@ const {
   GLOBAL_ENUM,
   PLATEFORM_FEES,
 } = require('../../../../../common/enums');
-const { clearCart } = require('../shop');
+const { deleteCartItem } = require('../shop');
 const {
   INVOICE_PAID_ENUM,
 } = require('../../../server/utils/Stripe/checkout');
@@ -344,7 +344,7 @@ const checkout = async (body, userId) => {
           },
           userId,
         );
-        return { invoiceItem, metadata };
+        return { invoiceItem, metadata, cartItemId: price.id };
       }),
     );
 
@@ -366,54 +366,58 @@ const checkout = async (body, userId) => {
     const transfers = await createTransfers(paidInvoice, userId);
     await sendReceiptEmail({ receipt: receiptUrl }, userId);
     await Promise.all(
-      invoicesAndMetadatas.map(async ({ invoiceItem, metadata }) => {
-        if (Number(metadata.type) === GLOBAL_ENUM.EVENT) {
-          await INVOICE_PAID_ENUM.EVENT({
-            rosterId: metadata.rosterId,
-            eventId: metadata.id,
-            status: paidInvoice.status,
-            invoiceItemId: invoiceItem.id,
-            sellerEntityId: metadata.sellerEntityId,
-            quantity: invoiceItem.quantity,
-            unitAmount: invoiceItem.unit_amount,
-            amount: invoiceItem.amount,
-            stripePriceId: invoiceItem.price.id,
-            buyerUserId: userId,
-            receiptUrl,
-            metadata: { ...metadata, type: GLOBAL_ENUM.EVENT },
-          });
-        } else if (Number(metadata.type) === GLOBAL_ENUM.SHOP_ITEM) {
-          await INVOICE_PAID_ENUM.STORE({
-            sellerEntityId: metadata.seller_entity_id,
-            quantity: invoiceItem.quantity,
-            unitAmount: invoiceItem.unit_amount,
-            amount: invoiceItem.amount,
-            stripePriceId: invoiceItem.price.id,
-            buyerUserId: userId,
-            invoiceItemId: invoiceItem.id,
-            receiptUrl,
-            metadata: { ...metadata, type: GLOBAL_ENUM.SHOP_ITEM },
-          });
-        } else if (metadata.type === GLOBAL_ENUM.MEMBERSHIP) {
-          await INVOICE_PAID_ENUM.MEMBERSHIPS({
-            sellerEntityId: metadata.sellerEntityId,
-            quantity: invoiceItem.quantity,
-            unitAmount: invoiceItem.unit_amount,
-            amount: invoiceItem.amount,
-            stripePriceId: invoiceItem.price.id,
-            buyerUserId: userId,
-            invoiceItemId: invoiceItem.id,
-            receiptUrl,
-            metadata: {
-              ...metadata,
-              type: GLOBAL_ENUM.MEMBERSHIP,
-            },
-          });
-        }
-      }),
+      invoicesAndMetadatas.map(
+        async ({ invoiceItem, metadata, cartItemId }) => {
+          if (Number(metadata.type) === GLOBAL_ENUM.EVENT) {
+            await INVOICE_PAID_ENUM.EVENT({
+              rosterId: metadata.rosterId,
+              eventId: metadata.id,
+              status: paidInvoice.status,
+              invoiceItemId: invoiceItem.id,
+              sellerEntityId: metadata.sellerEntityId,
+              quantity: invoiceItem.quantity,
+              unitAmount: invoiceItem.unit_amount,
+              amount: invoiceItem.amount,
+              stripePriceId: invoiceItem.price.id,
+              buyerUserId: userId,
+              receiptUrl,
+              metadata: { ...metadata, type: GLOBAL_ENUM.EVENT },
+            });
+          } else if (
+            Number(metadata.type) === GLOBAL_ENUM.SHOP_ITEM
+          ) {
+            await INVOICE_PAID_ENUM.STORE({
+              sellerEntityId: metadata.seller_entity_id,
+              quantity: invoiceItem.quantity,
+              unitAmount: invoiceItem.unit_amount,
+              amount: invoiceItem.amount,
+              stripePriceId: invoiceItem.price.id,
+              buyerUserId: userId,
+              invoiceItemId: invoiceItem.id,
+              receiptUrl,
+              metadata: { ...metadata, type: GLOBAL_ENUM.SHOP_ITEM },
+            });
+          } else if (metadata.type === GLOBAL_ENUM.MEMBERSHIP) {
+            await INVOICE_PAID_ENUM.MEMBERSHIPS({
+              sellerEntityId: metadata.sellerEntityId,
+              quantity: invoiceItem.quantity,
+              unitAmount: invoiceItem.unit_amount,
+              amount: invoiceItem.amount,
+              stripePriceId: invoiceItem.price.id,
+              buyerUserId: userId,
+              invoiceItemId: invoiceItem.id,
+              receiptUrl,
+              metadata: {
+                ...metadata,
+                type: GLOBAL_ENUM.MEMBERSHIP,
+              },
+            });
+          }
+          deleteCartItem(cartItemId);
+        },
+      ),
     );
 
-    await clearCart(userId);
     /* eslint-disable-next-line */
     return { invoice: paidInvoice, receiptUrl, transfers };
   } catch (err) {
