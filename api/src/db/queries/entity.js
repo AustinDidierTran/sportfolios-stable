@@ -28,8 +28,8 @@ const {
   addOption: addOptionHelper,
   addPersonToEvent: addPersonToEventHelper,
   addPhase: addPhaseHelper,
-  addPlayersCartItems,
   addPlayerToRoster: addPlayerToRosterHelper,
+  addPlayerCartItem: addPlayerCartItemHelper,
   addReport: addReportHelper,
   addRoster: addRosterHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
@@ -62,7 +62,6 @@ const {
   getCreatorsEmail,
   getEmailPerson,
   getEntity: getEntityHelper,
-  getEntityOwners,
   getEntityRole: getEntityRoleHelper,
   getEvent: getEventHelper,
   getEventAdmins: getEventAdminsHelper,
@@ -107,6 +106,7 @@ const {
   getTeamGames: getTeamGamesHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
   getUnplacedGames: getUnplacedGamesHelper,
+  getUserIdFromPersonId,
   getWichTeamsCanUnregister: getWichTeamsCanUnregisterHelper,
   hasMemberships: hasMembershipsHelper,
   insertRosterInviteToken,
@@ -133,6 +133,7 @@ const {
   updateRegistrationPerson: updateRegistrationPersonHelper,
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
+  getTeamIdFromRosterId,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -142,6 +143,7 @@ const {
   sendTeamAcceptedRegistrationEmail,
   sendTeamPendingRegistrationEmailToAdmin,
   sendImportMemberEmail,
+  sendCartItemAddedPlayerEmail,
 } = require('../../server/utils/nodeMailer');
 const { addMembershipCartItem } = require('../helpers/shop');
 const {
@@ -388,7 +390,7 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
 }
 
 async function updateEvent(body, userId) {
-  const { eventId, maximumSpots, eventStart, eventEnd } = body;
+  const { eventId, maximumSpots, startDate, endDate } = body;
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
@@ -397,8 +399,8 @@ async function updateEvent(body, userId) {
   return updateEventHelper(
     eventId,
     maximumSpots,
-    eventStart,
-    eventEnd,
+    startDate,
+    endDate,
     userId,
   );
 }
@@ -437,44 +439,33 @@ async function addTeamToEvent(body, userId) {
   if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  console.log('1');
   if (!paymentOption) {
     throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
   }
 
-  console.log('2');
   // Reject team if there is already too many registered teams
   if ((await getRemainingSpotsHelper(eventId)) < 1) {
-    console.log('3');
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
   }
 
-  console.log('4');
   const team = (await getEntity(teamId, userId)).basicInfos;
   const event = (await getEntity(eventId, userId)).basicInfos;
 
-  console.log('5');
   const teamPaymentOption = await getRegistrationTeamPaymentOption(
     paymentOption,
   );
-  console.log('6');
   const isFreeOption = teamPaymentOption.team_price === 0;
-  console.log('7');
   // TODO: Validate status of team
-  console.log({ teamPaymentOption });
 
   let registrationStatus = isFreeOption
     ? STATUS_ENUM.ACCEPTED_FREE
     : STATUS_ENUM.ACCEPTED;
 
-  console.log('8');
   if (teamPaymentOption.team_acceptation) {
-    console.log('9');
     registrationStatus = STATUS_ENUM.PENDING;
   }
-  console.log('10');
 
   const rosterId = await addTeamToEventHelper({
     teamId,
@@ -483,53 +474,25 @@ async function addTeamToEvent(body, userId) {
     registrationStatus,
     paymentOption,
   });
-  console.log('11');
   // Add roster
   if (roster) {
-    console.log('12');
-    // await addRosterHelper(rosterId, roster, userId);
-
-    const rosterInfos = await getRosterEventInfos(rosterId);
-    console.log({ rosterInfos });
-
     await Promise.all(
       roster.map(async r => {
-        console.log({ r });
-
-        const player = await addPlayerToRoster(r);
-        const notif = {
-          user_id: r.userId,
-          type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-          entity_photo: eventId || teamId,
-          metadata: { eventId, teamName: team.name },
-        };
-
-        const buttonLink = await formatLinkWithAuthToken(
+        await addPlayerToRoster(
+          {
+            personId: r.personId,
+            role: r.role,
+            isSub: false,
+            rosterId,
+          },
           userId,
-          formatRoute(
-            ROUTES_ENUM.entity,
-            { id: eventId },
-            { tab: TABS_ENUM.ROSTERS },
-          ),
         );
-
-        const emailInfos = {
-          type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-          eventId,
-          teamName: team.name,
-          name: r.name,
-          buttonLink,
-        };
-
-        sendNotification(notif, emailInfos);
       }),
     );
   }
 
-  console.log('13');
   const captainEmails = await getEmailsFromUserId(userId);
   const creatorEmails = await getCreatorsEmail(eventId);
-  console.log('14');
 
   if (registrationStatus === STATUS_ENUM.PENDING) {
     creatorEmails.map(async email => {
@@ -542,17 +505,13 @@ async function addTeamToEvent(body, userId) {
         placesLeft: await getRemainingSpotsHelper(event.id),
         userId,
       });
-      console.log('16');
     });
   } else {
-    console.log('17');
     if (registrationStatus === STATUS_ENUM.ACCEPTED) {
-      console.log('18');
       // wont be added to cart if free
       const ownerId = await getOwnerStripePrice(
         teamPaymentOption.team_stripe_price_id,
       );
-      console.log('19');
       await addEventCartItem(
         {
           stripePriceId: teamPaymentOption.team_stripe_price_id,
@@ -566,7 +525,6 @@ async function addTeamToEvent(body, userId) {
         },
         userId,
       );
-      console.log('20');
     }
     captainEmails.map(async ({ email }) => {
       const language = await getLanguageFromEmail(email);
@@ -594,6 +552,48 @@ async function addTeamToEvent(body, userId) {
 
   return { status: registrationStatus, rosterId };
 }
+
+const addPlayersCartItems = async rosterId => {
+  const players = await getRoster(rosterId);
+
+  await Promise.all(
+    players.map(async p => {
+      if (p.paymentStatus == INVOICE_STATUS_ENUM.OPEN) {
+        await addPlayerCartItem({
+          personId: p.personId,
+          name: p.name,
+          rosterId,
+          isSub: p.isSub,
+        });
+      }
+    }),
+  );
+  return players;
+};
+
+const addPlayerCartItem = async body => {
+  const { personId, rosterId, name, isSub } = body;
+  const { cartItem, event, team } = await addPlayerCartItemHelper({
+    personId,
+    rosterId,
+    name,
+    isSub,
+  });
+
+  if (cartItem) {
+    const email = await getEmailPerson(personId);
+    const language = await getLanguageFromEmail(email);
+    const userId = await getUserIdFromPersonId(personId);
+    await sendCartItemAddedPlayerEmail({
+      email,
+      teamName: team.name,
+      eventName: event.name,
+      language,
+      userId,
+    });
+  }
+  return cartItem;
+};
 
 async function addTeamAsAdmin(body, userId) {
   const { eventId, name } = body;
@@ -1430,20 +1430,46 @@ async function deleteOption(id) {
 
 async function addPlayerToRoster(body, userId) {
   const { personId, role, isSub, rosterId } = body;
+  const eventId = await getEventIdFromRosterId(rosterId);
+  const teamId = await getTeamIdFromRosterId(rosterId);
+  const team = (await getEntity(teamId, userId)).basicInfos;
+  const playerUserId = await getUserIdFromPersonId(personId);
+
   const { name, surname } = await getPersonInfos(personId);
-  const res = await addPlayerToRosterHelper(
-    { name: name + ' ' + surname, role, isSub, personId, rosterId },
-    userId,
+  const res = await addPlayerToRosterHelper({
+    name: name + ' ' + surname,
+    role,
+    isSub,
+    personId,
+    rosterId,
+  });
+
+  const roster = await getRosterEventInfos(rosterId);
+
+  const individualOption = await getRegistrationIndividualPaymentOptionHelper(
+    roster.paymentOptionId,
   );
+
+  if (
+    (roster.status === INVOICE_STATUS_ENUM.FREE ||
+      roster.status === INVOICE_STATUS_ENUM.PAID) &&
+    individualOption.individual_price > 0
+  ) {
+    await addPlayerCartItem({ name, rosterId, personId, isSub });
+  }
+
+  if (playerUserId === userId) {
+    return res;
+  }
   const notif = {
-    user_id: userId,
+    user_id: playerUserId,
     type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
     entity_photo: eventId || team.Id,
     metadata: { eventId, teamName: team.name },
   };
 
   const buttonLink = await formatLinkWithAuthToken(
-    userId,
+    playerUserId,
     formatRoute(
       ROUTES_ENUM.entity,
       { id: eventId },
@@ -1589,6 +1615,7 @@ module.exports = {
   addPersonToEvent,
   addPhase,
   addPlayerToRoster,
+  addPlayersCartItems,
   addReport,
   addScoreSuggestion,
   addSpiritSubmission,
