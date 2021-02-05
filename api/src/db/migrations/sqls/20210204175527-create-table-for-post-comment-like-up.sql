@@ -1,7 +1,7 @@
 /* Replace with your SQL commands */
 CREATE TABLE posts (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-  entity_id UUID,
+  entity_id UUID NOT NULL,
   content TEXT NOT NULL,
   CONSTRAINT fk_entity
     FOREIGN KEY(entity_id)
@@ -10,7 +10,7 @@ CREATE TABLE posts (
 
 CREATE TABLE post_image(
   post_id UUID NOT NULL,
-  photo_url VARCHAR (255),
+  image_url VARCHAR (255),
   CONSTRAINT fk_posts
     FOREIGN KEY(post_id)
       REFERENCES posts(id)
