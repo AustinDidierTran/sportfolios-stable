@@ -2389,7 +2389,7 @@ async function addAllGames(eventId, gamesArray) {
 
   const res = await knex('games').insert(games).returning('*');
 
-  const teams = gamesArray.reduce((prev,g) => [
+  const teamsArray = gamesArray.reduce((prev,g) => [
       ...prev, {
         game_id: g.id, roster_id: g.teams[0].value, name: g.teams[0].name
       },
@@ -2399,7 +2399,7 @@ async function addAllGames(eventId, gamesArray) {
     ]
   , []);
 
-  const teams = await knex('game_teams').insert(teams).returning('*');
+  const teams = await knex('game_teams').insert(teamsArray).returning('*');
 
   return {
     ...res,
