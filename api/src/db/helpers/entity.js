@@ -2403,7 +2403,7 @@ async function addAllGames(eventId, gamesArray) {
 
   return {
     ...res,
-    teams: teams
+    teams
   };
 }
 
