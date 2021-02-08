@@ -3416,19 +3416,16 @@ async function updateGame(
 async function updateGamesInteractiveTool(games) {
   // TODO: do a real batch update
   return knex.transaction(trx => {
-    try {
-      queries = games.map(game =>
-        knex('games')
-          .where('id', game.id)
-          .update({
-            timeslot_id: game.timeslot_id,
-            field_id: game.fieldId,
-          })
-          .transacting(trx),
-      );
-    } catch (error) {
-      console.log(error);
-    }
+    
+    queries = games.map(game =>
+      knex('games')
+        .where('id', game.id)
+        .update({
+          timeslot_id: game.timeslot_id,
+          field_id: game.field_id,
+        })
+        .transacting(trx),
+    );
   
     return Promise.all(queries)
       .then(trx.commit)

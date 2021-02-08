@@ -1,16 +1,7 @@
 const {
-    getEntityRole: getEntityRoleHelper
-} = require('../api/src/db/helpers/entity');
-
-const {
-    addAllFields: addAllFieldsHelper
-} = require('../api/src/db/helpers/entity');
-
-const {
-    addAllTimeslots: addAllTimeslotsHelper
-} = require('../api/src/db/helpers/entity');
-
-const {
+    getEntityRole: getEntityRoleHelper,
+    addAllFields: addAllFieldsHelper,
+    addAllTimeslots: addAllTimeslotsHelper,
     addAllGames: addAllGamesHelper
 } = require('../api/src/db/helpers/entity');
 
