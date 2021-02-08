@@ -1499,7 +1499,6 @@ async function deletePlayerFromRoster(id, userId) {
 
   if (!(await canRemovePlayerFromRosterHelper(rosterId, personId))) {
     return ERROR_ENUM.VALUE_IS_INVALID;
-    a;
   }
 
   if (status === INVOICE_STATUS_ENUM.PAID) {
