@@ -2365,6 +2365,50 @@ async function updateMembershipInvoice(body) {
   return res;
 }
 
+async function addAllFields(eventId, fieldsArray) {
+  const realId = await getRealId(eventId);
+  const fields = fieldsArray.map((f) => ({ event_id: realId, field: f.field, id: f.id }))
+
+  const res = await knex('event_fields')
+    .insert(fields).returning('*');
+
+  return res; 
+}
+
+async function addAllTimeslots(eventId, timeslotsArray) {
+  const realId = await getRealId(eventId);
+  const timeslots = timeslotsArray.map((t) => ({ event_id: realId, date: new Date(t.date), id: t.id}))
+
+  const res = await knex('event_time_slots')
+    .insert(timeslots).returning('*');
+
+  return res; 
+}
+
+async function addAllGames(eventId, gamesArray) {
+  const realId = await getRealId(eventId);
+  const games = gamesArray.map((g) => ({ event_id: realId, phase_id: g.phase_id, field_id: g.field_id, timeslot_id: g.timeslot_id, id: g.id }));
+
+  const res = await knex('games').insert(games).returning('*');
+
+  const teamsArray = gamesArray.reduce((prev,g) => [
+      ...prev, {
+        game_id: g.id, roster_id: g.teams[0].value, name: g.teams[0].name
+      },
+      {
+        game_id: g.id, roster_id: g.teams[1].value, name: g.teams[1].name
+      }
+    ]
+  , []);
+
+  const teams = await knex('game_teams').insert(teamsArray).returning('*');
+
+  return {
+    ...res,
+    teams
+  };
+}
+
 async function addEntityRole(entityId, entityIdAdmin, role) {
   const realEntityId = await getRealId(entityId);
   const realAdminId = await getRealId(entityIdAdmin);
@@ -3372,15 +3416,17 @@ async function updateGame(
 async function updateGamesInteractiveTool(games) {
   // TODO: do a real batch update
   return knex.transaction(trx => {
-    const queries = games.map(game =>
+    
+    queries = games.map(game =>
       knex('games')
-        .where('id', game.gameId)
+        .where('id', game.id)
         .update({
-          timeslot_id: game.timeSlotId,
-          field_id: game.fieldId,
+          timeslot_id: game.timeslot_id,
+          field_id: game.field_id,
         })
         .transacting(trx),
     );
+  
     return Promise.all(queries)
       .then(trx.commit)
       .catch(trx.rollback);
@@ -3642,6 +3688,9 @@ async function getRosterEventInfos(roster_id) {
 module.exports = {
   acceptScoreSuggestion,
   acceptScoreSuggestionIfPossible,
+  addAllFields,
+  addAllTimeslots,
+  addAllGames,
   addAlias,
   addEntity,
   addEntityRole,

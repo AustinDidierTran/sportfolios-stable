@@ -7,6 +7,8 @@ const {
 } = require('../../../../../common/errors');
 const { OrganizationController } = require('../../../../../controllers/organization');
 
+const { InteractiveToolController } = require('../../../../../controllers/interactiveToolController');
+
 const router = new Router();
 const BASE_URL = '/api/entity';
 
@@ -998,6 +1000,23 @@ router.post(`${BASE_URL}/memberManually`, async ctx => {
     ctx.body = {
       status: 'success',
       data: entity,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  } 
+});
+
+router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {
+  const res = await InteractiveToolController.addAll(ctx.request.body, ctx.body.userInfo.id);
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: res,
     };
   } else {
     ctx.status = STATUS_ENUM.ERROR;
