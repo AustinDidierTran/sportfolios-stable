@@ -3,6 +3,23 @@ const {
   ENTITIES_ROLE_ENUM,
 } = require('../../../../common/enums');
 
+async function addLike(entity_id, post_id) {
+
+  const [created_at] = await knex('post_like')
+    .insert({ entity_id, post_id })
+    .returning('created_at');
+  return created_at;
+}
+
+async function deleteLike(entity_id, post_id) {
+
+  await knex('post_like')
+    .where({
+      entity_id: entity_id,
+      post_id: post_id,
+    })
+    .del();
+}
 async function addPost(body, entity_id) {
   const { content } = body;
 
@@ -18,7 +35,7 @@ async function addPostImageUrl(post_id, image_url) {
     .insert({ post_id, image_url });
 }
 
-async function getPostFeed(array_entity_id, body) {
+async function getPostFeed(user_id, array_entity_id, body) {
   let res;
   if (body) {
     const { perPage, currentPage } = body;
@@ -31,7 +48,8 @@ async function getPostFeed(array_entity_id, body) {
         'posts.updated_at',
         'entities_name.name',
         'entities_name.surname',
-        'entities_photo.photo_url'
+        'entities_photo.photo_url',
+        knex.raw(`(SELECT COUNT(*) AS liked FROM post_like WHERE entity_id = '${user_id}' AND post_id = posts.id)`)
       )
       .from('posts')
       .leftJoin(
@@ -73,4 +91,6 @@ module.exports = {
   addPost,
   addPostImageUrl,
   getPostFeed,
+  addLike,
+  deleteLike,
 }

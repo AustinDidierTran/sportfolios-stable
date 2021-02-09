@@ -1,7 +1,9 @@
 const {
-  addPost: addPost,
-  addPostImageUrl: addPostImageUrl,
-  getPostFeed: getPostFeed,
+  addPost,
+  addPostImageUrl,
+  getPostFeed,
+  addLike,
+  deleteLike,
 } = require('../api/src/db/services/posts');
 
 class PostsController {
@@ -22,11 +24,19 @@ class PostsController {
 
   }
 
-  static async getFeedOrganization(organizationId, body) {
-    const res = await getPostFeed([organizationId], body);
+  static async getFeedOrganization(userId, organizationId, body) {
+    const res = await getPostFeed(userId, [organizationId], body);
     return res;
   }
 
+  static async addLike(entityId, postId) {
+    const res = await addLike(entityId, postId);
+    return res;
+  }
+
+  static async deleteLike(entityId, postId) {
+    await deleteLike(entityId, postId);
+  }
 }
 
 module.exports = { PostsController: PostsController };
