@@ -1,6 +1,7 @@
 const {
   addPost: addPost,
   addPostImageUrl: addPostImageUrl,
+  getPostFeed: getPostFeed,
 } = require('../api/src/db/services/posts');
 
 class PostsController {
@@ -19,6 +20,11 @@ class PostsController {
       return true;
     }
 
+  }
+
+  static async getFeedOrganization(organizationId, body) {
+    const res = await getPostFeed([organizationId], body);
+    return res;
   }
 
 }
