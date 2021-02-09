@@ -14,6 +14,7 @@ CREATE TABLE post_image(
 CREATE TABLE post_comment (
   id UUID default uuid_generate_v4() PRIMARY KEY,
   post_id UUID REFERENCES posts(id) NOT NULL,
+  entity_id UUID REFEREnCES entities(id) NOT NULL,
   content TEXT NOT NULL,
   parent_id UUID REFERENCES post_comment(id)
 );

@@ -29,7 +29,7 @@ router.post(`${BASE_URL}/create`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/images`, async ctx => {
+router.post(`${BASE_URL}/image`, async ctx => {
 
   const result = await PostsController.addImage(
     ctx.request.body.postId,
@@ -107,6 +107,44 @@ router.del(`${BASE_URL}/like`, async ctx => {
     status: STATUS_ENUM.SUCCESS,
   };
 
-})
+});
+
+router.del(`${BASE_URL}/comment`, async ctx => {
+
+  const commentId = await PostsController.deleteComment(
+    ctx.query.commentId,
+  );
+
+  ctx.status = 201;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS,
+  };
+
+});
+
+router.post(`${BASE_URL}/comment`, async ctx => {
+
+  const commentId = await PostsController.addComment(
+    ctx.request.body.entityId,
+    ctx.request.body.postId,
+    ctx.request.body.content,
+  );
+
+  if (commentId) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: commentId,
+    };
+  } else {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+
 
 module.exports = router;

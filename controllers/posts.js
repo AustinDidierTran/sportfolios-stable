@@ -4,6 +4,8 @@ const {
   getPostFeed,
   addLike,
   deleteLike,
+  addComment,
+  deleteComment,
 } = require('../api/src/db/services/posts');
 
 class PostsController {
@@ -36,6 +38,16 @@ class PostsController {
 
   static async deleteLike(entityId, postId) {
     await deleteLike(entityId, postId);
+  }
+
+  static async addComment(entityId, postId, content) {
+    const res = await addComment(entityId, postId, content);
+    return res;
+  }
+
+  static async deleteComment(commentId) {
+    const res = await deleteComment(commentId);
+    return res;
   }
 }
 

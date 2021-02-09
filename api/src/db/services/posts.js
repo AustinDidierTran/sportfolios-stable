@@ -49,7 +49,7 @@ async function getPostFeed(user_id, array_entity_id, body) {
         'entities_name.name',
         'entities_name.surname',
         'entities_photo.photo_url',
-        knex.raw(`(SELECT COUNT(*) AS liked FROM post_like WHERE entity_id = '${user_id}' AND post_id = posts.id)`)
+        knex.raw(`(SELECT COUNT(*) AS liked FROM post_like WHERE entity_id = '${user_id}' AND post_id = posts.id)`),
       )
       .from('posts')
       .leftJoin(
@@ -78,6 +78,31 @@ async function getPostFeed(user_id, array_entity_id, body) {
             .from('post_image')
             .where('post_image.post_id', objectSql.id);
           objectSql.images = data;
+
+          const likes = await knex
+            .select('*')
+            .from('post_like')
+            .leftJoin(
+              'entities_name',
+              'post_like.entity_id',
+              '=',
+              'entities_name.entity_id'
+            )
+            .where('post_like.post_id', objectSql.id);
+
+          objectSql.likes = likes;
+
+          const comments = await knex
+            .select('*')
+            .from('post_comment')
+            .leftJoin(
+              'entities_name',
+              'post_comment.entity_id',
+              '=',
+              'entities_name.entity_id'
+            )
+            .where('post_comment.post_id', objectSql.id);
+          objectSql.comments = comments;
           return objectSql;
         })
       );
@@ -87,10 +112,25 @@ async function getPostFeed(user_id, array_entity_id, body) {
   }
 
 }
+
+async function addComment(entity_id, post_id, content) {
+  const [comment_id] = await knex('post_comment')
+    .insert({ post_id, entity_id, content })
+    .returning('id');
+  return comment_id;
+}
+
+async function deleteComment(comment_id) {
+  await knex('post_comment')
+    .where({ id: comment_id })
+    .del();
+}
 module.exports = {
   addPost,
   addPostImageUrl,
   getPostFeed,
   addLike,
   deleteLike,
+  addComment,
+  deleteComment,
 }
