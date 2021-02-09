@@ -1,16 +1,23 @@
 const {
+  INVOICE_STATUS_ENUM,
+} = require('../../../../../common/enums');
+const { getLanguageFromEmail } = require('../../../db/helpers');
+const {
   addMember,
   deleteRegistration,
   updateRegistration,
   updateRegistrationPerson,
   updatePlayerPaymentStatus,
   updateMembershipInvoice,
-  addPlayersCartItems,
+  addPlayerCartItem,
+  getRoster,
+  getEmailPerson,
+  getUserIdFromPersonId,
 } = require('../../../db/helpers/entity');
-
 const {
   addItemToPaidStoreItems,
 } = require('../../../db/helpers/shop');
+const { sendCartItemAddedPlayerEmail } = require('../nodeMailer');
 
 const INVOICE_CREATED_ENUM = {
   EVENT: async (metadata, stripe) => {
@@ -48,7 +55,38 @@ const INVOICE_PAID_ENUM = {
           invoiceItemId,
           status,
         );
-        await addPlayersCartItems(rosterId);
+        const players = await getRoster(rosterId);
+
+        await Promise.all(
+          players.map(async p => {
+            if (p.paymentStatus == INVOICE_STATUS_ENUM.OPEN) {
+              const {
+                cartItem,
+                event,
+                team,
+              } = await addPlayerCartItem({
+                personId: p.personId,
+                name: p.name,
+                rosterId,
+                isSub: p.isSub,
+              });
+              if (cartItem) {
+                const email = await getEmailPerson(p.personId);
+                const userId = await getUserIdFromPersonId(
+                  p.personId,
+                );
+                const language = await getLanguageFromEmail(email);
+                await sendCartItemAddedPlayerEmail({
+                  email,
+                  teamName: team.name,
+                  eventName: event.name,
+                  language,
+                  userId,
+                });
+              }
+            }
+          }),
+        );
       }
       if (person) {
         await updateRegistrationPerson(

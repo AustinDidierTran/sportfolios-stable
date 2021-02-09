@@ -348,6 +348,7 @@ const SOCKET_EVENT = {
 
 const NOTIFICATION_TYPE = {
   ADDED_TO_ROSTER: 'added to roster',
+  CART_ITEM_ADDED_PLAYER: 'cart item added player',
   EMAIL_CONFIRMATION: 'email confirmation',
   IMPORT_MEMBER: 'import member',
   OTHER_TEAM_SUBMITTED_A_SCORE: 'other team submitted a score',
@@ -357,6 +358,7 @@ const NOTIFICATION_TYPE = {
   SCORE_SUBMISSION_CONFLICT: 'score submission conflict',
   SCORE_SUBMISSION_REQUEST: 'score submission request',
   SEND_RECEIPT: 'send receipt',
+  TEAM_PENDING_REGISTRATION_ADMIN: 'team pending registration admin',
   TEAM_REGISTRATION_TO_ADMIN: 'team registration to admin',
   TEAM_REGISTRATION: 'team registration',
   TRANSFER_PERSON: 'transfer person',

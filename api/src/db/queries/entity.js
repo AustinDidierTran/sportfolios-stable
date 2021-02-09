@@ -28,8 +28,8 @@ const {
   addOption: addOptionHelper,
   addPersonToEvent: addPersonToEventHelper,
   addPhase: addPhaseHelper,
-  addPlayersCartItems,
   addPlayerToRoster: addPlayerToRosterHelper,
+  addPlayerCartItem: addPlayerCartItemHelper,
   addReport: addReportHelper,
   addRoster: addRosterHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
@@ -62,7 +62,6 @@ const {
   getCreatorsEmail,
   getEmailPerson,
   getEntity: getEntityHelper,
-  getEntityOwners,
   getEntityRole: getEntityRoleHelper,
   getEvent: getEventHelper,
   getEventAdmins: getEventAdminsHelper,
@@ -107,6 +106,7 @@ const {
   getTeamGames: getTeamGamesHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
   getUnplacedGames: getUnplacedGamesHelper,
+  getUserIdFromPersonId,
   getWichTeamsCanUnregister: getWichTeamsCanUnregisterHelper,
   hasMemberships: hasMembershipsHelper,
   insertRosterInviteToken,
@@ -133,14 +133,17 @@ const {
   updateRegistrationPerson: updateRegistrationPersonHelper,
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
+  getTeamIdFromRosterId,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
   sendTeamRegistrationEmailToAdmin,
   sendPersonRegistrationEmailToAdmin,
   sendPersonRegistrationEmail,
-  sendTeamRegistrationEmail,
+  sendTeamAcceptedRegistrationEmail,
+  sendTeamPendingRegistrationEmailToAdmin,
   sendImportMemberEmail,
+  sendCartItemAddedPlayerEmail,
 } = require('../../server/utils/nodeMailer');
 const { addMembershipCartItem } = require('../helpers/shop');
 const {
@@ -387,7 +390,7 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
 }
 
 async function updateEvent(body, userId) {
-  const { eventId, maximumSpots, eventStart, eventEnd } = body;
+  const { eventId, maximumSpots, startDate, endDate } = body;
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
@@ -396,8 +399,8 @@ async function updateEvent(body, userId) {
   return updateEventHelper(
     eventId,
     maximumSpots,
-    eventStart,
-    eventEnd,
+    startDate,
+    endDate,
     userId,
   );
 }
@@ -455,77 +458,142 @@ async function addTeamToEvent(body, userId) {
   );
   const isFreeOption = teamPaymentOption.team_price === 0;
   // TODO: Validate status of team
-  const registrationStatus = isFreeOption
+
+  let registrationStatus = isFreeOption
     ? STATUS_ENUM.ACCEPTED_FREE
     : STATUS_ENUM.ACCEPTED;
 
+  if (teamPaymentOption.team_acceptation) {
+    registrationStatus = STATUS_ENUM.PENDING;
+  }
+
   const rosterId = await addTeamToEventHelper({
     teamId,
-    eventId: event.id,
+    eventId,
     status: isFreeOption ? INVOICE_STATUS_ENUM.FREE : status,
     registrationStatus,
     paymentOption,
   });
   // Add roster
   if (roster) {
-    await addRosterHelper(rosterId, roster, userId);
-  }
-  if (registrationStatus === STATUS_ENUM.ACCEPTED_FREE) {
-    await addPlayersCartItems(rosterId);
-  }
-  if (registrationStatus === STATUS_ENUM.ACCEPTED) {
-    // wont be added to cart if free
-    const ownerId = await getOwnerStripePrice(
-      teamPaymentOption.team_stripe_price_id,
-    );
-    await addEventCartItem(
-      {
-        stripePriceId: teamPaymentOption.team_stripe_price_id,
-        metadata: {
-          eventId: event.id,
-          sellerEntityId: ownerId,
-          buyerId: teamId,
-          rosterId,
-          team,
-        },
-      },
-      userId,
+    await Promise.all(
+      roster.map(async r => {
+        await addPlayerToRoster(
+          {
+            personId: r.personId,
+            role: r.role,
+            isSub: false,
+            rosterId,
+          },
+          userId,
+        );
+      }),
     );
   }
 
-  // send mail to organization admin
-  // TODO find real event user creator
-  const creatorEmails = await getCreatorsEmail(eventId);
-  creatorEmails.map(async email => {
-    const language = await getLanguageFromEmail(email);
-    sendTeamRegistrationEmailToAdmin({
-      email,
-      team,
-      event,
-      language,
-      placesLeft: await getRemainingSpotsHelper(event.id),
-      userId,
-    });
-  });
-
-  // Send accepted email to team captain
   const captainEmails = await getEmailsFromUserId(userId);
+  const creatorEmails = await getCreatorsEmail(eventId);
 
-  captainEmails.map(async ({ email }) => {
-    const language = await getLanguageFromEmail(email);
-    sendTeamRegistrationEmail({
-      language,
-      team,
-      event,
-      email,
-      isFreeOption,
-      userId,
+  if (registrationStatus === STATUS_ENUM.PENDING) {
+    creatorEmails.map(async email => {
+      const language = await getLanguageFromEmail(email);
+      sendTeamPendingRegistrationEmailToAdmin({
+        email,
+        team,
+        event,
+        language,
+        placesLeft: await getRemainingSpotsHelper(event.id),
+        userId,
+      });
     });
-  });
+  } else {
+    if (registrationStatus === STATUS_ENUM.ACCEPTED) {
+      // wont be added to cart if free
+      const ownerId = await getOwnerStripePrice(
+        teamPaymentOption.team_stripe_price_id,
+      );
+      await addEventCartItem(
+        {
+          stripePriceId: teamPaymentOption.team_stripe_price_id,
+          metadata: {
+            eventId: event.id,
+            sellerEntityId: ownerId,
+            buyerId: teamId,
+            rosterId,
+            team,
+          },
+        },
+        userId,
+      );
+    }
+    captainEmails.map(async ({ email }) => {
+      const language = await getLanguageFromEmail(email);
+      sendTeamAcceptedRegistrationEmail({
+        language,
+        team,
+        event,
+        email,
+        isFreeOption,
+        userId,
+      });
+    });
+    creatorEmails.map(async email => {
+      const language = await getLanguageFromEmail(email);
+      sendTeamRegistrationEmailToAdmin({
+        email,
+        team,
+        event,
+        language,
+        placesLeft: await getRemainingSpotsHelper(event.id),
+        userId,
+      });
+    });
+  }
 
-  // Handle other acceptation statuses
   return { status: registrationStatus, rosterId };
 }
+
+const addPlayersCartItems = async rosterId => {
+  const players = await getRoster(rosterId);
+
+  await Promise.all(
+    players.map(async p => {
+      if (p.paymentStatus == INVOICE_STATUS_ENUM.OPEN) {
+        await addPlayerCartItem({
+          personId: p.personId,
+          name: p.name,
+          rosterId,
+          isSub: p.isSub,
+        });
+      }
+    }),
+  );
+  return players;
+};
+
+const addPlayerCartItem = async body => {
+  const { personId, rosterId, name, isSub } = body;
+  const { cartItem, event, team } = await addPlayerCartItemHelper({
+    personId,
+    rosterId,
+    name,
+    isSub,
+  });
+
+  if (cartItem) {
+    const email = await getEmailPerson(personId);
+    const language = await getLanguageFromEmail(email);
+    const userId = await getUserIdFromPersonId(personId);
+    await sendCartItemAddedPlayerEmail({
+      email,
+      teamName: team.name,
+      eventName: event.name,
+      language,
+      userId,
+    });
+  }
+  return cartItem;
+};
 
 async function addTeamAsAdmin(body, userId) {
   const { eventId, name } = body;
@@ -1362,57 +1430,62 @@ async function deleteOption(id) {
 
 async function addPlayerToRoster(body, userId) {
   const { personId, role, isSub, rosterId } = body;
+  const eventId = await getEventIdFromRosterId(rosterId);
+  const teamId = await getTeamIdFromRosterId(rosterId);
+  const team = (await getEntity(teamId, userId)).basicInfos;
+  const playerUserId = await getUserIdFromPersonId(personId);
+
   const { name, surname } = await getPersonInfos(personId);
-  const res = await addPlayerToRosterHelper(
-    { name: name + ' ' + surname, role, isSub, personId, rosterId },
-    userId,
+  const res = await addPlayerToRosterHelper({
+    name: name + ' ' + surname,
+    role,
+    isSub,
+    personId,
+    rosterId,
+  });
+
+  const roster = await getRosterEventInfos(rosterId);
+
+  const individualOption = await getRegistrationIndividualPaymentOptionHelper(
+    roster.paymentOptionId,
   );
-  if (!res) {
-    return;
+
+  if (
+    (roster.status === INVOICE_STATUS_ENUM.FREE ||
+      roster.status === INVOICE_STATUS_ENUM.PAID) &&
+    individualOption.individual_price > 0
+  ) {
+    await addPlayerCartItem({ name, rosterId, personId, isSub });
   }
-  if (isSub) {
+
+  if (playerUserId === userId) {
     return res;
   }
-  const owners = await getEntityOwners(personId);
-  const { eventId, teamId, teamName } = await getRosterEventInfos(
-    rosterId,
+  const notif = {
+    user_id: playerUserId,
+    type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+    entity_photo: eventId || team.Id,
+    metadata: { eventId, teamName: team.name },
+  };
+
+  const buttonLink = await formatLinkWithAuthToken(
+    playerUserId,
+    formatRoute(
+      ROUTES_ENUM.entity,
+      { id: eventId },
+      { tab: TABS_ENUM.ROSTERS },
+    ),
   );
 
-  if (owners) {
-    Promise.all(
-      owners.map(async owner => {
-        //Not sending the notification if the user added himself
-        if (owner.user_id === userId) {
-          return;
-        }
+  const emailInfos = {
+    type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+    eventId,
+    teamName: team.name,
+    name,
+    buttonLink,
+  };
 
-        const buttonLink = await formatLinkWithAuthToken(
-          userId,
-          formatRoute(
-            ROUTES_ENUM.entity,
-            { id: eventId },
-            { tab: TABS_ENUM.ROSTERS },
-          ),
-        );
-
-        const notif = {
-          user_id: owner.user_id,
-          type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-          entity_photo: eventId || teamId,
-          metadata: { eventId, teamName },
-        };
-        const emailInfos = {
-          type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-          eventId,
-          teamName,
-          name,
-          buttonLink,
-        };
-
-        sendNotification(notif, emailInfos);
-      }),
-    );
-  }
+  sendNotification(notif, emailInfos);
   return res;
 }
 
@@ -1541,6 +1614,7 @@ module.exports = {
   addPersonToEvent,
   addPhase,
   addPlayerToRoster,
+  addPlayersCartItems,
   addReport,
   addScoreSuggestion,
   addSpiritSubmission,

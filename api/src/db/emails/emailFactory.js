@@ -1,4 +1,5 @@
-const AddeddToRosterEmail = require('./addedToRosterEmail');
+const AddedToRosterEmail = require('./addedToRosterEmail');
+const CartItemAddedPlayerEmail = require('./cartItemAddedPlayerEmail');
 const EmailConfirmationEmail = require('./emailConfirmationEmail');
 const PersonRegistrationToAdminEmail = require('./personRegistrationToAdminEmail');
 const RecoveryEmail = require('./recoveryEmail');
@@ -6,6 +7,7 @@ const ScoreSubmissionRequestEmail = require('./scoreSubmissionRequestEmail');
 const SendReceiptEmail = require('./sendReceiptEmail');
 const TeamRegistrationToAdminEmail = require('./teamRegistrationToAdminEmail');
 const TeamRegistrationEmail = require('./teamRegistrationEmail');
+const TeamPendingRegistrationToAdminEmail = require('./teamPendingRegistrationToAdminEmail');
 const PersonRegistrationEmail = require('./personRegistrationEmail');
 const TransferPersonEmail = require('./transferPersonEmail');
 const ImportMemberEmail = require('./importMemberEmail');
@@ -13,7 +15,8 @@ const { NOTIFICATION_TYPE } = require('./../../../../common/enums');
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
 const map = {
-  [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: AddeddToRosterEmail,
+  [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: AddedToRosterEmail,
+  [NOTIFICATION_TYPE.CART_ITEM_ADDED_PLAYER]: CartItemAddedPlayerEmail,
   [NOTIFICATION_TYPE.EMAIL_CONFIRMATION]: EmailConfirmationEmail,
   [NOTIFICATION_TYPE.IMPORT_MEMBER]: ImportMemberEmail,
   [NOTIFICATION_TYPE.PERSON_REGISTRATION_TO_ADMIN]: PersonRegistrationToAdminEmail,
@@ -23,6 +26,7 @@ const map = {
   [NOTIFICATION_TYPE.TEAM_REGISTRATION_TO_ADMIN]: TeamRegistrationToAdminEmail,
   [NOTIFICATION_TYPE.PERSON_REGISTRATION]: PersonRegistrationEmail,
   [NOTIFICATION_TYPE.TEAM_REGISTRATION]: TeamRegistrationEmail,
+  [NOTIFICATION_TYPE.TEAM_PENDING_REGISTRATION_ADMIN]: TeamPendingRegistrationToAdminEmail,
   [NOTIFICATION_TYPE.TRANSFER_PERSON]: TransferPersonEmail,
 };
 module.exports = async function EmailFactory(infos) {

@@ -23,7 +23,6 @@ const validator = require('validator');
 
 const _ = require('lodash');
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
-
 const generateToken = () => {
   return uuidv1();
 };
@@ -1108,7 +1107,7 @@ async function getRegistered(teamId, eventId) {
 
 async function getRegistrationTeamPaymentOption(paymentOptionId) {
   const [teamPaymentOption] = await knex('event_payment_options')
-    .select('team_price', 'team_stripe_price_id')
+    .select('team_price', 'team_stripe_price_id', 'team_acceptation')
     .where({ id: paymentOptionId });
 
   return teamPaymentOption;
@@ -1914,16 +1913,16 @@ async function updateEntityRole(entityId, entityIdAdmin, role) {
 async function updateEvent(
   eventId,
   maximumSpots,
-  eventStart,
-  eventEnd,
+  startDate,
+  endDate,
 ) {
   const realId = await getRealId(eventId);
   const maximum_spots = Number(maximumSpots);
   const [entity] = await knex('events')
     .update({
       maximum_spots,
-      start_date: eventStart,
-      end_date: eventEnd,
+      start_date: startDate,
+      end_date: endDate,
     })
     .where({ id: realId })
     .returning('*');
@@ -3166,15 +3165,27 @@ const addPlayerToRoster = async body => {
     })
     .returning('*');
 
-  const userId = await getUserIdFromPersonId(personId);
+  return player;
+};
+
+const addPlayerCartItem = async body => {
+  const { personId, rosterId, name, isSub } = body;
+  if (isSub) {
+    return;
+  }
 
   const paymentOption = await getIndividualPaymentOptionFromRosterId(
     rosterId,
   );
-
   if (paymentOption.individual_price <= 0) {
-    return player;
+    return;
   }
+
+  const eventId = await getEventIdFromRosterId(rosterId);
+  const userId = await getUserIdFromPersonId(personId);
+  const event = (await getEntity(eventId, userId)).basicInfos;
+  const team = (await getEntity(paymentOption.teamId, userId))
+    .basicInfos;
 
   const ownerId = await getOwnerStripePrice(
     paymentOption.individual_stripe_price_id,
@@ -3183,69 +3194,20 @@ const addPlayerToRoster = async body => {
   const cartItem = {
     stripePriceId: paymentOption.individual_stripe_price_id,
     metadata: {
-      eventId: paymentOption.event_id,
+      eventId,
       sellerEntityId: ownerId,
       isIndividualOption: true,
       personId,
       name,
       buyerId: personId,
       rosterId,
-      team: (await getEntity(paymentOption.teamId, userId))
-        .basicInfos,
+      team,
     },
   };
+
   await addEventCartItem(cartItem, userId);
 
-  return player;
-};
-
-const addPlayersCartItems = async rosterId => {
-  const rosters = await knex('team_players')
-    .select('*')
-    .where({ roster_id: rosterId });
-
-  const eventId = await getEventIdFromRosterId(rosterId);
-
-  await Promise.all(
-    rosters.map(async r => {
-      const {
-        person_id: personId,
-        name,
-        roster_id: rosterId,
-        is_sub: isSub,
-      } = r;
-
-      if (isSub) {
-        return;
-      }
-      const userId = await getUserIdFromPersonId(personId);
-
-      const paymentOption = await getIndividualPaymentOptionFromRosterId(
-        rosterId,
-      );
-      if (paymentOption.individual_price <= 0) {
-        return;
-      }
-      const ownerId = await getOwnerStripePrice(
-        paymentOption.individual_stripe_price_id,
-      );
-      const cartItem = {
-        stripePriceId: paymentOption.individual_stripe_price_id,
-        metadata: {
-          eventId,
-          sellerEntityId: ownerId,
-          isIndividualOption: true,
-          personId,
-          name,
-          buyerId: personId,
-          rosterId,
-          team: (await getEntity(paymentOption.teamId, userId))
-            .basicInfos,
-        },
-      };
-      await addEventCartItem(cartItem, userId);
-    }),
-  );
+  return { cartItem, event, team };
 };
 
 const addEventCartItem = async (body, userId) => {
@@ -3255,6 +3217,13 @@ const addEventCartItem = async (body, userId) => {
     user_id: userId,
     metadata: { ...metadata, type: GLOBAL_ENUM.EVENT },
   });
+};
+
+const getTeamIdFromRosterId = async rosterId => {
+  const [{ team_id: teamId }] = await knex('team_rosters')
+    .select('team_id')
+    .where({ id: rosterId });
+  return teamId;
 };
 
 const deletePlayerFromRoster = async body => {
@@ -3666,6 +3635,8 @@ async function getRosterEventInfos(roster_id) {
       'event_id',
       'event_rosters.team_id',
       'registration_status',
+      'status',
+      'payment_option_id',
       knex.raw('name as teamname'),
     )
     .leftJoin(
@@ -3680,8 +3651,10 @@ async function getRosterEventInfos(roster_id) {
   return {
     eventId: res.event_id,
     teamId: res.team_id,
-    registrationStatus: res.registrationStatus,
+    status: res.status,
+    registrationStatus: res.registration_status,
     teamName: res.teamname,
+    paymentOptionId: res.payment_option_id,
   };
 }
 
@@ -3697,6 +3670,7 @@ module.exports = {
   addEventCartItem,
   addField,
   addGame,
+  addPlayerCartItem,
   addGameAttendances,
   addMember,
   addMemberManually,
@@ -3704,7 +3678,6 @@ module.exports = {
   addOption,
   addPersonToEvent,
   addPhase,
-  addPlayersCartItems,
   addPlayerToRoster,
   addReport,
   addRoster,
@@ -3796,8 +3769,11 @@ module.exports = {
   getSubmissionerInfos,
   getTeamGames,
   getTeamsSchedule,
+  getIndividualPaymentOptionFromRosterId,
+  getTeamIdFromRosterId,
   getUnplacedGames,
   getUserNextGame,
+  getUserIdFromPersonId,
   getWichTeamsCanUnregister,
   hasMemberships,
   insertRosterInviteToken,
