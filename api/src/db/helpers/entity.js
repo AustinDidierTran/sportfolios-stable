@@ -1900,6 +1900,66 @@ async function getPersonInfos(entityId) {
   return resObj;
 }
 
+async function getAllTeamsPending(eventId) {
+  const realId = await getRealId(eventId);
+  const teams = await knex('event_rosters')
+    .select('*')
+    .where({
+      event_id: realId,
+      registration_status: STATUS_ENUM.PENDING,
+    });
+  const res = await Promise.all(
+    teams.map(async t => {
+      const basicInfos = (await getEntity(t.team_id)).basicInfos;
+      const event = (await getEntity(eventId)).basicInfos;
+      const roster = await getRoster(t.roster_id);
+      const paymentOption = await getPaymentOption(
+        t.payment_option_id,
+      );
+      return { ...basicInfos, team: t, roster, paymentOption, event };
+    }),
+  );
+  return res;
+}
+
+async function getAllPlayersPending(eventId) {
+  const realId = await getRealId(eventId);
+  const registeredPlayers = await knex('event_persons')
+    .select('*')
+    .where({ event_id: realId, status: STATUS_ENUM.PENDING });
+
+  const rosters = await knex('event_rosters')
+    .select('roster_id')
+    .where({ event_id: realId });
+
+  const teamPlayers = await Promise.all(
+    rosters.map(async r => {
+      const players = await knex('team_players')
+        .select('*')
+        .where({
+          roster_id: r.roster_id,
+          payment_status: STATUS_ENUM.PENDING,
+        });
+      return players;
+    }, []),
+  );
+
+  const teamPlayersConcat = teamPlayers.reduce((prev, curr) => [
+    ...prev,
+    ...curr,
+  ]);
+
+  const allPlayers = registeredPlayers.concat(teamPlayersConcat);
+
+  const res = await Promise.all(
+    allPlayers.map(async p => {
+      const basicInfos = (await getEntity(p.person_id)).basicInfos;
+      return { ...basicInfos, p };
+    }),
+  );
+  return res;
+}
+
 async function updateEntityRole(entityId, entityIdAdmin, role) {
   const realEntityId = await getRealId(entityId);
   const realAdminId = await getRealId(entityIdAdmin);
@@ -3776,6 +3836,8 @@ module.exports = {
   getOwnerStripePrice,
   getPersonGames,
   getPersonInfos,
+  getAllTeamsPending,
+  getAllPlayersPending,
   getPhases,
   getPhasesGameAndTeams,
   getPlayerInvoiceItem,
