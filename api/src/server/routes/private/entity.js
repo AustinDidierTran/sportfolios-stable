@@ -38,13 +38,13 @@ router.get(`${BASE_URL}/about`, async ctx => {
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  } 
-  
+  }
+
   ctx.body = {
     status: 'success',
     data: entity,
   };
-  
+
 });
 
 router.get(`${BASE_URL}/events`, async ctx => {
@@ -53,43 +53,58 @@ router.get(`${BASE_URL}/events`, async ctx => {
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  } 
-  
+  }
+
   ctx.body = {
     status: 'success',
     data: entity,
   };
-  
+
 });
 
 router.get(`${BASE_URL}/home`, async ctx => {
 
   const entity = await OrganizationController.home(ctx.query.id, ctx.body.userInfo.id);
-  
+
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  } 
-  
+  }
+
   ctx.body = {
     status: 'success',
     data: entity,
   };
-  
+
 });
 
 router.get(`${BASE_URL}/league`, async ctx => {
 
   const entity = await OrganizationController.league(ctx.query.id, ctx.body.userInfo.id);
-  
+
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  } 
-  
+  }
+
   ctx.body = {
     status: 'success',
     data: entity,
   };
-  
+
+});
+
+router.get(`${BASE_URL}/edit`, async ctx => {
+
+  const entity = await OrganizationController.edit(ctx.query.id, ctx.body.userInfo.id);
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+
 });
 
 router.get(`${BASE_URL}/all`, async ctx => {
@@ -1007,7 +1022,7 @@ router.post(`${BASE_URL}/memberManually`, async ctx => {
       status: 'error',
       message: 'Something went wrong',
     };
-  } 
+  }
 });
 
 router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {

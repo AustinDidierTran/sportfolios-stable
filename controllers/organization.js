@@ -58,6 +58,15 @@ class OrganizationController {
       navBar: this.getNavBar(),
     };
   }
+
+  static async edit(orgId, userId) {
+    let res = await getEntityHelper(orgId, userId);
+
+    return {
+      basicInfos: res.basicInfos,
+      navBar: this.getNavBar(),
+    };
+  }
 }
 
 module.exports = { OrganizationController: OrganizationController };
