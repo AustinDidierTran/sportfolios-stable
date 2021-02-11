@@ -74,11 +74,6 @@ router.get(`${BASE_URL}/home`, async ctx => {
     ctx.body.userInfo.id,
   );
 
-  const entity = await OrganizationController.home(
-    ctx.query.id,
-    ctx.body.userInfo.id,
-  );
-
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -543,7 +538,6 @@ router.get(`${BASE_URL}/teamsAndPlayersPending`, async ctx => {
     ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
-
       message: 'That record does not exist.',
     };
   }
@@ -561,7 +555,6 @@ router.get(`${BASE_URL}/teamsPending`, async ctx => {
     ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
-
       message: 'That record does not exist.',
     };
   }
@@ -600,7 +593,6 @@ router.get(`${BASE_URL}/person`, async ctx => {
     ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
-
       message: 'That record does not exist.',
     };
   }
