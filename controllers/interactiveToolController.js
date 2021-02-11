@@ -2,7 +2,7 @@ const {
     getEntityRole: getEntityRoleHelper,
     addAllFields: addAllFieldsHelper,
     addAllTimeslots: addAllTimeslotsHelper,
-    addAllGames: addAllGamesHelper
+    addAllGames: addAllGamesHelper,
 } = require('../api/src/db/helpers/entity');
 
 const {
@@ -34,7 +34,7 @@ class InteractiveToolController {
             timeslots = await addAllTimeslotsHelper(eventId, timeslotsArray);
         }
 
-        if (gamesArray.lenght !== 0) {
+        if (gamesArray.length !== 0) {
             games = await addAllGamesHelper(eventId, gamesArray);
         }
 
@@ -46,7 +46,6 @@ class InteractiveToolController {
 
         return res;
     }
-
 
     static async isAllowed(
         entityId,
