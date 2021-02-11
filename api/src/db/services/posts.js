@@ -15,8 +15,8 @@ async function deleteLike(entity_id, post_id) {
 
   await knex('post_like')
     .where({
-      entity_id: entity_id,
-      post_id: post_id,
+      entity_id,
+      post_id,
     })
     .del();
 }
