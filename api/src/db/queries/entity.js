@@ -1200,13 +1200,13 @@ async function addField(body, userId) {
 }
 
 async function addPhase(body, userId) {
-  const { phase, eventId } = body;
+  const { phase, spots, eventId } = body;
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return addPhaseHelper(phase, eventId);
+  return addPhaseHelper(phase, spots, eventId);
 }
 
 async function addTimeSlot(body, userId) {

@@ -2862,10 +2862,10 @@ async function addField(field, eventId) {
   return res;
 }
 
-async function addPhase(phase, eventId) {
+async function addPhase(phase, spots, eventId) {
   const realId = await getRealId(eventId);
   const [res] = await knex('phase')
-    .insert({ name: phase, event_id: realId })
+    .insert({ name: phase, event_id: realId, spots })
     .returning('*');
   return res;
 }

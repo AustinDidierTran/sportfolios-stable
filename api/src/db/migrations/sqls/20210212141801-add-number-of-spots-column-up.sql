@@ -1,0 +1,3 @@
+ALTER TABLE phase 
+ADD COLUMN spots integer, 
+ADD COLUMN is_done BOOLEAN NOT NULL DEFAULT FALSE; 
