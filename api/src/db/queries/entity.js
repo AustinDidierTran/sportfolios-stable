@@ -70,6 +70,8 @@ const {
   getGames: getGamesHelper,
   getGameSubmissionInfos: getGameSubmissionInfosHelper,
   getGeneralInfos: getGeneralInfosHelper,
+  getAllTeamsPending: getAllTeamsPendingHelper,
+  getAllPlayersPending: getAllPlayersPendingHelper,
   getMembers: getMembersHelper,
   getMembership,
   getMemberships: getMembershipsHelper,
@@ -341,6 +343,19 @@ async function getFields(eventId) {
 
 async function getGeneralInfos(entityId, userId) {
   return getGeneralInfosHelper(entityId, userId);
+}
+async function getAllTeamsPending(eventId) {
+  return getAllTeamsPendingHelper(eventId);
+}
+
+async function getAllPlayersPending(eventId) {
+  return getAllPlayersPendingHelper(eventId);
+}
+
+async function getTeamsAndPlayersPending(eventId) {
+  const teams = await getAllTeamsPendingHelper(eventId);
+  const players = await getAllPlayersPendingHelper(eventId);
+  return { teams, players };
 }
 
 async function getPersonInfos(entityId) {
@@ -1655,6 +1670,9 @@ module.exports = {
   getGames,
   getGameSubmissionInfos,
   getGeneralInfos,
+  getTeamsAndPlayersPending,
+  getAllTeamsPending,
+  getAllPlayersPending,
   getInteractiveToolData,
   getMembers,
   getMemberships,
