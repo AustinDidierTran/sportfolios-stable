@@ -669,7 +669,7 @@ async function getCreators(id) {
   return data;
 }
 
-async function getCreatorsEmail(id) {
+async function getCreatorsEmails(id) {
   //Could be done in one query
   const realId = await getRealId(id);
   const creators = await knex('entities_role')
@@ -692,6 +692,17 @@ async function getCreatorsEmail(id) {
     return prev;
   }, []);
   return uniqueEmails;
+}
+async function getTeamCreatorEmail(teamId) {
+  //Could be done in one query
+  const realId = await getRealId(teamId);
+  const [creator] = await knex('entities_role')
+    .select('*')
+    .where({ entity_id: realId, role: 1 });
+
+  const email = await getEmailPerson(creator.entity_id_admin);
+
+  return email;
 }
 
 async function eventInfos(id, userId) {
@@ -1151,6 +1162,22 @@ async function getIndividualPaymentOptionFromRosterId(rosterId) {
     teamId: roster.team_id,
   };
 }
+async function getTeamPaymentOptionFromRosterId(rosterId) {
+  const [roster] = await knex('event_rosters')
+    .select('payment_option_id', 'team_id')
+    .where({ roster_id: rosterId });
+
+  const [option] = await knex('event_payment_options')
+    .select('team_price', 'team_stripe_price_id', 'event_id')
+    .where({ id: roster.payment_option_id });
+
+  return {
+    teamPrice: option.team_price,
+    teamStripePriceId: option.team_stripe_price_id,
+    eventId: option.event_id,
+    teamId: roster.team_id,
+  };
+}
 
 async function getTeamCaptains(teamId, userId) {
   const realId = await getRealId(teamId);
@@ -1226,7 +1253,7 @@ async function getAllPlayersAcceptedRegistered(eventId) {
 async function getAllTeamsRegisteredInfos(eventId, userId) {
   const teams = await getAllTeamsRegistered(eventId);
 
-  const props = await Promise.all(
+  const res = await Promise.all(
     teams.map(async t => {
       const entity = (await getEntity(t.team_id, userId)).basicInfos;
       const emails = await getEmailsEntity(t.team_id);
@@ -1254,13 +1281,23 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
       };
     }),
   );
-  return props;
+
+  res.sort((a, b) => {
+    if (a.name < b.name) {
+      return -1;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
+  });
+  return res;
 }
 
 async function getAllPeopleRegisteredInfos(eventId, userId) {
   const people = await getAllPeopleRegistered(eventId);
 
-  const props = await Promise.all(
+  const res = await Promise.all(
     people.map(async p => {
       const entity = (await getEntity(p.person_id, userId))
         .basicInfos;
@@ -1280,7 +1317,17 @@ async function getAllPeopleRegisteredInfos(eventId, userId) {
       };
     }),
   );
-  return props;
+
+  res.sort((a, b) => {
+    if (a.name < b.name) {
+      return -1;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
+  });
+  return res;
 }
 
 async function getRemainingSpots(eventId) {
@@ -1910,13 +1957,21 @@ async function getAllTeamsPending(eventId) {
     });
   const res = await Promise.all(
     teams.map(async t => {
-      const basicInfos = (await getEntity(t.team_id)).basicInfos;
+      const team = (await getEntity(t.team_id)).basicInfos;
       const event = (await getEntity(eventId)).basicInfos;
       const roster = await getRoster(t.roster_id);
       const paymentOption = await getPaymentOption(
         t.payment_option_id,
       );
-      return { ...basicInfos, team: t, roster, paymentOption, event };
+      return {
+        id: t.roster_id,
+        name: team.name,
+        photoUrl: team.photoUrl,
+        team: t,
+        roster,
+        paymentOption,
+        event,
+      };
     }),
   );
   return res;
@@ -2426,79 +2481,99 @@ async function updateMembershipInvoice(body) {
 
 async function addAllFields(eventId, fieldsArray) {
   const realId = await getRealId(eventId);
-  const fields = fieldsArray.map((f) => ({ event_id: realId, field: f.field, id: f.id }));
+  const fields = fieldsArray.map(f => ({
+    event_id: realId,
+    field: f.field,
+    id: f.id,
+  }));
 
   const res = await knex.transaction(async trx => {
     const queries = await knex('event_fields')
-    .insert(fields)
-    .returning('*')
-    .transacting(trx);
+      .insert(fields)
+      .returning('*')
+      .transacting(trx);
 
     return Promise.all(queries)
-    .then(trx.commit)
-    .catch(trx.rollback);
-  });  
+      .then(trx.commit)
+      .catch(trx.rollback);
+  });
 
-  return res; 
+  return res;
 }
 
 async function addAllTimeslots(eventId, timeslotsArray) {
   const realId = await getRealId(eventId);
-  const timeslots = timeslotsArray.map((t) => ({ event_id: realId, date: new Date(t.date), id: t.id}))
+  const timeslots = timeslotsArray.map(t => ({
+    event_id: realId,
+    date: new Date(t.date),
+    id: t.id,
+  }));
 
   const res = await knex.transaction(async trx => {
     const queries = await knex('event_time_slots')
-    .insert(timeslots)
-    .returning('*')
-    .transacting(trx);
+      .insert(timeslots)
+      .returning('*')
+      .transacting(trx);
 
     return Promise.all(queries)
-    .then(trx.commit)
-    .catch(trx.rollback);
-  });  
+      .then(trx.commit)
+      .catch(trx.rollback);
+  });
 
-  return res; 
+  return res;
 }
 
 async function addAllGames(eventId, gamesArray) {
   const realId = await getRealId(eventId);
-  const games = gamesArray.map((g) => ({ event_id: realId, phase_id: g.phase_id, field_id: g.field_id, timeslot_id: g.timeslot_id, id: g.id }));
-  const teamsArray = gamesArray.reduce((prev,g) => [
-      ...prev, {
-        game_id: g.id, roster_id: g.teams[0].value, name: g.teams[0].name
+  const games = gamesArray.map(g => ({
+    event_id: realId,
+    phase_id: g.phase_id,
+    field_id: g.field_id,
+    timeslot_id: g.timeslot_id,
+    id: g.id,
+  }));
+  const teamsArray = gamesArray.reduce(
+    (prev, g) => [
+      ...prev,
+      {
+        game_id: g.id,
+        roster_id: g.teams[0].value,
+        name: g.teams[0].name,
       },
       {
-        game_id: g.id, roster_id: g.teams[1].value, name: g.teams[1].name
-      }
-    ]
-    ,[]
+        game_id: g.id,
+        roster_id: g.teams[1].value,
+        name: g.teams[1].name,
+      },
+    ],
+    [],
   );
 
   const res = await knex.transaction(async trx => {
     const queries = await knex('games')
-    .insert(games)
-    .returning('*')
-    .transacting(trx);
+      .insert(games)
+      .returning('*')
+      .transacting(trx);
 
     return Promise.all(queries)
-    .then(trx.commit)
-    .catch(trx.rollback);
+      .then(trx.commit)
+      .catch(trx.rollback);
   });
 
   const teams = await knex.transaction(async trx => {
     const queries = await knex('game_teams')
-    .insert(teamsArray)
-    .returning('*')
-    .transacting(trx);
+      .insert(teamsArray)
+      .returning('*')
+      .transacting(trx);
 
     return Promise.all(queries)
-    .then(trx.commit)
-    .catch(trx.rollback);
+      .then(trx.commit)
+      .catch(trx.rollback);
   });
 
   return {
     ...res,
-    teams
+    teams,
   };
 }
 
@@ -3355,6 +3430,24 @@ async function updateMember(
     .returning('*');
   return res;
 }
+async function updateTeamAcceptation(
+  eventId,
+  rosterId,
+  registrationStatus,
+) {
+  const realId = await getRealId(eventId);
+  const [res] = await knex('event_rosters')
+    .where({
+      event_id: realId,
+      roster_id: rosterId,
+    })
+    .update({
+      registration_status: registrationStatus,
+    })
+    .returning('*');
+
+  return res;
+}
 
 async function updateAlias(entityId, alias) {
   if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
@@ -3479,7 +3572,6 @@ async function updateGame(
 async function updateGamesInteractiveTool(games) {
   // TODO: do a real batch update
   return knex.transaction(trx => {
-    
     queries = games.map(game =>
       knex('games')
         .where('id', game.id)
@@ -3489,7 +3581,7 @@ async function updateGamesInteractiveTool(games) {
         })
         .transacting(trx),
     );
-  
+
     return Promise.all(queries)
       .then(trx.commit)
       .catch(trx.rollback);
@@ -3810,7 +3902,8 @@ module.exports = {
   getAttendanceSheet,
   getCreator,
   getCreators,
-  getCreatorsEmail,
+  getCreatorsEmails,
+  getTeamCreatorEmail,
   getEmailPerson,
   getEmailsEntity,
   getEntity,
@@ -3866,6 +3959,7 @@ module.exports = {
   getTeamGames,
   getTeamsSchedule,
   getIndividualPaymentOptionFromRosterId,
+  getTeamPaymentOptionFromRosterId,
   getTeamIdFromRosterId,
   getUnplacedGames,
   getUserNextGame,
@@ -3893,6 +3987,7 @@ module.exports = {
   updateGamesInteractiveTool,
   updateGeneralInfos,
   updateMember,
+  updateTeamAcceptation,
   updateMembershipInvoice,
   updateOption,
   updatePersonInfosHelper,

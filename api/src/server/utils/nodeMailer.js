@@ -334,6 +334,26 @@ async function sendTeamAcceptedRegistrationEmail({
   const { html, subject, text } = fullEmail;
   sendMail({ html, email, subject, text });
 }
+
+async function sendTeamRefusedRegistrationEmail({
+  email,
+  team,
+  event,
+  language,
+}) {
+  const fullEmail = await emailFactory({
+    type: NOTIFICATION_TYPE.TEAM_REFUSED_REGISTRATION,
+    teamName: team.name,
+    eventName: event.name,
+    locale: language,
+  });
+  if (!fullEmail) {
+    return;
+  }
+  const { html, subject, text } = fullEmail;
+  sendMail({ html, email, subject, text });
+}
+
 async function sendTeamPendingRegistrationEmailToAdmin({
   email,
   team,
@@ -458,6 +478,7 @@ module.exports = {
   sendReceiptEmail,
   sendRecoveryEmail,
   sendTeamAcceptedRegistrationEmail,
+  sendTeamRefusedRegistrationEmail,
   sendTeamPendingRegistrationEmailToAdmin,
   sendTeamRegistrationEmailToAdmin,
 };
