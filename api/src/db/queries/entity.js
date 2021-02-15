@@ -896,6 +896,8 @@ async function updateTeamAcceptation(body) {
   const team = (await getEntity(teamId)).basicInfos;
 
   const email = await getTeamCreatorEmail(teamId);
+  const language = await getLanguageFromEmail(email);
+  const userId = await getUserIdFromEmail(email);
 
   if (registrationStatus === STATUS_ENUM.ACCEPTED) {
     const teamPaymentOption = await getTeamPaymentOptionFromRosterId(
@@ -905,8 +907,6 @@ async function updateTeamAcceptation(body) {
     const ownerId = await getOwnerStripePrice(
       teamPaymentOption.teamStripePriceId,
     );
-
-    const userId = await getUserIdFromEmail(email);
 
     await addEventCartItem(
       {
@@ -922,7 +922,6 @@ async function updateTeamAcceptation(body) {
       userId,
     );
 
-    const language = await getLanguageFromEmail(email);
     sendTeamAcceptedRegistrationEmail({
       email,
       team,
@@ -933,33 +932,22 @@ async function updateTeamAcceptation(body) {
     });
   }
   if (registrationStatus === STATUS_ENUM.ACCEPTED_FREE) {
-    await Promise.all(
-      emails.map(async email => {
-        const language = await getLanguageFromEmail(email);
-        const userId = await getUserIdFromEmail(email);
-        sendTeamAcceptedRegistrationEmail({
-          email,
-          team,
-          event,
-          language,
-          isFreeOption: true,
-          userId,
-        });
-      }),
-    );
+    sendTeamAcceptedRegistrationEmail({
+      email,
+      team,
+      event,
+      language,
+      isFreeOption: true,
+      userId,
+    });
   }
   if (registrationStatus === STATUS_ENUM.REFUSED) {
-    await Promise.all(
-      emails.map(async email => {
-        const language = await getLanguageFromEmail(email);
-        sendTeamRefusedRegistrationEmail({
-          email,
-          team,
-          event,
-          language,
-        });
-      }),
-    );
+    sendTeamRefusedRegistrationEmail({
+      email,
+      team,
+      event,
+      language,
+    });
   }
   return res;
 }
