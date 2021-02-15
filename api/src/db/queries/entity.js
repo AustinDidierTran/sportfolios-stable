@@ -59,8 +59,10 @@ const {
   getAllTeamsAcceptedRegistered: getAllTeamsAcceptedRegisteredHelper,
   getAllTeamsRegisteredInfos: getAllTeamsRegisteredInfosHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
-  getCreatorsEmail,
+  getCreatorsEmails,
+  getTeamCreatorEmail,
   getEmailPerson,
+  getTeamPaymentOptionFromRosterId,
   getEntity: getEntityHelper,
   getEntityRole: getEntityRoleHelper,
   getEvent: getEventHelper,
@@ -127,6 +129,7 @@ const {
   updateGamesInteractiveTool: updateGamesInteractiveToolHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
   updateMember: updateMemberHelper,
+  updateTeamAcceptation: updateTeamAcceptationHelper,
   updateOption: updateOptionHelper,
   updatePersonInfosHelper,
   updatePlayerPaymentStatus: updatePlayerPaymentStatusHelper,
@@ -143,16 +146,17 @@ const {
   sendPersonRegistrationEmailToAdmin,
   sendPersonRegistrationEmail,
   sendTeamAcceptedRegistrationEmail,
+  sendTeamRefusedRegistrationEmail,
   sendTeamPendingRegistrationEmailToAdmin,
   sendImportMemberEmail,
   sendCartItemAddedPlayerEmail,
 } = require('../../server/utils/nodeMailer');
 const { addMembershipCartItem } = require('../helpers/shop');
 const {
-  getEmailsFromUserId,
   getLanguageFromEmail,
   validateEmailIsUnique: validateEmailIsUniqueHelper,
   generateMemberImportToken,
+  getUserIdFromEmail,
 } = require('../helpers');
 const { sendNotification } = require('./notifications');
 const { formatLinkWithAuthToken } = require('../emails/utils');
@@ -506,8 +510,8 @@ async function addTeamToEvent(body, userId) {
     );
   }
 
-  const captainEmails = await getEmailsFromUserId(userId);
-  const creatorEmails = await getCreatorsEmail(eventId);
+  const email = await getTeamCreatorEmail(teamId);
+  const creatorEmails = await getCreatorsEmails(eventId);
 
   if (registrationStatus === STATUS_ENUM.PENDING) {
     creatorEmails.map(async email => {
@@ -541,17 +545,16 @@ async function addTeamToEvent(body, userId) {
         userId,
       );
     }
-    captainEmails.map(async ({ email }) => {
-      const language = await getLanguageFromEmail(email);
-      sendTeamAcceptedRegistrationEmail({
-        language,
-        team,
-        event,
-        email,
-        isFreeOption,
-        userId,
-      });
+    const language = await getLanguageFromEmail(email);
+    sendTeamAcceptedRegistrationEmail({
+      language,
+      team,
+      event,
+      email,
+      isFreeOption,
+      userId,
     });
+
     creatorEmails.map(async email => {
       const language = await getLanguageFromEmail(email);
       sendTeamRegistrationEmailToAdmin({
@@ -736,7 +739,7 @@ async function addPersonToEvent(body, userId) {
         userId,
       });
       // send mail to organization admin
-      const creatorEmails = await getCreatorsEmail(eventId);
+      const creatorEmails = await getCreatorsEmails(eventId);
       await Promise.all(
         creatorEmails.map(async email => {
           const language = await getLanguageFromEmail(email);
@@ -878,6 +881,86 @@ async function updateMember(body) {
     person_id,
     expiration_date,
   );
+  return res;
+}
+async function updateTeamAcceptation(body) {
+  const { eventId, rosterId, registrationStatus } = body;
+  const res = await updateTeamAcceptationHelper(
+    eventId,
+    rosterId,
+    registrationStatus,
+  );
+
+  const event = (await getEntity(eventId)).basicInfos;
+  const teamId = await getTeamIdFromRosterId(rosterId);
+  const team = (await getEntity(teamId)).basicInfos;
+
+  const email = await getTeamCreatorEmail(teamId);
+
+  if (registrationStatus === STATUS_ENUM.ACCEPTED) {
+    const teamPaymentOption = await getTeamPaymentOptionFromRosterId(
+      rosterId,
+    );
+
+    const ownerId = await getOwnerStripePrice(
+      teamPaymentOption.teamStripePriceId,
+    );
+
+    const userId = await getUserIdFromEmail(email);
+
+    await addEventCartItem(
+      {
+        stripePriceId: teamPaymentOption.teamStripePriceId,
+        metadata: {
+          eventId: event.id,
+          sellerEntityId: ownerId,
+          buyerId: teamId,
+          rosterId,
+          team,
+        },
+      },
+      userId,
+    );
+
+    const language = await getLanguageFromEmail(email);
+    sendTeamAcceptedRegistrationEmail({
+      email,
+      team,
+      event,
+      language,
+      isFreeOption: false,
+      userId,
+    });
+  }
+  if (registrationStatus === STATUS_ENUM.ACCEPTED_FREE) {
+    await Promise.all(
+      emails.map(async email => {
+        const language = await getLanguageFromEmail(email);
+        const userId = await getUserIdFromEmail(email);
+        sendTeamAcceptedRegistrationEmail({
+          email,
+          team,
+          event,
+          language,
+          isFreeOption: true,
+          userId,
+        });
+      }),
+    );
+  }
+  if (registrationStatus === STATUS_ENUM.REFUSED) {
+    await Promise.all(
+      emails.map(async email => {
+        const language = await getLanguageFromEmail(email);
+        sendTeamRefusedRegistrationEmail({
+          email,
+          team,
+          event,
+          language,
+        });
+      }),
+    );
+  }
   return res;
 }
 
@@ -1715,6 +1798,7 @@ module.exports = {
   updateGame,
   updateGamesInteractiveTool,
   updateGeneralInfos,
+  updateTeamAcceptation,
   updateMember,
   updateOption,
   updatePersonInfos,

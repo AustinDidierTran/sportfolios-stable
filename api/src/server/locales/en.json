@@ -30,6 +30,8 @@
     "send_receipt_button": "Receipt",
     "send_receipt_subject": "Order receipt | Sportfolios",
     "send_receipt_text": "To see your receipt, click on the following button",
+    "team_refused_registration_subject":"Registration refused %s | Sportfolios",
+    "team_refused_registration_text":"The event %s have refused the registration of your team %s. You can contact the organization of the event to have more information on your registration denial",
     "team_registration_button": "Pay your registration",
     "team_registration_free_button": "Go checkout the event",
     "team_registration_free_text": "Your team %s is officially registered to %s",

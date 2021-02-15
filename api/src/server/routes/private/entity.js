@@ -435,6 +435,7 @@ router.get(`${BASE_URL}/allTeamsAcceptedRegistered`, async ctx => {
     };
   }
 });
+
 router.get(`${BASE_URL}/allPlayersAcceptedRegistered`, async ctx => {
   const acceptedRegistration = await queries.getAllPlayersAcceptedRegistered(
     ctx.query.eventId,
@@ -752,6 +753,23 @@ router.put(`${BASE_URL}/member`, async ctx => {
     ctx.body = {
       status: 'success',
       data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/teamAcceptation`, async ctx => {
+  const team = await queries.updateTeamAcceptation(ctx.request.body);
+  if (team) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: team,
     };
   } else {
     ctx.status = 404;
