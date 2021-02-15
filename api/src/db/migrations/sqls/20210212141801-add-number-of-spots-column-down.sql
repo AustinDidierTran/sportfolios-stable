@@ -1,0 +1,3 @@
+ALTER TABLE phase
+DROP COLUMN spots, 
+DROP COLUMN is_done;
