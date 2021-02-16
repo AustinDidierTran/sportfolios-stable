@@ -1284,7 +1284,7 @@ async function addField(body, userId) {
   }
   return addFieldHelper(field, eventId);
 }
-
+//TODO: delete this function and replace queries by controller in route
 async function addPhase(body, userId) {
   const { phase, spots, eventId } = body;
   if (

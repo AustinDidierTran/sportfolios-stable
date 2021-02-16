@@ -2058,6 +2058,16 @@ async function updatePreRanking(eventId, ranking) {
   return res;
 }
 
+async function updatePhase(eventId, phaseId, spots) {
+  const realId = await getRealId(eventId);
+  console.log('dans le helper');
+  const res = await knex('phase')
+    .update({ spots })
+    .where({ event_id: realId, id: phaseId })
+    .returning('*');
+  return res;
+}
+
 async function updateGeneralInfos(entityId, body) {
   const { description, quickDescription } = body;
   const realId = await getRealId(entityId);
@@ -2999,7 +3009,7 @@ async function addField(field, eventId) {
 
 async function addPhase(phase, spots, eventId) {
   const realId = await getRealId(eventId);
-  const [res] = await knex('phase')
+  const res = await knex('phase')
     .insert({ name: phase, event_id: realId, spots })
     .returning('*');
   return res;
@@ -3012,7 +3022,7 @@ async function addTimeSlot(date, eventId) {
     .returning('*');
   return res;
 }
-
+ 
 async function addOption(
   endTime,
   eventId,
@@ -3991,6 +4001,7 @@ module.exports = {
   updateMembershipInvoice,
   updateOption,
   updatePersonInfosHelper,
+  updatePhase,
   updatePlayerPaymentStatus,
   updatePreRanking,
   updateRegistration,

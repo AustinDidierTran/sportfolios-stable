@@ -13,6 +13,10 @@ const {
   InteractiveToolController,
 } = require('../../../../../controllers/interactiveToolController');
 
+const {
+  PhaseController,
+} = require('../../../../../controllers/phaseController');
+
 const router = new Router();
 const BASE_URL = '/api/entity';
 
@@ -893,6 +897,27 @@ router.put(`${BASE_URL}/updatePreRanking`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/updatePhase`, async ctx => {
+  const entity = await PhaseController.updatePhase(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (entity) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.put(`${BASE_URL}/updateGeneralInfos`, async ctx => {
   const entity = await queries.updateGeneralInfos(
     ctx.request.body,
@@ -1280,11 +1305,11 @@ router.post(`${BASE_URL}/field`, async ctx => {
 });
 
 router.post(`${BASE_URL}/phase`, async ctx => {
-  const phase = await queries.addPhase(
+  const phase = await PhaseController.addPhase(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-
+  
   if (!phase) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
