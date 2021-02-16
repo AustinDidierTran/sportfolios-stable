@@ -2081,6 +2081,7 @@ async function updatePhase(body) {
   console.log('updatePhaseHelper');
   const { eventId, phaseId, phaseName, spots, isDone } = body;
   const realId = await getRealId(eventId);
+
   const [res] = await knex('phase')
     .update({ name: phaseName, spots, is_done: isDone })
     .where({ event_id: realId, id: phaseId })
@@ -4188,13 +4189,10 @@ module.exports = {
   updateOption,
   updatePersonInfosHelper,
   updatePhase,
-<<<<<<< HEAD
   updateInitialPositionPhase,
   updateFinalPositionPhase,
   updateOriginPhase,
   updatePhaseRankingsSpots,
-=======
->>>>>>> 1894c141... backend pour updater le nb de teams dans le pool (#684)
   updatePlayerPaymentStatus,
   updatePreRanking,
   updateRegistration,
