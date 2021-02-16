@@ -188,6 +188,29 @@ const sendEmailNotification = async (userId, emailInfos) => {
   }
 };
 
+const sendMessageToSportfoliosAdmin = async body => {
+  const { name, email, message } = body;
+
+  const emails = [
+    'austindidier@sportfolios.app',
+    'emilie@sportfolios.app',
+  ];
+
+  const subject = `Landing page message`;
+
+  const text = `${name} vous à envoyé un message à partir de l'adresse courriel suivante:  ${email}. \n\n Voici le message: \n\n ${message}`;
+
+  sendMail({ email: emails, subject, text });
+
+  const senderSubject = `Confirmation d'envoi`;
+
+  const senderText = `Votre message à bien été envoyé à Sportfolios. \n\n Voici le contenu de votre message: \n\n ${message}`;
+
+  sendMail({ email, subject: senderSubject, text: senderText });
+
+  return email;
+};
+
 const getNotifications = async (user_id, body) => {
   return getNotificationsHelper(user_id, body);
 };
@@ -211,6 +234,7 @@ module.exports = {
   clickNotification,
   deleteNotification,
   sendNotification,
+  sendMessageToSportfoliosAdmin,
   getNotificationsSettings,
   setNotificationsSettings,
 };
