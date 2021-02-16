@@ -39,12 +39,10 @@ router.get(`${BASE_URL}/about`, async ctx => {
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
   ctx.body = {
     status: 'success',
     data: entity,
   };
-
 });
 
 router.get(`${BASE_URL}/events`, async ctx => {
@@ -1022,7 +1020,7 @@ router.post(`${BASE_URL}/memberManually`, async ctx => {
       status: 'error',
       message: 'Something went wrong',
     };
-  } 
+  }
 });
 
 router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {

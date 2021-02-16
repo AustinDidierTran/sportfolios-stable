@@ -95,16 +95,15 @@ router.post(`${BASE_URL}/like`, async ctx => {
   }
 });
 
-router.del(`${BASE_URL}/like`, async ctx => {
-
-  await PostsController.deleteLike(
-    ctx.query.entityId,
-    ctx.query.postId
+router.post(`${BASE_URL}/unlike`, async ctx => {
+  const result = await PostsController.deleteLike(
+    ctx.request.body.entityId,
+    ctx.request.body.postId
   );
-
   ctx.status = 201;
   ctx.body = {
     status: STATUS_ENUM.SUCCESS,
+    data: result,
   };
 
 });
