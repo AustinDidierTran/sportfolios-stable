@@ -2060,7 +2060,6 @@ async function updatePreRanking(eventId, ranking) {
 
 async function updatePhase(eventId, phaseId, spots) {
   const realId = await getRealId(eventId);
-  console.log('dans le helper');
   const res = await knex('phase')
     .update({ spots })
     .where({ event_id: realId, id: phaseId })

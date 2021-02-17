@@ -14,7 +14,6 @@ const { ERROR_ENUM } = require('../common/errors');
 class PhaseController {
 
     static async addPhase(body, userId) {
-        console.log('dans le controlleur');
         const { phase, spots, eventId } = body;
 
         if (!(await this.isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
@@ -44,4 +43,4 @@ class PhaseController {
     }
  
 }
-module.exports = { PhaseController : PhaseController }; 
+module.exports = { PhaseController }; 
