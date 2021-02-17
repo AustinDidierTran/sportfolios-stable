@@ -3017,7 +3017,7 @@ async function addField(field, eventId) {
 
 async function addPhase(phase, spots, eventId) {
   const realId = await getRealId(eventId);
-  const [res] = await knex('phase')
+  const res = await knex('phase')
     .insert({ name: phase, event_id: realId, spots })
     .returning('*');
 
