@@ -18,6 +18,10 @@ const {
   PhaseRankingController,
 } = require('../../../../../controllers/phaseRankingController');
 
+const {
+  PhaseController,
+} = require('../../../../../controllers/phaseController');
+
 const router = new Router();
 const BASE_URL = '/api/entity';
 
@@ -1427,7 +1431,7 @@ router.post(`${BASE_URL}/phase`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-
+  
   if (!phase) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }

@@ -3174,7 +3174,7 @@ async function addField(field, eventId) {
 
 async function addPhase(phase, spots, eventId) {
   const realId = await getRealId(eventId);
-  const [res] = await knex('phase')
+  const res = await knex('phase')
     .insert({ name: phase, event_id: realId, spots })
     .returning('*');
 
@@ -3205,7 +3205,7 @@ async function addTimeSlot(date, eventId) {
     .returning('*');
   return res;
 }
-
+ 
 async function addOption(
   endTime,
   eventId,
@@ -4188,10 +4188,13 @@ module.exports = {
   updateOption,
   updatePersonInfosHelper,
   updatePhase,
+<<<<<<< HEAD
   updateInitialPositionPhase,
   updateFinalPositionPhase,
   updateOriginPhase,
   updatePhaseRankingsSpots,
+=======
+>>>>>>> 1894c141... backend pour updater le nb de teams dans le pool (#684)
   updatePlayerPaymentStatus,
   updatePreRanking,
   updateRegistration,
