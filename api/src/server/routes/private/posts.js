@@ -9,16 +9,16 @@ const { PostsController } = require('../../../../../controllers/posts');
 
 router.post(`${BASE_URL}/create`, async ctx => {
 
-  const postId = await PostsController.create(
+  const post = await PostsController.create(
     ctx.request.body,
     ctx.request.body.entity_id
   );
 
-  if (postId) {
+  if (post) {
     ctx.status = 201;
     ctx.body = {
       status: 'success',
-      data: postId,
+      data: post,
     };
   } else {
     ctx.status = 400;
@@ -30,7 +30,6 @@ router.post(`${BASE_URL}/create`, async ctx => {
 });
 
 router.post(`${BASE_URL}/image`, async ctx => {
-
   const result = await PostsController.addImage(
     ctx.request.body.postId,
     ctx.request.body.imageUrl

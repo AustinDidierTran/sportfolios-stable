@@ -5,15 +5,15 @@ const {
 class PostsController {
 
   static async create(body, userId) {
-    const postId = await PostServices.addPost(body, userId);
+    const post = await PostServices.addPost(body, userId);
 
-    return postId;
+    return post;
   }
 
   static async addImage(postId, imageUrl) {
-
     if (imageUrl && postId) {
-      await PostServices.addPostImageUrl(postId, imageUrl);
+      const res = await PostServices.addPostImageUrl(postId, imageUrl);
+      return res;
     }
 
   }

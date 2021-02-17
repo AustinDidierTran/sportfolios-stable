@@ -35,13 +35,21 @@ class PostServices {
     const [post_id] = await knex('posts')
       .insert({ entity_id, content })
       .returning('id');
-    return post_id;
+
+    const post = await PostServices.getPost(post_id, entity_id);
+
+    return post;
 
   }
 
   static async addPostImageUrl(post_id, image_url) {
     await knex('post_image')
       .insert({ post_id, image_url });
+    const images = await knex
+      .select('image_url')
+      .from('post_image')
+      .where('post_image.post_id', post_id);
+    return images;
   }
 
   static async getPost(post_id, user_id) {
