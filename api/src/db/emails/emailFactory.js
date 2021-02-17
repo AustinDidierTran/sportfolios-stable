@@ -7,6 +7,7 @@ const ScoreSubmissionRequestEmail = require('./scoreSubmissionRequestEmail');
 const SendReceiptEmail = require('./sendReceiptEmail');
 const TeamRegistrationToAdminEmail = require('./teamRegistrationToAdminEmail');
 const TeamRegistrationEmail = require('./teamRegistrationEmail');
+const TeamRefusedRegistrationEmail = require('./teamRefusedRegistrationEmail');
 const TeamPendingRegistrationToAdminEmail = require('./teamPendingRegistrationToAdminEmail');
 const PersonRegistrationEmail = require('./personRegistrationEmail');
 const TransferPersonEmail = require('./transferPersonEmail');
@@ -26,6 +27,7 @@ const map = {
   [NOTIFICATION_TYPE.TEAM_REGISTRATION_TO_ADMIN]: TeamRegistrationToAdminEmail,
   [NOTIFICATION_TYPE.PERSON_REGISTRATION]: PersonRegistrationEmail,
   [NOTIFICATION_TYPE.TEAM_REGISTRATION]: TeamRegistrationEmail,
+  [NOTIFICATION_TYPE.TEAM_REFUSED_REGISTRATION]: TeamRefusedRegistrationEmail,
   [NOTIFICATION_TYPE.TEAM_PENDING_REGISTRATION_ADMIN]: TeamPendingRegistrationToAdminEmail,
   [NOTIFICATION_TYPE.TRANSFER_PERSON]: TransferPersonEmail,
 };

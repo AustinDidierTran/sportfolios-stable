@@ -5,9 +5,13 @@ const {
   ERROR_ENUM,
   errors,
 } = require('../../../../../common/errors');
-const { OrganizationController } = require('../../../../../controllers/organization');
+const {
+  OrganizationController,
+} = require('../../../../../controllers/organization');
 
-const { InteractiveToolController } = require('../../../../../controllers/interactiveToolController');
+const {
+  InteractiveToolController,
+} = require('../../../../../controllers/interactiveToolController');
 
 const router = new Router();
 const BASE_URL = '/api/entity';
@@ -33,8 +37,10 @@ router.get(`${BASE_URL}`, async ctx => {
 });
 
 router.get(`${BASE_URL}/about`, async ctx => {
-
-  const entity = await OrganizationController.about(ctx.query.id, ctx.body.userInfo.id);
+  const entity = await OrganizationController.about(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -46,8 +52,10 @@ router.get(`${BASE_URL}/about`, async ctx => {
 });
 
 router.get(`${BASE_URL}/events`, async ctx => {
-
-  const entity = await OrganizationController.events(ctx.query.id, ctx.body.userInfo.id);
+  const entity = await OrganizationController.events(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -57,12 +65,13 @@ router.get(`${BASE_URL}/events`, async ctx => {
     status: 'success',
     data: entity,
   };
-
 });
 
 router.get(`${BASE_URL}/home`, async ctx => {
-
-  const entity = await OrganizationController.home(ctx.query.id, ctx.body.userInfo.id);
+  const entity = await OrganizationController.home(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -72,12 +81,13 @@ router.get(`${BASE_URL}/home`, async ctx => {
     status: 'success',
     data: entity,
   };
-
 });
 
 router.get(`${BASE_URL}/league`, async ctx => {
-
-  const entity = await OrganizationController.league(ctx.query.id, ctx.body.userInfo.id);
+  const entity = await OrganizationController.league(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -87,12 +97,13 @@ router.get(`${BASE_URL}/league`, async ctx => {
     status: 'success',
     data: entity,
   };
-
 });
 
 router.get(`${BASE_URL}/edit`, async ctx => {
-
-  const entity = await OrganizationController.edit(ctx.query.id, ctx.body.userInfo.id);
+  const entity = await OrganizationController.edit(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -102,7 +113,6 @@ router.get(`${BASE_URL}/edit`, async ctx => {
     status: 'success',
     data: entity,
   };
-
 });
 
 router.get(`${BASE_URL}/all`, async ctx => {
@@ -424,6 +434,7 @@ router.get(`${BASE_URL}/allTeamsAcceptedRegistered`, async ctx => {
     };
   }
 });
+
 router.get(`${BASE_URL}/allPlayersAcceptedRegistered`, async ctx => {
   const acceptedRegistration = await queries.getAllPlayersAcceptedRegistered(
     ctx.query.eventId,
@@ -512,6 +523,63 @@ router.get(`${BASE_URL}/personInfos`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/teamsAndPlayersPending`, async ctx => {
+  const { players, teams } = await queries.getTeamsAndPlayersPending(
+    ctx.query.eventId,
+  );
+
+  if (players || teams) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: { players, teams },
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+router.get(`${BASE_URL}/teamsPending`, async ctx => {
+  const teams = await queries.getAllTeamsPending(ctx.query.eventId);
+
+  if (teams) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: teams,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+router.get(`${BASE_URL}/playersPending`, async ctx => {
+  const players = await queries.getAllPlayersPending(
+    ctx.query.eventId,
+  );
+
+  if (players) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: players,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/person`, async ctx => {
   const infos = await queries.getGeneralInfos(ctx.query.entityId);
 
@@ -525,7 +593,6 @@ router.get(`${BASE_URL}/person`, async ctx => {
     ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
-
       message: 'That record does not exist.',
     };
   }
@@ -685,6 +752,23 @@ router.put(`${BASE_URL}/member`, async ctx => {
     ctx.body = {
       status: 'success',
       data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/teamAcceptation`, async ctx => {
+  const team = await queries.updateTeamAcceptation(ctx.request.body);
+  if (team) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: team,
     };
   } else {
     ctx.status = 404;
@@ -1024,7 +1108,10 @@ router.post(`${BASE_URL}/memberManually`, async ctx => {
 });
 
 router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {
-  const res = await InteractiveToolController.addAll(ctx.request.body, ctx.body.userInfo.id);
+  const res = await InteractiveToolController.addAll(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {

@@ -59,8 +59,10 @@ const {
   getAllTeamsAcceptedRegistered: getAllTeamsAcceptedRegisteredHelper,
   getAllTeamsRegisteredInfos: getAllTeamsRegisteredInfosHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
-  getCreatorsEmail,
+  getCreatorsEmails,
+  getTeamCreatorEmail,
   getEmailPerson,
+  getTeamPaymentOptionFromRosterId,
   getEntity: getEntityHelper,
   getEntityRole: getEntityRoleHelper,
   getEvent: getEventHelper,
@@ -70,6 +72,8 @@ const {
   getGames: getGamesHelper,
   getGameSubmissionInfos: getGameSubmissionInfosHelper,
   getGeneralInfos: getGeneralInfosHelper,
+  getAllTeamsPending: getAllTeamsPendingHelper,
+  getAllPlayersPending: getAllPlayersPendingHelper,
   getMembers: getMembersHelper,
   getMembership,
   getMemberships: getMembershipsHelper,
@@ -125,6 +129,7 @@ const {
   updateGamesInteractiveTool: updateGamesInteractiveToolHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
   updateMember: updateMemberHelper,
+  updateTeamAcceptation: updateTeamAcceptationHelper,
   updateOption: updateOptionHelper,
   updatePersonInfosHelper,
   updatePlayerPaymentStatus: updatePlayerPaymentStatusHelper,
@@ -141,16 +146,17 @@ const {
   sendPersonRegistrationEmailToAdmin,
   sendPersonRegistrationEmail,
   sendTeamAcceptedRegistrationEmail,
+  sendTeamRefusedRegistrationEmail,
   sendTeamPendingRegistrationEmailToAdmin,
   sendImportMemberEmail,
   sendCartItemAddedPlayerEmail,
 } = require('../../server/utils/nodeMailer');
 const { addMembershipCartItem } = require('../helpers/shop');
 const {
-  getEmailsFromUserId,
   getLanguageFromEmail,
   validateEmailIsUnique: validateEmailIsUniqueHelper,
   generateMemberImportToken,
+  getUserIdFromEmail,
 } = require('../helpers');
 const { sendNotification } = require('./notifications');
 const { formatLinkWithAuthToken } = require('../emails/utils');
@@ -342,6 +348,19 @@ async function getFields(eventId) {
 async function getGeneralInfos(entityId, userId) {
   return getGeneralInfosHelper(entityId, userId);
 }
+async function getAllTeamsPending(eventId) {
+  return getAllTeamsPendingHelper(eventId);
+}
+
+async function getAllPlayersPending(eventId) {
+  return getAllPlayersPendingHelper(eventId);
+}
+
+async function getTeamsAndPlayersPending(eventId) {
+  const teams = await getAllTeamsPendingHelper(eventId);
+  const players = await getAllPlayersPendingHelper(eventId);
+  return { teams, players };
+}
 
 async function getPersonInfos(entityId) {
   return getPersonInfosHelper(entityId);
@@ -491,8 +510,8 @@ async function addTeamToEvent(body, userId) {
     );
   }
 
-  const captainEmails = await getEmailsFromUserId(userId);
-  const creatorEmails = await getCreatorsEmail(eventId);
+  const email = await getTeamCreatorEmail(teamId);
+  const creatorEmails = await getCreatorsEmails(eventId);
 
   if (registrationStatus === STATUS_ENUM.PENDING) {
     creatorEmails.map(async email => {
@@ -526,17 +545,16 @@ async function addTeamToEvent(body, userId) {
         userId,
       );
     }
-    captainEmails.map(async ({ email }) => {
-      const language = await getLanguageFromEmail(email);
-      sendTeamAcceptedRegistrationEmail({
-        language,
-        team,
-        event,
-        email,
-        isFreeOption,
-        userId,
-      });
+    const language = await getLanguageFromEmail(email);
+    sendTeamAcceptedRegistrationEmail({
+      language,
+      team,
+      event,
+      email,
+      isFreeOption,
+      userId,
     });
+
     creatorEmails.map(async email => {
       const language = await getLanguageFromEmail(email);
       sendTeamRegistrationEmailToAdmin({
@@ -721,7 +739,7 @@ async function addPersonToEvent(body, userId) {
         userId,
       });
       // send mail to organization admin
-      const creatorEmails = await getCreatorsEmail(eventId);
+      const creatorEmails = await getCreatorsEmails(eventId);
       await Promise.all(
         creatorEmails.map(async email => {
           const language = await getLanguageFromEmail(email);
@@ -863,6 +881,74 @@ async function updateMember(body) {
     person_id,
     expiration_date,
   );
+  return res;
+}
+async function updateTeamAcceptation(body) {
+  const { eventId, rosterId, registrationStatus } = body;
+  const res = await updateTeamAcceptationHelper(
+    eventId,
+    rosterId,
+    registrationStatus,
+  );
+
+  const event = (await getEntity(eventId)).basicInfos;
+  const teamId = await getTeamIdFromRosterId(rosterId);
+  const team = (await getEntity(teamId)).basicInfos;
+
+  const email = await getTeamCreatorEmail(teamId);
+  const language = await getLanguageFromEmail(email);
+  const userId = await getUserIdFromEmail(email);
+
+  if (registrationStatus === STATUS_ENUM.ACCEPTED) {
+    const teamPaymentOption = await getTeamPaymentOptionFromRosterId(
+      rosterId,
+    );
+
+    const ownerId = await getOwnerStripePrice(
+      teamPaymentOption.teamStripePriceId,
+    );
+
+    await addEventCartItem(
+      {
+        stripePriceId: teamPaymentOption.teamStripePriceId,
+        metadata: {
+          eventId: event.id,
+          sellerEntityId: ownerId,
+          buyerId: teamId,
+          rosterId,
+          team,
+        },
+      },
+      userId,
+    );
+
+    sendTeamAcceptedRegistrationEmail({
+      email,
+      team,
+      event,
+      language,
+      isFreeOption: false,
+      userId,
+    });
+  }
+  if (registrationStatus === STATUS_ENUM.ACCEPTED_FREE) {
+    sendTeamAcceptedRegistrationEmail({
+      email,
+      team,
+      event,
+      language,
+      isFreeOption: true,
+      userId,
+    });
+  }
+  if (registrationStatus === STATUS_ENUM.REFUSED) {
+    sendTeamRefusedRegistrationEmail({
+      email,
+      team,
+      event,
+      language,
+    });
+  }
   return res;
 }
 
@@ -1200,13 +1286,13 @@ async function addField(body, userId) {
 }
 
 async function addPhase(body, userId) {
-  const { phase, eventId } = body;
+  const { phase, spots, eventId } = body;
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return addPhaseHelper(phase, eventId);
+  return addPhaseHelper(phase, spots, eventId);
 }
 
 async function addTimeSlot(body, userId) {
@@ -1655,6 +1741,9 @@ module.exports = {
   getGames,
   getGameSubmissionInfos,
   getGeneralInfos,
+  getTeamsAndPlayersPending,
+  getAllTeamsPending,
+  getAllPlayersPending,
   getInteractiveToolData,
   getMembers,
   getMemberships,
@@ -1697,6 +1786,7 @@ module.exports = {
   updateGame,
   updateGamesInteractiveTool,
   updateGeneralInfos,
+  updateTeamAcceptation,
   updateMember,
   updateOption,
   updatePersonInfos,
