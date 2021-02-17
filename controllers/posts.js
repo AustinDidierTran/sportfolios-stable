@@ -14,8 +14,6 @@ class PostsController {
 
     if (imageUrl && postId) {
       await PostServices.addPostImageUrl(postId, imageUrl);
-
-      return true;
     }
 
   }
