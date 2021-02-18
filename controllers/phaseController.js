@@ -2,6 +2,7 @@ const {
   addPhase: addPhaseHelper,
   getEntityRole: getEntityRoleHelper,
   updatePhase: updatePhaseHelper,
+  updatePhaseRankingsSpots: updatePhaseRankingsSpotsHelper,
 } = require('../api/src/db/helpers/entity');
 
 const { ENTITIES_ROLE_ENUM } = require('../common/enums');
@@ -11,6 +12,7 @@ const { ERROR_ENUM } = require('../common/errors');
 class PhaseController {
   static async addPhase(body, userId) {
     const { phase, spots, eventId } = body;
+    console.log({ phase, spots, eventId });
 
     if (
       !(await this.isAllowed(
@@ -26,8 +28,9 @@ class PhaseController {
   }
 
   static async updatePhase(body, userId) {
-    const { eventId, phaseId, spots } = body;
-
+    console.log('updatePhase');
+    const { eventId, phaseId, phaseName, spots, isDone } = body;
+    console.log({ eventId, phaseId, phaseName, spots, isDone });
     if (
       !(await this.isAllowed(
         eventId,
@@ -37,7 +40,21 @@ class PhaseController {
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
-    const res = await updatePhaseHelper(eventId, phaseId, spots);
+    const res = await updatePhaseHelper({
+      eventId,
+      phaseId,
+      phaseName,
+      spots,
+      isDone,
+    });
+
+    if (spots) {
+      await updatePhaseRankingsSpotsHelper({ phaseId, spots });
+    }
+    if (isDone === true || isDone === false) {
+      console.log('allo');
+      //Update all phase that reference the phase that is donw
+    }
     return res;
   }
 
