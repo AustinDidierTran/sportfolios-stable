@@ -2525,11 +2525,11 @@ async function addAllTimeslots(eventId, timeslotsArray) {
       .transacting(trx);
 
     return Promise.all(queries)
-      .then(trx.commit)
-      .catch(trx.rollback);
-  });
 
-  return res;
+    .then(trx.commit)
+    .catch(trx.rollback);
+  });  
+  return res; 
 }
 
 async function addAllGames(eventId, gamesArray) {

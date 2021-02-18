@@ -49,7 +49,6 @@ router.get(`${BASE_URL}/about`, async ctx => {
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
   ctx.body = {
     status: 'success',
     data: entity,
@@ -1138,6 +1137,23 @@ router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {
+  const res = await InteractiveToolController.addAll(ctx.request.body, ctx.body.userInfo.id);
   if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {

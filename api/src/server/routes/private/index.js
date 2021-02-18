@@ -8,6 +8,7 @@ const profile = require('./profile');
 const shop = require('./shop');
 const stripe = require('./stripe');
 const users = require('./users');
+const posts = require('./posts');
 
 module.exports = [
   data,
@@ -17,6 +18,7 @@ module.exports = [
   main,
   notifications,
   profile,
+  posts,
   shop,
   stripe,
   users,
