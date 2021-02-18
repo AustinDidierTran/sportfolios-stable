@@ -1588,6 +1588,15 @@ async function getPhases(eventId) {
   return res;
 }
 
+async function getPhaseRankings(phaseId) {
+  const rankings = await knex('phase_rankings')
+    .select('*')
+    .where({current_phase: phaseId});
+    
+  const res = rankings.sort((a,b)=> a.initial_position-b.initial_position);
+  return res; 
+}
+
 async function getGames(eventId) {
   const realId = await getRealId(eventId);
   const games = await knex('games')
@@ -3963,6 +3972,7 @@ module.exports = {
   getAllTeamsPending,
   getAllPlayersPending,
   getPhases,
+  getPhaseRankings,
   getPhasesGameAndTeams,
   getPlayerInvoiceItem,
   getPrimaryPerson,

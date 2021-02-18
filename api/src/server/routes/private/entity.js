@@ -17,6 +17,10 @@ const {
   PhaseController,
 } = require('../../../../../controllers/phaseController');
 
+const {
+  RankingsController,
+} = require('../../../../../controllers/rankingsController');
+
 const router = new Router();
 const BASE_URL = '/api/entity';
 
@@ -157,6 +161,26 @@ router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
   const res = await queries.canUnregisterTeamsList(
     ctx.query.rosterIds,
     ctx.query.eventId,
+  );
+
+  if (res) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: res,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/phaseRankings`, async ctx => {
+  const res = await RankingsController.getPhaseRankings(
+    ctx.query.phaseId,
   );
 
   if (res) {
