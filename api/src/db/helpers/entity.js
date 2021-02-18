@@ -3008,10 +3008,32 @@ async function addField(field, eventId) {
 
 async function addPhase(phase, spots, eventId) {
   const realId = await getRealId(eventId);
-  const res = await knex('phase')
+  const [res] = await knex('phase')
     .insert({ name: phase, event_id: realId, spots })
     .returning('*');
+
+  if(spots && spots !==0) {
+    const rankings = await addPhaseRanking(res.id, spots);
+  } 
   return res;
+}
+
+async function addPhaseRanking(phaseId, spots){
+  const res = [];
+  for(let i=0; i<spots;++i){
+    const ranking = await knex('phase_rankings')
+    .insert({
+      roster_id: null,
+      origin_phase: null,
+      origin_position: null,
+      current_phase: phaseId,
+      initial_position: i+1,
+      final_position: null,
+    })
+    .returning('*');
+    res.push(ranking); 
+  }
+  return res;  
 }
 
 async function addTimeSlot(date, eventId) {
