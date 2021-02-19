@@ -903,10 +903,10 @@ async function generateMembersReport(report) {
       }
       const address = person.address
         ? {
-            city: person.address.city,
-            state: person.address.state,
-            zip: person.address.zip,
-          }
+          city: person.address.city,
+          state: person.address.state,
+          zip: person.address.zip,
+        }
         : {};
       return {
         ...a,
@@ -1382,7 +1382,7 @@ async function getRankings(eventId) {
 async function getRegistrationStatus(rosterId) {
   const realRosterId = await getRealId(rosterId);
   const [registration] = await knex('event_rosters')
-    .select('registration_status')
+    .select('register.registration_status')
     .where({
       roster_id: realRosterId,
     });
@@ -1505,7 +1505,7 @@ const unregister = async body => {
 async function getEmailsEntity(entity_id) {
   const realId = await getRealId(entity_id);
   const emails = await knex('entities_role')
-    .select('email')
+    .select('email.email')
     .leftJoin(
       'user_entity_role',
       'user_entity_role.entity_id',
@@ -1523,7 +1523,7 @@ async function getEmailsEntity(entity_id) {
 }
 async function getEmailUser(userId) {
   const [{ email }] = await knex('user_email')
-    .select('email')
+    .select('email.email')
     .where({ user_id: userId });
   return email;
 }
@@ -1531,7 +1531,7 @@ async function getEmailUser(userId) {
 async function getEmailPerson(person_id) {
   const realId = await getRealId(person_id);
   const [{ email }] = await knex('user_entity_role')
-    .select('email')
+    .select('email.email')
     .leftJoin(
       'user_email',
       'user_email.user_id',
@@ -1723,9 +1723,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-        entityId: p.entity_id,
-        completeName: `${p.name} ${p.surname}`,
-      }))
+      entityId: p.entity_id,
+      completeName: `${p.name} ${p.surname}`,
+    }))
     : undefined;
 }
 
@@ -2810,7 +2810,7 @@ async function isSpiritAlreadySubmitted(infos) {
 async function acceptScoreSuggestion(infos) {
   const { id, submitted_by_roster, submitted_by_person } = infos;
   const res = await knex('score_suggestion')
-    .select('score', 'game_id')
+    .select('score.score', 'game_id')
     .where({ id });
   if (!res || res.length === 0) {
     return;
@@ -2932,7 +2932,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -2972,7 +2972,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -3021,7 +3021,7 @@ async function addTimeSlot(date, eventId) {
     .returning('*');
   return res;
 }
- 
+
 async function addOption(
   endTime,
   eventId,
@@ -3044,7 +3044,7 @@ async function addOption(
 
   if (teamPrice > 0) {
     const stripeProductTeam = {
-      name: `${name} - Paiement d'équipe`, // ${t('payment_team')}
+      name: `${name} - Paiement d'équipe`, // ${t('payment.payment_team')}
       active: true,
       description: entity.name,
 
@@ -3072,7 +3072,7 @@ async function addOption(
 
   if (playerPrice > 0) {
     const stripeProductIndividual = {
-      name: `${name} - Paiement individuel`, // ${t('payment_individual')}
+      name: `${name} - Paiement individuel`, // ${t('payment.payment_individual')}
       active: true,
       description: entity.name,
 
