@@ -1384,7 +1384,7 @@ async function getRankings(eventId) {
 async function getRegistrationStatus(rosterId) {
   const realRosterId = await getRealId(rosterId);
   const [registration] = await knex('event_rosters')
-    .select('register.registration_status')
+    .select('registration_status')
     .where({
       roster_id: realRosterId,
     });
