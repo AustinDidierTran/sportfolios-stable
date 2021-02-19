@@ -8,14 +8,15 @@ const {
 const {
   OrganizationController,
 } = require('../../../../../controllers/organization');
-
 const {
   InteractiveToolController,
 } = require('../../../../../controllers/interactiveToolController');
-
 const {
   PhaseController,
 } = require('../../../../../controllers/phaseController');
+const {
+  PhaseRankingController,
+} = require('../../../../../controllers/phaseRankingController');
 
 const router = new Router();
 const BASE_URL = '/api/entity';
@@ -917,6 +918,104 @@ router.put(`${BASE_URL}/updatePhase`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/updateTeamPhase`, async ctx => {
+  const entity = await PhaseRankingController.updateTeamPhase(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (entity) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.del(`${BASE_URL}/teamPhase`, async ctx => {
+  const res = await PhaseRankingController.deleteTeamPhase(
+    ctx.body.userInfo.id,
+    ctx.query.rosterId,
+  );
+  if (!res) {
+    throw new Error(STATUS_ENUM.ERROR_STRING);
+  }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS_STRING,
+  };
+});
+
+router.put(`${BASE_URL}/updateInitialPositionPhase`, async ctx => {
+  const entity = await PhaseRankingController.updateInitialPositionPhase(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (entity) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/finalPositionPhase`, async ctx => {
+  const entity = await PhaseRankingController.updateFinalPositionPhase(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (entity) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/originPhase`, async ctx => {
+  const entity = await PhaseRankingController.updateOriginPhase(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (entity) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.put(`${BASE_URL}/updateGeneralInfos`, async ctx => {
   const entity = await queries.updateGeneralInfos(
     ctx.request.body,
@@ -1153,7 +1252,10 @@ router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {
 });
 
 router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {
-  const res = await InteractiveToolController.addAll(ctx.request.body, ctx.body.userInfo.id);
+  const res = await InteractiveToolController.addAll(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
@@ -1325,7 +1427,7 @@ router.post(`${BASE_URL}/phase`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  
+
   if (!phase) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }

@@ -903,10 +903,10 @@ async function generateMembersReport(report) {
       }
       const address = person.address
         ? {
-          city: person.address.city,
-          state: person.address.state,
-          zip: person.address.zip,
-        }
+            city: person.address.city,
+            state: person.address.state,
+            zip: person.address.zip,
+          }
         : {};
       return {
         ...a,
@@ -1372,10 +1372,14 @@ async function getRankings(eventId) {
   const res = await Promise.all(
     teams.map(async team => {
       const name = await getEntitiesName(team.team_id);
-      return { ...team, name: name.name, surname: name.surname };
+      return {
+        teamId: team.team_id,
+        position: team.initial_position,
+        name: name.name,
+      };
     }),
   );
-
+  res.sort((a, b) => a.position - b.position);
   return res;
 }
 
@@ -1582,10 +1586,36 @@ async function getAlias(entityId) {
 
 async function getPhases(eventId) {
   const realId = await getRealId(eventId);
-  const res = await knex('phase')
+  const phases = await knex('phase')
     .select('*')
     .where({ event_id: realId });
+
+  const res = await Promise.all(
+    phases.map(async phase => {
+      const ranking = await getPhaseRanking(phase.id);
+      return { ...phase, ranking };
+    }),
+  );
   return res;
+}
+
+async function getPhaseRanking(phaseId) {
+  const rankings = await knex('phase_rankings')
+    .select('*')
+    .where({ current_phase: phaseId });
+  rankings.sort((a, b) => a.initial_position - b.initial_position);
+
+  const rankingsWithName = await Promise.all(
+    rankings.map(async r => {
+      if (r.roster_id) {
+        const name = await getRosterName(r.roster_id);
+        return { ...r, name };
+      } else {
+        return { ...r, initialPosition: r.initial_position };
+      }
+    }),
+  );
+  return rankingsWithName;
 }
 
 async function getGames(eventId) {
@@ -1723,9 +1753,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-      entityId: p.entity_id,
-      completeName: `${p.name} ${p.surname}`,
-    }))
+        entityId: p.entity_id,
+        completeName: `${p.name} ${p.surname}`,
+      }))
     : undefined;
 }
 
@@ -2058,13 +2088,152 @@ async function updatePreRanking(eventId, ranking) {
   return res;
 }
 
-async function updatePhase(eventId, phaseId, spots) {
+async function updatePhase(body) {
+  const { eventId, phaseId, phaseName, spots, isDone } = body;
   const realId = await getRealId(eventId);
-  const res = await knex('phase')
-    .update({ spots })
+
+  const [res] = await knex('phase')
+    .update({ name: phaseName, spots, is_done: isDone })
     .where({ event_id: realId, id: phaseId })
     .returning('*');
   return res;
+}
+
+async function updateInitialPositionPhase(phaseId, teams) {
+  const res = await Promise.all(
+    teams.map(async (t, index) => {
+      await knex('phase_rankings')
+        .update({ roster_id: t.isEmpty ? null : t.roster_id })
+        .where({
+          current_phase: phaseId,
+          initial_position: index + 1,
+        })
+        .returning('*');
+    }),
+  );
+  return res;
+}
+
+async function updateFinalPositionPhase(phaseId, teams) {
+  const res = await Promise.all(
+    teams.map(async t => {
+      await knex('phase_rankings')
+        .update({ roster_id: t.rosterId })
+        .where({
+          current_phase: phaseId,
+          final_position: t.finalPosition,
+        })
+        .returning('*');
+    }),
+  );
+  return res;
+}
+async function updateOriginPhase(phaseId, teams) {
+  const res = await Promise.all(
+    teams.map(async t => {
+      await knex('phase_rankings')
+        .update({
+          origin_phase: t.originPhase,
+          origin_position: t.originPosition,
+        })
+        .where({
+          current_phase: phaseId,
+          initial_position: t.initialPosition,
+        })
+        .returning('*');
+    }),
+  );
+  return res;
+}
+
+async function updatePhaseRankingsSpots(body) {
+  const { phaseId, spots } = body;
+
+  const actualSpots = await nbOfSpotsInPhase(phaseId);
+
+  const nbTeams = await nbOfTeamsInPhase(phaseId);
+
+  if (nbTeams > spots) {
+    throw new Error(ERROR_ENUM.INVALID_INFORMATION);
+  }
+
+  if (actualSpots === spots) {
+    return allSpots;
+  }
+
+  if (actualSpots < spots) {
+    let added = [];
+    for (let i = actualSpots; i < spots; ++i) {
+      const ranking = await knex('phase_rankings')
+        .insert({
+          current_phase: phaseId,
+          initial_position: i + 1,
+        })
+        .returning('*');
+      added.push(ranking);
+    }
+    return added;
+  }
+  if (actualSpots > spots) {
+    let deleted = [];
+    for (let i = actualSpots; i > spots; --i) {
+      const ranking = await knex('phase_rankings')
+        .where({
+          current_phase: phaseId,
+          initial_position: i,
+        })
+        .del()
+        .returning('*');
+      deleted.push(ranking);
+    }
+    return deleted;
+  }
+}
+
+async function nbOfSpotsInPhase(phaseId) {
+  const [res] = await knex('phase_rankings')
+    .count('initial_position')
+    .where({ current_phase: phaseId });
+  return Number(res.count);
+}
+async function nbOfTeamsInPhase(phaseId) {
+  const [res] = await knex('phase_rankings')
+    .count('initial_position')
+    .whereNotNull('roster_id')
+    .andWhere({ current_phase: phaseId });
+  return Number(res.count);
+}
+async function addTeamPhase(phaseId, rosterId, initialPosition) {
+  const res = await knex('phase_rankings')
+    .update({ roster_id: rosterId })
+    .where({
+      current_phase: phaseId,
+      initial_position: initialPosition,
+    });
+  return res;
+}
+
+async function deleteTeamPhase(phaseId, initialPosition) {
+  const deleted = await knex('phase_rankings')
+    .where({
+      current_phase: phaseId,
+      initial_position: initialPosition,
+    })
+    .del()
+    .returning('*');
+
+  const actualSpots = await nbOfSpotsInPhase(phaseId);
+
+  for (let i = initialPosition; i < actualSpots; i++) {
+    await knex('phase_rankings')
+      .update({ initial_position: i })
+      .where({
+        current_phase: phaseId,
+        initial_position: i + 1,
+      })
+      .returning('*');
+  }
+  return deleted;
 }
 
 async function updateGeneralInfos(entityId, body) {
@@ -2526,10 +2695,10 @@ async function addAllTimeslots(eventId, timeslotsArray) {
 
     return Promise.all(queries)
 
-    .then(trx.commit)
-    .catch(trx.rollback);
-  });  
-  return res; 
+      .then(trx.commit)
+      .catch(trx.rollback);
+  });
+  return res;
 }
 
 async function addAllGames(eventId, gamesArray) {
@@ -2932,7 +3101,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -2972,7 +3141,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -3008,9 +3177,27 @@ async function addField(field, eventId) {
 
 async function addPhase(phase, spots, eventId) {
   const realId = await getRealId(eventId);
-  const res = await knex('phase')
+  const [res] = await knex('phase')
     .insert({ name: phase, event_id: realId, spots })
     .returning('*');
+
+  if (spots && spots !== 0) {
+    await addPhaseRanking(res.id, spots);
+  }
+  return res;
+}
+
+async function addPhaseRanking(phaseId, spots) {
+  const res = [];
+  for (let i = 0; i < spots; ++i) {
+    const ranking = await knex('phase_rankings')
+      .insert({
+        current_phase: phaseId,
+        initial_position: i + 1,
+      })
+      .returning('*');
+    res.push(ranking);
+  }
   return res;
 }
 
@@ -3878,11 +4065,13 @@ module.exports = {
   addRoster,
   addScoreSuggestion,
   addSpiritSubmission,
+  addTeamPhase,
   addTeamToEvent,
   addTimeSlot,
   cancelRosterInviteToken,
   canRemovePlayerFromRoster,
   canUnregisterTeam,
+  deleteTeamPhase,
   deleteEntity,
   deleteEntityMembership,
   deleteGame,
@@ -3941,6 +4130,7 @@ module.exports = {
   getAllTeamsPending,
   getAllPlayersPending,
   getPhases,
+  getPhaseRanking,
   getPhasesGameAndTeams,
   getPlayerInvoiceItem,
   getPrimaryPerson,
@@ -4001,6 +4191,10 @@ module.exports = {
   updateOption,
   updatePersonInfosHelper,
   updatePhase,
+  updateInitialPositionPhase,
+  updateFinalPositionPhase,
+  updateOriginPhase,
+  updatePhaseRankingsSpots,
   updatePlayerPaymentStatus,
   updatePreRanking,
   updateRegistration,
