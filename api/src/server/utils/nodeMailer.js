@@ -37,7 +37,6 @@ async function sendMail({ email: emailProps, subject, text, html }) {
     );
     return;
   }
-
   const realSubject =
     process.env.NODE_ENV === 'development'
       ? `[DEV] | ${subject}`
