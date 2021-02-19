@@ -10,7 +10,7 @@ const { ENTITIES_ROLE_ENUM } = require('../common/enums');
 
 const { ERROR_ENUM } = require('../common/errors');
 
-class phaseRankingsController {
+class phaseRankingController {
   static async updateInitialPositionPhase(body) {
     const { phaseId, teams, eventId, userId } = body;
     console.log({
@@ -99,9 +99,19 @@ class phaseRankingsController {
     return res;
   }
   static async addTeamPhase(body) {
-    const { phaseId, rosterId,initialPosition, eventId, userId } = body;
+    const {
+      phaseId,
+      rosterId,
+      initialPosition,
+      eventId,
+      userId,
+    } = body;
     console.log({
-      phaseId, rosterId,initialPosition, eventId, userId 
+      phaseId,
+      rosterId,
+      initialPosition,
+      eventId,
+      userId,
     });
 
     if (
@@ -113,7 +123,11 @@ class phaseRankingsController {
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
-    const res = await addTeamPhaseHelper(phaseId, rosterId,initialPosition);
+    const res = await addTeamPhaseHelper(
+      phaseId,
+      rosterId,
+      initialPosition,
+    );
     return res;
   }
   static async deleteTeamPhase(body) {
@@ -146,4 +160,4 @@ class phaseRankingsController {
     return role <= acceptationRole;
   }
 }
-module.exports = { phaseRankingsController };
+module.exports = { phaseRankingController };

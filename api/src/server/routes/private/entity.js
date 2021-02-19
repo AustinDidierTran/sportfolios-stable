@@ -15,12 +15,8 @@ const {
   PhaseController,
 } = require('../../../../../controllers/phaseController');
 const {
-  PhaseRankingsController,
-} = require('../../../../../controllers/phaseRankingsController');
-
-const {
-  RankingsController,
-} = require('../../../../../controllers/rankingsController');
+  PhaseRankingController,
+} = require('../../../../../controllers/phaseRankingController');
 
 const router = new Router();
 const BASE_URL = '/api/entity';
@@ -162,26 +158,6 @@ router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
   const res = await queries.canUnregisterTeamsList(
     ctx.query.rosterIds,
     ctx.query.eventId,
-  );
-
-  if (res) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: res,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
-});
-
-router.get(`${BASE_URL}/phaseRankings`, async ctx => {
-  const res = await RankingsController.getPhaseRankings(
-    ctx.query.phaseId,
   );
 
   if (res) {
@@ -943,7 +919,7 @@ router.put(`${BASE_URL}/updatePhase`, async ctx => {
 });
 
 router.post(`${BASE_URL}/teamPhase`, async ctx => {
-  const entity = await PhaseRankingsController.addTeamPhase(
+  const entity = await PhaseRankingController.addTeamPhase(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
@@ -964,7 +940,7 @@ router.post(`${BASE_URL}/teamPhase`, async ctx => {
 });
 
 router.del(`${BASE_URL}/teamPhase`, async ctx => {
-  const res = await PhaseRankingsController.deleteTeamPhase(
+  const res = await PhaseRankingController.deleteTeamPhase(
     ctx.body.userInfo.id,
     ctx.query.rosterId,
   );
@@ -978,7 +954,7 @@ router.del(`${BASE_URL}/teamPhase`, async ctx => {
 });
 
 router.put(`${BASE_URL}/initialPositionPhase`, async ctx => {
-  const entity = await PhaseRankingsController.updateInitialPositionPhase(
+  const entity = await PhaseRankingController.updateInitialPositionPhase(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
@@ -999,7 +975,7 @@ router.put(`${BASE_URL}/initialPositionPhase`, async ctx => {
 });
 
 router.put(`${BASE_URL}/finalPositionPhase`, async ctx => {
-  const entity = await PhaseRankingsController.updateFinalPositionPhase(
+  const entity = await PhaseRankingController.updateFinalPositionPhase(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
@@ -1020,7 +996,7 @@ router.put(`${BASE_URL}/finalPositionPhase`, async ctx => {
 });
 
 router.put(`${BASE_URL}/originPhase`, async ctx => {
-  const entity = await PhaseRankingsController.updateOriginPhase(
+  const entity = await PhaseRankingController.updateOriginPhase(
     ctx.request.body,
     ctx.body.userInfo.id,
   );

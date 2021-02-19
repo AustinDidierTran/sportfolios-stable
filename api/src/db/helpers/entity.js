@@ -1372,10 +1372,14 @@ async function getRankings(eventId) {
   const res = await Promise.all(
     teams.map(async team => {
       const name = await getEntitiesName(team.team_id);
-      return { ...team, name: name.name, surname: name.surname };
+      return {
+        teamId: team.team_id,
+        position: team.initial_position,
+        name: name.name,
+      };
     }),
   );
-
+  res.sort((a, b) => a.position - b.position);
   return res;
 }
 
@@ -1582,19 +1586,25 @@ async function getAlias(entityId) {
 
 async function getPhases(eventId) {
   const realId = await getRealId(eventId);
-  const res = await knex('phase')
+  const phases = await knex('phase')
     .select('*')
     .where({ event_id: realId });
+
+  const res = await Promise.all(
+    phases.map(async phase => {
+      const ranking = await getPhaseRanking(phase.id);
+      return { ...phase, ranking };
+    }),
+  );
   return res;
 }
 
-async function getPhaseRankings(phaseId) {
+async function getPhaseRanking(phaseId) {
   const rankings = await knex('phase_rankings')
     .select('*')
-    .where({current_phase: phaseId});
-    
-  const res = rankings.sort((a,b)=> a.initial_position-b.initial_position);
-  return res; 
+    .where({ current_phase: phaseId });
+  rankings.sort((a, b) => a.initial_position - b.initial_position);
+  return rankings;
 }
 
 async function getGames(eventId) {
@@ -2177,17 +2187,17 @@ async function updatePhaseRankingsSpots(body) {
 }
 
 async function nbOfSpotsInPhase(phaseId) {
-  const res = await knex('phase_rankings')
+  const [res] = await knex('phase_rankings')
     .count('initial_position')
     .where({ current_phase: phaseId });
-  return res;
+  return res.count;
 }
 async function nbOfTeamsInPhase(phaseId) {
-  const res = await knex('phase_rankings')
+  const [res] = await knex('phase_rankings')
     .count('initial_position')
     .whereNotNull('roster_id')
     .andWhere({ current_phase: phaseId });
-  return res;
+  return res.count;
 }
 async function addTeamPhase(phaseId, rosterId, initialPosition) {
   const res = await knex('phase_rankings')
@@ -4117,7 +4127,7 @@ module.exports = {
   getAllTeamsPending,
   getAllPlayersPending,
   getPhases,
-  getPhaseRankings,
+  getPhaseRanking,
   getPhasesGameAndTeams,
   getPlayerInvoiceItem,
   getPrimaryPerson,
