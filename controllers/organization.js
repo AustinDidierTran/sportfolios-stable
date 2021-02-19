@@ -11,7 +11,7 @@ class OrganizationController {
       },
       {
         value: 'events',
-        label: 'events',
+        label: 'event.events',
       },
       {
         value: 'league',
