@@ -461,7 +461,6 @@ async function addTeamToEvent(body, userId) {
   if (!paymentOption) {
     throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
   }
-
   // Reject team if there is already too many registered teams
   if ((await getRemainingSpotsHelper(eventId)) < 1) {
     const registrationStatus = STATUS_ENUM.REFUSED;
@@ -493,6 +492,7 @@ async function addTeamToEvent(body, userId) {
     registrationStatus,
     paymentOption,
   });
+
   // Add roster
   if (roster) {
     await Promise.all(

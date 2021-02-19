@@ -682,7 +682,6 @@ async function getCreatorsEmails(id) {
       return res.map(r => r.email);
     }),
   );
-
   const uniqueEmails = emails.reduce((prev, curr) => {
     curr.forEach(c => {
       if (!prev.find(p => p === c)) {
@@ -701,7 +700,6 @@ async function getTeamCreatorEmail(teamId) {
     .where({ entity_id: realId, role: 1 });
 
   const email = await getEmailPerson(creator.entity_id_admin);
-
   return email;
 }
 
@@ -1509,7 +1507,7 @@ const unregister = async body => {
 async function getEmailsEntity(entity_id) {
   const realId = await getRealId(entity_id);
   const emails = await knex('entities_role')
-    .select('email.email')
+    .select('email')
     .leftJoin(
       'user_entity_role',
       'user_entity_role.entity_id',
@@ -1527,7 +1525,7 @@ async function getEmailsEntity(entity_id) {
 }
 async function getEmailUser(userId) {
   const [{ email }] = await knex('user_email')
-    .select('email.email')
+    .select('email')
     .where({ user_id: userId });
   return email;
 }
@@ -1535,7 +1533,7 @@ async function getEmailUser(userId) {
 async function getEmailPerson(person_id) {
   const realId = await getRealId(person_id);
   const [{ email }] = await knex('user_entity_role')
-    .select('email.email')
+    .select('email')
     .leftJoin(
       'user_email',
       'user_email.user_id',
