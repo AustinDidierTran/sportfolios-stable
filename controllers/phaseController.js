@@ -12,7 +12,6 @@ const { ERROR_ENUM } = require('../common/errors');
 class PhaseController {
   static async addPhase(body, userId) {
     const { phase, spots, eventId } = body;
-    console.log({ phase, spots, eventId });
 
     if (
       !(await this.isAllowed(
@@ -28,9 +27,7 @@ class PhaseController {
   }
 
   static async updatePhase(body, userId) {
-    console.log('updatePhase');
     const { eventId, phaseId, phaseName, spots, isDone } = body;
-    console.log({ eventId, phaseId, phaseName, spots, isDone });
     if (
       !(await this.isAllowed(
         eventId,
@@ -52,7 +49,6 @@ class PhaseController {
       await updatePhaseRankingsSpotsHelper({ phaseId, spots });
     }
     if (isDone === true || isDone === false) {
-      console.log('allo');
       //Update all phase that reference the phase that is donw
     }
     return res;

@@ -18,10 +18,6 @@ const {
   PhaseRankingController,
 } = require('../../../../../controllers/phaseRankingController');
 
-const {
-  PhaseController,
-} = require('../../../../../controllers/phaseController');
-
 const router = new Router();
 const BASE_URL = '/api/entity';
 
@@ -922,8 +918,8 @@ router.put(`${BASE_URL}/updatePhase`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/teamPhase`, async ctx => {
-  const entity = await PhaseRankingController.addTeamPhase(
+router.put(`${BASE_URL}/updateTeamPhase`, async ctx => {
+  const entity = await PhaseRankingController.updateTeamPhase(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
@@ -957,7 +953,7 @@ router.del(`${BASE_URL}/teamPhase`, async ctx => {
   };
 });
 
-router.put(`${BASE_URL}/initialPositionPhase`, async ctx => {
+router.put(`${BASE_URL}/updateInitialPositionPhase`, async ctx => {
   const entity = await PhaseRankingController.updateInitialPositionPhase(
     ctx.request.body,
     ctx.body.userInfo.id,
@@ -1431,7 +1427,7 @@ router.post(`${BASE_URL}/phase`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  
+
   if (!phase) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }

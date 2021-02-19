@@ -1604,7 +1604,18 @@ async function getPhaseRanking(phaseId) {
     .select('*')
     .where({ current_phase: phaseId });
   rankings.sort((a, b) => a.initial_position - b.initial_position);
-  return rankings;
+
+  const rankingsWithName = await Promise.all(
+    rankings.map(async r => {
+      if (r.roster_id) {
+        const name = await getRosterName(r.roster_id);
+        return { ...r, name };
+      } else {
+        return { ...r, initialPosition: r.initial_position };
+      }
+    }),
+  );
+  return rankingsWithName;
 }
 
 async function getGames(eventId) {
@@ -2078,7 +2089,6 @@ async function updatePreRanking(eventId, ranking) {
 }
 
 async function updatePhase(body) {
-  console.log('updatePhaseHelper');
   const { eventId, phaseId, phaseName, spots, isDone } = body;
   const realId = await getRealId(eventId);
 
@@ -2086,28 +2096,25 @@ async function updatePhase(body) {
     .update({ name: phaseName, spots, is_done: isDone })
     .where({ event_id: realId, id: phaseId })
     .returning('*');
-  console.log({ res });
   return res;
 }
 
 async function updateInitialPositionPhase(phaseId, teams) {
-  console.log('updateInitialPositionPhase');
   const res = await Promise.all(
-    teams.map(async t => {
+    teams.map(async (t, index) => {
       await knex('phase_rankings')
-        .update({ roster_id: t.rosterId })
+        .update({ roster_id: t.isEmpty ? null : t.roster_id })
         .where({
           current_phase: phaseId,
-          initial_position: t.initialPosition,
+          initial_position: index + 1,
         })
         .returning('*');
     }),
   );
-  console.log({ res });
   return res;
 }
+
 async function updateFinalPositionPhase(phaseId, teams) {
-  console.log('updateFinalPositionPhase');
   const res = await Promise.all(
     teams.map(async t => {
       await knex('phase_rankings')
@@ -2119,11 +2126,9 @@ async function updateFinalPositionPhase(phaseId, teams) {
         .returning('*');
     }),
   );
-  console.log({ res });
   return res;
 }
 async function updateOriginPhase(phaseId, teams) {
-  console.log('updateOriginPhase');
   const res = await Promise.all(
     teams.map(async t => {
       await knex('phase_rankings')
@@ -2138,12 +2143,10 @@ async function updateOriginPhase(phaseId, teams) {
         .returning('*');
     }),
   );
-  console.log({ res });
   return res;
 }
 
 async function updatePhaseRankingsSpots(body) {
-  console.log('updatePhaseRankingsSpotsHelpers');
   const { phaseId, spots } = body;
 
   const actualSpots = await nbOfSpotsInPhase(phaseId);
@@ -2191,14 +2194,14 @@ async function nbOfSpotsInPhase(phaseId) {
   const [res] = await knex('phase_rankings')
     .count('initial_position')
     .where({ current_phase: phaseId });
-  return res.count;
+  return Number(res.count);
 }
 async function nbOfTeamsInPhase(phaseId) {
   const [res] = await knex('phase_rankings')
     .count('initial_position')
     .whereNotNull('roster_id')
     .andWhere({ current_phase: phaseId });
-  return res.count;
+  return Number(res.count);
 }
 async function addTeamPhase(phaseId, rosterId, initialPosition) {
   const res = await knex('phase_rankings')
@@ -2211,7 +2214,6 @@ async function addTeamPhase(phaseId, rosterId, initialPosition) {
 }
 
 async function deleteTeamPhase(phaseId, initialPosition) {
-  console.log('deleteTeamPhaseHelpers');
   const deleted = await knex('phase_rankings')
     .where({
       current_phase: phaseId,
@@ -2223,7 +2225,7 @@ async function deleteTeamPhase(phaseId, initialPosition) {
   const actualSpots = await nbOfSpotsInPhase(phaseId);
 
   for (let i = initialPosition; i < actualSpots; i++) {
-    const team = await knex('phase_rankings')
+    await knex('phase_rankings')
       .update({ initial_position: i })
       .where({
         current_phase: phaseId,
@@ -3175,7 +3177,7 @@ async function addField(field, eventId) {
 
 async function addPhase(phase, spots, eventId) {
   const realId = await getRealId(eventId);
-  const res = await knex('phase')
+  const [res] = await knex('phase')
     .insert({ name: phase, event_id: realId, spots })
     .returning('*');
 
@@ -3206,7 +3208,7 @@ async function addTimeSlot(date, eventId) {
     .returning('*');
   return res;
 }
- 
+
 async function addOption(
   endTime,
   eventId,
