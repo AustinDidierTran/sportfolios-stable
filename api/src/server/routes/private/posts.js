@@ -105,9 +105,9 @@ router.post(`${BASE_URL}/unlike`, async ctx => {
   };
 });
 
-router.post(`${BASE_URL}/deletePost`, async ctx => {
+router.del(`${BASE_URL}/deletePost`, async ctx => {
   await PostsController.deletePost(
-    ctx.request.body.postId,
+    ctx.query.postId,
   );
   ctx.status = 201;
   ctx.body = {
