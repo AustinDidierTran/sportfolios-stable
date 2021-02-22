@@ -848,8 +848,7 @@ async function updateRosterRole(body, userId) {
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.ADMIN)) &&
     !(
       userRole === ROSTER_ROLE_ENUM.CAPTAIN ||
-      userRole === ROSTER_ROLE_ENUM.COACH ||
-      userRole === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN
+      userRole === ROSTER_ROLE_ENUM.COACH
     )
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
