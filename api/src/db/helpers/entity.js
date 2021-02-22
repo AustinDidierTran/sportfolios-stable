@@ -2151,10 +2151,6 @@ async function updatePhaseRankingsSpots(body) {
 
   const nbTeams = await nbOfTeamsInPhase(phaseId);
 
-  if (nbTeams > spots) {
-    throw new Error(ERROR_ENUM.INVALID_INFORMATION);
-  }
-
   if (actualSpots === spots) {
     return allSpots;
   }
