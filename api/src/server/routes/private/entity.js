@@ -939,10 +939,10 @@ router.put(`${BASE_URL}/updateTeamPhase`, async ctx => {
   }
 });
 
-router.del(`${BASE_URL}/teamPhase`, async ctx => {
+router.put(`${BASE_URL}/teamPhase`, async ctx => {
   const res = await PhaseRankingController.deleteTeamPhase(
+    ctx.request.body,
     ctx.body.userInfo.id,
-    ctx.query.rosterId,
   );
   if (!res) {
     throw new Error(STATUS_ENUM.ERROR_STRING);
