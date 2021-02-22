@@ -2209,24 +2209,13 @@ async function addTeamPhase(phaseId, rosterId, initialPosition) {
 
 async function deleteTeamPhase(phaseId, initialPosition) {
   const deleted = await knex('phase_rankings')
+    .update({roster_id: null})
     .where({
       current_phase: phaseId,
       initial_position: initialPosition,
     })
-    .del()
     .returning('*');
-
-  const actualSpots = await nbOfSpotsInPhase(phaseId);
-
-  for (let i = initialPosition; i < actualSpots; i++) {
-    await knex('phase_rankings')
-      .update({ initial_position: i })
-      .where({
-        current_phase: phaseId,
-        initial_position: i + 1,
-      })
-      .returning('*');
-  }
+  
   return deleted;
 }
 
