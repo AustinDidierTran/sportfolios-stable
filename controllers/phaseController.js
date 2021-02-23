@@ -2,6 +2,7 @@ const {
   addPhase: addPhaseHelper,
   getEntityRole: getEntityRoleHelper,
   updatePhase: updatePhaseHelper,
+  updatePhaseOrder: updatePhaseOrderHelper,
   updatePhaseRankingsSpots: updatePhaseRankingsSpotsHelper,
 } = require('../api/src/db/helpers/entity');
 
@@ -11,7 +12,7 @@ const { ERROR_ENUM } = require('../common/errors');
 
 class PhaseController {
   static async addPhase(body, userId) {
-    const { phase, spots, eventId } = body;
+    const { phase, spots, order, eventId } = body;
 
     if (
       !(await this.isAllowed(
@@ -22,7 +23,22 @@ class PhaseController {
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
-    const res = await addPhaseHelper(phase, spots, eventId);
+    const res = await addPhaseHelper(phase, spots, order, eventId);
+    return res;
+  }
+
+  static async updatePhaseOrder(body, userId) {
+    const { orderedPhases, eventId } = body;
+    if (
+      !(await this.isAllowed(
+        eventId,
+        userId,
+        ENTITIES_ROLE_ENUM.EDITOR,
+      ))
+    ) {
+      throw new Error(ERROR_ENUM.ACCESS_DENIED);
+    }
+    const res = await updatePhaseOrderHelper(orderedPhases, eventId);
     return res;
   }
 
