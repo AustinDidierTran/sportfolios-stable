@@ -3420,7 +3420,6 @@ async function deleteTeamFromEvent(body) {
         roster_id: rosterId,
       })
       .transacting(trx);
-
     await knex('division_ranking')
       .del()
       .where({
@@ -3428,7 +3427,12 @@ async function deleteTeamFromEvent(body) {
         event_id: eventId,
       })
       .transacting(trx);
-
+    await knex('phase_rankings')
+      .update({ roster_id: null })
+      .where({
+        roster_id: rosterId,
+      })
+      .transacting(trx);
     await knex('event_rosters')
       .del()
       .where({
@@ -3436,20 +3440,17 @@ async function deleteTeamFromEvent(body) {
         event_id: eventId,
       })
       .transacting(trx);
-
     await knex('token_roster_invite')
       .del()
       .where({
         roster_id: rosterId,
       })
       .transacting(trx);
-
-    const [res] = await knex('team_rosters')
+    await knex('team_rosters')
       .del()
       .where({ id: rosterId })
       .returning('id')
       .transacting(trx);
-    return res;
   });
 }
 
