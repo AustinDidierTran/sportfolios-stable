@@ -3,7 +3,7 @@ require('dotenv').config();
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
-const { CLIENT_BASE_URL } = require('../../conf');
+const { CLIENT_BASE_URL, ANDROID_APP_URL } = require('../../conf');
 const socket = require('./server/websocket/socket.io');
 //starts the cron jobs
 require('./server/cronjobs');
@@ -23,9 +23,21 @@ const adminRoutes = require('./server/routes/admin');
 const app = new Koa();
 const PORT = process.env.PORT || 1337;
 
+const validOrigins = [CLIENT_BASE_URL, ANDROID_APP_URL];
+
 const corsOptions = {
-  origin: CLIENT_BASE_URL,
+  origin: verifyOrigin,
 };
+
+function verifyOrigin(ctx) {
+  const origin = ctx.headers.origin;
+  if (!originIsValid(origin)) return false;
+  return origin;
+}
+
+function originIsValid(origin) {
+  return validOrigins.indexOf(origin) != -1;
+}
 
 app.use(errorHandler);
 app.use(cors(corsOptions));
