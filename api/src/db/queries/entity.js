@@ -146,6 +146,7 @@ const {
   sendPersonRegistrationEmailToAdmin,
   sendPersonRegistrationEmail,
   sendTeamAcceptedRegistrationEmail,
+  sendTeamUnregisteredEmail,
   sendTeamRefusedRegistrationEmail,
   sendTeamPendingRegistrationEmailToAdmin,
   sendImportMemberEmail,
@@ -656,7 +657,7 @@ async function addTeamAsAdmin(body, userId) {
   ];
 
   // Add roster
-  await addRosterHelper(rosterId, roster, userId);
+  await addRosterHelper(rosterId, roster);
 
   // Handle other acceptation statuses
   return { status: registrationStatus, rosterId };
@@ -1402,8 +1403,26 @@ const unregisterTeams = async (body, userId) => {
             });
           }
         }
-
         // Remove all references to this this in this event and remove players.
+
+        const teamId = await getTeamIdFromRosterId(rosterId);
+
+        const email = await getTeamCreatorEmail(teamId);
+        const language = await getLanguageFromEmail(email);
+        const captainUserId = await getUserIdFromEmail(email);
+
+        const team = (await getEntity(teamId, captainUserId))
+          .basicInfos;
+        const event = (await getEntity(eventId)).basicInfos;
+
+        sendTeamUnregisteredEmail({
+          language,
+          email,
+          team,
+          event,
+          status,
+          userId: captainUserId,
+        });
         await unregisterHelper({ rosterId, eventId });
       } else {
         // team is in a game, can't unregister and refund
@@ -1421,6 +1440,7 @@ const unregisterTeams = async (body, userId) => {
   );
   return result;
 };
+
 const unregisterPeople = async (body, userId) => {
   const { eventId, people } = body;
   const result = { failed: false, data: [] };
@@ -1522,19 +1542,21 @@ async function addPlayerToRoster(body, userId) {
   const playerUserId = await getUserIdFromPersonId(personId);
 
   const { name, surname } = await getPersonInfos(personId);
-  const res = await addPlayerToRosterHelper({
-    name: name + ' ' + surname,
-    role,
-    isSub,
-    personId,
-    rosterId,
-  });
 
   const roster = await getRosterEventInfos(rosterId);
 
   const individualOption = await getRegistrationIndividualPaymentOptionHelper(
     roster.paymentOptionId,
   );
+
+  const res = await addPlayerToRosterHelper({
+    name: name + ' ' + surname,
+    role,
+    isSub,
+    personId,
+    rosterId,
+    individualOption,
+  });
 
   if (
     (roster.status === INVOICE_STATUS_ENUM.FREE ||

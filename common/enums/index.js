@@ -361,6 +361,8 @@ const NOTIFICATION_TYPE = {
   TEAM_PENDING_REGISTRATION_ADMIN: 'team pending registration admin',
   TEAM_REGISTRATION_TO_ADMIN: 'team registration to admin',
   TEAM_REGISTRATION: 'team registration',
+  TEAM_UNREGISTERED: 'team unregistered',
+  TEAM_UNREGISTERED_AND_REFUNDED: 'team unregistered and refunded',
   TEAM_REFUSED_REGISTRATION: 'team refused registration',
   TRANSFER_PERSON: 'transfer person',
 };
