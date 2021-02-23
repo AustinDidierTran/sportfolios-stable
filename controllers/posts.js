@@ -43,6 +43,10 @@ class PostsController {
     const res = await PostServices.deleteComment(commentId);
     return res;
   }
+
+  static async deletePost(postId) {
+    await PostServices.deletePost(postId);
+  }
 }
 
 module.exports = { PostsController };

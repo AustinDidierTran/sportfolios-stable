@@ -105,6 +105,16 @@ router.post(`${BASE_URL}/unlike`, async ctx => {
   };
 });
 
+router.del(`${BASE_URL}/deletePost`, async ctx => {
+  await PostsController.deletePost(
+    ctx.query.postId,
+  );
+  ctx.status = 201;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS,
+  };
+});
+
 router.del(`${BASE_URL}/comment`, async ctx => {
   await PostsController.deleteComment(ctx.query.commentId);
 

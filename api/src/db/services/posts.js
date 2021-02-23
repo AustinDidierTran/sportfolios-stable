@@ -35,6 +35,34 @@ class PostServices {
     return post;
   }
 
+  static async deletePost(post_id) {
+    await knex('post_like')
+      .where({
+        post_id,
+      })
+      .del();
+
+    await knex('post_image')
+      .where({
+        post_id,
+      })
+      .del();
+
+    await knex('post_comment')
+      .where({
+        post_id,
+      })
+      .del();
+
+    await knex('posts')
+      .where({
+        id: post_id,
+      })
+      .del();
+
+  }
+
+
   static async addPostImageUrl(post_id, image_url) {
     await knex('post_image').insert({ post_id, image_url });
     const images = await knex
