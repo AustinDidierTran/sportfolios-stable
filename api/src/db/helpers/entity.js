@@ -2102,7 +2102,7 @@ async function updatePhaseOrder(orderedPhases, eventId){
   const res = await Promise.all(
     orderedPhases.map(async (p, index) => {
      const [order] = await knex('phase')
-      .update({phase_order: index+1})
+      .update({phase_order: index})
       .where({event_id: realId, id:p.id})
       .returning('*');
       return order;
@@ -3172,10 +3172,11 @@ async function addField(field, eventId) {
   return res;
 }
 
-async function addPhase(phase, spots, order, eventId) {
+async function addPhase(phase, spots, eventId) {
   const realId = await getRealId(eventId);
+  const phases = await getPhases(eventId);
   const [res] = await knex('phase')
-    .insert({ name: phase, event_id: realId, spots, phase_order: order })
+    .insert({ name: phase, event_id: realId, spots, phase_order: phases.length ? phases.length : 0 })
     .returning('*');
 
   if (spots && spots !== 0) {

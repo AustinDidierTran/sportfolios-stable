@@ -12,7 +12,7 @@ const { ERROR_ENUM } = require('../common/errors');
 
 class PhaseController {
   static async addPhase(body, userId) {
-    const { phase, spots, order, eventId } = body;
+    const { phase, spots, eventId } = body;
 
     if (
       !(await this.isAllowed(
@@ -23,7 +23,7 @@ class PhaseController {
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
-    const res = await addPhaseHelper(phase, spots, order, eventId);
+    const res = await addPhaseHelper(phase, spots, eventId);
     return res;
   }
 
