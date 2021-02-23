@@ -3,6 +3,7 @@ const {
   NOTIFICATION_TYPE,
   ROUTES_ENUM,
   TABS_ENUM,
+  INVOICE_STATUS_ENUM,
 } = require('../../../../common/enums');
 const {
   formatRoute,
@@ -257,6 +258,56 @@ async function sendTeamRegistrationEmailToAdmin({
   sendMail({ html, email, subject, text });
 }
 
+async function sendTeamUnregisteredEmail({
+  language,
+  email,
+  team,
+  event,
+  status,
+  userId,
+}) {
+  const footerLink = formatFooterLink(userId);
+
+  let fullEmail = {};
+
+  if (status === INVOICE_STATUS_ENUM.PAID) {
+    const buttonLink = await formatLinkWithAuthToken(
+      userId,
+      formatRoute(ROUTES_ENUM.cart, null, {
+        tab: TABS_ENUM.PURCHASES,
+      }),
+    );
+    fullEmail = await emailFactory({
+      type: NOTIFICATION_TYPE.TEAM_UNREGISTERED_AND_REFUNDED,
+      teamName: team.name,
+      eventName: event.name,
+      locale: language,
+      buttonLink,
+      footerLink,
+    });
+  } else {
+    const buttonLink = await formatLinkWithAuthToken(
+      userId,
+      formatRoute(ROUTES_ENUM.entity, { id: event.id }),
+    );
+
+    fullEmail = await emailFactory({
+      type: NOTIFICATION_TYPE.TEAM_UNREGISTERED,
+      teamName: team.name,
+      eventName: event.name,
+      locale: language,
+      buttonLink,
+      footerLink,
+    });
+  }
+
+  if (!fullEmail) {
+    return;
+  }
+  const { html, subject, text } = fullEmail;
+  sendMail({ html, email, subject, text });
+}
+
 async function sendPersonRegistrationEmailToAdmin({
   email,
   person,
@@ -477,6 +528,7 @@ module.exports = {
   sendPersonTransferEmail,
   sendReceiptEmail,
   sendRecoveryEmail,
+  sendTeamUnregisteredEmail,
   sendTeamAcceptedRegistrationEmail,
   sendTeamRefusedRegistrationEmail,
   sendTeamPendingRegistrationEmailToAdmin,

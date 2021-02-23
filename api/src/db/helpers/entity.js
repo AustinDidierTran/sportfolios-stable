@@ -1364,21 +1364,36 @@ async function getRemainingSpots(eventId) {
 
 async function getRankings(eventId) {
   const realId = await getRealId(eventId);
-  const teams = await knex('division_ranking')
-    .select('*')
-    .where({ event_id: realId });
+  const teams = await getAllTeamsAcceptedRegistered(realId);
+
   const res = await Promise.all(
     teams.map(async team => {
       const name = await getEntitiesName(team.team_id);
+      const position = await getTeamInitialPosition(
+        team.team_id,
+        realId,
+      );
       return {
         teamId: team.team_id,
-        position: team.initial_position,
+        position,
         name: name.name,
       };
     }),
   );
   res.sort((a, b) => a.position - b.position);
   return res;
+}
+
+async function getTeamInitialPosition(teamId, eventId) {
+  const [{ initial_position: position }] = await knex(
+    'division_ranking',
+  )
+    .select('initial_position')
+    .where({
+      team_id: teamId,
+      event_id: eventId,
+    });
+  return position;
 }
 
 async function getRegistrationStatus(rosterId) {
@@ -2147,9 +2162,7 @@ async function updateOriginPhase(phaseId, teams) {
 async function updatePhaseRankingsSpots(body) {
   const { phaseId, spots } = body;
 
-  const actualSpots = await nbOfSpotsInPhase(phaseId);
-
-  const nbTeams = await nbOfTeamsInPhase(phaseId);
+  const actualSpots = await getNbOfSpotsInPhase(phaseId);
 
   if (actualSpots === spots) {
     return allSpots;
@@ -2184,13 +2197,13 @@ async function updatePhaseRankingsSpots(body) {
   }
 }
 
-async function nbOfSpotsInPhase(phaseId) {
+async function getNbOfSpotsInPhase(phaseId) {
   const [res] = await knex('phase_rankings')
     .count('initial_position')
     .where({ current_phase: phaseId });
   return Number(res.count);
 }
-async function nbOfTeamsInPhase(phaseId) {
+async function getNbOfTeamsInPhase(phaseId) {
   const [res] = await knex('phase_rankings')
     .count('initial_position')
     .whereNotNull('roster_id')
@@ -2209,13 +2222,13 @@ async function addTeamPhase(phaseId, rosterId, initialPosition) {
 
 async function deleteTeamPhase(phaseId, initialPosition) {
   const deleted = await knex('phase_rankings')
-    .update({roster_id: null})
+    .update({ roster_id: null })
     .where({
       current_phase: phaseId,
       initial_position: initialPosition,
     })
     .returning('*');
-  
+
   return deleted;
 }
 
@@ -2438,6 +2451,16 @@ const deleteRegistration = async (rosterId, eventId) => {
 
     await knex('division_ranking')
       .where({ team_id: res.team_id })
+      .del()
+      .transacting(trx);
+
+    await knex('phase_rankings')
+      .update({ roster_id: null })
+      .where({ roster_id: realRosterId })
+      .transacting(trx);
+
+    await knex('token_roster_invite')
+      .where({ roster_id: realRosterId })
       .del()
       .transacting(trx);
 
@@ -3479,18 +3502,21 @@ async function getEventIdFromRosterId(rosterId) {
     .where({ roster_id: rosterId });
   return res.event_id;
 }
-async function addRoster(rosterId, roster, userId) {
+async function addRoster(rosterId, roster) {
   const eventId = await getEventIdFromRosterId(rosterId);
+  const rosterInfos = await getRosterEventInfos(rosterId);
+
+  const individualOption = await getRegistrationIndividualPaymentOption(
+    rosterInfos.paymentOptionId,
+  );
   const players = await Promise.all(
     roster.map(async r => {
-      const res = await addPlayerToRoster(
-        {
-          ...r,
-          rosterId,
-          eventId,
-        },
-        userId,
-      );
+      const res = await addPlayerToRoster({
+        ...r,
+        rosterId,
+        eventId,
+        individualOption,
+      });
       return res;
     }),
   );
@@ -3498,8 +3524,19 @@ async function addRoster(rosterId, roster, userId) {
 }
 
 const addPlayerToRoster = async body => {
-  const { personId, name, id, rosterId, role, isSub } = body;
-
+  const {
+    personId,
+    name,
+    id,
+    rosterId,
+    role,
+    isSub,
+    individualOption,
+  } = body;
+  let paymentStatus = INVOICE_STATUS_ENUM.FREE;
+  if (individualOption.individual_price > 0) {
+    paymentStatus = INVOICE_STATUS_ENUM.OPEN;
+  }
   //TODO: Make sure userId adding is team Admin
   const player = await knex('team_players')
     .insert({
@@ -3508,7 +3545,7 @@ const addPlayerToRoster = async body => {
       name,
       id,
       is_sub: isSub,
-      payment_status: INVOICE_STATUS_ENUM.OPEN,
+      payment_status: paymentStatus,
       role,
     })
     .returning('*');
@@ -4112,6 +4149,7 @@ module.exports = {
   getPersonInfos,
   getAllTeamsPending,
   getAllPlayersPending,
+  getNbOfTeamsInPhase,
   getPhases,
   getPhaseRanking,
   getPhasesGameAndTeams,
