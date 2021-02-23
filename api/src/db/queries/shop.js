@@ -1,6 +1,5 @@
 const {
   addCartItem,
-  clearCart: clearCartHelper,
   deleteCartItem: deleteCartItemHelper,
   getAllShopItems,
   getCartItem,
@@ -94,10 +93,6 @@ const removeAllInstancesFromCart = async (query, userId) => {
   return getCartItems(userId);
 };
 
-const clearCart = async (query, userId) => {
-  await clearCartHelper(query, userId);
-};
-
 const deleteCartItem = async query => {
   const { cartItemId } = query;
   const cartItem = await getCartItem(cartItemId);
@@ -150,7 +145,6 @@ const deleteAllCartItems = async userId => {
 
 module.exports = {
   addToCart,
-  clearCart,
   deleteAllCartItems,
   deleteCartItem,
   getAllItems,

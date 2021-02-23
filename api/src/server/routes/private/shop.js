@@ -138,17 +138,6 @@ router.delete(`${BASE_URL}/removeCartItemInstance`, async ctx => {
   };
 });
 
-router.delete(`${BASE_URL}/clearCart`, async ctx => {
-  const data = await queries.clearCart(
-    ctx.query,
-    ctx.body.userInfo.id,
-  );
-  ctx.body = {
-    status: 'success',
-    data,
-  };
-});
-
 router.delete(`${BASE_URL}/deleteCartItem`, async ctx => {
   const data = await queries.deleteCartItem(ctx.query);
   ctx.body = {

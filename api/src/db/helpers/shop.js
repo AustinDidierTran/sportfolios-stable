@@ -611,18 +611,6 @@ const removeAllInstancesFromCart = async query => {
   }
 };
 
-const clearCart = async userId => {
-  try {
-    await knex('cart_items')
-      .where({ user_id: userId })
-      .andWhere({ selected: true })
-      .del();
-  } catch (err) {
-    stripeErrorLogger('removeCartItems error', err);
-    throw err;
-  }
-};
-
 const deleteCartItem = async cartItemId => {
   const cartItem = await knex('cart_items')
     .del()
@@ -635,7 +623,6 @@ module.exports = {
   addCartItem,
   addMembershipCartItem,
   addItemToPaidStoreItems,
-  clearCart,
   deleteCartItem,
   getCartItems,
   getCartItem,
