@@ -1874,11 +1874,31 @@ async function getTeamGames(eventId) {
   return res;
 }
 
+async function getTeamsPhase(phaseId) {
+  const rankings = await knex('phase_rankings')
+    .select('*')
+    .whereNotNull('roster_id')
+    .where({ current_phase: phaseId });
+
+  rankings.sort((a, b) => a.initial_position - b.initial_position);
+
+  const rankingsWithName = await Promise.all(
+    rankings.map(async r => {
+      const name = await getRosterName(r.roster_id);
+      const teamId = await getTeamIdFromRosterId(r.roster_id);
+      return { ...r, teamId, name };
+    }),
+  );
+  return rankingsWithName;
+}
+
 async function getPhasesGameAndTeams(eventId, phaseId) {
   const realId = await getRealId(eventId);
   const games = await knex('games')
     .select('*')
     .where({ event_id: realId, phase_id: phaseId });
+
+  const teams = await getTeamsPhase(phaseId);
 
   const res = await Promise.all(
     games.map(async game => {
@@ -1894,7 +1914,8 @@ async function getPhasesGameAndTeams(eventId, phaseId) {
       return { id: game.id, phaseId: game.phase_id, eventId, teams };
     }),
   );
-  return res;
+
+  return { games: res, teams };
 }
 
 const getPhaseName = async phaseId => {
