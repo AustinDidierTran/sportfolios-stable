@@ -2123,13 +2123,14 @@ async function updatePreRanking(eventId, ranking) {
 }
 
 async function updatePhase(body) {
-  const { eventId, phaseId, phaseName, spots } = body;
+  const { eventId, phaseId, phaseName, spots, status } = body;
   const realId = await getRealId(eventId);
 
   const [res] = await knex('phase')
-    .update({ name: phaseName, spots })
+    .update({ name: phaseName, spots, status })
     .where({ event_id: realId, id: phaseId })
     .returning('*');
+
   return res;
 }
 
@@ -2144,15 +2145,6 @@ async function updatePhaseOrder(orderedPhases, eventId){
       return order;
     }),
   );
-  return res;
-}
-
-async function updateStartPhase(phaseId, eventId){
-  const realId = await getRealId(eventId);
-  const [res] = await knex('phase')
-    .update({status: 'started'})
-    .where({event_id: realId, id: phaseId})
-    .returning('*');
   return res;
 }
 
@@ -4268,6 +4260,5 @@ module.exports = {
   updateRegistration,
   updateRegistrationPerson,
   updateRosterRole,
-  updateStartPhase,
   updateSuggestionStatus,
 };

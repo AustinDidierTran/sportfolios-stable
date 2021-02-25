@@ -44,7 +44,7 @@ class PhaseController {
   }
 
   static async updatePhase(body, userId) {
-    const { eventId, phaseId, phaseName, spots } = body;
+    const { eventId, phaseId, phaseName, spots, status } = body;
     if (
       !(await this.isAllowed(
         eventId,
@@ -59,6 +59,7 @@ class PhaseController {
       phaseId,
       phaseName,
       spots,
+      status,
     });
 
     if (spots) {

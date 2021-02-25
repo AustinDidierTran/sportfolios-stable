@@ -939,23 +939,6 @@ router.put(`${BASE_URL}/updatePhaseOrder`, async ctx => {
   }
 });
 
-router.put(`${BASE_URL}/startPhase`, async ctx => {
-  const phase = await PhaseController.updateStartPhase(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-  );
-
-  if (!phase) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
-  ctx.body = {
-    status: 'success',
-    data: phase,
-  };
-});
-
 router.put(`${BASE_URL}/updateTeamPhase`, async ctx => {
   const entity = await PhaseRankingController.updateTeamPhase(
     ctx.request.body,
