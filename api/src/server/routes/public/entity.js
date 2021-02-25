@@ -10,7 +10,7 @@ router.get(BASE_URL, async ctx => {
     ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
   const entity = await queries.getEntity(ctx.query.id, userId);
 
-  if(entity.basicInfos.type == GLOBAL_ENUM.ORGANIZATION){
+  if (entity.basicInfos.type == GLOBAL_ENUM.ORGANIZATION) {
     entity.navBar = OrganizationController.getNavBar();
   }
 
@@ -193,6 +193,23 @@ router.get(`${BASE_URL}/games`, async ctx => {
     ctx.body = {
       status: 'success',
       data: games,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/game`, async ctx => {
+  const gameInfo = await queries.getGame(ctx.query.gameId);
+
+  if (gameInfo) {
+    ctx.body = {
+      status: 'success',
+      data: gameInfo,
     };
   } else {
     ctx.status = 404;
