@@ -68,22 +68,6 @@ class PhaseController {
     return res;
   }
 
-  static async updateStartPhase(body, userId) {
-    const { eventId, phaseId} = body;
-    if (
-      !(await this.isAllowed(
-        eventId,
-        userId,
-        ENTITIES_ROLE_ENUM.EDITOR,
-      ))
-    ) {
-      throw new Error(ERROR_ENUM.ACCESS_DENIED);
-    }
-
-    const res = await updateStartPhaseHelper(phaseId, eventId);
-    return res;
-  }
-
   static async isAllowed(
     entityId,
     userId,
