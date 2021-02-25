@@ -2133,14 +2133,14 @@ async function updatePhase(body) {
   return res;
 }
 
-async function updatePhaseOrder(orderedPhases, eventId){
+async function updatePhaseOrder(orderedPhases, eventId) {
   const realId = await getRealId(eventId);
   const res = await Promise.all(
     orderedPhases.map(async (p, index) => {
-     const [order] = await knex('phase')
-      .update({phase_order: index})
-      .where({event_id: realId, id:p.id})
-      .returning('*');
+      const [order] = await knex('phase')
+        .update({ phase_order: index })
+        .where({ event_id: realId, id: p.id })
+        .returning('*');
       return order;
     }),
   );
@@ -3220,7 +3220,12 @@ async function addPhase(phase, spots, eventId) {
   const realId = await getRealId(eventId);
   const phases = await getPhases(eventId);
   const [res] = await knex('phase')
-    .insert({ name: phase, event_id: realId, spots, phase_order: phases.length ? phases.length : 0 })
+    .insert({
+      name: phase,
+      event_id: realId,
+      spots,
+      phase_order: phases.length ? phases.length : 0,
+    })
     .returning('*');
 
   if (spots && spots !== 0) {
@@ -3571,7 +3576,7 @@ const addPlayerToRoster = async body => {
     individualOption,
   } = body;
   let paymentStatus = INVOICE_STATUS_ENUM.FREE;
-  if (individualOption.individual_price > 0) {
+  if (individualOption && individualOption.individual_price > 0) {
     paymentStatus = INVOICE_STATUS_ENUM.OPEN;
   }
   //TODO: Make sure userId adding is team Admin
