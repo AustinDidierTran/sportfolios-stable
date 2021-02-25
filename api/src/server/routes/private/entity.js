@@ -939,7 +939,6 @@ router.put(`${BASE_URL}/updatePhaseOrder`, async ctx => {
   }
 });
 
-
 router.put(`${BASE_URL}/updateTeamPhase`, async ctx => {
   const entity = await PhaseRankingController.updateTeamPhase(
     ctx.request.body,

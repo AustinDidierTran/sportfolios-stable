@@ -2123,13 +2123,14 @@ async function updatePreRanking(eventId, ranking) {
 }
 
 async function updatePhase(body) {
-  const { eventId, phaseId, phaseName, spots, isDone } = body;
+  const { eventId, phaseId, phaseName, spots, status } = body;
   const realId = await getRealId(eventId);
 
   const [res] = await knex('phase')
-    .update({ name: phaseName, spots, is_done: isDone })
+    .update({ name: phaseName, spots, status })
     .where({ event_id: realId, id: phaseId })
     .returning('*');
+
   return res;
 }
 
