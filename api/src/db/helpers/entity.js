@@ -1289,6 +1289,25 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
     }
     return 0;
   });
+
+  res.sort((a, b) => {
+    if (
+      a.registrationStatus === STATUS_ENUM.REFUSED ||
+      (a.registrationStatus === STATUS_ENUM.PENDING &&
+        b.registrationStatus !== STATUS_ENUM.REFUSED)
+    ) {
+      return 1;
+    }
+    if (
+      b.registrationStatus === STATUS_ENUM.REFUSED ||
+      (b.registrationStatus === STATUS_ENUM.PENDING &&
+        a.registrationStatus !== STATUS_ENUM.REFUSED)
+    ) {
+      return -1;
+    }
+    return 0;
+  });
+
   return res;
 }
 
@@ -2035,6 +2054,37 @@ async function getAllTeamsPending(eventId) {
         roster,
         paymentOption,
         event,
+        registrationStatus: STATUS_ENUM.PENDING,
+      };
+    }),
+  );
+  return res;
+}
+async function getAllTeamsRefused(eventId) {
+  const realId = await getRealId(eventId);
+  const teams = await knex('event_rosters')
+    .select('*')
+    .where({
+      event_id: realId,
+      registration_status: STATUS_ENUM.REFUSED,
+    });
+  const res = await Promise.all(
+    teams.map(async t => {
+      const team = (await getEntity(t.team_id)).basicInfos;
+      const event = (await getEntity(eventId)).basicInfos;
+      const roster = await getRoster(t.roster_id);
+      const paymentOption = await getPaymentOption(
+        t.payment_option_id,
+      );
+      return {
+        id: t.roster_id,
+        name: team.name,
+        photoUrl: team.photoUrl,
+        team: t,
+        roster,
+        paymentOption,
+        event,
+        registrationStatus: STATUS_ENUM.REFUSED,
       };
     }),
   );
@@ -4191,6 +4241,7 @@ module.exports = {
   getPersonGames,
   getPersonInfos,
   getAllTeamsPending,
+  getAllTeamsRefused,
   getAllPlayersPending,
   getNbOfTeamsInPhase,
   getPhases,

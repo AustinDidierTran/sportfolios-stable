@@ -547,8 +547,10 @@ router.get(`${BASE_URL}/teamsAndPlayersPending`, async ctx => {
     };
   }
 });
-router.get(`${BASE_URL}/teamsPending`, async ctx => {
-  const teams = await queries.getAllTeamsPending(ctx.query.eventId);
+router.get(`${BASE_URL}/teamsPendingAndRefused`, async ctx => {
+  const teams = await queries.getAllTeamsPendingAndRefused(
+    ctx.query.eventId,
+  );
 
   if (teams) {
     ctx.status = STATUS_ENUM.SUCCESS;
