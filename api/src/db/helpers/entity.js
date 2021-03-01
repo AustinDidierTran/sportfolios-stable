@@ -1310,6 +1310,49 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
 
   return res;
 }
+async function getAllTeamsAcceptedInfos(eventId, userId) {
+  const teams = await getAllTeamsAcceptedRegistered(eventId);
+
+  const res = await Promise.all(
+    teams.map(async t => {
+      const entity = (await getEntity(t.team_id, userId)).basicInfos;
+      const emails = await getEmailsEntity(t.team_id);
+      const players = await getRoster(t.roster_id, true);
+      const captains = await getTeamCaptains(t.team_id, userId);
+      const option = await getPaymentOption(t.payment_option_id);
+      const role = await getRole(t.roster_id, userId);
+      const registrationStatus = await getRegistrationStatus(
+        t.roster_id,
+      );
+      return {
+        name: entity.name,
+        surname: entity.surname,
+        photoUrl: entity.photoUrl,
+        rosterId: t.roster_id,
+        teamId: t.team_id,
+        invoiceItemId: t.invoice_item_id,
+        status: t.status,
+        emails,
+        players,
+        captains,
+        option,
+        role,
+        registrationStatus,
+      };
+    }),
+  );
+  res.sort((a, b) => {
+    if (a.name < b.name) {
+      return -1;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    return 0;
+  });
+
+  return res;
+}
 
 async function getAllPeopleRegisteredInfos(eventId, userId) {
   const people = await getAllPeopleRegistered(eventId);
@@ -1386,7 +1429,7 @@ async function getRankings(eventId) {
   const teams = await getAllTeamsAcceptedRegistered(realId);
 
   const res = await Promise.all(
-    teams.map(async team => {
+    teams.map(async (team, index) => {
       const name = await getEntitiesName(team.team_id);
       const position = await getTeamInitialPosition(
         team.team_id,
@@ -1394,7 +1437,7 @@ async function getRankings(eventId) {
       );
       return {
         teamId: team.team_id,
-        position,
+        position: position || index,
         name: name.name,
       };
     }),
@@ -1948,7 +1991,13 @@ const getTeams = async gameId => {
   const teams = await knex('game_teams')
     .select('*')
     .where({ game_id: gameId });
-  return teams;
+  const res = await Promise.all(
+    teams.map(async team => {
+      const teamId = await getTeamIdFromRosterId(team.roster_id);
+      return { ...team, teamId };
+    }),
+  );
+  return res;
 };
 
 async function getSlots(eventId) {
@@ -4199,6 +4248,7 @@ module.exports = {
   generateAuthToken,
   generateReport,
   getAlias,
+  getAllTeamsAcceptedInfos,
   getAllTeamsAcceptedRegistered,
   getAllPlayersAcceptedRegistered,
   getAllEntities,
