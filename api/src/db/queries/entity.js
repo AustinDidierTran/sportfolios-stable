@@ -71,6 +71,7 @@ const {
   getEventAdmins: getEventAdminsHelper,
   getFields: getFieldsHelper,
   getGamePlayersWithRole,
+  getGameInfo: getGameInfoHelper,
   getGames: getGamesHelper,
   getGameSubmissionInfos: getGameSubmissionInfosHelper,
   getGeneralInfos: getGeneralInfosHelper,
@@ -326,6 +327,10 @@ async function validateEmailIsUnique(email) {
 
 async function getPhases(eventId) {
   return getPhasesHelper(eventId);
+}
+
+async function getGameInfo(gameId) {
+  return getGameInfoHelper(gameId);
 }
 
 async function getGames(eventId) {
@@ -1881,6 +1886,7 @@ module.exports = {
   getEntity,
   getEvent,
   getFields,
+  getGameInfo,
   getGames,
   getGameSubmissionInfos,
   getGeneralInfos,
