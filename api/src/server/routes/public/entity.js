@@ -203,8 +203,8 @@ router.get(`${BASE_URL}/games`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/game`, async ctx => {
-  const gameInfo = await queries.getGame(ctx.query.gameId);
+router.get(`${BASE_URL}/gameInfo`, async ctx => {
+  const gameInfo = await queries.getGameInfo(ctx.query.gameId);
 
   if (gameInfo) {
     ctx.body = {
