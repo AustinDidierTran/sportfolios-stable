@@ -1908,7 +1908,32 @@ const getTeams = async gameId => {
   const teams = await knex('game_teams')
     .select('*')
     .where({ game_id: gameId });
-  return teams;
+
+  const teamInfo = await Promise.all(
+    teams.map(async team => {
+      const realTeamId = await getTeamIdFromRosterId(team.roster_id);
+      const [entities_photo] = await knex('entities_photo')
+        .select('photo_url')
+        .where('entity_id', realTeamId);
+
+      const roster = await getRoster(team.roster_id);
+
+      return {
+        game_id: team.game_id,
+        roster_id: team.roster_id,
+        score: team.score,
+        position: team.position,
+        name: team.name,
+        id: team.id,
+        spirit: team.spirit,
+        created_at: team.created_at,
+        updated_at: team.updated_at,
+        photo_url: entities_photo.photo_url,
+        roster: roster,
+      }
+    }),
+  );
+  return teamInfo;
 };
 
 async function getSlots(eventId) {
@@ -3974,31 +3999,7 @@ const getGameInfo = async id => {
 
   const teams = await getTeams(id);
 
-  const teamInfo = await Promise.all(
-    teams.map(async team => {
-      const realTeamId = await getTeamIdFromRosterId(team.roster_id);
-      const [entities_photo] = await knex('entities_photo')
-        .select('photo_url')
-        .where('entity_id', realTeamId);
 
-      team.photo_url = entities_photo.photo_url;
-      const roster = await getRoster(team.roster_id);
-      team.roster = roster;
-      return {
-        game_id: team.game_id,
-        roster_id: team.roster_id,
-        score: team.score,
-        position: team.position,
-        name: team.name,
-        id: team.id,
-        spirit: team.spirit,
-        created_at: team.created_at,
-        updated_at: team.updated_at,
-        photo_url: entities_photo.photo_url,
-        roster,
-      }
-    }),
-  );
 
   if (game.phase_id) {
     game.phaseName = await getPhaseName(game.phase_id);
@@ -4012,7 +4013,7 @@ const getGameInfo = async id => {
     .where({ id: game.timeslot_id });
   return {
     ...game,
-    teams: teamInfo,
+    teams: teams,
     scoreSubmited: score_suggestion.score_submited,
     field: r1.field,
     start_time: r2.date
