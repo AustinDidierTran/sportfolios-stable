@@ -1929,7 +1929,7 @@ const getTeams = async gameId => {
         created_at: team.created_at,
         updated_at: team.updated_at,
         photo_url: entities_photo.photo_url,
-        roster: roster,
+        roster,
       }
     }),
   );
@@ -4002,7 +4002,7 @@ const getGameInfo = async id => {
 
 
   if (game.phase_id) {
-    game.phaseName = await getPhaseName(game.phase_id);
+    game.phase_name = await getPhaseName(game.phase_id);
   }
 
   const [r1] = await knex('event_fields')
@@ -4013,8 +4013,8 @@ const getGameInfo = async id => {
     .where({ id: game.timeslot_id });
   return {
     ...game,
-    teams: teams,
-    scoreSubmited: score_suggestion.score_submited,
+    teams,
+    score_submited: score_suggestion.score_submited,
     field: r1.field,
     start_time: r2.date
   };
