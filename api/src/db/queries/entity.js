@@ -1097,6 +1097,7 @@ async function updateGame(body) {
     rosterId2,
     name1,
     name2,
+    description,
     teamId1,
     teamId2,
   } = body;
@@ -1109,6 +1110,7 @@ async function updateGame(body) {
     rosterId2,
     name1,
     name2,
+    description,
     teamId1,
     teamId2,
   );
