@@ -81,8 +81,9 @@ async function sendConfirmationEmail({
   redirectUrl,
 }) {
   let buttonLink = '';
+
   if (redirectUrl) {
-    buttonlink = formatClientRoute(
+    buttonLink = formatClientRoute(
       ROUTES_ENUM.confirmEmail,
       { token },
       { redirectUrl },

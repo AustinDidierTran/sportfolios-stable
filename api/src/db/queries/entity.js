@@ -1550,11 +1550,9 @@ async function addPlayerToRoster(body, userId) {
   const { name, surname } = await getPersonInfos(personId);
 
   const roster = await getRosterEventInfos(rosterId);
-
   const individualOption = await getRegistrationIndividualPaymentOptionHelper(
     roster.paymentOptionId,
   );
-
   const res = await addPlayerToRosterHelper({
     name: name + ' ' + surname,
     role,
@@ -1567,6 +1565,7 @@ async function addPlayerToRoster(body, userId) {
   if (
     (roster.status === INVOICE_STATUS_ENUM.FREE ||
       roster.status === INVOICE_STATUS_ENUM.PAID) &&
+    individualOption &&
     individualOption.individual_price > 0
   ) {
     await addPlayerCartItem({ name, rosterId, personId, isSub });
