@@ -69,7 +69,7 @@ const {
   getEventAdmins: getEventAdminsHelper,
   getFields: getFieldsHelper,
   getGamePlayersWithRole,
-  getGame: getGameHelper,
+  getGameInfo: getGameInfoHelper,
   getGames: getGamesHelper,
   getGameSubmissionInfos: getGameSubmissionInfosHelper,
   getGeneralInfos: getGeneralInfosHelper,
@@ -315,8 +315,8 @@ async function getPhases(eventId) {
   return getPhasesHelper(eventId);
 }
 
-async function getGame(gameId) {
-  return getGameHelper(gameId);
+async function getGameInfo(gameId) {
+  return getGameInfoHelper(gameId);
 }
 
 async function getGames(eventId) {
@@ -1764,7 +1764,7 @@ module.exports = {
   getEntity,
   getEvent,
   getFields,
-  getGame,
+  getGameInfo,
   getGames,
   getGameSubmissionInfos,
   getGeneralInfos,

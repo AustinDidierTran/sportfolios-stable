@@ -2985,7 +2985,7 @@ async function isSpiritAlreadySubmitted(infos) {
 async function acceptScoreSuggestion(infos) {
   const { id, submitted_by_roster, submitted_by_person } = infos;
   const res = await knex('score_suggestion')
-    .select('score.score', 'game_id')
+    .select('score', 'game_id')
     .where({ id });
   if (!res || res.length === 0) {
     return;
@@ -3962,6 +3962,63 @@ const getGame = async id => {
   return { ...game, teams };
 };
 
+const getGameInfo = async id => {
+  const [game] = await knex('games')
+    .select('*')
+    .where({ id });
+
+  const [score_suggestion] = await knex('score_suggestion')
+    .select(knex.raw('count(*) >= 2 as score_submited'))
+    .where('game_id', id)
+    .andWhere('status', 'accepted');
+
+  const teams = await getTeams(id);
+
+  const teamInfo = await Promise.all(
+    teams.map(async team => {
+      const realTeamId = await getTeamIdFromRosterId(team.roster_id);
+      const [entities_photo] = await knex('entities_photo')
+        .select('photo_url')
+        .where('entity_id', realTeamId);
+
+      team.photo_url = entities_photo.photo_url;
+      const roster = await getRoster(team.roster_id);
+      team.roster = roster;
+      return {
+        game_id: team.game_id,
+        roster_id: team.roster_id,
+        score: team.score,
+        position: team.position,
+        name: team.name,
+        id: team.id,
+        spirit: team.spirit,
+        created_at: team.created_at,
+        updated_at: team.updated_at,
+        photo_url: entities_photo.photo_url,
+        roster,
+      }
+    }),
+  );
+
+  if (game.phase_id) {
+    game.phaseName = await getPhaseName(game.phase_id);
+  }
+
+  const [r1] = await knex('event_fields')
+    .select('field')
+    .where({ id: game.field_id });
+  const [r2] = await knex('event_time_slots')
+    .select('date')
+    .where({ id: game.timeslot_id });
+  return {
+    ...game,
+    teams: teamInfo,
+    scoreSubmited: score_suggestion.score_submited,
+    field: r1.field,
+    start_time: r2.date
+  };
+};
+
 const deleteGame = async id => {
   const game = await getGame(id);
   const [res] = await knex.transaction(async trx => {
@@ -4133,6 +4190,7 @@ module.exports = {
   getFields,
   getGamePlayersWithRole,
   getGame,
+  getGameInfo,
   getGames,
   getGameSubmissionInfos,
   getGamesWithAwaitingScore,
