@@ -3718,6 +3718,7 @@ async function updateGame(
   rosterId2,
   name1,
   name2,
+  description,
   teamId1,
   teamId2,
 ) {
@@ -3741,6 +3742,7 @@ async function updateGame(
       })
       .update({
         field_id: fieldId,
+        description,
       })
       .returning('*');
     res.push(r);
