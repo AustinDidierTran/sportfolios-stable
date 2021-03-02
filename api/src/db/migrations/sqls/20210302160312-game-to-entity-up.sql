@@ -1,6 +1,6 @@
 ALTER TABLE games ADD COLUMN entity_id UUID REFERENCES entities(id);
 
-insert into entities (type) select 5 FROM games cross join (values ('5')) as type;
+insert into entities (type) select 5 FROM games;
 
 DO $$
 DECLARE
