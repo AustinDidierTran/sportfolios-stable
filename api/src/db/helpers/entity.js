@@ -3033,13 +3033,22 @@ async function addAllTimeslots(eventId, timeslotsArray) {
 
 async function addAllGames(eventId, gamesArray) {
   const realId = await getRealId(eventId);
-  const games = gamesArray.map(g => ({
-    event_id: realId,
-    phase_id: g.phase_id,
-    field_id: g.field_id,
-    timeslot_id: g.timeslot_id,
-    id: g.id,
-  }));
+  const games = await Promise.all(
+    gamesArray.map(async (g) => {
+      const [{ id: entityId }] = await knex('entities')
+        .insert({ type: GLOBAL_ENUM.GAME })
+        .returning(['id']);
+      return {
+        event_id: realId,
+        phase_id: g.phase_id,
+        field_id: g.field_id,
+        timeslot_id: g.timeslot_id,
+        id: g.id,
+        entity_id: entityId,
+      }
+    }),
+  );
+
   const teamsArray = gamesArray.reduce(
     (prev, g) => [
       ...prev,
@@ -3198,6 +3207,10 @@ async function addGame(
   name1,
   name2,
 ) {
+  const [{ id: entityId }] = await knex('entities')
+    .insert({ type: GLOBAL_ENUM.GAME })
+    .returning(['id']);
+
   const realId = await getRealId(eventId);
   const [res] = await knex('games')
     .insert({
@@ -3205,6 +3218,7 @@ async function addGame(
       event_id: realId,
       field_id: fieldId,
       phase_id: phaseId,
+      entity_id: entityId,
     })
     .returning('*');
 
@@ -4364,6 +4378,12 @@ const deleteGame = async id => {
       .where('game_id', id)
       .del()
       .transacting(trx);
+
+    await knex('entities')
+      .where('id', game.entity_id)
+      .del()
+      .transacting(trx);
+
     return knex('games')
       .where({ id })
       .del()
