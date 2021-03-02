@@ -337,6 +337,7 @@ const GLOBAL_ENUM = {
   ORGANIZATION: 2,
   TEAM: 3,
   EVENT: 4,
+  GAME: 5,
   MEMBERSHIP: 'membership',
   SHOP_ITEM: 'shop_item',
 };
