@@ -71,7 +71,8 @@ const getEntitiesFromQuery = async (query, blackList) => {
           'surname',
           'entities_photo.photo_url',
         )
-        .as('entities_formatted'),
+        .as('entities_formatted')
+        .whereNull('deleted_at'),
     )
     .where('complete_name', 'ILIKE', `%${query}%`)
     .orWhere('name', 'ILIKE', `%${query}%`)
@@ -136,7 +137,8 @@ const getPersonsFromQuery = async (query, blackList, whiteList) => {
           'surname',
           'entities_photo.photo_url',
         )
-        .as('entities_formatted'),
+        .as('entities_formatted')
+        .whereNull('deleted_at'),
     )
     .where('complete_name', 'ILIKE', `%${query}%`)
     .orWhere('name', 'ILIKE', `%${query}%`)
@@ -174,7 +176,6 @@ const getTeamsFromQuery = async (query, blackList, whiteList) => {
       knex
         .select(
           'id',
-          'type',
           'name',
           'surname',
           'entities_photo.photo_url',
@@ -203,7 +204,8 @@ const getTeamsFromQuery = async (query, blackList, whiteList) => {
           'surname',
           'entities_photo.photo_url',
         )
-        .as('entities_formatted'),
+        .as('entities_formatted')
+        .whereNull('deleted_at'),
     )
     .where('complete_name', 'ILIKE', `%${query}%`)
     .orWhere('name', 'ILIKE', `%${query}%`)
@@ -292,7 +294,8 @@ const getOrganizationsFromQuery = async query => {
           'surname',
           'entities_photo.photo_url',
         )
-        .as('entities_formatted'),
+        .as('entities_formatted')
+        .whereNull('deleted_at'),
     )
     .where('complete_name', 'ILIKE', `%${query}%`)
     .orWhere('name', 'ILIKE', `%${query}%`)
