@@ -2300,7 +2300,7 @@ async function updatePhaseRankingsSpots(body) {
   const actualSpots = await getNbOfSpotsInPhase(phaseId);
 
   if (actualSpots === spots) {
-    return allSpots;
+    return;
   }
 
   if (actualSpots < spots) {
@@ -2316,6 +2316,7 @@ async function updatePhaseRankingsSpots(body) {
     }
     return added;
   }
+
   if (actualSpots > spots) {
     let deleted = [];
     for (let i = actualSpots; i > spots; --i) {
