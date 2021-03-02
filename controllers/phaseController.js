@@ -60,8 +60,8 @@ class PhaseController {
       spots,
       status,
     });
-
-    if (spots) {
+    
+    if (spots || spots === 0) {
       await updatePhaseRankingsSpotsHelper({ phaseId, spots });
     }
   
