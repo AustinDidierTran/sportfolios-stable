@@ -4,8 +4,8 @@ const {
 
 class PostsController {
 
-  static async create(body, userId) {
-    const post = await PostServices.addPost(body, userId);
+  static async create(body, locationId, userId) {
+    const post = await PostServices.addPost(body, locationId, userId);
 
     return post;
   }
@@ -20,6 +20,11 @@ class PostsController {
 
   static async getFeedOrganization(userId, organizationId, body) {
     const res = await PostServices.getPostFeed(userId, [organizationId], body);
+    return res;
+  }
+
+  static async getFeed(userId, locationId, body) {
+    const res = await PostServices.getPostFeed(userId, locationId, body);
     return res;
   }
 

@@ -23,11 +23,11 @@ class PostServices {
 
     return post;
   }
-  static async addPost(body, entity_id) {
+  static async addPost(body, location_id, entity_id) {
     const { content } = body;
 
     const [post_id] = await knex('posts')
-      .insert({ entity_id, content })
+      .insert({ entity_id, content, location_id })
       .returning('id');
 
     const post = await PostServices.getPost(post_id, entity_id);
@@ -155,7 +155,7 @@ class PostServices {
     return [];
   }
 
-  static async getPostFeed(user_id, array_entity_id, body) {
+  static async getPostFeed(user_id, locationId, body) {
     if (body) {
       const { perPage, currentPage } = body;
       const { data } = await knex
@@ -185,7 +185,7 @@ class PostServices {
           '=',
           'entities_photo.entity_id',
         )
-        .whereIn('posts.entity_id', array_entity_id)
+        .where('posts.location_id', locationId)
         .orderBy('posts.created_at', 'desc')
         .paginate({ perPage, currentPage });
       if (data) {
