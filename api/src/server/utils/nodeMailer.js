@@ -26,7 +26,7 @@ try {
   );
 }
 
-const YOUR_EMAIL_ADDRESS = 'info@sportfolios.app';
+const YOUR_EMAIL_ADDRESS = 'noreply@sportfolios.app';
 
 // Do not export this function. Create your own who uses it, then export this one
 async function sendMail({ email: emailProps, subject, text, html }) {
