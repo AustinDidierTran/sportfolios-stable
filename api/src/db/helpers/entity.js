@@ -1073,6 +1073,7 @@ async function getOptions(eventId) {
       'team_activity',
       'team_acceptation',
       'player_acceptation',
+      'informations',
     )
     .leftJoin(
       'entities_name',
@@ -3416,6 +3417,7 @@ async function addOption(
   teamAcceptation,
   teamActivity,
   teamPrice,
+  informations,
   userId,
 ) {
   const realId = await getRealId(eventId);
@@ -3497,6 +3499,7 @@ async function addOption(
       team_activity: teamActivity,
       team_acceptation: teamAcceptation,
       player_acceptation: playerAcceptation,
+      informations,
     })
     .returning('*');
   return res;
@@ -3568,6 +3571,7 @@ async function addTeamToEvent(body) {
     status,
     registrationStatus,
     paymentOption,
+    informations,
   } = body;
   const realTeamId = await getRealId(teamId);
   const realEventId = await getRealId(eventId);
@@ -3586,6 +3590,7 @@ async function addTeamToEvent(body) {
         status,
         registration_status: registrationStatus,
         payment_option_id: paymentOption,
+        informations,
       })
       .returning('*')
       .transacting(trx);
@@ -3663,6 +3668,7 @@ async function addPersonToEvent(body) {
     status,
     registrationStatus,
     paymentOption,
+    informations,
   } = body;
   const realEventId = await getRealId(eventId);
   const [res] = await knex('event_persons')
@@ -3672,6 +3678,7 @@ async function addPersonToEvent(body) {
       status,
       registration_status: registrationStatus,
       payment_option_id: paymentOption,
+      informations,
     })
     .returning('*');
   return res;

@@ -466,7 +466,14 @@ async function updatePersonInfos(body, userId) {
 }
 
 async function addTeamToEvent(body, userId) {
-  const { teamId, eventId, paymentOption, roster, status } = body;
+  const {
+    teamId,
+    eventId,
+    paymentOption,
+    roster,
+    status,
+    informations,
+  } = body;
   if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
@@ -503,6 +510,7 @@ async function addTeamToEvent(body, userId) {
     status: isFreeOption ? INVOICE_STATUS_ENUM.FREE : status,
     registrationStatus,
     paymentOption,
+    informations,
   });
 
   // Add roster
@@ -675,7 +683,13 @@ async function addTeamAsAdmin(body, userId) {
 }
 
 async function addPersonToEvent(body, userId) {
-  const { eventId, paymentOption, persons, status } = body;
+  const {
+    eventId,
+    paymentOption,
+    persons,
+    status,
+    informations,
+  } = body;
 
   if (!paymentOption) {
     throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
@@ -720,6 +734,7 @@ async function addPersonToEvent(body, userId) {
         status: isFreeOption ? INVOICE_STATUS_ENUM.FREE : status,
         registrationStatus,
         paymentOption,
+        informations,
       });
       if (registrationStatus === STATUS_ENUM.ACCEPTED) {
         // wont be added to cart if free
@@ -1329,6 +1344,7 @@ async function addOption(body, userId) {
     teamAcceptation,
     teamActivity,
     teamPrice,
+    informations,
   } = body;
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
@@ -1347,6 +1363,7 @@ async function addOption(body, userId) {
     teamAcceptation,
     teamActivity,
     teamPrice,
+    informations,
     userId,
   );
   return res;
