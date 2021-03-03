@@ -1296,13 +1296,23 @@ async function getAllPlayersAcceptedRegistered(eventId) {
   return people;
 }
 
+async function getStripeInvoiceItem(invoiceItemId) {
+  const [res] = await knex('stripe_invoice_item')
+    .select('*')
+    .where({ invoice_item_id: invoiceItemId });
+  return res;
+}
 async function getAllTeamsRegisteredInfos(eventId, userId) {
   const teams = await getAllTeamsRegistered(eventId);
 
   const res = await Promise.all(
     teams.map(async t => {
+      let invoice = null;
+      if (t.invoice_item_id) {
+        invoice = await getStripeInvoiceItem(t.invoice_item_id);
+      }
       const entity = (await getEntity(t.team_id, userId)).basicInfos;
-      const emails = await getEmailsEntity(t.team_id);
+      const email = await getTeamCreatorEmail(t.team_id);
       const players = await getRoster(t.roster_id, true);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.payment_option_id);
@@ -1318,10 +1328,13 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
         teamId: t.team_id,
         invoiceItemId: t.invoice_item_id,
         status: t.status,
-        emails,
+        registeredOn: t.created_at,
+        informations: t.informations,
+        email,
         players,
         captains,
         option,
+        invoice,
         role,
         registrationStatus,
       };
@@ -1355,7 +1368,6 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
     }
     return 0;
   });
-
   return res;
 }
 async function getAllTeamsAcceptedInfos(eventId, userId) {
@@ -1379,6 +1391,7 @@ async function getAllTeamsAcceptedInfos(eventId, userId) {
         rosterId: t.roster_id,
         teamId: t.team_id,
         invoiceItemId: t.invoice_item_id,
+        informations: t.informations,
         status: t.status,
         emails,
         players,
@@ -1407,6 +1420,10 @@ async function getAllPeopleRegisteredInfos(eventId, userId) {
 
   const res = await Promise.all(
     people.map(async p => {
+      let invoice = null;
+      if (p.invoice_item_id) {
+        invoice = await getStripeInvoiceItem(p.invoice_item_id);
+      }
       const entity = (await getEntity(p.person_id, userId))
         .basicInfos;
       const email = await getEmailPerson(p.person_id);
@@ -1419,6 +1436,9 @@ async function getAllPeopleRegisteredInfos(eventId, userId) {
         photoUrl: entity.photoUrl,
         invoiceItemId: p.invoice_item_id,
         status: p.status,
+        registeredOn: p.created_at,
+        informations: p.informations,
+        invoice,
         email,
         option,
         registrationStatus: p.registration_status,
