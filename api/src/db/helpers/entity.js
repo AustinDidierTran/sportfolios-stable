@@ -2380,7 +2380,6 @@ async function updatePhaseRankingsSpots(body) {
 }
 
 async function updatePhaseFinalRanking(phaseId, finalRanking) {
-  console.log(finalRanking);
   const res = finalRanking.map(async (r, index) => {
     const finalPosition = await knex('phase_rankings')
     .update({final_position: index+1})
