@@ -2272,12 +2272,10 @@ async function updatePreRanking(eventId, ranking) {
 async function updatePhase(body) {
   const { eventId, phaseId, phaseName, spots, status } = body;
   const realId = await getRealId(eventId);
-
-  const [res] = await knex('phase')
-    .update({ name: phaseName, spots, status })
-    .where({ event_id: realId, id: phaseId })
+  const res = await knex('phase')
+    .update({spots, status})
+    .where({event_id: realId, id: phaseId})
     .returning('*');
-
   return res;
 }
 
@@ -2379,6 +2377,17 @@ async function updatePhaseRankingsSpots(body) {
     }
     return deleted;
   }
+}
+
+async function updatePhaseFinalRanking(phaseId, finalRanking) {
+  console.log(finalRanking);
+  const res = finalRanking.map(async (r, index) => {
+    const finalPosition = await knex('phase_rankings')
+    .update({final_position: index+1})
+    .where({current_phase: phaseId, roster_id: r.rosterId})
+    .returning('*');
+  });
+  return res;
 }
 
 async function getNbOfSpotsInPhase(phaseId) {
@@ -4417,6 +4426,7 @@ module.exports = {
   updateFinalPositionPhase,
   updateOriginPhase,
   updatePhaseRankingsSpots,
+  updatePhaseFinalRanking,
   updatePlayerPaymentStatus,
   updatePreRanking,
   updateRegistration,

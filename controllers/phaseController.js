@@ -4,6 +4,7 @@ const {
   updatePhase: updatePhaseHelper,
   updatePhaseOrder: updatePhaseOrderHelper,
   updatePhaseRankingsSpots: updatePhaseRankingsSpotsHelper,
+  updatePhaseFinalRanking: updatePhaseFinalRankingHelper,
 } = require('../api/src/db/helpers/entity');
 
 const { ENTITIES_ROLE_ENUM } = require('../common/enums');
@@ -43,7 +44,7 @@ class PhaseController {
   }
 
   static async updatePhase(body, userId) {
-    const { eventId, phaseId, phaseName, spots, status } = body;
+    const { eventId, phaseId, phaseName, spots, status, finalRanking } = body;
     if (
       !(await this.isAllowed(
         eventId,
@@ -53,6 +54,7 @@ class PhaseController {
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
+
     const res = await updatePhaseHelper({
       eventId,
       phaseId,
@@ -63,6 +65,10 @@ class PhaseController {
     
     if (spots || spots === 0) {
       await updatePhaseRankingsSpotsHelper({ phaseId, spots });
+    }
+    
+    if(finalRanking) {
+      await updatePhaseFinalRankingHelper(phaseId, finalRanking);
     }
   
     return res;
