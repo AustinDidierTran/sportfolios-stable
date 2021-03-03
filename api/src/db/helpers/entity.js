@@ -532,8 +532,7 @@ async function getEntity(id, userId) {
       '=',
       'entities.id',
     )
-    .whereNull('deleted_at')
-    .andWhere({ id: realId });
+    .where({ id: realId });
 
   const role = await getEntityRole(realId, userId);
 
@@ -627,6 +626,54 @@ async function getPersonGames(id) {
           'players.roster_id',
           '=',
           'game_teams.roster_id',
+        )
+        .whereIn('game_id', gameIds)
+        .groupBy('game_id')
+        .as('teams'),
+      'teams.game_id',
+      '=',
+      'games_all_infos.id',
+    )
+    .whereIn('games_all_infos.id', gameIds)
+    .andWhere(
+      'games_all_infos.timeslot',
+      '>',
+      knex.raw("NOW() - '12 HOUR'::INTERVAL"),
+    )
+    .orderBy('games_all_infos.timeslot', 'asc');
+
+  return gamesInfos;
+}
+async function getTeamGamesInfos(id) {
+  const gameIds = (
+    await knex('team_rosters')
+      .select('games.id')
+      .leftJoin(
+        'game_teams',
+        'game_teams.roster_id',
+        '=',
+        'team_rosters.id',
+      )
+      .leftJoin('games', 'games.id', '=', 'game_teams.game_id')
+      .where({ team_id: id })
+  ).map(game => game.id);
+
+  const gamesInfos = await knex('games_all_infos')
+    .select(
+      'games_all_infos.event_id',
+      'games_all_infos.event_name',
+      'games_all_infos.id',
+      'games_all_infos.timeslot',
+      'games_all_infos.field',
+      'team_names',
+      'team_scores',
+    )
+    .leftJoin(
+      knex('game_teams')
+        .select(
+          knex.raw('array_agg(game_teams.name) AS team_names'),
+          knex.raw('array_agg(game_teams.score) AS team_scores'),
+          'game_id',
         )
         .whereIn('game_id', gameIds)
         .groupBy('game_id')
@@ -4322,6 +4369,7 @@ module.exports = {
   getSlots,
   getSubmissionerInfos,
   getTeamGames,
+  getTeamGamesInfos,
   getTeamsSchedule,
   getIndividualPaymentOptionFromRosterId,
   getTeamPaymentOptionFromRosterId,

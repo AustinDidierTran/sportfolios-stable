@@ -85,6 +85,7 @@ const {
   getOwnedEvents: getOwnedEventsHelper,
   getOwnerStripePrice,
   getPersonGames: getPersonGamesHelper,
+  getTeamGamesInfos: getTeamGamesInfosHelper,
   getPersonInfos: getPersonInfosHelper,
   getPersonInvoiceItem,
   getPhases: getPhasesHelper,
@@ -181,6 +182,9 @@ async function getEntity(id, user_id) {
 
   if (res.basicInfos.type === GLOBAL_ENUM.PERSON) {
     res.gamesInfos = await getPersonGamesHelper(id);
+  }
+  if (res.basicInfos.type === GLOBAL_ENUM.TEAM) {
+    res.gamesInfos = await getTeamGamesInfosHelper(id);
   }
 
   return res;
