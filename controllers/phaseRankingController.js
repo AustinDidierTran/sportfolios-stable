@@ -80,12 +80,12 @@ class PhaseRankingController {
   static async updateTeamPhase(body, userId) {
     const {
       eventId,
-      team,
+      id,
       initialPosition,
       phaseId,
     } = body;
 
-    const rosterId=team;
+    const rosterId=id;
 
     if (
       !(await this.isAllowed(
