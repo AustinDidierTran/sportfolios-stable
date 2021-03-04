@@ -1733,7 +1733,12 @@ async function getPhaseRanking(phaseId) {
       if (r.roster_id) {
         const name = await getRosterName(r.roster_id);
         return { ...r, name };
-      } else {
+      }
+      if(r.origin_phase && r.origin_position && !r.roster_id){
+        const phaseName = await getPhaseName(r.origin_phase);
+        return {...r, phaseName};
+      } 
+      else {
         return { ...r, initialPosition: r.initial_position };
       }
     }),
@@ -2322,21 +2327,14 @@ async function updateFinalPositionPhase(phaseId, teams) {
   );
   return res;
 }
-async function updateOriginPhase(phaseId, teams) {
-  const res = await Promise.all(
-    teams.map(async t => {
-      await knex('phase_rankings')
-        .update({
-          origin_phase: t.originPhase,
-          origin_position: t.originPosition,
-        })
-        .where({
-          current_phase: phaseId,
-          initial_position: t.initialPosition,
-        })
-        .returning('*');
-    }),
-  );
+
+async function updateOriginPhase(body) {
+  const {phaseId, originPhase, originPosition, initialPosition} = body;
+  const res = await knex('phase_rankings')
+    .update({origin_phase: originPhase, origin_position: originPosition})
+    .where({current_phase: phaseId, initial_position: initialPosition})
+    .returning('*');
+
   return res;
 }
 
@@ -2414,7 +2412,7 @@ async function addTeamPhase(phaseId, rosterId, initialPosition) {
 
 async function deleteTeamPhase(phaseId, initialPosition) {
   const deleted = await knex('phase_rankings')
-    .update({ roster_id: null })
+    .update({ roster_id: null, origin_phase: null, origin_position: null })
     .where({
       current_phase: phaseId,
       initial_position: initialPosition,

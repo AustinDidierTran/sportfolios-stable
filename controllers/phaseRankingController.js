@@ -45,44 +45,14 @@ class PhaseRankingController {
     return res;
   }
 
-  static async updateOriginPhase(body, userId) {
-    const { phaseId, teams, eventId } = body;
-
-    if (
-      !(await this.isAllowed(
-        eventId,
-        userId,
-        ENTITIES_ROLE_ENUM.EDITOR,
-      ))
-    ) {
-      throw new Error(ERROR_ENUM.ACCESS_DENIED);
-    }
-    const res = await updateOriginPhaseHelper(phaseId, teams);
-    return res;
-  }
-  
-  static async updateOriginPhase(body, userId) {
-    const { phaseId, teams, eventId } = body;
-
-    if (
-      !(await this.isAllowed(
-        eventId,
-        userId,
-        ENTITIES_ROLE_ENUM.EDITOR,
-      ))
-    ) {
-      throw new Error(ERROR_ENUM.ACCESS_DENIED);
-    }
-    const res = await updateOriginPhaseHelper(phaseId, teams);
-    return res;
-  }
-
   static async updateTeamPhase(body, userId) {
     const {
       eventId,
       id,
       initialPosition,
       phaseId,
+      originPhase,
+      originPosition,
     } = body;
 
     const rosterId=id;
@@ -97,12 +67,17 @@ class PhaseRankingController {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
 
-    const res = await addTeamPhaseHelper(
-      phaseId,
-      rosterId,
-      initialPosition,
-    );
-    return res;
+    if(originPhase && originPosition){
+      const res = await updateOriginPhaseHelper({phaseId, originPhase, originPosition, initialPosition});
+      return res;
+    }else{
+      const res = await addTeamPhaseHelper(
+        phaseId,
+        rosterId,
+        initialPosition,
+      );
+      return res;
+    }
   }
 
   static async deleteTeamPhase(body, userId) {
