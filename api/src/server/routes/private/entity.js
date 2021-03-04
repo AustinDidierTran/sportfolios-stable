@@ -528,25 +528,6 @@ router.get(`${BASE_URL}/personInfos`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/teamsAndPlayersPending`, async ctx => {
-  const { players, teams } = await queries.getTeamsAndPlayersPending(
-    ctx.query.eventId,
-  );
-
-  if (players || teams) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: { players, teams },
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
-});
 router.get(`${BASE_URL}/teamsPendingAndRefused`, async ctx => {
   const teams = await queries.getAllTeamsPendingAndRefused(
     ctx.query.eventId,
@@ -566,8 +547,8 @@ router.get(`${BASE_URL}/teamsPendingAndRefused`, async ctx => {
     };
   }
 });
-router.get(`${BASE_URL}/playersPending`, async ctx => {
-  const players = await queries.getAllPlayersPending(
+router.get(`${BASE_URL}/playersPendingAndRefused`, async ctx => {
+  const players = await queries.getAllPlayersPendingAndRefused(
     ctx.query.eventId,
   );
 
@@ -771,6 +752,24 @@ router.put(`${BASE_URL}/member`, async ctx => {
 
 router.put(`${BASE_URL}/teamAcceptation`, async ctx => {
   const team = await queries.updateTeamAcceptation(ctx.request.body);
+  if (team) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: team,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+router.put(`${BASE_URL}/playerAcceptation`, async ctx => {
+  const team = await queries.updatePlayerAcceptation(
+    ctx.request.body,
+  );
   if (team) {
     ctx.status = 201;
     ctx.body = {
