@@ -2344,13 +2344,13 @@ async function updateOriginPhase(body) {
     .where({current_phase: phaseId, initial_position: initialPosition})
     .returning('*');
     return res;
+  }else{
+    const res = await knex('phase_rankings')
+    .update({origin_phase: originPhase, origin_position: originPosition})
+    .where({current_phase: phaseId, initial_position: initialPosition})
+    .returning('*');
+    return res;
   }
-  const res = await knex('phase_rankings')
-  .update({origin_phase: originPhase, origin_position: originPosition})
-  .where({current_phase: phaseId, initial_position: initialPosition})
-  .returning('*');
-
-  return res;
 }
 
 async function updatePhaseRankingsSpots(body) {

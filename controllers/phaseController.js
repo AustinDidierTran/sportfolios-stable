@@ -68,8 +68,7 @@ class PhaseController {
     }
     
     if(finalRanking) {
-      const res = await updatePhaseFinalRankingHelper(phaseId, finalRanking);
-      return res;
+      return await updatePhaseFinalRankingHelper(phaseId, finalRanking); 
     }
   
     return res;
