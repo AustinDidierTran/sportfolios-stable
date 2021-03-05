@@ -1501,8 +1501,8 @@ const unregisterPeople = async (body, userId) => {
           eventId,
           stripePrice,
         });
-        await deletePersonFromEvent({ personId, eventId });
       }
+      await deletePersonFromEvent({ personId, eventId });
     }
   } catch (error) {
     // do not make api call fail, current teams state will be returned
