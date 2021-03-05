@@ -68,7 +68,7 @@ class PhaseRankingController {
     }
 
     if(originPhase && originPosition){
-      const res = await updateOriginPhaseHelper({phaseId, originPhase, originPosition, initialPosition});
+      const res = await updateOriginPhaseHelper({phaseId, eventId, originPhase, originPosition, initialPosition});
       return res;
     }else{
       const res = await addTeamPhaseHelper(

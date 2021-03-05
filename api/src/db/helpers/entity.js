@@ -2231,6 +2231,13 @@ async function getAllPlayersPending(eventId) {
   return res;
 }
 
+async function getRankingRoster(originPhase, originPosition){
+  const res = await knex('phase_rankings')
+  .select('*')
+  .where({current_phase: originPhase, final_position: originPosition});
+  return res;
+}
+
 async function updateEntityRole(entityId, entityIdAdmin, role) {
   const realEntityId = await getRealId(entityId);
   const realAdminId = await getRealId(entityIdAdmin);
@@ -2329,11 +2336,19 @@ async function updateFinalPositionPhase(phaseId, teams) {
 }
 
 async function updateOriginPhase(body) {
-  const {phaseId, originPhase, originPosition, initialPosition} = body;
-  const res = await knex('phase_rankings')
-    .update({origin_phase: originPhase, origin_position: originPosition})
+  const {phaseId, eventId, originPhase, originPosition, initialPosition} = body;
+  const rosterId = await getRankingRoster(originPhase, originPosition);
+  if(rosterId.length){
+    const res = await knex('phase_rankings')
+    .update({roster_id: rosterId[0].roster_id, origin_phase: originPhase, origin_position: originPosition})
     .where({current_phase: phaseId, initial_position: initialPosition})
     .returning('*');
+    return res;
+  }
+  const res = await knex('phase_rankings')
+  .update({origin_phase: originPhase, origin_position: originPosition})
+  .where({current_phase: phaseId, initial_position: initialPosition})
+  .returning('*');
 
   return res;
 }
@@ -2383,6 +2398,11 @@ async function updatePhaseFinalRanking(phaseId, finalRanking) {
     .update({final_position: index+1})
     .where({current_phase: phaseId, roster_id: r.rosterId})
     .returning('*');
+
+    const updatedRanking = await knex('phase_rankings')
+    .update({roster_id: r.rosterId})
+    .where({origin_phase: phaseId, origin_position: index+1})
+    .returning('*')
   });
   return res;
 }
