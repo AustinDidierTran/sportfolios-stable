@@ -1739,7 +1739,7 @@ async function getPhaseRanking(phaseId) {
         return {...r, phaseName};
       } 
       else {
-        return { ...r, initialPosition: r.initial_position };
+        return { ...r};
       }
     }),
   );
