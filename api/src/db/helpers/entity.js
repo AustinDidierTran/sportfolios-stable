@@ -2399,10 +2399,12 @@ async function updatePhaseFinalRanking(phaseId, finalRanking) {
     .where({current_phase: phaseId, roster_id: r.rosterId})
     .returning('*');
 
-    const updatedRanking = await knex('phase_rankings')
+    await knex('phase_rankings')
     .update({roster_id: r.rosterId})
     .where({origin_phase: phaseId, origin_position: index+1})
     .returning('*')
+
+    return finalPosition;
   });
   return res;
 }
