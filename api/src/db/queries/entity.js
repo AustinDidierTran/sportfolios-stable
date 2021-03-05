@@ -64,6 +64,7 @@ const {
   getTeamCreatorEmail,
   getEmailPerson,
   getTeamPaymentOptionFromRosterId,
+  getPersonPaymentOption,
   getEntity: getEntityHelper,
   getEntityRole: getEntityRoleHelper,
   getEvent: getEventHelper,
@@ -76,6 +77,7 @@ const {
   getAllTeamsPending: getAllTeamsPendingHelper,
   getAllTeamsRefused: getAllTeamsRefusedHelper,
   getAllPlayersPending: getAllPlayersPendingHelper,
+  getAllPlayersRefused: getAllPlayersRefusedHelper,
   getMembers: getMembersHelper,
   getMembership,
   getMemberships: getMembershipsHelper,
@@ -133,6 +135,7 @@ const {
   updateGeneralInfos: updateGeneralInfosHelper,
   updateMember: updateMemberHelper,
   updateTeamAcceptation: updateTeamAcceptationHelper,
+  updatePlayerAcceptation: updatePlayerAcceptationHelper,
   updateOption: updateOptionHelper,
   updatePersonInfosHelper,
   updatePlayerPaymentStatus: updatePlayerPaymentStatusHelper,
@@ -147,7 +150,9 @@ const { createRefund } = require('../helpers/stripe/checkout');
 const {
   sendTeamRegistrationEmailToAdmin,
   sendPersonRegistrationEmailToAdmin,
+  sendPersonPendingRegistrationEmailToAdmin,
   sendPersonRegistrationEmail,
+  sendPersonRefusedRegistrationEmail,
   sendTeamAcceptedRegistrationEmail,
   sendTeamUnregisteredEmail,
   sendTeamRefusedRegistrationEmail,
@@ -364,14 +369,10 @@ async function getAllTeamsPendingAndRefused(eventId) {
   return { pending, refused };
 }
 
-async function getAllPlayersPending(eventId) {
-  return getAllPlayersPendingHelper(eventId);
-}
-
-async function getTeamsAndPlayersPending(eventId) {
-  const teams = await getAllTeamsPendingHelper(eventId);
-  const players = await getAllPlayersPendingHelper(eventId);
-  return { teams, players };
+async function getAllPlayersPendingAndRefused(eventId) {
+  const pending = await getAllPlayersPendingHelper(eventId);
+  const refused = await getAllPlayersRefusedHelper(eventId);
+  return { pending, refused };
 }
 
 async function getPersonInfos(entityId) {
@@ -711,14 +712,19 @@ async function addPersonToEvent(body, userId) {
 
   const isFreeOption = individualPaymentOption.individual_price === 0;
   // TODO: Validate status of team
-  const registrationStatus = isFreeOption
+  let registrationStatus = isFreeOption
     ? STATUS_ENUM.ACCEPTED_FREE
     : STATUS_ENUM.ACCEPTED;
+
+  if (individualPaymentOption.player_acceptation) {
+    registrationStatus = STATUS_ENUM.PENDING;
+  }
 
   const registeredPersons = await getRegisteredPersons(
     persons,
     eventId,
   );
+
   if (registeredPersons.length > 0) {
     return {
       status: STATUS_ENUM.REFUSED,
@@ -736,50 +742,69 @@ async function addPersonToEvent(body, userId) {
         paymentOption,
         informations,
       });
-      if (registrationStatus === STATUS_ENUM.ACCEPTED) {
-        // wont be added to cart if free
-        const ownerId = await getOwnerStripePrice(
-          individualPaymentOption.individual_stripe_price_id,
-        );
-        await addEventCartItem(
-          {
-            stripePriceId:
-              individualPaymentOption.individual_stripe_price_id,
-            metadata: {
-              eventId: event.id,
-              sellerEntityId: ownerId,
-              buyerId: person.id,
-              person: person,
-            },
-          },
-          userId,
-        );
-      }
+
       const email = await getEmailPerson(person.id);
       const language = await getLanguageFromEmail(email);
-      //send mail to person
-      await sendPersonRegistrationEmail({
-        email,
-        person,
-        event,
-        language,
-        userId,
-      });
-      // send mail to organization admin
-      const creatorEmails = await getCreatorsEmails(eventId);
-      await Promise.all(
-        creatorEmails.map(async email => {
-          const language = await getLanguageFromEmail(email);
-          sendPersonRegistrationEmailToAdmin({
-            email,
-            person,
-            event,
-            language,
-            placesLeft: remainingSpots,
+      if (registrationStatus === STATUS_ENUM.PENDING) {
+        const creatorEmails = await getCreatorsEmails(eventId);
+        await Promise.all(
+          creatorEmails.map(async email => {
+            const language = await getLanguageFromEmail(email);
+            sendPersonPendingRegistrationEmailToAdmin({
+              email,
+              person,
+              event,
+              language,
+              placesLeft: remainingSpots,
+              userId,
+            });
+          }),
+        );
+      } else {
+        if (registrationStatus === STATUS_ENUM.ACCEPTED) {
+          // wont be added to cart if free
+          const ownerId = await getOwnerStripePrice(
+            individualPaymentOption.individual_stripe_price_id,
+          );
+          await addEventCartItem(
+            {
+              stripePriceId:
+                individualPaymentOption.individual_stripe_price_id,
+              metadata: {
+                eventId: event.id,
+                sellerEntityId: ownerId,
+                buyerId: person.id,
+                person: person,
+              },
+            },
             userId,
-          });
-        }),
-      );
+          );
+        }
+        //send mail to person
+        await sendPersonRegistrationEmail({
+          email,
+          person,
+          event,
+          language,
+          isFreeOption,
+          userId,
+        });
+        // send mail to organization admin
+        const creatorEmails = await getCreatorsEmails(eventId);
+        await Promise.all(
+          creatorEmails.map(async email => {
+            const language = await getLanguageFromEmail(email);
+            sendPersonRegistrationEmailToAdmin({
+              email,
+              person,
+              event,
+              language,
+              placesLeft: remainingSpots,
+              userId,
+            });
+          }),
+        );
+      }
     }),
   );
   return { status: registrationStatus, persons };
@@ -928,25 +953,27 @@ async function updateTeamAcceptation(body) {
   if (registrationStatus === STATUS_ENUM.ACCEPTED) {
     const teamPaymentOption = await getTeamPaymentOptionFromRosterId(
       rosterId,
+      eventId,
     );
+    if (teamPaymentOption) {
+      const ownerId = await getOwnerStripePrice(
+        teamPaymentOption.teamStripePriceId,
+      );
 
-    const ownerId = await getOwnerStripePrice(
-      teamPaymentOption.teamStripePriceId,
-    );
-
-    await addEventCartItem(
-      {
-        stripePriceId: teamPaymentOption.teamStripePriceId,
-        metadata: {
-          eventId: event.id,
-          sellerEntityId: ownerId,
-          buyerId: teamId,
-          rosterId,
-          team,
+      await addEventCartItem(
+        {
+          stripePriceId: teamPaymentOption.teamStripePriceId,
+          metadata: {
+            eventId: event.id,
+            sellerEntityId: ownerId,
+            buyerId: teamId,
+            rosterId,
+            team,
+          },
         },
-      },
-      userId,
-    );
+        userId,
+      );
+    }
 
     sendTeamAcceptedRegistrationEmail({
       email,
@@ -971,6 +998,73 @@ async function updateTeamAcceptation(body) {
     sendTeamRefusedRegistrationEmail({
       email,
       team,
+      event,
+      language,
+    });
+  }
+  return res;
+}
+async function updatePlayerAcceptation(body) {
+  const { eventId, personId, registrationStatus } = body;
+  const res = await updatePlayerAcceptationHelper(
+    eventId,
+    personId,
+    registrationStatus,
+  );
+
+  const event = (await getEntity(eventId)).basicInfos;
+  const person = (await getEntity(personId)).basicInfos;
+
+  const email = await getEmailPerson(personId);
+  const language = await getLanguageFromEmail(email);
+  const userId = await getUserIdFromEmail(email);
+
+  if (registrationStatus === STATUS_ENUM.ACCEPTED) {
+    const personPaymentOption = await getPersonPaymentOption(
+      personId,
+      eventId,
+    );
+
+    const ownerId = await getOwnerStripePrice(
+      personPaymentOption.individualStripePriceId,
+    );
+
+    await addEventCartItem(
+      {
+        stripePriceId: personPaymentOption.individualStripePriceId,
+        metadata: {
+          eventId,
+          sellerEntityId: ownerId,
+          buyerId: personId,
+          person,
+        },
+      },
+      userId,
+    );
+
+    sendPersonRegistrationEmail({
+      email,
+      person,
+      event,
+      language,
+      isFreeOption: false,
+      userId,
+    });
+  }
+  if (registrationStatus === STATUS_ENUM.ACCEPTED_FREE) {
+    sendPersonRegistrationEmail({
+      email,
+      person,
+      event,
+      language,
+      isFreeOption: true,
+      userId,
+    });
+  }
+  if (registrationStatus === STATUS_ENUM.REFUSED) {
+    sendPersonRefusedRegistrationEmail({
+      email,
+      person,
       event,
       language,
     });
@@ -1790,9 +1884,8 @@ module.exports = {
   getGames,
   getGameSubmissionInfos,
   getGeneralInfos,
-  getTeamsAndPlayersPending,
   getAllTeamsPendingAndRefused,
-  getAllPlayersPending,
+  getAllPlayersPendingAndRefused,
   getInteractiveToolData,
   getMembers,
   getMemberships,
@@ -1836,6 +1929,7 @@ module.exports = {
   updateGamesInteractiveTool,
   updateGeneralInfos,
   updateTeamAcceptation,
+  updatePlayerAcceptation,
   updateMember,
   updateOption,
   updatePersonInfos,

@@ -2,6 +2,7 @@ const AddedToRosterEmail = require('./addedToRosterEmail');
 const CartItemAddedPlayerEmail = require('./cartItemAddedPlayerEmail');
 const EmailConfirmationEmail = require('./emailConfirmationEmail');
 const PersonRegistrationToAdminEmail = require('./personRegistrationToAdminEmail');
+const PersonPendingRegistrationToAdminEmail = require('./personPendingRegistrationToAdminEmail');
 const RecoveryEmail = require('./recoveryEmail');
 const ScoreSubmissionRequestEmail = require('./scoreSubmissionRequestEmail');
 const SendReceiptEmail = require('./sendReceiptEmail');
@@ -10,6 +11,7 @@ const TeamRegistrationEmail = require('./teamRegistrationEmail');
 const TeamUnregisteredEmail = require('./teamUnregisteredEmail');
 const TeamUnregisteredAndRefundedEmail = require('./teamUnregisteredAndRefundedEmail');
 const TeamRefusedRegistrationEmail = require('./teamRefusedRegistrationEmail');
+const PersonRefusedRegistrationEmail = require('./personRefusedRegistrationEmail');
 const TeamPendingRegistrationToAdminEmail = require('./teamPendingRegistrationToAdminEmail');
 const PersonRegistrationEmail = require('./personRegistrationEmail');
 const TransferPersonEmail = require('./transferPersonEmail');
@@ -23,6 +25,7 @@ const map = {
   [NOTIFICATION_TYPE.EMAIL_CONFIRMATION]: EmailConfirmationEmail,
   [NOTIFICATION_TYPE.IMPORT_MEMBER]: ImportMemberEmail,
   [NOTIFICATION_TYPE.PERSON_REGISTRATION_TO_ADMIN]: PersonRegistrationToAdminEmail,
+  [NOTIFICATION_TYPE.PERSON_PENDING_REGISTRATION_TO_ADMIN]: PersonPendingRegistrationToAdminEmail,
   [NOTIFICATION_TYPE.RECOVERY_EMAIL]: RecoveryEmail,
   [NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST]: ScoreSubmissionRequestEmail,
   [NOTIFICATION_TYPE.SEND_RECEIPT]: SendReceiptEmail,
@@ -32,6 +35,7 @@ const map = {
   [NOTIFICATION_TYPE.TEAM_UNREGISTERED]: TeamUnregisteredEmail,
   [NOTIFICATION_TYPE.TEAM_UNREGISTERED_AND_REFUNDED]: TeamUnregisteredAndRefundedEmail,
   [NOTIFICATION_TYPE.TEAM_REFUSED_REGISTRATION]: TeamRefusedRegistrationEmail,
+  [NOTIFICATION_TYPE.PERSON_REFUSED_REGISTRATION]: PersonRefusedRegistrationEmail,
   [NOTIFICATION_TYPE.TEAM_PENDING_REGISTRATION_ADMIN]: TeamPendingRegistrationToAdminEmail,
   [NOTIFICATION_TYPE.TRANSFER_PERSON]: TransferPersonEmail,
 };

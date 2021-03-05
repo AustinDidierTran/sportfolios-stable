@@ -2,9 +2,15 @@ const ejs = require('ejs');
 const i18n = require('../../i18n.config');
 
 module.exports = async function personRegistrationEmail(infos) {
-  const { completeName, eventName, locale, buttonLink } = infos;
+  const {
+    completeName,
+    eventName,
+    locale,
+    isFreeOption,
+    buttonLink,
+  } = infos;
 
-  const text = i18n.__(
+  let text = i18n.__(
     {
       phrase: 'emails.person_registration_text',
       locale,
@@ -12,11 +18,28 @@ module.exports = async function personRegistrationEmail(infos) {
     completeName,
     eventName,
   );
+  if (isFreeOption) {
+    text = i18n.__(
+      {
+        phrase: 'emails.person_registration_text_free',
+        locale,
+      },
+      completeName,
+      eventName,
+    );
+  }
 
-  const buttonText = i18n.__({
+  let buttonText = i18n.__({
     phrase: 'emails.person_registration_button',
     locale,
   });
+
+  if (isFreeOption) {
+    buttonText = i18n.__({
+      phrase: 'emails.person_registration_button_free',
+      locale,
+    });
+  }
 
   const subject = i18n.__(
     {
