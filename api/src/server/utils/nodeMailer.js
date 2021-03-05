@@ -343,6 +343,40 @@ async function sendPersonRegistrationEmailToAdmin({
   const { html, subject, text } = fullEmail;
   sendMail({ html, email, subject, text });
 }
+async function sendPersonPendingRegistrationEmailToAdmin({
+  email,
+  person,
+  event,
+  placesLeft,
+  language,
+  userId,
+}) {
+  const footerLink = formatFooterLink(userId);
+
+  const buttonLink = await formatLinkWithAuthToken(
+    userId,
+    formatRoute(
+      ROUTES_ENUM.entity,
+      { id: event.id },
+      { tab: TABS_ENUM.SETTINGS },
+    ),
+  );
+  const fullEmail = await emailFactory({
+    type: NOTIFICATION_TYPE.PERSON_PENDING_REGISTRATION_TO_ADMIN,
+    completeName: person.complete_name,
+    eventName: event.name,
+    placesLeft,
+    locale: language,
+    buttonLink,
+    footerLink,
+  });
+
+  if (!fullEmail) {
+    return;
+  }
+  const { html, subject, text } = fullEmail;
+  sendMail({ html, email, subject, text });
+}
 
 async function sendTeamAcceptedRegistrationEmail({
   email,
@@ -405,6 +439,24 @@ async function sendTeamRefusedRegistrationEmail({
   const { html, subject, text } = fullEmail;
   sendMail({ html, email, subject, text });
 }
+async function sendPersonRefusedRegistrationEmail({
+  email,
+  person,
+  event,
+  language,
+}) {
+  const fullEmail = await emailFactory({
+    type: NOTIFICATION_TYPE.PERSON_REFUSED_REGISTRATION,
+    personName: `${person.name} ${person.surname}`,
+    eventName: event.name,
+    locale: language,
+  });
+  if (!fullEmail) {
+    return;
+  }
+  const { html, subject, text } = fullEmail;
+  sendMail({ html, email, subject, text });
+}
 
 async function sendTeamPendingRegistrationEmailToAdmin({
   email,
@@ -444,20 +496,27 @@ async function sendPersonRegistrationEmail({
   person,
   event,
   language,
+  isFreeOption,
   userId,
 }) {
   const footerLink = formatFooterLink(userId);
 
-  const buttonLink = await formatLinkWithAuthToken(
+  let buttonLink = await formatLinkWithAuthToken(
     userId,
-    formatRoute(ROUTES_ENUM.entity, { id: event.id }),
+    formatRoute(ROUTES_ENUM.cart),
   );
-
+  if (isFreeOption) {
+    buttonLink = await formatLinkWithAuthToken(
+      userId,
+      formatRoute(ROUTES_ENUM.entity, { id: event.id }),
+    );
+  }
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.PERSON_REGISTRATION,
-    completeName: person.complete_name,
+    completeName: `${person.name} ${person.surname}`,
     eventName: event.name,
     locale: language,
+    isFreeOption,
     buttonLink,
     footerLink,
   });
@@ -526,12 +585,14 @@ module.exports = {
   sendMail,
   sendPersonRegistrationEmail,
   sendPersonRegistrationEmailToAdmin,
+  sendPersonPendingRegistrationEmailToAdmin,
   sendPersonTransferEmail,
   sendReceiptEmail,
   sendRecoveryEmail,
   sendTeamUnregisteredEmail,
   sendTeamAcceptedRegistrationEmail,
   sendTeamRefusedRegistrationEmail,
+  sendPersonRefusedRegistrationEmail,
   sendTeamPendingRegistrationEmailToAdmin,
   sendTeamRegistrationEmailToAdmin,
 };

@@ -353,6 +353,8 @@ const NOTIFICATION_TYPE = {
   IMPORT_MEMBER: 'import member',
   OTHER_TEAM_SUBMITTED_A_SCORE: 'other team submitted a score',
   PERSON_REGISTRATION_TO_ADMIN: 'person registration to admin',
+  PERSON_PENDING_REGISTRATION_TO_ADMIN:
+    'person pending registration to admin',
   PERSON_REGISTRATION: 'person registration',
   RECOVERY_EMAIL: 'recovery email',
   SCORE_SUBMISSION_CONFLICT: 'score submission conflict',
@@ -364,6 +366,7 @@ const NOTIFICATION_TYPE = {
   TEAM_UNREGISTERED: 'team unregistered',
   TEAM_UNREGISTERED_AND_REFUNDED: 'team unregistered and refunded',
   TEAM_REFUSED_REGISTRATION: 'team refused registration',
+  PERSON_REFUSED_REGISTRATION: 'person refused registration',
   TRANSFER_PERSON: 'transfer person',
 };
 
