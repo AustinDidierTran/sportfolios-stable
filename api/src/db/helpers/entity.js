@@ -2769,6 +2769,22 @@ const canUnregisterTeam = async (rosterId, eventId) => {
     )
     .andWhere({ roster_id: realRosterId });
 
+
+  const startedPhasesWithRosterId = await knex('phase_rankings')
+    .select('current_phase')
+    .leftJoin(
+      'phase',
+      'phase.id',
+      '=',
+      'phase_rankings.current_phase',
+    )
+    .where({roster_id: realRosterId})
+    .whereNot({status: 'not_started'});
+
+  if(startedPhasesWithRosterId.length) {
+   return false;
+  }
+
   if (games) {
     return games.length == 0;
   }
