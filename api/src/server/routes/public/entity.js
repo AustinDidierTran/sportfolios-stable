@@ -131,8 +131,8 @@ router.get(`${BASE_URL}/allPeopleRegisteredInfos`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/rankings`, async ctx => {
-  const ranking = await queries.getRankings(ctx.query.eventId);
+router.get(`${BASE_URL}/preranking`, async ctx => {
+  const ranking = await queries.getPreranking(ctx.query.eventId);
   if (ranking) {
     ctx.body = {
       status: 'success',

@@ -95,7 +95,7 @@ const {
   getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getPrimaryPerson: getPrimaryPersonHelper,
-  getRankings: getRankingsHelper,
+  getPreranking: getPrerankingHelper,
   getRegistered: getRegisteredHelper,
   getRegisteredPersons,
   getRegistrationIndividualPaymentOption: getRegistrationIndividualPaymentOptionHelper,
@@ -282,8 +282,8 @@ async function getRemainingSpots(eventId) {
   return getRemainingSpotsHelper(eventId);
 }
 
-async function getRankings(eventId) {
-  return getRankingsHelper(eventId);
+async function getPreranking(eventId) {
+  return getPrerankingHelper(eventId);
 }
 async function getPrimaryPerson(userId) {
   return getPrimaryPersonHelper(userId);
@@ -517,6 +517,7 @@ async function addTeamToEvent(body, userId) {
     registrationStatus,
     paymentOption,
     informations,
+    isFromAdmin: false,
   });
 
   // Add roster
@@ -670,6 +671,7 @@ async function addTeamAsAdmin(body, userId) {
     eventId: event.id,
     status: INVOICE_STATUS_ENUM.FREE,
     registrationStatus,
+    isFromAdmin: true,
   });
 
   const roster = [
@@ -1906,7 +1908,7 @@ module.exports = {
   getPhasesGameAndTeams,
   getPossibleSubmissionerInfos,
   getPrimaryPerson,
-  getRankings,
+  getPreranking,
   getRegistered,
   getRemainingSpots,
   getReports,
