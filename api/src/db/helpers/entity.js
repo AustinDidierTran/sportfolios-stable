@@ -2811,8 +2811,7 @@ const canUnregisterTeam = async (rosterId, eventId) => {
     .whereNot({status: 'not_started'});
 
   if(startedPhasesWithRosterId.length) {
-    console.log('il en a po');
-   return false;
+    return false;
   }
 
   if (games) {
