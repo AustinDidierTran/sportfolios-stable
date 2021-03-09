@@ -2454,17 +2454,16 @@ async function updatePrerankingInitialPosition(eventId, phaseId, rankingIdToDele
   const preranking = await getRankings(eventId);
   const prerankingToUpdate = preranking.filter(r => r.rankingId !== rankingIdToDelete);
 
-  const res = knex.transaction(async trx => {
-    await Promise.all(
-      prerankingToUpdate.map(async (r,index) => {
-        const [position] = await knex('phase_rankings')
-          .update({initial_position: index+1})
-          .where({ranking_id: r.rankingId})
-          .returning('*');
-        return position;
-      })
-    );
-  }); 
+  const res = await Promise.all(
+    prerankingToUpdate.map(async (r,index) => {
+      const [position] = await knex('phase_rankings')
+        .update({initial_position: index+1})
+        .where({ranking_id: r.rankingId})
+        .returning('*');
+      return position;
+    })
+  );
+ 
   return res;
 }
 
