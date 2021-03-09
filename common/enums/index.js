@@ -90,6 +90,12 @@ const MEMBERSHIP_TYPE_ENUM = {
   NOT_SPECIFIED: 5,
 };
 
+const PHASE_STATUS_ENUM = {
+  NOT_STARTED: 'not_started',
+  STARTED: 'started',
+  DONE: 'done',
+};
+
 const PLATEFORM_FEES = 0.05;
 const CARD_TYPE_ENUM = {
   CART: 'cart',
@@ -292,7 +298,7 @@ const GAME_INFOS_CHATBOT_STATES = {
 };
 
 const REJECTION_ENUM = {
-  NO_REMAINING_SPOTS: 'no_remaining_spots',
+  NO_REMAINING_SPOTS: 'no.no_remaining_spots',
   ALREADY_REGISTERED: 'already_registered',
 };
 
@@ -484,6 +490,7 @@ module.exports = {
   NOTIFICATION_MEDIA,
   NOTIFICATION_TYPE,
   PERSON_TRANSFER_STATUS_ENUM,
+  PHASE_STATUS_ENUM,
   POSITION_ENUM,
   COUPON_CODE_ENUM,
   REJECTION_ENUM,

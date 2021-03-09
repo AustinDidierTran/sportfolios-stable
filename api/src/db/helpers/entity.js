@@ -14,6 +14,7 @@ const {
   REPORT_TYPE_ENUM,
   PLATEFORM_FEES,
   PLAYER_ATTENDANCE_STATUS,
+  PHASE_STATUS_ENUM,
 } = require('../../../../common/enums');
 const { v1: uuidv1 } = require('uuid');
 const { addProduct, addPrice } = require('./stripe/shop');
@@ -128,8 +129,8 @@ const addEntity = async (body, userId) => {
           .returning(['id'])
           .transacting(trx);
 
-        await knex('divisions')
-          .insert({ event_id: event.id })
+        await knex('phase')
+          .insert({ event_id: event.id, name: 'prerank', spots: 0, phase_order: 0, status: PHASE_STATUS_ENUM.NOT_STARTED })
           .transacting(trx);
         return event;
       }
@@ -928,6 +929,18 @@ async function generateReport(reportId) {
   return res;
 }
 
+async function getPrerankPhase(eventId) {
+  const [res] = await knex('phase')
+    .select('*')
+    .where({
+      event_id: eventId,
+      phase_order: 0,
+      status: PHASE_STATUS_ENUM.NOT_STARTED,
+      name: 'prerank',
+    });
+  return res;
+}
+
 async function generateMembersReport(report) {
   const { date } = report.metadata;
   const members = await knex('memberships').select('*');
@@ -1536,11 +1549,11 @@ async function getRankings(eventId) {
     teams.map(async (team, index) => {
       const name = await getEntitiesName(team.team_id);
       const position = await getTeamInitialPosition(
-        team.team_id,
+        team.roster_id,
         realId,
       );
       return {
-        teamId: team.team_id,
+        teamId: team.roster_id,
         position: position || index,
         name: name.name,
       };
@@ -1550,14 +1563,13 @@ async function getRankings(eventId) {
   return res;
 }
 
-async function getTeamInitialPosition(teamId, eventId) {
-  const [{ initial_position: position }] = await knex(
-    'division_ranking',
-  )
+async function getTeamInitialPosition(rosterId, eventId) {
+  const prerankPhase = await getPrerankPhase(eventId);
+  const [{ initial_position: position }] = await knex('phase_rankings')
     .select('initial_position')
     .where({
-      team_id: teamId,
-      event_id: eventId,
+      roster_id: rosterId,
+      current_phase: prerankPhase.id,
     });
   return position;
 }
@@ -1767,7 +1779,8 @@ async function getPhases(eventId) {
   const realId = await getRealId(eventId);
   const phases = await knex('phase')
     .select('*')
-    .where({ event_id: realId });
+    .where({ event_id: realId, status: PHASE_STATUS_ENUM.NOT_STARTED })
+    .whereNot({phase_order: 0});
 
   const res = await Promise.all(
     phases.map(async phase => {
@@ -1775,6 +1788,14 @@ async function getPhases(eventId) {
       return { ...phase, ranking };
     }),
   );
+  return res;
+}
+
+async function getAllPhases(eventId) {
+  const realId = await getRealId(eventId);
+  const res = await knex('phase')
+    .select('*')
+    .where({ event_id: realId})
   return res;
 }
 
@@ -2400,15 +2421,24 @@ async function updateEvent(
 
 async function updatePreRanking(eventId, ranking) {
   const realId = await getRealId(eventId);
+  const prerankPhase = await getPrerankPhase(realId);
   const res = await Promise.all(
     ranking.map(async (r, index) => {
-      const [rank] = await knex('division_ranking')
-        .update({ initial_position: index + 1 })
-        .where({ event_id: realId, team_id: r.id })
+      const [rank] = await knex('phase_rankings')
+        .update({ roster_id: r.id })
+        .where({ initial_position: index + 1, current_phase: prerankPhase.id })
         .returning('*');
       return rank;
     }),
   );
+  return res;
+}
+
+async function updatePreRankingSpots(prerankPhase) {
+  const res = await knex('phase')
+    .update({ spots: Number(prerankPhase.spots)+1 } )
+    .where({id: prerankPhase.id});
+
   return res;
 }
 
@@ -2712,7 +2742,6 @@ const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
       list.push(rosterId);
     }
   }
-
   return list;
 };
 
@@ -2782,6 +2811,7 @@ const canUnregisterTeam = async (rosterId, eventId) => {
     .whereNot({status: 'not_started'});
 
   if(startedPhasesWithRosterId.length) {
+    console.log('il en a po');
    return false;
   }
 
@@ -2794,6 +2824,8 @@ const canUnregisterTeam = async (rosterId, eventId) => {
 const deleteRegistration = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
+  const prerankPhase = await getPrerankPhase(eventId);
+
   const [res] = await knex('team_rosters')
     .select('team_id')
     .where({ id: realRosterId });
@@ -2812,9 +2844,23 @@ const deleteRegistration = async (rosterId, eventId) => {
       .del()
       .transacting(trx);
 
+    //delete from prerank
     await knex('phase_rankings')
-      .update({ roster_id: null })
-      .where({ roster_id: realRosterId })
+      .where({ roster_id: realRosterId, current_phase: prerankPhase.id })
+      .del()
+      .transacting(trx);
+
+    //update from phase_rankings
+    await knex('phase_rankings')
+      .where({roster_id : realRosterId})
+      .whereNot({current_phase: prerankPhase.id})
+      .update({roster_id: null})
+      .transacting(trx);
+
+    //update prerank phase spots 
+    await knex('phase')
+      .update({ spots: Number(prerankPhase.spots)-1 })
+      .where({ id: prerankPhase.id })
       .transacting(trx);
 
     await knex('token_roster_invite')
@@ -3555,13 +3601,13 @@ async function addField(field, eventId) {
 
 async function addPhase(phase, spots, eventId) {
   const realId = await getRealId(eventId);
-  const phases = await getPhases(eventId);
+  const phases = await getAllPhases(eventId);
   const [res] = await knex('phase')
     .insert({
       name: phase,
       event_id: realId,
       spots,
-      phase_order: phases.length ? phases.length : 0,
+      phase_order: phases.length ? phases.length : 1,
     })
     .returning('*');
 
@@ -3763,6 +3809,11 @@ async function addTeamToEvent(body) {
   } = body;
   const realTeamId = await getRealId(teamId);
   const realEventId = await getRealId(eventId);
+  const prerankPhase = await getPrerankPhase(eventId);
+  const acceptedTeams = await getAllTeamsAcceptedRegistered(eventId);
+  let numberOfTeams = acceptedTeams.length;
+
+  await updatePreRankingSpots(prerankPhase);
 
   return knex.transaction(async trx => {
     const [roster] = await knex('team_rosters')
@@ -3782,12 +3833,16 @@ async function addTeamToEvent(body) {
       })
       .returning('*')
       .transacting(trx);
-    await knex('division_ranking')
+
+    const [preranking] = await knex('phase_rankings')
       .insert({
-        team_id: roster.team_id,
-        event_id: res.event_id,
+        roster_id: roster.id,
+        current_phase: prerankPhase.id,
+        initial_position: Number(numberOfTeams)+1,
       })
+      .returning('*')
       .transacting(trx);
+
     return res.roster_id;
   });
 }
