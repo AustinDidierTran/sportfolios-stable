@@ -120,6 +120,23 @@ router.get(`${BASE_URL}/edit`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/graphUserCount`, async ctx => {
+  const arrayGraph = await queries.getGraphUserCount();
+  if (arrayGraph) {
+    ctx.body = {
+      status: 'success',
+      data: arrayGraph,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+  return;
+});
+
 router.get(`${BASE_URL}/all`, async ctx => {
   const entity = await queries.getAllEntities(ctx.query);
 

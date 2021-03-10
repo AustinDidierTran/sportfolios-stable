@@ -75,6 +75,7 @@ const {
   getGames: getGamesHelper,
   getGameSubmissionInfos: getGameSubmissionInfosHelper,
   getGeneralInfos: getGeneralInfosHelper,
+  getGraphUserCount: getGraphUserCountHelper,
   getAllTeamsPending: getAllTeamsPendingHelper,
   getAllTeamsRefused: getAllTeamsRefusedHelper,
   getAllPlayersPending: getAllPlayersPendingHelper,
@@ -367,6 +368,10 @@ async function getFields(eventId) {
 
 async function getGeneralInfos(entityId, userId) {
   return getGeneralInfosHelper(entityId, userId);
+}
+
+async function getGraphUserCount() {
+  return getGraphUserCountHelper();
 }
 async function getAllTeamsPendingAndRefused(eventId) {
   const pending = await getAllTeamsPendingHelper(eventId);
@@ -1892,6 +1897,7 @@ module.exports = {
   getGames,
   getGameSubmissionInfos,
   getGeneralInfos,
+  getGraphUserCount,
   getAllTeamsPendingAndRefused,
   getAllPlayersPendingAndRefused,
   getInteractiveToolData,
