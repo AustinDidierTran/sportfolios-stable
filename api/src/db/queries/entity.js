@@ -91,7 +91,7 @@ const {
   getTeamGamesInfos: getTeamGamesInfosHelper,
   getPersonInfos: getPersonInfosHelper,
   getPersonInvoiceItem,
-  getPhases: getPhasesHelper,
+  getPhasesWithoutPrerank: getPhasesWithoutPrerankHelper,
   getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getPrimaryPerson: getPrimaryPersonHelper,
@@ -326,7 +326,7 @@ async function validateEmailIsUnique(email) {
 }
 
 async function getPhases(eventId) {
-  return getPhasesHelper(eventId);
+  return getPhasesWithoutPrerankHelper(eventId);
 }
 
 async function getGameInfo(gameId) {
@@ -517,7 +517,6 @@ async function addTeamToEvent(body, userId) {
     registrationStatus,
     paymentOption,
     informations,
-    isFromAdmin: false,
   });
 
   // Add roster
@@ -671,7 +670,6 @@ async function addTeamAsAdmin(body, userId) {
     eventId: event.id,
     status: INVOICE_STATUS_ENUM.FREE,
     registrationStatus,
-    isFromAdmin: true,
   });
 
   const roster = [
