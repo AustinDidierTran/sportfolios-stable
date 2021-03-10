@@ -459,7 +459,7 @@ const MESSENGER_MESSAGES_EN = {
   },
   GET_STARTED_NO_REF: {
     text:
-      'You now need to link your Sportfolios account, please follow the following link: https://sportfolios.app/userSettings',
+      'You now need to link your Sportfolios account, please follow the following link: https://sportfolios.app/page/userSettings',
   },
 };
 
