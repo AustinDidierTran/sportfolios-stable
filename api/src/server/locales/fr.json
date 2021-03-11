@@ -37,7 +37,7 @@
 	"connection": {
 		"success": "Vous êtes maintenant inscrit au chatbot Sportfolios! Revenez après votre prochaine partie pour soumettre votre score facilement.",
 		"error": "Une erreur est survenue en tentant de lier votre compte, veuillez réessayer plus tard",
-		"no_ref": "Vous devez maintenant lier votre compte Sportfolios, veuillez suivre le lien suivant et connecter le chatbot: https://sportfolios.app/userSettings"
+		"no_ref": "Vous devez maintenant lier votre compte Sportfolios, veuillez suivre le lien suivant et connecter le chatbot: https://sportfolios.app/page/userSettings"
 	},
 	"ok_back_to_menu": "Très bien, je vous ramène au menu principal.",
 	"back_to_menu": "Je vous ramène au menu principal",
