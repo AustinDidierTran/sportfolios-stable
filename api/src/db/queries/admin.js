@@ -89,7 +89,15 @@ async function getAllUsersAndSecond() {
       'user_primary_person.primary_person',
       '=',
       'entities_photo.entity_id'
-    ).groupBy(
+    ).leftJoin(
+      'entities',
+      'user_primary_person.primary_person',
+      '=',
+      'entities.id',
+    ).whereNull(
+      'entities.deleted_at'
+    )
+    .groupBy(
       'user_primary_person.user_id',
       'user_primary_person.primary_person',
       'entities_name.name',
