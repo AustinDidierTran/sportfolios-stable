@@ -942,7 +942,7 @@ async function getPrerankPhase(eventId) {
     .where({
       event_id: eventId,
       phase_order: 0,
-      status: PHASE_STATUS_ENUM.NOT_STARTED,
+      status: PHASE_STATUS_ENUM.DONE,
       name: 'prerank',
     });
   return res;
@@ -2672,6 +2672,19 @@ async function updatePhaseRankingsSpots(body) {
     }
     return deleted;
   }
+}
+
+async function updatePhaseRankingRoster(phaseId, rankingsToUpdate) {
+  const res = await Promise.all(
+    rankingsToUpdate.map(async r => {
+      const phaseRanking = await knex('phase_rankings')
+        .update({ roster_id: r.rosterId })
+        .where({ current_phase: phaseId, ranking_id: r.rankingId })
+        .returning('*');
+      return phaseRanking;
+    }),
+  );
+  return res;
 }
 
 async function updatePhaseFinalRanking(phaseId, finalRanking) {
@@ -4787,6 +4800,7 @@ module.exports = {
   getAllPlayersRefused,
   getNbOfTeamsInPhase,
   getPhasesWithoutPrerank,
+  getPrerankPhase,
   getPhaseRanking,
   getPhasesGameAndTeams,
   getPlayerInvoiceItem,
@@ -4856,6 +4870,7 @@ module.exports = {
   updateFinalPositionPhase,
   updateOriginPhase,
   updatePhaseRankingsSpots,
+  updatePhaseRankingRoster,
   updatePhaseFinalRanking,
   updatePlayerPaymentStatus,
   updatePreRanking,
