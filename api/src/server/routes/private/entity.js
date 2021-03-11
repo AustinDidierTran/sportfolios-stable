@@ -646,6 +646,25 @@ router.get(`${BASE_URL}/gameSubmissionInfos`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/prerankPhase`, async ctx => {
+  const data = await PhaseController.getPrerankPhase(
+    ctx.query.eventId,
+    ctx.body.userInfo.id,
+  );
+  if (data) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+    };
+  }
+});
+
 router.put(`${BASE_URL}`, async ctx => {
   const entity = await queries.updateEntity(
     ctx.request.body,
