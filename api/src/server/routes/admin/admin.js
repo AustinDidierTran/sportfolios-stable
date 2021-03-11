@@ -7,7 +7,8 @@ const router = new Router();
 const BASE_URL = '/api/admin';
 
 router.get(`${BASE_URL}/users`, async ctx => {
-  const users = await queries.getAllUsers();
+  const users = await queries.getAllUsersAndSecond();
+
   ctx.body = {
     status: 'success',
     data: users,

@@ -1836,7 +1836,6 @@ async function getPhaseRanking(phaseId) {
       if (r.origin_phase && r.origin_position && !r.roster_id) {
         const phaseName = await getPhaseName(r.origin_phase);
         return { ...r, phaseName };
-
       } else {
         return { ...r };
       }
@@ -2597,6 +2596,7 @@ async function updateFinalPositionPhase(phaseId, teams) {
 }
 
 async function updateOriginPhase(body) {
+
   const {
     phaseId,
     originPhase,
@@ -4465,6 +4465,7 @@ async function removeEntityRole(entityId, entityIdAdmin) {
 const deleteEntity = async (entityId, userId) => {
   const realId = await getRealId(entityId);
   const role = await getEntityRole(entityId, userId);
+  
   if (role !== ENTITIES_ROLE_ENUM.ADMIN) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   } else {

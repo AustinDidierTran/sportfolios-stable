@@ -56,46 +56,79 @@ function getAllSports() {
     .orderBy('name', 'asc');
 }
 
-function getAllUsers() {
-  return knex
+async function getAllUsersAndSecond() {
+  const primaryUser = await knex
     .select(
       knex.raw(
-        'users.id, array_agg(user_email.email ORDER BY user_email.email) AS emails, entities_name.name, entities_name.surname, user_app_role.app_role',
+        'user_primary_person.user_id, user_primary_person.primary_person, entities_photo.photo_url, array_agg(user_email.email ORDER BY user_email.email) AS emails, entities_name.name, entities_name.surname, user_app_role.app_role',
       ),
     )
-    .from('users')
-    .leftJoin('user_email', 'users.id', '=', 'user_email.user_id')
-    .leftJoin(
-      'user_entity_role',
-      'user_entity_role.user_id',
-      '=',
-      'users.id',
-    )
-    .leftJoin(
-      'entities',
-      'entities.id',
-      '=',
-      'user_entity_role.entity_id',
-    )
+    .from('user_primary_person')
+    .leftJoin('user_email', 'user_primary_person.user_id', '=', 'user_email.user_id')
     .leftJoin(
       'entities_name',
-      'entities.id',
+      'user_primary_person.primary_person',
       '=',
       'entities_name.entity_id',
     )
     .leftJoin(
       'user_app_role',
-      'users.id',
+      'user_primary_person.user_id',
       '=',
       'user_app_role.user_id',
     )
-    .groupBy(
-      'users.id',
+    .leftJoin(
+      'entities_photo',
+      'user_primary_person.primary_person',
+      '=',
+      'entities_photo.entity_id'
+    ).groupBy(
+      'user_primary_person.user_id',
+      'user_primary_person.primary_person',
       'entities_name.name',
       'entities_name.surname',
       'user_app_role.app_role',
-    );
+      'entities_photo.photo_url'
+    ).orderBy(
+      'entities_name.name', 'asc'
+    )
+    ;
+  return Promise.all(
+    primaryUser.map(async user => {
+      const secondAccount = await knex
+        .select(
+          'user_entity_role.entity_id',
+          'entities_name.name',
+          'entities_name.surname',
+          'entities_photo.photo_url'
+        )
+        .from('user_entity_role')
+        .leftJoin(
+          'entities_name',
+          'user_entity_role.entity_id',
+          '=',
+          'entities_name.entity_id',
+        )
+        .leftJoin(
+          'entities_photo',
+          'user_entity_role.entity_id',
+          '=',
+          'entities_photo.entity_id'
+        ).whereRaw(`user_entity_role.user_id = '${user.user_id}' AND user_entity_role.entity_id NOT IN (select primary_person from user_primary_person WHERE user_primary_person.primary_person is not null)`);
+      return {
+        id: user.user_id,
+        entityId: user.primary_person,
+        emails: user.emails,
+        name: user.name,
+        surname: user.surname,
+        role: user.app_role,
+        photoUrl: user.photo_url,
+        secondAccount: secondAccount,
+      }
+    }),
+  )
 }
+
 
 function updateSport(id, sport) {
   const updateObject = {};
@@ -128,7 +161,7 @@ module.exports = {
   createSport,
   createTaxRate,
   getAllSports,
-  getAllUsers,
+  getAllUsersAndSecond,
   getAllTaxRates,
   updateActiveStatusTaxRate,
   updateSport,
