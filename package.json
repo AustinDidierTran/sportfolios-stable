@@ -10,7 +10,6 @@
     "staging-webserver": "node api/src/server.js",
     "webserver": "nodemon api/src/server.js",
     "dev": "webpack-dev-server --open --config webpack.dev.js",
-    "test": "jest __tests__ --detectOpenHandles",
     "build": "webpack --config webpack.prod.js",
     "lint": "eslint . --ext .js --ext .jsx",
     "prod": "NODE_ENV=prod node ./app/server.js",

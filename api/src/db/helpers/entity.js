@@ -2523,7 +2523,7 @@ async function updatePreRankingSpots(prerank, rosterId) {
     .where({ current_phase: prerank.id });
 
   if (lastPosition.max) {
-    const ranking = await knex('phase_rankings')
+    await knex('phase_rankings')
       .insert({
         roster_id: rosterId,
         current_phase: prerank.id,
@@ -2531,7 +2531,7 @@ async function updatePreRankingSpots(prerank, rosterId) {
       })
       .returning('*');
   } else {
-    const ranking = await knex('phase_rankings')
+    await knex('phase_rankings')
       .insert({
         roster_id: rosterId,
         current_phase: prerank.id,
@@ -2599,7 +2599,6 @@ async function updateFinalPositionPhase(phaseId, teams) {
 async function updateOriginPhase(body) {
   const {
     phaseId,
-    eventId,
     originPhase,
     originPosition,
     initialPosition,
@@ -4233,10 +4232,7 @@ async function updateTeamAcceptation(
     registrationStatus === STATUS_ENUM.ACCEPTED ||
     registrationStatus === STATUS_ENUM.ACCEPTED_FREE
   ) {
-    const prerank = await updatePreRankingSpots(
-      prerankPhase,
-      rosterId,
-    );
+    await updatePreRankingSpots(prerankPhase, rosterId);
   }
   return res;
 }
