@@ -92,11 +92,11 @@ const {
   getTeamGamesInfos: getTeamGamesInfosHelper,
   getPersonInfos: getPersonInfosHelper,
   getPersonInvoiceItem,
-  getPhases: getPhasesHelper,
+  getPhasesWithoutPrerank: getPhasesWithoutPrerankHelper,
   getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getPrimaryPerson: getPrimaryPersonHelper,
-  getRankings: getRankingsHelper,
+  getPreranking: getPrerankingHelper,
   getRegistered: getRegisteredHelper,
   getRegisteredPersons,
   getRegistrationIndividualPaymentOption: getRegistrationIndividualPaymentOptionHelper,
@@ -283,8 +283,8 @@ async function getRemainingSpots(eventId) {
   return getRemainingSpotsHelper(eventId);
 }
 
-async function getRankings(eventId) {
-  return getRankingsHelper(eventId);
+async function getPreranking(eventId) {
+  return getPrerankingHelper(eventId);
 }
 async function getPrimaryPerson(userId) {
   return getPrimaryPersonHelper(userId);
@@ -327,7 +327,7 @@ async function validateEmailIsUnique(email) {
 }
 
 async function getPhases(eventId) {
-  return getPhasesHelper(eventId);
+  return getPhasesWithoutPrerankHelper(eventId);
 }
 
 async function getGameInfo(gameId) {
@@ -1912,7 +1912,7 @@ module.exports = {
   getPhasesGameAndTeams,
   getPossibleSubmissionerInfos,
   getPrimaryPerson,
-  getRankings,
+  getPreranking,
   getRegistered,
   getRemainingSpots,
   getReports,
