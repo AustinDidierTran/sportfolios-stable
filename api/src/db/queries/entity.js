@@ -75,6 +75,7 @@ const {
   getGames: getGamesHelper,
   getGameSubmissionInfos: getGameSubmissionInfosHelper,
   getGeneralInfos: getGeneralInfosHelper,
+  getGraphUserCount: getGraphUserCountHelper,
   getAllTeamsPending: getAllTeamsPendingHelper,
   getAllTeamsRefused: getAllTeamsRefusedHelper,
   getAllPlayersPending: getAllPlayersPendingHelper,
@@ -91,11 +92,11 @@ const {
   getTeamGamesInfos: getTeamGamesInfosHelper,
   getPersonInfos: getPersonInfosHelper,
   getPersonInvoiceItem,
-  getPhases: getPhasesHelper,
+  getPhasesWithoutPrerank: getPhasesWithoutPrerankHelper,
   getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getPrimaryPerson: getPrimaryPersonHelper,
-  getRankings: getRankingsHelper,
+  getPreranking: getPrerankingHelper,
   getRegistered: getRegisteredHelper,
   getRegisteredPersons,
   getRegistrationIndividualPaymentOption: getRegistrationIndividualPaymentOptionHelper,
@@ -282,8 +283,8 @@ async function getRemainingSpots(eventId) {
   return getRemainingSpotsHelper(eventId);
 }
 
-async function getRankings(eventId) {
-  return getRankingsHelper(eventId);
+async function getPreranking(eventId) {
+  return getPrerankingHelper(eventId);
 }
 async function getPrimaryPerson(userId) {
   return getPrimaryPersonHelper(userId);
@@ -326,7 +327,7 @@ async function validateEmailIsUnique(email) {
 }
 
 async function getPhases(eventId) {
-  return getPhasesHelper(eventId);
+  return getPhasesWithoutPrerankHelper(eventId);
 }
 
 async function getGameInfo(gameId) {
@@ -367,6 +368,10 @@ async function getFields(eventId) {
 
 async function getGeneralInfos(entityId, userId) {
   return getGeneralInfosHelper(entityId, userId);
+}
+
+async function getGraphUserCount() {
+  return getGraphUserCountHelper();
 }
 async function getAllTeamsPendingAndRefused(eventId) {
   const pending = await getAllTeamsPendingHelper(eventId);
@@ -1892,6 +1897,7 @@ module.exports = {
   getGames,
   getGameSubmissionInfos,
   getGeneralInfos,
+  getGraphUserCount,
   getAllTeamsPendingAndRefused,
   getAllPlayersPendingAndRefused,
   getInteractiveToolData,
@@ -1906,7 +1912,7 @@ module.exports = {
   getPhasesGameAndTeams,
   getPossibleSubmissionerInfos,
   getPrimaryPerson,
-  getRankings,
+  getPreranking,
   getRegistered,
   getRemainingSpots,
   getReports,
