@@ -1836,6 +1836,7 @@ async function getPhaseRanking(phaseId) {
       if (r.origin_phase && r.origin_position && !r.roster_id) {
         const phaseName = await getPhaseName(r.origin_phase);
         return { ...r, phaseName };
+
       } else {
         return { ...r };
       }
@@ -2215,6 +2216,40 @@ async function getGeneralInfos(entityId) {
     description: res.description,
     quickDescription: res.quick_description,
   };
+}
+
+async function getGraphUserCount() {
+  const graphData = await knex.select(knex.raw(
+    `count(*) as total, COALESCE(count(*) - lag(count(*)) over(order by date) , 0) as new,date
+        FROM (select * ,generate_series
+        ( (current_date - interval '30' day )::timestamp
+        , current_date::timestamp
+        , interval '1 day')::date AS date
+	      FROM entities e
+	      ) s
+      where type = 1 and created_at::date <= date
+      group by date
+      order by date asc`
+  ));
+  const newData = graphData.map((o, i) => {
+    return {
+      x: i + 1,
+      y: parseInt(o.new),
+    }
+  });
+  const totalData = graphData.map((o, i) => {
+    return {
+      x: i + 1,
+      y: parseInt(o.total) - parseInt(o.new)
+    }
+  });
+
+  return {
+    new: newData,
+    total: totalData,
+    longLabel: graphData.map(o => (moment(o.date).add(1, 'days').format('ll'))),
+    shortLabel: graphData.map(o => (moment(o.date).add(1, 'days').format('DD/MM'))),
+  }
 }
 
 async function getPersonInfos(entityId) {
@@ -4738,6 +4773,7 @@ module.exports = {
   getGameTeams,
   getEventIdFromRosterId,
   getGeneralInfos,
+  getGraphUserCount,
   getMembers,
   getMembership,
   getMemberships,
