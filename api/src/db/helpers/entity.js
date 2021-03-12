@@ -942,7 +942,6 @@ async function getPrerankPhase(eventId) {
     .where({
       event_id: eventId,
       phase_order: 0,
-      status: PHASE_STATUS_ENUM.DONE,
       name: 'prerank',
     });
   return res;
@@ -1561,6 +1560,7 @@ async function getPreranking(eventId) {
         realId,
       );
       const rankingId = await getRankingId(prerankPhase.id, position);
+
       return {
         teamId: team.roster_id,
         position: position || index,
@@ -2218,8 +2218,9 @@ async function getGeneralInfos(entityId) {
 }
 
 async function getGraphUserCount() {
-  const graphData = await knex.select(knex.raw(
-    `count(*) as total, COALESCE(count(*) - lag(count(*)) over(order by date) , 0) as new,date
+  const graphData = await knex.select(
+    knex.raw(
+      `count(*) as total, COALESCE(count(*) - lag(count(*)) over(order by date) , 0) as new,date
         FROM (select * ,generate_series
         ( (current_date - interval '30' day )::timestamp
         , current_date::timestamp
@@ -2228,27 +2229,36 @@ async function getGraphUserCount() {
 	      ) s
       where type = 1 and created_at::date <= date
       group by date
-      order by date asc`
-  ));
+      order by date asc`,
+    ),
+  );
   const newData = graphData.map((o, i) => {
     return {
       x: i + 1,
       y: parseInt(o.new),
-    }
+    };
   });
   const totalData = graphData.map((o, i) => {
     return {
       x: i + 1,
-      y: parseInt(o.total) - parseInt(o.new)
-    }
+      y: parseInt(o.total) - parseInt(o.new),
+    };
   });
 
   return {
     new: newData,
     total: totalData,
-    longLabel: graphData.map(o => (moment(o.date).add(1, 'days').format('ll'))),
-    shortLabel: graphData.map(o => (moment(o.date).add(1, 'days').format('DD/MM'))),
-  }
+    longLabel: graphData.map(o =>
+      moment(o.date)
+        .add(1, 'days')
+        .format('ll'),
+    ),
+    shortLabel: graphData.map(o =>
+      moment(o.date)
+        .add(1, 'days')
+        .format('DD/MM'),
+    ),
+  };
 }
 
 async function getPersonInfos(entityId) {
@@ -2511,6 +2521,7 @@ async function updatePrerankingInitialPosition(eventId) {
 
 async function updatePreRankingSpots(prerank, rosterId) {
   const { spots } = prerank;
+
   let newSpots = spots || spots > 0 ? Number(spots) + 1 : 1;
   const [res] = await knex('phase')
     .update({ spots: newSpots })
@@ -2520,7 +2531,6 @@ async function updatePreRankingSpots(prerank, rosterId) {
   const [lastPosition] = await knex('phase_rankings')
     .max('initial_position')
     .where({ current_phase: prerank.id });
-
   if (lastPosition.max) {
     await knex('phase_rankings')
       .insert({
@@ -2596,7 +2606,6 @@ async function updateFinalPositionPhase(phaseId, teams) {
 }
 
 async function updateOriginPhase(body) {
-
   const {
     phaseId,
     originPhase,
@@ -4478,7 +4487,7 @@ async function removeEntityRole(entityId, entityIdAdmin) {
 const deleteEntity = async (entityId, userId) => {
   const realId = await getRealId(entityId);
   const role = await getEntityRole(entityId, userId);
-  
+
   if (role !== ENTITIES_ROLE_ENUM.ADMIN) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   } else {

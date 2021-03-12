@@ -955,7 +955,6 @@ async function updateTeamAcceptation(body) {
   const event = (await getEntity(eventId)).basicInfos;
   const teamId = await getTeamIdFromRosterId(rosterId);
   const team = (await getEntity(teamId)).basicInfos;
-
   const email = await getTeamCreatorEmail(teamId);
   const language = await getLanguageFromEmail(email);
   const userId = await getUserIdFromEmail(email);
