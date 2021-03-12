@@ -49,6 +49,13 @@ async function deleteTaxRate(body) {
     .where({ id: taxRateId });
 }
 
+
+async function deleteEntities(body) {
+  const { entityId } = body;
+  return knex('entities')
+    .where({ id: entityId })
+    .del();
+}
 function getAllSports() {
   return knex('sports')
     .select('*')
@@ -82,7 +89,15 @@ async function getAllUsersAndSecond() {
       'user_primary_person.primary_person',
       '=',
       'entities_photo.entity_id'
-    ).groupBy(
+    ).leftJoin(
+      'entities',
+      'user_primary_person.primary_person',
+      '=',
+      'entities.id',
+    ).whereNull(
+      'entities.deleted_at'
+    )
+    .groupBy(
       'user_primary_person.user_id',
       'user_primary_person.primary_person',
       'entities_name.name',
@@ -100,7 +115,7 @@ async function getAllUsersAndSecond() {
           'user_entity_role.entity_id',
           'entities_name.name',
           'entities_name.surname',
-          'entities_photo.photo_url'
+          'entities_photo.photo_url',
         )
         .from('user_entity_role')
         .leftJoin(
@@ -114,7 +129,13 @@ async function getAllUsersAndSecond() {
           'user_entity_role.entity_id',
           '=',
           'entities_photo.entity_id'
-        ).whereRaw(`user_entity_role.user_id = '${user.user_id}' AND user_entity_role.entity_id NOT IN (select primary_person from user_primary_person WHERE user_primary_person.primary_person is not null)`);
+        ).leftJoin(
+          'entities',
+          'user_entity_role.entity_id',
+          '=',
+          'entities.id'
+        )
+        .whereRaw(`entities.deleted_at is null and user_entity_role.user_id = '${user.user_id}' AND user_entity_role.entity_id NOT IN (select primary_person from user_primary_person WHERE user_primary_person.primary_person is not null)`);
       return {
         id: user.user_id,
         entityId: user.primary_person,
@@ -166,4 +187,5 @@ module.exports = {
   updateActiveStatusTaxRate,
   updateSport,
   deleteTaxRate,
+  deleteEntities,
 };

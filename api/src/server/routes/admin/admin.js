@@ -211,4 +211,12 @@ router.del(`${BASE_URL}/deleteTaxRate`, async ctx => {
   };
 });
 
+router.del(`${BASE_URL}/entities`, async ctx => {
+  const data = await queries.deleteEntities(ctx.query);
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
 module.exports = router;
