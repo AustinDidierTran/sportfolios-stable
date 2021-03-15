@@ -968,10 +968,10 @@ async function generateMembersReport(report) {
       }
       const address = person.address
         ? {
-            city: person.address.city,
-            state: person.address.state,
-            zip: person.address.zip,
-          }
+          city: person.address.city,
+          state: person.address.state,
+          zip: person.address.zip,
+        }
         : {};
       return {
         ...a,
@@ -1979,9 +1979,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-        entityId: p.entity_id,
-        completeName: `${p.name} ${p.surname}`,
-      }))
+      entityId: p.entity_id,
+      completeName: `${p.name} ${p.surname}`,
+    }))
     : undefined;
 }
 
@@ -3664,7 +3664,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -3704,7 +3704,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -4478,7 +4478,7 @@ async function removeEntityRole(entityId, entityIdAdmin) {
 const deleteEntity = async (entityId, userId) => {
   const realId = await getRealId(entityId);
   const role = await getEntityRole(entityId, userId);
-  
+
   if (role !== ENTITIES_ROLE_ENUM.ADMIN) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   } else {
@@ -4591,7 +4591,7 @@ const getGameInfo = async id => {
     .where({ id: game.timeslot_id });
   return {
     ...game,
-    teams,
+    teams: teams,
     score_submited: score_suggestion.score_submited,
     field: r1.field,
     start_time: r2.date,
