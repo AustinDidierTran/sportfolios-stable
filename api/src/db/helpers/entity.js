@@ -884,8 +884,8 @@ async function getMembers(personId, organizationId) {
     }
     return prev;
   }, []);
-
   const res = reduce.map(m => ({
+    membershipId: m.membership_id,
     organizationId: m.organization_id,
     personId: m.person_id,
     memberType: m.member_type,
