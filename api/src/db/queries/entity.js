@@ -1098,26 +1098,22 @@ async function updateGame(body) {
     phaseId,
     fieldId,
     timeslotId,
-    rosterId1,
-    rosterId2,
-    name1,
-    name2,
+    rankingId1,
+    rankingId2,
+    oldRanking1,
+    oldRanking2,
     description,
-    teamId1,
-    teamId2,
   } = body;
   const res = await updateGameHelper(
     gameId,
     phaseId,
     fieldId,
     timeslotId,
-    rosterId1,
-    rosterId2,
-    name1,
-    name2,
+    rankingId1,
+    rankingId2,
+    oldRanking1,
+    oldRanking2,
     description,
-    teamId1,
-    teamId2,
   );
   return res;
 }
@@ -1244,10 +1240,8 @@ async function addGame(body, userId) {
     phaseId,
     fieldId,
     timeslotId,
-    rosterId1,
-    rosterId2,
-    name1,
-    name2,
+    rankingId1,
+    rankingId2,
   } = body;
 
   if (
@@ -1256,16 +1250,16 @@ async function addGame(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  return addGameHelper(
+  const res = await addGameHelper(
     eventId,
     phaseId,
     fieldId,
     timeslotId,
-    rosterId1,
-    rosterId2,
-    name1,
-    name2,
+    rankingId1,
+    rankingId2,
   );
+
+  return res;
 }
 
 async function addGameAttendances(body, userId) {
