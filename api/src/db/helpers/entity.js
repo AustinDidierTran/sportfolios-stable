@@ -2161,28 +2161,41 @@ const getTeams = async gameId => {
 
   const teamInfo = await Promise.all(
     teams.map(async team => {
-      const realTeamId = await getTeamIdFromRosterId(team.roster_id);
-      const [entities_photo] = await knex('entities_photo')
-        .select('photo_url')
-        .where('entity_id', realTeamId);
+      if (team.roster_id) {
+        const realTeamId = await getTeamIdFromRosterId(
+          team.roster_id,
+        );
+        const [entities_photo] = await knex('entities_photo')
+          .select('photo_url')
+          .where('entity_id', realTeamId);
 
-      const roster = await getRoster(team.roster_id);
-
-      return {
-        game_id: team.game_id,
-        roster_id: team.roster_id,
-        score: team.score,
-        position: team.position,
-        name: team.name,
-        id: team.id,
-        spirit: team.spirit,
-        created_at: team.created_at,
-        updated_at: team.updated_at,
-        photo_url: entities_photo.photo_url,
-        roster,
-      };
+        const roster = await getRoster(team.roster_id);
+        return {
+          game_id: team.game_id,
+          roster_id: team.roster_id,
+          score: team.score,
+          position: team.position,
+          name: team.name,
+          id: team.id,
+          spirit: team.spirit,
+          created_at: team.created_at,
+          updated_at: team.updated_at,
+          photo_url: entities_photo.photo_url,
+          ranking_id: team.ranking_id,
+          roster,
+        };
+      } else {
+        return {
+          game_id: team.game_id,
+          score: team.score,
+          name: team.name,
+          spirit: team.spirit,
+          ranking_id: team.ranking_id,
+        };
+      }
     }),
   );
+
   return teamInfo;
 };
 
@@ -4737,7 +4750,7 @@ const getGameInfo = async id => {
     .where('game_id', id)
     .andWhere('status', 'accepted');
 
-  const teams = await getTeams(id);
+  const positions = await getTeams(id);
 
   if (game.phase_id) {
     game.phase_name = await getPhaseName(game.phase_id);
@@ -4751,7 +4764,7 @@ const getGameInfo = async id => {
     .where({ id: game.timeslot_id });
   return {
     ...game,
-    teams,
+    positions,
     score_submited: score_suggestion.score_submited,
     field: r1.field,
     start_time: r2.date,
