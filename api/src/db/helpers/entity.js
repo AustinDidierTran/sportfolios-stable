@@ -2611,7 +2611,7 @@ async function updatePhaseOrder(orderedPhases, eventId) {
   const res = await Promise.all(
     orderedPhases.map(async (p, index) => {
       const [order] = await knex('phase')
-        .update({ phase_order: index })
+        .update({ phase_order: index + 1 })
         .where({ event_id: realId, id: p.id })
         .returning('*');
       return order;
