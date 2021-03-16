@@ -56,6 +56,22 @@ router.get(`${BASE_URL}/about`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/membershipsTab`, async ctx => {
+  const entity = await OrganizationController.memberships(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
 router.get(`${BASE_URL}/events`, async ctx => {
   const entity = await OrganizationController.events(
     ctx.query.id,

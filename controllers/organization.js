@@ -14,8 +14,8 @@ class OrganizationController {
         label: 'event.events',
       },
       {
-        value: 'league',
-        label: 'league',
+        value: 'memberships',
+        label: 'member.memberships',
       },
       {
         value: 'about',
@@ -42,6 +42,15 @@ class OrganizationController {
   }
 
   static async home(orgId, userId) {
+    let res = await getEntityHelper(orgId, userId);
+
+    return {
+      basicInfos: res.basicInfos,
+      navBar: this.getNavBar(),
+    };
+  }
+
+  static async memberships(orgId, userId) {
     let res = await getEntityHelper(orgId, userId);
 
     return {
