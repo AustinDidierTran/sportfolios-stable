@@ -4591,7 +4591,7 @@ const getGameInfo = async id => {
     .where({ id: game.timeslot_id });
   return {
     ...game,
-    teams: teams,
+    teams,
     score_submited: score_suggestion.score_submited,
     field: r1.field,
     start_time: r2.date,

@@ -17,10 +17,6 @@ class OrganizationController {
         value: 'memberships',
         label: 'member.memberships',
       },
-      // {
-      //   value: 'league',
-      //   label: 'league',
-      // },
       {
         value: 'about',
         label: 'about',
