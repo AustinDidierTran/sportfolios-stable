@@ -24,6 +24,7 @@ const validator = require('validator');
 
 const _ = require('lodash');
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
+const { del } = require('../connection');
 const generateToken = () => {
   return uuidv1();
 };
@@ -967,10 +968,10 @@ async function generateMembersReport(report) {
       }
       const address = person.address
         ? {
-          city: person.address.city,
-          state: person.address.state,
-          zip: person.address.zip,
-        }
+            city: person.address.city,
+            state: person.address.state,
+            zip: person.address.zip,
+          }
         : {};
       return {
         ...a,
@@ -1988,9 +1989,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-      entityId: p.entity_id,
-      completeName: `${p.name} ${p.surname}`,
-    }))
+        entityId: p.entity_id,
+        completeName: `${p.name} ${p.surname}`,
+      }))
     : undefined;
 }
 
@@ -3815,7 +3816,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -3855,7 +3856,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -4832,6 +4833,51 @@ const deleteGame = async id => {
   return res;
 };
 
+const deletePhase = async (phaseId, eventId) => {
+  const phaseGames = await knex('games')
+    .select('id')
+    .where({ phase_id: phaseId });
+
+  if (phaseGames.length) {
+    const deletedGames = await Promise.all(
+      phaseGames.map(async g => {
+        return deleteGame(g.id);
+      }),
+    );
+  }
+
+  const rankings = await knex('phase_rankings')
+    .where({
+      current_phase: phaseId,
+    })
+    .del()
+    .returning('*');
+
+  const dependantRankings = await knex('phase_rankings')
+    .update({
+      roster_id: null,
+      origin_phase: null,
+      origin_position: null,
+    })
+    .where({
+      origin_phase: phaseId,
+    })
+    .returning('*');
+
+  const [res] = await knex('phase')
+    .where({ id: phaseId })
+    .del()
+    .returning('*');
+
+  const allPhases = await getPhasesWithoutPrerank(eventId);
+  await updatePhaseOrder(
+    allPhases.sort((a, b) => a.phase_order - b.phase_order),
+    eventId,
+  );
+
+  return res;
+};
+
 const personIsAwaitingTransfer = async personId => {
   return (
     await knex.first(
@@ -4947,6 +4993,7 @@ module.exports = {
   deleteMembership,
   deleteOption,
   deletePersonFromEvent,
+  deletePhase,
   deletePlayerFromRoster,
   deleteRegistration,
   deleteReport,
@@ -5077,7 +5124,6 @@ module.exports = {
   updateFinalPositionPhase,
   updateOriginPhase,
   updatePhaseRankingsSpots,
-  // updatePhaseRankingRoster,
   updatePhaseFinalRanking,
   updatePlayerPaymentStatus,
   updatePreRanking,
