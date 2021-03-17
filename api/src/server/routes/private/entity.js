@@ -291,6 +291,26 @@ router.get(`${BASE_URL}/allOwned`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/phaseRanking`, async ctx => {
+  const phaseRankings = await PhaseRankingController.getPhaseRanking(
+    ctx.query.phaseId,
+  );
+
+  if (phaseRankings) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: phaseRankings,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/roles`, async ctx => {
   const entity = await queries.getAllRolesEntity(ctx.query.id);
 

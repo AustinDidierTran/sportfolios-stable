@@ -5,6 +5,7 @@ const {
   deleteTeamPhase: deleteTeamPhaseHelper,
   addTeamPhase: addTeamPhaseHelper,
   getEntityRole: getEntityRoleHelper,
+  getPhaseRanking: getPhaseRankingHelper,
 } = require('../api/src/db/helpers/entity');
 
 const { ENTITIES_ROLE_ENUM } = require('../common/enums');
@@ -12,6 +13,10 @@ const { ENTITIES_ROLE_ENUM } = require('../common/enums');
 const { ERROR_ENUM } = require('../common/errors');
 
 class PhaseRankingController {
+  static async getPhaseRanking(phaseId) {
+    const res = getPhaseRankingHelper(phaseId);
+    return res;
+  }
 
   static async updateInitialPositionPhase(body, userId) {
     const { phaseId, teams, eventId } = body;
@@ -26,7 +31,10 @@ class PhaseRankingController {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
 
-    const res = await updateInitialPositionPhaseHelper(phaseId, teams);
+    const res = await updateInitialPositionPhaseHelper(
+      phaseId,
+      teams,
+    );
     return res;
   }
   static async updateFinalPositionPhase(body, userId) {
@@ -55,7 +63,7 @@ class PhaseRankingController {
       originPosition,
     } = body;
 
-    const rosterId=id;
+    const rosterId = id;
 
     if (
       !(await this.isAllowed(
@@ -67,10 +75,16 @@ class PhaseRankingController {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
 
-    if(originPhase && originPosition){
-      const res = await updateOriginPhaseHelper({phaseId, eventId, originPhase, originPosition, initialPosition});
+    if (originPhase && originPosition) {
+      const res = await updateOriginPhaseHelper({
+        phaseId,
+        eventId,
+        originPhase,
+        originPosition,
+        initialPosition,
+      });
       return res;
-    }else{
+    } else {
       const res = await addTeamPhaseHelper(
         phaseId,
         rosterId,

@@ -3,13 +3,16 @@ const {
   getEntityRole: getEntityRoleHelper,
   getPrerankPhase: getPrerankPhaseHelper,
   updatePhase: updatePhaseHelper,
+  updatePhaseGamesRosterId: updatePhaseGamesRosterIdHelper,
   updatePhaseOrder: updatePhaseOrderHelper,
   updatePhaseRankingsSpots: updatePhaseRankingsSpotsHelper,
-  updatePhaseRankingRoster: updatePhaseRankingRosterHelper,
   updatePhaseFinalRanking: updatePhaseFinalRankingHelper,
 } = require('../api/src/db/helpers/entity');
 
-const { ENTITIES_ROLE_ENUM } = require('../common/enums');
+const {
+  ENTITIES_ROLE_ENUM,
+  PHASE_STATUS_ENUM,
+} = require('../common/enums');
 
 const { ERROR_ENUM } = require('../common/errors');
 
@@ -70,7 +73,6 @@ class PhaseController {
       phaseName,
       spots,
       status,
-      rankingsToUpdate,
       finalRanking,
     } = body;
     if (
@@ -91,12 +93,12 @@ class PhaseController {
       status,
     });
 
-    if (rankingsToUpdate) {
-      await updatePhaseRankingRosterHelper(phaseId, rankingsToUpdate);
-    }
-
     if (spots || spots === 0) {
       await updatePhaseRankingsSpotsHelper({ phaseId, spots });
+    }
+
+    if (status === PHASE_STATUS_ENUM.STARTED) {
+      await updatePhaseGamesRosterIdHelper(phaseId, eventId);
     }
 
     if (finalRanking) {
