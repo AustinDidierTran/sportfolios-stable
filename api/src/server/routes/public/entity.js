@@ -3,17 +3,36 @@ const queries = require('../../../db/queries/entity');
 const {
   OrganizationController,
 } = require('../../../../../controllers/organization');
+const {
+  EventController,
+} = require('../../../../../controllers/event');
 const { GLOBAL_ENUM } = require('../../../../../common/enums');
 const router = new Router();
 const BASE_URL = '/api/entity';
 
 router.get(BASE_URL, async ctx => {
-  const userId =
-    ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
-  const entity = await queries.getEntity(ctx.query.id, userId);
 
-  if (entity.basicInfos.type == GLOBAL_ENUM.ORGANIZATION) {
-    entity.navBar = OrganizationController.getNavBar();
+  const type = await queries.getEntitiesTypeById(ctx.query.id);
+  let entity;
+
+  switch (type) {
+    case GLOBAL_ENUM.ORGANIZATION:
+      entity = await OrganizationController.home(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+      break;
+    case GLOBAL_ENUM.EVENT:
+      entity = await EventController.home(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+      break;
+    default:
+      entity = await queries.getEntity(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
   }
 
   if (entity) {

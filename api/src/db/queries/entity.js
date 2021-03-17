@@ -60,6 +60,7 @@ const {
   getAllTeamsRegisteredInfos: getAllTeamsRegisteredInfosHelper,
   getAllTeamsAcceptedInfos: getAllTeamsAcceptedInfosHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
+  getEntitiesTypeById: getEntitiesTypeByIdHelper,
   getCreatorsEmails,
   getTeamCreatorEmail,
   getEmailPerson,
@@ -219,6 +220,10 @@ async function getOwnedEvents(organizationId) {
 
 async function getAllTypeEntities(type) {
   return getAllTypeEntitiesHelper(type);
+}
+
+async function getEntitiesTypeById(id) {
+  return getEntitiesTypeByIdHelper(id);
 }
 
 async function getAllRolesEntity(id) {
@@ -1889,6 +1894,7 @@ module.exports = {
   getAllTeamsRegisteredInfos,
   getAllTeamsAcceptedInfos,
   getAllTypeEntities,
+  getEntitiesTypeById,
   getEntity,
   getEvent,
   getFields,
