@@ -1747,7 +1747,6 @@ router.del(`${BASE_URL}/phase`, async ctx => {
     ctx.query,
     ctx.body.userInfo.id,
   );
-  console.log({ routePhase: phase });
   if (phase) {
     ctx.status = STATUS_ENUM.SUCCESS;
 
