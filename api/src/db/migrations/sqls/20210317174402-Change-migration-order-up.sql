@@ -31,11 +31,16 @@ WHERE game_teams.game_id=games.id AND games.id=spirit_submission.game_id AND gam
 
 /*No condition on the ranking id here because we want every team in the game to be deleted or there will be dead data*/
 DELETE FROM game_teams
+<<<<<<< HEAD
 WHERE game_id IN (
     SELECT game_id 
     FROM game_teams
     WHERE ranking_id IS NULL
 );
+=======
+USING games
+WHERE game_teams.game_id=games.id;
+>>>>>>> 3e76a6ccbeca3030fcd337f319ed4d2898a81614
 ​
 DELETE FROM games
 WHERE NOT EXISTS(SELECT * FROM game_teams WHERE game_teams.game_id=games.id);
