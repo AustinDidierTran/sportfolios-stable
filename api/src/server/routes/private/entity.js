@@ -1,6 +1,6 @@
 const Router = require('koa-router');
 const queries = require('../../../db/queries/entity');
-const { STATUS_ENUM } = require('../../../../../common/enums');
+const { STATUS_ENUM, GLOBAL_ENUM } = require('../../../../../common/enums');
 const {
   ERROR_ENUM,
   errors,
@@ -8,6 +8,9 @@ const {
 const {
   OrganizationController,
 } = require('../../../../../controllers/organization');
+const {
+  EventController,
+} = require('../../../../../controllers/event');
 const {
   InteractiveToolController,
 } = require('../../../../../controllers/interactiveToolController');
@@ -22,10 +25,28 @@ const router = new Router();
 const BASE_URL = '/api/entity';
 
 router.get(`${BASE_URL}`, async ctx => {
-  const entity = await queries.getEntity(
-    ctx.query.id,
-    ctx.body.userInfo.id,
-  );
+
+  const type = await queries.getEntitiesTypeById(ctx.query.id);
+  let entity;
+  switch (type) {
+    case GLOBAL_ENUM.ORGANIZATION:
+      entity = await OrganizationController.home(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+      break;
+    case GLOBAL_ENUM.EVENT:
+      entity = await EventController.home(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+      break;
+    default:
+      entity = await queries.getEntity(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+  }
 
   if (entity) {
     ctx.body = {
@@ -89,7 +110,90 @@ router.get(`${BASE_URL}/events`, async ctx => {
 });
 
 router.get(`${BASE_URL}/home`, async ctx => {
-  const entity = await OrganizationController.home(
+
+  const type = await queries.getEntitiesTypeById(ctx.query.id);
+  let entity;
+  switch (type) {
+    case GLOBAL_ENUM.ORGANIZATION:
+      entity = await OrganizationController.edit(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+      break;
+    case GLOBAL_ENUM.EVENT:
+      entity = await EventController.edit(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+      break;
+    default:
+      entity = await OrganizationController.edit(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+  }
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
+router.get(`${BASE_URL}/editRankings`, async ctx => {
+  const entity = await EventController.editRankings(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
+router.get(`${BASE_URL}/rankings`, async ctx => {
+  const entity = await EventController.rankings(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
+router.get(`${BASE_URL}/editRosters`, async ctx => {
+  const entity = await EventController.editRosters(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
+
+router.get(`${BASE_URL}/editSchedule`, async ctx => {
+  const entity = await EventController.editSchedule(
     ctx.query.id,
     ctx.body.userInfo.id,
   );
@@ -120,8 +224,63 @@ router.get(`${BASE_URL}/league`, async ctx => {
   };
 });
 
+
+router.get(`${BASE_URL}/teams`, async ctx => {
+  const entity = await EventController.teams(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+  );
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
 router.get(`${BASE_URL}/edit`, async ctx => {
-  const entity = await OrganizationController.edit(
+
+  if (!ctx.query.id) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  const type = await queries.getEntitiesTypeById(ctx.query.id);
+  let entity;
+  switch (type) {
+    case GLOBAL_ENUM.ORGANIZATION:
+      entity = await OrganizationController.edit(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+      break;
+    case GLOBAL_ENUM.EVENT:
+      entity = await EventController.edit(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+      break;
+    default:
+      entity = await OrganizationController.edit(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+  }
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
+router.get(`${BASE_URL}/schedule`, async ctx => {
+  const entity = await EventController.schedule(
     ctx.query.id,
     ctx.body.userInfo.id,
   );
