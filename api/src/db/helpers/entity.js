@@ -24,7 +24,6 @@ const validator = require('validator');
 
 const _ = require('lodash');
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
-const { del } = require('../connection');
 const generateToken = () => {
   return uuidv1();
 };

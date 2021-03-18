@@ -104,8 +104,7 @@ class PhaseController {
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
-    const res = await updatePhaseOrderHelper(orderedPhases, eventId);
-    return res;
+    return updatePhaseOrderHelper(orderedPhases, eventId);
   }
 
   static async deletePhase(query, userId) {
