@@ -63,10 +63,27 @@ router.get(`${BASE_URL}`, async ctx => {
 });
 
 router.get(`${BASE_URL}/about`, async ctx => {
-  const entity = await OrganizationController.about(
-    ctx.query.id,
-    ctx.body.userInfo.id,
-  );
+  const type = await queries.getEntitiesTypeById(ctx.query.id);
+  let entity;
+  switch (type) {
+    case GLOBAL_ENUM.ORGANIZATION:
+      entity = await OrganizationController.edit(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+      break;
+    case GLOBAL_ENUM.EVENT:
+      entity = await EventController.about(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+      break;
+    default:
+      entity = await queries.getEntity(
+        ctx.query.id,
+        ctx.body.userInfo.id,
+      );
+  }
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -127,7 +144,7 @@ router.get(`${BASE_URL}/home`, async ctx => {
       );
       break;
     default:
-      entity = await OrganizationController.edit(
+      entity = await queries.getEntity(
         ctx.query.id,
         ctx.body.userInfo.id,
       );
@@ -263,7 +280,7 @@ router.get(`${BASE_URL}/edit`, async ctx => {
       );
       break;
     default:
-      entity = await OrganizationController.edit(
+      entity = await queries.getEntity(
         ctx.query.id,
         ctx.body.userInfo.id,
       );

@@ -1,7 +1,11 @@
 const {
   getEntity: getEntityHelper,
   eventInfos: eventInfosHelper,
+  getRemainingSpots: getRemainingSpots,
+  getOptions
 } = require('../api/src/db/helpers/entity');
+
+const moment = require('moment');
 
 class EventController {
   static getNavBar() {
@@ -31,7 +35,38 @@ class EventController {
 
   static async getEventInfo(eventId, userId) {
     const data = await eventInfosHelper(eventId, userId);
-    return data;
+    const remainingSpots = await getRemainingSpots(eventId);
+    const options = await getOptions(eventId);
+
+    let registrationStart, registrationEnd;
+    let isEarly, isLate = true;
+
+    if (Array.isArray(options)) {
+      isLate = options.every((option) => moment(option.endTime) < moment());
+      isEarly = options.every((option) => moment(option.startTime) > moment());
+      registrationStart = options.reduce((a, b) => moment(a.startTime) < moment(b.startTime) ? a.startTime : b.startTime, options[0]);
+      registrationEnd = options.reduce((a, b) => moment(a.endTime) > moment(b.endTime) ? a.endTime : b.endTime, options[0]);
+    }
+
+    return {
+      ...data,
+      remainingSpots,
+      options,
+      registrationStart,
+      registrationEnd,
+      isEarly,
+      isLate,
+    };
+  }
+
+  static async about(eventId, userId) {
+    let res = await getEntityHelper(eventId, userId);
+    const eventInfo = await this.getEventInfo(eventId, userId);
+    return {
+      basicInfos: res.basicInfos,
+      navBar: this.getNavBar(),
+      eventInfo,
+    };
   }
   static async home(eventId, userId) {
     let res = await getEntityHelper(eventId, userId);
@@ -104,9 +139,11 @@ class EventController {
 
   static async rankings(eventId, userId) {
     let res = await getEntityHelper(eventId, userId);
+    const eventInfo = await this.getEventInfo(eventId, userId);
     return {
       basicInfos: res.basicInfos,
       navBar: this.getNavBar(),
+      eventInfo,
     };
   }
 }
