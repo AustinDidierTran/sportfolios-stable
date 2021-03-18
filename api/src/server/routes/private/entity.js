@@ -1742,6 +1742,27 @@ router.del(`${BASE_URL}/game`, async ctx => {
   }
 });
 
+router.del(`${BASE_URL}/phase`, async ctx => {
+  const phase = await PhaseController.deletePhase(
+    ctx.query,
+    ctx.body.userInfo.id,
+  );
+  if (phase) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+
+    ctx.body = {
+      status: 'success',
+      data: phase,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/rosterInviteToken`, async ctx => {
   const token = await queries.getRosterInviteToken(
     ctx.body.userInfo.id,

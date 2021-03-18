@@ -7,6 +7,7 @@ const {
   updatePhaseOrder: updatePhaseOrderHelper,
   updatePhaseRankingsSpots: updatePhaseRankingsSpotsHelper,
   updatePhaseFinalRanking: updatePhaseFinalRankingHelper,
+  deletePhase: deletePhaseHelper,
 } = require('../api/src/db/helpers/entity');
 
 const {
@@ -50,22 +51,6 @@ class PhaseController {
     };
     return res;
   }
-
-  static async updatePhaseOrder(body, userId) {
-    const { orderedPhases, eventId } = body;
-    if (
-      !(await this.isAllowed(
-        eventId,
-        userId,
-        ENTITIES_ROLE_ENUM.EDITOR,
-      ))
-    ) {
-      throw new Error(ERROR_ENUM.ACCESS_DENIED);
-    }
-    const res = await updatePhaseOrderHelper(orderedPhases, eventId);
-    return res;
-  }
-
   static async updatePhase(body, userId) {
     const {
       eventId,
@@ -106,6 +91,35 @@ class PhaseController {
     }
 
     return res;
+  }
+
+  static async updatePhaseOrder(body, userId) {
+    const { orderedPhases, eventId } = body;
+    if (
+      !(await this.isAllowed(
+        eventId,
+        userId,
+        ENTITIES_ROLE_ENUM.EDITOR,
+      ))
+    ) {
+      throw new Error(ERROR_ENUM.ACCESS_DENIED);
+    }
+    return updatePhaseOrderHelper(orderedPhases, eventId);
+  }
+
+  static async deletePhase(query, userId) {
+    const { phaseId, eventId } = query;
+    if (
+      !(await this.isAllowed(
+        eventId,
+        userId,
+        ENTITIES_ROLE_ENUM.EDITOR,
+      ))
+    ) {
+      throw new Error(ERROR_ENUM.ACCESS_DENIED);
+    }
+
+    return deletePhaseHelper(phaseId, eventId);
   }
 
   static async isAllowed(
