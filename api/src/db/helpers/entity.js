@@ -4568,7 +4568,6 @@ async function updateGame(
           .returning('*');
         res.push(r);
       } else {
-        console.log('should be here');
         const [r] = await knex('game_teams')
           .update({
             name: fullName,
@@ -4583,7 +4582,6 @@ async function updateGame(
       }
     } else {
       const fullName = `${ranking.initial_position} - ${phaseName}`;
-
       const [r] = await knex('game_teams')
         .update({ name: fullName, ranking_id: rankingId1 })
         .where({
