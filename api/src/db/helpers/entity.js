@@ -4504,7 +4504,7 @@ async function updateGame(
   description,
 ) {
   const res = [];
-  const phase = getPhase(phaseId);
+  const [phase] = await getPhase(phaseId);
   const phaseName = await getPhaseName(phaseId);
 
   //TODO:  could update every data in game in one call because the parameters will always be defined
@@ -4568,9 +4568,9 @@ async function updateGame(
           .returning('*');
         res.push(r);
       } else {
+        console.log('should be here');
         const [r] = await knex('game_teams')
           .update({
-            roster_id: ranking.roster_id,
             name: fullName,
             ranking_id: rankingId1,
           })
@@ -4582,7 +4582,6 @@ async function updateGame(
         res.push(r);
       }
     } else {
-      const phaseName = await getPhaseName(phaseId);
       const fullName = `${ranking.initial_position} - ${phaseName}`;
 
       const [r] = await knex('game_teams')
@@ -4622,7 +4621,6 @@ async function updateGame(
       } else {
         const [r] = await knex('game_teams')
           .update({
-            roster_id: ranking.roster_id,
             name: fullName,
             ranking_id: rankingId2,
           })
@@ -4634,7 +4632,6 @@ async function updateGame(
         res.push(r);
       }
     } else {
-      const phaseName = await getPhaseName(phaseId);
       const fullName = `${ranking.initial_position} - ${phaseName}`;
 
       const [r] = await knex('game_teams')
