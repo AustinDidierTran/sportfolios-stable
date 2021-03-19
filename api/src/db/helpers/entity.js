@@ -3172,16 +3172,6 @@ const deleteRegistration = async (rosterId, eventId) => {
     return trx;
   });
 
-  // console.log(res);
-  //if team is registred to the event, updates preranking accordingly
-  // if (
-  //   registrationStatus === STATUS_ENUM.ACCEPTED ||
-  //   registrationStatus === STATUS_ENUM.ACCEPTED_FREE
-  // ) {
-
-  //   if (res.isCompleted) {
-  //   }
-  // }
   return res;
 };
 
