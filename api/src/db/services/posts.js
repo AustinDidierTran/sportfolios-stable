@@ -156,6 +156,10 @@ class PostServices {
   }
 
   static async getPostFeed(user_id, locationId, body) {
+    if (user_id == -1) {
+      user_id = '00000000-00a0-0000-a00a-000000000000';
+    }
+
     if (body) {
       const { perPage, currentPage } = body;
       const { data } = await knex

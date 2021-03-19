@@ -4,6 +4,7 @@ const shop = require('./shop');
 const googleAnalytics = require('./googleAnalytics');
 const user = require('./user');
 const facebook = require('./facebook');
+const posts = require('./posts');
 const notifications = require('./notifications');
 
 module.exports = [
@@ -12,6 +13,7 @@ module.exports = [
   shop,
   googleAnalytics,
   user,
+  posts,
   facebook,
   notifications,
 ];
