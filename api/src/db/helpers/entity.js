@@ -2632,7 +2632,7 @@ async function updatePhaseOrder(orderedPhases, eventId) {
   return res;
 }
 
-async function updatePhaseGamesRosterId(phaseId, eventId) {
+async function updatePhaseGamesRosterId(phaseId) {
   const games = await getPhaseGames(phaseId);
 
   const gamePositions = await Promise.all(
@@ -2779,7 +2779,7 @@ async function updatePhaseRankingsSpots(body) {
         .del()
         .returning('*');
 
-      const dependantRanking = await knex('phase_rankings')
+      await knex('phase_rankings')
         .update({
           roster_id: null,
           origin_phase: null,
@@ -2788,8 +2788,7 @@ async function updatePhaseRankingsSpots(body) {
         .where({
           origin_phase: ranking.current_phase,
           origin_position: ranking.initial_position,
-        })
-        .returning('*');
+        });
 
       deleted.push(ranking);
     }
@@ -3603,21 +3602,17 @@ async function addGame(
 
     name1 =
       teamName1 !== undefined
-        ? `${phaseRanking1.initial_position.toString()} - ${
-            phaseRanking1.phase.name
-          } (${teamName1})`
-        : `${phaseRanking1.initial_position.toString()} - ${
-            phaseRanking1.phase.name
-          }`;
+        ? `${phaseRanking1.initial_position.toString()} - ${phaseRanking1.phase.name
+        } (${teamName1})`
+        : `${phaseRanking1.initial_position.toString()} - ${phaseRanking1.phase.name
+        }`;
 
     name2 =
       teamName2 !== undefined
-        ? `${phaseRanking2.initial_position.toString()} - ${
-            phaseRanking2.phase.name
-          } (${teamName2})`
-        : `${phaseRanking2.initial_position.toString()} - ${
-            phaseRanking2.phase.name
-          }`;
+        ? `${phaseRanking2.initial_position.toString()} - ${phaseRanking2.phase.name
+        } (${teamName2})`
+        : `${phaseRanking2.initial_position.toString()} - ${phaseRanking2.phase.name
+        }`;
 
     [position1] = await knex('game_teams')
       .insert({
@@ -4849,21 +4844,20 @@ const deletePhase = async (phaseId, eventId) => {
     .where({ phase_id: phaseId });
 
   if (phaseGames.length) {
-    const deletedGames = await Promise.all(
+    await Promise.all(
       phaseGames.map(async g => {
         return deleteGame(g.id);
       }),
     );
   }
 
-  const rankings = await knex('phase_rankings')
+  await knex('phase_rankings')
     .where({
       current_phase: phaseId,
     })
-    .del()
-    .returning('*');
+    .del();
 
-  const dependantRankings = await knex('phase_rankings')
+  await knex('phase_rankings')
     .update({
       roster_id: null,
       origin_phase: null,
@@ -4871,8 +4865,7 @@ const deletePhase = async (phaseId, eventId) => {
     })
     .where({
       origin_phase: phaseId,
-    })
-    .returning('*');
+    });
 
   const [res] = await knex('phase')
     .where({ id: phaseId })

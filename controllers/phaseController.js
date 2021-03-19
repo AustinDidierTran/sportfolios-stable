@@ -83,7 +83,7 @@ class PhaseController {
     }
 
     if (status === PHASE_STATUS_ENUM.STARTED) {
-      await updatePhaseGamesRosterIdHelper(phaseId, eventId);
+      await updatePhaseGamesRosterIdHelper(phaseId);
     }
 
     if (finalRanking) {
