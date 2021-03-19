@@ -4649,7 +4649,6 @@ async function updateGame(
           .returning('*');
         res.push(r);
       } else {
-        console.log('should be here');
         const [r] = await knex('game_teams')
           .update({
             name: fullName,
