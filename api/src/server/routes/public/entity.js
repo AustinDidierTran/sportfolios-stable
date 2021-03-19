@@ -15,23 +15,28 @@ router.get(BASE_URL, async ctx => {
   const type = await queries.getEntitiesTypeById(ctx.query.id);
   let entity;
 
+  let userId = -1;
+  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
+    userId = ctx.body.userInfo.id;
+  }
+
   switch (type) {
     case GLOBAL_ENUM.ORGANIZATION:
       entity = await OrganizationController.home(
         ctx.query.id,
-        ctx.body.userInfo.id,
+        userId,
       );
       break;
     case GLOBAL_ENUM.EVENT:
       entity = await EventController.home(
         ctx.query.id,
-        ctx.body.userInfo.id,
+        userId,
       );
       break;
     default:
       entity = await queries.getEntity(
         ctx.query.id,
-        ctx.body.userInfo.id,
+        userId,
       );
   }
 
@@ -83,6 +88,193 @@ router.get(`${BASE_URL}/eventInfos`, async ctx => {
       message: 'That record does not exist.',
     };
   }
+});
+
+
+router.get(`${BASE_URL}/events`, async ctx => {
+
+  let userId = -1;
+  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
+    userId = ctx.body.userInfo.id;
+  }
+
+  const entity = await OrganizationController.events(
+    ctx.query.id,
+    userId,
+  );
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
+router.get(`${BASE_URL}/membershipsTab`, async ctx => {
+
+
+  let userId = -1;
+  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
+    userId = ctx.body.userInfo.id;
+  }
+  const entity = await OrganizationController.memberships(
+    ctx.query.id,
+    userId,
+  );
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
+router.get(`${BASE_URL}/home`, async ctx => {
+  const type = await queries.getEntitiesTypeById(ctx.query.id);
+  let entity;
+
+  let userId = -1;
+  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
+    userId = ctx.body.userInfo.id;
+  }
+  switch (type) {
+    case GLOBAL_ENUM.ORGANIZATION:
+      entity = await OrganizationController.home(
+        ctx.query.id,
+        userId,
+      );
+      break;
+    case GLOBAL_ENUM.EVENT:
+      entity = await EventController.home(
+        ctx.query.id,
+        userId,
+      );
+      break;
+    default:
+      entity = await queries.getEntity(
+        ctx.query.id,
+        userId,
+      );
+  }
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
+
+router.get(`${BASE_URL}/about`, async ctx => {
+  const type = await queries.getEntitiesTypeById(ctx.query.id);
+  let entity;
+
+  let userId = -1;
+  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
+    userId = ctx.body.userInfo.id;
+  }
+
+  switch (type) {
+    case GLOBAL_ENUM.ORGANIZATION:
+      entity = await OrganizationController.about(
+        ctx.query.id,
+        userId,
+      );
+      break;
+    case GLOBAL_ENUM.EVENT:
+      entity = await EventController.about(
+        ctx.query.id,
+        userId,
+      );
+      break;
+    default:
+      entity = await queries.getEntity(
+        ctx.query.id,
+        userId,
+      );
+  }
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
+
+router.get(`${BASE_URL}/teams`, async ctx => {
+
+  let userId = -1;
+  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
+    userId = ctx.body.userInfo.id;
+  }
+  const entity = await EventController.teams(
+    ctx.query.id,
+    userId,
+  );
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
+router.get(`${BASE_URL}/schedule`, async ctx => {
+
+  let userId = -1;
+  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
+    userId = ctx.body.userInfo.id;
+  }
+
+  const entity = await EventController.schedule(
+    ctx.query.id,
+    userId,
+  );
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
+router.get(`${BASE_URL}/rankings`, async ctx => {
+
+  let userId = -1;
+  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
+    userId = ctx.body.userInfo.id;
+  }
+  const entity = await EventController.rankings(
+    ctx.query.id,
+    userId,
+  );
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
 });
 
 router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {

@@ -383,7 +383,6 @@ async function getEntitiesTypeById(entityId) {
     'id',
     entityId
   );
-
   return data.type;
 }
 
@@ -553,7 +552,10 @@ async function getEntity(id, userId) {
     )
     .where({ id: realId });
 
-  const role = await getEntityRole(realId, userId);
+  let role = -1;
+  if (userId !== -1) {
+    role = await getEntityRole(realId, userId);
+  }
 
   return {
     basicInfos: {
@@ -771,7 +773,10 @@ async function getTeamCreatorEmail(teamId) {
 
 async function eventInfos(id, userId) {
   const entity = (await getEntity(id)).basicInfos;
-  const role = await getEntityRole(id, userId);
+  let role = -1;
+  if (userId !== -1) {
+    role = await getEntityRole(id, userId);
+  }
   const event = await getEvent(id);
   const infos = await getGeneralInfos(id);
   const creator = await getCreator(id);
