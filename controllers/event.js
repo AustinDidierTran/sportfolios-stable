@@ -26,10 +26,6 @@ class EventController {
         value: 'schedule',
         label: 'schedule',
       },
-      {
-        value: 'about',
-        label: 'about',
-      },
     ];
   }
 
@@ -47,7 +43,6 @@ class EventController {
       registrationStart = options.reduce((a, b) => moment(a.startTime) < moment(b.startTime) ? a.startTime : b.startTime, options[0]);
       registrationEnd = options.reduce((a, b) => moment(a.endTime) > moment(b.endTime) ? a.endTime : b.endTime, options[0]);
     }
-
     return {
       ...data,
       remainingSpots,
