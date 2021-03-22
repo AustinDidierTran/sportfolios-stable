@@ -204,7 +204,7 @@ async function getAllEntities(params) {
   }));
 }
 
-async function getAllOwnedEntities(type, userId, query = '') {
+async function getAllOwnedEntities(type, userId, query = '', onlyAdmin = false) {
   // getPersons
   let entityIds = (
     await knex('user_entity_role')
@@ -212,7 +212,7 @@ async function getAllOwnedEntities(type, userId, query = '') {
       .where({
         user_id: userId,
       })
-      .andWhere('role', '<=', ENTITIES_ROLE_ENUM.EDITOR)
+      .andWhere('role', '<=', onlyAdmin ? ENTITIES_ROLE_ENUM.ADMIN : ENTITIES_ROLE_ENUM.EDITOR)
   ).map(person => ({
     entity_id: person.entity_id,
     role: ENTITIES_ROLE_ENUM.ADMIN,
@@ -237,7 +237,7 @@ async function getAllOwnedEntities(type, userId, query = '') {
           'entity_id_admin',
           entityIds.map(e => e.entity_id),
         )
-        .andWhere('role', '<=', ENTITIES_ROLE_ENUM.EDITOR)
+        .andWhere('role', '<=', onlyAdmin ? ENTITIES_ROLE_ENUM.ADMIN : ENTITIES_ROLE_ENUM.EDITOR)
     ).map(entity => ({
       ...entity,
       role: Math.max(
