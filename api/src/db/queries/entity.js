@@ -956,7 +956,6 @@ async function updateTeamAcceptation(body) {
     rosterId,
     registrationStatus,
   );
-
   const event = (await getEntity(eventId)).basicInfos;
   const teamId = await getTeamIdFromRosterId(rosterId);
   const team = (await getEntity(teamId)).basicInfos;
@@ -964,12 +963,15 @@ async function updateTeamAcceptation(body) {
   const language = await getLanguageFromEmail(email);
   const userId = await getUserIdFromEmail(email);
 
-  if (registrationStatus === STATUS_ENUM.ACCEPTED) {
+  if (
+    registrationStatus === STATUS_ENUM.ACCEPTED ||
+    registrationStatus === STATUS_ENUM.ACCEPTED_FREE
+  ) {
     const teamPaymentOption = await getTeamPaymentOptionFromRosterId(
       rosterId,
       eventId,
     );
-    if (teamPaymentOption) {
+    if (teamPaymentOption.teamStripePriceId) {
       const ownerId = await getOwnerStripePrice(
         teamPaymentOption.teamStripePriceId,
       );
@@ -998,16 +1000,7 @@ async function updateTeamAcceptation(body) {
       userId,
     });
   }
-  if (registrationStatus === STATUS_ENUM.ACCEPTED_FREE) {
-    sendTeamAcceptedRegistrationEmail({
-      email,
-      team,
-      event,
-      language,
-      isFreeOption: true,
-      userId,
-    });
-  }
+
   if (registrationStatus === STATUS_ENUM.REFUSED) {
     sendTeamRefusedRegistrationEmail({
       email,

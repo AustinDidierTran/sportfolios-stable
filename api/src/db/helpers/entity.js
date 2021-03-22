@@ -377,7 +377,6 @@ async function getAllTypeEntities(type) {
 }
 
 async function getEntitiesTypeById(entityId) {
-
   const [data] = await knex('entities')
     .select('type')
     .where('id', entityId);
