@@ -3422,12 +3422,7 @@ async function addAllTimeslots(eventId, timeslotsArray) {
 }
 
 async function addAllGames(eventId, gamesArray) {
-  //
-  //
-  //
   let games;
-  let game_teams;
-  let g;
   const realId = await getRealId(eventId);
   const rankingsArray = await gamesArray.reduce(async (memo, g) => {
     const memoIteration = await memo;
@@ -3475,56 +3470,18 @@ async function addAllGames(eventId, gamesArray) {
       }),
     );
 
-    g = await knex('games')
+    await knex('games')
       .insert(games)
       .returning('*')
       .transacting(trx);
 
-    game_teams = await knex('game_teams')
+    await knex('game_teams')
       .insert(rankingsArray)
       .returning('*')
       .transacting(trx);
 
     return trx;
   });
-
-  // const games = await Promise.all(
-  //   gamesArray.map(async g => {
-  //     const [{ id: entityId }] = await knex('entities')
-  //       .insert({ type: GLOBAL_ENUM.GAME })
-  //       .returning(['id']);
-  //     return {
-  //       event_id: realId,
-  //       phase_id: g.phase_id,
-  //       field_id: g.field_id,
-  //       timeslot_id: g.timeslot_id,
-  //       id: g.id,
-  //       entity_id: entityId,
-  //     };
-  //   }),
-  // );
-
-  // const res = await knex.transaction(async trx => {
-  //   const queries = await knex('games')
-  //     .insert(games)
-  //     .returning('*')
-  //     .transacting(trx);
-
-  //   return Promise.all(queries)
-  //     .then(trx.commit)
-  //     .catch(trx.rollback);
-  // });
-
-  // const rankings = await knex.transaction(async trx => {
-  //   const queries = await knex('game_teams')
-  //     .insert(teamsArray)
-  //     .returning('*')
-  //     .transacting(trx);
-
-  //   return Promise.all(queries)
-  //     .then(trx.commit)
-  //     .catch(trx.rollback);
-  // });
 
   return res;
 }
