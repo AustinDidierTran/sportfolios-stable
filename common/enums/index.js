@@ -231,6 +231,7 @@ const ROUTES_ENUM = {
   scheduleInteractiveTool: '/page/scheduleInteractiveTool/:id',
   scheduleManager: '/page/scheduleManager',
   search: '/page/search',
+  signup: '/page/signup',
   shopDetails: '/page/shopDetails/:id/:stripePriceId',
   stripe: '/page/stripe',
   transferPerson: '/page/transferPerson/:token',
@@ -358,6 +359,7 @@ const NOTIFICATION_TYPE = {
   CART_ITEM_ADDED_PLAYER: 'cart item added player',
   EMAIL_CONFIRMATION: 'email confirmation',
   IMPORT_MEMBER: 'import member',
+  IMPORT_MEMBER_NON_EXISTING: 'import member non existing',
   OTHER_TEAM_SUBMITTED_A_SCORE: 'other team submitted a score',
   PERSON_REGISTRATION_TO_ADMIN: 'person registration to admin',
   PERSON_PENDING_REGISTRATION_TO_ADMIN:
