@@ -106,7 +106,7 @@ const {
   getRegistrationTeamPaymentOption: getRegistrationTeamPaymentOptionHelper,
   getRemainingSpots: getRemainingSpotsHelper,
   getReports: getReportsHelper,
-  getRole,
+  getRoleRoster,
   getRoster: getRosterHelper,
   getRosterEventInfos,
   getEventIdFromRosterId,
@@ -303,7 +303,7 @@ async function getRoster(rosterId, withSub) {
 
 async function getRosterAllIncluded(rosterId, userId, withSub) {
   const players = getRoster(rosterId, withSub);
-  const role = getRole(rosterId, userId);
+  const role = getRoleRoster(rosterId, userId);
 
   const eventId = await getEventIdFromRosterId(rosterId);
   const registrationStatus = getRegistrationStatus(rosterId);
@@ -327,6 +327,9 @@ async function getEvent(eventId) {
 
 async function getAlias(entityId) {
   return getAliasHelper(entityId);
+}
+async function getRole(entityId, userId) {
+  return getEntityRoleHelper(entityId, userId);
 }
 
 async function validateEmailIsUnique(email) {
@@ -919,7 +922,7 @@ async function updateRegistration(body, userId) {
 async function updateRosterRole(body, userId) {
   const { rosterId, playerId, role } = body;
   const { eventId } = await getRosterEventInfos(rosterId);
-  const userRole = await getRole(rosterId, userId);
+  const userRole = await getRoleRoster(rosterId, userId);
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.ADMIN)) &&
     !(
@@ -1893,6 +1896,7 @@ module.exports = {
   eventInfos,
   generateReport,
   getAlias,
+  getRole,
   getAllTeamsAcceptedRegistered,
   getAllPlayersAcceptedRegistered,
   getAllEntities,

@@ -2,7 +2,7 @@ const {
   getEntity: getEntityHelper,
   eventInfos: eventInfosHelper,
   getRemainingSpots: getRemainingSpots,
-  getOptions
+  getOptions,
 } = require('../api/src/db/helpers/entity');
 
 const moment = require('moment');
@@ -35,13 +35,30 @@ class EventController {
     const options = await getOptions(eventId);
 
     let registrationStart, registrationEnd;
-    let isEarly, isLate = true;
+    let isEarly,
+      isLate = true;
 
     if (Array.isArray(options)) {
-      isLate = options.every((option) => moment(option.endTime) < moment());
-      isEarly = options.every((option) => moment(option.startTime) > moment());
-      registrationStart = options.reduce((a, b) => moment(a.startTime) < moment(b.startTime) ? a.startTime : b.startTime, options[0]);
-      registrationEnd = options.reduce((a, b) => moment(a.endTime) > moment(b.endTime) ? a.endTime : b.endTime, options[0]);
+      isLate = options.every(
+        option => moment(option.endTime) < moment(),
+      );
+      isEarly = options.every(
+        option => moment(option.startTime) > moment(),
+      );
+      registrationStart = options.reduce(
+        (a, b) =>
+          moment(a.startTime) < moment(b.startTime)
+            ? a.startTime
+            : b.startTime,
+        options[0],
+      );
+      registrationEnd = options.reduce(
+        (a, b) =>
+          moment(a.endTime) > moment(b.endTime)
+            ? a.endTime
+            : b.endTime,
+        options[0],
+      );
     }
     return {
       ...data,

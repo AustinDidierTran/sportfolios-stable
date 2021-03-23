@@ -63,6 +63,25 @@ router.get(`${BASE_URL}/alias`, async ctx => {
     };
   }
 });
+router.get(`${BASE_URL}/role`, async ctx => {
+  const role = await queries.getRole(
+    ctx.query.entityId,
+    ctx.body.userInfo.id,
+  );
+
+  if (role) {
+    ctx.body = {
+      status: 'success',
+      data: role,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
 
 router.get(`${BASE_URL}/eventInfos`, async ctx => {
   const userId =
