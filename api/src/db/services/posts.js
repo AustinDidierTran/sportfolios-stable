@@ -11,6 +11,22 @@ class PostServices {
     return post;
   }
 
+  static async editPost(post_id, post_content) {
+    await knex('post_image')
+      .where({
+        post_id,
+      })
+      .del();
+
+    await knex('posts')
+      .update({
+        content: post_content,
+      })
+      .where({
+        'id': post_id,
+      });
+  }
+
   static async deleteLike(entity_id, post_id) {
     await knex('post_like')
       .where({

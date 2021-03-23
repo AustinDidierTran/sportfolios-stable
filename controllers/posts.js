@@ -10,6 +10,10 @@ class PostsController {
     return post;
   }
 
+  static async edit(postId, postContent) {
+    await PostServices.editPost(postId, postContent);
+  }
+
   static async addImage(postId, imageUrl) {
     if (imageUrl && postId) {
       const res = await PostServices.addPostImageUrl(postId, imageUrl);

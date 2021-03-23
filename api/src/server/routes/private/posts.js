@@ -30,6 +30,19 @@ router.post(`${BASE_URL}/create`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}`, async ctx => {
+  await PostsController.edit(
+    ctx.request.body.postId,
+    ctx.request.body.postContent,
+  );
+
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+
+});
+
 router.post(`${BASE_URL}/image`, async ctx => {
   const result = await PostsController.addImage(
     ctx.request.body.postId,
