@@ -1851,7 +1851,7 @@ async function getPhaseRanking(phaseId) {
     rankings.map(async r => {
       if (r.roster_id) {
         const name = await getRosterName(r.roster_id);
-        return { ...r, name };
+        return { ...r, name, teamName: name };
       }
       if (r.origin_phase && r.origin_position && !r.roster_id) {
         const phaseName = await getPhaseName(r.origin_phase);
@@ -1869,6 +1869,12 @@ async function getPositions(gameId) {
     .select('*')
     .where({ game_id: gameId });
 
+  if (positions[0].roster_id && positions[1].roster_id) {
+    return [
+      { ...positions[0], teamName: positions[0].name },
+      { ...positions[1], teamName: positions[1].name },
+    ];
+  }
   return positions;
 }
 
@@ -3416,66 +3422,111 @@ async function addAllTimeslots(eventId, timeslotsArray) {
 }
 
 async function addAllGames(eventId, gamesArray) {
+  //
+  //
+  //
+  let games;
+  let game_teams;
+  let g;
   const realId = await getRealId(eventId);
-  const games = await Promise.all(
-    gamesArray.map(async g => {
-      const [{ id: entityId }] = await knex('entities')
-        .insert({ type: GLOBAL_ENUM.GAME })
-        .returning(['id']);
-      return {
-        event_id: realId,
-        phase_id: g.phase_id,
-        field_id: g.field_id,
-        timeslot_id: g.timeslot_id,
-        id: g.id,
-        entity_id: entityId,
-      };
-    }),
-  );
-
-  const teamsArray = gamesArray.reduce(
-    (prev, g) => [
-      ...prev,
+  const rankingsArray = await gamesArray.reduce(async (memo, g) => {
+    const memoIteration = await memo;
+    const [phase] = await getPhase(g.phase_id);
+    //if phase is started, there will be a roster id otherwise it's null
+    const res = [
+      ...memoIteration,
       {
         game_id: g.id,
-        roster_id: g.teams[0].value,
-        name: g.teams[0].name,
+        ranking_id: g.rankings[0].ranking_id,
+        roster_id:
+          phase.status !== PHASE_STATUS_ENUM.NOT_STARTED
+            ? g.rankings[0].roster_id
+            : null,
+        name: g.rankings[0].name,
       },
       {
         game_id: g.id,
-        roster_id: g.teams[1].value,
-        name: g.teams[1].name,
+        ranking_id: g.rankings[1].ranking_id,
+        roster_id:
+          phase.status !== PHASE_STATUS_ENUM.NOT_STARTED
+            ? g.rankings[1].roster_id
+            : null,
+        name: g.rankings[1].name,
       },
-    ],
-    [],
-  );
+    ];
+    return res;
+  }, []);
 
   const res = await knex.transaction(async trx => {
-    const queries = await knex('games')
+    games = await Promise.all(
+      gamesArray.map(async g => {
+        const [{ id: entityId }] = await knex('entities')
+          .insert({ type: GLOBAL_ENUM.GAME })
+          .returning(['id'])
+          .transacting(trx);
+        return {
+          event_id: realId,
+          phase_id: g.phase_id,
+          field_id: g.field_id,
+          timeslot_id: g.timeslot_id,
+          id: g.id,
+          entity_id: entityId,
+        };
+      }),
+    );
+
+    g = await knex('games')
       .insert(games)
       .returning('*')
       .transacting(trx);
 
-    return Promise.all(queries)
-      .then(trx.commit)
-      .catch(trx.rollback);
-  });
-
-  const teams = await knex.transaction(async trx => {
-    const queries = await knex('game_teams')
-      .insert(teamsArray)
+    game_teams = await knex('game_teams')
+      .insert(rankingsArray)
       .returning('*')
       .transacting(trx);
 
-    return Promise.all(queries)
-      .then(trx.commit)
-      .catch(trx.rollback);
+    return trx;
   });
 
-  return {
-    ...res,
-    teams,
-  };
+  // const games = await Promise.all(
+  //   gamesArray.map(async g => {
+  //     const [{ id: entityId }] = await knex('entities')
+  //       .insert({ type: GLOBAL_ENUM.GAME })
+  //       .returning(['id']);
+  //     return {
+  //       event_id: realId,
+  //       phase_id: g.phase_id,
+  //       field_id: g.field_id,
+  //       timeslot_id: g.timeslot_id,
+  //       id: g.id,
+  //       entity_id: entityId,
+  //     };
+  //   }),
+  // );
+
+  // const res = await knex.transaction(async trx => {
+  //   const queries = await knex('games')
+  //     .insert(games)
+  //     .returning('*')
+  //     .transacting(trx);
+
+  //   return Promise.all(queries)
+  //     .then(trx.commit)
+  //     .catch(trx.rollback);
+  // });
+
+  // const rankings = await knex.transaction(async trx => {
+  //   const queries = await knex('game_teams')
+  //     .insert(teamsArray)
+  //     .returning('*')
+  //     .transacting(trx);
+
+  //   return Promise.all(queries)
+  //     .then(trx.commit)
+  //     .catch(trx.rollback);
+  // });
+
+  return res;
 }
 
 async function addEntityRole(entityId, entityIdAdmin, role) {
