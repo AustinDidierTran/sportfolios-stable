@@ -555,8 +555,6 @@ async function sendImportMemberEmail({
   organizationName,
   userId,
 }) {
-  const footerLink = formatFooterLink(userId);
-
   const buttonLink = await formatLinkWithAuthToken(
     userId,
     `${ROUTES_ENUM.userSettings}`,
@@ -567,7 +565,32 @@ async function sendImportMemberEmail({
     organizationName,
     token,
     buttonLink,
-    footerLink,
+    withoutFooter: true,
+  });
+
+  if (!fullEmail) {
+    return;
+  }
+  const { html, subject, text } = fullEmail;
+  sendMail({ html, email, subject, text });
+}
+async function sendImportMemberNonExistingEmail({
+  email,
+  token,
+  language,
+  organizationName,
+}) {
+  const buttonLink = formatClientRoute(ROUTES_ENUM.signup, null, {
+    redirectUrl: ROUTES_ENUM.userSettings,
+  });
+
+  const fullEmail = await emailFactory({
+    type: NOTIFICATION_TYPE.IMPORT_MEMBER_NON_EXISTING,
+    locale: language,
+    organizationName,
+    token,
+    buttonLink,
+    withoutFooter: true,
   });
 
   if (!fullEmail) {
@@ -582,6 +605,7 @@ module.exports = {
   sendCartItemAddedPlayerEmail,
   sendConfirmationEmail,
   sendImportMemberEmail,
+  sendImportMemberNonExistingEmail,
   sendMail,
   sendPersonRegistrationEmail,
   sendPersonRegistrationEmailToAdmin,

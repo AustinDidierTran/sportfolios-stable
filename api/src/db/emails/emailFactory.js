@@ -16,6 +16,7 @@ const TeamPendingRegistrationToAdminEmail = require('./teamPendingRegistrationTo
 const PersonRegistrationEmail = require('./personRegistrationEmail');
 const TransferPersonEmail = require('./transferPersonEmail');
 const ImportMemberEmail = require('./importMemberEmail');
+const ImportMemberNonExistingEmail = require('./importMemberNonExistingEmail');
 const { NOTIFICATION_TYPE } = require('./../../../../common/enums');
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
@@ -24,6 +25,7 @@ const map = {
   [NOTIFICATION_TYPE.CART_ITEM_ADDED_PLAYER]: CartItemAddedPlayerEmail,
   [NOTIFICATION_TYPE.EMAIL_CONFIRMATION]: EmailConfirmationEmail,
   [NOTIFICATION_TYPE.IMPORT_MEMBER]: ImportMemberEmail,
+  [NOTIFICATION_TYPE.IMPORT_MEMBER_NON_EXISTING]: ImportMemberNonExistingEmail,
   [NOTIFICATION_TYPE.PERSON_REGISTRATION_TO_ADMIN]: PersonRegistrationToAdminEmail,
   [NOTIFICATION_TYPE.PERSON_PENDING_REGISTRATION_TO_ADMIN]: PersonPendingRegistrationToAdminEmail,
   [NOTIFICATION_TYPE.RECOVERY_EMAIL]: RecoveryEmail,

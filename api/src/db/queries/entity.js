@@ -161,6 +161,7 @@ const {
   sendTeamRefusedRegistrationEmail,
   sendTeamPendingRegistrationEmailToAdmin,
   sendImportMemberEmail,
+  sendImportMemberNonExistingEmail,
   sendCartItemAddedPlayerEmail,
 } = require('../../server/utils/nodeMailer');
 const { addMembershipCartItem } = require('../helpers/shop');
@@ -1166,7 +1167,7 @@ async function addReport(body) {
   return addReportHelper(type, organizationId, date);
 }
 
-async function importMembers(body, userId) {
+async function importMembers(body) {
   const { membershipType, organizationId, language, members } = body;
   const res = await Promise.all(
     members.map(async m => {
@@ -1176,13 +1177,24 @@ async function importMembers(body, userId) {
         membershipType,
       );
       const organization = await getEntityHelper(organizationId);
-      sendImportMemberEmail({
-        email: m.email,
-        token,
-        language,
-        organizationName: organization.basicInfos.name,
-        userId,
-      });
+      const userId = await getUserIdFromEmail(m.email);
+
+      if (!userId) {
+        sendImportMemberNonExistingEmail({
+          email: m.email,
+          token,
+          language,
+          organizationName: organization.basicInfos.name,
+        });
+      } else {
+        sendImportMemberEmail({
+          email: m.email,
+          token,
+          language,
+          organizationName: organization.basicInfos.name,
+          userId,
+        });
+      }
       return m;
     }),
   );
