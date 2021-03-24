@@ -39,7 +39,7 @@ const generateAuthToken = async userId => {
 };
 
 const addEntity = async (body, userId) => {
-  const { name, creator, surname, type } = body;
+  const { name, creator, surname, type, startDate, endDate, maximumSpots } = body;
 
   if (
     (name && name.length > 64) ||
@@ -125,7 +125,12 @@ const addEntity = async (body, userId) => {
           .transacting(trx);
 
         const [event] = await knex('events')
-          .insert({ id: entityId })
+          .insert({
+            id: entityId,
+            start_date: startDate,
+            end_date: endDate,
+            maximum_spots: maximumSpots
+          })
           .returning(['id'])
           .transacting(trx);
 
@@ -199,7 +204,7 @@ async function getAllEntities(params) {
   }));
 }
 
-async function getAllOwnedEntities(type, userId, query = '') {
+async function getAllOwnedEntities(type, userId, query = '', onlyAdmin = false) {
   // getPersons
   let entityIds = (
     await knex('user_entity_role')
@@ -207,7 +212,7 @@ async function getAllOwnedEntities(type, userId, query = '') {
       .where({
         user_id: userId,
       })
-      .andWhere('role', '<=', ENTITIES_ROLE_ENUM.EDITOR)
+      .andWhere('role', '<=', onlyAdmin ? ENTITIES_ROLE_ENUM.ADMIN : ENTITIES_ROLE_ENUM.EDITOR)
   ).map(person => ({
     entity_id: person.entity_id,
     role: ENTITIES_ROLE_ENUM.ADMIN,
@@ -232,7 +237,7 @@ async function getAllOwnedEntities(type, userId, query = '') {
           'entity_id_admin',
           entityIds.map(e => e.entity_id),
         )
-        .andWhere('role', '<=', ENTITIES_ROLE_ENUM.EDITOR)
+        .andWhere('role', '<=', onlyAdmin ? ENTITIES_ROLE_ENUM.ADMIN : ENTITIES_ROLE_ENUM.EDITOR)
     ).map(entity => ({
       ...entity,
       role: Math.max(
@@ -981,10 +986,10 @@ async function generateMembersReport(report) {
       }
       const address = person.address
         ? {
-            city: person.address.city,
-            state: person.address.state,
-            zip: person.address.zip,
-          }
+          city: person.address.city,
+          state: person.address.state,
+          zip: person.address.zip,
+        }
         : {};
       return {
         ...a,
@@ -2002,9 +2007,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-        entityId: p.entity_id,
-        completeName: `${p.name} ${p.surname}`,
-      }))
+      entityId: p.entity_id,
+      completeName: `${p.name} ${p.surname}`,
+    }))
     : undefined;
 }
 
@@ -3653,21 +3658,17 @@ async function addGame(
 
     name1 =
       teamName1 !== undefined
-        ? `${phaseRanking1.initial_position.toString()} - ${
-            phaseRanking1.phase.name
-          } (${teamName1})`
-        : `${phaseRanking1.initial_position.toString()} - ${
-            phaseRanking1.phase.name
-          }`;
+        ? `${phaseRanking1.initial_position.toString()} - ${phaseRanking1.phase.name
+        } (${teamName1})`
+        : `${phaseRanking1.initial_position.toString()} - ${phaseRanking1.phase.name
+        }`;
 
     name2 =
       teamName2 !== undefined
-        ? `${phaseRanking2.initial_position.toString()} - ${
-            phaseRanking2.phase.name
-          } (${teamName2})`
-        : `${phaseRanking2.initial_position.toString()} - ${
-            phaseRanking2.phase.name
-          }`;
+        ? `${phaseRanking2.initial_position.toString()} - ${phaseRanking2.phase.name
+        } (${teamName2})`
+        : `${phaseRanking2.initial_position.toString()} - ${phaseRanking2.phase.name
+        }`;
 
     [position1] = await knex('game_teams')
       .insert({
@@ -3876,7 +3877,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -3916,7 +3917,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',

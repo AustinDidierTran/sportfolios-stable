@@ -309,6 +309,8 @@ router.get(`${BASE_URL}/allOwned`, async ctx => {
   const entity = await queries.getAllOwnedEntities(
     ctx.query.type,
     ctx.body.userInfo.id,
+    '',
+    ctx.query.onlyAdmin,
   );
 
   if (!entity) {

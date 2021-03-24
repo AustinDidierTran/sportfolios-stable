@@ -211,8 +211,8 @@ async function getScoreSuggestion(gameId) {
   return getScoreSuggestionHelper(gameId);
 }
 
-async function getAllOwnedEntities(type, userId) {
-  return getAllOwnedEntitiesHelper(type, userId);
+async function getAllOwnedEntities(type, userId, querry, onlyAdmin) {
+  return getAllOwnedEntitiesHelper(type, userId, querry, onlyAdmin);
 }
 
 async function getOwnedEvents(organizationId) {
