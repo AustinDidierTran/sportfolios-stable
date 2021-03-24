@@ -981,10 +981,10 @@ async function generateMembersReport(report) {
       }
       const address = person.address
         ? {
-            city: person.address.city,
-            state: person.address.state,
-            zip: person.address.zip,
-          }
+          city: person.address.city,
+          state: person.address.state,
+          zip: person.address.zip,
+        }
         : {};
       return {
         ...a,
@@ -2002,9 +2002,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-        entityId: p.entity_id,
-        completeName: `${p.name} ${p.surname}`,
-      }))
+      entityId: p.entity_id,
+      completeName: `${p.name} ${p.surname}`,
+    }))
     : undefined;
 }
 
@@ -3487,6 +3487,7 @@ async function addEntityRole(entityId, entityIdAdmin, role) {
 }
 
 async function addMemberManually(
+  membershipId,
   memberType,
   organizationId,
   personId,
@@ -3495,6 +3496,7 @@ async function addMemberManually(
   const realId = await getRealId(organizationId);
   const [res] = await knex('memberships')
     .insert({
+      membership_id: membershipId,
       member_type: memberType,
       organization_id: realId,
       person_id: personId,
@@ -3506,6 +3508,7 @@ async function addMemberManually(
 }
 
 async function addMember(
+  membershipId,
   memberType,
   organizationId,
   personId,
@@ -3514,6 +3517,7 @@ async function addMember(
   const realId = await getRealId(organizationId);
   const [res] = await knex('memberships')
     .insert({
+      membership_id: membershipId,
       member_type: memberType,
       organization_id: realId,
       person_id: personId,
@@ -3653,21 +3657,17 @@ async function addGame(
 
     name1 =
       teamName1 !== undefined
-        ? `${phaseRanking1.initial_position.toString()} - ${
-            phaseRanking1.phase.name
-          } (${teamName1})`
-        : `${phaseRanking1.initial_position.toString()} - ${
-            phaseRanking1.phase.name
-          }`;
+        ? `${phaseRanking1.initial_position.toString()} - ${phaseRanking1.phase.name
+        } (${teamName1})`
+        : `${phaseRanking1.initial_position.toString()} - ${phaseRanking1.phase.name
+        }`;
 
     name2 =
       teamName2 !== undefined
-        ? `${phaseRanking2.initial_position.toString()} - ${
-            phaseRanking2.phase.name
-          } (${teamName2})`
-        : `${phaseRanking2.initial_position.toString()} - ${
-            phaseRanking2.phase.name
-          }`;
+        ? `${phaseRanking2.initial_position.toString()} - ${phaseRanking2.phase.name
+        } (${teamName2})`
+        : `${phaseRanking2.initial_position.toString()} - ${phaseRanking2.phase.name
+        }`;
 
     [position1] = await knex('game_teams')
       .insert({
@@ -3876,7 +3876,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -3916,7 +3916,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
