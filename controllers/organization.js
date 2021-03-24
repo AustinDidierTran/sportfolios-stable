@@ -16,11 +16,7 @@ class OrganizationController {
       {
         value: 'memberships',
         label: 'member.memberships',
-      },
-      {
-        value: 'about',
-        label: 'about',
-      },
+      }
     ];
   }
 
