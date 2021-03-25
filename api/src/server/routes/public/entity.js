@@ -21,13 +21,13 @@ router.get(BASE_URL, async ctx => {
 
   switch (type) {
     case GLOBAL_ENUM.ORGANIZATION:
-      entity = await OrganizationController.entity(
+      entity = await OrganizationController.organization(
         ctx.query.id,
         userId,
       );
       break;
     case GLOBAL_ENUM.EVENT:
-      entity = await EventController.home(ctx.query.id, userId);
+      entity = await EventController.event(ctx.query.id, userId);
       break;
     default:
       entity = await queries.getEntity(ctx.query.id, userId);

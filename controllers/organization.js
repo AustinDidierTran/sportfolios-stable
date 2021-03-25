@@ -3,7 +3,7 @@ const {
 } = require('../api/src/db/helpers/entity');
 
 class OrganizationController {
-  static async entity(orgId, userId) {
+  static async organization(orgId, userId) {
     let res = await getEntityHelper(orgId, userId);
 
     return {
