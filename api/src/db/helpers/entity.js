@@ -333,15 +333,6 @@ async function getAllOwnedEntities(
   }));
 }
 
-async function getEntitiesName(entityId) {
-  const realId = await getRealId(entityId);
-
-  const [name] = await knex('entities_name')
-    .select('name', 'surname')
-    .where({ entity_id: realId });
-  return name;
-}
-
 async function getOwnedEvents(organizationId) {
   const realId = await getRealId(organizationId);
   const events = await knex('events_infos')
@@ -1614,7 +1605,6 @@ async function getRemainingSpots(eventId) {
 
 async function getPreranking(eventId) {
   const realId = await getRealId(eventId);
-  const teams = await getAllTeamsAcceptedRegistered(realId);
   const prerankPhase = await getPrerankPhase(realId);
   let name;
 
@@ -1646,25 +1636,6 @@ async function getPreranking(eventId) {
   );
   res.sort((a, b) => a.position - b.position);
   return res;
-}
-
-async function getRankingId(phaseId, position) {
-  const [{ ranking_id: rankingId }] = await knex('phase_rankings')
-    .select('ranking_id')
-    .where({ current_phase: phaseId, initial_position: position });
-  return rankingId;
-}
-
-async function getTeamInitialPosition(rosterId, phaseId) {
-  const [{ initial_position: position }] = await knex(
-    'phase_rankings',
-  )
-    .select('initial_position')
-    .where({
-      roster_id: rosterId,
-      current_phase: phaseId,
-    });
-  return position;
 }
 
 async function getRegistrationStatus(rosterId) {
@@ -2621,7 +2592,6 @@ async function updatePrerankSpots(eventId, newSpots) {
 
   if (newSpots === prerank.spots) return;
   else if (newSpots > prerank.spots) {
-    console.log('plus grand');
     const spotsToAdd = Number(newSpots - prerank.spots);
     for (let i = 0; i < spotsToAdd; ++i) {
       await knex('phase_rankings').insert({
@@ -2683,8 +2653,6 @@ async function updatePreRanking(eventId, ranking) {
 }
 
 async function updatePreRankingRosterId(prerank, roster_id) {
-  const { spots } = prerank;
-
   const [lastPosition] = await knex('phase_rankings')
     .min('initial_position')
     .where({ current_phase: prerank.id, roster_id: null });
@@ -3209,7 +3177,6 @@ const deleteRegistration = async (rosterId, eventId) => {
   const realEventId = await getRealId(eventId);
   const realRosterId = await getRealId(rosterId);
   const prerankPhase = await getPrerankPhase(eventId);
-  const registrationStatus = await getRegistrationStatus(rosterId);
   let ranking;
   let dependantRanking;
 
