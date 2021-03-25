@@ -1206,6 +1206,7 @@ async function addMember(body, userId) {
   const membership = await getMembership(membershipId);
   if (membership.price === 0) {
     const res = await addMemberManuallyHelper(
+      membershipId,
       membershipType,
       organizationId,
       personId,
@@ -1214,6 +1215,7 @@ async function addMember(body, userId) {
     return res;
   }
   const res = await addMemberHelper(
+    membershipId,
     membershipType,
     organizationId,
     personId,

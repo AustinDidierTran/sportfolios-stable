@@ -3500,6 +3500,7 @@ async function addEntityRole(entityId, entityIdAdmin, role) {
 }
 
 async function addMemberManually(
+  membershipId,
   memberType,
   organizationId,
   personId,
@@ -3508,6 +3509,7 @@ async function addMemberManually(
   const realId = await getRealId(organizationId);
   const [res] = await knex('memberships')
     .insert({
+      membership_id: membershipId,
       member_type: memberType,
       organization_id: realId,
       person_id: personId,
@@ -3519,6 +3521,7 @@ async function addMemberManually(
 }
 
 async function addMember(
+  membershipId,
   memberType,
   organizationId,
   personId,
@@ -3527,6 +3530,7 @@ async function addMember(
   const realId = await getRealId(organizationId);
   const [res] = await knex('memberships')
     .insert({
+      membership_id: membershipId,
       member_type: memberType,
       organization_id: realId,
       person_id: personId,
