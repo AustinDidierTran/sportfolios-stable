@@ -21,7 +21,7 @@ router.get(BASE_URL, async ctx => {
 
   switch (type) {
     case GLOBAL_ENUM.ORGANIZATION:
-      entity = await OrganizationController.home(
+      entity = await OrganizationController.entity(
         ctx.query.id,
         userId,
       );
