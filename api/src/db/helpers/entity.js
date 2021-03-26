@@ -2672,7 +2672,9 @@ async function updatePreRankingRosterId(prerank, roster_id) {
     })
     .returning('*');
 
-  await updateGameTeamName(roster_id, dependantRanking);
+  if (dependantRanking !== undefined) {
+    await updateGameTeamName(roster_id, dependantRanking);
+  }
   return res;
 }
 
@@ -3209,20 +3211,22 @@ const deleteRegistration = async (rosterId, eventId) => {
       .returning('*')
       .transacting(trx);
 
-    // update name in game_teams if it was in a game
-    const phaseName = await getPhaseName(
-      dependantRanking.current_phase,
-    );
+    if (dependantRanking !== undefined) {
+      // update name in game_teams if it was in a game
+      const phaseName = await getPhaseName(
+        dependantRanking.current_phase,
+      );
 
-    await knex('game_teams')
-      .where({
-        ranking_id: dependantRanking.ranking_id,
-      })
-      .update({
-        roster_id: null,
-        name: `${ranking.initial_position} - ${phaseName}`,
-      })
-      .transacting(trx);
+      await knex('game_teams')
+        .where({
+          ranking_id: dependantRanking.ranking_id,
+        })
+        .update({
+          roster_id: null,
+          name: `${ranking.initial_position} - ${phaseName}`,
+        })
+        .transacting(trx);
+    }
 
     await knex('token_roster_invite')
       .where({ roster_id: realRosterId })
@@ -4524,11 +4528,11 @@ async function updateTeamAcceptation(
     })
     .returning('*');
 
+  console.log('passes right here');
   if (
     registrationStatus === STATUS_ENUM.ACCEPTED ||
     registrationStatus === STATUS_ENUM.ACCEPTED_FREE
   ) {
-    //FIXME: gotta update roster_id on dependant position i.e. position from prerank chosen in other phase
     await updatePreRankingRosterId(prerankPhase, rosterId);
   }
   return res;
