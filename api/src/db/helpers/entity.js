@@ -1409,7 +1409,7 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
       const players = await getRoster(t.roster_id, true);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.payment_option_id);
-      const role = await getRole(t.roster_id, userId);
+      const role = await getRoleRoster(t.roster_id, userId);
       const registrationStatus = await getRegistrationStatus(
         t.roster_id,
       );
@@ -1473,7 +1473,7 @@ async function getAllTeamsAcceptedInfos(eventId, userId) {
       const players = await getRoster(t.roster_id, true);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.payment_option_id);
-      const role = await getRole(t.roster_id, userId);
+      const role = await getRoleRoster(t.roster_id, userId);
       const registrationStatus = await getRegistrationStatus(
         t.roster_id,
       );
@@ -1688,7 +1688,7 @@ const getPrimaryPerson = async user_id => {
   return primaryPerson;
 };
 
-async function getRole(rosterId, userId) {
+async function getRoleRoster(rosterId, userId) {
   const realId = await getRealId(rosterId);
   const [{ role } = {}] = await knex('team_players')
     .select('team_players.role')
@@ -5197,7 +5197,7 @@ module.exports = {
   getRegistrationTeamPaymentOption,
   getRemainingSpots,
   getReports,
-  getRole,
+  getRoleRoster,
   getRoster,
   getRosterEventInfos,
   getRosterIdFromInviteToken,
