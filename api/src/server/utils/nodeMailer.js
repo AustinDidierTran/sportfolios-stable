@@ -20,7 +20,7 @@ let key;
 try {
   key = require('./keys/google-keys.json');
 } catch (e) {
-  /* eslint-disable-next-line */
+  /* eslint-disable-next-line */  
   console.log(
     `There is an error, keys are probably simply not configured: ${e}`,
   );
