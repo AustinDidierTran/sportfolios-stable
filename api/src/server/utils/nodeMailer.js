@@ -33,8 +33,7 @@ async function sendMail({ email: emailProps, subject, text, html }) {
   if (!key) {
     /* eslint-disable-next-line */
     console.log(
-      `Google keys are not configured, aborting mail fire. Here was the email content: \n\n ${text ||
-        html}`,
+      `Google keys are not configured, aborting mail fire. Here was the email content: \n\n ${text}`,
     );
     return;
   }

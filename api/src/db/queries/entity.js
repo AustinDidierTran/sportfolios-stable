@@ -85,6 +85,7 @@ const {
   getMembership,
   getMemberships: getMembershipsHelper,
   getMyPersonsAdminsOfTeam: getMyPersonsAdminsOfTeamHelper,
+  getNbOfTeamsInEvent: getNbOfTeamsInEventHelper,
   getOptions: getOptionsHelper,
   getOrganizationMembers: getOrganizationMembersHelper,
   getOwnedEvents: getOwnedEventsHelper,
@@ -439,18 +440,25 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
 
 async function updateEvent(body, userId) {
   const { eventId, maximumSpots, startDate, endDate } = body;
+  const nbOfTeams = await getNbOfTeamsInEventHelper(eventId);
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return updateEventHelper(
+  if (nbOfTeams > maximumSpots) {
+    const reason = REJECTION_ENUM.TOO_MANY_TEAMS;
+    return { reason };
+  }
+  const res = await updateEventHelper(
     eventId,
     maximumSpots,
     startDate,
     endDate,
     userId,
   );
+
+  return res;
 }
 async function updatePreRanking(body, userId) {
   const { eventId, ranking } = body;

@@ -11,7 +11,6 @@ const router = new Router();
 const BASE_URL = '/api/entity';
 
 router.get(BASE_URL, async ctx => {
-
   const type = await queries.getEntitiesTypeById(ctx.query.id);
   let entity;
 
@@ -28,16 +27,10 @@ router.get(BASE_URL, async ctx => {
       );
       break;
     case GLOBAL_ENUM.EVENT:
-      entity = await EventController.home(
-        ctx.query.id,
-        userId,
-      );
+      entity = await EventController.home(ctx.query.id, userId);
       break;
     default:
-      entity = await queries.getEntity(
-        ctx.query.id,
-        userId,
-      );
+      entity = await queries.getEntity(ctx.query.id, userId);
   }
 
   if (entity) {
@@ -90,9 +83,7 @@ router.get(`${BASE_URL}/eventInfos`, async ctx => {
   }
 });
 
-
 router.get(`${BASE_URL}/events`, async ctx => {
-
   let userId = -1;
   if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
     userId = ctx.body.userInfo.id;
@@ -114,8 +105,6 @@ router.get(`${BASE_URL}/events`, async ctx => {
 });
 
 router.get(`${BASE_URL}/membershipsTab`, async ctx => {
-
-
   let userId = -1;
   if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
     userId = ctx.body.userInfo.id;
@@ -151,16 +140,10 @@ router.get(`${BASE_URL}/home`, async ctx => {
       );
       break;
     case GLOBAL_ENUM.EVENT:
-      entity = await EventController.home(
-        ctx.query.id,
-        userId,
-      );
+      entity = await EventController.home(ctx.query.id, userId);
       break;
     default:
-      entity = await queries.getEntity(
-        ctx.query.id,
-        userId,
-      );
+      entity = await queries.getEntity(ctx.query.id, userId);
   }
 
   if (!entity) {
@@ -172,7 +155,6 @@ router.get(`${BASE_URL}/home`, async ctx => {
     data: entity,
   };
 });
-
 
 router.get(`${BASE_URL}/about`, async ctx => {
   const type = await queries.getEntitiesTypeById(ctx.query.id);
@@ -191,16 +173,10 @@ router.get(`${BASE_URL}/about`, async ctx => {
       );
       break;
     case GLOBAL_ENUM.EVENT:
-      entity = await EventController.about(
-        ctx.query.id,
-        userId,
-      );
+      entity = await EventController.about(ctx.query.id, userId);
       break;
     default:
-      entity = await queries.getEntity(
-        ctx.query.id,
-        userId,
-      );
+      entity = await queries.getEntity(ctx.query.id, userId);
   }
 
   if (!entity) {
@@ -212,17 +188,12 @@ router.get(`${BASE_URL}/about`, async ctx => {
   };
 });
 
-
 router.get(`${BASE_URL}/teams`, async ctx => {
-
   let userId = -1;
   if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
     userId = ctx.body.userInfo.id;
   }
-  const entity = await EventController.teams(
-    ctx.query.id,
-    userId,
-  );
+  const entity = await EventController.teams(ctx.query.id, userId);
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -235,16 +206,12 @@ router.get(`${BASE_URL}/teams`, async ctx => {
 });
 
 router.get(`${BASE_URL}/schedule`, async ctx => {
-
   let userId = -1;
   if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
     userId = ctx.body.userInfo.id;
   }
 
-  const entity = await EventController.schedule(
-    ctx.query.id,
-    userId,
-  );
+  const entity = await EventController.schedule(ctx.query.id, userId);
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -257,15 +224,11 @@ router.get(`${BASE_URL}/schedule`, async ctx => {
 });
 
 router.get(`${BASE_URL}/rankings`, async ctx => {
-
   let userId = -1;
   if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
     userId = ctx.body.userInfo.id;
   }
-  const entity = await EventController.rankings(
-    ctx.query.id,
-    userId,
-  );
+  const entity = await EventController.rankings(ctx.query.id, userId);
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
