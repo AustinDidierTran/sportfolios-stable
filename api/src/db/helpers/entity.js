@@ -4528,6 +4528,7 @@ async function updateTeamAcceptation(
     })
     .returning('*');
 
+  console.log('passes right here');
   if (
     registrationStatus === STATUS_ENUM.ACCEPTED ||
     registrationStatus === STATUS_ENUM.ACCEPTED_FREE
