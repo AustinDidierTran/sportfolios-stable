@@ -138,4 +138,17 @@ router.post(`${BASE_URL}/comment`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/comment`, async ctx => {
+  await PostsController.editComment(
+    ctx.request.body.commentId,
+    ctx.request.body.commentContent,
+  );
+
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+
+});
+
 module.exports = router;
