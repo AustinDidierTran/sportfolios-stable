@@ -11,6 +11,14 @@ class PostServices {
     return post;
   }
 
+  static async editComment(commentId, commentContent) {
+    await knex('post_comment')
+      .update('content', commentContent)
+      .where({
+        'id': commentId
+      });
+  }
+
   static async editPost(post_id, post_content) {
     await knex('post_image')
       .where({
@@ -277,12 +285,9 @@ class PostServices {
   }
 
   static async deleteComment(comment_id) {
-    const [post_id, entity_id] = await knex('post_comment')
+    await knex('post_comment')
       .where({ id: comment_id })
-      .returning([post_id, entity_id])
       .del();
-
-    return [post_id, entity_id];
   }
 }
 module.exports = {

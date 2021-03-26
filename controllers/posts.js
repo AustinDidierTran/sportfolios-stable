@@ -49,12 +49,15 @@ class PostsController {
   }
 
   static async deleteComment(commentId) {
-    const res = await PostServices.deleteComment(commentId);
-    return res;
+    await PostServices.deleteComment(commentId);
   }
 
   static async deletePost(postId) {
     await PostServices.deletePost(postId);
+  }
+
+  static async editComment(commentId, commentContent) {
+    await PostServices.editComment(commentId, commentContent);
   }
 }
 
