@@ -1606,7 +1606,6 @@ async function getRemainingSpots(eventId) {
 async function getPreranking(eventId) {
   const realId = await getRealId(eventId);
   const prerankPhase = await getPrerankPhase(realId);
-  let name;
 
   const preranking = await knex('phase_rankings')
     .select('*')
@@ -1615,13 +1614,15 @@ async function getPreranking(eventId) {
   const res = await Promise.all(
     preranking.map(async r => {
       if (r.roster_id) {
-        name = await getTeamName(r.roster_id);
+        const name = await getTeamName(r.roster_id);
+        const teamId = await getTeamIdFromRosterId(r.roster_id);
         return {
           position: r.initial_position,
           name,
           rankingId: r.ranking_id,
           phaseId: prerankPhase.id,
           rosterId: r.roster_id,
+          teamId,
           noTeam: false,
         };
       } else {
@@ -2185,7 +2186,6 @@ async function getPhasesGameAndTeams(eventId, phaseId) {
       return { id: game.id, phaseId: game.phase_id, eventId, teams };
     }),
   );
-
   return { games: res, teams };
 }
 
@@ -2742,6 +2742,7 @@ async function updateGameTeamsRosterId(game) {
   const teamName1 = await getTeamName(ranking1.roster_id);
   const teamName2 = await getTeamName(ranking2.roster_id);
 
+  //ICI
   const [rosterId1] = await knex('game_teams')
     .update({ roster_id: ranking1.roster_id, name: teamName1 })
     .where({ ranking_id: ranking1.ranking_id })
@@ -3733,7 +3734,7 @@ async function addGame(
         game_id: res.id,
         ranking_id: rankingId2,
         name: name2,
-        roster_id: phaseRanking1.roster_id,
+        roster_id: phaseRanking2.roster_id,
       })
       .returning('*');
   } else {
