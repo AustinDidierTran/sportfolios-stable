@@ -1023,10 +1023,10 @@ async function generateMembersReport(report) {
       }
       const address = person.address
         ? {
-            city: person.address.city,
-            state: person.address.state,
-            zip: person.address.zip,
-          }
+          city: person.address.city,
+          state: person.address.state,
+          zip: person.address.zip,
+        }
         : {};
       return {
         ...a,
@@ -2037,9 +2037,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-        entityId: p.entity_id,
-        completeName: `${p.name} ${p.surname}`,
-      }))
+      entityId: p.entity_id,
+      completeName: `${p.name} ${p.surname}`,
+    }))
     : undefined;
 }
 
@@ -2296,13 +2296,13 @@ async function getGeneralInfos(entityId) {
   };
 }
 
-async function getGraphUserCount() {
+async function getGraphUserCount(date) {
   const graphData = await knex.select(
     knex.raw(
       `count(*) as total, COALESCE(count(*) - lag(count(*)) over(order by date) , 0) as new,date
         FROM (select * ,generate_series
-        ( (current_date - interval '30' day )::timestamp
-        , current_date::timestamp
+        ( ('${date}'::timestamp - interval '30' day )::timestamp
+        , '${date}'::timestamp
         , interval '1 day')::date AS date
 	      FROM entities e
 	      ) s
@@ -2329,12 +2329,52 @@ async function getGraphUserCount() {
     total: totalData,
     longLabel: graphData.map(o =>
       moment(o.date)
-        .add(1, 'days')
         .format('ll'),
     ),
     shortLabel: graphData.map(o =>
       moment(o.date)
-        .add(1, 'days')
+        .format('DD/MM'),
+    ),
+  };
+}
+
+async function getGraphMemberCount(organizationId, date) {
+  const graphData = await knex.select(
+    knex.raw(
+      `count(*) as total, COALESCE(count(*) - lag(count(*)) over(order by date) , 0) as new,date
+      FROM (select * ,generate_series
+      ( ('${date}'::timestamp - interval '30' day )::timestamp
+      , '${date}'::timestamp
+      , interval '1 day')::date AS date
+      FROM memberships e
+      ) s
+    where organization_id = '${organizationId}' and created_at::date <= date
+    group by date
+    order by date asc`,
+    ),
+  );
+  const newData = graphData.map((o, i) => {
+    return {
+      x: i + 1,
+      y: parseInt(o.new),
+    };
+  });
+  const totalData = graphData.map((o, i) => {
+    return {
+      x: i + 1,
+      y: parseInt(o.total) - parseInt(o.new),
+    };
+  });
+
+  return {
+    new: newData,
+    total: totalData,
+    longLabel: graphData.map(o =>
+      moment(o.date)
+        .format('ll'),
+    ),
+    shortLabel: graphData.map(o =>
+      moment(o.date)
         .format('DD/MM'),
     ),
   };
@@ -3742,21 +3782,17 @@ async function addGame(
 
     name1 =
       teamName1 !== undefined
-        ? `${phaseRanking1.initial_position.toString()} - ${
-            phaseRanking1.phase.name
-          } (${teamName1})`
-        : `${phaseRanking1.initial_position.toString()} - ${
-            phaseRanking1.phase.name
-          }`;
+        ? `${phaseRanking1.initial_position.toString()} - ${phaseRanking1.phase.name
+        } (${teamName1})`
+        : `${phaseRanking1.initial_position.toString()} - ${phaseRanking1.phase.name
+        }`;
 
     name2 =
       teamName2 !== undefined
-        ? `${phaseRanking2.initial_position.toString()} - ${
-            phaseRanking2.phase.name
-          } (${teamName2})`
-        : `${phaseRanking2.initial_position.toString()} - ${
-            phaseRanking2.phase.name
-          }`;
+        ? `${phaseRanking2.initial_position.toString()} - ${phaseRanking2.phase.name
+        } (${teamName2})`
+        : `${phaseRanking2.initial_position.toString()} - ${phaseRanking2.phase.name
+        }`;
 
     [position1] = await knex('game_teams')
       .insert({
@@ -3965,7 +4001,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -4005,7 +4041,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -5180,6 +5216,7 @@ module.exports = {
   getEventIdFromRosterId,
   getGeneralInfos,
   getGraphUserCount,
+  getGraphMemberCount,
   getMembers,
   getMembership,
   getMemberships,

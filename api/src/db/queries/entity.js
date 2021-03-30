@@ -77,6 +77,7 @@ const {
   getGameSubmissionInfos: getGameSubmissionInfosHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getGraphUserCount: getGraphUserCountHelper,
+  getGraphMemberCount: getGraphMemberCountHelper,
   getAllTeamsPending: getAllTeamsPendingHelper,
   getAllTeamsRefused: getAllTeamsRefusedHelper,
   getAllPlayersPending: getAllPlayersPendingHelper,
@@ -380,9 +381,14 @@ async function getGeneralInfos(entityId, userId) {
   return getGeneralInfosHelper(entityId, userId);
 }
 
-async function getGraphUserCount() {
-  return getGraphUserCountHelper();
+async function getGraphUserCount(date) {
+  return getGraphUserCountHelper(date);
 }
+
+async function getGraphMemberCount(organizationId, date) {
+  return getGraphMemberCountHelper(organizationId, date);
+}
+
 async function getAllTeamsPendingAndRefused(eventId) {
   const pending = await getAllTeamsPendingHelper(eventId);
   const refused = await getAllTeamsRefusedHelper(eventId);
@@ -1916,6 +1922,7 @@ module.exports = {
   getGameSubmissionInfos,
   getGeneralInfos,
   getGraphUserCount,
+  getGraphMemberCount,
   getAllTeamsPendingAndRefused,
   getAllPlayersPendingAndRefused,
   getInteractiveToolData,
