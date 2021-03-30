@@ -3,7 +3,6 @@ const {
   updateFinalPositionPhase: updateFinalPositionPhaseHelper,
   updateOriginPhase: updateOriginPhaseHelper,
   deleteTeamPhase: deleteTeamPhaseHelper,
-  addTeamPhase: addTeamPhaseHelper,
   getEntityRole: getEntityRoleHelper,
   getPhaseRanking: getPhaseRankingHelper,
 } = require('../api/src/db/helpers/entity');
@@ -56,14 +55,11 @@ class PhaseRankingController {
   static async updateTeamPhase(body, userId) {
     const {
       eventId,
-      id,
       initialPosition,
       phaseId,
       originPhase,
       originPosition,
     } = body;
-
-    const rosterId = id;
 
     if (
       !(await this.isAllowed(
@@ -75,23 +71,14 @@ class PhaseRankingController {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
 
-    if (originPhase && originPosition) {
-      const res = await updateOriginPhaseHelper({
-        phaseId,
-        eventId,
-        originPhase,
-        originPosition,
-        initialPosition,
-      });
-      return res;
-    } else {
-      const res = await addTeamPhaseHelper(
-        phaseId,
-        rosterId,
-        initialPosition,
-      );
-      return res;
-    }
+    const res = await updateOriginPhaseHelper({
+      phaseId,
+      eventId,
+      originPhase,
+      originPosition,
+      initialPosition,
+    });
+    return res;
   }
 
   static async deleteTeamPhase(body, userId) {

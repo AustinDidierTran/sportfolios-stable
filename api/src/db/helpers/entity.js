@@ -2540,7 +2540,8 @@ async function getRankingRoster(
       .where({
         current_phase: prerankPhase.id,
         initial_position: originPosition,
-      });
+      })
+      .whereNot({ roster_id: null });
     return res;
   } else {
     const res = await knex('phase_rankings')
@@ -2548,7 +2549,8 @@ async function getRankingRoster(
       .where({
         current_phase: originPhase,
         final_position: originPosition,
-      });
+      })
+      .whereNot({ roster_id: null });
     return res;
   }
 }
@@ -2799,6 +2801,8 @@ async function updateOriginPhase(body) {
     originPhase,
     originPosition,
   );
+  const phaseName = await getPhaseName(phaseId);
+
   if (roster !== undefined) {
     const [res] = await knex('phase_rankings')
       .update({
@@ -2813,7 +2817,6 @@ async function updateOriginPhase(body) {
       .returning('*');
 
     const teamName = await getTeamName(roster.roster_id);
-    const phaseName = await getPhaseName(phaseId);
     await knex('game_teams')
       .where({ ranking_id: res.ranking_id })
       .update({
@@ -2821,7 +2824,7 @@ async function updateOriginPhase(body) {
       });
     return res;
   } else {
-    const res = await knex('phase_rankings')
+    const [res] = await knex('phase_rankings')
       .update({
         origin_phase: originPhase,
         origin_position: originPosition,
@@ -2928,27 +2931,6 @@ async function getNbOfTeamsInPhase(phaseId) {
     .whereNotNull('roster_id')
     .andWhere({ current_phase: phaseId });
   return Number(res.count);
-}
-async function addTeamPhase(phaseId, rosterId, initialPosition) {
-  const [res] = await knex('phase_rankings')
-    .update({ roster_id: rosterId })
-    .where({
-      current_phase: phaseId,
-      initial_position: initialPosition,
-    })
-    .returning('*');
-
-  const phaseName = await getPhaseName(phaseId);
-  let teamName;
-  if (roster_id) {
-    teamName = await getTeamName(roster_id);
-    await knex('game_teams')
-      .where({ ranking_id: res.ranking_id })
-      .update({
-        name: `${initialPosition} - ${phaseName} (${teamName})`,
-      });
-  }
-  return res;
 }
 
 async function deleteTeamPhase(phaseId, initialPosition) {
@@ -5123,7 +5105,6 @@ module.exports = {
   addRoster,
   addScoreSuggestion,
   addSpiritSubmission,
-  addTeamPhase,
   addTeamToEvent,
   addTimeSlot,
   cancelRosterInviteToken,
