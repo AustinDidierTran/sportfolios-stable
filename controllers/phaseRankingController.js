@@ -55,7 +55,6 @@ class PhaseRankingController {
   static async updateTeamPhase(body, userId) {
     const {
       eventId,
-      id,
       initialPosition,
       phaseId,
       originPhase,
