@@ -96,7 +96,7 @@ BEGIN
     INSERT INTO entities (type) VALUES (4) RETURNING id INTO eventEntityId;
 
     -- create event
-    INSERT INTO events (id, start_date, end_date, maximum_spots) VALUES (eventEntityId, NOW(), NOW() + interval '1 year', 8) RETURNING id INTO eventId;
+    INSERT INTO events (id, start_date, end_date, maximum_spots) VALUES (eventEntityId, NOW(), NOW() + interval '1 month', 8) RETURNING id INTO eventId;
     INSERT INTO entities_general_infos (entity_id, description, quick_description) VALUES (eventId, null, null);
     INSERT INTO entities_name (entity_id, name, surname) VALUES (eventId, eventName, '');
     INSERT INTO entities_photo (entity_id, photo_url) VALUES (eventId, null);
@@ -117,6 +117,7 @@ BEGIN
     INSERT INTO event_time_slots (event_id, date, end_time) VALUES (eventId, '2021-12-11 16:00:00', null) RETURNING id INTO slot9;
     INSERT INTO event_time_slots (event_id, date, end_time) VALUES (eventId, '2021-12-11 17:00:00', null) RETURNING id INTO slot10;
     INSERT INTO event_time_slots (event_id, date, end_time) VALUES (eventId, '2021-12-11 18:00:00', null) RETURNING id INTO slot11;
+    INSERT INTO event_time_slots (event_id, date, end_time) VALUES (eventId, '2021-12-11 18:00:00', null) RETURNING id INTO slot12;
 
     -- create fields
     INSERT INTO event_fields (event_id, field) VALUES (eventId, 'Terrain 1') RETURNING id INTO field1;
@@ -205,10 +206,10 @@ BEGIN
     INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId2, eventId, teamEntityId2, 'free', 'accepted free', null, paymentOptionId);
     INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId3, eventId, teamEntityId3, 'free', 'accepted free', null, paymentOptionId);
     INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId4, eventId, teamEntityId4, 'free', 'accepted free', null, paymentOptionId);
-    INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId5, eventId, teamEntityId4, 'free', 'accepted free', null, paymentOptionId);
-    INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId6, eventId, teamEntityId4, 'free', 'accepted free', null, paymentOptionId);
-    INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId7, eventId, teamEntityId4, 'free', 'accepted free', null, paymentOptionId);
-    INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId8, eventId, teamEntityId4, 'free', 'accepted free', null, paymentOptionId);
+    INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId5, eventId, teamEntityId5, 'free', 'accepted free', null, paymentOptionId);
+    INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId6, eventId, teamEntityId6, 'free', 'accepted free', null, paymentOptionId);
+    INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId7, eventId, teamEntityId7, 'free', 'accepted free', null, paymentOptionId);
+    INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId8, eventId, teamEntityId8, 'free', 'accepted free', null, paymentOptionId);
 
 
     -- add rosters to prerank phase
@@ -223,15 +224,15 @@ BEGIN
 
     -- add rosters to pool A phase
     INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId1, prerankPhaseId, 1, poolAPhaseId, 1, null) RETURNING ranking_id INTO poolRankingId1;
-    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId4, prerankPhaseId, 4, poolAPhaseId, 4, null) RETURNING ranking_id INTO poolRankingId4;
-    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId5, prerankPhaseId, 5, poolAPhaseId, 5, null) RETURNING ranking_id INTO poolRankingId5;
-    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId8, prerankPhaseId, 8, poolAPhaseId, 8, null) RETURNING ranking_id INTO poolRankingId8;
+    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId4, prerankPhaseId, 4, poolAPhaseId, 2, null) RETURNING ranking_id INTO poolRankingId4;
+    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId5, prerankPhaseId, 5, poolAPhaseId, 3, null) RETURNING ranking_id INTO poolRankingId5;
+    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId8, prerankPhaseId, 8, poolAPhaseId, 4, null) RETURNING ranking_id INTO poolRankingId8;
 
     --add rosters to pool B phase
-    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId2, prerankPhaseId, 2, poolBPhaseId, 2, null) RETURNING ranking_id INTO poolRankingId2;
-    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId3, prerankPhaseId, 3, poolBPhaseId, 3, null) RETURNING ranking_id INTO poolRankingId3;
-    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId6, prerankPhaseId, 6, poolBPhaseId, 6, null) RETURNING ranking_id INTO poolRankingId6;
-    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId7, prerankPhaseId, 7, poolBPhaseId, 7, null) RETURNING ranking_id INTO poolRankingId7;
+    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId2, prerankPhaseId, 2, poolBPhaseId, 1, null) RETURNING ranking_id INTO poolRankingId2;
+    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId3, prerankPhaseId, 3, poolBPhaseId, 2, null) RETURNING ranking_id INTO poolRankingId3;
+    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId6, prerankPhaseId, 6, poolBPhaseId, 3, null) RETURNING ranking_id INTO poolRankingId6;
+    INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId7, prerankPhaseId, 7, poolBPhaseId, 4, null) RETURNING ranking_id INTO poolRankingId7;
 
     --create games entities
     INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameEntityId1;
