@@ -2762,7 +2762,11 @@ async function updateInitialPositionPhase(phaseId, teams) {
   const res = await Promise.all(
     teams.map(async (t, index) => {
       await knex('phase_rankings')
-        .update({ roster_id: t.isEmpty ? null : t.roster_id })
+        .update({
+          roster_id: t.roster_id,
+          origin_phase: t.origin_phase,
+          origin_position: t.origin_position,
+        })
         .where({
           current_phase: phaseId,
           initial_position: index + 1,
