@@ -299,7 +299,7 @@ const getEmailsFromUserId = async userId => {
   }
 
   const emails = await knex('user_email')
-    .select(['email', 'confirmed_email_at'])
+    .select(['email', 'confirmed_email_at', 'is_subscribed'])
     .where({ user_id: userId });
 
   return emails;
@@ -407,6 +407,15 @@ const updatePrimaryPerson = async (user_id, primary_person) => {
     .update({ primary_person })
     .where({ user_id })
     .returning('*');
+};
+
+const updateNewsLetterSubscription = async (user_id, body) => {
+  const { email, subscription } = body;
+  const [res] = await knex('user_email')
+    .update({ is_subscribed: subscription })
+    .where({ user_id: user_id, email: email })
+    .returning('*');
+  return res;
 };
 
 const useToken = async tokenId => {
@@ -767,6 +776,7 @@ module.exports = {
   sendNewConfirmationEmailAllIncluded,
   setRecoveryTokenToUsed,
   updateBasicUserInfoFromUserId,
+  updateNewsLetterSubscription,
   updatePasswordFromUserId,
   validateEmailIsConfirmed,
   validateEmailIsUnique,
