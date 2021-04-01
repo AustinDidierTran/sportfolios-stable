@@ -1,6 +1,7 @@
 const knex = require('../connection');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const moment = require('moment');
+const { columns } = require('../connection');
 
 function createSport(sport) {
   return knex('sports')
@@ -49,7 +50,6 @@ async function deleteTaxRate(body) {
     .where({ id: taxRateId });
 }
 
-
 async function deleteEntities(body) {
   const { entityId } = body;
   return knex('entities')
@@ -71,7 +71,12 @@ async function getAllUsersAndSecond() {
       ),
     )
     .from('user_primary_person')
-    .leftJoin('user_email', 'user_primary_person.user_id', '=', 'user_email.user_id')
+    .leftJoin(
+      'user_email',
+      'user_primary_person.user_id',
+      '=',
+      'user_email.user_id',
+    )
     .leftJoin(
       'entities_name',
       'user_primary_person.primary_person',
@@ -88,26 +93,24 @@ async function getAllUsersAndSecond() {
       'entities_photo',
       'user_primary_person.primary_person',
       '=',
-      'entities_photo.entity_id'
-    ).leftJoin(
+      'entities_photo.entity_id',
+    )
+    .leftJoin(
       'entities',
       'user_primary_person.primary_person',
       '=',
       'entities.id',
-    ).whereNull(
-      'entities.deleted_at'
     )
+    .whereNull('entities.deleted_at')
     .groupBy(
       'user_primary_person.user_id',
       'user_primary_person.primary_person',
       'entities_name.name',
       'entities_name.surname',
       'user_app_role.app_role',
-      'entities_photo.photo_url'
-    ).orderBy(
-      'entities_name.name', 'asc'
+      'entities_photo.photo_url',
     )
-    ;
+    .orderBy('entities_name.name', 'asc');
   return Promise.all(
     primaryUser.map(async user => {
       const secondAccount = await knex
@@ -128,14 +131,17 @@ async function getAllUsersAndSecond() {
           'entities_photo',
           'user_entity_role.entity_id',
           '=',
-          'entities_photo.entity_id'
-        ).leftJoin(
+          'entities_photo.entity_id',
+        )
+        .leftJoin(
           'entities',
           'user_entity_role.entity_id',
           '=',
-          'entities.id'
+          'entities.id',
         )
-        .whereRaw(`entities.deleted_at is null and user_entity_role.user_id = '${user.user_id}' AND user_entity_role.entity_id NOT IN (select primary_person from user_primary_person WHERE user_primary_person.primary_person is not null)`);
+        .whereRaw(
+          `entities.deleted_at is null and user_entity_role.user_id = '${user.user_id}' AND user_entity_role.entity_id NOT IN (select primary_person from user_primary_person WHERE user_primary_person.primary_person is not null)`,
+        );
       return {
         id: user.user_id,
         entityId: user.primary_person,
@@ -145,11 +151,30 @@ async function getAllUsersAndSecond() {
         role: user.app_role,
         photoUrl: user.photo_url,
         secondAccount: secondAccount,
-      }
+      };
     }),
-  )
+  );
 }
 
+async function getAllNewsLetterSubscriptions() {
+  const users = await getAllUsersAndSecond();
+  const res = await Promise.all(
+    users.map(async (u, index) => {
+      const [{ is_subscribed: subscription }] = await knex(
+        'user_email',
+      )
+        .select('is_subscribed')
+        .where({ user_id: u.id });
+
+      if (subscription) {
+        return { ...u, subscription: subscription };
+      } else {
+        return;
+      }
+    }),
+  );
+  return res.filter(r => r !== undefined);
+}
 
 function updateSport(id, sport) {
   const updateObject = {};
@@ -181,6 +206,7 @@ async function getAllTaxRates() {
 module.exports = {
   createSport,
   createTaxRate,
+  getAllNewsLetterSubscriptions,
   getAllSports,
   getAllUsersAndSecond,
   getAllTaxRates,
