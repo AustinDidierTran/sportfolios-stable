@@ -36,6 +36,7 @@ const signup = async ({
   email,
   password,
   redirectUrl,
+  newsLetterSubscription,
 }) => {
   // Validate email is not already taken
   const isUnique = await validateEmailIsUnique(email);
@@ -51,6 +52,7 @@ const signup = async ({
     email,
     name: firstName,
     surname: lastName,
+    newsLetterSubscription,
   });
 
   await createConfirmationEmailToken({

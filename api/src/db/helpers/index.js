@@ -33,7 +33,14 @@ const createUserEmail = async body => {
 };
 
 const createUserComplete = async body => {
-  const { password, email, name, surname, facebook_id } = body;
+  const {
+    password,
+    email,
+    name,
+    surname,
+    facebook_id,
+    newsLetterSubscription,
+  } = body;
 
   await knex.transaction(async trx => {
     // Create user
@@ -44,7 +51,11 @@ const createUserComplete = async body => {
 
     // Create user email
     await knex('user_email')
-      .insert({ user_id, email })
+      .insert({
+        user_id,
+        email,
+        is_subscribed: newsLetterSubscription,
+      })
       .transacting(trx);
 
     // Create user info
@@ -95,6 +106,7 @@ const createUserComplete = async body => {
           .transacting(trx);
       }),
     );
+    return trx;
   });
 };
 
