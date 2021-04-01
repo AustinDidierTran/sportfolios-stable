@@ -1024,10 +1024,10 @@ async function generateMembersReport(report) {
       }
       const address = person.address
         ? {
-          city: person.address.city,
-          state: person.address.state,
-          zip: person.address.zip,
-        }
+            city: person.address.city,
+            state: person.address.state,
+            zip: person.address.zip,
+          }
         : {};
       return {
         ...a,
@@ -1637,7 +1637,7 @@ async function getPreranking(eventId) {
     }),
   );
   res.sort((a, b) => a.position - b.position);
-  return res;
+  return { preranking: res, prerankPhaseId: prerankPhase.id };
 }
 
 async function getRegistrationStatus(rosterId) {
@@ -1876,8 +1876,9 @@ async function getPhaseRanking(phaseId) {
   const rankingsWithName = await Promise.all(
     rankings.map(async r => {
       if (r.roster_id) {
+        const phaseName = await getPhaseName(r.origin_phase);
         const name = await getRosterName(r.roster_id);
-        return { ...r, name, teamName: name };
+        return { ...r, name, teamName: name, phaseName };
       }
       if (r.origin_phase && r.origin_position && !r.roster_id) {
         const phaseName = await getPhaseName(r.origin_phase);
@@ -2039,9 +2040,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-      entityId: p.entity_id,
-      completeName: `${p.name} ${p.surname}`,
-    }))
+        entityId: p.entity_id,
+        completeName: `${p.name} ${p.surname}`,
+      }))
     : undefined;
 }
 
@@ -2157,9 +2158,10 @@ async function getTeamsPhase(phaseId) {
 
   const rankingsWithName = await Promise.all(
     rankings.map(async r => {
+      const phaseName = await getPhaseName(r.origin_phase);
       const name = await getRosterName(r.roster_id);
       const teamId = await getTeamIdFromRosterId(r.roster_id);
-      return { ...r, teamId, name };
+      return { ...r, teamId, name, phaseName };
     }),
   );
   return rankingsWithName;
@@ -2328,14 +2330,8 @@ async function getGraphUserCount(date) {
   return {
     new: newData,
     total: totalData,
-    longLabel: graphData.map(o =>
-      moment(o.date)
-        .format('ll'),
-    ),
-    shortLabel: graphData.map(o =>
-      moment(o.date)
-        .format('DD/MM'),
-    ),
+    longLabel: graphData.map(o => moment(o.date).format('ll')),
+    shortLabel: graphData.map(o => moment(o.date).format('DD/MM')),
   };
 }
 
@@ -2375,14 +2371,8 @@ async function getGraphMemberCount(organizationId, date) {
     new: newData,
     total: totalData,
     minDate: data2.min,
-    longLabel: graphData.map(o =>
-      moment(o.date)
-        .format('ll'),
-    ),
-    shortLabel: graphData.map(o =>
-      moment(o.date)
-        .format('DD/MM'),
-    ),
+    longLabel: graphData.map(o => moment(o.date).format('ll')),
+    shortLabel: graphData.map(o => moment(o.date).format('DD/MM')),
   };
 }
 
@@ -2671,7 +2661,7 @@ async function updatePrerankSpots(eventId, newSpots) {
       deletedRankings.push(rank);
     }
 
-    const preranking = await getPreranking(eventId);
+    const { preranking } = await getPreranking(eventId);
     preranking
       .sort((a, b) => a.initial_position - b.initial_position)
       .map(async (r, index) => {
@@ -2730,7 +2720,7 @@ async function updateGameTeamName(roster_id, ranking) {
   const teamName = await getTeamName(roster_id);
   const phaseName = await getPhaseName(ranking.current_phase);
 
-  const fullName = `${ranking.initial_position} - ${phaseName} (${teamName})`;
+  const fullName = `${ranking.initial_position}. ${phaseName} (${teamName})`;
 
   await knex('game_teams')
     .update({ name: fullName })
@@ -2870,7 +2860,7 @@ async function updateOriginPhase(body) {
     await knex('game_teams')
       .where({ ranking_id: res.ranking_id })
       .update({
-        name: `${initialPosition} - ${phaseName} (${teamName})`,
+        name: `${initialPosition}. ${phaseName} (${teamName})`,
       });
     return res;
   } else {
@@ -3002,7 +2992,7 @@ async function deleteTeamPhase(phaseId, initialPosition) {
     .where({
       ranking_id: deleted.ranking_id,
     })
-    .update({ name: `${deleted.initial_position} - ${phaseName}` });
+    .update({ name: `${deleted.initial_position}. ${phaseName}` });
 
   return deleted;
 }
@@ -3270,7 +3260,7 @@ const deleteRegistration = async (rosterId, eventId) => {
         })
         .update({
           roster_id: null,
-          name: `${ranking.initial_position} - ${phaseName}`,
+          name: `${ranking.initial_position}. ${phaseName}`,
         })
         .transacting(trx);
     }
@@ -3775,17 +3765,21 @@ async function addGame(
 
     name1 =
       teamName1 !== undefined
-        ? `${phaseRanking1.initial_position.toString()} - ${phaseRanking1.phase.name
-        } (${teamName1})`
-        : `${phaseRanking1.initial_position.toString()} - ${phaseRanking1.phase.name
-        }`;
+        ? `${phaseRanking1.initial_position.toString()}. ${
+            phaseRanking1.phase.name
+          } (${teamName1})`
+        : `${phaseRanking1.initial_position.toString()}. ${
+            phaseRanking1.phase.name
+          }`;
 
     name2 =
       teamName2 !== undefined
-        ? `${phaseRanking2.initial_position.toString()} - ${phaseRanking2.phase.name
-        } (${teamName2})`
-        : `${phaseRanking2.initial_position.toString()} - ${phaseRanking2.phase.name
-        }`;
+        ? `${phaseRanking2.initial_position.toString()}. ${
+            phaseRanking2.phase.name
+          } (${teamName2})`
+        : `${phaseRanking2.initial_position.toString()}. ${
+            phaseRanking2.phase.name
+          }`;
 
     [position1] = await knex('game_teams')
       .insert({
@@ -3994,7 +3988,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -4034,7 +4028,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -4129,7 +4123,6 @@ async function addOption(
   let teamPriceStripe;
   let individualPriceStripe;
 
-
   if (teamPrice > 0) {
     const stripeProductTeam = {
       name: `${name} - Paiement d'équipe`, // ${t('payment.payment_team')}
@@ -4201,8 +4194,10 @@ async function addOption(
       end_time: new Date(endTime),
       start_time: new Date(startTime),
       team_activity: eventType === EVENT_TYPE.TEAM,
-      team_acceptation: manualAcceptation && eventType === EVENT_TYPE.TEAM,
-      player_acceptation: manualAcceptation && eventType === EVENT_TYPE.PLAYER,
+      team_acceptation:
+        manualAcceptation && eventType === EVENT_TYPE.TEAM,
+      player_acceptation:
+        manualAcceptation && eventType === EVENT_TYPE.PLAYER,
       informations,
     })
     .returning('*');
@@ -4677,7 +4672,7 @@ async function updateGame(
 
     if (ranking.roster_id) {
       const name = await getTeamName(ranking.roster_id);
-      const fullName = `${ranking.initial_position} - ${phaseName} (${name})`;
+      const fullName = `${ranking.initial_position}. ${phaseName} (${name})`;
 
       if (phase.status !== PHASE_STATUS_ENUM.NOT_STARTED) {
         const [r] = await knex('game_teams')
@@ -4706,7 +4701,7 @@ async function updateGame(
         res.push(r);
       }
     } else {
-      const fullName = `${ranking.initial_position} - ${phaseName}`;
+      const fullName = `${ranking.initial_position}. ${phaseName}`;
       const [r] = await knex('game_teams')
         .update({ name: fullName, ranking_id: rankingId1 })
         .where({
@@ -4726,7 +4721,7 @@ async function updateGame(
 
     if (ranking.roster_id) {
       const name = await getTeamName(ranking.roster_id);
-      const fullName = `${ranking.initial_position} - ${phaseName} (${name})`;
+      const fullName = `${ranking.initial_position}. ${phaseName} (${name})`;
 
       if (phase.status !== PHASE_STATUS_ENUM.NOT_STARTED) {
         const [r] = await knex('game_teams')
@@ -4755,7 +4750,7 @@ async function updateGame(
         res.push(r);
       }
     } else {
-      const fullName = `${ranking.initial_position} - ${phaseName}`;
+      const fullName = `${ranking.initial_position}. ${phaseName}`;
 
       const [r] = await knex('game_teams')
         .update({ name: fullName, ranking_id: rankingId2 })
