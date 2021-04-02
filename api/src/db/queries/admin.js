@@ -1,7 +1,6 @@
 const knex = require('../connection');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const moment = require('moment');
-const { columns } = require('../connection');
 
 function createSport(sport) {
   return knex('sports')
@@ -159,7 +158,7 @@ async function getAllUsersAndSecond() {
 async function getAllNewsLetterSubscriptions() {
   const users = await getAllUsersAndSecond();
   const res = await Promise.all(
-    users.map(async (u, index) => {
+    users.map(async u => {
       const [{ is_subscribed: subscription }] = await knex(
         'user_email',
       )
