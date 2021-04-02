@@ -15,6 +15,15 @@ router.get(`${BASE_URL}/users`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/newsLetterSubscriptions`, async ctx => {
+  const users = await queries.getAllNewsLetterSubscriptions();
+
+  ctx.body = {
+    status: 'success',
+    data: users,
+  };
+});
+
 router.get(`${BASE_URL}/sports`, async ctx => {
   const sports = await queries.getAllSports();
   ctx.body = {
