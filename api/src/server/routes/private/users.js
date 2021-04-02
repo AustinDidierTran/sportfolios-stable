@@ -440,4 +440,28 @@ router.delete(`${BASE_URL}/messengerConnection`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/changeSubscription`, async ctx => {
+  try {
+    const data = await queries.updateNewsLetterSubscription(
+      ctx.body.userInfo.id,
+      ctx.request.body,
+    );
+    if (data) {
+      ctx.status = STATUS_ENUM.SUCCESS;
+      ctx.body = {
+        status: 'success',
+        data: data,
+      };
+    } else {
+      ctx.status = STATUS_ENUM.ERROR;
+      ctx.body = {
+        message: 'Something went wrong',
+      };
+    }
+  } catch (err) {
+    ctx.status = err.status;
+    ctx.body = err.message;
+  }
+});
+
 module.exports = router;

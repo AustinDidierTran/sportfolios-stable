@@ -21,6 +21,7 @@ const {
   sendPersonTransferEmailAllIncluded,
   confirmEmail,
   updatePrimaryPerson: updatePrimaryPersonHelper,
+  updateNewsLetterSubscription: updateNewsLetterSubscriptionHelper,
   useToken: useTokenHelper,
   getPeopleTransferedToUser: getPeopleTransferedToUserHelper,
   transferPerson: transferPersonHelper,
@@ -360,6 +361,14 @@ const unlinkMessenger = async user_id => {
   return deleteMessengerId(user_id);
 };
 
+const updateNewsLetterSubscription = async (user_id, body) => {
+  const subscription = await updateNewsLetterSubscriptionHelper(
+    user_id,
+    body,
+  );
+  return subscription;
+};
+
 module.exports = {
   addEmail,
   changePassword,
@@ -369,6 +378,7 @@ module.exports = {
   getPrimaryPersonId,
   getOwnedPersons,
   updatePrimaryPerson,
+  updateNewsLetterSubscription,
   useToken,
   sendTransferPersonEmail,
   cancelPersonTransfer,
