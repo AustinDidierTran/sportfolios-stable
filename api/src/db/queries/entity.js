@@ -1457,16 +1457,16 @@ async function addOption(body, userId) {
   const {
     endTime,
     eventId,
+    eventType,
     name,
     ownerId,
-    playerAcceptation,
     playerPrice,
+    playerTaxes,
     startTime,
-    taxRatesId,
-    teamAcceptation,
-    teamActivity,
     teamPrice,
+    teamTaxes,
     informations,
+    manualAcceptation,
   } = body;
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
@@ -1476,16 +1476,16 @@ async function addOption(body, userId) {
   const res = await addOptionHelper(
     endTime,
     eventId,
+    eventType,
     name,
     ownerId,
-    playerAcceptation,
     playerPrice,
+    playerTaxes,
     startTime,
-    taxRatesId,
-    teamAcceptation,
-    teamActivity,
     teamPrice,
+    teamTaxes,
     informations,
+    manualAcceptation,
     userId,
   );
   return res;
