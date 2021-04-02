@@ -2721,7 +2721,6 @@ async function updateGameTeamName(roster_id, ranking) {
   const phaseName = await getPhaseName(ranking.current_phase);
 
   const fullName = `${ranking.initial_position}. ${phaseName} (${teamName})`;
-
   await knex('game_teams')
     .update({ name: fullName })
     .where({ ranking_id: ranking.ranking_id });
@@ -2938,12 +2937,13 @@ async function updatePhaseFinalRanking(phaseId, finalRanking) {
         .update({ final_position: index + 1 })
         .where({ current_phase: phaseId, roster_id: r.rosterId })
         .returning('*');
-
       const [dependantRanking] = await knex('phase_rankings')
         .update({ roster_id: r.rosterId })
         .where({ origin_phase: phaseId, origin_position: index + 1 })
         .returning('*');
-      dependantRankings.push(dependantRanking);
+      if (dependantRanking) {
+        dependantRankings.push(dependantRanking);
+      }
       return finalPosition;
     }),
   );
