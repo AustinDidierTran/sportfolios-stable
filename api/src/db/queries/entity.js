@@ -1151,7 +1151,6 @@ async function updateSuggestionStatus(body, userId) {
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-
   return await updateSuggestionStatusHelper(body);
 }
 
@@ -1361,6 +1360,7 @@ async function addScoreSuggestion(body, userId) {
   }
 
   const res = await addScoreSuggestionHelper(body);
+
   //Send notification to other rosters member to accept/decline the score
   if (res) {
     const gamePlayers = await getGamePlayersWithRole(body.game_id);

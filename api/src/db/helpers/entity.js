@@ -3943,7 +3943,7 @@ async function acceptScoreSuggestionIfPossible(gameId) {
 async function setGameScore(gameId, score, isManualAdd = false) {
   for (let position in score) {
     await knex('game_teams')
-      .where({ game_id: gameId, ranking_id: position })
+      .where({ game_id: gameId, roster_id: position })
       .update({ score: score[position] });
   }
 
@@ -3963,7 +3963,6 @@ async function setGameScore(gameId, score, isManualAdd = false) {
         .where({ id: suggestion.id });
     }
   }
-
   return { gameId, score };
 }
 
