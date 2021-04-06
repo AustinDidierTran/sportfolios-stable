@@ -190,7 +190,6 @@ async function isAllowed(
 
 async function getEntity(id, user_id) {
   const res = await getEntityHelper(id, user_id);
-
   if (res.basicInfos.type === GLOBAL_ENUM.PERSON) {
     res.gamesInfos = await getPersonGamesHelper(id);
   }

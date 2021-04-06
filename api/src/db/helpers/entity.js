@@ -1892,17 +1892,37 @@ async function getPhaseRanking(phaseId) {
 }
 
 async function getPositions(gameId) {
-  const positions = await knex('game_teams')
+  let positions = await knex('game_teams')
     .select('*')
     .where({ game_id: gameId });
 
-  if (positions[0].roster_id && positions[1].roster_id) {
-    return [
-      { ...positions[0], teamName: positions[0].name },
-      { ...positions[1], teamName: positions[1].name },
-    ];
+  if (positions[0].roster_id) {
+    const photoUrl = await getPhotoFromRosterId(
+      positions[0].roster_id,
+    );
+    positions[0].teamName = positions[0].name;
+    if (photoUrl) {
+      positions[0].photoUrl = photoUrl;
+    }
+  }
+  if (positions[1].roster_id) {
+    const photoUrl = await getPhotoFromRosterId(
+      positions[1].roster_id,
+    );
+    positions[1].teamName = positions[1].name;
+    if (photoUrl) {
+      positions[1].photoUrl = photoUrl;
+    }
   }
   return positions;
+}
+
+async function getPhotoFromRosterId(rosterId) {
+  const teamId = await getTeamIdFromRosterId(rosterId);
+  const [{ photo_url: photoUrl }] = await knex('entities_photo')
+    .select('photo_url')
+    .where({ entity_id: teamId });
+  return photoUrl;
 }
 
 async function getGames(eventId) {
@@ -2229,7 +2249,7 @@ const getTeams = async gameId => {
           score: team.score,
           position: team.position,
           name: team.name,
-          id: team.id,
+          id: realTeamId,
           spirit: team.spirit,
           created_at: team.created_at,
           updated_at: team.updated_at,
