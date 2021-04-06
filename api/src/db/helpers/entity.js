@@ -4123,7 +4123,7 @@ async function addOption(
       entityId: realId,
       photoUrl: entity.photoUrl,
       ownerId,
-      taxRatesId: [teamTaxes],
+      taxRatesId: teamTaxes,
     });
   }
 
@@ -4151,7 +4151,7 @@ async function addOption(
       entityId: realId,
       photoUrl: entity.photoUrl,
       ownerId,
-      taxRatesId: [playerTaxes],
+      taxRatesId: playerTaxes,
     });
   }
 
@@ -4170,8 +4170,8 @@ async function addOption(
       end_time: new Date(endTime),
       start_time: new Date(startTime),
       team_activity: eventType === EVENT_TYPE.TEAM,
-      team_acceptation: eventType === EVENT_TYPE.TEAM && manualAcceptation,
-      player_acceptation: eventType === EVENT_TYPE.PLAYER ?? manualAcceptation,
+      team_acceptation: manualAcceptation && eventType === EVENT_TYPE.TEAM,
+      player_acceptation: manualAcceptation && eventType === EVENT_TYPE.PLAYER,
       informations,
     })
     .returning('*');
