@@ -4,6 +4,7 @@ const {
   stripeErrorLogger,
   stripeLogger,
 } = require('../../../server/utils/logger');
+const { PLATEFORM_FEES } = require('../../../../../common/enums');
 
 const addProduct = async body => {
   const { stripeProduct } = body;
@@ -43,6 +44,7 @@ const addPrice = async body => {
       stripe_product_id: price.product,
       amount: price.unit_amount,
       active: price.active,
+      transaction_fees: price.unit_amount * PLATEFORM_FEES,
       start_date: new Date(price.created * 1000),
       metadata: price.metadata,
       owner_id: ownerId,

@@ -564,6 +564,7 @@ const addItemToPaidStoreItems = async query => {
     invoiceItemId,
     metadata,
     receiptUrl,
+    transactionFees,
   } = query;
   const [receipt] = await knex('receipts')
     .insert({
@@ -579,6 +580,7 @@ const addItemToPaidStoreItems = async query => {
     stripe_price_id: stripePriceId,
     buyer_user_id: buyerUserId,
     invoice_item_id: invoiceItemId,
+    transaction_fees: transactionFees,
     metadata,
     receipt_id: receipt.id,
   });

@@ -13,7 +13,6 @@ const {
   MEMBERSHIP_LENGTH_TYPE_ENUM,
   INVOICE_STATUS_ENUM,
   REPORT_TYPE_ENUM,
-  PLATEFORM_FEES,
   PLAYER_ATTENDANCE_STATUS,
   PHASE_STATUS_ENUM,
 } = require('../../../../common/enums');
@@ -1085,7 +1084,7 @@ async function generateSalesReport(report) {
         return prev + (curr.percentage / 100) * a.amount;
       }, 0);
       const total = subtotal + totalTax;
-      const plateformFees = total * PLATEFORM_FEES;
+      const plateformFees = a.transaction_fees;
       const totalNet = total - plateformFees;
       if (a.metadata.type === GLOBAL_ENUM.EVENT) {
         const event = await getEntity(a.metadata.id);

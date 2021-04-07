@@ -8,7 +8,6 @@ const {
 const {
   STRIPE_STATUS_ENUM,
   GLOBAL_ENUM,
-  PLATEFORM_FEES,
 } = require('../../../../../common/enums');
 const { deleteCartItem } = require('../shop');
 const {
@@ -166,10 +165,6 @@ const getExternalAccount = async stripePriceId => {
   return externalAccount;
 };
 
-const getTransferedAmount = amount => {
-  return Math.ceil(amount - amount * PLATEFORM_FEES);
-};
-
 const createTransfers = async invoice => {
   try {
     const transfers = await Promise.all(
@@ -179,14 +174,22 @@ const createTransfers = async invoice => {
           currency,
           invoice_item: invoiceItemId,
         } = item;
+
         const [invoiceItem] = await knex('stripe_invoice_item')
           .select('*')
           .where({ invoice_item_id: invoiceItemId });
+
+        const [{ transaction_fees: transactionFees }] = await knex(
+          'stripe_price',
+        )
+          .select('transaction_fees')
+          .where({ stripe_price_id: invoiceItem.stripe_price_id });
+
         const externalAccount = await getExternalAccount(
           invoiceItem.stripe_price_id,
         );
 
-        const transferedAmount = getTransferedAmount(amount);
+        const transferedAmount = amount - transactionFees;
 
         const transfer = await createTransfer(
           {
@@ -288,6 +291,14 @@ const getTaxRatesFromStripePrice = async stripePriceId => {
 
   return taxRatesId.map(t => t.tax_rate_id);
 };
+const getTransactionFeesFromStripePriceId = async stripePriceId => {
+  const [{ transaction_fees: transactionFees }] = await knex(
+    'stripe_price',
+  )
+    .select('transaction_fees')
+    .where({ stripe_price_id: stripePriceId });
+  return transactionFees;
+};
 
 const getMetadata = async (stripePriceId, cartItemId) => {
   const [stripePrice] = await knex('stripe_price')
@@ -334,6 +345,9 @@ const checkout = async (body, userId) => {
         const tax_rates = await getTaxRatesFromStripePrice(
           stripePriceId,
         );
+        const transactionFees = await getTransactionFeesFromStripePriceId(
+          stripePriceId,
+        );
         const invoiceItem = await createInvoiceItem(
           {
             price: stripePriceId,
@@ -344,7 +358,12 @@ const checkout = async (body, userId) => {
           },
           userId,
         );
-        return { invoiceItem, metadata, cartItemId: price.id };
+        return {
+          invoiceItem,
+          metadata,
+          transactionFees,
+          cartItemId: price.id,
+        };
       }),
     );
 
@@ -367,7 +386,12 @@ const checkout = async (body, userId) => {
     await sendReceiptEmail({ receipt: receiptUrl }, userId);
     await Promise.all(
       invoicesAndMetadatas.map(
-        async ({ invoiceItem, metadata, cartItemId }) => {
+        async ({
+          invoiceItem,
+          metadata,
+          transactionFees,
+          cartItemId,
+        }) => {
           if (Number(metadata.type) === GLOBAL_ENUM.EVENT) {
             await INVOICE_PAID_ENUM.EVENT({
               rosterId: metadata.rosterId,
@@ -377,6 +401,7 @@ const checkout = async (body, userId) => {
               sellerEntityId: metadata.sellerEntityId,
               quantity: invoiceItem.quantity,
               unitAmount: invoiceItem.unit_amount,
+              transactionFees,
               amount: invoiceItem.amount,
               stripePriceId: invoiceItem.price.id,
               buyerUserId: userId,
@@ -392,6 +417,7 @@ const checkout = async (body, userId) => {
               unitAmount: invoiceItem.unit_amount,
               amount: invoiceItem.amount,
               stripePriceId: invoiceItem.price.id,
+              transactionFees,
               buyerUserId: userId,
               invoiceItemId: invoiceItem.id,
               receiptUrl,
@@ -404,6 +430,7 @@ const checkout = async (body, userId) => {
               unitAmount: invoiceItem.unit_amount,
               amount: invoiceItem.amount,
               stripePriceId: invoiceItem.price.id,
+              transactionFees,
               buyerUserId: userId,
               invoiceItemId: invoiceItem.id,
               receiptUrl,
