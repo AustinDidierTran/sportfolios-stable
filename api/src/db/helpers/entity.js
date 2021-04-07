@@ -1896,24 +1896,18 @@ async function getPositions(gameId) {
     .select('*')
     .where({ game_id: gameId });
 
-  if (positions[0].roster_id) {
-    const photoUrl = await getPhotoFromRosterId(
-      positions[0].roster_id,
-    );
-    positions[0].teamName = positions[0].name;
-    if (photoUrl) {
-      positions[0].photoUrl = photoUrl;
-    }
-  }
-  if (positions[1].roster_id) {
-    const photoUrl = await getPhotoFromRosterId(
-      positions[1].roster_id,
-    );
-    positions[1].teamName = positions[1].name;
-    if (photoUrl) {
-      positions[1].photoUrl = photoUrl;
-    }
-  }
+  await Promise.all(
+    positions.map(async (p, index) => {
+      if (p.roster_id) {
+        positions[index].teamName = p.name;
+        const photoUrl = await getPhotoFromRosterId(p.roster_id);
+        if (photoUrl) {
+          positions[index].photoUrl = photoUrl;
+        }
+      }
+    }),
+  );
+
   return positions;
 }
 
