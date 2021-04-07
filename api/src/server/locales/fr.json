@@ -16,7 +16,7 @@
 			"many": "La partie s'est terminée avec les scores suivant, est-ce bien le cas? Veuillez répondre oui pour confirmer, non pour resoumettre votre pointage.\n%s "
 		},
 		"confirmed": {
-			"victory": "C'est envoyé, félicitation pour votre belle victoire!",
+			"victory": "C'est envoyé, félicitations pour votre belle victoire!",
 			"other": "C'est envoyé!"
 		},
 		"failed": "Une erreur est survenue lors de l'enregistrement du score, voulez vous réessayer?",
