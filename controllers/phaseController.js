@@ -60,6 +60,7 @@ class PhaseController {
       status,
       finalRanking,
     } = body;
+
     if (
       !(await this.isAllowed(
         eventId,
@@ -89,7 +90,6 @@ class PhaseController {
     if (finalRanking) {
       return updatePhaseFinalRankingHelper(phaseId, finalRanking);
     }
-
     return res;
   }
 
