@@ -164,7 +164,7 @@ const addEntity = async (body, userId) => {
             })
             .transacting(trx);
         }
-        return event_id;
+        return { id: event_id };
       }
     }
   });
