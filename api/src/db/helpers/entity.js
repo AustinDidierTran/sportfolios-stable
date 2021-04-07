@@ -1892,17 +1892,31 @@ async function getPhaseRanking(phaseId) {
 }
 
 async function getPositions(gameId) {
-  const positions = await knex('game_teams')
+  let positions = await knex('game_teams')
     .select('*')
     .where({ game_id: gameId });
 
-  if (positions[0].roster_id && positions[1].roster_id) {
-    return [
-      { ...positions[0], teamName: positions[0].name },
-      { ...positions[1], teamName: positions[1].name },
-    ];
-  }
+  await Promise.all(
+    positions.map(async (p, index) => {
+      if (p.roster_id) {
+        positions[index].teamName = p.name;
+        const photoUrl = await getPhotoFromRosterId(p.roster_id);
+        if (photoUrl) {
+          positions[index].photoUrl = photoUrl;
+        }
+      }
+    }),
+  );
+
   return positions;
+}
+
+async function getPhotoFromRosterId(rosterId) {
+  const teamId = await getTeamIdFromRosterId(rosterId);
+  const [{ photo_url: photoUrl }] = await knex('entities_photo')
+    .select('photo_url')
+    .where({ entity_id: teamId });
+  return photoUrl;
 }
 
 async function getGames(eventId) {
@@ -2229,7 +2243,7 @@ const getTeams = async gameId => {
           score: team.score,
           position: team.position,
           name: team.name,
-          id: team.id,
+          id: realTeamId,
           spirit: team.spirit,
           created_at: team.created_at,
           updated_at: team.updated_at,
@@ -3943,7 +3957,7 @@ async function acceptScoreSuggestionIfPossible(gameId) {
 async function setGameScore(gameId, score, isManualAdd = false) {
   for (let position in score) {
     await knex('game_teams')
-      .where({ game_id: gameId, ranking_id: position })
+      .where({ game_id: gameId, roster_id: position })
       .update({ score: score[position] });
   }
 
@@ -3963,7 +3977,6 @@ async function setGameScore(gameId, score, isManualAdd = false) {
         .where({ id: suggestion.id });
     }
   }
-
   return { gameId, score };
 }
 

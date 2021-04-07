@@ -190,7 +190,6 @@ async function isAllowed(
 
 async function getEntity(id, user_id) {
   const res = await getEntityHelper(id, user_id);
-
   if (res.basicInfos.type === GLOBAL_ENUM.PERSON) {
     res.gamesInfos = await getPersonGamesHelper(id);
   }
@@ -1151,7 +1150,6 @@ async function updateSuggestionStatus(body, userId) {
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-
   return await updateSuggestionStatusHelper(body);
 }
 
@@ -1361,6 +1359,7 @@ async function addScoreSuggestion(body, userId) {
   }
 
   const res = await addScoreSuggestionHelper(body);
+
   //Send notification to other rosters member to accept/decline the score
   if (res) {
     const gamePlayers = await getGamePlayersWithRole(body.game_id);

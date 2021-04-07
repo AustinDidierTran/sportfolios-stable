@@ -1,6 +1,9 @@
 const Router = require('koa-router');
 const queries = require('../../../db/queries/entity');
-const { STATUS_ENUM, GLOBAL_ENUM } = require('../../../../../common/enums');
+const {
+  STATUS_ENUM,
+  GLOBAL_ENUM,
+} = require('../../../../../common/enums');
 const {
   ERROR_ENUM,
   errors,
@@ -25,7 +28,6 @@ const router = new Router();
 const BASE_URL = '/api/entity';
 
 router.get(`${BASE_URL}`, async ctx => {
-
   const type = await queries.getEntitiesTypeById(ctx.query.id);
   let entity;
   switch (type) {
@@ -78,7 +80,6 @@ router.get(`${BASE_URL}/editRankings`, async ctx => {
   };
 });
 
-
 router.get(`${BASE_URL}/editRosters`, async ctx => {
   const entity = await EventController.editRosters(
     ctx.query.id,
@@ -94,7 +95,6 @@ router.get(`${BASE_URL}/editRosters`, async ctx => {
     data: entity,
   };
 });
-
 
 router.get(`${BASE_URL}/editSchedule`, async ctx => {
   const entity = await EventController.editSchedule(
@@ -128,9 +128,7 @@ router.get(`${BASE_URL}/league`, async ctx => {
   };
 });
 
-
 router.get(`${BASE_URL}/edit`, async ctx => {
-
   if (!ctx.query.id) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1344,9 +1342,7 @@ router.post(`${BASE_URL}/report`, async ctx => {
 });
 
 router.post(`${BASE_URL}/importMembers`, async ctx => {
-  const members = await queries.importMembers(
-    ctx.request.body,
-  );
+  const members = await queries.importMembers(ctx.request.body);
   if (members) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
