@@ -2297,13 +2297,13 @@ async function getGeneralInfos(entityId) {
   };
 }
 
-async function getGraphUserCount() {
+async function getGraphUserCount(date) {
   const graphData = await knex.select(
     knex.raw(
       `count(*) as total, COALESCE(count(*) - lag(count(*)) over(order by date) , 0) as new,date
         FROM (select * ,generate_series
-        ( (current_date - interval '30' day )::timestamp
-        , current_date::timestamp
+        ( ('${date}'::timestamp - interval '30' day )::timestamp
+        , '${date}'::timestamp
         , interval '1 day')::date AS date
 	      FROM entities e
 	      ) s
@@ -2330,12 +2330,57 @@ async function getGraphUserCount() {
     total: totalData,
     longLabel: graphData.map(o =>
       moment(o.date)
-        .add(1, 'days')
         .format('ll'),
     ),
     shortLabel: graphData.map(o =>
       moment(o.date)
-        .add(1, 'days')
+        .format('DD/MM'),
+    ),
+  };
+}
+
+async function getGraphMemberCount(organizationId, date) {
+  const graphData = await knex.select(
+    knex.raw(
+      `count(*) as total, COALESCE(count(*) - lag(count(*)) over(order by date) , 0) as new,date
+      FROM (select * ,generate_series
+      ( ('${date}'::timestamp - interval '30' day )::timestamp
+      , '${date}'::timestamp
+      , interval '1 day')::date AS date
+      FROM memberships e
+      ) s
+    where organization_id = '${organizationId}' and created_at::date <= date and expiration_date::date >= date
+    group by date
+    order by date asc`,
+    ),
+  );
+  const newData = graphData.map((o, i) => {
+    return {
+      x: i + 1,
+      y: parseInt(o.new),
+    };
+  });
+  const totalData = graphData.map((o, i) => {
+    return {
+      x: i + 1,
+      y: parseInt(o.total) - parseInt(o.new),
+    };
+  });
+
+  const [data2] = await knex('memberships')
+    .min('created_at')
+    .where({ organization_id: organizationId });
+
+  return {
+    new: newData,
+    total: totalData,
+    minDate: data2.min,
+    longLabel: graphData.map(o =>
+      moment(o.date)
+        .format('ll'),
+    ),
+    shortLabel: graphData.map(o =>
+      moment(o.date)
         .format('DD/MM'),
     ),
   };
@@ -5164,6 +5209,7 @@ module.exports = {
   getEventIdFromRosterId,
   getGeneralInfos,
   getGraphUserCount,
+  getGraphMemberCount,
   getMembers,
   getMembership,
   getMemberships,

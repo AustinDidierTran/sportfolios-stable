@@ -168,7 +168,29 @@ router.get(`${BASE_URL}/edit`, async ctx => {
 });
 
 router.get(`${BASE_URL}/graphUserCount`, async ctx => {
-  const arrayGraph = await queries.getGraphUserCount();
+  const arrayGraph = await queries.getGraphUserCount(
+    ctx.query.date
+  );
+  if (arrayGraph) {
+    ctx.body = {
+      status: 'success',
+      data: arrayGraph,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+  return;
+});
+
+router.get(`${BASE_URL}/graphMemberCount`, async ctx => {
+  const arrayGraph = await queries.getGraphMemberCount(
+    ctx.query.organizationId,
+    ctx.query.date
+  );
   if (arrayGraph) {
     ctx.body = {
       status: 'success',
