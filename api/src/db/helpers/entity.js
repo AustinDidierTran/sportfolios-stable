@@ -2348,7 +2348,7 @@ async function getGraphMemberCount(organizationId, date) {
       , interval '1 day')::date AS date
       FROM memberships e
       ) s
-    where organization_id = '${organizationId}' and created_at::date <= date
+    where organization_id = '${organizationId}' and created_at::date <= date and expiration_date::date >= date
     group by date
     order by date asc`,
     ),
@@ -2366,9 +2366,14 @@ async function getGraphMemberCount(organizationId, date) {
     };
   });
 
+  const [data2] = await knex('memberships')
+    .min('created_at')
+    .where({ organization_id: organizationId });
+
   return {
     new: newData,
     total: totalData,
+    minDate: data2.min,
     longLabel: graphData.map(o =>
       moment(o.date)
         .format('ll'),
