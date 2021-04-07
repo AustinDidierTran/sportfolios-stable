@@ -74,7 +74,7 @@ cron.schedule('0-59/15 * * * *', async () => {
         formatRoute(
           ROUTES_ENUM.entity,
           { id: event_id },
-          { tab: TABS_ENUM.SCHEDULE, game: game_id },
+          { tab: TABS_ENUM.SCHEDULE, gameId: game_id },
         ),
       );
       const emailInfos = {
