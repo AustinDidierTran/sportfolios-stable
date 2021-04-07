@@ -2,6 +2,7 @@ const knex = require('../connection');
 
 const { getMembershipName } = require('../../../../common/functions');
 const {
+  EVENT_TYPE,
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
   ROSTER_ROLE_ENUM,
@@ -1023,10 +1024,10 @@ async function generateMembersReport(report) {
       }
       const address = person.address
         ? {
-            city: person.address.city,
-            state: person.address.state,
-            zip: person.address.zip,
-          }
+          city: person.address.city,
+          state: person.address.state,
+          zip: person.address.zip,
+        }
         : {};
       return {
         ...a,
@@ -2038,9 +2039,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-        entityId: p.entity_id,
-        completeName: `${p.name} ${p.surname}`,
-      }))
+      entityId: p.entity_id,
+      completeName: `${p.name} ${p.surname}`,
+    }))
     : undefined;
 }
 
@@ -3729,21 +3730,17 @@ async function addGame(
 
     name1 =
       teamName1 !== undefined
-        ? `${phaseRanking1.initial_position.toString()} - ${
-            phaseRanking1.phase.name
-          } (${teamName1})`
-        : `${phaseRanking1.initial_position.toString()} - ${
-            phaseRanking1.phase.name
-          }`;
+        ? `${phaseRanking1.initial_position.toString()} - ${phaseRanking1.phase.name
+        } (${teamName1})`
+        : `${phaseRanking1.initial_position.toString()} - ${phaseRanking1.phase.name
+        }`;
 
     name2 =
       teamName2 !== undefined
-        ? `${phaseRanking2.initial_position.toString()} - ${
-            phaseRanking2.phase.name
-          } (${teamName2})`
-        : `${phaseRanking2.initial_position.toString()} - ${
-            phaseRanking2.phase.name
-          }`;
+        ? `${phaseRanking2.initial_position.toString()} - ${phaseRanking2.phase.name
+        } (${teamName2})`
+        : `${phaseRanking2.initial_position.toString()} - ${phaseRanking2.phase.name
+        }`;
 
     [position1] = await knex('game_teams')
       .insert({
@@ -3952,7 +3949,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -3992,7 +3989,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -4069,16 +4066,16 @@ async function addTimeSlot(date, eventId) {
 async function addOption(
   endTime,
   eventId,
+  eventType,
   name,
   ownerId,
-  playerAcceptation,
   playerPrice,
+  playerTaxes,
   startTime,
-  taxRatesId,
-  teamAcceptation,
-  teamActivity,
   teamPrice,
+  teamTaxes,
   informations,
+  manualAcceptation,
   userId,
 ) {
   const realId = await getRealId(eventId);
@@ -4086,6 +4083,7 @@ async function addOption(
 
   let teamPriceStripe;
   let individualPriceStripe;
+
 
   if (teamPrice > 0) {
     const stripeProductTeam = {
@@ -4111,7 +4109,7 @@ async function addOption(
       entityId: realId,
       photoUrl: entity.photoUrl,
       ownerId,
-      taxRatesId,
+      taxRatesId: teamTaxes,
     });
   }
 
@@ -4139,7 +4137,7 @@ async function addOption(
       entityId: realId,
       photoUrl: entity.photoUrl,
       ownerId,
-      taxRatesId,
+      taxRatesId: playerTaxes,
     });
   }
 
@@ -4150,16 +4148,16 @@ async function addOption(
       team_stripe_price_id: teamPriceStripe
         ? teamPriceStripe.id
         : null,
-      team_price: teamPrice,
+      team_price: teamPrice === null ? 0 : teamPrice,
       individual_stripe_price_id: individualPriceStripe
         ? individualPriceStripe.id
         : null,
-      individual_price: playerPrice,
+      individual_price: playerPrice === null ? 0 : playerPrice,
       end_time: new Date(endTime),
       start_time: new Date(startTime),
-      team_activity: teamActivity,
-      team_acceptation: teamAcceptation,
-      player_acceptation: playerAcceptation,
+      team_activity: eventType === EVENT_TYPE.TEAM,
+      team_acceptation: manualAcceptation && eventType === EVENT_TYPE.TEAM,
+      player_acceptation: manualAcceptation && eventType === EVENT_TYPE.PLAYER,
       informations,
     })
     .returning('*');

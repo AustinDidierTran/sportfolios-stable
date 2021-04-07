@@ -220,6 +220,7 @@ const ROUTES_ENUM = {
   menu: '/page/menu',
   mockEvent: '/page/mock/Event/:openTab',
   notifications: '/page/notifications',
+  optionPayment: '/page/optionPayment/:id',
   orderProcessed: '/page/orderProcessed',
   organizationList: '/page/organizationList',
   privacyPolicy: '/page/privacy',
@@ -466,6 +467,11 @@ const MESSENGER_MESSAGES_EN = {
   },
 };
 
+const EVENT_TYPE = {
+  PLAYER: 'player',
+  TEAM: 'team',
+};
+
 module.exports = {
   APP_ENUM,
   BASIC_CHATBOT_STATES,
@@ -516,4 +522,5 @@ module.exports = {
   PLAYER_ATTENDANCE_STATUS,
   MONTH_NAMES,
   GAME_INFOS_CHATBOT_STATES,
+  EVENT_TYPE,
 };
