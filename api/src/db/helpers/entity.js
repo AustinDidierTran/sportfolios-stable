@@ -163,7 +163,7 @@ const addEntity = async (body, userId) => {
             })
             .transacting(trx);
         }
-        return event_id;
+        return { id: event_id };
       }
     }
   });
@@ -1826,7 +1826,15 @@ async function getEventAdmins(eventId) {
     .where('entities_role.entity_id', '=', realEventId)
     .andWhere('entities_role.role', '<=', ENTITIES_ROLE_ENUM.EDITOR);
 
-  return admins.map(a => a.user_id);
+  const res = await admins.reduce(async (prev, curr) => {
+    if (curr.user_id) {
+      return prev.concat(curr.user_id);
+    }
+    const currIteration = await curr;
+    const res = await getEventAdmins(currIteration.entity_id_admin);
+    return prev.concat(res);
+  }, []);
+  return res;
 }
 
 async function getAlias(entityId) {
