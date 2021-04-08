@@ -569,6 +569,7 @@ async function addTeamToEvent(body, userId) {
   if (registrationStatus === STATUS_ENUM.PENDING) {
     creatorEmails.map(async email => {
       const language = await getLanguageFromEmail(email);
+      const userId = await getUserIdFromEmail(email);
       sendTeamPendingRegistrationEmailToAdmin({
         email,
         team,
@@ -610,6 +611,7 @@ async function addTeamToEvent(body, userId) {
 
     creatorEmails.map(async email => {
       const language = await getLanguageFromEmail(email);
+      const userId = await getUserIdFromEmail(email);
       sendTeamRegistrationEmailToAdmin({
         email,
         team,
@@ -782,6 +784,7 @@ async function addPersonToEvent(body, userId) {
         await Promise.all(
           creatorEmails.map(async email => {
             const language = await getLanguageFromEmail(email);
+            const userId = await getUserIdFromEmail(email);
             sendPersonPendingRegistrationEmailToAdmin({
               email,
               person,
@@ -826,6 +829,7 @@ async function addPersonToEvent(body, userId) {
         await Promise.all(
           creatorEmails.map(async email => {
             const language = await getLanguageFromEmail(email);
+            const userId = await getUserIdFromEmail(email);
             sendPersonRegistrationEmailToAdmin({
               email,
               person,
