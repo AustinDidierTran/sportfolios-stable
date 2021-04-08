@@ -1154,12 +1154,11 @@ async function updateSuggestionStatus(body, userId) {
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return await updateSuggestionStatusHelper(body);
+  return updateSuggestionStatusHelper(body);
 }
 
 async function addMemberManually(body) {
-  const res = await addMemberManuallyHelper(body);
-  return res;
+  return addMemberManuallyHelper(body);
 }
 
 async function addReport(body) {
@@ -1206,8 +1205,7 @@ async function addMember(body, userId) {
 
   const membership = await getMembership(membershipId);
   if (membership.price === 0) {
-    const res = await addMemberManuallyHelper(body);
-    return res;
+    return addMemberManuallyHelper(body);
   }
   const res = await addMemberHelper(body);
   const person = (await getEntity(personId)).basicInfos;
