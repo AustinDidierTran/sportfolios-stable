@@ -32,12 +32,12 @@ const INVOICE_CREATED_ENUM = {
   },
   STORE: () => {},
   MEMBERSHIPS: async () => {
-    await addMember(
-      Number(membershipType),
-      entityId,
+    await addMember({
+      membershipType: Number(membershipType),
+      organizationId: entityId,
       personId,
       expirationDate,
-    );
+    });
   },
 };
 const INVOICE_PAID_ENUM = {

@@ -3615,18 +3615,35 @@ async function addEntityRole(entityId, entityIdAdmin, role) {
   return res;
 }
 
-async function addMemberManually(
-  membershipId,
-  memberType,
-  organizationId,
-  personId,
-  expirationDate,
-) {
+async function getMembershipId(membershipType, organizationId) {
+  const [res] = await knex('entity_memberships')
+    .select('id')
+    .where({
+      membership_type: membershipType,
+      entity_id: organizationId,
+    });
+  return res.id;
+}
+
+async function addMemberManually(body) {
+  const {
+    membershipId,
+    membershipType,
+    organizationId,
+    personId,
+    expirationDate,
+  } = body;
+  let id = membershipId;
+
+  if (!id) {
+    id = await getMembershipId(membershipType, organizationId);
+  }
+
   const realId = await getRealId(organizationId);
   const [res] = await knex('memberships')
     .insert({
-      membership_id: membershipId,
-      member_type: memberType,
+      membership_id: id,
+      member_type: membershipType,
       organization_id: realId,
       person_id: personId,
       expiration_date: expirationDate,
@@ -3636,18 +3653,19 @@ async function addMemberManually(
   return res;
 }
 
-async function addMember(
-  membershipId,
-  memberType,
-  organizationId,
-  personId,
-  expirationDate,
-) {
+async function addMember(body) {
+  const {
+    membershipId,
+    membershipType,
+    organizationId,
+    personId,
+    expirationDate,
+  } = body;
   const realId = await getRealId(organizationId);
   const [res] = await knex('memberships')
     .insert({
       membership_id: membershipId,
-      member_type: memberType,
+      member_type: membershipType,
       organization_id: realId,
       person_id: personId,
       expiration_date: expirationDate,

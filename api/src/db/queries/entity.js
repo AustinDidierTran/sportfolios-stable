@@ -1158,19 +1158,7 @@ async function updateSuggestionStatus(body, userId) {
 }
 
 async function addMemberManually(body) {
-  const {
-    membershipType,
-    organizationId,
-    personId,
-    expirationDate,
-  } = body;
-
-  const res = await addMemberManuallyHelper(
-    membershipType,
-    organizationId,
-    personId,
-    expirationDate,
-  );
+  const res = await addMemberManuallyHelper(body);
   return res;
 }
 
@@ -1214,35 +1202,15 @@ async function importMembers(body) {
 }
 
 async function addMember(body, userId) {
-  const {
-    membershipId,
-    membershipType,
-    organizationId,
-    personId,
-    expirationDate,
-  } = body;
+  const { membershipId, organizationId, personId } = body;
 
   const membership = await getMembership(membershipId);
   if (membership.price === 0) {
-    const res = await addMemberManuallyHelper(
-      membershipId,
-      membershipType,
-      organizationId,
-      personId,
-      expirationDate,
-    );
+    const res = await addMemberManuallyHelper(body);
     return res;
   }
-  const res = await addMemberHelper(
-    membershipId,
-    membershipType,
-    organizationId,
-    personId,
-    expirationDate,
-  );
-
+  const res = await addMemberHelper(body);
   const person = (await getEntity(personId)).basicInfos;
-
   const organization = (await getEntity(organizationId)).basicInfos;
 
   await addMembershipCartItem(
