@@ -4,7 +4,11 @@ const {
   stripeErrorLogger,
   stripeLogger,
 } = require('../../../server/utils/logger');
-const { PLATEFORM_FEES } = require('../../../../../common/enums');
+const {
+  PLATEFORM_FEES,
+  PLATEFORM_FEES_FIX,
+  MIN_AMOUNT_FEES,
+} = require('../../../../../common/enums');
 
 const addProduct = async body => {
   const { stripeProduct } = body;
@@ -39,12 +43,30 @@ const addPrice = async body => {
   try {
     const price = await stripe.prices.create(stripePrice);
 
+    let transactionFees = price.unit_amount;
+    await Promise.all(
+      taxRatesId.map(async taxRateId => {
+        const [{ percentage }] = await knex('tax_rates')
+          .select('percentage')
+          .where({ id: taxRateId });
+        transactionFees =
+          transactionFees + price.unit_amount * (percentage / 100);
+      }),
+    );
+    if (transactionFees >= MIN_AMOUNT_FEES) {
+      transactionFees = Math.floor(
+        transactionFees * PLATEFORM_FEES + PLATEFORM_FEES_FIX,
+      );
+    } else {
+      transactionFees = 0;
+    }
+
     await knex('stripe_price').insert({
       stripe_price_id: price.id,
       stripe_product_id: price.product,
       amount: price.unit_amount,
       active: price.active,
-      transaction_fees: price.unit_amount * PLATEFORM_FEES,
+      transaction_fees: transactionFees,
       start_date: new Date(price.created * 1000),
       metadata: price.metadata,
       owner_id: ownerId,
