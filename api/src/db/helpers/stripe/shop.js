@@ -4,7 +4,7 @@ const {
   stripeErrorLogger,
   stripeLogger,
 } = require('../../../server/utils/logger');
-const { PLATEFORM_FEES } = require('../../../../../common/enums');
+const { PLATEFORM_FEES_PERCENTAGE, PLATEFORM_FEES_FIX, MIN_AMOUNT_FEES } = require('../../../../../common/enums');
 
 const addProduct = async body => {
   const { stripeProduct } = body;
@@ -28,6 +28,14 @@ const addProduct = async body => {
   }
 };
 
+const getTaxesById = async (taxesId) => {
+  const taxes = await knex('tax_rates')
+    .whereIn('id', taxesId);
+
+  return taxes;
+
+}
+
 const addPrice = async body => {
   const {
     stripePrice,
@@ -38,13 +46,16 @@ const addPrice = async body => {
   } = body;
   try {
     const price = await stripe.prices.create(stripePrice);
+    const taxes = await getTaxesById(taxRatesId);
+    const taxesPercentage = taxes.reduce((prev, curr) => (prev + Number(curr.percentage)), 0);
+    const totalAmount = price.unit_amount + (price.unit_amount * (taxesPercentage / 100));
 
     await knex('stripe_price').insert({
       stripe_price_id: price.id,
       stripe_product_id: price.product,
       amount: price.unit_amount,
       active: price.active,
-      transaction_fees: price.unit_amount * PLATEFORM_FEES,
+      transaction_fees: price.unit_amount >= (MIN_AMOUNT_FEES * 100) ? Math.round((totalAmount * PLATEFORM_FEES_PERCENTAGE) + (PLATEFORM_FEES_FIX * 100)) : 0,
       start_date: new Date(price.created * 1000),
       metadata: price.metadata,
       owner_id: ownerId,
@@ -197,6 +208,7 @@ const deleteItem = async body => {
 module.exports = {
   addProduct,
   addPrice,
+  getTaxesById,
   createItem,
   editItem,
   deleteItem,
