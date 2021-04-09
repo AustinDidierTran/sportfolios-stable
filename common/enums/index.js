@@ -306,6 +306,7 @@ const REJECTION_ENUM = {
   NO_REMAINING_SPOTS: 'no.no_remaining_spots',
   ALREADY_REGISTERED: 'already_registered',
   TOO_MANY_TEAMS: 'too_many_teams',
+  LAST_TEAM_HIGHER_THAN_SPOTS: 'last_team_higher_than_spots',
 };
 
 const VIEW_ENUM = {

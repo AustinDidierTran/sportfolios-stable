@@ -524,6 +524,15 @@ async function getNbOfTeamsInEvent(eventId) {
   return numberOfTeams.count;
 }
 
+async function getLastRankedTeam(eventId) {
+  const prerank = await getPrerankPhase(eventId);
+  const [{ max: lastTeamRanked }] = await knex('phase_rankings')
+    .max('initial_position')
+    .where({ current_phase: prerank.id })
+    .whereNot({ roster_id: null });
+  return lastTeamRanked;
+}
+
 async function getScoreSuggestion(gameId) {
   const suggestions = await knex('score_suggestion')
     .select('*')
@@ -2645,30 +2654,42 @@ async function updateEvent(
 
 async function updatePrerankSpots(eventId, newSpots) {
   const prerank = await getPrerankPhase(eventId);
-  await knex('phase')
-    .update({ spots: newSpots })
-    .where({ id: prerank.id });
-
-  if (newSpots === prerank.spots) return;
-  else if (newSpots > prerank.spots) {
+  if (newSpots > Number(prerank.spots)) {
+    console.log(
+      'new spots greater than old spots',
+      newSpots,
+      prerank.spots,
+    );
     const spotsToAdd = Number(newSpots - prerank.spots);
+    console.log({ addedSpots: spotsToAdd });
     for (let i = 0; i < spotsToAdd; ++i) {
       await knex('phase_rankings').insert({
         current_phase: prerank.id,
         initial_position: Number(prerank.spots + i + 1),
       });
     }
-  } else if (newSpots < prerank.spots) {
+  } else if (newSpots < Number(prerank.spots)) {
     //TODO: wrap in transaction
     const spotsToDelete = Number(prerank.spots - newSpots);
-    let deletedRankings = [];
+    const [{ max: lastTeamRanked }] = await knex('phase_rankings')
+      .max('initial_position')
+      .where({ current_phase: prerank.id })
+      .whereNot({ roster_id: null });
+
     const emptyRankings = await knex('phase_rankings')
       .select('*')
       .where({ current_phase: prerank.id, roster_id: null });
 
-    for (let i = spotsToDelete; i > 0; --i) {
+    emptyRankings.sort(
+      (a, b) => a.initial_position - b.initial_position,
+    );
+
+    for (let i = 0; i < spotsToDelete; ++i) {
       const [rank] = await knex('phase_rankings')
-        .where({ ranking_id: emptyRankings[i].ranking_id })
+        .where({
+          ranking_id:
+            emptyRankings[emptyRankings.length - 1 - i].ranking_id,
+        })
         .del()
         .returning('*');
 
@@ -2679,18 +2700,13 @@ async function updatePrerankSpots(eventId, newSpots) {
           origin_phase: rank.current_phase,
           origin_position: rank.initial_position,
         });
-      deletedRankings.push(rank);
     }
-
-    const { preranking } = await getPreranking(eventId);
-    preranking
-      .sort((a, b) => a.initial_position - b.initial_position)
-      .map(async (r, index) => {
-        await knex('phase_rankings')
-          .update({ initial_position: Number(index + 1) })
-          .where({ ranking_id: r.rankingId });
-      });
+  } else if (newSpots === Number(prerank.spots)) {
+    return;
   }
+  await knex('phase')
+    .update({ spots: newSpots })
+    .where({ id: prerank.id });
 }
 
 async function updatePreRanking(eventId, ranking) {
@@ -5259,6 +5275,7 @@ module.exports = {
   getAllPlayersRefused,
   getNbOfTeamsInPhase,
   getNbOfTeamsInEvent,
+  getLastRankedTeam,
   getPhasesWithoutPrerank,
   getPrerankPhase,
   getPhaseRanking,
