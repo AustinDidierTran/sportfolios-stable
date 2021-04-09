@@ -10,6 +10,7 @@ module.exports = async function importMemberEmail(infos) {
       locale,
     },
     organizationName,
+    organizationName,
     token,
     organizationName,
   );
