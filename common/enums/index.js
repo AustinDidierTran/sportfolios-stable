@@ -96,7 +96,10 @@ const PHASE_STATUS_ENUM = {
   DONE: 'done',
 };
 
-const PLATEFORM_FEES = 0.05;
+const PLATEFORM_FEES = 0.059;
+const PLATEFORM_FEES_FIX = 30;
+const MIN_AMOUNT_FEES = 500;
+
 const CARD_TYPE_ENUM = {
   CART: 'cart',
   CART_SUMMARY: 'cart summary',
@@ -516,6 +519,8 @@ module.exports = {
   STRIPE_ERROR_ENUM,
   STRIPE_STATUS_ENUM,
   PLATEFORM_FEES,
+  PLATEFORM_FEES_FIX,
+  MIN_AMOUNT_FEES,
   TABS_ENUM,
   TAG_TYPE_ENUM,
   VIEW_ENUM,
