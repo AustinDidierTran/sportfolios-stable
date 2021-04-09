@@ -2655,13 +2655,7 @@ async function updateEvent(
 async function updatePrerankSpots(eventId, newSpots) {
   const prerank = await getPrerankPhase(eventId);
   if (newSpots > Number(prerank.spots)) {
-    console.log(
-      'new spots greater than old spots',
-      newSpots,
-      prerank.spots,
-    );
     const spotsToAdd = Number(newSpots - prerank.spots);
-    console.log({ addedSpots: spotsToAdd });
     for (let i = 0; i < spotsToAdd; ++i) {
       await knex('phase_rankings').insert({
         current_phase: prerank.id,
@@ -2671,11 +2665,6 @@ async function updatePrerankSpots(eventId, newSpots) {
   } else if (newSpots < Number(prerank.spots)) {
     //TODO: wrap in transaction
     const spotsToDelete = Number(prerank.spots - newSpots);
-    const [{ max: lastTeamRanked }] = await knex('phase_rankings')
-      .max('initial_position')
-      .where({ current_phase: prerank.id })
-      .whereNot({ roster_id: null });
-
     const emptyRankings = await knex('phase_rankings')
       .select('*')
       .where({ current_phase: prerank.id, roster_id: null });
