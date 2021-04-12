@@ -12,6 +12,7 @@ module.exports = async function importMemberEmail(infos) {
     organizationName,
     organizationName,
     token,
+    token,
     organizationName,
   );
   const buttonText = i18n.__({

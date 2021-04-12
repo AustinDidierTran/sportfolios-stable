@@ -186,6 +186,7 @@ const generateMemberImportToken = async (
   organizationId,
   expirationDate,
   membershipType,
+  email,
 ) => {
   const token = await generatePromoCodeToken();
   try {
@@ -194,6 +195,7 @@ const generateMemberImportToken = async (
       expires_at: new Date(
         Date.now() + EXPIRATION_TIMES.IMPORT_MEMBER,
       ),
+      email,
       metadata: {
         type: COUPON_CODE_ENUM.BECOME_MEMBER,
         organizationId,

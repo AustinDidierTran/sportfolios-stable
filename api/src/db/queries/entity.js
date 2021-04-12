@@ -1180,6 +1180,7 @@ async function importMembers(body) {
         organizationId,
         m.expirationDate,
         membershipType,
+        m.email,
       );
       const organization = await getEntityHelper(organizationId);
       const userId = await getUserIdFromEmail(m.email);
