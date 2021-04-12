@@ -1170,7 +1170,7 @@ async function importMembers(body) {
   const { membershipType, organizationId, language, members } = body;
   const res = await Promise.all(
     members.map(async m => {
-      token = await generateMemberImportToken(
+      const token = await generateMemberImportToken(
         organizationId,
         m.expirationDate,
         membershipType,
