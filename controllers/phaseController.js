@@ -7,6 +7,7 @@ const {
   updatePhaseOrder: updatePhaseOrderHelper,
   updatePhaseRankingsSpots: updatePhaseRankingsSpotsHelper,
   updatePhaseFinalRanking: updatePhaseFinalRankingHelper,
+  updateManualRanking: updateManualRankingHelper,
   deletePhase: deletePhaseHelper,
 } = require('../api/src/db/helpers/entity');
 
@@ -59,6 +60,7 @@ class PhaseController {
       spots,
       status,
       finalRanking,
+      manualRanking,
     } = body;
 
     if (
@@ -89,6 +91,10 @@ class PhaseController {
 
     if (finalRanking) {
       return updatePhaseFinalRankingHelper(phaseId, finalRanking);
+    }
+
+    if (manualRanking) {
+      return updateManualRankingHelper(phaseId, manualRanking);
     }
     return res;
   }

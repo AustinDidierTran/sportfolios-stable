@@ -2753,6 +2753,9 @@ async function updateGameTeamName(roster_id, ranking) {
 
 async function updatePhase(body) {
   const { eventId, phaseId, spots, status } = body;
+  if (!spots && !status) {
+    return;
+  }
   const realId = await getRealId(eventId);
   const res = await knex('phase')
     .update({ spots, status })
@@ -2981,6 +2984,19 @@ async function updatePhaseFinalRanking(phaseId, finalRanking) {
     );
   }
 
+  return res;
+}
+
+async function updateManualRanking(phaseId, manualRanking) {
+  const res = await Promise.all(
+    manualRanking.map(async (r, index) => {
+      const [finalPosition] = await knex('phase_rankings')
+        .update({ final_position: index + 1 })
+        .where({ current_phase: phaseId, roster_id: r.rosterId })
+        .returning('*');
+      return finalPosition;
+    }),
+  );
   return res;
 }
 
@@ -5337,6 +5353,7 @@ module.exports = {
   updateOriginPhase,
   updatePhaseRankingsSpots,
   updatePhaseFinalRanking,
+  updateManualRanking,
   updatePlayerPaymentStatus,
   updatePreRanking,
   updateRegistration,
