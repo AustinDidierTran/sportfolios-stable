@@ -960,18 +960,19 @@ async function getMembers(personId, organizationId) {
   return res;
 }
 
-async function getPriceFromInvoice(invoiceItemId) {
-  const [{ amount: price }] = await knex('stripe_invoice_item')
-    .select('amount')
-    .leftJoin(
-      'stripe_price',
-      'stripe_price.stripe_price_id',
-      '=',
-      'stripe_invoice_item.stripe_price_id',
-    )
-    .where({ invoice_item_id: invoiceItemId });
-  return price;
-}
+// NOT USED FOR THE MOMENT
+// async function getPriceFromInvoice(invoiceItemId) {
+//   const [{ amount: price }] = await knex('stripe_invoice_item')
+//     .select('amount')
+//     .leftJoin(
+//       'stripe_price',
+//       'stripe_price.stripe_price_id',
+//       '=',
+//       'stripe_invoice_item.stripe_price_id',
+//     )
+//     .where({ invoice_item_id: invoiceItemId });
+//   return price;
+// }
 
 async function getReports(entityId) {
   const realId = await getRealId(entityId);
@@ -1013,7 +1014,9 @@ async function getPrerankPhase(eventId) {
 
 async function generateMembersReport(report) {
   const { date } = report.metadata;
-  const members = await knex('memberships').select('*');
+  const members = await knex('memberships')
+    .select('*')
+    .where({ organization_id: report.entity_id });
   const active = members.filter(m => {
     return (
       moment(m.created_at).isSameOrBefore(moment(date), 'day') &&
@@ -1021,25 +1024,36 @@ async function generateMembersReport(report) {
     );
   });
 
+  const reduce = active.reduce((prev, curr) => {
+    let addCurr = true;
+    const filter = prev.filter(p => {
+      if (p.member_type != curr.member_type) {
+        return true;
+      } else {
+        if (
+          moment(p.expiration_date) > moment(curr.expiration_date)
+        ) {
+          addCurr = false;
+          return true;
+        } else {
+          return false;
+        }
+      }
+    });
+    if (addCurr) {
+      return [...filter, curr];
+    }
+    return filter;
+  }, []);
+
   const res = await Promise.all(
-    active.map(async a => {
+    reduce.map(async a => {
       const person = await getPersonInfos(a.person_id);
       const email = await getEmailPerson(a.person_id);
-      let price = '';
-      if (a.status === INVOICE_STATUS_ENUM.PAID) {
-        price = await getPriceFromInvoice(a.invoice_item_id);
-      }
-      const address = person.address
-        ? {
-            city: person.address.city,
-            state: person.address.state,
-            zip: person.address.zip,
-          }
-        : {};
+      const price = await getPriceFromMembershipId(a.membership_id);
       return {
         ...a,
         ...person,
-        ...address,
         price,
         email,
       };
@@ -1047,6 +1061,13 @@ async function generateMembersReport(report) {
   );
   return res;
 }
+
+const getPriceFromMembershipId = async membershipId => {
+  const [{ price }] = await knex('entity_memberships')
+    .select('price')
+    .where({ id: membershipId });
+  return price;
+};
 
 const getTaxRates = async stripe_price_id => {
   const taxRates = await knex('tax_rates')
@@ -1126,9 +1147,30 @@ async function getOrganizationMembers(organizationId) {
     .whereNull('deleted_at')
     .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
     .andWhere({ organization_id: realId });
+  const reduce = members.reduce((prev, curr) => {
+    let addCurr = true;
+    const filter = prev.filter(p => {
+      if (p.member_type != curr.member_type) {
+        return true;
+      } else {
+        if (
+          moment(p.expiration_date) > moment(curr.expiration_date)
+        ) {
+          addCurr = false;
+          return true;
+        } else {
+          return false;
+        }
+      }
+    });
+    if (addCurr) {
+      return [...filter, curr];
+    }
+    return filter;
+  }, []);
 
   const res = await Promise.all(
-    members.map(async m => ({
+    reduce.map(async m => ({
       organizationId: m.organization_id,
       person: (await getEntity(m.person_id)).basicInfos,
       memberType: m.member_type,
