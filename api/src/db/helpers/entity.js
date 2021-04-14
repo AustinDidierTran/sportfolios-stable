@@ -3188,6 +3188,47 @@ async function updatePersonInfosHelper(entityId, body) {
 
 async function updateEntityName(entityId, name, surname) {
   const realId = await getRealId(entityId);
+  const type = await getEntitiesTypeById(realId);
+
+  if (type === GLOBAL_ENUM.TEAM) {
+    const rosterIds = await knex('team_rosters')
+      .select('id')
+      .where({ team_id: realId });
+
+    const rankings = await rosterIds.reduce(async (memo, curr) => {
+      const memoIteration = await memo;
+      const ranking = await knex('phase_rankings')
+        .select('*')
+        .where({ roster_id: curr.id })
+        .whereNot({ origin_phase: null, origin_position: null });
+      return memoIteration.concat(ranking);
+    }, []);
+
+    //if phase is not started ranking_id is used to change the name in game_teams
+    if (rankings.length) {
+      await Promise.all(
+        rankings.map(async r => {
+          const phaseName = await getPhaseName(r.current_phase);
+          const fullName = `${r.initial_position}. ${phaseName} (${name})`;
+          return await knex('game_teams')
+            .update({ name: fullName })
+            .where({ ranking_id: r.ranking_id });
+        }),
+      );
+    }
+
+    //if phase is either started or done, the roster_id is used to update
+    if (rosterIds.length) {
+      await Promise.all(
+        rosterIds.map(
+          async r =>
+            await knex('game_teams')
+              .update({ name: name })
+              .where({ roster_id: r.id }),
+        ),
+      );
+    }
+  }
   return knex('entities_name')
     .update({ name, surname })
     .where({ entity_id: realId });
