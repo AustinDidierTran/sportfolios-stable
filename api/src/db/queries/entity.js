@@ -43,6 +43,7 @@ const {
   deleteEntityMembership: deleteEntityMembershipHelper,
   deleteGame: deleteGameHelper,
   deleteMembership: deleteMembershipHelper,
+  deleteMembershipWithId: deleteMembershipWithIdHelper,
   deleteOption: deleteOptionHelper,
   deletePersonFromEvent,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
@@ -1221,6 +1222,8 @@ async function addMember(body, userId) {
   await addMembershipCartItem(
     {
       ...membership,
+      membershipId: membership.id,
+      id: res.id,
       person,
       organization,
       sellerEntityId: organizationId,
@@ -1656,6 +1659,10 @@ async function deleteMembership(query) {
   const { memberType, organizationId, personId } = query;
   return deleteMembershipHelper(memberType, organizationId, personId);
 }
+async function deleteMembershipWithId(query) {
+  const { membershipId } = query;
+  return deleteMembershipWithIdHelper(membershipId);
+}
 async function deleteReport(query) {
   const { reportId } = query;
   return deleteReportHelper(reportId);
@@ -1871,6 +1878,7 @@ module.exports = {
   deleteGame,
   deleteGame,
   deleteMembership,
+  deleteMembershipWithId,
   deleteOption,
   deletePlayerFromRoster,
   deleteReport,

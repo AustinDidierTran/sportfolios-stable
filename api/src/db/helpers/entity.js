@@ -1150,7 +1150,10 @@ async function getOrganizationMembers(organizationId) {
   const reduce = members.reduce((prev, curr) => {
     let addCurr = true;
     const filter = prev.filter(p => {
-      if (p.member_type != curr.member_type) {
+      if (
+        p.member_type != curr.member_type ||
+        p.person_id != curr.person_id
+      ) {
         return true;
       } else {
         if (
@@ -4999,6 +5002,33 @@ const deleteReport = async reportId => {
     .where({ report_id: reportId })
     .del();
 };
+const deleteMembershipWithId = async membershipId => {
+  const [res] = await knex('memberships')
+    .where({
+      id: membershipId,
+    })
+    .del()
+    .returning('*');
+  if (!res.status) {
+    const res2 = await knex
+      .select('*')
+      .from(
+        knex
+          .select(knex.raw("id, metadata ->> 'id' AS membership_id"))
+          .from('cart_items')
+          .as('cartItems'),
+      )
+      .where('cartItems.membership_id', membershipId);
+
+    await Promise.all(
+      res2.map(async r => {
+        await knex('cart_items')
+          .where({ id: r.id })
+          .del();
+      }),
+    );
+  }
+};
 
 const deleteMembership = async (
   memberType,
@@ -5277,6 +5307,7 @@ module.exports = {
   deleteEntityMembership,
   deleteGame,
   deleteMembership,
+  deleteMembershipWithId,
   deleteOption,
   deletePersonFromEvent,
   deletePhase,
