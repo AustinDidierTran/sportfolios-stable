@@ -16,7 +16,7 @@ const {
 } = require('../helpers/shop');
 
 const {
-  deleteMembership,
+  deleteMembershipWithId,
   deletePersonFromEvent,
   deletePlayerFromRoster,
   deleteTeamFromEvent,
@@ -125,11 +125,7 @@ const deleteCartItem = async query => {
     }
   }
   if (type === GLOBAL_ENUM.MEMBERSHIP) {
-    await deleteMembership(
-      metadata.membership_type,
-      metadata.organization.id,
-      metadata.person.id,
-    );
+    await deleteMembershipWithId(metadata.id);
   }
   await deleteCartItemHelper(cartItemId);
 };
