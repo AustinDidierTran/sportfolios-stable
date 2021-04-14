@@ -3635,6 +3635,9 @@ async function addMemberManually(body) {
     membershipType,
     organizationId,
     personId,
+    birthDate,
+    gender,
+    address,
     expirationDate,
   } = body;
   let id = membershipId;
@@ -3650,6 +3653,13 @@ async function addMemberManually(body) {
       member_type: membershipType,
       organization_id: realId,
       person_id: personId,
+      birth_date: birthDate,
+      gender,
+      street_address: address.street_address,
+      city: address.city,
+      state: address.state,
+      zip: address.zip,
+      country: address.country,
       expiration_date: expirationDate,
       status: INVOICE_STATUS_ENUM.FREE,
     })
@@ -3663,6 +3673,9 @@ async function addMember(body) {
     membershipType,
     organizationId,
     personId,
+    birthDate,
+    gender,
+    address,
     expirationDate,
   } = body;
   const realId = await getRealId(organizationId);
@@ -3672,6 +3685,13 @@ async function addMember(body) {
       member_type: membershipType,
       organization_id: realId,
       person_id: personId,
+      birth_date: birthDate,
+      gender,
+      street_address: address.street_address,
+      city: address.city,
+      state: address.state,
+      zip: address.zip,
+      country: address.country,
       expiration_date: expirationDate,
       status: INVOICE_STATUS_ENUM.OPEN,
     })
