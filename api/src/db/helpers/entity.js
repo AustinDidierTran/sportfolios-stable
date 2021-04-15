@@ -2882,7 +2882,6 @@ async function updateGameTeamsRosterId(game) {
   const teamName1 = await getTeamName(ranking1.roster_id);
   const teamName2 = await getTeamName(ranking2.roster_id);
 
-  //ICI
   const [rosterId1] = await knex('game_teams')
     .update({ roster_id: ranking1.roster_id, name: teamName1 })
     .where({ ranking_id: ranking1.ranking_id })
@@ -2899,7 +2898,7 @@ async function updateGameTeamsRosterId(game) {
 async function updateInitialPositionPhase(phaseId, teams) {
   const res = await Promise.all(
     teams.map(async (t, index) => {
-      await knex('phase_rankings')
+      const [ranking] = await knex('phase_rankings')
         .update({
           roster_id: t.roster_id,
           origin_phase: t.origin_phase,
@@ -2910,8 +2909,26 @@ async function updateInitialPositionPhase(phaseId, teams) {
           initial_position: index + 1,
         })
         .returning('*');
+
+      return ranking;
     }),
   );
+  await Promise.all(
+    res.map(async r => {
+      const phaseName = await getPhaseName(r.current_phase);
+      let teamName = '';
+      if (r.roster_id) {
+        teamName = await getTeamName(r.roster_id);
+      }
+      const fullName = r.roster_id
+        ? `${r.initial_position}. ${phaseName} (${teamName})`
+        : `${r.initial_position}. ${phaseName}`;
+      await knex('game_teams')
+        .update({ name: fullName })
+        .where({ ranking_id: r.ranking_id });
+    }),
+  );
+
   return res;
 }
 
