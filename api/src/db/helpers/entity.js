@@ -409,9 +409,10 @@ async function getAllTypeEntities(type) {
 }
 
 async function getEntitiesTypeById(entityId) {
+  const realId = await getRealId(entityId);
   const [data] = await knex('entities')
     .select('type')
-    .where('id', entityId);
+    .where('id', realId);
 
   return data.type;
 }
@@ -1231,7 +1232,6 @@ async function getOptions(eventId) {
         owner = await getEntity(ownerId);
       }
       if (r.individual_stripe_price_id) {
-
         individualTaxRates = await getTaxRates(
           r.individual_stripe_price_id,
         );
@@ -4809,7 +4809,6 @@ async function updateAlias(entityId, alias) {
   if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
     throw Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
-
   const realId = await getRealId(entityId);
   const res = await knex('alias')
     .where({
