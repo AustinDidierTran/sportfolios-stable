@@ -2406,13 +2406,13 @@ async function getGeneralInfos(entityId) {
 async function getGraphAmountGeneratedByEvent(eventPaymentId, date) {
 
   const [ids] = await knex('event_payment_options')
-    .select('team_stripe_price_id', 'individual_stripe_price_id')
+    .select('name', 'team_stripe_price_id', 'individual_stripe_price_id')
     .where('id', eventPaymentId);
 
   const graphData = await knex.select(
     knex.raw(`
-    sum(s.quantity* ((stripe_price.amount + (stripe_price.amount*(percentage / 100))) - stripe_price.transaction_fees)) as total,
-    COALESCE(sum(s.quantity* ((stripe_price.amount + (stripe_price.amount*(percentage / 100))) - stripe_price.transaction_fees)) - COALESCE(lag(sum(s.quantity* ((stripe_price.amount + (stripe_price.amount*(percentage / 100))) - stripe_price.transaction_fees))) over(order by date), 0), 0) as new, date
+    sum(s.quantity* ((stripe_price.amount + (stripe_price.amount*(COALESCE(percentage,0) / 100))) - COALESCE(stripe_price.transaction_fees,0))) as total,
+    COALESCE(sum(s.quantity* ((stripe_price.amount + (stripe_price.amount*(COALESCE(percentage,0) / 100))) - COALESCE(stripe_price.transaction_fees,0))) - COALESCE(lag(sum(s.quantity* ((stripe_price.amount + (stripe_price.amount*(COALESCE(percentage,0) / 100))) - COALESCE(stripe_price.transaction_fees,0)))) over(order by date), 0), 0) as new, date
     FROM (select * ,generate_series
         ( ('${date}'::timestamp - interval '30' day )::timestamp
         , '${date}'::timestamp
@@ -2447,6 +2447,7 @@ async function getGraphAmountGeneratedByEvent(eventPaymentId, date) {
     .whereIn('stripe_price_id', [ids.team_stripe_price_id, ids.individual_stripe_price_id])
 
   return {
+    name: ids.name,
     new: newData,
     total: totalData,
     minDate: date2.min,
