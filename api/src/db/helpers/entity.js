@@ -1215,25 +1215,42 @@ async function getOptions(eventId) {
 
   return Promise.all(
     res.map(async r => {
-      let taxRates = [];
+      let individualTaxRates = [];
+      let teamTaxRates = [];
+      let individualTransactionFees = 0;
+      let teamTransactionFees = 0;
       let owner = {};
       if (r.team_stripe_price_id) {
-        taxRates = await getTaxRates(r.team_stripe_price_id);
+        teamTaxRates = await getTaxRates(r.team_stripe_price_id);
+        teamTransactionFees = await getTransactionFeesFromStripePriceId(
+          r.team_stripe_price_id,
+        );
         const ownerId = await getOwnerStripePrice(
           r.team_stripe_price_id,
         );
         owner = await getEntity(ownerId);
-      } else if (r.individual_stripe_price_id) {
-        taxRates = await getTaxRates(r.individual_stripe_price_id);
+      }
+      if (r.individual_stripe_price_id) {
+
+        individualTaxRates = await getTaxRates(
+          r.individual_stripe_price_id,
+        );
+        individualTransactionFees = await getTransactionFeesFromStripePriceId(
+          r.individual_stripe_price_id,
+        );
         const ownerId = await getOwnerStripePrice(
           r.individual_stripe_price_id,
         );
         owner = await getEntity(ownerId);
       }
+
       return {
         ...r,
         owner,
-        taxRates,
+        teamTaxRates,
+        individualTaxRates,
+        individualTransactionFees,
+        teamTransactionFees,
         startTime: new Date(r.start_time).getTime(),
         endTime: new Date(r.end_time).getTime(),
       };
@@ -1250,13 +1267,26 @@ async function getMemberships(entityId) {
   return Promise.all(
     memberships.map(async m => {
       const taxRates = await getTaxRates(m.stripe_price_id);
+      const transactionFees = await getTransactionFeesFromStripePriceId(
+        m.stripe_price_id,
+      );
       return {
         ...m,
+        transactionFees,
         taxRates,
         price: m.price,
       };
     }),
   );
+}
+
+async function getTransactionFeesFromStripePriceId(stripePriceId) {
+  const [{ transaction_fees: transactionFees }] = await knex(
+    'stripe_price',
+  )
+    .select('*')
+    .where({ stripe_price_id: stripePriceId });
+  return transactionFees;
 }
 
 async function hasMemberships(organizationId) {
