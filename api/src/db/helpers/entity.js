@@ -1231,7 +1231,6 @@ async function getOptions(eventId) {
         owner = await getEntity(ownerId);
       }
       if (r.individual_stripe_price_id) {
-
         individualTaxRates = await getTaxRates(
           r.individual_stripe_price_id,
         );
@@ -5078,11 +5077,37 @@ const deleteEntity = async (entityId, userId) => {
 };
 
 const deleteEntityMembership = async membershipId => {
-  await knex('entity_memberships')
+  const res = await knex
+    .select('*')
+    .from(
+      knex
+        .select(
+          knex.raw(
+            "id, metadata ->> 'membershipId' AS membership_id",
+          ),
+        )
+        .from('cart_items')
+        .as('cartItems'),
+    )
+    .where('cartItems.membership_id', membershipId);
+  await Promise.all(
+    res.map(async r => {
+      await knex('cart_items')
+        .where({ id: r.id })
+        .del();
+    }),
+  );
+  await knex('memberships')
+    .where({
+      membership_id: membershipId,
+    })
+    .del();
+  const res2 = await knex('entity_memberships')
     .where({
       id: membershipId,
     })
     .del();
+  return res2;
 };
 
 const deleteReport = async reportId => {
