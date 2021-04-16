@@ -2043,31 +2043,35 @@ async function getGames(eventId) {
   return res;
 }
 
-async function getMyRosterIds(eventId, userId) {
+async function getRosterByEventAndUser(eventId, userId) {
   const realId = await getRealId(eventId);
   const [{ primary_person: id }] = await knex('user_primary_person')
     .select('primary_person')
     .where({ user_id: userId });
 
-  const rosterIds = await getRosterIdsFromEntityId(id);
-  const res = await Promise.all(
-    rosterIds.map(async r => {
-      const [roster] = await knex('event_rosters')
-        .select('roster_id')
-        .where({ roster_id: r.roster_id, event_id: realId });
+  const res = await knex('team_players')
+    .select('entities_name.name', 'event_rosters.roster_id')
+    .leftJoin(
+      'event_rosters',
+      'event_rosters.roster_id',
+      '=',
+      'team_players.roster_id',
+    )
+    .leftJoin(
+      'team_rosters',
+      'event_rosters.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .leftJoin(
+      'entities_name',
+      'team_rosters.team_id',
+      '=',
+      'entities_name.entity_id',
+    )
+    .where({ person_id: id, event_id: realId });
 
-      let teamName;
-      if (roster !== undefined) {
-        teamName = await getTeamName(roster.roster_id);
-        const result = { ...roster, teamName };
-        return result;
-      } else {
-        return;
-      }
-    }),
-  );
-
-  return res.filter(r => r !== undefined);
+  return res;
 }
 
 async function getRosterIdsFromEntityId(id) {
@@ -5567,7 +5571,7 @@ module.exports = {
   getMembership,
   getMemberships,
   getMyPersonsAdminsOfTeam,
-  getMyRosterIds,
+  getRosterByEventAndUser,
   getOptions,
   getOrganizationMembers,
   getOwnedEvents,

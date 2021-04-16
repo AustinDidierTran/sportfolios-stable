@@ -88,7 +88,7 @@ const {
   getMembership,
   getMemberships: getMembershipsHelper,
   getMyPersonsAdminsOfTeam: getMyPersonsAdminsOfTeamHelper,
-  getMyRosterIds: getMyRosterIdsHelper,
+  getRosterByEventAndUser: getRosterByEventAndUserHelper,
   getNbOfTeamsInEvent: getNbOfTeamsInEventHelper,
   getLastRankedTeam: getLastRankedTeamHelper,
   getOptions: getOptionsHelper,
@@ -353,7 +353,7 @@ async function getGames(eventId) {
 }
 
 async function getMyRosterIds(eventId, userId) {
-  return getMyRosterIdsHelper(eventId, userId);
+  return getRosterByEventAndUserHelper(eventId, userId);
 }
 
 async function getGameSubmissionInfos(gameId, rosterId) {
