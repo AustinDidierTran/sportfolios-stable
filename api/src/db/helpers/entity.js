@@ -2074,13 +2074,6 @@ async function getRosterByEventAndUser(eventId, userId) {
   return res;
 }
 
-async function getRosterIdsFromEntityId(id) {
-  const rosterIds = await knex('team_players')
-    .select('roster_id')
-    .where({ person_id: id });
-  return rosterIds;
-}
-
 async function getRostersNames(rostersArray) {
   const res = await knex
     .queryBuilder()
