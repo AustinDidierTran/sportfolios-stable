@@ -2043,6 +2043,38 @@ async function getGames(eventId) {
   );
   return res;
 }
+
+async function getRosterByEventAndUser(eventId, userId) {
+  const realId = await getRealId(eventId);
+  const [{ primary_person: id }] = await knex('user_primary_person')
+    .select('primary_person')
+    .where({ user_id: userId });
+
+  const res = await knex('team_players')
+    .select('entities_name.name', 'event_rosters.roster_id')
+    .leftJoin(
+      'event_rosters',
+      'event_rosters.roster_id',
+      '=',
+      'team_players.roster_id',
+    )
+    .leftJoin(
+      'team_rosters',
+      'event_rosters.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .leftJoin(
+      'entities_name',
+      'team_rosters.team_id',
+      '=',
+      'entities_name.entity_id',
+    )
+    .where({ person_id: id, event_id: realId });
+
+  return res;
+}
+
 async function getRostersNames(rostersArray) {
   const res = await knex
     .queryBuilder()
@@ -2404,10 +2436,14 @@ async function getGeneralInfos(entityId) {
   };
 }
 
-async function getGraphFeesByEvent(eventPaymentId, date) {
 
+async function getGraphFeesByEvent(eventPaymentId, date) {
   const [ids] = await knex('event_payment_options')
-    .select('name', 'team_stripe_price_id', 'individual_stripe_price_id')
+    .select(
+      'name',
+      'team_stripe_price_id',
+      'individual_stripe_price_id',
+    )
     .where('id', eventPaymentId);
 
   const graphData = await knex.select(
@@ -2426,27 +2462,29 @@ async function getGraphFeesByEvent(eventPaymentId, date) {
       where s.created_at::date <= date and stripe_price.stripe_price_id in ('${ids.team_stripe_price_id}', '${ids.individual_stripe_price_id}')
       group by date
       order by date asc
-      `)
+      `),
   );
 
 
   const newData = graphData.map((o, i) => {
     return {
       x: i + 1,
-      y: (parseInt(o.new) / 100),
+      y: parseInt(o.new) / 100,
     };
   });
   const totalData = graphData.map((o, i) => {
     return {
       x: i + 1,
-      y: ((parseInt(o.total) - parseInt(o.new)) / 100),
+      y: (parseInt(o.total) - parseInt(o.new)) / 100,
     };
   });
 
-
   const [date2] = await knex('store_items_paid')
     .min('created_at')
-    .whereIn('stripe_price_id', [ids.team_stripe_price_id, ids.individual_stripe_price_id])
+    .whereIn('stripe_price_id', [
+      ids.team_stripe_price_id,
+      ids.individual_stripe_price_id,
+    ]);
 
   return {
     name: ids.name,
@@ -5588,6 +5626,7 @@ module.exports = {
   getMembership,
   getMemberships,
   getMyPersonsAdminsOfTeam,
+  getRosterByEventAndUser,
   getOptions,
   getOrganizationMembers,
   getOwnedEvents,

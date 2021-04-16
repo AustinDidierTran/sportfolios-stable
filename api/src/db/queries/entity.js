@@ -89,6 +89,7 @@ const {
   getMembership,
   getMemberships: getMembershipsHelper,
   getMyPersonsAdminsOfTeam: getMyPersonsAdminsOfTeamHelper,
+  getRosterByEventAndUser: getRosterByEventAndUserHelper,
   getNbOfTeamsInEvent: getNbOfTeamsInEventHelper,
   getLastRankedTeam: getLastRankedTeamHelper,
   getOptions: getOptionsHelper,
@@ -350,6 +351,10 @@ async function getGameInfo(gameId) {
 
 async function getGames(eventId) {
   return getGamesHelper(eventId);
+}
+
+async function getMyRosterIds(eventId, userId) {
+  return getRosterByEventAndUserHelper(eventId, userId);
 }
 
 async function getGameSubmissionInfos(gameId, rosterId) {
@@ -1913,6 +1918,7 @@ module.exports = {
   getFields,
   getGameInfo,
   getGames,
+  getMyRosterIds,
   getGameSubmissionInfos,
   getGeneralInfos,
   getGraphUserCount,

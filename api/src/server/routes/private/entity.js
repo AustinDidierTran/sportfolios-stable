@@ -190,7 +190,7 @@ router.get(`${BASE_URL}/graphFeesByEvent`, async ctx => {
 router.get(`${BASE_URL}/graphAmountGeneratedByEvent`, async ctx => {
   const arrayGraph = await queries.getGraphAmountGeneratedByEvent(
     ctx.query.eventPaymentId,
-    ctx.query.date
+    ctx.query.date,
   );
 
   if (arrayGraph) {
@@ -208,11 +208,8 @@ router.get(`${BASE_URL}/graphAmountGeneratedByEvent`, async ctx => {
   return;
 });
 
-
 router.get(`${BASE_URL}/graphUserCount`, async ctx => {
-  const arrayGraph = await queries.getGraphUserCount(
-    ctx.query.date
-  );
+  const arrayGraph = await queries.getGraphUserCount(ctx.query.date);
   if (arrayGraph) {
     ctx.body = {
       status: 'success',
@@ -231,7 +228,7 @@ router.get(`${BASE_URL}/graphUserCount`, async ctx => {
 router.get(`${BASE_URL}/graphMemberCount`, async ctx => {
   const arrayGraph = await queries.getGraphMemberCount(
     ctx.query.organizationId,
-    ctx.query.date
+    ctx.query.date,
   );
   if (arrayGraph) {
     ctx.body = {
@@ -798,6 +795,25 @@ router.get(`${BASE_URL}/gameSubmissionInfos`, async ctx => {
 
 router.get(`${BASE_URL}/prerankPhase`, async ctx => {
   const data = await PhaseController.getPrerankPhase(
+    ctx.query.eventId,
+    ctx.body.userInfo.id,
+  );
+  if (data) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/myRosters`, async ctx => {
+  const data = await queries.getMyRosterIds(
     ctx.query.eventId,
     ctx.body.userInfo.id,
   );
