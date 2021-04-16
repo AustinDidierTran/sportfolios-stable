@@ -1003,10 +1003,11 @@ async function generateReport(reportId) {
 }
 
 async function getPrerankPhase(eventId) {
+  const realId = await getRealId(eventId);
   const [res] = await knex('phase')
     .select('*')
     .where({
-      event_id: eventId,
+      event_id: realId,
       phase_order: 0,
       name: 'prerank',
     });
@@ -2432,6 +2433,66 @@ async function getGeneralInfos(entityId) {
     entityId: res.entity_id,
     description: res.description,
     quickDescription: res.quick_description,
+  };
+}
+
+
+async function getGraphFeesByEvent(eventPaymentId, date) {
+  const [ids] = await knex('event_payment_options')
+    .select(
+      'name',
+      'team_stripe_price_id',
+      'individual_stripe_price_id',
+    )
+    .where('id', eventPaymentId);
+
+  const graphData = await knex.select(
+    knex.raw(`
+    sum(s.quantity* (COALESCE(stripe_price.transaction_fees,0))) as total,
+    COALESCE(sum(s.quantity* (COALESCE(stripe_price.transaction_fees,0))) - COALESCE(lag(sum(s.quantity* (COALESCE(stripe_price.transaction_fees,0)))) over(order by date), 0), 0) as new, date
+    FROM (select * ,generate_series
+        ( ('${date}'::timestamp - interval '30' day )::timestamp
+        , '${date}'::timestamp
+        , interval '1 day')::date AS date
+	      FROM store_items_paid
+	      ) s
+    left join stripe_price on s.stripe_price_id = stripe_price.stripe_price_id
+    left join tax_rates_stripe_price on s.stripe_price_id =tax_rates_stripe_price.stripe_price_id
+    left join tax_rates on tax_rates_stripe_price.tax_rate_id = tax_rates.id
+      where s.created_at::date <= date and stripe_price.stripe_price_id in ('${ids.team_stripe_price_id}', '${ids.individual_stripe_price_id}')
+      group by date
+      order by date asc
+      `),
+  );
+
+
+  const newData = graphData.map((o, i) => {
+    return {
+      x: i + 1,
+      y: parseInt(o.new) / 100,
+    };
+  });
+  const totalData = graphData.map((o, i) => {
+    return {
+      x: i + 1,
+      y: (parseInt(o.total) - parseInt(o.new)) / 100,
+    };
+  });
+
+  const [date2] = await knex('store_items_paid')
+    .min('created_at')
+    .whereIn('stripe_price_id', [
+      ids.team_stripe_price_id,
+      ids.individual_stripe_price_id,
+    ]);
+
+  return {
+    name: ids.name,
+    new: newData,
+    total: totalData,
+    minDate: date2.min,
+    longLabel: graphData.map(o => moment(o.date).format('ll')),
+    shortLabel: graphData.map(o => moment(o.date).format('DD/MM')),
   };
 }
 
@@ -5559,6 +5620,7 @@ module.exports = {
   getGeneralInfos,
   getGraphUserCount,
   getGraphAmountGeneratedByEvent,
+  getGraphFeesByEvent,
   getGraphMemberCount,
   getMembers,
   getMembership,
