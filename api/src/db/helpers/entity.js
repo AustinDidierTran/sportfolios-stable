@@ -2051,7 +2051,7 @@ async function getMyRosterIds(eventId, userId) {
 
   const rosterIds = await getRosterIdsFromEntityId(id);
   const res = await Promise.all(
-    rosterIds.map(async (r, index) => {
+    rosterIds.map(async r => {
       const [roster] = await knex('event_rosters')
         .select('roster_id')
         .where({ roster_id: r.roster_id, event_id: realId });
