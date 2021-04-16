@@ -1003,10 +1003,11 @@ async function generateReport(reportId) {
 }
 
 async function getPrerankPhase(eventId) {
+  const realId = await getRealId(eventId);
   const [res] = await knex('phase')
     .select('*')
     .where({
-      event_id: eventId,
+      event_id: realId,
       phase_order: 0,
       name: 'prerank',
     });
@@ -1687,7 +1688,10 @@ async function getRemainingSpots(eventId) {
 }
 
 async function getPreranking(eventId) {
+  console.log(eventId);
   const realId = await getRealId(eventId);
+  console.log(realId);
+
   const prerankPhase = await getPrerankPhase(realId);
 
   const preranking = await knex('phase_rankings')
