@@ -165,6 +165,27 @@ router.get(`${BASE_URL}/edit`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/graphFeesByEvent`, async ctx => {
+
+  const arrayGraph = await queries.getGraphFeesByEvent(
+    ctx.query.eventPaymentId,
+    ctx.query.date
+  );
+
+  if (arrayGraph) {
+    ctx.body = {
+      status: 'success',
+      data: arrayGraph,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+  return;
+});
 
 router.get(`${BASE_URL}/graphAmountGeneratedByEvent`, async ctx => {
   const arrayGraph = await queries.getGraphAmountGeneratedByEvent(

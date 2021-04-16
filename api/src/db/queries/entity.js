@@ -79,6 +79,7 @@ const {
   getGeneralInfos: getGeneralInfosHelper,
   getGraphUserCount: getGraphUserCountHelper,
   getGraphAmountGeneratedByEvent: getGraphAmountGeneratedByEventHelper,
+  getGraphFeesByEvent: getGraphFeesByEventHelper,
   getGraphMemberCount: getGraphMemberCountHelper,
   getAllTeamsPending: getAllTeamsPendingHelper,
   getAllTeamsRefused: getAllTeamsRefusedHelper,
@@ -385,6 +386,10 @@ async function getGeneralInfos(entityId, userId) {
 
 async function getGraphAmountGeneratedByEvent(eventPaymentId, date) {
   return getGraphAmountGeneratedByEventHelper(eventPaymentId, date);
+}
+
+async function getGraphFeesByEvent(eventPaymentId, date) {
+  return getGraphFeesByEventHelper(eventPaymentId, date);
 }
 
 async function getGraphUserCount(date) {
@@ -1912,6 +1917,7 @@ module.exports = {
   getGeneralInfos,
   getGraphUserCount,
   getGraphAmountGeneratedByEvent,
+  getGraphFeesByEvent,
   getGraphMemberCount,
   getAllTeamsPendingAndRefused,
   getAllPlayersPendingAndRefused,
