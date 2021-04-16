@@ -1688,10 +1688,7 @@ async function getRemainingSpots(eventId) {
 }
 
 async function getPreranking(eventId) {
-  console.log(eventId);
   const realId = await getRealId(eventId);
-  console.log(realId);
-
   const prerankPhase = await getPrerankPhase(realId);
 
   const preranking = await knex('phase_rankings')
@@ -2148,9 +2145,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-      entityId: p.entity_id,
-      completeName: `${p.name} ${p.surname}`,
-    }))
+        entityId: p.entity_id,
+        completeName: `${p.name} ${p.surname}`,
+      }))
     : undefined;
 }
 
@@ -2408,9 +2405,12 @@ async function getGeneralInfos(entityId) {
 }
 
 async function getGraphAmountGeneratedByEvent(eventPaymentId, date) {
-
   const [ids] = await knex('event_payment_options')
-    .select('name', 'team_stripe_price_id', 'individual_stripe_price_id')
+    .select(
+      'name',
+      'team_stripe_price_id',
+      'individual_stripe_price_id',
+    )
     .where('id', eventPaymentId);
 
   const graphData = await knex.select(
@@ -2429,26 +2429,28 @@ async function getGraphAmountGeneratedByEvent(eventPaymentId, date) {
       where s.created_at::date <= date and stripe_price.stripe_price_id in ('${ids.team_stripe_price_id}', '${ids.individual_stripe_price_id}')
       group by date
       order by date asc
-      `)
+      `),
   );
 
   const newData = graphData.map((o, i) => {
     return {
       x: i + 1,
-      y: (parseInt(o.new) / 100),
+      y: parseInt(o.new) / 100,
     };
   });
   const totalData = graphData.map((o, i) => {
     return {
       x: i + 1,
-      y: ((parseInt(o.total) - parseInt(o.new)) / 100),
+      y: (parseInt(o.total) - parseInt(o.new)) / 100,
     };
   });
 
-
   const [date2] = await knex('store_items_paid')
     .min('created_at')
-    .whereIn('stripe_price_id', [ids.team_stripe_price_id, ids.individual_stripe_price_id])
+    .whereIn('stripe_price_id', [
+      ids.team_stripe_price_id,
+      ids.individual_stripe_price_id,
+    ]);
 
   return {
     name: ids.name,
@@ -4034,17 +4036,21 @@ async function addGame(
 
     name1 =
       teamName1 !== undefined
-        ? `${phaseRanking1.initial_position.toString()}. ${phaseRanking1.phase.name
-        } (${teamName1})`
-        : `${phaseRanking1.initial_position.toString()}. ${phaseRanking1.phase.name
-        }`;
+        ? `${phaseRanking1.initial_position.toString()}. ${
+            phaseRanking1.phase.name
+          } (${teamName1})`
+        : `${phaseRanking1.initial_position.toString()}. ${
+            phaseRanking1.phase.name
+          }`;
 
     name2 =
       teamName2 !== undefined
-        ? `${phaseRanking2.initial_position.toString()}. ${phaseRanking2.phase.name
-        } (${teamName2})`
-        : `${phaseRanking2.initial_position.toString()}. ${phaseRanking2.phase.name
-        }`;
+        ? `${phaseRanking2.initial_position.toString()}. ${
+            phaseRanking2.phase.name
+          } (${teamName2})`
+        : `${phaseRanking2.initial_position.toString()}. ${
+            phaseRanking2.phase.name
+          }`;
 
     [position1] = await knex('game_teams')
       .insert({
@@ -4252,7 +4258,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -4292,7 +4298,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
