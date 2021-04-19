@@ -15,7 +15,7 @@ class PostServices {
     await knex('post_comment')
       .update('content', commentContent)
       .where({
-        'id': commentId
+        id: commentId,
       });
   }
 
@@ -31,7 +31,7 @@ class PostServices {
         content: post_content,
       })
       .where({
-        'id': post_id,
+        id: post_id,
       });
   }
 
@@ -83,9 +83,7 @@ class PostServices {
         id: post_id,
       })
       .del();
-
   }
-
 
   static async addPostImageUrl(post_id, image_url) {
     await knex('post_image').insert({ post_id, image_url });
@@ -104,25 +102,19 @@ class PostServices {
         'posts.content',
         'posts.created_at',
         'posts.updated_at',
-        'entities_name.name',
-        'entities_name.surname',
-        'entities_photo.photo_url',
+        'entities_general_infos.name',
+        'entities_general_infos.surname',
+        'entities_general_infos.photo_url',
         knex.raw(
           `(SELECT COUNT(*) > 0 AS liked FROM post_like WHERE entity_id = '${user_id}' AND post_id = '${post_id}')`,
         ),
       )
       .from('posts')
       .leftJoin(
-        'entities_name',
+        'entities_general_infos',
         'posts.entity_id',
         '=',
-        'entities_name.entity_id',
-      )
-      .leftJoin(
-        'entities_photo',
-        'posts.entity_id',
-        '=',
-        'entities_photo.entity_id',
+        'entities_general_infos.entity_id',
       )
       .where('posts.id', post_id);
     if (data) {
@@ -136,10 +128,10 @@ class PostServices {
         .select('*')
         .from('post_like')
         .leftJoin(
-          'entities_name',
+          'entities_general_infos',
           'post_like.entity_id',
           '=',
-          'entities_name.entity_id',
+          'entities_general_infos.entity_id',
         )
         .where('post_like.post_id', data.id);
 
@@ -153,22 +145,16 @@ class PostServices {
           'post_comment.content',
           'post_comment.parent_id',
           'post_comment.created_at',
-          'entities_name.name',
-          'entities_name.surname',
-          'entities_photo.photo_url',
+          'entities_general_infos.name',
+          'entities_general_infos.surname',
+          'entities_general_infos.photo_url',
         )
         .from('post_comment')
         .leftJoin(
-          'entities_name',
+          'entities_general_infos',
           'post_comment.entity_id',
           '=',
-          'entities_name.entity_id',
-        )
-        .leftJoin(
-          'entities_photo',
-          'post_comment.entity_id',
-          '=',
-          'entities_photo.entity_id',
+          'entities_general_infos.entity_id',
         )
         .where('post_comment.post_id', data.id)
         .orderBy('post_comment.created_at', 'desc');
@@ -193,25 +179,19 @@ class PostServices {
           'posts.content',
           'posts.created_at',
           'posts.updated_at',
-          'entities_name.name',
-          'entities_name.surname',
-          'entities_photo.photo_url',
+          'entities_general_infos.name',
+          'entities_general_infos.surname',
+          'entities_general_infos.photo_url',
           knex.raw(
             `(SELECT COUNT(*) > 0 AS liked FROM post_like WHERE entity_id = '${user_id}' AND post_id = posts.id)`,
           ),
         )
         .from('posts')
         .leftJoin(
-          'entities_name',
+          'entities_general_infos',
           'posts.entity_id',
           '=',
-          'entities_name.entity_id',
-        )
-        .leftJoin(
-          'entities_photo',
-          'posts.entity_id',
-          '=',
-          'entities_photo.entity_id',
+          'entities_general_infos.entity_id',
         )
         .where('posts.location_id', locationId)
         .orderBy('posts.created_at', 'desc')
@@ -229,10 +209,10 @@ class PostServices {
               .select('*')
               .from('post_like')
               .leftJoin(
-                'entities_name',
+                'entities_general_infos',
                 'post_like.entity_id',
                 '=',
-                'entities_name.entity_id',
+                'entities_general_infos.entity_id',
               )
               .where('post_like.post_id', objectSql.id);
 
@@ -246,22 +226,16 @@ class PostServices {
                 'post_comment.content',
                 'post_comment.parent_id',
                 'post_comment.created_at',
-                'entities_name.name',
-                'entities_name.surname',
-                'entities_photo.photo_url',
+                'entities_general_infos.name',
+                'entities_general_infos.surname',
+                'entities_general_infos.photo_url',
               )
               .from('post_comment')
               .leftJoin(
-                'entities_name',
+                'entities_general_infos',
                 'post_comment.entity_id',
                 '=',
-                'entities_name.entity_id',
-              )
-              .leftJoin(
-                'entities_photo',
-                'post_comment.entity_id',
-                '=',
-                'entities_photo.entity_id',
+                'entities_general_infos.entity_id',
               )
               .where('post_comment.post_id', objectSql.id)
               .orderBy('post_comment.created_at', 'desc');

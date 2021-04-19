@@ -61,23 +61,11 @@ const addEntity = async (body, userId) => {
       .returning(['id'])
       .transacting(trx);
 
-    await knex('entities_name')
+    await knex('entities_general_infos')
       .insert({
         entity_id: entityId,
         name,
         surname,
-      })
-      .transacting(trx);
-
-    await knex('entities_photo')
-      .insert({
-        entity_id: entityId,
-      })
-      .transacting(trx);
-
-    await knex('entities_general_infos')
-      .insert({
-        entity_id: entityId,
       })
       .transacting(trx);
 
@@ -176,16 +164,10 @@ async function getAllEntities(params) {
     const entities = await knex('entities')
       .select('id', 'type', 'name', 'surname', 'photo_url')
       .leftJoin(
-        'entities_name',
+        'entities_general_infos',
         'entities.id',
         '=',
-        'entities_name.entity_id',
-      )
-      .leftJoin(
-        'entities_photo',
-        'entities.id',
-        '=',
-        'entities_photo.entity_id',
+        'entities_general_infos.entity_id',
       )
       .whereNull('deleted_at')
       .where({ type });
@@ -202,16 +184,10 @@ async function getAllEntities(params) {
   const entities = await knex('entities')
     .select('id', 'type', 'name', 'surname', 'photo_url')
     .leftJoin(
-      'entities_name',
+      'entities_general_infos',
       'entities.id',
       '=',
-      'entities_name.entity_id',
-    )
-    .leftJoin(
-      'entities_photo',
-      'entities.id',
-      '=',
-      'entities_photo.entity_id',
+      'entities_general_infos.entity_id',
     );
 
   return entities.map(e => ({
@@ -387,16 +363,10 @@ async function getAllTypeEntities(type) {
   const entities = await knex('entities')
     .select('id', 'type', 'name', 'surname', 'photo_url')
     .leftJoin(
-      'entities_name',
+      'entities_general_infos',
       'entities.id',
       '=',
-      'entities_name.entity_id',
-    )
-    .leftJoin(
-      'entities_photo',
-      'entities.id',
-      '=',
-      'entities_photo.entity_id',
+      'entities_general_infos.entity_id',
     )
     .whereNull('deleted_at')
     .where({ type });
@@ -430,16 +400,10 @@ async function getAllRolesEntity(entityId) {
       'type',
     )
     .leftJoin(
-      'entities_name',
+      'entities_general_infos',
       'entities_role.entity_id_admin',
       '=',
-      'entities_name.entity_id',
-    )
-    .leftJoin(
-      'entities_photo',
-      'entities_role.entity_id_admin',
-      '=',
-      'entities_photo.entity_id',
+      'entities_general_infos.entity_id',
     )
     .leftJoin(
       'entities',
@@ -577,22 +541,10 @@ async function getEntity(id, userId) {
       'quick_description',
     )
     .leftJoin(
-      'entities_name',
-      'entities.id',
-      '=',
-      'entities_name.entity_id',
-    )
-    .leftJoin(
-      'entities_photo',
-      'entities.id',
-      '=',
-      'entities_photo.entity_id',
-    )
-    .leftJoin(
       'entities_general_infos',
-      'entities_general_infos.entity_id',
-      '=',
       'entities.id',
+      '=',
+      'entities_general_infos.entity_id',
     )
     .leftJoin(
       'entities_address',
@@ -1206,8 +1158,8 @@ async function getOptions(eventId) {
       'informations',
     )
     .leftJoin(
-      'entities_name',
-      'entities_name.entity_id',
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
       '=',
       'event_payment_options.event_id',
     )
@@ -2004,7 +1956,9 @@ async function getPositions(gameId) {
 
 async function getPhotoFromRosterId(rosterId) {
   const teamId = await getTeamIdFromRosterId(rosterId);
-  const [{ photo_url: photoUrl }] = await knex('entities_photo')
+  const [{ photo_url: photoUrl }] = await knex(
+    'entities_general_infos',
+  )
     .select('photo_url')
     .where({ entity_id: teamId });
   return photoUrl;
@@ -2051,7 +2005,7 @@ async function getRosterByEventAndUser(eventId, userId) {
     .where({ user_id: userId });
 
   const res = await knex('team_players')
-    .select('entities_name.name', 'event_rosters.roster_id')
+    .select('entities_general_infos.name', 'event_rosters.roster_id')
     .leftJoin(
       'event_rosters',
       'event_rosters.roster_id',
@@ -2065,10 +2019,10 @@ async function getRosterByEventAndUser(eventId, userId) {
       'team_rosters.id',
     )
     .leftJoin(
-      'entities_name',
+      'entities_general_infos',
       'team_rosters.team_id',
       '=',
-      'entities_name.entity_id',
+      'entities_general_infos.entity_id',
     )
     .where({ person_id: id, event_id: realId });
 
@@ -2081,8 +2035,8 @@ async function getRostersNames(rostersArray) {
     .select('name', 'roster_id')
     .from('event_rosters')
     .join(
-      'entities_name',
-      'entities_name.entity_id',
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
       'event_rosters.team_id',
     )
     .whereIn('roster_id', rostersArray);
@@ -2094,8 +2048,8 @@ async function getRosterName(roster_id) {
     .select('name')
     .from('event_rosters')
     .join(
-      'entities_name',
-      'entities_name.entity_id',
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
       'event_rosters.team_id',
     )
     .where({ roster_id });
@@ -2152,8 +2106,8 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
   const res = await knex('user_entity_role')
     .select(
       'user_entity_role.entity_id',
-      'entities_name.name',
-      'entities_name.surname',
+      'entities_general_infos.name',
+      'entities_general_infos.surname',
     )
     .leftJoin(
       'team_players',
@@ -2162,8 +2116,8 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
       'user_entity_role.entity_id',
     )
     .leftJoin(
-      'entities_name',
-      'entities_name.entity_id',
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
       '=',
       'user_entity_role.entity_id',
     )
@@ -2195,22 +2149,22 @@ async function getGameSubmissionInfos(gameId, myRosterId) {
   const presences = await knex('game_players_attendance')
     .select(
       knex.raw(
-        "string_agg(entities_name.name || ' ' || entities_name.surname, ' ') AS complete_name",
+        "string_agg(entities_general_infos.name || ' ' || entities_general_infos.surname, ' ') AS complete_name",
       ),
       'game_players_attendance.player_id',
       'game_players_attendance.is_sub',
     )
     .leftJoin(
-      'entities_name',
-      'entities_name.entity_id',
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
       '=',
       'game_players_attendance.player_id',
     )
     .where({ game_id: gameId, roster_id: myRosterId })
     .andWhere('status', '=', PLAYER_ATTENDANCE_STATUS.PRESENT)
     .groupBy(
-      'entities_name.name',
-      'entities_name.surname',
+      'entities_general_infos.name',
+      'entities_general_infos.surname',
       'game_players_attendance.player_id',
       'game_players_attendance.is_sub',
     );
@@ -2355,7 +2309,7 @@ const getTeams = async gameId => {
         const realTeamId = await getTeamIdFromRosterId(
           team.roster_id,
         );
-        const [entities_photo] = await knex('entities_photo')
+        const [entities_photo] = await knex('entities_general_infos')
           .select('photo_url')
           .where('entity_id', realTeamId);
 
@@ -2403,8 +2357,8 @@ async function getTeamsSchedule(eventId) {
   const res = await knex('event_rosters')
     .select('team_id', 'roster_id', 'event_id', 'name')
     .leftJoin(
-      'entities_name',
-      'entities_name.entity_id',
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
       '=',
       'event_rosters.team_id',
     )
@@ -2436,7 +2390,6 @@ async function getGeneralInfos(entityId) {
   };
 }
 
-
 async function getGraphFeesByEvent(eventPaymentId, date) {
   const [ids] = await knex('event_payment_options')
     .select(
@@ -2464,7 +2417,6 @@ async function getGraphFeesByEvent(eventPaymentId, date) {
       order by date asc
       `),
   );
-
 
   const newData = graphData.map((o, i) => {
     return {
@@ -2643,6 +2595,7 @@ async function getPersonInfos(entityId) {
     surname: res.surname,
     birthDate: res.birth_date,
     gender: res.gender,
+    phoneNumber: res.phone_number,
     formattedAddress: res.address,
   };
 
@@ -3306,57 +3259,50 @@ async function updatePersonInfosHelper(entityId, body) {
   const { personInfos } = body;
   const realId = await getRealId(entityId);
 
-  let fullname;
-  let birthDateRes;
-  let genderRes;
-  let fullAddress;
   let outputPersonInfos = {};
 
   if (personInfos.name || personInfos.surname) {
-    fullname = await knex('entities_name')
+    const [res] = await knex('entities_general_infos')
       .update({
         name: personInfos.name,
         surname: personInfos.surname,
       })
       .where({ entity_id: realId })
-      .returning('*');
-
-    outputPersonInfos.name = fullname[0].name;
-    outputPersonInfos.surname = fullname[0].surname;
+      .returning('name', 'surname');
+    outputPersonInfos.name = res.name;
+    outputPersonInfos.surname = res.surname;
   }
 
   if (personInfos.birthDate) {
-    birthDateRes = await knex.raw(
-      `? ON CONFLICT (entity_id)
-        DO UPDATE SET
-          birth_date = '${personInfos.birthDate}'
-        RETURNING birth_date;`,
-      [
-        knex('entities_birth_date').insert({
-          entity_id: realId,
-          birth_date: personInfos.birthDate,
-        }),
-      ],
-    );
+    const [{ birth_date }] = await knex('entities_general_infos')
+      .update({
+        birth_date: personInfos.birthDate,
+      })
+      .where({ entity_id: realId })
+      .returning('birth_date');
 
-    outputPersonInfos.birthDate = birthDateRes.rows[0].birth_date;
+    outputPersonInfos.birthDate = birth_date;
   }
 
   if (personInfos.gender) {
-    genderRes = await knex.raw(
-      `? ON CONFLICT (entity_id)
-        DO UPDATE SET
-          gender = '${personInfos.gender}'
-        RETURNING gender;`,
-      [
-        knex('entities_gender').insert({
-          entity_id: realId,
-          gender: personInfos.gender,
-        }),
-      ],
-    );
+    const [{ gender }] = await knex('person_infos')
+      .update({
+        gender: personInfos.gender,
+      })
+      .where({ entity_id: realId })
+      .returning('gender');
 
-    outputPersonInfos.gender = genderRes.rows[0].gender;
+    outputPersonInfos.gender = gender;
+  }
+  if (personInfos.phoneNumber) {
+    const [{ phone_number }] = await knex('entities_general_infos')
+      .update({
+        phone_number: personInfos.phoneNumber,
+      })
+      .where({ entity_id: realId })
+      .returning('phone_number');
+
+    outputPersonInfos.phoneNumber = phone_number;
   }
 
   if (personInfos.address.length != 0) {
@@ -3383,7 +3329,6 @@ async function updatePersonInfosHelper(entityId, body) {
 
     outputPersonInfos.address = fullAddress.rows[0].concat_ws;
   }
-
   return outputPersonInfos;
 }
 
@@ -3430,14 +3375,14 @@ async function updateEntityName(entityId, name, surname) {
       );
     }
   }
-  return knex('entities_name')
+  return knex('entities_general_infos')
     .update({ name, surname })
     .where({ entity_id: realId });
 }
 
 async function updateEntityPhoto(entityId, photo_url) {
   const realId = await getRealId(entityId);
-  return knex('entities_photo')
+  return knex('entities_general_infos')
     .update({ photo_url })
     .where({ entity_id: realId });
 }
@@ -4035,8 +3980,8 @@ async function getTeamName(team) {
   const [res] = await knex('team_rosters')
     .select('*')
     .leftJoin(
-      'entities_name',
-      'entities_name.entity_id',
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
       '=',
       'team_rosters.team_id',
     )
@@ -5518,9 +5463,9 @@ async function getRosterEventInfos(roster_id) {
       knex.raw('name as teamname'),
     )
     .leftJoin(
-      'entities_name',
+      'entities_general_infos',
       'event_rosters.team_id',
-      'entities_name.entity_id',
+      'entities_general_infos.entity_id',
     )
     .where({ roster_id });
   if (!res) {
