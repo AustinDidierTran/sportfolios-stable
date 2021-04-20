@@ -2522,7 +2522,7 @@ async function getGraphUserCount(date) {
     ),
   );
 
-  const data = graphData.map((o, i) => {
+  const data = graphData.map((o) => {
     return {
       name: moment(o.date).format('ll'),
       totalMember: o.total,
@@ -2531,10 +2531,10 @@ async function getGraphUserCount(date) {
 
   const lines = [
     {
-      stroke: "#008A6C",
+      stroke: '#008A6C',
       strokeWidth: 2,
-      name: "member.members",
-      dataKey: "totalMember",
+      name: 'member.members',
+      dataKey: 'totalMember',
       dot: false,
     },
   ];
