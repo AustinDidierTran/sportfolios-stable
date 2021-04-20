@@ -36,7 +36,7 @@ CREATE TABLE person_infos(
   emergency_name VARCHAR(255),
   emergency_surname VARCHAR(255),
   emergency_phone_number VARCHAR(11),
-  medical_condition TEXT
+  medical_conditions TEXT
 );
 
 INSERT INTO person_infos (entity_id)
@@ -85,7 +85,7 @@ CREATE OR REPLACE VIEW notifications_view AS
 
 DROP view person_all_infos;
 CREATE OR REPLACE VIEW person_all_infos as 
-  SELECT id, name, surname, photo_url, birth_date, gender, CONCAT_WS(', ', street_address, city, state, zip, country) "address", type, phone_number, emergency_name, emergency_surname, emergency_phone_number, medical_condition
+  SELECT id, name, surname, photo_url, birth_date, gender, CONCAT_WS(', ', street_address, city, state, zip, country) "address", type, phone_number, emergency_name, emergency_surname, emergency_phone_number, medical_conditions
     FROM entities_all_infos
         LEFT JOIN entities_address ON entities_address.entity_id = id
         LEFT JOIN person_infos ON person_infos.entity_id = id

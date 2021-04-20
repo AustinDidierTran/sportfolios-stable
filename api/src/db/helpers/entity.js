@@ -2600,7 +2600,7 @@ async function getPersonInfos(entityId) {
     emergencyName: res.emergency_name,
     emergencySurname: res.emergency_surname,
     emergencyPhoneNumber: res.emergency_phone_number,
-    medicalConditions: res.medical_condition,
+    medicalConditions: res.medical_conditions,
   };
 
   const [fullAddress] = await knex('entities_address')
@@ -3299,7 +3299,7 @@ async function updatePersonInfosHelper(entityId, body) {
       emergency_name: emergencyName,
       emergency_surname: emergencySurname,
       emergency_phone_number: emergencyPhoneNumber,
-      medical_condition: medicalConditions,
+      medical_conditions: medicalConditions,
     })
     .where({ entity_id: realId })
     .returning('*');
@@ -3309,7 +3309,7 @@ async function updatePersonInfosHelper(entityId, body) {
   outputPersonInfos.emergencySurname = res1.emergency_surname;
   outputPersonInfos.emergencyPhoneNumber =
     res1.emergency_phone_number;
-  outputPersonInfos.medicalConditions = res1.medical_condition;
+  outputPersonInfos.medicalConditions = res1.medical_conditions;
 
   if (personInfos.address.length != 0) {
     fullAddress = await knex.raw(
@@ -3928,6 +3928,11 @@ async function addMember(body) {
     gender,
     address,
     expirationDate,
+    phoneNumber,
+    emergencyPhoneNumber,
+    emergencyName,
+    emergencySurname,
+    medicalConditions,
   } = body;
   const realId = await getRealId(organizationId);
   const [res] = await knex('memberships')
@@ -3938,6 +3943,11 @@ async function addMember(body) {
       person_id: personId,
       birth_date: birthDate,
       gender,
+      phone_number: phoneNumber,
+      emergency_phone_number: emergencyPhoneNumber,
+      emergency_name: emergencyName,
+      emergency_surname: emergencySurname,
+      medical_conditions: medicalConditions,
       street_address: address.street_address,
       city: address.city,
       state: address.state,
