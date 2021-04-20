@@ -35,7 +35,7 @@ CREATE TABLE person_infos(
   gender VARCHAR(6) CHECK (gender in ('Male', 'Female', 'Other')),
   emergency_name VARCHAR(255),
   emergency_surname VARCHAR(255),
-  emergency_phone_number INTEGER,
+  emergency_phone_number VARCHAR(11),
   medical_condition TEXT
 );
 

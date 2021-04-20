@@ -2597,6 +2597,10 @@ async function getPersonInfos(entityId) {
     gender: res.gender,
     phoneNumber: res.phone_number,
     formattedAddress: res.address,
+    emergencyName: res.emergency_name,
+    emergencySurname: res.emergency_surname,
+    emergencyPhoneNumber: res.emergency_phone_number,
+    medicalConditions: res.medical_condition,
   };
 
   const [fullAddress] = await knex('entities_address')
@@ -3257,53 +3261,55 @@ async function updateGeneralInfos(entityId, body) {
 
 async function updatePersonInfosHelper(entityId, body) {
   const { personInfos } = body;
+
+  const {
+    name,
+    surname,
+    birthDate,
+    phoneNumber,
+    gender,
+    emergencyName,
+    emergencySurname,
+    emergencyPhoneNumber,
+    medicalConditions,
+  } = personInfos;
+
   const realId = await getRealId(entityId);
 
   let outputPersonInfos = {};
 
-  if (personInfos.name || personInfos.surname) {
-    const [res] = await knex('entities_general_infos')
-      .update({
-        name: personInfos.name,
-        surname: personInfos.surname,
-      })
-      .where({ entity_id: realId })
-      .returning('name', 'surname');
-    outputPersonInfos.name = res.name;
-    outputPersonInfos.surname = res.surname;
-  }
+  const [res] = await knex('entities_general_infos')
+    .update({
+      name: name,
+      surname: surname,
+      birth_date: birthDate,
+      phone_number: phoneNumber,
+    })
+    .where({ entity_id: realId })
+    .returning('*');
 
-  if (personInfos.birthDate) {
-    const [{ birth_date }] = await knex('entities_general_infos')
-      .update({
-        birth_date: personInfos.birthDate,
-      })
-      .where({ entity_id: realId })
-      .returning('birth_date');
+  outputPersonInfos.name = res.name;
+  outputPersonInfos.surname = res.surname;
+  outputPersonInfos.birthDate = res.birth_date;
+  outputPersonInfos.phoneNumber = res.phone_number;
 
-    outputPersonInfos.birthDate = birth_date;
-  }
+  const [res1] = await knex('person_infos')
+    .update({
+      gender: gender,
+      emergency_name: emergencyName,
+      emergency_surname: emergencySurname,
+      emergency_phone_number: emergencyPhoneNumber,
+      medical_condition: medicalConditions,
+    })
+    .where({ entity_id: realId })
+    .returning('*');
 
-  if (personInfos.gender) {
-    const [{ gender }] = await knex('person_infos')
-      .update({
-        gender: personInfos.gender,
-      })
-      .where({ entity_id: realId })
-      .returning('gender');
-
-    outputPersonInfos.gender = gender;
-  }
-  if (personInfos.phoneNumber) {
-    const [{ phone_number }] = await knex('entities_general_infos')
-      .update({
-        phone_number: personInfos.phoneNumber,
-      })
-      .where({ entity_id: realId })
-      .returning('phone_number');
-
-    outputPersonInfos.phoneNumber = phone_number;
-  }
+  outputPersonInfos.gender = res1.gender;
+  outputPersonInfos.emergencyName = res1.emergency_name;
+  outputPersonInfos.emergencySurname = res1.emergency_surname;
+  outputPersonInfos.emergencyPhoneNumber =
+    res1.emergency_phone_number;
+  outputPersonInfos.medicalConditions = res1.medical_condition;
 
   if (personInfos.address.length != 0) {
     fullAddress = await knex.raw(
