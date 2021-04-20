@@ -21,14 +21,8 @@ const getFollowingUsers = async sender => {
     .select('entities.id', 'name', 'surname', 'photo_url')
     .from('followers')
     .leftJoin(
-      'entities',
-      'entities_name.entity_id',
-      '=',
-      'entities.id',
-    )
-    .leftJoin(
-      'entities',
-      'entities_photo.entity_id',
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
       '=',
       'entities.id',
     )

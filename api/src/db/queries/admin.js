@@ -66,7 +66,7 @@ async function getAllUsersAndSecond() {
   const primaryUser = await knex
     .select(
       knex.raw(
-        'user_primary_person.user_id, user_primary_person.primary_person, entities_photo.photo_url, array_agg(user_email.email ORDER BY user_email.email) AS emails, entities_name.name, entities_name.surname, user_app_role.app_role',
+        'user_primary_person.user_id, user_primary_person.primary_person, entities_general_infos.photo_url, array_agg(user_email.email ORDER BY user_email.email) AS emails, entities_general_infos.name, entities_general_infos.surname, user_app_role.app_role',
       ),
     )
     .from('user_primary_person')
@@ -77,22 +77,16 @@ async function getAllUsersAndSecond() {
       'user_email.user_id',
     )
     .leftJoin(
-      'entities_name',
+      'entities_general_infos',
       'user_primary_person.primary_person',
       '=',
-      'entities_name.entity_id',
+      'entities_general_infos.entity_id',
     )
     .leftJoin(
       'user_app_role',
       'user_primary_person.user_id',
       '=',
       'user_app_role.user_id',
-    )
-    .leftJoin(
-      'entities_photo',
-      'user_primary_person.primary_person',
-      '=',
-      'entities_photo.entity_id',
     )
     .leftJoin(
       'entities',
@@ -104,33 +98,27 @@ async function getAllUsersAndSecond() {
     .groupBy(
       'user_primary_person.user_id',
       'user_primary_person.primary_person',
-      'entities_name.name',
-      'entities_name.surname',
+      'entities_general_infos.name',
+      'entities_general_infos.surname',
       'user_app_role.app_role',
-      'entities_photo.photo_url',
+      'entities_general_infos.photo_url',
     )
-    .orderBy('entities_name.name', 'asc');
+    .orderBy('entities_general_infos.name', 'asc');
   return Promise.all(
     primaryUser.map(async user => {
       const secondAccount = await knex
         .select(
           'user_entity_role.entity_id',
-          'entities_name.name',
-          'entities_name.surname',
-          'entities_photo.photo_url',
+          'entities_general_infos.name',
+          'entities_general_infos.surname',
+          'entities_general_infos.photo_url',
         )
         .from('user_entity_role')
         .leftJoin(
-          'entities_name',
+          'entities_general_infos',
           'user_entity_role.entity_id',
           '=',
-          'entities_name.entity_id',
-        )
-        .leftJoin(
-          'entities_photo',
-          'user_entity_role.entity_id',
-          '=',
-          'entities_photo.entity_id',
+          'entities_general_infos.entity_id',
         )
         .leftJoin(
           'entities',

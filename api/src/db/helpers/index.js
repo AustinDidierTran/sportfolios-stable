@@ -66,17 +66,11 @@ const createUserComplete = async body => {
       .returning('id')
       .transacting(trx);
 
-    await knex('entities_name')
+    await knex('entities_general_infos')
       .insert({
         entity_id,
         name,
         surname,
-      })
-      .transacting(trx);
-
-    await knex('entities_photo')
-      .insert({
-        entity_id,
       })
       .transacting(trx);
 
@@ -234,16 +228,10 @@ const getBasicUserInfoFromId = async user_id => {
       'entities.id',
     )
     .leftJoin(
-      'entities_name',
+      'entities_general_infos',
       'user_entity_role.entity_id',
       '=',
-      'entities_name.entity_id',
-    )
-    .leftJoin(
-      'entities_photo',
-      'user_entity_role.entity_id',
-      '=',
-      'entities_photo.entity_id',
+      'entities_general_infos.entity_id',
     )
     .where('entities.type', GLOBAL_ENUM.PERSON)
     .andWhere({
@@ -266,16 +254,10 @@ const getBasicUserInfoFromId = async user_id => {
       'entities.id',
     )
     .leftJoin(
-      'entities_name',
+      'entities_general_infos',
       'user_entity_role.entity_id',
       '=',
-      'entities_name.entity_id',
-    )
-    .leftJoin(
-      'entities_photo',
-      'user_entity_role.entity_id',
-      '=',
-      'entities_photo.entity_id',
+      'entities_general_infos.entity_id',
     )
     .where('entities.type', GLOBAL_ENUM.PERSON)
     .andWhere({ user_id });

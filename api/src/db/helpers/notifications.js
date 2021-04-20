@@ -120,8 +120,8 @@ async function getRostersNames(rostersArray) {
     .select('name', 'roster_id')
     .from('event_rosters')
     .join(
-      'entities_name',
-      'entities_name.entity_id',
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
       'event_rosters.team_id',
     )
     .whereIn('roster_id', rostersArray);
@@ -134,8 +134,8 @@ async function getRosterName(roster_id) {
     .select('name')
     .from('event_rosters')
     .join(
-      'entities_name',
-      'entities_name.entity_id',
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
       'event_rosters.team_id',
     )
     .where({ roster_id });

@@ -46,31 +46,19 @@ const getEntitiesFromQuery = async (query, blackList) => {
           'name',
           'surname',
           'type',
-          'entities_photo.photo_url',
+          'photo_url',
           knex.raw(
-            "string_agg(entities_name.name || ' ' || entities_name.surname, ' ') AS complete_name",
+            "string_agg(entities_general_infos.name || ' ' || entities_general_infos.surname, ' ') AS complete_name",
           ),
         )
         .from('entities')
         .leftJoin(
-          'entities_photo',
+          'entities_general_infos',
           'entities.id',
           '=',
-          'entities_photo.entity_id',
+          'entities_general_infos.entity_id',
         )
-        .leftJoin(
-          'entities_name',
-          'entities.id',
-          '=',
-          'entities_name.entity_id',
-        )
-        .groupBy(
-          'id',
-          'type',
-          'name',
-          'surname',
-          'entities_photo.photo_url',
-        )
+        .groupBy('id', 'type', 'name', 'surname', 'photo_url')
         .as('entities_formatted')
         .whereNull('deleted_at'),
     )
@@ -111,32 +99,20 @@ const getPersonsFromQuery = async (query, blackList, whiteList) => {
           'type',
           'name',
           'surname',
-          'entities_photo.photo_url',
+          'photo_url',
           knex.raw(
-            "string_agg(entities_name.name || ' ' || entities_name.surname, ' ') AS complete_name",
+            "string_agg(entities_general_infos.name || ' ' || entities_general_infos.surname, ' ') AS complete_name",
           ),
         )
         .from('entities')
         .leftJoin(
-          'entities_photo',
+          'entities_general_infos',
           'entities.id',
           '=',
-          'entities_photo.entity_id',
-        )
-        .leftJoin(
-          'entities_name',
-          'entities.id',
-          '=',
-          'entities_name.entity_id',
+          'entities_general_infos.entity_id',
         )
         .where('entities.type', GLOBAL_ENUM.PERSON)
-        .groupBy(
-          'id',
-          'type',
-          'name',
-          'surname',
-          'entities_photo.photo_url',
-        )
+        .groupBy('id', 'type', 'name', 'surname', 'photo_url')
         .as('entities_formatted')
         .whereNull('deleted_at'),
     )
@@ -178,32 +154,20 @@ const getTeamsFromQuery = async (query, blackList, whiteList) => {
           'id',
           'name',
           'surname',
-          'entities_photo.photo_url',
+          'photo_url',
           knex.raw(
-            "string_agg(entities_name.name || ' ' || entities_name.surname, ' ') AS complete_name",
+            "string_agg(entities_general_infos.name || ' ' || entities_general_infos.surname, ' ') AS complete_name",
           ),
         )
         .from('entities')
         .leftJoin(
-          'entities_photo',
+          'entities_general_infos',
           'entities.id',
           '=',
-          'entities_photo.entity_id',
-        )
-        .leftJoin(
-          'entities_name',
-          'entities.id',
-          '=',
-          'entities_name.entity_id',
+          'entities_general_infos.entity_id',
         )
         .where('entities.type', GLOBAL_ENUM.TEAM)
-        .groupBy(
-          'id',
-          'type',
-          'name',
-          'surname',
-          'entities_photo.photo_url',
-        )
+        .groupBy('id', 'type', 'name', 'surname', 'photo_url')
         .as('entities_formatted')
         .whereNull('deleted_at'),
     )
@@ -268,32 +232,20 @@ const getOrganizationsFromQuery = async query => {
           'type',
           'name',
           'surname',
-          'entities_photo.photo_url',
+          'photo_url',
           knex.raw(
-            "string_agg(entities_name.name || ' ' || entities_name.surname, ' ') AS complete_name",
+            "string_agg(entities_general_infos.name || ' ' || entities_general_infos.surname, ' ') AS complete_name",
           ),
         )
         .from('entities')
         .leftJoin(
-          'entities_photo',
+          'entities_general_infos',
           'entities.id',
           '=',
-          'entities_photo.entity_id',
-        )
-        .leftJoin(
-          'entities_name',
-          'entities.id',
-          '=',
-          'entities_name.entity_id',
+          'entities_general_infos.entity_id',
         )
         .where('entities.type', GLOBAL_ENUM.ORGANIZATION)
-        .groupBy(
-          'id',
-          'type',
-          'name',
-          'surname',
-          'entities_photo.photo_url',
-        )
+        .groupBy('id', 'type', 'name', 'surname', 'photo_url')
         .as('entities_formatted')
         .whereNull('deleted_at'),
     )
