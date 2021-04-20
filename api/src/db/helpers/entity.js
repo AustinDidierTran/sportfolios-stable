@@ -3312,28 +3312,28 @@ async function updatePersonInfosHelper(entityId, body) {
   outputPersonInfos.medicalConditions = res1.medical_conditions;
 
   if (personInfos.address.length != 0) {
-    fullAddress = await knex.raw(
-      `? ON CONFLICT (entity_id)
-        DO UPDATE SET
-        street_address = '${personInfos.address.street_address}',
-        city = '${personInfos.address.city}',
-        state = '${personInfos.address.state}',
-        zip = '${personInfos.address.zip}',
-        country = '${personInfos.address.country}'
-        RETURNING CONCAT_WS(', ', street_address, city, state, zip, country);`,
-      [
-        knex('entities_address').insert({
-          entity_id: realId,
-          street_address: personInfos.address.street_address,
-          city: personInfos.address.city,
-          state: personInfos.address.state,
-          zip: personInfos.address.zip,
-          country: personInfos.address.country,
-        }),
-      ],
-    );
+    let {
+      street_address,
+      city,
+      state,
+      zip,
+      country,
+    } = personInfos.address;
 
-    outputPersonInfos.address = fullAddress.rows[0].concat_ws;
+    const [res] = await knex('entities_address')
+      .insert({
+        entity_id: realId,
+        street_address,
+        city,
+        state,
+        zip,
+        country,
+      })
+      .onConflict('entity_id')
+      .merge()
+      .returning('*');
+
+    outputPersonInfos.address = `${res.street_address} ${res.city} ${res.state} ${res.zip} ${res.country}`;
   }
   return outputPersonInfos;
 }
@@ -3934,6 +3934,7 @@ async function addMember(body) {
     emergencySurname,
     medicalConditions,
   } = body;
+
   const realId = await getRealId(organizationId);
   const [res] = await knex('memberships')
     .insert({
