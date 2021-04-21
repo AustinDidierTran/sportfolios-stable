@@ -111,7 +111,6 @@ const deleteCartItem = async query => {
         });
       } else {
         await deleteTeamFromEvent({
-          teamId: team.id,
           eventId: metadata.eventId,
           rosterId: metadata.rosterId,
         });
