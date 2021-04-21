@@ -2129,9 +2129,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-      entityId: p.entity_id,
-      completeName: `${p.name} ${p.surname}`,
-    }))
+        entityId: p.entity_id,
+        completeName: `${p.name} ${p.surname}`,
+      }))
     : undefined;
 }
 
@@ -2522,9 +2522,9 @@ async function getGraphUserCount(date) {
 
   const [data2] = await knex('entities')
     .min('created_at')
-    .where({ 'type': 1 });
+    .where({ type: 1 });
 
-  const data = graphData.map((o) => {
+  const data = graphData.map(o => {
     return {
       name: moment(o.date).format('ll'),
       totalMember: Number(o.total),
@@ -4097,17 +4097,21 @@ async function addGame(
 
     name1 =
       teamName1 !== undefined
-        ? `${phaseRanking1.initial_position.toString()}. ${phaseRanking1.phase.name
-        } (${teamName1})`
-        : `${phaseRanking1.initial_position.toString()}. ${phaseRanking1.phase.name
-        }`;
+        ? `${phaseRanking1.initial_position.toString()}. ${
+            phaseRanking1.phase.name
+          } (${teamName1})`
+        : `${phaseRanking1.initial_position.toString()}. ${
+            phaseRanking1.phase.name
+          }`;
 
     name2 =
       teamName2 !== undefined
-        ? `${phaseRanking2.initial_position.toString()}. ${phaseRanking2.phase.name
-        } (${teamName2})`
-        : `${phaseRanking2.initial_position.toString()}. ${phaseRanking2.phase.name
-        }`;
+        ? `${phaseRanking2.initial_position.toString()}. ${
+            phaseRanking2.phase.name
+          } (${teamName2})`
+        : `${phaseRanking2.initial_position.toString()}. ${
+            phaseRanking2.phase.name
+          }`;
 
     [position1] = await knex('game_teams')
       .insert({
@@ -4315,7 +4319,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -4355,7 +4359,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -4639,20 +4643,13 @@ async function addTeamToEvent(body) {
 }
 
 async function deleteTeamFromEvent(body) {
-  const { teamId, eventId, rosterId } = body;
+  const { eventId, rosterId } = body;
 
   return knex.transaction(async trx => {
     await knex('team_players')
       .del()
       .where({
         roster_id: rosterId,
-      })
-      .transacting(trx);
-    await knex('division_ranking')
-      .del()
-      .where({
-        team_id: teamId,
-        event_id: eventId,
       })
       .transacting(trx);
     await knex('phase_rankings')
