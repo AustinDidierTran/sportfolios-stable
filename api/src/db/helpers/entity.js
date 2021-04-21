@@ -4648,13 +4648,6 @@ async function deleteTeamFromEvent(body) {
         roster_id: rosterId,
       })
       .transacting(trx);
-    await knex('division_ranking')
-      .del()
-      .where({
-        team_id: teamId,
-        event_id: eventId,
-      })
-      .transacting(trx);
     await knex('phase_rankings')
       .update({ roster_id: null })
       .where({
