@@ -1002,12 +1002,10 @@ async function generateMembersReport(report) {
 
   const res = await Promise.all(
     reduce.map(async a => {
-      const person = await getPersonInfos(a.person_id);
       const email = await getEmailPerson(a.person_id);
       const price = await getPriceFromMembershipId(a.membership_id);
       return {
         ...a,
-        ...person,
         price,
         email,
       };
