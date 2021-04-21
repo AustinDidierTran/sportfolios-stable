@@ -2526,7 +2526,7 @@ async function getGraphUserCount(date) {
     .min('created_at')
     .where({ 'type': 1 });
 
-  const data = graphData.map((o, i) => {
+  const data = graphData.map((o) => {
     return {
       name: moment(o.date).format('ll'),
       totalMember: Number(o.total),
