@@ -2522,10 +2522,14 @@ async function getGraphUserCount(date) {
     ),
   );
 
-  const data = graphData.map((o) => {
+  const [data2] = await knex('entities')
+    .min('created_at')
+    .where({ 'type': 1 });
+
+  const data = graphData.map((o, i) => {
     return {
       name: moment(o.date).format('ll'),
-      totalMember: o.total,
+      totalMember: Number(o.total),
     };
   });
 
@@ -2534,6 +2538,7 @@ async function getGraphUserCount(date) {
       stroke: '#008A6C',
       strokeWidth: 2,
       name: 'member.members',
+      nameSingular: 'member.member',
       dataKey: 'totalMember',
       dot: false,
     },
@@ -2542,6 +2547,7 @@ async function getGraphUserCount(date) {
   return {
     lines: lines,
     data: data,
+    minDate: data2.min,
   };
 }
 
