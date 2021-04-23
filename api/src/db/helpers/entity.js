@@ -98,6 +98,13 @@ const addEntity = async (body, userId) => {
           })
           .returning('entity_id')
           .transacting(trx);
+        await knex('person_infos')
+          .insert({
+            entity_id: entityId,
+          })
+          .returning('entity_id')
+          .transacting(trx);
+
         return { id };
       }
       case GLOBAL_ENUM.TEAM:
@@ -3900,6 +3907,11 @@ async function addMemberManually(body) {
     gender,
     address,
     expirationDate,
+    phoneNumber,
+    emergencyName,
+    emergencySurname,
+    emergencyPhoneNumber,
+    medicalConditions,
   } = body;
   let id = membershipId;
 
@@ -3916,6 +3928,11 @@ async function addMemberManually(body) {
       person_id: personId,
       birth_date: birthDate,
       gender,
+      phone_number: phoneNumber,
+      emergency_name: emergencyName,
+      emergency_surname: emergencySurname,
+      emergency_phone_number: emergencyPhoneNumber,
+      medical_conditions: medicalConditions,
       street_address: address.street_address,
       city: address.city,
       state: address.state,
