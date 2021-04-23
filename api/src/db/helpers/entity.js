@@ -102,7 +102,6 @@ const addEntity = async (body, userId) => {
           .insert({
             entity_id: entityId,
           })
-          .returning('entity_id')
           .transacting(trx);
 
         return { id };
