@@ -20,7 +20,7 @@ let key;
 try {
   key = require('./keys/google-keys.json');
 } catch (e) {
-  /* eslint-disable-next-line */
+  /* eslint-disable-next-line */  
   console.log(
     `There is an error, keys are probably simply not configured: ${e}`,
   );
@@ -57,7 +57,7 @@ async function sendMail({ email: emailProps, subject, text, html }) {
   try {
     await transporter.verify();
     let email = emailProps;
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.YOUR_EMAIL) {
       email = process.env.YOUR_EMAIL;
     }
     return await transporter.sendMail({
