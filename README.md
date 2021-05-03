@@ -486,6 +486,8 @@ Change your username for your postgres username. If you don't have one try 'post
 
 You're all set! Go to Servers -> Sportfolios -> Database -> sportfolios_api_dev -> Schemas -> Tables to see all your tables.
 
+The password is the POSTGRES_PASSWORD in `docker-compose.yml`
+
 ## How email are displayed
 
 As you won’t have access to the Google API Keys, you won’t receive any emails. The content of these emails will be logged into the terminal, which you will be able to access via this command:
