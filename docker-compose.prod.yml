@@ -25,7 +25,7 @@ services:
       - '.:/sportfolios'
       - '/sportfolios/node_modules'
     ports:
-      - 3000:3000
+      - 4000:3000
 
   # Database container
   db:
