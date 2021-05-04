@@ -118,6 +118,16 @@ const addEntity = async (body, userId) => {
         return { id: entityId };
       }
       case GLOBAL_ENUM.EVENT: {
+        let start = startDate;
+        let end = endDate;
+
+        if (start) {
+          start = new Date(startDate);
+        }
+        if (end) {
+          end = new Date(endDate);
+        }
+
         await knex('entities_role')
           .insert({
             entity_id: entityId,
@@ -131,8 +141,8 @@ const addEntity = async (body, userId) => {
         )
           .insert({
             id: entityId,
-            start_date: startDate,
-            end_date: endDate,
+            start_date: start,
+            end_date: end,
             maximum_spots: maximumSpots,
           })
           .returning('*')
