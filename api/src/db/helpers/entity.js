@@ -987,9 +987,10 @@ async function generateMembersReport(report) {
   const reduce = active.reduce((prev, curr) => {
     let addCurr = true;
     const filter = prev.filter(p => {
-      if (p.member_type != curr.member_type) {
-        return true;
-      } else {
+      if (
+        p.member_type === curr.member_type &&
+        p.person_id === curr.person_id
+      ) {
         if (
           moment(p.expiration_date) > moment(curr.expiration_date)
         ) {
@@ -999,13 +1000,13 @@ async function generateMembersReport(report) {
           return false;
         }
       }
+      return true;
     });
     if (addCurr) {
       return [...filter, curr];
     }
     return filter;
   }, []);
-
   const res = await Promise.all(
     reduce.map(async a => {
       const person = await getPersonInfos(a.person_id);
