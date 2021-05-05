@@ -2521,17 +2521,15 @@ async function getGraphUserCount(date) {
       ( ('${date}'::timestamp - interval '30' day )::timestamp
       , '${date}'::timestamp
       , interval '1 day')::date AS date
-      FROM entities e
+      FROM users e
       ) s
-    where type = 1 and created_at::date <= date
+    where created_at::date <= date
     group by date
     order by date asc`,
     ),
   );
 
-  const [data2] = await knex('entities')
-    .min('created_at')
-    .where({ type: 1 });
+  const [data2] = await knex('users').min('created_at');
 
   const data = graphData.map(o => {
     return {
