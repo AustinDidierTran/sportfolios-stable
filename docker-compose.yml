@@ -35,7 +35,7 @@ services:
       - '.:/sportfolios'
       - '/sportfolios/node_modules'
     ports:
-      - 3000:3000
+      - 4000:3000
     # make container listen to file changes
     environment:
       - CHOKIDAR_USEPOLLING=true
@@ -56,5 +56,5 @@ services:
       - ./postgres-data:/var/lib/postgresql/data/
     environment:
       # default user is postgres
-      POSTGRES_PASSWORD: Psql_Sportfolios_Garand
+      POSTGRES_PASSWORD: password
       POSTGRES_DB: sportfolios_api_dev
