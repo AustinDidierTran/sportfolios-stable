@@ -592,7 +592,7 @@ async function addTeamToEvent(body, userId) {
   if (registrationStatus === STATUS_ENUM.PENDING) {
     creatorEmails.map(async email => {
       const language = await getLanguageFromEmail(email);
-      const userId = await getUserIdFromEmail(email);     
+      const userId = await getUserIdFromEmail(email);
       const placesLeft = await getRemainingSpotsHelper(event.id);
       sendTeamPendingRegistrationEmailToAdmin({
         email,

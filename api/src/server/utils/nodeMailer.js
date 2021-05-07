@@ -462,6 +462,7 @@ async function sendTeamPendingRegistrationEmailToAdmin({
   team,
   event,
   language,
+  placesLeft,
   userId,
 }) {
   const footerLink = formatFooterLink(userId);
@@ -478,6 +479,7 @@ async function sendTeamPendingRegistrationEmailToAdmin({
     type: NOTIFICATION_TYPE.TEAM_PENDING_REGISTRATION_ADMIN,
     teamName: team.name,
     eventName: event.name,
+    placesLeft,
     locale: language,
     buttonLink,
     footerLink,
