@@ -4560,6 +4560,9 @@ async function addMembership(
   date,
   type,
   price,
+  description,
+  fileName,
+  fileUrl,
   taxRatesId,
   userId,
 ) {
@@ -4594,6 +4597,9 @@ async function addMembership(
         membership_type: membership,
         fixed_date: date,
         price,
+        description,
+        file_name: fileName,
+        file_url: fileUrl,
       })
       .returning('*');
     return res;
@@ -4606,6 +4612,9 @@ async function addMembership(
         membership_type: membership,
         length,
         price,
+        description,
+        file_name: fileName,
+        file_url: fileUrl,
       })
       .returning('*');
     return res;

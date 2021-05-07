@@ -1646,6 +1646,9 @@ async function addMembership(body, userId) {
     date,
     type,
     price,
+    description,
+    fileName,
+    fileUrl,
     taxRatesId,
   } = body;
   const res = await addMembershipHelper(
@@ -1655,6 +1658,9 @@ async function addMembership(body, userId) {
     date,
     type,
     price,
+    description,
+    fileName,
+    fileUrl,
     taxRatesId,
     userId,
   );
