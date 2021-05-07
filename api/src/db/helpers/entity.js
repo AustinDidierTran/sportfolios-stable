@@ -2834,7 +2834,7 @@ async function updateEvent(
   endDate,
 ) {
   const realId = await getRealId(eventId);
-  const maximum_spots = Number(maximumSpots);
+  const maximum_spots = maximumSpots;
   const [entity] = await knex('events')
     .update({
       maximum_spots,
