@@ -1639,7 +1639,7 @@ async function getRemainingSpots(eventId) {
     .where({ id: realId });
 
   if (!event.maximum_spots) {
-    return 0;
+    return null;
   }
   return (
     event.maximum_spots - Number(countRosters) - Number(countPersons)

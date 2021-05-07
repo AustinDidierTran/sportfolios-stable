@@ -536,7 +536,8 @@ async function addTeamToEvent(body, userId) {
     throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
   }
   // Reject team if there is already too many registered teams
-  if ((await getRemainingSpotsHelper(eventId)) < 1) {
+  const numberOfTeamsRemaining = getRemainingSpotsHelper(eventId);
+  if (numberOfTeamsRemaining < 1 && numberOfTeamsRemaining != -1) {
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
@@ -591,13 +592,14 @@ async function addTeamToEvent(body, userId) {
   if (registrationStatus === STATUS_ENUM.PENDING) {
     creatorEmails.map(async email => {
       const language = await getLanguageFromEmail(email);
-      const userId = await getUserIdFromEmail(email);
+      const userId = await getUserIdFromEmail(email);     
+      const placesLeft = await getRemainingSpotsHelper(event.id);
       sendTeamPendingRegistrationEmailToAdmin({
         email,
         team,
         event,
         language,
-        placesLeft: await getRemainingSpotsHelper(event.id),
+        placesLeft,
         userId,
       });
     });
@@ -634,12 +636,13 @@ async function addTeamToEvent(body, userId) {
     creatorEmails.map(async email => {
       const language = await getLanguageFromEmail(email);
       const userId = await getUserIdFromEmail(email);
+      const placesLeft = await getRemainingSpotsHelper(event.id);
       sendTeamRegistrationEmailToAdmin({
         email,
         team,
         event,
         language,
-        placesLeft: await getRemainingSpotsHelper(event.id),
+        placesLeft,
         userId,
       });
     });
@@ -698,7 +701,8 @@ async function addTeamAsAdmin(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   // Reject team if there is already too many registered teams
-  if ((await getRemainingSpotsHelper(eventId)) < 1) {
+  const remainingSpots = await getRemainingSpotsHelper(eventId);
+  if (remainingSpots && remainingSpots< 1) {
     return {
       status: STATUS_ENUM.REFUSED,
       reason: REJECTION_ENUM.NO_REMAINING_SPOTS,
