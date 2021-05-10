@@ -20,7 +20,8 @@ let key;
 try {
   key = require('./keys/google-keys.json');
 } catch (e) {
-  /* eslint-disable-next-line */  
+  /* eslint-disable-next-line */
+
   console.log(
     `There is an error, keys are probably simply not configured: ${e}`,
   );
@@ -38,10 +39,7 @@ async function sendMail({ email: emailProps, subject, text, html }) {
     return;
   }
 
-  const realSubject =
-    process.env.NODE_ENV === 'development'
-      ? `[DEV] | ${subject}`
-      : subject;
+  const realSubject = `${process.env.prefix}${subject}`;
 
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',

@@ -105,10 +105,41 @@ Second, create a _.env_ file at the root with the following content:
 
 ```
 NODE_ENV=development
+PREFIX="[DEV] | "
 
 AWS_ACCESS_KEY_ID=AKIA6JQINATQN5SREG4U
 AWS_SECRET_ACCESS_KEY=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
 AWS_S3_BUCKET=sportfolios-images
+
+STRIPE_PUBLIC_KEY=pk_test_qd1ulz9FxZA3aj2OcBfjqqro00G1K5WrTb
+STRIPE_SECRET_KEY=sk_test_tzvUgJHRWyWNg0s3ctjHFd6P00DoFwlm9f
+STRIPE_WEBHOOK_SECRET=1
+
+YOUR_EMAIL=[insert email here]
+```
+
+Third, create a folder named _keys_ and create a file named _google-keys.json_ at this path
+
+```
+sportfolios-stable/api/src/server/utils/keys/google-keys.json
+```
+
+Put this content inside of it
+
+```
+{
+  "type": "service_account",
+  "project_id": "sportfoliosapp-184623",
+  "private_key_id": "3f6e19c005c9f8541fa45243647174a6dbbbe136",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQClyyn3wl0km8ue\nnWK/4plD/DmAY21cpvqGaPwLXJQP1yMDEWuwTnzEHp7ZBV75oWY691mNYbyu1o7P\nbxgNqUFxlD2DxHN5VFJJrpg3ZUFM4bomxEmk5Tl1MGudKL0C/1jT8rdQOGRLg9tj\nA79+IRLAaLY0hu/NQqxUKcO1QYHZ7WROxBFaBJfEkHy4dHz+MDgvR6GSQIe1seD/\n1rSDD8/0LWDVUf+MsnYmy0A0q2JpEHUIV0ZwVTCmmzo0k88WFAkEknkpe0E+Y7lu\nPSeXFUiRtGQrdu1CYmFZIMQphLgpj5Vy8Up4wHTtpan85UceS1mm0FuTIoBfAxAm\n3jkLSU1PAgMBAAECggEAI2CpWWl7l6K4/eUmm7x+KPAq0vckcHdfEQxY8BG2tHSb\nT33JpWryG6VPDw8i15C1sFJ0pQMckJBPE/toPg4GXXac87+ZRmQUVQ2xBG0SVJX8\nM2aCMnIJYzTMWdJGFtwm978cl70YxbZiu4uisobbKfyOGMJMbFfUTvdEgCp0y2wR\nByabwPp0kUa60zP16z4fqBmYNIqdYpWD06nWJR7PmoHeE2+OW+lvWi1v4EfYfRSl\nwtVL3ytHDZoC2rzEIuseWvKoT+cK5ULJAdf1ogtLcs52tjxy5LpjfbGPmrey5tk1\ndB8Ndr+ttPqGXkMdek5qhirVCUaaSqoPDvyEWWVWRQKBgQDZCk1X0vo0nMcJgUBm\nwsLpS9d7NYtehbg3JTQPed50c8rAHng9zvPRWHTUrRgbeJQ7VQe2teGDhpprIQq7\nQzHaiHg2Pdt8QSoMrBB7n9WvrJoGw9r6VJiBH/n2XyAaHai4Tf1s7HR9E2GuYGX8\nU55Gf685VnT/4biPtP7pulcWgwKBgQDDjen9dZwFDJ2Kk0b+pCLsc/yWdynAxo2M\nzJd2ldRN1Iwr9AIrx3gNEydTsPOwlaYC/kzZMNyCs/8nK1cWC2hgsmXcQA3PeRIz\nxZuDz8OE+eZy4hUYdkgu4e6I9HtqUBudvEwUlFbxhA72Xtx+H4Rf49bafnB++Wrf\nLWzDXloURQKBgQCeg/izEQLulCaGWaEorExgyaSKdzPgCDfgBsr8Fp0TXlKReG+H\nbPQETN+fSQCXZ7yTjOnCVxpqzk9PuOU2mb/6hLuPmiQInytP8Adl0vnlgWFJWZhA\nRrLPdARDHXy7tje4zDUwbY4yn4ozKnKyFHw/rxfR/8QZ8siyJJYdLJxYcwKBgQCM\nk5AJ7GnkF1WJMKZwl32jjR2e7LrPIezPsqOPU9XyvUCmuBp3bkUW4RX8S9BiuLFG\npZiI6V8bdlmNxtIrvreiC5y94C4NX3N+VCefcdOT3DGVlIClvSHW0gOv4FB39G5l\nzd7DTH/TzqMS6M6IvA9k/1yMZShpntL87KKrL0CCIQKBgArcBM6e9FdiFi0Wq9cq\nWdM7gZR8lphAfZgBst5xW8Nkgz5078MSFl96qZc2Xyc1RcsVTdXesz23zU8064iR\n6yF9TCoNgqN2SIs49kBUIbj+jlyurIU5XtcIj3HTjBG8LnfvLkBjiUibK1mrIc1R\njvFNrOQYBVWw/f1Rh5R35J9s\n-----END PRIVATE KEY-----\n",
+  "client_email": "test-emails@sportfoliosapp-184623.iam.gserviceaccount.com",
+  "client_id": "110025484649688284052",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/test-emails%40sportfoliosapp-184623.iam.gserviceaccount.com"
+}
+
 ```
 
 There are 2 ways to run the application:
