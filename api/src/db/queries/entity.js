@@ -144,6 +144,7 @@ const {
   updateGamesInteractiveTool: updateGamesInteractiveToolHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
   updateMember: updateMemberHelper,
+  updateMemberOptionalField: updateMemberOptionalFieldHelper,
   updateTeamAcceptation: updateTeamAcceptationHelper,
   updatePlayerAcceptation: updatePlayerAcceptationHelper,
   updateOption: updateOptionHelper,
@@ -992,6 +993,15 @@ async function updateMember(body) {
   );
   return res;
 }
+
+async function updateMemberOptionalField(body) {
+  const { membershipId, heardOrganization, gettingInvolved, frequentedSchool, jobTitle, employer } = body;
+
+  const res = await updateMemberOptionalFieldHelper(membershipId, heardOrganization, gettingInvolved, frequentedSchool, jobTitle, employer);
+
+  return res;
+}
+
 async function updateTeamAcceptation(body) {
   const { eventId, rosterId, registrationStatus } = body;
   const res = await updateTeamAcceptationHelper(
@@ -1978,6 +1988,7 @@ module.exports = {
   updateTeamAcceptation,
   updatePlayerAcceptation,
   updateMember,
+  updateMemberOptionalField,
   updateOption,
   updatePersonInfos,
   updatePreRanking,

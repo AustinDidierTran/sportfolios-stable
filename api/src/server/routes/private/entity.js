@@ -1384,6 +1384,23 @@ router.post(`${BASE_URL}/member`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/memberOptionalField`, async ctx => {
+  const entity = await queries.updateMemberOptionalField(ctx.request.body);
+  if (entity) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/report`, async ctx => {
   const report = await queries.addReport(ctx.request.body);
   if (report) {
