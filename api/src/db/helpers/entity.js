@@ -487,12 +487,27 @@ async function getAllForYouPagePosts() {
 }
 
 async function getNbOfTeamsInEvent(eventId) {
-  const prerank = await getPrerankPhase(eventId);
-  const [numberOfTeams] = await knex('phase_rankings')
-    .count('roster_id')
-    .where({ current_phase: prerank.id })
-    .whereNot({ roster_id: null });
-  return numberOfTeams.count;
+  const [{ count: countRosters }] = await knex('event_rosters')
+    .count('team_id')
+    .where({
+      event_id: eventId,
+    })
+    .whereIn('registration_status', [
+      STATUS_ENUM.ACCEPTED,
+      STATUS_ENUM.ACCEPTED_FREE,
+    ]);
+
+  const [{ count: countPersons }] = await knex('event_persons')
+    .count('person_id')
+    .where({
+      event_id: eventId,
+    })
+    .whereIn('registration_status', [
+      STATUS_ENUM.ACCEPTED,
+      STATUS_ENUM.ACCEPTED_FREE,
+    ]);
+
+  return Number(countRosters) + Number(countPersons);
 }
 
 async function getLastRankedTeam(eventId) {
@@ -2834,10 +2849,9 @@ async function updateEvent(
   endDate,
 ) {
   const realId = await getRealId(eventId);
-  const maximum_spots = maximumSpots;
   const [entity] = await knex('events')
     .update({
-      maximum_spots,
+      maximum_spots: maximumSpots,
       start_date: startDate,
       end_date: endDate,
     })
@@ -2845,22 +2859,96 @@ async function updateEvent(
     .returning('*');
 
   await updatePrerankSpots(eventId, maximumSpots);
+
   return entity;
+}
+
+async function addSpotsPreranking(spotsToAdd, nbOfSpots, prerankId) {
+  for (let i = 0; i < spotsToAdd; ++i) {
+    await knex('phase_rankings').insert({
+      current_phase: prerankId,
+      initial_position: Number(nbOfSpots + i + 1),
+    });
+  }
 }
 
 async function updatePrerankSpots(eventId, newSpots) {
   const prerank = await getPrerankPhase(eventId);
-  if (newSpots > Number(prerank.spots)) {
-    const spotsToAdd = Number(newSpots - prerank.spots);
-    for (let i = 0; i < spotsToAdd; ++i) {
-      await knex('phase_rankings').insert({
+  if (!newSpots) {
+    const [totalSpot] = await knex('phase_rankings')
+      .count('initial_position')
+      .where({
         current_phase: prerank.id,
-        initial_position: Number(prerank.spots + i + 1),
       });
+    const deleted = await knex('phase_rankings')
+      .where({
+        current_phase: prerank.id,
+        roster_id: null,
+      })
+      .del()
+      .returning('*');
+
+    const res = await knex('phase_rankings')
+      .select(
+        'initial_position',
+        'current_phase',
+        'roster_id',
+        'ranking_id',
+      )
+      .where({
+        current_phase: prerank.id,
+      });
+
+    res.sort((a, b) => a.initial_position - b.initial_position);
+
+    await Promise.all(
+      res.map(async (r, index) => {
+        await knex('phase_rankings')
+          .update({ initial_position: index + 1 })
+          .where({
+            roster_id: r.roster_id,
+            current_phase: prerank.id,
+          });
+      }),
+    );
+
+    for (let i = 0; i < deleted.length; ++i) {
+      await knex('phase_rankings')
+        .update({
+          roster_id: null,
+          origin_phase: null,
+          origin_position: null,
+        })
+        .where({
+          origin_phase: prerank.id,
+          origin_position: Number(totalSpot.count) - i,
+        });
     }
+  } else if (!prerank.spots) {
+    const [{ count: countSpots }] = await knex('phase_rankings')
+      .count('roster_id')
+      .where({
+        current_phase: prerank.id,
+      });
+
+    const spotsToAdd = Number(newSpots - countSpots);
+
+    await addSpotsPreranking(
+      spotsToAdd,
+      Number(countSpots),
+      prerank.id,
+    );
+  } else if (newSpots > Number(prerank.spots)) {
+    const spotsToAdd = Number(newSpots - prerank.spots);
+
+    await addSpotsPreranking(
+      spotsToAdd,
+      Number(prerank.spots),
+      prerank.id,
+    );
   } else if (newSpots < Number(prerank.spots)) {
-    //TODO: wrap in transaction
     const spotsToDelete = Number(prerank.spots - newSpots);
+
     const emptyRankings = await knex('phase_rankings')
       .select('*')
       .where({ current_phase: prerank.id, roster_id: null });
@@ -2912,28 +3000,57 @@ async function updatePreRanking(eventId, ranking) {
   return res;
 }
 
-async function updatePreRankingRosterId(prerank, roster_id) {
-  const [lastPosition] = await knex('phase_rankings')
-    .min('initial_position')
-    .where({ current_phase: prerank.id, roster_id: null });
+async function updatePreRankingRosterId(prerank, rosterId, eventId) {
+  const [{ maximum_spots: maximumSpots }] = await knex('events')
+    .select('maximum_spots')
+    .where({ id: eventId });
 
-  const res = await knex('phase_rankings')
-    .update({ roster_id: roster_id })
-    .where({
-      current_phase: prerank.id,
-      initial_position: Number(lastPosition.min),
-    });
+  let res = {};
+  let lastPos = 0;
+
+  if (maximumSpots) {
+    const [lastPosition] = await knex('phase_rankings')
+      .min('initial_position')
+      .where({ current_phase: prerank.id, roster_id: null });
+
+    lastPos = Number(lastPosition.min);
+
+    res = await knex('phase_rankings')
+      .update({ roster_id: rosterId })
+      .where({
+        current_phase: prerank.id,
+        initial_position: lastPos,
+      });
+  } else {
+    const [lastPosition] = await knex('phase_rankings')
+      .max('initial_position')
+      .where({ current_phase: prerank.id });
+
+    if (!lastPosition.max) {
+      lastPos = 1;
+    } else {
+      lastPos = Number(lastPosition.max) + 1;
+    }
+
+    res = await knex('phase_rankings')
+      .insert({
+        roster_id: rosterId,
+        current_phase: prerank.id,
+        initial_position: lastPos,
+      })
+      .returning('*');
+  }
 
   const [dependantRanking] = await knex('phase_rankings')
-    .update({ roster_id: roster_id })
+    .update({ roster_id: rosterId })
     .where({
       origin_phase: prerank.id,
-      origin_position: lastPosition.min,
+      origin_position: lastPos,
     })
     .returning('*');
 
   if (dependantRanking !== undefined) {
-    await updateGameTeamName(roster_id, dependantRanking);
+    await updateGameTeamName(rosterId, dependantRanking);
   }
   return res;
 }
@@ -4653,7 +4770,11 @@ async function addTeamToEvent(body) {
     registrationStatus === STATUS_ENUM.ACCEPTED ||
     registrationStatus === STATUS_ENUM.ACCEPTED_FREE
   ) {
-    await updatePreRankingRosterId(prerankPhase, rosterId);
+    await updatePreRankingRosterId(
+      prerankPhase,
+      rosterId,
+      realEventId,
+    );
   }
 
   return res;
@@ -4912,7 +5033,7 @@ async function updateTeamAcceptation(
     registrationStatus === STATUS_ENUM.ACCEPTED ||
     registrationStatus === STATUS_ENUM.ACCEPTED_FREE
   ) {
-    await updatePreRankingRosterId(prerankPhase, rosterId);
+    await updatePreRankingRosterId(prerankPhase, rosterId, realId);
   }
   return res;
 }
