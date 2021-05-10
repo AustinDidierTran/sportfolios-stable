@@ -166,10 +166,9 @@ router.get(`${BASE_URL}/edit`, async ctx => {
 });
 
 router.get(`${BASE_URL}/graphFeesByEvent`, async ctx => {
-
   const arrayGraph = await queries.getGraphFeesByEvent(
     ctx.query.eventPaymentId,
-    ctx.query.date
+    ctx.query.date,
   );
 
   if (arrayGraph) {

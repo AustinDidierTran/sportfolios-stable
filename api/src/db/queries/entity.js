@@ -472,11 +472,15 @@ async function updateEvent(body, userId) {
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  if (nbOfTeams > maximumSpots) {
+
+  if (typeof maximumSpots === 'number' && nbOfTeams > maximumSpots) {
     const reason = REJECTION_ENUM.TOO_MANY_TEAMS;
     return { reason };
   }
-  if (lastTeamInPrerank > maximumSpots) {
+  if (
+    typeof maximumSpots === 'number' &&
+    lastTeamInPrerank > maximumSpots
+  ) {
     const reason = REJECTION_ENUM.LAST_TEAM_HIGHER_THAN_SPOTS;
     return { reason };
   }
@@ -536,7 +540,11 @@ async function addTeamToEvent(body, userId) {
     throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
   }
   // Reject team if there is already too many registered teams
-  if ((await getRemainingSpotsHelper(eventId)) < 1) {
+  const numberOfTeamsRemaining = getRemainingSpotsHelper(eventId);
+  if (
+    typeof numberOfTeamsRemaining === 'number' &&
+    numberOfTeamsRemaining < 1
+  ) {
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
@@ -592,12 +600,13 @@ async function addTeamToEvent(body, userId) {
     creatorEmails.map(async email => {
       const language = await getLanguageFromEmail(email);
       const userId = await getUserIdFromEmail(email);
+      const placesLeft = await getRemainingSpotsHelper(event.id);
       sendTeamPendingRegistrationEmailToAdmin({
         email,
         team,
         event,
         language,
-        placesLeft: await getRemainingSpotsHelper(event.id),
+        placesLeft,
         userId,
       });
     });
@@ -634,12 +643,13 @@ async function addTeamToEvent(body, userId) {
     creatorEmails.map(async email => {
       const language = await getLanguageFromEmail(email);
       const userId = await getUserIdFromEmail(email);
+      const placesLeft = await getRemainingSpotsHelper(event.id);
       sendTeamRegistrationEmailToAdmin({
         email,
         team,
         event,
         language,
-        placesLeft: await getRemainingSpotsHelper(event.id),
+        placesLeft,
         userId,
       });
     });
@@ -698,7 +708,8 @@ async function addTeamAsAdmin(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   // Reject team if there is already too many registered teams
-  if ((await getRemainingSpotsHelper(eventId)) < 1) {
+  const remainingSpots = await getRemainingSpotsHelper(eventId);
+  if (typeof remainingSpots === 'number' && remainingSpots < 1) {
     return {
       status: STATUS_ENUM.REFUSED,
       reason: REJECTION_ENUM.NO_REMAINING_SPOTS,
@@ -754,7 +765,10 @@ async function addPersonToEvent(body, userId) {
 
   const remainingSpots = await getRemainingSpotsHelper(eventId);
   // Reject team if there is already too many registered teams
-  if (remainingSpots && remainingSpots < persons.length) {
+  if (
+    typeof remainingSpots === 'number' &&
+    remainingSpots < persons.length
+  ) {
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
