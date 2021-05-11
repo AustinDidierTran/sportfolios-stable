@@ -5022,6 +5022,30 @@ async function updateMember(
     .returning('*');
   return res;
 }
+
+async function updateMemberOptionalField(
+  membershipId,
+  heardOrganization,
+  gettingInvolved,
+  frequentedSchool,
+  jobTitle,
+  employer
+) {
+  const [res] = await knex('memberships')
+    .where({
+      id: membershipId
+    })
+    .update({
+      heard_organization: heardOrganization,
+      getting_involved: gettingInvolved,
+      frequented_school: frequentedSchool,
+      job_title: jobTitle,
+      employer: employer
+    })
+    .returning('*');
+  return res;
+}
+
 async function updateTeamAcceptation(
   eventId,
   rosterId,
@@ -5810,6 +5834,7 @@ module.exports = {
   updateGamesInteractiveTool,
   updateGeneralInfos,
   updateMember,
+  updateMemberOptionalField,
   updateTeamAcceptation,
   updatePlayerAcceptation,
   updateMembershipInvoice,
