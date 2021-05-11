@@ -21,7 +21,6 @@ try {
   key = require('./keys/google-keys.json');
 } catch (e) {
   /* eslint-disable-next-line */
-
   console.log(
     `There is an error, keys are probably simply not configured: ${e}`,
   );
@@ -39,7 +38,7 @@ async function sendMail({ email: emailProps, subject, text, html }) {
     return;
   }
 
-  const realSubject = `${process.env.prefix}${subject}`;
+  const realSubject = `${process.env.PREFIX}${subject}`;
 
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
