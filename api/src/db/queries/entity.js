@@ -1009,9 +1009,23 @@ async function updateMember(body) {
 }
 
 async function updateMemberOptionalField(body) {
-  const { membershipId, heardOrganization, gettingInvolved, frequentedSchool, jobTitle, employer } = body;
+  const {
+    membershipId,
+    heardOrganization,
+    gettingInvolved,
+    frequentedSchool,
+    jobTitle,
+    employer,
+  } = body;
 
-  const res = await updateMemberOptionalFieldHelper(membershipId, heardOrganization, gettingInvolved, frequentedSchool, jobTitle, employer);
+  const res = await updateMemberOptionalFieldHelper(
+    membershipId,
+    heardOrganization,
+    gettingInvolved,
+    frequentedSchool,
+    jobTitle,
+    employer,
+  );
 
   return res;
 }
@@ -1251,9 +1265,11 @@ async function addMember(body, userId) {
   const { membershipId, organizationId, personId } = body;
 
   const membership = await getMembership(membershipId);
+
   if (membership.price === 0) {
     return addMemberManuallyHelper(body);
   }
+
   const res = await addMemberHelper(body);
   const person = (await getEntity(personId)).basicInfos;
   const organization = (await getEntity(organizationId)).basicInfos;
