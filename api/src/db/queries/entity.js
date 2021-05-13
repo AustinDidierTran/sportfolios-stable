@@ -148,6 +148,7 @@ const {
   updateTeamAcceptation: updateTeamAcceptationHelper,
   updatePlayerAcceptation: updatePlayerAcceptationHelper,
   updateOption: updateOptionHelper,
+  updateMembershipTermsAndConditions: updateMembershipTermsAndConditionsHelper,
   updatePersonInfosHelper,
   updatePlayerPaymentStatus: updatePlayerPaymentStatusHelper,
   updatePreRanking: updatePreRankingHelper,
@@ -1156,6 +1157,10 @@ async function updateOption(body) {
   return updateOptionHelper(body);
 }
 
+async function updateMembershipTermsAndConditions(body) {
+  return updateMembershipTermsAndConditionsHelper(body);
+}
+
 async function updateGame(body) {
   const {
     gameId,
@@ -2004,6 +2009,7 @@ module.exports = {
   updateMember,
   updateMemberOptionalField,
   updateOption,
+  updateMembershipTermsAndConditions,
   updatePersonInfos,
   updatePreRanking,
   updateRegistration,

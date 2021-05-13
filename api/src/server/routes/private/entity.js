@@ -1279,6 +1279,23 @@ router.put(`${BASE_URL}/updateOption`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/updateMembershipTermsAndConditions`, async ctx => {
+  const membership = await queries.updateMembershipTermsAndConditions(ctx.request.body);
+  if (membership) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: membership,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.post(BASE_URL, async ctx => {
   const entityId = await queries.addEntity(
     ctx.request.body,

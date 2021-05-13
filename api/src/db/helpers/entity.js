@@ -3536,6 +3536,18 @@ async function updateOption(body) {
     .where({ id });
 }
 
+async function updateMembershipTermsAndConditions(body) {
+  const { id, description, fileName, fileUrl } = body;
+
+  return knex('entity_memberships')
+    .update({
+      description: description,
+      file_name: fileName,
+      file_url: fileUrl
+    })
+    .where({ id });
+}
+
 const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
   var list = [];
   for (const rosterId of rosterIds) {
@@ -5839,6 +5851,7 @@ module.exports = {
   updatePlayerAcceptation,
   updateMembershipInvoice,
   updateOption,
+  updateMembershipTermsAndConditions,
   updatePersonInfosHelper,
   updatePhase,
   updatePhaseGamesRosterId,
