@@ -1022,6 +1022,7 @@ async function generateMembersReport(report) {
     }
     return filter;
   }, []);
+
   const res = await Promise.all(
     reduce.map(async a => {
       const person = await getPersonInfos(a.person_id);
@@ -2580,13 +2581,15 @@ async function getGraphMemberCount(organizationId, date) {
       ( ('${date}'::timestamp - interval '30' day )::timestamp
       , '${date}'::timestamp
       , interval '1 day')::date AS date
-      FROM memberships e
-      ) s
+      FROM memberships e WHERE expiration_date IN (
+        SELECT MAX(expiration_date) FROM memberships GROUP BY person_id, member_type )
+        ) s
     where organization_id = '${organizationId}' and created_at::date <= date and expiration_date::date >= date
     group by date
     order by date asc`,
     ),
   );
+
   const newData = graphData.map((o, i) => {
     return {
       x: i + 1,
@@ -5029,18 +5032,18 @@ async function updateMemberOptionalField(
   gettingInvolved,
   frequentedSchool,
   jobTitle,
-  employer
+  employer,
 ) {
   const [res] = await knex('memberships')
     .where({
-      id: membershipId
+      id: membershipId,
     })
     .update({
       heard_organization: heardOrganization,
       getting_involved: gettingInvolved,
       frequented_school: frequentedSchool,
       job_title: jobTitle,
-      employer: employer
+      employer: employer,
     })
     .returning('*');
   return res;
