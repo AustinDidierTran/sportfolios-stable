@@ -499,7 +499,6 @@ async function getNbOfTeamsInEvent(eventId) {
       STATUS_ENUM.ACCEPTED,
       STATUS_ENUM.ACCEPTED_FREE,
     ]);
-
   const [{ count: countPersons }] = await knex('event_persons')
     .count('person_id')
     .where({
@@ -2861,7 +2860,6 @@ async function updateEvent(
   startDate,
   endDate,
 ) {
-  console.log({ eventId, maximumSpots, startDate, endDate });
   const realId = await getRealId(eventId);
   const [entity] = await knex('events')
     .update({
@@ -2871,7 +2869,6 @@ async function updateEvent(
     })
     .where({ id: realId })
     .returning('*');
-  console.log({ entity });
   await updatePrerankSpots(eventId, maximumSpots);
 
   return entity;
@@ -2887,17 +2884,13 @@ async function addSpotsPreranking(spotsToAdd, nbOfSpots, prerankId) {
 }
 
 async function updatePrerankSpots(eventId, newSpots) {
-  console.log({ eventId, newSpots });
   const prerank = await getPrerankPhase(eventId);
-  console.log({ prerank });
   if (!newSpots) {
-    console.log('!newSpots');
     const [totalSpot] = await knex('phase_rankings')
       .count('initial_position')
       .where({
         current_phase: prerank.id,
       });
-    console.log({ totalSpot });
     const deleted = await knex('phase_rankings')
       .where({
         current_phase: prerank.id,
@@ -2905,7 +2898,6 @@ async function updatePrerankSpots(eventId, newSpots) {
       })
       .del()
       .returning('*');
-    console.log({ deleted });
 
     const res = await knex('phase_rankings')
       .select(
@@ -2917,7 +2909,6 @@ async function updatePrerankSpots(eventId, newSpots) {
       .where({
         current_phase: prerank.id,
       });
-    console.log({ res });
 
     res.sort((a, b) => a.initial_position - b.initial_position);
 
@@ -2931,7 +2922,6 @@ async function updatePrerankSpots(eventId, newSpots) {
           });
       }),
     );
-    console.log('await Promise');
 
     for (let i = 0; i < deleted.length; ++i) {
       await knex('phase_rankings')
@@ -2945,45 +2935,34 @@ async function updatePrerankSpots(eventId, newSpots) {
           origin_position: Number(totalSpot.count) - i,
         });
     }
-    console.log('fin');
   } else if (!prerank.spots) {
-    console.log('!prerank.spots');
     const [{ count: countSpots }] = await knex('phase_rankings')
       .count('roster_id')
       .where({
         current_phase: prerank.id,
       });
-    console.log({ countSpots });
 
     const spotsToAdd = Number(newSpots - countSpots);
-    console.log({ spotsToAdd });
 
     await addSpotsPreranking(
       spotsToAdd,
       Number(countSpots),
       prerank.id,
     );
-    console.log('fin');
   } else if (newSpots > Number(prerank.spots)) {
-    console.log('newSpots > Number(prerank.spots)');
     const spotsToAdd = Number(newSpots - prerank.spots);
-    console.log({ spotsToAdd });
 
     await addSpotsPreranking(
       spotsToAdd,
       Number(prerank.spots),
       prerank.id,
     );
-    console.log('fin');
   } else if (newSpots < Number(prerank.spots)) {
-    console.log('newSpots < Number(prerank.spots)');
     const spotsToDelete = Number(prerank.spots - newSpots);
-    console.log({ spotsToDelete });
 
     const emptyRankings = await knex('phase_rankings')
       .select('*')
       .where({ current_phase: prerank.id, roster_id: null });
-    console.log({ emptyRankings });
 
     emptyRankings.sort(
       (a, b) => a.initial_position - b.initial_position,
@@ -3006,14 +2985,12 @@ async function updatePrerankSpots(eventId, newSpots) {
           origin_position: rank.initial_position,
         });
     }
-    console.log('fin');
   } else if (newSpots === Number(prerank.spots)) {
     return;
   }
   await knex('phase')
     .update({ spots: newSpots })
     .where({ id: prerank.id });
-  console.log('lastCall');
 }
 
 async function updatePreRanking(eventId, ranking) {
