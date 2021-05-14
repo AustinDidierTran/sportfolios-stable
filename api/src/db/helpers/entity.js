@@ -490,27 +490,33 @@ async function getAllForYouPagePosts() {
 }
 
 async function getNbOfTeamsInEvent(eventId) {
-  const [{ count: countRosters }] = await knex('event_rosters')
-    .count('team_id')
-    .where({
-      event_id: eventId,
-    })
-    .whereIn('registration_status', [
-      STATUS_ENUM.ACCEPTED,
-      STATUS_ENUM.ACCEPTED_FREE,
-    ]);
+  console.log({ eventId });
+  try {
+    const [{ count: countRosters }] = await knex('event_rosters')
+      .count('team_id')
+      .where({
+        event_id: eventId,
+      })
+      .whereIn('registration_status', [
+        STATUS_ENUM.ACCEPTED,
+        STATUS_ENUM.ACCEPTED_FREE,
+      ]);
+    console.log({ countRosters });
+    const [{ count: countPersons }] = await knex('event_persons')
+      .count('person_id')
+      .where({
+        event_id: eventId,
+      })
+      .whereIn('registration_status', [
+        STATUS_ENUM.ACCEPTED,
+        STATUS_ENUM.ACCEPTED_FREE,
+      ]);
 
-  const [{ count: countPersons }] = await knex('event_persons')
-    .count('person_id')
-    .where({
-      event_id: eventId,
-    })
-    .whereIn('registration_status', [
-      STATUS_ENUM.ACCEPTED,
-      STATUS_ENUM.ACCEPTED_FREE,
-    ]);
-
-  return Number(countRosters) + Number(countPersons);
+    console.log({ countPersons });
+    return Number(countRosters) + Number(countPersons);
+  } catch (e) {
+    console.log({ e });
+  }
 }
 
 async function getLastRankedTeam(eventId) {
