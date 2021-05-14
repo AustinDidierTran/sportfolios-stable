@@ -466,19 +466,14 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
 }
 
 async function updateEvent(body, userId) {
-  console.log('updateEvent');
   const { eventId, maximumSpots, startDate, endDate } = body;
-  console.log({ eventId, maximumSpots, startDate, endDate });
   const nbOfTeams = await getNbOfTeamsInEventHelper(eventId);
-  console.log({ nbOfTeams });
   const lastTeamInPrerank = await getLastRankedTeamHelper(eventId);
-  console.log({ lastTeamInPrerank });
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  console.log({ lastTeamInPrerank });
 
   if (typeof maximumSpots === 'number' && nbOfTeams > maximumSpots) {
     const reason = REJECTION_ENUM.TOO_MANY_TEAMS;
@@ -491,7 +486,6 @@ async function updateEvent(body, userId) {
     const reason = REJECTION_ENUM.LAST_TEAM_HIGHER_THAN_SPOTS;
     return { reason };
   }
-  console.log('updateEventHelper');
   const res = await updateEventHelper(
     eventId,
     maximumSpots,
