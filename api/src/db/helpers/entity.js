@@ -135,7 +135,9 @@ const addEntity = async (body, userId) => {
           .insert({
             id: entityId,
             start_date: startDate,
+            start_varchar: startDate,
             end_date: endDate,
+            end_varchar: endDate,
             maximum_spots: maximumSpots,
           })
           .returning('*')
@@ -2866,6 +2868,8 @@ async function updateEvent(
       maximum_spots: maximumSpots,
       start_date: startDate,
       end_date: endDate,
+      start_varchar: startDate,
+      end_varchar: endDate,
     })
     .where({ id: realId })
     .returning('*');
