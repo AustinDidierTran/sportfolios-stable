@@ -1,8 +1,8 @@
 /* Replace with your SQL commands */
 ALTER TABLE events
-  ADD COLUMN start_time VARCHAR (255),
-  ADD COLUMN end_time VARCHAR (255);
+  ADD COLUMN start_varchar VARCHAR (255),
+  ADD COLUMN end_varchar VARCHAR (255);
 
 UPDATE events SET 
-  start_time=start_date::time, 
-  end_time=end_date::time;
+  start_varchar=start_date, 
+  end_varchar=end_date;

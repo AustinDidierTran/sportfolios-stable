@@ -45,9 +45,7 @@ const addEntity = async (body, userId) => {
     surname,
     type,
     startDate,
-    startTime,
     endDate,
-    endTime,
     maximumSpots,
   } = body;
 
@@ -137,9 +135,9 @@ const addEntity = async (body, userId) => {
           .insert({
             id: entityId,
             start_date: startDate,
-            start_time: startTime,
+            start_varchar: startDate,
             end_date: endDate,
-            end_time: endTime,
+            end_varchar: endDate,
             maximum_spots: maximumSpots,
           })
           .returning('*')
@@ -2862,18 +2860,16 @@ async function updateEvent(
   eventId,
   maximumSpots,
   startDate,
-  startTime,
   endDate,
-  endTime,
 ) {
   const realId = await getRealId(eventId);
   const [entity] = await knex('events')
     .update({
       maximum_spots: maximumSpots,
       start_date: startDate,
-      start_time: startTime,
       end_date: endDate,
-      end_time: endTime,
+      start_varchar: startDate,
+      end_varchar: endDate,
     })
     .where({ id: realId })
     .returning('*');
