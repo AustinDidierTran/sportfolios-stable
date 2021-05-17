@@ -466,7 +466,14 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
 }
 
 async function updateEvent(body, userId) {
-  const { eventId, maximumSpots, startDate, endDate } = body;
+  const {
+    eventId,
+    maximumSpots,
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+  } = body;
   const nbOfTeams = await getNbOfTeamsInEventHelper(eventId);
   const lastTeamInPrerank = await getLastRankedTeamHelper(eventId);
   if (
@@ -490,8 +497,9 @@ async function updateEvent(body, userId) {
     eventId,
     maximumSpots,
     startDate,
+    startTime,
     endDate,
-    userId,
+    endTime,
   );
 
   return res;
