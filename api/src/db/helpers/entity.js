@@ -1181,7 +1181,7 @@ async function getOrganizationTokenPromoCode(organizationId){
     .where(
       knex.raw(`metadata ->> 'organizationId' = '${organizationId}'`)
     )
-    .orderBy('expires_at');
+    .orderBy('created_at');
 
   return res;
 }
