@@ -193,6 +193,8 @@ const createTransfers = async invoice => {
           .select('tax_rate_id')
           .where({ stripe_price_id: invoiceItem.stripe_price_id });
 
+        console.log({ amount });
+
         console.log({ taxRatesId });
 
         const taxRates = await Promise.all(
@@ -206,7 +208,7 @@ const createTransfers = async invoice => {
 
         console.log({ taxRates });
         const totalAmount = taxRates.reduce(
-          (prev, rate) => prev * (rate / 100),
+          (prev, rate) => prev * (1 + rate / 100),
           amount,
         );
         console.log({ totalAmount });
