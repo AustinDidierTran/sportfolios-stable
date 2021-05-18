@@ -94,6 +94,7 @@ const {
   getLastRankedTeam: getLastRankedTeamHelper,
   getOptions: getOptionsHelper,
   getOrganizationMembers: getOrganizationMembersHelper,
+  getOrganizationTokenPromoCode: getOrganizationTokenPromoCodeHelper,
   getOwnedEvents: getOwnedEventsHelper,
   getOwnerStripePrice,
   getPersonGames: getPersonGamesHelper,
@@ -262,6 +263,19 @@ async function getOrganizationMembers(organizationId, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return getOrganizationMembersHelper(organizationId);
+}
+
+async function getOrganizationTokenPromoCode(organizationId, userId){
+  if (
+    !(await isAllowed(
+      organizationId,
+      userId,
+      ENTITIES_ROLE_ENUM.EDITOR,
+    ))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return getOrganizationTokenPromoCodeHelper(organizationId);
 }
 
 async function eventInfos(id, user_id) {
@@ -1984,6 +1998,7 @@ module.exports = {
   getNewRosterInviteToken,
   getOptions,
   getOrganizationMembers,
+  getOrganizationTokenPromoCode,
   getOwnedEvents,
   getPersonInfos,
   getPhases,

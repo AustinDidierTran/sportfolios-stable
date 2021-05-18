@@ -513,6 +513,25 @@ router.get(`${BASE_URL}/organizationMembers`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/organizationTokenPromoCode`, async ctx => {
+  const entity = await queries.getOrganizationTokenPromoCode(
+    ctx.query.id,
+    ctx.body.userInfo.id,
+    );
+  if (entity) {
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/memberships`, async ctx => {
   const entity = await queries.getMemberships(ctx.query.id);
 
