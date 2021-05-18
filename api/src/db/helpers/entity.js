@@ -320,6 +320,11 @@ async function getAllOwnedEntities(
   }));
 }
 
+async function getEmailsLandingPage() {
+  const emails = await knex('landing_page_emails').select('email');
+  return emails.map(e => e.email);
+}
+
 async function getOwnedEvents(organizationId) {
   const realId = await getRealId(organizationId);
   const events = await knex('events_infos')
@@ -5870,6 +5875,7 @@ module.exports = {
   getEmailPerson,
   getEmailsEntity,
   getEntitiesTypeById,
+  getEmailsLandingPage,
   getEntity,
   getEntityOwners,
   getEntityRole,

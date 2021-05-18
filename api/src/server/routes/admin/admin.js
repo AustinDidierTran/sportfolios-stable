@@ -24,6 +24,15 @@ router.get(`${BASE_URL}/newsLetterSubscriptions`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/emailsLandingPage`, async ctx => {
+  const emails = await queries.getEmailsLandingPage();
+
+  ctx.body = {
+    status: 'success',
+    data: emails,
+  };
+});
+
 router.get(`${BASE_URL}/sports`, async ctx => {
   const sports = await queries.getAllSports();
   ctx.body = {
@@ -84,6 +93,24 @@ router.post(`${BASE_URL}/sport`, async ctx => {
     };
   }
 });
+
+router.post(`${BASE_URL}/emailLandingPage`, async ctx => {
+  const email = await queries.addEmailLandingPage(ctx.request.body);
+  if (email) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: email,
+    };
+  } else {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/taxRate`, async ctx => {
   const tax = await queries.createTaxRate(ctx.request.body);
   if (tax) {
@@ -214,6 +241,14 @@ router.put(`${BASE_URL}/gaPageviews/:id`, async ctx => {
 
 router.del(`${BASE_URL}/deleteTaxRate`, async ctx => {
   const data = await queries.deleteTaxRate(ctx.query);
+  ctx.body = {
+    status: 'success',
+    data,
+  };
+});
+
+router.del(`${BASE_URL}/emailLandingPage`, async ctx => {
+  const data = await queries.deleteEmailLandingPage(ctx.query);
   ctx.body = {
     status: 'success',
     data,

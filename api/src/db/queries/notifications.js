@@ -25,7 +25,10 @@ const {
   setChatbotInfos,
   getChatbotInfos,
 } = require('../helpers');
-const { getGameTeams } = require('../helpers/entity');
+const {
+  getGameTeams,
+  getEmailsLandingPage,
+} = require('../helpers/entity');
 
 const {
   SOCKET_EVENT,
@@ -191,10 +194,7 @@ const sendEmailNotification = async (userId, emailInfos) => {
 const sendMessageToSportfoliosAdmin = async body => {
   const { name, email, message } = body;
 
-  const emails = [
-    'austindidier@sportfolios.app',
-    'emilie@sportfolios.app',
-  ];
+  const emails = await getEmailsLandingPage();
 
   const subject = `Landing page message`;
 
