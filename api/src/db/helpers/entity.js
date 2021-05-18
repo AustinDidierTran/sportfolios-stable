@@ -1176,6 +1176,17 @@ async function getOrganizationMembers(organizationId) {
   return res;
 }
 
+async function getOrganizationTokenPromoCode(organizationId){
+  const res = await knex('token_promo_code')
+    .select('token_id', 'expires_at', 'used', 'email')
+    .where(
+      knex.raw(`metadata ->> 'organizationId' = '${organizationId}'`)
+    )
+    .orderBy('created_at');
+
+  return res;
+}
+
 async function getOptions(eventId) {
   const realId = await getRealId(eventId);
   const res = await knex('event_payment_options')
@@ -5860,6 +5871,7 @@ module.exports = {
   getRosterByEventAndUser,
   getOptions,
   getOrganizationMembers,
+  getOrganizationTokenPromoCode,
   getOwnedEvents,
   getOwnerStripePrice,
   getPersonGames,
