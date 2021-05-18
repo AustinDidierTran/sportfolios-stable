@@ -193,10 +193,6 @@ const createTransfers = async invoice => {
           .select('tax_rate_id')
           .where({ stripe_price_id: invoiceItem.stripe_price_id });
 
-        console.log({ amount });
-
-        console.log({ taxRatesId });
-
         const taxRates = await Promise.all(
           taxRatesId.map(async t => {
             const [{ percentage }] = await knex('tax_rates')
@@ -206,18 +202,15 @@ const createTransfers = async invoice => {
           }),
         );
 
-        console.log({ taxRates });
         const totalAmount = Math.floor(
           taxRates.reduce(
             (prev, rate) => prev + amount * (rate / 100),
             amount,
           ),
         );
-        console.log({ totalAmount });
 
         const transferedAmount = totalAmount - transactionFees;
 
-        console.log({ transferedAmount });
         const transfer = await createTransfer(
           {
             amount: transferedAmount,
@@ -233,7 +226,6 @@ const createTransfers = async invoice => {
           invoiceItemId,
         );
 
-        console.log({ transfer });
         return transfer;
       }),
     );
