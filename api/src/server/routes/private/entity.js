@@ -64,6 +64,19 @@ router.get(`${BASE_URL}`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/realId`, async ctx => {
+  const entity = await queries.getRealId(ctx.query.id);
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: entity,
+  };
+});
+
 router.get(`${BASE_URL}/editRankings`, async ctx => {
   const entity = await EventController.editRankings(
     ctx.query.id,

@@ -107,7 +107,6 @@ const {
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getPreranking: getPrerankingHelper,
   getPrimaryPerson: getPrimaryPersonHelper,
-  getRealId,
   getRegistered: getRegisteredHelper,
   getRegisteredPersons,
   getRegistrationIndividualPaymentOption: getRegistrationIndividualPaymentOptionHelper,
@@ -164,6 +163,8 @@ const {
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
   updateTeamAcceptation: updateTeamAcceptationHelper,
+  getTeamIdFromRosterId,
+  getRealId: getRealIdHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -489,13 +490,7 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
 }
 
 async function updateEvent(body, userId) {
-  const {
-    eventId: notRealId,
-    maximumSpots,
-    startDate,
-    endDate,
-  } = body;
-  const eventId = getRealId(notRealId);
+  const { eventId, maximumSpots, startDate, endDate } = body;
   const nbOfTeams = await getNbOfTeamsInEventHelper(eventId);
   const lastTeamInPrerank = await getLastRankedTeamHelper(eventId);
   if (
@@ -524,6 +519,12 @@ async function updateEvent(body, userId) {
 
   return res;
 }
+
+async function getRealId(id) {
+  const res = await getRealIdHelper(id);
+  return res;
+}
+
 async function updatePreRanking(body, userId) {
   const { eventId, ranking } = body;
   if (
@@ -1583,8 +1584,7 @@ const canUnregisterTeamsList = async (rosterIds, eventId) => {
 };
 
 const unregisterTeams = async (body, userId) => {
-  const { eventId: notRealId, rosterIds } = body;
-  const eventId = await getRealId(notRealId);
+  const { eventId, rosterIds } = body;
 
   const result = { failed: false, data: [] };
   if (
@@ -1677,8 +1677,7 @@ const unregisterTeams = async (body, userId) => {
 };
 
 const unregisterPeople = async (body, userId) => {
-  const { eventId: notRealId, people } = body;
-  const eventId = await getRealId(notRealId);
+  const { eventId, people } = body;
   const result = { failed: false, data: [] };
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
@@ -2044,6 +2043,7 @@ module.exports = {
   getPossibleSubmissionerInfos,
   getPreranking,
   getPrimaryPerson,
+  getRealId,
   getRegistered,
   getRemainingSpots,
   getReports,

@@ -326,7 +326,6 @@ async function getEmailsLandingPage() {
 }
 
 async function getOwnedEvents(organizationId) {
-  const realId = await getRealId(organizationId);
   const events = await knex('events_infos')
     .select('*')
     .leftJoin(
@@ -335,7 +334,7 @@ async function getOwnedEvents(organizationId) {
       '=',
       'entities_role.entity_id',
     )
-    .where('entities_role.entity_id_admin', '=', realId)
+    .where('entities_role.entity_id_admin', '=', organizationId)
     .whereNull('deleted_at');
 
   const fullEvents = await Promise.all(
@@ -395,17 +394,14 @@ async function getAllTypeEntities(type) {
 }
 
 async function getEntitiesTypeById(entityId) {
-  const realId = await getRealId(entityId);
   const [data] = await knex('entities')
     .select('type')
-    .where('id', realId);
+    .where('id', entityId);
 
   return data.type;
 }
 
 async function getAllRolesEntity(entityId) {
-  const realId = await getRealId(entityId);
-
   const entities_role = await knex('entities_role')
     .select(
       'entity_id_admin',
@@ -427,7 +423,7 @@ async function getAllRolesEntity(entityId) {
       '=',
       'entities.id',
     )
-    .where('entities_role.entity_id', realId)
+    .where('entities_role.entity_id', entityId)
     .orderBy('entities_role.role');
 
   return entities_role.map(e => {
@@ -558,8 +554,6 @@ async function getRealId(id) {
 }
 
 async function getEntity(id, userId) {
-  const realId = await getRealId(id);
-
   const [entity] = await knex('entities')
     .select(
       'entities.id',
@@ -589,11 +583,11 @@ async function getEntity(id, userId) {
       '=',
       'person_infos.address_id',
     )
-    .where('entities.id', '=', realId);
+    .where('entities.id', '=', id);
 
   let role = -1;
   if (userId !== -1) {
-    role = await getEntityRole(realId, userId);
+    role = await getEntityRole(id, userId);
   }
 
   return {
@@ -754,19 +748,17 @@ async function getTeamGamesInfos(id) {
 }
 
 async function getCreator(id) {
-  const realId = await getRealId(id);
   const [creator] = await knex('entities_role')
     .select('*')
-    .where({ entity_id: realId, role: 1 });
+    .where({ entity_id: id, role: 1 });
 
   const data = (await getEntity(creator.entity_id_admin)).basicInfos;
   return data;
 }
 async function getCreators(id) {
-  const realId = await getRealId(id);
   const creators = await knex('entities_role')
     .select('*')
-    .where({ entity_id: realId, role: 1 });
+    .where({ entity_id: id, role: 1 });
 
   const data = await Promise.all(
     creators.map(async c => {
@@ -778,10 +770,9 @@ async function getCreators(id) {
 
 async function getCreatorsEmails(id) {
   //Could be done in one query
-  const realId = await getRealId(id);
   const creators = await knex('entities_role')
     .select('*')
-    .where({ entity_id: realId, role: 1 });
+    .where({ entity_id: id, role: 1 });
 
   const emails = await Promise.all(
     creators.map(async c => {
@@ -801,10 +792,9 @@ async function getCreatorsEmails(id) {
 }
 async function getTeamCreatorEmail(teamId) {
   //Could be done in one query
-  const realId = await getRealId(teamId);
   const [creator] = await knex('entities_role')
     .select('*')
-    .where({ entity_id: realId, role: 1 });
+    .where({ entity_id: teamId, role: 1 });
 
   const email = await getEmailPerson(creator.entity_id_admin);
   return email;
@@ -846,7 +836,6 @@ const findRole = async (entityId, lookedFor, role, cpt) => {
   if (cpt > 5) {
     return ENTITIES_ROLE_ENUM.VIEWER;
   }
-  const realId = await getRealId(entityId);
   const entities = await knex('entities_role')
     .select('*')
     .leftJoin(
@@ -856,7 +845,7 @@ const findRole = async (entityId, lookedFor, role, cpt) => {
       'entities_role.entity_id',
     )
     .whereNull('entities.deleted_at')
-    .where({ entity_id_admin: realId });
+    .where({ entity_id_admin: entityId });
 
   const roles = await Promise.all(
     entities.map(async entity => {
@@ -878,7 +867,6 @@ const findRole = async (entityId, lookedFor, role, cpt) => {
 };
 
 async function getEntityRole(entityId, userId) {
-  const realId = await getRealId(entityId);
   if (!userId) {
     return ENTITIES_ROLE_ENUM.VIEWER;
   }
@@ -897,7 +885,7 @@ async function getEntityRole(entityId, userId) {
       if (entity.entity_id === entityId) {
         return entity.role;
       } else {
-        return findRole(entity.entity_id, realId, entity.role, 0);
+        return findRole(entity.entity_id, entityId, entity.role, 0);
       }
     }),
   );
@@ -905,8 +893,6 @@ async function getEntityRole(entityId, userId) {
 }
 
 async function getMembers(personId, organizationId) {
-  const realId = await getRealId(organizationId);
-
   const members = await knex('memberships_infos')
     .select('*')
     .rightJoin(
@@ -917,7 +903,7 @@ async function getMembers(personId, organizationId) {
     )
     .where('entities.id', '=', personId)
     .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
-    .andWhere({ organization_id: realId });
+    .andWhere({ organization_id: organizationId });
 
   const reduce = members.reduce((prev, curr) => {
     let addCurr = true;
@@ -967,10 +953,9 @@ async function getMembers(personId, organizationId) {
 // }
 
 async function getReports(entityId) {
-  const realId = await getRealId(entityId);
   const reports = await knex('reports')
     .select('*')
-    .where({ entity_id: realId });
+    .where({ entity_id: entityId });
 
   const sorted = reports.sort((a, b) => {
     return moment(b.created_at) - moment(a.created_at);
@@ -994,11 +979,10 @@ async function generateReport(reportId) {
 }
 
 async function getPrerankPhase(eventId) {
-  const realId = await getRealId(eventId);
   const [res] = await knex('phase')
     .select('*')
     .where({
-      event_id: realId,
+      event_id: eventId,
       phase_order: 0,
       name: 'prerank',
     });
@@ -1130,7 +1114,6 @@ async function generateSalesReport(report) {
 }
 
 async function getOrganizationMembers(organizationId) {
-  const realId = await getRealId(organizationId);
   const members = await knex('memberships')
     .select('*')
     .rightJoin(
@@ -1141,7 +1124,7 @@ async function getOrganizationMembers(organizationId) {
     )
     .whereNull('deleted_at')
     .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
-    .andWhere({ organization_id: realId });
+    .andWhere({ organization_id: organizationId });
   const reduce = members.reduce((prev, curr) => {
     let addCurr = true;
     const filter = prev.filter(p => {
@@ -1193,7 +1176,6 @@ async function getOrganizationTokenPromoCode(organizationId) {
 }
 
 async function getOptions(eventId) {
-  const realId = await getRealId(eventId);
   const res = await knex('event_payment_options')
     .select(
       'event_payment_options.name',
@@ -1216,7 +1198,7 @@ async function getOptions(eventId) {
       'event_payment_options.event_id',
     )
     .whereNull('event_payment_options.deleted_at')
-    .andWhere({ event_id: realId })
+    .andWhere({ event_id: eventId })
     .orderBy('event_payment_options.created_at');
 
   return Promise.all(
@@ -1264,10 +1246,9 @@ async function getOptions(eventId) {
 }
 
 async function getMemberships(entityId) {
-  const realId = await getRealId(entityId);
   const memberships = await knex('entity_memberships')
     .select('*')
-    .where({ entity_id: realId });
+    .where({ entity_id: entityId });
 
   return Promise.all(
     memberships.map(async m => {
@@ -1302,10 +1283,9 @@ async function getTransactionFeesFromStripePriceId(stripePriceId) {
 }
 
 async function hasMemberships(organizationId) {
-  const realId = await getRealId(organizationId);
   const memberships = await knex('entity_memberships')
     .select('*')
-    .where({ entity_id: realId });
+    .where({ entity_id: organizationId });
   return Boolean(memberships.length);
 }
 
@@ -1317,16 +1297,14 @@ async function getMembership(membershipId) {
 }
 
 async function getRegistered(teamId, eventId) {
-  const realTeamId = await getRealId(teamId);
-  const realEventId = await getRealId(eventId);
   const rosters = await knex('team_rosters')
     .select('id')
-    .where({ team_id: realTeamId });
+    .where({ team_id: teamId });
   const rostersId = rosters.map(roster => roster.id);
   return knex('event_rosters')
     .select('*')
     .where({
-      event_id: realEventId,
+      event_id: eventId,
       registration_status: STATUS_ENUM.ACCEPTED,
     })
     .whereIn('roster_id', rostersId);
@@ -1414,11 +1392,10 @@ async function getPersonPaymentOption(personId, eventId) {
 }
 
 async function getTeamCaptains(teamId, userId) {
-  const realId = await getRealId(teamId);
   const caps = await knex('entities_role')
     .select('entity_id_admin')
     .where('role', '=', ENTITIES_ROLE_ENUM.ADMIN)
-    .andWhere('entity_id', '=', realId);
+    .andWhere('entity_id', '=', teamId);
 
   const captainIds = caps.map(c => c.entity_id_admin);
 
@@ -1437,27 +1414,24 @@ async function getPaymentOption(paymentOptionId) {
 }
 
 async function getAllTeamsRegistered(eventId) {
-  const realId = await getRealId(eventId);
   const teams = await knex('event_rosters')
     .select('*')
     .where({
-      event_id: realId,
+      event_id: eventId,
     });
   return teams;
 }
 
 async function getAllPeopleRegistered(eventId) {
-  const realId = await getRealId(eventId);
   const people = await knex('event_persons')
     .select('*')
     .where({
-      event_id: realId,
+      event_id: eventId,
     });
   return people;
 }
 
 async function getAllTeamsAcceptedRegistered(eventId) {
-  const realId = await getRealId(eventId);
   const teams = await knex('event_rosters')
     .select('*')
     .whereIn('registration_status', [
@@ -1465,13 +1439,12 @@ async function getAllTeamsAcceptedRegistered(eventId) {
       STATUS_ENUM.ACCEPTED_FREE,
     ])
     .andWhere({
-      event_id: realId,
+      event_id: eventId,
     });
   return teams;
 }
 
 async function getAllPlayersAcceptedRegistered(eventId) {
-  const realId = await getRealId(eventId);
   const people = await knex('event_persons')
     .select('*')
     .whereIn('registration_status', [
@@ -1479,7 +1452,7 @@ async function getAllPlayersAcceptedRegistered(eventId) {
       STATUS_ENUM.ACCEPTED_FREE,
     ])
     .andWhere({
-      event_id: realId,
+      event_id: eventId,
     });
   return people;
 }
@@ -1665,11 +1638,10 @@ async function getAllPeopleRegisteredInfos(eventId, userId) {
 }
 
 async function getRemainingSpots(eventId) {
-  const realId = await getRealId(eventId);
   const [{ count: countRosters }] = await knex('event_rosters')
     .count('team_id')
     .where({
-      event_id: realId,
+      event_id: eventId,
     })
     .whereIn('registration_status', [
       STATUS_ENUM.ACCEPTED,
@@ -1679,7 +1651,7 @@ async function getRemainingSpots(eventId) {
   const [{ count: countPersons }] = await knex('event_persons')
     .count('person_id')
     .where({
-      event_id: realId,
+      event_id: eventId,
     })
     .whereIn('registration_status', [
       STATUS_ENUM.ACCEPTED,
@@ -1688,7 +1660,7 @@ async function getRemainingSpots(eventId) {
 
   const [event] = await knex('events')
     .select('maximum_spots')
-    .where({ id: realId });
+    .where({ id: eventId });
 
   if (!event.maximum_spots) {
     return null;
@@ -1699,8 +1671,7 @@ async function getRemainingSpots(eventId) {
 }
 
 async function getPreranking(eventId) {
-  const realId = await getRealId(eventId);
-  const prerankPhase = await getPrerankPhase(realId);
+  const prerankPhase = await getPrerankPhase(eventId);
 
   const preranking = await knex('phase_rankings')
     .select('*')
@@ -1735,19 +1706,17 @@ async function getPreranking(eventId) {
 }
 
 async function getRegistrationStatus(rosterId) {
-  const realRosterId = await getRealId(rosterId);
   const [registration] = await knex('event_rosters')
     .select('registration_status')
     .where({
-      roster_id: realRosterId,
+      roster_id: rosterId,
     });
 
   return registration.registration_status;
 }
 
 async function getRoster(rosterId, withSub) {
-  const realId = await getRealId(rosterId);
-  let whereCond = { roster_id: realId };
+  let whereCond = { roster_id: rosterId };
   if (!withSub) {
     whereCond.is_sub = false;
   }
@@ -1785,7 +1754,6 @@ const getPrimaryPerson = async user_id => {
 };
 
 async function getRoleRoster(rosterId, userId) {
-  const realId = await getRealId(rosterId);
   const [{ role } = {}] = await knex('team_players')
     .select('team_players.role')
     .join(
@@ -1793,7 +1761,7 @@ async function getRoleRoster(rosterId, userId) {
       'user_entity_role.entity_id',
       'team_players.person_id',
     )
-    .where({ roster_id: realId, user_id: userId })
+    .where({ roster_id: rosterId, user_id: userId })
     .orderByRaw(
       `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], team_players.role)`,
     )
@@ -1807,14 +1775,12 @@ async function getRoleRoster(rosterId, userId) {
 
 const getRosterInvoiceItem = async body => {
   const { eventId, rosterId } = body;
-  const realRosterId = await getRealId(rosterId);
-  const realEventId = await getRealId(eventId);
 
   const [{ invoice_item_id: invoiceItemId, status }] = await knex(
     'event_rosters',
   )
     .select(['invoice_item_id', 'status'])
-    .where({ roster_id: realRosterId, event_id: realEventId });
+    .where({ roster_id: rosterId, event_id: eventId });
 
   return { invoiceItemId, status };
 };
@@ -1852,13 +1818,10 @@ const getPlayerInvoiceItem = async id => {
 
 const unregister = async body => {
   const { rosterId, eventId } = body;
-  const realRosterId = await getRealId(rosterId);
-  const realEventId = await getRealId(eventId);
-  await deleteRegistration(realRosterId, realEventId);
+  await deleteRegistration(rosterId, eventId);
 };
 
 async function getEmailsEntity(entity_id) {
-  const realId = await getRealId(entity_id);
   const emails = await knex('entities_role')
     .select('email')
     .leftJoin(
@@ -1873,7 +1836,7 @@ async function getEmailsEntity(entity_id) {
       '=',
       'user_entity_role.user_id',
     )
-    .where('entities_role.entity_id', realId);
+    .where('entities_role.entity_id', entity_id);
   return emails;
 }
 async function getEmailUser(userId) {
@@ -1884,7 +1847,6 @@ async function getEmailUser(userId) {
 }
 
 async function getEmailPerson(person_id) {
-  const realId = await getRealId(person_id);
   const [{ email }] = await knex('user_entity_role')
     .select('email')
     .leftJoin(
@@ -1893,7 +1855,7 @@ async function getEmailPerson(person_id) {
       '=',
       'user_entity_role.user_id',
     )
-    .where('user_entity_role.entity_id', realId);
+    .where('user_entity_role.entity_id', person_id);
   if (!email) {
     return getEmailsEntity(person_id);
   }
@@ -1901,15 +1863,13 @@ async function getEmailPerson(person_id) {
 }
 
 async function getEvent(eventId) {
-  const realId = await getRealId(eventId);
   const [res] = await knex('events')
     .select('*')
-    .where({ id: realId });
+    .where({ id: eventId });
   return res;
 }
 
 async function getEventAdmins(eventId) {
-  const realEventId = await getRealId(eventId);
   const admins = await knex('entities_role')
     .select('user_entity_role.user_id')
     .leftJoin(
@@ -1918,7 +1878,7 @@ async function getEventAdmins(eventId) {
       '=',
       'entities_role.entity_id_admin',
     )
-    .where('entities_role.entity_id', '=', realEventId)
+    .where('entities_role.entity_id', '=', eventId)
     .andWhere('entities_role.role', '<=', ENTITIES_ROLE_ENUM.EDITOR);
 
   const res = await admins.reduce(async (prev, curr) => {
@@ -1933,10 +1893,9 @@ async function getEventAdmins(eventId) {
 }
 
 async function getAlias(entityId) {
-  const realId = await getRealId(entityId);
   const [res] = await knex('alias')
     .select('*')
-    .where({ id: realId });
+    .where({ id: entityId });
   if (!res) {
     return { entityId };
   }
@@ -1944,12 +1903,10 @@ async function getAlias(entityId) {
 }
 
 async function getPhasesWithoutPrerank(eventId) {
-  const realId = await getRealId(eventId);
-
   //order 0 indicates prerank of the event
   const phases = await knex('phase')
     .select('*')
-    .where({ event_id: realId })
+    .where({ event_id: eventId })
     .whereNot({ phase_order: 0 });
 
   const res = await Promise.all(
@@ -1962,10 +1919,9 @@ async function getPhasesWithoutPrerank(eventId) {
 }
 
 async function getAllPhases(eventId) {
-  const realId = await getRealId(eventId);
   const res = await knex('phase')
     .select('*')
-    .where({ event_id: realId });
+    .where({ event_id: eventId });
   return res;
 }
 
@@ -2024,11 +1980,10 @@ async function getPhotoFromRosterId(rosterId) {
 }
 
 async function getGames(eventId) {
-  const realId = await getRealId(eventId);
   const games = await knex('games')
     .select('*')
     .whereNotNull('timeslot_id', 'field_id')
-    .andWhere({ event_id: realId });
+    .andWhere({ event_id: eventId });
 
   const res = await Promise.all(
     games.map(async game => {
@@ -2058,7 +2013,6 @@ async function getGames(eventId) {
 }
 
 async function getRosterByEventAndUser(eventId, userId) {
-  const realId = await getRealId(eventId);
   const [{ primary_person: id }] = await knex('user_primary_person')
     .select('primary_person')
     .where({ user_id: userId });
@@ -2083,7 +2037,7 @@ async function getRosterByEventAndUser(eventId, userId) {
       '=',
       'entities_general_infos.entity_id',
     )
-    .where({ person_id: id, event_id: realId });
+    .where({ person_id: id, event_id: eventId });
 
   return res;
 }
@@ -2248,18 +2202,16 @@ async function isPlayerInRoster(player_id, roster_id) {
 }
 
 const isTeamRegisteredInEvent = async (teamId, eventId) => {
-  const realEventId = await getRealId(eventId);
   const [res] = await knex('event_rosters')
     .select('roster_id')
-    .where({ event_id: realEventId, team_id: teamId });
+    .where({ event_id: eventId, team_id: teamId });
   return Boolean(res);
 };
 
 async function getUnplacedGames(eventId) {
-  const realId = await getRealId(eventId);
   const unplacedGames = await knex('games')
     .select('*')
-    .where({ event_id: realId, timeslot_id: null, field_id: null });
+    .where({ event_id: eventId, timeslot_id: null, field_id: null });
 
   const res = await Promise.all(
     unplacedGames.map(async game => {
@@ -2318,10 +2270,9 @@ async function getTeamsPhase(phaseId) {
 }
 
 async function getPhasesGameAndTeams(eventId, phaseId) {
-  const realId = await getRealId(eventId);
   const games = await knex('games')
     .select('*')
-    .where({ event_id: realId, phase_id: phaseId });
+    .where({ event_id: eventId, phase_id: phaseId });
 
   const teams = await getTeamsPhase(phaseId);
 
@@ -2403,16 +2354,14 @@ const getTeams = async gameId => {
 };
 
 async function getSlots(eventId) {
-  const realId = await getRealId(eventId);
   const res = await knex('event_time_slots')
     .select('*')
-    .where({ event_id: realId })
+    .where({ event_id: eventId })
     .orderBy('date');
   return res;
 }
 
 async function getTeamsSchedule(eventId) {
-  const realId = await getRealId(eventId);
   const res = await knex('event_rosters')
     .select('team_id', 'roster_id', 'event_id', 'name')
     .leftJoin(
@@ -2425,23 +2374,21 @@ async function getTeamsSchedule(eventId) {
       STATUS_ENUM.ACCEPTED_FREE,
       STATUS_ENUM.ACCEPTED,
     ])
-    .andWhere({ event_id: realId });
+    .andWhere({ event_id: eventId });
   return res;
 }
 
 async function getFields(eventId) {
-  const realId = await getRealId(eventId);
   const res = await knex('event_fields')
     .select('*')
-    .where({ event_id: realId });
+    .where({ event_id: eventId });
   return res;
 }
 
 async function getGeneralInfos(entityId) {
-  const realId = await getRealId(entityId);
   const [res] = await knex('entities_general_infos')
     .select('*')
-    .where({ entity_id: realId });
+    .where({ entity_id: entityId });
   return {
     name: res.name,
     entityId: res.entity_id,
@@ -2651,10 +2598,9 @@ async function getGraphMemberCount(organizationId, date) {
 }
 
 async function getPersonInfos(entityId) {
-  const realId = await getRealId(entityId);
   const [res] = await knex('person_all_infos')
     .select('*')
-    .where({ id: realId });
+    .where({ id: entityId });
 
   let resObj = {
     photoUrl: res.photo_url,
@@ -2688,11 +2634,10 @@ async function getPersonInfos(entityId) {
 }
 
 async function getAllTeamsPending(eventId) {
-  const realId = await getRealId(eventId);
   const teams = await knex('event_rosters')
     .select('*')
     .where({
-      event_id: realId,
+      event_id: eventId,
       registration_status: STATUS_ENUM.PENDING,
     });
   const res = await Promise.all(
@@ -2718,11 +2663,10 @@ async function getAllTeamsPending(eventId) {
   return res;
 }
 async function getAllTeamsRefused(eventId) {
-  const realId = await getRealId(eventId);
   const teams = await knex('event_rosters')
     .select('*')
     .where({
-      event_id: realId,
+      event_id: eventId,
       registration_status: STATUS_ENUM.REFUSED,
     });
   const res = await Promise.all(
@@ -2749,11 +2693,10 @@ async function getAllTeamsRefused(eventId) {
 }
 
 async function getAllPlayersRefused(eventId) {
-  const realId = await getRealId(eventId);
   const registeredPlayers = await knex('event_persons')
     .select('*')
     .where({
-      event_id: realId,
+      event_id: eventId,
       registration_status: STATUS_ENUM.REFUSED,
     });
 
@@ -2783,11 +2726,10 @@ async function getAllPlayersRefused(eventId) {
 }
 
 async function getAllPlayersPending(eventId) {
-  const realId = await getRealId(eventId);
   const registeredPlayers = await knex('event_persons')
     .select('*')
     .where({
-      event_id: realId,
+      event_id: eventId,
       registration_status: STATUS_ENUM.PENDING,
     });
 
@@ -2795,7 +2737,7 @@ async function getAllPlayersPending(eventId) {
   //Dont need this for now but maybe for later
   // const rosters = await knex('event_rosters')
   //   .select('roster_id')
-  //   .where({ event_id: realId });
+  //   .where({ event_id: eventId });
 
   // const teamPlayers = await Promise.all(
   //   rosters.map(async r => {
@@ -2847,8 +2789,7 @@ async function getRankingRoster(
   originPhase,
   originPosition,
 ) {
-  const realId = await getRealId(eventId);
-  const prerankPhase = await getPrerankPhase(realId);
+  const prerankPhase = await getPrerankPhase(eventId);
   if (originPhase === prerankPhase.id) {
     const res = await knex('phase_rankings')
       .select('*')
@@ -2871,11 +2812,9 @@ async function getRankingRoster(
 }
 
 async function updateEntityRole(entityId, entityIdAdmin, role) {
-  const realEntityId = await getRealId(entityId);
-  const realAdminId = await getRealId(entityIdAdmin);
   const [entity] = await knex('entities_role')
     .update({ role })
-    .where({ entity_id: realEntityId, entity_id_admin: realAdminId })
+    .where({ entity_id: entityId, entity_id_admin: entityIdAdmin })
     .returning(['role']);
   return entity;
 }
@@ -2886,7 +2825,6 @@ async function updateEvent(
   startDate,
   endDate,
 ) {
-  const realId = await getRealId(eventId);
   const [entity] = await knex('events')
     .update({
       maximum_spots: maximumSpots,
@@ -2895,7 +2833,7 @@ async function updateEvent(
       start_varchar: startDate,
       end_varchar: endDate,
     })
-    .where({ id: realId })
+    .where({ id: eventId })
     .returning('*');
   await updatePrerankSpots(eventId, maximumSpots);
 
@@ -3022,8 +2960,7 @@ async function updatePrerankSpots(eventId, newSpots) {
 }
 
 async function updatePreRanking(eventId, ranking) {
-  const realId = await getRealId(eventId);
-  const prerankPhase = await getPrerankPhase(realId);
+  const prerankPhase = await getPrerankPhase(eventId);
   const res = await Promise.all(
     ranking.map(async (r, index) => {
       const [rank] = await knex('phase_rankings')
@@ -3109,21 +3046,19 @@ async function updatePhase(body) {
   if (!spots && !status) {
     return;
   }
-  const realId = await getRealId(eventId);
   const res = await knex('phase')
     .update({ spots, status })
-    .where({ event_id: realId, id: phaseId })
+    .where({ event_id: eventId, id: phaseId })
     .returning('*');
   return res;
 }
 
 async function updatePhaseOrder(orderedPhases, eventId) {
-  const realId = await getRealId(eventId);
   const res = await Promise.all(
     orderedPhases.map(async (p, index) => {
       const [order] = await knex('phase')
         .update({ phase_order: index + 1 })
-        .where({ event_id: realId, id: p.id })
+        .where({ event_id: eventId, id: p.id })
         .returning('*');
       return order;
     }),
@@ -3410,7 +3345,6 @@ async function deleteTeamPhase(phaseId, initialPosition) {
 
 async function updateGeneralInfos(entityId, body) {
   const { description, quickDescription } = body;
-  const realId = await getRealId(entityId);
 
   const updateQuery = {};
 
@@ -3424,14 +3358,13 @@ async function updateGeneralInfos(entityId, body) {
 
   const [entity] = await knex('entities_general_infos')
     .update(updateQuery)
-    .where({ entity_id: realId })
+    .where({ entity_id: entityId })
     .returning('*');
   return entity;
 }
 
 async function updatePersonInfosHelper(entityId, body) {
   const { personInfos } = body;
-
   const {
     name,
     surname,
@@ -3443,8 +3376,6 @@ async function updatePersonInfosHelper(entityId, body) {
     emergencyPhoneNumber,
     medicalConditions,
   } = personInfos;
-
-  const realId = await getRealId(entityId);
 
   let outputPersonInfos = {};
   let addressId = null;
@@ -3500,7 +3431,7 @@ async function updatePersonInfosHelper(entityId, body) {
       surname: surname,
       infos_supp_id: res.id,
     })
-    .where({ entity_id: realId })
+    .where({ entity_id: entityId })
     .returning('*');
 
   outputPersonInfos.name = res2.name;
@@ -3510,13 +3441,12 @@ async function updatePersonInfosHelper(entityId, body) {
 }
 
 async function updateEntityName(entityId, name, surname) {
-  const realId = await getRealId(entityId);
-  const type = await getEntitiesTypeById(realId);
+  const type = await getEntitiesTypeById(entityId);
 
   if (type === GLOBAL_ENUM.TEAM) {
     const rosterIds = await knex('team_rosters')
       .select('id')
-      .where({ team_id: realId });
+      .where({ team_id: entityId });
 
     const rankings = await rosterIds.reduce(async (memo, curr) => {
       const memoIteration = await memo;
@@ -3554,14 +3484,13 @@ async function updateEntityName(entityId, name, surname) {
   }
   return knex('entities_general_infos')
     .update({ name, surname })
-    .where({ entity_id: realId });
+    .where({ entity_id: entityId });
 }
 
 async function updateEntityPhoto(entityId, photo_url) {
-  const realId = await getRealId(entityId);
   return knex('entities_general_infos')
     .update({ photo_url })
-    .where({ entity_id: realId });
+    .where({ entity_id: entityId });
 }
 
 async function updateOption(body) {
@@ -3611,16 +3540,13 @@ const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
 };
 
 const canRemovePlayerFromRoster = async (rosterId, personId) => {
-  const realRosterId = await getRealId(rosterId);
-  const realPersonId = await getRealId(personId);
-
   const presentRoles = await knex('team_players')
     .select('person_id', 'role')
     .where(
       'roster_id',
       knex('team_players')
         .select('roster_id')
-        .where({ roster_id: realRosterId, person_id: realPersonId }),
+        .where({ roster_id: rosterId, person_id: personId }),
     );
 
   return (
@@ -3651,17 +3577,14 @@ const getSubmissionerInfos = async gameInfos => {
 };
 
 const canUnregisterTeam = async (rosterId, eventId) => {
-  const realEventId = await getRealId(eventId);
-  const realRosterId = await getRealId(rosterId);
-
   const games = await knex('game_teams')
     .whereIn(
       'game_id',
       knex('games')
         .select('id')
-        .where({ event_id: realEventId }),
+        .where({ event_id: eventId }),
     )
-    .andWhere({ roster_id: realRosterId });
+    .andWhere({ roster_id: rosterId });
 
   const startedPhasesWithRosterId = await knex('phase_rankings')
     .select('current_phase')
@@ -3671,7 +3594,7 @@ const canUnregisterTeam = async (rosterId, eventId) => {
       '=',
       'phase_rankings.current_phase',
     )
-    .where({ roster_id: realRosterId })
+    .where({ roster_id: rosterId })
     .whereNot({ status: 'not_started' });
 
   if (startedPhasesWithRosterId.length) {
@@ -3685,8 +3608,6 @@ const canUnregisterTeam = async (rosterId, eventId) => {
 };
 
 const deleteRegistration = async (rosterId, eventId) => {
-  const realEventId = await getRealId(eventId);
-  const realRosterId = await getRealId(rosterId);
   const prerankPhase = await getPrerankPhase(eventId);
   let ranking;
   let dependantRanking;
@@ -3694,8 +3615,8 @@ const deleteRegistration = async (rosterId, eventId) => {
   const res = await knex.transaction(async trx => {
     await knex('event_rosters')
       .where({
-        roster_id: realRosterId,
-        event_id: realEventId,
+        roster_id: rosterId,
+        event_id: eventId,
       })
       .del()
       .transacting(trx);
@@ -3704,7 +3625,7 @@ const deleteRegistration = async (rosterId, eventId) => {
     [ranking] = await knex('phase_rankings')
       .update({ roster_id: null })
       .where({
-        roster_id: realRosterId,
+        roster_id: rosterId,
         current_phase: prerankPhase.id,
       })
       .returning('*')
@@ -3712,7 +3633,7 @@ const deleteRegistration = async (rosterId, eventId) => {
 
     //update from phase_rankings if used elsewhere
     [dependantRanking] = await knex('phase_rankings')
-      .where({ roster_id: realRosterId })
+      .where({ roster_id: rosterId })
       .whereNot({ current_phase: prerankPhase.id })
       .update({
         roster_id: null,
@@ -3738,18 +3659,18 @@ const deleteRegistration = async (rosterId, eventId) => {
     }
 
     await knex('token_roster_invite')
-      .where({ roster_id: realRosterId })
+      .where({ roster_id: rosterId })
       .del()
       .transacting(trx);
 
     await knex('team_players')
-      .where({ roster_id: realRosterId })
+      .where({ roster_id: rosterId })
       .del()
       .transacting(trx);
 
     await knex('team_rosters')
       .where({
-        id: realRosterId,
+        id: rosterId,
       })
       .del()
       .transacting(trx);
@@ -3760,7 +3681,6 @@ const deleteRegistration = async (rosterId, eventId) => {
 };
 
 const removeEventCartItem = async ({ rosterId }) => {
-  const realId = await getRealId(rosterId);
   const res = await knex
     .select('id')
     .from(
@@ -3769,7 +3689,7 @@ const removeEventCartItem = async ({ rosterId }) => {
         .from('cart_items')
         .as('cartItems'),
     )
-    .where('cartItems.rosterid', realId);
+    .where('cartItems.rosterid', rosterId);
 
   const ids = res.map(r => r.id);
 
@@ -3850,16 +3770,14 @@ async function updateRegistration(
   invoiceItemId,
   status,
 ) {
-  const realRosterId = await getRealId(rosterId);
-  const realEventId = await getRealId(eventId);
   return knex('event_rosters')
     .update({
       invoice_item_id: invoiceItemId,
       status,
     })
     .where({
-      event_id: realEventId,
-      roster_id: realRosterId,
+      event_id: eventId,
+      roster_id: rosterId,
     });
 }
 
@@ -3869,14 +3787,13 @@ async function updateRegistrationPerson(
   invoiceItemId,
   status,
 ) {
-  const realEventId = await getRealId(eventId);
   return knex('event_persons')
     .update({
       invoice_item_id: invoiceItemId,
       status,
     })
     .where({
-      event_id: realEventId,
+      event_id: eventId,
       person_id: personId,
     });
 }
@@ -3913,7 +3830,6 @@ async function updatePlayerPaymentStatus(body) {
     status,
     invoiceItemId,
   } = body;
-  const realRosterId = await getRealId(rosterId);
   return knex('team_players')
     .update({
       payment_status: status,
@@ -3921,7 +3837,7 @@ async function updatePlayerPaymentStatus(body) {
     })
     .where({
       person_id: buyerPersonId,
-      roster_id: realRosterId,
+      roster_id: rosterId,
     });
 }
 
@@ -3945,9 +3861,8 @@ async function updateMembershipInvoice(body) {
 }
 
 async function addAllFields(eventId, fieldsArray) {
-  const realId = await getRealId(eventId);
   const fields = fieldsArray.map(f => ({
-    event_id: realId,
+    event_id: eventId,
     field: f.field,
     id: f.id,
   }));
@@ -3967,9 +3882,8 @@ async function addAllFields(eventId, fieldsArray) {
 }
 
 async function addAllTimeslots(eventId, timeslotsArray) {
-  const realId = await getRealId(eventId);
   const timeslots = timeslotsArray.map(t => ({
-    event_id: realId,
+    event_id: eventId,
     date: new Date(t.date),
     id: t.id,
   }));
@@ -3990,7 +3904,6 @@ async function addAllTimeslots(eventId, timeslotsArray) {
 
 async function addAllGames(eventId, gamesArray) {
   let games;
-  const realId = await getRealId(eventId);
   const rankingsArray = await gamesArray.reduce(async (memo, g) => {
     const memoIteration = await memo;
     const [phase] = await getPhase(g.phase_id);
@@ -4027,7 +3940,7 @@ async function addAllGames(eventId, gamesArray) {
           .returning(['id'])
           .transacting(trx);
         return {
-          event_id: realId,
+          event_id: eventId,
           phase_id: g.phase_id,
           field_id: g.field_id,
           timeslot_id: g.timeslot_id,
@@ -4054,12 +3967,10 @@ async function addAllGames(eventId, gamesArray) {
 }
 
 async function addEntityRole(entityId, entityIdAdmin, role) {
-  const realEntityId = await getRealId(entityId);
-  const realAdminId = await getRealId(entityIdAdmin);
   const [res] = await knex('entities_role')
     .insert({
-      entity_id: realEntityId,
-      entity_id_admin: realAdminId,
+      entity_id: entityId,
+      entity_id_admin: entityIdAdmin,
       role,
     })
     .returning('role');
@@ -4098,8 +4009,6 @@ async function addMemberManually(body) {
     id = await getMembershipId(membershipType, organizationId);
   }
 
-  const realId = await getRealId(organizationId);
-
   const [add] = await knex('addresses')
     .insert({
       street_address: address.street_address,
@@ -4127,7 +4036,7 @@ async function addMemberManually(body) {
     .insert({
       membership_id: id,
       member_type: membershipType,
-      organization_id: realId,
+      organization_id: organizationId,
       person_id: personId,
       expiration_date: expirationDate,
       status: INVOICE_STATUS_ENUM.FREE,
@@ -4154,8 +4063,6 @@ async function addMember(body) {
     emergencySurname,
     medicalConditions,
   } = body;
-
-  const realId = await getRealId(organizationId);
 
   const [add] = await knex('addresses')
     .insert({
@@ -4184,7 +4091,7 @@ async function addMember(body) {
     .insert({
       membership_id: membershipId,
       member_type: membershipType,
-      organization_id: realId,
+      organization_id: organizationId,
       person_id: personId,
       expiration_date: expirationDate,
       status: INVOICE_STATUS_ENUM.OPEN,
@@ -4196,12 +4103,11 @@ async function addMember(body) {
 }
 
 async function addReport(type, organizationId, date) {
-  const realId = await getRealId(organizationId);
   const organization = (await getEntity(organizationId)).basicInfos;
   const [res] = await knex('reports')
     .insert({
       type: type,
-      entity_id: realId,
+      entity_id: organizationId,
       metadata: {
         date,
         organizationName: organization.name,
@@ -4215,11 +4121,9 @@ async function addAlias(entityId, alias) {
   if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
     throw Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
-
-  const realId = await getRealId(entityId);
   const [res] = await knex('alias')
     .insert({
-      id: realId,
+      id: entityId,
       alias,
       reduced_alias: alias.replace(/\./g, '').toLowerCase(),
     })
@@ -4279,11 +4183,10 @@ async function addGame(
     .insert({ type: GLOBAL_ENUM.GAME })
     .returning(['id']);
 
-  const realId = await getRealId(eventId);
   const [res] = await knex('games')
     .insert({
       timeslot_id: timeslotId,
-      event_id: realId,
+      event_id: eventId,
       field_id: fieldId,
       phase_id: phaseId,
       entity_id: entityId,
@@ -4626,23 +4529,21 @@ async function getUserNextGame(user_id) {
 }
 
 async function addField(field, eventId) {
-  const realId = await getRealId(eventId);
   const [res] = await knex('event_fields')
     .insert({
       field,
-      event_id: realId,
+      event_id: eventId,
     })
     .returning('*');
   return res;
 }
 
 async function addPhase(phase, spots, eventId) {
-  const realId = await getRealId(eventId);
   const phases = await getAllPhases(eventId);
   const [res] = await knex('phase')
     .insert({
       name: phase,
-      event_id: realId,
+      event_id: eventId,
       spots,
       phase_order: phases.length ? phases.length : 1,
     })
@@ -4669,9 +4570,8 @@ async function addPhaseRanking(phaseId, spots) {
 }
 
 async function addTimeSlot(date, eventId) {
-  const realId = await getRealId(eventId);
   const [res] = await knex('event_time_slots')
-    .insert({ date: new Date(date), event_id: realId })
+    .insert({ date: new Date(date), event_id: eventId })
     .returning('*');
   return res;
 }
@@ -4691,7 +4591,6 @@ async function addOption(
   manualAcceptation,
   userId,
 ) {
-  const realId = await getRealId(eventId);
   const entity = (await getEntity(eventId, userId)).basicInfos;
 
   let teamPriceStripe;
@@ -4704,7 +4603,7 @@ async function addOption(
       description: entity.name,
 
       // TODO: Add entity seller id
-      metadata: { type: GLOBAL_ENUM.EVENT, id: realId },
+      metadata: { type: GLOBAL_ENUM.EVENT, id: eventId },
     };
     const productTeam = await addProduct({
       stripeProduct: stripeProductTeam,
@@ -4714,11 +4613,11 @@ async function addOption(
       unit_amount: teamPrice,
       active: true,
       product: productTeam.id,
-      metadata: { type: GLOBAL_ENUM.EVENT, id: realId },
+      metadata: { type: GLOBAL_ENUM.EVENT, id: eventId },
     };
     teamPriceStripe = await addPrice({
       stripePrice: stripePriceTeam,
-      entityId: realId,
+      entityId: eventId,
       photoUrl: entity.photoUrl,
       ownerId,
       taxRatesId: teamTaxes,
@@ -4732,7 +4631,7 @@ async function addOption(
       description: entity.name,
 
       // TODO: Add entity seller id
-      metadata: { type: GLOBAL_ENUM.EVENT, id: realId },
+      metadata: { type: GLOBAL_ENUM.EVENT, id: eventId },
     };
     const productIndividual = await addProduct({
       stripeProduct: stripeProductIndividual,
@@ -4742,11 +4641,11 @@ async function addOption(
       unit_amount: playerPrice,
       active: true,
       product: productIndividual.id,
-      metadata: { type: GLOBAL_ENUM.EVENT, id: realId },
+      metadata: { type: GLOBAL_ENUM.EVENT, id: eventId },
     };
     individualPriceStripe = await addPrice({
       stripePrice: stripePriceIndividual,
-      entityId: realId,
+      entityId: eventId,
       photoUrl: entity.photoUrl,
       ownerId,
       taxRatesId: playerTaxes,
@@ -4755,7 +4654,7 @@ async function addOption(
 
   const [res] = await knex('event_payment_options')
     .insert({
-      event_id: realId,
+      event_id: eventId,
       name,
       team_stripe_price_id: teamPriceStripe
         ? teamPriceStripe.id
@@ -4791,13 +4690,12 @@ async function addMembership(
   taxRatesId,
   userId,
 ) {
-  const realId = await getRealId(entityId);
   const entity = (await getEntity(entityId, userId)).basicInfos;
   const stripeProduct = {
     name: getMembershipName(membership),
     active: true,
     description: entity.name,
-    metadata: { type: GLOBAL_ENUM.MEMBERSHIP, id: realId },
+    metadata: { type: GLOBAL_ENUM.MEMBERSHIP, id: entityId },
   };
   const product = await addProduct({ stripeProduct });
   const stripePrice = {
@@ -4805,7 +4703,7 @@ async function addMembership(
     unit_amount: price,
     active: true,
     product: product.id,
-    metadata: { type: GLOBAL_ENUM.MEMBERSHIP, id: realId },
+    metadata: { type: GLOBAL_ENUM.MEMBERSHIP, id: entityId },
   };
   const priceStripe = await addPrice({
     stripePrice,
@@ -4818,7 +4716,7 @@ async function addMembership(
     const [res] = await knex('entity_memberships')
       .insert({
         stripe_price_id: priceStripe.id,
-        entity_id: realId,
+        entity_id: entityId,
         membership_type: membership,
         fixed_date: date,
         price,
@@ -4833,7 +4731,7 @@ async function addMembership(
     const [res] = await knex('entity_memberships')
       .insert({
         stripe_price_id: priceStripe.id,
-        entity_id: realId,
+        entity_id: entityId,
         membership_type: membership,
         length,
         price,
@@ -4855,14 +4753,12 @@ async function addTeamToEvent(body) {
     paymentOption,
     informations,
   } = body;
-  const realTeamId = await getRealId(teamId);
-  const realEventId = await getRealId(eventId);
   const prerankPhase = await getPrerankPhase(eventId);
   let rosterId;
 
   const res = await knex.transaction(async trx => {
     const [roster] = await knex('team_rosters')
-      .insert({ team_id: realTeamId })
+      .insert({ team_id: teamId })
       .returning('*')
       .transacting(trx);
 
@@ -4871,8 +4767,8 @@ async function addTeamToEvent(body) {
     const [eventRoster] = await knex('event_rosters')
       .insert({
         roster_id: roster.id,
-        team_id: realTeamId,
-        event_id: realEventId,
+        team_id: teamId,
+        event_id: eventId,
         status,
         registration_status: registrationStatus,
         payment_option_id: paymentOption,
@@ -4888,11 +4784,7 @@ async function addTeamToEvent(body) {
     registrationStatus === STATUS_ENUM.ACCEPTED ||
     registrationStatus === STATUS_ENUM.ACCEPTED_FREE
   ) {
-    await updatePreRankingRosterId(
-      prerankPhase,
-      rosterId,
-      realEventId,
-    );
+    await updatePreRankingRosterId(prerankPhase, rosterId, eventId);
   }
 
   return res;
@@ -4957,11 +4849,10 @@ async function addPersonToEvent(body) {
     paymentOption,
     informations,
   } = body;
-  const realEventId = await getRealId(eventId);
   const [res] = await knex('event_persons')
     .insert({
       person_id: personId,
-      event_id: realEventId,
+      event_id: eventId,
       status,
       registration_status: registrationStatus,
       payment_option_id: paymentOption,
@@ -4970,6 +4861,7 @@ async function addPersonToEvent(body) {
     .returning('*');
   return res;
 }
+
 async function deletePersonFromEvent(body) {
   const { personId, eventId } = body;
   await knex('event_persons')
@@ -5131,11 +5023,10 @@ async function updateMember(
   personId,
   expirationDate,
 ) {
-  const realId = await getRealId(organizationId);
   const [res] = await knex('memberships')
     .where({
       member_type: memberType,
-      organization_id: realId,
+      organization_id: organizationId,
       person_id: personId,
     })
     .update({
@@ -5173,11 +5064,10 @@ async function updateTeamAcceptation(
   rosterId,
   registrationStatus,
 ) {
-  const realId = await getRealId(eventId);
-  const prerankPhase = await getPrerankPhase(realId);
+  const prerankPhase = await getPrerankPhase(eventId);
   const [res] = await knex('event_rosters')
     .where({
-      event_id: realId,
+      event_id: eventId,
       roster_id: rosterId,
     })
     .update({
@@ -5189,19 +5079,19 @@ async function updateTeamAcceptation(
     registrationStatus === STATUS_ENUM.ACCEPTED ||
     registrationStatus === STATUS_ENUM.ACCEPTED_FREE
   ) {
-    await updatePreRankingRosterId(prerankPhase, rosterId, realId);
+    await updatePreRankingRosterId(prerankPhase, rosterId, eventId);
   }
   return res;
 }
+
 async function updatePlayerAcceptation(
   eventId,
   personId,
   registrationStatus,
 ) {
-  const realId = await getRealId(eventId);
   const [res] = await knex('event_persons')
     .where({
-      event_id: realId,
+      event_id: eventId,
       person_id: personId,
     })
     .update({
@@ -5216,10 +5106,9 @@ async function updateAlias(entityId, alias) {
   if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
     throw Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
-  const realId = await getRealId(entityId);
   const res = await knex('alias')
     .where({
-      id: realId,
+      id: entityId,
     })
     .update({
       alias,
@@ -5460,25 +5349,22 @@ async function updateSuggestionStatus(body) {
 }
 
 async function removeEntityRole(entityId, entityIdAdmin) {
-  const realEntityId = await getRealId(entityId);
-  const realAdminId = await getRealId(entityIdAdmin);
   return knex('entities_role')
-    .where({ entity_id: realEntityId, entity_id_admin: realAdminId })
+    .where({ entity_id: entityId, entity_id_admin: entityIdAdmin })
     .del();
 }
 
 const deleteEntity = async (entityId, userId) => {
-  const realId = await getRealId(entityId);
   const role = await getEntityRole(entityId, userId);
 
   if (role !== ENTITIES_ROLE_ENUM.ADMIN) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   } else {
     await knex('alias')
-      .where({ id: realId })
+      .where({ id: entityId })
       .del();
     await knex('entities')
-      .where({ id: realId })
+      .where({ id: entityId })
       .del();
   }
 };
