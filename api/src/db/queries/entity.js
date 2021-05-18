@@ -157,6 +157,7 @@ const {
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
   getTeamIdFromRosterId,
+  getRealId,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -466,7 +467,13 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
 }
 
 async function updateEvent(body, userId) {
-  const { eventId, maximumSpots, startDate, endDate } = body;
+  const {
+    eventId: notRealId,
+    maximumSpots,
+    startDate,
+    endDate,
+  } = body;
+  const eventId = getRealId(notRealId);
   const nbOfTeams = await getNbOfTeamsInEventHelper(eventId);
   const lastTeamInPrerank = await getLastRankedTeamHelper(eventId);
   if (
@@ -1544,7 +1551,9 @@ const canUnregisterTeamsList = async (rosterIds, eventId) => {
 };
 
 const unregisterTeams = async (body, userId) => {
-  const { eventId, rosterIds } = body;
+  const { eventId: notRealId, rosterIds } = body;
+  const eventId = await getRealId(notRealId);
+
   const result = { failed: false, data: [] };
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
@@ -1636,7 +1645,8 @@ const unregisterTeams = async (body, userId) => {
 };
 
 const unregisterPeople = async (body, userId) => {
-  const { eventId, people } = body;
+  const { eventId: notRealId, people } = body;
+  const eventId = await getRealId(notRealId);
   const result = { failed: false, data: [] };
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
