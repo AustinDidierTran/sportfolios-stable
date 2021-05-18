@@ -209,7 +209,7 @@ const createTransfers = async invoice => {
         console.log({ taxRates });
         const totalAmount = Math.floor(
           taxRates.reduce(
-            (prev, rate) => prev * (1 + rate / 100),
+            (prev, rate) => prev + amount * (rate / 100),
             amount,
           ),
         );
