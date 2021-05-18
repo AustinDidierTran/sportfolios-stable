@@ -498,7 +498,6 @@ async function updateEvent(body, userId) {
     maximumSpots,
     startDate,
     endDate,
-    userId,
   );
 
   return res;
