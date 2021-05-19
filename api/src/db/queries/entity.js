@@ -33,6 +33,7 @@ const {
   addReport: addReportHelper,
   addRoster: addRosterHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
+  addMemberDonation: addMemberDonationHelper,
   addSpiritSubmission: addSpiritSubmissionHelper,
   addTeamToEvent: addTeamToEventHelper,
   addTimeSlot: addTimeSlotHelper,
@@ -1286,6 +1287,10 @@ async function importMembers(body) {
   return res;
 }
 
+async function addMemberDonation(body) {
+  return addMemberDonationHelper(body);
+}
+
 async function addMember(body, userId) {
   const { membershipId, organizationId, personId } = body;
 
@@ -1951,6 +1956,7 @@ module.exports = {
   addPlayersCartItems,
   addReport,
   addScoreSuggestion,
+  addMemberDonation,
   addSpiritSubmission,
   addTeamToEvent,
   addTeamAsAdmin,
