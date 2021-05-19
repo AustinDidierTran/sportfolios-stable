@@ -1280,6 +1280,13 @@ async function getMemberships(entityId) {
   );
 }
 
+async function getPartners(entityId) {
+  const partners = await knex('partners')
+    .select('*')
+    .where({ organization_id: entityId });
+  return partners;
+}
+
 async function getTransactionFeesFromStripePriceId(stripePriceId) {
   const [{ transaction_fees: transactionFees }] = await knex(
     'stripe_price',
@@ -5895,6 +5902,7 @@ module.exports = {
   getOrganizationTokenPromoCode,
   getOwnedEvents,
   getOwnerStripePrice,
+  getPartners,
   getPersonGames,
   getPersonInfos,
   getPersonInvoiceItem,

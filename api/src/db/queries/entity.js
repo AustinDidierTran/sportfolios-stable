@@ -95,6 +95,7 @@ const {
   getOrganizationTokenPromoCode: getOrganizationTokenPromoCodeHelper,
   getOwnedEvents: getOwnedEventsHelper,
   getOwnerStripePrice,
+  getPartners: getPartnersHelper,
   getPersonGames: getPersonGamesHelper,
   getPersonInfos: getPersonInfosHelper,
   getPersonInvoiceItem,
@@ -286,6 +287,9 @@ async function eventInfos(id, user_id) {
 
 async function getMemberships(entity_id) {
   return getMembershipsHelper(entity_id);
+}
+async function getPartners(entityId) {
+  return getPartnersHelper(entityId);
 }
 
 async function getRegistered(team_id, event_id) {
@@ -2014,6 +2018,7 @@ module.exports = {
   getOrganizationMembers,
   getOrganizationTokenPromoCode,
   getOwnedEvents,
+  getPartners,
   getPersonInfos,
   getPhases,
   getPhasesGameAndTeams,
