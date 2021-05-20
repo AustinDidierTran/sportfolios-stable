@@ -1336,6 +1336,23 @@ router.put(
   },
 );
 
+router.put(`${BASE_URL}/partner`, async ctx => {
+  const partner = await queries.updatePartner(ctx.request.body);
+  if (partner) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: partner,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.post(BASE_URL, async ctx => {
   const entityId = await queries.addEntity(
     ctx.request.body,
@@ -1896,6 +1913,14 @@ router.del(BASE_URL, async ctx => {
 
 router.del(`${BASE_URL}/membership`, async ctx => {
   await queries.deleteEntityMembership(ctx.query);
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
+router.del(`${BASE_URL}/partner`, async ctx => {
+  await queries.deletePartner(ctx.query.partnerId);
   ctx.status = 201;
   ctx.body = {
     status: 'success',

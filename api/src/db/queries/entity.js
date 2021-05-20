@@ -46,6 +46,7 @@ const {
   deleteMembership: deleteMembershipHelper,
   deleteMembershipWithId: deleteMembershipWithIdHelper,
   deleteOption: deleteOptionHelper,
+  deletePartner: deletePartnerHelper,
   deletePersonFromEvent,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
   deleteReport: deleteReportHelper,
@@ -151,6 +152,7 @@ const {
   updateMember: updateMemberHelper,
   updateMemberOptionalField: updateMemberOptionalFieldHelper,
   updateMembershipTermsAndConditions: updateMembershipTermsAndConditionsHelper,
+  updatePartner: updatePartnerHelper,
   updateOption: updateOptionHelper,
   updatePersonInfosHelper,
   updatePlayerAcceptation: updatePlayerAcceptationHelper,
@@ -1203,6 +1205,9 @@ async function updateOption(body) {
 async function updateMembershipTermsAndConditions(body) {
   return updateMembershipTermsAndConditionsHelper(body);
 }
+async function updatePartner(body) {
+  return updatePartnerHelper(body);
+}
 
 async function updateGame(body) {
   const {
@@ -1748,19 +1753,26 @@ async function deleteEntity(id, user_id) {
   return deleteEntityHelper(id, user_id);
 }
 
+async function deletePartner(partnerId) {
+  return deletePartnerHelper(partnerId);
+}
+
 async function deleteEntityMembership(query) {
   const { membershipId } = query;
 
   return deleteEntityMembershipHelper(membershipId);
 }
+
 async function deleteMembership(query) {
   const { memberType, organizationId, personId } = query;
   return deleteMembershipHelper(memberType, organizationId, personId);
 }
+
 async function deleteMembershipWithId(query) {
   const { membershipId } = query;
   return deleteMembershipWithIdHelper(membershipId);
 }
+
 async function deleteReport(query) {
   const { reportId } = query;
   return deleteReportHelper(reportId);
@@ -1979,6 +1991,7 @@ module.exports = {
   deleteMembership,
   deleteMembershipWithId,
   deleteOption,
+  deletePartner,
   deletePlayerFromRoster,
   deleteReport,
   eventInfos,
@@ -2058,6 +2071,7 @@ module.exports = {
   updateMember,
   updateMemberOptionalField,
   updateMembershipTermsAndConditions,
+  updatePartner,
   updateOption,
   updatePersonInfos,
   updatePlayerAcceptation,
