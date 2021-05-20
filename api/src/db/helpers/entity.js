@@ -2443,6 +2443,7 @@ async function getGeneralInfos(entityId) {
     .select('*')
     .where({ entity_id: realId });
   return {
+    name: res.name,
     entityId: res.entity_id,
     description: res.description,
     quickDescription: res.quick_description,
@@ -4461,6 +4462,22 @@ async function addScoreSuggestion(infos) {
   };
 }
 
+async function addMemberDonation(infos) {
+  const { amount, anonyme, note, organizationId, userId } = infos;
+
+  const [newDonation] = await knex('donation')
+    .insert({
+      amount,
+      anonyme,
+      note,
+      organization_id: organizationId,
+      user_id: userId
+    })
+    .returning('*');
+
+  return newDonation;
+}
+
 async function isScoreSuggestionAlreadySubmitted(infos) {
   const { game_id, submitted_by_roster } = infos;
   const res = await knex('score_suggestion')
@@ -5848,6 +5865,7 @@ module.exports = {
   addReport,
   addRoster,
   addScoreSuggestion,
+  addMemberDonation,
   addSpiritSubmission,
   addTeamToEvent,
   addTimeSlot,

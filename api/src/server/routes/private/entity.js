@@ -1531,6 +1531,23 @@ router.post(`${BASE_URL}/importMembers`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/memberDonation`, async ctx => {
+  const donation = await queries.addMemberDonation(ctx.request.body);
+  if (donation) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: donation,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/memberManually`, async ctx => {
   const entity = await queries.addMemberManually(ctx.request.body);
   if (entity) {
