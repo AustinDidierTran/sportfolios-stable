@@ -1336,6 +1336,27 @@ router.post(BASE_URL, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/partner`, async ctx => {
+  const partner = await queries.addPartner(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (partner) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: partner,
+    };
+  } else {
+    ctx.status = 400;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
   const res = await queries.unregisterTeams(
     ctx.request.body,
