@@ -33,6 +33,15 @@ async function createTaxRate(body) {
     .returning('*');
   return res;
 }
+async function addEmailLandingPage(body) {
+  const { email } = body;
+  const [res] = await knex('landing_page_emails')
+    .insert({
+      email,
+    })
+    .returning('*');
+  return res;
+}
 
 async function updateActiveStatusTaxRate(body) {
   const { taxRateId, active } = body;
@@ -40,6 +49,11 @@ async function updateActiveStatusTaxRate(body) {
   return knex('tax_rates')
     .update({ active })
     .where({ id: taxRateId });
+}
+
+async function getEmailsLandingPage() {
+  const res = await knex('landing_page_emails').select('email');
+  return res.map(r => r.email);
 }
 
 async function deleteTaxRate(body) {
@@ -55,6 +69,14 @@ async function deleteEntities(body) {
     .where({ id: entityId })
     .del();
 }
+
+async function deleteEmailLandingPage(body) {
+  const { email } = body;
+  return knex('landing_page_emails')
+    .where({ email })
+    .del();
+}
+
 function getAllSports() {
   return knex('sports')
     .select('*')
@@ -191,14 +213,17 @@ async function getAllTaxRates() {
 }
 
 module.exports = {
+  addEmailLandingPage,
   createSport,
   createTaxRate,
   getAllNewsLetterSubscriptions,
   getAllSports,
   getAllUsersAndSecond,
   getAllTaxRates,
+  getEmailsLandingPage,
   updateActiveStatusTaxRate,
   updateSport,
+  deleteEmailLandingPage,
   deleteTaxRate,
   deleteEntities,
 };
