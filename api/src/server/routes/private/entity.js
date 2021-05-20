@@ -517,7 +517,7 @@ router.get(`${BASE_URL}/organizationTokenPromoCode`, async ctx => {
   const entity = await queries.getOrganizationTokenPromoCode(
     ctx.query.id,
     ctx.body.userInfo.id,
-    );
+  );
   if (entity) {
     ctx.body = {
       status: 'success',
@@ -539,6 +539,22 @@ router.get(`${BASE_URL}/memberships`, async ctx => {
     ctx.body = {
       status: 'success',
       data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+router.get(`${BASE_URL}/partners`, async ctx => {
+  const partners = await queries.getPartners(ctx.query.id);
+
+  if (partners) {
+    ctx.body = {
+      status: 'success',
+      data: partners,
     };
   } else {
     ctx.status = 404;
@@ -1298,22 +1314,27 @@ router.put(`${BASE_URL}/updateOption`, async ctx => {
   }
 });
 
-router.put(`${BASE_URL}/updateMembershipTermsAndConditions`, async ctx => {
-  const membership = await queries.updateMembershipTermsAndConditions(ctx.request.body);
-  if (membership) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: membership,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
-  }
-});
+router.put(
+  `${BASE_URL}/updateMembershipTermsAndConditions`,
+  async ctx => {
+    const membership = await queries.updateMembershipTermsAndConditions(
+      ctx.request.body,
+    );
+    if (membership) {
+      ctx.status = STATUS_ENUM.SUCCESS;
+      ctx.body = {
+        status: 'success',
+        data: membership,
+      };
+    } else {
+      ctx.status = STATUS_ENUM.ERROR;
+      ctx.body = {
+        status: 'error',
+        message: 'That entity does not exist.',
+      };
+    }
+  },
+);
 
 router.post(BASE_URL, async ctx => {
   const entityId = await queries.addEntity(
@@ -1441,7 +1462,9 @@ router.post(`${BASE_URL}/member`, async ctx => {
 });
 
 router.put(`${BASE_URL}/memberOptionalField`, async ctx => {
-  const entity = await queries.updateMemberOptionalField(ctx.request.body);
+  const entity = await queries.updateMemberOptionalField(
+    ctx.request.body,
+  );
   if (entity) {
     ctx.status = 201;
     ctx.body = {
