@@ -3581,6 +3581,19 @@ async function updateMembershipTermsAndConditions(body) {
     .where({ id });
 }
 
+async function updatePartner(body) {
+  const { id, description, name, website, photoUrl } = body;
+
+  return knex('partners')
+    .update({
+      name,
+      description,
+      website,
+      photo_url: photoUrl,
+    })
+    .where({ id });
+}
+
 const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
   var list = [];
   for (const rosterId of rosterIds) {
@@ -5611,6 +5624,12 @@ const deleteOption = async id => {
     .del();
 };
 
+const deletePartner = async id => {
+  return knex('partners')
+    .where({ id })
+    .del();
+};
+
 const getGame = async id => {
   const [game] = await knex('games')
     .select('*')
@@ -5836,6 +5855,7 @@ module.exports = {
   deleteMembership,
   deleteMembershipWithId,
   deleteOption,
+  deletePartner,
   deletePersonFromEvent,
   deletePhase,
   deletePlayerFromRoster,
@@ -5972,6 +5992,7 @@ module.exports = {
   updateMemberOptionalField,
   updateMembershipInvoice,
   updateMembershipTermsAndConditions,
+  updatePartner,
   updateOption,
   updateOriginPhase,
   updatePersonInfosHelper,
