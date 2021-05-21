@@ -1269,7 +1269,8 @@ async function getMemberships(entityId) {
 async function getPartners(entityId) {
   const partners = await knex('partners')
     .select('*')
-    .where({ organization_id: entityId });
+    .where({ organization_id: entityId })
+    .orderBy('created_at');
   return partners;
 }
 
