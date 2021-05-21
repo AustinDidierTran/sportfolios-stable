@@ -1301,8 +1301,10 @@ async function importMembers(body) {
   return res;
 }
 
-async function addMemberDonation(body) {
-  return addMemberDonationHelper(body);
+async function addMemberDonation(body, userId) {
+  const { amount, anonyme, note, organizationId, personId } = body;
+  const res = await addMemberDonationHelper(amount, anonyme, note, organizationId, personId, userId);
+  return res;
 }
 
 async function addMember(body, userId) {

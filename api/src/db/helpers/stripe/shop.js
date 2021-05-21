@@ -44,22 +44,21 @@ const addPrice = async body => {
     const price = await stripe.prices.create(stripePrice);
 
     let transactionFees = price.unit_amount;
-    await Promise.all(
-      taxRatesId.map(async taxRateId => {
-        const [{ percentage }] = await knex('tax_rates')
-          .select('percentage')
-          .where({ id: taxRateId });
-        transactionFees =
-          transactionFees + price.unit_amount * (percentage / 100);
-      }),
-    );
-    if (transactionFees >= MIN_AMOUNT_FEES) {
-      transactionFees = Math.floor(
-        transactionFees * PLATEFORM_FEES + PLATEFORM_FEES_FIX,
+    if(taxRatesId){
+      await Promise.all(
+        taxRatesId.map(async taxRateId => {
+          const [{ percentage }] = await knex('tax_rates')
+            .select('percentage')
+            .where({ id: taxRateId });
+          transactionFees =
+            transactionFees + price.unit_amount * (percentage / 100);
+        }),
       );
-    } else {
-      transactionFees = 0;
     }
+
+    transactionFees = Math.floor(
+      transactionFees * PLATEFORM_FEES + PLATEFORM_FEES_FIX,
+    );
 
     await knex('stripe_price').insert({
       stripe_price_id: price.id,
@@ -72,14 +71,16 @@ const addPrice = async body => {
       owner_id: ownerId,
     });
 
-    await Promise.all(
-      taxRatesId.map(async taxRateId => {
-        await knex('tax_rates_stripe_price').insert({
-          stripe_price_id: price.id,
-          tax_rate_id: taxRateId,
-        });
-      }),
-    );
+    if(taxRatesId){
+      await Promise.all(
+        taxRatesId.map(async taxRateId => {
+          await knex('tax_rates_stripe_price').insert({
+            stripe_price_id: price.id,
+            tax_rate_id: taxRateId,
+          });
+        }),
+      );
+    }
 
     await knex('store_items').insert({
       entity_id: entityId,

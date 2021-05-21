@@ -1532,7 +1532,10 @@ router.post(`${BASE_URL}/importMembers`, async ctx => {
 });
 
 router.post(`${BASE_URL}/memberDonation`, async ctx => {
-  const donation = await queries.addMemberDonation(ctx.request.body);
+  const donation = await queries.addMemberDonation(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (donation) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
