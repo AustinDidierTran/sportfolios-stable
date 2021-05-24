@@ -83,7 +83,6 @@ const {
   getGameSubmissionInfos: getGameSubmissionInfosHelper,
   getGeneralInfos: getGeneralInfosHelper,
   getGraphAmountGeneratedByEvent: getGraphAmountGeneratedByEventHelper,
-  getGraphFeesByEvent: getGraphFeesByEventHelper,
   getGraphMemberCount: getGraphMemberCountHelper,
   getGraphUserCount: getGraphUserCountHelper,
   getLastRankedTeam: getLastRankedTeamHelper,
@@ -414,16 +413,12 @@ async function getGeneralInfos(entityId, userId) {
   return getGeneralInfosHelper(entityId, userId);
 }
 
-async function getGraphAmountGeneratedByEvent(eventPaymentId, date) {
-  return getGraphAmountGeneratedByEventHelper(eventPaymentId, date);
+async function getGraphAmountGeneratedByEvent(eventPaymentId, language, date) {
+  return getGraphAmountGeneratedByEventHelper(eventPaymentId, language, date);
 }
 
-async function getGraphFeesByEvent(eventPaymentId, date) {
-  return getGraphFeesByEventHelper(eventPaymentId, date);
-}
-
-async function getGraphUserCount(date) {
-  return getGraphUserCountHelper(date);
+async function getGraphUserCount(date, language) {
+  return getGraphUserCountHelper(date, language);
 }
 
 async function getGraphMemberCount(organizationId, date) {
@@ -2025,7 +2020,6 @@ module.exports = {
   getGameSubmissionInfos,
   getGeneralInfos,
   getGraphAmountGeneratedByEvent,
-  getGraphFeesByEvent,
   getGraphMemberCount,
   getGraphUserCount,
   getInteractiveToolData,

@@ -165,30 +165,10 @@ router.get(`${BASE_URL}/edit`, async ctx => {
   };
 });
 
-router.get(`${BASE_URL}/graphFeesByEvent`, async ctx => {
-  const arrayGraph = await queries.getGraphFeesByEvent(
-    ctx.query.eventPaymentId,
-    ctx.query.date,
-  );
-
-  if (arrayGraph) {
-    ctx.body = {
-      status: 'success',
-      data: arrayGraph,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
-  return;
-});
-
 router.get(`${BASE_URL}/graphAmountGeneratedByEvent`, async ctx => {
   const arrayGraph = await queries.getGraphAmountGeneratedByEvent(
     ctx.query.eventPaymentId,
+    ctx.query.language,
     ctx.query.date,
   );
 
@@ -208,7 +188,7 @@ router.get(`${BASE_URL}/graphAmountGeneratedByEvent`, async ctx => {
 });
 
 router.get(`${BASE_URL}/graphUserCount`, async ctx => {
-  const arrayGraph = await queries.getGraphUserCount(ctx.query.date);
+  const arrayGraph = await queries.getGraphUserCount(ctx.query.date, ctx.query.language);
   if (arrayGraph) {
     ctx.body = {
       status: 'success',
