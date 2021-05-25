@@ -2397,7 +2397,7 @@ async function getGeneralInfos(entityId) {
   };
 }
 
-async function getGraphFeesByEvent(eventPaymentId, date) {
+async function getGraphAmountGeneratedByEvent(eventPaymentId, language, date) {
   const [ids] = await knex('event_payment_options')
     .select(
       'name',
@@ -2406,65 +2406,7 @@ async function getGraphFeesByEvent(eventPaymentId, date) {
     )
     .where('id', eventPaymentId);
 
-  const graphData = await knex.select(
-    knex.raw(`
-    sum(s.quantity* (COALESCE(stripe_price.transaction_fees,0))) as total,
-    COALESCE(sum(s.quantity* (COALESCE(stripe_price.transaction_fees,0))) - COALESCE(lag(sum(s.quantity* (COALESCE(stripe_price.transaction_fees,0)))) over(order by date), 0), 0) as new, date
-    FROM (select * ,generate_series
-        ( ('${date}'::timestamp - interval '30' day )::timestamp
-        , '${date}'::timestamp
-        , interval '1 day')::date AS date
-	      FROM store_items_paid
-	      ) s
-    left join stripe_price on s.stripe_price_id = stripe_price.stripe_price_id
-    left join tax_rates_stripe_price on s.stripe_price_id =tax_rates_stripe_price.stripe_price_id
-    left join tax_rates on tax_rates_stripe_price.tax_rate_id = tax_rates.id
-      where s.created_at::date <= date and stripe_price.stripe_price_id in ('${ids.team_stripe_price_id}', '${ids.individual_stripe_price_id}')
-      group by date
-      order by date asc
-      `),
-  );
-
-  const newData = graphData.map((o, i) => {
-    return {
-      x: i + 1,
-      y: parseInt(o.new) / 100,
-    };
-  });
-  const totalData = graphData.map((o, i) => {
-    return {
-      x: i + 1,
-      y: (parseInt(o.total) - parseInt(o.new)) / 100,
-    };
-  });
-
-  const [date2] = await knex('store_items_paid')
-    .min('created_at')
-    .whereIn('stripe_price_id', [
-      ids.team_stripe_price_id,
-      ids.individual_stripe_price_id,
-    ]);
-
-  return {
-    name: ids.name,
-    new: newData,
-    total: totalData,
-    minDate: date2.min,
-    longLabel: graphData.map(o => moment(o.date).format('ll')),
-    shortLabel: graphData.map(o => moment(o.date).format('DD/MM')),
-  };
-}
-
-async function getGraphAmountGeneratedByEvent(eventPaymentId, date) {
-  const [ids] = await knex('event_payment_options')
-    .select(
-      'name',
-      'team_stripe_price_id',
-      'individual_stripe_price_id',
-    )
-    .where('id', eventPaymentId);
-
-  const graphData = await knex.select(
+  const graphIncomeData = await knex.select(
     knex.raw(`
     sum(s.quantity* ((stripe_price.amount + (stripe_price.amount*(COALESCE(percentage,0) / 100))) - COALESCE(stripe_price.transaction_fees,0))) as total,
     COALESCE(sum(s.quantity* ((stripe_price.amount + (stripe_price.amount*(COALESCE(percentage,0) / 100))) - COALESCE(stripe_price.transaction_fees,0))) - COALESCE(lag(sum(s.quantity* ((stripe_price.amount + (stripe_price.amount*(COALESCE(percentage,0) / 100))) - COALESCE(stripe_price.transaction_fees,0)))) over(order by date), 0), 0) as new, date
@@ -2483,18 +2425,67 @@ async function getGraphAmountGeneratedByEvent(eventPaymentId, date) {
       `),
   );
 
-  const newData = graphData.map((o, i) => {
+  const graphFeeData = await knex.select(
+    knex.raw(`
+    sum(s.quantity* (COALESCE(stripe_price.transaction_fees,0))) as total,
+    COALESCE(sum(s.quantity* (COALESCE(stripe_price.transaction_fees,0))) - COALESCE(lag(sum(s.quantity* (COALESCE(stripe_price.transaction_fees,0)))) over(order by date), 0), 0) as new, date
+    FROM (select * ,generate_series
+        ( ('${date}'::timestamp - interval '30' day )::timestamp
+        , '${date}'::timestamp
+        , interval '1 day')::date AS date
+	      FROM store_items_paid
+	      ) s
+    left join stripe_price on s.stripe_price_id = stripe_price.stripe_price_id
+    left join tax_rates_stripe_price on s.stripe_price_id =tax_rates_stripe_price.stripe_price_id
+    left join tax_rates on tax_rates_stripe_price.tax_rate_id = tax_rates.id
+      where s.created_at::date <= date and stripe_price.stripe_price_id in ('${ids.team_stripe_price_id}', '${ids.individual_stripe_price_id}')
+      group by date
+      order by date asc
+      `),
+  );
+
+  const dataIncome = graphIncomeData.map(o=> {
     return {
-      x: i + 1,
-      y: parseInt(o.new) / 100,
-    };
-  });
-  const totalData = graphData.map((o, i) => {
+      incomeDate: moment(o.date).locale(language).format('ll'),
+      totalIncomeAmount: Number(o.total)/100,
+    }
+  })
+
+  const dataFee = graphFeeData.map(o=> {
     return {
-      x: i + 1,
-      y: (parseInt(o.total) - parseInt(o.new)) / 100,
+      date: moment(o.date).locale(language).format('ll'),
+      totalFeeTransaction: Number(o.total)/100,
+    }
+  })
+
+  var data = dataIncome.map(function(v, i) {
+    return {
+      incomeDate: v.incomeDate,
+      totalIncomeAmount: v.totalIncomeAmount,
+      date: dataFee[i].date,
+      totalFeeTransaction: dataFee[i].totalFeeTransaction,
     };
-  });
+  })
+
+
+  const lines = [
+    {
+      stroke: '#008A6C',
+      strokeWidth: 2,
+      name: 'income',
+      nameSingular: 'income',
+      dataKey: 'totalIncomeAmount',
+      dot: false,
+    },
+    {
+      stroke: '#00478a',
+      strokeWidth: 2,
+      name: 'fees',
+      nameSingular: 'fees',
+      dataKey: 'totalFeeTransaction',
+      dot: false,
+    }
+  ];
 
   const [date2] = await knex('store_items_paid')
     .min('created_at')
@@ -2505,15 +2496,13 @@ async function getGraphAmountGeneratedByEvent(eventPaymentId, date) {
 
   return {
     name: ids.name,
-    new: newData,
-    total: totalData,
+    lines: lines,
+    data: data,
     minDate: date2.min,
-    longLabel: graphData.map(o => moment(o.date).format('ll')),
-    shortLabel: graphData.map(o => moment(o.date).format('DD/MM')),
   };
 }
 
-async function getGraphUserCount(date) {
+async function getGraphUserCount(date, language) {
   const graphData = await knex.select(
     knex.raw(
       `count(*) as total, COALESCE(count(*) - COALESCE(lag(count(*)) over(order by date), 0) , 0) as new,date
@@ -2533,7 +2522,7 @@ async function getGraphUserCount(date) {
 
   const data = graphData.map(o => {
     return {
-      name: moment(o.date).format('ll'),
+      name: moment(o.date).locale(language).format('ll'),
       totalMember: Number(o.total),
     };
   });
@@ -5820,7 +5809,6 @@ module.exports = {
   getGameTeams,
   getGeneralInfos,
   getGraphAmountGeneratedByEvent,
-  getGraphFeesByEvent,
   getGraphMemberCount,
   getGraphUserCount,
   getIndividualPaymentOptionFromRosterId,
