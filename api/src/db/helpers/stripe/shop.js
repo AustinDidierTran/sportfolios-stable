@@ -7,7 +7,6 @@ const {
 const {
   PLATEFORM_FEES,
   PLATEFORM_FEES_FIX,
-  MIN_AMOUNT_FEES,
 } = require('../../../../../common/enums');
 
 const addProduct = async body => {
@@ -44,7 +43,7 @@ const addPrice = async body => {
     const price = await stripe.prices.create(stripePrice);
 
     let transactionFees = price.unit_amount;
-    if(taxRatesId){
+    if (taxRatesId) {
       await Promise.all(
         taxRatesId.map(async taxRateId => {
           const [{ percentage }] = await knex('tax_rates')
@@ -71,7 +70,7 @@ const addPrice = async body => {
       owner_id: ownerId,
     });
 
-    if(taxRatesId){
+    if (taxRatesId) {
       await Promise.all(
         taxRatesId.map(async taxRateId => {
           await knex('tax_rates_stripe_price').insert({

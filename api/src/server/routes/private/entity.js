@@ -384,6 +384,26 @@ router.get(`${BASE_URL}/members`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/recentMember`, async ctx => {
+  const member = await queries.getMostRecentMember(
+    ctx.query.personId,
+    ctx.query.id,
+  );
+
+  if (member) {
+    ctx.body = {
+      status: 'success',
+      data: member,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/reports`, async ctx => {
   const reports = await queries.getReports(ctx.query.id);
 
