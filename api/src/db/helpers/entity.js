@@ -4374,7 +4374,7 @@ async function addMemberDonation(infos) {
       anonyme,
       note,
       organization_id: organizationId,
-      user_id: userId
+      user_id: userId,
     })
     .returning('*');
 

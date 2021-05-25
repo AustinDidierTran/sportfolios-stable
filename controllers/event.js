@@ -3,7 +3,6 @@ const {
   eventInfos: eventInfosHelper,
   getRemainingSpots: getRemainingSpots,
   getOptions,
-  getRealId,
 } = require('../api/src/db/helpers/entity');
 
 const moment = require('moment');
@@ -45,9 +44,8 @@ class EventController {
   }
 
   static async event(eventId, userId) {
-    const realId = await getRealId(eventId);
-    let res = await getEntityHelper(realId, userId);
-    const eventInfo = await this.getEventInfo(realId, userId);
+    let res = await getEntityHelper(eventId, userId);
+    const eventInfo = await this.getEventInfo(eventId, userId);
     return {
       basicInfos: res.basicInfos,
       eventInfo,

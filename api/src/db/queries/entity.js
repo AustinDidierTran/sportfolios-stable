@@ -107,6 +107,7 @@ const {
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getPreranking: getPrerankingHelper,
   getPrimaryPerson: getPrimaryPersonHelper,
+  getRealId: getRealIdHelper,
   getRegistered: getRegisteredHelper,
   getRegisteredPersons,
   getRegistrationIndividualPaymentOption: getRegistrationIndividualPaymentOptionHelper,
@@ -163,7 +164,6 @@ const {
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
   updateTeamAcceptation: updateTeamAcceptationHelper,
-  getRealId: getRealIdHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -520,8 +520,7 @@ async function updateEvent(body, userId) {
 }
 
 async function getRealId(id) {
-  const res = await getRealIdHelper(id);
-  return res;
+  return getRealIdHelper(id);
 }
 
 async function updatePreRanking(body, userId) {
