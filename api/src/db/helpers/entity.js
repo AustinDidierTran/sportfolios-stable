@@ -2559,7 +2559,7 @@ async function getGraphUserCount(date) {
 async function getGraphMemberCount(organizationId, date) {
   const graphData = await knex.select(
     knex.raw(
-      `count(*) as total, COALESCE(count(*) - lag(count(*)) over(order by date) , 0) as new,date
+      `count(*) as total, date
       FROM (select * ,generate_series
       ( ('${date}'::timestamp - interval '30' day )::timestamp
       , '${date}'::timestamp
@@ -2571,29 +2571,33 @@ async function getGraphMemberCount(organizationId, date) {
     order by date asc`,
     ),
   );
-  const newData = graphData.map((o, i) => {
+
+  const data = graphData.map(o => {
     return {
-      x: i + 1,
-      y: parseInt(o.new),
+      name: moment(o.date).format('DD/MM'),
+      totalMember: Number(o.total),
     };
   });
-  const totalData = graphData.map((o, i) => {
-    return {
-      x: i + 1,
-      y: parseInt(o.total) - parseInt(o.new),
-    };
-  });
+
+  const lines = [
+    {
+      stroke: '#008A6C',
+      strokeWidth: 2,
+      name: 'member.members',
+      nameSingular: 'member.member',
+      dataKey: 'totalMember',
+      dot: false,
+    },
+  ];
 
   const [data2] = await knex('memberships')
     .min('created_at')
     .where({ organization_id: organizationId });
 
   return {
-    new: newData,
-    total: totalData,
+    lines: lines,
+    data: data,
     minDate: data2.min,
-    longLabel: graphData.map(o => moment(o.date).format('ll')),
-    shortLabel: graphData.map(o => moment(o.date).format('DD/MM')),
   };
 }
 
