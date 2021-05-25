@@ -163,7 +163,6 @@ const {
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
   updateTeamAcceptation: updateTeamAcceptationHelper,
-  getTeamIdFromRosterId,
   getRealId: getRealIdHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
