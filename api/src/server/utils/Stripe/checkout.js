@@ -107,6 +107,9 @@ const INVOICE_PAID_ENUM = {
     await updateMembershipInvoice(body);
     await addItemToPaidStoreItems(body);
   },
+  DONATION: async body => {
+    await addItemToPaidStoreItems(body);
+  }
 };
 
 const INVOICE_REFUND_ENUM = {

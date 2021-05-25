@@ -4511,7 +4511,7 @@ async function addMemberDonation(amount, anonyme, note, organizationId, personId
   }
 
   const metadata = {
-    eventId: newDonation.id,
+    donationId: newDonation.id,
     sellerEntityId: organizationId,
     isIndividualOption: true,
     personId,
