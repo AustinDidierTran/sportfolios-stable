@@ -4358,8 +4358,8 @@ async function addScoreSuggestion(infos) {
   };
 }
 
-async function addMemberDonation(infos) {
-  const { amount, anonyme, note, organizationId, userId } = infos;
+
+async function addMemberDonation(amount, anonyme, note, organizationId, personId, userId) {
 
   const [newDonation] = await knex('donation')
     .insert({
@@ -4370,6 +4370,59 @@ async function addMemberDonation(infos) {
       user_id: userId,
     })
     .returning('*');
+
+  const entity = (await getEntity(organizationId, userId)).basicInfos;
+
+  const stripeProduct = {
+    name: GLOBAL_ENUM.DONATION,
+    active: true,
+    description: entity.name,
+    metadata: { type: GLOBAL_ENUM.DONATION, id: organizationId },
+  };
+  const product = await addProduct({ stripeProduct });
+
+  const stripePrice = {
+    currency: 'cad',
+    unit_amount: amount,
+    active: true,
+    product: product.id,
+    metadata: { type: GLOBAL_ENUM.DONATION, id: organizationId },
+  };
+  const priceStripe = await addPrice({
+    stripePrice,
+    entityId: organizationId,
+    photoUrl: entity.photoUrl,
+    ownerId: organizationId,
+    taxRatesId: null,
+  });
+
+  let person = { name: 'Anonyme'};
+
+  if (!anonyme) {
+    const [res] = await knex('person_all_infos')
+    .select('*')
+    .where({ id: personId });
+
+    person = { name: res.name, surname: res.surname};
+  }
+
+  const metadata = {
+    donationId: newDonation.id,
+    sellerEntityId: organizationId,
+    isIndividualOption: true,
+    personId,
+    name: GLOBAL_ENUM.DONATION,
+    buyerId: userId,
+    organization: entity,
+    person,
+    note,
+  };
+
+  await knex('cart_items').insert({
+    stripe_price_id: priceStripe.id,
+    user_id: userId,
+    metadata: { ...metadata, type: GLOBAL_ENUM.DONATION },
+  });
 
   return newDonation;
 }

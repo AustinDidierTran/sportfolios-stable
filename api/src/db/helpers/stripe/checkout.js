@@ -459,6 +459,22 @@ const checkout = async (body, userId) => {
                 type: GLOBAL_ENUM.MEMBERSHIP,
               },
             });
+          } else if (metadata.type === GLOBAL_ENUM.DONATION) {
+            await INVOICE_PAID_ENUM.DONATION({
+              sellerEntityId: metadata.sellerEntityId,
+              quantity: invoiceItem.quantity,
+              unitAmount: invoiceItem.unit_amount,
+              amount: invoiceItem.amount,
+              stripePriceId: invoiceItem.price.id,
+              transactionFees,
+              buyerUserId: userId,
+              invoiceItemId: invoiceItem.id,
+              receiptUrl,
+              metadata: {
+                ...metadata,
+                type: GLOBAL_ENUM.DONATION,
+              },
+            });
           }
           deleteCartItem(cartItemId);
         },
