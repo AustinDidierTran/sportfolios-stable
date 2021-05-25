@@ -46,7 +46,6 @@ const {
 const {
   getAllOwnedEntities,
   personIsAwaitingTransfer,
-  getRealId,
 } = require('../helpers/entity');
 
 const {
@@ -190,7 +189,6 @@ const getOwnedAndTransferedPersons = async userId => {
 };
 
 const getOwnedPersonsRegistration = async (eventId, userId) => {
-  const realId = await getRealId(eventId);
   const [owned, transfered] = await Promise.all([
     (await getOwnedPersons(userId)).filter(
       person => person.role === ENTITIES_ROLE_ENUM.ADMIN,
@@ -209,7 +207,7 @@ const getOwnedPersonsRegistration = async (eventId, userId) => {
   const registered = await Promise.all(
     concat.map(async c => ({
       ...c,
-      registered: await isRegistered(c.id, realId),
+      registered: await isRegistered(c.id, eventId),
     })),
   );
   return registered;

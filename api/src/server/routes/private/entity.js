@@ -27,43 +27,6 @@ const {
 const router = new Router();
 const BASE_URL = '/api/entity';
 
-router.get(`${BASE_URL}`, async ctx => {
-  const type = await queries.getEntitiesTypeById(ctx.query.id);
-  let entity;
-  switch (type) {
-    case GLOBAL_ENUM.ORGANIZATION:
-      entity = await OrganizationController.home(
-        ctx.query.id,
-        ctx.body.userInfo.id,
-      );
-      break;
-    case GLOBAL_ENUM.EVENT:
-      entity = await EventController.home(
-        ctx.query.id,
-        ctx.body.userInfo.id,
-      );
-      break;
-    default:
-      entity = await queries.getEntity(
-        ctx.query.id,
-        ctx.body.userInfo.id,
-      );
-  }
-
-  if (entity) {
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
-});
-
 router.get(`${BASE_URL}/editRankings`, async ctx => {
   const entity = await EventController.editRankings(
     ctx.query.id,

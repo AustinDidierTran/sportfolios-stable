@@ -107,7 +107,7 @@ const {
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getPreranking: getPrerankingHelper,
   getPrimaryPerson: getPrimaryPersonHelper,
-  getRealId,
+  getRealId: getRealIdHelper,
   getRegistered: getRegisteredHelper,
   getRegisteredPersons,
   getRegistrationIndividualPaymentOption: getRegistrationIndividualPaymentOptionHelper,
@@ -489,13 +489,7 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
 }
 
 async function updateEvent(body, userId) {
-  const {
-    eventId: notRealId,
-    maximumSpots,
-    startDate,
-    endDate,
-  } = body;
-  const eventId = getRealId(notRealId);
+  const { eventId, maximumSpots, startDate, endDate } = body;
   const nbOfTeams = await getNbOfTeamsInEventHelper(eventId);
   const lastTeamInPrerank = await getLastRankedTeamHelper(eventId);
   if (
@@ -524,6 +518,11 @@ async function updateEvent(body, userId) {
 
   return res;
 }
+
+async function getRealId(id) {
+  return getRealIdHelper(id);
+}
+
 async function updatePreRanking(body, userId) {
   const { eventId, ranking } = body;
   if (
@@ -1583,8 +1582,7 @@ const canUnregisterTeamsList = async (rosterIds, eventId) => {
 };
 
 const unregisterTeams = async (body, userId) => {
-  const { eventId: notRealId, rosterIds } = body;
-  const eventId = await getRealId(notRealId);
+  const { eventId, rosterIds } = body;
 
   const result = { failed: false, data: [] };
   if (
@@ -1677,8 +1675,7 @@ const unregisterTeams = async (body, userId) => {
 };
 
 const unregisterPeople = async (body, userId) => {
-  const { eventId: notRealId, people } = body;
-  const eventId = await getRealId(notRealId);
+  const { eventId, people } = body;
   const result = { failed: false, data: [] };
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
@@ -2044,6 +2041,7 @@ module.exports = {
   getPossibleSubmissionerInfos,
   getPreranking,
   getPrimaryPerson,
+  getRealId,
   getRegistered,
   getRemainingSpots,
   getReports,
