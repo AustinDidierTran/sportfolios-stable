@@ -1466,6 +1466,12 @@ async function getStripeInvoiceItem(invoiceItemId) {
 async function getAllTeamsRegisteredInfos(eventId, userId) {
   const teams = await getAllTeamsRegistered(eventId);
 
+  const [event] = await knex('events_infos')
+  .select('creator_id')
+  .where({
+    id: eventId
+  });
+
   const res = await Promise.all(
     teams.map(async t => {
       let invoice = null;
@@ -1481,6 +1487,14 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
       const registrationStatus = await getRegistrationStatus(
         t.roster_id,
       );
+
+      const [{ count: count_memberships }] = await knex('memberships_infos')
+        .count('id')
+        .where({
+          person_id: captains[0].id,
+          organization_id: event.creator_id,
+        });
+
       return {
         name: entity.name,
         surname: entity.surname,
@@ -1498,6 +1512,7 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
         invoice,
         role,
         registrationStatus,
+        isMember: count_memberships > 0,
       };
     }),
   );
@@ -1580,6 +1595,12 @@ async function getAllTeamsAcceptedInfos(eventId, userId) {
 async function getAllPeopleRegisteredInfos(eventId, userId) {
   const people = await getAllPeopleRegistered(eventId);
 
+  const [event] = await knex('events_infos')
+    .select('creator_id')
+    .where({
+      id: eventId
+    });
+
   const res = await Promise.all(
     people.map(async p => {
       let invoice = null;
@@ -1590,6 +1611,14 @@ async function getAllPeopleRegisteredInfos(eventId, userId) {
         .basicInfos;
       const email = await getEmailPerson(p.person_id);
       const option = await getPaymentOption(p.payment_option_id);
+
+      const [{ count: count_memberships }] = await knex('memberships_infos')
+        .count('id')
+        .where({
+          person_id: p.person_id,
+          organization_id: event.creator_id,
+        });
+
       return {
         personId: p.person_id,
         name: entity.name,
@@ -1604,6 +1633,7 @@ async function getAllPeopleRegisteredInfos(eventId, userId) {
         email,
         option,
         registrationStatus: p.registration_status,
+        isMember: count_memberships > 0,
       };
     }),
   );
