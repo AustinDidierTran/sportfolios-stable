@@ -894,6 +894,23 @@ async function getEntityRole(entityId, userId) {
   return Math.min(...roles);
 }
 
+async function getMostRecentMember(personId, organizationId) {
+  const [member] = await knex('memberships_infos')
+    .select('*')
+    .rightJoin(
+      'entities',
+      'entities.id',
+      '=',
+      'memberships_infos.person_id',
+    )
+    .whereIn('status', ['paid', 'free'])
+    .andWhere('entities.id', '=', personId)
+    .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
+    .andWhere({ organization_id: organizationId })
+    .orderBy('memberships_infos.created_at', 'desc');
+  return member;
+}
+
 async function getMembers(personId, organizationId) {
   const members = await knex('memberships_infos')
     .select('*')
@@ -1271,7 +1288,8 @@ async function getMemberships(entityId) {
 async function getPartners(entityId) {
   const partners = await knex('partners')
     .select('*')
-    .where({ organization_id: entityId });
+    .where({ organization_id: entityId })
+    .orderBy('created_at');
   return partners;
 }
 
@@ -2399,7 +2417,11 @@ async function getGeneralInfos(entityId) {
   };
 }
 
-async function getGraphAmountGeneratedByEvent(eventPaymentId, language, date) {
+async function getGraphAmountGeneratedByEvent(
+  eventPaymentId,
+  language,
+  date,
+) {
   const [ids] = await knex('event_payment_options')
     .select(
       'name',
@@ -2446,19 +2468,23 @@ async function getGraphAmountGeneratedByEvent(eventPaymentId, language, date) {
       `),
   );
 
-  const dataIncome = graphIncomeData.map(o=> {
+  const dataIncome = graphIncomeData.map(o => {
     return {
-      incomeDate: moment(o.date).locale(language).format('ll'),
-      totalIncomeAmount: Number(o.total)/100,
-    }
-  })
+      incomeDate: moment(o.date)
+        .locale(language)
+        .format('ll'),
+      totalIncomeAmount: Number(o.total) / 100,
+    };
+  });
 
-  const dataFee = graphFeeData.map(o=> {
+  const dataFee = graphFeeData.map(o => {
     return {
-      date: moment(o.date).locale(language).format('ll'),
-      totalFeeTransaction: Number(o.total)/100,
-    }
-  })
+      date: moment(o.date)
+        .locale(language)
+        .format('ll'),
+      totalFeeTransaction: Number(o.total) / 100,
+    };
+  });
 
   var data = dataIncome.map(function(v, i) {
     return {
@@ -2467,8 +2493,7 @@ async function getGraphAmountGeneratedByEvent(eventPaymentId, language, date) {
       date: dataFee[i].date,
       totalFeeTransaction: dataFee[i].totalFeeTransaction,
     };
-  })
-
+  });
 
   const lines = [
     {
@@ -2486,7 +2511,7 @@ async function getGraphAmountGeneratedByEvent(eventPaymentId, language, date) {
       nameSingular: 'fees',
       dataKey: 'totalFeeTransaction',
       dot: false,
-    }
+    },
   ];
 
   const [date2] = await knex('store_items_paid')
@@ -2524,7 +2549,9 @@ async function getGraphUserCount(date, language) {
 
   const data = graphData.map(o => {
     return {
-      name: moment(o.date).locale(language).format('ll'),
+      name: moment(o.date)
+        .locale(language)
+        .format('ll'),
       totalMember: Number(o.total),
     };
   });
@@ -4360,9 +4387,14 @@ async function addScoreSuggestion(infos) {
   };
 }
 
-
-async function addMemberDonation(amount, anonyme, note, organizationId, personId, userId) {
-
+async function addMemberDonation(
+  amount,
+  anonyme,
+  note,
+  organizationId,
+  personId,
+  userId,
+) {
   const [newDonation] = await knex('donation')
     .insert({
       amount,
@@ -4398,14 +4430,14 @@ async function addMemberDonation(amount, anonyme, note, organizationId, personId
     taxRatesId: null,
   });
 
-  let person = { name: 'Anonyme'};
+  let person = { name: 'Anonyme' };
 
   if (!anonyme) {
     const [res] = await knex('person_all_infos')
-    .select('*')
-    .where({ id: personId });
+      .select('*')
+      .where({ id: personId });
 
-    person = { name: res.name, surname: res.surname};
+    person = { name: res.name, surname: res.surname };
   }
 
   const metadata = {
@@ -5868,6 +5900,7 @@ module.exports = {
   getGraphUserCount,
   getIndividualPaymentOptionFromRosterId,
   getLastRankedTeam,
+  getMostRecentMember,
   getMembers,
   getMembership,
   getMemberships,

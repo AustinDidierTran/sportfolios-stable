@@ -87,6 +87,7 @@ const {
   getGraphUserCount: getGraphUserCountHelper,
   getLastRankedTeam: getLastRankedTeamHelper,
   getMembers: getMembersHelper,
+  getMostRecentMember: getMostRecentMemberHelper,
   getMembership,
   getMemberships: getMembershipsHelper,
   getMyPersonsAdminsOfTeam: getMyPersonsAdminsOfTeamHelper,
@@ -290,6 +291,11 @@ async function eventInfos(id, user_id) {
 async function getMemberships(entity_id) {
   return getMembershipsHelper(entity_id);
 }
+
+async function getMostRecentMember(personId, organizationId) {
+  return getMostRecentMemberHelper(personId, organizationId);
+}
+
 async function getPartners(entityId) {
   return getPartnersHelper(entityId);
 }
@@ -413,8 +419,16 @@ async function getGeneralInfos(entityId, userId) {
   return getGeneralInfosHelper(entityId, userId);
 }
 
-async function getGraphAmountGeneratedByEvent(eventPaymentId, language, date) {
-  return getGraphAmountGeneratedByEventHelper(eventPaymentId, language, date);
+async function getGraphAmountGeneratedByEvent(
+  eventPaymentId,
+  language,
+  date,
+) {
+  return getGraphAmountGeneratedByEventHelper(
+    eventPaymentId,
+    language,
+    date,
+  );
 }
 
 async function getGraphUserCount(date, language) {
@@ -1297,7 +1311,14 @@ async function importMembers(body) {
 
 async function addMemberDonation(body, userId) {
   const { amount, anonyme, note, organizationId, personId } = body;
-  const res = await addMemberDonationHelper(amount, anonyme, note, organizationId, personId, userId);
+  const res = await addMemberDonationHelper(
+    amount,
+    anonyme,
+    note,
+    organizationId,
+    personId,
+    userId,
+  );
   return res;
 }
 
@@ -2022,6 +2043,7 @@ module.exports = {
   getGraphMemberCount,
   getGraphUserCount,
   getInteractiveToolData,
+  getMostRecentMember,
   getMembers,
   getMemberships,
   getMyRosterIds,
