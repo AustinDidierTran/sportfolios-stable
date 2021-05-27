@@ -47,6 +47,7 @@ const addEntity = async (body, userId) => {
     startDate,
     endDate,
     maximumSpots,
+    eventType,
   } = body;
 
   if (
@@ -139,6 +140,7 @@ const addEntity = async (body, userId) => {
             end_date: endDate,
             end_varchar: endDate,
             maximum_spots: maximumSpots,
+            type: eventType,
           })
           .returning('*')
           .transacting(trx);
