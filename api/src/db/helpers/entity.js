@@ -1483,8 +1483,14 @@ async function getStripeInvoiceItem(invoiceItemId) {
     .where({ invoice_item_id: invoiceItemId });
   return res;
 }
-async function getAllTeamsRegisteredInfos(eventId, userId) {
+async function getAllTeamsRegisteredInfos(eventId, userId, date) {
   const teams = await getAllTeamsRegistered(eventId);
+
+  const [event] = await knex('events_infos')
+  .select('creator_id')
+  .where({
+    id: eventId
+  });
 
   const res = await Promise.all(
     teams.map(async t => {
@@ -1501,6 +1507,22 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
       const registrationStatus = await getRegistrationStatus(
         t.roster_id,
       );
+      const date = new Date();
+
+      const memberships = await knex('memberships_infos')
+        .select('*')
+        .where({
+          person_id: captains[0].id,
+          organization_id: event.creator_id,
+        });
+
+      const active_membership = memberships.filter(m => {
+        return (
+          moment(m.created_at).isSameOrBefore(moment(date), 'day') &&
+          moment(m.expiration_date).isSameOrAfter(moment(date), 'day')
+        );
+      });
+
       return {
         name: entity.name,
         surname: entity.surname,
@@ -1518,6 +1540,7 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
         invoice,
         role,
         registrationStatus,
+        isMember: active_membership.length > 0,
       };
     }),
   );
@@ -1600,6 +1623,12 @@ async function getAllTeamsAcceptedInfos(eventId, userId) {
 async function getAllPeopleRegisteredInfos(eventId, userId) {
   const people = await getAllPeopleRegistered(eventId);
 
+  const [event] = await knex('events_infos')
+    .select('creator_id')
+    .where({
+      id: eventId
+    });
+
   const res = await Promise.all(
     people.map(async p => {
       let invoice = null;
@@ -1610,6 +1639,22 @@ async function getAllPeopleRegisteredInfos(eventId, userId) {
         .basicInfos;
       const email = await getEmailPerson(p.person_id);
       const option = await getPaymentOption(p.payment_option_id);
+      const date = new Date();
+
+      const memberships = await knex('memberships_infos')
+        .select('*')
+        .where({
+          person_id: p.person_id,
+          organization_id: event.creator_id,
+        });
+
+      const active_membership = memberships.filter(m => {
+        return (
+          moment(m.created_at).isSameOrBefore(moment(date), 'day') &&
+          moment(m.expiration_date).isSameOrAfter(moment(date), 'day')
+        );
+      });
+
       return {
         personId: p.person_id,
         name: entity.name,
@@ -1624,6 +1669,7 @@ async function getAllPeopleRegisteredInfos(eventId, userId) {
         email,
         option,
         registrationStatus: p.registration_status,
+        isMember: active_membership.length > 0,
       };
     }),
   );
