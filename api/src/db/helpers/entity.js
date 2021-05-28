@@ -1483,14 +1483,14 @@ async function getStripeInvoiceItem(invoiceItemId) {
     .where({ invoice_item_id: invoiceItemId });
   return res;
 }
-async function getAllTeamsRegisteredInfos(eventId, userId, date) {
+async function getAllTeamsRegisteredInfos(eventId, userId) {
   const teams = await getAllTeamsRegistered(eventId);
 
   const [event] = await knex('events_infos')
-  .select('creator_id')
-  .where({
-    id: eventId
-  });
+    .select('creator_id')
+    .where({
+      id: eventId,
+    });
 
   const res = await Promise.all(
     teams.map(async t => {
@@ -1626,7 +1626,7 @@ async function getAllPeopleRegisteredInfos(eventId, userId) {
   const [event] = await knex('events_infos')
     .select('creator_id')
     .where({
-      id: eventId
+      id: eventId,
     });
 
   const res = await Promise.all(
@@ -4185,20 +4185,6 @@ async function addReport(type, organizationId, date) {
   return res;
 }
 
-async function addAlias(entityId, alias) {
-  if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
-    throw Error(ERROR_ENUM.VALUE_IS_INVALID);
-  }
-  const [res] = await knex('alias')
-    .insert({
-      id: entityId,
-      alias,
-      reduced_alias: alias.replace(/\./g, '').toLowerCase(),
-    })
-    .returning('*');
-  return res;
-}
-
 async function getTeamName(team) {
   const [res] = await knex('team_rosters')
     .select('*')
@@ -5232,15 +5218,25 @@ async function updateAlias(entityId, alias) {
   if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
     throw Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
-  const res = await knex('alias')
-    .where({
+
+  const reducedAlias = alias.replace(/\./g, '').toLowerCase();
+  const [similarAlias] = await knex('alias')
+    .select('*')
+    .where({ reduced_alias: reducedAlias });
+
+  if (similarAlias && entityId != similarAlias.id) {
+    return null;
+  }
+  const [res] = await knex('alias')
+    .insert({
       id: entityId,
-    })
-    .update({
       alias,
-      reduced_alias: alias.replace(/\./g, '').toLowerCase(),
+      reduced_alias: reducedAlias,
     })
+    .onConflict(['id'])
+    .merge()
     .returning('*');
+
   return res;
 }
 
@@ -5855,7 +5851,6 @@ async function getRosterEventInfos(roster_id) {
 module.exports = {
   acceptScoreSuggestion,
   acceptScoreSuggestionIfPossible,
-  addAlias,
   addAllFields,
   addAllGames,
   addAllTimeslots,
