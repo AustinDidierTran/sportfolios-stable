@@ -5228,9 +5228,13 @@ async function updateAlias(entityId, alias) {
     .where({ reduced_alias: reducedAlias });
   console.log({ similarAlias });
 
-  if (similarAlias && entityId != similarAlias.id) {
-    console.log('return');
-    return null;
+  if (similarAlias) {
+    if (entityId === similarAlias.id) {
+      return similarAlias;
+    } else {
+      console.log('return');
+      return null;
+    }
   }
   const [res] = await knex('alias')
     .insert({
