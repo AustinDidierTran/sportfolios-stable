@@ -5228,25 +5228,32 @@ async function updateAlias(entityId, alias) {
     .where({ reduced_alias: reducedAlias });
   console.log({ similarAlias });
 
-  if (similarAlias) {
-    if (entityId === similarAlias.id) {
-      return similarAlias;
-    } else {
-      console.log('return');
-      return null;
+  try {
+    if (similarAlias) {
+      console.log('ici');
+      if (entityId === similarAlias.id) {
+        console.log('la');
+        return similarAlias;
+      } else {
+        console.log('return');
+        return null;
+      }
     }
+
+    const [res] = await knex('alias')
+      .insert({
+        id: entityId,
+        alias,
+        reduced_alias: reducedAlias,
+      })
+      .onConflict(['id'])
+      .merge()
+      .returning('*');
+    console.log({ res });
+    return res;
+  } catch (e) {
+    console.log({ e });
   }
-  const [res] = await knex('alias')
-    .insert({
-      id: entityId,
-      alias,
-      reduced_alias: reducedAlias,
-    })
-    .onConflict(['id'])
-    .merge()
-    .returning('*');
-  console.log({ res });
-  return res;
 }
 
 async function updateGame(
