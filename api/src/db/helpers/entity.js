@@ -609,13 +609,13 @@ async function getEntity(id, userId) {
 
 async function getPersonGames(id) {
   const gameIds = (
-    await knex('team_players')
+    await knex('roster_players')
       .select('games.id')
       .leftJoin(
         'game_teams',
         'game_teams.roster_id',
         '=',
-        'team_players.roster_id',
+        'roster_players.roster_id',
       )
       .leftJoin('games', 'games.id', '=', 'game_teams.game_id')
       .where({ person_id: id })
@@ -657,8 +657,8 @@ async function getPersonGames(id) {
                   'game_teams.roster_id',
                 )
                 .leftJoin(
-                  'team_players',
-                  'team_players.roster_id',
+                  'roster_players',
+                  'roster_players.roster_id',
                   '=',
                   'game_teams.roster_id',
                 )
@@ -666,7 +666,7 @@ async function getPersonGames(id) {
                   'entities_all_infos',
                   ' entities_all_infos.id',
                   '=',
-                  'team_players.person_id',
+                  'roster_players.person_id',
                 )
                 .where('entities_all_infos.id', id)
                 .groupBy(
@@ -1787,7 +1787,7 @@ async function getRoster(rosterId, withSub) {
     whereCond.is_sub = false;
   }
 
-  const roster = await knex('team_players')
+  const roster = await knex('roster_players')
     .select('*')
     .where(whereCond)
     .orderByRaw(
@@ -1820,16 +1820,16 @@ const getPrimaryPerson = async user_id => {
 };
 
 async function getRoleRoster(rosterId, userId) {
-  const [{ role } = {}] = await knex('team_players')
-    .select('team_players.role')
+  const [{ role } = {}] = await knex('roster_players')
+    .select('roster_players.role')
     .join(
       'user_entity_role',
       'user_entity_role.entity_id',
-      'team_players.person_id',
+      'roster_players.person_id',
     )
     .where({ roster_id: rosterId, user_id: userId })
     .orderByRaw(
-      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], team_players.role)`,
+      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], roster_players.role)`,
     )
     .limit(1);
   if (role) {
@@ -1870,7 +1870,7 @@ const getPlayerInvoiceItem = async id => {
       person_id: personId,
       roster_id: rosterId,
     },
-  ] = await knex('team_players')
+  ] = await knex('roster_players')
     .select([
       'invoice_item_id',
       'payment_status',
@@ -2083,13 +2083,13 @@ async function getRosterByEventAndUser(eventId, userId) {
     .select('primary_person')
     .where({ user_id: userId });
 
-  const res = await knex('team_players')
+  const res = await knex('roster_players')
     .select('entities_general_infos.name', 'event_rosters.roster_id')
     .leftJoin(
       'event_rosters',
       'event_rosters.roster_id',
       '=',
-      'team_players.roster_id',
+      'roster_players.roster_id',
     )
     .leftJoin(
       'team_rosters',
@@ -2189,8 +2189,8 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
       'entities_general_infos.surname',
     )
     .leftJoin(
-      'team_players',
-      'team_players.person_id',
+      'roster_players',
+      'roster_players.person_id',
       '=',
       'user_entity_role.entity_id',
     )
@@ -2201,12 +2201,12 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
       'user_entity_role.entity_id',
     )
     .where({ user_id: userId })
-    .whereIn('team_players.role', [
+    .whereIn('roster_players.role', [
       ROSTER_ROLE_ENUM.COACH,
       ROSTER_ROLE_ENUM.CAPTAIN,
       ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN,
     ])
-    .andWhere('team_players.roster_id', '=', rosterId);
+    .andWhere('roster_players.roster_id', '=', rosterId);
 
   return res.length
     ? res.map(p => ({
@@ -2260,7 +2260,7 @@ async function getGameSubmissionInfos(gameId, myRosterId) {
 }
 
 async function isPlayerInRoster(player_id, roster_id) {
-  const [res] = await knex('team_players').where({
+  const [res] = await knex('roster_players').where({
     roster_id,
     person_id: player_id,
   });
@@ -2809,7 +2809,7 @@ async function getAllPlayersPending(eventId) {
 
   // const teamPlayers = await Promise.all(
   //   rosters.map(async r => {
-  //     const players = await knex('team_players')
+  //     const players = await knex('roster_players')
   //       .select('*')
   //       .where({
   //         roster_id: r.roster_id,
@@ -3608,11 +3608,11 @@ const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
 };
 
 const canRemovePlayerFromRoster = async (rosterId, personId) => {
-  const presentRoles = await knex('team_players')
+  const presentRoles = await knex('roster_players')
     .select('person_id', 'role')
     .where(
       'roster_id',
-      knex('team_players')
+      knex('roster_players')
         .select('roster_id')
         .where({ roster_id: rosterId, person_id: personId }),
     );
@@ -3627,7 +3627,7 @@ const canRemovePlayerFromRoster = async (rosterId, personId) => {
 };
 
 const getSubmissionerInfos = async gameInfos => {
-  const [{ role: myRole }] = await knex('team_players')
+  const [{ role: myRole }] = await knex('roster_players')
     .select('role')
     .where({
       roster_id: gameInfos.myRosterId,
@@ -3731,7 +3731,7 @@ const deleteRegistration = async (rosterId, eventId) => {
       .del()
       .transacting(trx);
 
-    await knex('team_players')
+    await knex('roster_players')
       .where({ roster_id: rosterId })
       .del()
       .transacting(trx);
@@ -3868,11 +3868,11 @@ async function updateRegistrationPerson(
 
 async function updateRosterRole(playerId, role) {
   if (role === ROSTER_ROLE_ENUM.PLAYER) {
-    const presentRoles = await knex('team_players')
+    const presentRoles = await knex('roster_players')
       .select('id', 'role')
       .where(
         'roster_id',
-        knex('team_players')
+        knex('roster_players')
           .select('roster_id')
           .where({ id: playerId }),
       );
@@ -3886,7 +3886,7 @@ async function updateRosterRole(playerId, role) {
     }
   }
 
-  return knex('team_players')
+  return knex('roster_players')
     .update({ role })
     .where({ id: playerId });
 }
@@ -3898,7 +3898,7 @@ async function updatePlayerPaymentStatus(body) {
     status,
     invoiceItemId,
   } = body;
-  return knex('team_players')
+  return knex('roster_players')
     .update({
       payment_status: status,
       invoice_item_id: invoiceItemId,
@@ -4906,7 +4906,7 @@ async function deleteTeamFromEvent(body) {
   const { eventId, rosterId } = body;
 
   return knex.transaction(async trx => {
-    await knex('team_players')
+    await knex('roster_players')
       .del()
       .where({
         roster_id: rosterId,
@@ -5040,7 +5040,7 @@ const addPlayerToRoster = async body => {
     paymentStatus = INVOICE_STATUS_ENUM.OPEN;
   }
   //TODO: Make sure userId adding is team Admin
-  const player = await knex('team_players')
+  const player = await knex('roster_players')
     .insert({
       roster_id: rosterId,
       person_id: personId,
@@ -5116,13 +5116,13 @@ const getTeamIdFromRosterId = async rosterId => {
 const deletePlayerFromRoster = async body => {
   const { id, personId, rosterId } = body;
   if (id) {
-    const [res] = await knex('team_players')
+    const [res] = await knex('roster_players')
       .del()
       .where({ id })
       .returning('id');
     return res;
   }
-  const [res] = await knex('team_players')
+  const [res] = await knex('roster_players')
     .del()
     .where({ person_id: personId, roster_id: rosterId })
     .returning('id');
