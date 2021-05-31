@@ -5215,16 +5215,21 @@ async function updatePlayerAcceptation(
 }
 
 async function updateAlias(entityId, alias) {
+  console.log({ entityId, alias });
   if (!/^[\w.-]+$/.test(alias) || validator.isUUID(alias)) {
+    console.log('throw');
     throw Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
 
   const reducedAlias = alias.replace(/\./g, '').toLowerCase();
+  console.log({ reducedAlias });
   const [similarAlias] = await knex('alias')
     .select('*')
     .where({ reduced_alias: reducedAlias });
+  console.log({ similarAlias });
 
   if (similarAlias && entityId != similarAlias.id) {
+    console.log('return');
     return null;
   }
   const [res] = await knex('alias')
@@ -5236,7 +5241,7 @@ async function updateAlias(entityId, alias) {
     .onConflict(['id'])
     .merge()
     .returning('*');
-
+  console.log({ res });
   return res;
 }
 
