@@ -5001,6 +5001,7 @@ async function addRoster(rosterId, roster) {
     roster.map(async r => {
       const res = await addPlayerToRoster({
         ...r,
+        teamId: rosterInfos.teamId,
         rosterId,
         eventId,
         individualOption,
@@ -5029,27 +5030,40 @@ const addPlayerToRoster = async body => {
   const {
     personId,
     name,
-    id,
     rosterId,
     role,
     isSub,
     individualOption,
+    teamId,
   } = body;
   let paymentStatus = INVOICE_STATUS_ENUM.FREE;
   if (individualOption && individualOption.individual_price > 0) {
     paymentStatus = INVOICE_STATUS_ENUM.OPEN;
   }
+
   //TODO: Make sure userId adding is team Admin
   const player = await knex('roster_players')
     .insert({
       roster_id: rosterId,
       person_id: personId,
       name,
-      id,
       is_sub: isSub,
       payment_status: paymentStatus,
       role,
     })
+    .onConflict(['person_id', 'roster_id'])
+    .merge()
+    .returning('*');
+
+  await knex('team_players')
+    .insert({
+      team_id: teamId,
+      person_id: personId,
+      name,
+      role,
+    })
+    .onConflict(['person_id', 'team_id'])
+    .merge()
     .returning('*');
 
   return player;

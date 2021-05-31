@@ -1815,6 +1815,7 @@ async function addPlayerToRoster(body, userId) {
     personId,
     rosterId,
     individualOption,
+    teamId,
   });
 
   if (
