@@ -740,7 +740,8 @@ async function getTeamEventsInfos(id) {
       '=',
       'sessions.address_id',
     )
-    .where({ team_id: id });
+    .where({ team_id: id })
+    .orderBy('sessions.start_date', 'asc');
 
   const gamesInfos = await knex('games_all_infos')
     .select(
