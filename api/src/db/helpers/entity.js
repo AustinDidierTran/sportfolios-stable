@@ -15,6 +15,7 @@ const {
   REPORT_TYPE_ENUM,
   PLAYER_ATTENDANCE_STATUS,
   PHASE_STATUS_ENUM,
+  SESSION_ENUM,
 } = require('../../../../common/enums');
 const { v1: uuidv1 } = require('uuid');
 const { addProduct, addPrice } = require('./stripe/shop');
@@ -4321,6 +4322,67 @@ async function addGame(
   };
 }
 
+async function addPractice(
+  name,
+  dateStart,
+  dateEnd,
+  address,
+  location,
+  teamId,
+) {
+
+  const [{ id: entityId }] = await knex('entities')
+    .insert({ type: GLOBAL_ENUM.SESSION })
+    .returning(['id']);
+
+  let addressId = null;
+  if (address && address.length != 0) {
+    let {
+      street_address,
+      city,
+      state,
+      zip,
+      country,
+    } = address;
+
+    const [res] = await knex('addresses')
+      .insert({
+        street_address,
+        city,
+        state,
+        zip,
+        country,
+      })
+      .returning('*');
+
+    addressId = res.id;
+  }
+
+  const [roster] = await knex('team_rosters')
+  .select('id')
+  .where({ team_id: teamId })
+  .orderByRaw(
+    `created_at desc, updated_at desc`,
+  )
+  .limit(1);
+
+  const [res] = await knex('sessions')
+    .insert({
+      roster_id: roster.id,
+      start_date: dateStart,
+      end_date: dateEnd,
+      name,
+      entity_id: entityId,
+      type: SESSION_ENUM.PRACTICE,
+      location,
+      address_id: addressId
+    })
+    .returning('*');
+
+
+  return res;
+}
+
 async function addGameAttendances(body) {
   const { gameId, rosterId, editedBy, attendances } = body;
 
@@ -5883,6 +5945,7 @@ module.exports = {
   addPhase,
   addPlayerCartItem,
   addPlayerToRoster,
+  addPractice,
   addReport,
   addRoster,
   addScoreSuggestion,

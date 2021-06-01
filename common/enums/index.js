@@ -351,10 +351,15 @@ const GLOBAL_ENUM = {
   TEAM: 3,
   EVENT: 4,
   GAME: 5,
+  SESSION: 6,
   MEMBERSHIP: 'membership',
   DONATION: 'donation',
   SHOP_ITEM: 'shop_item',
 };
+
+const SESSION_ENUM = {
+  PRACTICE: 'practice',
+}
 
 const SOCKET_EVENT = {
   CONNECTED_USER: 'connectedUser',
@@ -488,6 +493,7 @@ module.exports = {
   FORM_DIALOG_TYPE_ENUM,
   GENDER_ENUM,
   GLOBAL_ENUM,
+  SESSION_ENUM,
   HEADER_FLYOUT_TYPE_ENUM,
   IMAGE_ENUM,
   INVOICE_STATUS_ENUM,
