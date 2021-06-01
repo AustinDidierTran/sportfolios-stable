@@ -4350,7 +4350,7 @@ async function addPractice(
     .returning(['id']);
 
   let addressId = null;
-  if (address.length != 0) {
+  if (address && address.length != 0) {
     let {
       street_address,
       city,
