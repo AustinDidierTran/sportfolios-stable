@@ -28,6 +28,7 @@ const {
   addOption: addOptionHelper,
   addPartner: addPartnerHelper,
   addPersonToEvent: addPersonToEventHelper,
+  addPractice: addPracticeHelper,
   addPhase: addPhaseHelper,
   addPlayerCartItem: addPlayerCartItemHelper,
   addPlayerToRoster: addPlayerToRosterHelper,
@@ -1384,6 +1385,27 @@ async function addGame(body, userId) {
   return res;
 }
 
+async function addPractice(body, userId) {
+  const { name, dateStart, dateEnd, address, location, teamId } = body;
+
+  if (
+    !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  const res = await addPracticeHelper(
+    name,
+    dateStart,
+    dateEnd,
+    address,
+    location,
+    teamId,
+  );
+
+  return res;
+}
+
 async function addGameAttendances(body, userId) {
   const { editedBy } = body;
   if (
@@ -1991,6 +2013,7 @@ module.exports = {
   addPhase,
   addPlayersCartItems,
   addPlayerToRoster,
+  addPractice,
   addReport,
   addScoreSuggestion,
   addMemberDonation,
