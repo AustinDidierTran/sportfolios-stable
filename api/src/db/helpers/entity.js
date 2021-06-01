@@ -701,7 +701,7 @@ async function getPersonGames(id) {
 
   return gamesInfos;
 }
-async function getTeamGamesInfos(id) {
+async function getTeamEventsInfos(id) {
   const gameIds = (
     await knex('team_rosters')
       .select('games.id')
@@ -714,6 +714,33 @@ async function getTeamGamesInfos(id) {
       .leftJoin('games', 'games.id', '=', 'game_teams.game_id')
       .where({ team_id: id })
   ).map(game => game.id);
+
+  const practiceInfos = await knex('team_rosters')
+    .select(
+      'sessions.start_date',
+      'sessions.end_date',
+      'sessions.name',
+      'sessions.type',
+      'sessions.location',
+      'addresses.street_address',
+      'addresses.city',
+      'addresses.state',
+      'addresses.zip',
+      'addresses.country'
+    )
+    .leftJoin(
+      'sessions',
+      'sessions.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .leftJoin(
+      'addresses',
+      'addresses.id',
+      '=',
+      'sessions.address_id',
+    )
+    .where({ team_id: id });
 
   const gamesInfos = await knex('games_all_infos')
     .select(
@@ -747,7 +774,7 @@ async function getTeamGamesInfos(id) {
     )
     .orderBy('games_all_infos.timeslot', 'asc');
 
-  return gamesInfos;
+  return { gamesInfos, practiceInfos };
 }
 
 async function getCreator(id) {
@@ -1488,10 +1515,10 @@ async function getAllTeamsRegisteredInfos(eventId, userId, date) {
   const teams = await getAllTeamsRegistered(eventId);
 
   const [event] = await knex('events_infos')
-  .select('creator_id')
-  .where({
-    id: eventId
-  });
+    .select('creator_id')
+    .where({
+      id: eventId,
+    });
 
   const res = await Promise.all(
     teams.map(async t => {
@@ -1627,7 +1654,7 @@ async function getAllPeopleRegisteredInfos(eventId, userId) {
   const [event] = await knex('events_infos')
     .select('creator_id')
     .where({
-      id: eventId
+      id: eventId,
     });
 
   const res = await Promise.all(
@@ -4344,20 +4371,13 @@ async function addPractice(
   location,
   teamId,
 ) {
-
   const [{ id: entityId }] = await knex('entities')
     .insert({ type: GLOBAL_ENUM.SESSION })
     .returning(['id']);
 
   let addressId = null;
   if (address.length != 0) {
-    let {
-      street_address,
-      city,
-      state,
-      zip,
-      country,
-    } = address;
+    let { street_address, city, state, zip, country } = address;
 
     const [res] = await knex('addresses')
       .insert({
@@ -4373,12 +4393,10 @@ async function addPractice(
   }
 
   const [roster] = await knex('team_rosters')
-  .select('id')
-  .where({ team_id: teamId })
-  .orderByRaw(
-    `created_at desc, updated_at desc`,
-  )
-  .limit(1);
+    .select('id')
+    .where({ team_id: teamId })
+    .orderByRaw(`created_at desc, updated_at desc`)
+    .limit(1);
 
   const [res] = await knex('sessions')
     .insert({
@@ -4389,10 +4407,9 @@ async function addPractice(
       entity_id: entityId,
       type: SESSION_ENUM.PRACTICE,
       location,
-      address_id: addressId
+      address_id: addressId,
     })
     .returning('*');
-
 
   return res;
 }
@@ -6055,7 +6072,7 @@ module.exports = {
   getSubmissionerInfos,
   getTeamCreatorEmail,
   getTeamGames,
-  getTeamGamesInfos,
+  getTeamEventsInfos,
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
   getTeamsSchedule,

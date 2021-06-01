@@ -128,7 +128,7 @@ const {
   getSlots: getSlotsHelper,
   getTeamCreatorEmail,
   getTeamGames: getTeamGamesHelper,
-  getTeamGamesInfos: getTeamGamesInfosHelper,
+  getTeamEventsInfos: getTeamEventsInfosHelper,
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
   getTeamsSchedule: getTeamsScheduleHelper,
@@ -209,7 +209,7 @@ async function getEntity(id, user_id) {
     res.gamesInfos = await getPersonGamesHelper(id);
   }
   if (res.basicInfos.type === GLOBAL_ENUM.TEAM) {
-    res.gamesInfos = await getTeamGamesInfosHelper(id);
+    res.eventInfos = await getTeamEventsInfosHelper(id);
   }
 
   return res;
