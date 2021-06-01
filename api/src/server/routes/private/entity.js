@@ -1585,6 +1585,23 @@ router.post(`${BASE_URL}/game`, async ctx => {
   };
 });
 
+router.post(`${BASE_URL}/practice`, async ctx => {
+  const game = await queries.addPractice(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (!game) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: game,
+  };
+});
+
 router.post(`${BASE_URL}/gameScore`, async ctx => {
   const game = await queries.setGameScore(
     ctx.request.body,
