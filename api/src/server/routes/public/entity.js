@@ -337,6 +337,28 @@ router.get(`${BASE_URL}/allPeopleRegisteredInfos`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/players`, async ctx => {
+  const userId =
+    ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
+  const players = await queries.getTeamPlayers(
+    ctx.query.teamId,
+    userId,
+  );
+
+  if (players) {
+    ctx.body = {
+      status: 'success',
+      data: players,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/preranking`, async ctx => {
   const ranking = await queries.getPreranking(ctx.query.eventId);
   if (ranking) {
