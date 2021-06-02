@@ -750,6 +750,7 @@ async function getTeamEventsInfos(id) {
       'games_all_infos.id',
       'games_all_infos.timeslot',
       'games_all_infos.field',
+      'phase.name',
       'team_names',
       'team_scores',
     )
@@ -766,6 +767,12 @@ async function getTeamEventsInfos(id) {
       'teams.game_id',
       '=',
       'games_all_infos.id',
+    )
+    .leftJoin(
+      'phase',
+      'phase.event_id',
+      '=',
+      'games_all_infos.phase_id',
     )
     .whereIn('games_all_infos.id', gameIds)
     .andWhere(
