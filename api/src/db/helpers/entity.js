@@ -701,7 +701,7 @@ async function getPersonGames(id) {
 
   return gamesInfos;
 }
-async function getTeamGamesInfos(id) {
+async function getTeamEventsInfos(id) {
   const gameIds = (
     await knex('team_rosters')
       .select('games.id')
@@ -715,6 +715,34 @@ async function getTeamGamesInfos(id) {
       .where({ team_id: id })
   ).map(game => game.id);
 
+  const practiceInfos = await knex('team_rosters')
+    .select(
+      'sessions.start_date',
+      'sessions.end_date',
+      'sessions.name',
+      'sessions.type',
+      'sessions.location',
+      'addresses.street_address',
+      'addresses.city',
+      'addresses.state',
+      'addresses.zip',
+      'addresses.country'
+    )
+    .leftJoin(
+      'sessions',
+      'sessions.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .leftJoin(
+      'addresses',
+      'addresses.id',
+      '=',
+      'sessions.address_id',
+    )
+    .where({ team_id: id })
+    .orderBy('sessions.start_date', 'asc');
+
   const gamesInfos = await knex('games_all_infos')
     .select(
       'games_all_infos.event_id',
@@ -722,6 +750,7 @@ async function getTeamGamesInfos(id) {
       'games_all_infos.id',
       'games_all_infos.timeslot',
       'games_all_infos.field',
+      'phase.name',
       'team_names',
       'team_scores',
     )
@@ -739,6 +768,12 @@ async function getTeamGamesInfos(id) {
       '=',
       'games_all_infos.id',
     )
+    .leftJoin(
+      'phase',
+      'phase.event_id',
+      '=',
+      'games_all_infos.phase_id',
+    )
     .whereIn('games_all_infos.id', gameIds)
     .andWhere(
       'games_all_infos.timeslot',
@@ -747,7 +782,7 @@ async function getTeamGamesInfos(id) {
     )
     .orderBy('games_all_infos.timeslot', 'asc');
 
-  return gamesInfos;
+  return { gamesInfos, practiceInfos };
 }
 
 async function getCreator(id) {
@@ -6090,7 +6125,7 @@ module.exports = {
   getSubmissionerInfos,
   getTeamCreatorEmail,
   getTeamGames,
-  getTeamGamesInfos,
+  getTeamEventsInfos,
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
   getTeamPlayers,
