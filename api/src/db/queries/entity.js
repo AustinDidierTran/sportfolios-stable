@@ -15,7 +15,6 @@ const { signS3Request } = require('../../server/utils/aws');
 
 const {
   acceptScoreSuggestion: acceptScoreSuggestionHelper,
-  addAlias: addAliasHelper,
   addEntity: addEntityHelper,
   addEntityRole: addEntityRoleHelper,
   addEventCartItem,
@@ -1351,12 +1350,6 @@ async function addMember(body, userId) {
   return res;
 }
 
-async function addAlias(body) {
-  const { entityId, alias } = body;
-  const res = await addAliasHelper(entityId, alias);
-  return res;
-}
-
 async function addGame(body, userId) {
   const {
     eventId,
@@ -1844,6 +1837,7 @@ async function addPlayerToRoster(body, userId) {
     personId,
     rosterId,
     individualOption,
+    teamId,
   });
 
   if (
@@ -1998,7 +1992,6 @@ async function getRosterFromInviteToken(token, userId) {
 module.exports = {
   acceptScoreSuggestion,
   acceptScoreSuggestion,
-  addAlias,
   addEntity,
   addEntityRole,
   addField,

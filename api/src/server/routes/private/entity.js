@@ -151,7 +151,10 @@ router.get(`${BASE_URL}/graphAmountGeneratedByEvent`, async ctx => {
 });
 
 router.get(`${BASE_URL}/graphUserCount`, async ctx => {
-  const arrayGraph = await queries.getGraphUserCount(ctx.query.date, ctx.query.language);
+  const arrayGraph = await queries.getGraphUserCount(
+    ctx.query.date,
+    ctx.query.language,
+  );
   if (arrayGraph) {
     ctx.body = {
       status: 'success',
@@ -1541,23 +1544,6 @@ router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {
     ctx.body = {
       status: 'success',
       data: res,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
-});
-
-router.post(`${BASE_URL}/alias`, async ctx => {
-  const alias = await queries.addAlias(ctx.request.body);
-  if (alias) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: alias,
     };
   } else {
     ctx.status = STATUS_ENUM.ERROR;
