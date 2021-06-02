@@ -2,20 +2,20 @@ const knex = require('../connection');
 
 const { getMembershipName } = require('../../../../common/functions');
 const {
-  EVENT_TYPE,
-  ENTITIES_ROLE_ENUM,
-  GLOBAL_ENUM,
-  ROSTER_ROLE_ENUM,
-  TAG_TYPE_ENUM,
   CARD_TYPE_ENUM,
-  PERSON_TRANSFER_STATUS_ENUM,
-  STATUS_ENUM,
-  MEMBERSHIP_LENGTH_TYPE_ENUM,
+  ENTITIES_ROLE_ENUM,
+  EVENT_TYPE,
+  GLOBAL_ENUM,
   INVOICE_STATUS_ENUM,
-  REPORT_TYPE_ENUM,
-  PLAYER_ATTENDANCE_STATUS,
+  MEMBERSHIP_LENGTH_TYPE_ENUM,
+  PERSON_TRANSFER_STATUS_ENUM,
   PHASE_STATUS_ENUM,
+  PLAYER_ATTENDANCE_STATUS,
+  REPORT_TYPE_ENUM,
+  ROSTER_ROLE_ENUM,
   SESSION_ENUM,
+  STATUS_ENUM,
+  TAG_TYPE_ENUM,
 } = require('../../../../common/enums');
 const { v1: uuidv1 } = require('uuid');
 const { addProduct, addPrice } = require('./stripe/shop');
@@ -2431,7 +2431,11 @@ async function getSlots(eventId) {
 async function getTeamPlayers(teamId) {
   const res = await knex('team_players')
     .select('*')
-    .where({ team_id: teamId });
+    .where({ team_id: teamId })
+    .orderByRaw(
+      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
+    )
+    .orderBy('name');
   return res;
 }
 
@@ -4337,20 +4341,13 @@ async function addPractice(
   location,
   teamId,
 ) {
-
   const [{ id: entityId }] = await knex('entities')
     .insert({ type: GLOBAL_ENUM.SESSION })
     .returning(['id']);
 
   let addressId = null;
   if (address && address.length != 0) {
-    let {
-      street_address,
-      city,
-      state,
-      zip,
-      country,
-    } = address;
+    let { street_address, city, state, zip, country } = address;
 
     const [res] = await knex('addresses')
       .insert({
@@ -4366,12 +4363,10 @@ async function addPractice(
   }
 
   const [roster] = await knex('team_rosters')
-  .select('id')
-  .where({ team_id: teamId })
-  .orderByRaw(
-    `created_at desc, updated_at desc`,
-  )
-  .limit(1);
+    .select('id')
+    .where({ team_id: teamId })
+    .orderByRaw(`created_at desc, updated_at desc`)
+    .limit(1);
 
   const [res] = await knex('sessions')
     .insert({
@@ -4382,10 +4377,9 @@ async function addPractice(
       entity_id: entityId,
       type: SESSION_ENUM.PRACTICE,
       location,
-      address_id: addressId
+      address_id: addressId,
     })
     .returning('*');
-
 
   return res;
 }
@@ -5136,6 +5130,30 @@ const addPlayerToRoster = async body => {
     .returning('*');
 
   return player;
+};
+const addPlayersToTeam = async body => {
+  const { players, teamId } = body;
+  const res = await Promise.all(
+    players.map(async player => {
+      const { name, surname } = await getPersonInfos(player.id);
+      let fullName = name;
+      if (surname) {
+        fullName = name + ' ' + surname;
+      }
+      const [res] = await knex('team_players')
+        .insert({
+          team_id: teamId,
+          person_id: player.id,
+          name: fullName,
+          role: ROSTER_ROLE_ENUM.PLAYER,
+        })
+        .onConflict(['team_id', 'person_id'])
+        .merge()
+        .returning('*');
+      return res;
+    }),
+  );
+  return res;
 };
 
 const addPlayerCartItem = async body => {
@@ -5944,6 +5962,7 @@ module.exports = {
   addGame,
   addGameAttendances,
   addMember,
+  addMemberDonation,
   addMemberManually,
   addMembership,
   addOption,
@@ -5951,12 +5970,12 @@ module.exports = {
   addPersonToEvent,
   addPhase,
   addPlayerCartItem,
+  addPlayersToTeam,
   addPlayerToRoster,
   addPractice,
   addReport,
   addRoster,
   addScoreSuggestion,
-  addMemberDonation,
   addSpiritSubmission,
   addTeamToEvent,
   addTimeSlot,
@@ -6003,8 +6022,8 @@ module.exports = {
   getCreatorsEmails,
   getEmailPerson,
   getEmailsEntity,
-  getEntitiesTypeById,
   getEmailsLandingPage,
+  getEntitiesTypeById,
   getEntity,
   getEntityOwners,
   getEntityRole,
@@ -6025,10 +6044,10 @@ module.exports = {
   getGraphUserCount,
   getIndividualPaymentOptionFromRosterId,
   getLastRankedTeam,
-  getMostRecentMember,
   getMembers,
   getMembership,
   getMemberships,
+  getMostRecentMember,
   getMyPersonsAdminsOfTeam,
   getNbOfTeamsInEvent,
   getNbOfTeamsInPhase,
@@ -6074,8 +6093,8 @@ module.exports = {
   getTeamGamesInfos,
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
-  getTeamsSchedule,
   getTeamPlayers,
+  getTeamsSchedule,
   getUnplacedGames,
   getUserIdFromPersonId,
   getUserNextGame,
@@ -6108,9 +6127,9 @@ module.exports = {
   updateMemberOptionalField,
   updateMembershipInvoice,
   updateMembershipTermsAndConditions,
-  updatePartner,
   updateOption,
   updateOriginPhase,
+  updatePartner,
   updatePersonInfosHelper,
   updatePhase,
   updatePhaseFinalRanking,

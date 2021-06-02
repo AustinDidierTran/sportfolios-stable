@@ -831,6 +831,51 @@ router.get(`${BASE_URL}/myRosters`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/rosterFromInviteToken`, async ctx => {
+  const roster = await queries.getRosterFromInviteToken(
+    ctx.query.token,
+    ctx.body.userInfo.id,
+  );
+  if (!roster) {
+    throw new Error(STATUS_ENUM.ERROR_STRING);
+  }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS_STRING,
+    data: roster,
+  };
+});
+
+router.get(`${BASE_URL}/rosterInviteToken`, async ctx => {
+  const token = await queries.getRosterInviteToken(
+    ctx.body.userInfo.id,
+    ctx.query.rosterId,
+  );
+  if (!token) {
+    throw new Error(STATUS_ENUM.ERROR_STRING);
+  }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS_STRING,
+    data: token,
+  };
+});
+
+router.get(`${BASE_URL}/newRosterInviteToken`, async ctx => {
+  const token = await queries.getNewRosterInviteToken(
+    ctx.body.userInfo.id,
+    ctx.query.rosterId,
+  );
+  if (!token) {
+    throw new Error(STATUS_ENUM.ERROR_STRING);
+  }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS_STRING,
+    data: token,
+  };
+});
+
 router.put(`${BASE_URL}`, async ctx => {
   const entity = await queries.updateEntity(
     ctx.request.body,
@@ -1779,6 +1824,38 @@ router.post(`${BASE_URL}/membership`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/players`, async ctx => {
+  const players = await queries.addPlayersToTeam(ctx.request.body);
+  if (players) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: players,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
+  const player = await queries.addPlayerToRoster(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (!player) {
+    throw new Error(STATUS_ENUM.ERROR_STRING);
+  }
+  ctx.status = 201;
+  ctx.body = {
+    status: STATUS_ENUM.SUCCESS_STRING,
+    data: player,
+  };
+});
+
 router.post(`${BASE_URL}/register`, async ctx => {
   const { status, reason, rosterId } = await queries.addTeamToEvent(
     ctx.request.body,
@@ -1966,7 +2043,6 @@ router.del(`${BASE_URL}/phase`, async ctx => {
   );
   if (phase) {
     ctx.status = STATUS_ENUM.SUCCESS;
-
     ctx.body = {
       status: 'success',
       data: phase,
@@ -1980,35 +2056,6 @@ router.del(`${BASE_URL}/phase`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/rosterInviteToken`, async ctx => {
-  const token = await queries.getRosterInviteToken(
-    ctx.body.userInfo.id,
-    ctx.query.rosterId,
-  );
-  if (!token) {
-    throw new Error(STATUS_ENUM.ERROR_STRING);
-  }
-  ctx.status = STATUS_ENUM.SUCCESS;
-  ctx.body = {
-    status: STATUS_ENUM.SUCCESS_STRING,
-    data: token,
-  };
-});
-router.get(`${BASE_URL}/newRosterInviteToken`, async ctx => {
-  const token = await queries.getNewRosterInviteToken(
-    ctx.body.userInfo.id,
-    ctx.query.rosterId,
-  );
-  if (!token) {
-    throw new Error(STATUS_ENUM.ERROR_STRING);
-  }
-  ctx.status = STATUS_ENUM.SUCCESS;
-  ctx.body = {
-    status: STATUS_ENUM.SUCCESS_STRING,
-    data: token,
-  };
-});
-
 router.del(`${BASE_URL}/rosterInviteToken`, async ctx => {
   const res = await queries.cancelRosterInviteToken(
     ctx.body.userInfo.id,
@@ -2020,36 +2067,6 @@ router.del(`${BASE_URL}/rosterInviteToken`, async ctx => {
   ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: STATUS_ENUM.SUCCESS_STRING,
-  };
-});
-
-router.get(`${BASE_URL}/rosterFromInviteToken`, async ctx => {
-  const roster = await queries.getRosterFromInviteToken(
-    ctx.query.token,
-    ctx.body.userInfo.id,
-  );
-  if (!roster) {
-    throw new Error(STATUS_ENUM.ERROR_STRING);
-  }
-  ctx.status = STATUS_ENUM.SUCCESS;
-  ctx.body = {
-    status: STATUS_ENUM.SUCCESS_STRING,
-    data: roster,
-  };
-});
-
-router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
-  const player = await queries.addPlayerToRoster(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-  );
-  if (!player) {
-    throw new Error(STATUS_ENUM.ERROR_STRING);
-  }
-  ctx.status = 201;
-  ctx.body = {
-    status: STATUS_ENUM.SUCCESS_STRING,
-    data: player,
   };
 });
 
