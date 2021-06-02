@@ -338,12 +338,7 @@ router.get(`${BASE_URL}/allPeopleRegisteredInfos`, async ctx => {
 });
 
 router.get(`${BASE_URL}/players`, async ctx => {
-  const userId =
-    ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
-  const players = await queries.getTeamPlayers(
-    ctx.query.teamId,
-    userId,
-  );
+  const players = await queries.getTeamPlayers(ctx.query.teamId);
 
   if (players) {
     ctx.body = {
