@@ -31,6 +31,7 @@ const {
   addPhase: addPhaseHelper,
   addPlayerCartItem: addPlayerCartItemHelper,
   addPlayerToRoster: addPlayerToRosterHelper,
+  addPlayersToTeam: addPlayersToTeamHelper,
   addReport: addReportHelper,
   addRoster: addRosterHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
@@ -1384,11 +1385,16 @@ async function addGame(body, userId) {
 }
 
 async function addPractice(body, userId) {
-  const { name, dateStart, dateEnd, address, location, teamId } = body;
+  const {
+    name,
+    dateStart,
+    dateEnd,
+    address,
+    location,
+    teamId,
+  } = body;
 
-  if (
-    !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))
-  ) {
+  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -1822,6 +1828,10 @@ async function deleteOption(id) {
   return deleteOptionHelper(id);
 }
 
+async function addPlayersToTeam(body) {
+  return addPlayersToTeamHelper(body);
+}
+
 async function addPlayerToRoster(body, userId) {
   const { personId, role, isSub, rosterId } = body;
   const eventId = await getEventIdFromRosterId(rosterId);
@@ -2003,6 +2013,7 @@ module.exports = {
   addGame,
   addGameAttendances,
   addMember,
+  addMemberDonation,
   addMemberManually,
   addMembership,
   addOption,
@@ -2010,11 +2021,11 @@ module.exports = {
   addPersonToEvent,
   addPhase,
   addPlayersCartItems,
+  addPlayersToTeam,
   addPlayerToRoster,
   addPractice,
   addReport,
   addScoreSuggestion,
-  addMemberDonation,
   addSpiritSubmission,
   addTeamAsAdmin,
   addTeamToEvent,
@@ -2064,9 +2075,9 @@ module.exports = {
   getGraphMemberCount,
   getGraphUserCount,
   getInteractiveToolData,
-  getMostRecentMember,
   getMembers,
   getMemberships,
+  getMostRecentMember,
   getMyRosterIds,
   getNewRosterInviteToken,
   getOptions,
@@ -2097,8 +2108,8 @@ module.exports = {
   getScoreSuggestion,
   getSlots,
   getTeamGames,
-  getTeamsSchedule,
   getTeamPlayers,
+  getTeamsSchedule,
   hasMemberships,
   importMembers,
   isAllowed,
@@ -2115,8 +2126,8 @@ module.exports = {
   updateMember,
   updateMemberOptionalField,
   updateMembershipTermsAndConditions,
-  updatePartner,
   updateOption,
+  updatePartner,
   updatePersonInfos,
   updatePlayerAcceptation,
   updatePreRanking,
