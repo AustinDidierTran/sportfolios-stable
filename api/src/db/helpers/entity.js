@@ -2428,6 +2428,13 @@ async function getSlots(eventId) {
   return res;
 }
 
+async function getTeamPlayers(teamId) {
+  const res = await knex('team_players')
+    .select('*')
+    .where({ team_id: teamId });
+  return res;
+}
+
 async function getTeamsSchedule(eventId) {
   const res = await knex('event_rosters')
     .select('team_id', 'roster_id', 'event_id', 'name')
@@ -6068,6 +6075,7 @@ module.exports = {
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
   getTeamsSchedule,
+  getTeamPlayers,
   getUnplacedGames,
   getUserIdFromPersonId,
   getUserNextGame,
