@@ -5822,7 +5822,7 @@ const deleteGame = async id => {
   return res;
 };
 
-const getPracticeInfo = async id => {
+const getPracticeInfo = async (id, userId) => {
   const [session] = await knex('sessions')
     .select(
       'sessions.id',
@@ -5838,6 +5838,7 @@ const getPracticeInfo = async id => {
       'addresses.zip',
       'addresses.country',
       'team.roster',
+      'team.team_id',
     )
     .leftJoin('addresses', 'addresses.id', '=', 'sessions.address_id')
     .leftJoin(
@@ -5845,6 +5846,7 @@ const getPracticeInfo = async id => {
         .select(
           knex.raw('array_agg(players.playerInfo) AS roster'),
           'team_rosters.id',
+          'team_rosters.team_id',
         )
         .leftJoin(
           knex
@@ -5884,14 +5886,19 @@ const getPracticeInfo = async id => {
           '=',
           'team_rosters.team_id',
         )
-        .groupBy('team_rosters.id')
+        .groupBy('team_rosters.id', 'team_rosters.team_id')
         .as('team'),
       'team.id',
       '=',
       'sessions.roster_id',
     )
     .where({ 'sessions.id': id });
-  return session;
+
+  const role = await getEntityRole(session.team_id, userId);
+  return {
+    ...session,
+    role,
+  };
 };
 
 const deletePhase = async (phaseId, eventId) => {

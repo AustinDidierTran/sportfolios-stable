@@ -380,8 +380,8 @@ async function getGameInfo(gameId, userId) {
   return getGameInfoHelper(gameId, userId);
 }
 
-async function getPracticeInfo(practiceId) {
-  return getPracticeInfoHelper(practiceId);
+async function getPracticeInfo(practiceId, userId) {
+  return getPracticeInfoHelper(practiceId, userId);
 }
 
 async function getGames(eventId) {
