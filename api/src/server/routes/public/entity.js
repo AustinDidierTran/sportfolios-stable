@@ -450,12 +450,35 @@ router.get(`${BASE_URL}/games`, async ctx => {
 });
 
 router.get(`${BASE_URL}/gameInfo`, async ctx => {
-  const gameInfo = await queries.getGameInfo(ctx.query.gameId);
+  const gameInfo = await queries.getGameInfo(
+    ctx.query.gameId,
+    ctx.body.userInfo.id,
+  );
 
   if (gameInfo) {
     ctx.body = {
       status: 'success',
       data: gameInfo,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/practiceInfo`, async ctx => {
+  const practiceInfo = await queries.getPracticeInfo(
+    ctx.query.practiceId,
+    ctx.body.userInfo.id,
+  );
+
+  if (practiceInfo) {
+    ctx.body = {
+      status: 'success',
+      data: practiceInfo,
     };
   } else {
     ctx.status = 404;
