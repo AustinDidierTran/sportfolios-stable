@@ -105,6 +105,7 @@ const {
   getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
   getPhasesWithoutPrerank: getPhasesWithoutPrerankHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
+  getPracticeInfo: getPracticeInfoHelper,
   getPreranking: getPrerankingHelper,
   getPrimaryPerson: getPrimaryPersonHelper,
   getRealId: getRealIdHelper,
@@ -377,6 +378,10 @@ async function getPhases(eventId) {
 
 async function getGameInfo(gameId) {
   return getGameInfoHelper(gameId);
+}
+
+async function getPracticeInfo(practiceId) {
+  return getPracticeInfoHelper(practiceId);
 }
 
 async function getGames(eventId) {
@@ -2073,6 +2078,7 @@ module.exports = {
   getPhases,
   getPhasesGameAndTeams,
   getPossibleSubmissionerInfos,
+  getPracticeInfo,
   getPreranking,
   getPrimaryPerson,
   getRealId,

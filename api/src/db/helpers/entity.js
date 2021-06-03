@@ -717,28 +717,18 @@ async function getTeamEventsInfos(id) {
 
   const practiceInfos = await knex('team_rosters')
     .select(
+      'sessions.id',
       'sessions.start_date',
       'sessions.end_date',
       'sessions.name',
       'sessions.type',
       'sessions.location',
-      'addresses.street_address',
-      'addresses.city',
-      'addresses.state',
-      'addresses.zip',
-      'addresses.country'
     )
     .leftJoin(
       'sessions',
       'sessions.roster_id',
       '=',
       'team_rosters.id',
-    )
-    .leftJoin(
-      'addresses',
-      'addresses.id',
-      '=',
-      'sessions.address_id',
     )
     .where({ team_id: id })
     .orderBy('sessions.start_date', 'asc');
@@ -4371,13 +4361,7 @@ async function addPractice(
 
   let addressId = null;
   if (address && address.length != 0) {
-    let {
-      street_address,
-      city,
-      state,
-      zip,
-      country,
-    } = address;
+    let { street_address, city, state, zip, country } = address;
 
     const [res] = await knex('addresses')
       .insert({
@@ -5835,6 +5819,78 @@ const deleteGame = async id => {
   return res;
 };
 
+const getPracticeInfo = async id => {
+  const [session] = await knex('sessions')
+    .select(
+      'sessions.id',
+      'sessions.entity_id',
+      'sessions.start_date',
+      'sessions.end_date',
+      'sessions.name',
+      'sessions.type',
+      'sessions.location',
+      'addresses.street_address',
+      'addresses.city',
+      'addresses.state',
+      'addresses.zip',
+      'addresses.country',
+      'team.roster',
+    )
+    .leftJoin('addresses', 'addresses.id', '=', 'sessions.address_id')
+    .leftJoin(
+      knex('team_rosters')
+        .select(
+          knex.raw('array_agg(players.playerInfo) AS roster'),
+          'team_rosters.id',
+        )
+        .leftJoin(
+          knex
+            .select(
+              knex.raw(
+                "json_agg(json_build_object('name', person.name, 'surname', person.surname, 'photo_url', person.photo_url, 'role', person.role)) AS playerInfo",
+              ),
+              'person.team_id'
+            )
+            .from(
+              knex('team_rosters')
+                .select(
+                  'entities_all_infos.name',
+                  'entities_all_infos.surname',
+                  'entities_all_infos.photo_url',
+                  'team_players.role',
+                  'team_rosters.team_id',
+                )
+                .leftJoin(
+                  'team_players',
+                  'team_players.team_id',
+                  '=',
+                  'team_rosters.team_id',
+                )
+                .leftJoin(
+                  'entities_all_infos',
+                  ' entities_all_infos.id',
+                  '=',
+                  'team_players.person_id',
+                )
+                .orderBy('team_players.role', 'asc')
+                .as('person'),
+            )
+            .groupBy('person.team_id')
+            .as('players'),
+          'players.team_id',
+          '=',
+          'team_rosters.team_id',
+        )
+        .groupBy('team_rosters.id')
+        .as('team'),
+      'team.id',
+      '=',
+      'sessions.roster_id',
+    )
+    .where({ 'sessions.id': id });
+  return session;
+};
+
 const deletePhase = async (phaseId, eventId) => {
   const phaseGames = await knex('games')
     .select('id')
@@ -6070,6 +6126,7 @@ module.exports = {
   getPhasesGameAndTeams,
   getPhasesWithoutPrerank,
   getPlayerInvoiceItem,
+  getPracticeInfo,
   getPreranking,
   getPrerankPhase,
   getPrimaryPerson,

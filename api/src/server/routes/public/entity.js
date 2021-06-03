@@ -449,6 +449,23 @@ router.get(`${BASE_URL}/gameInfo`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/practiceInfo`, async ctx => {
+  const practiceInfo = await queries.getPracticeInfo(ctx.query.practiceId);
+
+  if (practiceInfo) {
+    ctx.body = {
+      status: 'success',
+      data: practiceInfo,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/teamGames`, async ctx => {
   const games = await queries.getTeamGames(ctx.query.eventId);
 
