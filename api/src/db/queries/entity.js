@@ -376,8 +376,8 @@ async function getPhases(eventId) {
   return getPhasesWithoutPrerankHelper(eventId);
 }
 
-async function getGameInfo(gameId) {
-  return getGameInfoHelper(gameId);
+async function getGameInfo(gameId, userId) {
+  return getGameInfoHelper(gameId, userId);
 }
 
 async function getPracticeInfo(practiceId) {

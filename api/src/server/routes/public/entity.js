@@ -433,7 +433,10 @@ router.get(`${BASE_URL}/games`, async ctx => {
 });
 
 router.get(`${BASE_URL}/gameInfo`, async ctx => {
-  const gameInfo = await queries.getGameInfo(ctx.query.gameId);
+  const gameInfo = await queries.getGameInfo(
+    ctx.query.gameId,
+    ctx.body.userInfo.id,
+  );
 
   if (gameInfo) {
     ctx.body = {
@@ -450,7 +453,9 @@ router.get(`${BASE_URL}/gameInfo`, async ctx => {
 });
 
 router.get(`${BASE_URL}/practiceInfo`, async ctx => {
-  const practiceInfo = await queries.getPracticeInfo(ctx.query.practiceId);
+  const practiceInfo = await queries.getPracticeInfo(
+    ctx.query.practiceId,
+  );
 
   if (practiceInfo) {
     ctx.body = {

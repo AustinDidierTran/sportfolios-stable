@@ -5758,7 +5758,7 @@ const getGame = async id => {
   return { ...game };
 };
 
-const getGameInfo = async id => {
+const getGameInfo = async (id, userId) => {
   const [game] = await knex('games')
     .select('*')
     .where({ id });
@@ -5774,6 +5774,8 @@ const getGameInfo = async id => {
     game.phase_name = await getPhaseName(game.phase_id);
   }
 
+  const role = await getEntityRole(game.event_id, userId);
+
   const [r1] = await knex('event_fields')
     .select('field')
     .where({ id: game.field_id });
@@ -5786,6 +5788,7 @@ const getGameInfo = async id => {
     score_submited: score_suggestion.score_submited,
     field: r1.field,
     start_time: r2.date,
+    role,
   };
 };
 
@@ -5849,7 +5852,7 @@ const getPracticeInfo = async id => {
               knex.raw(
                 "json_agg(json_build_object('name', person.name, 'surname', person.surname, 'photo_url', person.photo_url, 'role', person.role)) AS playerInfo",
               ),
-              'person.team_id'
+              'person.team_id',
             )
             .from(
               knex('team_rosters')
