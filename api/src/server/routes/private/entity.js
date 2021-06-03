@@ -1347,6 +1347,25 @@ router.put(
   },
 );
 
+router.put(`${BASE_URL}/memberOptionalField`, async ctx => {
+  const entity = await queries.updateMemberOptionalField(
+    ctx.request.body,
+  );
+  if (entity) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.put(`${BASE_URL}/partner`, async ctx => {
   const partner = await queries.updatePartner(ctx.request.body);
   if (partner) {
@@ -1354,6 +1373,23 @@ router.put(`${BASE_URL}/partner`, async ctx => {
     ctx.body = {
       status: 'success',
       data: partner,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/player`, async ctx => {
+  const player = await queries.updatePlayer(ctx.request.body);
+  if (player) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: player,
     };
   } else {
     ctx.status = STATUS_ENUM.ERROR;
@@ -1427,6 +1463,7 @@ router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
     };
   }
 });
+
 router.post(`${BASE_URL}/unregisterPeople`, async ctx => {
   const res = await queries.unregisterPeople(
     ctx.request.body,
@@ -1473,25 +1510,6 @@ router.post(`${BASE_URL}/member`, async ctx => {
   const entity = await queries.addMember(
     ctx.request.body,
     ctx.body.userInfo.id,
-  );
-  if (entity) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
-  }
-});
-
-router.put(`${BASE_URL}/memberOptionalField`, async ctx => {
-  const entity = await queries.updateMemberOptionalField(
-    ctx.request.body,
   );
   if (entity) {
     ctx.status = 201;
@@ -1975,7 +1993,7 @@ router.del(BASE_URL, async ctx => {
 });
 
 router.del(`${BASE_URL}/membership`, async ctx => {
-  await queries.deleteEntityMembership(ctx.query);
+  await queries.deleteEntityMembership(ctx.query.id);
   ctx.status = 201;
   ctx.body = {
     status: 'success',
@@ -1984,6 +2002,14 @@ router.del(`${BASE_URL}/membership`, async ctx => {
 
 router.del(`${BASE_URL}/partner`, async ctx => {
   await queries.deletePartner(ctx.query.partnerId);
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
+router.del(`${BASE_URL}/player`, async ctx => {
+  await queries.deletePlayer(ctx.query.id);
   ctx.status = 201;
   ctx.body = {
     status: 'success',

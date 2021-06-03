@@ -723,6 +723,11 @@ async function getTeamEventsInfos(id) {
       'sessions.name',
       'sessions.type',
       'sessions.location',
+      'addresses.street_address',
+      'addresses.city',
+      'addresses.state',
+      'addresses.zip',
+      'addresses.country',
     )
     .leftJoin(
       'sessions',
@@ -730,6 +735,7 @@ async function getTeamEventsInfos(id) {
       '=',
       'team_rosters.id',
     )
+    .leftJoin('addresses', 'addresses.id', '=', 'sessions.address_id')
     .where({ team_id: id })
     .orderBy('sessions.start_date', 'asc');
 
@@ -3634,6 +3640,15 @@ async function updatePartner(body) {
     .where({ id });
 }
 
+async function updatePlayer(body) {
+  const { id, role } = body;
+  return knex('team_players')
+    .update({
+      role,
+    })
+    .where({ id });
+}
+
 const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
   var list = [];
   for (const rosterId of rosterIds) {
@@ -5786,6 +5801,12 @@ const deletePartner = async id => {
     .del();
 };
 
+const deletePlayer = async id => {
+  return knex('team_players')
+    .where({ id })
+    .del();
+};
+
 const getGame = async id => {
   const [game] = await knex('games')
     .select('*')
@@ -6096,6 +6117,7 @@ module.exports = {
   deleteMembershipWithId,
   deleteOption,
   deletePartner,
+  deletePlayer,
   deletePersonFromEvent,
   deletePhase,
   deletePlayerFromRoster,
@@ -6238,6 +6260,7 @@ module.exports = {
   updateOption,
   updateOriginPhase,
   updatePartner,
+  updatePlayer,
   updatePersonInfosHelper,
   updatePhase,
   updatePhaseFinalRanking,
