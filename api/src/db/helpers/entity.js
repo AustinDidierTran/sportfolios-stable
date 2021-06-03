@@ -5902,10 +5902,31 @@ const getPracticeInfo = async (id, userId) => {
 };
 
 const deletePractice = async id => {
+  const [session] = await knex('sessions')
+    .select('*')
+    .where({ id });
+  console.log(session);
+  if (session.address_id) {
+    const [resAddress] = await knex.transaction(async trx => {
+      await knex('sessions')
+        .where({ id })
+        .del()
+        .transacting(trx);
+
+      return knex('addresses')
+        .where('id', session.address_id)
+        .del()
+        .returning('*')
+        .transacting(trx);
+    });
+    return resAddress;
+  }
+
   const [res] = await knex('sessions')
     .where({ id })
     .del()
     .returning('*');
+
   return res;
 };
 
