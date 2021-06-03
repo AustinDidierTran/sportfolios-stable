@@ -5901,6 +5901,14 @@ const getPracticeInfo = async (id, userId) => {
   };
 };
 
+const deletePractice = async id => {
+  const [res] = await knex('sessions')
+    .where({ id })
+    .del()
+    .returning('*');
+  return res;
+};
+
 const deletePhase = async (phaseId, eventId) => {
   const phaseGames = await knex('games')
     .select('id')
@@ -6063,6 +6071,7 @@ module.exports = {
   deletePersonFromEvent,
   deletePhase,
   deletePlayerFromRoster,
+  deletePractice,
   deleteRegistration,
   deleteReport,
   deleteTeamFromEvent,
