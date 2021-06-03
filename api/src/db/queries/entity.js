@@ -601,7 +601,6 @@ async function addTeamToEvent(body, userId) {
 
   const team = (await getEntity(teamId, userId)).basicInfos;
   const event = (await getEntity(eventId, userId)).basicInfos;
-
   const teamPaymentOption = await getRegistrationTeamPaymentOption(
     paymentOption,
   );
@@ -1844,14 +1843,13 @@ async function addPlayerToRoster(body, userId) {
   const team = (await getEntity(teamId, userId)).basicInfos;
   const playerUserId = await getUserIdFromPersonId(personId);
 
-  const { name, surname } = await getPersonInfos(personId);
+  const { name } = await getPersonInfos(personId);
 
   const roster = await getRosterEventInfos(rosterId);
   const individualOption = await getRegistrationIndividualPaymentOptionHelper(
     roster.paymentOptionId,
   );
   const res = await addPlayerToRosterHelper({
-    name: name + ' ' + surname,
     role,
     isSub,
     personId,
