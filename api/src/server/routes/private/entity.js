@@ -1417,6 +1417,23 @@ router.put(`${BASE_URL}/player`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/rosterPlayer`, async ctx => {
+  const player = await queries.updateRosterPlayer(ctx.request.body);
+  if (player) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: player,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.post(BASE_URL, async ctx => {
   const entityId = await queries.addEntity(
     ctx.request.body,
@@ -2027,6 +2044,14 @@ router.del(`${BASE_URL}/partner`, async ctx => {
 
 router.del(`${BASE_URL}/player`, async ctx => {
   await queries.deletePlayer(ctx.query.id);
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
+router.del(`${BASE_URL}/rosterPlayer`, async ctx => {
+  await queries.deleteRosterPlayer(ctx.query.id);
   ctx.status = 201;
   ctx.body = {
     status: 'success',

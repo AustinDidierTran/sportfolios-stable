@@ -3668,6 +3668,15 @@ async function updatePlayer(body) {
     .where({ id });
 }
 
+async function updateRosterPlayer(body) {
+  const { id, role } = body;
+  return knex('roster_players')
+    .update({
+      role,
+    })
+    .where({ id });
+}
+
 const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
   var list = [];
   for (const rosterId of rosterIds) {
@@ -5817,6 +5826,12 @@ const deletePlayer = async id => {
     .del();
 };
 
+const deleteRosterPlayer = async id => {
+  return knex('roster_players')
+    .where({ id })
+    .del();
+};
+
 const getGame = async id => {
   const [game] = await knex('games')
     .select('*')
@@ -6157,6 +6172,7 @@ module.exports = {
   deleteOption,
   deletePartner,
   deletePlayer,
+  deleteRosterPlayer,
   deletePersonFromEvent,
   deletePhase,
   deletePlayerFromRoster,
@@ -6303,6 +6319,7 @@ module.exports = {
   updateOriginPhase,
   updatePartner,
   updatePlayer,
+  updateRosterPlayer,
   updatePersonInfosHelper,
   updatePhase,
   updatePhaseFinalRanking,

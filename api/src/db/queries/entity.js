@@ -50,6 +50,7 @@ const {
   deleteOption: deleteOptionHelper,
   deletePartner: deletePartnerHelper,
   deletePlayer: deletePlayerHelper,
+  deleteRosterPlayer: deleteRosterPlayerHelper,
   deletePersonFromEvent,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
   deletePractice: deletePracticeHelper,
@@ -162,6 +163,7 @@ const {
   updateMembershipTermsAndConditions: updateMembershipTermsAndConditionsHelper,
   updatePartner: updatePartnerHelper,
   updatePlayer: updatePlayerHelper,
+  updateRosterPlayer: updateRosterPlayerHelper,
   updateOption: updateOptionHelper,
   updatePersonInfosHelper,
   updatePlayerAcceptation: updatePlayerAcceptationHelper,
@@ -1246,6 +1248,10 @@ async function updatePlayer(body) {
   return updatePlayerHelper(body);
 }
 
+async function updateRosterPlayer(body) {
+  return updateRosterPlayerHelper(body);
+}
+
 async function updateGame(body) {
   const {
     gameId,
@@ -1829,6 +1835,10 @@ async function deletePlayer(id) {
   return deletePlayerHelper(id);
 }
 
+async function deleteRosterPlayer(id) {
+  return deleteRosterPlayerHelper(id);
+}
+
 async function deleteEntityMembership(query) {
   const { membershipId } = query;
 
@@ -2080,6 +2090,7 @@ module.exports = {
   deleteOption,
   deletePartner,
   deletePlayer,
+  deleteRosterPlayer,
   deletePlayerFromRoster,
   deletePractice,
   deleteReport,
@@ -2168,6 +2179,7 @@ module.exports = {
   updateOption,
   updatePartner,
   updatePlayer,
+  updateRosterPlayer,
   updatePersonInfos,
   updatePlayerAcceptation,
   updatePreRanking,
