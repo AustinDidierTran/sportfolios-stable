@@ -160,6 +160,7 @@ const {
   updatePersonInfosHelper,
   updatePlayerAcceptation: updatePlayerAcceptationHelper,
   updatePlayerPaymentStatus: updatePlayerPaymentStatusHelper,
+  updatePractice: updatePracticeHelper,
   updatePreRanking: updatePreRankingHelper,
   updateRegistration: updateRegistrationHelper,
   updateRegistrationPerson: updateRegistrationPersonHelper,
@@ -1250,6 +1251,23 @@ async function updateGame(body) {
   return res;
 }
 
+async function updatePractice(body, userId) {
+  const { id, name, start_date, end_date, location, address } = body;
+
+  if (!(await isAllowed(id, userId), ENTITIES_ROLE_ENUM.ADMIN)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return updatePracticeHelper(
+    id,
+    name,
+    start_date,
+    end_date,
+    location,
+    address,
+  );
+}
+
 async function updateGamesInteractiveTool(body, userId) {
   const { eventId, games } = body;
   if (
@@ -1385,11 +1403,16 @@ async function addGame(body, userId) {
 }
 
 async function addPractice(body, userId) {
-  const { name, dateStart, dateEnd, address, location, teamId } = body;
+  const {
+    name,
+    dateStart,
+    dateEnd,
+    address,
+    location,
+    teamId,
+  } = body;
 
-  if (
-    !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))
-  ) {
+  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -2130,6 +2153,7 @@ module.exports = {
   updateOption,
   updatePersonInfos,
   updatePlayerAcceptation,
+  updatePractice,
   updatePreRanking,
   updateRegistration,
   updateRosterRole,
