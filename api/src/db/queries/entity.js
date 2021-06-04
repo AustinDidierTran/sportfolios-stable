@@ -1934,9 +1934,9 @@ async function deleteGame(userId, query) {
 }
 
 async function deletePractice(userId, query) {
-  const { eventId, practiceId } = query;
+  const { teamId, practiceId } = query;
   if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+    !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }

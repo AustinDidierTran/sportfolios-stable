@@ -5905,7 +5905,7 @@ const deletePractice = async id => {
   const [session] = await knex('sessions')
     .select('*')
     .where({ id });
-  console.log(session);
+
   if (session.address_id) {
     const [resAddress] = await knex.transaction(async trx => {
       await knex('sessions')
