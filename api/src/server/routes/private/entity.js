@@ -694,6 +694,7 @@ router.get(`${BASE_URL}/teamsPendingAndRefused`, async ctx => {
     };
   }
 });
+
 router.get(`${BASE_URL}/playersPendingAndRefused`, async ctx => {
   const players = await queries.getAllPlayersPendingAndRefused(
     ctx.query.eventId,
@@ -874,6 +875,22 @@ router.get(`${BASE_URL}/newRosterInviteToken`, async ctx => {
     status: STATUS_ENUM.SUCCESS_STRING,
     data: token,
   };
+});
+
+router.get(`${BASE_URL}/rosters`, async ctx => {
+  const rosters = await queries.getTeamRosters(ctx.query.teamId);
+  if (rosters) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      rosters,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+    };
+  }
 });
 
 router.put(`${BASE_URL}`, async ctx => {

@@ -131,10 +131,12 @@ const {
   getSlots: getSlotsHelper,
   getTeamCreatorEmail,
   getTeamGames: getTeamGamesHelper,
+  getTeamRosters: getTeamRostersHelper,
   getTeamEventsInfos: getTeamEventsInfosHelper,
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
   getTeamPlayers: getTeamPlayersHelper,
+  getRosterPlayers: getRosterPlayersHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
   getUnplacedGames: getUnplacedGamesHelper,
   getUserIdFromPersonId,
@@ -409,6 +411,10 @@ async function getTeamGames(eventId) {
   return getTeamGamesHelper(eventId);
 }
 
+async function getTeamRosters(teamId) {
+  return getTeamRostersHelper(teamId);
+}
+
 async function getPhasesGameAndTeams(eventId, phaseId) {
   return getPhasesGameAndTeamsHelper(eventId, phaseId);
 }
@@ -423,6 +429,10 @@ async function getTeamsSchedule(eventId) {
 
 async function getTeamPlayers(teamId) {
   return getTeamPlayersHelper(teamId);
+}
+
+async function getRosterPlayers(rosterId) {
+  return getRosterPlayersHelper(rosterId);
 }
 
 async function getFields(eventId) {
@@ -2135,7 +2145,9 @@ module.exports = {
   getScoreSuggestion,
   getSlots,
   getTeamGames,
+  getTeamRosters,
   getTeamPlayers,
+  getRosterPlayers,
   getTeamsSchedule,
   hasMemberships,
   importMembers,

@@ -2349,6 +2349,13 @@ async function getTeamGames(eventId) {
   return res;
 }
 
+async function getTeamRosters(teamId) {
+  const rosters = await knex('team_rosters')
+    .select('*')
+    .where({ team_id: teamId, active: true });
+  return rosters;
+}
+
 async function getTeamsPhase(phaseId) {
   const rankings = await knex('phase_rankings')
     .select('*')
@@ -2464,6 +2471,17 @@ async function getTeamPlayers(teamId) {
   const res = await knex('team_players_infos')
     .select('*')
     .where({ team_id: teamId })
+    .orderByRaw(
+      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
+    )
+    .orderBy('name');
+  return res;
+}
+
+async function getRosterPlayers(rosterId) {
+  const res = await knex('roster_players_infos')
+    .select('*')
+    .where({ roster_id: rosterId })
     .orderByRaw(
       `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
     )
@@ -6242,10 +6260,12 @@ module.exports = {
   getSubmissionerInfos,
   getTeamCreatorEmail,
   getTeamGames,
+  getTeamRosters,
   getTeamEventsInfos,
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
   getTeamPlayers,
+  getRosterPlayers,
   getTeamsSchedule,
   getUnplacedGames,
   getUserIdFromPersonId,
