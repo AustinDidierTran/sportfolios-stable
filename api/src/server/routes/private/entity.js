@@ -2062,6 +2062,26 @@ router.del(`${BASE_URL}/game`, async ctx => {
   }
 });
 
+router.del(`${BASE_URL}/practice`, async ctx => {
+  const practice = await queries.deletePractice(
+    ctx.body.userInfo.id,
+    ctx.query,
+  );
+  if (practice) {
+    (ctx.status = 201),
+      (ctx.body = {
+        status: 'success',
+        data: practice,
+      });
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.del(`${BASE_URL}/phase`, async ctx => {
   const phase = await PhaseController.deletePhase(
     ctx.query,

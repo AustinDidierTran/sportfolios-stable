@@ -52,6 +52,7 @@ const {
   deletePlayer: deletePlayerHelper,
   deletePersonFromEvent,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
+  deletePractice: deletePracticeHelper,
   deleteReport: deleteReportHelper,
   eventInfos: eventInfosHelper,
   generateReport: generateReportHelper,
@@ -1956,6 +1957,16 @@ async function deleteGame(userId, query) {
   return deleteGameHelper(gameId);
 }
 
+async function deletePractice(userId, query) {
+  const { teamId, practiceId } = query;
+  if (
+    !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return deletePracticeHelper(practiceId);
+}
+
 async function createRosterInviteToken(userId, rosterId) {
   const admins = await getMyPersonsAdminsOfTeamHelper(
     rosterId,
@@ -2054,13 +2065,13 @@ module.exports = {
   deleteEntityHelper,
   deleteEntityMembership,
   deleteGame,
-  deleteGame,
   deleteMembership,
   deleteMembershipWithId,
   deleteOption,
   deletePartner,
   deletePlayer,
   deletePlayerFromRoster,
+  deletePractice,
   deleteReport,
   eventInfos,
   eventInfos,
