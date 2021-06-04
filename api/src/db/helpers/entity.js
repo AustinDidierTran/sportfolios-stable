@@ -723,6 +723,11 @@ async function getTeamEventsInfos(id) {
       'sessions.name',
       'sessions.type',
       'sessions.location',
+      'addresses.street_address',
+      'addresses.city',
+      'addresses.state',
+      'addresses.zip',
+      'addresses.country',
     )
     .leftJoin(
       'sessions',
@@ -730,6 +735,7 @@ async function getTeamEventsInfos(id) {
       '=',
       'team_rosters.id',
     )
+    .leftJoin('addresses', 'addresses.id', '=', 'sessions.address_id')
     .where({ team_id: id })
     .orderBy('sessions.start_date', 'asc');
 
@@ -1813,7 +1819,7 @@ async function getRoster(rosterId, withSub) {
     whereCond.is_sub = false;
   }
 
-  const roster = await knex('roster_players')
+  const roster = await knex('roster_players_infos')
     .select('*')
     .where(whereCond)
     .orderByRaw(
@@ -1826,6 +1832,7 @@ async function getRoster(rosterId, withSub) {
   const props = roster.map(player => ({
     id: player.id,
     name: player.name,
+    photoUrl: player.photo_url,
     personId: player.person_id,
     role: player.role,
     isSub: player.is_sub,
@@ -2454,7 +2461,7 @@ async function getSlots(eventId) {
 }
 
 async function getTeamPlayers(teamId) {
-  const res = await knex('team_players')
+  const res = await knex('team_players_infos')
     .select('*')
     .where({ team_id: teamId })
     .orderByRaw(
@@ -2846,7 +2853,7 @@ async function getAllPlayersPending(eventId) {
 
   // const teamPlayers = await Promise.all(
   //   rosters.map(async r => {
-  //     const players = await knex('roster_players')
+  //     const players = await knex('roster_players_infos')
   //       .select('*')
   //       .where({
   //         roster_id: r.roster_id,
@@ -3630,6 +3637,15 @@ async function updatePartner(body) {
       description,
       website,
       photo_url: photoUrl,
+    })
+    .where({ id });
+}
+
+async function updatePlayer(body) {
+  const { id, role } = body;
+  return knex('team_players')
+    .update({
+      role,
     })
     .where({ id });
 }
@@ -5117,7 +5133,6 @@ const addPartner = async body => {
 const addPlayerToRoster = async body => {
   const {
     personId,
-    name,
     rosterId,
     role,
     isSub,
@@ -5134,7 +5149,6 @@ const addPlayerToRoster = async body => {
     .insert({
       roster_id: rosterId,
       person_id: personId,
-      name,
       is_sub: isSub,
       payment_status: paymentStatus,
       role,
@@ -5147,7 +5161,6 @@ const addPlayerToRoster = async body => {
     .insert({
       team_id: teamId,
       person_id: personId,
-      name,
       role,
     })
     .onConflict(['person_id', 'team_id'])
@@ -5160,16 +5173,10 @@ const addPlayersToTeam = async body => {
   const { players, teamId } = body;
   const res = await Promise.all(
     players.map(async player => {
-      const { name, surname } = await getPersonInfos(player.id);
-      let fullName = name;
-      if (surname) {
-        fullName = name + ' ' + surname;
-      }
       const [res] = await knex('team_players')
         .insert({
           team_id: teamId,
           person_id: player.id,
-          name: fullName,
           role: ROSTER_ROLE_ENUM.PLAYER,
         })
         .onConflict(['team_id', 'person_id'])
@@ -5786,6 +5793,12 @@ const deletePartner = async id => {
     .del();
 };
 
+const deletePlayer = async id => {
+  return knex('team_players')
+    .where({ id })
+    .del();
+};
+
 const getGame = async id => {
   const [game] = await knex('games')
     .select('*')
@@ -6096,6 +6109,7 @@ module.exports = {
   deleteMembershipWithId,
   deleteOption,
   deletePartner,
+  deletePlayer,
   deletePersonFromEvent,
   deletePhase,
   deletePlayerFromRoster,
@@ -6238,6 +6252,7 @@ module.exports = {
   updateOption,
   updateOriginPhase,
   updatePartner,
+  updatePlayer,
   updatePersonInfosHelper,
   updatePhase,
   updatePhaseFinalRanking,

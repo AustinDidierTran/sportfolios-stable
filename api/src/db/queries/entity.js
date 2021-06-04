@@ -49,6 +49,7 @@ const {
   deleteMembershipWithId: deleteMembershipWithIdHelper,
   deleteOption: deleteOptionHelper,
   deletePartner: deletePartnerHelper,
+  deletePlayer: deletePlayerHelper,
   deletePersonFromEvent,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
   deleteReport: deleteReportHelper,
@@ -157,6 +158,7 @@ const {
   updateMemberOptionalField: updateMemberOptionalFieldHelper,
   updateMembershipTermsAndConditions: updateMembershipTermsAndConditionsHelper,
   updatePartner: updatePartnerHelper,
+  updatePlayer: updatePlayerHelper,
   updateOption: updateOptionHelper,
   updatePersonInfosHelper,
   updatePlayerAcceptation: updatePlayerAcceptationHelper,
@@ -601,7 +603,6 @@ async function addTeamToEvent(body, userId) {
 
   const team = (await getEntity(teamId, userId)).basicInfos;
   const event = (await getEntity(eventId, userId)).basicInfos;
-
   const teamPaymentOption = await getRegistrationTeamPaymentOption(
     paymentOption,
   );
@@ -1225,8 +1226,13 @@ async function updateOption(body) {
 async function updateMembershipTermsAndConditions(body) {
   return updateMembershipTermsAndConditionsHelper(body);
 }
+
 async function updatePartner(body) {
   return updatePartnerHelper(body);
+}
+
+async function updatePlayer(body) {
+  return updatePlayerHelper(body);
 }
 
 async function updateGame(body) {
@@ -1808,6 +1814,10 @@ async function deletePartner(partnerId) {
   return deletePartnerHelper(partnerId);
 }
 
+async function deletePlayer(id) {
+  return deletePlayerHelper(id);
+}
+
 async function deleteEntityMembership(query) {
   const { membershipId } = query;
 
@@ -1844,14 +1854,13 @@ async function addPlayerToRoster(body, userId) {
   const team = (await getEntity(teamId, userId)).basicInfos;
   const playerUserId = await getUserIdFromPersonId(personId);
 
-  const { name, surname } = await getPersonInfos(personId);
+  const { name } = await getPersonInfos(personId);
 
   const roster = await getRosterEventInfos(rosterId);
   const individualOption = await getRegistrationIndividualPaymentOptionHelper(
     roster.paymentOptionId,
   );
   const res = await addPlayerToRosterHelper({
-    name: name + ' ' + surname,
     role,
     isSub,
     personId,
@@ -2050,6 +2059,7 @@ module.exports = {
   deleteMembershipWithId,
   deleteOption,
   deletePartner,
+  deletePlayer,
   deletePlayerFromRoster,
   deleteReport,
   eventInfos,
@@ -2134,6 +2144,7 @@ module.exports = {
   updateMembershipTermsAndConditions,
   updateOption,
   updatePartner,
+  updatePlayer,
   updatePersonInfos,
   updatePlayerAcceptation,
   updatePreRanking,
