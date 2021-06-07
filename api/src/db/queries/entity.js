@@ -31,6 +31,7 @@ const {
   addPhase: addPhaseHelper,
   addPlayerCartItem: addPlayerCartItemHelper,
   addPlayerToRoster: addPlayerToRosterHelper,
+  addPlayersToTeam: addPlayersToTeamHelper,
   addReport: addReportHelper,
   addRoster: addRosterHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
@@ -48,6 +49,7 @@ const {
   deleteMembershipWithId: deleteMembershipWithIdHelper,
   deleteOption: deleteOptionHelper,
   deletePartner: deletePartnerHelper,
+  deletePlayer: deletePlayerHelper,
   deletePersonFromEvent,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
   deletePractice: deletePracticeHelper,
@@ -132,6 +134,7 @@ const {
   getTeamEventsInfos: getTeamEventsInfosHelper,
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
+  getTeamPlayers: getTeamPlayersHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
   getUnplacedGames: getUnplacedGamesHelper,
   getUserIdFromPersonId,
@@ -156,6 +159,7 @@ const {
   updateMemberOptionalField: updateMemberOptionalFieldHelper,
   updateMembershipTermsAndConditions: updateMembershipTermsAndConditionsHelper,
   updatePartner: updatePartnerHelper,
+  updatePlayer: updatePlayerHelper,
   updateOption: updateOptionHelper,
   updatePersonInfosHelper,
   updatePlayerAcceptation: updatePlayerAcceptationHelper,
@@ -418,6 +422,10 @@ async function getTeamsSchedule(eventId) {
   return getTeamsScheduleHelper(eventId);
 }
 
+async function getTeamPlayers(teamId) {
+  return getTeamPlayersHelper(teamId);
+}
+
 async function getFields(eventId) {
   return getFieldsHelper(eventId);
 }
@@ -597,7 +605,6 @@ async function addTeamToEvent(body, userId) {
 
   const team = (await getEntity(teamId, userId)).basicInfos;
   const event = (await getEntity(eventId, userId)).basicInfos;
-
   const teamPaymentOption = await getRegistrationTeamPaymentOption(
     paymentOption,
   );
@@ -1221,8 +1228,13 @@ async function updateOption(body) {
 async function updateMembershipTermsAndConditions(body) {
   return updateMembershipTermsAndConditionsHelper(body);
 }
+
 async function updatePartner(body) {
   return updatePartnerHelper(body);
+}
+
+async function updatePlayer(body) {
+  return updatePlayerHelper(body);
 }
 
 async function updateGame(body) {
@@ -1821,6 +1833,10 @@ async function deletePartner(partnerId) {
   return deletePartnerHelper(partnerId);
 }
 
+async function deletePlayer(id) {
+  return deletePlayerHelper(id);
+}
+
 async function deleteEntityMembership(query) {
   const { membershipId } = query;
 
@@ -1846,6 +1862,10 @@ async function deleteOption(id) {
   return deleteOptionHelper(id);
 }
 
+async function addPlayersToTeam(body) {
+  return addPlayersToTeamHelper(body);
+}
+
 async function addPlayerToRoster(body, userId) {
   const { personId, role, isSub, rosterId } = body;
   const eventId = await getEventIdFromRosterId(rosterId);
@@ -1853,14 +1873,13 @@ async function addPlayerToRoster(body, userId) {
   const team = (await getEntity(teamId, userId)).basicInfos;
   const playerUserId = await getUserIdFromPersonId(personId);
 
-  const { name, surname } = await getPersonInfos(personId);
+  const { name } = await getPersonInfos(personId);
 
   const roster = await getRosterEventInfos(rosterId);
   const individualOption = await getRegistrationIndividualPaymentOptionHelper(
     roster.paymentOptionId,
   );
   const res = await addPlayerToRosterHelper({
-    name: name + ' ' + surname,
     role,
     isSub,
     personId,
@@ -1957,9 +1976,9 @@ async function deleteGame(userId, query) {
 }
 
 async function deletePractice(userId, query) {
-  const { eventId, practiceId } = query;
+  const { teamId, practiceId } = query;
   if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+    !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
@@ -2037,6 +2056,7 @@ module.exports = {
   addGame,
   addGameAttendances,
   addMember,
+  addMemberDonation,
   addMemberManually,
   addMembership,
   addOption,
@@ -2044,11 +2064,11 @@ module.exports = {
   addPersonToEvent,
   addPhase,
   addPlayersCartItems,
+  addPlayersToTeam,
   addPlayerToRoster,
   addPractice,
   addReport,
   addScoreSuggestion,
-  addMemberDonation,
   addSpiritSubmission,
   addTeamAsAdmin,
   addTeamToEvent,
@@ -2067,6 +2087,7 @@ module.exports = {
   deleteMembershipWithId,
   deleteOption,
   deletePartner,
+  deletePlayer,
   deletePlayerFromRoster,
   deletePractice,
   deleteReport,
@@ -2098,9 +2119,9 @@ module.exports = {
   getGraphMemberCount,
   getGraphUserCount,
   getInteractiveToolData,
-  getMostRecentMember,
   getMembers,
   getMemberships,
+  getMostRecentMember,
   getMyRosterIds,
   getNewRosterInviteToken,
   getOptions,
@@ -2132,6 +2153,7 @@ module.exports = {
   getScoreSuggestion,
   getSlots,
   getTeamGames,
+  getTeamPlayers,
   getTeamsSchedule,
   hasMemberships,
   importMembers,
@@ -2149,8 +2171,9 @@ module.exports = {
   updateMember,
   updateMemberOptionalField,
   updateMembershipTermsAndConditions,
-  updatePartner,
   updateOption,
+  updatePartner,
+  updatePlayer,
   updatePersonInfos,
   updatePlayerAcceptation,
   updatePractice,

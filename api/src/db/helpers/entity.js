@@ -2,20 +2,20 @@ const knex = require('../connection');
 
 const { getMembershipName } = require('../../../../common/functions');
 const {
-  EVENT_TYPE,
-  ENTITIES_ROLE_ENUM,
-  GLOBAL_ENUM,
-  ROSTER_ROLE_ENUM,
-  TAG_TYPE_ENUM,
   CARD_TYPE_ENUM,
-  PERSON_TRANSFER_STATUS_ENUM,
-  STATUS_ENUM,
-  MEMBERSHIP_LENGTH_TYPE_ENUM,
+  ENTITIES_ROLE_ENUM,
+  EVENT_TYPE,
+  GLOBAL_ENUM,
   INVOICE_STATUS_ENUM,
-  REPORT_TYPE_ENUM,
-  PLAYER_ATTENDANCE_STATUS,
+  MEMBERSHIP_LENGTH_TYPE_ENUM,
+  PERSON_TRANSFER_STATUS_ENUM,
   PHASE_STATUS_ENUM,
+  PLAYER_ATTENDANCE_STATUS,
+  REPORT_TYPE_ENUM,
+  ROSTER_ROLE_ENUM,
   SESSION_ENUM,
+  STATUS_ENUM,
+  TAG_TYPE_ENUM,
 } = require('../../../../common/enums');
 const { v1: uuidv1 } = require('uuid');
 const { addProduct, addPrice } = require('./stripe/shop');
@@ -723,6 +723,11 @@ async function getTeamEventsInfos(id) {
       'sessions.name',
       'sessions.type',
       'sessions.location',
+      'addresses.street_address',
+      'addresses.city',
+      'addresses.state',
+      'addresses.zip',
+      'addresses.country',
     )
     .leftJoin(
       'sessions',
@@ -730,6 +735,7 @@ async function getTeamEventsInfos(id) {
       '=',
       'team_rosters.id',
     )
+    .leftJoin('addresses', 'addresses.id', '=', 'sessions.address_id')
     .where({ team_id: id })
     .orderBy('sessions.start_date', 'asc');
 
@@ -1813,7 +1819,7 @@ async function getRoster(rosterId, withSub) {
     whereCond.is_sub = false;
   }
 
-  const roster = await knex('roster_players')
+  const roster = await knex('roster_players_infos')
     .select('*')
     .where(whereCond)
     .orderByRaw(
@@ -1826,6 +1832,7 @@ async function getRoster(rosterId, withSub) {
   const props = roster.map(player => ({
     id: player.id,
     name: player.name,
+    photoUrl: player.photo_url,
     personId: player.person_id,
     role: player.role,
     isSub: player.is_sub,
@@ -2453,6 +2460,17 @@ async function getSlots(eventId) {
   return res;
 }
 
+async function getTeamPlayers(teamId) {
+  const res = await knex('team_players_infos')
+    .select('*')
+    .where({ team_id: teamId })
+    .orderByRaw(
+      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
+    )
+    .orderBy('name');
+  return res;
+}
+
 async function getTeamsSchedule(eventId) {
   const res = await knex('event_rosters')
     .select('team_id', 'roster_id', 'event_id', 'name')
@@ -2835,7 +2853,7 @@ async function getAllPlayersPending(eventId) {
 
   // const teamPlayers = await Promise.all(
   //   rosters.map(async r => {
-  //     const players = await knex('roster_players')
+  //     const players = await knex('roster_players_infos')
   //       .select('*')
   //       .where({
   //         roster_id: r.roster_id,
@@ -3684,6 +3702,15 @@ async function updatePartner(body) {
       description,
       website,
       photo_url: photoUrl,
+    })
+    .where({ id });
+}
+
+async function updatePlayer(body) {
+  const { id, role } = body;
+  return knex('team_players')
+    .update({
+      role,
     })
     .where({ id });
 }
@@ -5171,7 +5198,6 @@ const addPartner = async body => {
 const addPlayerToRoster = async body => {
   const {
     personId,
-    name,
     rosterId,
     role,
     isSub,
@@ -5188,7 +5214,6 @@ const addPlayerToRoster = async body => {
     .insert({
       roster_id: rosterId,
       person_id: personId,
-      name,
       is_sub: isSub,
       payment_status: paymentStatus,
       role,
@@ -5201,7 +5226,6 @@ const addPlayerToRoster = async body => {
     .insert({
       team_id: teamId,
       person_id: personId,
-      name,
       role,
     })
     .onConflict(['person_id', 'team_id'])
@@ -5209,6 +5233,24 @@ const addPlayerToRoster = async body => {
     .returning('*');
 
   return player;
+};
+const addPlayersToTeam = async body => {
+  const { players, teamId } = body;
+  const res = await Promise.all(
+    players.map(async player => {
+      const [res] = await knex('team_players')
+        .insert({
+          team_id: teamId,
+          person_id: player.id,
+          role: ROSTER_ROLE_ENUM.PLAYER,
+        })
+        .onConflict(['team_id', 'person_id'])
+        .merge()
+        .returning('*');
+      return res;
+    }),
+  );
+  return res;
 };
 
 const addPlayerCartItem = async body => {
@@ -5816,6 +5858,12 @@ const deletePartner = async id => {
     .del();
 };
 
+const deletePlayer = async id => {
+  return knex('team_players')
+    .where({ id })
+    .del();
+};
+
 const getGame = async id => {
   const [game] = await knex('games')
     .select('*')
@@ -6128,6 +6176,7 @@ module.exports = {
   addGame,
   addGameAttendances,
   addMember,
+  addMemberDonation,
   addMemberManually,
   addMembership,
   addOption,
@@ -6135,12 +6184,12 @@ module.exports = {
   addPersonToEvent,
   addPhase,
   addPlayerCartItem,
+  addPlayersToTeam,
   addPlayerToRoster,
   addPractice,
   addReport,
   addRoster,
   addScoreSuggestion,
-  addMemberDonation,
   addSpiritSubmission,
   addTeamToEvent,
   addTimeSlot,
@@ -6154,6 +6203,7 @@ module.exports = {
   deleteMembershipWithId,
   deleteOption,
   deletePartner,
+  deletePlayer,
   deletePersonFromEvent,
   deletePhase,
   deletePlayerFromRoster,
@@ -6188,8 +6238,8 @@ module.exports = {
   getCreatorsEmails,
   getEmailPerson,
   getEmailsEntity,
-  getEntitiesTypeById,
   getEmailsLandingPage,
+  getEntitiesTypeById,
   getEntity,
   getEntityOwners,
   getEntityRole,
@@ -6210,10 +6260,10 @@ module.exports = {
   getGraphUserCount,
   getIndividualPaymentOptionFromRosterId,
   getLastRankedTeam,
-  getMostRecentMember,
   getMembers,
   getMembership,
   getMemberships,
+  getMostRecentMember,
   getMyPersonsAdminsOfTeam,
   getNbOfTeamsInEvent,
   getNbOfTeamsInPhase,
@@ -6260,6 +6310,7 @@ module.exports = {
   getTeamEventsInfos,
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
+  getTeamPlayers,
   getTeamsSchedule,
   getUnplacedGames,
   getUserIdFromPersonId,
@@ -6293,9 +6344,10 @@ module.exports = {
   updateMemberOptionalField,
   updateMembershipInvoice,
   updateMembershipTermsAndConditions,
-  updatePartner,
   updateOption,
   updateOriginPhase,
+  updatePartner,
+  updatePlayer,
   updatePersonInfosHelper,
   updatePhase,
   updatePhaseFinalRanking,
