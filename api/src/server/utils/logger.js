@@ -17,12 +17,12 @@ const logger = (category, messages = [], type) => {
   }
 };
 
-const stripeLogger = (type, ...messages) => {
-  logger(LOGGER_ENUM.STRIPE, messages);
+const stripeLogger = (type = 'message', ...messages) => {
+  logger(LOGGER_ENUM.STRIPE, messages, type);
 };
 
-const stripeErrorLogger = (type, ...messages) => {
-  logger(LOGGER_ENUM.STRIPE, messages, 'error');
+const stripeErrorLogger = (type = 'error', ...messages) => {
+  logger(LOGGER_ENUM.STRIPE, messages, type);
 };
 
 module.exports = {

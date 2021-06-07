@@ -1298,7 +1298,13 @@ async function getOptions(eventId) {
 
 async function getMemberships(entityId) {
   const memberships = await knex('entity_memberships')
-    .select('*')
+    .select('*', 'entity_memberships.id')
+    .leftJoin(
+      'terms_and_conditions',
+      'terms_and_conditions.id',
+      '=',
+      'entity_memberships.terms_and_conditions_id',
+    )
     .where({ entity_id: entityId });
 
   return Promise.all(
@@ -3618,14 +3624,20 @@ async function updateOption(body) {
 
 async function updateMembershipTermsAndConditions(body) {
   const { id, description, fileName, fileUrl } = body;
-
-  return knex('entity_memberships')
-    .update({
-      description: description,
+  const [res] = await knex('terms_and_conditions')
+    .insert({
+      description,
       file_name: fileName,
       file_url: fileUrl,
     })
-    .where({ id });
+    .returning('id');
+
+  return knex('entity_memberships')
+    .update({
+      terms_and_conditions_id: res,
+    })
+    .where({ id })
+    .returning('*');
 }
 
 async function updatePartner(body) {
@@ -4123,6 +4135,7 @@ async function addMemberManually(body) {
     emergencySurname,
     emergencyPhoneNumber,
     medicalConditions,
+    termsAndConditionsId,
   } = body;
   let id = membershipId;
 
@@ -4161,6 +4174,7 @@ async function addMemberManually(body) {
       person_id: personId,
       expiration_date: expirationDate,
       status: INVOICE_STATUS_ENUM.FREE,
+      terms_and_conditions_id: termsAndConditionsId,
       infos_supp_id: infos,
     })
     .returning('*');
@@ -4183,6 +4197,7 @@ async function addMember(body) {
     emergencyName,
     emergencySurname,
     medicalConditions,
+    termsAndConditionsId,
   } = body;
 
   const [add] = await knex('addresses')
@@ -4216,6 +4231,7 @@ async function addMember(body) {
       person_id: personId,
       expiration_date: expirationDate,
       status: INVOICE_STATUS_ENUM.OPEN,
+      terms_and_conditions_id: termsAndConditionsId,
       infos_supp_id: infos,
     })
     .returning('*');
@@ -4928,6 +4944,15 @@ async function addMembership(
     ownerId: entityId,
     taxRatesId,
   });
+
+  const [terms_and_conditions] = await knex('terms_and_conditions')
+    .insert({
+      description,
+      file_name: fileName,
+      file_url: fileUrl,
+    })
+    .returning('id');
+
   if (type === MEMBERSHIP_LENGTH_TYPE_ENUM.FIXED) {
     const [res] = await knex('entity_memberships')
       .insert({
@@ -4936,9 +4961,7 @@ async function addMembership(
         membership_type: membership,
         fixed_date: date,
         price,
-        description,
-        file_name: fileName,
-        file_url: fileUrl,
+        terms_and_conditions_id: terms_and_conditions,
       })
       .returning('*');
     return res;
@@ -4951,9 +4974,7 @@ async function addMembership(
         membership_type: membership,
         length,
         price,
-        description,
-        file_name: fileName,
-        file_url: fileUrl,
+        terms_and_conditions_id: terms_and_conditions,
       })
       .returning('*');
     return res;
@@ -5652,7 +5673,6 @@ const deleteEntityMembership = async membershipId => {
     })
     .del()
     .returning('infos_supp_id');
-
   await Promise.all(
     memberships.map(async m => {
       const [person] = await knex('person_infos')
