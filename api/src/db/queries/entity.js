@@ -32,8 +32,9 @@ const {
   addPlayerCartItem: addPlayerCartItemHelper,
   addPlayerToRoster: addPlayerToRosterHelper,
   addPlayersToTeam: addPlayersToTeamHelper,
+  addTeamRoster: addTeamRosterHelper,
   addReport: addReportHelper,
-  addRoster: addRosterHelper,
+  addEventRoster: addEventRosterHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
   addMemberDonation: addMemberDonationHelper,
   addSpiritSubmission: addSpiritSubmissionHelper,
@@ -50,6 +51,7 @@ const {
   deleteOption: deleteOptionHelper,
   deletePartner: deletePartnerHelper,
   deletePlayer: deletePlayerHelper,
+  deleteRoster: deleteRosterHelper,
   deleteRosterPlayer: deleteRosterPlayerHelper,
   deletePersonFromEvent,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
@@ -164,6 +166,7 @@ const {
   updatePartner: updatePartnerHelper,
   updatePlayer: updatePlayerHelper,
   updateRosterPlayer: updateRosterPlayerHelper,
+  updateRoster: updateRosterHelper,
   updateOption: updateOptionHelper,
   updatePersonInfosHelper,
   updatePlayerAcceptation: updatePlayerAcceptationHelper,
@@ -807,7 +810,7 @@ async function addTeamAsAdmin(body, userId) {
   ];
 
   // Add roster
-  await addRosterHelper(rosterId, roster);
+  await addEventRosterHelper(rosterId, roster);
 
   // Handle other acceptation statuses
   return { status: registrationStatus, rosterId };
@@ -1250,6 +1253,10 @@ async function updatePlayer(body) {
 
 async function updateRosterPlayer(body) {
   return updateRosterPlayerHelper(body);
+}
+
+async function updateRoster(body) {
+  return updateRosterHelper(body);
 }
 
 async function updateGame(body) {
@@ -1835,6 +1842,10 @@ async function deletePlayer(id) {
   return deletePlayerHelper(id);
 }
 
+async function deleteRoster(id) {
+  return deleteRosterHelper(id);
+}
+
 async function deleteRosterPlayer(id) {
   return deleteRosterPlayerHelper(id);
 }
@@ -1866,6 +1877,10 @@ async function deleteOption(id) {
 
 async function addPlayersToTeam(body) {
   return addPlayersToTeamHelper(body);
+}
+
+async function addTeamRoster(body) {
+  return addTeamRosterHelper(body);
 }
 
 async function addPlayerToRoster(body, userId) {
@@ -1979,9 +1994,7 @@ async function deleteGame(userId, query) {
 
 async function deletePractice(userId, query) {
   const { teamId, practiceId } = query;
-  if (
-    !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return deletePracticeHelper(practiceId);
@@ -2067,6 +2080,7 @@ module.exports = {
   addPhase,
   addPlayersCartItems,
   addPlayersToTeam,
+  addTeamRoster,
   addPlayerToRoster,
   addPractice,
   addReport,
@@ -2090,6 +2104,7 @@ module.exports = {
   deleteOption,
   deletePartner,
   deletePlayer,
+  deleteRoster,
   deleteRosterPlayer,
   deletePlayerFromRoster,
   deletePractice,
@@ -2180,6 +2195,7 @@ module.exports = {
   updatePartner,
   updatePlayer,
   updateRosterPlayer,
+  updateRoster,
   updatePersonInfos,
   updatePlayerAcceptation,
   updatePreRanking,
