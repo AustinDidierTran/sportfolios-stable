@@ -2355,6 +2355,14 @@ async function getTeamGames(eventId) {
   return res;
 }
 
+async function getTeamRosters(teamId) {
+  const rosters = await knex('team_rosters')
+    .select('*')
+    .where({ team_id: teamId, active: true })
+    .orderBy('created_at');
+  return rosters;
+}
+
 async function getTeamsPhase(phaseId) {
   const rankings = await knex('phase_rankings')
     .select('*')
@@ -2470,6 +2478,17 @@ async function getTeamPlayers(teamId) {
   const res = await knex('team_players_infos')
     .select('*')
     .where({ team_id: teamId })
+    .orderByRaw(
+      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
+    )
+    .orderBy('name');
+  return res;
+}
+
+async function getRosterPlayers(rosterId) {
+  const res = await knex('roster_players_infos')
+    .select('*')
+    .where({ roster_id: rosterId })
     .orderByRaw(
       `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
     )
@@ -3725,6 +3744,37 @@ async function updatePlayer(body) {
       role,
     })
     .where({ id });
+}
+
+async function updateRosterPlayer(body) {
+  const { id, role } = body;
+  return knex('roster_players')
+    .update({
+      role,
+    })
+    .where({ id });
+}
+
+async function updateRoster(body) {
+  const { id, name, players } = body;
+  const roster = knex('team_rosters')
+    .update({
+      name,
+    })
+    .where({ id });
+await Promise.all(
+    players.map(async player => {
+      const [res] = await knex('roster_players')
+        .insert({
+          roster_id: id,
+          person_id: player.id,
+          role: ROSTER_ROLE_ENUM.PLAYER,
+        })
+        .returning('*');
+      return res;
+    }),
+  );
+  return roster;
 }
 
 const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
@@ -5060,7 +5110,7 @@ async function addTeamToEvent(body) {
 
   const res = await knex.transaction(async trx => {
     const [roster] = await knex('team_rosters')
-      .insert({ team_id: teamId })
+      .insert({ team_id: teamId, active: false })
       .returning('*')
       .transacting(trx);
 
@@ -5180,7 +5230,7 @@ async function getEventIdFromRosterId(rosterId) {
     .where({ roster_id: rosterId });
   return res.event_id;
 }
-async function addRoster(rosterId, roster) {
+async function addEventRoster(rosterId, roster) {
   const eventId = await getEventIdFromRosterId(rosterId);
   const rosterInfos = await getRosterEventInfos(rosterId);
 
@@ -5255,6 +5305,7 @@ const addPlayerToRoster = async body => {
 
   return player;
 };
+
 const addPlayersToTeam = async body => {
   const { players, teamId } = body;
   const res = await Promise.all(
@@ -5272,6 +5323,33 @@ const addPlayersToTeam = async body => {
     }),
   );
   return res;
+};
+
+const addTeamRoster = async body => {
+  const { players, teamId, name } = body;
+
+  const [roster] = await knex('team_rosters')
+    .insert({
+      team_id: teamId,
+      name,
+      active: true,
+    })
+    .returning('*');
+
+await Promise.all(
+    players.map(async player => {
+      const [res] = await knex('roster_players')
+        .insert({
+          roster_id: roster.id,
+          person_id: player.id,
+          role: ROSTER_ROLE_ENUM.PLAYER,
+        })
+        .returning('*');
+      return res;
+    }),
+  );
+
+  return roster;
 };
 
 const addPlayerCartItem = async body => {
@@ -5884,6 +5962,19 @@ const deletePlayer = async id => {
     .del();
 };
 
+const deleteRoster = async id => {
+  return knex('team_rosters')
+    .update({ active: false })
+    .where({ id })
+    .returning('*');
+};
+
+const deleteRosterPlayer = async id => {
+  return knex('roster_players')
+    .where({ id })
+    .del();
+};
+
 const getGame = async id => {
   const [game] = await knex('games')
     .select('*')
@@ -6205,10 +6296,11 @@ module.exports = {
   addPhase,
   addPlayerCartItem,
   addPlayersToTeam,
+  addTeamRoster,
   addPlayerToRoster,
   addPractice,
   addReport,
-  addRoster,
+  addEventRoster,
   addScoreSuggestion,
   addSpiritSubmission,
   addTeamToEvent,
@@ -6224,6 +6316,8 @@ module.exports = {
   deleteOption,
   deletePartner,
   deletePlayer,
+  deleteRoster,
+  deleteRosterPlayer,
   deletePersonFromEvent,
   deletePhase,
   deletePlayerFromRoster,
@@ -6327,10 +6421,12 @@ module.exports = {
   getSubmissionerInfos,
   getTeamCreatorEmail,
   getTeamGames,
+  getTeamRosters,
   getTeamEventsInfos,
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
   getTeamPlayers,
+  getRosterPlayers,
   getTeamsSchedule,
   getUnplacedGames,
   getUserIdFromPersonId,
@@ -6368,6 +6464,8 @@ module.exports = {
   updateOriginPhase,
   updatePartner,
   updatePlayer,
+  updateRosterPlayer,
+  updateRoster,
   updatePersonInfosHelper,
   updatePhase,
   updatePhaseFinalRanking,

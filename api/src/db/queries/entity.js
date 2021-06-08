@@ -32,8 +32,9 @@ const {
   addPlayerCartItem: addPlayerCartItemHelper,
   addPlayerToRoster: addPlayerToRosterHelper,
   addPlayersToTeam: addPlayersToTeamHelper,
+  addTeamRoster: addTeamRosterHelper,
   addReport: addReportHelper,
-  addRoster: addRosterHelper,
+  addEventRoster: addEventRosterHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
   addMemberDonation: addMemberDonationHelper,
   addSpiritSubmission: addSpiritSubmissionHelper,
@@ -50,6 +51,8 @@ const {
   deleteOption: deleteOptionHelper,
   deletePartner: deletePartnerHelper,
   deletePlayer: deletePlayerHelper,
+  deleteRoster: deleteRosterHelper,
+  deleteRosterPlayer: deleteRosterPlayerHelper,
   deletePersonFromEvent,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
   deletePractice: deletePracticeHelper,
@@ -131,10 +134,12 @@ const {
   getSlots: getSlotsHelper,
   getTeamCreatorEmail,
   getTeamGames: getTeamGamesHelper,
+  getTeamRosters: getTeamRostersHelper,
   getTeamEventsInfos: getTeamEventsInfosHelper,
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
   getTeamPlayers: getTeamPlayersHelper,
+  getRosterPlayers: getRosterPlayersHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
   getUnplacedGames: getUnplacedGamesHelper,
   getUserIdFromPersonId,
@@ -160,6 +165,8 @@ const {
   updateMembershipTermsAndConditions: updateMembershipTermsAndConditionsHelper,
   updatePartner: updatePartnerHelper,
   updatePlayer: updatePlayerHelper,
+  updateRosterPlayer: updateRosterPlayerHelper,
+  updateRoster: updateRosterHelper,
   updateOption: updateOptionHelper,
   updatePersonInfosHelper,
   updatePlayerAcceptation: updatePlayerAcceptationHelper,
@@ -410,6 +417,10 @@ async function getTeamGames(eventId) {
   return getTeamGamesHelper(eventId);
 }
 
+async function getTeamRosters(teamId) {
+  return getTeamRostersHelper(teamId);
+}
+
 async function getPhasesGameAndTeams(eventId, phaseId) {
   return getPhasesGameAndTeamsHelper(eventId, phaseId);
 }
@@ -424,6 +435,10 @@ async function getTeamsSchedule(eventId) {
 
 async function getTeamPlayers(teamId) {
   return getTeamPlayersHelper(teamId);
+}
+
+async function getRosterPlayers(rosterId) {
+  return getRosterPlayersHelper(rosterId);
 }
 
 async function getFields(eventId) {
@@ -796,7 +811,7 @@ async function addTeamAsAdmin(body, userId) {
   ];
 
   // Add roster
-  await addRosterHelper(rosterId, roster);
+  await addEventRosterHelper(rosterId, roster);
 
   // Handle other acceptation statuses
   return { status: registrationStatus, rosterId };
@@ -1235,6 +1250,14 @@ async function updatePartner(body) {
 
 async function updatePlayer(body) {
   return updatePlayerHelper(body);
+}
+
+async function updateRosterPlayer(body) {
+  return updateRosterPlayerHelper(body);
+}
+
+async function updateRoster(body) {
+  return updateRosterHelper(body);
 }
 
 async function updateGame(body) {
@@ -1842,6 +1865,14 @@ async function deletePlayer(id) {
   return deletePlayerHelper(id);
 }
 
+async function deleteRoster(id) {
+  return deleteRosterHelper(id);
+}
+
+async function deleteRosterPlayer(id) {
+  return deleteRosterPlayerHelper(id);
+}
+
 async function deleteEntityMembership(query) {
   const { membershipId } = query;
   return deleteEntityMembershipHelper(membershipId);
@@ -1868,6 +1899,10 @@ async function deleteOption(id) {
 
 async function addPlayersToTeam(body) {
   return addPlayersToTeamHelper(body);
+}
+
+async function addTeamRoster(body) {
+  return addTeamRosterHelper(body);
 }
 
 async function addPlayerToRoster(body, userId) {
@@ -2067,6 +2102,7 @@ module.exports = {
   addPhase,
   addPlayersCartItems,
   addPlayersToTeam,
+  addTeamRoster,
   addPlayerToRoster,
   addPractice,
   addReport,
@@ -2090,6 +2126,8 @@ module.exports = {
   deleteOption,
   deletePartner,
   deletePlayer,
+  deleteRoster,
+  deleteRosterPlayer,
   deletePlayerFromRoster,
   deletePractice,
   deleteReport,
@@ -2155,7 +2193,9 @@ module.exports = {
   getScoreSuggestion,
   getSlots,
   getTeamGames,
+  getTeamRosters,
   getTeamPlayers,
+  getRosterPlayers,
   getTeamsSchedule,
   hasMemberships,
   importMembers,
@@ -2176,6 +2216,8 @@ module.exports = {
   updateOption,
   updatePartner,
   updatePlayer,
+  updateRosterPlayer,
+  updateRoster,
   updatePersonInfos,
   updatePlayerAcceptation,
   updatePractice,
