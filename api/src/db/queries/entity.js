@@ -1344,12 +1344,17 @@ async function addMember(body, userId) {
   const { membershipId, organizationId, personId } = body;
 
   const membership = await getMembership(membershipId);
-
   if (membership.price === 0) {
-    return addMemberManuallyHelper(body);
+    return addMemberManuallyHelper({
+      ...body,
+      termsAndConditionsId: membership.terms_and_conditions_id,
+    });
   }
 
-  const res = await addMemberHelper(body);
+  const res = await addMemberHelper({
+    ...body,
+    termsAndConditionsId: membership.terms_and_conditions_id,
+  });
   const person = (await getEntity(personId)).basicInfos;
   const organization = (await getEntity(organizationId)).basicInfos;
 
@@ -1821,7 +1826,6 @@ async function deletePlayer(id) {
 
 async function deleteEntityMembership(query) {
   const { membershipId } = query;
-
   return deleteEntityMembershipHelper(membershipId);
 }
 
@@ -1959,9 +1963,7 @@ async function deleteGame(userId, query) {
 
 async function deletePractice(userId, query) {
   const { teamId, practiceId } = query;
-  if (
-    !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return deletePracticeHelper(practiceId);

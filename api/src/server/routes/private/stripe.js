@@ -268,10 +268,26 @@ router.post(`${BASE_URL}/checkout`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    status: 'success',
-    data,
-  };
+  if (data.reason) {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: data.reason,
+      data,
+    };
+  } else if (!data) {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+      data,
+    };
+  } else {
+    ctx.body = {
+      status: 'success',
+      data,
+    };
+  }
 });
 
 router.post(`${BASE_URL}/sendReceiptEmail`, async ctx => {

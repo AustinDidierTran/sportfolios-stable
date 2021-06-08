@@ -307,6 +307,9 @@ const REJECTION_ENUM = {
   ALREADY_REGISTERED: 'already_registered',
   TOO_MANY_TEAMS: 'too_many_teams',
   LAST_TEAM_HIGHER_THAN_SPOTS: 'last_team_higher_than_spots',
+  NO_PAYMENT_METHOD_SELECTED: 'no.no_payment_method_selected',
+  NO_CART_ITEMS_SELECTED: 'no.no_cart_items_selected',
+  CHECKOUT_ERROR: 'checkout_error',
 };
 
 const VIEW_ENUM = {
@@ -359,7 +362,7 @@ const GLOBAL_ENUM = {
 
 const SESSION_ENUM = {
   PRACTICE: 'practice',
-}
+};
 
 const SOCKET_EVENT = {
   CONNECTED_USER: 'connectedUser',
