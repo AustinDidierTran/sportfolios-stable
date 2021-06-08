@@ -2482,7 +2482,15 @@ async function getTeamPlayers(teamId) {
       `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
     )
     .orderBy('name');
-  return res;
+
+  return res.map(r => ({
+    id: r.id,
+    teamId: r.team_id,
+    personId: r.person_id,
+    role: r.role,
+    photoUrl: r.photo_url,
+    name: r.name,
+  }));
 }
 
 async function getRosterPlayers(rosterId) {
@@ -3123,7 +3131,7 @@ async function updatePractice(
     let addressId = newAddress.id;
 
     const res = await knex.transaction(async trx => {
-      const [session] = await knex('sessions')
+      await knex('sessions')
         .where({ id })
         .update({
           name,
@@ -3762,7 +3770,7 @@ async function updateRoster(body) {
       name,
     })
     .where({ id });
-await Promise.all(
+  await Promise.all(
     players.map(async player => {
       const [res] = await knex('roster_players')
         .insert({
@@ -5336,12 +5344,12 @@ const addTeamRoster = async body => {
     })
     .returning('*');
 
-await Promise.all(
+  await Promise.all(
     players.map(async player => {
       const [res] = await knex('roster_players')
         .insert({
           roster_id: roster.id,
-          person_id: player.id,
+          person_id: player.personId,
           role: ROSTER_ROLE_ENUM.PLAYER,
         })
         .returning('*');
