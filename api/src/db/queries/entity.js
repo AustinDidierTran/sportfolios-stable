@@ -1266,7 +1266,7 @@ async function updateGame(body) {
 async function updatePractice(body, userId) {
   const { id, name, start_date, end_date, location, address } = body;
 
-  if (!(await isAllowed(id, userId), ENTITIES_ROLE_ENUM.ADMIN)) {
+  if (!(await isAllowed(id, userId), ENTITIES_ROLE_ENUM.EDITOR)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -1424,7 +1424,7 @@ async function addPractice(body, userId) {
     teamId,
   } = body;
 
-  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))) {
+  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
