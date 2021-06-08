@@ -128,6 +128,7 @@ const {
   getRosterInvoiceItem,
   getRostersNames: getRostersNamesHelper,
   getScoreSuggestion: getScoreSuggestionHelper,
+  getSessionLocations: getSessionLocationsHelper,
   getSlots: getSlotsHelper,
   getTeamCreatorEmail,
   getTeamGames: getTeamGamesHelper,
@@ -384,6 +385,10 @@ async function getPhases(eventId) {
 
 async function getGameInfo(gameId, userId) {
   return getGameInfoHelper(gameId, userId);
+}
+
+async function getSessionLocations(teamId) {
+  return getSessionLocationsHelper(teamId);
 }
 
 async function getPracticeInfo(practiceId, userId) {
@@ -1264,7 +1269,7 @@ async function updateGame(body) {
 }
 
 async function updatePractice(body, userId) {
-  const { id, name, start_date, end_date, location, address } = body;
+  const { id, name, start_date, end_date, newLocation, locationId, address } = body;
 
   if (!(await isAllowed(id, userId), ENTITIES_ROLE_ENUM.ADMIN)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
@@ -1275,7 +1280,8 @@ async function updatePractice(body, userId) {
     name,
     start_date,
     end_date,
-    location,
+    newLocation,
+    locationId,
     address,
   );
 }
@@ -1420,7 +1426,8 @@ async function addPractice(body, userId) {
     dateStart,
     dateEnd,
     address,
-    location,
+    locationId,
+    newLocation,
     teamId,
   } = body;
 
@@ -1433,7 +1440,8 @@ async function addPractice(body, userId) {
     dateStart,
     dateEnd,
     address,
-    location,
+    locationId,
+    newLocation,
     teamId,
   );
 
@@ -1977,9 +1985,7 @@ async function deleteGame(userId, query) {
 
 async function deletePractice(userId, query) {
   const { teamId, practiceId } = query;
-  if (
-    !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return deletePracticeHelper(practiceId);
@@ -2151,6 +2157,7 @@ module.exports = {
   getRostersNames,
   getS3Signature,
   getScoreSuggestion,
+  getSessionLocations,
   getSlots,
   getTeamGames,
   getTeamPlayers,

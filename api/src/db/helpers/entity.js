@@ -722,7 +722,7 @@ async function getTeamEventsInfos(id) {
       'sessions.end_date',
       'sessions.name',
       'sessions.type',
-      'sessions.location',
+      'locations.location',
       'addresses.street_address',
       'addresses.city',
       'addresses.state',
@@ -735,7 +735,19 @@ async function getTeamEventsInfos(id) {
       '=',
       'team_rosters.id',
     )
-    .leftJoin('addresses', 'addresses.id', '=', 'sessions.address_id')
+    .leftJoin(
+      'locations',
+      'locations.id',
+      '=',
+      'sessions.location_id',
+    )
+    .leftJoin(
+      'addresses',
+      'addresses.id',
+      '=',
+      'locations.address_id',
+    )
+    .whereNotNull('sessions.id')
     .where({ team_id: id })
     .orderBy('sessions.start_date', 'asc');
 
@@ -3076,14 +3088,12 @@ async function updatePractice(
   name,
   start_date,
   end_date,
-  location,
+  newLocation,
+  locationId,
   address,
 ) {
+  let addressId = null;
   if (address && address.length != 0) {
-    const [oldAddress] = await knex('sessions')
-      .select('address_id')
-      .where({ id });
-
     let { street_address, city, state, zip, country } = address;
     const [newAddress] = await knex('addresses')
       .insert({
@@ -3095,7 +3105,16 @@ async function updatePractice(
       })
       .returning('*');
 
-    let addressId = newAddress.id;
+    addressId = newAddress.id;
+  }
+
+  if (newLocation) {
+    const [location] = await knex('locations')
+      .insert({
+        location: newLocation,
+        address_id: addressId,
+      })
+      .returning('*');
 
     const res = await knex.transaction(async trx => {
       const [session] = await knex('sessions')
@@ -3104,17 +3123,8 @@ async function updatePractice(
           name,
           start_date,
           end_date,
-          location,
-          address_id: addressId,
+          location_id: location.id,
         })
-        .returning('*')
-        .transacting(trx);
-
-      await knex('addresses')
-        .where({
-          id: oldAddress.address_id,
-        })
-        .del()
         .returning('*')
         .transacting(trx);
 
@@ -3124,12 +3134,25 @@ async function updatePractice(
     return res;
   }
 
+  if (locationId) {
+    return knex('sessions')
+      .update({
+        name,
+        start_date,
+        end_date,
+        location_id: locationId,
+      })
+      .where({
+        id,
+      });
+  }
+
   return knex('sessions')
     .update({
       name,
       start_date,
       end_date,
-      location,
+      location_id: null,
     })
     .where({
       id,
@@ -4444,7 +4467,8 @@ async function addPractice(
   dateStart,
   dateEnd,
   address,
-  location,
+  locationId,
+  newLocation,
   teamId,
 ) {
   const [{ id: entityId }] = await knex('entities')
@@ -4452,10 +4476,12 @@ async function addPractice(
     .returning(['id']);
 
   let addressId = null;
+  let location_id = locationId;
+
   if (address && address.length != 0) {
     let { street_address, city, state, zip, country } = address;
 
-    const [res] = await knex('addresses')
+    const [createdAddress] = await knex('addresses')
       .insert({
         street_address,
         city,
@@ -4465,7 +4491,17 @@ async function addPractice(
       })
       .returning('*');
 
-    addressId = res.id;
+    addressId = createdAddress.id;
+  }
+
+  if (newLocation) {
+    const [location] = await knex('locations')
+      .insert({
+        location: newLocation,
+        address_id: addressId,
+      })
+      .returning('*');
+    location_id = location.id;
   }
 
   const [roster] = await knex('team_rosters')
@@ -4482,8 +4518,7 @@ async function addPractice(
       name,
       entity_id: entityId,
       type: SESSION_ENUM.PRACTICE,
-      location,
-      address_id: addressId,
+      location_id,
     })
     .returning('*');
 
@@ -5935,6 +5970,41 @@ const deleteGame = async id => {
   return res;
 };
 
+const getSessionLocations = async teamId => {
+  const session_locations = await knex('team_rosters')
+    .select(
+      'locations.id',
+      'locations.location',
+      'addresses.street_address',
+      'addresses.city',
+      'addresses.state',
+      'addresses.zip',
+      'addresses.country',
+    )
+    .distinctOn('locations.id')
+    .leftJoin(
+      'sessions',
+      'sessions.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .leftJoin(
+      'locations',
+      'locations.id',
+      '=',
+      'sessions.location_id',
+    )
+    .leftJoin(
+      'addresses',
+      'addresses.id',
+      '=',
+      'locations.address_id',
+    )
+    .where({ team_id: teamId });
+
+  return session_locations;
+};
+
 const getPracticeInfo = async (id, userId) => {
   const [session] = await knex('sessions')
     .select(
@@ -5944,7 +6014,8 @@ const getPracticeInfo = async (id, userId) => {
       'sessions.end_date',
       'sessions.name',
       'sessions.type',
-      'sessions.location',
+      'locations.id as location_id',
+      'locations.location',
       'addresses.street_address',
       'addresses.city',
       'addresses.state',
@@ -5953,7 +6024,18 @@ const getPracticeInfo = async (id, userId) => {
       'team.roster',
       'team.team_id',
     )
-    .leftJoin('addresses', 'addresses.id', '=', 'sessions.address_id')
+    .leftJoin(
+      'locations',
+      'locations.id',
+      '=',
+      'sessions.location_id',
+    )
+    .leftJoin(
+      'addresses',
+      'addresses.id',
+      '=',
+      'locations.address_id',
+    )
     .leftJoin(
       knex('team_rosters')
         .select(
@@ -6303,6 +6385,7 @@ module.exports = {
   getRosterName,
   getRostersNames,
   getScoreSuggestion,
+  getSessionLocations,
   getSlots,
   getSubmissionerInfos,
   getTeamCreatorEmail,

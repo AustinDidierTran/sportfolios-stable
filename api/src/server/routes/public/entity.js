@@ -469,6 +469,25 @@ router.get(`${BASE_URL}/gameInfo`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/teamLocations`, async ctx => {
+  const locations = await queries.getSessionLocations(
+    ctx.query.teamId,
+  );
+
+  if (locations) {
+    ctx.body = {
+      status: 'success',
+      data: locations,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/practiceInfo`, async ctx => {
   const practiceInfo = await queries.getPracticeInfo(
     ctx.query.practiceId,
