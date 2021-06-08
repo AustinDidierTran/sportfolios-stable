@@ -3077,6 +3077,71 @@ async function updatePrerankSpots(eventId, newSpots) {
     .where({ id: prerank.id });
 }
 
+async function updatePractice(
+  id,
+  name,
+  start_date,
+  end_date,
+  location,
+  address,
+) {
+  if (address && address.length != 0) {
+    const [oldAddress] = await knex('sessions')
+      .select('address_id')
+      .where({ id });
+
+    let { street_address, city, state, zip, country } = address;
+    const [newAddress] = await knex('addresses')
+      .insert({
+        street_address,
+        city,
+        state,
+        zip,
+        country,
+      })
+      .returning('*');
+
+    let addressId = newAddress.id;
+
+    const res = await knex.transaction(async trx => {
+      const [session] = await knex('sessions')
+        .where({ id })
+        .update({
+          name,
+          start_date,
+          end_date,
+          location,
+          address_id: addressId,
+        })
+        .returning('*')
+        .transacting(trx);
+
+      await knex('addresses')
+        .where({
+          id: oldAddress.address_id,
+        })
+        .del()
+        .returning('*')
+        .transacting(trx);
+
+      return trx;
+    });
+
+    return res;
+  }
+
+  return knex('sessions')
+    .update({
+      name,
+      start_date,
+      end_date,
+      location,
+    })
+    .where({
+      id,
+    });
+}
+
 async function updatePreRanking(eventId, ranking) {
   const prerankPhase = await getPrerankPhase(eventId);
   const res = await Promise.all(
@@ -6311,6 +6376,7 @@ module.exports = {
   updatePhaseRankingsSpots,
   updatePlayerAcceptation,
   updatePlayerPaymentStatus,
+  updatePractice,
   updatePreRanking,
   updateRegistration,
   updateRegistrationPerson,
