@@ -261,12 +261,23 @@ const getBasicUserInfoFromId = async user_id => {
     )
     .where('entities.type', GLOBAL_ENUM.PERSON)
     .andWhere({ user_id });
+
   return {
-    primaryPerson,
-    persons,
-    app_role,
+    primaryPerson: {
+      personId: primaryPerson.entity_id,
+      name: primaryPerson.name,
+      photoUrl: primaryPerson.photo_url,
+      surname: primaryPerson.surname,
+    },
+    persons: persons.map(person => ({
+      personId: person.entity_id,
+      name: person.name,
+      photoUrl: person.photo_url,
+      surname: person.surname,
+    })),
+    appRole: app_role,
     language,
-    user_id,
+    userId: user_id,
   };
 };
 
