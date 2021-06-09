@@ -6072,7 +6072,9 @@ const getPracticeInfo = async (id, userId) => {
                   '=',
                   'team_players.person_id',
                 )
-                .orderBy('team_players.role', 'asc')
+                .orderByRaw(
+                  `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], team_players.role)`,
+                )
                 .as('person'),
             )
             .groupBy('person.team_id')
