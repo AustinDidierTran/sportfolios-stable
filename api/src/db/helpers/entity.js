@@ -2501,7 +2501,16 @@ async function getRosterPlayers(rosterId) {
       `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
     )
     .orderBy('name');
-  return res;
+
+  return res.map(r => ({
+    id: r.id,
+    rosterId: r.roster_id,
+    personId: r.person_id,
+    role: r.role,
+    photoUrl: r.photo_url,
+    name: r.name,
+    isSub: r.is_sub,
+  }));
 }
 
 async function getTeamsSchedule(eventId) {
