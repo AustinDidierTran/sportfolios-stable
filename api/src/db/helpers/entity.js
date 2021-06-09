@@ -6055,7 +6055,7 @@ const deleteGame = async id => {
 };
 
 const getPracticeInfo = async (id, userId) => {
-  const [session] = await knex('sessions')
+  const session = await knex('sessions')
     .select(
       'sessions.id',
       'sessions.entity_id',
@@ -6084,18 +6084,17 @@ const getPracticeInfo = async (id, userId) => {
           knex
             .select(
               knex.raw(
-                "json_agg(json_build_object('name', person.name, 'surname', person.surname, 'photo_url', person.photo_url, 'role', person.role)) AS playerInfo",
+                "json_agg(json_build_object('name', person.name, 'photo_url', person.photo_url, 'role', person.role)) AS playerInfo",
               ),
               'person.team_id',
             )
             .from(
               knex('team_rosters')
                 .select(
-                  'entities_all_infos.name',
-                  'entities_all_infos.surname',
-                  'entities_all_infos.photo_url',
-                  'team_players.role',
-                  'team_rosters.team_id',
+                  'team_players_infos.name',
+                  'team_players_infos.photo_url',
+                  'team_players_infos.role',
+                  'team_players_infos.team_id',
                 )
                 .leftJoin(
                   'team_players',
@@ -6104,11 +6103,12 @@ const getPracticeInfo = async (id, userId) => {
                   'team_rosters.team_id',
                 )
                 .leftJoin(
-                  'entities_all_infos',
-                  ' entities_all_infos.id',
+                  'team_players_infos',
+                  'team_players_infos.person_id',
                   '=',
                   'team_players.person_id',
                 )
+                .whereRaw('team_players_infos.team_id = team_rosters.team_id')
                 .orderBy('team_players.role', 'asc')
                 .as('person'),
             )
@@ -6127,10 +6127,24 @@ const getPracticeInfo = async (id, userId) => {
     .where({ 'sessions.id': id });
 
   const role = await getEntityRole(session.team_id, userId);
-  return {
-    ...session,
-    role,
-  };
+
+  return ({
+    id: session[0].id,
+    entityId: session[0].entity_id,
+    startDate: session[0].start_date,
+    endDate: session[0].end_date,
+    name: session[0].name,
+    type: session[0].type,
+    location: session[0].location,
+    streetAddress: session[0].street_address,
+    city: session[0].city,
+    state: session[0].state,
+    zip: session[0].zip,
+    country: session[0].country,
+    roster: session[0].roster[0].map(r => ({ photoUrl: r.photo_url, role: r.role, name: r.name})),
+    teamId: session[0].team_id,
+    role
+  });
 };
 
 const deletePractice = async id => {
