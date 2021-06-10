@@ -712,10 +712,11 @@ async function getTeamEventsInfos(id) {
         'team_rosters.id',
       )
       .leftJoin('games', 'games.id', '=', 'game_teams.game_id')
-      .where({ team_id: id })
+      .whereNotNull('games.id')
+      .andWhere({ team_id: id })
   ).map(game => game.id);
 
-  const [practiceInfos] = await knex('team_rosters')
+  const practiceInfos = await knex('team_rosters')
     .select(
       'sessions.id',
       'sessions.start_date',
@@ -736,10 +737,11 @@ async function getTeamEventsInfos(id) {
       'team_rosters.id',
     )
     .leftJoin('addresses', 'addresses.id', '=', 'sessions.address_id')
+    .whereNotNull('sessions.id')
     .where({ team_id: id })
     .orderBy('sessions.start_date', 'asc');
 
-  const [gamesInfos] = await knex('games_all_infos')
+  const gamesInfos = await knex('games_all_infos')
     .select(
       'games_all_infos.event_id',
       'games_all_infos.event_name',
@@ -779,33 +781,29 @@ async function getTeamEventsInfos(id) {
     .orderBy('games_all_infos.timeslot', 'asc');
 
   return {
-    gamesInfos: [
-      {
-        eventId: gamesInfos.event_id,
-        eventName: gamesInfos.event_name,
-        id: gamesInfos.id,
-        timeslot: gamesInfos.timeslot,
-        field: gamesInfos.field,
-        name: gamesInfos.name,
-        teamNames: gamesInfos.team_names,
-        teamScores: gamesInfos.team_scores,
-      },
-    ],
-    practiceInfos: [
-      {
-        id: practiceInfos.id,
-        startDate: practiceInfos.start_date,
-        endDate: practiceInfos.end_date,
-        name: practiceInfos.name,
-        type: practiceInfos.type,
-        location: practiceInfos.location,
-        streetAddress: practiceInfos.street_address,
-        city: practiceInfos.city,
-        state: practiceInfos.state,
-        zip: practiceInfos.zip,
-        country: practiceInfos.country,
-      },
-    ],
+    gamesInfos: gamesInfos.map(g => ({
+      eventId: g.event_id,
+      eventName: g.event_name,
+      id: g.id,
+      timeslot: g.timeslot,
+      field: g.field,
+      name: g.name,
+      teamNames: g.team_names,
+      teamScores: g.team_scores,
+    })),
+    practiceInfos: practiceInfos.map(p => ({
+      id: p.id,
+      startDate: p.start_date,
+      endDate: p.end_date,
+      name: p.name,
+      type: p.type,
+      location: p.location,
+      streetAddress: p.street_address,
+      city: p.city,
+      state: p.state,
+      zip: p.zip,
+      country: p.country,
+    })),
   };
 }
 
