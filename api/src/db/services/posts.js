@@ -243,6 +243,35 @@ class PostServices {
             return objectSql;
           }),
         );
+
+        return arrayPosts.map(a => ({
+          comments: a.comments.map(c => ({
+            id: c.id,
+            postId: c.post_id,
+            entityId: c.entity_id,
+            content: c.content,
+            parentId: c.parent_id,
+            createdAt: c.created_at,
+            name: c.name,
+            surname: c.surname,
+            photoUrl: c.photo_url,
+          })),
+          content: a.content,
+          createdAt: a.created_at,
+          entityId: a.entity_id,
+          id: a.id,
+          images: a.images,
+          liked: a.liked,
+          likes: a.likes.map(l => ({
+            entityd: l.entity_id,
+            postId: l.post_id,
+          })),
+          name: a.name,
+          photoUrl: a.photo_url,
+          surname: a.surname,
+          updatedAt: a.updated_at,
+        }));
+
         return arrayPosts;
       }
       return [];
