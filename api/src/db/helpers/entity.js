@@ -715,7 +715,7 @@ async function getTeamEventsInfos(id) {
       .where({ team_id: id })
   ).map(game => game.id);
 
-  const practiceInfos = await knex('team_rosters')
+  const [practiceInfos] = await knex('team_rosters')
     .select(
       'sessions.id',
       'sessions.start_date',
@@ -739,7 +739,7 @@ async function getTeamEventsInfos(id) {
     .where({ team_id: id })
     .orderBy('sessions.start_date', 'asc');
 
-  const gamesInfos = await knex('games_all_infos')
+  const [gamesInfos] = await knex('games_all_infos')
     .select(
       'games_all_infos.event_id',
       'games_all_infos.event_name',
@@ -778,7 +778,35 @@ async function getTeamEventsInfos(id) {
     )
     .orderBy('games_all_infos.timeslot', 'asc');
 
-  return { gamesInfos, practiceInfos };
+  return {
+    gamesInfos: [
+      {
+        eventId: gamesInfos.event_id,
+        eventName: gamesInfos.event_name,
+        id: gamesInfos.id,
+        timeslot: gamesInfos.timeslot,
+        field: gamesInfos.field,
+        name: gamesInfos.name,
+        teamNames: gamesInfos.team_names,
+        teamScores: gamesInfos.team_scores,
+      },
+    ],
+    practiceInfos: [
+      {
+        id: practiceInfos.id,
+        startDate: practiceInfos.start_date,
+        endDate: practiceInfos.end_date,
+        name: practiceInfos.name,
+        type: practiceInfos.type,
+        location: practiceInfos.location,
+        streetAddress: practiceInfos.street_address,
+        city: practiceInfos.city,
+        state: practiceInfos.state,
+        zip: practiceInfos.zip,
+        country: practiceInfos.country,
+      },
+    ],
+  };
 }
 
 async function getCreator(id) {
@@ -2110,7 +2138,7 @@ async function getGames(eventId) {
         phaseName,
         positions,
         field: r1.field,
-        start_time: r2.date,
+        startTime: r2.date,
       };
     }),
   );
@@ -6117,7 +6145,9 @@ const getPracticeInfo = async (id, userId) => {
                   '=',
                   'team_players.person_id',
                 )
-                .whereRaw('team_players_infos.team_id = team_rosters.team_id')
+                .whereRaw(
+                  'team_players_infos.team_id = team_rosters.team_id',
+                )
                 .orderBy('team_players.role', 'asc')
                 .as('person'),
             )
@@ -6135,25 +6165,31 @@ const getPracticeInfo = async (id, userId) => {
     )
     .where({ 'sessions.id': id });
 
-  const role = await getEntityRole(session.team_id, userId);
+  const role = await getEntityRole(session[0].team_id, userId);
 
-  return ({
-    id: session[0].id,
-    entityId: session[0].entity_id,
-    startDate: session[0].start_date,
-    endDate: session[0].end_date,
-    name: session[0].name,
-    type: session[0].type,
-    location: session[0].location,
-    streetAddress: session[0].street_address,
-    city: session[0].city,
-    state: session[0].state,
-    zip: session[0].zip,
-    country: session[0].country,
-    roster: session[0].roster[0].map(r => ({ photoUrl: r.photo_url, role: r.role, name: r.name})),
-    teamId: session[0].team_id,
-    role
-  });
+  return {
+    practice: {
+      id: session[0].id,
+      entityId: session[0].entity_id,
+      startDate: session[0].start_date,
+      endDate: session[0].end_date,
+      name: session[0].name,
+      type: session[0].type,
+      location: session[0].location,
+      streetAddress: session[0].street_address,
+      city: session[0].city,
+      state: session[0].state,
+      zip: session[0].zip,
+      country: session[0].country,
+      roster: session[0].roster[0].map(r => ({
+        photoUrl: r.photo_url,
+        role: r.role,
+        name: r.name,
+      })),
+      teamId: session[0].team_id,
+    },
+    role,
+  };
 };
 
 const deletePractice = async id => {
