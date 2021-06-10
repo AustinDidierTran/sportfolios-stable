@@ -6121,7 +6121,7 @@ const getPracticeInfo = async (id, userId) => {
           knex
             .select(
               knex.raw(
-                "json_agg(json_build_object('name', person.name, 'photo_url', person.photo_url, 'role', person.role)) AS playerInfo",
+                "json_agg(json_build_object('name', person.name, 'photoUrl', person.photo_url, 'role', person.role)) AS playerInfo",
               ),
               'person.team_id',
             )
