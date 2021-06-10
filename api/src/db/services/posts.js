@@ -122,7 +122,6 @@ class PostServices {
         .select('image_url')
         .from('post_image')
         .where('post_image.post_id', data.id);
-      data.images = images;
 
       const likes = await knex
         .select('*')
@@ -134,8 +133,6 @@ class PostServices {
           'entities_general_infos.entity_id',
         )
         .where('post_like.post_id', data.id);
-
-      data.likes = likes;
 
       const comments = await knex
         .select(
@@ -158,9 +155,31 @@ class PostServices {
         )
         .where('post_comment.post_id', data.id)
         .orderBy('post_comment.created_at', 'desc');
-      data.comments = comments;
 
-      return data;
+      return {
+        id: data.id,
+        entityId: data.entity_id,
+        content: data.content,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at,
+        name: data.name,
+        surname: data.surname,
+        photoUrl: data.photo_url,
+        liked: data.liked,
+        images: images,
+        likes: likes,
+        comments: comments.map(c => ({
+          id: c.id,
+          postId: c.post_id,
+          entityId: c.entity_id,
+          content: c.content,
+          parentId: c.parent_id,
+          createdAt: c.created_at,
+          name: c.name,
+          surname: c.surname,
+          photoUrl: c.photo_url,
+        })),
+      };
     }
     return [];
   }
@@ -271,8 +290,6 @@ class PostServices {
           surname: a.surname,
           updatedAt: a.updated_at,
         }));
-
-        return arrayPosts;
       }
       return [];
     }
