@@ -790,7 +790,31 @@ async function getTeamEventsInfos(id) {
     )
     .orderBy('games_all_infos.timeslot', 'asc');
 
-  return { gamesInfos, practiceInfos };
+  return {
+    gamesInfos: gamesInfos.map(g => ({
+      eventId: g.event_id,
+      eventName: g.event_name,
+      id: g.id,
+      timeslot: g.timeslot,
+      field: g.field,
+      name: g.name,
+      teamNames: g.team_names,
+      teamScores: g.team_scores,
+    })),
+    practiceInfos: practiceInfos.map(p => ({
+      id: p.id,
+      startDate: p.start_date,
+      endDate: p.end_date,
+      name: p.name,
+      type: p.type,
+      location: p.location,
+      streetAddress: p.street_address,
+      city: p.city,
+      state: p.state,
+      zip: p.zip,
+      country: p.country,
+    })),
+  };
 }
 
 async function getCreator(id) {
@@ -1310,7 +1334,13 @@ async function getOptions(eventId) {
 
 async function getMemberships(entityId) {
   const memberships = await knex('entity_memberships')
-    .select('*')
+    .select('*', 'entity_memberships.id')
+    .leftJoin(
+      'terms_and_conditions',
+      'terms_and_conditions.id',
+      '=',
+      'entity_memberships.terms_and_conditions_id',
+    )
     .where({ entity_id: entityId });
 
   return Promise.all(
@@ -2116,7 +2146,7 @@ async function getGames(eventId) {
         phaseName,
         positions,
         field: r1.field,
-        start_time: r2.date,
+        startTime: r2.date,
       };
     }),
   );
@@ -2361,6 +2391,14 @@ async function getTeamGames(eventId) {
   return res;
 }
 
+async function getTeamRosters(teamId) {
+  const rosters = await knex('team_rosters')
+    .select('*')
+    .where({ team_id: teamId, active: true })
+    .orderBy('created_at');
+  return rosters;
+}
+
 async function getTeamsPhase(phaseId) {
   const rankings = await knex('phase_rankings')
     .select('*')
@@ -2480,7 +2518,35 @@ async function getTeamPlayers(teamId) {
       `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
     )
     .orderBy('name');
-  return res;
+
+  return res.map(r => ({
+    id: r.id,
+    teamId: r.team_id,
+    personId: r.person_id,
+    role: r.role,
+    photoUrl: r.photo_url,
+    name: r.name,
+  }));
+}
+
+async function getRosterPlayers(rosterId) {
+  const res = await knex('roster_players_infos')
+    .select('*')
+    .where({ roster_id: rosterId })
+    .orderByRaw(
+      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
+    )
+    .orderBy('name');
+
+  return res.map(r => ({
+    id: r.id,
+    rosterId: r.roster_id,
+    personId: r.person_id,
+    role: r.role,
+    photoUrl: r.photo_url,
+    name: r.name,
+    isSub: r.is_sub,
+  }));
 }
 
 async function getTeamsSchedule(eventId) {
@@ -3086,13 +3152,14 @@ async function updatePrerankSpots(eventId, newSpots) {
 async function updatePractice(
   id,
   name,
-  start_date,
-  end_date,
+  dateStart,
+  dateEnd,
   newLocation,
   locationId,
   address,
 ) {
   let addressId = null;
+
   if (address && address.length != 0) {
     let { street_address, city, state, zip, country } = address;
     const [newAddress] = await knex('addresses')
@@ -3117,12 +3184,12 @@ async function updatePractice(
       .returning('*');
 
     const res = await knex.transaction(async trx => {
-      const [session] = await knex('sessions')
+      await knex('sessions')
         .where({ id })
         .update({
           name,
-          start_date,
-          end_date,
+          start_date: dateStart,
+          end_date: dateEnd,
           location_id: location.id,
         })
         .returning('*')
@@ -3138,8 +3205,8 @@ async function updatePractice(
     return knex('sessions')
       .update({
         name,
-        start_date,
-        end_date,
+        start_date: dateStart,
+        end_date: dateEnd,
         location_id: locationId,
       })
       .where({
@@ -3150,8 +3217,8 @@ async function updatePractice(
   return knex('sessions')
     .update({
       name,
-      start_date,
-      end_date,
+      start_date: dateStart,
+      end_date: dateEnd,
       location_id: null,
     })
     .where({
@@ -3706,14 +3773,20 @@ async function updateOption(body) {
 
 async function updateMembershipTermsAndConditions(body) {
   const { id, description, fileName, fileUrl } = body;
-
-  return knex('entity_memberships')
-    .update({
-      description: description,
+  const [res] = await knex('terms_and_conditions')
+    .insert({
+      description,
       file_name: fileName,
       file_url: fileUrl,
     })
-    .where({ id });
+    .returning('id');
+
+  return knex('entity_memberships')
+    .update({
+      terms_and_conditions_id: res,
+    })
+    .where({ id })
+    .returning('*');
 }
 
 async function updatePartner(body) {
@@ -3736,6 +3809,37 @@ async function updatePlayer(body) {
       role,
     })
     .where({ id });
+}
+
+async function updateRosterPlayer(body) {
+  const { id, role } = body;
+  return knex('roster_players')
+    .update({
+      role,
+    })
+    .where({ id });
+}
+
+async function updateRoster(body) {
+  const { id, name, players } = body;
+  const roster = knex('team_rosters')
+    .update({
+      name,
+    })
+    .where({ id });
+  await Promise.all(
+    players.map(async player => {
+      const [res] = await knex('roster_players')
+        .insert({
+          roster_id: id,
+          person_id: player.id,
+          role: ROSTER_ROLE_ENUM.PLAYER,
+        })
+        .returning('*');
+      return res;
+    }),
+  );
+  return roster;
 }
 
 const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
@@ -4211,6 +4315,7 @@ async function addMemberManually(body) {
     emergencySurname,
     emergencyPhoneNumber,
     medicalConditions,
+    termsAndConditionsId,
   } = body;
   let id = membershipId;
 
@@ -4249,6 +4354,7 @@ async function addMemberManually(body) {
       person_id: personId,
       expiration_date: expirationDate,
       status: INVOICE_STATUS_ENUM.FREE,
+      terms_and_conditions_id: termsAndConditionsId,
       infos_supp_id: infos,
     })
     .returning('*');
@@ -4271,6 +4377,7 @@ async function addMember(body) {
     emergencyName,
     emergencySurname,
     medicalConditions,
+    termsAndConditionsId,
   } = body;
 
   const [add] = await knex('addresses')
@@ -4304,6 +4411,7 @@ async function addMember(body) {
       person_id: personId,
       expiration_date: expirationDate,
       status: INVOICE_STATUS_ENUM.OPEN,
+      terms_and_conditions_id: termsAndConditionsId,
       infos_supp_id: infos,
     })
     .returning('*');
@@ -5028,6 +5136,15 @@ async function addMembership(
     ownerId: entityId,
     taxRatesId,
   });
+
+  const [terms_and_conditions] = await knex('terms_and_conditions')
+    .insert({
+      description,
+      file_name: fileName,
+      file_url: fileUrl,
+    })
+    .returning('id');
+
   if (type === MEMBERSHIP_LENGTH_TYPE_ENUM.FIXED) {
     const [res] = await knex('entity_memberships')
       .insert({
@@ -5036,9 +5153,7 @@ async function addMembership(
         membership_type: membership,
         fixed_date: date,
         price,
-        description,
-        file_name: fileName,
-        file_url: fileUrl,
+        terms_and_conditions_id: terms_and_conditions,
       })
       .returning('*');
     return res;
@@ -5051,9 +5166,7 @@ async function addMembership(
         membership_type: membership,
         length,
         price,
-        description,
-        file_name: fileName,
-        file_url: fileUrl,
+        terms_and_conditions_id: terms_and_conditions,
       })
       .returning('*');
     return res;
@@ -5074,7 +5187,7 @@ async function addTeamToEvent(body) {
 
   const res = await knex.transaction(async trx => {
     const [roster] = await knex('team_rosters')
-      .insert({ team_id: teamId })
+      .insert({ team_id: teamId, active: false })
       .returning('*')
       .transacting(trx);
 
@@ -5194,7 +5307,7 @@ async function getEventIdFromRosterId(rosterId) {
     .where({ roster_id: rosterId });
   return res.event_id;
 }
-async function addRoster(rosterId, roster) {
+async function addEventRoster(rosterId, roster) {
   const eventId = await getEventIdFromRosterId(rosterId);
   const rosterInfos = await getRosterEventInfos(rosterId);
 
@@ -5269,6 +5382,7 @@ const addPlayerToRoster = async body => {
 
   return player;
 };
+
 const addPlayersToTeam = async body => {
   const { players, teamId } = body;
   const res = await Promise.all(
@@ -5286,6 +5400,33 @@ const addPlayersToTeam = async body => {
     }),
   );
   return res;
+};
+
+const addTeamRoster = async body => {
+  const { players, teamId, name } = body;
+
+  const [roster] = await knex('team_rosters')
+    .insert({
+      team_id: teamId,
+      name,
+      active: true,
+    })
+    .returning('*');
+
+  await Promise.all(
+    players.map(async player => {
+      const [res] = await knex('roster_players')
+        .insert({
+          roster_id: roster.id,
+          person_id: player.personId,
+          role: ROSTER_ROLE_ENUM.PLAYER,
+        })
+        .returning('*');
+      return res;
+    }),
+  );
+
+  return roster;
 };
 
 const addPlayerCartItem = async body => {
@@ -5752,7 +5893,6 @@ const deleteEntityMembership = async membershipId => {
     })
     .del()
     .returning('infos_supp_id');
-
   await Promise.all(
     memberships.map(async m => {
       const [person] = await knex('person_infos')
@@ -5899,6 +6039,19 @@ const deletePlayer = async id => {
     .del();
 };
 
+const deleteRoster = async id => {
+  return knex('team_rosters')
+    .update({ active: false })
+    .where({ id })
+    .returning('*');
+};
+
+const deleteRosterPlayer = async id => {
+  return knex('roster_players')
+    .where({ id })
+    .del();
+};
+
 const getGame = async id => {
   const [game] = await knex('games')
     .select('*')
@@ -6000,9 +6153,18 @@ const getSessionLocations = async teamId => {
       '=',
       'locations.address_id',
     )
+    .whereNotNull('locations.id')
     .where({ team_id: teamId });
 
-  return session_locations;
+  return session_locations.map(s => ({
+    id: s.id,
+    location: s.location,
+    streetAddress: s.street_address,
+    city: s.city,
+    state: s.state,
+    zip: s.zip,
+    country: s.country,
+  }));
 };
 
 const getPracticeInfo = async (id, userId) => {
@@ -6014,7 +6176,7 @@ const getPracticeInfo = async (id, userId) => {
       'sessions.end_date',
       'sessions.name',
       'sessions.type',
-      'locations.id as location_id',
+      'locations.id as locationId',
       'locations.location',
       'addresses.street_address',
       'addresses.city',
@@ -6047,18 +6209,17 @@ const getPracticeInfo = async (id, userId) => {
           knex
             .select(
               knex.raw(
-                "json_agg(json_build_object('name', person.name, 'surname', person.surname, 'photo_url', person.photo_url, 'role', person.role)) AS playerInfo",
+                "json_agg(json_build_object('name', person.name, 'photoUrl', person.photo_url, 'role', person.role)) AS playerInfo",
               ),
               'person.team_id',
             )
             .from(
               knex('team_rosters')
                 .select(
-                  'entities_all_infos.name',
-                  'entities_all_infos.surname',
-                  'entities_all_infos.photo_url',
-                  'team_players.role',
-                  'team_rosters.team_id',
+                  'team_players_infos.name',
+                  'team_players_infos.photo_url',
+                  'team_players_infos.role',
+                  'team_players_infos.team_id',
                 )
                 .leftJoin(
                   'team_players',
@@ -6067,13 +6228,16 @@ const getPracticeInfo = async (id, userId) => {
                   'team_rosters.team_id',
                 )
                 .leftJoin(
-                  'entities_all_infos',
-                  ' entities_all_infos.id',
+                  'team_players_infos',
+                  'team_players_infos.person_id',
                   '=',
                   'team_players.person_id',
                 )
                 .orderByRaw(
                   `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], team_players.role)`,
+                )
+                .whereRaw(
+                  'team_players_infos.team_id = team_rosters.team_id',
                 )
                 .as('person'),
             )
@@ -6093,7 +6257,23 @@ const getPracticeInfo = async (id, userId) => {
 
   const role = await getEntityRole(session.team_id, userId);
   return {
-    ...session,
+    practice: {
+      id: session.id,
+      entityId: session.entity_id,
+      startDate: session.start_date,
+      endDate: session.end_date,
+      name: session.name,
+      type: session.type,
+      locationId: session.locationId,
+      location: session.location,
+      streetAddress: session.street_address,
+      city: session.city,
+      state: session.state,
+      zip: session.zip,
+      country: session.country,
+      roster: session.roster[0],
+      teamId: session.team_id,
+    },
     role,
   };
 };
@@ -6269,10 +6449,11 @@ module.exports = {
   addPhase,
   addPlayerCartItem,
   addPlayersToTeam,
+  addTeamRoster,
   addPlayerToRoster,
   addPractice,
   addReport,
-  addRoster,
+  addEventRoster,
   addScoreSuggestion,
   addSpiritSubmission,
   addTeamToEvent,
@@ -6288,6 +6469,8 @@ module.exports = {
   deleteOption,
   deletePartner,
   deletePlayer,
+  deleteRoster,
+  deleteRosterPlayer,
   deletePersonFromEvent,
   deletePhase,
   deletePlayerFromRoster,
@@ -6392,10 +6575,12 @@ module.exports = {
   getSubmissionerInfos,
   getTeamCreatorEmail,
   getTeamGames,
+  getTeamRosters,
   getTeamEventsInfos,
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
   getTeamPlayers,
+  getRosterPlayers,
   getTeamsSchedule,
   getUnplacedGames,
   getUserIdFromPersonId,
@@ -6433,6 +6618,8 @@ module.exports = {
   updateOriginPhase,
   updatePartner,
   updatePlayer,
+  updateRosterPlayer,
+  updateRoster,
   updatePersonInfosHelper,
   updatePhase,
   updatePhaseFinalRanking,

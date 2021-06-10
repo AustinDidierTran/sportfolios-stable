@@ -32,8 +32,9 @@ const {
   addPlayerCartItem: addPlayerCartItemHelper,
   addPlayerToRoster: addPlayerToRosterHelper,
   addPlayersToTeam: addPlayersToTeamHelper,
+  addTeamRoster: addTeamRosterHelper,
   addReport: addReportHelper,
-  addRoster: addRosterHelper,
+  addEventRoster: addEventRosterHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
   addMemberDonation: addMemberDonationHelper,
   addSpiritSubmission: addSpiritSubmissionHelper,
@@ -50,6 +51,8 @@ const {
   deleteOption: deleteOptionHelper,
   deletePartner: deletePartnerHelper,
   deletePlayer: deletePlayerHelper,
+  deleteRoster: deleteRosterHelper,
+  deleteRosterPlayer: deleteRosterPlayerHelper,
   deletePersonFromEvent,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
   deletePractice: deletePracticeHelper,
@@ -132,10 +135,12 @@ const {
   getSlots: getSlotsHelper,
   getTeamCreatorEmail,
   getTeamGames: getTeamGamesHelper,
+  getTeamRosters: getTeamRostersHelper,
   getTeamEventsInfos: getTeamEventsInfosHelper,
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
   getTeamPlayers: getTeamPlayersHelper,
+  getRosterPlayers: getRosterPlayersHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
   getUnplacedGames: getUnplacedGamesHelper,
   getUserIdFromPersonId,
@@ -161,6 +166,8 @@ const {
   updateMembershipTermsAndConditions: updateMembershipTermsAndConditionsHelper,
   updatePartner: updatePartnerHelper,
   updatePlayer: updatePlayerHelper,
+  updateRosterPlayer: updateRosterPlayerHelper,
+  updateRoster: updateRosterHelper,
   updateOption: updateOptionHelper,
   updatePersonInfosHelper,
   updatePlayerAcceptation: updatePlayerAcceptationHelper,
@@ -415,6 +422,10 @@ async function getTeamGames(eventId) {
   return getTeamGamesHelper(eventId);
 }
 
+async function getTeamRosters(teamId) {
+  return getTeamRostersHelper(teamId);
+}
+
 async function getPhasesGameAndTeams(eventId, phaseId) {
   return getPhasesGameAndTeamsHelper(eventId, phaseId);
 }
@@ -429,6 +440,10 @@ async function getTeamsSchedule(eventId) {
 
 async function getTeamPlayers(teamId) {
   return getTeamPlayersHelper(teamId);
+}
+
+async function getRosterPlayers(rosterId) {
+  return getRosterPlayersHelper(rosterId);
 }
 
 async function getFields(eventId) {
@@ -801,7 +816,7 @@ async function addTeamAsAdmin(body, userId) {
   ];
 
   // Add roster
-  await addRosterHelper(rosterId, roster);
+  await addEventRosterHelper(rosterId, roster);
 
   // Handle other acceptation statuses
   return { status: registrationStatus, rosterId };
@@ -1242,6 +1257,14 @@ async function updatePlayer(body) {
   return updatePlayerHelper(body);
 }
 
+async function updateRosterPlayer(body) {
+  return updateRosterPlayerHelper(body);
+}
+
+async function updateRoster(body) {
+  return updateRosterHelper(body);
+}
+
 async function updateGame(body) {
   const {
     gameId,
@@ -1269,17 +1292,17 @@ async function updateGame(body) {
 }
 
 async function updatePractice(body, userId) {
-  const { id, name, start_date, end_date, newLocation, locationId, address } = body;
+  const { id, name, dateStart, dateEnd, newLocation, locationId, address } = body;
 
-  if (!(await isAllowed(id, userId), ENTITIES_ROLE_ENUM.ADMIN)) {
+  if (!(await isAllowed(id, userId), ENTITIES_ROLE_ENUM.EDITOR)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
   return updatePracticeHelper(
     id,
     name,
-    start_date,
-    end_date,
+    dateStart,
+    dateEnd,
     newLocation,
     locationId,
     address,
@@ -1368,12 +1391,17 @@ async function addMember(body, userId) {
   const { membershipId, organizationId, personId } = body;
 
   const membership = await getMembership(membershipId);
-
   if (membership.price === 0) {
-    return addMemberManuallyHelper(body);
+    return addMemberManuallyHelper({
+      ...body,
+      termsAndConditionsId: membership.terms_and_conditions_id,
+    });
   }
 
-  const res = await addMemberHelper(body);
+  const res = await addMemberHelper({
+    ...body,
+    termsAndConditionsId: membership.terms_and_conditions_id,
+  });
   const person = (await getEntity(personId)).basicInfos;
   const organization = (await getEntity(organizationId)).basicInfos;
 
@@ -1431,7 +1459,7 @@ async function addPractice(body, userId) {
     teamId,
   } = body;
 
-  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))) {
+  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -1845,9 +1873,16 @@ async function deletePlayer(id) {
   return deletePlayerHelper(id);
 }
 
+async function deleteRoster(id) {
+  return deleteRosterHelper(id);
+}
+
+async function deleteRosterPlayer(id) {
+  return deleteRosterPlayerHelper(id);
+}
+
 async function deleteEntityMembership(query) {
   const { membershipId } = query;
-
   return deleteEntityMembershipHelper(membershipId);
 }
 
@@ -1872,6 +1907,10 @@ async function deleteOption(id) {
 
 async function addPlayersToTeam(body) {
   return addPlayersToTeamHelper(body);
+}
+
+async function addTeamRoster(body) {
+  return addTeamRosterHelper(body);
 }
 
 async function addPlayerToRoster(body, userId) {
@@ -2071,6 +2110,7 @@ module.exports = {
   addPhase,
   addPlayersCartItems,
   addPlayersToTeam,
+  addTeamRoster,
   addPlayerToRoster,
   addPractice,
   addReport,
@@ -2094,6 +2134,8 @@ module.exports = {
   deleteOption,
   deletePartner,
   deletePlayer,
+  deleteRoster,
+  deleteRosterPlayer,
   deletePlayerFromRoster,
   deletePractice,
   deleteReport,
@@ -2160,7 +2202,9 @@ module.exports = {
   getSessionLocations,
   getSlots,
   getTeamGames,
+  getTeamRosters,
   getTeamPlayers,
+  getRosterPlayers,
   getTeamsSchedule,
   hasMemberships,
   importMembers,
@@ -2181,6 +2225,8 @@ module.exports = {
   updateOption,
   updatePartner,
   updatePlayer,
+  updateRosterPlayer,
+  updateRoster,
   updatePersonInfos,
   updatePlayerAcceptation,
   updatePractice,

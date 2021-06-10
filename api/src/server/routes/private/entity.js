@@ -694,6 +694,7 @@ router.get(`${BASE_URL}/teamsPendingAndRefused`, async ctx => {
     };
   }
 });
+
 router.get(`${BASE_URL}/playersPendingAndRefused`, async ctx => {
   const players = await queries.getAllPlayersPendingAndRefused(
     ctx.query.eventId,
@@ -874,6 +875,22 @@ router.get(`${BASE_URL}/newRosterInviteToken`, async ctx => {
     status: STATUS_ENUM.SUCCESS_STRING,
     data: token,
   };
+});
+
+router.get(`${BASE_URL}/rosters`, async ctx => {
+  const rosters = await queries.getTeamRosters(ctx.query.teamId);
+  if (rosters) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      rosters,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+    };
+  }
 });
 
 router.put(`${BASE_URL}`, async ctx => {
@@ -1422,6 +1439,40 @@ router.put(`${BASE_URL}/player`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/rosterPlayer`, async ctx => {
+  const player = await queries.updateRosterPlayer(ctx.request.body);
+  if (player) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: player,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/roster`, async ctx => {
+  const roster = await queries.updateRoster(ctx.request.body);
+  if (roster) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: roster,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.post(BASE_URL, async ctx => {
   const entityId = await queries.addEntity(
     ctx.request.body,
@@ -1881,6 +1932,23 @@ router.post(`${BASE_URL}/players`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/roster`, async ctx => {
+  const roster = await queries.addTeamRoster(ctx.request.body);
+  if (roster) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: roster,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
   const player = await queries.addPlayerToRoster(
     ctx.request.body,
@@ -2032,6 +2100,22 @@ router.del(`${BASE_URL}/partner`, async ctx => {
 
 router.del(`${BASE_URL}/player`, async ctx => {
   await queries.deletePlayer(ctx.query.id);
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
+router.del(`${BASE_URL}/roster`, async ctx => {
+  await queries.deleteRoster(ctx.query.id);
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
+router.del(`${BASE_URL}/rosterPlayer`, async ctx => {
+  await queries.deleteRosterPlayer(ctx.query.id);
   ctx.status = 201;
   ctx.body = {
     status: 'success',

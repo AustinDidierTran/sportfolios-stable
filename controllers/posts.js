@@ -1,9 +1,6 @@
-const {
-  PostServices
-} = require('../api/src/db/services/posts');
+const { PostServices } = require('../api/src/db/services/posts');
 
 class PostsController {
-
   static async create(body, locationId, userId) {
     const post = await PostServices.addPost(body, locationId, userId);
 
@@ -16,19 +13,29 @@ class PostsController {
 
   static async addImage(postId, imageUrl) {
     if (imageUrl && postId) {
-      const res = await PostServices.addPostImageUrl(postId, imageUrl);
+      const res = await PostServices.addPostImageUrl(
+        postId,
+        imageUrl,
+      );
       return res;
     }
-
   }
 
   static async getFeedOrganization(userId, organizationId, body) {
-    const res = await PostServices.getPostFeed(userId, [organizationId], body);
+    const res = await PostServices.getPostFeed(
+      userId,
+      [organizationId],
+      body,
+    );
     return res;
   }
 
   static async getFeed(userId, locationId, body) {
-    const res = await PostServices.getPostFeed(userId, locationId, body);
+    const res = await PostServices.getPostFeed(
+      userId,
+      locationId,
+      body,
+    );
     return res;
   }
 
@@ -44,7 +51,11 @@ class PostsController {
   }
 
   static async addComment(entityId, postId, content) {
-    const res = await PostServices.addComment(entityId, postId, content);
+    const res = await PostServices.addComment(
+      entityId,
+      postId,
+      content,
+    );
     return res;
   }
 

@@ -8,6 +8,7 @@ const {
 const {
   STRIPE_STATUS_ENUM,
   GLOBAL_ENUM,
+  REJECTION_ENUM,
 } = require('../../../../../common/enums');
 const { deleteCartItem } = require('../shop');
 const {
@@ -344,6 +345,11 @@ const getMetadata = async (stripePriceId, cartItemId) => {
 const checkout = async (body, userId) => {
   const { paymentMethodId } = body;
 
+  if (!paymentMethodId) {
+    const reason = REJECTION_ENUM.NO_PAYMENT_METHOD_SELECTED;
+    return { reason };
+  }
+
   const invoiceParams = {
     invoice: {
       auto_advance: 'false',
@@ -356,10 +362,16 @@ const checkout = async (body, userId) => {
     .where({ user_id: userId })
     .andWhere({ selected: true });
 
+  if (!prices.length) {
+    const reason = REJECTION_ENUM.NO_CART_ITEMS_SELECTED;
+    return { reason };
+  }
+
   try {
     const invoicesAndMetadatas = await Promise.all(
       prices.map(async price => {
         const stripePriceId = price.stripe_price_id;
+
         const quantity = price.quantity;
         const metadata = await getMetadata(stripePriceId, price.id);
         const tax_rates = await getTaxRatesFromStripePrice(
@@ -485,7 +497,8 @@ const checkout = async (body, userId) => {
     return { invoice: paidInvoice, receiptUrl, transfers };
   } catch (err) {
     stripeErrorLogger('CreateInvoice error', err);
-    throw err;
+    const reason = REJECTION_ENUM.CHECKOUT_ERROR;
+    return { reason };
   }
 };
 
