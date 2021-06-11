@@ -2569,7 +2569,7 @@ async function getGeneralInfos(entityId) {
     .where({ entity_id: entityId });
   return {
     name: res.name,
-    entityId: res.entity_id,
+    id: res.entity_id,
     description: res.description,
     quickDescription: res.quick_description,
   };
