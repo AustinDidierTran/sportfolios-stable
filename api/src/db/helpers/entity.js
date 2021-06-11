@@ -6170,6 +6170,10 @@ const getSessionLocations = async teamId => {
 
 const getPracticeInfo = async (id, userId) => {
   const [session] = await knex('sessions')
+    .select('sessions.roster_id')
+    .where({ 'sessions.id': id });
+
+  const [practiceInfo] = await knex('sessions')
     .select(
       'sessions.id',
       'sessions.entity_id',
@@ -6217,28 +6221,21 @@ const getPracticeInfo = async (id, userId) => {
             .from(
               knex('team_rosters')
                 .select(
-                  'team_players_infos.name',
-                  'team_players_infos.photo_url',
-                  'team_players_infos.role',
-                  'team_players_infos.team_id',
-                )
-                .leftJoin(
-                  'team_players',
-                  'team_players.team_id',
-                  '=',
+                  'roster_players_infos.name',
+                  'roster_players_infos.photo_url',
+                  'roster_players_infos.role',
                   'team_rosters.team_id',
                 )
+                .where({ 'team_rosters.id': session.roster_id })
+                .where('roster_players_infos.name', '!=', 'null')
                 .leftJoin(
-                  'team_players_infos',
-                  'team_players_infos.person_id',
+                  'roster_players_infos',
+                  'roster_players_infos.roster_id',
                   '=',
-                  'team_players.person_id',
+                  'team_rosters.id',
                 )
                 .orderByRaw(
-                  `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], team_players.role)`,
-                )
-                .whereRaw(
-                  'team_players_infos.team_id = team_rosters.team_id',
+                  `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], roster_players_infos.role)`,
                 )
                 .as('person'),
             )
@@ -6256,24 +6253,24 @@ const getPracticeInfo = async (id, userId) => {
     )
     .where({ 'sessions.id': id });
 
-  const role = await getEntityRole(session.team_id, userId);
+  const role = await getEntityRole(practiceInfo.team_id, userId);
   return {
     practice: {
-      id: session.id,
-      entityId: session.entity_id,
-      startDate: session.start_date,
-      endDate: session.end_date,
-      name: session.name,
-      type: session.type,
-      locationId: session.locationId,
-      location: session.location,
-      streetAddress: session.street_address,
-      city: session.city,
-      state: session.state,
-      zip: session.zip,
-      country: session.country,
-      roster: session.roster[0],
-      teamId: session.team_id,
+      id: practiceInfo.id,
+      entityId: practiceInfo.entity_id,
+      startDate: practiceInfo.start_date,
+      endDate: practiceInfo.end_date,
+      name: practiceInfo.name,
+      type: practiceInfo.type,
+      locationId: practiceInfo.locationId,
+      location: practiceInfo.location,
+      streetAddress: practiceInfo.street_address,
+      city: practiceInfo.city,
+      state: practiceInfo.state,
+      zip: practiceInfo.zip,
+      country: practiceInfo.country,
+      roster: practiceInfo.roster[0],
+      teamId: practiceInfo.team_id,
     },
     role,
   };
