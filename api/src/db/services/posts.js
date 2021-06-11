@@ -122,6 +122,7 @@ class PostServices {
         .select('image_url')
         .from('post_image')
         .where('post_image.post_id', data.id);
+      data.images = images;
 
       const likes = await knex
         .select('*')
@@ -133,6 +134,8 @@ class PostServices {
           'entities_general_infos.entity_id',
         )
         .where('post_like.post_id', data.id);
+
+      data.likes = likes;
 
       const comments = await knex
         .select(
@@ -155,20 +158,10 @@ class PostServices {
         )
         .where('post_comment.post_id', data.id)
         .orderBy('post_comment.created_at', 'desc');
+      data.comments = comments;
 
-      return {
-        id: data.id,
-        entityId: data.entity_id,
-        content: data.content,
-        createdAt: data.created_at,
-        updatedAt: data.updated_at,
-        name: data.name,
-        surname: data.surname,
-        photoUrl: data.photo_url,
-        liked: data.liked,
-        images: images,
-        likes: likes,
-        comments: comments.map(c => ({
+      return data.map(d => ({
+        comments: d.comments.map(c => ({
           id: c.id,
           postId: c.post_id,
           entityId: c.entity_id,
@@ -179,7 +172,21 @@ class PostServices {
           surname: c.surname,
           photoUrl: c.photo_url,
         })),
-      };
+        content: d.content,
+        createdAt: d.created_at,
+        entityId: d.entity_id,
+        id: d.id,
+        images: d.images.map(i => ({ imageUrl: i.image_url })),
+        liked: d.liked,
+        likes: d.likes.map(l => ({
+          entityd: l.entity_id,
+          postId: l.post_id,
+        })),
+        name: d.name,
+        photoUrl: d.photo_url,
+        surname: d.surname,
+        updatedAt: d.updated_at,
+      }));
     }
     return [];
   }
@@ -279,7 +286,7 @@ class PostServices {
           createdAt: a.created_at,
           entityId: a.entity_id,
           id: a.id,
-          images: a.images,
+          images: a.images.map(i => ({ imageUrl: i.image_url })),
           liked: a.liked,
           likes: a.likes.map(l => ({
             entityd: l.entity_id,

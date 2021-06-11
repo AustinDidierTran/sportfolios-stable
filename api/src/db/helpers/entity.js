@@ -712,7 +712,8 @@ async function getTeamEventsInfos(id) {
         'team_rosters.id',
       )
       .leftJoin('games', 'games.id', '=', 'game_teams.game_id')
-      .where({ team_id: id })
+      .whereNotNull('games.id')
+      .andWhere({ team_id: id })
   ).map(game => game.id);
 
   const practiceInfos = await knex('team_rosters')

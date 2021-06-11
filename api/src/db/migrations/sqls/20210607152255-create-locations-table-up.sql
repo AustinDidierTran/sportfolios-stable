@@ -10,4 +10,5 @@ DROP COLUMN location,
 DROP COLUMN address_id;
 
 ALTER TABLE sessions
+ALTER COLUMN name DROP NOT NULL,
 ADD COLUMN location_id UUID REFERENCES locations(id);
