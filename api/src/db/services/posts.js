@@ -160,7 +160,33 @@ class PostServices {
         .orderBy('post_comment.created_at', 'desc');
       data.comments = comments;
 
-      return data;
+      return data.map(d => ({
+        comments: d.comments.map(c => ({
+          id: c.id,
+          postId: c.post_id,
+          entityId: c.entity_id,
+          content: c.content,
+          parentId: c.parent_id,
+          createdAt: c.created_at,
+          name: c.name,
+          surname: c.surname,
+          photoUrl: c.photo_url,
+        })),
+        content: d.content,
+        createdAt: d.created_at,
+        entityId: d.entity_id,
+        id: d.id,
+        images: d.images.map(i => ({ imageUrl: i.image_url })),
+        liked: d.liked,
+        likes: d.likes.map(l => ({
+          entityd: l.entity_id,
+          postId: l.post_id,
+        })),
+        name: d.name,
+        photoUrl: d.photo_url,
+        surname: d.surname,
+        updatedAt: d.updated_at,
+      }));
     }
     return [];
   }
@@ -243,7 +269,34 @@ class PostServices {
             return objectSql;
           }),
         );
-        return arrayPosts;
+
+        return arrayPosts.map(a => ({
+          comments: a.comments.map(c => ({
+            id: c.id,
+            postId: c.post_id,
+            entityId: c.entity_id,
+            content: c.content,
+            parentId: c.parent_id,
+            createdAt: c.created_at,
+            name: c.name,
+            surname: c.surname,
+            photoUrl: c.photo_url,
+          })),
+          content: a.content,
+          createdAt: a.created_at,
+          entityId: a.entity_id,
+          id: a.id,
+          images: a.images.map(i => ({ imageUrl: i.image_url })),
+          liked: a.liked,
+          likes: a.likes.map(l => ({
+            entityd: l.entity_id,
+            postId: l.post_id,
+          })),
+          name: a.name,
+          photoUrl: a.photo_url,
+          surname: a.surname,
+          updatedAt: a.updated_at,
+        }));
       }
       return [];
     }

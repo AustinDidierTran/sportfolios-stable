@@ -296,13 +296,9 @@ const getPreviousSearchQueriesFromId = async user_id => {
 module.exports = {
   addQueryToRecentSearches,
   getEntitiesFromQuery,
-  getOrganizationsFromQuery,
-  getPersonsFromQuery,
-  getPreviousSearchQueriesFromId,
-  getEntitiesFromQuery,
+  getMyTeamsFromQuery,
   getOrganizationsFromQuery,
   getPersonsFromQuery,
   getPreviousSearchQueriesFromId,
   getTeamsFromQuery,
-  getMyTeamsFromQuery,
 };
