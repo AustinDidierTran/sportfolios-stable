@@ -5405,7 +5405,6 @@ const addPlayersToTeam = async body => {
 
 const addTeamRoster = async body => {
   const { players, teamId, name } = body;
-
   const [roster] = await knex('team_rosters')
     .insert({
       team_id: teamId,
@@ -5419,7 +5418,7 @@ const addTeamRoster = async body => {
       const [res] = await knex('roster_players')
         .insert({
           roster_id: roster.id,
-          person_id: player.personId,
+          person_id: player.id,
           role: ROSTER_ROLE_ENUM.PLAYER,
         })
         .returning('*');

@@ -1292,7 +1292,15 @@ async function updateGame(body) {
 }
 
 async function updatePractice(body, userId) {
-  const { id, name, dateStart, dateEnd, newLocation, locationId, address } = body;
+  const {
+    id,
+    name,
+    dateStart,
+    dateEnd,
+    newLocation,
+    locationId,
+    address,
+  } = body;
 
   if (!(await isAllowed(id, userId), ENTITIES_ROLE_ENUM.EDITOR)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
