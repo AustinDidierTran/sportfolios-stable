@@ -723,7 +723,7 @@ async function getTeamEventsInfos(id) {
       'sessions.end_date',
       'sessions.name',
       'sessions.type',
-      'sessions.location',
+      'locations.location',
       'addresses.street_address',
       'addresses.city',
       'addresses.state',
@@ -736,7 +736,18 @@ async function getTeamEventsInfos(id) {
       '=',
       'team_rosters.id',
     )
-    .leftJoin('addresses', 'addresses.id', '=', 'sessions.address_id')
+    .leftJoin(
+      'locations',
+      'locations.id',
+      '=',
+      'sessions.location_id',
+    )
+    .leftJoin(
+      'addresses',
+      'addresses.id',
+      '=',
+      'locations.address_id',
+    )
     .whereNotNull('sessions.id')
     .where({ team_id: id })
     .orderBy('sessions.start_date', 'asc');
@@ -3142,16 +3153,15 @@ async function updatePrerankSpots(eventId, newSpots) {
 async function updatePractice(
   id,
   name,
-  start_date,
-  end_date,
-  location,
+  dateStart,
+  dateEnd,
+  newLocation,
+  locationId,
   address,
 ) {
-  if (address && address.length != 0) {
-    const [oldAddress] = await knex('sessions')
-      .select('address_id')
-      .where({ id });
+  let addressId = null;
 
+  if (address && address.length != 0) {
     let { street_address, city, state, zip, country } = address;
     const [newAddress] = await knex('addresses')
       .insert({
@@ -3163,26 +3173,26 @@ async function updatePractice(
       })
       .returning('*');
 
-    let addressId = newAddress.id;
+    addressId = newAddress.id;
+  }
+
+  if (newLocation) {
+    const [location] = await knex('locations')
+      .insert({
+        location: newLocation,
+        address_id: addressId,
+      })
+      .returning('*');
 
     const res = await knex.transaction(async trx => {
       await knex('sessions')
         .where({ id })
         .update({
           name,
-          start_date,
-          end_date,
-          location,
-          address_id: addressId,
+          start_date: dateStart,
+          end_date: dateEnd,
+          location_id: location.id,
         })
-        .returning('*')
-        .transacting(trx);
-
-      await knex('addresses')
-        .where({
-          id: oldAddress.address_id,
-        })
-        .del()
         .returning('*')
         .transacting(trx);
 
@@ -3192,12 +3202,25 @@ async function updatePractice(
     return res;
   }
 
+  if (locationId) {
+    return knex('sessions')
+      .update({
+        name,
+        start_date: dateStart,
+        end_date: dateEnd,
+        location_id: locationId,
+      })
+      .where({
+        id,
+      });
+  }
+
   return knex('sessions')
     .update({
       name,
-      start_date,
-      end_date,
-      location,
+      start_date: dateStart,
+      end_date: dateEnd,
+      location_id: null,
     })
     .where({
       id,
@@ -4553,7 +4576,8 @@ async function addPractice(
   dateStart,
   dateEnd,
   address,
-  location,
+  locationId,
+  newLocation,
   teamId,
 ) {
   const [{ id: entityId }] = await knex('entities')
@@ -4561,10 +4585,12 @@ async function addPractice(
     .returning(['id']);
 
   let addressId = null;
+  let location_id = locationId;
+
   if (address && address.length != 0) {
     let { street_address, city, state, zip, country } = address;
 
-    const [res] = await knex('addresses')
+    const [createdAddress] = await knex('addresses')
       .insert({
         street_address,
         city,
@@ -4574,7 +4600,17 @@ async function addPractice(
       })
       .returning('*');
 
-    addressId = res.id;
+    addressId = createdAddress.id;
+  }
+
+  if (newLocation) {
+    const [location] = await knex('locations')
+      .insert({
+        location: newLocation,
+        address_id: addressId,
+      })
+      .returning('*');
+    location_id = location.id;
   }
 
   const [roster] = await knex('team_rosters')
@@ -4591,8 +4627,7 @@ async function addPractice(
       name,
       entity_id: entityId,
       type: SESSION_ENUM.PRACTICE,
-      location,
-      address_id: addressId,
+      location_id,
     })
     .returning('*');
 
@@ -6089,8 +6124,56 @@ const deleteGame = async id => {
   return res;
 };
 
+const getSessionLocations = async teamId => {
+  const session_locations = await knex('team_rosters')
+    .select(
+      'locations.id',
+      'locations.location',
+      'addresses.street_address',
+      'addresses.city',
+      'addresses.state',
+      'addresses.zip',
+      'addresses.country',
+    )
+    .distinctOn('locations.id')
+    .leftJoin(
+      'sessions',
+      'sessions.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .leftJoin(
+      'locations',
+      'locations.id',
+      '=',
+      'sessions.location_id',
+    )
+    .leftJoin(
+      'addresses',
+      'addresses.id',
+      '=',
+      'locations.address_id',
+    )
+    .whereNotNull('locations.id')
+    .where({ team_id: teamId });
+
+  return session_locations.map(s => ({
+    id: s.id,
+    location: s.location,
+    streetAddress: s.street_address,
+    city: s.city,
+    state: s.state,
+    zip: s.zip,
+    country: s.country,
+  }));
+};
+
 const getPracticeInfo = async (id, userId) => {
-  const session = await knex('sessions')
+  const [session] = await knex('sessions')
+    .select('sessions.roster_id')
+    .where({ 'sessions.id': id });
+
+  const [practiceInfo] = await knex('sessions')
     .select(
       'sessions.id',
       'sessions.entity_id',
@@ -6098,7 +6181,8 @@ const getPracticeInfo = async (id, userId) => {
       'sessions.end_date',
       'sessions.name',
       'sessions.type',
-      'sessions.location',
+      'locations.id as locationId',
+      'locations.location',
       'addresses.street_address',
       'addresses.city',
       'addresses.state',
@@ -6107,7 +6191,18 @@ const getPracticeInfo = async (id, userId) => {
       'team.roster',
       'team.team_id',
     )
-    .leftJoin('addresses', 'addresses.id', '=', 'sessions.address_id')
+    .leftJoin(
+      'locations',
+      'locations.id',
+      '=',
+      'sessions.location_id',
+    )
+    .leftJoin(
+      'addresses',
+      'addresses.id',
+      '=',
+      'locations.address_id',
+    )
     .leftJoin(
       knex('team_rosters')
         .select(
@@ -6126,27 +6221,22 @@ const getPracticeInfo = async (id, userId) => {
             .from(
               knex('team_rosters')
                 .select(
-                  'team_players_infos.name',
-                  'team_players_infos.photo_url',
-                  'team_players_infos.role',
-                  'team_players_infos.team_id',
-                )
-                .leftJoin(
-                  'team_players',
-                  'team_players.team_id',
-                  '=',
+                  'roster_players_infos.name',
+                  'roster_players_infos.photo_url',
+                  'roster_players_infos.role',
                   'team_rosters.team_id',
                 )
+                .where({ 'team_rosters.id': session.roster_id })
+                .where('roster_players_infos.name', '!=', 'null')
                 .leftJoin(
-                  'team_players_infos',
-                  'team_players_infos.person_id',
+                  'roster_players_infos',
+                  'roster_players_infos.roster_id',
                   '=',
-                  'team_players.person_id',
+                  'team_rosters.id',
                 )
-                .whereRaw(
-                  'team_players_infos.team_id = team_rosters.team_id',
+                .orderByRaw(
+                  `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], roster_players_infos.role)`,
                 )
-                .orderBy('team_players.role', 'asc')
                 .as('person'),
             )
             .groupBy('person.team_id')
@@ -6163,28 +6253,24 @@ const getPracticeInfo = async (id, userId) => {
     )
     .where({ 'sessions.id': id });
 
-  const role = await getEntityRole(session[0].team_id, userId);
-
+  const role = await getEntityRole(practiceInfo.team_id, userId);
   return {
     practice: {
-      id: session[0].id,
-      entityId: session[0].entity_id,
-      startDate: session[0].start_date,
-      endDate: session[0].end_date,
-      name: session[0].name,
-      type: session[0].type,
-      location: session[0].location,
-      streetAddress: session[0].street_address,
-      city: session[0].city,
-      state: session[0].state,
-      zip: session[0].zip,
-      country: session[0].country,
-      roster: session[0].roster[0].map(r => ({
-        photoUrl: r.photo_url,
-        role: r.role,
-        name: r.name,
-      })),
-      teamId: session[0].team_id,
+      id: practiceInfo.id,
+      entityId: practiceInfo.entity_id,
+      startDate: practiceInfo.start_date,
+      endDate: practiceInfo.end_date,
+      name: practiceInfo.name,
+      type: practiceInfo.type,
+      locationId: practiceInfo.locationId,
+      location: practiceInfo.location,
+      streetAddress: practiceInfo.street_address,
+      city: practiceInfo.city,
+      state: practiceInfo.state,
+      zip: practiceInfo.zip,
+      country: practiceInfo.country,
+      roster: practiceInfo.roster[0],
+      teamId: practiceInfo.team_id,
     },
     role,
   };
@@ -6482,6 +6568,7 @@ module.exports = {
   getRosterName,
   getRostersNames,
   getScoreSuggestion,
+  getSessionLocations,
   getSlots,
   getSubmissionerInfos,
   getTeamCreatorEmail,
