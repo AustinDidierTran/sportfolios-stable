@@ -36,6 +36,7 @@ function verifyOrigin(ctx) {
 }
 
 function originIsValid(origin) {
+  console.log({ origin });
   return validOrigins.indexOf(origin) != -1;
 }
 
