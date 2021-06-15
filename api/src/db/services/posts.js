@@ -55,7 +55,6 @@ class PostServices {
       .returning('id');
 
     const post = await PostServices.getPost(post_id, entity_id);
-
     return post;
   }
 
@@ -160,8 +159,8 @@ class PostServices {
         .orderBy('post_comment.created_at', 'desc');
       data.comments = comments;
 
-      return data.map(d => ({
-        comments: d.comments.map(c => ({
+      return {
+        comments: data.comments.map(c => ({
           id: c.id,
           postId: c.post_id,
           entityId: c.entity_id,
@@ -172,21 +171,21 @@ class PostServices {
           surname: c.surname,
           photoUrl: c.photo_url,
         })),
-        content: d.content,
-        createdAt: d.created_at,
-        entityId: d.entity_id,
-        id: d.id,
-        images: d.images.map(i => ({ imageUrl: i.image_url })),
-        liked: d.liked,
-        likes: d.likes.map(l => ({
+        content: data.content,
+        createdAt: data.created_at,
+        entityId: data.entity_id,
+        id: data.id,
+        images: data.images.map(i => ({ imageUrl: i.image_url })),
+        liked: data.liked,
+        likes: data.likes.map(l => ({
           entityd: l.entity_id,
           postId: l.post_id,
         })),
-        name: d.name,
-        photoUrl: d.photo_url,
-        surname: d.surname,
-        updatedAt: d.updated_at,
-      }));
+        name: data.name,
+        photoUrl: data.photo_url,
+        surname: data.surname,
+        updatedAt: data.updated_at,
+      };
     }
     return [];
   }

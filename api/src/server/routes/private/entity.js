@@ -913,7 +913,6 @@ router.put(`${BASE_URL}`, async ctx => {
   }
 });
 
-
 router.put(`${BASE_URL}/practice`, async ctx => {
   const entity = await queries.updatePractice(
     ctx.request.body,
