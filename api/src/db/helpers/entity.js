@@ -2392,6 +2392,7 @@ async function getTeamGames(eventId) {
   return res;
 }
 
+///////
 async function getTeamRosters(teamId) {
   const rosters = await knex('team_rosters')
     .select('*')
@@ -6424,6 +6425,18 @@ async function getRosterEventInfos(roster_id) {
   };
 }
 
+async function getTeamCoachedByUser123(person_id) {
+  console.log('call me ', person_id);
+  const res = await knex('team_players')
+    .select('team_id')
+    .where('person_id', person_id);
+
+  console.log('res = ', res);
+  //const [res1] = await knex('entities_general_infos')
+  //  .select('name')
+  //  .where();
+}
+
 module.exports = {
   acceptScoreSuggestion,
   acceptScoreSuggestionIfPossible,
@@ -6570,6 +6583,7 @@ module.exports = {
   getSessionLocations,
   getSlots,
   getSubmissionerInfos,
+  getTeamCoachedByUser123,
   getTeamCreatorEmail,
   getTeamGames,
   getTeamRosters,

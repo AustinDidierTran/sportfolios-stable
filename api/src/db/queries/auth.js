@@ -72,6 +72,8 @@ const signup = async ({
 
 const login = async ({ email, password }) => {
   // Validate account with this email exists
+  console.log(email, ' ', password);
+
   const userId = await getUserIdFromEmail(email);
   if (!userId) {
     return { status: 404 };
