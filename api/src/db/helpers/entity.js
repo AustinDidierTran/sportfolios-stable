@@ -4303,49 +4303,13 @@ async function getMembershipId(membershipType, organizationId) {
 
 async function addMemberManually(body) {
   const {
-    membershipId,
     membershipType,
     organizationId,
     personId,
-    birthDate,
-    gender,
-    address,
     expirationDate,
-    phoneNumber,
-    emergencyName,
-    emergencySurname,
-    emergencyPhoneNumber,
-    medicalConditions,
-    termsAndConditionsId,
   } = body;
-  let id = membershipId;
 
-  if (!id) {
-    id = await getMembershipId(membershipType, organizationId);
-  }
-
-  const [add] = await knex('addresses')
-    .insert({
-      street_address: address.street_address,
-      city: address.city,
-      state: address.state,
-      zip: address.zip,
-      country: address.country,
-    })
-    .returning('id');
-
-  const [infos] = await knex('person_infos')
-    .insert({
-      birth_date: birthDate,
-      gender,
-      phone_number: phoneNumber,
-      emergency_name: emergencyName,
-      emergency_surname: emergencySurname,
-      emergency_phone_number: emergencyPhoneNumber,
-      medical_conditions: medicalConditions,
-      address_id: add,
-    })
-    .returning('id');
+  const id = await getMembershipId(membershipType, organizationId);
 
   const [res] = await knex('memberships')
     .insert({
@@ -4355,8 +4319,6 @@ async function addMemberManually(body) {
       person_id: personId,
       expiration_date: expirationDate,
       status: INVOICE_STATUS_ENUM.FREE,
-      terms_and_conditions_id: termsAndConditionsId,
-      infos_supp_id: infos,
     })
     .returning('*');
 
