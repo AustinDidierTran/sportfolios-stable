@@ -31,7 +31,7 @@ const {
   addPhase: addPhaseHelper,
   addPlayerCartItem: addPlayerCartItemHelper,
   addPlayerToRoster: addPlayerToRosterHelper,
-  addPlayersToTeam: addPlayersToTeamHelper,
+  addPlayerToTeam: addPlayerToTeamHelper,
   addTeamRoster: addTeamRosterHelper,
   addReport: addReportHelper,
   addEventRoster: addEventRosterHelper,
@@ -1917,7 +1917,18 @@ async function deleteOption(id) {
 }
 
 async function addPlayersToTeam(body) {
-  return addPlayersToTeamHelper(body);
+  const { players, teamId } = body;
+  await Promise.all(
+    players.map(player => {
+      addPlayerToTeamHelper(player, teamId);
+      const notif = {
+        type: NOTIFICATION_TYPE.ADDED_TO_TEAM,
+        player,
+        teamId,
+      };
+      sendNotification(notif);
+    }),
+  );
 }
 
 async function addTeamRoster(body) {

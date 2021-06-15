@@ -5346,22 +5346,16 @@ const addPlayerToRoster = async body => {
   return player;
 };
 
-const addPlayersToTeam = async body => {
-  const { players, teamId } = body;
-  const res = await Promise.all(
-    players.map(async player => {
-      const [res] = await knex('team_players')
-        .insert({
-          team_id: teamId,
-          person_id: player.id,
-          role: ROSTER_ROLE_ENUM.PLAYER,
-        })
-        .onConflict(['team_id', 'person_id'])
-        .merge()
-        .returning('*');
-      return res;
-    }),
-  );
+const addPlayerToTeam = async (player, teamId) => {
+  const [res] = await knex('team_players')
+    .insert({
+      team_id: teamId,
+      person_id: player.id,
+      role: ROSTER_ROLE_ENUM.PLAYER,
+    })
+    .onConflict(['team_id', 'person_id'])
+    .merge()
+    .returning('*');
   return res;
 };
 
@@ -6507,7 +6501,7 @@ module.exports = {
   addPersonToEvent,
   addPhase,
   addPlayerCartItem,
-  addPlayersToTeam,
+  addPlayerToTeam,
   addTeamRoster,
   addPlayerToRoster,
   addPractice,

@@ -57,20 +57,27 @@ const deleteNotification = async notification_id => {
 
 const sendNotification = async (notif, emailInfos) => {
   const { user_id, type } = notif;
-  await addNotification(notif);
-  const unseenCount = await countUnseenNotifications(user_id);
-  socket.emit(SOCKET_EVENT.NOTIFICATIONS, user_id, unseenCount);
 
+  // Get notification Settings
   const notifSetting = await getNotificationsSettingsHelper(
     user_id,
     type,
   );
+
+  if (notif && (!notifSetting || notifSetting.in_app)) {
+    await addNotification(notif);
+  }
+
   if (emailInfos && (!notifSetting || notifSetting.email)) {
     sendEmailNotification(user_id, emailInfos);
   }
+
   if (!notifSetting || notifSetting.chatbot) {
     sendChatbotNotification(user_id, notif);
   }
+
+  const unseenCount = await countUnseenNotifications(user_id);
+  socket.emit(SOCKET_EVENT.NOTIFICATIONS, user_id, unseenCount);
 };
 
 const sendChatbotNotification = async (user_id, notif) => {
