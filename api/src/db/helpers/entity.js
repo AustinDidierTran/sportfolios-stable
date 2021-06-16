@@ -6386,6 +6386,27 @@ async function getRosterEventInfos(roster_id) {
   };
 }
 
+async function getTeamCoachedByUser(person_id) {
+  const res = await knex('team_players')
+    .select('name', 'photo_url', 'team_id')
+    .where({ person_id, role: 'coach' })
+    .leftJoin(
+      'entities_general_infos',
+      'team_players.team_id',
+      '=',
+      'entities_general_infos.entity_id',
+    )
+    .leftJoin(
+      'entities',
+      'entities.id',
+      '=',
+      'entities_general_infos.entity_id',
+    )
+    .whereNull('deleted_at');
+
+  return res;
+}
+
 module.exports = {
   acceptScoreSuggestion,
   acceptScoreSuggestionIfPossible,
@@ -6532,6 +6553,7 @@ module.exports = {
   getSessionLocations,
   getSlots,
   getSubmissionerInfos,
+  getTeamCoachedByUser,
   getTeamCreatorEmail,
   getTeamGames,
   getTeamRosters,

@@ -1514,6 +1514,23 @@ router.post(`${BASE_URL}/partner`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/getTeamCoachedByUser`, async ctx => {
+  const teams = await queries.getTeamCoachedByUser(
+    ctx.request.body.personId,
+  );
+
+  if (teams) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = { status: 'success', data: teams };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
   const res = await queries.unregisterTeams(
     ctx.request.body,

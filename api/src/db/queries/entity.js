@@ -179,6 +179,7 @@ const {
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
   updateTeamAcceptation: updateTeamAcceptationHelper,
+  getTeamCoachedByUser: getTeamCoachedByUserHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -2100,6 +2101,15 @@ async function getRosterFromInviteToken(token, userId) {
   return getRosterAllIncluded(rosterId, userId, true);
 }
 
+async function getTeamCoachedByUser(userId) {
+  const res = await getTeamCoachedByUserHelper(userId);
+  if (!res) {
+    return;
+  }
+
+  return res;
+}
+
 module.exports = {
   acceptScoreSuggestion,
   acceptScoreSuggestion,
@@ -2209,6 +2219,7 @@ module.exports = {
   getScoreSuggestion,
   getSessionLocations,
   getSlots,
+  getTeamCoachedByUser,
   getTeamGames,
   getTeamRosters,
   getTeamPlayers,
