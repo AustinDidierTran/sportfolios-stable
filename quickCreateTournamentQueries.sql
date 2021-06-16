@@ -87,9 +87,7 @@ BEGIN
     INSERT INTO entities (type) VALUES (2) RETURNING id INTO organizationEntityId;
 
     --create organization
-    INSERT INTO entities_general_infos (entity_id, description, quick_description) VALUES (organizationEntityId, null, null);
-    INSERT INTO entities_name (entity_id, name, surname) VALUES (organizationEntityId, organizationName, '');
-    INSERT INTO entities_photo (entity_id, photo_url) VALUES (organizationEntityId, null);
+    INSERT INTO entities_general_infos (entity_id, name) VALUES (organizationEntityId, organizationName);
     INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (organizationEntityId, 1, didierEntityId);
 
     -- create event entity
@@ -97,9 +95,7 @@ BEGIN
 
     -- create event
     INSERT INTO events (id, start_date, end_date, maximum_spots) VALUES (eventEntityId, NOW(), NOW() + interval '1 month', 8) RETURNING id INTO eventId;
-    INSERT INTO entities_general_infos (entity_id, description, quick_description) VALUES (eventId, null, null);
-    INSERT INTO entities_name (entity_id, name, surname) VALUES (eventId, eventName, '');
-    INSERT INTO entities_photo (entity_id, photo_url) VALUES (eventId, null);
+    INSERT INTO entities_general_infos (entity_id, name) VALUES (eventId, eventName);
     INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (eventId, 1, organizationEntityId);
 
     -- create payment option
@@ -134,51 +130,35 @@ BEGIN
 
     -- create teams
     INSERT INTO entities (type) VALUES (3) RETURNING id INTO teamEntityId1;
-    INSERT INTO entities_general_infos (entity_id, description, quick_description) VALUES (teamEntityId1, null, null);
-    INSERT INTO entities_name (entity_id, name, surname) VALUES (teamEntityId1, 'Team Alpha', '');
-    INSERT INTO entities_photo (entity_id, photo_url) VALUES (teamEntityId1, null);
+    INSERT INTO entities_general_infos (entity_id, name) VALUES (teamEntityId1, 'Team Alpha');
     INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (teamEntityId1, 1, didierEntityId);
 
     INSERT INTO entities (type) VALUES (3) RETURNING id INTO teamEntityId2;
-    INSERT INTO entities_general_infos (entity_id, description, quick_description) VALUES (teamEntityId2, null, null);
-    INSERT INTO entities_name (entity_id, name, surname) VALUES (teamEntityId2, 'Team Beta', '');
-    INSERT INTO entities_photo (entity_id, photo_url) VALUES (teamEntityId2, null);
+    INSERT INTO entities_general_infos (entity_id, name) VALUES (teamEntityId2, 'Team Beta');
     INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (teamEntityId2, 1, didierEntityId);
 
     INSERT INTO entities (type) VALUES (3) RETURNING id INTO teamEntityId3;
-    INSERT INTO entities_general_infos (entity_id, description, quick_description) VALUES (teamEntityId3, null, null);
-    INSERT INTO entities_name (entity_id, name, surname) VALUES (teamEntityId3, 'Team Charlie', '');
-    INSERT INTO entities_photo (entity_id, photo_url) VALUES (teamEntityId3, null);
+    INSERT INTO entities_general_infos (entity_id, name) VALUES (teamEntityId3, 'Team Charlie');
     INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (teamEntityId3, 1, didierEntityId);
 
     INSERT INTO entities (type) VALUES (3) RETURNING id INTO teamEntityId4;
-    INSERT INTO entities_general_infos (entity_id, description, quick_description) VALUES (teamEntityId4, null, null);
-    INSERT INTO entities_name (entity_id, name, surname) VALUES (teamEntityId4, 'Team Delta', '');
-    INSERT INTO entities_photo (entity_id, photo_url) VALUES (teamEntityId4, null);
+    INSERT INTO entities_general_infos (entity_id, name) VALUES (teamEntityId4, 'Team Delta');
     INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (teamEntityId4, 1, didierEntityId);
 
     INSERT INTO entities (type) VALUES (3) RETURNING id INTO teamEntityId5;
-    INSERT INTO entities_general_infos (entity_id, description, quick_description) VALUES (teamEntityId5, null, null);
-    INSERT INTO entities_name (entity_id, name, surname) VALUES (teamEntityId5, 'Team Echo', '');
-    INSERT INTO entities_photo (entity_id, photo_url) VALUES (teamEntityId5, null);
+    INSERT INTO entities_general_infos (entity_id, name) VALUES (teamEntityId5, 'Team Echo');
     INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (teamEntityId5, 1, didierEntityId);
 
     INSERT INTO entities (type) VALUES (3) RETURNING id INTO teamEntityId6;
-    INSERT INTO entities_general_infos (entity_id, description, quick_description) VALUES (teamEntityId6, null, null);
-    INSERT INTO entities_name (entity_id, name, surname) VALUES (teamEntityId6, 'Team Foxtrot', '');
-    INSERT INTO entities_photo (entity_id, photo_url) VALUES (teamEntityId6, null);
+    INSERT INTO entities_general_infos (entity_id, name) VALUES (teamEntityId6, 'Team Foxtrot');
     INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (teamEntityId6, 1, didierEntityId);
 
     INSERT INTO entities (type) VALUES (3) RETURNING id INTO teamEntityId7;
-    INSERT INTO entities_general_infos (entity_id, description, quick_description) VALUES (teamEntityId7, null, null);
-    INSERT INTO entities_name (entity_id, name, surname) VALUES (teamEntityId7, 'Team Golf', '');
-    INSERT INTO entities_photo (entity_id, photo_url) VALUES (teamEntityId7, null);
+    INSERT INTO entities_general_infos (entity_id, name) VALUES (teamEntityId7, 'Team Golf');
     INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (teamEntityId7, 1, didierEntityId);
 
     INSERT INTO entities (type) VALUES (3) RETURNING id INTO teamEntityId8;
-    INSERT INTO entities_general_infos (entity_id, description, quick_description) VALUES (teamEntityId8, null, null);
-    INSERT INTO entities_name (entity_id, name, surname) VALUES (teamEntityId8, 'Team Hotel', '');
-    INSERT INTO entities_photo (entity_id, photo_url) VALUES (teamEntityId8, null);
+    INSERT INTO entities_general_infos (entity_id, name) VALUES (teamEntityId8, 'Team Hotel');
     INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (teamEntityId8, 1, didierEntityId);
 
     -- create rosters
@@ -192,14 +172,24 @@ BEGIN
     INSERT INTO team_rosters (team_id) VALUES (teamEntityId8) RETURNING id INTO teamId8;
 
     -- add captain
-    INSERT INTO team_players (roster_id,person_id,name,role) VALUES (teamId1,didierEntityId,'Austin-Didier Tran','captain'); 
-    INSERT INTO team_players (roster_id,person_id,name,role) VALUES (teamId2,didierEntityId,'Austin-Didier Tran','captain'); 
-    INSERT INTO team_players (roster_id,person_id,name,role) VALUES (teamId3,didierEntityId,'Austin-Didier Tran','captain'); 
-    INSERT INTO team_players (roster_id,person_id,name,role) VALUES (teamId4,didierEntityId,'Austin-Didier Tran','captain'); 
-    INSERT INTO team_players (roster_id,person_id,name,role) VALUES (teamId5,didierEntityId,'Austin-Didier Tran','captain'); 
-    INSERT INTO team_players (roster_id,person_id,name,role) VALUES (teamId6,didierEntityId,'Austin-Didier Tran','captain'); 
-    INSERT INTO team_players (roster_id,person_id,name,role) VALUES (teamId7,didierEntityId,'Austin-Didier Tran','captain'); 
-    INSERT INTO team_players (roster_id,person_id,name,role) VALUES (teamId8,didierEntityId,'Austin-Didier Tran','captain'); 
+    INSERT INTO team_players (team_id,person_id,role) VALUES (teamEntityId1,didierEntityId,'captain'); 
+    INSERT INTO team_players (team_id,person_id,role) VALUES (teamEntityId2,didierEntityId,'captain'); 
+    INSERT INTO team_players (team_id,person_id,role) VALUES (teamEntityId3,didierEntityId,'captain'); 
+    INSERT INTO team_players (team_id,person_id,role) VALUES (teamEntityId4,didierEntityId,'captain'); 
+    INSERT INTO team_players (team_id,person_id,role) VALUES (teamEntityId5,didierEntityId,'captain'); 
+    INSERT INTO team_players (team_id,person_id,role) VALUES (teamEntityId6,didierEntityId,'captain'); 
+    INSERT INTO team_players (team_id,person_id,role) VALUES (teamEntityId7,didierEntityId,'captain'); 
+    INSERT INTO team_players (team_id,person_id,role) VALUES (teamEntityId8,didierEntityId,'captain'); 
+
+    -- add captain
+    INSERT INTO roster_players (roster_id,person_id,role) VALUES (teamId1,didierEntityId,'captain'); 
+    INSERT INTO roster_players (roster_id,person_id,role) VALUES (teamId2,didierEntityId,'captain'); 
+    INSERT INTO roster_players (roster_id,person_id,role) VALUES (teamId3,didierEntityId,'captain'); 
+    INSERT INTO roster_players (roster_id,person_id,role) VALUES (teamId4,didierEntityId,'captain'); 
+    INSERT INTO roster_players (roster_id,person_id,role) VALUES (teamId5,didierEntityId,'captain'); 
+    INSERT INTO roster_players (roster_id,person_id,role) VALUES (teamId6,didierEntityId,'captain'); 
+    INSERT INTO roster_players (roster_id,person_id,role) VALUES (teamId7,didierEntityId,'captain'); 
+    INSERT INTO roster_players (roster_id,person_id,role) VALUES (teamId8,didierEntityId,'captain'); 
 
     -- add rosters to event
     INSERT INTO event_rosters (roster_id, event_id, team_id, status, registration_status, invoice_item_id, payment_option_id) VALUES (teamId1, eventId, teamEntityId1, 'free', 'accepted free', null, paymentOptionId);
