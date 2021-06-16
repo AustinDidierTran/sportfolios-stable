@@ -1515,19 +1515,15 @@ router.post(`${BASE_URL}/partner`, async ctx => {
 });
 
 router.post(`${BASE_URL}/getTeamCoachedByUser`, async ctx => {
-  const partner = await queries.getTeamCoachedByUser(
-    ctx.request.body,
-    ctx.body.userInfo.id,
+  const teams = await queries.getTeamCoachedByUser(
+    ctx.request.body.personId,
   );
 
-  if (partner) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: partner,
-    };
+  if (teams) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = { status: 'success', data: teams };
   } else {
-    ctx.status = 400;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'Something went wrong',
