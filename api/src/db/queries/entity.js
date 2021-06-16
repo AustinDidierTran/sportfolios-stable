@@ -6,8 +6,6 @@ const {
   NOTIFICATION_TYPE,
   GLOBAL_ENUM,
   ROSTER_ROLE_ENUM,
-  ROUTES_ENUM,
-  TABS_ENUM,
 } = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
@@ -206,10 +204,6 @@ const {
   validateEmailIsUnique: validateEmailIsUniqueHelper,
 } = require('../helpers');
 const { sendNotification } = require('./notifications');
-const { formatLinkWithAuthToken } = require('../emails/utils');
-const {
-  formatRoute,
-} = require('../../../../common/utils/stringFormat');
 
 async function isAllowed(
   entityId,
@@ -1583,31 +1577,22 @@ async function addScoreSuggestion(body, userId) {
         submittedBy: submitted_by_roster,
         suggestionId: res[0].id,
       };
-      const notif = {
-        type: NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE,
-        entity_photo: event_id,
-      };
       opponentsPlayers.forEach(p => {
-        const fullMetadata = {
+        const infos = {
           ...metadata,
           myRosterId: p.roster_id,
           myPlayerId: p.player_id,
         };
-        //TODO Add email infos
-        sendNotification({
-          ...notif,
-          user_id: p.player_owner,
-          metadata: fullMetadata,
-        });
+        sendNotification(
+          NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE,
+          p.player_owner,
+          infos,
+        );
       });
 
       // send notifications to event admins in case of score conflict
       if (res.conflict) {
-        const conflictNotif = {
-          type: NOTIFICATION_TYPE.SCORE_SUBMISSION_CONFLICT,
-          entity_photo: event_id,
-        };
-        const conflictMetadata = {
+        const infos = {
           eventId: event_id,
           eventName: event_name,
           gameId: body.game_id,
@@ -1615,11 +1600,11 @@ async function addScoreSuggestion(body, userId) {
 
         const adminsUserIds = await getEventAdminsHelper(event_id);
         adminsUserIds.forEach(adminUserId => {
-          sendNotification({
-            ...conflictNotif,
-            user_id: adminUserId,
-            metadata: conflictMetadata,
-          });
+          sendNotification(
+            NOTIFICATION_TYPE.SCORE_SUBMISSION_CONFLICT,
+            adminUserId,
+            infos,
+          );
         });
       }
     }
@@ -1916,17 +1901,20 @@ async function deleteOption(id) {
   return deleteOptionHelper(id);
 }
 
-async function addPlayersToTeam(body) {
+async function addPlayersToTeam(body, userId) {
   const { players, teamId } = body;
-  await Promise.all(
-    players.map(player => {
-      addPlayerToTeamHelper(player, teamId);
-      const notif = {
-        type: NOTIFICATION_TYPE.ADDED_TO_TEAM,
-        player,
-        teamId,
-      };
-      sendNotification(notif);
+  const team = (await getEntity(teamId, userId)).basicInfos;
+  return Promise.all(
+    players.map(async player => {
+      const res = await addPlayerToTeamHelper(player, teamId);
+      const userId = await getUserIdFromPersonId(player.id);
+      const infos = { team };
+      sendNotification(
+        NOTIFICATION_TYPE.ADDED_TO_TEAM,
+        userId,
+        infos,
+      );
+      return res;
     }),
   );
 }
@@ -1940,6 +1928,7 @@ async function addPlayerToRoster(body, userId) {
   const eventId = await getEventIdFromRosterId(rosterId);
   const teamId = await getTeamIdFromRosterId(rosterId);
   const team = (await getEntity(teamId, userId)).basicInfos;
+  const event = (await getEntity(eventId, userId)).basicInfos;
   const playerUserId = await getUserIdFromPersonId(personId);
 
   const { name } = await getPersonInfos(personId);
@@ -1969,31 +1958,18 @@ async function addPlayerToRoster(body, userId) {
   if (playerUserId === userId) {
     return res;
   }
-  const notif = {
-    user_id: playerUserId,
-    type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-    entity_photo: eventId || team.Id,
-    metadata: { eventId, teamName: team.name },
-  };
 
-  const buttonLink = await formatLinkWithAuthToken(
-    playerUserId,
-    formatRoute(
-      ROUTES_ENUM.entity,
-      { id: eventId },
-      { tab: TABS_ENUM.ROSTERS },
-    ),
-  );
-
-  const emailInfos = {
-    type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
-    eventId,
-    teamName: team.name,
+  const infos = {
+    event,
+    team,
     name,
-    buttonLink,
   };
 
-  sendNotification(notif, emailInfos);
+  sendNotification(
+    NOTIFICATION_TYPE.ADDED_TO_EVENT,
+    playerUserId,
+    infos,
+  );
   return res;
 }
 

@@ -2011,21 +2011,23 @@ async function getEvent(eventId) {
   return res;
 }
 
-async function getEventAdmins(eventId) {
+async function getEventAdmins(entityId) {
   const admins = await knex('entities_role')
-    .select('user_entity_role.user_id')
+    .select(
+      'user_entity_role.user_id',
+      'entities_role.entity_id_admin',
+    )
     .leftJoin(
       'user_entity_role',
       'user_entity_role.entity_id',
       '=',
       'entities_role.entity_id_admin',
     )
-    .where('entities_role.entity_id', '=', eventId)
+    .where('entities_role.entity_id', '=', entityId)
     .andWhere('entities_role.role', '<=', ENTITIES_ROLE_ENUM.EDITOR);
-
   const res = await admins.reduce(async (prev, curr) => {
     if (curr.user_id) {
-      return prev.concat(curr.user_id);
+      return [...prev, curr.user_id];
     }
     const currIteration = await curr;
     const res = await getEventAdmins(currIteration.entity_id_admin);

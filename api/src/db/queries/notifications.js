@@ -15,11 +15,14 @@ const Chatbot = require('../../server/utils/ChatBot/chatbot');
 
 const socket = require('../../server/websocket/socket.io');
 
-const { sendMail } = require('../../server/utils/nodeMailer');
-
-const emailFactory = require('../emails/emailFactory');
 const {
-  getEmailsFromUserId,
+  sendMail,
+  sendAddedToEventEmail,
+  sendAddedToTeamEmail,
+} = require('../../server/utils/nodeMailer');
+
+const {
+  getEmailFromUserId,
   getLanguageFromUser,
   getMessengerId,
   setChatbotInfos,
@@ -37,14 +40,13 @@ const {
   MILLIS_TIME_ENUM,
   BASIC_CHATBOT_STATES,
 } = require('../../../../common/enums');
-const { formatFooterLink } = require('../emails/utils');
 
-const seeNotifications = async user_id => {
-  return seeNotificationsHelper(user_id);
+const seeNotifications = async userId => {
+  return seeNotificationsHelper(userId);
 };
 
-const countUnseenNotifications = async user_id => {
-  return countUnseenNotificationsHelper(user_id);
+const countUnseenNotifications = async userId => {
+  return countUnseenNotificationsHelper(userId);
 };
 
 const clickNotification = async notification_id => {
@@ -55,33 +57,115 @@ const deleteNotification = async notification_id => {
   return deleteNotificationHelper(notification_id);
 };
 
-const sendNotification = async (notif, emailInfos) => {
-  const { user_id, type } = notif;
-
+//This is the notification manager
+const sendNotification = async (type, userId, infos) => {
   // Get notification Settings
   const notifSetting = await getNotificationsSettingsHelper(
-    user_id,
+    userId,
     type,
   );
-
-  if (notif && (!notifSetting || notifSetting.in_app)) {
-    await addNotification(notif);
+  if (infos && (!notifSetting || notifSetting.in_app)) {
+    await sendInAppNotification(type, userId, infos);
+    const unseenCount = await countUnseenNotifications(userId);
+    socket.emit(SOCKET_EVENT.NOTIFICATIONS, userId, unseenCount);
   }
 
-  if (emailInfos && (!notifSetting || notifSetting.email)) {
-    sendEmailNotification(user_id, emailInfos);
+  if (infos && (!notifSetting || notifSetting.email)) {
+    await sendEmailNotification(type, userId, infos);
   }
 
-  if (!notifSetting || notifSetting.chatbot) {
-    sendChatbotNotification(user_id, notif);
+  if (infos && (!notifSetting || notifSetting.chatbot)) {
+    await sendChatbotNotification(type, userId, infos);
   }
-
-  const unseenCount = await countUnseenNotifications(user_id);
-  socket.emit(SOCKET_EVENT.NOTIFICATIONS, user_id, unseenCount);
 };
 
-const sendChatbotNotification = async (user_id, notif) => {
-  const messengerId = await getMessengerId(user_id);
+const sendEmailNotification = async (type, userId, infos) => {
+  const email = await getEmailFromUserId(userId);
+  const language = await getLanguageFromUser(userId);
+  switch (type) {
+    case NOTIFICATION_TYPE.ADDED_TO_EVENT: {
+      const { team, name, event } = infos;
+      sendAddedToEventEmail({
+        email,
+        teamName: team.name,
+        senderName: name,
+        language,
+        eventName: event.name,
+        eventId: event.id,
+        userId,
+      });
+      break;
+    }
+    case NOTIFICATION_TYPE.ADDED_TO_TEAM: {
+      const { team } = infos;
+      sendAddedToTeamEmail({
+        email,
+        language,
+        teamName: team.name,
+        teamId: team.id,
+        userId,
+      });
+      break;
+    }
+  }
+};
+
+const sendInAppNotification = async (type, userId, infos) => {
+  switch (type) {
+    case NOTIFICATION_TYPE.ADDED_TO_EVENT: {
+      const { event, team } = infos;
+      const notif = {
+        user_id: userId,
+        type: NOTIFICATION_TYPE.ADDED_TO_EVENT,
+        entity_photo: event.id || team.id,
+        metadata: {
+          eventId: event.id,
+          eventName: event.name,
+          teamName: team.name,
+        },
+      };
+      addNotification(notif);
+      break;
+    }
+    case NOTIFICATION_TYPE.ADDED_TO_TEAM: {
+      const { team } = infos;
+      const notif = {
+        user_id: userId,
+        type: NOTIFICATION_TYPE.ADDED_TO_TEAM,
+        entity_photo: team.id,
+        metadata: {
+          teamId: team.id,
+          teamName: team.name,
+        },
+      };
+      addNotification(notif);
+      break;
+    }
+    case NOTIFICATION_TYPE.SCORE_SUBMISSION_CONFLICT: {
+      const notif = {
+        user_id: userId,
+        type: NOTIFICATION_TYPE.SCORE_SUBMISSION_CONFLICT,
+        entity_photo: infos.eventId,
+        metadata: infos,
+      };
+      addNotification(notif);
+      break;
+    }
+    case NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE: {
+      const notif = {
+        user_id: userId,
+        type: NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE,
+        entity_photo: infos.eventId,
+        metadata: infos,
+      };
+      addNotification(notif);
+      break;
+    }
+  }
+};
+
+const sendChatbotNotification = async (type, userId, infos) => {
+  const messengerId = await getMessengerId(userId);
   if (!messengerId) {
     return;
   }
@@ -96,73 +180,75 @@ const sendChatbotNotification = async (user_id, notif) => {
   ) {
     return;
   }
-  const { type, metadata } = notif;
   let newState;
-  if (type === NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST) {
-    newState =
-      SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT;
-    const { gameId, playerId, eventId } = metadata;
-    const teams = await getGameTeams(gameId, playerId);
-    let myTeamFound = false;
-    chatbotInfos.opponentTeams = [];
-    chatbotInfos.gameId = gameId;
-    chatbotInfos.playerId = playerId;
-    chatbotInfos.eventId = eventId;
-    teams.forEach(team => {
-      if (!myTeamFound && team.player_id) {
-        myTeamFound = true;
-        chatbotInfos.myRosterId = team.roster_id;
-        chatbotInfos.myTeamName = team.name;
-      } else {
-        chatbotInfos.opponentTeams.push({
-          rosterId: team.roster_id,
-          teamName: team.name,
-        });
-      }
-    });
-  } else if (
-    type === NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE
-  ) {
-    newState =
-      SCORE_SUBMISSION_CHATBOT_STATES.OTHER_TEAM_SUBMITTED_A_SCORE;
-    const {
-      gameId,
-      eventId,
-      eventName,
-      myRosterId,
-      myPlayerId,
-      submittedBy,
-    } = metadata;
-    const score = JSON.parse(metadata.score);
-    const rostersId = Object.keys(score);
-    const names = await getRostersNames(rostersId);
-    const myTeam = [
-      names.splice(
-        names.findIndex(n => {
-          return n.roster_id == myRosterId;
-        }),
-        1,
-      ),
-    ];
-    chatbotInfos.myTeamName = myTeam.name;
-    chatbotInfos.myScore = score[myRosterId];
-    delete names[myRosterId];
-    chatbotInfos.opponentTeams = names.map(team => {
-      const { roster_id, name } = team;
-      return {
-        rosterId: roster_id,
-        score: score[roster_id],
-        teamName: name,
-      };
-    }, {});
-    chatbotInfos.submittedBy = names.find(
-      n => n.roster_id == submittedBy,
-    ).name;
-    chatbotInfos.gameId = gameId;
-    chatbotInfos.eventName = eventName;
-    chatbotInfos.myRosterId = myRosterId;
-    chatbotInfos.playerId = myPlayerId;
-    chatbotInfos.eventId = eventId;
+  switch (type) {
+    case NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST: {
+      newState =
+        SCORE_SUBMISSION_CHATBOT_STATES.SCORE_SUBMISSION_REQUEST_SENT;
+      const { gameId, playerId, eventId } = infos;
+      const teams = await getGameTeams(gameId, playerId);
+      let myTeamFound = false;
+      chatbotInfos.opponentTeams = [];
+      chatbotInfos.gameId = gameId;
+      chatbotInfos.playerId = playerId;
+      chatbotInfos.eventId = eventId;
+      teams.forEach(team => {
+        if (!myTeamFound && team.player_id) {
+          myTeamFound = true;
+          chatbotInfos.myRosterId = team.roster_id;
+          chatbotInfos.myTeamName = team.name;
+        } else {
+          chatbotInfos.opponentTeams.push({
+            rosterId: team.roster_id,
+            teamName: team.name,
+          });
+        }
+      });
+      break;
+    }
+    case NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE: {
+      newState =
+        SCORE_SUBMISSION_CHATBOT_STATES.OTHER_TEAM_SUBMITTED_A_SCORE;
+      const {
+        gameId,
+        eventId,
+        eventName,
+        myRosterId,
+        myPlayerId,
+        submittedBy,
+      } = infos;
+      const score = JSON.parse(infos.score);
+      const rostersId = Object.keys(score);
+      const names = await getRostersNames(rostersId);
+      const myTeam = [
+        names.splice(
+          names.findIndex(n => {
+            return n.roster_id == myRosterId;
+          }),
+          1,
+        ),
+      ];
+      chatbotInfos.myTeamName = myTeam.name;
+      chatbotInfos.myScore = score[myRosterId];
+      delete names[myRosterId];
+      chatbotInfos.opponentTeams = names.map(team => {
+        const { roster_id, name } = team;
+        return {
+          rosterId: roster_id,
+          score: score[roster_id],
+          teamName: name,
+        };
+      }, {});
+      chatbotInfos.submittedBy = names.find(
+        n => n.roster_id == submittedBy,
+      ).name;
+      chatbotInfos.gameId = gameId;
+      chatbotInfos.eventName = eventName;
+      chatbotInfos.myRosterId = myRosterId;
+      chatbotInfos.playerId = myPlayerId;
+      chatbotInfos.eventId = eventId;
+      break;
+    }
   }
   //Sending the notif and updating db
   if (newState) {
@@ -171,29 +257,6 @@ const sendChatbotNotification = async (user_id, notif) => {
     await setChatbotInfos(messengerId, {
       chatbot_infos: JSON.stringify(chatbot.chatbotInfos),
       state: chatbot.stateType,
-    });
-  }
-};
-
-const sendEmailNotification = async (userId, emailInfos) => {
-  const emails = await getEmailsFromUserId(userId);
-  const locale = await getLanguageFromUser(userId);
-  const footerLink = await formatFooterLink(userId);
-  if (emails) {
-    const fullEmail = await emailFactory({
-      ...emailInfos,
-      footerLink,
-      locale,
-    });
-    if (!fullEmail) {
-      return;
-    }
-    const { html, subject, text } = fullEmail;
-    emails.forEach(e => {
-      const { email, confirmed_email_at } = e;
-      if (confirmed_email_at) {
-        sendMail({ html, email, subject, text });
-      }
     });
   }
 };
@@ -218,8 +281,8 @@ const sendMessageToSportfoliosAdmin = async body => {
   return email;
 };
 
-const getNotifications = async (user_id, body) => {
-  return getNotificationsHelper(user_id, body);
+const getNotifications = async (userId, body) => {
+  return getNotificationsHelper(userId, body);
 };
 
 const getNotificationsSettings = async userId => {

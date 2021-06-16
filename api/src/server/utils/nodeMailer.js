@@ -20,7 +20,7 @@ let key;
 try {
   key = require('./keys/google-keys.json');
 } catch (e) {
-  /* eslint-disable-next-line */  
+  /* eslint-disable-next-line */
   console.log(
     `There is an error, keys are probably simply not configured: ${e}`,
   );
@@ -132,16 +132,16 @@ const sendPersonTransferEmail = async ({
   return fullEmail;
 };
 
-const sendAddPersonToTeamEmail = async ({
+const sendAddedToEventEmail = async ({
   email,
   teamName,
+  eventName,
   senderName,
   language,
   eventId,
   userId,
 }) => {
   const footerLink = formatFooterLink(userId);
-
   const buttonLink = await formatLinkWithAuthToken(
     userId,
     formatRoute(
@@ -152,8 +152,38 @@ const sendAddPersonToTeamEmail = async ({
   );
 
   const fullEmail = await emailFactory({
-    type: NOTIFICATION_TYPE.ADDED_TO_ROSTER,
+    type: NOTIFICATION_TYPE.ADDED_TO_EVENT,
     name: senderName,
+    teamName,
+    eventName,
+    locale: language,
+    buttonLink,
+    footerLink,
+  });
+
+  if (!fullEmail) {
+    return;
+  }
+
+  const { html, subject, text } = fullEmail;
+  sendMail({ html, email, subject, text });
+};
+
+const sendAddedToTeamEmail = async ({
+  email,
+  language,
+  teamName,
+  teamId,
+  userId,
+}) => {
+  const footerLink = formatFooterLink(userId);
+  const buttonLink = await formatLinkWithAuthToken(
+    userId,
+    formatRoute(ROUTES_ENUM.entity, { id: teamId }),
+  );
+
+  const fullEmail = await emailFactory({
+    type: NOTIFICATION_TYPE.ADDED_TO_TEAM,
     teamName,
     locale: language,
     buttonLink,
@@ -599,7 +629,8 @@ async function sendImportMemberNonExistingEmail({
 }
 
 module.exports = {
-  sendAddPersonToTeamEmail,
+  sendAddedToEventEmail,
+  sendAddedToTeamEmail,
   sendCartItemAddedPlayerEmail,
   sendConfirmationEmail,
   sendImportMemberEmail,
