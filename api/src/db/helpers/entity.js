@@ -6407,6 +6407,85 @@ async function getTeamCoachedByUser(person_id) {
   return res;
 }
 
+async function getAllTeamGames(team_id) {
+  const res = await knex('team_rosters')
+    .select('date', 'games.event_id', 'end_time')
+    .where({ team_id })
+    .leftJoin(
+      'game_teams',
+      'team_rosters.id',
+      '=',
+      'game_teams.roster_id',
+    )
+    .leftJoin('games', 'games.id', '=', 'game_teams.game_id')
+    .leftJoin(
+      'event_time_slots',
+      'games.timeslot_id',
+      '=',
+      'event_time_slots.id',
+    );
+
+  return res.map(i => ({
+    date: i.date,
+    eventId: i.event_id,
+    endTime: i.end_time,
+  }));
+
+  return res;
+}
+
+async function getAllTeamPractices(id) {
+  const res = await knex('team_rosters')
+    .select(
+      'sessions.id',
+      'sessions.start_date',
+      'sessions.end_date',
+      'sessions.name',
+      'sessions.type',
+      'locations.location',
+      'addresses.street_address',
+      'addresses.city',
+      'addresses.state',
+      'addresses.zip',
+      'addresses.country',
+    )
+    .leftJoin(
+      'sessions',
+      'sessions.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .leftJoin(
+      'locations',
+      'locations.id',
+      '=',
+      'sessions.location_id',
+    )
+    .leftJoin(
+      'addresses',
+      'addresses.id',
+      '=',
+      'locations.address_id',
+    )
+    .whereNotNull('sessions.id')
+    .where({ team_id: id })
+    .orderBy('sessions.start_date', 'asc');
+
+  return res.map(i => ({
+    id: i.id,
+    startDate: i.start_date,
+    endDate: i.end_date,
+    name: i.name,
+    type: i.type,
+    locations: i.location,
+    streetAddress: i.street_address,
+    city: i.city,
+    state: i.state,
+    zip: i.zip,
+    country: i.country,
+  }));
+}
+
 module.exports = {
   acceptScoreSuggestion,
   acceptScoreSuggestionIfPossible,
@@ -6479,6 +6558,8 @@ module.exports = {
   getAllTeamsRegistered,
   getAllTeamsRegisteredInfos,
   getAllTypeEntities,
+  getAllTeamGames,
+  getAllTeamPractices,
   getAttendanceSheet,
   getCreator,
   getCreators,

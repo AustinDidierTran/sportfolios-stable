@@ -180,6 +180,8 @@ const {
   updateSuggestionStatus: updateSuggestionStatusHelper,
   updateTeamAcceptation: updateTeamAcceptationHelper,
   getTeamCoachedByUser: getTeamCoachedByUserHelper,
+  getAllTeamGames: getAllTeamGamesHelper,
+  getAllTeamPractices: getAllTeamPracticesHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -2110,6 +2112,24 @@ async function getTeamCoachedByUser(userId) {
   return res;
 }
 
+async function getAllTeamGames(teamId) {
+  const res = await getAllTeamGamesHelper(teamId);
+  if (!res) {
+    return;
+  }
+
+  return res;
+}
+
+async function getAllTeamPractices(teamId) {
+  const res = await getAllTeamPracticesHelper(teamId);
+  if (!res) {
+    return;
+  }
+
+  return res;
+}
+
 module.exports = {
   acceptScoreSuggestion,
   acceptScoreSuggestion,
@@ -2170,6 +2190,8 @@ module.exports = {
   getAllRolesEntity,
   getAllTeamsAcceptedInfos,
   getAllTeamsAcceptedRegistered,
+  getAllTeamGames,
+  getAllTeamPractices,
   getAllTeamsPendingAndRefused,
   getAllTeamsRegisteredInfos,
   getAllTypeEntities,
