@@ -16,26 +16,26 @@ const {
   addEntity: addEntityHelper,
   addEntityRole: addEntityRoleHelper,
   addEventCartItem,
+  addEventRoster: addEventRosterHelper,
   addField: addFieldHelper,
   addGame: addGameHelper,
   addGameAttendances: addGameAttendancesHelper,
   addMember: addMemberHelper,
+  addMemberDonation: addMemberDonationHelper,
   addMemberManually: addMemberManuallyHelper,
   addMembership: addMembershipHelper,
   addOption: addOptionHelper,
   addPartner: addPartnerHelper,
   addPersonToEvent: addPersonToEventHelper,
-  addPractice: addPracticeHelper,
   addPhase: addPhaseHelper,
   addPlayerCartItem: addPlayerCartItemHelper,
   addPlayerToRoster: addPlayerToRosterHelper,
   addPlayerToTeam: addPlayerToTeamHelper,
-  addTeamRoster: addTeamRosterHelper,
+  addPractice: addPracticeHelper,
   addReport: addReportHelper,
-  addEventRoster: addEventRosterHelper,
   addScoreSuggestion: addScoreSuggestionHelper,
-  addMemberDonation: addMemberDonationHelper,
   addSpiritSubmission: addSpiritSubmissionHelper,
+  addTeamRoster: addTeamRosterHelper,
   addTeamToEvent: addTeamToEventHelper,
   addTimeSlot: addTimeSlotHelper,
   cancelRosterInviteToken: cancelRosterInviteTokenHelper,
@@ -48,13 +48,13 @@ const {
   deleteMembershipWithId: deleteMembershipWithIdHelper,
   deleteOption: deleteOptionHelper,
   deletePartner: deletePartnerHelper,
-  deletePlayer: deletePlayerHelper,
-  deleteRoster: deleteRosterHelper,
-  deleteRosterPlayer: deleteRosterPlayerHelper,
   deletePersonFromEvent,
+  deletePlayer: deletePlayerHelper,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
   deletePractice: deletePracticeHelper,
   deleteReport: deleteReportHelper,
+  deleteRoster: deleteRosterHelper,
+  deleteRosterPlayer: deleteRosterPlayerHelper,
   eventInfos: eventInfosHelper,
   generateReport: generateReportHelper,
   getAlias: getAliasHelper,
@@ -66,13 +66,15 @@ const {
   getAllPlayersPending: getAllPlayersPendingHelper,
   getAllPlayersRefused: getAllPlayersRefusedHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
+  getAllTeamGames: getAllTeamGamesHelper,
+  getAllTeamPractices: getAllTeamPracticesHelper,
   getAllTeamsAcceptedInfos: getAllTeamsAcceptedInfosHelper,
   getAllTeamsAcceptedRegistered: getAllTeamsAcceptedRegisteredHelper,
   getAllTeamsPending: getAllTeamsPendingHelper,
   getAllTeamsRefused: getAllTeamsRefusedHelper,
   getAllTeamsRegisteredInfos: getAllTeamsRegisteredInfosHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
-  getCreatorsEmails,
+  getCreatorsUserId,
   getEmailPerson,
   getEntitiesTypeById: getEntitiesTypeByIdHelper,
   getEntity: getEntityHelper,
@@ -91,9 +93,9 @@ const {
   getGraphUserCount: getGraphUserCountHelper,
   getLastRankedTeam: getLastRankedTeamHelper,
   getMembers: getMembersHelper,
-  getMostRecentMember: getMostRecentMemberHelper,
   getMembership,
   getMemberships: getMembershipsHelper,
+  getMostRecentMember: getMostRecentMemberHelper,
   getMyPersonsAdminsOfTeam: getMyPersonsAdminsOfTeamHelper,
   getNbOfTeamsInEvent: getNbOfTeamsInEventHelper,
   getOptions: getOptionsHelper,
@@ -127,18 +129,19 @@ const {
   getRosterIdFromInviteToken,
   getRosterInviteToken: getRosterInviteTokenHelper,
   getRosterInvoiceItem,
+  getRosterPlayers: getRosterPlayersHelper,
   getRostersNames: getRostersNamesHelper,
   getScoreSuggestion: getScoreSuggestionHelper,
   getSessionLocations: getSessionLocationsHelper,
   getSlots: getSlotsHelper,
-  getTeamCreatorEmail,
-  getTeamGames: getTeamGamesHelper,
-  getTeamRosters: getTeamRostersHelper,
+  getTeamCoachedByUser: getTeamCoachedByUserHelper,
+  getTeamCreatorUserId,
   getTeamEventsInfos: getTeamEventsInfosHelper,
+  getTeamGames: getTeamGamesHelper,
   getTeamIdFromRosterId,
   getTeamPaymentOptionFromRosterId,
   getTeamPlayers: getTeamPlayersHelper,
-  getRosterPlayers: getRosterPlayersHelper,
+  getTeamRosters: getTeamRostersHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
   getUnplacedGames: getUnplacedGamesHelper,
   getUserIdFromPersonId,
@@ -162,39 +165,26 @@ const {
   updateMember: updateMemberHelper,
   updateMemberOptionalField: updateMemberOptionalFieldHelper,
   updateMembershipTermsAndConditions: updateMembershipTermsAndConditionsHelper,
-  updatePartner: updatePartnerHelper,
-  updatePlayer: updatePlayerHelper,
-  updateRosterPlayer: updateRosterPlayerHelper,
-  updateRoster: updateRosterHelper,
   updateOption: updateOptionHelper,
+  updatePartner: updatePartnerHelper,
   updatePersonInfosHelper,
+  updatePlayer: updatePlayerHelper,
   updatePlayerAcceptation: updatePlayerAcceptationHelper,
   updatePlayerPaymentStatus: updatePlayerPaymentStatusHelper,
   updatePractice: updatePracticeHelper,
   updatePreRanking: updatePreRankingHelper,
   updateRegistration: updateRegistrationHelper,
   updateRegistrationPerson: updateRegistrationPersonHelper,
+  updateRoster: updateRosterHelper,
+  updateRosterPlayer: updateRosterPlayerHelper,
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
   updateTeamAcceptation: updateTeamAcceptationHelper,
-  getTeamCoachedByUser: getTeamCoachedByUserHelper,
-  getAllTeamGames: getAllTeamGamesHelper,
-  getAllTeamPractices: getAllTeamPracticesHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
   sendCartItemAddedPlayerEmail,
-  sendImportMemberEmail,
   sendImportMemberNonExistingEmail,
-  sendPersonPendingRegistrationEmailToAdmin,
-  sendPersonRefusedRegistrationEmail,
-  sendPersonRegistrationEmail,
-  sendPersonRegistrationEmailToAdmin,
-  sendTeamAcceptedRegistrationEmail,
-  sendTeamPendingRegistrationEmailToAdmin,
-  sendTeamRefusedRegistrationEmail,
-  sendTeamRegistrationEmailToAdmin,
-  sendTeamUnregisteredEmail,
 } = require('../../server/utils/nodeMailer');
 const { addMembershipCartItem } = require('../helpers/shop');
 const {
@@ -662,22 +652,17 @@ async function addTeamToEvent(body, userId) {
     );
   }
 
-  const email = await getTeamCreatorEmail(teamId);
-  const creatorEmails = await getCreatorsEmails(eventId);
+  const creatorUserIds = await getCreatorsUserId(eventId);
 
   if (registrationStatus === STATUS_ENUM.PENDING) {
-    creatorEmails.map(async email => {
-      const language = await getLanguageFromEmail(email);
-      const userId = await getUserIdFromEmail(email);
+    creatorUserIds.map(async userId => {
       const placesLeft = await getRemainingSpotsHelper(event.id);
-      sendTeamPendingRegistrationEmailToAdmin({
-        email,
-        team,
-        event,
-        language,
-        placesLeft,
+      const infos = { team, event, placesLeft };
+      sendNotification(
+        NOTIFICATION_TYPE.TEAM_PENDING_REGISTRATION_ADMIN,
         userId,
-      });
+        infos,
+      );
     });
   } else {
     if (registrationStatus === STATUS_ENUM.ACCEPTED) {
@@ -699,28 +684,22 @@ async function addTeamToEvent(body, userId) {
         userId,
       );
     }
-    const language = await getLanguageFromEmail(email);
-    sendTeamAcceptedRegistrationEmail({
-      language,
-      team,
-      event,
-      email,
-      isFreeOption,
-      userId,
-    });
 
-    creatorEmails.map(async email => {
-      const language = await getLanguageFromEmail(email);
-      const userId = await getUserIdFromEmail(email);
+    const infos = { team, event, isFreeOption };
+    sendNotification(
+      NOTIFICATION_TYPE.TEAM_REGISTRATION,
+      userId,
+      infos,
+    );
+
+    creatorUserIds.map(async userId => {
       const placesLeft = await getRemainingSpotsHelper(event.id);
-      sendTeamRegistrationEmailToAdmin({
-        email,
-        team,
-        event,
-        language,
-        placesLeft,
+      const infos = { team, event, placesLeft };
+      sendNotification(
+        NOTIFICATION_TYPE.TEAM_REGISTRATION_TO_ADMIN,
         userId,
-      });
+        infos,
+      );
     });
   }
 
@@ -882,22 +861,20 @@ async function addPersonToEvent(body, userId) {
         informations,
       });
 
-      const email = await getEmailPerson(person.id);
-      const language = await getLanguageFromEmail(email);
       if (registrationStatus === STATUS_ENUM.PENDING) {
-        const creatorEmails = await getCreatorsEmails(eventId);
+        const creatorUserIds = await getCreatorsUserId(eventId);
         await Promise.all(
-          creatorEmails.map(async email => {
-            const language = await getLanguageFromEmail(email);
-            const userId = await getUserIdFromEmail(email);
-            sendPersonPendingRegistrationEmailToAdmin({
-              email,
+          creatorUserIds.map(async userId => {
+            const infos = {
               person,
               event,
-              language,
               placesLeft: remainingSpots,
+            };
+            sendNotification(
+              NOTIFICATION_TYPE.PERSON_PENDING_REGISTRATION_TO_ADMIN,
               userId,
-            });
+              infos,
+            );
           }),
         );
       } else {
@@ -920,29 +897,31 @@ async function addPersonToEvent(body, userId) {
             userId,
           );
         }
-        //send mail to person
-        await sendPersonRegistrationEmail({
-          email,
+        const infos = {
           person,
           event,
-          language,
           isFreeOption,
+        };
+        //send notification to person
+        sendNotification(
+          NOTIFICATION_TYPE.PERSON_REGISTRATION,
           userId,
-        });
-        // send mail to organization admin
-        const creatorEmails = await getCreatorsEmails(eventId);
+          infos,
+        );
+        // send notification to organization admin
+        const creatorUserIds = await getCreatorsUserId(eventId);
         await Promise.all(
-          creatorEmails.map(async email => {
-            const language = await getLanguageFromEmail(email);
-            const userId = await getUserIdFromEmail(email);
-            sendPersonRegistrationEmailToAdmin({
-              email,
+          creatorUserIds.map(async userId => {
+            const infos = {
               person,
               event,
-              language,
               placesLeft: remainingSpots,
+            };
+            sendNotification(
+              NOTIFICATION_TYPE.PERSON_REGISTRATION_TO_ADMIN,
               userId,
-            });
+              infos,
+            );
           }),
         );
       }
@@ -1112,9 +1091,7 @@ async function updateTeamAcceptation(body) {
   const event = (await getEntity(eventId)).basicInfos;
   const teamId = await getTeamIdFromRosterId(rosterId);
   const team = (await getEntity(teamId)).basicInfos;
-  const email = await getTeamCreatorEmail(teamId);
-  const language = await getLanguageFromEmail(email);
-  const userId = await getUserIdFromEmail(email);
+  const userId = await getTeamCreatorUserId(teamId);
 
   if (
     registrationStatus === STATUS_ENUM.ACCEPTED ||
@@ -1144,23 +1121,21 @@ async function updateTeamAcceptation(body) {
       );
     }
 
-    sendTeamAcceptedRegistrationEmail({
-      email,
-      team,
-      event,
-      language,
-      isFreeOption: false,
+    const infos = { team, event, isFreeOption: false };
+    sendNotification(
+      NOTIFICATION_TYPE.TEAM_REGISTRATION,
       userId,
-    });
+      infos,
+    );
   }
 
   if (registrationStatus === STATUS_ENUM.REFUSED) {
-    sendTeamRefusedRegistrationEmail({
-      email,
-      team,
-      event,
-      language,
-    });
+    const infos = { team, event };
+    sendNotification(
+      NOTIFICATION_TYPE.TEAM_REFUSED_REGISTRATION,
+      userId,
+      infos,
+    );
   }
   return res;
 }
@@ -1175,9 +1150,7 @@ async function updatePlayerAcceptation(body) {
   const event = (await getEntity(eventId)).basicInfos;
   const person = (await getEntity(personId)).basicInfos;
 
-  const email = await getEmailPerson(personId);
-  const language = await getLanguageFromEmail(email);
-  const userId = await getUserIdFromEmail(email);
+  const userId = await getUserIdFromPersonId(personId);
 
   if (registrationStatus === STATUS_ENUM.ACCEPTED) {
     const personPaymentOption = await getPersonPaymentOption(
@@ -1202,32 +1175,28 @@ async function updatePlayerAcceptation(body) {
       userId,
     );
 
-    sendPersonRegistrationEmail({
-      email,
-      person,
-      event,
-      language,
-      isFreeOption: false,
+    const infos = { person, event, isFreeOption: false };
+    sendNotification(
+      NOTIFICATION_TYPE.PERSON_REGISTRATION,
       userId,
-    });
+      infos,
+    );
   }
   if (registrationStatus === STATUS_ENUM.ACCEPTED_FREE) {
-    sendPersonRegistrationEmail({
-      email,
-      person,
-      event,
-      language,
-      isFreeOption: true,
+    const infos = { person, event, isFreeOption: true };
+    sendNotification(
+      NOTIFICATION_TYPE.PERSON_REGISTRATION,
       userId,
-    });
+      infos,
+    );
   }
   if (registrationStatus === STATUS_ENUM.REFUSED) {
-    sendPersonRefusedRegistrationEmail({
-      email,
-      person,
-      event,
-      language,
-    });
+    const infos = { person, event };
+    sendNotification(
+      NOTIFICATION_TYPE.PERSON_REFUSED_REGISTRATION,
+      userId,
+      infos,
+    );
   }
   return res;
 }
@@ -1365,13 +1334,15 @@ async function importMembers(body) {
           organizationName: organization.basicInfos.name,
         });
       } else {
-        sendImportMemberEmail({
-          email: m.email,
+        const infos = {
           token,
-          language,
           organizationName: organization.basicInfos.name,
+        };
+        sendNotification(
+          NOTIFICATION_TYPE.IMPORT_MEMBER,
           userId,
-        });
+          infos,
+        );
       }
       return m;
     }),
@@ -1743,25 +1714,17 @@ const unregisterTeams = async (body, userId) => {
           }
         }
         // Remove all references to this this in this event and remove players.
-
         const teamId = await getTeamIdFromRosterId(rosterId);
-
-        const email = await getTeamCreatorEmail(teamId);
-        const language = await getLanguageFromEmail(email);
-        const captainUserId = await getUserIdFromEmail(email);
-
+        const captainUserId = await getTeamCreatorUserId(teamId);
         const team = (await getEntity(teamId, captainUserId))
           .basicInfos;
         const event = (await getEntity(eventId)).basicInfos;
-
-        sendTeamUnregisteredEmail({
-          language,
-          email,
-          team,
-          event,
-          status,
-          userId: captainUserId,
-        });
+        const infos = { team, event, status };
+        sendNotification(
+          NOTIFICATION_TYPE.TEAM_UNREGISTERED,
+          captainUserId,
+          infos,
+        );
         await unregisterHelper({ rosterId, eventId });
       } else {
         // team is in a game, can't unregister and refund

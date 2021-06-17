@@ -19,6 +19,16 @@ const {
   sendMail,
   sendAddedToEventEmail,
   sendAddedToTeamEmail,
+  sendPersonRegistrationEmail,
+  sendPersonRefusedRegistrationEmail,
+  sendPersonPendingRegistrationEmailToAdmin,
+  sendPersonRegistrationEmailToAdmin,
+  sendTeamUnregisteredEmail,
+  sendTeamAcceptedRegistrationEmail,
+  sendTeamPendingRegistrationEmailToAdmin,
+  sendTeamRegistrationEmailToAdmin,
+  sendTeamRefusedRegistrationEmail,
+  sendImportMemberEmail,
 } = require('../../server/utils/nodeMailer');
 
 const {
@@ -103,6 +113,121 @@ const sendEmailNotification = async (type, userId, infos) => {
         language,
         teamName: team.name,
         teamId: team.id,
+        userId,
+      });
+      break;
+    }
+    case NOTIFICATION_TYPE.PERSON_REGISTRATION: {
+      const { event, person, isFreeOption } = infos;
+      sendPersonRegistrationEmail({
+        email,
+        language,
+        event,
+        person,
+        isFreeOption,
+        userId,
+      });
+      break;
+    }
+    case NOTIFICATION_TYPE.PERSON_REGISTRATION_TO_ADMIN: {
+      const { person, event, placesLeft } = infos;
+      sendPersonRegistrationEmailToAdmin({
+        email,
+        person,
+        event,
+        placesLeft,
+        language,
+        userId,
+      });
+      break;
+    }
+    case NOTIFICATION_TYPE.PERSON_PENDING_REGISTRATION_TO_ADMIN: {
+      const { person, event, placesLeft } = infos;
+      sendPersonPendingRegistrationEmailToAdmin({
+        email,
+        person,
+        event,
+        language,
+        placesLeft,
+        userId,
+      });
+      break;
+    }
+    case NOTIFICATION_TYPE.PERSON_REFUSED_REGISTRATION: {
+      const { event, person } = infos;
+      sendPersonRefusedRegistrationEmail({
+        email,
+        person,
+        event,
+        language,
+      });
+      break;
+    }
+    case NOTIFICATION_TYPE.TEAM_REGISTRATION: {
+      const { team, event, isFreeOption } = infos;
+      sendTeamAcceptedRegistrationEmail({
+        language,
+        team,
+        event,
+        email,
+        isFreeOption,
+        userId,
+      });
+      break;
+    }
+    case NOTIFICATION_TYPE.TEAM_REGISTRATION_TO_ADMIN: {
+      const { team, event, placesLeft } = infos;
+      sendTeamRegistrationEmailToAdmin({
+        email,
+        team,
+        event,
+        language,
+        placesLeft,
+        userId,
+      });
+      break;
+    }
+    case NOTIFICATION_TYPE.TEAM_REFUSED_REGISTRATION: {
+      const { team, event } = infos;
+      sendTeamRefusedRegistrationEmail({
+        email,
+        team,
+        event,
+        language,
+      });
+      break;
+    }
+    case NOTIFICATION_TYPE.TEAM_PENDING_REGISTRATION_ADMIN: {
+      const { team, event, placesLeft } = infos;
+      sendTeamPendingRegistrationEmailToAdmin({
+        email,
+        team,
+        event,
+        language,
+        placesLeft,
+        userId,
+      });
+      break;
+    }
+    case NOTIFICATION_TYPE.TEAM_UNREGISTERED: {
+      const { team, event, status } = infos;
+      sendTeamUnregisteredEmail({
+        language,
+        email,
+        team,
+        event,
+        status,
+        userId,
+      });
+      break;
+    }
+    case NOTIFICATION_TYPE.IMPORT_MEMBER: {
+      const { token, organizationName } = infos;
+      sendImportMemberEmail({
+        email,
+        token,
+        language,
+        organizationName,
         userId,
       });
       break;
