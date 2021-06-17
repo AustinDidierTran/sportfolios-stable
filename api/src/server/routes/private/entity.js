@@ -1515,6 +1515,40 @@ router.post(`${BASE_URL}/getTeamCoachedByUser`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/getAllTeamGames`, async ctx => {
+  const games = await queries.getAllTeamGames(
+    ctx.request.body.teamId,
+  );
+
+  if (games) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = { status: 'success', data: games };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
+router.post(`${BASE_URL}/getAllTeamPractices`, async ctx => {
+  const practices = await queries.getAllTeamPractices(
+    ctx.request.body.teamId,
+  );
+
+  if (practices) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = { status: 'success', data: practices };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
   const res = await queries.unregisterTeams(
     ctx.request.body,
