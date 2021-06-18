@@ -1,4 +1,5 @@
-const AddedToRosterEmail = require('./addedToRosterEmail');
+const AddedToEventEmail = require('./addedToEventEmail');
+const AddedToTeamEmail = require('./addedToTeamEmail');
 const CartItemAddedPlayerEmail = require('./cartItemAddedPlayerEmail');
 const EmailConfirmationEmail = require('./emailConfirmationEmail');
 const PersonRegistrationToAdminEmail = require('./personRegistrationToAdminEmail');
@@ -21,7 +22,8 @@ const { NOTIFICATION_TYPE } = require('./../../../../common/enums');
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
 const map = {
-  [NOTIFICATION_TYPE.ADDED_TO_ROSTER]: AddedToRosterEmail,
+  [NOTIFICATION_TYPE.ADDED_TO_EVENT]: AddedToEventEmail,
+  [NOTIFICATION_TYPE.ADDED_TO_TEAM]: AddedToTeamEmail,
   [NOTIFICATION_TYPE.CART_ITEM_ADDED_PLAYER]: CartItemAddedPlayerEmail,
   [NOTIFICATION_TYPE.EMAIL_CONFIRMATION]: EmailConfirmationEmail,
   [NOTIFICATION_TYPE.IMPORT_MEMBER]: ImportMemberEmail,

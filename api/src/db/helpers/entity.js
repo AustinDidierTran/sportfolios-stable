@@ -839,28 +839,19 @@ async function getCreators(id) {
   return data;
 }
 
-async function getCreatorsEmails(id) {
-  //Could be done in one query
+async function getCreatorsUserId(entityId) {
   const creators = await knex('entities_role')
     .select('*')
-    .where({ entity_id: id, role: 1 });
+    .where({ entity_id: entityId, role: 1 });
 
-  const emails = await Promise.all(
+  const userIds = await Promise.all(
     creators.map(async c => {
-      const res = await getEmailsEntity(c.entity_id_admin);
-      return res.map(r => r.email);
+      return getUserIdFromEntityId(c.entity_id_admin);
     }),
   );
-  const uniqueEmails = emails.reduce((prev, curr) => {
-    curr.forEach(c => {
-      if (!prev.find(p => p === c)) {
-        prev.push(c);
-      }
-    });
-    return prev;
-  }, []);
-  return uniqueEmails;
+  return userIds.filter(userId => userId);
 }
+
 async function getTeamCreatorEmail(teamId) {
   //Could be done in one query
   const [creator] = await knex('entities_role')
@@ -869,6 +860,11 @@ async function getTeamCreatorEmail(teamId) {
 
   const email = await getEmailPerson(creator.entity_id_admin);
   return email;
+}
+
+async function getTeamCreatorUserId(teamId) {
+  const userId = await getUserIdFromEntityId(teamId);
+  return userId;
 }
 
 async function eventInfos(id, userId) {
@@ -1963,7 +1959,7 @@ const unregister = async body => {
   await deleteRegistration(rosterId, eventId);
 };
 
-async function getEmailsEntity(entity_id) {
+async function getEmailsEntity(entityId) {
   const emails = await knex('entities_role')
     .select('email')
     .leftJoin(
@@ -1978,9 +1974,23 @@ async function getEmailsEntity(entity_id) {
       '=',
       'user_entity_role.user_id',
     )
-    .where('entities_role.entity_id', entity_id);
+    .where('entities_role.entity_id', entityId);
   return emails;
 }
+
+async function getUserIdFromEntityId(entityId) {
+  const [{ user_id }] = await knex('entities_role')
+    .select('user_id')
+    .leftJoin(
+      'user_entity_role',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_role.entity_id_admin',
+    )
+    .where('entities_role.entity_id', entityId);
+  return user_id;
+}
+
 async function getEmailUser(userId) {
   const [{ email }] = await knex('user_email')
     .select('email')
@@ -2011,21 +2021,23 @@ async function getEvent(eventId) {
   return res;
 }
 
-async function getEventAdmins(eventId) {
+async function getEventAdmins(entityId) {
   const admins = await knex('entities_role')
-    .select('user_entity_role.user_id')
+    .select(
+      'user_entity_role.user_id',
+      'entities_role.entity_id_admin',
+    )
     .leftJoin(
       'user_entity_role',
       'user_entity_role.entity_id',
       '=',
       'entities_role.entity_id_admin',
     )
-    .where('entities_role.entity_id', '=', eventId)
+    .where('entities_role.entity_id', '=', entityId)
     .andWhere('entities_role.role', '<=', ENTITIES_ROLE_ENUM.EDITOR);
-
   const res = await admins.reduce(async (prev, curr) => {
     if (curr.user_id) {
-      return prev.concat(curr.user_id);
+      return [...prev, curr.user_id];
     }
     const currIteration = await curr;
     const res = await getEventAdmins(currIteration.entity_id_admin);
@@ -5346,22 +5358,16 @@ const addPlayerToRoster = async body => {
   return player;
 };
 
-const addPlayersToTeam = async body => {
-  const { players, teamId } = body;
-  const res = await Promise.all(
-    players.map(async player => {
-      const [res] = await knex('team_players')
-        .insert({
-          team_id: teamId,
-          person_id: player.id,
-          role: ROSTER_ROLE_ENUM.PLAYER,
-        })
-        .onConflict(['team_id', 'person_id'])
-        .merge()
-        .returning('*');
-      return res;
-    }),
-  );
+const addPlayerToTeam = async (player, teamId) => {
+  const [res] = await knex('team_players')
+    .insert({
+      team_id: teamId,
+      person_id: player.id,
+      role: ROSTER_ROLE_ENUM.PLAYER,
+    })
+    .onConflict(['team_id', 'person_id'])
+    .merge()
+    .returning('*');
   return res;
 };
 
@@ -6507,7 +6513,7 @@ module.exports = {
   addPersonToEvent,
   addPhase,
   addPlayerCartItem,
-  addPlayersToTeam,
+  addPlayerToTeam,
   addTeamRoster,
   addPlayerToRoster,
   addPractice,
@@ -6563,7 +6569,7 @@ module.exports = {
   getAttendanceSheet,
   getCreator,
   getCreators,
-  getCreatorsEmails,
+  getCreatorsUserId,
   getEmailPerson,
   getEmailsEntity,
   getEmailsLandingPage,
@@ -6636,6 +6642,7 @@ module.exports = {
   getSubmissionerInfos,
   getTeamCoachedByUser,
   getTeamCreatorEmail,
+  getTeamCreatorUserId,
   getTeamGames,
   getTeamRosters,
   getTeamEventsInfos,
@@ -6646,6 +6653,7 @@ module.exports = {
   getTeamsSchedule,
   getUnplacedGames,
   getUserIdFromPersonId,
+  getUserIdFromEntityId,
   getUserNextGame,
   getWichTeamsCanUnregister,
   hasMemberships,

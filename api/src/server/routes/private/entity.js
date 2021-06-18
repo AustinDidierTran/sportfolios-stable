@@ -1950,7 +1950,10 @@ router.post(`${BASE_URL}/membership`, async ctx => {
 });
 
 router.post(`${BASE_URL}/players`, async ctx => {
-  const players = await queries.addPlayersToTeam(ctx.request.body);
+  const players = await queries.addPlayersToTeam(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
   if (players) {
     ctx.status = 201;
     ctx.body = {

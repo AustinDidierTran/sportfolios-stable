@@ -86,6 +86,7 @@ BEGIN
     --create organization entity 
     INSERT INTO entities (type) VALUES (2) RETURNING id INTO organizationEntityId;
 
+
     --create organization
     INSERT INTO entities_general_infos (entity_id, name) VALUES (organizationEntityId, organizationName);
     INSERT INTO entities_role (entity_id, role, entity_id_admin) VALUES (organizationEntityId, 1, didierEntityId);

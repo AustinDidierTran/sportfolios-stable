@@ -300,6 +300,18 @@ const getEmailsFromUserId = async userId => {
   return emails;
 };
 
+const getEmailFromUserId = async userId => {
+  if (!userId) {
+    return [];
+  }
+
+  const [email] = await knex('user_email')
+    .select(['email', 'confirmed_email_at', 'is_subscribed'])
+    .where({ user_id: userId });
+
+  return email;
+};
+
 const getEmailFromToken = async ({ token }) => {
   const response = await knex('confirmation_email_token')
     .select(['email', 'expires_at'])
@@ -764,6 +776,7 @@ module.exports = {
   getBasicUserInfoFromId,
   getEmailFromToken,
   getEmailsFromUserId,
+  getEmailFromUserId,
   getHashedPasswordFromId,
   getLanguageFromEmail,
   getUserIdFromEmail,

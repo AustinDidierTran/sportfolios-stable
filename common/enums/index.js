@@ -370,27 +370,28 @@ const SOCKET_EVENT = {
 };
 
 const NOTIFICATION_TYPE = {
-  ADDED_TO_ROSTER: 'added to roster',
+  ADDED_TO_EVENT: 'added to event',
+  ADDED_TO_TEAM: 'added to team',
   CART_ITEM_ADDED_PLAYER: 'cart item added player',
   EMAIL_CONFIRMATION: 'email confirmation',
-  IMPORT_MEMBER: 'import member',
   IMPORT_MEMBER_NON_EXISTING: 'import member non existing',
+  IMPORT_MEMBER: 'import member',
   OTHER_TEAM_SUBMITTED_A_SCORE: 'other team submitted a score',
-  PERSON_REGISTRATION_TO_ADMIN: 'person registration to admin',
   PERSON_PENDING_REGISTRATION_TO_ADMIN:
     'person pending registration to admin',
+  PERSON_REFUSED_REGISTRATION: 'person refused registration',
+  PERSON_REGISTRATION_TO_ADMIN: 'person registration to admin',
   PERSON_REGISTRATION: 'person registration',
   RECOVERY_EMAIL: 'recovery email',
   SCORE_SUBMISSION_CONFLICT: 'score submission conflict',
   SCORE_SUBMISSION_REQUEST: 'score submission request',
   SEND_RECEIPT: 'send receipt',
   TEAM_PENDING_REGISTRATION_ADMIN: 'team pending registration admin',
+  TEAM_REFUSED_REGISTRATION: 'team refused registration',
   TEAM_REGISTRATION_TO_ADMIN: 'team registration to admin',
   TEAM_REGISTRATION: 'team registration',
-  TEAM_UNREGISTERED: 'team unregistered',
   TEAM_UNREGISTERED_AND_REFUNDED: 'team unregistered and refunded',
-  TEAM_REFUSED_REGISTRATION: 'team refused registration',
-  PERSON_REFUSED_REGISTRATION: 'person refused registration',
+  TEAM_UNREGISTERED: 'team unregistered',
   TRANSFER_PERSON: 'transfer person',
 };
 
