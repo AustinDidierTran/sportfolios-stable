@@ -4583,11 +4583,11 @@ async function addPractice(
 
   const [res] = await knex('sessions')
     .insert({
+      id: entityId,
       roster_id: roster.id,
       start_date: dateStart,
       end_date: dateEnd,
       name,
-      entity_id: entityId,
       type: SESSION_ENUM.PRACTICE,
       location_id,
     })
