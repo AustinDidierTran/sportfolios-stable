@@ -383,6 +383,7 @@ const NOTIFICATION_TYPE = {
   PERSON_REGISTRATION_TO_ADMIN: 'person registration to admin',
   PERSON_REGISTRATION: 'person registration',
   RECOVERY_EMAIL: 'recovery email',
+  REQUEST_TO_JOIN_TEAM: 'request to join team',
   SCORE_SUBMISSION_CONFLICT: 'score submission conflict',
   SCORE_SUBMISSION_REQUEST: 'score submission request',
   SEND_RECEIPT: 'send receipt',

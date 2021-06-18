@@ -863,7 +863,9 @@ async function getTeamCreatorEmail(teamId) {
 }
 
 async function getTeamCreatorUserId(teamId) {
+  console.log({ teamId });
   const userId = await getUserIdFromEntityId(teamId);
+  console.log({ userId });
   return userId;
 }
 
@@ -5371,6 +5373,21 @@ const addPlayerToTeam = async (player, teamId) => {
   return res;
 };
 
+const sendRequestToJoinTeam = async (personId, teamId) => {
+  console.log({ personId, teamId });
+  const [res] = await knex('team_players_request')
+    .insert({
+      team_id: teamId,
+      person_id: personId,
+      status: 'pending',
+    })
+    .onConflict(['team_id', 'person_id'])
+    .merge()
+    .returning('*');
+  console.log({ res });
+  return res;
+};
+
 const addTeamRoster = async body => {
   const { players, teamId, name } = body;
   const [roster] = await knex('team_rosters')
@@ -6514,6 +6531,7 @@ module.exports = {
   addPhase,
   addPlayerCartItem,
   addPlayerToTeam,
+  sendRequestToJoinTeam,
   addTeamRoster,
   addPlayerToRoster,
   addPractice,
