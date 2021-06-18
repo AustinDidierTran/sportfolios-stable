@@ -1970,7 +1970,6 @@ router.post(`${BASE_URL}/players`, async ctx => {
 });
 
 router.post(`${BASE_URL}/joinTeam`, async ctx => {
-  console.log('allo');
   const player = await queries.sendRequestToJoinTeam(
     ctx.request.body,
     ctx.body.userInfo.id,

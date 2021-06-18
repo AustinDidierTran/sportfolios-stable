@@ -1884,22 +1884,13 @@ async function addPlayersToTeam(body, userId) {
 }
 
 async function sendRequestToJoinTeam(body, userId) {
-  console.log('allo');
   const { personId, teamId } = body;
-  console.log({ personId, teamId });
 
   const res = await sendRequestToJoinTeamHelper(personId, teamId);
 
-  console.log({ res });
-
   const team = (await getEntity(teamId, userId)).basicInfos;
-  console.log({ team });
   const person = (await getEntity(personId, userId)).basicInfos;
-  console.log({ person });
   const teamCaptainUserId = await getTeamCreatorUserId(teamId);
-  console.log({ teamCaptainUserId });
-
-  console.log({ team, person, teamCaptainUserId });
 
   const infos = { team, person };
   sendNotification(

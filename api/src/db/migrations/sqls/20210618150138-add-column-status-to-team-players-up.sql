@@ -6,3 +6,7 @@ CREATE TABLE team_players_request(
   status VARCHAR(255) NOT NULL,
   UNIQUE (team_id,person_id)
   );
+
+
+INSERT INTO user_notification_setting (user_id, type, email, chatbot, in_app)
+(SELECT id, 'request to join team', false, true, true FROM users);

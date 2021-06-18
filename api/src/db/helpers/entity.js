@@ -863,9 +863,7 @@ async function getTeamCreatorEmail(teamId) {
 }
 
 async function getTeamCreatorUserId(teamId) {
-  console.log({ teamId });
   const userId = await getUserIdFromEntityId(teamId);
-  console.log({ userId });
   return userId;
 }
 
@@ -5374,7 +5372,6 @@ const addPlayerToTeam = async (player, teamId) => {
 };
 
 const sendRequestToJoinTeam = async (personId, teamId) => {
-  console.log({ personId, teamId });
   const [res] = await knex('team_players_request')
     .insert({
       team_id: teamId,
@@ -5384,7 +5381,6 @@ const sendRequestToJoinTeam = async (personId, teamId) => {
     .onConflict(['team_id', 'person_id'])
     .merge()
     .returning('*');
-  console.log({ res });
   return res;
 };
 
