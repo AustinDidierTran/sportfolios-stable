@@ -1549,6 +1549,21 @@ router.post(`${BASE_URL}/getAllTeamPractices`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/getAllExercises`, async ctx => {
+  const practices = await queries.getAllExercises();
+
+  if (practices) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = { status: 'success', data: practices };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
   const res = await queries.unregisterTeams(
     ctx.request.body,

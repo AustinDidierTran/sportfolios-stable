@@ -180,6 +180,10 @@ const {
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
   updateTeamAcceptation: updateTeamAcceptationHelper,
+  getTeamCoachedByUser: getTeamCoachedByUserHelper,
+  getAllTeamGames: getAllTeamGamesHelper,
+  getAllTeamPractices: getAllTeamPracticesHelper,
+  getAllExercises: getAllExercisesHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {
@@ -2080,6 +2084,15 @@ async function getAllTeamPractices(teamId) {
   return res;
 }
 
+async function getAllExercises() {
+  const res = await getAllExercisesHelper();
+  if (!res) {
+    return;
+  }
+
+  return res;
+}
+
 module.exports = {
   acceptScoreSuggestion,
   acceptScoreSuggestion,
@@ -2132,6 +2145,7 @@ module.exports = {
   generateReport,
   getAlias,
   getAllEntities,
+  getAllExercises,
   getAllForYouPagePosts,
   getAllOwnedEntities,
   getAllPeopleRegisteredInfos,
