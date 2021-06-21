@@ -59,6 +59,7 @@ const {
   generateReport: generateReportHelper,
   getAlias: getAliasHelper,
   getAllEntities: getAllEntitiesHelper,
+  getAllExercises: getAllExercisesHelper,
   getAllForYouPagePosts: getAllForYouPagePostsHelper,
   getAllOwnedEntities: getAllOwnedEntitiesHelper,
   getAllPeopleRegisteredInfos: getAllPeopleRegisteredInfosHelper,
@@ -180,10 +181,6 @@ const {
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
   updateTeamAcceptation: updateTeamAcceptationHelper,
-  getTeamCoachedByUser: getTeamCoachedByUserHelper,
-  getAllTeamGames: getAllTeamGamesHelper,
-  getAllTeamPractices: getAllTeamPracticesHelper,
-  getAllExercises: getAllExercisesHelper,
 } = require('../helpers/entity');
 const { createRefund } = require('../helpers/stripe/checkout');
 const {

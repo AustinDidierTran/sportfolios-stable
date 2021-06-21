@@ -1498,9 +1498,9 @@ router.post(`${BASE_URL}/partner`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/getTeamCoachedByUser`, async ctx => {
+router.get(`${BASE_URL}/getTeamCoachedByUser`, async ctx => {
   const teams = await queries.getTeamCoachedByUser(
-    ctx.request.body.personId,
+    ctx.query.personId,
   );
 
   if (teams) {
@@ -1515,10 +1515,8 @@ router.post(`${BASE_URL}/getTeamCoachedByUser`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/getAllTeamGames`, async ctx => {
-  const games = await queries.getAllTeamGames(
-    ctx.request.body.teamId,
-  );
+router.get(`${BASE_URL}/getAllTeamGames`, async ctx => {
+  const games = await queries.getAllTeamGames(ctx.query.teamId);
 
   if (games) {
     ctx.status = STATUS_ENUM.SUCCESS;
@@ -1532,9 +1530,9 @@ router.post(`${BASE_URL}/getAllTeamGames`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/getAllTeamPractices`, async ctx => {
+router.get(`${BASE_URL}/getAllTeamPractices`, async ctx => {
   const practices = await queries.getAllTeamPractices(
-    ctx.request.body.teamId,
+    ctx.query.teamId,
   );
 
   if (practices) {
@@ -1549,12 +1547,12 @@ router.post(`${BASE_URL}/getAllTeamPractices`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/getAllExercises`, async ctx => {
-  const practices = await queries.getAllExercises();
+router.get(`${BASE_URL}/getAllExercises`, async ctx => {
+  const exercises = await queries.getAllExercises();
 
-  if (practices) {
+  if (exercises) {
     ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = { status: 'success', data: practices };
+    ctx.body = { status: 'success', data: exercises };
   } else {
     ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
