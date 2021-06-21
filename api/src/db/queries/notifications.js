@@ -266,6 +266,22 @@ const sendInAppNotification = async (type, userId, infos) => {
       addNotification(notif);
       break;
     }
+    case NOTIFICATION_TYPE.REQUEST_TO_JOIN_TEAM: {
+      const { team, person } = infos;
+      const notif = {
+        user_id: userId,
+        type: NOTIFICATION_TYPE.REQUEST_TO_JOIN_TEAM,
+        entity_photo: team.id,
+        metadata: {
+          teamId: team.id,
+          teamName: team.name,
+          personName: person.name,
+          personSurname: person.surname,
+        },
+      };
+      addNotification(notif);
+      break;
+    }
     case NOTIFICATION_TYPE.SCORE_SUBMISSION_CONFLICT: {
       const notif = {
         user_id: userId,

@@ -430,9 +430,14 @@ async function getAllRolesEntity(entityId) {
     .orderBy('entities_role.role');
 
   return entities_role.map(e => {
-    const { photo_url: photoUrl, ...otherProps } = e;
-
-    return { ...otherProps, photoUrl };
+    return {
+      entityId: e.entity_id_admin,
+      role: e.role,
+      name: e.name,
+      surname: e.surname,
+      type: e.type,
+      photoUrl: e.photo_url,
+    };
   });
 }
 
@@ -961,7 +966,7 @@ async function getEntityRole(entityId, userId) {
 
 async function getMostRecentMember(personId, organizationId) {
   const [member] = await knex('memberships_infos')
-    .select('*')
+    .select('member_type')
     .rightJoin(
       'entities',
       'entities.id',
@@ -973,7 +978,7 @@ async function getMostRecentMember(personId, organizationId) {
     .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
     .andWhere({ organization_id: organizationId })
     .orderBy('memberships_infos.created_at', 'desc');
-  return member;
+  return { memberType: member.member_type };
 }
 
 async function getMembers(personId, organizationId) {
@@ -1347,10 +1352,18 @@ async function getMemberships(entityId) {
         m.stripe_price_id,
       );
       return {
-        ...m,
+        id: m.id,
+        entityId: m.entity_id,
+        membershipType: m.membership_type,
+        length: m.length,
+        price: m.price,
+        fixedDate: m.fixed_date,
+        stripePriceId: m.stripe_price_id,
+        description: m.id,
+        fileName: m.file_name,
+        fileUrl: m.file_url,
         transactionFees,
         taxRates,
-        price: m.price,
       };
     }),
   );
@@ -2155,7 +2168,13 @@ async function getGames(eventId) {
       // field and start_time are temporary, this will change when all the schedule logic will be handled in backend.
       // For now this is so it can still works even after adding the new ids to these fields.
       return {
-        ...game,
+        eventId: game.event_id,
+        phaseId: game.phase_id,
+        description: game.description,
+        entityId: game.entity_id,
+        notifiedStart: game.notified_start,
+        notifiedEnd: game.notified_end,
+        locationId: game.location_id,
         phaseName,
         positions,
         field: r1.field,
@@ -2576,7 +2595,12 @@ async function getTeamsSchedule(eventId) {
       STATUS_ENUM.ACCEPTED,
     ])
     .andWhere({ event_id: eventId });
-  return res;
+  return {
+    teamId: res.team_id,
+    rosterId: res.roster_id,
+    eventId: res.event_id,
+    name: res.name,
+  };
 }
 
 async function getFields(eventId) {
@@ -5371,6 +5395,19 @@ const addPlayerToTeam = async (player, teamId) => {
   return res;
 };
 
+const sendRequestToJoinTeam = async (personId, teamId) => {
+  const [res] = await knex('team_players_request')
+    .insert({
+      team_id: teamId,
+      person_id: personId,
+      status: 'pending',
+    })
+    .onConflict(['team_id', 'person_id'])
+    .merge()
+    .returning('*');
+  return res;
+};
+
 const addTeamRoster = async body => {
   const { players, teamId, name } = body;
   const [roster] = await knex('team_rosters')
@@ -6514,6 +6551,7 @@ module.exports = {
   addPhase,
   addPlayerCartItem,
   addPlayerToTeam,
+  sendRequestToJoinTeam,
   addTeamRoster,
   addPlayerToRoster,
   addPractice,
