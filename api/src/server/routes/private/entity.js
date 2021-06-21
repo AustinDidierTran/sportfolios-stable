@@ -1969,6 +1969,26 @@ router.post(`${BASE_URL}/players`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/joinTeam`, async ctx => {
+  const player = await queries.sendRequestToJoinTeam(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (player) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: player,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'Something went wrong',
+    };
+  }
+});
+
 router.post(`${BASE_URL}/roster`, async ctx => {
   const roster = await queries.addTeamRoster(ctx.request.body);
   if (roster) {

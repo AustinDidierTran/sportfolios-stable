@@ -36,6 +36,7 @@ const {
   addScoreSuggestion: addScoreSuggestionHelper,
   addSpiritSubmission: addSpiritSubmissionHelper,
   addTeamRoster: addTeamRosterHelper,
+  sendRequestToJoinTeam: sendRequestToJoinTeamHelper,
   addTeamToEvent: addTeamToEventHelper,
   addTimeSlot: addTimeSlotHelper,
   cancelRosterInviteToken: cancelRosterInviteTokenHelper,
@@ -1882,6 +1883,24 @@ async function addPlayersToTeam(body, userId) {
   );
 }
 
+async function sendRequestToJoinTeam(body, userId) {
+  const { personId, teamId } = body;
+
+  const res = await sendRequestToJoinTeamHelper(personId, teamId);
+
+  const team = (await getEntity(teamId, userId)).basicInfos;
+  const person = (await getEntity(personId, userId)).basicInfos;
+  const teamCaptainUserId = await getTeamCreatorUserId(teamId);
+
+  const infos = { team, person };
+  sendNotification(
+    NOTIFICATION_TYPE.REQUEST_TO_JOIN_TEAM,
+    teamCaptainUserId,
+    infos,
+  );
+  return res;
+}
+
 async function addTeamRoster(body) {
   return addTeamRosterHelper(body);
 }
@@ -2098,6 +2117,7 @@ module.exports = {
   addPhase,
   addPlayersCartItems,
   addPlayersToTeam,
+  sendRequestToJoinTeam,
   addTeamRoster,
   addPlayerToRoster,
   addPractice,
