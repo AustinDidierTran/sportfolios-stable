@@ -35,6 +35,14 @@ async function getAllCommentSuggestions() {
   return res;
 }
 
+async function getPlayerLastEvaluation(playerId) {
+  const res = await getPlayerLastEvaluation(playerId);
+  if (!res) {
+    return;
+  }
+  return res;
+}
+
 module.exports = {
   createEvaluation,
   getAllCommentSuggestions,

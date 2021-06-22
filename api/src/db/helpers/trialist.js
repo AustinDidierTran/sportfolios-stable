@@ -19,6 +19,10 @@ function getAllCommentSuggestions() {
   return knex('comments');
 }
 
+function getPlayerLastEvaluation(playerId) {
+  return knex('evaluations').where({ person_id: playerId });
+}
+
 module.exports = {
   createEvaluation,
   getAllCommentSuggestions,

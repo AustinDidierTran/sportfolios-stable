@@ -38,4 +38,22 @@ router.get(`${BASE_URL}/comments`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/getPlayerLastEvaluation`, async ctx => {
+  const res = await queries.getPlayerLastEvaluation(
+    ctx.query.playerId,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
+
 module.exports = router;
