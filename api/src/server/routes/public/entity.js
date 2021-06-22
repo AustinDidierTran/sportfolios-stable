@@ -531,10 +531,41 @@ router.get(`${BASE_URL}/teamLocations`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/practiceBasicInfo`, async ctx => {
+  let userId = -1;
+  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
+    userId = ctx.body.userInfo.id;
+  }
+
+  const practicesBasicInfo = await queries.getPracticeBasicInfo(
+    ctx.query.teamId,
+    userId,
+  );
+
+  if (practicesBasicInfo) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: practicesBasicInfo,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/practiceInfo`, async ctx => {
+  let userId = -1;
+  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
+    userId = ctx.body.userInfo.id;
+  }
+
   const practiceInfo = await queries.getPracticeInfo(
     ctx.query.practiceId,
-    ctx.body.userInfo.id,
+    userId,
   );
 
   if (practiceInfo) {

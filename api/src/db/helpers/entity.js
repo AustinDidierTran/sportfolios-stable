@@ -430,9 +430,14 @@ async function getAllRolesEntity(entityId) {
     .orderBy('entities_role.role');
 
   return entities_role.map(e => {
-    const { photo_url: photoUrl, ...otherProps } = e;
-
-    return { ...otherProps, photoUrl };
+    return {
+      entityId: e.entity_id_admin,
+      role: e.role,
+      name: e.name,
+      surname: e.surname,
+      type: e.type,
+      photoUrl: e.photo_url,
+    };
   });
 }
 
@@ -716,42 +721,6 @@ async function getTeamEventsInfos(id) {
       .andWhere({ team_id: id })
   ).map(game => game.id);
 
-  const practiceInfos = await knex('team_rosters')
-    .select(
-      'sessions.id',
-      'sessions.start_date',
-      'sessions.end_date',
-      'sessions.name',
-      'sessions.type',
-      'locations.location',
-      'addresses.street_address',
-      'addresses.city',
-      'addresses.state',
-      'addresses.zip',
-      'addresses.country',
-    )
-    .leftJoin(
-      'sessions',
-      'sessions.roster_id',
-      '=',
-      'team_rosters.id',
-    )
-    .leftJoin(
-      'locations',
-      'locations.id',
-      '=',
-      'sessions.location_id',
-    )
-    .leftJoin(
-      'addresses',
-      'addresses.id',
-      '=',
-      'locations.address_id',
-    )
-    .whereNotNull('sessions.id')
-    .where({ team_id: id })
-    .orderBy('sessions.start_date', 'asc');
-
   const gamesInfos = await knex('games_all_infos')
     .select(
       'games_all_infos.event_id',
@@ -791,31 +760,16 @@ async function getTeamEventsInfos(id) {
     )
     .orderBy('games_all_infos.timeslot', 'asc');
 
-  return {
-    gamesInfos: gamesInfos.map(g => ({
-      eventId: g.event_id,
-      eventName: g.event_name,
-      id: g.id,
-      timeslot: g.timeslot,
-      field: g.field,
-      name: g.name,
-      teamNames: g.team_names,
-      teamScores: g.team_scores,
-    })),
-    practiceInfos: practiceInfos.map(p => ({
-      id: p.id,
-      startDate: p.start_date,
-      endDate: p.end_date,
-      name: p.name,
-      type: p.type,
-      location: p.location,
-      streetAddress: p.street_address,
-      city: p.city,
-      state: p.state,
-      zip: p.zip,
-      country: p.country,
-    })),
-  };
+  return gamesInfos.map(g => ({
+    eventId: g.event_id,
+    eventName: g.event_name,
+    id: g.id,
+    timeslot: g.timeslot,
+    field: g.field,
+    name: g.name,
+    teamNames: g.team_names,
+    teamScores: g.team_scores,
+  }));
 }
 
 async function getCreator(id) {
@@ -961,7 +915,7 @@ async function getEntityRole(entityId, userId) {
 
 async function getMostRecentMember(personId, organizationId) {
   const [member] = await knex('memberships_infos')
-    .select('*')
+    .select('member_type')
     .rightJoin(
       'entities',
       'entities.id',
@@ -973,7 +927,7 @@ async function getMostRecentMember(personId, organizationId) {
     .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
     .andWhere({ organization_id: organizationId })
     .orderBy('memberships_infos.created_at', 'desc');
-  return member;
+  return { memberType: member.member_type };
 }
 
 async function getMembers(personId, organizationId) {
@@ -1347,10 +1301,18 @@ async function getMemberships(entityId) {
         m.stripe_price_id,
       );
       return {
-        ...m,
+        id: m.id,
+        entityId: m.entity_id,
+        membershipType: m.membership_type,
+        length: m.length,
+        price: m.price,
+        fixedDate: m.fixed_date,
+        stripePriceId: m.stripe_price_id,
+        description: m.id,
+        fileName: m.file_name,
+        fileUrl: m.file_url,
         transactionFees,
         taxRates,
-        price: m.price,
       };
     }),
   );
@@ -2155,7 +2117,13 @@ async function getGames(eventId) {
       // field and start_time are temporary, this will change when all the schedule logic will be handled in backend.
       // For now this is so it can still works even after adding the new ids to these fields.
       return {
-        ...game,
+        eventId: game.event_id,
+        phaseId: game.phase_id,
+        description: game.description,
+        entityId: game.entity_id,
+        notifiedStart: game.notified_start,
+        notifiedEnd: game.notified_end,
+        locationId: game.location_id,
         phaseName,
         positions,
         field: r1.field,
@@ -2576,7 +2544,12 @@ async function getTeamsSchedule(eventId) {
       STATUS_ENUM.ACCEPTED,
     ])
     .andWhere({ event_id: eventId });
-  return res;
+  return {
+    teamId: res.team_id,
+    rosterId: res.roster_id,
+    eventId: res.event_id,
+    name: res.name,
+  };
 }
 
 async function getFields(eventId) {
@@ -3237,6 +3210,50 @@ async function updatePractice(
     .where({
       id,
     });
+}
+
+async function updatePracticeRsvp(
+  id,
+  rsvp,
+  personId,
+  updateAll,
+  userId,
+) {
+  const [roster] = await knex('sessions')
+    .select('roster_id')
+    .where({ id });
+
+  if (updateAll) {
+    const entities = await getAllOwnedEntities(
+      GLOBAL_ENUM.PERSON,
+      userId,
+      '',
+      true,
+    );
+    const res = await knex('roster_players')
+      .update({ rsvp })
+      .where({ roster_id: roster.roster_id })
+      .whereIn(
+        'roster_players.person_id',
+        entities.map(e => e.id),
+      )
+      .returning('*');
+
+    return res;
+  }
+
+  let person_id = personId;
+  if (!person_id) {
+    const person = await getPrimaryPerson(userId);
+    person_id = person.id;
+  }
+
+  const res = await knex('roster_players')
+    .update({ rsvp })
+    .where({ roster_id: roster.roster_id, person_id })
+    .returning('*');
+
+  return res;
 }
 
 async function updatePreRanking(eventId, ranking) {
@@ -4587,16 +4604,41 @@ async function addPractice(
     location_id = location.id;
   }
 
-  const [roster] = await knex('team_rosters')
+  const [oldRoster] = await knex('team_rosters')
     .select('id')
     .where({ team_id: teamId })
+    .where('active', '=', 'true')
     .orderByRaw(`created_at desc, updated_at desc`)
     .limit(1);
+
+  const [rosterId] = await knex('team_rosters')
+    .insert({ team_id: teamId, active: false })
+    .returning('id');
+
+  const oldRosterPlayer = await knex('roster_players')
+    .select('*')
+    .where({ roster_id: oldRoster.id });
+
+  await Promise.all(
+    oldRosterPlayer.map(async player => {
+      const [res] = await knex('roster_players')
+        .insert({
+          roster_id: rosterId,
+          person_id: player.person_id,
+          role: player.role,
+          payment_status: player.payment_status,
+          is_sub: player.is_sub,
+          invoice_item_id: player.invoice_item_id,
+        })
+        .returning('*');
+      return res;
+    }),
+  );
 
   const [res] = await knex('sessions')
     .insert({
       id: entityId,
-      roster_id: roster.id,
+      roster_id: rosterId,
       start_date: dateStart,
       end_date: dateEnd,
       name,
@@ -6148,6 +6190,137 @@ const getSessionLocations = async teamId => {
   }));
 };
 
+const getPracticeBasicInfo = async (teamId, userId) => {
+  if (userId == -1) {
+    const practiceInfosNotConnected = await knex('team_rosters')
+      .select(
+        'sessions.id',
+        'sessions.start_date',
+        'sessions.end_date',
+        'sessions.name',
+        'sessions.type',
+        'locations.location',
+        'addresses.street_address',
+        'addresses.city',
+        'addresses.state',
+        'addresses.zip',
+        'addresses.country',
+      )
+      .leftJoin(
+        'sessions',
+        'sessions.roster_id',
+        '=',
+        'team_rosters.id',
+      )
+      .leftJoin(
+        'locations',
+        'locations.id',
+        '=',
+        'sessions.location_id',
+      )
+      .leftJoin(
+        'addresses',
+        'addresses.id',
+        '=',
+        'locations.address_id',
+      )
+      .whereNotNull('sessions.id')
+      .where({ team_id: teamId })
+      .orderBy('sessions.start_date', 'asc');
+
+    return practiceInfosNotConnected.map(p => ({
+      id: p.id,
+      startDate: p.start_date,
+      endDate: p.end_date,
+      name: p.name,
+      type: p.type,
+      location: p.location,
+      streetAddress: p.street_address,
+      city: p.city,
+      state: p.state,
+      zip: p.zip,
+      country: p.country,
+      rsvp: 'notConnected',
+    }));
+  }
+
+  const entities = await getAllOwnedEntities(
+    GLOBAL_ENUM.PERSON,
+    userId,
+    '',
+    true,
+  );
+  const practiceInfos = await knex('team_rosters')
+    .select(
+      'sessions.id',
+      'sessions.start_date',
+      'sessions.end_date',
+      'sessions.name',
+      'sessions.type',
+      'locations.location',
+      'addresses.street_address',
+      'addresses.city',
+      'addresses.state',
+      'addresses.zip',
+      'addresses.country',
+      'player.rsvp',
+    )
+    .leftJoin(
+      'sessions',
+      'sessions.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .leftJoin(
+      'locations',
+      'locations.id',
+      '=',
+      'sessions.location_id',
+    )
+    .leftJoin(
+      'addresses',
+      'addresses.id',
+      '=',
+      'locations.address_id',
+    )
+    .leftJoin(
+      knex('roster_players_infos')
+        .select(
+          knex.raw(
+            "json_agg(json_build_object('rsvp', roster_players_infos.rsvp, 'photoUrl', roster_players_infos.photo_url, 'name', roster_players_infos.name)) AS rsvp",
+          ),
+          'roster_id',
+        )
+        .whereIn(
+          'roster_players_infos.person_id',
+          entities.map(e => e.id),
+        )
+        .groupBy('roster_id')
+        .as('player'),
+      'player.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .whereNotNull('sessions.id')
+    .where({ team_id: teamId })
+    .orderBy('sessions.start_date', 'asc');
+
+  return practiceInfos.map(p => ({
+    id: p.id,
+    startDate: p.start_date,
+    endDate: p.end_date,
+    name: p.name,
+    type: p.type,
+    location: p.location,
+    streetAddress: p.street_address,
+    city: p.city,
+    state: p.state,
+    zip: p.zip,
+    country: p.country,
+    rsvp: p.rsvp,
+  }));
+};
+
 const getPracticeInfo = async (id, userId) => {
   const [session] = await knex('sessions')
     .select('sessions.roster_id')
@@ -6156,7 +6329,6 @@ const getPracticeInfo = async (id, userId) => {
   const [practiceInfo] = await knex('sessions')
     .select(
       'sessions.id',
-      'sessions.entity_id',
       'sessions.start_date',
       'sessions.end_date',
       'sessions.name',
@@ -6194,7 +6366,7 @@ const getPracticeInfo = async (id, userId) => {
           knex
             .select(
               knex.raw(
-                "json_agg(json_build_object('name', person.name, 'photoUrl', person.photo_url, 'role', person.role)) AS playerInfo",
+                "json_agg(json_build_object('name', person.name, 'photoUrl', person.photo_url, 'role', person.role, 'rsvp', person.rsvp, 'personId', person.person_id)) AS playerInfo",
               ),
               'person.team_id',
             )
@@ -6204,6 +6376,8 @@ const getPracticeInfo = async (id, userId) => {
                   'roster_players_infos.name',
                   'roster_players_infos.photo_url',
                   'roster_players_infos.role',
+                  'roster_players_infos.rsvp',
+                  'roster_players_infos.person_id',
                   'team_rosters.team_id',
                 )
                 .where({ 'team_rosters.id': session.roster_id })
@@ -6233,11 +6407,14 @@ const getPracticeInfo = async (id, userId) => {
     )
     .where({ 'sessions.id': id });
 
-  const role = await getEntityRole(practiceInfo.team_id, userId);
+  let role = 3;
+  if (userId != -1) {
+    role = await getEntityRole(practiceInfo.team_id, userId);
+  }
+
   return {
     practice: {
       id: practiceInfo.id,
-      entityId: practiceInfo.entity_id,
       startDate: practiceInfo.start_date,
       endDate: practiceInfo.end_date,
       name: practiceInfo.name,
@@ -6636,6 +6813,7 @@ module.exports = {
   getPhasesGameAndTeams,
   getPhasesWithoutPrerank,
   getPlayerInvoiceItem,
+  getPracticeBasicInfo,
   getPracticeInfo,
   getPreranking,
   getPrerankPhase,
@@ -6720,6 +6898,7 @@ module.exports = {
   updatePlayerAcceptation,
   updatePlayerPaymentStatus,
   updatePractice,
+  updatePracticeRsvp,
   updatePreRanking,
   updateRegistration,
   updateRegistrationPerson,

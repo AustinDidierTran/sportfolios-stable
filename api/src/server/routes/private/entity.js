@@ -897,8 +897,30 @@ router.put(`${BASE_URL}`, async ctx => {
   }
 });
 
+
 router.put(`${BASE_URL}/practice`, async ctx => {
   const entity = await queries.updatePractice(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (entity) {
+    ctx.status = 201;
+    ctx.body = {
+      status: 'success',
+      data: entity,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/practiceRsvp`, async ctx => {
+  const entity = await queries.updatePracticeRsvp(
     ctx.request.body,
     ctx.body.userInfo.id,
   );

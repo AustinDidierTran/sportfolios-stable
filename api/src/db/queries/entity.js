@@ -113,6 +113,7 @@ const {
   getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
   getPhasesWithoutPrerank: getPhasesWithoutPrerankHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
+  getPracticeBasicInfo: getPracticeBasicInfoHelper,
   getPracticeInfo: getPracticeInfoHelper,
   getPreranking: getPrerankingHelper,
   getPrimaryPerson: getPrimaryPersonHelper,
@@ -174,6 +175,7 @@ const {
   updatePlayerAcceptation: updatePlayerAcceptationHelper,
   updatePlayerPaymentStatus: updatePlayerPaymentStatusHelper,
   updatePractice: updatePracticeHelper,
+  updatePracticeRsvp: updatePracticeRsvpHelper,
   updatePreRanking: updatePreRankingHelper,
   updateRegistration: updateRegistrationHelper,
   updateRegistrationPerson: updateRegistrationPersonHelper,
@@ -212,7 +214,7 @@ async function getEntity(id, user_id) {
     res.gamesInfos = await getPersonGamesHelper(id);
   }
   if (res.basicInfos.type === GLOBAL_ENUM.TEAM) {
-    res.eventInfos = await getTeamEventsInfosHelper(id);
+    res.gamesInfos = await getTeamEventsInfosHelper(id);
   }
 
   return res;
@@ -385,6 +387,10 @@ async function getGameInfo(gameId, userId) {
 
 async function getSessionLocations(teamId) {
   return getSessionLocationsHelper(teamId);
+}
+
+async function getPracticeBasicInfo(teamId, userId) {
+  return getPracticeBasicInfoHelper(teamId, userId);
 }
 
 async function getPracticeInfo(practiceId, userId) {
@@ -1283,6 +1289,16 @@ async function updatePractice(body, userId) {
     locationId,
     address,
   );
+}
+
+async function updatePracticeRsvp(body, userId) {
+  const { id, rsvp, personId, updateAll } = body;
+
+  if (!(await isAllowed(id, userId), ENTITIES_ROLE_ENUM.EDITOR)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return updatePracticeRsvpHelper(id, rsvp, personId, updateAll, userId);
 }
 
 async function updateGamesInteractiveTool(body, userId) {
@@ -2202,6 +2218,7 @@ module.exports = {
   getPhases,
   getPhasesGameAndTeams,
   getPossibleSubmissionerInfos,
+  getPracticeBasicInfo,
   getPracticeInfo,
   getPreranking,
   getPrimaryPerson,
@@ -2252,6 +2269,7 @@ module.exports = {
   updatePersonInfos,
   updatePlayerAcceptation,
   updatePractice,
+  updatePracticeRsvp,
   updatePreRanking,
   updateRegistration,
   updateRosterRole,
