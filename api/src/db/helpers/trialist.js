@@ -15,6 +15,11 @@ function createEvaluation(evaluation) {
     .returning('*');
 }
 
+function getAllCommentSuggestions() {
+  return knex('comments');
+}
+
 module.exports = {
   createEvaluation,
+  getAllCommentSuggestions,
 };
