@@ -1,8 +1,11 @@
 {
   "emails": {
-    "added_to_roster_button": "See current roster",
-    "added_to_roster_subject": "You have been added to a roster",
-    "added_to_roster_text": "Hello %s Somebody added you to %s team's roster on Sportfolios. Click on the following button to see the current roster.",
+    "added_to_event_button": "See current roster",
+    "added_to_event_subject": "You have been added to an event",
+    "added_to_event_text": "Hello %s, team %s added you to the event %s on Sportfolios. Click on the following button to see the event.",
+    "added_to_team_button": "See team",
+    "added_to_team_subject": "You have been added to a team",
+    "added_to_team_text": "You have been added to the team %s on Sportfolios. Click on the following button to see the team.",
     "cart_item_added_player_button": "Go to cart",
     "cart_item_added_player_subject": "New item in your cart",
     "cart_item_added_player_text": "Your team %s is now officially registered to %s. You can now go pay your indivdual fees in your cart",

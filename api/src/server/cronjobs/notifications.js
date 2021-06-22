@@ -4,18 +4,10 @@ const {
   sendNotification,
 } = require('../../db/queries/notifications');
 
-const { getPersonInfos } = require('../../db/queries/entity');
-
 const {
   NOTIFICATION_TYPE,
   ROSTER_ROLE_ENUM,
-  ROUTES_ENUM,
-  TABS_ENUM,
 } = require('../../../../common/enums');
-const { formatLinkWithAuthToken } = require('../../db/emails/utils');
-const {
-  formatRoute,
-} = require('../../../../common/utils/stringFormat');
 
 /*
  ┌────────────── second (optional)
@@ -63,34 +55,16 @@ cron.schedule('0-59/15 * * * *', async () => {
       event_id,
       event_name,
     }) => {
-      const metadata = {
+      const infos = {
         gameId: game_id,
         eventId: event_id,
         eventName: event_name,
         playerId: player_id,
       };
-      const buttonLink = await formatLinkWithAuthToken(
-        userId,
-        formatRoute(
-          ROUTES_ENUM.entity,
-          { id: event_id },
-          { tab: TABS_ENUM.SCHEDULE, gameId: game_id },
-        ),
-      );
-      const emailInfos = {
-        name: (await getPersonInfos(player_id)).name,
-        eventName: event_name,
-        type: NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST,
-        buttonLink,
-      };
       sendNotification(
-        {
-          user_id: player_owner,
-          metadata,
-          type: NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST,
-          entity_photo: event_id,
-        },
-        emailInfos,
+        NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST,
+        player_owner,
+        infos,
       );
     },
   );
