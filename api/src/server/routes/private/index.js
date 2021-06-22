@@ -9,6 +9,7 @@ const shop = require('./shop');
 const stripe = require('./stripe');
 const users = require('./users');
 const posts = require('./posts');
+const trialist = require('./trialist');
 
 module.exports = [
   data,
@@ -22,4 +23,5 @@ module.exports = [
   shop,
   stripe,
   users,
+  trialist,
 ];

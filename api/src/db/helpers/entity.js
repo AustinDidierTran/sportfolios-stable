@@ -6428,7 +6428,7 @@ async function getTeamCoachedByUser(person_id) {
 
 async function getAllTeamGames(team_id) {
   const res = await knex('team_rosters')
-    .select('date', 'games.event_id', 'end_time')
+    .select('date', 'end_time', 'games.id')
     .where({ team_id })
     .leftJoin(
       'game_teams',
@@ -6446,7 +6446,7 @@ async function getAllTeamGames(team_id) {
 
   return res.map(i => ({
     date: i.date,
-    eventId: i.event_id,
+    id: i.id,
     endTime: i.end_time,
   }));
 
@@ -6503,6 +6503,12 @@ async function getAllTeamPractices(id) {
     zip: i.zip,
     country: i.country,
   }));
+}
+
+async function getAllExercises() {
+  const res = await knex('exercises').select('*');
+
+  return res;
 }
 
 module.exports = {
@@ -6563,6 +6569,7 @@ module.exports = {
   generateReport,
   getAlias,
   getAllEntities,
+  getAllExercises,
   getAllForYouPagePosts,
   getAllOwnedEntities,
   getAllPeopleRegistered,

@@ -60,6 +60,7 @@ const {
   generateReport: generateReportHelper,
   getAlias: getAliasHelper,
   getAllEntities: getAllEntitiesHelper,
+  getAllExercises: getAllExercisesHelper,
   getAllForYouPagePosts: getAllForYouPagePostsHelper,
   getAllOwnedEntities: getAllOwnedEntitiesHelper,
   getAllPeopleRegisteredInfos: getAllPeopleRegisteredInfosHelper,
@@ -2099,6 +2100,15 @@ async function getAllTeamPractices(teamId) {
   return res;
 }
 
+async function getAllExercises() {
+  const res = await getAllExercisesHelper();
+  if (!res) {
+    return;
+  }
+
+  return res;
+}
+
 module.exports = {
   acceptScoreSuggestion,
   acceptScoreSuggestion,
@@ -2152,6 +2162,7 @@ module.exports = {
   generateReport,
   getAlias,
   getAllEntities,
+  getAllExercises,
   getAllForYouPagePosts,
   getAllOwnedEntities,
   getAllPeopleRegisteredInfos,
