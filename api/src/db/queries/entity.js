@@ -66,7 +66,7 @@ const {
   getAllPeopleRegisteredInfos: getAllPeopleRegisteredInfosHelper,
   getAllPlayersAcceptedRegistered: getAllPlayersAcceptedRegisteredHelper,
   getAllPlayersPending: getAllPlayersPendingHelper,
-  getAllPlayersRefused: getAllPlayersRefusedHelper,
+  getAllTeamPlayersPending: getAllTeamPlayersPendingHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTeamGames: getAllTeamGamesHelper,
   getAllTeamPractices: getAllTeamPracticesHelper,
@@ -173,6 +173,7 @@ const {
   updatePersonInfosHelper,
   updatePlayer: updatePlayerHelper,
   updatePlayerAcceptation: updatePlayerAcceptationHelper,
+  updateTeamPlayerAcceptation: updateTeamPlayerAcceptationHelper,
   updatePlayerPaymentStatus: updatePlayerPaymentStatusHelper,
   updatePractice: updatePracticeHelper,
   updatePracticeRsvp: updatePracticeRsvpHelper,
@@ -479,6 +480,11 @@ async function getAllPlayersPendingAndRefused(eventId) {
   const pending = await getAllPlayersPendingHelper(eventId);
   const refused = await getAllPlayersRefusedHelper(eventId);
   return { pending, refused };
+}
+
+async function getAllTeamPlayersPending(teamId) {
+  const pending = await getAllTeamPlayersPendingHelper(teamId);
+  return pending;
 }
 
 async function getPersonInfos(entityId) {
@@ -1147,6 +1153,17 @@ async function updateTeamAcceptation(body) {
   }
   return res;
 }
+
+async function updateTeamPlayerAcceptation(body) {
+  const { teamId, personId, status } = body;
+  const res = await updateTeamPlayerAcceptationHelper(
+    teamId,
+    personId,
+    status,
+  );
+  return res;
+}
+
 async function updatePlayerAcceptation(body) {
   const { eventId, personId, registrationStatus } = body;
   const res = await updatePlayerAcceptationHelper(
@@ -2184,6 +2201,7 @@ module.exports = {
   getAllPeopleRegisteredInfos,
   getAllPlayersAcceptedRegistered,
   getAllPlayersPendingAndRefused,
+  getAllTeamPlayersPending,
   getAllRolesEntity,
   getAllTeamsAcceptedInfos,
   getAllTeamsAcceptedRegistered,
@@ -2268,6 +2286,7 @@ module.exports = {
   updateRoster,
   updatePersonInfos,
   updatePlayerAcceptation,
+  updateTeamPlayerAcceptation,
   updatePractice,
   updatePracticeRsvp,
   updatePreRanking,
