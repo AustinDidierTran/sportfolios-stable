@@ -16,6 +16,7 @@ const { signS3Request } = require('../../server/utils/aws');
 const {
   createEvaluation: createEvaluationHelper,
   getAllCommentSuggestions: getAllCommentSuggestionsHelper,
+  getPlayerLastEvaluation: getPlayerLastEvaluationhelper,
 } = require('../helpers/trialist');
 
 async function createEvaluation(evaluation) {
@@ -36,7 +37,7 @@ async function getAllCommentSuggestions() {
 }
 
 async function getPlayerLastEvaluation(playerId) {
-  const res = await getPlayerLastEvaluation(playerId);
+  const res = await getPlayerLastEvaluationhelper(playerId);
   if (!res) {
     return;
   }
@@ -46,4 +47,5 @@ async function getPlayerLastEvaluation(playerId) {
 module.exports = {
   createEvaluation,
   getAllCommentSuggestions,
+  getPlayerLastEvaluation,
 };

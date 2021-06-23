@@ -19,11 +19,49 @@ function getAllCommentSuggestions() {
   return knex('comments');
 }
 
-function getPlayerLastEvaluation(playerId) {
-  return knex('evaluations').where({ person_id: playerId });
+async function getPlayerLastEvaluation(playerId) {
+  let res = await knex('evaluations')
+    .select(
+      'rating',
+      'entities_general_infos.name as coach_name',
+      'exercises.name as exercise_name',
+      'event_time_slots.date as game_date',
+      'sessions.start_date as session_date',
+    )
+
+    .where({ person_id: playerId })
+    .leftJoin(
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
+      '=',
+      'evaluations.coach_id',
+    )
+    .leftJoin(
+      'exercises',
+      'exercises.id',
+      '=',
+      'evaluations.exercise_id',
+    )
+    .leftJoin(
+      'event_time_slots',
+      'event_time_slots.event_id',
+      '=',
+      'evaluations.game_id',
+    )
+    .leftJoin(
+      'sessions',
+      'sessions.id',
+      '=',
+      'evaluations.session_id',
+    );
+
+  console.log(res);
+
+  return res;
 }
 
 module.exports = {
   createEvaluation,
   getAllCommentSuggestions,
+  getPlayerLastEvaluation,
 };
