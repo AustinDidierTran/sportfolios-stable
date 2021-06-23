@@ -2530,6 +2530,41 @@ async function getRosterPlayers(rosterId) {
   }));
 }
 
+async function getMyTeamPlayers(teamId, userId) {
+  const res = await knex('user_entity_role')
+    .select(
+      'team_players_infos.person_id',
+      'team_players_infos.id',
+      'team_players_infos.team_id',
+      'team_players_infos.role',
+      'team_players_infos.name',
+      'team_players_infos.photo_url',
+    )
+    .leftJoin(
+      'team_players_infos',
+      'team_players_infos.person_id',
+      '=',
+      'user_entity_role.entity_id',
+    )
+    .leftJoin(
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
+      '=',
+      'user_entity_role.entity_id',
+    )
+    .where({ user_id: userId })
+    .andWhere('team_players_infos.team_id', '=', teamId);
+
+  return res.map(r => ({
+    id: r.id,
+    personId: r.person_id,
+    teamId: r.team_id,
+    role: r.role,
+    photoUrl: r.photo_url,
+    name: r.name,
+  }));
+}
+
 async function getTeamsSchedule(eventId) {
   const res = await knex('event_rosters')
     .select('team_id', 'roster_id', 'event_id', 'name')
@@ -6895,6 +6930,7 @@ module.exports = {
   getTeamPaymentOptionFromRosterId,
   getTeamPlayers,
   getRosterPlayers,
+  getMyTeamPlayers,
   getTeamsSchedule,
   getUnplacedGames,
   getUserIdFromPersonId,

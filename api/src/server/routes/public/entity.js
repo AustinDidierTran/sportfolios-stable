@@ -371,6 +371,7 @@ router.get(`${BASE_URL}/players`, async ctx => {
     };
   }
 });
+
 router.get(`${BASE_URL}/rosterPlayers`, async ctx => {
   const players = await queries.getRosterPlayers(ctx.query.rosterId);
 
@@ -379,6 +380,27 @@ router.get(`${BASE_URL}/rosterPlayers`, async ctx => {
     ctx.body = {
       status: 'success',
       data: players,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/myTeamPlayers`, async ctx => {
+  const isTeamPlayer = await queries.getMyTeamPlayers(
+    ctx.query.teamId,
+    ctx.body.userInfo.id,
+  );
+
+  if (isTeamPlayer) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: isTeamPlayer,
     };
   } else {
     ctx.status = STATUS_ENUM.ERROR;
