@@ -371,6 +371,7 @@ router.get(`${BASE_URL}/players`, async ctx => {
     };
   }
 });
+
 router.get(`${BASE_URL}/rosterPlayers`, async ctx => {
   const players = await queries.getRosterPlayers(ctx.query.rosterId);
 
@@ -387,6 +388,28 @@ router.get(`${BASE_URL}/rosterPlayers`, async ctx => {
       message: 'That record does not exist.',
     };
   }
+});
+
+router.get(`${BASE_URL}/myTeamPlayers`, async ctx => {
+  let userId = -1;
+  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
+    userId = ctx.body.userInfo.id;
+  }
+
+  const myTeamPlayers = await queries.getMyTeamPlayers(
+    ctx.query.teamId,
+    userId,
+  );
+
+  if (!myTeamPlayers) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: myTeamPlayers,
+  };
 });
 
 router.get(`${BASE_URL}/preranking`, async ctx => {

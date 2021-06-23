@@ -133,6 +133,7 @@ const {
   getRosterInviteToken: getRosterInviteTokenHelper,
   getRosterInvoiceItem,
   getRosterPlayers: getRosterPlayersHelper,
+  getMyTeamPlayers: getMyTeamPlayersHelper,
   getRostersNames: getRostersNamesHelper,
   getScoreSuggestion: getScoreSuggestionHelper,
   getSessionLocations: getSessionLocationsHelper,
@@ -440,6 +441,10 @@ async function getTeamPlayers(teamId) {
 
 async function getRosterPlayers(rosterId) {
   return getRosterPlayersHelper(rosterId);
+}
+
+async function getMyTeamPlayers(teamId, userId) {
+  return getMyTeamPlayersHelper(teamId, userId);
 }
 
 async function getFields(eventId) {
@@ -1315,7 +1320,13 @@ async function updatePracticeRsvp(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  return updatePracticeRsvpHelper(id, rsvp, personId, updateAll, userId);
+  return updatePracticeRsvpHelper(
+    id,
+    rsvp,
+    personId,
+    updateAll,
+    userId,
+  );
 }
 
 async function updateGamesInteractiveTool(body, userId) {
@@ -2262,6 +2273,7 @@ module.exports = {
   getTeamRosters,
   getTeamPlayers,
   getRosterPlayers,
+  getMyTeamPlayers,
   getTeamsSchedule,
   hasMemberships,
   importMembers,
