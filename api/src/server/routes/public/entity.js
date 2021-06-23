@@ -391,24 +391,25 @@ router.get(`${BASE_URL}/rosterPlayers`, async ctx => {
 });
 
 router.get(`${BASE_URL}/myTeamPlayers`, async ctx => {
-  const isTeamPlayer = await queries.getMyTeamPlayers(
+  let userId = -1;
+  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
+    userId = ctx.body.userInfo.id;
+  }
+
+  const myTeamPlayers = await queries.getMyTeamPlayers(
     ctx.query.teamId,
-    ctx.body.userInfo.id,
+    userId,
   );
 
-  if (isTeamPlayer) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: isTeamPlayer,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!myTeamPlayers) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: myTeamPlayers,
+  };
 });
 
 router.get(`${BASE_URL}/preranking`, async ctx => {
