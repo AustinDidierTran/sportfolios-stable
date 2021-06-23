@@ -1308,7 +1308,7 @@ async function getMemberships(entityId) {
         price: m.price,
         fixedDate: m.fixed_date,
         stripePriceId: m.stripe_price_id,
-        description: m.id,
+        description: m.description,
         fileName: m.file_name,
         fileUrl: m.file_url,
         transactionFees,
@@ -2028,7 +2028,15 @@ async function getPhasesWithoutPrerank(eventId) {
   const res = await Promise.all(
     phases.map(async phase => {
       const ranking = await getPhaseRanking(phase.id);
-      return { ...phase, ranking };
+      return {
+        id: phase.id,
+        name: phase.name,
+        eventId: phase.event_id,
+        spots: phase.spots,
+        phaseOrder: phase.phase_order,
+        status: phase.status,
+        ranking,
+      };
     }),
   );
   return res;
@@ -2052,13 +2060,44 @@ async function getPhaseRanking(phaseId) {
       if (r.roster_id) {
         const phaseName = await getPhaseName(r.origin_phase);
         const name = await getRosterName(r.roster_id);
-        return { ...r, name, teamName: name, phaseName };
+        return {
+          id: r.id,
+          rosterId: r.roster,
+          originPhase: r.origin_phase,
+          originPosition: r.origin_position,
+          currentPhase: r.current_phase,
+          initialPosition: r.initial_position,
+          finalPosition: r.final_position,
+          rankingId: r.ranking_id,
+          name,
+          teamName: name,
+          phaseName,
+        };
       }
       if (r.origin_phase && r.origin_position && !r.roster_id) {
         const phaseName = await getPhaseName(r.origin_phase);
-        return { ...r, phaseName };
+        return {
+          id: r.id,
+          rosterId: r.roster,
+          originPhase: r.origin_phase,
+          originPosition: r.origin_position,
+          currentPhase: r.current_phase,
+          initialPosition: r.initial_position,
+          finalPosition: r.final_position,
+          rankingId: r.ranking_id,
+          phaseName,
+        };
       } else {
-        return { ...r };
+        return {
+          id: r.id,
+          rosterId: r.roster,
+          originPhase: r.origin_phase,
+          originPosition: r.origin_position,
+          currentPhase: r.current_phase,
+          initialPosition: r.initial_position,
+          finalPosition: r.final_position,
+          rankingId: r.ranking_id,
+        };
       }
     }),
   );
@@ -2079,6 +2118,14 @@ async function getPositions(gameId) {
           positions[index].photoUrl = photoUrl;
         }
       }
+      positions[index].gameId = p.game_id;
+      positions[index].id = p.id;
+      positions[index].name = p.name;
+      positions[index].position = p.position;
+      positions[index].rankingId = p.ranking_id;
+      positions[index].rosterId = p.roster_id;
+      positions[index].score = p.score;
+      positions[index].spirit = p.spirit;
     }),
   );
 
@@ -2117,6 +2164,7 @@ async function getGames(eventId) {
       // field and start_time are temporary, this will change when all the schedule logic will be handled in backend.
       // For now this is so it can still works even after adding the new ids to these fields.
       return {
+        id: game.id,
         eventId: game.event_id,
         phaseId: game.phase_id,
         description: game.description,
@@ -2393,7 +2441,18 @@ async function getTeamsPhase(phaseId) {
       const phaseName = await getPhaseName(r.origin_phase);
       const name = await getRosterName(r.roster_id);
       const teamId = await getTeamIdFromRosterId(r.roster_id);
-      return { ...r, teamId, name, phaseName };
+      return {
+        rosterId: r.roster_id,
+        originPhase: r.origin_phase,
+        originPosition: r.origin_position,
+        currentPhase: r.current_phase,
+        initialPosition: r.initial_position,
+        finalPosition: r.final_position,
+        rankingId: r.ranking_id,
+        teamId,
+        name,
+        phaseName,
+      };
     }),
   );
   return rankingsWithName;
@@ -2417,7 +2476,21 @@ async function getPhasesGameAndTeams(eventId, phaseId) {
           'game_teams.roster_id',
         )
         .where({ game_id: game.id });
-      return { id: game.id, phaseId: game.phase_id, eventId, teams };
+      return {
+        id: game.id,
+        phaseId: game.phase_id,
+        eventId,
+        teams: teams.map(t => ({
+          gameId: t.game_id,
+          rosterId: t.roster_id,
+          score: t.score,
+          position: t.position,
+          name: t.name,
+          id: t.id,
+          spirit: t.spirit,
+          rankingId: t.ranking_id,
+        })),
+      };
     }),
   );
   return { games: res, teams };
@@ -2488,7 +2561,11 @@ async function getSlots(eventId) {
     .select('*')
     .where({ event_id: eventId })
     .orderBy('date');
-  return res;
+  return res.map(r => ({
+    id: r.id,
+    eventId: r.event_id,
+    date: r.date,
+  }));
 }
 
 async function getTeamPlayers(teamId) {
@@ -2544,19 +2621,23 @@ async function getTeamsSchedule(eventId) {
       STATUS_ENUM.ACCEPTED,
     ])
     .andWhere({ event_id: eventId });
-  return {
-    teamId: res.team_id,
-    rosterId: res.roster_id,
-    eventId: res.event_id,
-    name: res.name,
-  };
+  return res.map(r => ({
+    teamId: r.team_id,
+    rosterId: r.roster_id,
+    eventId: r.event_id,
+    name: r.name,
+  }));
 }
 
 async function getFields(eventId) {
   const res = await knex('event_fields')
     .select('*')
     .where({ event_id: eventId });
-  return res;
+  return res.map(r => ({
+    eventId: r.event_id,
+    field: r.field,
+    id: r.id,
+  }));
 }
 
 async function getGeneralInfos(entityId) {
@@ -6152,11 +6233,21 @@ const getGameInfo = async (id, userId) => {
     .select('date')
     .where({ id: game.timeslot_id });
   return {
-    ...game,
+    id: game.id,
+    phaseId: game.phase_id,
+    fieldId: game.field_id,
+    locationId: game.location_id,
+    eventId: game.event_id,
+    entityId: game.entity.id,
+    description: game.description,
+    notifiedStart: game.notified_start,
+    notifiedEnd: game.notified_end,
+    phaseName: game.phase_name,
+    timeslotId: game.timeslot_id,
     positions,
-    score_submited: score_suggestion.score_submited,
+    scoreSubmited: score_suggestion.score_submited,
     field: r1.field,
-    start_time: r2.date,
+    startTime: r2.date,
     role,
   };
 };
