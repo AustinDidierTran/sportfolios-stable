@@ -968,8 +968,8 @@ async function getOptions(eventId) {
   return getOptionsHelper(eventId);
 }
 
-const addEntity = async (body, user_id) => {
-  return addEntityHelper(body, user_id);
+const addEntity = async (body, userId) => {
+  return addEntityHelper(body, userId);
 };
 
 const addPartner = async body => {
@@ -1866,8 +1866,8 @@ async function addMembership(body, userId) {
   return res;
 }
 
-async function deleteEntity(id, user_id) {
-  return deleteEntityHelper(id, user_id);
+async function deleteEntity(body, userId) {
+  return deleteEntityHelper(body, userId);
 }
 
 async function deletePartner(partnerId) {

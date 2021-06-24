@@ -111,7 +111,42 @@ const addEntity = async (body, userId) => {
 
         return { id };
       }
-      case GLOBAL_ENUM.TEAM:
+      case GLOBAL_ENUM.TEAM: {
+        await knex('team_players')
+          .insert({
+            team_id: entityId,
+            person_id: creatorId,
+            role: ROSTER_ROLE_ENUM.CAPTAIN,
+          })
+          .transacting(trx);
+
+        const [roster] = await knex('team_rosters')
+          .insert({
+            team_id: entityId,
+            name: 'Main Roster',
+            active: true,
+          })
+          .returning('*')
+          .transacting(trx);
+
+        await knex('roster_players')
+          .insert({
+            roster_id: roster.id,
+            person_id: creatorId,
+            role: ROSTER_ROLE_ENUM.CAPTAIN,
+          })
+          .transacting(trx);
+
+        await knex('entities_role')
+          .insert({
+            entity_id: entityId,
+            entity_id_admin: creatorId,
+            role: ENTITIES_ROLE_ENUM.ADMIN,
+          })
+          .transacting(trx);
+
+        return { id: entityId };
+      }
       case GLOBAL_ENUM.ORGANIZATION: {
         await knex('entities_role')
           .insert({
@@ -5953,17 +5988,18 @@ async function removeEntityRole(entityId, entityIdAdmin) {
     .del();
 }
 
-const deleteEntity = async (entityId, userId) => {
-  const role = await getEntityRole(entityId, userId);
+const deleteEntity = async (body, userId) => {
+  const { id } = body;
+  const role = await getEntityRole(id, userId);
 
   if (role !== ENTITIES_ROLE_ENUM.ADMIN) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   } else {
     await knex('alias')
-      .where({ id: entityId })
+      .where({ id })
       .del();
     await knex('entities')
-      .where({ id: entityId })
+      .where({ id })
       .del();
   }
 };
