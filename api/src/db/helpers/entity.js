@@ -948,7 +948,15 @@ async function getEntityRole(entityId, userId) {
   return Math.min(...roles);
 }
 
-async function getMostRecentMember(personId, organizationId) {
+async function getPrimaryPersonIdFromUserId(user_id) {
+  const [{ primary_person: id }] = await knex('user_primary_person')
+    .select('primary_person')
+    .where({ user_id });
+  return id;
+}
+
+async function getMostRecentMember(organizationId, userId) {
+  const personId = await getPrimaryPersonIdFromUserId(userId);
   const [member] = await knex('memberships_infos')
     .select('member_type')
     .rightJoin(
@@ -2152,6 +2160,7 @@ async function getGames(eventId) {
       // field and start_time are temporary, this will change when all the schedule logic will be handled in backend.
       // For now this is so it can still works even after adding the new ids to these fields.
       return {
+        id: game.id,
         eventId: game.event_id,
         phaseId: game.phase_id,
         description: game.description,
@@ -2401,7 +2410,12 @@ async function getTeamGames(eventId) {
           'game_teams.roster_id',
         )
         .where({ game_id: game.id });
-      return { id: game.id, phaseId: game.phase_id, eventId, teams };
+      return {
+        id: game.id,
+        phaseId: game.phase_id,
+        eventId,
+        teams,
+      };
     }),
   );
   return res;

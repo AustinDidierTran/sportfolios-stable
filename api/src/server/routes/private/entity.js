@@ -389,8 +389,8 @@ router.get(`${BASE_URL}/members`, async ctx => {
 
 router.get(`${BASE_URL}/recentMember`, async ctx => {
   const member = await queries.getMostRecentMember(
-    ctx.query.personId,
     ctx.query.id,
+    ctx.body.userInfo.id,
   );
 
   if (member) {

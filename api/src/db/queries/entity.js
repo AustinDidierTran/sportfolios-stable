@@ -300,8 +300,8 @@ async function getMemberships(entity_id) {
   return getMembershipsHelper(entity_id);
 }
 
-async function getMostRecentMember(personId, organizationId) {
-  return getMostRecentMemberHelper(personId, organizationId);
+async function getMostRecentMember(organizationId, userId) {
+  return getMostRecentMemberHelper(organizationId, userId);
 }
 
 async function getPartners(entityId) {
