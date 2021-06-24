@@ -450,7 +450,7 @@ Don't forget to change `username` and `password` for the right parameters.
 ### How to run the application pm2
 
 ```
-TODO: tell how to run the app when using pm2
+pm2 start pm2-dev.json
 ```
 
 #
@@ -516,6 +516,20 @@ Change your username for your postgres username. If you don't have one try 'post
 ![](pgAdminConnection.png)
 
 You're all set! Go to Servers -> Sportfolios -> Database -> sportfolios_api_dev -> Schemas -> Tables to see all your tables.
+
+## Quick way to populate your db
+
+Two SQL scripts exists to populate your db
+
+```
+sportfolios-stable/quickCreateTournamentQueries.sql
+```
+
+```
+sportfolios-stable/quickCreateSessions.sql
+```
+
+Run them in pgAdmin using the Query tool
 
 ## How email are displayed
 
@@ -622,16 +636,6 @@ openssl req -new -key key.pem -out csr.pem
 openssl x509 -req -days 9999 -in csr.pem -signkey key.pem -out cert.pem
 rm csr.pem
 ```
-
-## MODULE BUNDLER
-
-This project is built using [Webpack](https://survivejs.com/webpack/what-is-webpack/#:~:text=Webpack%20gives%20you%20control%20over,issues%20of%20standard%20CSS%20styling).
-
-I have tried using [Next.js](https://nextjs.org/) instead to simplify the setup process, but decided not too. Since the application is already all set up, using next would require lots of changes in the current codebase. It uses a different router, and doesn’t treat pages in the same way as react-router. The api part seemed also pretty different, but I did not look into it that much.
-
-The reason I would use Next.js in a new project is for the SSR (Server-side rendering), built-in typescript and sass-modules integration, easy routing and api integration when started from scratch. Next.js is built on top of webpack, so most web pack features can be added to the project using a web pack config file.
-
-#
 
 ## PWA
 
