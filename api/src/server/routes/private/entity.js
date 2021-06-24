@@ -207,6 +207,22 @@ router.get(`${BASE_URL}/all`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/role`, async ctx => {
+  const role = await queries.getRole(
+    ctx.query.entityId,
+    ctx.body.userInfo.id,
+  );
+
+  if (!role) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: role,
+  };
+});
+
 router.get(`${BASE_URL}/forYouPage`, async ctx => {
   const entity = await queries.getAllForYouPagePosts(ctx.query);
 
