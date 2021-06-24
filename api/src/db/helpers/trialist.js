@@ -43,7 +43,7 @@ async function getPlayerLastEvaluation(playerId) {
       'evaluations.exercise_id',
     )
     .limit(5)
-    .orderBy('evaluations.created_at');
+    .orderBy('evaluations.created_at', 'desc');
 
   return res;
 }
