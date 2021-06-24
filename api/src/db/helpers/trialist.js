@@ -22,11 +22,11 @@ function getAllCommentSuggestions() {
 async function getPlayerLastEvaluation(playerId) {
   let res = await knex('evaluations')
     .select(
+      'evaluations.game_id',
+      'evaluations.session_id',
       'rating',
       'entities_general_infos.name as coach_name',
       'exercises.name as exercise_name',
-      'event_time_slots.date as game_date',
-      'sessions.start_date as session_date',
     )
 
     .where({ person_id: playerId })
@@ -42,20 +42,8 @@ async function getPlayerLastEvaluation(playerId) {
       '=',
       'evaluations.exercise_id',
     )
-    .leftJoin(
-      'event_time_slots',
-      'event_time_slots.event_id',
-      '=',
-      'evaluations.game_id',
-    )
-    .leftJoin(
-      'sessions',
-      'sessions.id',
-      '=',
-      'evaluations.session_id',
-    );
-
-  console.log(res);
+    .limit(5)
+    .orderBy('evaluations.created_at');
 
   return res;
 }

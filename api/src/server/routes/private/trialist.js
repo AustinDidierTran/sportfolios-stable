@@ -7,7 +7,9 @@ const router = new Router();
 const BASE_URL = '/api/trialist';
 
 router.post(`${BASE_URL}/createEvaluation`, async ctx => {
-  const res = await queries.createEvaluation(ctx.request.body);
+  const res = await queries.createEvaluation(
+    ctx.request.body.evaluation,
+  );
   if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
@@ -39,7 +41,6 @@ router.get(`${BASE_URL}/comments`, async ctx => {
 });
 
 router.get(`${BASE_URL}/getPlayerLastEvaluation`, async ctx => {
-  console.log('ALLO = ', ctx.query.playerId);
   const res = await queries.getPlayerLastEvaluation(
     ctx.query.playerId,
   );
