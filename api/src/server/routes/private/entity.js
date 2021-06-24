@@ -918,7 +918,6 @@ router.put(`${BASE_URL}`, async ctx => {
   }
 });
 
-
 router.put(`${BASE_URL}/practice`, async ctx => {
   const entity = await queries.updatePractice(
     ctx.request.body,
@@ -2208,7 +2207,7 @@ router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
 });
 
 router.del(BASE_URL, async ctx => {
-  await queries.deleteEntity(ctx.query.id, ctx.body.userInfo.id);
+  await queries.deleteEntity(ctx.query, ctx.body.userInfo.id);
   ctx.status = 201;
   ctx.body = {
     status: 'success',
