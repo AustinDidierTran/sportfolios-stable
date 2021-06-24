@@ -1,6 +1,7 @@
 const {
   createEvaluation: createEvaluationHelper,
   getAllCommentSuggestions: getAllCommentSuggestionsHelper,
+  getPlayerLastEvaluation: getPlayerLastEvaluationhelper,
 } = require('../helpers/trialist');
 
 async function createEvaluation(evaluation) {
@@ -20,7 +21,16 @@ async function getAllCommentSuggestions() {
   return res;
 }
 
+async function getPlayerLastEvaluation(playerId) {
+  const res = await getPlayerLastEvaluationhelper(playerId);
+  if (!res) {
+    return;
+  }
+  return res;
+}
+
 module.exports = {
   createEvaluation,
   getAllCommentSuggestions,
+  getPlayerLastEvaluation,
 };
