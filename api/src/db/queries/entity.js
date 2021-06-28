@@ -198,6 +198,7 @@ const {
   getLanguageFromEmail,
   getUserIdFromEmail,
   validateEmailIsUnique: validateEmailIsUniqueHelper,
+  getPrimaryPersonIdFromUserId,
 } = require('../helpers');
 const { sendNotification } = require('./notifications');
 
@@ -304,8 +305,9 @@ function getMemberships(entityId) {
   return getMembershipsHelper(entityId);
 }
 
-function getMostRecentMember(organizationId, userId) {
-  return getMostRecentMemberHelper(organizationId, userId);
+async function getMostRecentMember(organizationId, userId) {
+  const personId = await getPrimaryPersonIdFromUserId(userId);
+  return getMostRecentMemberHelper(personId, organizationId);
 }
 
 function getPartners(entityId) {

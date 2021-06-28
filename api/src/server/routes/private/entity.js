@@ -405,7 +405,7 @@ router.get(`${BASE_URL}/members`, async ctx => {
 
 router.get(`${BASE_URL}/recentMember`, async ctx => {
   const member = await queries.getMostRecentMember(
-    ctx.query.id,
+    ctx.query.organizationId,
     ctx.body.userInfo.id,
   );
 
@@ -460,7 +460,9 @@ router.get(`${BASE_URL}/generateReport`, async ctx => {
 });
 
 router.get(`${BASE_URL}/hasMemberships`, async ctx => {
-  const entity = await queries.hasMemberships(ctx.query.id);
+  const entity = await queries.hasMemberships(
+    ctx.query.organizationId,
+  );
   if (entity || entity === false) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
