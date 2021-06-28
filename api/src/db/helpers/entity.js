@@ -6379,7 +6379,8 @@ const getPracticeBasicInfo = async (teamId, userId) => {
       'addresses.state',
       'addresses.zip',
       'addresses.country',
-      'player.rsvp',
+      'myPlayer.rsvp as myRsvp',
+      'player.rsvp as rsvp',
     )
     .leftJoin(
       'sessions',
@@ -6412,6 +6413,24 @@ const getPracticeBasicInfo = async (teamId, userId) => {
           entities.map(e => e.id),
         )
         .groupBy('roster_id')
+        .as('myPlayer'),
+      'myPlayer.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .leftJoin(
+      knex('roster_players_infos')
+        .select(
+          knex.raw(
+            "json_agg(json_build_object('rsvp', roster_players_infos.rsvp, 'photoUrl', roster_players_infos.photo_url, 'name', roster_players_infos.name)) AS rsvp",
+          ),
+          'roster_id',
+        )
+        .whereNotIn(
+          'roster_players_infos.person_id',
+          entities.map(e => e.id),
+        )
+        .groupBy('roster_id')
         .as('player'),
       'player.roster_id',
       '=',
@@ -6433,6 +6452,7 @@ const getPracticeBasicInfo = async (teamId, userId) => {
     state: p.state,
     zip: p.zip,
     country: p.country,
+    myRsvp: p.myRsvp,
     rsvp: p.rsvp,
   }));
 };
