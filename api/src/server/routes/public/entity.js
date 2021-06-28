@@ -13,14 +13,18 @@ const {
 const router = new Router();
 const BASE_URL = '/api/entity';
 
-router.get(BASE_URL, async ctx => {
-  const type = await queries.getEntitiesTypeById(ctx.query.id);
-  let entity;
-
+const getUserId = ctx => {
   let userId = -1;
   if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
     userId = ctx.body.userInfo.id;
   }
+  return userId;
+};
+
+router.get(BASE_URL, async ctx => {
+  const type = await queries.getEntitiesTypeById(ctx.query.id);
+  const userId = getUserId(ctx);
+  let entity;
 
   switch (type) {
     case GLOBAL_ENUM.ORGANIZATION:
@@ -67,66 +71,32 @@ router.get(`${BASE_URL}/realId`, async ctx => {
 router.get(`${BASE_URL}/alias`, async ctx => {
   const alias = await queries.getAlias(ctx.query.entityId);
 
-  if (alias) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: alias,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!alias) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-});
-router.get(`${BASE_URL}/role`, async ctx => {
-  const role = await queries.getRole(
-    ctx.query.entityId,
-    ctx.body.userInfo.id,
-  );
-
-  if (role) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: role,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
-  }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: alias,
+  };
 });
 
 router.get(`${BASE_URL}/eventInfos`, async ctx => {
-  const userId =
-    ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
-  const entity = await queries.eventInfos(ctx.query.id, userId);
+  const userId = getUserId(ctx);
+  const event = await queries.eventInfos(ctx.query.id, userId);
 
-  if (entity) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!event) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: event,
+  };
 });
 
 router.get(`${BASE_URL}/events`, async ctx => {
-  let userId = -1;
-  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
-    userId = ctx.body.userInfo.id;
-  }
+  const userId = getUserId(ctx);
 
   const entity = await OrganizationController.events(
     ctx.query.id,
@@ -145,10 +115,8 @@ router.get(`${BASE_URL}/events`, async ctx => {
 });
 
 router.get(`${BASE_URL}/membershipsTab`, async ctx => {
-  let userId = -1;
-  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
-    userId = ctx.body.userInfo.id;
-  }
+  const userId = getUserId(ctx);
+
   const entity = await OrganizationController.memberships(
     ctx.query.id,
     userId,
@@ -169,10 +137,8 @@ router.get(`${BASE_URL}/home`, async ctx => {
   const type = await queries.getEntitiesTypeById(ctx.query.id);
   let entity;
 
-  let userId = -1;
-  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
-    userId = ctx.body.userInfo.id;
-  }
+  const userId = getUserId(ctx);
+
   switch (type) {
     case GLOBAL_ENUM.ORGANIZATION:
       entity = await OrganizationController.home(
@@ -202,10 +168,7 @@ router.get(`${BASE_URL}/about`, async ctx => {
   const type = await queries.getEntitiesTypeById(ctx.query.id);
   let entity;
 
-  let userId = -1;
-  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
-    userId = ctx.body.userInfo.id;
-  }
+  const userId = getUserId(ctx);
 
   switch (type) {
     case GLOBAL_ENUM.ORGANIZATION:
@@ -232,169 +195,140 @@ router.get(`${BASE_URL}/about`, async ctx => {
 });
 
 router.get(`${BASE_URL}/teams`, async ctx => {
-  let userId = -1;
-  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
-    userId = ctx.body.userInfo.id;
-  }
-  const entity = await EventController.teams(ctx.query.id, userId);
+  const userId = getUserId(ctx);
 
-  if (!entity) {
+  const teams = await EventController.teams(ctx.query.id, userId);
+
+  if (!teams) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
   ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: 'success',
-    data: entity,
+    data: teams,
   };
 });
 
 router.get(`${BASE_URL}/schedule`, async ctx => {
-  let userId = -1;
-  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
-    userId = ctx.body.userInfo.id;
-  }
+  const userId = getUserId(ctx);
 
-  const entity = await EventController.schedule(ctx.query.id, userId);
+  const schedule = await EventController.schedule(
+    ctx.query.id,
+    userId,
+  );
 
-  if (!entity) {
+  if (!schedule) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
   ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: 'success',
-    data: entity,
+    data: schedule,
   };
 });
 
 router.get(`${BASE_URL}/rankings`, async ctx => {
-  let userId = -1;
-  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
-    userId = ctx.body.userInfo.id;
-  }
-  const entity = await EventController.rankings(ctx.query.id, userId);
+  const userId = getUserId(ctx);
 
-  if (!entity) {
+  const rankings = await EventController.rankings(
+    ctx.query.id,
+    userId,
+  );
+
+  if (!rankings) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
   ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: 'success',
-    data: entity,
+    data: rankings,
   };
 });
 
 router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
-  const userId =
-    ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
-  const entity = await queries.getAllTeamsRegisteredInfos(
+  const userId = getUserId(ctx);
+
+  const teams = await queries.getAllTeamsRegisteredInfos(
     ctx.query.eventId,
     userId,
   );
 
-  if (entity) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!teams) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: teams,
+  };
 });
 router.get(`${BASE_URL}/allTeamsAcceptedInfos`, async ctx => {
-  const userId =
-    ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
-  const entity = await queries.getAllTeamsAcceptedInfos(
+  const userId = getUserId(ctx);
+
+  const teams = await queries.getAllTeamsAcceptedInfos(
     ctx.query.eventId,
     userId,
   );
 
-  if (entity) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!teams) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: teams,
+  };
 });
 
 router.get(`${BASE_URL}/allPeopleRegisteredInfos`, async ctx => {
-  const userId =
-    ctx.body && ctx.body.userInfo && ctx.body.userInfo.id;
-  const entity = await queries.getAllPeopleRegisteredInfos(
+  const userId = getUserId(ctx);
+
+  const people = await queries.getAllPeopleRegisteredInfos(
     ctx.query.eventId,
     userId,
   );
 
-  if (entity) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!people) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: people,
+  };
 });
 
 router.get(`${BASE_URL}/players`, async ctx => {
   const players = await queries.getTeamPlayers(ctx.query.teamId);
 
-  if (players) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: players,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!players) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: players,
+  };
 });
 
 router.get(`${BASE_URL}/rosterPlayers`, async ctx => {
   const players = await queries.getRosterPlayers(ctx.query.rosterId);
 
-  if (players) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: players,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!players) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: players,
+  };
 });
 
 router.get(`${BASE_URL}/myTeamPlayers`, async ctx => {
-  let userId = -1;
-  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
-    userId = ctx.body.userInfo.id;
-  }
+  const userId = getUserId(ctx);
 
   const myTeamPlayers = await queries.getMyTeamPlayers(
     ctx.query.teamId,
@@ -414,62 +348,55 @@ router.get(`${BASE_URL}/myTeamPlayers`, async ctx => {
 
 router.get(`${BASE_URL}/preranking`, async ctx => {
   const ranking = await queries.getPreranking(ctx.query.eventId);
-  if (ranking) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: ranking,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+
+  if (!ranking) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: ranking,
+  };
 });
 
 router.get(`${BASE_URL}/remainingSpots`, async ctx => {
   const remaining = await queries.getRemainingSpots(ctx.query.id);
 
-  if (remaining >= 0) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: remaining,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (remaining < 0) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: remaining,
+  };
 });
 
 router.get(`${BASE_URL}/getRoster`, async ctx => {
-  const entity = await queries.getRoster(
+  const roster = await queries.getRoster(
     ctx.query.rosterId,
     ctx.query.withSub,
   );
 
-  if (entity) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!roster) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: roster,
+  };
 });
 
 router.get(`${BASE_URL}/options`, async ctx => {
   const option = await queries.getOptions(ctx.query.eventId);
+
+  if (!option) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
   ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: 'success',
@@ -480,58 +407,48 @@ router.get(`${BASE_URL}/options`, async ctx => {
 router.get(`${BASE_URL}/phases`, async ctx => {
   const phases = await queries.getPhases(ctx.query.eventId);
 
-  if (phases) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: phases,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!phases) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: phases,
+  };
 });
 
 router.get(`${BASE_URL}/games`, async ctx => {
   const games = await queries.getGames(ctx.query.eventId);
 
-  if (games) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: games,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!games) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: games,
+  };
 });
 
 router.get(`${BASE_URL}/gameInfo`, async ctx => {
+  const userId = getUserId(ctx);
+
   const gameInfo = await queries.getGameInfo(
     ctx.query.gameId,
-    ctx.body.userInfo.id,
+    userId,
   );
 
-  if (gameInfo) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: gameInfo,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!gameInfo) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: gameInfo,
+  };
 });
 
 router.get(`${BASE_URL}/teamLocations`, async ctx => {
@@ -539,89 +456,67 @@ router.get(`${BASE_URL}/teamLocations`, async ctx => {
     ctx.query.teamId,
   );
 
-  if (locations) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: locations,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!locations) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: locations,
+  };
 });
 
 router.get(`${BASE_URL}/practiceBasicInfo`, async ctx => {
-  let userId = -1;
-  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
-    userId = ctx.body.userInfo.id;
-  }
+  const userId = getUserId(ctx);
 
   const practicesBasicInfo = await queries.getPracticeBasicInfo(
     ctx.query.teamId,
     userId,
   );
 
-  if (practicesBasicInfo) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: practicesBasicInfo,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!practicesBasicInfo) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: practicesBasicInfo,
+  };
 });
 
 router.get(`${BASE_URL}/practiceInfo`, async ctx => {
-  let userId = -1;
-  if (ctx.body && ctx.body.userInfo && ctx.body.userInfo.id) {
-    userId = ctx.body.userInfo.id;
-  }
+  const userId = getUserId(ctx);
 
   const practiceInfo = await queries.getPracticeInfo(
     ctx.query.practiceId,
     userId,
   );
 
-  if (practiceInfo) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: practiceInfo,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!practiceInfo) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: practiceInfo,
+  };
 });
 
 router.get(`${BASE_URL}/teamGames`, async ctx => {
   const games = await queries.getTeamGames(ctx.query.eventId);
 
-  if (games) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: games,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!games) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: games,
+  };
 });
 router.get(`${BASE_URL}/phasesGameAndTeams`, async ctx => {
   const games = await queries.getPhasesGameAndTeams(
@@ -629,107 +524,83 @@ router.get(`${BASE_URL}/phasesGameAndTeams`, async ctx => {
     ctx.query.phaseId,
   );
 
-  if (games) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-
-    ctx.body = {
-      status: 'success',
-      data: games,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!games) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: games,
+  };
 });
 
 router.get(`${BASE_URL}/slots`, async ctx => {
   const slots = await queries.getSlots(ctx.query.eventId);
 
-  if (slots) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: slots,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!slots) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: slots,
+  };
 });
 
 router.get(`${BASE_URL}/teamsSchedule`, async ctx => {
   const teams = await queries.getTeamsSchedule(ctx.query.eventId);
 
-  if (teams) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: teams,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!teams) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: teams,
+  };
 });
 
 router.get(`${BASE_URL}/fields`, async ctx => {
   const field = await queries.getFields(ctx.query.eventId);
 
-  if (field) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: field,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!field) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: field,
+  };
 });
 
 router.get(`${BASE_URL}/rosters`, async ctx => {
   const rosters = await queries.getTeamRosters(ctx.query.teamId);
-  if (rosters) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      rosters,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-    };
+  if (!rosters) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: rosters,
+  };
 });
 
 router.get(`${BASE_URL}/rostersNames`, async ctx => {
-  const res = await queries.getRostersNames(ctx.query.id);
-  if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: res,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  const names = await queries.getRostersNames(ctx.query.id);
+  if (!names) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: names,
+  };
 });
 
 module.exports = router;
