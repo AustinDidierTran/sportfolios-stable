@@ -96,7 +96,13 @@ const createUserComplete = async body => {
     await Promise.all(
       NOTIFICATION_ARRAY.map(async notif => {
         await knex('user_notification_setting')
-          .insert({ type: notif, user_id })
+          .insert({
+            user_id,
+            type: notif.type,
+            email: notif.email,
+            chatbot: notif.chatbot,
+            in_app: notif.inApp,
+          })
           .transacting(trx);
       }),
     );

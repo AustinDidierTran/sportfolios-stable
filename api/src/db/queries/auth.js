@@ -54,7 +54,6 @@ const signup = async ({
     surname: lastName,
     newsLetterSubscription,
   });
-
   await createConfirmationEmailToken({
     email,
     token: confirmationEmailToken,
