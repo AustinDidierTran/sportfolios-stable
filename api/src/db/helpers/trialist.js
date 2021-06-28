@@ -24,9 +24,13 @@ async function getPlayerLastEvaluation(playerId) {
     .select(
       'evaluations.game_id',
       'evaluations.session_id',
+      'evaluations.exercise_id',
+      'evaluations.person_id',
+      'evaluations.created_at',
       'rating',
       'entities_general_infos.name as coach_name',
       'exercises.name as exercise_name',
+      'evaluations.coach_id',
     )
 
     .where({ person_id: playerId })
