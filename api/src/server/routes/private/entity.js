@@ -2233,7 +2233,7 @@ router.del(BASE_URL, async ctx => {
 });
 
 router.del(`${BASE_URL}/membership`, async ctx => {
-  await queries.deleteEntityMembership(ctx.query.id);
+  await queries.deleteEntityMembership(ctx.query.membershipId);
   ctx.status = 201;
   ctx.body = {
     status: 'success',

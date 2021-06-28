@@ -1894,8 +1894,7 @@ function deleteRosterPlayer(id) {
   return deleteRosterPlayerHelper(id);
 }
 
-function deleteEntityMembership(query) {
-  const { membershipId } = query;
+function deleteEntityMembership(membershipId) {
   return deleteEntityMembershipHelper(membershipId);
 }
 

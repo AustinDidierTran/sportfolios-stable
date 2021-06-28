@@ -2461,7 +2461,18 @@ async function getTeamGames(eventId) {
         id: game.id,
         phaseId: game.phase_id,
         eventId,
-        teams,
+        teams: teams.map(t => ({
+          gameId: t.game_id,
+          rosterId: t.roster_id,
+          score: t.score,
+          position: t.position,
+          name: t.name,
+          teamId: t.team_id,
+          spirit: t.spirit,
+          rankingId: t.ranking_id,
+          id: t.id,
+          active: t.active,
+        })),
       };
     }),
   );
@@ -2534,7 +2545,7 @@ async function getPhasesGameAndTeams(eventId, phaseId) {
           score: t.score,
           position: t.position,
           name: t.name,
-          id: t.id,
+          teamId: t.team_id,
           spirit: t.spirit,
           rankingId: t.ranking_id,
         })),
@@ -6126,20 +6137,24 @@ const deleteEntityMembership = async membershipId => {
     })
     .del()
     .returning('infos_supp_id');
+
   await Promise.all(
     memberships.map(async m => {
-      const [person] = await knex('person_infos')
-        .where({
-          id: m,
-        })
-        .del()
-        .returning('address_id');
-
-      await knex('addresses')
-        .where({
-          id: person,
-        })
-        .del();
+      if (m) {
+        const [person] = await knex('person_infos')
+          .where({
+            id: m,
+          })
+          .del()
+          .returning('address_id');
+        if (person) {
+          await knex('addresses')
+            .where({
+              id: person,
+            })
+            .del();
+        }
+      }
     }),
   );
 
