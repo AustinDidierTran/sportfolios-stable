@@ -386,7 +386,7 @@ router.get(`${BASE_URL}/roles`, async ctx => {
 router.get(`${BASE_URL}/members`, async ctx => {
   const entity = await queries.getMembers(
     ctx.query.personId,
-    ctx.query.id,
+    ctx.query.organizationId,
   );
 
   if (entity) {
