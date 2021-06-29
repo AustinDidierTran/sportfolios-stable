@@ -2587,26 +2587,26 @@ const getTeams = async gameId => {
 
         const roster = await getRoster(team.roster_id);
         return {
-          game_id: team.game_id,
-          roster_id: team.roster_id,
+          gameId: team.game_id,
+          rosterId: team.roster_id,
           score: team.score,
           position: team.position,
           name: team.name,
           id: realTeamId,
           spirit: team.spirit,
-          created_at: team.created_at,
-          updated_at: team.updated_at,
-          photo_url: entities_photo.photo_url,
-          ranking_id: team.ranking_id,
+          createdAt: team.created_at,
+          updatedAt: team.updated_at,
+          photoUrl: entities_photo.photo_url,
+          rankingId: team.ranking_id,
           roster,
         };
       } else {
         return {
-          game_id: team.game_id,
+          gameId: team.game_id,
           score: team.score,
           name: team.name,
           spirit: team.spirit,
-          ranking_id: team.ranking_id,
+          rankingId: team.ranking_id,
         };
       }
     }),
@@ -5960,7 +5960,7 @@ async function updateGame(
             ranking_id: rankingId1,
           })
           .where({
-            ranking_id: oldRanking1.ranking_id,
+            ranking_id: oldRanking1.rankingId,
             game_id: gameId,
           })
           .returning('*');
@@ -5972,7 +5972,7 @@ async function updateGame(
             ranking_id: rankingId1,
           })
           .where({
-            ranking_id: oldRanking1.ranking_id,
+            ranking_id: oldRanking1.rankingId,
             game_id: gameId,
           })
           .returning('*');
@@ -6009,7 +6009,7 @@ async function updateGame(
             ranking_id: rankingId2,
           })
           .where({
-            ranking_id: oldRanking2.ranking_id,
+            ranking_id: oldRanking2.rankingId,
             game_id: gameId,
           })
           .returning('*');
@@ -6021,7 +6021,7 @@ async function updateGame(
             ranking_id: rankingId2,
           })
           .where({
-            ranking_id: oldRanking2.ranking_id,
+            ranking_id: oldRanking2.rankingId,
             game_id: gameId,
           })
           .returning('*');
@@ -6033,7 +6033,7 @@ async function updateGame(
       const [r] = await knex('game_teams')
         .update({ name: fullName, ranking_id: rankingId2 })
         .where({
-          ranking_id: oldRanking2.ranking_id,
+          ranking_id: oldRanking2.rankingId,
           game_id: gameId,
         })
         .returning('*');
@@ -6357,7 +6357,6 @@ const getGameInfo = async (id, userId) => {
   }
 
   const role = await getEntityRole(game.event_id, userId);
-
   const [r1] = await knex('event_fields')
     .select('field')
     .where({ id: game.field_id });
@@ -6370,7 +6369,7 @@ const getGameInfo = async (id, userId) => {
     fieldId: game.field_id,
     locationId: game.location_id,
     eventId: game.event_id,
-    entityId: game.entity.id,
+    entityId: game.entity_id,
     description: game.description,
     notifiedStart: game.notified_start,
     notifiedEnd: game.notified_end,
