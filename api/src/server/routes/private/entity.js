@@ -749,7 +749,27 @@ router.get(`${BASE_URL}/teamPlayersPending`, async ctx => {
     ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
 
+router.get(`${BASE_URL}/myTeamPlayersRequest`, async ctx => {
+  const players = await queries.getMyTeamPlayersRequest(
+    ctx.query.teamId,
+    ctx.body.userInfo.id,
+  );
+
+  if (players) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: players,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
       message: 'That record does not exist.',
     };
   }

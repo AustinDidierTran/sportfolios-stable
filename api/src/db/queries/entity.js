@@ -68,6 +68,7 @@ const {
   getAllPlayersAcceptedRegistered: getAllPlayersAcceptedRegisteredHelper,
   getAllPlayersPending: getAllPlayersPendingHelper,
   getAllTeamPlayersPending: getAllTeamPlayersPendingHelper,
+  getMyTeamPlayersRequest: getMyTeamPlayersRequestHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTeamGames: getAllTeamGamesHelper,
   getAllTeamPractices: getAllTeamPracticesHelper,
@@ -85,7 +86,7 @@ const {
   getEvent: getEventHelper,
   getEventAdmins: getEventAdminsHelper,
   getEventIdFromRosterId,
-  getTeamExercise: getTeamExerciseHelper,
+  getTeamExercises: getTeamExercisesHelper,
   getFields: getFieldsHelper,
   getGameInfo: getGameInfoHelper,
   getGamePlayersWithRole,
@@ -138,6 +139,7 @@ const {
   getMyTeamPlayers: getMyTeamPlayersHelper,
   getRostersNames: getRostersNamesHelper,
   getScoreSuggestion: getScoreSuggestionHelper,
+  getSessionExercises: getSessionExercisesHelper,
   getSessionLocations: getSessionLocationsHelper,
   getSlots: getSlotsHelper,
   getTeamCoachedByUser: getTeamCoachedByUserHelper,
@@ -203,6 +205,7 @@ const {
   getPrimaryPersonIdFromUserId,
 } = require('../helpers');
 const { sendNotification } = require('./notifications');
+const { getOwnedPersons } = require('./users');
 
 async function isAllowed(
   entityId,
@@ -253,8 +256,12 @@ function getEntitiesTypeById(id) {
   return getEntitiesTypeByIdHelper(id);
 }
 
-function getTeamExercise(sessionId) {
-  return getTeamExerciseHelper(sessionId);
+function getTeamExercises(teamId) {
+  return getTeamExercisesHelper(teamId);
+}
+
+function getSessionExercises(sessionId) {
+  return getSessionExercisesHelper(sessionId);
 }
 
 function getAllRolesEntity(id) {
@@ -504,6 +511,12 @@ async function getAllPlayersPendingAndRefused(eventId) {
 
 function getAllTeamPlayersPending(teamId) {
   return getAllTeamPlayersPendingHelper(teamId);
+}
+
+async function getMyTeamPlayersRequest(teamId, userId) {
+  const persons = await getOwnedPersons(userId);
+  const personIds = persons.map(p => p.id);
+  return getMyTeamPlayersRequestHelper(teamId, personIds);
 }
 
 function getPersonInfos(entityId) {
@@ -2069,11 +2082,11 @@ async function deletePractice(userId, query) {
 }
 
 async function addExercise(query, userId) {
-  const { exerciseId, name, description, sessionId, teamId } = query;
+  const { exerciseId, name, description, type, sessionId, teamId } = query;
   if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return addExerciseHelper(exerciseId, name, description, sessionId);
+  return addExerciseHelper(exerciseId, name, description, type, sessionId, teamId);
 }
 
 async function createRosterInviteToken(userId, rosterId) {
@@ -2232,6 +2245,7 @@ module.exports = {
   getAllPlayersAcceptedRegistered,
   getAllPlayersPendingAndRefused,
   getAllTeamPlayersPending,
+  getMyTeamPlayersRequest,
   getAllRolesEntity,
   getAllTeamsAcceptedInfos,
   getAllTeamsAcceptedRegistered,
@@ -2243,7 +2257,7 @@ module.exports = {
   getEntitiesTypeById,
   getEntity,
   getEvent,
-  getTeamExercise,
+  getTeamExercises,
   getFields,
   getGameInfo,
   getGames,
@@ -2286,6 +2300,7 @@ module.exports = {
   getRostersNames,
   getS3Signature,
   getScoreSuggestion,
+  getSessionExercises,
   getSessionLocations,
   getSlots,
   getTeamCoachedByUser,

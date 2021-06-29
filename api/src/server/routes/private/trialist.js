@@ -58,14 +58,13 @@ router.get(`${BASE_URL}/getPlayerLastEvaluation`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/createExercise`, async ctx => {
-  const res = await queries.createExercise(ctx.request.body.exercise);
-  const linkWasCreated = await queries.linkExerciseToTeam(
+router.post(`${BASE_URL}/createTeamExercise`, async ctx => {
+  const res = await queries.createTeamExercise(
+    ctx.request.body.exercise,
     ctx.request.body.teamId,
-    res[0].id,
   );
 
-  if (linkWasCreated) {
+  if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: STATUS_ENUM.SUCCESS_STRING,

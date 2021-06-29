@@ -3098,6 +3098,31 @@ async function getAllTeamPlayersPending(teamId) {
   return pending;
 }
 
+async function getMyTeamPlayersRequest(teamId, personIds) {
+  const pendingPlayers = await knex('team_players_request')
+    .select('*')
+    .where({
+      team_id: teamId,
+    });
+
+  const filtered = pendingPlayers.filter(p =>
+    personIds.includes(p.person_id),
+  );
+
+  const pending = await Promise.all(
+    filtered.map(async p => {
+      const person = await getPersonInfos(p.person_id);
+      return {
+        id: p.person_id,
+        name: `${person.name} ${person.surname}`,
+        photoUrl: person.photoUrl,
+        status: p.status,
+      };
+    }),
+  );
+  return pending;
+}
+
 async function getAllPlayersPending(eventId) {
   const registeredPlayers = await knex('event_persons')
     .select('*')
@@ -4759,10 +4784,10 @@ async function addGame(
   };
 }
 
-async function getTeamExercise(sessionId) {
-  const exercises = await knex('session_exercises')
+async function getTeamExercises(teamId) {
+  const exercises = await knex('team_exercises')
     .select('*')
-    .where({ session_id: sessionId });
+    .where({ team_id: teamId });
 
   const res = await knex('exercises')
     .select('*')
@@ -4774,7 +4799,28 @@ async function getTeamExercise(sessionId) {
   return res;
 }
 
-async function addExercise(exerciseId, name, description, sessionId) {
+async function getSessionExercises(sessionId) {
+  const exercises = await knex('session_exercises')
+    .select('*')
+    .where({ session_id: sessionId });
+  const res = await knex('exercises')
+    .select('*')
+    .whereIn(
+      'id',
+      exercises.map(e => e.exercise_id),
+    );
+
+  return res;
+}
+
+async function addExercise(
+  exerciseId,
+  name,
+  description,
+  type,
+  sessionId,
+  teamId,
+) {
   let exercise_id = exerciseId;
 
   if (!exercise_id) {
@@ -4782,10 +4828,20 @@ async function addExercise(exerciseId, name, description, sessionId) {
       .insert({
         name,
         description,
+        type,
       })
       .returning('*');
     exercise_id = exercise.id;
   }
+
+  await knex('team_exercises')
+    .insert({
+      team_id: teamId,
+      exercise_id,
+    })
+    .onConflict({ team_id: teamId, exercise_id: exerciseId })
+    .ignore()
+    .returning('*');
 
   const [res] = await knex('session_exercises')
     .insert({
@@ -5829,6 +5885,24 @@ async function updateTeamAcceptation(
 }
 
 async function updateTeamPlayerAcceptation(teamId, personId, status) {
+  if (status === STATUS_ENUM.ACCEPTED) {
+    const [res] = await knex('team_players_request')
+      .where({
+        team_id: teamId,
+        person_id: personId,
+      })
+      .del()
+      .returning('*');
+    await knex('team_players')
+      .insert({
+        team_id: teamId,
+        person_id: personId,
+        role: ROSTER_ROLE_ENUM.PLAYER,
+      })
+      .onConflict(['team_id', 'person_id'])
+      .ignore();
+    return res;
+  }
   const [res] = await knex('team_players_request')
     .where({
       team_id: teamId,
@@ -5838,16 +5912,6 @@ async function updateTeamPlayerAcceptation(teamId, personId, status) {
       status,
     })
     .returning('*');
-  if (status === STATUS_ENUM.ACCEPTED) {
-    await knex('team_players')
-      .insert({
-        team_id: teamId,
-        person_id: personId,
-        role: ROSTER_ROLE_ENUM.PLAYER,
-      })
-      .onConflict(['team_id', 'person_id'])
-      .ignore();
-  }
   return res;
 }
 
@@ -7049,6 +7113,7 @@ module.exports = {
   getAllPlayersPending,
   getAllPlayersRefused,
   getAllTeamPlayersPending,
+  getMyTeamPlayersRequest,
   getAllRolesEntity,
   getAllTeamsAcceptedInfos,
   getAllTeamsAcceptedRegistered,
@@ -7073,7 +7138,7 @@ module.exports = {
   getEvent,
   getEventAdmins,
   getEventIdFromRosterId,
-  getTeamExercise,
+  getTeamExercises,
   getFields,
   getGame,
   getGameInfo,
@@ -7132,6 +7197,7 @@ module.exports = {
   getRosterName,
   getRostersNames,
   getScoreSuggestion,
+  getSessionExercises,
   getSessionLocations,
   getSlots,
   getSubmissionerInfos,

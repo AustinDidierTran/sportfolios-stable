@@ -248,8 +248,23 @@ router.get(`${BASE_URL}/rankings`, async ctx => {
   };
 });
 
-router.get(`${BASE_URL}/teamExercise`, async ctx => {
-  const exercise = await queries.getTeamExercise(ctx.query.sessionId);
+router.get(`${BASE_URL}/teamExercises`, async ctx => {
+  const exercise = await queries.getTeamExercises(ctx.query.teamId);
+
+  if (!exercise) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: exercise,
+  };
+});
+
+
+router.get(`${BASE_URL}/sessionExercises`, async ctx => {
+  const exercise = await queries.getSessionExercises(ctx.query.sessionId);
 
   if (!exercise) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
