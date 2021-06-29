@@ -74,7 +74,7 @@ router.post(`${BASE_URL}/createExercise`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/updateExercise`, async ctx => {
+router.put(`${BASE_URL}/updateExercise`, async ctx => {
   const res = await queries.updateExercise(ctx.request.body.exercise);
   if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;
