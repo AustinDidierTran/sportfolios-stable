@@ -27,7 +27,6 @@ const {
   addOption: addOptionHelper,
   addPartner: addPartnerHelper,
   addPersonToEvent: addPersonToEventHelper,
-  addPhase: addPhaseHelper,
   addPlayerCartItem: addPlayerCartItemHelper,
   addPlayerToRoster: addPlayerToRosterHelper,
   addPlayerToTeam: addPlayerToTeamHelper,
@@ -1646,16 +1645,6 @@ async function addField(body, userId) {
   }
   return addFieldHelper(field, eventId);
 }
-//TODO: delete this function and replace queries by controller in route
-async function addPhase(body, userId) {
-  const { phase, spots, eventId } = body;
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
-  return addPhaseHelper(phase, spots, eventId);
-}
 
 async function addTimeSlot(body, userId) {
   const { date, eventId } = body;
@@ -2175,7 +2164,6 @@ module.exports = {
   addOption,
   addPartner,
   addPersonToEvent,
-  addPhase,
   addPlayersCartItems,
   addPlayersToTeam,
   sendRequestToJoinTeam,

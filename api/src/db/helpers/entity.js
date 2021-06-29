@@ -2073,6 +2073,7 @@ async function getPhasesWithoutPrerank(eventId) {
       const ranking = await getPhaseRanking(phase.id);
       return {
         id: phase.id,
+        type: phase.type,
         name: phase.name,
         eventId: phase.event_id,
         spots: phase.spots,
@@ -2217,6 +2218,8 @@ async function getGames(eventId) {
         locationId: game.location_id,
         phaseName,
         positions,
+        fieldId: game.field_id,
+        timeslotId: game.timeslot_id,
         field: r1.field,
         startTime: r2.date,
       };
@@ -4446,25 +4449,25 @@ async function addAllGames(eventId, gamesArray) {
   let games;
   const rankingsArray = await gamesArray.reduce(async (memo, g) => {
     const memoIteration = await memo;
-    const [phase] = await getPhase(g.phase_id);
+    const [phase] = await getPhase(g.phaseId);
     //if phase is started, there will be a roster id otherwise it's null
     const res = [
       ...memoIteration,
       {
         game_id: g.id,
-        ranking_id: g.rankings[0].ranking_id,
+        ranking_id: g.rankings[0].rankingId,
         roster_id:
           phase.status !== PHASE_STATUS_ENUM.NOT_STARTED
-            ? g.rankings[0].roster_id
+            ? g.rankings[0].rosterId
             : null,
         name: g.rankings[0].name,
       },
       {
         game_id: g.id,
-        ranking_id: g.rankings[1].ranking_id,
+        ranking_id: g.rankings[1].rankingId,
         roster_id:
           phase.status !== PHASE_STATUS_ENUM.NOT_STARTED
-            ? g.rankings[1].roster_id
+            ? g.rankings[1].rosterId
             : null,
         name: g.rankings[1].name,
       },
@@ -4481,9 +4484,9 @@ async function addAllGames(eventId, gamesArray) {
           .transacting(trx);
         return {
           event_id: eventId,
-          phase_id: g.phase_id,
-          field_id: g.field_id,
-          timeslot_id: g.timeslot_id,
+          phase_id: g.phaseId,
+          field_id: g.fieldId,
+          timeslot_id: g.timeslotId,
           id: g.id,
           entity_id: entityId,
         };
@@ -5176,7 +5179,7 @@ async function addField(field, eventId) {
   return res;
 }
 
-async function addPhase(phase, spots, eventId) {
+async function addPhase(phase, spots, eventId, type) {
   const phases = await getAllPhases(eventId);
   const [res] = await knex('phase')
     .insert({
@@ -5184,6 +5187,7 @@ async function addPhase(phase, spots, eventId) {
       event_id: eventId,
       spots,
       phase_order: phases.length ? phases.length : 1,
+      type,
     })
     .returning('*');
 
@@ -6017,8 +6021,8 @@ async function updateGamesInteractiveTool(games) {
       knex('games')
         .where('id', game.id)
         .update({
-          timeslot_id: game.timeslot_id,
-          field_id: game.field_id,
+          timeslot_id: game.timeslotId,
+          field_id: game.fieldId,
         })
         .transacting(trx),
     );
