@@ -948,15 +948,7 @@ async function getEntityRole(entityId, userId) {
   return Math.min(...roles);
 }
 
-async function getPrimaryPersonIdFromUserId(user_id) {
-  const [{ primary_person: id }] = await knex('user_primary_person')
-    .select('primary_person')
-    .where({ user_id });
-  return id;
-}
-
-async function getMostRecentMember(organizationId, userId) {
-  const personId = await getPrimaryPersonIdFromUserId(userId);
+async function getMostRecentMember(personId, organizationId) {
   const [member] = await knex('memberships_infos')
     .select('member_type')
     .rightJoin(
@@ -1366,7 +1358,15 @@ async function getPartners(entityId) {
     .select('*')
     .where({ organization_id: entityId })
     .orderBy('created_at');
-  return partners;
+
+  return partners.map(p => ({
+    id: p.id,
+    name: p.name,
+    website: p.website,
+    description: p.description,
+    photoUrl: p.photo_url,
+    organizationId: p.organization_id,
+  }));
 }
 
 async function getTransactionFeesFromStripePriceId(stripePriceId) {
@@ -2461,7 +2461,18 @@ async function getTeamGames(eventId) {
         id: game.id,
         phaseId: game.phase_id,
         eventId,
-        teams,
+        teams: teams.map(t => ({
+          gameId: t.game_id,
+          rosterId: t.roster_id,
+          score: t.score,
+          position: t.position,
+          name: t.name,
+          teamId: t.team_id,
+          spirit: t.spirit,
+          rankingId: t.ranking_id,
+          id: t.id,
+          active: t.active,
+        })),
       };
     }),
   );
@@ -2534,7 +2545,7 @@ async function getPhasesGameAndTeams(eventId, phaseId) {
           score: t.score,
           position: t.position,
           name: t.name,
-          id: t.id,
+          teamId: t.team_id,
           spirit: t.spirit,
           rankingId: t.ranking_id,
         })),
@@ -6126,20 +6137,24 @@ const deleteEntityMembership = async membershipId => {
     })
     .del()
     .returning('infos_supp_id');
+
   await Promise.all(
     memberships.map(async m => {
-      const [person] = await knex('person_infos')
-        .where({
-          id: m,
-        })
-        .del()
-        .returning('address_id');
-
-      await knex('addresses')
-        .where({
-          id: person,
-        })
-        .del();
+      if (m) {
+        const [person] = await knex('person_infos')
+          .where({
+            id: m,
+          })
+          .del()
+          .returning('address_id');
+        if (person) {
+          await knex('addresses')
+            .where({
+              id: person,
+            })
+            .del();
+        }
+      }
     }),
   );
 
