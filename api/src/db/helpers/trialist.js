@@ -50,13 +50,18 @@ async function getPlayerLastEvaluation(playerId) {
   return res;
 }
 
-function createExercise(exercise) {
-  return knex('exercises')
+async function createTeamExercise(exercise, team_id) {
+  const newExercise = await knex('exercises')
     .insert({
       name: exercise.name,
       description: exercise.description,
     })
     .returning('*');
+
+  return knex('team_exercises').insert({
+    team_id,
+    exercise_id: newExercise[0].id,
+  });
 }
 
 function updateExercise(exercise) {
@@ -73,11 +78,23 @@ function getSessionById(sessionId) {
   return knex('sessions').where({ id: sessionId });
 }
 
+function getExercicesByTeamId(team_id) {
+  return knex('team_exercises')
+    .where({ team_id })
+    .leftJoin(
+      'exercises',
+      'team_exercises.exercise_id',
+      '=',
+      'exercises.id',
+    );
+}
+
 module.exports = {
   createEvaluation,
   getAllCommentSuggestions,
   getPlayerLastEvaluation,
-  createExercise,
+  createTeamExercise,
   updateExercise,
   getSessionById,
+  getExercicesByTeamId,
 };
