@@ -3098,6 +3098,31 @@ async function getAllTeamPlayersPending(teamId) {
   return pending;
 }
 
+async function getMyTeamPlayersRequest(teamId, personIds) {
+  const pendingPlayers = await knex('team_players_request')
+    .select('*')
+    .where({
+      team_id: teamId,
+    });
+
+  const filtered = pendingPlayers.filter(p =>
+    personIds.includes(p.person_id),
+  );
+
+  const pending = await Promise.all(
+    filtered.map(async p => {
+      const person = await getPersonInfos(p.person_id);
+      return {
+        id: p.person_id,
+        name: `${person.name} ${person.surname}`,
+        photoUrl: person.photoUrl,
+        status: p.status,
+      };
+    }),
+  );
+  return pending;
+}
+
 async function getAllPlayersPending(eventId) {
   const registeredPlayers = await knex('event_persons')
     .select('*')
@@ -5791,6 +5816,24 @@ async function updateTeamAcceptation(
 }
 
 async function updateTeamPlayerAcceptation(teamId, personId, status) {
+  if (status === STATUS_ENUM.ACCEPTED) {
+    const [res] = await knex('team_players_request')
+      .where({
+        team_id: teamId,
+        person_id: personId,
+      })
+      .del()
+      .returning('*');
+    await knex('team_players')
+      .insert({
+        team_id: teamId,
+        person_id: personId,
+        role: ROSTER_ROLE_ENUM.PLAYER,
+      })
+      .onConflict(['team_id', 'person_id'])
+      .ignore();
+    return res;
+  }
   const [res] = await knex('team_players_request')
     .where({
       team_id: teamId,
@@ -5800,16 +5843,6 @@ async function updateTeamPlayerAcceptation(teamId, personId, status) {
       status,
     })
     .returning('*');
-  if (status === STATUS_ENUM.ACCEPTED) {
-    await knex('team_players')
-      .insert({
-        team_id: teamId,
-        person_id: personId,
-        role: ROSTER_ROLE_ENUM.PLAYER,
-      })
-      .onConflict(['team_id', 'person_id'])
-      .ignore();
-  }
   return res;
 }
 
@@ -7010,6 +7043,7 @@ module.exports = {
   getAllPlayersPending,
   getAllPlayersRefused,
   getAllTeamPlayersPending,
+  getMyTeamPlayersRequest,
   getAllRolesEntity,
   getAllTeamsAcceptedInfos,
   getAllTeamsAcceptedRegistered,
