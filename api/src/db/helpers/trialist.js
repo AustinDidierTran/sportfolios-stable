@@ -73,6 +73,10 @@ function getSessionById(sessionId) {
   return knex('sessions').where({ id: sessionId });
 }
 
+function linkExerciseToTeam(team_id, exercise_id) {
+  return knex('team_exercises').insert({ team_id, exercise_id });
+}
+
 module.exports = {
   createEvaluation,
   getAllCommentSuggestions,
@@ -80,4 +84,5 @@ module.exports = {
   createExercise,
   updateExercise,
   getSessionById,
+  linkExerciseToTeam,
 };
