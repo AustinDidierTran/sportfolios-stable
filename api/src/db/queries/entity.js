@@ -133,6 +133,7 @@ const {
   getRosterInviteToken: getRosterInviteTokenHelper,
   getRosterInvoiceItem,
   getRosterPlayers: getRosterPlayersHelper,
+  getMyTeamPlayers: getMyTeamPlayersHelper,
   getRostersNames: getRostersNamesHelper,
   getScoreSuggestion: getScoreSuggestionHelper,
   getSessionLocations: getSessionLocationsHelper,
@@ -197,6 +198,7 @@ const {
   getLanguageFromEmail,
   getUserIdFromEmail,
   validateEmailIsUnique: validateEmailIsUniqueHelper,
+  getPrimaryPersonIdFromUserId,
 } = require('../helpers');
 const { sendNotification } = require('./notifications');
 
@@ -209,8 +211,8 @@ async function isAllowed(
   return role <= acceptationRole;
 }
 
-async function getEntity(id, user_id) {
-  const res = await getEntityHelper(id, user_id);
+async function getEntity(id, userId) {
+  const res = await getEntityHelper(id, userId);
   if (res.basicInfos.type === GLOBAL_ENUM.PERSON) {
     res.gamesInfos = await getPersonGamesHelper(id);
   }
@@ -221,50 +223,54 @@ async function getEntity(id, user_id) {
   return res;
 }
 
-async function getAllEntities(params) {
+function getAllEntities(params) {
   return getAllEntitiesHelper(params);
 }
 
-async function getAllForYouPagePosts() {
+function getAllForYouPagePosts() {
   return getAllForYouPagePostsHelper();
 }
 
-async function getScoreSuggestion(gameId) {
+function getScoreSuggestion(gameId) {
   return getScoreSuggestionHelper(gameId);
 }
 
-async function getAllOwnedEntities(type, userId, querry, onlyAdmin) {
+function getAllOwnedEntities(type, userId, querry, onlyAdmin) {
   return getAllOwnedEntitiesHelper(type, userId, querry, onlyAdmin);
 }
 
-async function getOwnedEvents(organizationId) {
+function getOwnedEvents(organizationId) {
   return getOwnedEventsHelper(organizationId);
 }
 
-async function getAllTypeEntities(type) {
+function getAllTypeEntities(type) {
   return getAllTypeEntitiesHelper(type);
 }
 
-async function getEntitiesTypeById(id) {
+function getEntitiesTypeById(id) {
   return getEntitiesTypeByIdHelper(id);
 }
 
-async function getAllRolesEntity(id) {
+function getAllRolesEntity(id) {
   return getAllRolesEntityHelper(id);
 }
 
-async function getMembers(persons, organizationId) {
+function getMembers(persons, organizationId) {
   return getMembersHelper(persons, organizationId);
 }
-async function getReports(entityId) {
+
+function getReports(entityId) {
   return getReportsHelper(entityId);
 }
-async function generateReport(reportId) {
+
+function generateReport(reportId) {
   return generateReportHelper(reportId);
 }
-async function hasMemberships(organizationId) {
+
+function hasMemberships(organizationId) {
   return hasMembershipsHelper(organizationId);
 }
+
 async function getOrganizationMembers(organizationId, userId) {
   if (
     !(await isAllowed(
@@ -291,55 +297,59 @@ async function getOrganizationTokenPromoCode(organizationId, userId) {
   return getOrganizationTokenPromoCodeHelper(organizationId);
 }
 
-async function eventInfos(id, user_id) {
-  return eventInfosHelper(id, user_id);
+function eventInfos(id, userId) {
+  return eventInfosHelper(id, userId);
 }
 
-async function getMemberships(entity_id) {
-  return getMembershipsHelper(entity_id);
+function getMemberships(entityId) {
+  return getMembershipsHelper(entityId);
 }
 
-async function getMostRecentMember(personId, organizationId) {
+async function getMostRecentMember(organizationId, userId) {
+  const personId = await getPrimaryPersonIdFromUserId(userId);
   return getMostRecentMemberHelper(personId, organizationId);
 }
 
-async function getPartners(entityId) {
+function getPartners(entityId) {
   return getPartnersHelper(entityId);
 }
 
-async function getRegistered(team_id, event_id) {
-  return getRegisteredHelper(team_id, event_id);
+function getRegistered(teamId, eventId) {
+  return getRegisteredHelper(teamId, eventId);
 }
 
-async function getAllTeamsRegisteredInfos(eventId, userId) {
+function getAllTeamsRegisteredInfos(eventId, userId) {
   return getAllTeamsRegisteredInfosHelper(eventId, userId);
 }
-async function getAllTeamsAcceptedInfos(eventId, userId) {
+
+function getAllTeamsAcceptedInfos(eventId, userId) {
   return getAllTeamsAcceptedInfosHelper(eventId, userId);
 }
-async function getAllPeopleRegisteredInfos(eventId, userId) {
+
+function getAllPeopleRegisteredInfos(eventId, userId) {
   return getAllPeopleRegisteredInfosHelper(eventId, userId);
 }
 
-async function getAllTeamsAcceptedRegistered(eventId) {
+function getAllTeamsAcceptedRegistered(eventId) {
   return getAllTeamsAcceptedRegisteredHelper(eventId);
 }
-async function getAllPlayersAcceptedRegistered(eventId) {
+
+function getAllPlayersAcceptedRegistered(eventId) {
   return getAllPlayersAcceptedRegisteredHelper(eventId);
 }
 
-async function getRemainingSpots(eventId) {
+function getRemainingSpots(eventId) {
   return getRemainingSpotsHelper(eventId);
 }
 
-async function getPreranking(eventId) {
+function getPreranking(eventId) {
   return getPrerankingHelper(eventId);
 }
-async function getPrimaryPerson(userId) {
+function getPrimaryPerson(userId) {
   return getPrimaryPersonHelper(userId);
 }
 
-async function getRoster(rosterId, withSub) {
+function getRoster(rosterId, withSub) {
   return getRosterHelper(rosterId, withSub);
 }
 
@@ -363,94 +373,98 @@ async function getRosterAllIncluded(rosterId, userId, withSub) {
   };
 }
 
-async function getEvent(eventId) {
+function getEvent(eventId) {
   return getEventHelper(eventId);
 }
 
-async function getAlias(entityId) {
+function getAlias(entityId) {
   return getAliasHelper(entityId);
 }
-async function getRole(entityId, userId) {
+function getRole(entityId, userId) {
   return getEntityRoleHelper(entityId, userId);
 }
 
-async function validateEmailIsUnique(email) {
+function validateEmailIsUnique(email) {
   return validateEmailIsUniqueHelper(email);
 }
 
-async function getPhases(eventId) {
+function getPhases(eventId) {
   return getPhasesWithoutPrerankHelper(eventId);
 }
 
-async function getGameInfo(gameId, userId) {
+function getGameInfo(gameId, userId) {
   return getGameInfoHelper(gameId, userId);
 }
 
-async function getSessionLocations(teamId) {
+function getSessionLocations(teamId) {
   return getSessionLocationsHelper(teamId);
 }
 
-async function getPracticeBasicInfo(teamId, userId) {
+function getPracticeBasicInfo(teamId, userId) {
   return getPracticeBasicInfoHelper(teamId, userId);
 }
 
-async function getPracticeInfo(practiceId, userId) {
+function getPracticeInfo(practiceId, userId) {
   return getPracticeInfoHelper(practiceId, userId);
 }
 
-async function getGames(eventId) {
+function getGames(eventId) {
   return getGamesHelper(eventId);
 }
 
-async function getMyRosterIds(eventId, userId) {
+function getMyRosterIds(eventId, userId) {
   return getRosterByEventAndUserHelper(eventId, userId);
 }
 
-async function getGameSubmissionInfos(gameId, rosterId) {
+function getGameSubmissionInfos(gameId, rosterId) {
   return getGameSubmissionInfosHelper(gameId, rosterId);
 }
 
-async function getUnplacedGames(eventId) {
+function getUnplacedGames(eventId) {
   return getUnplacedGamesHelper(eventId);
 }
 
-async function getTeamGames(eventId) {
+function getTeamGames(eventId) {
   return getTeamGamesHelper(eventId);
 }
 
-async function getTeamRosters(teamId) {
+function getTeamRosters(teamId) {
   return getTeamRostersHelper(teamId);
 }
 
-async function getPhasesGameAndTeams(eventId, phaseId) {
+function getPhasesGameAndTeams(eventId, phaseId) {
   return getPhasesGameAndTeamsHelper(eventId, phaseId);
 }
 
-async function getSlots(eventId) {
+function getSlots(eventId) {
   return getSlotsHelper(eventId);
 }
 
-async function getTeamsSchedule(eventId) {
+function getTeamsSchedule(eventId) {
   return getTeamsScheduleHelper(eventId);
 }
 
-async function getTeamPlayers(teamId) {
+function getTeamPlayers(teamId) {
   return getTeamPlayersHelper(teamId);
 }
 
-async function getRosterPlayers(rosterId) {
+function getRosterPlayers(rosterId) {
   return getRosterPlayersHelper(rosterId);
 }
 
-async function getFields(eventId) {
+function getMyTeamPlayers(teamId, userId) {
+  return getMyTeamPlayersHelper(teamId, userId);
+}
+
+function getFields(eventId) {
   return getFieldsHelper(eventId);
 }
 
-async function getGeneralInfos(entityId, userId) {
+function getGeneralInfos(entityId, userId) {
   return getGeneralInfosHelper(entityId, userId);
 }
 
-async function getGraphAmountGeneratedByEvent(
+function getGraphAmountGeneratedByEvent(
   eventPaymentId,
   language,
   date,
@@ -462,11 +476,11 @@ async function getGraphAmountGeneratedByEvent(
   );
 }
 
-async function getGraphUserCount(date, language) {
+function getGraphUserCount(date, language) {
   return getGraphUserCountHelper(date, language);
 }
 
-async function getGraphMemberCount(organizationId, date) {
+function getGraphMemberCount(organizationId, date) {
   return getGraphMemberCountHelper(organizationId, date);
 }
 
@@ -482,16 +496,15 @@ async function getAllPlayersPendingAndRefused(eventId) {
   return { pending, refused };
 }
 
-async function getAllTeamPlayersPending(teamId) {
-  const pending = await getAllTeamPlayersPendingHelper(teamId);
-  return pending;
+function getAllTeamPlayersPending(teamId) {
+  return getAllTeamPlayersPendingHelper(teamId);
 }
 
-async function getPersonInfos(entityId) {
+function getPersonInfos(entityId) {
   return getPersonInfosHelper(entityId);
 }
 
-async function getRegistrationTeamPaymentOption(paymentOptionId) {
+function getRegistrationTeamPaymentOption(paymentOptionId) {
   return getRegistrationTeamPaymentOptionHelper(paymentOptionId);
 }
 
@@ -564,7 +577,7 @@ async function updateEvent(body, userId) {
   return res;
 }
 
-async function getRealId(id) {
+function getRealId(id) {
   return getRealIdHelper(id);
 }
 
@@ -959,17 +972,17 @@ async function getInteractiveToolData(eventId, userId) {
   };
 }
 
-async function getOptions(eventId) {
+function getOptions(eventId) {
   return getOptionsHelper(eventId);
 }
 
-const addEntity = async (body, user_id) => {
-  return addEntityHelper(body, user_id);
-};
+function addEntity(body, userId) {
+  return addEntityHelper(body, userId);
+}
 
-const addPartner = async body => {
+function addPartner(body) {
   return addPartnerHelper(body);
-};
+}
 
 async function updateEntity(body, userId) {
   const { id, name, surname, photoUrl } = body;
@@ -1232,27 +1245,27 @@ async function updateAlias(body) {
   return res;
 }
 
-async function updateOption(body) {
+function updateOption(body) {
   return updateOptionHelper(body);
 }
 
-async function updateMembershipTermsAndConditions(body) {
+function updateMembershipTermsAndConditions(body) {
   return updateMembershipTermsAndConditionsHelper(body);
 }
 
-async function updatePartner(body) {
+function updatePartner(body) {
   return updatePartnerHelper(body);
 }
 
-async function updatePlayer(body) {
+function updatePlayer(body) {
   return updatePlayerHelper(body);
 }
 
-async function updateRosterPlayer(body) {
+function updateRosterPlayer(body) {
   return updateRosterPlayerHelper(body);
 }
 
-async function updateRoster(body) {
+function updateRoster(body) {
   return updateRosterHelper(body);
 }
 
@@ -1315,7 +1328,13 @@ async function updatePracticeRsvp(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  return updatePracticeRsvpHelper(id, rsvp, personId, updateAll, userId);
+  return updatePracticeRsvpHelper(
+    id,
+    rsvp,
+    personId,
+    updateAll,
+    userId,
+  );
 }
 
 async function updateGamesInteractiveTool(body, userId) {
@@ -1339,11 +1358,11 @@ async function updateSuggestionStatus(body, userId) {
   return updateSuggestionStatusHelper(body);
 }
 
-async function addMemberManually(body) {
+function addMemberManually(body) {
   return addMemberManuallyHelper(body);
 }
 
-async function addReport(body) {
+function addReport(body) {
   const { type, organizationId, date } = body;
   return addReportHelper(type, organizationId, date);
 }
@@ -1514,7 +1533,7 @@ async function addSpiritSubmission(body, userId) {
   return addSpiritSubmissionHelper(body);
 }
 
-async function getRostersNames(rosterArray) {
+function getRostersNames(rosterArray) {
   return getRostersNamesHelper(rosterArray);
 }
 
@@ -1778,7 +1797,7 @@ const unregisterTeams = async (body, userId) => {
   return result;
 };
 
-const unregisterPeople = async (body, userId) => {
+async function unregisterPeople(body, userId) {
   const { eventId, people } = body;
   const result = { failed: false, data: [] };
   if (
@@ -1824,7 +1843,7 @@ const unregisterPeople = async (body, userId) => {
     userId,
   );
   return result;
-};
+}
 
 async function addMembership(body, userId) {
   const {
@@ -1855,47 +1874,46 @@ async function addMembership(body, userId) {
   return res;
 }
 
-async function deleteEntity(id, user_id) {
-  return deleteEntityHelper(id, user_id);
+function deleteEntity(body, userId) {
+  return deleteEntityHelper(body, userId);
 }
 
-async function deletePartner(partnerId) {
+function deletePartner(partnerId) {
   return deletePartnerHelper(partnerId);
 }
 
-async function deletePlayer(id) {
+function deletePlayer(id) {
   return deletePlayerHelper(id);
 }
 
-async function deleteRoster(id) {
+function deleteRoster(id) {
   return deleteRosterHelper(id);
 }
 
-async function deleteRosterPlayer(id) {
+function deleteRosterPlayer(id) {
   return deleteRosterPlayerHelper(id);
 }
 
-async function deleteEntityMembership(query) {
-  const { membershipId } = query;
+function deleteEntityMembership(membershipId) {
   return deleteEntityMembershipHelper(membershipId);
 }
 
-async function deleteMembership(query) {
+function deleteMembership(query) {
   const { memberType, organizationId, personId } = query;
   return deleteMembershipHelper(memberType, organizationId, personId);
 }
 
-async function deleteMembershipWithId(query) {
+function deleteMembershipWithId(query) {
   const { membershipId } = query;
   return deleteMembershipWithIdHelper(membershipId);
 }
 
-async function deleteReport(query) {
+function deleteReport(query) {
   const { reportId } = query;
   return deleteReportHelper(reportId);
 }
 
-async function deleteOption(id) {
+function deleteOption(id) {
   return deleteOptionHelper(id);
 }
 
@@ -1935,7 +1953,7 @@ async function sendRequestToJoinTeam(body, userId) {
   return res;
 }
 
-async function addTeamRoster(body) {
+function addTeamRoster(body) {
   return addTeamRosterHelper(body);
 }
 
@@ -2262,6 +2280,7 @@ module.exports = {
   getTeamRosters,
   getTeamPlayers,
   getRosterPlayers,
+  getMyTeamPlayers,
   getTeamsSchedule,
   hasMemberships,
   importMembers,

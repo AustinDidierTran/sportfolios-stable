@@ -207,6 +207,22 @@ router.get(`${BASE_URL}/all`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/role`, async ctx => {
+  const role = await queries.getRole(
+    ctx.query.entityId,
+    ctx.body.userInfo.id,
+  );
+
+  if (!role) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = {
+    status: 'success',
+    data: role,
+  };
+});
+
 router.get(`${BASE_URL}/forYouPage`, async ctx => {
   const entity = await queries.getAllForYouPagePosts(ctx.query);
 
@@ -370,7 +386,7 @@ router.get(`${BASE_URL}/roles`, async ctx => {
 router.get(`${BASE_URL}/members`, async ctx => {
   const entity = await queries.getMembers(
     ctx.query.personId,
-    ctx.query.id,
+    ctx.query.organizationId,
   );
 
   if (entity) {
@@ -389,8 +405,8 @@ router.get(`${BASE_URL}/members`, async ctx => {
 
 router.get(`${BASE_URL}/recentMember`, async ctx => {
   const member = await queries.getMostRecentMember(
-    ctx.query.personId,
-    ctx.query.id,
+    ctx.query.organizationId,
+    ctx.body.userInfo.id,
   );
 
   if (member) {
@@ -444,7 +460,9 @@ router.get(`${BASE_URL}/generateReport`, async ctx => {
 });
 
 router.get(`${BASE_URL}/hasMemberships`, async ctx => {
-  const entity = await queries.hasMemberships(ctx.query.id);
+  const entity = await queries.hasMemberships(
+    ctx.query.organizationId,
+  );
   if (entity || entity === false) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
@@ -2207,7 +2225,7 @@ router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
 });
 
 router.del(BASE_URL, async ctx => {
-  await queries.deleteEntity(ctx.query.id, ctx.body.userInfo.id);
+  await queries.deleteEntity(ctx.query, ctx.body.userInfo.id);
   ctx.status = 201;
   ctx.body = {
     status: 'success',
@@ -2215,7 +2233,7 @@ router.del(BASE_URL, async ctx => {
 });
 
 router.del(`${BASE_URL}/membership`, async ctx => {
-  await queries.deleteEntityMembership(ctx.query.id);
+  await queries.deleteEntityMembership(ctx.query.membershipId);
   ctx.status = 201;
   ctx.body = {
     status: 'success',

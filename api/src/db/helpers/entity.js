@@ -111,7 +111,42 @@ const addEntity = async (body, userId) => {
 
         return { id };
       }
-      case GLOBAL_ENUM.TEAM:
+      case GLOBAL_ENUM.TEAM: {
+        await knex('team_players')
+          .insert({
+            team_id: entityId,
+            person_id: creatorId,
+            role: ROSTER_ROLE_ENUM.CAPTAIN,
+          })
+          .transacting(trx);
+
+        const [roster] = await knex('team_rosters')
+          .insert({
+            team_id: entityId,
+            name: 'Main Roster',
+            active: true,
+          })
+          .returning('*')
+          .transacting(trx);
+
+        await knex('roster_players')
+          .insert({
+            roster_id: roster.id,
+            person_id: creatorId,
+            role: ROSTER_ROLE_ENUM.CAPTAIN,
+          })
+          .transacting(trx);
+
+        await knex('entities_role')
+          .insert({
+            entity_id: entityId,
+            entity_id_admin: creatorId,
+            role: ENTITIES_ROLE_ENUM.ADMIN,
+          })
+          .transacting(trx);
+
+        return { id: entityId };
+      }
       case GLOBAL_ENUM.ORGANIZATION: {
         await knex('entities_role')
           .insert({
@@ -1308,7 +1343,7 @@ async function getMemberships(entityId) {
         price: m.price,
         fixedDate: m.fixed_date,
         stripePriceId: m.stripe_price_id,
-        description: m.id,
+        description: m.description,
         fileName: m.file_name,
         fileUrl: m.file_url,
         transactionFees,
@@ -1323,7 +1358,15 @@ async function getPartners(entityId) {
     .select('*')
     .where({ organization_id: entityId })
     .orderBy('created_at');
-  return partners;
+
+  return partners.map(p => ({
+    id: p.id,
+    name: p.name,
+    website: p.website,
+    description: p.description,
+    photoUrl: p.photo_url,
+    organizationId: p.organization_id,
+  }));
 }
 
 async function getTransactionFeesFromStripePriceId(stripePriceId) {
@@ -2028,7 +2071,15 @@ async function getPhasesWithoutPrerank(eventId) {
   const res = await Promise.all(
     phases.map(async phase => {
       const ranking = await getPhaseRanking(phase.id);
-      return { ...phase, ranking };
+      return {
+        id: phase.id,
+        name: phase.name,
+        eventId: phase.event_id,
+        spots: phase.spots,
+        phaseOrder: phase.phase_order,
+        status: phase.status,
+        ranking,
+      };
     }),
   );
   return res;
@@ -2052,13 +2103,44 @@ async function getPhaseRanking(phaseId) {
       if (r.roster_id) {
         const phaseName = await getPhaseName(r.origin_phase);
         const name = await getRosterName(r.roster_id);
-        return { ...r, name, teamName: name, phaseName };
+        return {
+          id: r.id,
+          rosterId: r.roster,
+          originPhase: r.origin_phase,
+          originPosition: r.origin_position,
+          currentPhase: r.current_phase,
+          initialPosition: r.initial_position,
+          finalPosition: r.final_position,
+          rankingId: r.ranking_id,
+          name,
+          teamName: name,
+          phaseName,
+        };
       }
       if (r.origin_phase && r.origin_position && !r.roster_id) {
         const phaseName = await getPhaseName(r.origin_phase);
-        return { ...r, phaseName };
+        return {
+          id: r.id,
+          rosterId: r.roster,
+          originPhase: r.origin_phase,
+          originPosition: r.origin_position,
+          currentPhase: r.current_phase,
+          initialPosition: r.initial_position,
+          finalPosition: r.final_position,
+          rankingId: r.ranking_id,
+          phaseName,
+        };
       } else {
-        return { ...r };
+        return {
+          id: r.id,
+          rosterId: r.roster,
+          originPhase: r.origin_phase,
+          originPosition: r.origin_position,
+          currentPhase: r.current_phase,
+          initialPosition: r.initial_position,
+          finalPosition: r.final_position,
+          rankingId: r.ranking_id,
+        };
       }
     }),
   );
@@ -2079,6 +2161,14 @@ async function getPositions(gameId) {
           positions[index].photoUrl = photoUrl;
         }
       }
+      positions[index].gameId = p.game_id;
+      positions[index].id = p.id;
+      positions[index].name = p.name;
+      positions[index].position = p.position;
+      positions[index].rankingId = p.ranking_id;
+      positions[index].rosterId = p.roster_id;
+      positions[index].score = p.score;
+      positions[index].spirit = p.spirit;
     }),
   );
 
@@ -2117,6 +2207,7 @@ async function getGames(eventId) {
       // field and start_time are temporary, this will change when all the schedule logic will be handled in backend.
       // For now this is so it can still works even after adding the new ids to these fields.
       return {
+        id: game.id,
         eventId: game.event_id,
         phaseId: game.phase_id,
         description: game.description,
@@ -2366,7 +2457,23 @@ async function getTeamGames(eventId) {
           'game_teams.roster_id',
         )
         .where({ game_id: game.id });
-      return { id: game.id, phaseId: game.phase_id, eventId, teams };
+      return {
+        id: game.id,
+        phaseId: game.phase_id,
+        eventId,
+        teams: teams.map(t => ({
+          gameId: t.game_id,
+          rosterId: t.roster_id,
+          score: t.score,
+          position: t.position,
+          name: t.name,
+          teamId: t.team_id,
+          spirit: t.spirit,
+          rankingId: t.ranking_id,
+          id: t.id,
+          active: t.active,
+        })),
+      };
     }),
   );
   return res;
@@ -2393,7 +2500,18 @@ async function getTeamsPhase(phaseId) {
       const phaseName = await getPhaseName(r.origin_phase);
       const name = await getRosterName(r.roster_id);
       const teamId = await getTeamIdFromRosterId(r.roster_id);
-      return { ...r, teamId, name, phaseName };
+      return {
+        rosterId: r.roster_id,
+        originPhase: r.origin_phase,
+        originPosition: r.origin_position,
+        currentPhase: r.current_phase,
+        initialPosition: r.initial_position,
+        finalPosition: r.final_position,
+        rankingId: r.ranking_id,
+        teamId,
+        name,
+        phaseName,
+      };
     }),
   );
   return rankingsWithName;
@@ -2417,7 +2535,21 @@ async function getPhasesGameAndTeams(eventId, phaseId) {
           'game_teams.roster_id',
         )
         .where({ game_id: game.id });
-      return { id: game.id, phaseId: game.phase_id, eventId, teams };
+      return {
+        id: game.id,
+        phaseId: game.phase_id,
+        eventId,
+        teams: teams.map(t => ({
+          gameId: t.game_id,
+          rosterId: t.roster_id,
+          score: t.score,
+          position: t.position,
+          name: t.name,
+          teamId: t.team_id,
+          spirit: t.spirit,
+          rankingId: t.ranking_id,
+        })),
+      };
     }),
   );
   return { games: res, teams };
@@ -2488,7 +2620,11 @@ async function getSlots(eventId) {
     .select('*')
     .where({ event_id: eventId })
     .orderBy('date');
-  return res;
+  return res.map(r => ({
+    id: r.id,
+    eventId: r.event_id,
+    date: r.date,
+  }));
 }
 
 async function getTeamPlayers(teamId) {
@@ -2530,6 +2666,41 @@ async function getRosterPlayers(rosterId) {
   }));
 }
 
+async function getMyTeamPlayers(teamId, userId) {
+  const res = await knex('user_entity_role')
+    .select(
+      'team_players_infos.person_id',
+      'team_players_infos.id',
+      'team_players_infos.team_id',
+      'team_players_infos.role',
+      'team_players_infos.name',
+      'team_players_infos.photo_url',
+    )
+    .leftJoin(
+      'team_players_infos',
+      'team_players_infos.person_id',
+      '=',
+      'user_entity_role.entity_id',
+    )
+    .leftJoin(
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
+      '=',
+      'user_entity_role.entity_id',
+    )
+    .where({ user_id: userId })
+    .andWhere('team_players_infos.team_id', '=', teamId);
+
+  return res.map(r => ({
+    id: r.id,
+    personId: r.person_id,
+    teamId: r.team_id,
+    role: r.role,
+    photoUrl: r.photo_url,
+    name: r.name,
+  }));
+}
+
 async function getTeamsSchedule(eventId) {
   const res = await knex('event_rosters')
     .select('team_id', 'roster_id', 'event_id', 'name')
@@ -2544,19 +2715,23 @@ async function getTeamsSchedule(eventId) {
       STATUS_ENUM.ACCEPTED,
     ])
     .andWhere({ event_id: eventId });
-  return {
-    teamId: res.team_id,
-    rosterId: res.roster_id,
-    eventId: res.event_id,
-    name: res.name,
-  };
+  return res.map(r => ({
+    teamId: r.team_id,
+    rosterId: r.roster_id,
+    eventId: r.event_id,
+    name: r.name,
+  }));
 }
 
 async function getFields(eventId) {
   const res = await knex('event_fields')
     .select('*')
     .where({ event_id: eventId });
-  return res;
+  return res.map(r => ({
+    eventId: r.event_id,
+    field: r.field,
+    id: r.id,
+  }));
 }
 
 async function getGeneralInfos(entityId) {
@@ -5918,17 +6093,18 @@ async function removeEntityRole(entityId, entityIdAdmin) {
     .del();
 }
 
-const deleteEntity = async (entityId, userId) => {
-  const role = await getEntityRole(entityId, userId);
+const deleteEntity = async (body, userId) => {
+  const { id } = body;
+  const role = await getEntityRole(id, userId);
 
   if (role !== ENTITIES_ROLE_ENUM.ADMIN) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   } else {
     await knex('alias')
-      .where({ id: entityId })
+      .where({ id })
       .del();
     await knex('entities')
-      .where({ id: entityId })
+      .where({ id })
       .del();
   }
 };
@@ -5961,20 +6137,24 @@ const deleteEntityMembership = async membershipId => {
     })
     .del()
     .returning('infos_supp_id');
+
   await Promise.all(
     memberships.map(async m => {
-      const [person] = await knex('person_infos')
-        .where({
-          id: m,
-        })
-        .del()
-        .returning('address_id');
-
-      await knex('addresses')
-        .where({
-          id: person,
-        })
-        .del();
+      if (m) {
+        const [person] = await knex('person_infos')
+          .where({
+            id: m,
+          })
+          .del()
+          .returning('address_id');
+        if (person) {
+          await knex('addresses')
+            .where({
+              id: person,
+            })
+            .del();
+        }
+      }
     }),
   );
 
@@ -6152,11 +6332,21 @@ const getGameInfo = async (id, userId) => {
     .select('date')
     .where({ id: game.timeslot_id });
   return {
-    ...game,
+    id: game.id,
+    phaseId: game.phase_id,
+    fieldId: game.field_id,
+    locationId: game.location_id,
+    eventId: game.event_id,
+    entityId: game.entity.id,
+    description: game.description,
+    notifiedStart: game.notified_start,
+    notifiedEnd: game.notified_end,
+    phaseName: game.phase_name,
+    timeslotId: game.timeslot_id,
     positions,
-    score_submited: score_suggestion.score_submited,
+    scoreSubmited: score_suggestion.score_submited,
     field: r1.field,
-    start_time: r2.date,
+    startTime: r2.date,
     role,
   };
 };
@@ -6308,7 +6498,8 @@ const getPracticeBasicInfo = async (teamId, userId) => {
       'addresses.state',
       'addresses.zip',
       'addresses.country',
-      'player.rsvp',
+      'myPlayer.rsvp as myRsvp',
+      'player.rsvp as rsvp',
     )
     .leftJoin(
       'sessions',
@@ -6341,6 +6532,24 @@ const getPracticeBasicInfo = async (teamId, userId) => {
           entities.map(e => e.id),
         )
         .groupBy('roster_id')
+        .as('myPlayer'),
+      'myPlayer.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .leftJoin(
+      knex('roster_players_infos')
+        .select(
+          knex.raw(
+            "json_agg(json_build_object('rsvp', roster_players_infos.rsvp, 'photoUrl', roster_players_infos.photo_url, 'name', roster_players_infos.name)) AS rsvp",
+          ),
+          'roster_id',
+        )
+        .whereNotIn(
+          'roster_players_infos.person_id',
+          entities.map(e => e.id),
+        )
+        .groupBy('roster_id')
         .as('player'),
       'player.roster_id',
       '=',
@@ -6362,6 +6571,7 @@ const getPracticeBasicInfo = async (teamId, userId) => {
     state: p.state,
     zip: p.zip,
     country: p.country,
+    myRsvp: p.myRsvp,
     rsvp: p.rsvp,
   }));
 };
@@ -6895,6 +7105,7 @@ module.exports = {
   getTeamPaymentOptionFromRosterId,
   getTeamPlayers,
   getRosterPlayers,
+  getMyTeamPlayers,
   getTeamsSchedule,
   getUnplacedGames,
   getUserIdFromPersonId,

@@ -1,6 +1,4 @@
 const knex = require('../connection');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const moment = require('moment');
 
 function createEvaluation(evaluation) {
   return knex('evaluations')

@@ -397,10 +397,54 @@ const NOTIFICATION_TYPE = {
 };
 
 const NOTIFICATION_ARRAY = [
-  'added to roster',
-  'other team submitted a score',
-  'score submission conflict',
-  'score submission request',
+  {
+    type: 'added to event',
+    email: true,
+    chatbot: false,
+    inApp: true,
+  },
+  {
+    type: 'added to team',
+    email: true,
+    chatbot: false,
+    inApp: true,
+  },
+  {
+    type: 'request to join team',
+    email: false,
+    chatbot: false,
+    inApp: true,
+  },
+  {
+    type: 'other team submitted a score',
+    email: false,
+    chatbot: false,
+    inApp: true,
+  },
+  {
+    type: 'score submission conflict',
+    email: false,
+    chatbot: false,
+    inApp: true,
+  },
+  {
+    type: 'score submission request',
+    email: false,
+    chatbot: false,
+    inApp: true,
+  },
+  {
+    type: 'person registration',
+    email: true,
+    chatbot: false,
+    inApp: false,
+  },
+  {
+    type: 'team registration',
+    email: true,
+    chatbot: false,
+    inApp: false,
+  },
 ];
 
 const NOTIFICATION_MEDIA = {
