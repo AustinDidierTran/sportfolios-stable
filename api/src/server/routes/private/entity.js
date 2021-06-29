@@ -1817,6 +1817,23 @@ router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/exercise`, async ctx => {
+  const exercise = await queries.addExercise(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (!exercise) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: exercise,
+  };
+});
+
 router.post(`${BASE_URL}/game`, async ctx => {
   const game = await queries.addGame(
     ctx.request.body,
