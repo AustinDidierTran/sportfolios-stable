@@ -67,6 +67,7 @@ const {
   getAllPlayersAcceptedRegistered: getAllPlayersAcceptedRegisteredHelper,
   getAllPlayersPending: getAllPlayersPendingHelper,
   getAllTeamPlayersPending: getAllTeamPlayersPendingHelper,
+  getMyTeamPlayersRequest: getMyTeamPlayersRequestHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
   getAllTeamGames: getAllTeamGamesHelper,
   getAllTeamPractices: getAllTeamPracticesHelper,
@@ -201,6 +202,7 @@ const {
   getPrimaryPersonIdFromUserId,
 } = require('../helpers');
 const { sendNotification } = require('./notifications');
+const { getOwnedPersons } = require('./users');
 
 async function isAllowed(
   entityId,
@@ -498,6 +500,12 @@ async function getAllPlayersPendingAndRefused(eventId) {
 
 function getAllTeamPlayersPending(teamId) {
   return getAllTeamPlayersPendingHelper(teamId);
+}
+
+async function getMyTeamPlayersRequest(teamId, userId) {
+  const persons = await getOwnedPersons(userId);
+  const personIds = persons.map(p => p.id);
+  return getMyTeamPlayersRequestHelper(teamId, personIds);
 }
 
 function getPersonInfos(entityId) {
@@ -2220,6 +2228,7 @@ module.exports = {
   getAllPlayersAcceptedRegistered,
   getAllPlayersPendingAndRefused,
   getAllTeamPlayersPending,
+  getMyTeamPlayersRequest,
   getAllRolesEntity,
   getAllTeamsAcceptedInfos,
   getAllTeamsAcceptedRegistered,
