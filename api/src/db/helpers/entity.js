@@ -4759,6 +4759,44 @@ async function addGame(
   };
 }
 
+async function getTeamExercise(sessionId) {
+  const exercises = await knex('session_exercises')
+    .select('*')
+    .where({ session_id: sessionId });
+
+  const res = await knex('exercises')
+    .select('*')
+    .whereIn(
+      'id',
+      exercises.map(e => e.exercise_id),
+    );
+
+  return res;
+}
+
+async function addExercise(exerciseId, name, description, sessionId) {
+  let exercise_id = exerciseId;
+
+  if (!exercise_id) {
+    const [exercise] = await knex('exercises')
+      .insert({
+        name,
+        description,
+      })
+      .returning('*');
+    exercise_id = exercise.id;
+  }
+
+  const [res] = await knex('session_exercises')
+    .insert({
+      session_id: sessionId,
+      exercise_id,
+    })
+    .returning('*');
+
+  return res;
+}
+
 async function addPractice(
   name,
   dateStart,
@@ -6966,6 +7004,7 @@ module.exports = {
   addPlayerCartItem,
   addPlayerToTeam,
   sendRequestToJoinTeam,
+  addExercise,
   addTeamRoster,
   addPlayerToRoster,
   addPractice,
@@ -7034,6 +7073,7 @@ module.exports = {
   getEvent,
   getEventAdmins,
   getEventIdFromRosterId,
+  getTeamExercise,
   getFields,
   getGame,
   getGameInfo,

@@ -69,12 +69,23 @@ function updateExercise(exercise) {
     .returning('*');
 }
 
+function linkExerciseToTeam(team_id, exercise_id) {
+  return knex('team_exercises').insert({ team_id, exercise_id });
+}
+
 function getSessionById(sessionId) {
   return knex('sessions').where({ id: sessionId });
 }
 
-function linkExerciseToTeam(team_id, exercise_id) {
-  return knex('team_exercises').insert({ team_id, exercise_id });
+function getExercicesByTeamId(team_id) {
+  return knex('team_exercises')
+    .where({ team_id })
+    .leftJoin(
+      'exercises',
+      'team_exercises.exercise_id',
+      '=',
+      'exercises.id',
+    );
 }
 
 module.exports = {
@@ -85,4 +96,5 @@ module.exports = {
   updateExercise,
   getSessionById,
   linkExerciseToTeam,
+  getExercicesByTeamId,
 };

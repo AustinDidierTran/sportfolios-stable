@@ -42,6 +42,7 @@ const {
   cancelRosterInviteToken: cancelRosterInviteTokenHelper,
   canRemovePlayerFromRoster: canRemovePlayerFromRosterHelper,
   canUnregisterTeam: canUnregisterTeamHelper,
+  addExercise: addExerciseHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
   deleteGame: deleteGameHelper,
@@ -84,6 +85,7 @@ const {
   getEvent: getEventHelper,
   getEventAdmins: getEventAdminsHelper,
   getEventIdFromRosterId,
+  getTeamExercise: getTeamExerciseHelper,
   getFields: getFieldsHelper,
   getGameInfo: getGameInfoHelper,
   getGamePlayersWithRole,
@@ -249,6 +251,10 @@ function getAllTypeEntities(type) {
 
 function getEntitiesTypeById(id) {
   return getEntitiesTypeByIdHelper(id);
+}
+
+function getTeamExercise(sessionId) {
+  return getTeamExerciseHelper(sessionId);
 }
 
 function getAllRolesEntity(id) {
@@ -2062,6 +2068,14 @@ async function deletePractice(userId, query) {
   return deletePracticeHelper(practiceId);
 }
 
+async function addExercise(query, userId) {
+  const { exerciseId, name, description, sessionId, teamId } = query;
+  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return addExerciseHelper(exerciseId, name, description, sessionId);
+}
+
 async function createRosterInviteToken(userId, rosterId) {
   const admins = await getMyPersonsAdminsOfTeamHelper(
     rosterId,
@@ -2189,12 +2203,10 @@ module.exports = {
   addTeamToEvent,
   addTimeSlot,
   cancelRosterInviteToken,
-  cancelRosterInviteToken,
   canUnregisterTeamsList,
-  createRosterInviteToken,
+  addExercise,
   createRosterInviteToken,
   deleteEntity,
-  deleteEntityHelper,
   deleteEntityHelper,
   deleteEntityMembership,
   deleteGame,
@@ -2231,6 +2243,7 @@ module.exports = {
   getEntitiesTypeById,
   getEntity,
   getEvent,
+  getTeamExercise,
   getFields,
   getGameInfo,
   getGames,
