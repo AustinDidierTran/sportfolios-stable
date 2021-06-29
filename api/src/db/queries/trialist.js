@@ -17,6 +17,9 @@ const {
   createEvaluation: createEvaluationHelper,
   getAllCommentSuggestions: getAllCommentSuggestionsHelper,
   getPlayerLastEvaluation: getPlayerLastEvaluationhelper,
+  createExercise: createExerciseHelper,
+  updateExercise: updateExerciseHelper,
+  getSessionById: getSessionByIdHelper,
 } = require('../helpers/trialist');
 
 async function createEvaluation(evaluation) {
@@ -44,8 +47,38 @@ async function getPlayerLastEvaluation(playerId) {
   return res;
 }
 
+async function createExercise(exercise) {
+  const res = await createExerciseHelper(exercise);
+  if (!res) {
+    return;
+  }
+
+  return res;
+}
+
+async function updateExercise(exercise) {
+  const res = await updateExerciseHelper(exercise);
+  if (!res) {
+    return;
+  }
+
+  return res;
+}
+
+async function getSessionById(session_id) {
+  const res = await getSessionByIdHelper(session_id);
+  if (!res) {
+    return;
+  }
+
+  return res;
+}
+
 module.exports = {
   createEvaluation,
   getAllCommentSuggestions,
   getPlayerLastEvaluation,
+  createExercise,
+  updateExercise,
+  getSessionById,
 };

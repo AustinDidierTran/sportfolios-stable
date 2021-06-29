@@ -58,4 +58,52 @@ router.get(`${BASE_URL}/getPlayerLastEvaluation`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/createExercise`, async ctx => {
+  const res = await queries.createExercise(ctx.request.body.exercise);
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS_STRING,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
+
+router.post(`${BASE_URL}/updateExercise`, async ctx => {
+  const res = await queries.updateExercise(ctx.request.body.exercise);
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS_STRING,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
+
+router.get(`${BASE_URL}/getSessionById`, async ctx => {
+  const res = await queries.getSessionById(ctx.query.sessionId);
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
+
 module.exports = router;

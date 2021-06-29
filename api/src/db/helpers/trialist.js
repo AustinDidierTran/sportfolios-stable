@@ -5,11 +5,11 @@ const moment = require('moment');
 function createEvaluation(evaluation) {
   return knex('evaluations')
     .insert({
-      exercise_id: evaluation.exercise_id,
-      coach_id: evaluation.coach_id,
-      person_id: evaluation.person_id,
-      session_id: evaluation.session_id,
-      game_id: evaluation.game_id,
+      exercise_id: evaluation.exerciseId,
+      coach_id: evaluation.coachId,
+      person_id: evaluation.personId,
+      session_id: evaluation.sessionId,
+      game_id: evaluation.gameId,
       rating: evaluation.rating,
     })
     .returning('*');
@@ -52,8 +52,34 @@ async function getPlayerLastEvaluation(playerId) {
   return res;
 }
 
+function createExercise(exercise) {
+  return knex('exercises')
+    .insert({
+      name: exercise.name,
+      description: exercise.description,
+    })
+    .returning('*');
+}
+
+function updateExercise(exercise) {
+  return knex('exercises')
+    .update({
+      name: exercise.name,
+      description: exercise.description,
+    })
+    .where({ id: exercise.id })
+    .returning('*');
+}
+
+function getSessionById(sessionId) {
+  return knex('sessions').where({ id: sessionId });
+}
+
 module.exports = {
   createEvaluation,
   getAllCommentSuggestions,
   getPlayerLastEvaluation,
+  createExercise,
+  updateExercise,
+  getSessionById,
 };
