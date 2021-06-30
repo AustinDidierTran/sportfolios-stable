@@ -31,8 +31,7 @@ class PhaseController {
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
-    const res = await addPhaseHelper(phase, spots, eventId, type);
-    return res;
+    return addPhaseHelper(phase, spots, eventId, type);
   }
 
   static async getPrerankPhase(eventId, userId) {
