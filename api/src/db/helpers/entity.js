@@ -4787,6 +4787,75 @@ async function addGame(
   };
 }
 
+async function getTeamExercises(teamId) {
+  const exercises = await knex('team_exercises')
+    .select('*')
+    .where({ team_id: teamId });
+
+  const res = await knex('exercises')
+    .select('*')
+    .whereIn(
+      'id',
+      exercises.map(e => e.exercise_id),
+    );
+
+  return res;
+}
+
+async function getSessionExercises(sessionId) {
+  const exercises = await knex('session_exercises')
+    .select('*')
+    .where({ session_id: sessionId });
+  const res = await knex('exercises')
+    .select('*')
+    .whereIn(
+      'id',
+      exercises.map(e => e.exercise_id),
+    );
+
+  return res;
+}
+
+async function addExercise(
+  exerciseId,
+  name,
+  description,
+  type,
+  sessionId,
+  teamId,
+) {
+  let exercise_id = exerciseId;
+
+  if (!exercise_id) {
+    const [exercise] = await knex('exercises')
+      .insert({
+        name,
+        description,
+        type,
+      })
+      .returning('*');
+    exercise_id = exercise.id;
+  }
+
+  await knex('team_exercises')
+    .insert({
+      team_id: teamId,
+      exercise_id,
+    })
+    .onConflict(['team_id', 'exercise_id'])
+    .ignore()
+    .returning('*');
+
+  const [res] = await knex('session_exercises')
+    .insert({
+      session_id: sessionId,
+      exercise_id,
+    })
+    .returning('*');
+
+  return res;
+}
+
 async function addPractice(
   name,
   dateStart,
@@ -7002,6 +7071,7 @@ module.exports = {
   addPlayerCartItem,
   addPlayerToTeam,
   sendRequestToJoinTeam,
+  addExercise,
   addTeamRoster,
   addPlayerToRoster,
   addPractice,
@@ -7071,6 +7141,7 @@ module.exports = {
   getEvent,
   getEventAdmins,
   getEventIdFromRosterId,
+  getTeamExercises,
   getFields,
   getGame,
   getGameInfo,
@@ -7129,6 +7200,7 @@ module.exports = {
   getRosterName,
   getRostersNames,
   getScoreSuggestion,
+  getSessionExercises,
   getSessionLocations,
   getSlots,
   getSubmissionerInfos,

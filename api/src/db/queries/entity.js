@@ -41,6 +41,7 @@ const {
   cancelRosterInviteToken: cancelRosterInviteTokenHelper,
   canRemovePlayerFromRoster: canRemovePlayerFromRosterHelper,
   canUnregisterTeam: canUnregisterTeamHelper,
+  addExercise: addExerciseHelper,
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
   deleteGame: deleteGameHelper,
@@ -84,6 +85,7 @@ const {
   getEvent: getEventHelper,
   getEventAdmins: getEventAdminsHelper,
   getEventIdFromRosterId,
+  getTeamExercises: getTeamExercisesHelper,
   getFields: getFieldsHelper,
   getGameInfo: getGameInfoHelper,
   getGamePlayersWithRole,
@@ -136,6 +138,7 @@ const {
   getMyTeamPlayers: getMyTeamPlayersHelper,
   getRostersNames: getRostersNamesHelper,
   getScoreSuggestion: getScoreSuggestionHelper,
+  getSessionExercises: getSessionExercisesHelper,
   getSessionLocations: getSessionLocationsHelper,
   getSlots: getSlotsHelper,
   getTeamCoachedByUser: getTeamCoachedByUserHelper,
@@ -250,6 +253,14 @@ function getAllTypeEntities(type) {
 
 function getEntitiesTypeById(id) {
   return getEntitiesTypeByIdHelper(id);
+}
+
+function getTeamExercises(teamId) {
+  return getTeamExercisesHelper(teamId);
+}
+
+function getSessionExercises(sessionId) {
+  return getSessionExercisesHelper(sessionId);
 }
 
 function getAllRolesEntity(id) {
@@ -2059,6 +2070,14 @@ async function deletePractice(userId, query) {
   return deletePracticeHelper(practiceId);
 }
 
+async function addExercise(query, userId) {
+  const { exerciseId, name, description, type, sessionId, teamId } = query;
+  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return addExerciseHelper(exerciseId, name, description, type, sessionId, teamId);
+}
+
 async function createRosterInviteToken(userId, rosterId) {
   const admins = await getMyPersonsAdminsOfTeamHelper(
     rosterId,
@@ -2185,12 +2204,10 @@ module.exports = {
   addTeamToEvent,
   addTimeSlot,
   cancelRosterInviteToken,
-  cancelRosterInviteToken,
   canUnregisterTeamsList,
-  createRosterInviteToken,
+  addExercise,
   createRosterInviteToken,
   deleteEntity,
-  deleteEntityHelper,
   deleteEntityHelper,
   deleteEntityMembership,
   deleteGame,
@@ -2228,6 +2245,7 @@ module.exports = {
   getEntitiesTypeById,
   getEntity,
   getEvent,
+  getTeamExercises,
   getFields,
   getGameInfo,
   getGames,
@@ -2270,6 +2288,7 @@ module.exports = {
   getRostersNames,
   getS3Signature,
   getScoreSuggestion,
+  getSessionExercises,
   getSessionLocations,
   getSlots,
   getTeamCoachedByUser,
