@@ -55,6 +55,7 @@ async function createTeamExercise(exercise, team_id) {
     .insert({
       name: exercise.name,
       description: exercise.description,
+      type: exercise.type,
     })
     .returning('*');
 
