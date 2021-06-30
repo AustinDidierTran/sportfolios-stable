@@ -4839,7 +4839,7 @@ async function addExercise(
       team_id: teamId,
       exercise_id,
     })
-    .onConflict({ team_id: teamId, exercise_id: exerciseId })
+    .onConflict(['team_id', 'exercise_id'])
     .ignore()
     .returning('*');
 
