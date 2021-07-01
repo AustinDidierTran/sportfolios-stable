@@ -1506,7 +1506,22 @@ async function getPaymentOption(paymentOptionId) {
   const [option] = await knex('event_payment_options')
     .select('*')
     .where({ id: paymentOptionId });
-  return option;
+
+  return option.map(o => ({
+    teamStripePriceId: o.team_stripe_price_id,
+    eventId: o.event_id,
+    name: o.name,
+    teamPrice: o.team_price,
+    startTime: o.start_time,
+    endTime: o.end_time,
+    individualPrice: o.individual_price,
+    individualStripePriceId: o.individual_stripe_price_id,
+    id: o.id,
+    teamActivity: o.team_activity,
+    teamAcceptation: o.team_acceptation,
+    playerAcceptation: o.player_acceptation,
+    informations: o.informations,
+  }));
 }
 
 async function getAllTeamsRegistered(eventId) {
