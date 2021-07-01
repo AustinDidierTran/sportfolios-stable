@@ -115,6 +115,8 @@ const {
   getPhasesGameAndTeams: getPhasesGameAndTeamsHelper,
   getPhasesWithoutPrerank: getPhasesWithoutPrerankHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
+  getPlayerSessionEvaluation: getPlayerSessionEvaluationHelper,
+  getPlayerTeamRole: getPlayerTeamRoleHelper,
   getPracticeBasicInfo: getPracticeBasicInfoHelper,
   getPracticeInfo: getPracticeInfoHelper,
   getPreranking: getPrerankingHelper,
@@ -261,6 +263,16 @@ function getTeamExercises(teamId) {
 
 function getSessionExercises(sessionId) {
   return getSessionExercisesHelper(sessionId);
+}
+
+async function getPlayerSessionEvaluation(exerciseId, userId) {
+  const personId = await getPrimaryPersonIdFromUserId(userId);
+  return getPlayerSessionEvaluationHelper(exerciseId, personId);
+}
+
+async function getPlayerTeamRole(teamId, userId) {
+  const personId = await getPrimaryPersonIdFromUserId(userId);
+  return getPlayerTeamRoleHelper(teamId, personId);
 }
 
 function getAllRolesEntity(id) {
@@ -2268,6 +2280,8 @@ module.exports = {
   getPersonInfos,
   getPhases,
   getPhasesGameAndTeams,
+  getPlayerSessionEvaluation,
+  getPlayerTeamRole,
   getPossibleSubmissionerInfos,
   getPracticeBasicInfo,
   getPracticeInfo,
