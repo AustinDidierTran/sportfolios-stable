@@ -30,6 +30,11 @@ const APP_ENUM = {
   APPLE: 'Apple',
 };
 
+const PILL_TYPE_ENUM = {
+  NOT_PAID: 'not paid',
+  NOT_MEMBER: 'not member',
+};
+
 const SIZES_ENUM = {
   XXXS: '3x-small',
   XXS: '2x-small',
@@ -565,6 +570,7 @@ module.exports = {
   REJECTION_ENUM,
   REPORT_TYPE_ENUM,
   ROUTES_ENUM,
+  PILL_TYPE_ENUM,
   ROSTER_ROLE_ENUM,
   SCORE_SUBMISSION_CHATBOT_STATES,
   SELECT_ENUM,
