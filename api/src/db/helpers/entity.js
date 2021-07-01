@@ -4846,14 +4846,16 @@ async function addExercise(
     .ignore()
     .returning('*');
 
-  const [res] = await knex('session_exercises')
-    .insert({
-      session_id: sessionId,
-      exercise_id,
-    })
-    .returning('*');
+  if (sessionId) {
+    const [res] = await knex('session_exercises')
+      .insert({
+        session_id: sessionId,
+        exercise_id,
+      })
+      .returning('*');
+  }
 
-  return res;
+  return exercise_id;
 }
 
 async function addPractice(
