@@ -1682,19 +1682,29 @@ async function getAllTeamsRegisteredInfos(eventId, pills, userId) {
   return res;
 }
 async function getAllTeamsAcceptedInfos(eventId, userId) {
+  console.log({ eventId, userId });
   const teams = await getAllTeamsAcceptedRegistered(eventId);
+  console.log({ teams });
 
   const res = await Promise.all(
     teams.map(async t => {
       const entity = (await getEntity(t.team_id, userId)).basicInfos;
+      console.log({ entity });
+
       const emails = await getEmailsEntity(t.team_id);
+      console.log({ emails });
       const players = await getRoster(t.roster_id, true);
+      console.log({ players });
       const captains = await getTeamCaptains(t.team_id, userId);
+      console.log({ captains });
       const option = await getPaymentOption(t.payment_option_id);
+      console.log({ option });
       const role = await getRoleRoster(t.roster_id, userId);
+      console.log({ role });
       const registrationStatus = await getRegistrationStatus(
         t.roster_id,
       );
+      console.log({ registrationStatus });
       return {
         name: entity.name,
         surname: entity.surname,
@@ -1713,6 +1723,7 @@ async function getAllTeamsAcceptedInfos(eventId, userId) {
       };
     }),
   );
+  console.log({ res });
 
   res.sort((a, b) => {
     if (a.name < b.name) {
