@@ -2137,7 +2137,7 @@ async function getPhaseRanking(phaseId) {
         const name = await getRosterName(r.roster_id);
         return {
           id: r.id,
-          rosterId: r.roster,
+          rosterId: r.roster_id,
           originPhase: r.origin_phase,
           originPosition: r.origin_position,
           currentPhase: r.current_phase,
@@ -2153,7 +2153,7 @@ async function getPhaseRanking(phaseId) {
         const phaseName = await getPhaseName(r.origin_phase);
         return {
           id: r.id,
-          rosterId: r.roster,
+          rosterId: r.roster_id,
           originPhase: r.origin_phase,
           originPosition: r.origin_position,
           currentPhase: r.current_phase,
@@ -2165,7 +2165,7 @@ async function getPhaseRanking(phaseId) {
       } else {
         return {
           id: r.id,
-          rosterId: r.roster,
+          rosterId: r.roster_id,
           originPhase: r.origin_phase,
           originPosition: r.origin_position,
           currentPhase: r.current_phase,
