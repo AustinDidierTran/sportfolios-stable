@@ -4863,14 +4863,27 @@ async function getCoachSessionEvaluation(
         const [player] = await knex('entities_general_infos')
           .select('*')
           .where('entity_id', '=', user.person_id);
+        if(evaluation){
+          return {
+            id: evaluation.id,
+            exerciseId: evaluation.exercise_id,
+            personId: user.person_id,
+            name: player.name,
+            surname: player.surname,
+            photoUrl: player.photo_url,
+            rating: evaluation.rating,
+            sessionId: user.sessionId,
+            comments: comments?.map(c => ({
+              content: c.content,
+              active: c.active,
+            })),
+          };
+          }
         return {
-          id: evaluation ? evaluation.id : null,
-          exerciseId: evaluation ? evaluation.exercise_id : null,
           personId: user.person_id,
           name: player.name,
           surname: player.surname,
           photoUrl: player.photo_url,
-          rating: evaluation ? evaluation.rating : null,
           sessionId: user.sessionId,
           comments: comments?.map(c => ({
             content: c.content,
@@ -5035,31 +5048,21 @@ async function addPractice(
     location_id = location.id;
   }
 
-  const [oldRoster] = await knex('team_rosters')
-    .select('id')
-    .where({ team_id: teamId })
-    .where('active', '=', 'true')
-    .orderByRaw(`created_at desc, updated_at desc`)
-    .limit(1);
-
   const [rosterId] = await knex('team_rosters')
     .insert({ team_id: teamId, active: false })
     .returning('id');
 
-  const oldRosterPlayer = await knex('roster_players')
+  const teamPlayers = await knex('team_players')
     .select('*')
-    .where({ roster_id: oldRoster.id });
+    .where({ team_id: teamId });
 
   await Promise.all(
-    oldRosterPlayer.map(async player => {
+    teamPlayers.map(async player => {
       const [res] = await knex('roster_players')
         .insert({
           roster_id: rosterId,
           person_id: player.person_id,
           role: player.role,
-          payment_status: player.payment_status,
-          is_sub: player.is_sub,
-          invoice_item_id: player.invoice_item_id,
         })
         .returning('*');
       return res;
