@@ -77,6 +77,7 @@ const {
   getAllTeamsRefused: getAllTeamsRefusedHelper,
   getAllTeamsRegisteredInfos: getAllTeamsRegisteredInfosHelper,
   getAllTypeEntities: getAllTypeEntitiesHelper,
+  getCoachSessionEvaluation: getCoachSessionEvaluationHelper,
   getCreatorsUserId,
   getEmailPerson,
   getEntitiesTypeById: getEntitiesTypeByIdHelper,
@@ -116,7 +117,7 @@ const {
   getPhasesWithoutPrerank: getPhasesWithoutPrerankHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getPlayerSessionEvaluation: getPlayerSessionEvaluationHelper,
-  getPlayerTeamRole: getPlayerTeamRoleHelper,
+  getIsEvaluationCoach: getIsEvaluationCoachHelper,
   getPracticeBasicInfo: getPracticeBasicInfoHelper,
   getPracticeInfo: getPracticeInfoHelper,
   getPreranking: getPrerankingHelper,
@@ -265,14 +266,18 @@ function getSessionExercises(sessionId) {
   return getSessionExercisesHelper(sessionId);
 }
 
-async function getPlayerSessionEvaluation(exerciseId, userId) {
-  const personId = await getPrimaryPersonIdFromUserId(userId);
-  return getPlayerSessionEvaluationHelper(exerciseId, personId);
+async function getPlayerSessionEvaluation(exerciseId, sessionId, userId) {
+  return getPlayerSessionEvaluationHelper(exerciseId, sessionId, userId);
 }
 
-async function getPlayerTeamRole(teamId, userId) {
+async function getCoachSessionEvaluation(exerciseId, sessionId, userId) {
+  const coachId = await getPrimaryPersonIdFromUserId(userId);
+  return getCoachSessionEvaluationHelper(exerciseId, sessionId, coachId);
+}
+
+async function getIsEvaluationCoach(exerciseId, sessionId, userId) {
   const personId = await getPrimaryPersonIdFromUserId(userId);
-  return getPlayerTeamRoleHelper(teamId, personId);
+  return getIsEvaluationCoachHelper(exerciseId, sessionId, personId);
 }
 
 function getAllRolesEntity(id) {
@@ -2254,6 +2259,7 @@ module.exports = {
   getAllTeamsPendingAndRefused,
   getAllTeamsRegisteredInfos,
   getAllTypeEntities,
+  getCoachSessionEvaluation,
   getEntitiesTypeById,
   getEntity,
   getEvent,
@@ -2281,7 +2287,7 @@ module.exports = {
   getPhases,
   getPhasesGameAndTeams,
   getPlayerSessionEvaluation,
-  getPlayerTeamRole,
+  getIsEvaluationCoach,
   getPossibleSubmissionerInfos,
   getPracticeBasicInfo,
   getPracticeInfo,
