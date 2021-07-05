@@ -2137,7 +2137,7 @@ async function getPhaseRanking(phaseId) {
         const name = await getRosterName(r.roster_id);
         return {
           id: r.id,
-          rosterId: r.roster,
+          rosterId: r.roster_id,
           originPhase: r.origin_phase,
           originPosition: r.origin_position,
           currentPhase: r.current_phase,
@@ -2153,7 +2153,7 @@ async function getPhaseRanking(phaseId) {
         const phaseName = await getPhaseName(r.origin_phase);
         return {
           id: r.id,
-          rosterId: r.roster,
+          rosterId: r.roster_id,
           originPhase: r.origin_phase,
           originPosition: r.origin_position,
           currentPhase: r.current_phase,
@@ -2165,7 +2165,7 @@ async function getPhaseRanking(phaseId) {
       } else {
         return {
           id: r.id,
-          rosterId: r.roster,
+          rosterId: r.roster_id,
           originPhase: r.origin_phase,
           originPosition: r.origin_position,
           currentPhase: r.current_phase,
@@ -3628,7 +3628,6 @@ async function updatePhaseGamesRosterId(phaseId) {
       return res;
     }),
   );
-
   return gamePositions;
 }
 
@@ -3636,11 +3635,9 @@ async function updateGameTeamsRosterId(game) {
   const positions = await knex('game_teams')
     .select('*')
     .where({ game_id: game.id });
-
   const [ranking1] = await knex('phase_rankings')
     .select('*')
     .where({ ranking_id: positions[0].ranking_id });
-
   const [ranking2] = await knex('phase_rankings')
     .select('*')
     .where({ ranking_id: positions[1].ranking_id });
@@ -3652,12 +3649,10 @@ async function updateGameTeamsRosterId(game) {
     .update({ roster_id: ranking1.roster_id, name: teamName1 })
     .where({ ranking_id: ranking1.ranking_id })
     .returning('*');
-
   const [rosterId2] = await knex('game_teams')
     .update({ roster_id: ranking2.roster_id, name: teamName2 })
     .where({ ranking_id: ranking2.ranking_id })
     .returning('*');
-
   return [rosterId1, rosterId2];
 }
 
@@ -3667,8 +3662,8 @@ async function updateInitialPositionPhase(phaseId, teams) {
       const [ranking] = await knex('phase_rankings')
         .update({
           roster_id: t.roster_id,
-          origin_phase: t.origin_phase,
-          origin_position: t.origin_position,
+          origin_phase: t.originPhase,
+          origin_position: t.originPosition,
         })
         .where({
           current_phase: phaseId,
