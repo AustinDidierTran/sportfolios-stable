@@ -423,6 +423,46 @@ router.get(`${BASE_URL}/recentMember`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/playerSessionEvaluation`, async ctx => {
+  const evaluation = await queries.getPlayerSessionEvaluation(
+    ctx.query.exerciseId,
+    ctx.body.userInfo.id,
+  );
+
+  if (evaluation) {
+    ctx.body = {
+      status: 'success',
+      data: evaluation,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/playerTeamRole`, async ctx => {
+  const role = await queries.getPlayerTeamRole(
+    ctx.query.teamId,
+    ctx.body.userInfo.id,
+  );
+
+  if (role) {
+    ctx.body = {
+      status: 'success',
+      data: role,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/reports`, async ctx => {
   const reports = await queries.getReports(ctx.query.id);
 

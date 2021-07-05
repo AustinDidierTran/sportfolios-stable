@@ -4842,6 +4842,46 @@ async function getSessionExercises(sessionId) {
   return res;
 }
 
+async function getPlayerSessionEvaluation(exerciseId, personId) {
+  const [evaluation] = await knex('evaluations')
+    .select('*')
+    .where({ exercise_id: exerciseId, person_id: personId });
+
+  if (evaluation) {
+    const evaluationComments = await knex('evaluation_comments')
+      .select('*')
+      .where({ evaluation_id: evaluation.id });
+    const comments = await knex('comments')
+      .select('*')
+      .whereIn(
+        'id',
+        evaluationComments.map(e => e.comment_id),
+      );
+
+    return {
+      id: evaluation.id,
+      exerciseId: evaluation.exercise_id,
+      coachId: evaluation.coach_id,
+      personId: evaluation.person_id,
+      rating: evaluation.rating,
+      sessionId: evaluation.session_id,
+      comments: comments.map(c => ({
+        content: c.content,
+        active: c.active,
+      })),
+    };
+  }
+
+  return [];
+}
+
+async function getPlayerTeamRole(teamId, personId) {
+  const [player] = await knex('team_players')
+    .select('role')
+    .where({ team_id: teamId, person_id: personId });
+  return player.role;
+}
+
 async function addExercise(
   exerciseId,
   name,
@@ -7205,6 +7245,8 @@ module.exports = {
   getPhasesGameAndTeams,
   getPhasesWithoutPrerank,
   getPlayerInvoiceItem,
+  getPlayerSessionEvaluation,
+  getPlayerTeamRole,
   getPracticeBasicInfo,
   getPracticeInfo,
   getPreranking,
