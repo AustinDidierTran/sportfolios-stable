@@ -262,9 +262,10 @@ router.get(`${BASE_URL}/teamExercises`, async ctx => {
   };
 });
 
-
 router.get(`${BASE_URL}/sessionExercises`, async ctx => {
-  const exercise = await queries.getSessionExercises(ctx.query.sessionId);
+  const exercise = await queries.getSessionExercises(
+    ctx.query.sessionId,
+  );
 
   if (!exercise) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -282,6 +283,7 @@ router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
 
   const teams = await queries.getAllTeamsRegisteredInfos(
     ctx.query.eventId,
+    ctx.query.pills,
     userId,
   );
 

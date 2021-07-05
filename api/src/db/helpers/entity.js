@@ -16,6 +16,7 @@ const {
   SESSION_ENUM,
   STATUS_ENUM,
   TAG_TYPE_ENUM,
+  PILL_TYPE_ENUM,
 } = require('../../../../common/enums');
 const { v1: uuidv1 } = require('uuid');
 const { addProduct, addPrice } = require('./stripe/shop');
@@ -1506,7 +1507,22 @@ async function getPaymentOption(paymentOptionId) {
   const [option] = await knex('event_payment_options')
     .select('*')
     .where({ id: paymentOptionId });
-  return option;
+
+  return {
+    teamStripePriceId: option.team_stripe_price_id,
+    eventId: option.event_id,
+    name: option.name,
+    teamPrice: option.team_price,
+    startTime: option.start_time,
+    endTime: option.end_time,
+    individualPrice: option.individual_price,
+    individualStripePriceId: option.individual_stripe_price_id,
+    id: option.id,
+    teamActivity: option.team_activity,
+    teamAcceptation: option.team_acceptation,
+    playerAcceptation: option.player_acceptation,
+    informations: option.informations,
+  };
 }
 
 async function getAllTeamsRegistered(eventId) {
@@ -1515,6 +1531,7 @@ async function getAllTeamsRegistered(eventId) {
     .where({
       event_id: eventId,
     });
+
   return teams;
 }
 
@@ -1559,7 +1576,7 @@ async function getStripeInvoiceItem(invoiceItemId) {
     .where({ invoice_item_id: invoiceItemId });
   return res;
 }
-async function getAllTeamsRegisteredInfos(eventId, userId) {
+async function getAllTeamsRegisteredInfos(eventId, pills, userId) {
   const teams = await getAllTeamsRegistered(eventId);
 
   const [event] = await knex('events_infos')
@@ -1568,7 +1585,7 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
       id: eventId,
     });
 
-  const res = await Promise.all(
+  let res = await Promise.all(
     teams.map(async t => {
       let invoice = null;
       if (t.invoice_item_id) {
@@ -1620,6 +1637,20 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
       };
     }),
   );
+
+  if (pills.includes(PILL_TYPE_ENUM.NOT_PAID)) {
+    res = res.filter(
+      r =>
+        r.status === INVOICE_STATUS_ENUM.OPEN &&
+        r.registrationStatus === STATUS_ENUM.ACCEPTED,
+    );
+  }
+  if (pills.includes(PILL_TYPE_ENUM.NOT_MEMBER)) {
+    res = res.filter(
+      r =>
+        !r.isMember && r.registrationStatus === STATUS_ENUM.ACCEPTED,
+    );
+  }
 
   res.sort((a, b) => {
     if (a.name < b.name) {
@@ -4847,7 +4878,7 @@ async function addExercise(
     .returning('*');
 
   if (sessionId) {
-    const [res] = await knex('session_exercises')
+    await knex('session_exercises')
       .insert({
         session_id: sessionId,
         exercise_id,
