@@ -1682,60 +1682,65 @@ async function getAllTeamsRegisteredInfos(eventId, pills, userId) {
   return res;
 }
 async function getAllTeamsAcceptedInfos(eventId, userId) {
-  console.log({ eventId, userId });
-  const teams = await getAllTeamsAcceptedRegistered(eventId);
-  console.log({ teams });
+  try {
+    console.log({ eventId, userId });
+    const teams = await getAllTeamsAcceptedRegistered(eventId);
+    console.log({ teams });
 
-  const res = await Promise.all(
-    teams.map(async t => {
-      const entity = (await getEntity(t.team_id, userId)).basicInfos;
-      console.log({ entity });
+    const res = await Promise.all(
+      teams.map(async t => {
+        const entity = (await getEntity(t.team_id, userId))
+          .basicInfos;
+        console.log({ entity });
 
-      const emails = await getEmailsEntity(t.team_id);
-      console.log({ emails });
-      const players = await getRoster(t.roster_id, true);
-      console.log({ players });
-      const captains = await getTeamCaptains(t.team_id, userId);
-      console.log({ captains });
-      const option = await getPaymentOption(t.payment_option_id);
-      console.log({ option });
-      const role = await getRoleRoster(t.roster_id, userId);
-      console.log({ role });
-      const registrationStatus = await getRegistrationStatus(
-        t.roster_id,
-      );
-      console.log({ registrationStatus });
-      return {
-        name: entity.name,
-        surname: entity.surname,
-        photoUrl: entity.photoUrl,
-        rosterId: t.roster_id,
-        teamId: t.team_id,
-        invoiceItemId: t.invoice_item_id,
-        informations: t.informations,
-        status: t.status,
-        emails,
-        players,
-        captains,
-        option,
-        role,
-        registrationStatus,
-      };
-    }),
-  );
-  console.log({ res });
+        const emails = await getEmailsEntity(t.team_id);
+        console.log({ emails });
+        const players = await getRoster(t.roster_id, true);
+        console.log({ players });
+        const captains = await getTeamCaptains(t.team_id, userId);
+        console.log({ captains });
+        const option = await getPaymentOption(t.payment_option_id);
+        console.log({ option });
+        const role = await getRoleRoster(t.roster_id, userId);
+        console.log({ role });
+        const registrationStatus = await getRegistrationStatus(
+          t.roster_id,
+        );
+        console.log({ registrationStatus });
+        return {
+          name: entity.name,
+          surname: entity.surname,
+          photoUrl: entity.photoUrl,
+          rosterId: t.roster_id,
+          teamId: t.team_id,
+          invoiceItemId: t.invoice_item_id,
+          informations: t.informations,
+          status: t.status,
+          emails,
+          players,
+          captains,
+          option,
+          role,
+          registrationStatus,
+        };
+      }),
+    );
+    console.log({ res });
 
-  res.sort((a, b) => {
-    if (a.name < b.name) {
-      return -1;
-    }
-    if (a.name > b.name) {
-      return 1;
-    }
-    return 0;
-  });
+    res.sort((a, b) => {
+      if (a.name < b.name) {
+        return -1;
+      }
+      if (a.name > b.name) {
+        return 1;
+      }
+      return 0;
+    });
 
-  return res;
+    return res;
+  } catch (e) {
+    console.log({ e });
+  }
 }
 
 async function getAllPeopleRegisteredInfos(eventId, userId) {
