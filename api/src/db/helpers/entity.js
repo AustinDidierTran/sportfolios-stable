@@ -4863,7 +4863,7 @@ async function getPlayerSessionEvaluation(exerciseId, personId) {
       exerciseId: evaluation.exercise_id,
       coachId: evaluation.coach_id,
       personId: evaluation.person_id,
-      rating: evaluation.rating,
+      value: evaluation.value,
       sessionId: evaluation.session_id,
       comments: comments.map(c => ({
         content: c.content,

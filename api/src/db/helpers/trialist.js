@@ -7,8 +7,7 @@ function createEvaluation(evaluation) {
       coach_id: evaluation.coachId,
       person_id: evaluation.personId,
       session_id: evaluation.sessionId,
-      game_id: evaluation.gameId,
-      rating: evaluation.rating,
+      value: evaluation.value,
     })
     .returning('*');
 }
@@ -20,17 +19,15 @@ function getAllCommentSuggestions() {
 async function getPlayerLastEvaluation(playerId) {
   let res = await knex('evaluations')
     .select(
-      'evaluations.game_id',
       'evaluations.session_id',
       'evaluations.exercise_id',
       'evaluations.person_id',
       'evaluations.created_at',
-      'rating',
+      'value',
       'entities_general_infos.name as coach_name',
       'exercises.name as exercise_name',
       'evaluations.coach_id',
     )
-
     .where({ person_id: playerId })
     .leftJoin(
       'entities_general_infos',
@@ -46,6 +43,47 @@ async function getPlayerLastEvaluation(playerId) {
     )
     .limit(5)
     .orderBy('evaluations.created_at', 'desc');
+
+  return res;
+}
+
+async function getPlayerSessionsEvaluations(teamId, personId) {
+  let res = await knex('team_rosters')
+    .select(
+      'sessions.name',
+      'sessions.start_date as startDate',
+      'playerEvaluation.evaluations',
+    )
+    .where({ team_id: teamId })
+    .leftJoin(
+      'sessions',
+      'sessions.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .leftJoin(
+      knex('evaluations')
+        .select(
+          knex.raw(
+            "json_agg(json_build_object('exerciseId', evaluations.exercise_id, 'coachId', evaluations.coach_id, 'personId', evaluations.person_id, 'value', evaluations.value, 'exerciseName', exercises.name)) AS evaluations",
+          ),
+          'session_id'
+        )
+        .leftJoin(
+          'exercises',
+          'exercises.id',
+          '=',
+          'evaluations.exercise_id',
+        )
+        .where('evaluations.person_id','=', personId)
+        .groupBy('session_id')
+        .as('playerEvaluation'),
+      'playerEvaluation.session_id',
+      '=',
+      'sessions.id',
+    )
+    .limit(5)
+    .orderBy('sessions.start_date', 'desc');
 
   return res;
 }
@@ -94,6 +132,7 @@ module.exports = {
   createEvaluation,
   getAllCommentSuggestions,
   getPlayerLastEvaluation,
+  getPlayerSessionsEvaluations,
   createTeamExercise,
   updateExercise,
   getSessionById,
