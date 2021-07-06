@@ -7,8 +7,7 @@ function createEvaluation(evaluation) {
       coach_id: evaluation.coachId,
       person_id: evaluation.personId,
       session_id: evaluation.sessionId,
-      game_id: evaluation.gameId,
-      rating: evaluation.rating,
+      value: evaluation.rating,
     })
     .returning('*');
 }
