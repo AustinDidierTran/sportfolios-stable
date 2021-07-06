@@ -512,7 +512,7 @@ const IMAGE_ENUM = {
 const MESSENGER_MESSAGES_EN = {
   CONNECTION_SUCCESS: {
     text:
-      "You have been sign up to Sportfolios' chatbot successfuly! Come again after your next match to submit your scores",
+      "You have been signed up to Sportfolios' chatbot successfully! Come again after your next match to submit your scores",
     quick_replies: [
       {
         content_type: 'text',

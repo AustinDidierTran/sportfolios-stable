@@ -1507,7 +1507,9 @@ async function getPaymentOption(paymentOptionId) {
   const [option] = await knex('event_payment_options')
     .select('*')
     .where({ id: paymentOptionId });
-
+  if (!option) {
+    return null;
+  }
   return {
     teamStripePriceId: option.team_stripe_price_id,
     eventId: option.event_id,
@@ -1687,6 +1689,7 @@ async function getAllTeamsAcceptedInfos(eventId, userId) {
   const res = await Promise.all(
     teams.map(async t => {
       const entity = (await getEntity(t.team_id, userId)).basicInfos;
+
       const emails = await getEmailsEntity(t.team_id);
       const players = await getRoster(t.roster_id, true);
       const captains = await getTeamCaptains(t.team_id, userId);
