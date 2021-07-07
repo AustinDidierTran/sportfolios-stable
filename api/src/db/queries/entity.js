@@ -347,8 +347,8 @@ function getRegistered(teamId, eventId) {
   return getRegisteredHelper(teamId, eventId);
 }
 
-function getAllTeamsRegisteredInfos(eventId, userId) {
-  return getAllTeamsRegisteredInfosHelper(eventId, userId);
+function getAllTeamsRegisteredInfos(eventId, pills, userId) {
+  return getAllTeamsRegisteredInfosHelper(eventId, pills, userId);
 }
 
 function getAllTeamsAcceptedInfos(eventId, userId) {
@@ -2088,11 +2088,25 @@ async function deletePractice(userId, query) {
 }
 
 async function addExercise(query, userId) {
-  const { exerciseId, name, description, type, sessionId, teamId } = query;
+  const {
+    exerciseId,
+    name,
+    description,
+    type,
+    sessionId,
+    teamId,
+  } = query;
   if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return addExerciseHelper(exerciseId, name, description, type, sessionId, teamId);
+  return addExerciseHelper(
+    exerciseId,
+    name,
+    description,
+    type,
+    sessionId,
+    teamId,
+  );
 }
 
 async function createRosterInviteToken(userId, rosterId) {

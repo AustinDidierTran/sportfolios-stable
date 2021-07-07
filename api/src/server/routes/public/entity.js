@@ -283,6 +283,7 @@ router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
 
   const teams = await queries.getAllTeamsRegisteredInfos(
     ctx.query.eventId,
+    ctx.query.pills,
     userId,
   );
 

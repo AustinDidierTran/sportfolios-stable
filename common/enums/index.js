@@ -30,6 +30,11 @@ const APP_ENUM = {
   APPLE: 'Apple',
 };
 
+const PILL_TYPE_ENUM = {
+  NOT_PAID: 'not paid',
+  NOT_MEMBER: 'not member',
+};
+
 const SIZES_ENUM = {
   XXXS: '3x-small',
   XXS: '2x-small',
@@ -507,7 +512,7 @@ const IMAGE_ENUM = {
 const MESSENGER_MESSAGES_EN = {
   CONNECTION_SUCCESS: {
     text:
-      "You have been sign up to Sportfolios' chatbot successfuly! Come again after your next match to submit your scores",
+      "You have been signed up to Sportfolios' chatbot successfully! Come again after your next match to submit your scores",
     quick_replies: [
       {
         content_type: 'text',
@@ -565,6 +570,7 @@ module.exports = {
   REJECTION_ENUM,
   REPORT_TYPE_ENUM,
   ROUTES_ENUM,
+  PILL_TYPE_ENUM,
   ROSTER_ROLE_ENUM,
   SCORE_SUBMISSION_CHATBOT_STATES,
   SELECT_ENUM,

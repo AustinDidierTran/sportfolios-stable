@@ -16,6 +16,7 @@ const {
   SESSION_ENUM,
   STATUS_ENUM,
   TAG_TYPE_ENUM,
+  PILL_TYPE_ENUM,
 } = require('../../../../common/enums');
 const { v1: uuidv1 } = require('uuid');
 const { addProduct, addPrice } = require('./stripe/shop');
@@ -1506,7 +1507,24 @@ async function getPaymentOption(paymentOptionId) {
   const [option] = await knex('event_payment_options')
     .select('*')
     .where({ id: paymentOptionId });
-  return option;
+  if (!option) {
+    return null;
+  }
+  return {
+    teamStripePriceId: option.team_stripe_price_id,
+    eventId: option.event_id,
+    name: option.name,
+    teamPrice: option.team_price,
+    startTime: option.start_time,
+    endTime: option.end_time,
+    individualPrice: option.individual_price,
+    individualStripePriceId: option.individual_stripe_price_id,
+    id: option.id,
+    teamActivity: option.team_activity,
+    teamAcceptation: option.team_acceptation,
+    playerAcceptation: option.player_acceptation,
+    informations: option.informations,
+  };
 }
 
 async function getAllTeamsRegistered(eventId) {
@@ -1515,6 +1533,7 @@ async function getAllTeamsRegistered(eventId) {
     .where({
       event_id: eventId,
     });
+
   return teams;
 }
 
@@ -1559,7 +1578,7 @@ async function getStripeInvoiceItem(invoiceItemId) {
     .where({ invoice_item_id: invoiceItemId });
   return res;
 }
-async function getAllTeamsRegisteredInfos(eventId, userId) {
+async function getAllTeamsRegisteredInfos(eventId, pills, userId) {
   const teams = await getAllTeamsRegistered(eventId);
 
   const [event] = await knex('events_infos')
@@ -1568,7 +1587,7 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
       id: eventId,
     });
 
-  const res = await Promise.all(
+  let res = await Promise.all(
     teams.map(async t => {
       let invoice = null;
       if (t.invoice_item_id) {
@@ -1621,6 +1640,20 @@ async function getAllTeamsRegisteredInfos(eventId, userId) {
     }),
   );
 
+  if (pills.includes(PILL_TYPE_ENUM.NOT_PAID)) {
+    res = res.filter(
+      r =>
+        r.status === INVOICE_STATUS_ENUM.OPEN &&
+        r.registrationStatus === STATUS_ENUM.ACCEPTED,
+    );
+  }
+  if (pills.includes(PILL_TYPE_ENUM.NOT_MEMBER)) {
+    res = res.filter(
+      r =>
+        !r.isMember && r.registrationStatus === STATUS_ENUM.ACCEPTED,
+    );
+  }
+
   res.sort((a, b) => {
     if (a.name < b.name) {
       return -1;
@@ -1656,6 +1689,7 @@ async function getAllTeamsAcceptedInfos(eventId, userId) {
   const res = await Promise.all(
     teams.map(async t => {
       const entity = (await getEntity(t.team_id, userId)).basicInfos;
+
       const emails = await getEmailsEntity(t.team_id);
       const players = await getRoster(t.roster_id, true);
       const captains = await getTeamCaptains(t.team_id, userId);
@@ -2106,7 +2140,7 @@ async function getPhaseRanking(phaseId) {
         const name = await getRosterName(r.roster_id);
         return {
           id: r.id,
-          rosterId: r.roster,
+          rosterId: r.roster_id,
           originPhase: r.origin_phase,
           originPosition: r.origin_position,
           currentPhase: r.current_phase,
@@ -2122,7 +2156,7 @@ async function getPhaseRanking(phaseId) {
         const phaseName = await getPhaseName(r.origin_phase);
         return {
           id: r.id,
-          rosterId: r.roster,
+          rosterId: r.roster_id,
           originPhase: r.origin_phase,
           originPosition: r.origin_position,
           currentPhase: r.current_phase,
@@ -2134,7 +2168,7 @@ async function getPhaseRanking(phaseId) {
       } else {
         return {
           id: r.id,
-          rosterId: r.roster,
+          rosterId: r.roster_id,
           originPhase: r.origin_phase,
           originPosition: r.origin_position,
           currentPhase: r.current_phase,
@@ -3597,7 +3631,6 @@ async function updatePhaseGamesRosterId(phaseId) {
       return res;
     }),
   );
-
   return gamePositions;
 }
 
@@ -3605,11 +3638,9 @@ async function updateGameTeamsRosterId(game) {
   const positions = await knex('game_teams')
     .select('*')
     .where({ game_id: game.id });
-
   const [ranking1] = await knex('phase_rankings')
     .select('*')
     .where({ ranking_id: positions[0].ranking_id });
-
   const [ranking2] = await knex('phase_rankings')
     .select('*')
     .where({ ranking_id: positions[1].ranking_id });
@@ -3621,12 +3652,10 @@ async function updateGameTeamsRosterId(game) {
     .update({ roster_id: ranking1.roster_id, name: teamName1 })
     .where({ ranking_id: ranking1.ranking_id })
     .returning('*');
-
   const [rosterId2] = await knex('game_teams')
     .update({ roster_id: ranking2.roster_id, name: teamName2 })
     .where({ ranking_id: ranking2.ranking_id })
     .returning('*');
-
   return [rosterId1, rosterId2];
 }
 
@@ -3636,8 +3665,8 @@ async function updateInitialPositionPhase(phaseId, teams) {
       const [ranking] = await knex('phase_rankings')
         .update({
           roster_id: t.roster_id,
-          origin_phase: t.origin_phase,
-          origin_position: t.origin_position,
+          origin_phase: t.originPhase,
+          origin_position: t.originPosition,
         })
         .where({
           current_phase: phaseId,
@@ -4871,9 +4900,9 @@ async function getCoachSessionEvaluation(
             name: player.name,
             surname: player.surname,
             photoUrl: player.photo_url,
-            rating: evaluation.rating,
+            value: evaluation.value,
             sessionId: user.sessionId,
-            comments: comments?.map(c => ({
+            comments: comments.map(c => ({
               content: c.content,
               active: c.active,
             })),
@@ -4885,10 +4914,6 @@ async function getCoachSessionEvaluation(
           surname: player.surname,
           photoUrl: player.photo_url,
           sessionId: user.sessionId,
-          comments: comments?.map(c => ({
-            content: c.content,
-            active: c.active,
-          })),
         };
       }),
     );
@@ -4942,7 +4967,7 @@ async function getPlayerSessionEvaluation(
           exerciseId: evaluation.exercise_id,
           coachId: evaluation.coach_id,
           personId: evaluation.person_id,
-          rating: evaluation.rating,
+          value: evaluation.value,
           sessionId: evaluation.session_id,
           comments: comments.map(c => ({
             content: c.content,
@@ -4996,14 +5021,16 @@ async function addExercise(
     .ignore()
     .returning('*');
 
-  const [res] = await knex('session_exercises')
-    .insert({
-      session_id: sessionId,
-      exercise_id,
-    })
-    .returning('*');
+  if (sessionId) {
+    await knex('session_exercises')
+      .insert({
+        session_id: sessionId,
+        exercise_id,
+      })
+      .returning('*');
+  }
 
-  return res;
+  return exercise_id;
 }
 
 async function addPractice(

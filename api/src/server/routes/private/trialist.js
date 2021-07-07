@@ -58,6 +58,25 @@ router.get(`${BASE_URL}/getPlayerLastEvaluation`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/getPlayerSessionsEvaluations`, async ctx => {
+  const res = await queries.getPlayerSessionsEvaluations(
+    ctx.query.teamId,
+    ctx.query.playerId,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
+
 router.post(`${BASE_URL}/createTeamExercise`, async ctx => {
   const res = await queries.createTeamExercise(
     ctx.request.body.exercise,
