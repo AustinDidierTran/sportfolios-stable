@@ -426,6 +426,7 @@ router.get(`${BASE_URL}/recentMember`, async ctx => {
 router.get(`${BASE_URL}/playerSessionEvaluation`, async ctx => {
   const evaluation = await queries.getPlayerSessionEvaluation(
     ctx.query.exerciseId,
+    ctx.query.sessionId,
     ctx.body.userInfo.id,
   );
 
@@ -443,13 +444,35 @@ router.get(`${BASE_URL}/playerSessionEvaluation`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/playerTeamRole`, async ctx => {
-  const role = await queries.getPlayerTeamRole(
-    ctx.query.teamId,
+router.get(`${BASE_URL}/coachSessionEvaluation`, async ctx => {
+  const evaluation = await queries.getCoachSessionEvaluation(
+    ctx.query.exerciseId,
+    ctx.query.sessionId,
     ctx.body.userInfo.id,
   );
 
-  if (role) {
+  if (evaluation) {
+    ctx.body = {
+      status: 'success',
+      data: evaluation,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
+router.get(`${BASE_URL}/isEvaluationCoach`, async ctx => {
+  const role = await queries.getIsEvaluationCoach(
+    ctx.query.exerciseId,
+    ctx.query.sessionId,
+    ctx.body.userInfo.id,
+  );
+
+  if (role || role === false) {
     ctx.body = {
       status: 'success',
       data: role,

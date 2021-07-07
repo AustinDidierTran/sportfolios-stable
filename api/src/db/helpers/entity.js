@@ -4845,44 +4845,150 @@ async function getSessionExercises(sessionId) {
   return res;
 }
 
-async function getPlayerSessionEvaluation(exerciseId, personId) {
-  const [evaluation] = await knex('evaluations')
-    .select('*')
-    .where({ exercise_id: exerciseId, person_id: personId });
+async function getCoachSessionEvaluation(
+  exerciseId,
+  sessionId,
+  coachId,
+) {
+  const users = await knex('sessions')
+    .select(
+      'sessions.id as sessionId',
+      'roster_players_infos.person_id',
+    )
+    .leftJoin(
+      'roster_players_infos',
+      'roster_players_infos.roster_id',
+      '=',
+      'sessions.roster_id',
+    )
+    .where('sessions.id', '=', sessionId);
 
-  if (evaluation) {
-    const evaluationComments = await knex('evaluation_comments')
-      .select('*')
-      .where({ evaluation_id: evaluation.id });
-    const comments = await knex('comments')
-      .select('*')
-      .whereIn(
-        'id',
-        evaluationComments.map(e => e.comment_id),
-      );
+  let res = [];
 
-    return {
-      id: evaluation.id,
-      exerciseId: evaluation.exercise_id,
-      coachId: evaluation.coach_id,
-      personId: evaluation.person_id,
-      value: evaluation.value,
-      sessionId: evaluation.session_id,
-      comments: comments.map(c => ({
-        content: c.content,
-        active: c.active,
-      })),
-    };
+  if (users) {
+    res = await Promise.all(
+      users.map(async user => {
+        const [evaluation] = await knex('evaluations')
+          .select('*')
+          .where({
+            exercise_id: exerciseId,
+            session_id: sessionId,
+            coach_id: coachId,
+            person_id: user.person_id,
+          });
+        let comments = null;
+        if (evaluation) {
+          const evaluationComments = await knex('evaluation_comments')
+            .select('*')
+            .where('evaluation_id', '=', evaluation.id);
+
+          comments = await knex('comments')
+            .select('*')
+            .whereIn(
+              'id',
+              evaluationComments.map(e => e.comment_id),
+            );
+        }
+        const [player] = await knex('entities_general_infos')
+          .select('*')
+          .where('entity_id', '=', user.person_id);
+        if(evaluation){
+          return {
+            id: evaluation.id,
+            exerciseId: evaluation.exercise_id,
+            personId: user.person_id,
+            name: player.name,
+            surname: player.surname,
+            photoUrl: player.photo_url,
+            value: evaluation.value,
+            sessionId: user.sessionId,
+            comments: comments.map(c => ({
+              content: c.content,
+              active: c.active,
+            })),
+          };
+          }
+        return {
+          personId: user.person_id,
+          name: player.name,
+          surname: player.surname,
+          photoUrl: player.photo_url,
+          sessionId: user.sessionId,
+        };
+      }),
+    );
   }
 
-  return [];
+  return res;
 }
 
-async function getPlayerTeamRole(teamId, personId) {
-  const [player] = await knex('team_players')
-    .select('role')
-    .where({ team_id: teamId, person_id: personId });
-  return player.role;
+async function getPlayerSessionEvaluation(
+  exerciseId,
+  sessionId,
+  userId,
+) {
+  const entities = await getAllOwnedEntities(
+    GLOBAL_ENUM.PERSON,
+    userId,
+    '',
+    true,
+  );
+
+  const evaluations = await knex('evaluations')
+    .select('*')
+    .where({ exercise_id: exerciseId, session_id: sessionId })
+    .whereIn(
+      'person_id',
+      entities.map(e => e.id),
+    );
+  let res = [];
+  if (evaluations.length > 0) {
+    res = await Promise.all(
+      evaluations.map(async evaluation => {
+        const evaluationComments = await knex('evaluation_comments')
+          .select('*')
+          .where({ evaluation_id: evaluation.id });
+
+        const comments = await knex('comments')
+          .select('*')
+          .whereIn(
+            'id',
+            evaluationComments.map(e => e.comment_id),
+          );
+
+        const [player] = await knex('entities_general_infos')
+          .select('*')
+          .where('entity_id', '=', evaluation.person_id);
+        return {
+          id: evaluation.id,
+          name: player.name,
+          surname: player.surname,
+          photoUrl: player.photo_url,
+          exerciseId: evaluation.exercise_id,
+          coachId: evaluation.coach_id,
+          personId: evaluation.person_id,
+          value: evaluation.value,
+          sessionId: evaluation.session_id,
+          comments: comments.map(c => ({
+            content: c.content,
+            active: c.active,
+          })),
+        };
+      }),
+    );
+  }
+  return res;
+}
+
+async function getIsEvaluationCoach(exerciseId, sessionId, personId) {
+  const res = await knex('evaluations')
+    .select('*')
+    .where({
+      exercise_id: exerciseId,
+      session_id: sessionId,
+      coach_id: personId,
+    });
+  return res.length !== 0;
 }
 
 async function addExercise(
@@ -4969,31 +5075,21 @@ async function addPractice(
     location_id = location.id;
   }
 
-  const [oldRoster] = await knex('team_rosters')
-    .select('id')
-    .where({ team_id: teamId })
-    .where('active', '=', 'true')
-    .orderByRaw(`created_at desc, updated_at desc`)
-    .limit(1);
-
   const [rosterId] = await knex('team_rosters')
     .insert({ team_id: teamId, active: false })
     .returning('id');
 
-  const oldRosterPlayer = await knex('roster_players')
+  const teamPlayers = await knex('team_players')
     .select('*')
-    .where({ roster_id: oldRoster.id });
+    .where({ team_id: teamId });
 
   await Promise.all(
-    oldRosterPlayer.map(async player => {
+    teamPlayers.map(async player => {
       const [res] = await knex('roster_players')
         .insert({
           roster_id: rosterId,
           person_id: player.person_id,
           role: player.role,
-          payment_status: player.payment_status,
-          is_sub: player.is_sub,
-          invoice_item_id: player.invoice_item_id,
         })
         .returning('*');
       return res;
@@ -6654,7 +6750,6 @@ const getPracticeBasicInfo = async (teamId, userId) => {
       rsvp: 'notConnected',
     }));
   }
-
   const entities = await getAllOwnedEntities(
     GLOBAL_ENUM.PERSON,
     userId,
@@ -7199,6 +7294,7 @@ module.exports = {
   getAllTeamGames,
   getAllTeamPractices,
   getAttendanceSheet,
+  getCoachSessionEvaluation,
   getCreator,
   getCreators,
   getCreatorsUserId,
@@ -7249,7 +7345,7 @@ module.exports = {
   getPhasesWithoutPrerank,
   getPlayerInvoiceItem,
   getPlayerSessionEvaluation,
-  getPlayerTeamRole,
+  getIsEvaluationCoach,
   getPracticeBasicInfo,
   getPracticeInfo,
   getPreranking,
