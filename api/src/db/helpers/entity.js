@@ -1579,109 +1579,124 @@ async function getStripeInvoiceItem(invoiceItemId) {
   return res;
 }
 async function getAllTeamsRegisteredInfos(eventId, pills, userId) {
-  const teams = await getAllTeamsRegistered(eventId);
+  try {
+    const teams = await getAllTeamsRegistered(eventId);
+    console.log({ teams });
 
-  const [event] = await knex('events_infos')
-    .select('creator_id')
-    .where({
-      id: eventId,
-    });
-
-  let res = await Promise.all(
-    teams.map(async t => {
-      let invoice = null;
-      if (t.invoice_item_id) {
-        invoice = await getStripeInvoiceItem(t.invoice_item_id);
-      }
-      const entity = (await getEntity(t.team_id, userId)).basicInfos;
-      const email = await getTeamCreatorEmail(t.team_id);
-      const players = await getRoster(t.roster_id, true);
-      const captains = await getTeamCaptains(t.team_id, userId);
-      const option = await getPaymentOption(t.payment_option_id);
-      const role = await getRoleRoster(t.roster_id, userId);
-      const registrationStatus = await getRegistrationStatus(
-        t.roster_id,
-      );
-      const date = new Date();
-
-      const memberships = await knex('memberships_infos')
-        .select('*')
-        .where({
-          person_id: captains[0].id,
-          organization_id: event.creator_id,
-        });
-
-      const active_membership = memberships.filter(m => {
-        return (
-          moment(m.created_at).isSameOrBefore(moment(date), 'day') &&
-          moment(m.expiration_date).isSameOrAfter(moment(date), 'day')
-        );
+    const [event] = await knex('events_infos')
+      .select('creator_id')
+      .where({
+        id: eventId,
       });
 
-      return {
-        name: entity.name,
-        surname: entity.surname,
-        photoUrl: entity.photoUrl,
-        rosterId: t.roster_id,
-        teamId: t.team_id,
-        invoiceItemId: t.invoice_item_id,
-        status: t.status,
-        registeredOn: t.created_at,
-        informations: t.informations,
-        email,
-        players,
-        captains,
-        option,
-        invoice,
-        role,
-        registrationStatus,
-        isMember: active_membership.length > 0,
-      };
-    }),
-  );
+    let res = await Promise.all(
+      teams.map(async t => {
+        let invoice = null;
+        if (t.invoice_item_id) {
+          invoice = await getStripeInvoiceItem(t.invoice_item_id);
+        }
+        const entity = (await getEntity(t.team_id, userId))
+          .basicInfos;
+        const email = await getTeamCreatorEmail(t.team_id);
+        const players = await getRoster(t.roster_id, true);
+        const captains = await getTeamCaptains(t.team_id, userId);
+        const option = await getPaymentOption(t.payment_option_id);
+        const role = await getRoleRoster(t.roster_id, userId);
+        const registrationStatus = await getRegistrationStatus(
+          t.roster_id,
+        );
+        const date = new Date();
 
-  if (pills.includes(PILL_TYPE_ENUM.NOT_PAID)) {
-    res = res.filter(
-      r =>
-        r.status === INVOICE_STATUS_ENUM.OPEN &&
-        r.registrationStatus === STATUS_ENUM.ACCEPTED,
+        const memberships = await knex('memberships_infos')
+          .select('*')
+          .where({
+            person_id: captains[0].id,
+            organization_id: event.creator_id,
+          });
+
+        const active_membership = memberships.filter(m => {
+          return (
+            moment(m.created_at).isSameOrBefore(
+              moment(date),
+              'day',
+            ) &&
+            moment(m.expiration_date).isSameOrAfter(
+              moment(date),
+              'day',
+            )
+          );
+        });
+
+        return {
+          name: entity.name,
+          surname: entity.surname,
+          photoUrl: entity.photoUrl,
+          rosterId: t.roster_id,
+          teamId: t.team_id,
+          invoiceItemId: t.invoice_item_id,
+          status: t.status,
+          registeredOn: t.created_at,
+          informations: t.informations,
+          email,
+          players,
+          captains,
+          option,
+          invoice,
+          role,
+          registrationStatus,
+          isMember: active_membership.length > 0,
+        };
+      }),
     );
-  }
-  if (pills.includes(PILL_TYPE_ENUM.NOT_MEMBER)) {
-    res = res.filter(
-      r =>
-        !r.isMember && r.registrationStatus === STATUS_ENUM.ACCEPTED,
-    );
-  }
+    console.log({ res });
 
-  res.sort((a, b) => {
-    if (a.name < b.name) {
-      return -1;
+    if (pills.includes(PILL_TYPE_ENUM.NOT_PAID)) {
+      res = res.filter(
+        r =>
+          r.status === INVOICE_STATUS_ENUM.OPEN &&
+          r.registrationStatus === STATUS_ENUM.ACCEPTED,
+      );
     }
-    if (a.name > b.name) {
-      return 1;
+    if (pills.includes(PILL_TYPE_ENUM.NOT_MEMBER)) {
+      res = res.filter(
+        r =>
+          !r.isMember &&
+          r.registrationStatus === STATUS_ENUM.ACCEPTED,
+      );
     }
-    return 0;
-  });
 
-  res.sort((a, b) => {
-    if (
-      a.registrationStatus === STATUS_ENUM.REFUSED ||
-      (a.registrationStatus === STATUS_ENUM.PENDING &&
-        b.registrationStatus !== STATUS_ENUM.REFUSED)
-    ) {
-      return 1;
-    }
-    if (
-      b.registrationStatus === STATUS_ENUM.REFUSED ||
-      (b.registrationStatus === STATUS_ENUM.PENDING &&
-        a.registrationStatus !== STATUS_ENUM.REFUSED)
-    ) {
-      return -1;
-    }
-    return 0;
-  });
-  return res;
+    res.sort((a, b) => {
+      if (a.name < b.name) {
+        return -1;
+      }
+      if (a.name > b.name) {
+        return 1;
+      }
+      return 0;
+    });
+
+    res.sort((a, b) => {
+      if (
+        a.registrationStatus === STATUS_ENUM.REFUSED ||
+        (a.registrationStatus === STATUS_ENUM.PENDING &&
+          b.registrationStatus !== STATUS_ENUM.REFUSED)
+      ) {
+        return 1;
+      }
+      if (
+        b.registrationStatus === STATUS_ENUM.REFUSED ||
+        (b.registrationStatus === STATUS_ENUM.PENDING &&
+          a.registrationStatus !== STATUS_ENUM.REFUSED)
+      ) {
+        return -1;
+      }
+      return 0;
+    });
+    console.log({ res });
+    return res;
+  } catch (e) {
+    console.log(e);
+  }
 }
 async function getAllTeamsAcceptedInfos(eventId, userId) {
   const teams = await getAllTeamsAcceptedRegistered(eventId);
