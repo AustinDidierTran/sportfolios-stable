@@ -8,6 +8,7 @@ CREATE OR REPLACE FUNCTION create_session_template(teamName CHARACTER VARYING, s
     RETURNS UUID AS
 $BODY$
 DECLARE didierEntityId UUID;
+DECLARE userId UUID;
 DECLARE teamId UUID;
 DECLARE rosterId UUID;
 DECLARE sessionId UUID;
@@ -38,6 +39,7 @@ DECLARE evaluationId9 UUID;
 BEGIN
     -- get Didier's entityId    
     SELECT (entity_id) FROM user_entity_role WHERE user_id = (SELECT (user_id) FROM user_app_role WHERE app_role = 1) INTO didierEntityId;
+    SELECT (user_id) FROM user_entity_role WHERE user_id = (SELECT (user_id) FROM user_app_role WHERE app_role = 1) INTO userId;
 
     -- create team
     INSERT INTO entities (type) VALUES (3) RETURNING id INTO teamId;
@@ -46,20 +48,24 @@ BEGIN
 
     -- create players
     INSERT INTO entities (type) VALUES (1) RETURNING id INTO playerId1;
+    INSERT INTO user_entity_role (user_id, entity_id, role) VALUES (userId, playerId1, 1);
     INSERT INTO entities_general_infos (entity_id, name) VALUES (playerId1, 'Steve Jobs');
     
     INSERT INTO entities (type) VALUES (1) RETURNING id INTO playerId2;
+    INSERT INTO user_entity_role (user_id, entity_id, role) VALUES (userId, playerId2, 1);
     INSERT INTO entities_general_infos (entity_id, name) VALUES (playerId2, 'Johnny Cash');
 
     INSERT INTO entities (type) VALUES (1) RETURNING id INTO playerId3;
+    INSERT INTO user_entity_role (user_id, entity_id, role) VALUES (userId, playerId3, 1);
     INSERT INTO entities_general_infos (entity_id, name) VALUES (playerId3, 'Carey Price');
 
     INSERT INTO entities (type) VALUES (1) RETURNING id INTO playerId4;
+    INSERT INTO user_entity_role (user_id, entity_id, role) VALUES (userId, playerId4, 1);
     INSERT INTO entities_general_infos (entity_id, name) VALUES (playerId4, 'Bob Marley');
 
     INSERT INTO entities (type) VALUES (1) RETURNING id INTO playerId5;
+    INSERT INTO user_entity_role (user_id, entity_id, role) VALUES (userId, playerId5, 1);
     INSERT INTO entities_general_infos (entity_id, name) VALUES (playerId5, 'Austin-Didier Tran');
-
 
     --add team player
     INSERT INTO team_players (team_id, person_id, role) VALUES (teamId, didierEntityId, 'coach'); 

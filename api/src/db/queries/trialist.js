@@ -2,6 +2,7 @@ const {
   createEvaluation: createEvaluationHelper,
   getAllCommentSuggestions: getAllCommentSuggestionsHelper,
   getPlayerLastEvaluation: getPlayerLastEvaluationhelper,
+  getPlayerSessionsEvaluations: getPlayerSessionsEvaluationsHelper,
   createTeamExercise: createTeamExerciseHelper,
   updateExercise: updateExerciseHelper,
   getSessionById: getSessionByIdHelper,
@@ -27,6 +28,17 @@ async function getAllCommentSuggestions() {
 
 async function getPlayerLastEvaluation(playerId) {
   const res = await getPlayerLastEvaluationhelper(playerId);
+  if (!res) {
+    return;
+  }
+  return res;
+}
+
+async function getPlayerSessionsEvaluations(teamId, personId) {
+  const res = await getPlayerSessionsEvaluationsHelper(
+    teamId,
+    personId,
+  );
   if (!res) {
     return;
   }
@@ -73,6 +85,7 @@ module.exports = {
   createEvaluation,
   getAllCommentSuggestions,
   getPlayerLastEvaluation,
+  getPlayerSessionsEvaluations,
   createTeamExercise,
   updateExercise,
   getSessionById,
