@@ -90,11 +90,11 @@ BEGIN
     INSERT INTO sessions (roster_id, start_date, end_date, name, type) VALUES (rosterId, NOW()+ interval '1 day', NOW() + interval '2 day', sessionName, 'practice') RETURNING id INTO sessionId;
 
     --create exercises
-    INSERT INTO exercises (name, description) VALUES ('Long throw', 'In this exercise you are going to do 5 long throws long to a teammate') RETURNING id INTO exerciseId1;
-    INSERT INTO exercises (name, description) VALUES ('Short throw', 'In this exercise you are going to do 5 short throws court to a teammate') RETURNING id INTO exerciseId2;
-    INSERT INTO exercises (name, description) VALUES ('Hammer throw', 'In this exercise you are going to do 5 hammer throws marteau to a teammate') RETURNING id INTO exerciseId3;
-    INSERT INTO exercises (name, description) VALUES ('T test', 'In this exercise you are going to do the T test as fast as you can 5 times') RETURNING id INTO exerciseId4;
-    INSERT INTO exercises (name, description) VALUES ('Sky battle', 'In this exercise you are going to battle in the air to catch a disc') RETURNING id INTO exerciseId5;
+    INSERT INTO exercises (name, description, type) VALUES ('Long throw', 'In this exercise you are going to do 5 long throws long to a teammate', 'Default') RETURNING id INTO exerciseId1;
+    INSERT INTO exercises (name, description, type) VALUES ('Short throw', 'In this exercise you are going to do 5 short throws court to a teammate', 'Default') RETURNING id INTO exerciseId2;
+    INSERT INTO exercises (name, description, type) VALUES ('Hammer throw', 'In this exercise you are going to do 5 hammer throws marteau to a teammate', 'Default') RETURNING id INTO exerciseId3;
+    INSERT INTO exercises (name, description, type) VALUES ('T test', 'In this exercise you are going to do the T test as fast as you can 5 times', 'Default') RETURNING id INTO exerciseId4;
+    INSERT INTO exercises (name, description, type) VALUES ('Sky battle', 'In this exercise you are going to battle in the air to catch a disc', 'Default') RETURNING id INTO exerciseId5;
 
     --add exercises to session
     INSERT INTO session_exercises (session_id, exercise_id) VALUES (sessionId, exerciseId1);
