@@ -84,11 +84,11 @@ BEGIN
     INSERT INTO sessions (roster_id, start_date, end_date, name, type) VALUES (rosterId, NOW()+ interval '1 day', NOW() + interval '2 day', sessionName, 'practice') RETURNING id INTO sessionId;
 
     --create exercises
-    INSERT INTO exercises (name, description) VALUES ('Long throw', 'In this exercise you are going to do 5 long throws long to a teammate') RETURNING id INTO exerciseId1;
-    INSERT INTO exercises (name, description) VALUES ('Short throw', 'In this exercise you are going to do 5 short throws court to a teammate') RETURNING id INTO exerciseId2;
-    INSERT INTO exercises (name, description) VALUES ('Hammer throw', 'In this exercise you are going to do 5 hammer throws marteau to a teammate') RETURNING id INTO exerciseId3;
-    INSERT INTO exercises (name, description) VALUES ('T test', 'In this exercise you are going to do the T test as fast as you can 5 times') RETURNING id INTO exerciseId4;
-    INSERT INTO exercises (name, description) VALUES ('Sky battle', 'In this exercise you are going to battle in the air to catch a disc') RETURNING id INTO exerciseId5;
+    INSERT INTO exercises (name, description, type) VALUES ('Long throw', 'In this exercise you are going to do 5 long throws long to a teammate', 'Default') RETURNING id INTO exerciseId1;
+    INSERT INTO exercises (name, description, type) VALUES ('Short throw', 'In this exercise you are going to do 5 short throws court to a teammate', 'Default') RETURNING id INTO exerciseId2;
+    INSERT INTO exercises (name, description, type) VALUES ('Hammer throw', 'In this exercise you are going to do 5 hammer throws marteau to a teammate', 'Default') RETURNING id INTO exerciseId3;
+    INSERT INTO exercises (name, description, type) VALUES ('T test', 'In this exercise you are going to do the T test as fast as you can 5 times', 'Default') RETURNING id INTO exerciseId4;
+    INSERT INTO exercises (name, description, type) VALUES ('Sky battle', 'In this exercise you are going to battle in the air to catch a disc', 'Default') RETURNING id INTO exerciseId5;
 
     --add exercises to session
     INSERT INTO session_exercises (session_id, exercise_id) VALUES (sessionId, exerciseId1);
@@ -105,15 +105,15 @@ BEGIN
     INSERT INTO comments (content, active) VALUES ('Pass dropped', true) RETURNING id INTO commentId5;
 
     --create evaluation
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId1, didierEntityId, playerId1, sessionId, -1) RETURNING id INTO evaluationId1;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId1, didierEntityId, playerId2, sessionId, 2) RETURNING id INTO evaluationId2;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId1, didierEntityId, playerId5, sessionId, 1) RETURNING id INTO evaluationId3;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId2, didierEntityId, playerId3, sessionId, 0) RETURNING id INTO evaluationId4;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId2, didierEntityId, playerId4, sessionId, 1) RETURNING id INTO evaluationId5;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId2, didierEntityId, playerId1, sessionId, -2) RETURNING id INTO evaluationId6;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId3, didierEntityId, playerId5, sessionId, -1) RETURNING id INTO evaluationId7;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId3, didierEntityId, playerId4, sessionId, 0) RETURNING id INTO evaluationId8;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId3, didierEntityId, playerId2, sessionId, 2) RETURNING id INTO evaluationId9;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId1, didierEntityId, playerId1, sessionId, -1) RETURNING id INTO evaluationId1;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId1, didierEntityId, playerId2, sessionId, 2) RETURNING id INTO evaluationId2;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId1, didierEntityId, playerId5, sessionId, 1) RETURNING id INTO evaluationId3;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId2, didierEntityId, playerId3, sessionId, 0) RETURNING id INTO evaluationId4;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId2, didierEntityId, playerId4, sessionId, 1) RETURNING id INTO evaluationId5;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId2, didierEntityId, playerId1, sessionId, -2) RETURNING id INTO evaluationId6;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId3, didierEntityId, playerId5, sessionId, -1) RETURNING id INTO evaluationId7;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId3, didierEntityId, playerId4, sessionId, 0) RETURNING id INTO evaluationId8;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId3, didierEntityId, playerId2, sessionId, 2) RETURNING id INTO evaluationId9;
 
     --add evaluation comments
     INSERT INTO evaluation_comments (evaluation_id, comment_id) VALUES (evaluationId1, commentId1);
