@@ -117,7 +117,7 @@ const {
   getPhasesWithoutPrerank: getPhasesWithoutPrerankHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getPlayerSessionEvaluation: getPlayerSessionEvaluationHelper,
-  getIsEvaluationCoach: getIsEvaluationCoachHelper,
+  getIsTeamCoach: getIsTeamCoachHelper,
   getPracticeBasicInfo: getPracticeBasicInfoHelper,
   getPracticeInfo: getPracticeInfoHelper,
   getPreranking: getPrerankingHelper,
@@ -275,9 +275,9 @@ async function getCoachSessionEvaluation(exerciseId, sessionId, userId) {
   return getCoachSessionEvaluationHelper(exerciseId, sessionId, coachId);
 }
 
-async function getIsEvaluationCoach(exerciseId, sessionId, userId) {
+async function getIsTeamCoach(teamId, userId) {
   const personId = await getPrimaryPersonIdFromUserId(userId);
-  return getIsEvaluationCoachHelper(exerciseId, sessionId, personId);
+  return getIsTeamCoachHelper(teamId, personId);
 }
 
 function getAllRolesEntity(id) {
@@ -2301,7 +2301,7 @@ module.exports = {
   getPhases,
   getPhasesGameAndTeams,
   getPlayerSessionEvaluation,
-  getIsEvaluationCoach,
+  getIsTeamCoach,
   getPossibleSubmissionerInfos,
   getPracticeBasicInfo,
   getPracticeInfo,

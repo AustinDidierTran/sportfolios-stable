@@ -4980,13 +4980,20 @@ async function getPlayerSessionEvaluation(
   return res;
 }
 
-async function getIsEvaluationCoach(exerciseId, sessionId, personId) {
-  const res = await knex('evaluations')
+async function getIsTeamCoach(teamId, personId) {
+  const res = await knex('team_rosters')
     .select('*')
+    .where('active', '=', true)
+    .leftJoin(
+      'roster_players',
+      'roster_players.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .where('role', '=', 'coach')
     .where({
-      exercise_id: exerciseId,
-      session_id: sessionId,
-      coach_id: personId,
+      person_id: personId,
+      team_id: teamId,
     });
   return res.length !== 0;
 }
@@ -7345,7 +7352,7 @@ module.exports = {
   getPhasesWithoutPrerank,
   getPlayerInvoiceItem,
   getPlayerSessionEvaluation,
-  getIsEvaluationCoach,
+  getIsTeamCoach,
   getPracticeBasicInfo,
   getPracticeInfo,
   getPreranking,

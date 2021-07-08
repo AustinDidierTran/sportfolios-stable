@@ -465,10 +465,9 @@ router.get(`${BASE_URL}/coachSessionEvaluation`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/isEvaluationCoach`, async ctx => {
-  const role = await queries.getIsEvaluationCoach(
-    ctx.query.exerciseId,
-    ctx.query.sessionId,
+router.get(`${BASE_URL}/isTeamCoach`, async ctx => {
+  const role = await queries.getIsTeamCoach(
+    ctx.query.teamId,
     ctx.body.userInfo.id,
   );
 
