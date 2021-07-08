@@ -9,8 +9,6 @@ const {
   getExercicesByTeamId: getExercicesByTeamIdHelper,
 } = require('../helpers/trialist');
 
-const { getPrimaryPersonIdFromUserId } = require('../helpers');
-
 async function createEvaluation(evaluation) {
   const res = await createEvaluationHelper(evaluation);
   if (!res) {
@@ -36,8 +34,7 @@ async function getPlayerLastEvaluation(playerId) {
   return res;
 }
 
-async function getPlayerSessionsEvaluations(teamId, playerId) {
-  const personId = await getPrimaryPersonIdFromUserId(playerId);
+async function getPlayerSessionsEvaluations(teamId, personId) {
   const res = await getPlayerSessionsEvaluationsHelper(
     teamId,
     personId,
