@@ -8,6 +8,7 @@ CREATE OR REPLACE FUNCTION create_session_template(teamName CHARACTER VARYING, s
     RETURNS UUID AS
 $BODY$
 DECLARE didierEntityId UUID;
+DECLARE userId UUID;
 DECLARE teamId UUID;
 DECLARE rosterId UUID;
 DECLARE sessionId UUID;
@@ -38,6 +39,7 @@ DECLARE evaluationId9 UUID;
 BEGIN
     -- get Didier's entityId    
     SELECT (entity_id) FROM user_entity_role WHERE user_id = (SELECT (user_id) FROM user_app_role WHERE app_role = 1) INTO didierEntityId;
+    SELECT (user_id) FROM user_entity_role WHERE user_id = (SELECT (user_id) FROM user_app_role WHERE app_role = 1) INTO userId;
 
     -- create team
     INSERT INTO entities (type) VALUES (3) RETURNING id INTO teamId;
@@ -46,20 +48,24 @@ BEGIN
 
     -- create players
     INSERT INTO entities (type) VALUES (1) RETURNING id INTO playerId1;
+    INSERT INTO user_entity_role (user_id, entity_id, role) VALUES (userId, playerId1, 1);
     INSERT INTO entities_general_infos (entity_id, name) VALUES (playerId1, 'Steve Jobs');
     
     INSERT INTO entities (type) VALUES (1) RETURNING id INTO playerId2;
+    INSERT INTO user_entity_role (user_id, entity_id, role) VALUES (userId, playerId2, 1);
     INSERT INTO entities_general_infos (entity_id, name) VALUES (playerId2, 'Johnny Cash');
 
     INSERT INTO entities (type) VALUES (1) RETURNING id INTO playerId3;
+    INSERT INTO user_entity_role (user_id, entity_id, role) VALUES (userId, playerId3, 1);
     INSERT INTO entities_general_infos (entity_id, name) VALUES (playerId3, 'Carey Price');
 
     INSERT INTO entities (type) VALUES (1) RETURNING id INTO playerId4;
+    INSERT INTO user_entity_role (user_id, entity_id, role) VALUES (userId, playerId4, 1);
     INSERT INTO entities_general_infos (entity_id, name) VALUES (playerId4, 'Bob Marley');
 
     INSERT INTO entities (type) VALUES (1) RETURNING id INTO playerId5;
+    INSERT INTO user_entity_role (user_id, entity_id, role) VALUES (userId, playerId5, 1);
     INSERT INTO entities_general_infos (entity_id, name) VALUES (playerId5, 'Austin-Didier Tran');
-
 
     --add team player
     INSERT INTO team_players (team_id, person_id, role) VALUES (teamId, didierEntityId, 'coach'); 
@@ -105,15 +111,15 @@ BEGIN
     INSERT INTO comments (content, active) VALUES ('Pass dropped', true) RETURNING id INTO commentId5;
 
     --create evaluation
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId1, didierEntityId, playerId1, sessionId, -1) RETURNING id INTO evaluationId1;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId1, didierEntityId, playerId2, sessionId, 2) RETURNING id INTO evaluationId2;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId1, didierEntityId, playerId5, sessionId, 1) RETURNING id INTO evaluationId3;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId2, didierEntityId, playerId3, sessionId, 0) RETURNING id INTO evaluationId4;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId2, didierEntityId, playerId4, sessionId, 1) RETURNING id INTO evaluationId5;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId2, didierEntityId, playerId1, sessionId, -2) RETURNING id INTO evaluationId6;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId3, didierEntityId, playerId5, sessionId, -1) RETURNING id INTO evaluationId7;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId3, didierEntityId, playerId4, sessionId, 0) RETURNING id INTO evaluationId8;
-    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, rating) VALUES (exerciseId3, didierEntityId, playerId2, sessionId, 2) RETURNING id INTO evaluationId9;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId1, didierEntityId, playerId1, sessionId, -1) RETURNING id INTO evaluationId1;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId1, didierEntityId, playerId2, sessionId, 2) RETURNING id INTO evaluationId2;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId1, didierEntityId, playerId5, sessionId, 1) RETURNING id INTO evaluationId3;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId2, didierEntityId, playerId3, sessionId, 0) RETURNING id INTO evaluationId4;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId2, didierEntityId, playerId4, sessionId, 1) RETURNING id INTO evaluationId5;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId2, didierEntityId, playerId1, sessionId, -2) RETURNING id INTO evaluationId6;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId3, didierEntityId, playerId5, sessionId, -1) RETURNING id INTO evaluationId7;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId3, didierEntityId, playerId4, sessionId, 0) RETURNING id INTO evaluationId8;
+    INSERT INTO evaluations (exercise_id, coach_id, person_id, session_id, value) VALUES (exerciseId3, didierEntityId, playerId2, sessionId, 2) RETURNING id INTO evaluationId9;
 
     --add evaluation comments
     INSERT INTO evaluation_comments (evaluation_id, comment_id) VALUES (evaluationId1, commentId1);
