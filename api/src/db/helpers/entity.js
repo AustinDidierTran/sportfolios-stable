@@ -3140,6 +3140,7 @@ async function getMyTeamPlayersRequest(teamId, personIds) {
     .select('*')
     .where({
       team_id: teamId,
+      status: STATUS_ENUM.PENDING,
     });
 
   const filtered = pendingPlayers.filter(p =>
@@ -4892,7 +4893,7 @@ async function getCoachSessionEvaluation(
         const [player] = await knex('entities_general_infos')
           .select('*')
           .where('entity_id', '=', user.person_id);
-        if(evaluation){
+        if (evaluation) {
           return {
             id: evaluation.id,
             exerciseId: evaluation.exercise_id,
@@ -4907,7 +4908,7 @@ async function getCoachSessionEvaluation(
               active: c.active,
             })),
           };
-          }
+        }
         return {
           personId: user.person_id,
           name: player.name,
