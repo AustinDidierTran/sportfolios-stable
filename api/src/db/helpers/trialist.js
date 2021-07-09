@@ -9,6 +9,13 @@ function createEvaluation(evaluation) {
       session_id: evaluation.sessionId,
       value: evaluation.value,
     })
+    .onConflict([
+      'coach_id',
+      'exercise_id',
+      'person_id',
+      'session_id',
+    ])
+    .merge()
     .returning('*');
 }
 
@@ -67,7 +74,7 @@ async function getPlayerSessionsEvaluations(teamId, personId) {
           knex.raw(
             "json_agg(json_build_object('exerciseId', evaluations.exercise_id, 'coachId', evaluations.coach_id, 'personId', evaluations.person_id, 'value', evaluations.value, 'exerciseName', exercises.name)) AS evaluations",
           ),
-          'session_id'
+          'session_id',
         )
         .leftJoin(
           'exercises',
@@ -75,7 +82,7 @@ async function getPlayerSessionsEvaluations(teamId, personId) {
           '=',
           'evaluations.exercise_id',
         )
-        .where('evaluations.person_id','=', personId)
+        .where('evaluations.person_id', '=', personId)
         .groupBy('session_id')
         .as('playerEvaluation'),
       'playerEvaluation.session_id',
@@ -84,6 +91,25 @@ async function getPlayerSessionsEvaluations(teamId, personId) {
     )
     .limit(5)
     .orderBy('sessions.start_date', 'desc');
+
+  return res;
+}
+
+async function getCoachEvaluations(coachId, sessionId, exerciseId) {
+  let res = await knex('evaluations')
+    .where({
+      coach_id: coachId,
+      session_id: sessionId,
+      exercise_id: exerciseId,
+    })
+    .select(
+      'value',
+      'person_id',
+      'coach_id',
+      'exercise_id',
+      'session_id',
+    )
+    .orderBy('created_at', 'desc');
 
   return res;
 }
@@ -137,4 +163,5 @@ module.exports = {
   updateExercise,
   getSessionById,
   getExercicesByTeamId,
+  getCoachEvaluations,
 };

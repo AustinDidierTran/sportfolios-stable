@@ -7,6 +7,7 @@ const {
   updateExercise: updateExerciseHelper,
   getSessionById: getSessionByIdHelper,
   getExercicesByTeamId: getExercicesByTeamIdHelper,
+  getCoachEvaluations: getCoachEvaluationsHelper,
 } = require('../helpers/trialist');
 
 async function createEvaluation(evaluation) {
@@ -38,6 +39,18 @@ async function getPlayerSessionsEvaluations(teamId, personId) {
   const res = await getPlayerSessionsEvaluationsHelper(
     teamId,
     personId,
+  );
+  if (!res) {
+    return;
+  }
+  return res;
+}
+
+async function getCoachEvaluations(coachId, sessionId, exerciseId) {
+  const res = await getCoachEvaluationsHelper(
+    coachId,
+    sessionId,
+    exerciseId,
   );
   if (!res) {
     return;
@@ -90,4 +103,5 @@ module.exports = {
   updateExercise,
   getSessionById,
   getExercicesByTeamId,
+  getCoachEvaluations,
 };
