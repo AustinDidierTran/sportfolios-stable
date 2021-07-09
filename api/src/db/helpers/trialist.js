@@ -24,7 +24,7 @@ function getAllCommentSuggestions() {
 }
 
 async function getPlayerLastEvaluation(playerId) {
-  let res = await knex('evaluations')
+  const res = await knex('evaluations')
     .select(
       'evaluations.session_id',
       'evaluations.exercise_id',
@@ -55,7 +55,7 @@ async function getPlayerLastEvaluation(playerId) {
 }
 
 async function getPlayerSessionsEvaluations(teamId, personId) {
-  let res = await knex('team_rosters')
+  const res = await knex('team_rosters')
     .select(
       'sessions.name',
       'sessions.start_date as startDate',
@@ -96,7 +96,7 @@ async function getPlayerSessionsEvaluations(teamId, personId) {
 }
 
 async function getCoachEvaluations(coachId, sessionId, exerciseId) {
-  let res = await knex('evaluations')
+  const res = await knex('evaluations')
     .where({
       coach_id: coachId,
       session_id: sessionId,
@@ -110,6 +110,23 @@ async function getCoachEvaluations(coachId, sessionId, exerciseId) {
       'session_id',
     )
     .orderBy('created_at', 'desc');
+
+  return res;
+}
+
+async function getEvaluationComments(evaluationId) {
+  const res = await knex('evaluation_comments')
+    .select('comments.id', 'content')
+    .where({
+      evaluation_id: evaluationId,
+    })
+    .leftJoin(
+      'comments',
+      'comments.id',
+      '=',
+      'evaluation_comments.comment_id',
+    )
+    .orderBy('comments.created_at', 'desc');
 
   return res;
 }
@@ -164,4 +181,5 @@ module.exports = {
   getSessionById,
   getExercicesByTeamId,
   getCoachEvaluations,
+  getEvaluationComments,
 };

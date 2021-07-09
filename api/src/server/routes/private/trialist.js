@@ -97,6 +97,24 @@ router.get(`${BASE_URL}/getCoachEvaluations`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/getEvaluationComments`, async ctx => {
+  const res = await queries.getEvaluationComments(
+    ctx.query.evaluationId,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
+
 router.post(`${BASE_URL}/createTeamExercise`, async ctx => {
   const res = await queries.createTeamExercise(
     ctx.request.body.exercise,
