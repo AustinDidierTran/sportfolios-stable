@@ -1,7 +1,7 @@
 const knex = require('../connection');
 
 async function createEvaluation(evaluation) {
-  const res = await knex('evaluations')
+  const [res] = await knex('evaluations')
     .insert({
       exercise_id: evaluation.exerciseId,
       coach_id: evaluation.coachId,
@@ -18,24 +18,32 @@ async function createEvaluation(evaluation) {
     .merge()
     .returning('*');
 
-  const deleteEvaluations = await knex('evaluations_comments')
-    .delete()
-    .where({ evaluation_id: res.id })
-    .returning('*');
+  console.log('le insert est ok');
 
-  const values = await Promise.all(
-    evaluation.commentsId
-      .map(
-        async commentId =>
-          await knex('evaluation_comments').insert({
-            evaluation_id: res.id,
-            comment_id: commentId,
-          }),
-      )
-      .returning('*'),
+  const deleteEvaluations = await knex('evaluation_comments')
+    .where({ evaluation_id: res.id })
+    .del();
+
+  console.log(
+    'le delete est ok :',
+    evaluation.commentsId,
+    ' ',
+    res.id,
   );
 
-  return values;
+  await Promise.all(
+    evaluation.commentsId.map(async commentId => {
+      console.log(res.id, ' ', commentId);
+      await knex('evaluation_comments').insert({
+        evaluation_id: res.id,
+        comment_id: commentId,
+      });
+    }),
+  );
+
+  console.log('le add all semble ok');
+
+  return res;
 }
 
 function getAllCommentSuggestions() {
