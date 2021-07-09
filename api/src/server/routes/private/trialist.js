@@ -101,6 +101,7 @@ router.get(`${BASE_URL}/getEvaluationComments`, async ctx => {
   const res = await queries.getEvaluationComments(
     ctx.query.evaluationId,
   );
+
   if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {

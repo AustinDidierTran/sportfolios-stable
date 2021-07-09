@@ -18,30 +18,18 @@ async function createEvaluation(evaluation) {
     .merge()
     .returning('*');
 
-  console.log('le insert est ok');
-
   const deleteEvaluations = await knex('evaluation_comments')
     .where({ evaluation_id: res.id })
     .del();
 
-  console.log(
-    'le delete est ok :',
-    evaluation.commentsId,
-    ' ',
-    res.id,
-  );
-
   await Promise.all(
     evaluation.commentsId.map(async commentId => {
-      console.log(res.id, ' ', commentId);
       await knex('evaluation_comments').insert({
         evaluation_id: res.id,
         comment_id: commentId,
       });
     }),
   );
-
-  console.log('le add all semble ok');
 
   return res;
 }
@@ -135,6 +123,7 @@ async function getCoachEvaluations(coachId, sessionId, exerciseId) {
       'coach_id',
       'exercise_id',
       'session_id',
+      'id',
     )
     .orderBy('created_at', 'desc');
 
@@ -143,17 +132,10 @@ async function getCoachEvaluations(coachId, sessionId, exerciseId) {
 
 async function getEvaluationComments(evaluationId) {
   const res = await knex('evaluation_comments')
-    .select('comments.id', 'content')
+    .select('comment_id')
     .where({
       evaluation_id: evaluationId,
-    })
-    .leftJoin(
-      'comments',
-      'comments.id',
-      '=',
-      'evaluation_comments.comment_id',
-    )
-    .orderBy('comments.created_at', 'desc');
+    });
 
   return res;
 }
