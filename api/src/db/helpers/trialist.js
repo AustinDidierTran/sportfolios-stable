@@ -1,7 +1,7 @@
 const knex = require('../connection');
 
-function createEvaluation(evaluation) {
-  return knex('evaluations')
+async function createEvaluation(evaluation) {
+  const res = await knex('evaluations')
     .insert({
       exercise_id: evaluation.exerciseId,
       coach_id: evaluation.coachId,
@@ -17,6 +17,25 @@ function createEvaluation(evaluation) {
     ])
     .merge()
     .returning('*');
+
+  const deleteEvaluations = await knex('evaluations_comments')
+    .delete()
+    .where({ evaluation_id: res.id })
+    .returning('*');
+
+  const values = await Promise.all(
+    evaluation.commentsId
+      .map(
+        async commentId =>
+          await knex('evaluation_comments').insert({
+            evaluation_id: res.id,
+            comment_id: commentId,
+          }),
+      )
+      .returning('*'),
+  );
+
+  return values;
 }
 
 function getAllCommentSuggestions() {
