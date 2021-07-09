@@ -3146,6 +3146,7 @@ async function getMyTeamPlayersRequest(teamId, personIds) {
     .select('*')
     .where({
       team_id: teamId,
+      status: STATUS_ENUM.PENDING,
     });
 
   const filtered = pendingPlayers.filter(p =>
