@@ -18,7 +18,7 @@ async function createEvaluation(evaluation) {
     .merge()
     .returning('*');
 
-  const deleteEvaluations = await knex('evaluation_comments')
+  await knex('evaluation_comments')
     .where({ evaluation_id: res.id })
     .del();
 

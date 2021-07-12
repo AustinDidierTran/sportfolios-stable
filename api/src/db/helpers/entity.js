@@ -1306,12 +1306,15 @@ async function getOptions(eventId) {
       }
 
       return {
+        id: r.id,
+        informations: r.informations,
         name: r.name,
         individualPrice: r.individual_price,
         individualStripePriceId: r.individual_stripe_price_id,
         individualTaxRates,
         individualTransactionFees,
         playerAcceptation: r.player_acceptation,
+        teamAcceptation: r.team_acceptation,
         endTime: new Date(r.end_time).getTime(),
         startTime: new Date(r.start_time).getTime(),
         teamActivity: r.team_activity,
