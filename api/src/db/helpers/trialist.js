@@ -22,28 +22,24 @@ async function createEvaluation(evaluation) {
     evaluation_id: res.id,
   });
 
-  console.log('avant');
-
-  console.log(evaluation);
-
   evaluation.commentsId.map(async (comm, i) => {
-    console.log(comm);
-    if (comments.find(c => c === comm)) {
-      comments.splice(i, 1);
-    } else {
+    if (!comments.find(c => c.comment_id === comm)) {
       await knex('evaluation_comments').insert({
         evaluation_id: res.id,
         comment_id: comm,
       });
     }
   });
-  console.log('apres');
 
-  comments.map(
+  const commentsToRemove = comments.filter(
+    x => !evaluation.commentsId.includes(x.comment_id),
+  );
+
+  commentsToRemove.map(
     async c =>
       await knex('evaluation_comments')
-        .where({ evaluation_id: res.id, comment_id: c })
-        .del(),
+        .del()
+        .where({ evaluation_id: res.id, comment_id: c.comment_id }),
   );
 
   return res;
