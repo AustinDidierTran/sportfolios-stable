@@ -22,7 +22,7 @@ async function createEvaluation(evaluation) {
     evaluation_id: res.id,
   });
 
-  evaluation.commentsId.map(async (comm, i) => {
+  evaluation.commentsId.map(async comm => {
     if (!comments.find(c => c.comment_id === comm)) {
       await knex('evaluation_comments').insert({
         evaluation_id: res.id,
@@ -142,22 +142,25 @@ async function getCoachEvaluations(coachId, sessionId, exerciseId) {
 
   await Promise.all(
     res.map(async r => {
-      const c = await knex('evaluation_comments')
-        .select('comment_id')
-        .where({
-          evaluation_id: r.id,
-        });
-
+      const c = await getEvaluationComments(r.id);
       comments.push(c.map(comment => comment.comment_id));
     }),
   );
 
   const transformed = res.map((r, i) => ({
     ...r,
-    comments: comments[i],
+    commentsId: comments[i],
   }));
 
-  return transformed;
+  return transformed.map(t => ({
+    coachId: t.coach_id,
+    exerciseId: t.exercise_id,
+    personId: t.person_id,
+    id: t.id,
+    value: t.value,
+    sessionId: t.session_id,
+    commentsId: t.commentsId,
+  }));
 }
 
 async function getEvaluationComments(evaluationId) {
