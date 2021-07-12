@@ -53,6 +53,9 @@ async function getCoachEvaluations(coachId, sessionId, exerciseId) {
     sessionId,
     exerciseId,
   );
+
+  console.log('RES = ', res);
+
   if (!res) {
     return;
   }
