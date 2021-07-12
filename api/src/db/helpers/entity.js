@@ -1306,14 +1306,20 @@ async function getOptions(eventId) {
       }
 
       return {
-        ...r,
-        owner,
-        teamTaxRates,
+        name: r.name,
+        individualPrice: r.individual_price,
+        individualStripePriceId: r.individual_stripe_price_id,
         individualTaxRates,
         individualTransactionFees,
-        teamTransactionFees,
-        startTime: new Date(r.start_time).getTime(),
+        playerAcceptation: r.player_acceptation,
         endTime: new Date(r.end_time).getTime(),
+        startTime: new Date(r.start_time).getTime(),
+        teamActivity: r.team_activity,
+        teamPrice: r.team_price,
+        teamStripePriceId: r.team_stripe_price_id,
+        teamTaxRates,
+        teamTransactionFees,
+        owner,
       };
     }),
   );
@@ -3140,6 +3146,7 @@ async function getMyTeamPlayersRequest(teamId, personIds) {
     .select('*')
     .where({
       team_id: teamId,
+      status: STATUS_ENUM.PENDING,
     });
 
   const filtered = pendingPlayers.filter(p =>
@@ -4892,7 +4899,7 @@ async function getCoachSessionEvaluation(
         const [player] = await knex('entities_general_infos')
           .select('*')
           .where('entity_id', '=', user.person_id);
-        if(evaluation){
+        if (evaluation) {
           return {
             id: evaluation.id,
             exerciseId: evaluation.exercise_id,
@@ -4907,7 +4914,7 @@ async function getCoachSessionEvaluation(
               active: c.active,
             })),
           };
-          }
+        }
         return {
           personId: user.person_id,
           name: player.name,
