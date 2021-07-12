@@ -22,7 +22,12 @@ async function createEvaluation(evaluation) {
     evaluation_id: res.id,
   });
 
-  evaluation.comments.map(async (comm, i) => {
+  console.log('avant');
+
+  console.log(evaluation);
+
+  evaluation.commentsId.map(async (comm, i) => {
+    console.log(comm);
     if (comments.find(c => c === comm)) {
       comments.splice(i, 1);
     } else {
@@ -32,6 +37,7 @@ async function createEvaluation(evaluation) {
       });
     }
   });
+  console.log('apres');
 
   comments.map(
     async c =>
@@ -136,35 +142,26 @@ async function getCoachEvaluations(coachId, sessionId, exerciseId) {
     )
     .orderBy('created_at', 'desc');
 
-  /*   res.map(async (r, index) => {
-    console.log(r);
-    const c = await knex('evaluation_comments')
-      .select('comment_id')
-      .where({
-        evaluation_id: r.id,
-      });
-    const transformed = c.map(comment => comment.comment_id);
-    console.log('T = ', transformed);
-    res[index].comments = transformed;
-  }); */
-
   const comments = [];
 
   await Promise.all(
-    res.map(async (r, index) => {
+    res.map(async r => {
       const c = await knex('evaluation_comments')
         .select('comment_id')
         .where({
           evaluation_id: r.id,
         });
-      //  const transformed = c.map(comment => comment.comment_id);
+
       comments.push(c.map(comment => comment.comment_id));
     }),
   );
 
-  const newobj = res.map((r, i) => ({ ...r, comments: comments[i] }));
+  const transformed = res.map((r, i) => ({
+    ...r,
+    comments: comments[i],
+  }));
 
-  return newobj;
+  return transformed;
 }
 
 async function getEvaluationComments(evaluationId) {

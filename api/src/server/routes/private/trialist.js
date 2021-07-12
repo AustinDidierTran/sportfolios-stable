@@ -7,6 +7,7 @@ const router = new Router();
 const BASE_URL = '/api/trialist';
 
 router.post(`${BASE_URL}/createEvaluation`, async ctx => {
+  console.log('salut');
   const res = await queries.createEvaluation(
     ctx.request.body.evaluation,
   );
