@@ -2371,6 +2371,15 @@ router.del(`${BASE_URL}/rosterPlayer`, async ctx => {
   };
 });
 
+
+router.del(`${BASE_URL}/sessionExercise`, async ctx => {
+  await queries.deleteSessionExercise(ctx.query.sessionId, ctx.query.exerciseId);
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
 router.del(`${BASE_URL}/member`, async ctx => {
   await queries.deleteMembership(ctx.query);
 

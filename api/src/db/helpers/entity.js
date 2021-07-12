@@ -6587,6 +6587,12 @@ const deleteRosterPlayer = async id => {
     .del();
 };
 
+const deleteSessionExercise = async (sessionId, exerciseId) => {
+  return knex('session_exercises')
+    .where({ session_id: sessionId, exercise_id: exerciseId })
+    .del();
+};
+
 const getGame = async id => {
   const [game] = await knex('games')
     .select('*')
@@ -7274,6 +7280,7 @@ module.exports = {
   deletePlayer,
   deleteRoster,
   deleteRosterPlayer,
+  deleteSessionExercise,
   deletePersonFromEvent,
   deletePhase,
   deletePlayerFromRoster,

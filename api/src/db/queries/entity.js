@@ -56,6 +56,7 @@ const {
   deleteReport: deleteReportHelper,
   deleteRoster: deleteRosterHelper,
   deleteRosterPlayer: deleteRosterPlayerHelper,
+  deleteSessionExercise: deleteSessionExerciseHelper,
   eventInfos: eventInfosHelper,
   generateReport: generateReportHelper,
   getAlias: getAliasHelper,
@@ -1919,6 +1920,10 @@ function deleteRosterPlayer(id) {
   return deleteRosterPlayerHelper(id);
 }
 
+function deleteSessionExercise(sessionId, exerciseId) {
+  return deleteSessionExerciseHelper(sessionId, exerciseId);
+}
+
 function deleteEntityMembership(membershipId) {
   return deleteEntityMembershipHelper(membershipId);
 }
@@ -2249,6 +2254,7 @@ module.exports = {
   deletePlayer,
   deleteRoster,
   deleteRosterPlayer,
+  deleteSessionExercise,
   deletePlayerFromRoster,
   deletePractice,
   deleteReport,
