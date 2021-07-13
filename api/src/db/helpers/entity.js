@@ -2298,7 +2298,10 @@ async function getRosterByEventAndUser(eventId, userId) {
     )
     .where({ person_id: id, event_id: eventId });
 
-  return res;
+  return res.map(r => ({
+    name: r.name,
+    rosterId: r.roster_id,
+  }));
 }
 
 async function getRostersNames(rostersArray) {
