@@ -465,10 +465,9 @@ router.get(`${BASE_URL}/coachSessionEvaluation`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/isEvaluationCoach`, async ctx => {
-  const role = await queries.getIsEvaluationCoach(
-    ctx.query.exerciseId,
-    ctx.query.sessionId,
+router.get(`${BASE_URL}/isTeamCoach`, async ctx => {
+  const role = await queries.getIsTeamCoach(
+    ctx.query.teamId,
     ctx.body.userInfo.id,
   );
 
@@ -2366,6 +2365,15 @@ router.del(`${BASE_URL}/roster`, async ctx => {
 
 router.del(`${BASE_URL}/rosterPlayer`, async ctx => {
   await queries.deleteRosterPlayer(ctx.query.id);
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
+
+router.del(`${BASE_URL}/sessionExercise`, async ctx => {
+  await queries.deleteSessionExercise(ctx.query.sessionId, ctx.query.exerciseId);
   ctx.status = 201;
   ctx.body = {
     status: 'success',

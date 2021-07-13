@@ -56,6 +56,7 @@ const {
   deleteReport: deleteReportHelper,
   deleteRoster: deleteRosterHelper,
   deleteRosterPlayer: deleteRosterPlayerHelper,
+  deleteSessionExercise: deleteSessionExerciseHelper,
   eventInfos: eventInfosHelper,
   generateReport: generateReportHelper,
   getAlias: getAliasHelper,
@@ -117,7 +118,7 @@ const {
   getPhasesWithoutPrerank: getPhasesWithoutPrerankHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getPlayerSessionEvaluation: getPlayerSessionEvaluationHelper,
-  getIsEvaluationCoach: getIsEvaluationCoachHelper,
+  getIsTeamCoach: getIsTeamCoachHelper,
   getPracticeBasicInfo: getPracticeBasicInfoHelper,
   getPracticeInfo: getPracticeInfoHelper,
   getPreranking: getPrerankingHelper,
@@ -291,9 +292,9 @@ async function getCoachSessionEvaluation(
   );
 }
 
-async function getIsEvaluationCoach(exerciseId, sessionId, userId) {
+async function getIsTeamCoach(teamId, userId) {
   const personId = await getPrimaryPersonIdFromUserId(userId);
-  return getIsEvaluationCoachHelper(exerciseId, sessionId, personId);
+  return getIsTeamCoachHelper(teamId, personId);
 }
 
 function getAllRolesEntity(id) {
@@ -1931,6 +1932,10 @@ function deleteRosterPlayer(id) {
   return deleteRosterPlayerHelper(id);
 }
 
+function deleteSessionExercise(sessionId, exerciseId) {
+  return deleteSessionExerciseHelper(sessionId, exerciseId);
+}
+
 function deleteEntityMembership(membershipId) {
   return deleteEntityMembershipHelper(membershipId);
 }
@@ -2259,6 +2264,7 @@ module.exports = {
   deletePlayer,
   deleteRoster,
   deleteRosterPlayer,
+  deleteSessionExercise,
   deletePlayerFromRoster,
   deletePractice,
   deleteReport,
@@ -2311,7 +2317,7 @@ module.exports = {
   getPhases,
   getPhasesGameAndTeams,
   getPlayerSessionEvaluation,
-  getIsEvaluationCoach,
+  getIsTeamCoach,
   getPossibleSubmissionerInfos,
   getPracticeBasicInfo,
   getPracticeInfo,
