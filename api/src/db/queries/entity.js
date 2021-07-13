@@ -266,13 +266,29 @@ function getSessionExercises(sessionId) {
   return getSessionExercisesHelper(sessionId);
 }
 
-async function getPlayerSessionEvaluation(exerciseId, sessionId, userId) {
-  return getPlayerSessionEvaluationHelper(exerciseId, sessionId, userId);
+async function getPlayerSessionEvaluation(
+  exerciseId,
+  sessionId,
+  userId,
+) {
+  return getPlayerSessionEvaluationHelper(
+    exerciseId,
+    sessionId,
+    userId,
+  );
 }
 
-async function getCoachSessionEvaluation(exerciseId, sessionId, userId) {
+async function getCoachSessionEvaluation(
+  exerciseId,
+  sessionId,
+  userId,
+) {
   const coachId = await getPrimaryPersonIdFromUserId(userId);
-  return getCoachSessionEvaluationHelper(exerciseId, sessionId, coachId);
+  return getCoachSessionEvaluationHelper(
+    exerciseId,
+    sessionId,
+    coachId,
+  );
 }
 
 async function getIsEvaluationCoach(exerciseId, sessionId, userId) {
@@ -1523,10 +1539,6 @@ async function addPractice(body, userId) {
     newLocation,
     teamId,
   } = body;
-
-  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
 
   const res = await addPracticeHelper(
     name,
