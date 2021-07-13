@@ -2108,9 +2108,7 @@ async function addExercise(query, userId) {
     sessionId,
     teamId,
   } = query;
-  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.ADMIN))) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
+
   return addExerciseHelper(
     exerciseId,
     name,
