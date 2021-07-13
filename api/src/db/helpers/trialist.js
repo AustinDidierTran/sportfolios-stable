@@ -18,17 +18,28 @@ async function createEvaluation(evaluation) {
     .merge()
     .returning('*');
 
-  await knex('evaluation_comments')
-    .where({ evaluation_id: res.id })
-    .del();
+  const comments = await knex('evaluation_comments').where({
+    evaluation_id: res.id,
+  });
 
-  await Promise.all(
-    evaluation.commentsId.map(async commentId => {
+  evaluation.commentsId.map(async comm => {
+    if (!comments.find(c => c.comment_id === comm)) {
       await knex('evaluation_comments').insert({
         evaluation_id: res.id,
-        comment_id: commentId,
+        comment_id: comm,
       });
-    }),
+    }
+  });
+
+  const commentsToRemove = comments.filter(
+    x => !evaluation.commentsId.includes(x.comment_id),
+  );
+
+  commentsToRemove.map(
+    async c =>
+      await knex('evaluation_comments')
+        .del()
+        .where({ evaluation_id: res.id, comment_id: c.comment_id }),
   );
 
   return res;
@@ -127,7 +138,29 @@ async function getCoachEvaluations(coachId, sessionId, exerciseId) {
     )
     .orderBy('created_at', 'desc');
 
-  return res;
+  const comments = [];
+
+  await Promise.all(
+    res.map(async r => {
+      const c = await getEvaluationComments(r.id);
+      comments.push(c.map(comment => comment.comment_id));
+    }),
+  );
+
+  const transformed = res.map((r, i) => ({
+    ...r,
+    commentsId: comments[i],
+  }));
+
+  return transformed.map(t => ({
+    coachId: t.coach_id,
+    exerciseId: t.exercise_id,
+    personId: t.person_id,
+    id: t.id,
+    value: t.value,
+    sessionId: t.session_id,
+    commentsId: t.commentsId,
+  }));
 }
 
 async function getEvaluationComments(evaluationId) {
