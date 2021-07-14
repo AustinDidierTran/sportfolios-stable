@@ -4493,7 +4493,7 @@ async function addAllTimeslots(eventId, timeslotsArray) {
 }
 
 async function addAllGames(eventId, gamesArray) {
-  const res = await Promise.all(
+  return Promise.all(
     gamesArray.map(async g => {
       const game = await addGame(
         eventId,
@@ -4506,7 +4506,6 @@ async function addAllGames(eventId, gamesArray) {
       return game;
     }),
   );
-  return res;
 }
 
 async function addEntityRole(entityId, entityIdAdmin, role) {
