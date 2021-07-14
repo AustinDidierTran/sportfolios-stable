@@ -17,6 +17,7 @@ const {
   STATUS_ENUM,
   TAG_TYPE_ENUM,
   PILL_TYPE_ENUM,
+  PHASE_TYPE_ENUM,
 } = require('../../../../common/enums');
 const { v1: uuidv1 } = require('uuid');
 const { addProduct, addPrice } = require('./stripe/shop');
@@ -2232,7 +2233,6 @@ async function getPhotoFromRosterId(rosterId) {
 async function getGames(eventId) {
   const games = await knex('games')
     .select('*')
-    .whereNotNull('timeslot_id', 'field_id')
     .andWhere({ event_id: eventId });
 
   const res = await Promise.all(
@@ -2242,12 +2242,18 @@ async function getGames(eventId) {
       if (game.phase_id) {
         phaseName = await getPhaseName(game.phase_id);
       }
-      const [r1] = await knex('event_fields')
-        .select('field')
-        .where({ id: game.field_id });
-      const [r2] = await knex('event_time_slots')
-        .select('date')
-        .where({ id: game.timeslot_id });
+      let r1 = 'no_field';
+      let r2 = 'no_time_slot';
+      if (game.field_id) {
+        [r1] = await knex('event_fields')
+          .select('field')
+          .where({ id: game.field_id });
+      }
+      if (game.timeslot_id) {
+        [r2] = await knex('event_time_slots')
+          .select('date')
+          .where({ id: game.timeslot_id });
+      }
       // field and start_time are temporary, this will change when all the schedule logic will be handled in backend.
       // For now this is so it can still works even after adding the new ids to these fields.
       return {
@@ -2255,7 +2261,6 @@ async function getGames(eventId) {
         eventId: game.event_id,
         phaseId: game.phase_id,
         description: game.description,
-        entityId: game.entity_id,
         notifiedStart: game.notified_start,
         notifiedEnd: game.notified_end,
         locationId: game.location_id,
@@ -2466,28 +2471,6 @@ const isTeamRegisteredInEvent = async (teamId, eventId) => {
     .where({ event_id: eventId, team_id: teamId });
   return Boolean(res);
 };
-
-async function getUnplacedGames(eventId) {
-  const unplacedGames = await knex('games')
-    .select('*')
-    .where({ event_id: eventId, timeslot_id: null, field_id: null });
-
-  const res = await Promise.all(
-    unplacedGames.map(async game => {
-      const teams = await getTeams(game.id);
-      let phaseName = null;
-      if (game.phase_id) {
-        phaseName = await getPhaseName(game.phase_id);
-      }
-      return {
-        ...game,
-        phaseName,
-        teams,
-      };
-    }),
-  );
-  return res;
-}
 
 async function getTeamGames(eventId) {
   const games = await getGames(eventId);
@@ -4510,66 +4493,19 @@ async function addAllTimeslots(eventId, timeslotsArray) {
 }
 
 async function addAllGames(eventId, gamesArray) {
-  let games;
-  const rankingsArray = await gamesArray.reduce(async (memo, g) => {
-    const memoIteration = await memo;
-    const [phase] = await getPhase(g.phaseId);
-    //if phase is started, there will be a roster id otherwise it's null
-    const res = [
-      ...memoIteration,
-      {
-        game_id: g.id,
-        ranking_id: g.rankings[0].rankingId,
-        roster_id:
-          phase.status !== PHASE_STATUS_ENUM.NOT_STARTED
-            ? g.rankings[0].rosterId
-            : null,
-        name: g.rankings[0].name,
-      },
-      {
-        game_id: g.id,
-        ranking_id: g.rankings[1].rankingId,
-        roster_id:
-          phase.status !== PHASE_STATUS_ENUM.NOT_STARTED
-            ? g.rankings[1].rosterId
-            : null,
-        name: g.rankings[1].name,
-      },
-    ];
-    return res;
-  }, []);
-
-  const res = await knex.transaction(async trx => {
-    games = await Promise.all(
-      gamesArray.map(async g => {
-        const [{ id: entityId }] = await knex('entities')
-          .insert({ type: GLOBAL_ENUM.GAME })
-          .returning(['id'])
-          .transacting(trx);
-        return {
-          event_id: eventId,
-          phase_id: g.phaseId,
-          field_id: g.fieldId,
-          timeslot_id: g.timeslotId,
-          id: g.id,
-          entity_id: entityId,
-        };
-      }),
-    );
-
-    await knex('games')
-      .insert(games)
-      .returning('*')
-      .transacting(trx);
-
-    await knex('game_teams')
-      .insert(rankingsArray)
-      .returning('*')
-      .transacting(trx);
-
-    return trx;
-  });
-
+  const res = await Promise.all(
+    gamesArray.map(async g => {
+      const game = await addGame(
+        eventId,
+        g.phaseId,
+        g.fieldId,
+        g.timeslotId,
+        g.rankings[0].rankingId,
+        g.rankings[1].rankingId,
+      );
+      return game;
+    }),
+  );
   return res;
 }
 
@@ -4744,11 +4680,11 @@ async function addGame(
 
   const [res] = await knex('games')
     .insert({
+      id: entityId,
       timeslot_id: timeslotId,
       event_id: eventId,
       field_id: fieldId,
       phase_id: phaseId,
-      entity_id: entityId,
     })
     .returning('*');
 
@@ -5463,15 +5399,35 @@ async function addPhase(phase, spots, eventId, type) {
     .returning('*');
 
   if (spots && spots !== 0) {
-    await addPhaseRanking(res.id, spots);
+    const rankings = await addPhaseRanking(res.id, spots);
+
+    if (type === PHASE_TYPE_ENUM.POOL) {
+      await generateGamesPool(res.id, eventId, rankings);
+    }
   }
+
   return res;
+}
+
+async function generateGamesPool(phaseId, eventId, rankings) {
+  for (let index = 0; index < rankings.length - 1; ++index) {
+    for (let i = index + 1; i < rankings.length; ++i) {
+      await addGame(
+        eventId,
+        phaseId,
+        null,
+        null,
+        rankings[index].ranking_id,
+        rankings[i].ranking_id,
+      );
+    }
+  }
 }
 
 async function addPhaseRanking(phaseId, spots) {
   const res = [];
   for (let i = 0; i < spots; ++i) {
-    const ranking = await knex('phase_rankings')
+    const [ranking] = await knex('phase_rankings')
       .insert({
         current_phase: phaseId,
         initial_position: i + 1,
@@ -6294,7 +6250,6 @@ async function updateGame(
 }
 
 async function updateGamesInteractiveTool(games) {
-  // TODO: do a real batch update
   return knex.transaction(trx => {
     queries = games.map(game =>
       knex('games')
@@ -6619,7 +6574,6 @@ const getGameInfo = async (id, userId) => {
     fieldId: game.field_id,
     locationId: game.location_id,
     eventId: game.event_id,
-    entityId: game.entity_id,
     description: game.description,
     notifiedStart: game.notified_start,
     notifiedEnd: game.notified_end,
@@ -6634,12 +6588,10 @@ const getGameInfo = async (id, userId) => {
 };
 
 const deleteGame = async id => {
-  const game = await getGame(id);
-
   const [res] = await knex.transaction(async trx => {
     await knex('score_suggestion')
       .where({
-        game_id: game.id,
+        game_id: id,
       })
       .del()
       .transacting(trx);
@@ -6650,7 +6602,7 @@ const deleteGame = async id => {
       .transacting(trx);
 
     await knex('entities')
-      .where('id', game.entity_id)
+      .where('id', id)
       .del()
       .transacting(trx);
 
@@ -7162,8 +7114,6 @@ async function getAllTeamGames(team_id) {
     id: i.id,
     endTime: i.end_time,
   }));
-
-  return res;
 }
 
 async function getAllTeamPractices(id) {
@@ -7395,7 +7345,6 @@ module.exports = {
   getRosterPlayers,
   getMyTeamPlayers,
   getTeamsSchedule,
-  getUnplacedGames,
   getUserIdFromPersonId,
   getUserIdFromEntityId,
   getUserNextGame,
