@@ -1934,10 +1934,7 @@ router.post(`${BASE_URL}/game`, async ctx => {
 });
 
 router.post(`${BASE_URL}/practice`, async ctx => {
-  const game = await queries.addPractice(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-  );
+  const game = await queries.addPractice(ctx.request.body);
 
   if (!game) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);

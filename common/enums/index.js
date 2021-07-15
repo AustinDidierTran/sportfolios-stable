@@ -47,6 +47,11 @@ const SIZES_ENUM = {
   XXXL: '3x-large',
 };
 
+const PHASE_TYPE_ENUM = {
+  CUSTOM: 'custom',
+  POOL: 'pool',
+};
+
 const COMPONENT_TYPE_ENUM = {
   LIST: 'list',
   SELECT: 'select',
@@ -118,7 +123,6 @@ const CARD_TYPE_ENUM = {
   SCORE_SUGGESTION: 'score suggestion',
   SHOP: 'shop',
   TWO_TEAM_GAME_EDITABLE: 'twoTeamGameEditable',
-  TWO_TEAM_GAME: 'twoTeamGame',
   TWO_TEAM_GAME_PROFILE: 'twoTeamGameProfile',
 };
 
@@ -128,7 +132,6 @@ const TABS_ENUM = {
   EDIT_EVENTS: 'editEvents',
   EDIT_PERSON_INFOS: 'editPersonInfos',
   EDIT_RANKINGS: 'editRankings',
-  EDIT_RESULTS: 'editResults',
   EDIT_ROSTERS: 'editRosters',
   EDIT_SCHEDULE: 'editSchedule',
   EVENT_INFO: 'eventInfo',
@@ -591,4 +594,5 @@ module.exports = {
   MONTH_NAMES,
   GAME_INFOS_CHATBOT_STATES,
   EVENT_TYPE,
+  PHASE_TYPE_ENUM,
 };

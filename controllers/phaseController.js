@@ -79,9 +79,12 @@ class PhaseController {
       spots,
       status,
     });
-
     if (spots || spots === 0) {
-      await updatePhaseRankingsSpotsHelper({ phaseId, spots });
+      await updatePhaseRankingsSpotsHelper({
+        phaseId,
+        spots,
+        eventId,
+      });
     }
 
     if (status === PHASE_STATUS_ENUM.STARTED) {

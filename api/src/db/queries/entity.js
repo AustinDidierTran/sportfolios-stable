@@ -154,7 +154,6 @@ const {
   getTeamPlayers: getTeamPlayersHelper,
   getTeamRosters: getTeamRostersHelper,
   getTeamsSchedule: getTeamsScheduleHelper,
-  getUnplacedGames: getUnplacedGamesHelper,
   getUserIdFromPersonId,
   getWichTeamsCanUnregister: getWichTeamsCanUnregisterHelper,
   hasMemberships: hasMembershipsHelper,
@@ -464,10 +463,6 @@ function getMyRosterIds(eventId, userId) {
 
 function getGameSubmissionInfos(gameId, rosterId) {
   return getGameSubmissionInfosHelper(gameId, rosterId);
-}
-
-function getUnplacedGames(eventId) {
-  return getUnplacedGamesHelper(eventId);
 }
 
 function getTeamGames(eventId) {
@@ -1020,7 +1015,6 @@ async function getInteractiveToolData(eventId, userId) {
     timeSlots: await getSlots(eventId),
     fields: await getFields(eventId),
     games: await getGames(eventId),
-    unplacedGames: await getUnplacedGames(eventId),
   };
 }
 
@@ -1396,7 +1390,6 @@ async function updateGamesInteractiveTool(body, userId) {
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-
   return updateGamesInteractiveToolHelper(games);
 }
 
@@ -1530,7 +1523,7 @@ async function addGame(body, userId) {
   return res;
 }
 
-async function addPractice(body, userId) {
+async function addPractice(body) {
   const {
     name,
     dateStart,
