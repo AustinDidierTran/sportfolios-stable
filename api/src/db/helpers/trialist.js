@@ -88,6 +88,7 @@ async function getPlayerSessionsEvaluations(teamId, personId) {
       'playerEvaluation.evaluations',
     )
     .where({ team_id: teamId })
+    .whereNotNull('sessions.start_date')
     .leftJoin(
       'sessions',
       'sessions.roster_id',
