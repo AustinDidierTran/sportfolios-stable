@@ -3817,6 +3817,9 @@ async function updatePhaseRankingsSpots(body) {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Add algo to add games when creating elimination phase
   if (actualSpots < spots) {
     let added = [];
     for (let i = actualSpots; i < spots; ++i) {
@@ -3846,7 +3849,10 @@ async function updatePhaseRankingsSpots(body) {
         }),
       );
 
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> Add algo to add games when creating elimination phase
   if (phaseType === PHASE_TYPE_ENUM.ELIMINATION_BRACKET) {
     return updateSpotsEliminationBracket(phaseId, eventId, spots);
   }
