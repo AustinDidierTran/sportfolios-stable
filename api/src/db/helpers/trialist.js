@@ -203,6 +203,11 @@ function getSessionById(sessionId) {
   return knex('sessions').where({ id: sessionId });
 }
 
+async function getExerciseById(exerciseId) {
+  const [res] = await knex('exercises').where({ id: exerciseId });
+  return res;
+}
+
 function getExercicesByTeamId(team_id) {
   return knex('team_exercises')
     .where({ team_id })
@@ -225,4 +230,5 @@ module.exports = {
   getExercicesByTeamId,
   getCoachEvaluations,
   getEvaluationComments,
+  getExerciseById,
 };
