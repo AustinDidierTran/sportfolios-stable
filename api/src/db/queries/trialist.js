@@ -9,6 +9,7 @@ const {
   getExercicesByTeamId: getExercicesByTeamIdHelper,
   getCoachEvaluations: getCoachEvaluationsHelper,
   getEvaluationComments: getEvaluationCommentsHelper,
+  getExerciseById: getExerciseByIdHelper,
 } = require('../helpers/trialist');
 
 async function createEvaluation(evaluation) {
@@ -104,6 +105,15 @@ async function getExercicesByTeamId(teamId) {
   return res;
 }
 
+async function getExerciseById(exerciseId) {
+  const res = await getExerciseByIdHelper(exerciseId);
+  if (!res) {
+    return;
+  }
+
+  return res;
+}
+
 module.exports = {
   createEvaluation,
   getAllCommentSuggestions,
@@ -115,4 +125,5 @@ module.exports = {
   getExercicesByTeamId,
   getCoachEvaluations,
   getEvaluationComments,
+  getExerciseById,
 };
