@@ -50,6 +50,7 @@ const SIZES_ENUM = {
 const PHASE_TYPE_ENUM = {
   CUSTOM: 'custom',
   POOL: 'pool',
+  ELIMINATION_BRACKET: 'elimination bracket',
 };
 
 const COMPONENT_TYPE_ENUM = {

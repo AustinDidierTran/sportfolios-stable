@@ -14,6 +14,7 @@ const {
 const {
   ENTITIES_ROLE_ENUM,
   PHASE_STATUS_ENUM,
+  PHASE_TYPE_ENUM,
 } = require('../common/enums');
 
 const { ERROR_ENUM } = require('../common/errors');
@@ -58,6 +59,7 @@ class PhaseController {
       phaseName,
       spots,
       status,
+      type,
       finalRanking,
       manualRanking,
     } = body;
@@ -85,6 +87,11 @@ class PhaseController {
         spots,
         eventId,
       });
+    }
+
+    if (type === PHASE_TYPE_ENUM.ELIMINATION_BRACKET) {
+      console.log('elimination bracket');
+      return;
     }
 
     if (status === PHASE_STATUS_ENUM.STARTED) {
