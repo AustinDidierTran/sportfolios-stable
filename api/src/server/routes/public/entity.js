@@ -566,31 +566,17 @@ router.get(`${BASE_URL}/phasesGameAndTeams`, async ctx => {
   };
 });
 
-router.get(`${BASE_URL}/slots`, async ctx => {
-  const slots = await queries.getSlots(ctx.query.eventId);
+router.get(`${BASE_URL}/gameOptions`, async ctx => {
+  const gameOptions = await queries.getGameOptions(ctx.query.eventId);
 
-  if (!slots) {
+  if (!gameOptions) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
   ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: 'success',
-    data: slots,
-  };
-});
-
-router.get(`${BASE_URL}/teamsSchedule`, async ctx => {
-  const teams = await queries.getTeamsSchedule(ctx.query.eventId);
-
-  if (!teams) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
-  ctx.body = {
-    status: 'success',
-    data: teams,
+    data: gameOptions,
   };
 });
 

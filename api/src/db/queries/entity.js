@@ -477,6 +477,15 @@ function getPhasesGameAndTeams(eventId, phaseId) {
   return getPhasesGameAndTeamsHelper(eventId, phaseId);
 }
 
+async function getGameOptions(eventId) {
+  return {
+    timeSlots: await getSlots(eventId),
+    teams: await getTeamsSchedule(eventId),
+    phases: await getPhases(eventId),
+    fields: await getFields(eventId),
+  };
+}
+
 function getSlots(eventId) {
   return getSlotsHelper(eventId);
 }
@@ -2097,7 +2106,7 @@ async function deletePractice(userId, query) {
   return deletePracticeHelper(practiceId);
 }
 
-async function addExercise(query, userId) {
+async function addExercise(query) {
   const {
     exerciseId,
     name,
@@ -2290,6 +2299,7 @@ module.exports = {
   getFields,
   getGameInfo,
   getGames,
+  getGameOptions,
   getGameSubmissionInfos,
   getGeneralInfos,
   getGraphAmountGeneratedByEvent,
