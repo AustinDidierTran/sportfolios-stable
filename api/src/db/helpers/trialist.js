@@ -209,6 +209,7 @@ async function getExerciseById(exerciseId) {
 }
 
 function getExercicesByTeamId(team_id) {
+  console.log(team_id);
   return knex('team_exercises')
     .where({ team_id })
     .leftJoin(
@@ -216,7 +217,25 @@ function getExercicesByTeamId(team_id) {
       'team_exercises.exercise_id',
       '=',
       'exercises.id',
-    );
+    )
+    .orderBy('exercises.type');
+}
+
+async function addExerciseToSessions(exerciseId, sessionsId) {
+  const toDelete = await knex('session_exercises')
+    .del()
+    .where({ exercise_id: exerciseId });
+
+  const res = Promise.all(
+    sessionsId.map(id => {
+      return knex('session_exercises').insert({
+        session_id: id,
+        exercise_id: exerciseId,
+      });
+    }),
+  );
+
+  return res;
 }
 
 module.exports = {
@@ -231,4 +250,5 @@ module.exports = {
   getCoachEvaluations,
   getEvaluationComments,
   getExerciseById,
+  addExerciseToSessions,
 };
