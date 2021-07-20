@@ -6,7 +6,6 @@ const {
   createTeamExercise: createTeamExerciseHelper,
   updateExercise: updateExerciseHelper,
   getSessionById: getSessionByIdHelper,
-  getExercicesByTeamId: getExercicesByTeamIdHelper,
   getCoachEvaluations: getCoachEvaluationsHelper,
   getEvaluationComments: getEvaluationCommentsHelper,
   getExerciseById: getExerciseByIdHelper,
@@ -107,15 +106,6 @@ async function getSessionsByExerciseId(exerciseId) {
   return res;
 }
 
-async function getExercicesByTeamId(teamId) {
-  const res = await getExercicesByTeamIdHelper(teamId);
-  if (!res) {
-    return;
-  }
-
-  return res;
-}
-
 async function getExerciseById(exerciseId) {
   const res = await getExerciseByIdHelper(exerciseId);
   if (!res) {
@@ -145,7 +135,6 @@ module.exports = {
   createTeamExercise,
   updateExercise,
   getSessionById,
-  getExercicesByTeamId,
   getCoachEvaluations,
   getEvaluationComments,
   getExerciseById,

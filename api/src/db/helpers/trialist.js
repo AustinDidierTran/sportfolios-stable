@@ -214,19 +214,6 @@ async function getExerciseById(exerciseId) {
   return res;
 }
 
-function getExercicesByTeamId(team_id) {
-  console.log(team_id);
-  return knex('team_exercises')
-    .where({ team_id })
-    .leftJoin(
-      'exercises',
-      'team_exercises.exercise_id',
-      '=',
-      'exercises.id',
-    )
-    .orderBy('exercises.type');
-}
-
 async function addExerciseToSessions(exerciseId, sessionsId) {
   const toDelete = await knex('session_exercises')
     .del()
@@ -252,7 +239,6 @@ module.exports = {
   createTeamExercise,
   updateExercise,
   getSessionById,
-  getExercicesByTeamId,
   getCoachEvaluations,
   getEvaluationComments,
   getExerciseById,
