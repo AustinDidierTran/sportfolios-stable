@@ -62,7 +62,6 @@ class PhaseController {
       finalRanking,
       manualRanking,
     } = body;
-
     if (
       !(await this.isAllowed(
         eventId,
