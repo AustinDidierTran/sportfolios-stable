@@ -1485,6 +1485,15 @@ async function getTeamPaymentOptionFromRosterId(rosterId, eventId) {
   };
 }
 
+async function getHasSpirit(eventId) {
+  const [res] = await knex('events')
+    .select('has_spirit')
+    .where({ id: eventId });
+  return {
+    hasSpirit: res.has_spirit,
+  };
+}
+
 async function getPersonPaymentOption(personId, eventId) {
   const [person] = await knex('event_persons')
     .select('payment_option_id')
@@ -2419,7 +2428,7 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
     : undefined;
 }
 
-async function getGameSubmissionInfos(gameId, myRosterId) {
+async function getGameSubmissionInfos(gameId, myRosterId, eventId) {
   const scoreSuggestions = await knex('score_suggestion')
     .select('*')
     .where({ game_id: gameId });
@@ -2451,14 +2460,40 @@ async function getGameSubmissionInfos(gameId, myRosterId) {
       'game_players_attendance.is_sub',
     );
 
+  const getSpirit = await getHasSpirit(eventId);
+
   return {
-    scoreSuggestions,
-    spiritSubmission,
+    scoreSuggestions: scoreSuggestions.map(s => ({
+      gameId: s.game_id,
+      submittedByRoster: s.submitted_by_roster,
+      submittedByPerson: s.submitted_by_person,
+      status: s.status,
+      score: s.score,
+      id: s.id,
+    })),
+    spiritSubmission: {
+      id: spiritSubmission ? spiritSubmission.id : null,
+      gameId: spiritSubmission ? spiritSubmission.game_id : null,
+      submittedByRoster: spiritSubmission
+        ? spiritSubmission.submitted_by_roster
+        : null,
+      submittedByPerson: spiritSubmission
+        ? spiritSubmission.submitted_by_person
+        : null,
+      submittedForRoster: spiritSubmission
+        ? spiritSubmission.submitted_for_roster
+        : null,
+      comment: spiritSubmission ? spiritSubmission.comment : null,
+      spiritScore: spiritSubmission
+        ? spiritSubmission.spirit_score
+        : null,
+    },
     presences: presences.map(p => ({
       value: p.player_id,
       display: p.complete_name,
       isSub: p.is_sub,
     })),
+    hasSpirit: getSpirit.hasSpirit,
   };
 }
 
@@ -3952,6 +3987,16 @@ async function updateGeneralInfos(entityId, body) {
   return entity;
 }
 
+async function updateHasSpirit(eventId, hasSpirit) {
+  const [event] = await knex('events')
+    .update({
+      has_spirit: hasSpirit,
+    })
+    .where({ id: eventId })
+    .returning('*');
+  return event;
+}
+
 async function updatePersonInfosHelper(entityId, body) {
   const { personInfos } = body;
   const {
@@ -4991,14 +5036,12 @@ async function getIsTeamCoach(teamId, personId) {
 
 async function getImages(type) {
   let res;
-  if(type == 'all'){
+  if (type == 'all') {
+    res = await knex('images').select('*');
+  } else {
     res = await knex('images')
-    .select('*');
-  }
-  else{
-    res = await knex('images')
-    .select('*')
-    .where({type});
+      .select('*')
+      .where({ type });
   }
   return res.map(r => ({
     photoUrl: r.photo_url,
@@ -7358,6 +7401,7 @@ module.exports = {
   getGraphMemberCount,
   getGraphUserCount,
   getIndividualPaymentOptionFromRosterId,
+  getHasSpirit,
   getLastRankedTeam,
   getMembers,
   getMembership,
@@ -7448,6 +7492,7 @@ module.exports = {
   updateGame,
   updateGamesInteractiveTool,
   updateGeneralInfos,
+  updateHasSpirit,
   updateInitialPositionPhase,
   updateManualRanking,
   updateMember,
