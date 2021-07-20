@@ -2586,6 +2586,7 @@ async function getTeamsPhase(phaseId) {
 }
 
 async function getPhasesGameAndTeams(eventId, phaseId) {
+  //RENDU ICI
   const games = await knex('games')
     .select('*')
     .where({ event_id: eventId, phase_id: phaseId });
@@ -3693,7 +3694,6 @@ async function updatePhaseGamesRosterId(phaseId) {
 }
 
 async function updateGameTeamsRosterId(game) {
-  const type = await getGameType(game.id);
   const positions = await knex('game_teams')
     .select('*')
     .where({ game_id: game.id });
@@ -3792,7 +3792,6 @@ async function updateOriginPhase(body) {
     originPhase,
     originPosition,
   );
-  const phaseName = await getPhaseName(phaseId);
 
   if (roster !== undefined) {
     const [res] = await knex('phase_rankings')
@@ -4791,7 +4790,6 @@ async function addGame(
   rankingId1,
   rankingId2,
 ) {
-  const type = getPhaseType(phaseId);
   const [{ id: entityId }] = await knex('entities')
     .insert({ type: GLOBAL_ENUM.GAME })
     .returning(['id']);
@@ -5437,8 +5435,8 @@ async function setGameScore(gameId, score, isManualAdd = false) {
     );
 
     //update winner and loser position
-    let rankingId0 = null;
-    let rankingId1 = null;
+    let ranking0 = null;
+    let ranking1 = null;
     if (team0.position < team1.position) {
       await knex('elimination_bracket')
         .update({
@@ -6516,7 +6514,6 @@ async function updateGameRanking(
   rankingId,
   oldRanking,
   phase,
-  phaseName,
 ) {
   let ranking = null;
 
@@ -6570,7 +6567,6 @@ async function updateGame(
 ) {
   const res = [];
   const [phase] = await getPhase(phaseId);
-  const phaseName = await getPhaseName(phaseId);
 
   if (phaseId) {
     const r = await updateGamePhaseId(gameId, phaseId);
@@ -6593,7 +6589,6 @@ async function updateGame(
       rankingId1,
       oldRanking1,
       phase,
-      phaseName,
     );
     res.push(r);
   }
@@ -6604,7 +6599,6 @@ async function updateGame(
       rankingId2,
       oldRanking2,
       phase,
-      phaseName,
     );
     res.push(r);
   }
@@ -6914,45 +6908,45 @@ const getGame = async id => {
 };
 
 const getGameInfo = async (id, userId) => {
-    const [game] = await knex('games')
-      .select('*')
-      .where({ id });
+  const [game] = await knex('games')
+    .select('*')
+    .where({ id });
 
-    const [score_suggestion] = await knex('score_suggestion')
-      .select(knex.raw('count(*) >= 2 as score_submited'))
-      .where('game_id', id)
-      .andWhere('status', 'accepted');
+  const [score_suggestion] = await knex('score_suggestion')
+    .select(knex.raw('count(*) >= 2 as score_submited'))
+    .where('game_id', id)
+    .andWhere('status', 'accepted');
 
-    const positions = await getTeams(id);
+  const positions = await getTeams(id);
 
-    if (game.phase_id) {
-      game.phase_name = await getPhaseName(game.phase_id);
-    }
+  if (game.phase_id) {
+    game.phase_name = await getPhaseName(game.phase_id);
+  }
 
-    const role = await getEntityRole(game.event_id, userId);
-    const [r1] = await knex('event_fields')
-      .select('field')
-      .where({ id: game.field_id });
-    const [r2] = await knex('event_time_slots')
-      .select('date')
-      .where({ id: game.timeslot_id });
-    return {
-      id: game.id,
-      phaseId: game.phase_id,
-      fieldId: game.field_id,
-      locationId: game.location_id,
-      eventId: game.event_id,
-      description: game.description,
-      notifiedStart: game.notified_start,
-      notifiedEnd: game.notified_end,
-      phaseName: game.phase_name,
-      timeslotId: game.timeslot_id,
-      positions,
-      scoreSubmited: score_suggestion.score_submited,
-      field: r1 ? r1.field : null,
-      startTime: r2 ? r2.date : null,
-      role,
-    };
+  const role = await getEntityRole(game.event_id, userId);
+  const [r1] = await knex('event_fields')
+    .select('field')
+    .where({ id: game.field_id });
+  const [r2] = await knex('event_time_slots')
+    .select('date')
+    .where({ id: game.timeslot_id });
+  return {
+    id: game.id,
+    phaseId: game.phase_id,
+    fieldId: game.field_id,
+    locationId: game.location_id,
+    eventId: game.event_id,
+    description: game.description,
+    notifiedStart: game.notified_start,
+    notifiedEnd: game.notified_end,
+    phaseName: game.phase_name,
+    timeslotId: game.timeslot_id,
+    positions,
+    scoreSubmited: score_suggestion.score_submited,
+    field: r1 ? r1.field : null,
+    startTime: r2 ? r2.date : null,
+    role,
+  };
 };
 
 const getGameType = async gameId => {
