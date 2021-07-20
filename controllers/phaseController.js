@@ -89,11 +89,6 @@ class PhaseController {
       });
     }
 
-    if (type === PHASE_TYPE_ENUM.ELIMINATION_BRACKET) {
-      console.log('elimination bracket');
-      return;
-    }
-
     if (status === PHASE_STATUS_ENUM.STARTED) {
       await updatePhaseGamesRosterIdHelper(phaseId);
     }

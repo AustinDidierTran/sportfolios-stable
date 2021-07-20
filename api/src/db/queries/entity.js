@@ -6,6 +6,7 @@ const {
   NOTIFICATION_TYPE,
   GLOBAL_ENUM,
   ROSTER_ROLE_ENUM,
+  PHASE_TYPE_ENUM,
 } = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
@@ -45,6 +46,7 @@ const {
   deleteEntity: deleteEntityHelper,
   deleteEntityMembership: deleteEntityMembershipHelper,
   deleteGame: deleteGameHelper,
+  getGameType,
   deleteMembership: deleteMembershipHelper,
   deleteMembershipWithId: deleteMembershipWithIdHelper,
   deleteOption: deleteOptionHelper,
@@ -2109,13 +2111,14 @@ async function deletePlayerFromRoster(id, userId) {
 }
 
 async function deleteGame(userId, query) {
-  const { eventId, gameId } = query;
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
-  return deleteGameHelper(gameId);
+    const { eventId, gameId } = query;
+    if (
+      !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+    ) {
+      throw new Error(ERROR_ENUM.ACCESS_DENIED);
+    }
+
+    return deleteGameHelper(gameId);
 }
 
 async function deletePractice(userId, query) {
