@@ -171,7 +171,6 @@ router.put(`${BASE_URL}/updateExercise`, async ctx => {
 });
 
 router.post(`${BASE_URL}/addExerciseToSessions`, async ctx => {
-  console.log(ctx.request.body);
   const res = await queries.addExerciseToSessions(
     ctx.request.body.exerciseId,
     ctx.request.body.sessionsId,
@@ -208,7 +207,6 @@ router.get(`${BASE_URL}/getSessionById`, async ctx => {
 });
 
 router.get(`${BASE_URL}/getSessionsByExerciseId`, async ctx => {
-  console.log(ctx.query.exerciseId);
   const res = await queries.getSessionsByExerciseId(
     ctx.query.exerciseId,
   );
