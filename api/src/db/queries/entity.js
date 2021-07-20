@@ -119,6 +119,7 @@ const {
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getPlayerSessionEvaluation: getPlayerSessionEvaluationHelper,
   getIsTeamCoach: getIsTeamCoachHelper,
+  getImages: getImagesHelper,
   getPracticeBasicInfo: getPracticeBasicInfoHelper,
   getPracticeInfo: getPracticeInfoHelper,
   getPreranking: getPrerankingHelper,
@@ -294,6 +295,10 @@ async function getCoachSessionEvaluation(
 async function getIsTeamCoach(teamId, userId) {
   const personId = await getPrimaryPersonIdFromUserId(userId);
   return getIsTeamCoachHelper(teamId, personId);
+}
+
+async function getImages(type) {
+  return getImagesHelper(type);
 }
 
 function getAllRolesEntity(id) {
@@ -2321,6 +2326,7 @@ module.exports = {
   getPhasesGameAndTeams,
   getPlayerSessionEvaluation,
   getIsTeamCoach,
+  getImages,
   getPossibleSubmissionerInfos,
   getPracticeBasicInfo,
   getPracticeInfo,

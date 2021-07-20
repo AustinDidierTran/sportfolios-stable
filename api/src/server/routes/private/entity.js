@@ -485,6 +485,25 @@ router.get(`${BASE_URL}/isTeamCoach`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/images`, async ctx => {
+  const images = await queries.getImages(
+    ctx.query.type,
+  );
+
+  if (images) {
+    ctx.body = {
+      status: 'success',
+      data: images,
+    };
+  } else {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That record does not exist.',
+    };
+  }
+});
+
 router.get(`${BASE_URL}/reports`, async ctx => {
   const reports = await queries.getReports(ctx.query.id);
 

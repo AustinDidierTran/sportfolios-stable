@@ -51,6 +51,7 @@ const addEntity = async (body, userId) => {
     endDate,
     maximumSpots,
     eventType,
+    photoUrl,
   } = body;
 
   if (
@@ -70,6 +71,7 @@ const addEntity = async (body, userId) => {
         entity_id: entityId,
         name,
         surname,
+        photo_url: photoUrl,
       })
       .transacting(trx);
 
@@ -4987,6 +4989,23 @@ async function getIsTeamCoach(teamId, personId) {
   return res.length !== 0;
 }
 
+async function getImages(type) {
+  let res;
+  if(type == 'all'){
+    res = await knex('images')
+    .select('*');
+  }
+  else{
+    res = await knex('images')
+    .select('*')
+    .where({type});
+  }
+  return res.map(r => ({
+    photoUrl: r.photo_url,
+    type: r.type,
+  }));
+}
+
 async function addExercise(
   exerciseId,
   name,
@@ -7363,6 +7382,7 @@ module.exports = {
   getPlayerInvoiceItem,
   getPlayerSessionEvaluation,
   getIsTeamCoach,
+  getImages,
   getPracticeBasicInfo,
   getPracticeInfo,
   getPreranking,
