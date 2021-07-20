@@ -203,20 +203,32 @@ function getSessionById(sessionId) {
   return knex('sessions').where({ id: sessionId });
 }
 
+function getSessionsByExerciseId(exerciseId) {
+  return knex('session_exercises')
+    .select('session_id')
+    .where({ exercise_id: exerciseId });
+}
+
 async function getExerciseById(exerciseId) {
   const [res] = await knex('exercises').where({ id: exerciseId });
   return res;
 }
 
-function getExercicesByTeamId(team_id) {
-  return knex('team_exercises')
-    .where({ team_id })
-    .leftJoin(
-      'exercises',
-      'team_exercises.exercise_id',
-      '=',
-      'exercises.id',
-    );
+async function addExerciseToSessions(exerciseId, sessionsId) {
+  const toDelete = await knex('session_exercises')
+    .del()
+    .where({ exercise_id: exerciseId });
+
+  const res = Promise.all(
+    sessionsId.map(id => {
+      return knex('session_exercises').insert({
+        session_id: id,
+        exercise_id: exerciseId,
+      });
+    }),
+  );
+
+  return res;
 }
 
 module.exports = {
@@ -227,8 +239,9 @@ module.exports = {
   createTeamExercise,
   updateExercise,
   getSessionById,
-  getExercicesByTeamId,
   getCoachEvaluations,
   getEvaluationComments,
   getExerciseById,
+  addExerciseToSessions,
+  getSessionsByExerciseId,
 };

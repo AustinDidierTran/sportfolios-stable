@@ -3758,94 +3758,94 @@ async function updateOriginPhase(body) {
 }
 
 async function updatePhaseRankingsSpots(body) {
-    const { phaseId, spots, eventId } = body;
+  const { phaseId, spots, eventId } = body;
 
-    const actualSpots = await getNbOfSpotsInPhase(phaseId);
+  const actualSpots = await getNbOfSpotsInPhase(phaseId);
 
-    if (actualSpots === spots) {
-      return;
+  if (actualSpots === spots) {
+    return;
+  }
+
+  if (actualSpots < spots) {
+    let added = [];
+    for (let i = actualSpots; i < spots; ++i) {
+      const rankings = await knex('phase_rankings')
+        .select('*')
+        .where({
+          current_phase: phaseId,
+        });
+
+      const [ranking] = await knex('phase_rankings')
+        .insert({
+          current_phase: phaseId,
+          initial_position: i + 1,
+        })
+        .returning('*');
+
+      await Promise.all(
+        rankings.map(async r => {
+          addGame(
+            eventId,
+            phaseId,
+            null,
+            null,
+            r.ranking_id,
+            ranking.ranking_id,
+          );
+        }),
+      );
+
+      added.push(ranking);
     }
+    return added;
+  }
 
-    if (actualSpots < spots) {
-      let added = [];
-      for (let i = actualSpots; i < spots; ++i) {
-        const rankings = await knex('phase_rankings')
-          .select('*')
-          .where({
-            current_phase: phaseId,
-          });
+  if (actualSpots > spots) {
+    let deleted = [];
+    for (let i = actualSpots; i > spots; --i) {
+      const [ranking] = await knex('phase_rankings')
+        .select('*')
+        .where({
+          current_phase: phaseId,
+          initial_position: i,
+        });
 
-        const [ranking] = await knex('phase_rankings')
-          .insert({
-            current_phase: phaseId,
-            initial_position: i + 1,
-          })
-          .returning('*');
+      const teams = await knex('game_teams')
+        .where({ ranking_id: ranking.ranking_id })
+        .del()
+        .returning('*');
 
-        await Promise.all(
-          rankings.map(async r => {
-            addGame(
-              eventId,
-              phaseId,
-              null,
-              null,
-              r.ranking_id,
-              ranking.ranking_id,
-            );
-          }),
-        );
+      await Promise.all(
+        teams.map(async team => {
+          await knex('game_teams')
+            .where({ game_id: team.game_id })
+            .del();
+          await knex('games')
+            .where({ id: team.game_id })
+            .del();
+        }),
+      );
 
-        added.push(ranking);
-      }
-      return added;
+      await knex('phase_rankings')
+        .where({ ranking_id: ranking.ranking_id })
+        .del()
+        .returning('*');
+
+      await knex('phase_rankings')
+        .update({
+          roster_id: null,
+          origin_phase: null,
+          origin_position: null,
+        })
+        .where({
+          origin_phase: ranking.current_phase,
+          origin_position: ranking.initial_position,
+        });
+
+      deleted.push(ranking);
     }
-
-    if (actualSpots > spots) {
-      let deleted = [];
-      for (let i = actualSpots; i > spots; --i) {
-        const [ranking] = await knex('phase_rankings')
-          .select('*')
-          .where({
-            current_phase: phaseId,
-            initial_position: i,
-          });
-
-        const teams = await knex('game_teams')
-          .where({ ranking_id: ranking.ranking_id })
-          .del()
-          .returning('*');
-
-        await Promise.all(
-          teams.map(async team => {
-            await knex('game_teams')
-              .where({ game_id: team.game_id })
-              .del();
-            await knex('games')
-              .where({ id: team.game_id })
-              .del();
-          }),
-        );
-
-        await knex('phase_rankings')
-          .where({ ranking_id: ranking.ranking_id })
-          .del()
-          .returning('*');
-
-        await knex('phase_rankings')
-          .update({
-            roster_id: null,
-            origin_phase: null,
-            origin_position: null,
-          })
-          .where({
-            origin_phase: ranking.current_phase,
-            origin_position: ranking.initial_position,
-          });
-
-        deleted.push(ranking);
-      }
-      return deleted;
-    }
+    return deleted;
+  }
 }
 
 async function updatePhaseFinalRanking(phaseId, finalRanking) {
@@ -4814,7 +4814,8 @@ async function getTeamExercises(teamId) {
     .whereIn(
       'id',
       exercises.map(e => e.exercise_id),
-    );
+    )
+    .orderBy('created_at');
 
   return res;
 }

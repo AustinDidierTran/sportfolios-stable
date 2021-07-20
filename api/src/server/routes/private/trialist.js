@@ -159,6 +159,27 @@ router.put(`${BASE_URL}/updateExercise`, async ctx => {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: STATUS_ENUM.SUCCESS_STRING,
+      body: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
+
+router.post(`${BASE_URL}/addExerciseToSessions`, async ctx => {
+  const res = await queries.addExerciseToSessions(
+    ctx.request.body.exerciseId,
+    ctx.request.body.sessionsId,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS_STRING,
+      body: res,
     };
   } else {
     ctx.status = STATUS_ENUM.ERROR;
@@ -185,9 +206,10 @@ router.get(`${BASE_URL}/getSessionById`, async ctx => {
   }
 });
 
-router.get(`${BASE_URL}/getExercisesByTeamId`, async ctx => {
-  const res = await queries.getExercicesByTeamId(ctx.query.teamId);
-
+router.get(`${BASE_URL}/getSessionsByExerciseId`, async ctx => {
+  const res = await queries.getSessionsByExerciseId(
+    ctx.query.exerciseId,
+  );
   if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
