@@ -190,6 +190,26 @@ router.post(`${BASE_URL}/addExerciseToSessions`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/addExercisesToSession`, async ctx => {
+  const res = await queries.addExercisesToSession(
+    ctx.request.body.sessionId,
+    ctx.request.body.exercisesId,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS_STRING,
+      body: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
+
 router.get(`${BASE_URL}/getSessionById`, async ctx => {
   const res = await queries.getSessionById(ctx.query.sessionId);
   if (res) {
