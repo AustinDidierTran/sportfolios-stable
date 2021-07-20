@@ -3,7 +3,6 @@ CREATE TABLE elimination_bracket(
   ranking_id UUID DEFAULT uuid_generate_v4() PRIMARY KEY, 
   origin_step INTEGER,
   current_step INTEGER NOT NULL,
-  origin_position INTEGER,
   initial_position INTEGER NOT NULL,
   final_position INTEGER,
   phase_id UUID NOT NULL,
