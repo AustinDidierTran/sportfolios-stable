@@ -207,6 +207,25 @@ router.get(`${BASE_URL}/getSessionById`, async ctx => {
   }
 });
 
+router.get(`${BASE_URL}/getSessionsByExerciseId`, async ctx => {
+  console.log(ctx.query.exerciseId);
+  const res = await queries.getSessionsByExerciseId(
+    ctx.query.exerciseId,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      data: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
+
 router.get(`${BASE_URL}/getExercisesByTeamId`, async ctx => {
   const res = await queries.getExercicesByTeamId(ctx.query.teamId);
 
