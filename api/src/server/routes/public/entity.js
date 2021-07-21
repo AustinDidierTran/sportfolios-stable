@@ -620,4 +620,18 @@ router.get(`${BASE_URL}/rostersNames`, async ctx => {
   };
 });
 
+router.get(`${BASE_URL}/hasSpirit`, async ctx => {
+  const getHasSpirit = await queries.getHasSpirit(ctx.query.eventId);
+
+  if (!getHasSpirit) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: getHasSpirit,
+  };
+});
+
 module.exports = router;
