@@ -14,6 +14,7 @@ const {
 const {
   ENTITIES_ROLE_ENUM,
   PHASE_STATUS_ENUM,
+  PHASE_TYPE_ENUM,
 } = require('../common/enums');
 
 const { ERROR_ENUM } = require('../common/errors');
@@ -79,10 +80,13 @@ class PhaseController {
       spots,
       status,
     });
-    if (spots || spots === 0) {
+
+    if (
+      (spots || spots === 0) &&
+      type != PHASE_TYPE_ENUM.ELIMINATION_BRACKET
+    ) {
       await updatePhaseRankingsSpotsHelper({
         phaseId,
-        type,
         spots,
         eventId,
       });
