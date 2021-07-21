@@ -5421,154 +5421,156 @@ async function setGameScore(gameId, score, isManualAdd = false) {
       .select('*')
       .where({ ranking_id: team1.ranking_id });
 
-    const loserPos = Math.max(
-      t0.initial_position,
-      t1.initial_position,
-    );
-    const winnerPos = Math.min(
-      t0.initial_position,
-      t1.initial_position,
-    );
+    if (t0 && t1) {
+      const loserPos = Math.max(
+        t0.initial_position,
+        t1.initial_position,
+      );
+      const winnerPos = Math.min(
+        t0.initial_position,
+        t1.initial_position,
+      );
 
-    //update winner and loser position
-    let ranking0 = null;
-    let ranking1 = null;
-    if (team0.position < team1.position) {
-      await knex('elimination_bracket')
-        .update({
-          final_position: winnerPos,
-        })
-        .where({
-          ranking_id: team0.ranking_id,
-        });
+      //update winner and loser position
+      let ranking0 = null;
+      let ranking1 = null;
+      if (team0.position < team1.position) {
+        await knex('elimination_bracket')
+          .update({
+            final_position: winnerPos,
+          })
+          .where({
+            ranking_id: team0.ranking_id,
+          });
 
-      await knex('phase_rankings')
-        .update({
-          final_position: winnerPos,
-        })
-        .where({
-          roster_id: team0.roster_id,
-          current_phase: t0.phase_id,
-        });
+        await knex('phase_rankings')
+          .update({
+            final_position: winnerPos,
+          })
+          .where({
+            roster_id: team0.roster_id,
+            current_phase: t0.phase_id,
+          });
 
-      [ranking0] = await knex('elimination_bracket')
-        .update({
-          roster_id: team0.roster_id,
-        })
-        .where({
-          origin_step: t0.current_step,
-          initial_position: winnerPos,
-          phase_id: t0.phase_id,
-        })
-        .returning('*');
+        [ranking0] = await knex('elimination_bracket')
+          .update({
+            roster_id: team0.roster_id,
+          })
+          .where({
+            origin_step: t0.current_step,
+            initial_position: winnerPos,
+            phase_id: t0.phase_id,
+          })
+          .returning('*');
 
-      await knex('elimination_bracket')
-        .update({
-          final_position: loserPos,
-        })
-        .where({
-          ranking_id: team1.ranking_id,
-        });
+        await knex('elimination_bracket')
+          .update({
+            final_position: loserPos,
+          })
+          .where({
+            ranking_id: team1.ranking_id,
+          });
 
-      await knex('phase_rankings')
-        .update({
-          final_position: loserPos,
-        })
-        .where({
-          roster_id: team1.roster_id,
-          current_phase: t1.phase_id,
-        });
+        await knex('phase_rankings')
+          .update({
+            final_position: loserPos,
+          })
+          .where({
+            roster_id: team1.roster_id,
+            current_phase: t1.phase_id,
+          });
 
-      [ranking1] = await knex('elimination_bracket')
-        .update({
-          roster_id: team1.roster_id,
-        })
-        .where({
-          origin_step: t1.current_step,
-          initial_position: loserPos,
-          phase_id: t1.phase_id,
-        })
-        .returning('*');
-    } else {
-      await knex('elimination_bracket')
-        .update({
-          final_position: loserPos,
-        })
-        .where({
-          ranking_id: team0.ranking_id,
-        });
+        [ranking1] = await knex('elimination_bracket')
+          .update({
+            roster_id: team1.roster_id,
+          })
+          .where({
+            origin_step: t1.current_step,
+            initial_position: loserPos,
+            phase_id: t1.phase_id,
+          })
+          .returning('*');
+      } else {
+        await knex('elimination_bracket')
+          .update({
+            final_position: loserPos,
+          })
+          .where({
+            ranking_id: team0.ranking_id,
+          });
 
-      await knex('phase_rankings')
-        .update({
-          final_position: loserPos,
-        })
-        .where({
-          roster_id: team0.roster_id,
-          current_phase: t0.phase_id,
-        });
+        await knex('phase_rankings')
+          .update({
+            final_position: loserPos,
+          })
+          .where({
+            roster_id: team0.roster_id,
+            current_phase: t0.phase_id,
+          });
 
-      [ranking0] = await knex('elimination_bracket')
-        .update({
-          roster_id: team0.roster_id,
-        })
-        .where({
-          origin_step: t0.current_step,
-          initial_position: loserPos,
-          phase_id: t0.phase_id,
-        })
-        .returning('*');
+        [ranking0] = await knex('elimination_bracket')
+          .update({
+            roster_id: team0.roster_id,
+          })
+          .where({
+            origin_step: t0.current_step,
+            initial_position: loserPos,
+            phase_id: t0.phase_id,
+          })
+          .returning('*');
 
-      await knex('elimination_bracket')
-        .update({
-          final_position: winnerPos,
-        })
-        .where({
-          ranking_id: team1.ranking_id,
-        });
+        await knex('elimination_bracket')
+          .update({
+            final_position: winnerPos,
+          })
+          .where({
+            ranking_id: team1.ranking_id,
+          });
 
-      await knex('phase_rankings')
-        .update({
-          final_position: winnerPos,
-        })
-        .where({
-          roster_id: team1.roster_id,
-          current_phase: t1.phase_id,
-        });
+        await knex('phase_rankings')
+          .update({
+            final_position: winnerPos,
+          })
+          .where({
+            roster_id: team1.roster_id,
+            current_phase: t1.phase_id,
+          });
 
-      [ranking1] = await knex('elimination_bracket')
-        .update({
-          roster_id: team1.roster_id,
-        })
-        .where({
-          origin_step: t1.current_step,
-          initial_position: winnerPos,
-          phase_id: t1.phase_id,
-        })
-        .returning('*');
-    }
+        [ranking1] = await knex('elimination_bracket')
+          .update({
+            roster_id: team1.roster_id,
+          })
+          .where({
+            origin_step: t1.current_step,
+            initial_position: winnerPos,
+            phase_id: t1.phase_id,
+          })
+          .returning('*');
+      }
 
-    if (ranking0) {
-      await knex('game_teams')
-        .update({
-          roster_id: ranking0.roster_id,
-        })
-        .where({
-          ranking_id: ranking0.ranking_id,
-        });
+      if (ranking0) {
+        await knex('game_teams')
+          .update({
+            roster_id: ranking0.roster_id,
+          })
+          .where({
+            ranking_id: ranking0.ranking_id,
+          });
 
-      await updateGameTeamName(ranking0);
-    }
+        await updateGameTeamName(ranking0);
+      }
 
-    if (ranking1) {
-      await knex('game_teams')
-        .update({
-          roster_id: ranking1.roster_id,
-        })
-        .where({
-          ranking_id: ranking1.ranking_id,
-        });
+      if (ranking1) {
+        await knex('game_teams')
+          .update({
+            roster_id: ranking1.roster_id,
+          })
+          .where({
+            ranking_id: ranking1.ranking_id,
+          });
 
-      await updateGameTeamName(ranking1);
+        await updateGameTeamName(ranking1);
+      }
     }
   }
 
@@ -7020,15 +7022,16 @@ const deleteGame = async (gameId, forceDelete) => {
         const [currentStep] = await knex('elimination_bracket')
           .select('current_step')
           .where({ ranking_id: r.ranking_id });
-
-        const [game] = await knex('elimination_bracket')
-          .select('*')
-          .where({
-            origin_step: currentStep.current_step,
-            phase_id: r.phase_id,
-          });
-        if (game) {
-          dependantGames = true;
+        if (currentStep) {
+          const [game] = await knex('elimination_bracket')
+            .select('*')
+            .where({
+              origin_step: currentStep.current_step,
+              phase_id: r.phase_id,
+            });
+          if (game) {
+            dependantGames = true;
+          }
         }
       }),
     );
