@@ -4847,7 +4847,7 @@ async function addExercise(
     .returning('*');
 
   if (sessionId) {
-    const [res] = await knex('session_exercises')
+    await knex('session_exercises')
       .insert({
         session_id: sessionId,
         exercise_id,
