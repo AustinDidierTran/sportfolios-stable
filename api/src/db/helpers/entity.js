@@ -7007,11 +7007,9 @@ const getGameType = async gameId => {
 };
 
 const deleteGame = async (gameId, forceDelete) => {
-  if (
-    (await getGameType(gameId)) ===
-      PHASE_TYPE_ENUM.ELIMINATION_BRACKET &&
-    !forceDelete
-  ) {
+  const type = await getGameType(gameId);
+
+  if (type === PHASE_TYPE_ENUM.ELIMINATION_BRACKET && !forceDelete) {
     const rankings = await knex('games')
       .select('ranking_id', 'phase_id')
       .leftJoin('game_teams', 'game_teams.game_id', '=', 'games.id')
@@ -7047,14 +7045,14 @@ const deleteGame = async (gameId, forceDelete) => {
       .del()
       .transacting(trx);
 
-    const [rankingId] = await knex('game_teams')
+    const rankingIds = await knex('game_teams')
       .where('game_id', gameId)
       .del()
       .returning('ranking_id')
       .transacting(trx);
 
     await knex('elimination_bracket')
-      .where('ranking_id', rankingId)
+      .whereIn('ranking_id', rankingIds)
       .del()
       .transacting(trx);
 
@@ -7069,7 +7067,7 @@ const deleteGame = async (gameId, forceDelete) => {
       .returning('*')
       .transacting(trx);
   });
-  return res;
+  return { game: res };
 };
 
 const getSessionLocations = async teamId => {
