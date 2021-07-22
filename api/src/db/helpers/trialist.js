@@ -225,7 +225,7 @@ async function getExerciseById(exerciseId) {
 }
 
 async function addExerciseToSessions(exerciseId, sessionsId) {
-  const toDelete = await knex('session_exercises')
+  await knex('session_exercises')
     .del()
     .where({ exercise_id: exerciseId });
 
@@ -242,7 +242,7 @@ async function addExerciseToSessions(exerciseId, sessionsId) {
 }
 
 async function addExercisesToSession(sessionId, exercisesId) {
-  const toDelete = await knex('session_exercises')
+  await knex('session_exercises')
     .del()
     .where({ session_id: sessionId });
 
