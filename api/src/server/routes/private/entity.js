@@ -486,9 +486,7 @@ router.get(`${BASE_URL}/isTeamCoach`, async ctx => {
 });
 
 router.get(`${BASE_URL}/images`, async ctx => {
-  const images = await queries.getImages(
-    ctx.query.type,
-  );
+  const images = await queries.getImages(ctx.query.type);
 
   if (images) {
     ctx.body = {
@@ -918,8 +916,8 @@ router.get(`${BASE_URL}/gameSubmissionInfos`, async ctx => {
   const data = await queries.getGameSubmissionInfos(
     ctx.query.gameId,
     ctx.query.rosterId,
+    ctx.query.eventId,
   );
-
   if (data) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
@@ -1484,6 +1482,27 @@ router.put(`${BASE_URL}/updateGeneralInfos`, async ctx => {
     };
   } else {
     ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/hasSpirit`, async ctx => {
+  const roster = await queries.updateHasSpirit(
+    ctx.request.body.eventId,
+    ctx.request.body.hasSpirit,
+    ctx.body.userInfo.id,
+  );
+  if (roster) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: roster,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'That entity does not exist.',
@@ -2387,9 +2406,11 @@ router.del(`${BASE_URL}/rosterPlayer`, async ctx => {
   };
 });
 
-
 router.del(`${BASE_URL}/sessionExercise`, async ctx => {
-  await queries.deleteSessionExercise(ctx.query.sessionId, ctx.query.exerciseId);
+  await queries.deleteSessionExercise(
+    ctx.query.sessionId,
+    ctx.query.exerciseId,
+  );
   ctx.status = 201;
   ctx.body = {
     status: 'success',
@@ -2423,15 +2444,21 @@ router.del(`${BASE_URL}/option`, async ctx => {
 });
 
 router.del(`${BASE_URL}/game`, async ctx => {
-  const game = await queries.deleteGame(
+  const { reason, game } = await queries.deleteGame(
     ctx.body.userInfo.id,
     ctx.query,
   );
-  if (game) {
+  if (reason) {
+    ctx.status = 404;
+    ctx.body = {
+      status: 'error',
+      data: { reason },
+    };
+  } else if (game) {
     (ctx.status = 201),
       (ctx.body = {
         status: 'success',
-        data: game,
+        data: { game },
       });
   } else {
     ctx.status = 404;

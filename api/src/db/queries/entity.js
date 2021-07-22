@@ -97,6 +97,7 @@ const {
   getGraphAmountGeneratedByEvent: getGraphAmountGeneratedByEventHelper,
   getGraphMemberCount: getGraphMemberCountHelper,
   getGraphUserCount: getGraphUserCountHelper,
+  getHasSpirit: getHasSpiritHelper,
   getLastRankedTeam: getLastRankedTeamHelper,
   getMembers: getMembersHelper,
   getMembership,
@@ -173,6 +174,7 @@ const {
   updateGame: updateGameHelper,
   updateGamesInteractiveTool: updateGamesInteractiveToolHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
+  updateHasSpirit: updateHasSpiritHelper,
   updateMember: updateMemberHelper,
   updateMemberOptionalField: updateMemberOptionalFieldHelper,
   updateMembershipTermsAndConditions: updateMembershipTermsAndConditionsHelper,
@@ -423,6 +425,10 @@ async function getRosterAllIncluded(rosterId, userId, withSub) {
   };
 }
 
+function getHasSpirit(eventId) {
+  return getHasSpiritHelper(eventId);
+}
+
 function getEvent(eventId) {
   return getEventHelper(eventId);
 }
@@ -466,8 +472,8 @@ function getMyRosterIds(eventId, userId) {
   return getRosterByEventAndUserHelper(eventId, userId);
 }
 
-function getGameSubmissionInfos(gameId, rosterId) {
-  return getGameSubmissionInfosHelper(gameId, rosterId);
+function getGameSubmissionInfos(gameId, rosterId, eventId) {
+  return getGameSubmissionInfosHelper(gameId, rosterId, eventId);
 }
 
 function getTeamGames(eventId) {
@@ -660,6 +666,15 @@ async function updateGeneralInfos(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return updateGeneralInfosHelper(entityId, otherBody);
+}
+
+async function updateHasSpirit(eventId, hasSpirit, userId) {
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return updateHasSpiritHelper(eventId, hasSpirit);
 }
 
 async function updatePersonInfos(body, userId) {
@@ -2100,6 +2115,7 @@ async function deleteGame(userId, query) {
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
+
   return deleteGameHelper(gameId);
 }
 
@@ -2311,6 +2327,7 @@ module.exports = {
   getGraphMemberCount,
   getGraphUserCount,
   getInteractiveToolData,
+  getHasSpirit,
   getMembers,
   getMemberships,
   getMostRecentMember,
@@ -2340,10 +2357,7 @@ module.exports = {
   getRoster,
   getRosterAllIncluded,
   getRosterFromInviteToken,
-  getRosterFromInviteToken,
   getRosterInviteToken,
-  getRosterInviteToken,
-  getRostersNames,
   getRostersNames,
   getS3Signature,
   getScoreSuggestion,
@@ -2370,6 +2384,7 @@ module.exports = {
   updateGame,
   updateGamesInteractiveTool,
   updateGeneralInfos,
+  updateHasSpirit,
   updateMember,
   updateMemberOptionalField,
   updateMembershipTermsAndConditions,

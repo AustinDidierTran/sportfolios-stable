@@ -549,6 +549,7 @@ router.get(`${BASE_URL}/teamGames`, async ctx => {
     data: games,
   };
 });
+
 router.get(`${BASE_URL}/phasesGameAndTeams`, async ctx => {
   const games = await queries.getPhasesGameAndTeams(
     ctx.query.eventId,
@@ -617,6 +618,20 @@ router.get(`${BASE_URL}/rostersNames`, async ctx => {
   ctx.body = {
     status: 'success',
     data: names,
+  };
+});
+
+router.get(`${BASE_URL}/hasSpirit`, async ctx => {
+  const getHasSpirit = await queries.getHasSpirit(ctx.query.eventId);
+
+  if (!getHasSpirit) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.status = STATUS_ENUM.SUCCESS;
+  ctx.body = {
+    status: 'success',
+    data: getHasSpirit,
   };
 });
 
