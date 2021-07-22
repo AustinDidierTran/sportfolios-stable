@@ -12,6 +12,7 @@ const {
   addExerciseToSessions: addExerciseToSessionsHelper,
   getSessionsByExerciseId: getSessionsByExerciseIdHelper,
   addExercisesToSession: addExercisesToSessionHelper,
+  updateSession: updateSessionHelper,
 } = require('../helpers/trialist');
 
 async function createEvaluation(evaluation) {
@@ -89,6 +90,15 @@ async function updateExercise(exercise) {
   return res;
 }
 
+async function updateSession(session) {
+  const res = await updateSessionHelper(session);
+  if (!res) {
+    return;
+  }
+
+  return res;
+}
+
 async function getSessionById(session_id) {
   const res = await getSessionByIdHelper(session_id);
   if (!res) {
@@ -154,4 +164,5 @@ module.exports = {
   addExerciseToSessions,
   getSessionsByExerciseId,
   addExercisesToSession,
+  updateSession,
 };

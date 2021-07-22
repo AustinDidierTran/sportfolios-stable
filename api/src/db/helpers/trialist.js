@@ -199,6 +199,16 @@ function updateExercise(exercise) {
     .returning('*');
 }
 
+function updateSession(session) {
+  return knex('sessions')
+    .update({
+      name: session.name,
+      start_date: session.startDate,
+    })
+    .where({ id: session.id })
+    .returning('*');
+}
+
 function getSessionById(sessionId) {
   return knex('sessions').where({ id: sessionId });
 }
@@ -262,4 +272,5 @@ module.exports = {
   addExerciseToSessions,
   getSessionsByExerciseId,
   addExercisesToSession,
+  updateSession,
 };
