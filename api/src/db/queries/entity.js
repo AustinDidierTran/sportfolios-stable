@@ -2115,6 +2115,7 @@ async function deleteGame(userId, query) {
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
+
   return deleteGameHelper(gameId);
 }
 

@@ -50,6 +50,7 @@ const SIZES_ENUM = {
 const PHASE_TYPE_ENUM = {
   CUSTOM: 'custom',
   POOL: 'pool',
+  ELIMINATION_BRACKET: 'elimination bracket',
 };
 
 const COMPONENT_TYPE_ENUM = {
@@ -318,6 +319,7 @@ const REJECTION_ENUM = {
   NO_PAYMENT_METHOD_SELECTED: 'no.no_payment_method_selected',
   NO_CART_ITEMS_SELECTED: 'no.no_cart_items_selected',
   CHECKOUT_ERROR: 'checkout_error',
+  OTHER_GAMES_DEPENDS_ON_IT: 'other_games_depends_on_it',
 };
 
 const VIEW_ENUM = {

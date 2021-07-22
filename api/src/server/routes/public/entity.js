@@ -549,6 +549,7 @@ router.get(`${BASE_URL}/teamGames`, async ctx => {
     data: games,
   };
 });
+
 router.get(`${BASE_URL}/phasesGameAndTeams`, async ctx => {
   const games = await queries.getPhasesGameAndTeams(
     ctx.query.eventId,
