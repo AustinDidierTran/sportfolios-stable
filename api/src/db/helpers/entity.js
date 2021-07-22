@@ -4219,11 +4219,10 @@ async function updateField(body) {
 
 async function updateTimeslot(body) {
   const { id, date } = body;
-  const res = await knex('event_time_slots')
+  return knex('event_time_slots')
     .update({ date: new Date(date) })
     .where({ id })
     .returning('*');
-  return res;
 }
 
 const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
