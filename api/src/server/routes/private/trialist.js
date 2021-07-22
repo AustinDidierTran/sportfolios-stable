@@ -170,10 +170,47 @@ router.put(`${BASE_URL}/updateExercise`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/updateSession`, async ctx => {
+  const res = await queries.updateSession(ctx.request.body.session);
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS_STRING,
+      body: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
+
 router.post(`${BASE_URL}/addExerciseToSessions`, async ctx => {
   const res = await queries.addExerciseToSessions(
     ctx.request.body.exerciseId,
     ctx.request.body.sessionsId,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS_STRING,
+      body: res,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
+
+router.post(`${BASE_URL}/addExercisesToSession`, async ctx => {
+  const res = await queries.addExercisesToSession(
+    ctx.request.body.sessionId,
+    ctx.request.body.exercisesId,
   );
   if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;

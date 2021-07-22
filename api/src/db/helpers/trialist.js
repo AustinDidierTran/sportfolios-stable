@@ -199,6 +199,16 @@ function updateExercise(exercise) {
     .returning('*');
 }
 
+function updateSession(session) {
+  return knex('sessions')
+    .update({
+      name: session.name,
+      start_date: session.startDate,
+    })
+    .where({ id: session.id })
+    .returning('*');
+}
+
 function getSessionById(sessionId) {
   return knex('sessions').where({ id: sessionId });
 }
@@ -231,6 +241,23 @@ async function addExerciseToSessions(exerciseId, sessionsId) {
   return res;
 }
 
+async function addExercisesToSession(sessionId, exercisesId) {
+  await knex('session_exercises')
+    .del()
+    .where({ session_id: sessionId });
+
+  const res = Promise.all(
+    exercisesId.map(id => {
+      return knex('session_exercises').insert({
+        session_id: sessionId,
+        exercise_id: id,
+      });
+    }),
+  );
+
+  return res;
+}
+
 module.exports = {
   createEvaluation,
   getAllCommentSuggestions,
@@ -244,4 +271,6 @@ module.exports = {
   getExerciseById,
   addExerciseToSessions,
   getSessionsByExerciseId,
+  addExercisesToSession,
+  updateSession,
 };
