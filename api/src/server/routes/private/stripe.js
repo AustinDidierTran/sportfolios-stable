@@ -40,13 +40,6 @@ router.get(`${BASE_URL}/hasStripeBankAccount`, async ctx => {
   };
 });
 
-router.get(`${BASE_URL}/eventHasBankAccount`, async ctx => {
-  const data = await queries.eventHasBankAccount(ctx.query.id);
-  ctx.body = {
-    status: 'success',
-    data,
-  };
-});
 router.get(`${BASE_URL}/eventAccounts`, async ctx => {
   const data = await queries.getEventAccounts(ctx.query.eventId);
   ctx.body = {
@@ -205,7 +198,7 @@ router.post(`${BASE_URL}/createPrice`, async ctx => {
 
 router.post(`${BASE_URL}/createItem`, async ctx => {
   const data = await queries.createItem(
-    ctx.request.body,
+    ctx.request.body.itemParams,
     ctx.body.userInfo.id,
   );
   ctx.body = {
@@ -214,15 +207,24 @@ router.post(`${BASE_URL}/createItem`, async ctx => {
   };
 });
 
-router.post(`${BASE_URL}/editItem`, async ctx => {
+router.put(`${BASE_URL}/editItem`, async ctx => {
   const data = await queries.editItem(
-    ctx.request.body,
+    ctx.request.body.itemParams,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    status: 'success',
-    data,
-  };
+  if (data) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: data,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
 });
 
 router.del(`${BASE_URL}/deleteItem`, async ctx => {
