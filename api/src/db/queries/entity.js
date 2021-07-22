@@ -55,6 +55,8 @@ const {
   deletePractice: deletePracticeHelper,
   deleteReport: deleteReportHelper,
   deleteRoster: deleteRosterHelper,
+  deleteField: deleteFieldHelper,
+  deleteTimeslot: deleteTimeslotHelper,
   deleteRosterPlayer: deleteRosterPlayerHelper,
   deleteSessionExercise: deleteSessionExerciseHelper,
   eventInfos: eventInfosHelper,
@@ -191,6 +193,8 @@ const {
   updateRegistration: updateRegistrationHelper,
   updateRegistrationPerson: updateRegistrationPersonHelper,
   updateRoster: updateRosterHelper,
+  updateField: updateFieldHelper,
+  updateTimeslot: updateTimeslotHelper,
   updateRosterPlayer: updateRosterPlayerHelper,
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
@@ -1344,6 +1348,14 @@ function updateRoster(body) {
   return updateRosterHelper(body);
 }
 
+function updateField(body) {
+  return updateFieldHelper(body);
+}
+
+function updateTimeslot(body) {
+  return updateTimeslotHelper(body);
+}
+
 async function updateGame(body) {
   const {
     gameId,
@@ -1950,6 +1962,14 @@ function deleteRoster(id) {
   return deleteRosterHelper(id);
 }
 
+function deleteField(id) {
+  return deleteFieldHelper(id);
+}
+
+function deleteTimeslot(id) {
+  return deleteTimeslotHelper(id);
+}
+
 function deleteRosterPlayer(id) {
   return deleteRosterPlayerHelper(id);
 }
@@ -2285,6 +2305,8 @@ module.exports = {
   deletePartner,
   deletePlayer,
   deleteRoster,
+  deleteField,
+  deleteTimeslot,
   deleteRosterPlayer,
   deleteSessionExercise,
   deletePlayerFromRoster,
@@ -2392,6 +2414,8 @@ module.exports = {
   updatePlayer,
   updateRosterPlayer,
   updateRoster,
+  updateField,
+  updateTimeslot,
   updatePersonInfos,
   updatePlayerAcceptation,
   updateTeamPlayerAcceptation,

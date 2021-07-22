@@ -4209,6 +4209,23 @@ async function updateRoster(body) {
   return roster;
 }
 
+async function updateField(body) {
+  const { id, name } = body;
+  return knex('event_fields')
+    .update({ field: name })
+    .where({ id })
+    .returning('*');
+}
+
+async function updateTimeslot(body) {
+  const { id, date } = body;
+  const res = await knex('event_time_slots')
+    .update({ date: new Date(date) })
+    .where({ id })
+    .returning('*');
+  return res;
+}
+
 const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
   var list = [];
   for (const rosterId of rosterIds) {
@@ -6644,6 +6661,18 @@ const deleteRoster = async id => {
     .returning('*');
 };
 
+const deleteField = async id => {
+  return knex('event_fields')
+    .where({ id })
+    .del();
+};
+
+const deleteTimeslot = async id => {
+  return knex('event_time_slots')
+    .where({ id })
+    .del();
+};
+
 const deleteRosterPlayer = async id => {
   return knex('roster_players')
     .where({ id })
@@ -7337,6 +7366,8 @@ module.exports = {
   deletePartner,
   deletePlayer,
   deleteRoster,
+  deleteField,
+  deleteTimeslot,
   deleteRosterPlayer,
   deleteSessionExercise,
   deletePersonFromEvent,
@@ -7505,6 +7536,8 @@ module.exports = {
   updatePlayer,
   updateRosterPlayer,
   updateRoster,
+  updateField,
+  updateTimeslot,
   updatePersonInfosHelper,
   updatePhase,
   updatePhaseFinalRanking,
