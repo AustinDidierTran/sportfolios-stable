@@ -209,8 +209,9 @@ function updateSession(session) {
     .returning('*');
 }
 
-function getSessionById(sessionId) {
-  return knex('sessions').where({ id: sessionId });
+async function getSessionById(sessionId) {
+  const [res] = await knex('sessions').where({ id: sessionId });
+  return res;
 }
 
 function getSessionsByExerciseId(exerciseId) {
