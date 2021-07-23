@@ -1050,8 +1050,7 @@ async function generateReport(reportId) {
   };
   const getReport = ReportMap[report.type];
 
-  const res = await getReport(report);
-  return res;
+  return getReport(report);
 }
 
 async function getPrerankPhase(eventId) {
@@ -1106,7 +1105,28 @@ async function generateMembersReport(report) {
       const email = await getEmailPerson(a.person_id);
       const price = await getPriceFromMembershipId(a.membership_id);
       return {
-        ...a,
+        id: a.id,
+        organizationId: a.organization_id,
+        personId: a.person_id,
+        memberType: a.member_type,
+        expirationDate: a.expiration_date,
+        createdAt: a.created_at,
+        status: a.status,
+        invoiceItemId: a.invoice_item_id,
+        paidOn: a.paid_on,
+        membershipId: a.membership_id,
+        gender: a.gender,
+        address: a.address,
+        birthDate: a.birth_date,
+        phoneNumber: a.phone_number,
+        heardOrganization: a.heard_organization,
+        frequentedSchool: a.frequented_school,
+        jobTitle: a.job_title,
+        gettingInvolved: a.getting_involved,
+        emergencyName: a.emergency_name,
+        emergencySurname: a.emergency_surname,
+        emergencyPhoneNumber: a.emergency_phone_number,
+        medicalConditions: a.medical_onditions,
         name: person.name,
         surname: person.surname,
         price,
@@ -1141,52 +1161,100 @@ const getTaxRates = async stripe_price_id => {
   return taxRates;
 };
 
-async function generateSalesReport(report) {
-  const { date } = report.metadata;
-  const sales = await knex('store_items_paid')
+async function getEventPaymentOption(stripePriceId) {
+  let [option] = await knex('event_payment_options')
     .select('*')
-    .where({ seller_entity_id: report.entity_id });
-  const active = sales.filter(
-    s =>
-      moment(s.created_at)
-        .set('hour', 0)
-        .set('minute', 0)
-        .set('second', 0) <
-      moment(date)
-        .set('hour', 0)
-        .set('minute', 0)
-        .set('second', 0)
-        .add(1, 'day'),
-  );
-  const res = await Promise.all(
-    active.map(async a => {
-      const person = await getPrimaryPerson(a.buyer_user_id);
-      const email = await getEmailUser(a.buyer_user_id);
-      const taxes = await getTaxRates(a.stripe_price_id);
-      const subtotal = a.amount;
-      const totalTax = taxes.reduce((prev, curr) => {
-        return prev + (curr.percentage / 100) * a.amount;
-      }, 0);
-      const total = subtotal + totalTax;
-      const plateformFees = a.transaction_fees;
-      const totalNet = total - plateformFees;
-      if (a.metadata.type === GLOBAL_ENUM.EVENT) {
-        const event = await getEntity(a.metadata.id);
-        a.metadata.event = event;
-      }
-      return {
-        ...a,
-        person,
-        email,
-        total,
-        subtotal,
-        totalTax,
-        plateformFees,
-        totalNet,
-      };
-    }),
-  );
-  return res;
+    .where({ team_stripe_price_id: stripePriceId });
+  if (option) {
+    return option;
+  }
+
+  [option] = await knex('event_payment_options')
+    .select('*')
+    .where({ individual_stripe_price_id: stripePriceId });
+  return option;
+}
+
+async function getPaymentStatus(invoiceItemId) {
+  const [refunded] = await knex('stripe_refund')
+    .select('*')
+    .where({ invoice_item_id: invoiceItemId });
+  if (refunded) {
+    return INVOICE_STATUS_ENUM.REFUNDED;
+  }
+  return INVOICE_STATUS_ENUM.PAID;
+}
+
+async function generateSalesReport(report) {
+    const { date } = report.metadata;
+    const sales = await knex('store_items_paid')
+      .select('*')
+      .where({ seller_entity_id: report.entity_id });
+    const active = sales.filter(
+      s =>
+        moment(s.created_at)
+          .set('hour', 0)
+          .set('minute', 0)
+          .set('second', 0) <
+        moment(date)
+          .set('hour', 0)
+          .set('minute', 0)
+          .set('second', 0)
+          .add(1, 'day'),
+    );
+    const res = await Promise.all(
+      active.map(async a => {
+        const person = await getPrimaryPerson(a.buyer_user_id);
+        const email = await getEmailUser(a.buyer_user_id);
+        const taxes = await getTaxRates(a.stripe_price_id);
+        const subtotal = a.amount;
+        const totalTax = taxes.reduce((prev, curr) => {
+          return prev + (curr.percentage / 100) * a.amount;
+        }, 0);
+        const total = subtotal + totalTax;
+        const plateformFees = a.transaction_fees;
+        const totalNet = total - plateformFees;
+
+        if (a.metadata.type === GLOBAL_ENUM.EVENT) {
+          const event = await getEntity(a.metadata.id);
+          const option = await getEventPaymentOption(
+            a.stripe_price_id,
+          );
+          a.metadata.event = event;
+          a.metadata.option = option;
+        }
+
+        let status = INVOICE_STATUS_ENUM.FREE;
+        if (a.invoice_item_id) {
+          status = await getPaymentStatus(a.invoice_item_id);
+        }
+
+        return {
+          id: a.id,
+          sellerEntityId: a.seller_entity_id,
+          quantity: a.quantity,
+          unitAmount: a.unit_amount,
+          amount: a.amount,
+          status: status,
+          stripePriceId: a.stripe_price_id,
+          buyerUserId: a.buyer_user_id,
+          invoiceItemId: a.invoice_item_id,
+          metadata: a.metadata,
+          createdAt: a.created_at,
+          receiptId: a.receipt_id,
+          transactionFees: a.transaction_fees,
+          name: person.name,
+          surname: person.surname,
+          email,
+          total,
+          subtotal,
+          totalTax,
+          plateformFees,
+          totalNet,
+        };
+      }),
+    );
+    return res;
 }
 
 async function getOrganizationMembers(organizationId) {
