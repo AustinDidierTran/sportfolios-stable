@@ -1656,6 +1656,40 @@ router.put(`${BASE_URL}/roster`, async ctx => {
   }
 });
 
+router.put(`${BASE_URL}/field`, async ctx => {
+  const field = await queries.updateField(ctx.request.body);
+  if (field) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: field,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
+router.put(`${BASE_URL}/timeslot`, async ctx => {
+  const timeslot = await queries.updateTimeslot(ctx.request.body);
+  if (timeslot) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: 'success',
+      data: timeslot,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: 'error',
+      message: 'That entity does not exist.',
+    };
+  }
+});
+
 router.post(BASE_URL, async ctx => {
   const entityId = await queries.addEntity(
     ctx.request.body,
@@ -2392,6 +2426,22 @@ router.del(`${BASE_URL}/player`, async ctx => {
 
 router.del(`${BASE_URL}/roster`, async ctx => {
   await queries.deleteRoster(ctx.query.id);
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
+router.del(`${BASE_URL}/field`, async ctx => {
+  await queries.deleteField(ctx.query.id);
+  ctx.status = 201;
+  ctx.body = {
+    status: 'success',
+  };
+});
+
+router.del(`${BASE_URL}/timeslot`, async ctx => {
+  await queries.deleteTimeslot(ctx.query.id);
   ctx.status = 201;
   ctx.body = {
     status: 'success',
