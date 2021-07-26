@@ -45,12 +45,16 @@ async function createEvaluation(evaluation) {
   return res;
 }
 
-function createComment(content, personId, exerciseId) {
-  return knex('comments').insert({
-    person_id: personId,
-    content,
-    exercise_id: exerciseId,
-  });
+async function createComment(content, personId, exerciseId) {
+  const [res] = await knex('comments')
+    .insert({
+      person_id: personId,
+      content,
+      exercise_id: exerciseId,
+    })
+    .returning('*');
+
+  return res;
 }
 
 function getAllCommentSuggestions(personId, exerciseId) {
