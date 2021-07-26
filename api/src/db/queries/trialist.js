@@ -13,6 +13,7 @@ const {
   getSessionsByExerciseId: getSessionsByExerciseIdHelper,
   addExercisesToSession: addExercisesToSessionHelper,
   updateSession: updateSessionHelper,
+  createComment: createCommentHelper,
 } = require('../helpers/trialist');
 
 async function createEvaluation(evaluation) {
@@ -24,8 +25,24 @@ async function createEvaluation(evaluation) {
   return res;
 }
 
-async function getAllCommentSuggestions() {
-  const res = await getAllCommentSuggestionsHelper();
+async function createComment(content, personId, exerciseId) {
+  const res = await createCommentHelper(
+    content,
+    personId,
+    exerciseId,
+  );
+  if (!res) {
+    return;
+  }
+
+  return res;
+}
+
+async function getAllCommentSuggestions(personId, exerciseId) {
+  const res = await getAllCommentSuggestionsHelper(
+    personId,
+    exerciseId,
+  );
   if (!res) {
     return;
   }
@@ -165,4 +182,5 @@ module.exports = {
   getSessionsByExerciseId,
   addExercisesToSession,
   updateSession,
+  createComment,
 };

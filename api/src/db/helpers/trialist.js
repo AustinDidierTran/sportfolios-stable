@@ -45,8 +45,19 @@ async function createEvaluation(evaluation) {
   return res;
 }
 
-function getAllCommentSuggestions() {
-  return knex('comments');
+function createComment(content, personId, exerciseId) {
+  return knex('comments').insert({
+    person_id: personId,
+    content,
+    exercise_id: exerciseId,
+  });
+}
+
+function getAllCommentSuggestions(personId, exerciseId) {
+  return knex('comments').where({
+    person_id: personId,
+    exercise_id: exerciseId,
+  });
 }
 
 async function getPlayerLastEvaluation(playerId) {
@@ -274,4 +285,5 @@ module.exports = {
   getSessionsByExerciseId,
   addExercisesToSession,
   updateSession,
+  createComment,
 };
