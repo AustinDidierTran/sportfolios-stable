@@ -34,7 +34,6 @@ router.post(`${BASE_URL}/createComment`, async ctx => {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: STATUS_ENUM.SUCCESS_STRING,
-      data: res,
     };
   } else {
     ctx.status = STATUS_ENUM.ERROR;
