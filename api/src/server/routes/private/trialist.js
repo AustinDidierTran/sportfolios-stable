@@ -24,8 +24,32 @@ router.post(`${BASE_URL}/createEvaluation`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/createComment`, async ctx => {
+  const res = await queries.createComment(
+    ctx.request.body.content,
+    ctx.request.body.personId,
+    ctx.request.body.exerciseId,
+  );
+  if (res) {
+    ctx.status = STATUS_ENUM.SUCCESS;
+    ctx.body = {
+      status: STATUS_ENUM.SUCCESS_STRING,
+    };
+  } else {
+    ctx.status = STATUS_ENUM.ERROR;
+    ctx.body = {
+      status: STATUS_ENUM.ERROR_STRING,
+      message: ERROR_ENUM.ERROR_OCCURED,
+    };
+  }
+});
+
 router.get(`${BASE_URL}/comments`, async ctx => {
-  const res = await queries.getAllCommentSuggestions();
+  const res = await queries.getAllCommentSuggestions(
+    ctx.query.personId,
+    ctx.query.exerciseId,
+  );
+
   if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
