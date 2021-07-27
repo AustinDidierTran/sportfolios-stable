@@ -41,17 +41,11 @@ router.get(BASE_URL, async ctx => {
   }
 
   if (entity) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -61,9 +55,7 @@ router.get(`${BASE_URL}/realId`, async ctx => {
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: entity,
   };
 });
@@ -74,9 +66,7 @@ router.get(`${BASE_URL}/alias`, async ctx => {
   if (!alias) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: alias,
   };
 });
@@ -88,16 +78,13 @@ router.get(`${BASE_URL}/eventInfos`, async ctx => {
   if (!event) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: event,
   };
 });
 
 router.get(`${BASE_URL}/events`, async ctx => {
   const userId = getUserId(ctx);
-
   const entity = await OrganizationController.events(
     ctx.query.id,
     userId,
@@ -106,17 +93,13 @@ router.get(`${BASE_URL}/events`, async ctx => {
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: entity,
   };
 });
 
 router.get(`${BASE_URL}/membershipsTab`, async ctx => {
   const userId = getUserId(ctx);
-
   const entity = await OrganizationController.memberships(
     ctx.query.id,
     userId,
@@ -125,10 +108,7 @@ router.get(`${BASE_URL}/membershipsTab`, async ctx => {
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: entity,
   };
 });
@@ -156,10 +136,7 @@ router.get(`${BASE_URL}/home`, async ctx => {
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: entity,
   };
 });
@@ -187,32 +164,25 @@ router.get(`${BASE_URL}/about`, async ctx => {
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: entity,
   };
 });
 
 router.get(`${BASE_URL}/teams`, async ctx => {
   const userId = getUserId(ctx);
-
   const teams = await EventController.teams(ctx.query.id, userId);
 
   if (!teams) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: teams,
   };
 });
 
 router.get(`${BASE_URL}/schedule`, async ctx => {
   const userId = getUserId(ctx);
-
   const schedule = await EventController.schedule(
     ctx.query.id,
     userId,
@@ -221,17 +191,13 @@ router.get(`${BASE_URL}/schedule`, async ctx => {
   if (!schedule) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: schedule,
   };
 });
 
 router.get(`${BASE_URL}/rankings`, async ctx => {
   const userId = getUserId(ctx);
-
   const rankings = await EventController.rankings(
     ctx.query.id,
     userId,
@@ -240,10 +206,7 @@ router.get(`${BASE_URL}/rankings`, async ctx => {
   if (!rankings) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: rankings,
   };
 });
@@ -254,10 +217,7 @@ router.get(`${BASE_URL}/teamExercises`, async ctx => {
   if (!exercise) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: exercise,
   };
 });
@@ -270,17 +230,13 @@ router.get(`${BASE_URL}/sessionExercises`, async ctx => {
   if (!exercise) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: exercise,
   };
 });
 
 router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
   const userId = getUserId(ctx);
-
   const teams = await queries.getAllTeamsRegisteredInfos(
     ctx.query.eventId,
     ctx.query.pills,
@@ -290,15 +246,12 @@ router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
   if (!teams) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: teams,
   };
 });
 router.get(`${BASE_URL}/allTeamsAcceptedInfos`, async ctx => {
   const userId = getUserId(ctx);
-
   const teams = await queries.getAllTeamsAcceptedInfos(
     ctx.query.eventId,
     userId,
@@ -307,16 +260,13 @@ router.get(`${BASE_URL}/allTeamsAcceptedInfos`, async ctx => {
   if (!teams) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: teams,
   };
 });
 
 router.get(`${BASE_URL}/allPeopleRegisteredInfos`, async ctx => {
   const userId = getUserId(ctx);
-
   const people = await queries.getAllPeopleRegisteredInfos(
     ctx.query.eventId,
     userId,
@@ -325,9 +275,7 @@ router.get(`${BASE_URL}/allPeopleRegisteredInfos`, async ctx => {
   if (!people) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: people,
   };
 });
@@ -338,9 +286,7 @@ router.get(`${BASE_URL}/players`, async ctx => {
   if (!players) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: players,
   };
 });
@@ -351,16 +297,13 @@ router.get(`${BASE_URL}/rosterPlayers`, async ctx => {
   if (!players) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: players,
   };
 });
 
 router.get(`${BASE_URL}/myTeamPlayers`, async ctx => {
   const userId = getUserId(ctx);
-
   const myTeamPlayers = await queries.getMyTeamPlayers(
     ctx.query.teamId,
     userId,
@@ -369,10 +312,7 @@ router.get(`${BASE_URL}/myTeamPlayers`, async ctx => {
   if (!myTeamPlayers) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: myTeamPlayers,
   };
 });
@@ -383,10 +323,7 @@ router.get(`${BASE_URL}/preranking`, async ctx => {
   if (!ranking) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: ranking,
   };
 });
@@ -397,9 +334,7 @@ router.get(`${BASE_URL}/remainingSpots`, async ctx => {
   if (remaining < 0) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: remaining,
   };
 });
@@ -413,10 +348,7 @@ router.get(`${BASE_URL}/getRoster`, async ctx => {
   if (!roster) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: roster,
   };
 });
@@ -427,10 +359,7 @@ router.get(`${BASE_URL}/options`, async ctx => {
   if (!option) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: option,
   };
 });
@@ -441,10 +370,7 @@ router.get(`${BASE_URL}/phases`, async ctx => {
   if (!phases) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: phases,
   };
 });
@@ -455,17 +381,13 @@ router.get(`${BASE_URL}/games`, async ctx => {
   if (!games) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: games,
   };
 });
 
 router.get(`${BASE_URL}/gameInfo`, async ctx => {
   const userId = getUserId(ctx);
-
   const gameInfo = await queries.getGameInfo(
     ctx.query.gameId,
     userId,
@@ -474,10 +396,7 @@ router.get(`${BASE_URL}/gameInfo`, async ctx => {
   if (!gameInfo) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: gameInfo,
   };
 });
@@ -490,17 +409,13 @@ router.get(`${BASE_URL}/teamLocations`, async ctx => {
   if (!locations) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: locations,
   };
 });
 
 router.get(`${BASE_URL}/practiceBasicInfo`, async ctx => {
   const userId = getUserId(ctx);
-
   const practicesBasicInfo = await queries.getPracticeBasicInfo(
     ctx.query.teamId,
     userId,
@@ -509,10 +424,7 @@ router.get(`${BASE_URL}/practiceBasicInfo`, async ctx => {
   if (!practicesBasicInfo) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: practicesBasicInfo,
   };
 });
@@ -528,10 +440,7 @@ router.get(`${BASE_URL}/practiceInfo`, async ctx => {
   if (!practiceInfo) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: practiceInfo,
   };
 });
@@ -542,10 +451,7 @@ router.get(`${BASE_URL}/teamGames`, async ctx => {
   if (!games) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: games,
   };
 });
@@ -559,10 +465,7 @@ router.get(`${BASE_URL}/phasesGameAndTeams`, async ctx => {
   if (!games) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: games,
   };
 });
@@ -573,10 +476,7 @@ router.get(`${BASE_URL}/gameOptions`, async ctx => {
   if (!gameOptions) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: gameOptions,
   };
 });
@@ -587,36 +487,29 @@ router.get(`${BASE_URL}/fields`, async ctx => {
   if (!field) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: field,
   };
 });
 
 router.get(`${BASE_URL}/rosters`, async ctx => {
   const rosters = await queries.getTeamRosters(ctx.query.teamId);
+
   if (!rosters) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: rosters,
   };
 });
 
 router.get(`${BASE_URL}/rostersNames`, async ctx => {
   const names = await queries.getRostersNames(ctx.query.id);
+
   if (!names) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: names,
   };
 });
@@ -627,10 +520,7 @@ router.get(`${BASE_URL}/hasSpirit`, async ctx => {
   if (!getHasSpirit) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: getHasSpirit,
   };
 });

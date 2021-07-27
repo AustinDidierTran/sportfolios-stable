@@ -27,107 +27,6 @@ const {
 const router = new Router();
 const BASE_URL = '/api/entity';
 
-router.get(`${BASE_URL}/editRankings`, async ctx => {
-  const entity = await EventController.editRankings(
-    ctx.query.id,
-    ctx.body.userInfo.id,
-  );
-
-  if (!entity) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-
-  ctx.body = {
-    status: 'success',
-    data: entity,
-  };
-});
-
-router.get(`${BASE_URL}/editRosters`, async ctx => {
-  const entity = await EventController.editRosters(
-    ctx.query.id,
-    ctx.body.userInfo.id,
-  );
-
-  if (!entity) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-
-  ctx.body = {
-    status: 'success',
-    data: entity,
-  };
-});
-
-router.get(`${BASE_URL}/editSchedule`, async ctx => {
-  const entity = await EventController.editSchedule(
-    ctx.query.id,
-    ctx.body.userInfo.id,
-  );
-
-  if (!entity) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-
-  ctx.body = {
-    status: 'success',
-    data: entity,
-  };
-});
-
-router.get(`${BASE_URL}/league`, async ctx => {
-  const entity = await OrganizationController.league(
-    ctx.query.id,
-    ctx.body.userInfo.id,
-  );
-
-  if (!entity) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-
-  ctx.body = {
-    status: 'success',
-    data: entity,
-  };
-});
-
-router.get(`${BASE_URL}/edit`, async ctx => {
-  if (!ctx.query.id) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-
-  const type = await queries.getEntitiesTypeById(ctx.query.id);
-  let entity;
-  switch (type) {
-    case GLOBAL_ENUM.ORGANIZATION:
-      entity = await OrganizationController.edit(
-        ctx.query.id,
-        ctx.body.userInfo.id,
-      );
-      break;
-    case GLOBAL_ENUM.EVENT:
-      entity = await EventController.edit(
-        ctx.query.id,
-        ctx.body.userInfo.id,
-      );
-      break;
-    default:
-      entity = await queries.getEntity(
-        ctx.query.id,
-        ctx.body.userInfo.id,
-      );
-  }
-
-  if (!entity) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-
-  ctx.body = {
-    status: 'success',
-    data: entity,
-  };
-});
-
 router.get(`${BASE_URL}/graphAmountGeneratedByEvent`, async ctx => {
   const arrayGraph = await queries.getGraphAmountGeneratedByEvent(
     ctx.query.eventPaymentId,
@@ -135,19 +34,12 @@ router.get(`${BASE_URL}/graphAmountGeneratedByEvent`, async ctx => {
     ctx.query.date,
   );
 
-  if (arrayGraph) {
-    ctx.body = {
-      status: 'success',
-      data: arrayGraph,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!arrayGraph) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  return;
+  ctx.body = {
+    data: arrayGraph,
+  };
 });
 
 router.get(`${BASE_URL}/graphUserCount`, async ctx => {
@@ -155,19 +47,13 @@ router.get(`${BASE_URL}/graphUserCount`, async ctx => {
     ctx.query.date,
     ctx.query.language,
   );
-  if (arrayGraph) {
-    ctx.body = {
-      status: 'success',
-      data: arrayGraph,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+
+  if (!arrayGraph) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  return;
+  ctx.body = {
+    data: arrayGraph,
+  };
 });
 
 router.get(`${BASE_URL}/graphMemberCount`, async ctx => {
@@ -175,36 +61,24 @@ router.get(`${BASE_URL}/graphMemberCount`, async ctx => {
     ctx.query.organizationId,
     ctx.query.date,
   );
-  if (arrayGraph) {
-    ctx.body = {
-      status: 'success',
-      data: arrayGraph,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+
+  if (!arrayGraph) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  return;
+  ctx.body = {
+    data: arrayGraph,
+  };
 });
 
 router.get(`${BASE_URL}/all`, async ctx => {
   const entity = await queries.getAllEntities(ctx.query);
 
-  if (entity) {
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = {
+    data: entity,
+  };
 });
 
 router.get(`${BASE_URL}/role`, async ctx => {
@@ -216,9 +90,7 @@ router.get(`${BASE_URL}/role`, async ctx => {
   if (!role) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-
   ctx.body = {
-    status: 'success',
     data: role,
   };
 });
@@ -226,18 +98,12 @@ router.get(`${BASE_URL}/role`, async ctx => {
 router.get(`${BASE_URL}/forYouPage`, async ctx => {
   const entity = await queries.getAllForYouPagePosts(ctx.query);
 
-  if (entity) {
-    ctx.body = {
-      status: 'success',
-      data: entity,
-    };
-  } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = {
+    data: entity,
+  };
 });
 
 router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
@@ -247,17 +113,11 @@ router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
   );
 
   if (res) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: res,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -269,23 +129,13 @@ router.get(`${BASE_URL}/getPossibleSubmissionerInfos`, async ctx => {
   );
 
   if (res === ERROR_ENUM.ACCESS_DENIED) {
-    ctx.status = STATUS_ENUM.FORBIDDEN;
-    ctx.body = {
-      status: 'error',
-      message: 'player not in team',
-    };
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   } else if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -296,15 +146,10 @@ router.get(`${BASE_URL}/scoreSuggestion`, async ctx => {
 
   if (suggestion) {
     ctx.body = {
-      status: 'success',
       data: suggestion,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -315,15 +160,10 @@ router.get(`${BASE_URL}/ownedEvents`, async ctx => {
 
   if (entity) {
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -339,9 +179,7 @@ router.get(`${BASE_URL}/allOwned`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: entity,
   };
 });
@@ -352,17 +190,11 @@ router.get(`${BASE_URL}/phaseRanking`, async ctx => {
   );
 
   if (phaseRankings) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: phaseRankings,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -371,15 +203,10 @@ router.get(`${BASE_URL}/roles`, async ctx => {
 
   if (entity) {
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -391,15 +218,10 @@ router.get(`${BASE_URL}/members`, async ctx => {
 
   if (entity) {
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -411,15 +233,10 @@ router.get(`${BASE_URL}/recentMember`, async ctx => {
 
   if (member) {
     ctx.body = {
-      status: 'success',
       data: member,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -432,15 +249,10 @@ router.get(`${BASE_URL}/playerSessionEvaluation`, async ctx => {
 
   if (evaluation) {
     ctx.body = {
-      status: 'success',
       data: evaluation,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -453,15 +265,10 @@ router.get(`${BASE_URL}/coachSessionEvaluation`, async ctx => {
 
   if (evaluation) {
     ctx.body = {
-      status: 'success',
       data: evaluation,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -473,15 +280,10 @@ router.get(`${BASE_URL}/isTeamCoach`, async ctx => {
 
   if (role || role === false) {
     ctx.body = {
-      status: 'success',
       data: role,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -490,15 +292,10 @@ router.get(`${BASE_URL}/images`, async ctx => {
 
   if (images) {
     ctx.body = {
-      status: 'success',
       data: images,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -506,17 +303,11 @@ router.get(`${BASE_URL}/reports`, async ctx => {
   const reports = await queries.getReports(ctx.query.id);
 
   if (reports) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: reports,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -524,17 +315,11 @@ router.get(`${BASE_URL}/generateReport`, async ctx => {
   const report = await queries.generateReport(ctx.query.reportId);
 
   if (report) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: report,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -543,17 +328,11 @@ router.get(`${BASE_URL}/hasMemberships`, async ctx => {
     ctx.query.organizationId,
   );
   if (entity || entity === false) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -564,15 +343,10 @@ router.get(`${BASE_URL}/organizationMembers`, async ctx => {
   );
   if (entity) {
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -583,15 +357,10 @@ router.get(`${BASE_URL}/organizationTokenPromoCode`, async ctx => {
   );
   if (entity) {
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -600,15 +369,10 @@ router.get(`${BASE_URL}/memberships`, async ctx => {
 
   if (entity) {
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 router.get(`${BASE_URL}/partners`, async ctx => {
@@ -616,15 +380,10 @@ router.get(`${BASE_URL}/partners`, async ctx => {
 
   if (partners) {
     ctx.body = {
-      status: 'success',
       data: partners,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -633,15 +392,10 @@ router.get(`${BASE_URL}/primaryPerson`, async ctx => {
 
   if (entity) {
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -653,15 +407,10 @@ router.get(`${BASE_URL}/registered`, async ctx => {
 
   if (entity) {
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -672,15 +421,10 @@ router.get(`${BASE_URL}/allTeamsAcceptedRegistered`, async ctx => {
 
   if (acceptedRegistration) {
     ctx.body = {
-      status: 'success',
       data: acceptedRegistration,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -691,15 +435,10 @@ router.get(`${BASE_URL}/allPlayersAcceptedRegistered`, async ctx => {
 
   if (acceptedRegistration) {
     ctx.body = {
-      status: 'success',
       data: acceptedRegistration,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -708,15 +447,10 @@ router.get(`${BASE_URL}/event`, async ctx => {
 
   if (event) {
     ctx.body = {
-      status: 'success',
       data: event,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -725,24 +459,17 @@ router.get(`${BASE_URL}/generalInfos`, async ctx => {
 
   if (infos) {
     ctx.body = {
-      status: 'success',
       data: infos,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.get(`${BASE_URL}/uniqueEmail`, async ctx => {
   const email = await queries.validateEmailIsUnique(ctx.query.email);
   if (email) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: email,
     };
   } else {
@@ -758,17 +485,11 @@ router.get(`${BASE_URL}/personInfos`, async ctx => {
   const infos = await queries.getPersonInfos(ctx.query.entityId);
 
   if (infos) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: infos,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -778,17 +499,11 @@ router.get(`${BASE_URL}/teamsPendingAndRefused`, async ctx => {
   );
 
   if (teams) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: teams,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -798,18 +513,11 @@ router.get(`${BASE_URL}/playersPendingAndRefused`, async ctx => {
   );
 
   if (players) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: players,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -819,17 +527,11 @@ router.get(`${BASE_URL}/teamPlayersPending`, async ctx => {
   );
 
   if (players) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: players,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -840,17 +542,11 @@ router.get(`${BASE_URL}/myTeamPlayersRequest`, async ctx => {
   );
 
   if (players) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: players,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -858,17 +554,11 @@ router.get(`${BASE_URL}/person`, async ctx => {
   const infos = await queries.getGeneralInfos(ctx.query.entityId);
 
   if (infos) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: infos,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -879,9 +569,7 @@ router.get(`${BASE_URL}/s3Signature`, async ctx => {
   );
 
   if (code === 200) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data,
     };
   } else {
@@ -899,16 +587,11 @@ router.get(`${BASE_URL}/interactiveTool`, async ctx => {
   );
 
   if (data) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -919,16 +602,11 @@ router.get(`${BASE_URL}/gameSubmissionInfos`, async ctx => {
     ctx.query.eventId,
   );
   if (data) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -938,16 +616,11 @@ router.get(`${BASE_URL}/prerankPhase`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (data) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -957,16 +630,11 @@ router.get(`${BASE_URL}/myRosters`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (data) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -976,9 +644,8 @@ router.get(`${BASE_URL}/rosterFromInviteToken`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (!roster) {
-    throw new Error(STATUS_ENUM.ERROR_STRING);
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: STATUS_ENUM.SUCCESS_STRING,
     data: roster,
@@ -991,9 +658,8 @@ router.get(`${BASE_URL}/rosterInviteToken`, async ctx => {
     ctx.query.rosterId,
   );
   if (!token) {
-    throw new Error(STATUS_ENUM.ERROR_STRING);
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: STATUS_ENUM.SUCCESS_STRING,
     data: token,
@@ -1006,9 +672,8 @@ router.get(`${BASE_URL}/newRosterInviteToken`, async ctx => {
     ctx.query.rosterId,
   );
   if (!token) {
-    throw new Error(STATUS_ENUM.ERROR_STRING);
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: STATUS_ENUM.SUCCESS_STRING,
     data: token,
@@ -1021,17 +686,11 @@ router.put(`${BASE_URL}`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1042,17 +701,11 @@ router.put(`${BASE_URL}/practice`, async ctx => {
   );
 
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1063,17 +716,11 @@ router.put(`${BASE_URL}/practiceRsvp`, async ctx => {
   );
 
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1087,9 +734,7 @@ router.put(`${BASE_URL}/updateGamesInteractiveTool`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: res,
   };
 });
@@ -1100,17 +745,11 @@ router.put(`${BASE_URL}/role`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1121,21 +760,11 @@ router.put(`${BASE_URL}/rosterRole`, async ctx => {
   );
 
   if (!res) {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   } else if (res === ERROR_ENUM.VALUE_IS_INVALID) {
-    ctx.status = STATUS_ENUM.FORBIDDEN;
-    ctx.body = {
-      status: 'error',
-      message: 'At least one team admin must be set',
-    };
+    throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
   } else {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: res,
     };
   }
@@ -1147,34 +776,22 @@ router.put(`${BASE_URL}/member`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.put(`${BASE_URL}/teamAcceptation`, async ctx => {
   const team = await queries.updateTeamAcceptation(ctx.request.body);
   if (team) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: team,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1183,17 +800,11 @@ router.put(`${BASE_URL}/playerAcceptation`, async ctx => {
     ctx.request.body,
   );
   if (team) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: team,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1202,51 +813,33 @@ router.put(`${BASE_URL}/teamPlayerAcceptation`, async ctx => {
     ctx.request.body,
   );
   if (player) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: player,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.put(`${BASE_URL}/alias`, async ctx => {
   const entity = await queries.updateAlias(ctx.request.body);
   if (entity) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.put(`${BASE_URL}/game`, async ctx => {
   const entity = await queries.updateGame(ctx.request.body);
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 router.put(`${BASE_URL}/updateSuggestionStatus`, async ctx => {
@@ -1255,17 +848,11 @@ router.put(`${BASE_URL}/updateSuggestionStatus`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (suggestion) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: suggestion,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1275,17 +862,11 @@ router.put(`${BASE_URL}/updateRegistration`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1295,17 +876,11 @@ router.put(`${BASE_URL}/updateEvent`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1315,17 +890,11 @@ router.put(`${BASE_URL}/updatePreRanking`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1336,17 +905,11 @@ router.put(`${BASE_URL}/updatePhase`, async ctx => {
   );
 
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1357,17 +920,11 @@ router.put(`${BASE_URL}/updatePhaseOrder`, async ctx => {
   );
 
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1378,17 +935,11 @@ router.put(`${BASE_URL}/updateTeamPhase`, async ctx => {
   );
 
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1398,9 +949,8 @@ router.put(`${BASE_URL}/teamPhase`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (!res) {
-    throw new Error(STATUS_ENUM.ERROR_STRING);
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: STATUS_ENUM.SUCCESS_STRING,
   };
@@ -1413,17 +963,11 @@ router.put(`${BASE_URL}/updateInitialPositionPhase`, async ctx => {
   );
 
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1434,17 +978,11 @@ router.put(`${BASE_URL}/finalPositionPhase`, async ctx => {
   );
 
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1455,17 +993,11 @@ router.put(`${BASE_URL}/originPhase`, async ctx => {
   );
 
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1475,17 +1007,11 @@ router.put(`${BASE_URL}/updateGeneralInfos`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1496,17 +1022,11 @@ router.put(`${BASE_URL}/hasSpirit`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (roster) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: roster,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1516,34 +1036,22 @@ router.put(`${BASE_URL}/updatePersonInfos`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (personInfos) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: personInfos,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.put(`${BASE_URL}/updateOption`, async ctx => {
   const option = await queries.updateOption(ctx.request.body);
   if (option) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: option,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1554,17 +1062,11 @@ router.put(
       ctx.request.body,
     );
     if (membership) {
-      ctx.status = STATUS_ENUM.SUCCESS;
       ctx.body = {
-        status: 'success',
         data: membership,
       };
     } else {
-      ctx.status = STATUS_ENUM.ERROR;
-      ctx.body = {
-        status: 'error',
-        message: 'That entity does not exist.',
-      };
+      throw new Error(ERROR_ENUM.ERROR_OCCURED);
     }
   },
 );
@@ -1574,119 +1076,77 @@ router.put(`${BASE_URL}/memberOptionalField`, async ctx => {
     ctx.request.body,
   );
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.put(`${BASE_URL}/partner`, async ctx => {
   const partner = await queries.updatePartner(ctx.request.body);
   if (partner) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: partner,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.put(`${BASE_URL}/player`, async ctx => {
   const player = await queries.updatePlayer(ctx.request.body);
   if (player) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: player,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.put(`${BASE_URL}/rosterPlayer`, async ctx => {
   const player = await queries.updateRosterPlayer(ctx.request.body);
   if (player) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: player,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.put(`${BASE_URL}/roster`, async ctx => {
   const roster = await queries.updateRoster(ctx.request.body);
   if (roster) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: roster,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.put(`${BASE_URL}/field`, async ctx => {
   const field = await queries.updateField(ctx.request.body);
   if (field) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: field,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.put(`${BASE_URL}/timeslot`, async ctx => {
   const timeslot = await queries.updateTimeslot(ctx.request.body);
   if (timeslot) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: timeslot,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1697,17 +1157,11 @@ router.post(BASE_URL, async ctx => {
   );
 
   if (entityId) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entityId,
     };
   } else {
-    ctx.status = 400;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1717,19 +1171,12 @@ router.post(`${BASE_URL}/partner`, async ctx => {
     ctx.body.userInfo.id,
   );
 
-  if (partner) {
-    ctx.status = 201;
-    ctx.body = {
-      status: 'success',
-      data: partner,
-    };
-  } else {
-    ctx.status = 400;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+  if (!partner) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = {
+    data: partner,
+  };
 });
 
 router.get(`${BASE_URL}/getTeamCoachedByUser`, async ctx => {
@@ -1737,31 +1184,19 @@ router.get(`${BASE_URL}/getTeamCoachedByUser`, async ctx => {
     ctx.query.personId,
   );
 
-  if (teams) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = { status: 'success', data: teams };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+  if (!teams) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: teams };
 });
 
 router.get(`${BASE_URL}/getAllTeamGames`, async ctx => {
   const games = await queries.getAllTeamGames(ctx.query.teamId);
 
   if (games) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = { status: 'success', data: games };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: games };
 });
 
 router.get(`${BASE_URL}/getAllTeamPractices`, async ctx => {
@@ -1770,30 +1205,18 @@ router.get(`${BASE_URL}/getAllTeamPractices`, async ctx => {
   );
 
   if (practices) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = { status: 'success', data: practices };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: practices };
 });
 
 router.get(`${BASE_URL}/getAllExercises`, async ctx => {
   const exercises = await queries.getAllExercises();
 
   if (exercises) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = { status: 'success', data: exercises };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: exercises };
 });
 
 router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
@@ -1810,9 +1233,7 @@ router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
       message: 'Something went wrong',
     };
   } else {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: res.data,
     };
   }
@@ -1832,9 +1253,7 @@ router.post(`${BASE_URL}/unregisterPeople`, async ctx => {
       message: 'Something went wrong',
     };
   } else {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: res.data,
     };
   }
@@ -1846,17 +1265,11 @@ router.post(`${BASE_URL}/role`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1866,51 +1279,33 @@ router.post(`${BASE_URL}/member`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.post(`${BASE_URL}/report`, async ctx => {
   const report = await queries.addReport(ctx.request.body);
   if (report) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: report,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.post(`${BASE_URL}/importMembers`, async ctx => {
   const members = await queries.importMembers(ctx.request.body);
   if (members) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: members,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1920,34 +1315,22 @@ router.post(`${BASE_URL}/memberDonation`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (donation) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: donation,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.post(`${BASE_URL}/memberManually`, async ctx => {
   const entity = await queries.addMemberManually(ctx.request.body);
   if (entity) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1957,17 +1340,11 @@ router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -1981,9 +1358,7 @@ router.post(`${BASE_URL}/exercise`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: exercise,
   };
 });
@@ -1998,9 +1373,7 @@ router.post(`${BASE_URL}/game`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: game,
   };
 });
@@ -2012,9 +1385,7 @@ router.post(`${BASE_URL}/practice`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: game,
   };
 });
@@ -2025,17 +1396,11 @@ router.post(`${BASE_URL}/gameScore`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (game) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: game,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -2045,17 +1410,11 @@ router.post(`${BASE_URL}/suggestScore`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (game) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: game,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -2065,17 +1424,11 @@ router.post(`${BASE_URL}/acceptScore`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -2085,17 +1438,11 @@ router.post(`${BASE_URL}/spirit`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -2105,17 +1452,11 @@ router.post(`${BASE_URL}/gameAttendances`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -2129,9 +1470,7 @@ router.post(`${BASE_URL}/field`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: field,
   };
 });
@@ -2146,9 +1485,7 @@ router.post(`${BASE_URL}/phase`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: phase,
   };
 });
@@ -2163,9 +1500,7 @@ router.post(`${BASE_URL}/timeSlots`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
-    status: 'success',
     data: slots,
   };
 });
@@ -2176,17 +1511,11 @@ router.post(`${BASE_URL}/option`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (option) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: option,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Could not add this option',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -2196,17 +1525,11 @@ router.post(`${BASE_URL}/membership`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: entity,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -2216,17 +1539,11 @@ router.post(`${BASE_URL}/players`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (players) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: players,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -2236,34 +1553,22 @@ router.post(`${BASE_URL}/joinTeam`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (player) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: player,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.post(`${BASE_URL}/roster`, async ctx => {
   const roster = await queries.addTeamRoster(ctx.request.body);
   if (roster) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: roster,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -2273,9 +1578,8 @@ router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (!player) {
-    throw new Error(STATUS_ENUM.ERROR_STRING);
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = 201;
   ctx.body = {
     status: STATUS_ENUM.SUCCESS_STRING,
     data: player,
@@ -2294,17 +1598,11 @@ router.post(`${BASE_URL}/register`, async ctx => {
       data: { status, reason },
     };
   } else if (status) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: { status, rosterId },
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 router.post(`${BASE_URL}/addTeamAsAdmin`, async ctx => {
@@ -2320,9 +1618,7 @@ router.post(`${BASE_URL}/addTeamAsAdmin`, async ctx => {
       data: { status, reason },
     };
   } else if (status) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: { status, rosterId },
     };
   } else {
@@ -2351,9 +1647,7 @@ router.post(`${BASE_URL}/registerIndividual`, async ctx => {
       data: { status, reason, persons },
     };
   } else {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: { status, persons },
     };
   }
@@ -2379,81 +1673,50 @@ router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
         'Team must have at least one coach, captain or assistant captain',
     };
   } else if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-    };
+    ctx.body = {};
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.del(BASE_URL, async ctx => {
   await queries.deleteEntity(ctx.query, ctx.body.userInfo.id);
-  ctx.status = 201;
-  ctx.body = {
-    status: 'success',
-  };
+  ctx.body = {};
 });
 
 router.del(`${BASE_URL}/membership`, async ctx => {
   await queries.deleteEntityMembership(ctx.query.membershipId);
-  ctx.status = 201;
-  ctx.body = {
-    status: 'success',
-  };
+  ctx.body = {};
 });
 
 router.del(`${BASE_URL}/partner`, async ctx => {
   await queries.deletePartner(ctx.query.partnerId);
-  ctx.status = 201;
-  ctx.body = {
-    status: 'success',
-  };
+  ctx.body = {};
 });
 
 router.del(`${BASE_URL}/player`, async ctx => {
   await queries.deletePlayer(ctx.query.id);
-  ctx.status = 201;
-  ctx.body = {
-    status: 'success',
-  };
+  ctx.body = {};
 });
 
 router.del(`${BASE_URL}/roster`, async ctx => {
   await queries.deleteRoster(ctx.query.id);
-  ctx.status = 201;
-  ctx.body = {
-    status: 'success',
-  };
+  ctx.body = {};
 });
 
 router.del(`${BASE_URL}/field`, async ctx => {
   await queries.deleteField(ctx.query.id);
-  ctx.status = 201;
-  ctx.body = {
-    status: 'success',
-  };
+  ctx.body = {};
 });
 
 router.del(`${BASE_URL}/timeslot`, async ctx => {
   await queries.deleteTimeslot(ctx.query.id);
-  ctx.status = 201;
-  ctx.body = {
-    status: 'success',
-  };
+  ctx.body = {};
 });
 
 router.del(`${BASE_URL}/rosterPlayer`, async ctx => {
   await queries.deleteRosterPlayer(ctx.query.id);
-  ctx.status = 201;
-  ctx.body = {
-    status: 'success',
-  };
+  ctx.body = {};
 });
 
 router.del(`${BASE_URL}/sessionExercise`, async ctx => {
@@ -2461,36 +1724,24 @@ router.del(`${BASE_URL}/sessionExercise`, async ctx => {
     ctx.query.sessionId,
     ctx.query.exerciseId,
   );
-  ctx.status = 201;
-  ctx.body = {
-    status: 'success',
-  };
+  ctx.body = {};
 });
 
 router.del(`${BASE_URL}/member`, async ctx => {
   await queries.deleteMembership(ctx.query);
 
-  ctx.status = 201;
-  ctx.body = {
-    status: 'success',
-  };
+  ctx.body = {};
 });
 
 router.del(`${BASE_URL}/report`, async ctx => {
   await queries.deleteReport(ctx.query);
 
-  ctx.status = STATUS_ENUM.SUCCESS;
-  ctx.body = {
-    status: 'success',
-  };
+  ctx.body = {};
 });
 
 router.del(`${BASE_URL}/option`, async ctx => {
   await queries.deleteOption(ctx.query.id);
-  ctx.status = STATUS_ENUM.SUCCESS;
-  ctx.body = {
-    status: 'success',
-  };
+  ctx.body = {};
 });
 
 router.del(`${BASE_URL}/game`, async ctx => {
@@ -2505,17 +1756,12 @@ router.del(`${BASE_URL}/game`, async ctx => {
       data: { reason },
     };
   } else if (game) {
-    (ctx.status = 201),
+    (ctx.status = STATUS_ENUM.SUCCESS),
       (ctx.body = {
-        status: 'success',
         data: { game },
       });
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -2525,17 +1771,12 @@ router.del(`${BASE_URL}/practice`, async ctx => {
     ctx.query,
   );
   if (practice) {
-    (ctx.status = 201),
+    (ctx.status = STATUS_ENUM.SUCCESS),
       (ctx.body = {
-        status: 'success',
         data: practice,
       });
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -2545,17 +1786,11 @@ router.del(`${BASE_URL}/phase`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (phase) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: phase,
     };
   } else {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -2565,9 +1800,8 @@ router.del(`${BASE_URL}/rosterInviteToken`, async ctx => {
     ctx.query.rosterId,
   );
   if (!res) {
-    throw new Error(STATUS_ENUM.ERROR_STRING);
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.status = STATUS_ENUM.SUCCESS;
   ctx.body = {
     status: STATUS_ENUM.SUCCESS_STRING,
   };
