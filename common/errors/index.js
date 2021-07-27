@@ -9,6 +9,7 @@ const ERROR_ENUM = {
     'Invalid transit number. The number should be in the format xxxxx-yyy or xxxxxyyy.',
   REGISTRATION_ERROR: 'There was an error with your registration',
   TOKEN_EXPIRED: 'Token has expired',
+  TOKEN_IS_INVALID: 'Token is invalid,',
   VALUE_IS_INVALID: 'value_is_invalid',
   VALUE_IS_REQUIRED: 'value_is_required',
   VALUE_IS_TOO_LONG: 'value_is_too_long',
@@ -31,6 +32,10 @@ const errors = {
   [ERROR_ENUM.TOKEN_EXPIRED]: {
     message: ERROR_ENUM.TOKEN_EXPIRED,
     code: 401,
+  },
+  [ERROR_ENUM.TOKEN_IS_INVALID]: {
+    message: ERROR_ENUM.TOKEN_IS_INVALID,
+    code: 403,
   },
   [ERROR_ENUM.INVALID_TRANSIT_NUMBER]: {
     message: ERROR_ENUM.INVALID_TRANSIT_NUMBER,

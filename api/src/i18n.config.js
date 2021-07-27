@@ -2,6 +2,7 @@ const i18n = require('i18n'),
   path = require('path');
 
 i18n.configure({
+  useSuspense: true,
   locales: ['en', 'fr'],
   defaultLocale: 'fr',
   directory: path.join(__dirname, '/server/locales'),
