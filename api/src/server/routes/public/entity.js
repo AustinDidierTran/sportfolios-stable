@@ -561,7 +561,7 @@ router.get(`${BASE_URL}/phasesGameAndTeams`, async ctx => {
   }
 
   ctx.status = STATUS_ENUM.SUCCESS;
-  ctx.body = {
+  ctx.body = { const res = await knex('game_rsvp')
     status: 'success',
     data: games,
   };

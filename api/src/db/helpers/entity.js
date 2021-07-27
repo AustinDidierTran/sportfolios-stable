@@ -1185,76 +1185,89 @@ async function getPaymentStatus(invoiceItemId) {
   return INVOICE_STATUS_ENUM.PAID;
 }
 
+// TODO: Refactor in one call
 async function generateSalesReport(report) {
-    const { date } = report.metadata;
-    const sales = await knex('store_items_paid')
-      .select('*')
-      .where({ seller_entity_id: report.entity_id });
-    const active = sales.filter(
-      s =>
-        moment(s.created_at)
-          .set('hour', 0)
-          .set('minute', 0)
-          .set('second', 0) <
+  const { date } = report.metadata;
+  const sales = await knex('store_items_paid')
+    .select(
+      'id',
+      'quantity',
+      'unit_amount',
+      'seller_entity_id',
+      'created_at',
+      'buyer_user_id',
+      'stripe_price_id',
+      'amount',
+      'metadata',
+      'invoice_item_id',
+      'receipt_id',
+      'transaction_fees',
+    )
+    .where({ seller_entity_id: report.entity_id });
+  const active = sales.filter(s =>
+    moment(s.created_at)
+      .set('hour', 0)
+      .set('minute', 0)
+      .set('second', 0)
+      .isBefore(
         moment(date)
           .set('hour', 0)
           .set('minute', 0)
           .set('second', 0)
-          .add(1, 'day'),
-    );
-    const res = await Promise.all(
-      active.map(async a => {
-        const person = await getPrimaryPerson(a.buyer_user_id);
-        const email = await getEmailUser(a.buyer_user_id);
-        const taxes = await getTaxRates(a.stripe_price_id);
-        const subtotal = a.amount;
-        const totalTax = taxes.reduce((prev, curr) => {
-          return prev + (curr.percentage / 100) * a.amount;
-        }, 0);
-        const total = subtotal + totalTax;
-        const plateformFees = a.transaction_fees;
-        const totalNet = total - plateformFees;
+          .add(1, 'day')
+      ),
+  );
+  const res = await Promise.all(
+    active.map(async a => {
+      const person = await getPrimaryPerson(a.buyer_user_id);
+      const email = await getEmailUser(a.buyer_user_id);
+      const taxes = await getTaxRates(a.stripe_price_id);
+      const subtotal = a.amount;
+      const totalTax = taxes.reduce((prev, curr) => {
+        return prev + (curr.percentage / 100) * a.amount;
+      }, 0);
+      const total = subtotal + totalTax;
+      const plateformFees = a.transaction_fees;
+      const totalNet = total - plateformFees;
 
-        if (a.metadata.type === GLOBAL_ENUM.EVENT) {
-          const event = await getEntity(a.metadata.id);
-          const option = await getEventPaymentOption(
-            a.stripe_price_id,
-          );
-          a.metadata.event = event;
-          a.metadata.option = option;
-        }
+      if (a.metadata.type === GLOBAL_ENUM.EVENT) {
+        const event = await getEntity(a.metadata.id);
+        const option = await getEventPaymentOption(a.stripe_price_id);
+        a.metadata.event = event;
+        a.metadata.option = option;
+      }
 
-        let status = INVOICE_STATUS_ENUM.FREE;
-        if (a.invoice_item_id) {
-          status = await getPaymentStatus(a.invoice_item_id);
-        }
+      let status = INVOICE_STATUS_ENUM.FREE;
+      if (a.invoice_item_id) {
+        status = await getPaymentStatus(a.invoice_item_id);
+      }
 
-        return {
-          id: a.id,
-          sellerEntityId: a.seller_entity_id,
-          quantity: a.quantity,
-          unitAmount: a.unit_amount,
-          amount: a.amount,
-          status: status,
-          stripePriceId: a.stripe_price_id,
-          buyerUserId: a.buyer_user_id,
-          invoiceItemId: a.invoice_item_id,
-          metadata: a.metadata,
-          createdAt: a.created_at,
-          receiptId: a.receipt_id,
-          transactionFees: a.transaction_fees,
-          name: person.name,
-          surname: person.surname,
-          email,
-          total,
-          subtotal,
-          totalTax,
-          plateformFees,
-          totalNet,
-        };
-      }),
-    );
-    return res;
+      return {
+        id: a.id,
+        sellerEntityId: a.seller_entity_id,
+        quantity: a.quantity,
+        unitAmount: a.unit_amount,
+        amount: a.amount,
+        status: status,
+        stripePriceId: a.stripe_price_id,
+        buyerUserId: a.buyer_user_id,
+        invoiceItemId: a.invoice_item_id,
+        metadata: a.metadata,
+        createdAt: a.created_at,
+        receiptId: a.receipt_id,
+        transactionFees: a.transaction_fees,
+        name: person.name,
+        surname: person.surname,
+        email,
+        total,
+        subtotal,
+        totalTax,
+        plateformFees,
+        totalNet,
+      };
+    }),
+  );
+  return res;
 }
 
 async function getOrganizationMembers(organizationId) {
@@ -2010,6 +2023,53 @@ async function getRoster(rosterId, withSub) {
   return props;
 }
 
+async function getRosterWithRsvp(rosterId, gameId) {
+  const roster = await knex('roster_players_infos')
+    .select(
+      'id',
+      'roster_id',
+      'person_id',
+      'role',
+      'is_sub',
+      'photo_url',
+      'payment_status',
+      'invoice_item_id',
+      )
+    .where({ roster_id: rosterId })
+    .orderByRaw(
+      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
+    );
+
+  //TODO: Make a call to know if has created an account or is child account
+  const status = TAG_TYPE_ENUM.REGISTERED;
+
+  const res = await Promise.all(
+    roster.map(async player => {
+      const [rsvp] = await knex('game_rsvp')
+        .select('status')
+        .where({
+          roster_id: rosterId,
+          game_id: gameId,
+          person_id: player.person_id,
+        });
+
+      return {
+        id: player.id,
+        name: player.name,
+        photoUrl: player.photo_url,
+        personId: player.person_id,
+        role: player.role,
+        isSub: player.is_sub,
+        status: status,
+        paymentStatus: player.payment_status,
+        invoiceItemId: player.invoice_item_id,
+        rsvp: rsvp.status,
+      };
+    }),
+  );
+  return res;
+}
+
 const getPrimaryPerson = async user_id => {
   const [{ primary_person: id }] = await knex('user_primary_person')
     .select('primary_person')
@@ -2713,7 +2773,10 @@ const getTeams = async gameId => {
           .select('photo_url')
           .where('entity_id', realTeamId);
 
-        const roster = await getRoster(team.roster_id);
+        const roster = await getRosterWithRsvp(
+          team.roster_id,
+          gameId,
+        );
         return {
           gameId: team.game_id,
           rosterId: team.roster_id,
@@ -3603,6 +3666,50 @@ async function updatePracticeRsvp(
     .update({ rsvp })
     .where({ roster_id: roster.roster_id, person_id })
     .returning('*');
+
+  return res;
+}
+
+async function updateGameRsvp(
+  id,
+  rsvp,
+  personId,
+  rosterId,
+  updateAll,
+  userId,
+) {
+  if (updateAll) {
+    const entities = await getAllOwnedEntities(
+      GLOBAL_ENUM.PERSON,
+      userId,
+      '',
+      true,
+    );
+    const res = await knex('game_rsvp')
+      .update({ status: rsvp })
+      .where({ roster_id: roster.roster_id, game_id: id })
+      .whereIn(
+        'game_rsvp.person_id',
+        entities.map(e => e.id),
+      )
+      .returning('person_id');
+
+    return res;
+  }
+
+  let primaryPersonId = personId;
+  if (!person_id) {
+    const person = await getPrimaryPerson(userId);
+    primaryPersonId = person.id;
+  }
+  const res = await knex('game_rsvp')
+    .update({ status: rsvp })
+    .where({
+      roster_id: rosterId,
+      person_id: primaryPersonId,
+      game_id: id,
+    })
+    .returning('person_id');
 
   return res;
 }
@@ -7880,6 +7987,7 @@ module.exports = {
   updateEvent,
   updateFinalPositionPhase,
   updateGame,
+  updateGameRsvp,
   updateGamesInteractiveTool,
   updateGeneralInfos,
   updateHasSpirit,
