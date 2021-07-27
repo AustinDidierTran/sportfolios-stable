@@ -11,16 +11,11 @@ router.delete(`${BASE_URL}/delete`, async ctx => {
     ctx.request.body.notificationId,
   );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: STATUS_ENUM.SUCCESS_STRING,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -29,32 +24,22 @@ router.put(`${BASE_URL}/click`, async ctx => {
     ctx.request.body.notificationId,
   );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: STATUS_ENUM.SUCCESS_STRING,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.put(`${BASE_URL}/see`, async ctx => {
   const res = await queries.seeNotifications(ctx.body.userInfo.id);
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: STATUS_ENUM.SUCCESS_STRING,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -63,17 +48,11 @@ router.get(`${BASE_URL}/unseenCount`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (count) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
       data: count,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -83,17 +62,11 @@ router.get(`${BASE_URL}/all`, async ctx => {
     ctx.query,
   );
   if (notifications) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
       data: notifications,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 router.get(`${BASE_URL}/settings/all`, async ctx => {
@@ -101,17 +74,11 @@ router.get(`${BASE_URL}/settings/all`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (settings) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
       data: settings,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -121,16 +88,11 @@ router.put(`${BASE_URL}/settings`, async ctx => {
     ctx.request.body,
   );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: STATUS_ENUM.SUCCESS_STRING,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 module.exports = router;
