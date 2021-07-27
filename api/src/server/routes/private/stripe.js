@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const { STATUS_ENUM } = require('../../../../../common/enums');
+const { ERROR_ENUM } = require('../../../../../common/errors');
 const queries = require('../../../db/queries/stripe');
 
 const router = new Router();
@@ -319,11 +320,7 @@ router.put(`${BASE_URL}/defaultCreditCard`, async ctx => {
       data: card,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -337,11 +334,7 @@ router.put(`${BASE_URL}/defaultBankAccount`, async ctx => {
       data: bankAccount,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 

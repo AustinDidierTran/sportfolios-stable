@@ -1,5 +1,4 @@
 const Router = require('koa-router');
-const { STATUS_ENUM } = require('../../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../../common/errors');
 const queries = require('../../../db/queries/users');
 const router = new Router();
@@ -12,7 +11,7 @@ router.post(`${BASE_URL}/addEmail`, async ctx => {
     ctx.request.body,
   );
 
-  if (code === STATUS_ENUM.SUCCESS) {
+  if (code === 200) {
     ctx.body = {
       status: 'success',
     };
@@ -30,7 +29,7 @@ router.post(`${BASE_URL}/changePassword`, async ctx => {
     ctx.request.body,
   );
 
-  if (code === STATUS_ENUM.SUCCESS) {
+  if (code === 200) {
     ctx.body = {
       status: 'success',
     };
@@ -46,6 +45,7 @@ router.get(`${BASE_URL}/userInfo`, async ctx => {
   const { basicUserInfo, status } = await queries.userInfo(
     ctx.body.userInfo.id,
   );
+
   if (status === 200) {
     ctx.body = {
       data: basicUserInfo,

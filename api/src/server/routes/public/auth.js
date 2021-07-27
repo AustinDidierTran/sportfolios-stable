@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const { STATUS_ENUM } = require('../../../../../common/enums');
+const { ERROR_ENUM } = require('../../../../../common/errors');
 const queries = require('../../../db/queries/auth');
 
 const router = new Router();
@@ -13,23 +14,15 @@ router.post(`${BASE_URL}/signup`, async ctx => {
       status: 'success',
     };
   } else {
-    ctx.status = res.code;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.post(`${BASE_URL}/login`, async ctx => {
-  const { status, token, userInfo } = await queries.login(
-    ctx.request.body,
-  );
+  const { token, userInfo } = await queries.login(ctx.request.body);
 
   if (!token) {
-    ctx.status = status;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   } else {
     ctx.status = 200;
     ctx.body = {
@@ -63,10 +56,7 @@ router.post(`${BASE_URL}/transferPersonSignup`, async ctx => {
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -82,10 +72,7 @@ router.post(`${BASE_URL}/confirmEmail`, async ctx => {
       data: { token, userInfo },
     };
   } else {
-    ctx.status = status;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -101,10 +88,7 @@ router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
       status: 'success',
     };
   } else {
-    ctx.status = code;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -124,10 +108,7 @@ router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
       message: 'Email is not found',
     };
   } else {
-    ctx.status = code;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -150,10 +131,7 @@ router.post(`${BASE_URL}/recoverPassword`, async ctx => {
       message: 'Token is invalid',
     };
   } else {
-    ctx.status = code;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 

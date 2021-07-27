@@ -271,8 +271,8 @@ const getOrganizationsFromQuery = async query => {
   return entities.map(mappingFunction);
 };
 
-const getPreviousSearchQueriesFromId = async user_id => {
-  const [{ search_queries = [] } = {}] = await knex
+const getPreviousSearchQueriesFromId = async userId => {
+  const [{ search_queries } = {}] = await knex
     .select(knex.raw('array_agg(search_query) AS search_queries'))
     .from(
       knex
@@ -283,13 +283,15 @@ const getPreviousSearchQueriesFromId = async user_id => {
         )
 
         .from('previous_search_queries')
-        .where({ user_id })
+        .where({ user_id: userId })
         .groupBy('search_query')
         .orderBy('created_at', 'desc')
         .limit(10)
         .as('subQuery'),
     );
-
+  if (!search_queries) {
+    return [];
+  }
   return search_queries;
 };
 
