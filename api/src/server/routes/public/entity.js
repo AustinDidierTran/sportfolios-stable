@@ -6,10 +6,7 @@ const {
 const {
   EventController,
 } = require('../../../../../controllers/event');
-const {
-  GLOBAL_ENUM,
-  STATUS_ENUM,
-} = require('../../../../../common/enums');
+const { GLOBAL_ENUM } = require('../../../../../common/enums');
 const router = new Router();
 const BASE_URL = '/api/entity';
 
@@ -80,134 +77,6 @@ router.get(`${BASE_URL}/eventInfos`, async ctx => {
   }
   ctx.body = {
     data: event,
-  };
-});
-
-router.get(`${BASE_URL}/events`, async ctx => {
-  const userId = getUserId(ctx);
-  const entity = await OrganizationController.events(
-    ctx.query.id,
-    userId,
-  );
-
-  if (!entity) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = {
-    data: entity,
-  };
-});
-
-router.get(`${BASE_URL}/membershipsTab`, async ctx => {
-  const userId = getUserId(ctx);
-  const entity = await OrganizationController.memberships(
-    ctx.query.id,
-    userId,
-  );
-
-  if (!entity) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = {
-    data: entity,
-  };
-});
-
-router.get(`${BASE_URL}/home`, async ctx => {
-  const type = await queries.getEntitiesTypeById(ctx.query.id);
-  let entity;
-
-  const userId = getUserId(ctx);
-
-  switch (type) {
-    case GLOBAL_ENUM.ORGANIZATION:
-      entity = await OrganizationController.home(
-        ctx.query.id,
-        userId,
-      );
-      break;
-    case GLOBAL_ENUM.EVENT:
-      entity = await EventController.home(ctx.query.id, userId);
-      break;
-    default:
-      entity = await queries.getEntity(ctx.query.id, userId);
-  }
-
-  if (!entity) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = {
-    data: entity,
-  };
-});
-
-router.get(`${BASE_URL}/about`, async ctx => {
-  const type = await queries.getEntitiesTypeById(ctx.query.id);
-  let entity;
-
-  const userId = getUserId(ctx);
-
-  switch (type) {
-    case GLOBAL_ENUM.ORGANIZATION:
-      entity = await OrganizationController.about(
-        ctx.query.id,
-        userId,
-      );
-      break;
-    case GLOBAL_ENUM.EVENT:
-      entity = await EventController.about(ctx.query.id, userId);
-      break;
-    default:
-      entity = await queries.getEntity(ctx.query.id, userId);
-  }
-
-  if (!entity) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = {
-    data: entity,
-  };
-});
-
-router.get(`${BASE_URL}/teams`, async ctx => {
-  const userId = getUserId(ctx);
-  const teams = await EventController.teams(ctx.query.id, userId);
-
-  if (!teams) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = {
-    data: teams,
-  };
-});
-
-router.get(`${BASE_URL}/schedule`, async ctx => {
-  const userId = getUserId(ctx);
-  const schedule = await EventController.schedule(
-    ctx.query.id,
-    userId,
-  );
-
-  if (!schedule) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = {
-    data: schedule,
-  };
-});
-
-router.get(`${BASE_URL}/rankings`, async ctx => {
-  const userId = getUserId(ctx);
-  const rankings = await EventController.rankings(
-    ctx.query.id,
-    userId,
-  );
-
-  if (!rankings) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = {
-    data: rankings,
   };
 });
 
