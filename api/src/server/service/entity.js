@@ -53,6 +53,7 @@ const {
   deletePlayer: deletePlayerHelper,
   deletePlayerFromRoster: deletePlayerFromRosterHelper,
   deletePractice: deletePracticeHelper,
+  updateGameRsvp: updateGameRsvpHelper,
   deleteReport: deleteReportHelper,
   deleteRoster: deleteRosterHelper,
   deleteField: deleteFieldHelper,
@@ -2106,6 +2107,23 @@ async function deletePractice(userId, query) {
   return deletePracticeHelper(practiceId);
 }
 
+async function updateGameRsvp(body, userId) {
+  const { id, rsvp, personId, rosterId, updateAll } = body;
+
+  if (!(await isAllowed(id, userId), ENTITIES_ROLE_ENUM.EDITOR)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return updateGameRsvpHelper(
+    id,
+    rsvp,
+    personId,
+    rosterId,
+    updateAll,
+    userId,
+  );
+}
+
 async function addExercise(query) {
   const {
     exerciseId,
@@ -2271,6 +2289,7 @@ module.exports = {
   deleteSessionExercise,
   deletePlayerFromRoster,
   deletePractice,
+  updateGameRsvp,
   deleteReport,
   eventInfos,
   eventInfos,

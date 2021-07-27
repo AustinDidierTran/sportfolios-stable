@@ -23,7 +23,6 @@ const { addProduct, addPrice } = require('./stripe/shop');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const moment = require('moment');
 const validator = require('validator');
-
 const _ = require('lodash');
 const { getTaxRates } = require('./shop');
 
@@ -5792,6 +5791,50 @@ async function addTeamToEvent(body) {
   return res;
 }
 
+async function updateGameRsvp(
+  id,
+  rsvp,
+  personId,
+  rosterId,
+  updateAll,
+  userId,
+) {
+  if (updateAll) {
+    const entities = await getAllOwnedEntities(
+      GLOBAL_ENUM.PERSON,
+      userId,
+      '',
+      true,
+    );
+    const res = await knex('game_rsvp')
+      .update({ status: rsvp })
+      .where({ roster_id: roster.roster_id, game_id: id })
+      .whereIn(
+        'game_rsvp.person_id',
+        entities.map(e => e.id),
+      )
+      .returning('person_id');
+
+    return res;
+  }
+
+  let primaryPersonId = personId;
+  if (!person_id) {
+    const person = await getPrimaryPerson(userId);
+    primaryPersonId = person.id;
+  }
+  const res = await knex('game_rsvp')
+    .update({ status: rsvp })
+    .where({
+      roster_id: rosterId,
+      person_id: primaryPersonId,
+      game_id: id,
+    })
+    .returning('person_id');
+
+  return res;
+}
+
 async function deleteTeamFromEvent(body) {
   const { eventId, rosterId } = body;
 
@@ -7553,6 +7596,7 @@ module.exports = {
   updateEvent,
   updateFinalPositionPhase,
   updateGame,
+  updateGameRsvp,
   updateGamesInteractiveTool,
   updateGeneralInfos,
   updateHasSpirit,
