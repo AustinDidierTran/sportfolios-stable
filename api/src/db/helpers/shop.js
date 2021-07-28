@@ -59,6 +59,7 @@ const getShopItems = async entityId => {
       'stripe_price.amount',
       'stripe_price.active',
       'store_items.photo_url',
+      'stripe_product.metadata',
     )
     .leftJoin(
       'stripe_price',
@@ -72,7 +73,11 @@ const getShopItems = async entityId => {
       '=',
       'stripe_price.stripe_product_id',
     )
-    .where('store_items.entity_id', entityId);
+    .whereRaw(
+      `stripe_product.metadata::jsonb @> '{"type": "shop_item"}'`,
+    )
+    .where('store_items.entity_id', entityId)
+    .orderBy('store_items.created_at', 'asc');
 
   return res.map(i => ({
     active: i.active,
@@ -83,6 +88,7 @@ const getShopItems = async entityId => {
     photoUrl: i.photo_url,
     stripePriceId: i.stripe_price_id,
     stripeProductId: i.stripe_product_id,
+    sizes: i.metadata.sizes,
   }));
 };
 
@@ -501,8 +507,20 @@ const getSales = async entityId => {
       '=',
       'store_items.stripe_price_id',
     )
+    .whereRaw(
+      `stripe_product.metadata::jsonb @> '{"type": "shop_item"}'`,
+    )
     .where('store_items_paid.seller_entity_id', entityId);
-  return sales;
+  return sales.map(s => ({
+    label: s.label,
+    description: s.description,
+    quantity: s.quantity,
+    amount: s.amount,
+    email: s.email,
+    metadata: s.metadata,
+    photoUrl: s.photo_url,
+    createdAt: s.created_at,
+  }));
 };
 
 const addMembershipCartItem = async (body, userId) => {
@@ -572,6 +590,7 @@ const addItemToPaidStoreItems = async query => {
       user_id: buyerUserId,
     })
     .returning('*');
+
   await knex('store_items_paid').insert({
     seller_entity_id: sellerEntityId,
     quantity,

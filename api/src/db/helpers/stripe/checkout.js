@@ -440,9 +440,7 @@ const checkout = async (body, userId) => {
               receiptUrl,
               metadata: { ...metadata, type: GLOBAL_ENUM.EVENT },
             });
-          } else if (
-            Number(metadata.type) === GLOBAL_ENUM.SHOP_ITEM
-          ) {
+          } else if (metadata.type === GLOBAL_ENUM.SHOP_ITEM) {
             await INVOICE_PAID_ENUM.STORE({
               sellerEntityId: metadata.seller_entity_id,
               quantity: invoiceItem.quantity,

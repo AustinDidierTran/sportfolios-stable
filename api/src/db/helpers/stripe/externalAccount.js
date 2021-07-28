@@ -52,18 +52,6 @@ const hasStripeBankAccount = async entityId => {
   return false;
 };
 
-const eventHasBankAccount = async eventId => {
-  const admins = await getCreators(eventId);
-  const res = await Promise.all(
-    admins.map(async a => {
-      if (await hasStripeBankAccount(a.id)) {
-        return true;
-      }
-      return false;
-    }),
-  );
-  return res.includes(true);
-};
 
 const getEventAccounts = async eventId => {
   const admins = await getCreators(eventId);
@@ -230,11 +218,9 @@ module.exports = {
   createAccountLink,
   createAccountLink2,
   createStripeConnectedAccount,
-  eventHasBankAccount,
   getEventAccounts,
   getOrCreateStripeConnectedAccountId,
   hasStripeAccount,
-  hasStripeBankAccount,
   hasStripeBankAccount,
   getTaxes,
 };
