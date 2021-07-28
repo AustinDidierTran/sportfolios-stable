@@ -8,7 +8,10 @@ const BASE_URL = '/api/auth';
 
 router.post(`${BASE_URL}/signup`, async ctx => {
   const res = await queries.signup(ctx.request.body);
-  if (res.code === 200) {
+  if (res.code === 403) {
+    ctx.status = 403;
+    ctx.body = { data: res };
+  } else if (res.code === 200) {
     ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -21,12 +24,7 @@ router.post(`${BASE_URL}/login`, async ctx => {
   if (!token) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   } else {
-    ctx.body = {
-      data: JSON.stringify({
-        token,
-        userInfo,
-      }),
-    };
+    ctx.body = { data: JSON.stringify({ token, userInfo }) };
   }
 });
 
