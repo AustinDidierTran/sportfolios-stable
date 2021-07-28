@@ -115,6 +115,8 @@ STRIPE_PUBLIC_KEY=pk_test_qd1ulz9FxZA3aj2OcBfjqqro00G1K5WrTb
 STRIPE_SECRET_KEY=sk_test_tzvUgJHRWyWNg0s3ctjHFd6P00DoFwlm9f
 STRIPE_WEBHOOK_SECRET=1
 
+DISPLAY_ERROR=true
+
 YOUR_EMAIL=[insert email here]
 ```
 

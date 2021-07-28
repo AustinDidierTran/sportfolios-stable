@@ -16,17 +16,11 @@ router.post(`${BASE_URL}/create`, async ctx => {
   );
 
   if (post) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: post,
     };
   } else {
-    ctx.status = 400;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -36,11 +30,9 @@ router.put(`${BASE_URL}`, async ctx => {
     ctx.request.body.postContent,
   );
 
-  ctx.status = 201;
   ctx.body = {
     status: 'success',
   };
-
 });
 
 router.post(`${BASE_URL}/image`, async ctx => {
@@ -50,17 +42,11 @@ router.post(`${BASE_URL}/image`, async ctx => {
   );
 
   if (result) {
-    ctx.status = 201;
     ctx.body = {
-      status: STATUS_ENUM.SUCCESS,
       data: result,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR,
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -71,17 +57,11 @@ router.post(`${BASE_URL}/like`, async ctx => {
   );
 
   if (result) {
-    ctx.status = 201;
     ctx.body = {
-      status: STATUS_ENUM.SUCCESS,
       data: result,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR,
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -90,18 +70,13 @@ router.post(`${BASE_URL}/unlike`, async ctx => {
     ctx.request.body.entityId,
     ctx.request.body.postId,
   );
-  ctx.status = 201;
   ctx.body = {
-    status: STATUS_ENUM.SUCCESS,
     data: result,
   };
 });
 
 router.del(`${BASE_URL}/deletePost`, async ctx => {
-  await PostsController.deletePost(
-    ctx.query.postId,
-  );
-  ctx.status = 201;
+  await PostsController.deletePost(ctx.query.postId);
   ctx.body = {
     status: STATUS_ENUM.SUCCESS,
   };
@@ -109,8 +84,6 @@ router.del(`${BASE_URL}/deletePost`, async ctx => {
 
 router.del(`${BASE_URL}/comment`, async ctx => {
   await PostsController.deleteComment(ctx.query.commentId);
-
-  ctx.status = 201;
   ctx.body = {
     status: STATUS_ENUM.SUCCESS,
   };
@@ -124,17 +97,11 @@ router.post(`${BASE_URL}/comment`, async ctx => {
   );
 
   if (commentId) {
-    ctx.status = 201;
     ctx.body = {
-      status: 'success',
       data: commentId,
     };
   } else {
-    ctx.status = 400;
-    ctx.body = {
-      status: 'error',
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -143,12 +110,9 @@ router.put(`${BASE_URL}/comment`, async ctx => {
     ctx.request.body.commentId,
     ctx.request.body.commentContent,
   );
-
-  ctx.status = 201;
   ctx.body = {
     status: 'success',
   };
-
 });
 
 module.exports = router;

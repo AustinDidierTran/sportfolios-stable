@@ -55,18 +55,6 @@ DECLARE poolRankingId5 UUID;
 DECLARE poolRankingId6 UUID;
 DECLARE poolRankingId7 UUID;
 DECLARE poolRankingId8 UUID;
-DECLARE gameEntityId1 UUID;
-DECLARE gameEntityId2 UUID;
-DECLARE gameEntityId3 UUID;
-DECLARE gameEntityId4 UUID;
-DECLARE gameEntityId5 UUID;
-DECLARE gameEntityId6 UUID;
-DECLARE gameEntityId7 UUID;
-DECLARE gameEntityId8 UUID;
-DECLARE gameEntityId9 UUID;
-DECLARE gameEntityId10 UUID;
-DECLARE gameEntityId11 UUID;
-DECLARE gameEntityId12 UUID;
 DECLARE gameId1 UUID;
 DECLARE gameId2 UUID;
 DECLARE gameId3 UUID;
@@ -226,33 +214,33 @@ BEGIN
     INSERT INTO phase_rankings (roster_id, origin_phase, origin_position, current_phase, initial_position, final_position) VALUES (teamId7, prerankPhaseId, 7, poolBPhaseId, 4, null) RETURNING ranking_id INTO poolRankingId7;
 
     --create games entities
-    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameEntityId1;
-    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameEntityId2;
-    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameEntityId3;
-    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameEntityId4;
-    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameEntityId5;
-    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameEntityId6;
-    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameEntityId7;
-    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameEntityId8;
-    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameEntityId9;
-    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameEntityId10;
-    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameEntityId11;
-    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameEntityId12;
+    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameId1;
+    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameId2;
+    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameId3;
+    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameId4;
+    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameId5;
+    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameId6;
+    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameId7;
+    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameId8;
+    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameId9;
+    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameId10;
+    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameId11;
+    INSERT INTO entities (type) VALUES (5) RETURNING id INTO gameId12;
 
     -- create games pool A
-    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, entity_id) VALUES (poolAPhaseId, null, eventId, slot1, field1, gameEntityId1) RETURNING id INTO gameId1;
-    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, entity_id) VALUES (poolAPhaseId, null, eventId, slot2, field2, gameEntityId2) RETURNING id INTO gameId2;
-    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, entity_id) VALUES (poolAPhaseId, null, eventId, slot3, field3, gameEntityId3) RETURNING id INTO gameId3;
-    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, entity_id) VALUES (poolAPhaseId, null, eventId, slot4, field4, gameEntityId4) RETURNING id INTO gameId4;
-    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, entity_id) VALUES (poolAPhaseId, null, eventId, slot5, field2, gameEntityId5) RETURNING id INTO gameId5;
-    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, entity_id) VALUES (poolAPhaseId, null, eventId, slot6, field3, gameEntityId6) RETURNING id INTO gameId6;
+    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, id) VALUES (poolAPhaseId, null, eventId, slot1, field1, gameId1);
+    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, id) VALUES (poolAPhaseId, null, eventId, slot2, field2, gameId2);
+    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, id) VALUES (poolAPhaseId, null, eventId, slot3, field3, gameId3);
+    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, id) VALUES (poolAPhaseId, null, eventId, slot4, field4, gameId4);
+    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, id) VALUES (poolAPhaseId, null, eventId, slot5, field2, gameId5);
+    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, id) VALUES (poolAPhaseId, null, eventId, slot6, field3, gameId6);
 
-    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, entity_id) VALUES (poolBPhaseId, null, eventId, slot7, field1, gameEntityId7) RETURNING id INTO gameId7;
-    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, entity_id) VALUES (poolBPhaseId, null, eventId, slot8, field2, gameEntityId8) RETURNING id INTO gameId8;
-    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, entity_id) VALUES (poolBPhaseId, null, eventId, slot9, field3, gameEntityId9) RETURNING id INTO gameId9;
-    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, entity_id) VALUES (poolBPhaseId, null, eventId, slot10, field4, gameEntityId10) RETURNING id INTO gameId10;
-    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, entity_id) VALUES (poolBPhaseId, null, eventId, slot11, field2, gameEntityId11) RETURNING id INTO gameId11;
-    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, entity_id) VALUES (poolBPhaseId, null, eventId, slot12, field3, gameEntityId12) RETURNING id INTO gameId12;
+    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, id) VALUES (poolBPhaseId, null, eventId, slot7, field1, gameId7);
+    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, id) VALUES (poolBPhaseId, null, eventId, slot8, field2, gameId8);
+    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, id) VALUES (poolBPhaseId, null, eventId, slot9, field3, gameId9);
+    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, id) VALUES (poolBPhaseId, null, eventId, slot10, field4, gameId10);
+    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, id) VALUES (poolBPhaseId, null, eventId, slot11, field2, gameId11);
+    INSERT INTO games (phase_id, location_id, event_id, timeslot_id, field_id, id) VALUES (poolBPhaseId, null, eventId, slot12, field3, gameId12);
 
     -- game teams pool A
     INSERT INTO game_teams (game_id, roster_id, score, position, name, spirit, ranking_id) VALUES (gameId1, teamId1, 0, null, 'Team Alpha', null, poolRankingId1);

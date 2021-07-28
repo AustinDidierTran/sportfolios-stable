@@ -11,7 +11,6 @@ router.get(`${BASE_URL}/accountLink`, async ctx => {
     ctx.query.entityId,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -19,7 +18,6 @@ router.get(`${BASE_URL}/accountLink`, async ctx => {
 router.get(`${BASE_URL}/bankAccounts`, async ctx => {
   const data = await queries.getBankAccounts(ctx.query.entityId);
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -27,7 +25,6 @@ router.get(`${BASE_URL}/bankAccounts`, async ctx => {
 router.get(`${BASE_URL}/hasStripeAccount`, async ctx => {
   const data = await queries.hasStripeAccount(ctx.query.entityId);
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -35,15 +32,22 @@ router.get(`${BASE_URL}/hasStripeAccount`, async ctx => {
 router.get(`${BASE_URL}/hasStripeBankAccount`, async ctx => {
   const data = await queries.hasStripeBankAccount(ctx.query.entityId);
   ctx.body = {
-    status: 'success',
     data,
   };
 });
 
+<<<<<<< HEAD
+=======
+router.get(`${BASE_URL}/eventHasBankAccount`, async ctx => {
+  const data = await queries.eventHasBankAccount(ctx.query.id);
+  ctx.body = {
+    data,
+  };
+});
+>>>>>>> develop
 router.get(`${BASE_URL}/eventAccounts`, async ctx => {
   const data = await queries.getEventAccounts(ctx.query.eventId);
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -71,7 +75,6 @@ router.post(`${BASE_URL}/externalAccount`, async ctx => {
 router.get(`${BASE_URL}/getCustomer`, async ctx => {
   const data = await queries.getCustomer(ctx.body.userInfo.id);
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -82,7 +85,6 @@ router.post(`${BASE_URL}/createCustomer`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -93,7 +95,6 @@ router.post(`${BASE_URL}/createInvoiceItem`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -104,7 +105,6 @@ router.post(`${BASE_URL}/createInvoice`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -115,7 +115,6 @@ router.post(`${BASE_URL}/finalizeInvoice`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -126,7 +125,6 @@ router.post(`${BASE_URL}/payInvoice`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -135,7 +133,6 @@ router.get(`${BASE_URL}/paymentMethods`, async ctx => {
   const data = await queries.getPaymentMethods(ctx.body.userInfo.id);
 
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -147,7 +144,6 @@ router.post(`${BASE_URL}/paymentMethod`, async ctx => {
   );
 
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -158,7 +154,6 @@ router.post(`${BASE_URL}/attachPaymentMethod`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -169,7 +164,6 @@ router.post(`${BASE_URL}/detachPaymentMethod`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -180,7 +174,6 @@ router.post(`${BASE_URL}/createProduct`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -191,7 +184,6 @@ router.post(`${BASE_URL}/createPrice`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -202,7 +194,6 @@ router.post(`${BASE_URL}/createItem`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -230,7 +221,6 @@ router.put(`${BASE_URL}/editItem`, async ctx => {
 router.del(`${BASE_URL}/deleteItem`, async ctx => {
   const data = await queries.deleteItem(ctx.query);
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -242,7 +232,6 @@ router.get(`${BASE_URL}/getProductFromPriceId`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -253,14 +242,12 @@ router.get(`${BASE_URL}/getReceipt`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
 router.get(`${BASE_URL}/getTaxes`, async ctx => {
   const data = await queries.getTaxes();
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -286,7 +273,6 @@ router.post(`${BASE_URL}/checkout`, async ctx => {
     };
   } else {
     ctx.body = {
-      status: 'success',
       data,
     };
   }
@@ -298,7 +284,6 @@ router.post(`${BASE_URL}/sendReceiptEmail`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -309,7 +294,6 @@ router.post(`${BASE_URL}/sendRegistrationEmail`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -320,7 +304,6 @@ router.post(`${BASE_URL}/createRefund`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -333,7 +316,6 @@ router.put(`${BASE_URL}/defaultCreditCard`, async ctx => {
   if (card) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: card,
     };
   } else {
@@ -352,7 +334,6 @@ router.put(`${BASE_URL}/defaultBankAccount`, async ctx => {
   if (bankAccount) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
-      status: 'success',
       data: bankAccount,
     };
   } else {
@@ -370,7 +351,6 @@ router.del(`${BASE_URL}/creditCard`, async ctx => {
     ctx.body.userInfo.id,
   );
   ctx.body = {
-    status: 'success',
     data,
   };
 });
@@ -378,7 +358,6 @@ router.del(`${BASE_URL}/creditCard`, async ctx => {
 router.del(`${BASE_URL}/bankAccount`, async ctx => {
   const data = await queries.deleteBankAccount(ctx.query);
   ctx.body = {
-    status: 'success',
     data,
   };
 });

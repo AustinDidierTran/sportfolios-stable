@@ -55,6 +55,8 @@ const {
   deletePractice: deletePracticeHelper,
   deleteReport: deleteReportHelper,
   deleteRoster: deleteRosterHelper,
+  deleteField: deleteFieldHelper,
+  deleteTimeslot: deleteTimeslotHelper,
   deleteRosterPlayer: deleteRosterPlayerHelper,
   deleteSessionExercise: deleteSessionExerciseHelper,
   eventInfos: eventInfosHelper,
@@ -97,6 +99,7 @@ const {
   getGraphAmountGeneratedByEvent: getGraphAmountGeneratedByEventHelper,
   getGraphMemberCount: getGraphMemberCountHelper,
   getGraphUserCount: getGraphUserCountHelper,
+  getHasSpirit: getHasSpiritHelper,
   getLastRankedTeam: getLastRankedTeamHelper,
   getMembers: getMembersHelper,
   getMembership,
@@ -173,6 +176,7 @@ const {
   updateGame: updateGameHelper,
   updateGamesInteractiveTool: updateGamesInteractiveToolHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
+  updateHasSpirit: updateHasSpiritHelper,
   updateMember: updateMemberHelper,
   updateMemberOptionalField: updateMemberOptionalFieldHelper,
   updateMembershipTermsAndConditions: updateMembershipTermsAndConditionsHelper,
@@ -189,6 +193,8 @@ const {
   updateRegistration: updateRegistrationHelper,
   updateRegistrationPerson: updateRegistrationPersonHelper,
   updateRoster: updateRosterHelper,
+  updateField: updateFieldHelper,
+  updateTimeslot: updateTimeslotHelper,
   updateRosterPlayer: updateRosterPlayerHelper,
   updateRosterRole: updateRosterRoleHelper,
   updateSuggestionStatus: updateSuggestionStatusHelper,
@@ -423,6 +429,10 @@ async function getRosterAllIncluded(rosterId, userId, withSub) {
   };
 }
 
+function getHasSpirit(eventId) {
+  return getHasSpiritHelper(eventId);
+}
+
 function getEvent(eventId) {
   return getEventHelper(eventId);
 }
@@ -466,8 +476,8 @@ function getMyRosterIds(eventId, userId) {
   return getRosterByEventAndUserHelper(eventId, userId);
 }
 
-function getGameSubmissionInfos(gameId, rosterId) {
-  return getGameSubmissionInfosHelper(gameId, rosterId);
+function getGameSubmissionInfos(gameId, rosterId, eventId) {
+  return getGameSubmissionInfosHelper(gameId, rosterId, eventId);
 }
 
 function getTeamGames(eventId) {
@@ -660,6 +670,15 @@ async function updateGeneralInfos(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return updateGeneralInfosHelper(entityId, otherBody);
+}
+
+async function updateHasSpirit(eventId, hasSpirit, userId) {
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return updateHasSpiritHelper(eventId, hasSpirit);
 }
 
 async function updatePersonInfos(body, userId) {
@@ -1329,6 +1348,14 @@ function updateRoster(body) {
   return updateRosterHelper(body);
 }
 
+function updateField(body) {
+  return updateFieldHelper(body);
+}
+
+function updateTimeslot(body) {
+  return updateTimeslotHelper(body);
+}
+
 async function updateGame(body) {
   const {
     gameId,
@@ -1935,6 +1962,14 @@ function deleteRoster(id) {
   return deleteRosterHelper(id);
 }
 
+function deleteField(id) {
+  return deleteFieldHelper(id);
+}
+
+function deleteTimeslot(id) {
+  return deleteTimeslotHelper(id);
+}
+
 function deleteRosterPlayer(id) {
   return deleteRosterPlayerHelper(id);
 }
@@ -2100,6 +2135,7 @@ async function deleteGame(userId, query) {
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
+
   return deleteGameHelper(gameId);
 }
 
@@ -2270,6 +2306,8 @@ module.exports = {
   deletePartner,
   deletePlayer,
   deleteRoster,
+  deleteField,
+  deleteTimeslot,
   deleteRosterPlayer,
   deleteSessionExercise,
   deletePlayerFromRoster,
@@ -2311,6 +2349,7 @@ module.exports = {
   getGraphMemberCount,
   getGraphUserCount,
   getInteractiveToolData,
+  getHasSpirit,
   getMembers,
   getMemberships,
   getMostRecentMember,
@@ -2340,10 +2379,7 @@ module.exports = {
   getRoster,
   getRosterAllIncluded,
   getRosterFromInviteToken,
-  getRosterFromInviteToken,
   getRosterInviteToken,
-  getRosterInviteToken,
-  getRostersNames,
   getRostersNames,
   getS3Signature,
   getScoreSuggestion,
@@ -2370,6 +2406,7 @@ module.exports = {
   updateGame,
   updateGamesInteractiveTool,
   updateGeneralInfos,
+  updateHasSpirit,
   updateMember,
   updateMemberOptionalField,
   updateMembershipTermsAndConditions,
@@ -2378,6 +2415,8 @@ module.exports = {
   updatePlayer,
   updateRosterPlayer,
   updateRoster,
+  updateField,
+  updateTimeslot,
   updatePersonInfos,
   updatePlayerAcceptation,
   updateTeamPlayerAcceptation,

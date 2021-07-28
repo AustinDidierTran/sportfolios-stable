@@ -45,8 +45,23 @@ async function createEvaluation(evaluation) {
   return res;
 }
 
-function getAllCommentSuggestions() {
-  return knex('comments');
+async function createComment(content, personId, exerciseId) {
+  const [res] = await knex('comments')
+    .insert({
+      person_id: personId,
+      content,
+      exercise_id: exerciseId,
+    })
+    .returning('*');
+
+  return res;
+}
+
+function getAllCommentSuggestions(personId, exerciseId) {
+  return knex('comments').where({
+    person_id: personId,
+    exercise_id: exerciseId,
+  });
 }
 
 async function getPlayerLastEvaluation(playerId) {
@@ -199,8 +214,19 @@ function updateExercise(exercise) {
     .returning('*');
 }
 
-function getSessionById(sessionId) {
-  return knex('sessions').where({ id: sessionId });
+function updateSession(session) {
+  return knex('sessions')
+    .update({
+      name: session.name,
+      start_date: session.startDate,
+    })
+    .where({ id: session.id })
+    .returning('*');
+}
+
+async function getSessionById(sessionId) {
+  const [res] = await knex('sessions').where({ id: sessionId });
+  return res;
 }
 
 function getSessionsByExerciseId(exerciseId) {
@@ -215,7 +241,7 @@ async function getExerciseById(exerciseId) {
 }
 
 async function addExerciseToSessions(exerciseId, sessionsId) {
-  const toDelete = await knex('session_exercises')
+  await knex('session_exercises')
     .del()
     .where({ exercise_id: exerciseId });
 
@@ -224,6 +250,23 @@ async function addExerciseToSessions(exerciseId, sessionsId) {
       return knex('session_exercises').insert({
         session_id: id,
         exercise_id: exerciseId,
+      });
+    }),
+  );
+
+  return res;
+}
+
+async function addExercisesToSession(sessionId, exercisesId) {
+  await knex('session_exercises')
+    .del()
+    .where({ session_id: sessionId });
+
+  const res = Promise.all(
+    exercisesId.map(id => {
+      return knex('session_exercises').insert({
+        session_id: sessionId,
+        exercise_id: id,
       });
     }),
   );
@@ -244,4 +287,7 @@ module.exports = {
   getExerciseById,
   addExerciseToSessions,
   getSessionsByExerciseId,
+  addExercisesToSession,
+  updateSession,
+  createComment,
 };

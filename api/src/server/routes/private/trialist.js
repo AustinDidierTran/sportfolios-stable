@@ -11,32 +11,41 @@ router.post(`${BASE_URL}/createEvaluation`, async ctx => {
     ctx.request.body.evaluation,
   );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: STATUS_ENUM.SUCCESS_STRING,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
-router.get(`${BASE_URL}/comments`, async ctx => {
-  const res = await queries.getAllCommentSuggestions();
+router.post(`${BASE_URL}/createComment`, async ctx => {
+  const res = await queries.createComment(
+    ctx.request.body.content,
+    ctx.request.body.personId,
+    ctx.request.body.exerciseId,
+  );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+});
+
+router.get(`${BASE_URL}/comments`, async ctx => {
+  const res = await queries.getAllCommentSuggestions(
+    ctx.query.personId,
+    ctx.query.exerciseId,
+  );
+
+  if (res) {
     ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
+      data: res,
     };
+  } else {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -45,16 +54,11 @@ router.get(`${BASE_URL}/getPlayerLastEvaluation`, async ctx => {
     ctx.query.playerId,
   );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -64,16 +68,11 @@ router.get(`${BASE_URL}/getPlayerSessionsEvaluations`, async ctx => {
     ctx.query.playerId,
   );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -84,16 +83,11 @@ router.get(`${BASE_URL}/getCoachEvaluations`, async ctx => {
     ctx.query.exerciseId,
   );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -103,16 +97,11 @@ router.get(`${BASE_URL}/getEvaluationComments`, async ctx => {
   );
 
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -120,16 +109,11 @@ router.get(`${BASE_URL}/getExerciseById`, async ctx => {
   const res = await queries.getExerciseById(ctx.query.exerciseId);
 
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -140,33 +124,35 @@ router.post(`${BASE_URL}/createTeamExercise`, async ctx => {
   );
 
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: STATUS_ENUM.SUCCESS_STRING,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.put(`${BASE_URL}/updateExercise`, async ctx => {
   const res = await queries.updateExercise(ctx.request.body.exercise);
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: STATUS_ENUM.SUCCESS_STRING,
       body: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+});
+
+router.put(`${BASE_URL}/updateSession`, async ctx => {
+  const res = await queries.updateSession(ctx.request.body.session);
+  if (res) {
     ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
+      status: STATUS_ENUM.SUCCESS_STRING,
+      body: res,
     };
+  } else {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -176,33 +162,38 @@ router.post(`${BASE_URL}/addExerciseToSessions`, async ctx => {
     ctx.request.body.sessionsId,
   );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: STATUS_ENUM.SUCCESS_STRING,
       body: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+});
+
+router.post(`${BASE_URL}/addExercisesToSession`, async ctx => {
+  const res = await queries.addExercisesToSession(
+    ctx.request.body.sessionId,
+    ctx.request.body.exercisesId,
+  );
+  if (res) {
     ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
+      status: STATUS_ENUM.SUCCESS_STRING,
+      body: res,
     };
+  } else {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.get(`${BASE_URL}/getSessionById`, async ctx => {
   const res = await queries.getSessionById(ctx.query.sessionId);
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -211,16 +202,11 @@ router.get(`${BASE_URL}/getSessionsByExerciseId`, async ctx => {
     ctx.query.exerciseId,
   );
   if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       data: res,
     };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR_STRING,
-      message: ERROR_ENUM.ERROR_OCCURED,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
