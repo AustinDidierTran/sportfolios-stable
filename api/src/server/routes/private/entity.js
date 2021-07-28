@@ -1196,18 +1196,20 @@ router.get(`${BASE_URL}/getAllTeamPractices`, async ctx => {
   );
 
   if (practices) {
+    ctx.body = { data: practices };
+  } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = { data: practices };
 });
 
 router.get(`${BASE_URL}/getAllExercises`, async ctx => {
   const exercises = await queries.getAllExercises();
 
   if (exercises) {
+    ctx.body = { data: exercises };
+  } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = { data: exercises };
 });
 
 router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
