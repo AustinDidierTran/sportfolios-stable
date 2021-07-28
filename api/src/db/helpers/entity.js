@@ -2017,6 +2017,9 @@ const getPrimaryPerson = async user_id => {
 };
 
 async function getRoleRoster(rosterId, userId) {
+  if (userId === -1) {
+    return ROSTER_ROLE_ENUM.VIEWER;
+  }
   const [{ role } = {}] = await knex('roster_players')
     .select('roster_players.role')
     .join(
