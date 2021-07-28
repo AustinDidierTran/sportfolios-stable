@@ -1,5 +1,4 @@
 const Router = require('koa-router');
-const { STATUS_ENUM } = require('../../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../../common/errors');
 const queries = require('../../../db/queries/trialist');
 
@@ -11,9 +10,7 @@ router.post(`${BASE_URL}/createEvaluation`, async ctx => {
     ctx.request.body.evaluation,
   );
   if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -26,9 +23,7 @@ router.post(`${BASE_URL}/createComment`, async ctx => {
     ctx.request.body.exerciseId,
   );
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -41,9 +36,7 @@ router.get(`${BASE_URL}/comments`, async ctx => {
   );
 
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -54,9 +47,7 @@ router.get(`${BASE_URL}/getPlayerLastEvaluation`, async ctx => {
     ctx.query.playerId,
   );
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -68,9 +59,7 @@ router.get(`${BASE_URL}/getPlayerSessionsEvaluations`, async ctx => {
     ctx.query.playerId,
   );
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -83,9 +72,7 @@ router.get(`${BASE_URL}/getCoachEvaluations`, async ctx => {
     ctx.query.exerciseId,
   );
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -97,9 +84,7 @@ router.get(`${BASE_URL}/getEvaluationComments`, async ctx => {
   );
 
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -109,9 +94,7 @@ router.get(`${BASE_URL}/getExerciseById`, async ctx => {
   const res = await queries.getExerciseById(ctx.query.exerciseId);
 
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -124,9 +107,7 @@ router.post(`${BASE_URL}/createTeamExercise`, async ctx => {
   );
 
   if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -135,10 +116,7 @@ router.post(`${BASE_URL}/createTeamExercise`, async ctx => {
 router.put(`${BASE_URL}/updateExercise`, async ctx => {
   const res = await queries.updateExercise(ctx.request.body.exercise);
   if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-      body: res,
-    };
+    ctx.body = { body: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -147,10 +125,7 @@ router.put(`${BASE_URL}/updateExercise`, async ctx => {
 router.put(`${BASE_URL}/updateSession`, async ctx => {
   const res = await queries.updateSession(ctx.request.body.session);
   if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-      body: res,
-    };
+    ctx.body = { body: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -162,10 +137,7 @@ router.post(`${BASE_URL}/addExerciseToSessions`, async ctx => {
     ctx.request.body.sessionsId,
   );
   if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-      body: res,
-    };
+    ctx.body = { body: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -177,10 +149,7 @@ router.post(`${BASE_URL}/addExercisesToSession`, async ctx => {
     ctx.request.body.exercisesId,
   );
   if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-      body: res,
-    };
+    ctx.body = { body: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -189,9 +158,7 @@ router.post(`${BASE_URL}/addExercisesToSession`, async ctx => {
 router.get(`${BASE_URL}/getSessionById`, async ctx => {
   const res = await queries.getSessionById(ctx.query.sessionId);
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -202,9 +169,7 @@ router.get(`${BASE_URL}/getSessionsByExerciseId`, async ctx => {
     ctx.query.exerciseId,
   );
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }

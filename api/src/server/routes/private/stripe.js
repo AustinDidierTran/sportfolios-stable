@@ -37,15 +37,12 @@ router.get(`${BASE_URL}/hasStripeBankAccount`, async ctx => {
   };
 });
 
-<<<<<<< HEAD
-=======
 router.get(`${BASE_URL}/eventHasBankAccount`, async ctx => {
   const data = await queries.eventHasBankAccount(ctx.query.id);
   ctx.body = {
     data,
   };
 });
->>>>>>> develop
 router.get(`${BASE_URL}/eventAccounts`, async ctx => {
   const data = await queries.getEventAccounts(ctx.query.eventId);
   ctx.body = {

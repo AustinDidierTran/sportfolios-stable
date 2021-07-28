@@ -28,9 +28,7 @@ router.get(`${BASE_URL}/graphAmountGeneratedByEvent`, async ctx => {
   if (!arrayGraph) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = {
-    data: arrayGraph,
-  };
+  ctx.body = { data: arrayGraph };
 });
 
 router.get(`${BASE_URL}/graphUserCount`, async ctx => {
@@ -42,9 +40,7 @@ router.get(`${BASE_URL}/graphUserCount`, async ctx => {
   if (!arrayGraph) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = {
-    data: arrayGraph,
-  };
+  ctx.body = { data: arrayGraph };
 });
 
 router.get(`${BASE_URL}/graphMemberCount`, async ctx => {
@@ -56,9 +52,7 @@ router.get(`${BASE_URL}/graphMemberCount`, async ctx => {
   if (!arrayGraph) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = {
-    data: arrayGraph,
-  };
+  ctx.body = { data: arrayGraph };
 });
 
 router.get(`${BASE_URL}/all`, async ctx => {
@@ -67,9 +61,7 @@ router.get(`${BASE_URL}/all`, async ctx => {
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = {
-    data: entity,
-  };
+  ctx.body = { data: entity };
 });
 
 router.get(`${BASE_URL}/role`, async ctx => {
@@ -81,9 +73,7 @@ router.get(`${BASE_URL}/role`, async ctx => {
   if (!role) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = {
-    data: role,
-  };
+  ctx.body = { data: role };
 });
 
 router.get(`${BASE_URL}/forYouPage`, async ctx => {
@@ -92,9 +82,7 @@ router.get(`${BASE_URL}/forYouPage`, async ctx => {
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = {
-    data: entity,
-  };
+  ctx.body = { data: entity };
 });
 
 router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
@@ -104,9 +92,7 @@ router.get(`${BASE_URL}/canUnregisterTeamsList`, async ctx => {
   );
 
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -122,9 +108,7 @@ router.get(`${BASE_URL}/getPossibleSubmissionerInfos`, async ctx => {
   if (res === ERROR_ENUM.ACCESS_DENIED) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   } else if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -136,9 +120,7 @@ router.get(`${BASE_URL}/scoreSuggestion`, async ctx => {
   );
 
   if (suggestion) {
-    ctx.body = {
-      data: suggestion,
-    };
+    ctx.body = { data: suggestion };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -150,9 +132,7 @@ router.get(`${BASE_URL}/ownedEvents`, async ctx => {
   );
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -170,9 +150,7 @@ router.get(`${BASE_URL}/allOwned`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.body = {
-    data: entity,
-  };
+  ctx.body = { data: entity };
 });
 
 router.get(`${BASE_URL}/phaseRanking`, async ctx => {
@@ -181,9 +159,7 @@ router.get(`${BASE_URL}/phaseRanking`, async ctx => {
   );
 
   if (phaseRankings) {
-    ctx.body = {
-      data: phaseRankings,
-    };
+    ctx.body = { data: phaseRankings };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -193,9 +169,7 @@ router.get(`${BASE_URL}/roles`, async ctx => {
   const entity = await queries.getAllRolesEntity(ctx.query.id);
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -208,9 +182,7 @@ router.get(`${BASE_URL}/members`, async ctx => {
   );
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -223,9 +195,7 @@ router.get(`${BASE_URL}/recentMember`, async ctx => {
   );
 
   if (member) {
-    ctx.body = {
-      data: member,
-    };
+    ctx.body = { data: member };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -239,9 +209,7 @@ router.get(`${BASE_URL}/playerSessionEvaluation`, async ctx => {
   );
 
   if (evaluation) {
-    ctx.body = {
-      data: evaluation,
-    };
+    ctx.body = { data: evaluation };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -255,9 +223,7 @@ router.get(`${BASE_URL}/coachSessionEvaluation`, async ctx => {
   );
 
   if (evaluation) {
-    ctx.body = {
-      data: evaluation,
-    };
+    ctx.body = { data: evaluation };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -270,9 +236,7 @@ router.get(`${BASE_URL}/isTeamCoach`, async ctx => {
   );
 
   if (role || role === false) {
-    ctx.body = {
-      data: role,
-    };
+    ctx.body = { data: role };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -282,9 +246,7 @@ router.get(`${BASE_URL}/images`, async ctx => {
   const images = await queries.getImages(ctx.query.type);
 
   if (images) {
-    ctx.body = {
-      data: images,
-    };
+    ctx.body = { data: images };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -294,9 +256,7 @@ router.get(`${BASE_URL}/reports`, async ctx => {
   const reports = await queries.getReports(ctx.query.id);
 
   if (reports) {
-    ctx.body = {
-      data: reports,
-    };
+    ctx.body = { data: reports };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -306,9 +266,7 @@ router.get(`${BASE_URL}/generateReport`, async ctx => {
   const report = await queries.generateReport(ctx.query.reportId);
 
   if (report) {
-    ctx.body = {
-      data: report,
-    };
+    ctx.body = { data: report };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -319,9 +277,7 @@ router.get(`${BASE_URL}/hasMemberships`, async ctx => {
     ctx.query.organizationId,
   );
   if (entity || entity === false) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -333,9 +289,7 @@ router.get(`${BASE_URL}/organizationMembers`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -347,9 +301,7 @@ router.get(`${BASE_URL}/organizationTokenPromoCode`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -359,9 +311,7 @@ router.get(`${BASE_URL}/memberships`, async ctx => {
   const entity = await queries.getMemberships(ctx.query.id);
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -370,9 +320,7 @@ router.get(`${BASE_URL}/partners`, async ctx => {
   const partners = await queries.getPartners(ctx.query.id);
 
   if (partners) {
-    ctx.body = {
-      data: partners,
-    };
+    ctx.body = { data: partners };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -382,9 +330,7 @@ router.get(`${BASE_URL}/primaryPerson`, async ctx => {
   const entity = await queries.getPrimaryPerson(ctx.body.userInfo.id);
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -397,9 +343,7 @@ router.get(`${BASE_URL}/registered`, async ctx => {
   );
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -411,9 +355,7 @@ router.get(`${BASE_URL}/allTeamsAcceptedRegistered`, async ctx => {
   );
 
   if (acceptedRegistration) {
-    ctx.body = {
-      data: acceptedRegistration,
-    };
+    ctx.body = { data: acceptedRegistration };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -425,9 +367,7 @@ router.get(`${BASE_URL}/allPlayersAcceptedRegistered`, async ctx => {
   );
 
   if (acceptedRegistration) {
-    ctx.body = {
-      data: acceptedRegistration,
-    };
+    ctx.body = { data: acceptedRegistration };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -437,9 +377,7 @@ router.get(`${BASE_URL}/event`, async ctx => {
   const event = await queries.getEvent(ctx.query.eventId);
 
   if (event) {
-    ctx.body = {
-      data: event,
-    };
+    ctx.body = { data: event };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -449,9 +387,7 @@ router.get(`${BASE_URL}/generalInfos`, async ctx => {
   const infos = await queries.getGeneralInfos(ctx.query.entityId);
 
   if (infos) {
-    ctx.body = {
-      data: infos,
-    };
+    ctx.body = { data: infos };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -460,9 +396,7 @@ router.get(`${BASE_URL}/generalInfos`, async ctx => {
 router.get(`${BASE_URL}/uniqueEmail`, async ctx => {
   const email = await queries.validateEmailIsUnique(ctx.query.email);
   if (email) {
-    ctx.body = {
-      data: email,
-    };
+    ctx.body = { data: email };
   } else {
     ctx.status = 404;
     ctx.body = {
@@ -476,9 +410,7 @@ router.get(`${BASE_URL}/personInfos`, async ctx => {
   const infos = await queries.getPersonInfos(ctx.query.entityId);
 
   if (infos) {
-    ctx.body = {
-      data: infos,
-    };
+    ctx.body = { data: infos };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -490,9 +422,7 @@ router.get(`${BASE_URL}/teamsPendingAndRefused`, async ctx => {
   );
 
   if (teams) {
-    ctx.body = {
-      data: teams,
-    };
+    ctx.body = { data: teams };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -504,9 +434,7 @@ router.get(`${BASE_URL}/playersPendingAndRefused`, async ctx => {
   );
 
   if (players) {
-    ctx.body = {
-      data: players,
-    };
+    ctx.body = { data: players };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -518,9 +446,7 @@ router.get(`${BASE_URL}/teamPlayersPending`, async ctx => {
   );
 
   if (players) {
-    ctx.body = {
-      data: players,
-    };
+    ctx.body = { data: players };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -533,9 +459,7 @@ router.get(`${BASE_URL}/myTeamPlayersRequest`, async ctx => {
   );
 
   if (players) {
-    ctx.body = {
-      data: players,
-    };
+    ctx.body = { data: players };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -545,9 +469,7 @@ router.get(`${BASE_URL}/person`, async ctx => {
   const infos = await queries.getGeneralInfos(ctx.query.entityId);
 
   if (infos) {
-    ctx.body = {
-      data: infos,
-    };
+    ctx.body = { data: infos };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -560,9 +482,7 @@ router.get(`${BASE_URL}/s3Signature`, async ctx => {
   );
 
   if (code === 200) {
-    ctx.body = {
-      data,
-    };
+    ctx.body = { data };
   } else {
     ctx.status = code;
     ctx.body = {
@@ -578,9 +498,7 @@ router.get(`${BASE_URL}/interactiveTool`, async ctx => {
   );
 
   if (data) {
-    ctx.body = {
-      data,
-    };
+    ctx.body = { data };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -593,9 +511,7 @@ router.get(`${BASE_URL}/gameSubmissionInfos`, async ctx => {
     ctx.query.eventId,
   );
   if (data) {
-    ctx.body = {
-      data,
-    };
+    ctx.body = { data };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -607,9 +523,7 @@ router.get(`${BASE_URL}/prerankPhase`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (data) {
-    ctx.body = {
-      data,
-    };
+    ctx.body = { data };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -621,9 +535,7 @@ router.get(`${BASE_URL}/myRosters`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (data) {
-    ctx.body = {
-      data,
-    };
+    ctx.body = { data };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -637,10 +549,7 @@ router.get(`${BASE_URL}/rosterFromInviteToken`, async ctx => {
   if (!roster) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = {
-    status: STATUS_ENUM.SUCCESS_STRING,
-    data: roster,
-  };
+  ctx.body = { data: roster };
 });
 
 router.get(`${BASE_URL}/rosterInviteToken`, async ctx => {
@@ -651,10 +560,7 @@ router.get(`${BASE_URL}/rosterInviteToken`, async ctx => {
   if (!token) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = {
-    status: STATUS_ENUM.SUCCESS_STRING,
-    data: token,
-  };
+  ctx.body = { data: token };
 });
 
 router.get(`${BASE_URL}/newRosterInviteToken`, async ctx => {
@@ -665,10 +571,7 @@ router.get(`${BASE_URL}/newRosterInviteToken`, async ctx => {
   if (!token) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = {
-    status: STATUS_ENUM.SUCCESS_STRING,
-    data: token,
-  };
+  ctx.body = { data: token };
 });
 
 router.put(`${BASE_URL}`, async ctx => {
@@ -677,9 +580,7 @@ router.put(`${BASE_URL}`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -692,9 +593,7 @@ router.put(`${BASE_URL}/practice`, async ctx => {
   );
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -707,9 +606,7 @@ router.put(`${BASE_URL}/practiceRsvp`, async ctx => {
   );
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -725,9 +622,7 @@ router.put(`${BASE_URL}/updateGamesInteractiveTool`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.body = {
-    data: res,
-  };
+  ctx.body = { data: res };
 });
 
 router.put(`${BASE_URL}/role`, async ctx => {
@@ -736,9 +631,7 @@ router.put(`${BASE_URL}/role`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -755,9 +648,7 @@ router.put(`${BASE_URL}/rosterRole`, async ctx => {
   } else if (res === ERROR_ENUM.VALUE_IS_INVALID) {
     throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
   } else {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   }
 });
 
@@ -767,9 +658,7 @@ router.put(`${BASE_URL}/member`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -778,9 +667,7 @@ router.put(`${BASE_URL}/member`, async ctx => {
 router.put(`${BASE_URL}/teamAcceptation`, async ctx => {
   const team = await queries.updateTeamAcceptation(ctx.request.body);
   if (team) {
-    ctx.body = {
-      data: team,
-    };
+    ctx.body = { data: team };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -791,9 +678,7 @@ router.put(`${BASE_URL}/playerAcceptation`, async ctx => {
     ctx.request.body,
   );
   if (team) {
-    ctx.body = {
-      data: team,
-    };
+    ctx.body = { data: team };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -804,9 +689,7 @@ router.put(`${BASE_URL}/teamPlayerAcceptation`, async ctx => {
     ctx.request.body,
   );
   if (player) {
-    ctx.body = {
-      data: player,
-    };
+    ctx.body = { data: player };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -815,9 +698,7 @@ router.put(`${BASE_URL}/teamPlayerAcceptation`, async ctx => {
 router.put(`${BASE_URL}/alias`, async ctx => {
   const entity = await queries.updateAlias(ctx.request.body);
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -826,9 +707,7 @@ router.put(`${BASE_URL}/alias`, async ctx => {
 router.put(`${BASE_URL}/game`, async ctx => {
   const entity = await queries.updateGame(ctx.request.body);
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -839,9 +718,7 @@ router.put(`${BASE_URL}/updateSuggestionStatus`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (suggestion) {
-    ctx.body = {
-      data: suggestion,
-    };
+    ctx.body = { data: suggestion };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -853,9 +730,7 @@ router.put(`${BASE_URL}/updateRegistration`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -867,9 +742,7 @@ router.put(`${BASE_URL}/updateEvent`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -881,9 +754,7 @@ router.put(`${BASE_URL}/updatePreRanking`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -896,9 +767,7 @@ router.put(`${BASE_URL}/updatePhase`, async ctx => {
   );
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -911,9 +780,7 @@ router.put(`${BASE_URL}/updatePhaseOrder`, async ctx => {
   );
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -926,9 +793,7 @@ router.put(`${BASE_URL}/updateTeamPhase`, async ctx => {
   );
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -942,9 +807,7 @@ router.put(`${BASE_URL}/teamPhase`, async ctx => {
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = {
-    status: STATUS_ENUM.SUCCESS_STRING,
-  };
+  ctx.body = { data: res };
 });
 
 router.put(`${BASE_URL}/updateInitialPositionPhase`, async ctx => {
@@ -954,9 +817,7 @@ router.put(`${BASE_URL}/updateInitialPositionPhase`, async ctx => {
   );
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -969,9 +830,7 @@ router.put(`${BASE_URL}/finalPositionPhase`, async ctx => {
   );
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -984,9 +843,7 @@ router.put(`${BASE_URL}/originPhase`, async ctx => {
   );
 
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -998,9 +855,7 @@ router.put(`${BASE_URL}/updateGeneralInfos`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1013,9 +868,7 @@ router.put(`${BASE_URL}/hasSpirit`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (roster) {
-    ctx.body = {
-      data: roster,
-    };
+    ctx.body = { data: roster };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1027,9 +880,7 @@ router.put(`${BASE_URL}/updatePersonInfos`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (personInfos) {
-    ctx.body = {
-      data: personInfos,
-    };
+    ctx.body = { data: personInfos };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1038,9 +889,7 @@ router.put(`${BASE_URL}/updatePersonInfos`, async ctx => {
 router.put(`${BASE_URL}/updateOption`, async ctx => {
   const option = await queries.updateOption(ctx.request.body);
   if (option) {
-    ctx.body = {
-      data: option,
-    };
+    ctx.body = { data: option };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1053,9 +902,7 @@ router.put(
       ctx.request.body,
     );
     if (membership) {
-      ctx.body = {
-        data: membership,
-      };
+      ctx.body = { data: membership };
     } else {
       throw new Error(ERROR_ENUM.ERROR_OCCURED);
     }
@@ -1067,9 +914,7 @@ router.put(`${BASE_URL}/memberOptionalField`, async ctx => {
     ctx.request.body,
   );
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1078,9 +923,7 @@ router.put(`${BASE_URL}/memberOptionalField`, async ctx => {
 router.put(`${BASE_URL}/partner`, async ctx => {
   const partner = await queries.updatePartner(ctx.request.body);
   if (partner) {
-    ctx.body = {
-      data: partner,
-    };
+    ctx.body = { data: partner };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1089,9 +932,7 @@ router.put(`${BASE_URL}/partner`, async ctx => {
 router.put(`${BASE_URL}/player`, async ctx => {
   const player = await queries.updatePlayer(ctx.request.body);
   if (player) {
-    ctx.body = {
-      data: player,
-    };
+    ctx.body = { data: player };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1100,9 +941,7 @@ router.put(`${BASE_URL}/player`, async ctx => {
 router.put(`${BASE_URL}/rosterPlayer`, async ctx => {
   const player = await queries.updateRosterPlayer(ctx.request.body);
   if (player) {
-    ctx.body = {
-      data: player,
-    };
+    ctx.body = { data: player };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1111,9 +950,7 @@ router.put(`${BASE_URL}/rosterPlayer`, async ctx => {
 router.put(`${BASE_URL}/roster`, async ctx => {
   const roster = await queries.updateRoster(ctx.request.body);
   if (roster) {
-    ctx.body = {
-      data: roster,
-    };
+    ctx.body = { data: roster };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1122,9 +959,7 @@ router.put(`${BASE_URL}/roster`, async ctx => {
 router.put(`${BASE_URL}/field`, async ctx => {
   const field = await queries.updateField(ctx.request.body);
   if (field) {
-    ctx.body = {
-      data: field,
-    };
+    ctx.body = { data: field };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1133,9 +968,7 @@ router.put(`${BASE_URL}/field`, async ctx => {
 router.put(`${BASE_URL}/timeslot`, async ctx => {
   const timeslot = await queries.updateTimeslot(ctx.request.body);
   if (timeslot) {
-    ctx.body = {
-      data: timeslot,
-    };
+    ctx.body = { data: timeslot };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1148,9 +981,7 @@ router.post(BASE_URL, async ctx => {
   );
 
   if (entityId) {
-    ctx.body = {
-      data: entityId,
-    };
+    ctx.body = { data: entityId };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1165,9 +996,7 @@ router.post(`${BASE_URL}/partner`, async ctx => {
   if (!partner) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = {
-    data: partner,
-  };
+  ctx.body = { data: partner };
 });
 
 router.get(`${BASE_URL}/getTeamCoachedByUser`, async ctx => {
@@ -1226,9 +1055,7 @@ router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
       message: 'Something went wrong',
     };
   } else {
-    ctx.body = {
-      data: res.data,
-    };
+    ctx.body = { data: res.data };
   }
 });
 
@@ -1246,9 +1073,7 @@ router.post(`${BASE_URL}/unregisterPeople`, async ctx => {
       message: 'Something went wrong',
     };
   } else {
-    ctx.body = {
-      data: res.data,
-    };
+    ctx.body = { data: res.data };
   }
 });
 
@@ -1258,9 +1083,7 @@ router.post(`${BASE_URL}/role`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1272,9 +1095,7 @@ router.post(`${BASE_URL}/member`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1294,9 +1115,7 @@ router.post(`${BASE_URL}/report`, async ctx => {
 router.post(`${BASE_URL}/importMembers`, async ctx => {
   const members = await queries.importMembers(ctx.request.body);
   if (members) {
-    ctx.body = {
-      data: members,
-    };
+    ctx.body = { data: members };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1308,9 +1127,7 @@ router.post(`${BASE_URL}/memberDonation`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (donation) {
-    ctx.body = {
-      data: donation,
-    };
+    ctx.body = { data: donation };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1319,9 +1136,7 @@ router.post(`${BASE_URL}/memberDonation`, async ctx => {
 router.post(`${BASE_URL}/memberManually`, async ctx => {
   const entity = await queries.addMemberManually(ctx.request.body);
   if (entity) {
-    ctx.body = {
-      data: entity,
-    };
+    ctx.body = { data: entity };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1333,9 +1148,7 @@ router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1351,9 +1164,7 @@ router.post(`${BASE_URL}/exercise`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.body = {
-    data: exercise,
-  };
+  ctx.body = { data: exercise };
 });
 
 router.post(`${BASE_URL}/game`, async ctx => {
@@ -1366,9 +1177,7 @@ router.post(`${BASE_URL}/game`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.body = {
-    data: game,
-  };
+  ctx.body = { data: game };
 });
 
 router.post(`${BASE_URL}/practice`, async ctx => {
@@ -1378,9 +1187,7 @@ router.post(`${BASE_URL}/practice`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.body = {
-    data: game,
-  };
+  ctx.body = { data: game };
 });
 
 router.post(`${BASE_URL}/gameScore`, async ctx => {
@@ -1389,9 +1196,7 @@ router.post(`${BASE_URL}/gameScore`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (game) {
-    ctx.body = {
-      data: game,
-    };
+    ctx.body = { data: game };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1403,9 +1208,7 @@ router.post(`${BASE_URL}/suggestScore`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (game) {
-    ctx.body = {
-      data: game,
-    };
+    ctx.body = { data: game };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1417,9 +1220,7 @@ router.post(`${BASE_URL}/acceptScore`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1431,9 +1232,7 @@ router.post(`${BASE_URL}/spirit`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1445,9 +1244,7 @@ router.post(`${BASE_URL}/gameAttendances`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (res) {
-    ctx.body = {
-      data: res,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1463,9 +1260,7 @@ router.post(`${BASE_URL}/field`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.body = {
-    data: field,
-  };
+  ctx.body = { data: field };
 });
 
 router.post(`${BASE_URL}/phase`, async ctx => {
@@ -1478,9 +1273,7 @@ router.post(`${BASE_URL}/phase`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.body = {
-    data: phase,
-  };
+  ctx.body = { data: phase };
 });
 
 router.post(`${BASE_URL}/timeSlots`, async ctx => {
@@ -1493,9 +1286,7 @@ router.post(`${BASE_URL}/timeSlots`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  ctx.body = {
-    data: slots,
-  };
+  ctx.body = { data: slots };
 });
 
 router.post(`${BASE_URL}/option`, async ctx => {
@@ -1574,7 +1365,6 @@ router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   ctx.body = {
-    status: STATUS_ENUM.SUCCESS_STRING,
     data: player,
   };
 });
@@ -1779,9 +1569,7 @@ router.del(`${BASE_URL}/phase`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (phase) {
-    ctx.body = {
-      data: phase,
-    };
+    ctx.body = { data: phase };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1795,9 +1583,7 @@ router.del(`${BASE_URL}/rosterInviteToken`, async ctx => {
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = {
-    status: STATUS_ENUM.SUCCESS_STRING,
-  };
+  ctx.body = { data: res };
 });
 
 module.exports = router;

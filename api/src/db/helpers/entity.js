@@ -1186,75 +1186,73 @@ async function getPaymentStatus(invoiceItemId) {
 }
 
 async function generateSalesReport(report) {
-    const { date } = report.metadata;
-    const sales = await knex('store_items_paid')
-      .select('*')
-      .where({ seller_entity_id: report.entity_id });
-    const active = sales.filter(
-      s =>
-        moment(s.created_at)
-          .set('hour', 0)
-          .set('minute', 0)
-          .set('second', 0) <
-        moment(date)
-          .set('hour', 0)
-          .set('minute', 0)
-          .set('second', 0)
-          .add(1, 'day'),
-    );
-    const res = await Promise.all(
-      active.map(async a => {
-        const person = await getPrimaryPerson(a.buyer_user_id);
-        const email = await getEmailUser(a.buyer_user_id);
-        const taxes = await getTaxRates(a.stripe_price_id);
-        const subtotal = a.amount;
-        const totalTax = taxes.reduce((prev, curr) => {
-          return prev + (curr.percentage / 100) * a.amount;
-        }, 0);
-        const total = subtotal + totalTax;
-        const plateformFees = a.transaction_fees;
-        const totalNet = total - plateformFees;
+  const { date } = report.metadata;
+  const sales = await knex('store_items_paid')
+    .select('*')
+    .where({ seller_entity_id: report.entity_id });
+  const active = sales.filter(
+    s =>
+      moment(s.created_at)
+        .set('hour', 0)
+        .set('minute', 0)
+        .set('second', 0) <
+      moment(date)
+        .set('hour', 0)
+        .set('minute', 0)
+        .set('second', 0)
+        .add(1, 'day'),
+  );
+  const res = await Promise.all(
+    active.map(async a => {
+      const person = await getPrimaryPerson(a.buyer_user_id);
+      const email = await getEmailUser(a.buyer_user_id);
+      const taxes = await getTaxRates(a.stripe_price_id);
+      const subtotal = a.amount;
+      const totalTax = taxes.reduce((prev, curr) => {
+        return prev + (curr.percentage / 100) * a.amount;
+      }, 0);
+      const total = subtotal + totalTax;
+      const plateformFees = a.transaction_fees;
+      const totalNet = total - plateformFees;
 
-        if (a.metadata.type === GLOBAL_ENUM.EVENT) {
-          const event = await getEntity(a.metadata.id);
-          const option = await getEventPaymentOption(
-            a.stripe_price_id,
-          );
-          a.metadata.event = event;
-          a.metadata.option = option;
-        }
+      if (a.metadata.type === GLOBAL_ENUM.EVENT) {
+        const event = await getEntity(a.metadata.id);
+        const option = await getEventPaymentOption(a.stripe_price_id);
+        a.metadata.event = event;
+        a.metadata.option = option;
+      }
 
-        let status = INVOICE_STATUS_ENUM.FREE;
-        if (a.invoice_item_id) {
-          status = await getPaymentStatus(a.invoice_item_id);
-        }
+      let status = INVOICE_STATUS_ENUM.FREE;
+      if (a.invoice_item_id) {
+        status = await getPaymentStatus(a.invoice_item_id);
+      }
 
-        return {
-          id: a.id,
-          sellerEntityId: a.seller_entity_id,
-          quantity: a.quantity,
-          unitAmount: a.unit_amount,
-          amount: a.amount,
-          status: status,
-          stripePriceId: a.stripe_price_id,
-          buyerUserId: a.buyer_user_id,
-          invoiceItemId: a.invoice_item_id,
-          metadata: a.metadata,
-          createdAt: a.created_at,
-          receiptId: a.receipt_id,
-          transactionFees: a.transaction_fees,
-          name: person.name,
-          surname: person.surname,
-          email,
-          total,
-          subtotal,
-          totalTax,
-          plateformFees,
-          totalNet,
-        };
-      }),
-    );
-    return res;
+      return {
+        id: a.id,
+        sellerEntityId: a.seller_entity_id,
+        quantity: a.quantity,
+        unitAmount: a.unit_amount,
+        amount: a.amount,
+        status: status,
+        stripePriceId: a.stripe_price_id,
+        buyerUserId: a.buyer_user_id,
+        invoiceItemId: a.invoice_item_id,
+        metadata: a.metadata,
+        createdAt: a.created_at,
+        receiptId: a.receipt_id,
+        transactionFees: a.transaction_fees,
+        name: person.name,
+        surname: person.surname,
+        email,
+        total,
+        subtotal,
+        totalTax,
+        plateformFees,
+        totalNet,
+      };
+    }),
+  );
+  return res;
 }
 
 async function getOrganizationMembers(organizationId) {

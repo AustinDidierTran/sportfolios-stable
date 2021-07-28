@@ -1,5 +1,4 @@
 const Router = require('koa-router');
-const { STATUS_ENUM } = require('../../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../../common/errors');
 const queries = require('../../../db/queries/notifications');
 
@@ -11,9 +10,7 @@ router.delete(`${BASE_URL}/delete`, async ctx => {
     ctx.request.body.notificationId,
   );
   if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -24,9 +21,7 @@ router.put(`${BASE_URL}/click`, async ctx => {
     ctx.request.body.notificationId,
   );
   if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -35,9 +30,7 @@ router.put(`${BASE_URL}/click`, async ctx => {
 router.put(`${BASE_URL}/see`, async ctx => {
   const res = await queries.seeNotifications(ctx.body.userInfo.id);
   if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -48,9 +41,7 @@ router.get(`${BASE_URL}/unseenCount`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (count) {
-    ctx.body = {
-      data: count,
-    };
+    ctx.body = { data: count };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -62,9 +53,7 @@ router.get(`${BASE_URL}/all`, async ctx => {
     ctx.query,
   );
   if (notifications) {
-    ctx.body = {
-      data: notifications,
-    };
+    ctx.body = { data: notifications };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -74,9 +63,7 @@ router.get(`${BASE_URL}/settings/all`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (settings) {
-    ctx.body = {
-      data: settings,
-    };
+    ctx.body = { data: settings };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -88,9 +75,7 @@ router.put(`${BASE_URL}/settings`, async ctx => {
     ctx.request.body,
   );
   if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-    };
+    ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
