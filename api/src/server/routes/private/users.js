@@ -1,4 +1,3 @@
-const { ElasticBeanstalk } = require('aws-sdk');
 const Router = require('koa-router');
 const { STATUS_ENUM } = require('../../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../../common/errors');
@@ -8,26 +7,21 @@ const BASE_URL = '/api/user';
 
 // Reset password
 router.post(`${BASE_URL}/changePassword`, async ctx => {
-  const code = await queries.changePassword(
+  const status = await queries.changePassword(
     ctx.body.userInfo.id,
     ctx.request.body,
   );
-  if (code === STATUS_ENUM.FORBIDDEN) {
-    throw new Error(ERROR_ENUM.TOKEN_IS_INVALID);
-  } else if (code != STATUS_ENUM.SUCCESS) {
+  if (!status) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: status };
 });
 
 // Basic User Info
 router.get(`${BASE_URL}/userInfo`, async ctx => {
-  const { basicUserInfo, status } = await queries.userInfo(
-    ctx.body.userInfo.id,
-  );
+  const basicUserInfo = await queries.userInfo(ctx.body.userInfo.id);
 
-  if (status === STATUS_ENUM.FORBIDDEN) {
-    throw new Error(ERROR_ENUM.TOKEN_IS_INVALID);
-  } else if (status != STATUS_ENUM.SUCCESS) {
+  if (!basicUserInfo) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   ctx.body = { data: basicUserInfo };
@@ -39,22 +33,17 @@ router.post(`${BASE_URL}/changeBasicUserInfo`, async ctx => {
     ctx.body.userInfo.id,
     ctx.request.body,
   );
-  if (status === STATUS_ENUM.FORBIDDEN) {
-    throw new Error(ERROR_ENUM.TOKEN_IS_INVALID);
-  } else {
+  if (!status) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: status };
 });
 
 // Email Info
 router.get(`${BASE_URL}/emails`, async ctx => {
-  const { status, emails } = await queries.getEmails(
-    ctx.body.userInfo.id,
-  );
+  const emails = await queries.getEmails(ctx.body.userInfo.id);
 
-  if (status === STATUS_ENUM.FORBIDDEN) {
-    throw new Error(ERROR_ENUM.TOKEN_IS_INVALID);
-  } else if (status != STATUS_ENUM.SUCCESS) {
+  if (!emails) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   ctx.body = { data: emails };
@@ -109,8 +98,7 @@ router.put(`${BASE_URL}/useToken`, async ctx => {
 });
 
 router.post(`${BASE_URL}/transferPerson`, async ctx => {
-  let person;
-  person = await queries.sendTransferPersonEmail(
+  const person = await queries.sendTransferPersonEmail(
     ctx.body.userInfo.id,
     ctx.request.body,
   );

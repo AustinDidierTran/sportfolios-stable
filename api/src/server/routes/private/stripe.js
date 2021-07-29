@@ -64,15 +64,9 @@ router.post(`${BASE_URL}/externalAccount`, async ctx => {
 
   if (error) {
     ctx.status = status;
-    ctx.body = {
-      status: 'error',
-      error: error.message,
-    };
+    ctx.body = { error: error.message };
   } else {
-    ctx.body = {
-      status,
-      data,
-    };
+    ctx.body = { status, data };
   }
 });
 
@@ -220,19 +214,10 @@ router.put(`${BASE_URL}/editItem`, async ctx => {
     ctx.request.body.itemParams,
     ctx.body.userInfo.id,
   );
-  if (data) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: data,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That entity does not exist.',
-    };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: data };
 });
 
 router.del(`${BASE_URL}/deleteItem`, async ctx => {
@@ -281,22 +266,13 @@ router.post(`${BASE_URL}/checkout`, async ctx => {
   if (data.reason) {
     ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
-      status: 'error',
       message: data.reason,
       data,
     };
   } else if (!data) {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      message: 'That record does not exist.',
-      data,
-    };
-  } else {
-    ctx.body = {
-      data,
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/sendReceiptEmail`, async ctx => {
@@ -337,28 +313,20 @@ router.put(`${BASE_URL}/defaultCreditCard`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  if (card) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      data: card,
-    };
-  } else {
+  if (!card) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: card };
 });
 
 router.put(`${BASE_URL}/defaultBankAccount`, async ctx => {
   const bankAccount = await queries.updateDefaultBankAccount(
     ctx.request.body,
   );
-  if (bankAccount) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      data: bankAccount,
-    };
-  } else {
+  if (!bankAccount) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: bankAccount };
 });
 
 router.del(`${BASE_URL}/creditCard`, async ctx => {

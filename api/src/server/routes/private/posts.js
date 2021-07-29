@@ -2,7 +2,6 @@ const Router = require('koa-router');
 
 const router = new Router();
 const BASE_URL = '/api/posts';
-const { STATUS_ENUM } = require('../../../../../common/enums');
 
 const {
   PostsController,

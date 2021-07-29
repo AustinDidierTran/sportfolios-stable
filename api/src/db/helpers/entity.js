@@ -4593,7 +4593,7 @@ async function updateRosterRole(playerId, role) {
         p => p.role !== ROSTER_ROLE_ENUM.PLAYER && p.id !== playerId,
       )
     ) {
-      return ERROR_ENUM.VALUE_IS_INVALID;
+      throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
     }
   }
 

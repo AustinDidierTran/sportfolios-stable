@@ -81,31 +81,12 @@ const cancelPersonTransfer = async (userId, personId) => {
   return cancelPersonTransferHelper(personId);
 };
 
-const addEmail = async (userId, { email }) => {
-  if (!userId) {
-    return STATUS_ENUM.UNAUTHORIZED;
-  }
-
-  // validate there is no user with said email
-  const emailUserId = await getUserIdFromEmail(email);
-
-  if (emailUserId) {
-    return STATUS_ENUM.FORBIDDEN;
-  }
-
-  await createUserEmail({ userId, email });
-
-  await sendNewConfirmationEmailAllIncluded(email);
-
-  return STATUS_ENUM.SUCCESS;
-};
-
 const changePassword = async (
   userId,
   { oldPassword, newPassword },
 ) => {
   if (!userId) {
-    return STATUS_ENUM.UNAUTHORIZED;
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   const newHashedPassword = await generateHashedPassword(newPassword);
 
@@ -118,7 +99,7 @@ const changePassword = async (
   const isSame = bcrypt.compareSync(oldPassword, oldHashedPassword);
 
   if (!isSame) {
-    return STATUS_ENUM.FORBIDDEN;
+    throw new Error(ERROR_ENUM.FORBIDDEN);
   }
 
   await updatePasswordFromUserId({
@@ -131,7 +112,7 @@ const changePassword = async (
 
 const changeUserInfo = async (userId, { language }) => {
   if (!userId) {
-    return STATUS_ENUM.UNAUTHORIZED;
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   await updateBasicUserInfoFromUserId({
     userId,
@@ -145,29 +126,20 @@ const getEmails = async userId => {
   const emails = await getEmailsFromUserId(userId);
 
   if (!emails) {
-    return { status: STATUS_ENUM.FORBIDDEN };
+    throw new Error(ERROR_ENUM.FORBIDDEN);
   }
 
-  return { status: STATUS_ENUM.SUCCESS, emails };
+  return emails;
 };
 
 const userInfo = async id => {
   const basicUserInfo = await getBasicUserInfoFromId(id);
 
   if (!basicUserInfo) {
-    return { status: STATUS_ENUM.FORBIDDEN };
+    throw new Error(ERROR_ENUM.FORBIDDEN);
   }
   // get basic user info
-  return { basicUserInfo, status: STATUS_ENUM.SUCCESS };
-};
-
-const getPrimaryPersonId = async userId => {
-  const id = await getPrimaryPersonIdFromUserId(userId);
-  if (!id) {
-    return { status: STATUS_ENUM.FORBIDDEN };
-  }
-
-  return { status: STATUS_ENUM.SUCCESS, id };
+  return basicUserInfo;
 };
 
 const getOwnedAndTransferedPersons = async userId => {
@@ -347,7 +319,7 @@ const unlinkFacebook = async userId => {
 const linkMessengerFromFBId = async (userId, facebook_id) => {
   const messengerId = await getMessengerIdFromFbID(facebook_id);
   if (!messengerId) {
-    throw new errors[ERROR_ENUM.VALUE_IS_INVALID]();
+    throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
   sendMessage(
     messengerId,
@@ -370,12 +342,10 @@ const updateNewsLetterSubscription = async (userId, body) => {
 };
 
 module.exports = {
-  addEmail,
   changePassword,
   changeUserInfo,
   getEmails,
   userInfo,
-  getPrimaryPersonId,
   getOwnedPersons,
   updatePrimaryPerson,
   updateNewsLetterSubscription,

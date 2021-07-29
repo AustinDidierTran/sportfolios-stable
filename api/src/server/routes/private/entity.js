@@ -440,12 +440,12 @@ router.get(`${BASE_URL}/person`, async ctx => {
 });
 
 router.get(`${BASE_URL}/s3Signature`, async ctx => {
-  const { code, data } = await queries.getS3Signature(
+  const data = await queries.getS3Signature(
     ctx.body.userInfo.id,
     ctx.query.fileType,
   );
 
-  if (code !== 200) {
+  if (!data) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   ctx.body = { data };
@@ -596,8 +596,6 @@ router.put(`${BASE_URL}/rosterRole`, async ctx => {
 
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  } else if (res === ERROR_ENUM.VALUE_IS_INVALID) {
-    throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
   ctx.body = { data: res };
 });
@@ -986,16 +984,10 @@ router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
     ctx.body.userInfo.id,
   );
 
-  if (res.failed) {
-    ctx.status = STATUS_ENUM.FORBIDDEN;
-    ctx.body = {
-      status: 'error',
-      data: res.data,
-      message: 'Something went wrong',
-    };
-  } else {
-    ctx.body = { data: res.data };
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.post(`${BASE_URL}/unregisterPeople`, async ctx => {
@@ -1004,16 +996,10 @@ router.post(`${BASE_URL}/unregisterPeople`, async ctx => {
     ctx.body.userInfo.id,
   );
 
-  if (res.failed) {
-    ctx.status = STATUS_ENUM.FORBIDDEN;
-    ctx.body = {
-      status: 'error',
-      data: res.data,
-      message: 'Something went wrong',
-    };
-  } else {
-    ctx.body = { data: res.data };
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.post(`${BASE_URL}/role`, async ctx => {
@@ -1292,16 +1278,13 @@ router.post(`${BASE_URL}/register`, async ctx => {
   );
   if (status === STATUS_ENUM.REFUSED) {
     ctx.status = errors[ERROR_ENUM.REGISTRATION_ERROR].code;
-    ctx.body = {
-      status: 'error',
-      data: { status, reason },
-    };
-  } else if (status) {
-    ctx.body = { data: { status, rosterId } };
-  } else {
+    ctx.body = { data: { status, reason } };
+  } else if (!status) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: { status, rosterId } };
 });
+
 router.post(`${BASE_URL}/addTeamAsAdmin`, async ctx => {
   const { status, reason, rosterId } = await queries.addTeamAsAdmin(
     ctx.request.body,
@@ -1310,18 +1293,12 @@ router.post(`${BASE_URL}/addTeamAsAdmin`, async ctx => {
 
   if (status === STATUS_ENUM.REFUSED) {
     ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      data: { status, reason },
-    };
+    ctx.body = { data: { status, reason } };
   } else if (status) {
     ctx.body = { data: { status, rosterId } };
   } else {
     ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      data: { status, reason },
-    };
+    ctx.body = { data: { status, reason } };
   }
 });
 
@@ -1337,14 +1314,9 @@ router.post(`${BASE_URL}/registerIndividual`, async ctx => {
 
   if (status === STATUS_ENUM.REFUSED) {
     ctx.status = errors[ERROR_ENUM.REGISTRATION_ERROR].code;
-    ctx.body = {
-      status: 'error',
-      data: { status, reason, persons },
-    };
+    ctx.body = { data: { status, reason, persons } };
   } else {
-    ctx.body = {
-      data: { status, persons },
-    };
+    ctx.body = { data: { status, persons } };
   }
 });
 
@@ -1354,24 +1326,10 @@ router.del(`${BASE_URL}/deletePlayerFromRoster`, async ctx => {
     ctx.body.userInfo.id,
   );
 
-  if (res === ERROR_ENUM.ACCESS_DENIED) {
-    ctx.status = STATUS_ENUM.FORBIDDEN;
-    ctx.body = {
-      status: 'error',
-      message: 'Not allowed to remove player that has paid',
-    };
-  } else if (res === ERROR_ENUM.VALUE_IS_INVALID) {
-    ctx.status = STATUS_ENUM.METHOD_NOT_ALLOWED;
-    ctx.body = {
-      status: 'error',
-      message:
-        'Team must have at least one coach, captain or assistant captain',
-    };
-  } else if (res) {
-    ctx.body = { data: res };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.del(BASE_URL, async ctx => {
@@ -1432,15 +1390,11 @@ router.del(`${BASE_URL}/game`, async ctx => {
   );
   if (reason) {
     ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-      data: { reason },
-    };
-  } else if (game) {
-    ctx.body = { data: { game } };
-  } else {
+    ctx.body = { data: { reason } };
+  } else if (!game) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: { game } };
 });
 
 router.del(`${BASE_URL}/practice`, async ctx => {
@@ -1448,11 +1402,10 @@ router.del(`${BASE_URL}/practice`, async ctx => {
     ctx.body.userInfo.id,
     ctx.query,
   );
-  if (practice) {
-    ctx.body = { data: practice };
-  } else {
+  if (!practice) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: practice };
 });
 
 router.del(`${BASE_URL}/phase`, async ctx => {
@@ -1460,11 +1413,10 @@ router.del(`${BASE_URL}/phase`, async ctx => {
     ctx.query,
     ctx.body.userInfo.id,
   );
-  if (phase) {
-    ctx.body = { data: phase };
-  } else {
+  if (!phase) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: phase };
 });
 
 router.del(`${BASE_URL}/rosterInviteToken`, async ctx => {
