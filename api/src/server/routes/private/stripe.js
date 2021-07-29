@@ -11,43 +11,49 @@ router.get(`${BASE_URL}/accountLink`, async ctx => {
     ctx.request.ip,
     ctx.query.entityId,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.get(`${BASE_URL}/bankAccounts`, async ctx => {
   const data = await queries.getBankAccounts(ctx.query.entityId);
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.get(`${BASE_URL}/hasStripeAccount`, async ctx => {
   const data = await queries.hasStripeAccount(ctx.query.entityId);
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.get(`${BASE_URL}/hasStripeBankAccount`, async ctx => {
   const data = await queries.hasStripeBankAccount(ctx.query.entityId);
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.get(`${BASE_URL}/eventHasBankAccount`, async ctx => {
   const data = await queries.eventHasBankAccount(ctx.query.id);
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 router.get(`${BASE_URL}/eventAccounts`, async ctx => {
   const data = await queries.getEventAccounts(ctx.query.eventId);
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/externalAccount`, async ctx => {
@@ -72,9 +78,10 @@ router.post(`${BASE_URL}/externalAccount`, async ctx => {
 
 router.get(`${BASE_URL}/getCustomer`, async ctx => {
   const data = await queries.getCustomer(ctx.body.userInfo.id);
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/createCustomer`, async ctx => {
@@ -82,9 +89,10 @@ router.post(`${BASE_URL}/createCustomer`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/createInvoiceItem`, async ctx => {
@@ -92,9 +100,10 @@ router.post(`${BASE_URL}/createInvoiceItem`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/createInvoice`, async ctx => {
@@ -102,9 +111,10 @@ router.post(`${BASE_URL}/createInvoice`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/finalizeInvoice`, async ctx => {
@@ -112,9 +122,10 @@ router.post(`${BASE_URL}/finalizeInvoice`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/payInvoice`, async ctx => {
@@ -122,17 +133,19 @@ router.post(`${BASE_URL}/payInvoice`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.get(`${BASE_URL}/paymentMethods`, async ctx => {
   const data = await queries.getPaymentMethods(ctx.body.userInfo.id);
 
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/paymentMethod`, async ctx => {
@@ -141,9 +154,10 @@ router.post(`${BASE_URL}/paymentMethod`, async ctx => {
     ctx.body.userInfo.id,
   );
 
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/attachPaymentMethod`, async ctx => {
@@ -151,9 +165,10 @@ router.post(`${BASE_URL}/attachPaymentMethod`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/detachPaymentMethod`, async ctx => {
@@ -161,9 +176,10 @@ router.post(`${BASE_URL}/detachPaymentMethod`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/createProduct`, async ctx => {
@@ -171,9 +187,10 @@ router.post(`${BASE_URL}/createProduct`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/createPrice`, async ctx => {
@@ -181,9 +198,10 @@ router.post(`${BASE_URL}/createPrice`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/createItem`, async ctx => {
@@ -191,9 +209,10 @@ router.post(`${BASE_URL}/createItem`, async ctx => {
     ctx.request.body.itemParams,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.put(`${BASE_URL}/editItem`, async ctx => {
@@ -218,9 +237,10 @@ router.put(`${BASE_URL}/editItem`, async ctx => {
 
 router.del(`${BASE_URL}/deleteItem`, async ctx => {
   const data = await queries.deleteItem(ctx.query);
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 //TODO: Link this to a fct (getProduct doesnt exist)
@@ -229,9 +249,10 @@ router.get(`${BASE_URL}/getProductFromPriceId`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.get(`${BASE_URL}/getReceipt`, async ctx => {
@@ -239,15 +260,17 @@ router.get(`${BASE_URL}/getReceipt`, async ctx => {
     ctx.query,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 router.get(`${BASE_URL}/getTaxes`, async ctx => {
   const data = await queries.getTaxes();
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/checkout`, async ctx => {
@@ -281,9 +304,10 @@ router.post(`${BASE_URL}/sendReceiptEmail`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/sendRegistrationEmail`, async ctx => {
@@ -291,9 +315,10 @@ router.post(`${BASE_URL}/sendRegistrationEmail`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/createRefund`, async ctx => {
@@ -301,9 +326,10 @@ router.post(`${BASE_URL}/createRefund`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.put(`${BASE_URL}/defaultCreditCard`, async ctx => {
@@ -340,16 +366,18 @@ router.del(`${BASE_URL}/creditCard`, async ctx => {
     ctx.query,
     ctx.body.userInfo.id,
   );
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 router.del(`${BASE_URL}/bankAccount`, async ctx => {
   const data = await queries.deleteBankAccount(ctx.query);
-  ctx.body = {
-    data,
-  };
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
 });
 
 module.exports = router;

@@ -82,29 +82,26 @@ router.get(`${BASE_URL}/gaPageviews`, async ctx => {
 
 router.post(`${BASE_URL}/sport`, async ctx => {
   const sport = await queries.createSport(ctx.request.body);
-  if (sport.length) {
-    ctx.body = { data: sport };
-  } else {
+  if (!sport.length) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: sport };
 });
 
 router.post(`${BASE_URL}/emailLandingPage`, async ctx => {
   const email = await queries.addEmailLandingPage(ctx.request.body);
-  if (email) {
-    ctx.body = { data: email };
-  } else {
+  if (!email) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: email };
 });
 
 router.post(`${BASE_URL}/taxRate`, async ctx => {
   const tax = await queries.createTaxRate(ctx.request.body);
-  if (tax) {
-    ctx.body = { data: tax };
-  } else {
+  if (!tax) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: tax };
 });
 
 router.post(`${BASE_URL}/gaPageview`, async ctx => {
@@ -112,11 +109,10 @@ router.post(`${BASE_URL}/gaPageview`, async ctx => {
     ctx.request.body.pathname,
     ctx.request.body.enabled,
   );
-  if (pageView.length) {
-    ctx.body = { data: pageView };
-  } else {
+  if (!pageView.length) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: pageView };
 });
 
 router.put(`${BASE_URL}/sport/:id`, async ctx => {
@@ -124,17 +120,16 @@ router.put(`${BASE_URL}/sport/:id`, async ctx => {
     ctx.params.id,
     ctx.request.body,
   );
-  if (sport) {
-    ctx.body = {
-      data: {
-        id: sport.id,
-        name: sport.name,
-        scoreType: sport.score_type,
-      },
-    };
-  } else {
+  if (!sport) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = {
+    data: {
+      id: sport.id,
+      name: sport.name,
+      scoreType: sport.score_type,
+    },
+  };
 });
 
 router.put(`${BASE_URL}/gaEvents/:id`, async ctx => {
@@ -142,28 +137,26 @@ router.put(`${BASE_URL}/gaEvents/:id`, async ctx => {
     ctx.params.id,
     ctx.request.body.enabled,
   );
-  if (event) {
-    ctx.body = {
-      data: {
-        id: event.id,
-        category: event.category,
-        enabled: event.enabled,
-      },
-    };
-  } else {
+  if (!event) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = {
+    data: {
+      id: event.id,
+      category: event.category,
+      enabled: event.enabled,
+    },
+  };
 });
 
 router.put(`${BASE_URL}/updateActiveStatusTaxRate`, async ctx => {
   const taxRate = await queries.updateActiveStatusTaxRate(
     ctx.request.body,
   );
-  if (taxRate) {
-    ctx.body = { data: taxRate };
-  } else {
+  if (!taxRate) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: taxRate };
 });
 
 router.put(`${BASE_URL}/gaPageviews/:id`, async ctx => {
@@ -171,17 +164,16 @@ router.put(`${BASE_URL}/gaPageviews/:id`, async ctx => {
     ctx.params.id,
     ctx.request.body.enabled,
   );
-  if (pageview) {
-    ctx.body = {
-      data: {
-        id: pageview.id,
-        pathname: pageview.pathname,
-        enabled: pageview.enabled,
-      },
-    };
-  } else {
+  if (!pageview) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = {
+    data: {
+      id: pageview.id,
+      pathname: pageview.pathname,
+      enabled: pageview.enabled,
+    },
+  };
 });
 
 router.del(`${BASE_URL}/deleteTaxRate`, async ctx => {

@@ -1,3 +1,4 @@
+const { ElasticBeanstalk } = require('aws-sdk');
 const Router = require('koa-router');
 const { STATUS_ENUM } = require('../../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../../common/errors');
@@ -11,12 +12,9 @@ router.post(`${BASE_URL}/changePassword`, async ctx => {
     ctx.body.userInfo.id,
     ctx.request.body,
   );
-
-  if (code === STATUS_ENUM.SUCCESS) {
-    ctx.body = { status: 'success' };
-  } else if (code === STATUS_ENUM.FORBIDDEN) {
+  if (code === STATUS_ENUM.FORBIDDEN) {
     throw new Error(ERROR_ENUM.TOKEN_IS_INVALID);
-  } else {
+  } else if (code != STATUS_ENUM.SUCCESS) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
@@ -27,13 +25,12 @@ router.get(`${BASE_URL}/userInfo`, async ctx => {
     ctx.body.userInfo.id,
   );
 
-  if (status === STATUS_ENUM.SUCCESS) {
-    ctx.body = { data: basicUserInfo };
-  } else if (status === STATUS_ENUM.FORBIDDEN) {
+  if (status === STATUS_ENUM.FORBIDDEN) {
     throw new Error(ERROR_ENUM.TOKEN_IS_INVALID);
-  } else {
+  } else if (status != STATUS_ENUM.SUCCESS) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: basicUserInfo };
 });
 
 // Basic User Info
@@ -42,9 +39,7 @@ router.post(`${BASE_URL}/changeBasicUserInfo`, async ctx => {
     ctx.body.userInfo.id,
     ctx.request.body,
   );
-  if (status === STATUS_ENUM.SUCCESS) {
-    ctx.body = { status: 'success' };
-  } else if (status === STATUS_ENUM.FORBIDDEN) {
+  if (status === STATUS_ENUM.FORBIDDEN) {
     throw new Error(ERROR_ENUM.TOKEN_IS_INVALID);
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -57,22 +52,20 @@ router.get(`${BASE_URL}/emails`, async ctx => {
     ctx.body.userInfo.id,
   );
 
-  if (status === STATUS_ENUM.SUCCESS) {
-    ctx.body = { data: emails };
-  } else if (status === STATUS_ENUM.FORBIDDEN) {
+  if (status === STATUS_ENUM.FORBIDDEN) {
     throw new Error(ERROR_ENUM.TOKEN_IS_INVALID);
-  } else {
+  } else if (status != STATUS_ENUM.SUCCESS) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: emails };
 });
 
 router.get(`${BASE_URL}/getTokenPromoCode`, async ctx => {
   const token = await queries.getTokenPromoCode(ctx.query);
-  if (token) {
-    ctx.body = { data: token };
-  } else {
+  if (!token) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: token };
 });
 
 //Owned persons
@@ -102,20 +95,17 @@ router.put(`${BASE_URL}/primaryPerson`, async ctx => {
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-  if (success) {
-    ctx.body = { status: 'success' };
-  } else {
+  if (!success) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.put(`${BASE_URL}/useToken`, async ctx => {
   const token = await queries.useToken(ctx.request.body);
-  if (token) {
-    ctx.body = { data: token };
-  } else {
+  if (!token) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: token };
 });
 
 router.post(`${BASE_URL}/transferPerson`, async ctx => {
@@ -124,11 +114,10 @@ router.post(`${BASE_URL}/transferPerson`, async ctx => {
     ctx.body.userInfo.id,
     ctx.request.body,
   );
-  if (person) {
-    ctx.body = { data: person };
-  } else {
+  if (!person) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: person };
 });
 
 router.delete(`${BASE_URL}/transferPerson`, async ctx => {
@@ -136,22 +125,20 @@ router.delete(`${BASE_URL}/transferPerson`, async ctx => {
     ctx.body.userInfo.id,
     ctx.query.id,
   );
-  if (person) {
-    ctx.body = { data: person };
-  } else {
+  if (!person) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: person };
 });
 
 router.get(`${BASE_URL}/transferedPeople`, async ctx => {
   const people = await queries.getPeopleTransferedToUser(
     ctx.body.userInfo.id,
   );
-  if (people) {
-    ctx.body = { data: people };
-  } else {
+  if (!people) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: people };
 });
 
 router.get(`${BASE_URL}/acceptPersonTransfer`, async ctx => {
@@ -159,20 +146,18 @@ router.get(`${BASE_URL}/acceptPersonTransfer`, async ctx => {
     ctx.query.id,
     ctx.body.userInfo.id,
   );
-  if (personId) {
-    ctx.body = { data: previousOwnerId };
-  } else {
+  if (!personId) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: personId };
 });
 
 router.get(`${BASE_URL}/declinePersonTransfer`, async ctx => {
   const id = await queries.declinePersonTransfer(ctx.query.id);
-  if (id) {
-    ctx.body = { data: id };
-  } else {
+  if (!id) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: id };
 });
 
 router.post(`${BASE_URL}/facebookData`, async ctx => {
@@ -180,11 +165,10 @@ router.post(`${BASE_URL}/facebookData`, async ctx => {
     ctx.body.userInfo.id,
     ctx.request.body,
   );
-  if (data) {
-    ctx.body = { data: data };
-  } else {
+  if (!data) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data };
 });
 
 router.post(`${BASE_URL}/facebookConnection`, async ctx => {
@@ -192,29 +176,26 @@ router.post(`${BASE_URL}/facebookConnection`, async ctx => {
     ctx.body.userInfo.id,
     ctx.request.body,
   );
-  if (data) {
-    ctx.body = { data: data };
-  } else {
+  if (!data) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data };
 });
 
 router.delete(`${BASE_URL}/facebookConnection`, async ctx => {
   const res = await queries.unlinkFacebook(ctx.body.userInfo.id);
-  if (res) {
-    ctx.body = { data: res };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.get(`${BASE_URL}/connectedApps`, async ctx => {
   const res = await queries.getConnectedApps(ctx.body.userInfo.id);
-  if (res) {
-    ctx.body = { data: res };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.post(`${BASE_URL}/messengerConnection`, async ctx => {
@@ -222,20 +203,18 @@ router.post(`${BASE_URL}/messengerConnection`, async ctx => {
     ctx.body.userInfo.id,
     ctx.request.body.facebook_id,
   );
-  if (data) {
-    ctx.data = data;
-  } else {
+  if (!data) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.data = { data };
 });
 
 router.delete(`${BASE_URL}/messengerConnection`, async ctx => {
   const res = await queries.unlinkMessenger(ctx.body.userInfo.id);
-  if (res) {
-    ctx.body = { data: res };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.put(`${BASE_URL}/changeSubscription`, async ctx => {
@@ -243,11 +222,10 @@ router.put(`${BASE_URL}/changeSubscription`, async ctx => {
     ctx.body.userInfo.id,
     ctx.request.body,
   );
-  if (data) {
-    ctx.body = { data: data };
-  } else {
+  if (!data) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data };
 });
 
 module.exports = router;
