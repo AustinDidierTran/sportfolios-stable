@@ -27,9 +27,9 @@ const confirmEmail = async ({ email }) => {
 };
 
 const createUserEmail = async body => {
-  const { user_id, email } = body;
+  const { userId, email } = body;
 
-  await knex('user_email').insert({ user_id, email });
+  await knex('user_email').insert({ user_id: userId, email });
 };
 
 const createUserComplete = async body => {
@@ -122,16 +122,16 @@ const createConfirmationEmailToken = async ({ email, token }) => {
 
 const createPersonTransferToken = async ({
   email,
-  person_id,
+  personId,
   token,
-  sender_id,
+  senderId,
 }) => {
   return knex('transfered_person')
     .insert({
       email,
       token,
-      person_id,
-      sender_id,
+      person_id: personId,
+      sender_id: senderId,
       expires_at: new Date(
         Date.now() + EXPIRATION_TIMES.PERSON_TRANSFER_TOKEN,
       ),
@@ -401,12 +401,12 @@ const setRecoveryTokenToUsed = async token => {
 };
 
 const updateBasicUserInfoFromUserId = async ({
-  user_id,
+  userId,
   language,
 }) => {
   await knex('users')
     .update({ language })
-    .where({ id: user_id });
+    .where({ id: userId });
 };
 
 const updatePasswordFromUserId = async ({ hashedPassword, id }) => {
@@ -415,18 +415,18 @@ const updatePasswordFromUserId = async ({ hashedPassword, id }) => {
     .where({ id });
 };
 
-const updatePrimaryPerson = async (user_id, primary_person) => {
+const updatePrimaryPerson = async (userId, primary_person) => {
   return knex('user_primary_person')
     .update({ primary_person })
-    .where({ user_id })
+    .where({ user_id: userId })
     .returning('*');
 };
 
-const updateNewsLetterSubscription = async (user_id, body) => {
+const updateNewsLetterSubscription = async (userId, body) => {
   const { email, subscription } = body;
   const [res] = await knex('user_email')
     .update({ is_subscribed: subscription })
-    .where({ user_id: user_id, email: email })
+    .where({ user_id: userId, email: email })
     .returning('*');
   return res;
 };
@@ -499,8 +499,8 @@ const sendPersonTransferEmailAllIncluded = async ({
   const res = await createPersonTransferToken({
     email,
     token: personTransferToken,
-    person_id: sendedPersonId,
-    sender_id: senderUserId,
+    personId: sendedPersonId,
+    senderId: senderUserId,
   });
   if (!res) {
     return;
@@ -541,18 +541,18 @@ const getPeopleTransferedToEmails = async emails => {
     .whereIn('id', peopleId);
 };
 
-const transferPerson = async (person_id, user_id) => {
+const transferPerson = async (personId, userId) => {
   return knex.transaction(async trx => {
     const id = await knex('user_entity_role')
-      .update({ user_id })
-      .where('entity_id', person_id)
+      .update({ user_id: userId })
+      .where('entity_id', personId)
       .andWhere('role', ENTITIES_ROLE_ENUM.ADMIN)
       .returning('entity_id')
       .transacting(trx);
 
     await knex('transfered_person')
       .update('status', PERSON_TRANSFER_STATUS_ENUM.ACCEPTED)
-      .where({ person_id })
+      .where({ person_id: personId })
       .andWhere('status', PERSON_TRANSFER_STATUS_ENUM.PENDING)
       .transacting(trx);
     return id;
@@ -568,18 +568,18 @@ const getTokenPromoCode = async tokenId => {
   return res;
 };
 
-const cancelPersonTransfer = async person_id => {
+const cancelPersonTransfer = async personId => {
   const [person] = await knex('transfered_person')
-    .where({ person_id })
+    .where({ person_id: personId })
     .andWhere('status', PERSON_TRANSFER_STATUS_ENUM.PENDING)
     .update('status', PERSON_TRANSFER_STATUS_ENUM.CANCELED)
     .returning('person_id');
   return person;
 };
 
-const declinePersonTransfer = async person_id => {
+const declinePersonTransfer = async personId => {
   const [person] = await knex('transfered_person')
-    .where({ person_id })
+    .where({ person_id: personId })
     .andWhere('status', PERSON_TRANSFER_STATUS_ENUM.PENDING)
     .update('status', PERSON_TRANSFER_STATUS_ENUM.REFUSED)
     .returning('person_id');
@@ -592,7 +592,7 @@ const getTransferInfosFromToken = async token => {
     .where({ token })
     .first();
 };
-const setFacebookData = async (user_id, data) => {
+const setFacebookData = async (userId, data) => {
   const { facebook_id, name, surname, email, picture } = data;
   let updateQuery = {};
   if (!facebook_id) {
@@ -635,7 +635,7 @@ const setFacebookData = async (user_id, data) => {
     //Update user__facebook_id
     const success = await trx('user_apps_id')
       .update({ facebook_id })
-      .where({ user_id });
+      .where({ user_id: userId });
     if (!success) {
       return;
     }
@@ -644,11 +644,11 @@ const setFacebookData = async (user_id, data) => {
   });
 };
 
-const getChatbotInfos = async messenger_id => {
+const getChatbotInfos = async messengerId => {
   const infos = await knex('messenger_user_chatbot_state')
     .select('*')
     .first()
-    .where({ messenger_id });
+    .where({ messenger_id: messengerId });
 
   if (infos) {
     const {
@@ -664,10 +664,10 @@ const getChatbotInfos = async messenger_id => {
   }
 };
 
-const setChatbotInfos = async (messenger_id, infos) => {
+const setChatbotInfos = async (messengerId, infos) => {
   const res = await knex('messenger_user_chatbot_state')
     .update({ ...infos })
-    .where({ messenger_id })
+    .where({ messenger_id: messengerId })
     .returning('*');
   if (res) {
     return {
@@ -678,11 +678,11 @@ const setChatbotInfos = async (messenger_id, infos) => {
   }
 };
 
-const addChatbotId = async messenger_id => {
-  const name = await getNameFromPSID(messenger_id);
+const addChatbotId = async messengerId => {
+  const name = await getNameFromPSID(messengerId);
   const [res] = await knex('messenger_user_chatbot_state')
     .insert({
-      messenger_id,
+      messenger_id: messengerId,
       chatbot_infos: { userName: name },
       state: BASIC_CHATBOT_STATES.NOT_LINKED,
     })
@@ -694,69 +694,69 @@ const addChatbotId = async messenger_id => {
   };
 };
 
-const getFacebookId = async user_id => {
+const getFacebookId = async userId => {
   const [id] = await knex('user_apps_id')
     .select('facebook_id')
-    .where({ user_id });
+    .where({ user_id: userId });
   return id && id.facebook_id;
 };
 
-const deleteFacebookId = async user_id => {
+const deleteFacebookId = async userId => {
   return knex('user_apps_id')
     .update({ facebook_id: null })
-    .where({ user_id })
+    .where({ user_id: userId })
     .returning('user_id');
 };
 
-const isLinkedFacebookAccount = async facebook_id => {
+const isLinkedFacebookAccount = async facebookId => {
   return (
     await knex.first(
       knex.raw(
         'exists ?',
         knex('user_apps_id')
           .select('user_id')
-          .where({ facebook_id }),
+          .where({ facebook_id: facebookId }),
       ),
     )
   ).exists;
 };
 
-const setMessengerId = async (user_id, messenger_id) => {
+const setMessengerId = async (userId, messengerId) => {
   return knex('user_apps_id')
-    .where({ user_id })
-    .update({ messenger_id })
+    .where({ user_id: userId })
+    .update({ messenger_id: messengerId })
     .returning('messenger_id');
 };
 
-const getMessengerId = async user_id => {
+const getMessengerId = async userId => {
   const [res] = await knex('user_apps_id')
-    .where({ user_id })
+    .where({ user_id: userId })
     .select('messenger_id');
   if (res) {
     return res.messenger_id;
   }
 };
 
-const deleteMessengerId = async user_id => {
+const deleteMessengerId = async userId => {
   //Reseting chatbot state
-  await setChatbotInfos(await getMessengerId(user_id), {
+  await setChatbotInfos(await getMessengerId(userId), {
     state: BASIC_CHATBOT_STATES.NOT_LINKED,
   });
   const res = await knex('user_apps_id')
     .update({ messenger_id: null })
-    .where({ user_id })
+    .where({ user_id: userId })
     .returning('user_id');
 
   return res;
 };
 
-const deleteChatbotInfos = async messenger_id => {
+const deleteChatbotInfos = async messengerId => {
   await knex('user_apps_id')
     .update({ messenger_id: null })
-    .where({ messenger_id });
+    .where({ messenger_id: messengerId });
   return knex('messenger_user_chatbot_state')
     .del()
-    .where({ messenger_id })
+    .where({ messenger_id: messengerId })
     .returning('messenger_id');
 };
 

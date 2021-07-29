@@ -398,7 +398,7 @@ router.get(`${BASE_URL}/uniqueEmail`, async ctx => {
   if (email) {
     ctx.body = { data: email };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'That email does not exist.',
@@ -1048,7 +1048,7 @@ router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
   );
 
   if (res.failed) {
-    ctx.status = 403;
+    ctx.status = STATUS_ENUM.FORBIDDEN;
     ctx.body = {
       status: 'error',
       data: res.data,
@@ -1066,7 +1066,7 @@ router.post(`${BASE_URL}/unregisterPeople`, async ctx => {
   );
 
   if (res.failed) {
-    ctx.status = 403;
+    ctx.status = STATUS_ENUM.FORBIDDEN;
     ctx.body = {
       status: 'error',
       data: res.data,
@@ -1395,7 +1395,7 @@ router.post(`${BASE_URL}/addTeamAsAdmin`, async ctx => {
   );
 
   if (status === STATUS_ENUM.REFUSED) {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       data: { status, reason },
@@ -1405,7 +1405,7 @@ router.post(`${BASE_URL}/addTeamAsAdmin`, async ctx => {
       data: { status, rosterId },
     };
   } else {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       data: { status, reason },
@@ -1533,7 +1533,7 @@ router.del(`${BASE_URL}/game`, async ctx => {
     ctx.query,
   );
   if (reason) {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       data: { reason },

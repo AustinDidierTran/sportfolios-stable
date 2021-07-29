@@ -8,10 +8,10 @@ const BASE_URL = '/api/auth';
 
 router.post(`${BASE_URL}/signup`, async ctx => {
   const res = await queries.signup(ctx.request.body);
-  if (res.code === 403) {
-    ctx.status = 403;
+  if (res.code === STATUS_ENUM.FORBIDDEN) {
+    ctx.status = STATUS_ENUM.FORBIDDEN;
     ctx.body = { data: res };
-  } else if (res.code === 200) {
+  } else if (res.code === STATUS_ENUM.SUCCESS) {
     ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -50,7 +50,7 @@ router.post(`${BASE_URL}/confirmEmail`, async ctx => {
   const res = await queries.confirmEmail(ctx.request.body);
   const { status, token, userInfo } = res;
 
-  if (status === 200) {
+  if (status === STATUS_ENUM.SUCCESS) {
     ctx.body = { data: { token, userInfo } };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -63,7 +63,7 @@ router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
     ctx.request.body,
   );
 
-  if (code === 200) {
+  if (code === STATUS_ENUM.SUCCESS) {
     ctx.body = { data: code };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -74,14 +74,10 @@ router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
 router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
   const code = await queries.recoveryEmail(ctx.request.body);
 
-  if (code === 200) {
+  if (code === STATUS_ENUM.SUCCESS) {
     ctx.body = { data: code };
-  } else if (code === 404) {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Email is not found',
-    };
+  } else if (code === STATUS_ENUM.ERROR) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -93,14 +89,10 @@ router.post(`${BASE_URL}/recoverPassword`, async ctx => {
     ctx.request.body,
   );
 
-  if (code === 200) {
+  if (code === STATUS_ENUM.SUCCESS) {
     ctx.body = { data: { authToken, userInfo } };
-  } else if (code === 403) {
-    ctx.status = 403;
-    ctx.body = {
-      status: 'error',
-      message: 'Token is invalid',
-    };
+  } else if (code === STATUS_ENUM.FORBIDDEN) {
+    throw new Error(ERROR_ENUM.TOKEN_IS_INVALID);
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }

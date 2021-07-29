@@ -329,7 +329,7 @@ async function getAllOwnedEntities(
           'name',
           'surname',
           knex.raw(
-            "string_agg(entities_all_infos.name || ' ' || entities_all_infos.surname, ' ') AS complete_name",
+            "string_agg(entities_all_infos.name || ' ', entities_all_infos.surname || ' ') AS complete_name",
           ),
           'photo_url',
         )
@@ -339,7 +339,6 @@ async function getAllOwnedEntities(
           'entities_all_infos.id',
           entityIds.map(e => e.entity_id),
         )
-
         .groupBy(
           'entities_all_infos.id',
           'entities_all_infos.type',
@@ -349,7 +348,7 @@ async function getAllOwnedEntities(
         )
         .as('res'),
     )
-    .where('complete_name', 'ILIKE', `%${query || ''}%`)
+    .where('complete_name', 'ILIKE', `%${query}%`)
     .where({ type });
 
   return entities.map(entity => ({

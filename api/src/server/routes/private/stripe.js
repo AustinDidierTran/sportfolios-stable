@@ -256,14 +256,14 @@ router.post(`${BASE_URL}/checkout`, async ctx => {
     ctx.body.userInfo.id,
   );
   if (data.reason) {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: data.reason,
       data,
     };
   } else if (!data) {
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = {
       status: 'error',
       message: 'That record does not exist.',

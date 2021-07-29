@@ -5,6 +5,7 @@ const BASE_URL = '/api/fb';
 const { Chatbot } = require('../../utils/ChatBot');
 const queries = require('../../../db/queries/facebook');
 const { FACEBOOK_VERIFY_TOKEN } = require('../../../../../conf');
+const { STATUS_ENUM } = require('../../../../../common/enums');
 router.post(`${BASE_URL}/messengerHook`, async ctx => {
   let body = ctx.request.body;
 
@@ -47,13 +48,13 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
       }
     });
     // Returns a '200 OK' response to all requests
-    ctx.status = 200;
+    ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: 'EVENT_RECEIVED',
     };
   } else {
     // Returns a '404 Not Found' if event is not from a page subscription
-    ctx.status = 404;
+    ctx.status = STATUS_ENUM.ERROR;
   }
 });
 
@@ -70,11 +71,11 @@ router.get(`${BASE_URL}/messengerHook`, async ctx => {
     // Checks the mode and token sent is correct
     if (mode === 'subscribe' && token === FACEBOOK_VERIFY_TOKEN) {
       // Responds with the challenge token from the request
-      ctx.status = 200;
+      ctx.status = STATUS_ENUM.SUCCESS;
       ctx.message = challenge;
     } else {
       // Responds with '403 Forbidden' if verify tokens do not match
-      ctx.status = 403;
+      ctx.status = STATUS_ENUM.FORBIDDEN;
     }
   }
 });

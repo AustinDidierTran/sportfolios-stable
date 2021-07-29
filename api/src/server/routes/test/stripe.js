@@ -1,4 +1,6 @@
 const Router = require('koa-router');
+const { STATUS_ENUM } = require('../../../../../common/enums');
+const { ERROR_ENUM } = require('../../../../../common/errors');
 const helpers = require('../../../db/helpers/stripe');
 
 const router = new Router();
@@ -11,17 +13,10 @@ router.post(`${BASE_URL}/connectedAccount`, async ctx => {
 
   const accountLink = await helpers.createAccountLink2(account.id);
 
-  if (res.code === 200) {
-    ctx.status = 200;
-    ctx.body = {
-      status: 'success',
-      data: { accountId: account.id, accountLink },
-    };
+  if (res.code === STATUS_ENUM.SUCCESS) {
+    ctx.body = { data: { accountId: account.id, accountLink } };
   } else {
-    ctx.status = res.code;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 

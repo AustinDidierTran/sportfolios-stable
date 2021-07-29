@@ -1,4 +1,6 @@
 const Router = require('koa-router');
+const { STATUS_ENUM } = require('../../../../../common/enums');
+const { ERROR_ENUM } = require('../../../../../common/errors');
 const helpers = require('../../../db/helpers/entity');
 
 const router = new Router();
@@ -9,16 +11,10 @@ router.get(`${BASE_URL}/removeEventCartItem`, async ctx => {
     rosterId: ctx.body.rosterId,
   });
 
-  if (res.code === 200) {
-    ctx.status = 200;
-    ctx.body = {
-      status: 'success',
-    };
+  if (res.code === STATUS_ENUM.SUCCESS) {
+    ctx.body = { status: 'success' };
   } else {
-    ctx.status = res.code;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 

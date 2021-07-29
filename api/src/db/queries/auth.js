@@ -28,6 +28,7 @@ const {
 const {
   ENTITIES_ROLE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
+  STATUS_ENUM,
 } = require('../../../../common/enums');
 
 const signup = async ({
@@ -41,7 +42,7 @@ const signup = async ({
   // Validate email is not already taken
   const isUnique = await validateEmailIsUnique(email);
 
-  if (!isUnique) return { code: 403 };
+  if (!isUnique) return { code: STATUS_ENUM.FORBIDDEN };
 
   const hashedPassword = await generateHashedPassword(password);
 
@@ -66,25 +67,25 @@ const signup = async ({
     token: confirmationEmailToken,
     redirectUrl,
   });
-  return { code: 200 };
+  return { code: STATUS_ENUM.SUCCESS };
 };
 
 const login = async ({ email, password }) => {
   // Validate account with this email exists
   const userId = await getUserIdFromEmail(email);
   if (!userId) {
-    return { status: 404 };
+    return { status: STATUS_ENUM.ERROR };
   }
 
   // Validate email is confirmed
   const emailIsConfirmed = await validateEmailIsConfirmed(email);
   if (!emailIsConfirmed) {
-    return { status: 401 };
+    return { status: STATUS_ENUM.UNAUTHORIZED };
   }
 
   const hashedPassword = await getHashedPasswordFromId(userId);
   if (!hashedPassword) {
-    return { status: 402 };
+    return { status: STATUS_ENUM.UNAUTHORIZED };
   }
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
@@ -94,9 +95,9 @@ const login = async ({ email, password }) => {
 
     const userInfo = await getBasicUserInfoFromId(userId);
 
-    return { status: 200, token, userInfo };
+    return { status: STATUS_ENUM.SUCCESS, token, userInfo };
   } else {
-    return { status: 403 };
+    return { status: STATUS_ENUM.FORBIDDEN };
   }
 };
 
@@ -113,7 +114,7 @@ const confirmEmail = async ({ token }) => {
 
   if (!email) {
     // Email not found or token is expired
-    return 403;
+    return STATUS_ENUM.FORBIDDEN;
   }
 
   await confirmEmailHelper({ email });
@@ -129,14 +130,14 @@ const confirmEmail = async ({ token }) => {
 
   const userInfo = await getBasicUserInfoFromId(userId);
 
-  return { status: 200, token: authToken, userInfo };
+  return { status: STATUS_ENUM.SUCCESS, token: authToken, userInfo };
 };
 
 const recoveryEmail = async ({ email }) => {
   const userId = await getUserIdFromEmail(email);
 
   if (!userId) {
-    return 404;
+    return STATUS_ENUM.ERROR;
   }
 
   const token = generateToken();
@@ -145,14 +146,14 @@ const recoveryEmail = async ({ email }) => {
   const language = await getLanguageFromEmail(email);
   await sendRecoveryEmail({ email, token, language });
 
-  return 200;
+  return STATUS_ENUM.SUCCESS;
 };
 
 const recoverPassword = async ({ token, password }) => {
   const userId = await getUserIdFromRecoveryPasswordToken(token);
 
   if (!userId) {
-    return { code: 403 };
+    return { code: STATUS_ENUM.FORBIDDEN };
   }
 
   const hashedPassword = await generateHashedPassword(password);
@@ -165,14 +166,14 @@ const recoverPassword = async ({ token, password }) => {
 
   const userInfo = await getBasicUserInfoFromId(userId);
 
-  return { code: 200, authToken, userInfo };
+  return { code: STATUS_ENUM.SUCCESS, authToken, userInfo };
 };
 
 const resendConfirmationEmail = async ({ email, successRoute }) => {
   const isEmailConfirmed = await validateEmailIsConfirmed(email);
 
   if (isEmailConfirmed) {
-    return 403;
+    return STATUS_ENUM.FORBIDDEN;
   }
 
   const token = generateToken();
@@ -187,7 +188,7 @@ const resendConfirmationEmail = async ({ email, successRoute }) => {
     successRoute,
   });
 
-  return 200;
+  return STATUS_ENUM.SUCCESS;
 };
 
 const transferPersonSignup = async ({
