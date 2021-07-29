@@ -1,5 +1,4 @@
 const Router = require('koa-router');
-const { STATUS_ENUM } = require('../../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../../common/errors');
 const queries = require('../../../db/queries/users');
 const router = new Router();

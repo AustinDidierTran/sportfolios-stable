@@ -5,17 +5,15 @@ const {
   BASIC_CHATBOT_STATES,
   STATUS_ENUM,
 } = require('../../../../common/enums');
-const { ERROR_ENUM, errors } = require('../../../../common/errors');
+const { ERROR_ENUM } = require('../../../../common/errors');
 const bcrypt = require('bcrypt');
 
 const {
-  createUserEmail,
   generateHashedPassword,
   getBasicUserInfoFromId,
   getEmailsFromUserId,
   getHashedPasswordFromId,
   getUserIdFromEmail,
-  sendNewConfirmationEmailAllIncluded,
   updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,
   getPrimaryPersonIdFromUserId,

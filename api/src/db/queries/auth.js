@@ -30,6 +30,7 @@ const {
   PERSON_TRANSFER_STATUS_ENUM,
   STATUS_ENUM,
 } = require('../../../../common/enums');
+const { ERROR_ENUM } = require('../../../../common/errors');
 
 const signup = async ({
   firstName,
@@ -42,7 +43,9 @@ const signup = async ({
   // Validate email is not already taken
   const isUnique = await validateEmailIsUnique(email);
 
-  if (!isUnique) return { code: STATUS_ENUM.FORBIDDEN };
+  if (!isUnique) {
+    throw new Error(ERROR_ENUM.FORBIDDEN);
+  }
 
   const hashedPassword = await generateHashedPassword(password);
 
@@ -74,18 +77,18 @@ const login = async ({ email, password }) => {
   // Validate account with this email exists
   const userId = await getUserIdFromEmail(email);
   if (!userId) {
-    return { status: STATUS_ENUM.ERROR };
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
   // Validate email is confirmed
   const emailIsConfirmed = await validateEmailIsConfirmed(email);
   if (!emailIsConfirmed) {
-    return { status: STATUS_ENUM.UNAUTHORIZED };
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
   const hashedPassword = await getHashedPasswordFromId(userId);
   if (!hashedPassword) {
-    return { status: STATUS_ENUM.UNAUTHORIZED };
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
@@ -95,9 +98,9 @@ const login = async ({ email, password }) => {
 
     const userInfo = await getBasicUserInfoFromId(userId);
 
-    return { status: STATUS_ENUM.SUCCESS, token, userInfo };
+    return { token, userInfo };
   } else {
-    return { status: STATUS_ENUM.FORBIDDEN };
+    throw new Error(ERROR_ENUM.FORBIDDEN);
   }
 };
 
@@ -113,8 +116,7 @@ const confirmEmail = async ({ token }) => {
   const email = await getEmailFromToken({ token });
 
   if (!email) {
-    // Email not found or token is expired
-    return STATUS_ENUM.FORBIDDEN;
+    throw new Error(ERROR_ENUM.FORBIDDEN);
   }
 
   await confirmEmailHelper({ email });
@@ -130,14 +132,14 @@ const confirmEmail = async ({ token }) => {
 
   const userInfo = await getBasicUserInfoFromId(userId);
 
-  return { status: STATUS_ENUM.SUCCESS, token: authToken, userInfo };
+  return { token: authToken, userInfo };
 };
 
 const recoveryEmail = async ({ email }) => {
   const userId = await getUserIdFromEmail(email);
 
   if (!userId) {
-    return STATUS_ENUM.ERROR;
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
   const token = generateToken();
@@ -153,7 +155,7 @@ const recoverPassword = async ({ token, password }) => {
   const userId = await getUserIdFromRecoveryPasswordToken(token);
 
   if (!userId) {
-    return { code: STATUS_ENUM.FORBIDDEN };
+    throw new Error(ERROR_ENUM.FORBIDDEN);
   }
 
   const hashedPassword = await generateHashedPassword(password);
@@ -166,14 +168,14 @@ const recoverPassword = async ({ token, password }) => {
 
   const userInfo = await getBasicUserInfoFromId(userId);
 
-  return { code: STATUS_ENUM.SUCCESS, authToken, userInfo };
+  return { authToken, userInfo };
 };
 
 const resendConfirmationEmail = async ({ email, successRoute }) => {
   const isEmailConfirmed = await validateEmailIsConfirmed(email);
 
   if (isEmailConfirmed) {
-    return STATUS_ENUM.FORBIDDEN;
+    throw new Error(ERROR_ENUM.FORBIDDEN);
   }
 
   const token = generateToken();

@@ -8,10 +8,8 @@ const BASE_URL = '/api/auth';
 
 router.post(`${BASE_URL}/signup`, async ctx => {
   const res = await queries.signup(ctx.request.body);
-  if (res.code === STATUS_ENUM.FORBIDDEN) {
-    ctx.status = STATUS_ENUM.FORBIDDEN;
-    ctx.body = { data: res };
-  } else if (res.code === STATUS_ENUM.SUCCESS) {
+
+  if (res.code === STATUS_ENUM.SUCCESS) {
     ctx.body = { data: res };
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -23,9 +21,8 @@ router.post(`${BASE_URL}/login`, async ctx => {
 
   if (!token) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  } else {
-    ctx.body = { data: JSON.stringify({ token, userInfo }) };
   }
+  ctx.body = { data: JSON.stringify({ token, userInfo }) };
 });
 
 router.get(`${BASE_URL}/loginWithToken`, async ctx => {
@@ -38,23 +35,20 @@ router.get(`${BASE_URL}/loginWithToken`, async ctx => {
 
 router.post(`${BASE_URL}/transferPersonSignup`, async ctx => {
   const res = await queries.transferPersonSignup(ctx.request.body);
-  if (res) {
-    ctx.body = { data: res };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 // Confirm email
 router.post(`${BASE_URL}/confirmEmail`, async ctx => {
   const res = await queries.confirmEmail(ctx.request.body);
-  const { status, token, userInfo } = res;
 
-  if (status === STATUS_ENUM.SUCCESS) {
-    ctx.body = { data: { token, userInfo } };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 // Resend confirmation email
@@ -76,8 +70,6 @@ router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
 
   if (code === STATUS_ENUM.SUCCESS) {
     ctx.body = { data: code };
-  } else if (code === STATUS_ENUM.ERROR) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   } else {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -85,16 +77,12 @@ router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
 
 // Reset password with token
 router.post(`${BASE_URL}/recoverPassword`, async ctx => {
-  const { code, authToken, userInfo } = await queries.recoverPassword(
-    ctx.request.body,
-  );
+  const res = await queries.recoverPassword(ctx.request.body);
 
-  if (code === STATUS_ENUM.SUCCESS) {
-    ctx.body = { data: { authToken, userInfo } };
-  } else if (code === STATUS_ENUM.FORBIDDEN) {
-    throw new Error(ERROR_ENUM.TOKEN_IS_INVALID);
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  } else {
+    ctx.body = { data: res };
   }
 });
 
