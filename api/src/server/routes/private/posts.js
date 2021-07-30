@@ -2,7 +2,6 @@ const Router = require('koa-router');
 
 const router = new Router();
 const BASE_URL = '/api/posts';
-const { STATUS_ENUM } = require('../../../../../common/enums');
 
 const {
   PostsController,
@@ -15,13 +14,10 @@ router.post(`${BASE_URL}/create`, async ctx => {
     ctx.request.body.entity_id,
   );
 
-  if (post) {
-    ctx.body = {
-      data: post,
-    };
-  } else {
+  if (!post) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: post };
 });
 
 router.put(`${BASE_URL}`, async ctx => {
@@ -29,10 +25,6 @@ router.put(`${BASE_URL}`, async ctx => {
     ctx.request.body.postId,
     ctx.request.body.postContent,
   );
-
-  ctx.body = {
-    status: 'success',
-  };
 });
 
 router.post(`${BASE_URL}/image`, async ctx => {
@@ -41,13 +33,10 @@ router.post(`${BASE_URL}/image`, async ctx => {
     ctx.request.body.imageUrl,
   );
 
-  if (result) {
-    ctx.body = {
-      data: result,
-    };
-  } else {
+  if (!result) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: result };
 });
 
 router.post(`${BASE_URL}/like`, async ctx => {
@@ -56,13 +45,10 @@ router.post(`${BASE_URL}/like`, async ctx => {
     ctx.request.body.postId,
   );
 
-  if (result) {
-    ctx.body = {
-      data: result,
-    };
-  } else {
+  if (!result) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: result };
 });
 
 router.post(`${BASE_URL}/unlike`, async ctx => {
@@ -70,23 +56,18 @@ router.post(`${BASE_URL}/unlike`, async ctx => {
     ctx.request.body.entityId,
     ctx.request.body.postId,
   );
-  ctx.body = {
-    data: result,
-  };
+  if (!result) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: result };
 });
 
 router.del(`${BASE_URL}/deletePost`, async ctx => {
   await PostsController.deletePost(ctx.query.postId);
-  ctx.body = {
-    status: STATUS_ENUM.SUCCESS,
-  };
 });
 
 router.del(`${BASE_URL}/comment`, async ctx => {
   await PostsController.deleteComment(ctx.query.commentId);
-  ctx.body = {
-    status: STATUS_ENUM.SUCCESS,
-  };
 });
 
 router.post(`${BASE_URL}/comment`, async ctx => {
@@ -96,13 +77,10 @@ router.post(`${BASE_URL}/comment`, async ctx => {
     ctx.request.body.content,
   );
 
-  if (commentId) {
-    ctx.body = {
-      data: commentId,
-    };
-  } else {
+  if (!commentId) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: commentId };
 });
 
 router.put(`${BASE_URL}/comment`, async ctx => {
@@ -110,9 +88,6 @@ router.put(`${BASE_URL}/comment`, async ctx => {
     ctx.request.body.commentId,
     ctx.request.body.commentContent,
   );
-  ctx.body = {
-    status: 'success',
-  };
 });
 
 module.exports = router;

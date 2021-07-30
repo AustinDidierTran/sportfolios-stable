@@ -9,9 +9,6 @@ router.post(`${BASE_URL}/follow`, async ctx => {
     ctx.body.userInfo.id,
     ctx.request.body.targetId,
   );
-  ctx.body = {
-    status: 'success',
-  };
 });
 
 router.post(`${BASE_URL}/unfollow`, async ctx => {
@@ -19,9 +16,6 @@ router.post(`${BASE_URL}/unfollow`, async ctx => {
     ctx.body.userInfo.id,
     ctx.request.body.targetId,
   );
-  ctx.body = {
-    status: 'success',
-  };
 });
 
 module.exports = router;

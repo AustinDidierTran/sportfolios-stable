@@ -1,5 +1,6 @@
 const knex = require('../connection');
 const moment = require('moment');
+const { STATUS_ENUM } = require('../../../../common/enums');
 
 async function getUserInfo(sender, target) {
   const [{ count }] = (sender !== target &&
@@ -22,11 +23,11 @@ async function updateBirthDate(user_id, { birthDate }) {
   const date = moment(birthDate);
 
   if (!date.isValid()) {
-    return { code: 403 };
+    return { code: STATUS_ENUM.FORBIDDEN };
   }
 
   if (date.diff(moment()) > 0) {
-    return { code: 402 };
+    return { code: STATUS_ENUM.UNAUTHORIZED };
   }
 
   const updatedUser = await knex('persons')
@@ -35,10 +36,10 @@ async function updateBirthDate(user_id, { birthDate }) {
     .returning('user_id');
 
   if (!updatedUser) {
-    return { code: 404 };
+    return { code: STATUS_ENUM.ERROR };
   }
 
-  return { code: 200 };
+  return { code: STATUS_ENUM.SUCCESS };
 }
 
 async function updatePhotoUrl(user_id, { photoUrl }) {
@@ -48,10 +49,10 @@ async function updatePhotoUrl(user_id, { photoUrl }) {
     .returning('user_id');
 
   if (!updatedUser) {
-    return { code: 404 };
+    return { code: STATUS_ENUM.ERROR };
   }
 
-  return { code: 200 };
+  return { code: STATUS_ENUM.SUCCESS };
 }
 
 module.exports = {

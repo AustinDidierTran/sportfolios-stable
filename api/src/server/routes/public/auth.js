@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const { STATUS_ENUM } = require('../../../../../common/enums');
+const { ERROR_ENUM } = require('../../../../../common/errors');
 const queries = require('../../../db/queries/auth');
 
 const router = new Router();
@@ -7,39 +8,21 @@ const BASE_URL = '/api/auth';
 
 router.post(`${BASE_URL}/signup`, async ctx => {
   const res = await queries.signup(ctx.request.body);
-  if (res.code === 200) {
-    ctx.status = 200;
-    ctx.body = {
-      status: 'success',
-    };
+
+  if (res.code === STATUS_ENUM.SUCCESS) {
+    ctx.body = { data: res };
   } else {
-    ctx.status = res.code;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 router.post(`${BASE_URL}/login`, async ctx => {
-  const { status, token, userInfo } = await queries.login(
-    ctx.request.body,
-  );
+  const { token, userInfo } = await queries.login(ctx.request.body);
 
   if (!token) {
-    ctx.status = status;
-    ctx.body = {
-      status: 'error',
-    };
-  } else {
-    ctx.status = 200;
-    ctx.body = {
-      status: 'success',
-      data: JSON.stringify({
-        token,
-        userInfo,
-      }),
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: JSON.stringify({ token, userInfo }) };
 });
 
 router.get(`${BASE_URL}/loginWithToken`, async ctx => {
@@ -47,46 +30,25 @@ router.get(`${BASE_URL}/loginWithToken`, async ctx => {
   if (!res) {
     throw new Error(STATUS_ENUM.ERROR_STRING);
   }
-  ctx.status = 200;
-  ctx.body = {
-    status: 'success',
-    data: res,
-  };
+  ctx.body = { data: res };
 });
 
 router.post(`${BASE_URL}/transferPersonSignup`, async ctx => {
   const res = await queries.transferPersonSignup(ctx.request.body);
-  if (res) {
-    ctx.status = STATUS_ENUM.SUCCESS;
-    ctx.body = {
-      status: 'success',
-      data: res,
-    };
-  } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: 'error',
-    };
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 // Confirm email
 router.post(`${BASE_URL}/confirmEmail`, async ctx => {
   const res = await queries.confirmEmail(ctx.request.body);
-  const { status, token, userInfo } = res;
 
-  if (status === 200) {
-    ctx.status = 200;
-    ctx.body = {
-      status: 'success',
-      data: { token, userInfo },
-    };
-  } else {
-    ctx.status = status;
-    ctx.body = {
-      status: 'error',
-    };
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 // Resend confirmation email
@@ -95,16 +57,10 @@ router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
     ctx.request.body,
   );
 
-  if (code === 200) {
-    ctx.status = 200;
-    ctx.body = {
-      status: 'success',
-    };
+  if (code === STATUS_ENUM.SUCCESS) {
+    ctx.body = { data: code };
   } else {
-    ctx.status = code;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
@@ -112,48 +68,21 @@ router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
 router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
   const code = await queries.recoveryEmail(ctx.request.body);
 
-  if (code === 200) {
-    ctx.status = 200;
-    ctx.body = {
-      status: 'success',
-    };
-  } else if (code === 404) {
-    ctx.status = 404;
-    ctx.body = {
-      status: 'error',
-      message: 'Email is not found',
-    };
+  if (code === STATUS_ENUM.SUCCESS) {
+    ctx.body = { data: code };
   } else {
-    ctx.status = code;
-    ctx.body = {
-      status: 'error',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
 
 // Reset password with token
 router.post(`${BASE_URL}/recoverPassword`, async ctx => {
-  const { code, authToken, userInfo } = await queries.recoverPassword(
-    ctx.request.body,
-  );
+  const res = await queries.recoverPassword(ctx.request.body);
 
-  if (code === 200) {
-    ctx.status = 200;
-    ctx.body = {
-      status: 'success',
-      data: { authToken, userInfo },
-    };
-  } else if (code === 403) {
-    ctx.status = 403;
-    ctx.body = {
-      status: 'error',
-      message: 'Token is invalid',
-    };
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   } else {
-    ctx.status = code;
-    ctx.body = {
-      status: 'error',
-    };
+    ctx.body = { data: res };
   }
 });
 

@@ -1,5 +1,4 @@
 const Router = require('koa-router');
-const { STATUS_ENUM } = require('../../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../../common/errors');
 const queries = require('../../../db/queries/trialist');
 
@@ -10,13 +9,10 @@ router.post(`${BASE_URL}/createEvaluation`, async ctx => {
   const res = await queries.createEvaluation(
     ctx.request.body.evaluation,
   );
-  if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.post(`${BASE_URL}/createComment`, async ctx => {
@@ -25,13 +21,10 @@ router.post(`${BASE_URL}/createComment`, async ctx => {
     ctx.request.body.personId,
     ctx.request.body.exerciseId,
   );
-  if (res) {
-    ctx.body = {
-      data: res,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.get(`${BASE_URL}/comments`, async ctx => {
@@ -40,26 +33,20 @@ router.get(`${BASE_URL}/comments`, async ctx => {
     ctx.query.exerciseId,
   );
 
-  if (res) {
-    ctx.body = {
-      data: res,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.get(`${BASE_URL}/getPlayerLastEvaluation`, async ctx => {
   const res = await queries.getPlayerLastEvaluation(
     ctx.query.playerId,
   );
-  if (res) {
-    ctx.body = {
-      data: res,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.get(`${BASE_URL}/getPlayerSessionsEvaluations`, async ctx => {
@@ -67,13 +54,10 @@ router.get(`${BASE_URL}/getPlayerSessionsEvaluations`, async ctx => {
     ctx.query.teamId,
     ctx.query.playerId,
   );
-  if (res) {
-    ctx.body = {
-      data: res,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.get(`${BASE_URL}/getCoachEvaluations`, async ctx => {
@@ -82,13 +66,10 @@ router.get(`${BASE_URL}/getCoachEvaluations`, async ctx => {
     ctx.query.sessionId,
     ctx.query.exerciseId,
   );
-  if (res) {
-    ctx.body = {
-      data: res,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.get(`${BASE_URL}/getEvaluationComments`, async ctx => {
@@ -96,25 +77,19 @@ router.get(`${BASE_URL}/getEvaluationComments`, async ctx => {
     ctx.query.evaluationId,
   );
 
-  if (res) {
-    ctx.body = {
-      data: res,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.get(`${BASE_URL}/getExerciseById`, async ctx => {
   const res = await queries.getExerciseById(ctx.query.exerciseId);
 
-  if (res) {
-    ctx.body = {
-      data: res,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.post(`${BASE_URL}/createTeamExercise`, async ctx => {
@@ -123,37 +98,26 @@ router.post(`${BASE_URL}/createTeamExercise`, async ctx => {
     ctx.request.body.teamId,
   );
 
-  if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.put(`${BASE_URL}/updateExercise`, async ctx => {
   const res = await queries.updateExercise(ctx.request.body.exercise);
-  if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-      body: res,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { body: res };
 });
 
 router.put(`${BASE_URL}/updateSession`, async ctx => {
   const res = await queries.updateSession(ctx.request.body.session);
-  if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-      body: res,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { body: res };
 });
 
 router.post(`${BASE_URL}/addExerciseToSessions`, async ctx => {
@@ -161,14 +125,10 @@ router.post(`${BASE_URL}/addExerciseToSessions`, async ctx => {
     ctx.request.body.exerciseId,
     ctx.request.body.sessionsId,
   );
-  if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-      body: res,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { body: res };
 });
 
 router.post(`${BASE_URL}/addExercisesToSession`, async ctx => {
@@ -176,38 +136,28 @@ router.post(`${BASE_URL}/addExercisesToSession`, async ctx => {
     ctx.request.body.sessionId,
     ctx.request.body.exercisesId,
   );
-  if (res) {
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS_STRING,
-      body: res,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { body: res };
 });
 
 router.get(`${BASE_URL}/getSessionById`, async ctx => {
   const res = await queries.getSessionById(ctx.query.sessionId);
-  if (res) {
-    ctx.body = {
-      data: res,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 router.get(`${BASE_URL}/getSessionsByExerciseId`, async ctx => {
   const res = await queries.getSessionsByExerciseId(
     ctx.query.exerciseId,
   );
-  if (res) {
-    ctx.body = {
-      data: res,
-    };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 module.exports = router;

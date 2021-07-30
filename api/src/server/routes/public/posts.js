@@ -2,7 +2,7 @@ const Router = require('koa-router');
 
 const router = new Router();
 const BASE_URL = '/api/posts';
-const { STATUS_ENUM } = require('../../../../../common/enums');
+const { ERROR_ENUM } = require('../../../../../common/errors');
 
 const {
   PostsController,
@@ -16,20 +16,10 @@ router.get(`${BASE_URL}`, async ctx => {
   );
 
   if (result) {
-    ctx.status = 201;
-    ctx.body = {
-      status: STATUS_ENUM.SUCCESS,
-      data: result,
-    };
+    ctx.body = { data: result };
   } else {
-    ctx.status = STATUS_ENUM.ERROR;
-    ctx.body = {
-      status: STATUS_ENUM.ERROR,
-      message: 'Something went wrong',
-    };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 });
-
-
 
 module.exports = router;
