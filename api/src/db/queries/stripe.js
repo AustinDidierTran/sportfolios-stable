@@ -13,7 +13,6 @@ const {
   createRefund: createRefundHelper,
   deleteItem: deleteItemHelper,
   editItem: editItemHelper,
-  eventHasBankAccount: eventHasBankAccountHelper,
   getEventAccounts: getEventAccountsHelper,
   finalizeInvoice: finalizeInvoiceHelper,
   getCustomer: getCustomerHelper,
@@ -53,9 +52,6 @@ const hasStripeAccount = async entityId => {
 };
 const hasStripeBankAccount = async entityId => {
   return hasStripeBankAccountHelper(entityId);
-};
-const eventHasBankAccount = async eventId => {
-  return eventHasBankAccountHelper(eventId);
 };
 const getEventAccounts = async eventId => {
   return getEventAccountsHelper(eventId);
@@ -186,7 +182,6 @@ module.exports = {
   deleteItem,
   detachPaymentMethod,
   editItem,
-  eventHasBankAccount,
   getEventAccounts,
   finalizeInvoice,
   getAccountLink,

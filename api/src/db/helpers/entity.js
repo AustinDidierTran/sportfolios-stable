@@ -329,7 +329,7 @@ async function getAllOwnedEntities(
           'name',
           'surname',
           knex.raw(
-            "string_agg(entities_all_infos.name || ' ' || entities_all_infos.surname, ' ') AS complete_name",
+            "string_agg(entities_all_infos.name || ' ', entities_all_infos.surname || ' ') AS complete_name",
           ),
           'photo_url',
         )
@@ -339,7 +339,6 @@ async function getAllOwnedEntities(
           'entities_all_infos.id',
           entityIds.map(e => e.entity_id),
         )
-
         .groupBy(
           'entities_all_infos.id',
           'entities_all_infos.type',
@@ -349,7 +348,7 @@ async function getAllOwnedEntities(
         )
         .as('res'),
     )
-    .where('complete_name', 'ILIKE', `%${query || ''}%`)
+    .where('complete_name', 'ILIKE', `%${query}%`)
     .where({ type });
 
   return entities.map(entity => ({
@@ -784,12 +783,7 @@ async function getTeamEventsInfos(id) {
       '=',
       'games_all_infos.id',
     )
-    .leftJoin(
-      'phase',
-      'phase.event_id',
-      '=',
-      'games_all_infos.phase_id',
-    )
+    .leftJoin('phase', 'phase.id', '=', 'games_all_infos.phase_id')
     .whereIn('games_all_infos.id', gameIds)
     .andWhere(
       'games_all_infos.timeslot',
@@ -804,7 +798,7 @@ async function getTeamEventsInfos(id) {
     id: g.id,
     timeslot: g.timeslot,
     field: g.field,
-    name: g.name,
+    phaseName: g.name,
     teamNames: g.team_names,
     teamScores: g.team_scores,
   }));
@@ -1214,7 +1208,7 @@ async function generateSalesReport(report) {
           .set('hour', 0)
           .set('minute', 0)
           .set('second', 0)
-          .add(1, 'day')
+          .add(1, 'day'),
       ),
   );
   const res = await Promise.all(
@@ -2028,13 +2022,14 @@ async function getRosterWithRsvp(rosterId, gameId) {
     .select(
       'id',
       'roster_id',
+      'name',
       'person_id',
       'role',
       'is_sub',
       'photo_url',
       'payment_status',
       'invoice_item_id',
-      )
+    )
     .where({ roster_id: rosterId })
     .orderByRaw(
       `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
@@ -2079,6 +2074,9 @@ const getPrimaryPerson = async user_id => {
 };
 
 async function getRoleRoster(rosterId, userId) {
+  if (userId === -1) {
+    return ROSTER_ROLE_ENUM.VIEWER;
+  }
   const [{ role } = {}] = await knex('roster_players')
     .select('roster_players.role')
     .join(
@@ -4700,7 +4698,7 @@ async function updateRosterRole(playerId, role) {
         p => p.role !== ROSTER_ROLE_ENUM.PLAYER && p.id !== playerId,
       )
     ) {
-      return ERROR_ENUM.VALUE_IS_INVALID;
+      throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
     }
   }
 

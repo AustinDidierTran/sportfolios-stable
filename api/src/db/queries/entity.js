@@ -1088,7 +1088,7 @@ async function getS3Signature(userId, { fileType }) {
   const fileName = `images/entity/${date}-${randomString}-${userId}`;
   const data = await signS3Request(fileName, fileType);
 
-  return { code: 200, data };
+  return data;
 }
 
 async function updateEntityRole(body, userId) {
@@ -1805,7 +1805,6 @@ const canUnregisterTeamsList = async (rosterIds, eventId) => {
 const unregisterTeams = async (body, userId) => {
   const { eventId, rosterIds } = body;
 
-  const result = { failed: false, data: [] };
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
@@ -1871,25 +1870,18 @@ const unregisterTeams = async (body, userId) => {
         );
         await unregisterHelper({ rosterId, eventId });
       } else {
-        // team is in a game, can't unregister and refund
-        result.failed = true;
+        throw new Error(ERROR_ENUM.UNREGISTRATION_ERROR);
       }
     }
   } catch (error) {
-    // do not make api call fail, current teams state will be returned
-    result.failed = true;
+    throw new Error(ERROR_ENUM.UNREGISTRATION_ERROR);
   }
 
-  result.data = await getAllTeamsRegisteredInfosHelper(
-    eventId,
-    userId,
-  );
-  return result;
+  return getAllTeamsRegisteredInfosHelper(eventId, userId);
 };
 
 async function unregisterPeople(body, userId) {
   const { eventId, people } = body;
-  const result = { failed: false, data: [] };
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
@@ -1924,15 +1916,10 @@ async function unregisterPeople(body, userId) {
       await deletePersonFromEvent({ personId, eventId });
     }
   } catch (error) {
-    // do not make api call fail, current teams state will be returned
-    result.failed = true;
+    throw new Error(ERROR_ENUM.UNREGISTRATION_ERROR);
   }
 
-  result.data = await getAllPeopleRegisteredInfosHelper(
-    eventId,
-    userId,
-  );
-  return result;
+  return getAllPeopleRegisteredInfosHelper(eventId, userId);
 }
 
 async function addMembership(body, userId) {
@@ -2118,7 +2105,7 @@ async function deletePlayerFromRoster(id, userId) {
   } = await getPlayerInvoiceItemHelper(id);
 
   if (!(await canRemovePlayerFromRosterHelper(rosterId, personId))) {
-    return ERROR_ENUM.VALUE_IS_INVALID;
+    throw new Error(ERROR_ENUM.REMOVE_LAST_CAPTAIN);
   }
 
   if (status === INVOICE_STATUS_ENUM.PAID) {
@@ -2133,7 +2120,7 @@ async function deletePlayerFromRoster(id, userId) {
         invoiceItemId,
       });
     } else {
-      return ERROR_ENUM.ACCESS_DENIED;
+      throw new Error(ERROR_ENUM.REMOVE_PAID_PLAYER);
     }
   } else if (status === INVOICE_STATUS_ENUM.OPEN) {
     // status is open, can remove from roster
