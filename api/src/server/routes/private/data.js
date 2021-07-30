@@ -6,32 +6,32 @@ const router = new Router();
 const BASE_URL = '/api/data';
 
 router.get(`${BASE_URL}/search/global`, async ctx => {
-  const previousSearchQueries = await queries.globalSearch(
+  const entities = await queries.globalSearch(
     ctx.body.userInfo.id,
     ctx.query.query,
     ctx.query.type,
     ctx.query.blackList,
     ctx.query.whiteList,
   );
-  if (!previousSearchQueries) {
+  if (!entities) {
     throw new Error(STATUS_ENUM.ERROR_STRING);
   }
   ctx.body = {
-    data: previousSearchQueries,
+    data: entities,
   };
 });
 
 router.get(`${BASE_URL}/search/myTeamsSearch`, async ctx => {
-  const previousSearchQueries = await queries.myTeamsSearch(
+  const teams = await queries.myTeamsSearch(
     ctx.body.userInfo.id,
     ctx.query.query,
     ctx.query.eventId,
   );
-  if (!previousSearchQueries) {
+  if (!teams) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   ctx.body = {
-    data: previousSearchQueries,
+    data: teams,
   };
 });
 
