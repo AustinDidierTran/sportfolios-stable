@@ -1,8 +1,7 @@
-const data = require('./data');
+const data = require('./search');
 const dev = require('./dev');
 const entity = require('./entity');
 const followers = require('./followers');
-const main = require('./main');
 const notifications = require('./notifications');
 const shop = require('./shop');
 const stripe = require('./stripe');
@@ -15,7 +14,6 @@ module.exports = [
   dev,
   entity,
   followers,
-  main,
   notifications,
   posts,
   shop,

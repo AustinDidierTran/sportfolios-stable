@@ -219,59 +219,9 @@ Returns 403 if token is invalid.
 
 # Group Data
 
-Resources related to other data
+## Search [/api/search]
 
-## Main [/api/data/main]
-
-### All [GET /api/data/main/all]
-
-+ Response 200 (application/json)
-
-        {
-            "data": {
-                "users": [
-                    {
-                        "user_id": "8317ff33-3b04-49a1-afd3-420202cddf73",
-                        "first_name": "Austin-Didier",
-                        "last_name": "Tran",
-                        "photo_url": "https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200415-bmu4t-8317ff33-3b04-49a1-afd3-420202cddf73"
-                    },
-                    {
-                        "user_id": "8317ff33-3b04-49a1-afd3-420202cddf73",
-                        "first_name": "Duy Khang",
-                        "last_name": "Tran",
-                        "photo_url": "https://sportfolios-images.s3.us-east-1.amazonaws.com/development/images/profile/20200415-0o6hk-8317ff33-3b04-49a1-afd3-420202cddf73"
-                    }
-                ]
-            }
-        }
-
-### Following users [GET /api/data/main/followingUsers]
-
-+ Response 200 (application/json)
-
-        {
-            "data": {
-                [
-                    {
-                        "user_id": "8317ff33-3b04-49a1-afd3-420202cddf73",
-                        "first_name": "Austin-Didier",
-                        "last_name": "Tran",
-                        "photo_url": "https://sportfolios-images.s3.amazonaws.com/development/images/profile/20200415-bmu4t-8317ff33-3b04-49a1-afd3-420202cddf73"
-                    },
-                    {
-                        "user_id": "8317ff33-3b04-49a1-afd3-420202cddf73",
-                        "first_name": "Duy Khang",
-                        "last_name": "Tran",
-                        "photo_url": "https://sportfolios-images.s3.us-east-1.amazonaws.com/development/images/profile/20200415-0o6hk-8317ff33-3b04-49a1-afd3-420202cddf73"
-                    }
-                ]
-            
-            }
-
-## Search [/api/data/search]
-
-### Global search query [GET /api/data/search/global]
+### Global search query [GET /api/search/global]
 
 + Response 200 (application/json)
 
@@ -288,7 +238,7 @@ Resources related to other data
             }
         }
 
-### Previous results [GET /api/data/search/previous]
+### Previous results [GET /api/search/previous]
 
 Returns previous search queries from the user.
 

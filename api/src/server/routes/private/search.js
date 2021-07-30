@@ -1,11 +1,11 @@
 const Router = require('koa-router');
 const { ERROR_ENUM } = require('../../../../../common/errors');
-const queries = require('../../../db/queries/data');
+const queries = require('../../../db/queries/search');
 
 const router = new Router();
-const BASE_URL = '/api/data';
+const BASE_URL = '/api/search';
 
-router.get(`${BASE_URL}/search/global`, async ctx => {
+router.get(`${BASE_URL}/global`, async ctx => {
   const entities = await queries.globalSearch(
     ctx.body.userInfo.id,
     ctx.query.query,
@@ -21,7 +21,7 @@ router.get(`${BASE_URL}/search/global`, async ctx => {
   };
 });
 
-router.get(`${BASE_URL}/search/myTeamsSearch`, async ctx => {
+router.get(`${BASE_URL}/myTeamsSearch`, async ctx => {
   const teams = await queries.myTeamsSearch(
     ctx.body.userInfo.id,
     ctx.query.query,
@@ -35,7 +35,7 @@ router.get(`${BASE_URL}/search/myTeamsSearch`, async ctx => {
   };
 });
 
-router.get(`${BASE_URL}/search/previous`, async ctx => {
+router.get(`${BASE_URL}/previous`, async ctx => {
   const previousSearchQueries = await queries.getPreviousSearchQueries(
     ctx.body.userInfo.id,
   );

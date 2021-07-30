@@ -2,7 +2,6 @@ const {
   GLOBAL_ENUM,
   ENTITIES_ROLE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
-  BASIC_CHATBOT_STATES,
   STATUS_ENUM,
 } = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
@@ -31,14 +30,6 @@ const {
   generateAuthToken,
   generateToken,
   validateEmailIsConfirmed,
-  setFacebookData: setFacebookDataHelper,
-  getFacebookId,
-  deleteFacebookId,
-  isLinkedFacebookAccount,
-  setMessengerId,
-  getMessengerId,
-  deleteMessengerId,
-  setChatbotInfos,
   isRegistered,
 } = require('../helpers');
 
@@ -47,14 +38,7 @@ const {
   personIsAwaitingTransfer,
 } = require('../helpers/entity');
 
-const {
-  getMessengerIdFromFbID,
-  sendMessage,
-} = require('../helpers/facebook');
-
 const { isAllowed } = require('./entity');
-const i18n = require('../../i18n.config');
-const Response = require('../../server/utils/ChatBot/response');
 
 const sendTransferPersonEmail = async (
   userId,
@@ -278,58 +262,6 @@ const getTransferInfos = async token => {
     authToken,
   };
 };
-const setFacebookData = async (userId, data) => {
-  return setFacebookDataHelper(userId, data);
-};
-
-const linkFacebook = async (userId, data) => {
-  const { facebook_id } = data;
-  if (!facebook_id) {
-    return;
-  }
-  if (await isLinkedFacebookAccount(facebook_id)) {
-    throw Error(ERROR_ENUM.ACCESS_DENIED);
-  }
-  return setFacebookDataHelper(userId, data);
-};
-
-const getConnectedApps = async userId => {
-  const facebookId = await getFacebookId(userId);
-  const facebook = {
-    connected: Boolean(facebookId),
-    id: facebookId,
-  };
-  const messengerId = await getMessengerId(userId);
-  const messenger = {
-    connected: Boolean(messengerId),
-    id: messengerId,
-  };
-  let apps = {};
-  apps.facebook = facebook;
-  apps.messenger = messenger;
-  return apps;
-};
-
-const unlinkFacebook = async userId => {
-  return deleteFacebookId(userId);
-};
-
-const linkMessengerFromFBId = async (userId, facebook_id) => {
-  const messengerId = await getMessengerIdFromFbID(facebook_id);
-  if (!messengerId) {
-    throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
-  }
-  sendMessage(
-    messengerId,
-    Response.genText(i18n.__('connection.success')),
-  );
-  setChatbotInfos(messengerId, { state: BASIC_CHATBOT_STATES.HOME });
-  return setMessengerId(userId, messengerId);
-};
-
-const unlinkMessenger = async userId => {
-  return deleteMessengerId(userId);
-};
 
 const updateNewsLetterSubscription = async (userId, body) => {
   const subscription = await updateNewsLetterSubscriptionHelper(
@@ -340,27 +272,21 @@ const updateNewsLetterSubscription = async (userId, body) => {
 };
 
 module.exports = {
+  cancelPersonTransfer,
   changePassword,
   changeUserInfo,
-  getEmails,
-  userInfo,
-  getOwnedPersons,
-  updatePrimaryPerson,
-  updateNewsLetterSubscription,
-  useToken,
-  sendTransferPersonEmail,
-  cancelPersonTransfer,
-  getPeopleTransferedToUser,
-  transferPerson,
-  getTokenPromoCode,
   declinePersonTransfer,
+  getEmails,
   getOwnedAndTransferedPersons,
+  getOwnedPersons,
   getOwnedPersonsRegistration,
+  getPeopleTransferedToUser,
+  getTokenPromoCode,
   getTransferInfos,
-  setFacebookData,
-  getConnectedApps,
-  unlinkFacebook,
-  linkFacebook,
-  linkMessengerFromFBId,
-  unlinkMessenger,
+  sendTransferPersonEmail,
+  transferPerson,
+  updateNewsLetterSubscription,
+  updatePrimaryPerson,
+  userInfo,
+  useToken,
 };

@@ -1,12 +1,10 @@
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
 const { v1: uuidv1 } = require('uuid');
-const util = require('util');
 const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
-  BASIC_CHATBOT_STATES,
   COUPON_CODE_ENUM,
   NOTIFICATION_ARRAY,
 } = require('../../../../common/enums');
@@ -18,7 +16,6 @@ const {
 } = require('../../server/utils/nodeMailer');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const randtoken = require('rand-token');
-const { getNameFromPSID } = require('./facebook');
 
 const confirmEmail = async ({ email }) => {
   await knex('user_email')
@@ -592,173 +589,6 @@ const getTransferInfosFromToken = async token => {
     .where({ token })
     .first();
 };
-const setFacebookData = async (userId, data) => {
-  const { facebook_id, name, surname, email, picture } = data;
-  let updateQuery = {};
-  if (!facebook_id) {
-    return;
-  }
-  if (name) {
-    updateQuery.name = name;
-  }
-  if (surname) {
-    updateQuery.surname = surname;
-  }
-  if (email) {
-    updateQuery.email = email;
-  }
-  if (picture) {
-    updateQuery.picture = picture;
-  }
-  if (Object.keys(updateQuery).length === 0) {
-    return;
-  }
-  return knex.transaction(async trx => {
-    //Upsert data
-    const insertData = trx('facebook_data').insert({
-      facebook_id,
-      name,
-      surname,
-      email,
-      picture,
-    });
-    const updateData = trx('facebook_data')
-      .update(updateQuery)
-      .whereRaw('facebook_data.facebook_id = ?', [facebook_id]);
-    const queryData = util.format(
-      '%s ON CONFLICT (facebook_id) DO UPDATE SET %s RETURNING *',
-      insertData.toString(),
-      updateData.toString().replace(/^update\s.*\sset\s/i, ''),
-    );
-    const datas = await knex.raw(queryData);
-
-    //Update user__facebook_id
-    const success = await trx('user_apps_id')
-      .update({ facebook_id })
-      .where({ user_id: userId });
-    if (!success) {
-      return;
-    }
-
-    return datas;
-  });
-};
-
-const getChatbotInfos = async messengerId => {
-  const infos = await knex('messenger_user_chatbot_state')
-    .select('*')
-    .first()
-    .where({ messenger_id: messengerId });
-
-  if (infos) {
-    const {
-      messenger_id: messengerId,
-      chatbot_infos: chatbotInfos,
-      ...otherInfos
-    } = infos;
-    return {
-      messengerId,
-      chatbotInfos,
-      ...otherInfos,
-    };
-  }
-};
-
-const setChatbotInfos = async (messengerId, infos) => {
-  const res = await knex('messenger_user_chatbot_state')
-    .update({ ...infos })
-    .where({ messenger_id: messengerId })
-    .returning('*');
-  if (res) {
-    return {
-      messengerId: res.messenger_id,
-      state: res.state,
-      chatbotInfos: res.chatbot_infos,
-    };
-  }
-};
-
-const addChatbotId = async messengerId => {
-  const name = await getNameFromPSID(messengerId);
-  const [res] = await knex('messenger_user_chatbot_state')
-    .insert({
-      messenger_id: messengerId,
-      chatbot_infos: { userName: name },
-      state: BASIC_CHATBOT_STATES.NOT_LINKED,
-    })
-    .returning('*');
-  return {
-    messengerId: res.messenger_id,
-    state: res.state,
-    chatbotInfos: res.chatbot_infos,
-  };
-};
-
-const getFacebookId = async userId => {
-  const [id] = await knex('user_apps_id')
-    .select('facebook_id')
-    .where({ user_id: userId });
-  return id && id.facebook_id;
-};
-
-const deleteFacebookId = async userId => {
-  return knex('user_apps_id')
-    .update({ facebook_id: null })
-    .where({ user_id: userId })
-    .returning('user_id');
-};
-
-const isLinkedFacebookAccount = async facebookId => {
-  return (
-    await knex.first(
-      knex.raw(
-        'exists ?',
-        knex('user_apps_id')
-          .select('user_id')
-          .where({ facebook_id: facebookId }),
-      ),
-    )
-  ).exists;
-};
-
-const setMessengerId = async (userId, messengerId) => {
-  return knex('user_apps_id')
-    .where({ user_id: userId })
-    .update({ messenger_id: messengerId })
-    .returning('messenger_id');
-};
-
-const getMessengerId = async userId => {
-  const [res] = await knex('user_apps_id')
-    .where({ user_id: userId })
-    .select('messenger_id');
-  if (res) {
-    return res.messenger_id;
-  }
-};
-
-const deleteMessengerId = async userId => {
-  //Reseting chatbot state
-  await setChatbotInfos(await getMessengerId(userId), {
-    state: BASIC_CHATBOT_STATES.NOT_LINKED,
-  });
-  const res = await knex('user_apps_id')
-    .update({ messenger_id: null })
-    .where({ user_id: userId })
-    .returning('user_id');
-
-  return res;
-};
-
-const deleteChatbotInfos = async messengerId => {
-  await knex('user_apps_id')
-    .update({ messenger_id: null })
-    .where({ messenger_id: messengerId });
-  return knex('messenger_user_chatbot_state')
-    .del()
-    .where({ messenger_id: messengerId })
-    .returning('messenger_id');
-};
 
 const getUserIdFromAuthToken = async token => {
   const [{ user_id } = {}] = await knex('user_token')
@@ -806,17 +636,6 @@ module.exports = {
   cancelPersonTransfer,
   declinePersonTransfer,
   getTransferInfosFromToken,
-  setFacebookData,
-  getFacebookId,
-  deleteFacebookId,
-  isLinkedFacebookAccount,
-  setMessengerId,
-  getMessengerId,
-  deleteMessengerId,
-  getChatbotInfos,
-  setChatbotInfos,
-  addChatbotId,
-  deleteChatbotInfos,
   getLanguageFromUser,
   getUserIdFromMessengerId,
   getUserIdFromAuthToken,

@@ -8,7 +8,7 @@ const {
   getPreviousSearchQueriesFromId,
   getMyTeamsFromQuery,
   getTeamsFromQuery,
-} = require('../helpers/data');
+} = require('../helpers/search');
 
 const globalSearch = async (
   user_id,
