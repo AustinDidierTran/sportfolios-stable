@@ -213,9 +213,9 @@ router.get(`${BASE_URL}/coachSessionEvaluation`, async ctx => {
   );
 
   if (!evaluation) {
-    ctx.body = { data: evaluation };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  ctx.body = { data: evaluation };
 });
 
 router.get(`${BASE_URL}/isTeamCoach`, async ctx => {
@@ -921,9 +921,9 @@ router.post(BASE_URL, async ctx => {
   );
 
   if (!entityId) {
-    ctx.body = { data: entityId };
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  ctx.body = { data: entityId };
 });
 
 router.post(`${BASE_URL}/partner`, async ctx => {
