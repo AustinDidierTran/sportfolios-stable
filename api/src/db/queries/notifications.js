@@ -38,10 +38,7 @@ const {
   setChatbotInfos,
   getChatbotInfos,
 } = require('../helpers');
-const {
-  getGameTeams,
-  getEmailsLandingPage,
-} = require('../helpers/entity');
+const { getGameTeams } = require('../helpers/entity');
 
 const {
   SOCKET_EVENT,
@@ -50,6 +47,7 @@ const {
   MILLIS_TIME_ENUM,
   BASIC_CHATBOT_STATES,
 } = require('../../../../common/enums');
+const { getEmailsLandingPage } = require('./admin');
 
 const seeNotifications = async userId => {
   return seeNotificationsHelper(userId);

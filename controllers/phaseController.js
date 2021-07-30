@@ -1,6 +1,5 @@
 const {
   addPhase: addPhaseHelper,
-  getEntityRole: getEntityRoleHelper,
   getPrerankPhase: getPrerankPhaseHelper,
   updatePhase: updatePhaseHelper,
   updatePhaseGamesRosterId: updatePhaseGamesRosterIdHelper,
@@ -10,6 +9,7 @@ const {
   updateManualRanking: updateManualRankingHelper,
   deletePhase: deletePhaseHelper,
 } = require('../api/src/db/helpers/entity');
+const { isAllowed } = require('../api/src/db/helpers/utils');
 
 const {
   ENTITIES_ROLE_ENUM,
@@ -24,11 +24,7 @@ class PhaseController {
     const { phase, spots, eventId, type } = body;
 
     if (
-      !(await this.isAllowed(
-        eventId,
-        userId,
-        ENTITIES_ROLE_ENUM.EDITOR,
-      ))
+      !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
@@ -37,11 +33,7 @@ class PhaseController {
 
   static async getPrerankPhase(eventId, userId) {
     if (
-      !(await this.isAllowed(
-        eventId,
-        userId,
-        ENTITIES_ROLE_ENUM.EDITOR,
-      ))
+      !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
@@ -64,11 +56,7 @@ class PhaseController {
       manualRanking,
     } = body;
     if (
-      !(await this.isAllowed(
-        eventId,
-        userId,
-        ENTITIES_ROLE_ENUM.EDITOR,
-      ))
+      !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
@@ -109,11 +97,7 @@ class PhaseController {
   static async updatePhaseOrder(body, userId) {
     const { orderedPhases, eventId } = body;
     if (
-      !(await this.isAllowed(
-        eventId,
-        userId,
-        ENTITIES_ROLE_ENUM.EDITOR,
-      ))
+      !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
@@ -123,25 +107,12 @@ class PhaseController {
   static async deletePhase(query, userId) {
     const { phaseId, eventId } = query;
     if (
-      !(await this.isAllowed(
-        eventId,
-        userId,
-        ENTITIES_ROLE_ENUM.EDITOR,
-      ))
+      !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
 
     return deletePhaseHelper(phaseId, eventId);
-  }
-
-  static async isAllowed(
-    entityId,
-    userId,
-    acceptationRole = ENTITIES_ROLE_ENUM.ADMIN,
-  ) {
-    const role = await getEntityRoleHelper(entityId, userId);
-    return role <= acceptationRole;
   }
 }
 module.exports = { PhaseController };

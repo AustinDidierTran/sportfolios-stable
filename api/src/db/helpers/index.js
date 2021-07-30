@@ -1,6 +1,5 @@
 const knex = require('../connection');
 const bcrypt = require('bcrypt');
-const { v1: uuidv1 } = require('uuid');
 const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
@@ -16,6 +15,7 @@ const {
 } = require('../../server/utils/nodeMailer');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const randtoken = require('rand-token');
+const { generateToken } = require('./utils');
 
 const confirmEmail = async ({ email }) => {
   await knex('user_email')
@@ -160,22 +160,8 @@ const generateHashedPassword = async password => {
   return hashedPassword;
 };
 
-const generateToken = () => {
-  return uuidv1();
-};
-
 const generatePromoCodeToken = () => {
   const token = randtoken.generate(6);
-  return token;
-};
-
-const generateAuthToken = async userId => {
-  const token = generateToken();
-  await knex('user_token').insert({
-    user_id: userId,
-    token_id: token,
-    expires_at: new Date(Date.now() + EXPIRATION_TIMES.AUTH_TOKEN),
-  });
   return token;
 };
 
@@ -600,43 +586,41 @@ const getUserIdFromAuthToken = async token => {
 };
 
 module.exports = {
+  cancelPersonTransfer,
   confirmEmail,
-  createUserEmail,
-  createUserComplete,
   createConfirmationEmailToken,
   createRecoveryEmailToken,
+  createUserComplete,
+  createUserEmail,
+  declinePersonTransfer,
   generateHashedPassword,
-  generateToken,
-  generateAuthToken,
   generateMemberImportToken,
   getBasicUserInfoFromId,
   getEmailFromToken,
-  getEmailsFromUserId,
   getEmailFromUserId,
+  getEmailsFromUserId,
   getHashedPasswordFromId,
   getLanguageFromEmail,
+  getLanguageFromUser,
+  getPeopleTransferedToEmails,
+  getPeopleTransferedToUser,
+  getPrimaryPersonIdFromUserId,
+  getTokenPromoCode,
+  getTransferInfosFromToken,
+  getUserIdFromAuthToken,
   getUserIdFromEmail,
+  getUserIdFromMessengerId,
   getUserIdFromRecoveryPasswordToken,
+  isRegistered,
   sendNewConfirmationEmailAllIncluded,
+  sendPersonTransferEmailAllIncluded,
   setRecoveryTokenToUsed,
+  transferPerson,
   updateBasicUserInfoFromUserId,
   updateNewsLetterSubscription,
   updatePasswordFromUserId,
-  validateEmailIsConfirmed,
-  validateEmailIsUnique,
-  getPrimaryPersonIdFromUserId,
   updatePrimaryPerson,
   useToken,
-  sendPersonTransferEmailAllIncluded,
-  isRegistered,
-  getPeopleTransferedToUser,
-  getPeopleTransferedToEmails,
-  transferPerson,
-  getTokenPromoCode,
-  cancelPersonTransfer,
-  declinePersonTransfer,
-  getTransferInfosFromToken,
-  getLanguageFromUser,
-  getUserIdFromMessengerId,
-  getUserIdFromAuthToken,
+  validateEmailIsConfirmed,
+  validateEmailIsUnique,
 };

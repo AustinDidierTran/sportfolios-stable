@@ -60,7 +60,6 @@ const {
   deleteRosterPlayer: deleteRosterPlayerHelper,
   deleteSessionExercise: deleteSessionExerciseHelper,
   eventInfos: eventInfosHelper,
-  generateReport: generateReportHelper,
   getAlias: getAliasHelper,
   getAllEntities: getAllEntitiesHelper,
   getAllExercises: getAllExercisesHelper,
@@ -108,9 +107,7 @@ const {
   getMyPersonsAdminsOfTeam: getMyPersonsAdminsOfTeamHelper,
   getNbOfTeamsInEvent: getNbOfTeamsInEventHelper,
   getOptions: getOptionsHelper,
-  getOrganizationMembers: getOrganizationMembersHelper,
   getOrganizationTokenPromoCode: getOrganizationTokenPromoCodeHelper,
-  getOwnedEvents: getOwnedEventsHelper,
   getOwnerStripePrice,
   getPartners: getPartnersHelper,
   getPersonGames: getPersonGamesHelper,
@@ -215,15 +212,7 @@ const {
 } = require('../helpers');
 const { sendNotification } = require('./notifications');
 const { getOwnedPersons } = require('./users');
-
-async function isAllowed(
-  entityId,
-  userId,
-  acceptationRole = ENTITIES_ROLE_ENUM.ADMIN,
-) {
-  const role = await getEntityRoleHelper(entityId, userId);
-  return role <= acceptationRole;
-}
+const { isAllowed } = require('../helpers/utils');
 
 async function getEntity(id, userId) {
   const res = await getEntityHelper(id, userId);
@@ -251,10 +240,6 @@ function getScoreSuggestion(gameId) {
 
 function getAllOwnedEntities(type, userId, querry, onlyAdmin) {
   return getAllOwnedEntitiesHelper(type, userId, querry, onlyAdmin);
-}
-
-function getOwnedEvents(organizationId) {
-  return getOwnedEventsHelper(organizationId);
 }
 
 function getAllTypeEntities(type) {
@@ -319,25 +304,8 @@ function getReports(entityId) {
   return getReportsHelper(entityId);
 }
 
-function generateReport(reportId) {
-  return generateReportHelper(reportId);
-}
-
 function hasMemberships(organizationId) {
   return hasMembershipsHelper(organizationId);
-}
-
-async function getOrganizationMembers(organizationId, userId) {
-  if (
-    !(await isAllowed(
-      organizationId,
-      userId,
-      ENTITIES_ROLE_ENUM.EDITOR,
-    ))
-  ) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
-  return getOrganizationMembersHelper(organizationId);
 }
 
 async function getOrganizationTokenPromoCode(organizationId, userId) {
@@ -2302,7 +2270,6 @@ module.exports = {
   deleteReport,
   eventInfos,
   eventInfos,
-  generateReport,
   getAlias,
   getAllEntities,
   getAllExercises,
@@ -2343,9 +2310,7 @@ module.exports = {
   getMyRosterIds,
   getNewRosterInviteToken,
   getOptions,
-  getOrganizationMembers,
   getOrganizationTokenPromoCode,
-  getOwnedEvents,
   getPartners,
   getPersonInfos,
   getPhases,

@@ -27,8 +27,6 @@ const {
   cancelPersonTransfer: cancelPersonTransferHelper,
   declinePersonTransfer: declinePersonTransferHelper,
   getTransferInfosFromToken: getTransferInfosHelper,
-  generateAuthToken,
-  generateToken,
   validateEmailIsConfirmed,
   isRegistered,
 } = require('../helpers');
@@ -38,7 +36,11 @@ const {
   personIsAwaitingTransfer,
 } = require('../helpers/entity');
 
-const { isAllowed } = require('./entity');
+const {
+  generateAuthToken,
+  generateToken,
+  isAllowed,
+} = require('../helpers/utils');
 
 const sendTransferPersonEmail = async (
   userId,

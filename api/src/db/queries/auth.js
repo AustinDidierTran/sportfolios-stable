@@ -10,9 +10,7 @@ const {
   createConfirmationEmailToken,
   createRecoveryEmailToken,
   createUserComplete,
-  generateAuthToken,
   generateHashedPassword,
-  generateToken,
   getBasicUserInfoFromId,
   getEmailFromToken,
   getHashedPasswordFromId,
@@ -25,12 +23,17 @@ const {
   validateEmailIsUnique,
   getUserIdFromAuthToken,
 } = require('../helpers');
+
 const {
   ENTITIES_ROLE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
   STATUS_ENUM,
 } = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
+const {
+  generateAuthToken,
+  generateToken,
+} = require('../helpers/utils');
 
 const signup = async ({
   firstName,

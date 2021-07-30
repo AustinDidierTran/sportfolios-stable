@@ -3,7 +3,7 @@ const {
   formatRoute,
 } = require('../../../../common/utils/stringFormat');
 const { ROUTES_ENUM } = require('../../../../common/enums');
-const { generateAuthToken } = require('../helpers/entity');
+const { generateAuthToken } = require('../helpers/utils');
 
 const formatLinkWithAuthToken = async (userId, route) => {
   const token = await generateAuthToken(userId);

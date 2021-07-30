@@ -3,9 +3,9 @@ const {
   updateFinalPositionPhase: updateFinalPositionPhaseHelper,
   updateOriginPhase: updateOriginPhaseHelper,
   deleteTeamPhase: deleteTeamPhaseHelper,
-  getEntityRole: getEntityRoleHelper,
   getPhaseRanking: getPhaseRankingHelper,
 } = require('../api/src/db/helpers/entity');
+const { isAllowed } = require('../api/src/db/helpers/utils');
 
 const { ENTITIES_ROLE_ENUM } = require('../common/enums');
 
@@ -21,11 +21,7 @@ class PhaseRankingController {
     const { phaseId, teams, eventId } = body;
 
     if (
-      !(await this.isAllowed(
-        eventId,
-        userId,
-        ENTITIES_ROLE_ENUM.EDITOR,
-      ))
+      !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
@@ -40,11 +36,7 @@ class PhaseRankingController {
     const { phaseId, teams, eventId } = body;
 
     if (
-      !(await this.isAllowed(
-        eventId,
-        userId,
-        ENTITIES_ROLE_ENUM.EDITOR,
-      ))
+      !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
@@ -62,11 +54,7 @@ class PhaseRankingController {
     } = body;
 
     if (
-      !(await this.isAllowed(
-        eventId,
-        userId,
-        ENTITIES_ROLE_ENUM.EDITOR,
-      ))
+      !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
@@ -85,25 +73,12 @@ class PhaseRankingController {
     const { phaseId, initialPosition, eventId } = body;
 
     if (
-      !(await this.isAllowed(
-        eventId,
-        userId,
-        ENTITIES_ROLE_ENUM.EDITOR,
-      ))
+      !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
     ) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
     const res = await deleteTeamPhaseHelper(phaseId, initialPosition);
     return res;
-  }
-
-  static async isAllowed(
-    entityId,
-    userId,
-    acceptationRole = ENTITIES_ROLE_ENUM.ADMIN,
-  ) {
-    const role = await getEntityRoleHelper(entityId, userId);
-    return role <= acceptationRole;
   }
 }
 module.exports = { PhaseRankingController };

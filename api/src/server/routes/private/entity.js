@@ -123,17 +123,6 @@ router.get(`${BASE_URL}/scoreSuggestion`, async ctx => {
   ctx.body = { data: suggestion };
 });
 
-router.get(`${BASE_URL}/ownedEvents`, async ctx => {
-  const entity = await queries.getOwnedEvents(
-    ctx.query.organizationId,
-  );
-
-  if (!entity) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = { data: entity };
-});
-
 router.get(`${BASE_URL}/allOwned`, async ctx => {
   const entity = await queries.getAllOwnedEntities(
     ctx.query.type,
@@ -248,31 +237,11 @@ router.get(`${BASE_URL}/reports`, async ctx => {
   ctx.body = { data: reports };
 });
 
-router.get(`${BASE_URL}/generateReport`, async ctx => {
-  const report = await queries.generateReport(ctx.query.reportId);
-
-  if (!report) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = { data: report };
-});
-
 router.get(`${BASE_URL}/hasMemberships`, async ctx => {
   const entity = await queries.hasMemberships(
     ctx.query.organizationId,
   );
   if (!entity && entity != false) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = { data: entity };
-});
-
-router.get(`${BASE_URL}/organizationMembers`, async ctx => {
-  const entity = await queries.getOrganizationMembers(
-    ctx.query.id,
-    ctx.body.userInfo.id,
-  );
-  if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   ctx.body = { data: entity };

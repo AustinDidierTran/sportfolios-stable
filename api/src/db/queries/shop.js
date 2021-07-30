@@ -20,17 +20,12 @@ const {
   deletePersonFromEvent,
   deletePlayerFromRoster,
   deleteTeamFromEvent,
-  getEntityRole: getEntityRoleHelper,
 } = require('../helpers/entity');
 const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
 } = require('../../../../common/enums');
-
-async function isAllowed(entityId, userId, acceptationRole) {
-  const role = await getEntityRoleHelper(entityId, userId);
-  return role <= acceptationRole;
-}
+const { isAllowed } = require('../helpers/utils');
 
 const getItem = async (stripePriceId, userId) => {
   return getItemHelper(stripePriceId, userId);
