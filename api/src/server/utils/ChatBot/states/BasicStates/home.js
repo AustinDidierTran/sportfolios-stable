@@ -11,10 +11,10 @@ const Response = require('../../response');
 const i18n = require('../../../../../i18n.config');
 const {
   getGamesWithAwaitingScore,
-} = require('../../../../../db/helpers/entity');
+} = require('../../../../../db/queries/entity');
 const {
   getUserIdFromMessengerId,
-} = require('../../../../../db/helpers');
+} = require('../../../../../db/queries/user');
 
 class Home extends State {
   isStartMock(webhookEvent) {

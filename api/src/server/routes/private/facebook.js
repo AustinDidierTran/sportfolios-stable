@@ -1,11 +1,11 @@
 const Router = require('koa-router');
 const { ERROR_ENUM } = require('../../../../../common/errors');
-const queries = require('../../../db/queries/facebook');
+const service = require('../../service/facebook');
 const router = new Router();
 const BASE_URL = '/api/user';
 
 router.post(`${BASE_URL}/facebookData`, async ctx => {
-  const data = await queries.setFacebookData(
+  const data = await service.setFacebookData(
     ctx.body.userInfo.id,
     ctx.request.body,
   );
@@ -16,7 +16,7 @@ router.post(`${BASE_URL}/facebookData`, async ctx => {
 });
 
 router.post(`${BASE_URL}/facebookConnection`, async ctx => {
-  const data = await queries.linkFacebook(
+  const data = await service.linkFacebook(
     ctx.body.userInfo.id,
     ctx.request.body,
   );
@@ -27,7 +27,7 @@ router.post(`${BASE_URL}/facebookConnection`, async ctx => {
 });
 
 router.delete(`${BASE_URL}/facebookConnection`, async ctx => {
-  const res = await queries.unlinkFacebook(ctx.body.userInfo.id);
+  const res = await service.unlinkFacebook(ctx.body.userInfo.id);
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -35,7 +35,7 @@ router.delete(`${BASE_URL}/facebookConnection`, async ctx => {
 });
 
 router.get(`${BASE_URL}/connectedApps`, async ctx => {
-  const res = await queries.getConnectedApps(ctx.body.userInfo.id);
+  const res = await service.getConnectedApps(ctx.body.userInfo.id);
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -43,7 +43,7 @@ router.get(`${BASE_URL}/connectedApps`, async ctx => {
 });
 
 router.post(`${BASE_URL}/messengerConnection`, async ctx => {
-  const data = await queries.linkMessengerFromFBId(
+  const data = await service.linkMessengerFromFBId(
     ctx.body.userInfo.id,
     ctx.request.body.facebook_id,
   );
@@ -54,7 +54,7 @@ router.post(`${BASE_URL}/messengerConnection`, async ctx => {
 });
 
 router.delete(`${BASE_URL}/messengerConnection`, async ctx => {
-  const res = await queries.unlinkMessenger(ctx.body.userInfo.id);
+  const res = await service.unlinkMessenger(ctx.body.userInfo.id);
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }

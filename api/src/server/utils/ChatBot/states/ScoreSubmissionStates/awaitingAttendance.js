@@ -13,7 +13,7 @@ const {
 const { MESSENGER_PAYLOADS } = require('../../../enums');
 const {
   getAttendanceSheet,
-} = require('../../../../../db/helpers/entity');
+} = require('../../../../../db/queries/entity');
 const { CLIENT_BASE_URL } = require('../../../../../../../conf');
 
 class AwaitingAttendance extends State {

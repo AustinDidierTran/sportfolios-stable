@@ -3,9 +3,10 @@ const _ = require('lodash');
 const router = new Router();
 const BASE_URL = '/api/fb';
 const { Chatbot } = require('../../utils/ChatBot');
-const queries = require('../../../db/queries/facebook');
+const service = require('../../service/facebook');
 const { FACEBOOK_VERIFY_TOKEN } = require('../../../../../conf');
 const { STATUS_ENUM } = require('../../../../../common/enums');
+
 router.post(`${BASE_URL}/messengerHook`, async ctx => {
   let body = ctx.request.body;
 
@@ -27,12 +28,12 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
           .toLowerCase()
           .includes('hardreset')
       ) {
-        queries.deleteChatbotInfos(senderId);
+        service.deleteChatbotInfos(senderId);
       } else {
         let {
           state: initialState,
           chatbotInfos: initialChatbotInfos,
-        } = await queries.getChatbotInfos(senderId);
+        } = await service.getChatbotInfos(senderId);
         const chatbot = new Chatbot(senderId, initialState, {
           ...initialChatbotInfos,
         });

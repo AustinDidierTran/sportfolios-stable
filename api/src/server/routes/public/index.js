@@ -4,8 +4,8 @@ const shop = require('./shop');
 const googleAnalytics = require('./googleAnalytics');
 const user = require('./user');
 const facebook = require('./facebook');
-const posts = require('./posts');
-const notifications = require('./notifications');
+const posts = require('./post');
+const notifications = require('./notification');
 
 module.exports = [
   auth,

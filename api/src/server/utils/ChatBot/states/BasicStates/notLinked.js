@@ -2,7 +2,7 @@ const State = require('../state');
 const {
   BASIC_CHATBOT_STATES,
 } = require('../../../../../../../common/enums');
-const queries = require('../../../../../db/queries/facebook');
+const queries = require('../../../../service/facebook');
 const Response = require('../../response');
 const i18n = require('../../../../../i18n.config');
 

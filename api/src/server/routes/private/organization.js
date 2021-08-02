@@ -1,11 +1,11 @@
 const Router = require('koa-router');
-const queries = require('../../../db/queries/organization');
+const service = require('../../service/organization');
 const { ERROR_ENUM } = require('../../../../../common/errors');
 const router = new Router();
 const BASE_URL = '/api/entity';
 
 router.get(`${BASE_URL}/ownedEvents`, async ctx => {
-  const entity = await queries.getOwnedEvents(
+  const entity = await service.getOwnedEvents(
     ctx.query.organizationId,
   );
 
@@ -16,7 +16,7 @@ router.get(`${BASE_URL}/ownedEvents`, async ctx => {
 });
 
 router.get(`${BASE_URL}/generateReport`, async ctx => {
-  const report = await queries.generateReport(ctx.query.reportId);
+  const report = await service.generateReport(ctx.query.reportId);
 
   if (!report) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -25,7 +25,7 @@ router.get(`${BASE_URL}/generateReport`, async ctx => {
 });
 
 router.get(`${BASE_URL}/organizationMembers`, async ctx => {
-  const entity = await queries.getOrganizationMembers(
+  const entity = await service.getOrganizationMembers(
     ctx.query.id,
     ctx.body.userInfo.id,
   );

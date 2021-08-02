@@ -1,47 +1,58 @@
-const {
-  getEventCategories: getEventsCategoriesHelper,
-  getPageviewPathnames: getPageviewsPathnameHelper,
-  getActiveEventCategories: getActiveEventsHelper,
-  getActivePageviewsPathnames: getActivePageviewsHelper,
-  updateEventCategoryToggle: updateEventHelper,
-  updatePageviewsPathnameToggle: updatePageviewHelper,
-  addPageviewsPathname: addPageviewHelper,
-} = require('../helpers/googleAnalytics');
+const knex = require('../connection');
 
-async function getAllEvents() {
-  return getEventsCategoriesHelper();
+async function getEventCategories() {
+  return knex('ga_toggles_events')
+    .select('*')
+    .orderBy('category');
 }
 
-async function getAllPageviews() {
-  return getPageviewsPathnameHelper();
+async function getPageviewPathnames() {
+  return knex('ga_toggles_pageviews')
+    .select('*')
+    .orderBy('pathname');
 }
 
-async function getAllActiveEvents() {
-  return getActiveEventsHelper();
+async function getActiveEventCategories() {
+  return knex('ga_toggles_events')
+    .select('category')
+    .where({ enabled: true });
 }
 
-async function getAllActivePageviews() {
-  return getActivePageviewsHelper();
+async function getActivePageviewsPathnames() {
+  return knex('ga_toggles_pageviews')
+    .select('pathname')
+    .where({ enabled: true });
 }
 
-async function updateEvent(id, enabled) {
-  return updateEventHelper(id, enabled);
+async function updateEventCategoryToggle(categoryId, enabled) {
+  return knex('ga_toggles_events')
+    .update({ enabled })
+    .where({ id: categoryId })
+    .returning('*');
 }
 
-async function updatePageview(id, enabled) {
-  return updatePageviewHelper(id, enabled);
+async function updatePageviewsPathnameToggle(pathnameId, enabled) {
+  return knex('ga_toggles_pageviews')
+    .update({ enabled })
+    .where({ id: pathnameId })
+    .returning('*');
 }
 
-async function addPageview(pathname, enabled) {
-  return addPageviewHelper(pathname, enabled);
+async function addPageviewsPathname(pathname, enabled) {
+  return knex('ga_toggles_pageviews')
+    .insert({
+      pathname,
+      enabled,
+    })
+    .returning('*');
 }
 
 module.exports = {
-  getAllEvents,
-  getAllPageviews,
-  getAllActiveEvents,
-  getAllActivePageviews,
-  updateEvent,
-  updatePageview,
-  addPageview,
+  getEventCategories,
+  getPageviewPathnames,
+  getActiveEventCategories,
+  getActivePageviewsPathnames,
+  updateEventCategoryToggle,
+  updatePageviewsPathnameToggle,
+  addPageviewsPathname,
 };

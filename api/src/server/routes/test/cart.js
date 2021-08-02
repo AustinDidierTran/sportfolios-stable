@@ -1,13 +1,13 @@
 const Router = require('koa-router');
 const { STATUS_ENUM } = require('../../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../../common/errors');
-const helpers = require('../../../db/helpers/entity');
+const service = require('../../service/entity');
 
 const router = new Router();
 const BASE_URL = '/api/test/cart';
 
 router.get(`${BASE_URL}/removeEventCartItem`, async ctx => {
-  const res = await helpers.removeEventCartItem({
+  const res = await service.removeEventCartItem({
     rosterId: ctx.body.rosterId,
   });
 

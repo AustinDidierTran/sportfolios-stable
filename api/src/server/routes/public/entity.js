@@ -1,11 +1,7 @@
 const Router = require('koa-router');
-const queries = require('../../../db/queries/entity');
-const {
-  OrganizationController,
-} = require('../../../../../controllers/organization');
-const {
-  EventController,
-} = require('../../../../../controllers/event');
+const service = require('../../service/entity');
+const organizationService = require('../../service/organization');
+const eventService = require('../../service/event');
 const { GLOBAL_ENUM } = require('../../../../../common/enums');
 const router = new Router();
 const BASE_URL = '/api/entity';
@@ -19,22 +15,22 @@ const getUserId = ctx => {
 };
 
 router.get(BASE_URL, async ctx => {
-  const type = await queries.getEntitiesTypeById(ctx.query.id);
+  const type = await service.getEntitiesTypeById(ctx.query.id);
   const userId = getUserId(ctx);
   let entity;
 
   switch (type) {
     case GLOBAL_ENUM.ORGANIZATION:
-      entity = await OrganizationController.organization(
+      entity = await organizationService.getOrganization(
         ctx.query.id,
         userId,
       );
       break;
     case GLOBAL_ENUM.EVENT:
-      entity = await EventController.event(ctx.query.id, userId);
+      entity = await eventService.getEvent(ctx.query.id, userId);
       break;
     default:
-      entity = await queries.getEntity(ctx.query.id, userId);
+      entity = await service.getEntity(ctx.query.id, userId);
   }
 
   if (entity) {
@@ -45,7 +41,7 @@ router.get(BASE_URL, async ctx => {
 });
 
 router.get(`${BASE_URL}/realId`, async ctx => {
-  const entity = await queries.getRealId(ctx.query.id);
+  const entity = await service.getRealId(ctx.query.id);
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -54,7 +50,7 @@ router.get(`${BASE_URL}/realId`, async ctx => {
 });
 
 router.get(`${BASE_URL}/alias`, async ctx => {
-  const alias = await queries.getAlias(ctx.query.entityId);
+  const alias = await service.getAlias(ctx.query.entityId);
 
   if (!alias) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -64,7 +60,7 @@ router.get(`${BASE_URL}/alias`, async ctx => {
 
 router.get(`${BASE_URL}/eventInfos`, async ctx => {
   const userId = getUserId(ctx);
-  const event = await queries.eventInfos(ctx.query.id, userId);
+  const event = await service.eventInfos(ctx.query.id, userId);
 
   if (!event) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -73,7 +69,7 @@ router.get(`${BASE_URL}/eventInfos`, async ctx => {
 });
 
 router.get(`${BASE_URL}/teamExercises`, async ctx => {
-  const exercise = await queries.getTeamExercises(ctx.query.teamId);
+  const exercise = await service.getTeamExercises(ctx.query.teamId);
 
   if (!exercise) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -82,7 +78,7 @@ router.get(`${BASE_URL}/teamExercises`, async ctx => {
 });
 
 router.get(`${BASE_URL}/sessionExercises`, async ctx => {
-  const exercise = await queries.getSessionExercises(
+  const exercise = await service.getSessionExercises(
     ctx.query.sessionId,
   );
 
@@ -94,7 +90,7 @@ router.get(`${BASE_URL}/sessionExercises`, async ctx => {
 
 router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
   const userId = getUserId(ctx);
-  const teams = await queries.getAllTeamsRegisteredInfos(
+  const teams = await service.getAllTeamsRegisteredInfos(
     ctx.query.eventId,
     ctx.query.pills,
     userId,
@@ -107,7 +103,7 @@ router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
 });
 router.get(`${BASE_URL}/allTeamsAcceptedInfos`, async ctx => {
   const userId = getUserId(ctx);
-  const teams = await queries.getAllTeamsAcceptedInfos(
+  const teams = await service.getAllTeamsAcceptedInfos(
     ctx.query.eventId,
     userId,
   );
@@ -120,7 +116,7 @@ router.get(`${BASE_URL}/allTeamsAcceptedInfos`, async ctx => {
 
 router.get(`${BASE_URL}/allPeopleRegisteredInfos`, async ctx => {
   const userId = getUserId(ctx);
-  const people = await queries.getAllPeopleRegisteredInfos(
+  const people = await service.getAllPeopleRegisteredInfos(
     ctx.query.eventId,
     userId,
   );
@@ -132,7 +128,7 @@ router.get(`${BASE_URL}/allPeopleRegisteredInfos`, async ctx => {
 });
 
 router.get(`${BASE_URL}/players`, async ctx => {
-  const players = await queries.getTeamPlayers(ctx.query.teamId);
+  const players = await service.getTeamPlayers(ctx.query.teamId);
 
   if (!players) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -141,7 +137,7 @@ router.get(`${BASE_URL}/players`, async ctx => {
 });
 
 router.get(`${BASE_URL}/rosterPlayers`, async ctx => {
-  const players = await queries.getRosterPlayers(ctx.query.rosterId);
+  const players = await service.getRosterPlayers(ctx.query.rosterId);
 
   if (!players) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -151,7 +147,7 @@ router.get(`${BASE_URL}/rosterPlayers`, async ctx => {
 
 router.get(`${BASE_URL}/myTeamPlayers`, async ctx => {
   const userId = getUserId(ctx);
-  const myTeamPlayers = await queries.getMyTeamPlayers(
+  const myTeamPlayers = await service.getMyTeamPlayers(
     ctx.query.teamId,
     userId,
   );
@@ -163,7 +159,7 @@ router.get(`${BASE_URL}/myTeamPlayers`, async ctx => {
 });
 
 router.get(`${BASE_URL}/preranking`, async ctx => {
-  const ranking = await queries.getPreranking(ctx.query.eventId);
+  const ranking = await service.getPreranking(ctx.query.eventId);
 
   if (!ranking) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -172,7 +168,7 @@ router.get(`${BASE_URL}/preranking`, async ctx => {
 });
 
 router.get(`${BASE_URL}/remainingSpots`, async ctx => {
-  const remaining = await queries.getRemainingSpots(ctx.query.id);
+  const remaining = await service.getRemainingSpots(ctx.query.id);
 
   if (remaining < 0) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -181,7 +177,7 @@ router.get(`${BASE_URL}/remainingSpots`, async ctx => {
 });
 
 router.get(`${BASE_URL}/getRoster`, async ctx => {
-  const roster = await queries.getRoster(
+  const roster = await service.getRoster(
     ctx.query.rosterId,
     ctx.query.withSub,
   );
@@ -193,7 +189,7 @@ router.get(`${BASE_URL}/getRoster`, async ctx => {
 });
 
 router.get(`${BASE_URL}/options`, async ctx => {
-  const option = await queries.getOptions(ctx.query.eventId);
+  const option = await service.getOptions(ctx.query.eventId);
 
   if (!option) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -202,7 +198,7 @@ router.get(`${BASE_URL}/options`, async ctx => {
 });
 
 router.get(`${BASE_URL}/phases`, async ctx => {
-  const phases = await queries.getPhases(ctx.query.eventId);
+  const phases = await service.getPhases(ctx.query.eventId);
 
   if (!phases) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -211,7 +207,7 @@ router.get(`${BASE_URL}/phases`, async ctx => {
 });
 
 router.get(`${BASE_URL}/games`, async ctx => {
-  const games = await queries.getGames(ctx.query.eventId);
+  const games = await service.getGames(ctx.query.eventId);
 
   if (!games) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -221,7 +217,7 @@ router.get(`${BASE_URL}/games`, async ctx => {
 
 router.get(`${BASE_URL}/gameInfo`, async ctx => {
   const userId = getUserId(ctx);
-  const gameInfo = await queries.getGameInfo(
+  const gameInfo = await service.getGameInfo(
     ctx.query.gameId,
     userId,
   );
@@ -233,7 +229,7 @@ router.get(`${BASE_URL}/gameInfo`, async ctx => {
 });
 
 router.get(`${BASE_URL}/teamLocations`, async ctx => {
-  const locations = await queries.getSessionLocations(
+  const locations = await service.getSessionLocations(
     ctx.query.teamId,
   );
 
@@ -245,7 +241,7 @@ router.get(`${BASE_URL}/teamLocations`, async ctx => {
 
 router.get(`${BASE_URL}/practiceBasicInfo`, async ctx => {
   const userId = getUserId(ctx);
-  const practicesBasicInfo = await queries.getPracticeBasicInfo(
+  const practicesBasicInfo = await service.getPracticeBasicInfo(
     ctx.query.teamId,
     userId,
   );
@@ -259,7 +255,7 @@ router.get(`${BASE_URL}/practiceBasicInfo`, async ctx => {
 router.get(`${BASE_URL}/practiceInfo`, async ctx => {
   const userId = getUserId(ctx);
 
-  const practiceInfo = await queries.getPracticeInfo(
+  const practiceInfo = await service.getPracticeInfo(
     ctx.query.practiceId,
     userId,
   );
@@ -271,7 +267,7 @@ router.get(`${BASE_URL}/practiceInfo`, async ctx => {
 });
 
 router.get(`${BASE_URL}/teamGames`, async ctx => {
-  const games = await queries.getTeamGames(ctx.query.eventId);
+  const games = await service.getTeamGames(ctx.query.eventId);
 
   if (!games) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -280,7 +276,7 @@ router.get(`${BASE_URL}/teamGames`, async ctx => {
 });
 
 router.get(`${BASE_URL}/phasesGameAndTeams`, async ctx => {
-  const games = await queries.getPhasesGameAndTeams(
+  const games = await service.getPhasesGameAndTeams(
     ctx.query.eventId,
     ctx.query.phaseId,
   );
@@ -292,7 +288,7 @@ router.get(`${BASE_URL}/phasesGameAndTeams`, async ctx => {
 });
 
 router.get(`${BASE_URL}/gameOptions`, async ctx => {
-  const gameOptions = await queries.getGameOptions(ctx.query.eventId);
+  const gameOptions = await service.getGameOptions(ctx.query.eventId);
 
   if (!gameOptions) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -301,7 +297,7 @@ router.get(`${BASE_URL}/gameOptions`, async ctx => {
 });
 
 router.get(`${BASE_URL}/fields`, async ctx => {
-  const field = await queries.getFields(ctx.query.eventId);
+  const field = await service.getFields(ctx.query.eventId);
 
   if (!field) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -310,7 +306,7 @@ router.get(`${BASE_URL}/fields`, async ctx => {
 });
 
 router.get(`${BASE_URL}/rosters`, async ctx => {
-  const rosters = await queries.getTeamRosters(ctx.query.teamId);
+  const rosters = await service.getTeamRosters(ctx.query.teamId);
 
   if (!rosters) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -319,7 +315,7 @@ router.get(`${BASE_URL}/rosters`, async ctx => {
 });
 
 router.get(`${BASE_URL}/rostersNames`, async ctx => {
-  const names = await queries.getRostersNames(ctx.query.id);
+  const names = await service.getRostersNames(ctx.query.id);
 
   if (!names) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -328,7 +324,7 @@ router.get(`${BASE_URL}/rostersNames`, async ctx => {
 });
 
 router.get(`${BASE_URL}/hasSpirit`, async ctx => {
-  const getHasSpirit = await queries.getHasSpirit(ctx.query.eventId);
+  const getHasSpirit = await service.getHasSpirit(ctx.query.eventId);
 
   if (!getHasSpirit) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
