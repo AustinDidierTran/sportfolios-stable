@@ -33,14 +33,14 @@ const globalSearch = async (
   return { entities };
 };
 
-const myTeamsSearch = async (user_id, query, eventId) => {
-  const entities = await getMyTeamsFromQuery(user_id, eventId, query);
+const myTeamsSearch = async (userId, query, eventId) => {
+  const entities = await getMyTeamsFromQuery(userId, eventId, query);
 
   return { entities };
 };
 
-const getPreviousSearchQueries = async user_id => {
-  return getPreviousSearchQueriesFromId(user_id);
+const getPreviousSearchQueries = async userId => {
+  return getPreviousSearchQueriesFromId(userId);
 };
 
 module.exports = {

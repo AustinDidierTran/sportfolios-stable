@@ -7,13 +7,13 @@ const {
 const {
   PLATEFORM_FEES,
   PLATEFORM_FEES_FIX,
+  GLOBAL_ENUM,
 } = require('../../../../../common/enums');
 
 const addProduct = async body => {
   const { stripeProduct } = body;
   try {
     const product = await stripe.products.create(stripeProduct);
-
     await knex('stripe_product').insert({
       stripe_product_id: product.id,
       label: product.name,
@@ -41,7 +41,6 @@ const addPrice = async body => {
   } = body;
   try {
     const price = await stripe.prices.create(stripePrice);
-
     let transactionFees = price.unit_amount;
     if (taxRatesId) {
       await Promise.all(
@@ -81,7 +80,7 @@ const addPrice = async body => {
       );
     }
 
-    await knex('store_items').insert({
+    const res = await knex('store_items').insert({
       entity_id: entityId,
       stripe_price_id: price.id,
       photo_url: photoUrl,
@@ -89,7 +88,7 @@ const addPrice = async body => {
 
     stripeLogger(`Price created, ${price.id}`);
 
-    return price;
+    return res;
   } catch (err) {
     stripeErrorLogger('addPrice error', err);
     throw err;
@@ -105,16 +104,24 @@ const editPrice = async body => {
   } = body;
   try {
     const price = await stripe.prices.create(stripePrice);
+    let transactionFees = price.unit_amount;
+
+    transactionFees = Math.floor(
+      transactionFees * PLATEFORM_FEES + PLATEFORM_FEES_FIX,
+    );
 
     await knex('stripe_price').insert({
       stripe_price_id: price.id,
       stripe_product_id: price.product,
       amount: price.unit_amount,
       active: price.active,
+      transaction_fees: transactionFees,
       start_date: new Date(price.created * 1000),
       metadata: price.metadata,
+      owner_id: entityId,
     });
-    await knex('store_items')
+
+    const res = await knex('store_items')
       .update({
         stripe_price_id: price.id,
         photo_url: photoUrl,
@@ -126,7 +133,7 @@ const editPrice = async body => {
 
     stripeLogger(`Price updated, ${price.id}`);
 
-    return price;
+    return res;
   } catch (err) {
     stripeErrorLogger('addPrice error', err);
     throw err;
@@ -135,13 +142,22 @@ const editPrice = async body => {
 
 const createItem = async body => {
   const { stripeProduct, stripePrice, entityId, photoUrl } = body;
+
   try {
     const product = await addProduct({
       stripeProduct,
     });
 
+    const newStripePrice = {
+      currency: stripePrice.currency,
+      unit_amount: stripePrice.unit_amount,
+      active: stripePrice.active,
+      product: product.id,
+      metadata: { type: GLOBAL_ENUM.SHOP_ITEM, id: entityId },
+    };
+
     const price = await addPrice({
-      stripePrice: { ...stripePrice, product: product.id },
+      stripePrice: { ...newStripePrice, product: product.id },
       entityId,
       photoUrl,
       ownerId: entityId,
@@ -207,13 +223,12 @@ const deleteItem = async body => {
   const { stripeProductId, stripePriceId } = body;
 
   const numberPriceDeleted = await deletePrice(stripePriceId);
-
   const numberProductDeleted = await deleteProduct(stripeProductId);
 
   if (numberPriceDeleted && numberProductDeleted) {
-    return { stripeProductId, stripePriceId };
+    return true;
   }
-  return null;
+  return false;
 };
 
 module.exports = {

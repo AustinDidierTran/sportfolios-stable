@@ -1,52 +1,48 @@
 const Router = require('koa-router');
+const { ERROR_ENUM } = require('../../../../../common/errors');
 const queries = require('../../../db/queries/data');
 
 const router = new Router();
 const BASE_URL = '/api/data';
 
 router.get(`${BASE_URL}/search/global`, async ctx => {
-  const previousSearchQueries = await queries.globalSearch(
+  const entities = await queries.globalSearch(
     ctx.body.userInfo.id,
     ctx.query.query,
     ctx.query.type,
     ctx.query.blackList,
     ctx.query.whiteList,
   );
-  if (!previousSearchQueries) {
+  if (!entities) {
     throw new Error(STATUS_ENUM.ERROR_STRING);
   }
   ctx.body = {
-    status: 'success',
-    data: previousSearchQueries,
+    data: entities,
   };
 });
 
 router.get(`${BASE_URL}/search/myTeamsSearch`, async ctx => {
-  try {
-    const previousSearchQueries = await queries.myTeamsSearch(
-      ctx.body.userInfo.id,
-      ctx.query.query,
-      ctx.query.eventId,
-    );
-    ctx.body = {
-      status: 'success',
-      data: previousSearchQueries,
-    };
-  } catch (err) {
-    ctx.status = 400;
-    ctx.body = {
-      status: 'error',
-      message: err.message || 'Sorry, an error has occured',
-    };
+  const teams = await queries.myTeamsSearch(
+    ctx.body.userInfo.id,
+    ctx.query.query,
+    ctx.query.eventId,
+  );
+  if (!teams) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = {
+    data: teams,
+  };
 });
 
 router.get(`${BASE_URL}/search/previous`, async ctx => {
   const previousSearchQueries = await queries.getPreviousSearchQueries(
     ctx.body.userInfo.id,
   );
+  if (!previousSearchQueries) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
   ctx.body = {
-    status: 'success',
     data: previousSearchQueries,
   };
 });

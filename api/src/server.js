@@ -17,7 +17,6 @@ const errorHandler = require('./server/middleware/error-handler');
 const publicRoutes = require('./server/routes/public');
 const testRoutes = require('./server/routes/test');
 const privateRoutes = require('./server/routes/private');
-const protectedRoutes = require('./server/routes/protected');
 const adminRoutes = require('./server/routes/admin');
 
 const app = new Koa();
@@ -52,9 +51,6 @@ if (process.env.NODE_ENV === 'development') {
 // private routes
 app.use(checkAuth);
 privateRoutes.forEach(route => app.use(route.routes()));
-
-// TODO: Protect these routes
-protectedRoutes.forEach(route => app.use(route.routes()));
 
 // admin routes
 app.use(adminOnly);

@@ -329,7 +329,7 @@ async function getAllOwnedEntities(
           'name',
           'surname',
           knex.raw(
-            "string_agg(entities_all_infos.name || ' ' || entities_all_infos.surname, ' ') AS complete_name",
+            "string_agg(entities_all_infos.name || ' ', entities_all_infos.surname || ' ') AS complete_name",
           ),
           'photo_url',
         )
@@ -339,7 +339,6 @@ async function getAllOwnedEntities(
           'entities_all_infos.id',
           entityIds.map(e => e.entity_id),
         )
-
         .groupBy(
           'entities_all_infos.id',
           'entities_all_infos.type',
@@ -349,7 +348,7 @@ async function getAllOwnedEntities(
         )
         .as('res'),
     )
-    .where('complete_name', 'ILIKE', `%${query || ''}%`)
+    .where('complete_name', 'ILIKE', `%${query}%`)
     .where({ type });
 
   return entities.map(entity => ({
@@ -2024,6 +2023,9 @@ const getPrimaryPerson = async user_id => {
 };
 
 async function getRoleRoster(rosterId, userId) {
+  if (userId === -1) {
+    return ROSTER_ROLE_ENUM.VIEWER;
+  }
   const [{ role } = {}] = await knex('roster_players')
     .select('roster_players.role')
     .join(
@@ -4602,7 +4604,7 @@ async function updateRosterRole(playerId, role) {
         p => p.role !== ROSTER_ROLE_ENUM.PLAYER && p.id !== playerId,
       )
     ) {
-      return ERROR_ENUM.VALUE_IS_INVALID;
+      throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
     }
   }
 

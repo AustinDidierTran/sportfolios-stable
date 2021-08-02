@@ -3,18 +3,17 @@ const {
   ENTITIES_ROLE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
   BASIC_CHATBOT_STATES,
+  STATUS_ENUM,
 } = require('../../../../common/enums');
-const { ERROR_ENUM, errors } = require('../../../../common/errors');
+const { ERROR_ENUM } = require('../../../../common/errors');
 const bcrypt = require('bcrypt');
 
 const {
-  createUserEmail,
   generateHashedPassword,
   getBasicUserInfoFromId,
   getEmailsFromUserId,
   getHashedPasswordFromId,
   getUserIdFromEmail,
-  sendNewConfirmationEmailAllIncluded,
   updateBasicUserInfoFromUserId,
   updatePasswordFromUserId,
   getPrimaryPersonIdFromUserId,
@@ -58,115 +57,87 @@ const i18n = require('../../i18n.config');
 const Response = require('../../server/utils/ChatBot/response');
 
 const sendTransferPersonEmail = async (
-  user_id,
+  userId,
   { email, sendedPersonId },
 ) => {
   if (
-    (await getEmailsFromUserId(user_id)).find(e => e.email == email)
+    (await getEmailsFromUserId(userId)).find(e => e.email == email)
   ) {
     throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
   return sendPersonTransferEmailAllIncluded({
     email,
     sendedPersonId,
-    senderUserId: user_id,
+    senderUserId: userId,
   });
 };
 
-const cancelPersonTransfer = async (user_id, personId) => {
-  if (!(await isAllowed(personId, user_id))) {
+const cancelPersonTransfer = async (userId, personId) => {
+  if (!(await isAllowed(personId, userId))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return cancelPersonTransferHelper(personId);
 };
 
-const addEmail = async (user_id, { email }) => {
-  if (!user_id) {
-    return 402;
-  }
-
-  // validate there is no user with said email
-  const email_user_id = await getUserIdFromEmail(email);
-
-  if (email_user_id) {
-    return 403;
-  }
-
-  await createUserEmail({ user_id, email });
-
-  await sendNewConfirmationEmailAllIncluded(email);
-
-  return 200;
-};
-
 const changePassword = async (
-  user_id,
+  userId,
   { oldPassword, newPassword },
 ) => {
-  if (!user_id) {
-    return 402;
+  if (!userId) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   const newHashedPassword = await generateHashedPassword(newPassword);
 
-  const oldHashedPassword = await getHashedPasswordFromId(user_id);
+  const oldHashedPassword = await getHashedPasswordFromId(userId);
 
   if (!oldHashedPassword) {
-    return 404;
+    return STATUS_ENUM.ERROR;
   }
 
   const isSame = bcrypt.compareSync(oldPassword, oldHashedPassword);
 
   if (!isSame) {
-    return 403;
+    throw new Error(ERROR_ENUM.FORBIDDEN);
   }
 
   await updatePasswordFromUserId({
-    id: user_id,
+    id: userId,
     hashedPassword: newHashedPassword,
   });
 
-  return 200;
+  return STATUS_ENUM.SUCCESS;
 };
 
-const changeUserInfo = async (user_id, { language }) => {
-  if (!user_id) {
-    return 402;
+const changeUserInfo = async (userId, { language }) => {
+  if (!userId) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   await updateBasicUserInfoFromUserId({
-    user_id,
+    userId,
     language,
   });
 
-  return 200;
+  return STATUS_ENUM.SUCCESS;
 };
 
 const getEmails = async userId => {
   const emails = await getEmailsFromUserId(userId);
 
   if (!emails) {
-    return { status: 403 };
+    throw new Error(ERROR_ENUM.FORBIDDEN);
   }
 
-  return { status: 200, emails };
+  return emails;
 };
 
 const userInfo = async id => {
   const basicUserInfo = await getBasicUserInfoFromId(id);
 
   if (!basicUserInfo) {
-    return { status: 403 };
+    throw new Error(ERROR_ENUM.FORBIDDEN);
   }
   // get basic user info
-  return { basicUserInfo, status: 200 };
-};
-
-const getPrimaryPersonId = async userId => {
-  const id = await getPrimaryPersonIdFromUserId(userId);
-  if (!id) {
-    return { status: 403 };
-  }
-
-  return { status: 200, id };
+  return basicUserInfo;
 };
 
 const getOwnedAndTransferedPersons = async userId => {
@@ -179,12 +150,10 @@ const getOwnedAndTransferedPersons = async userId => {
   const concat = owned.concat(transfered);
 
   //Permet de mettre la primary person comme 1er élément de la liste
-  for (var i = 0; i < concat.length; i++) {
-    if (concat[i].isPrimaryPerson) {
-      concat.unshift(concat.splice(i, 1)[0]);
-      break;
-    }
-  }
+  concat.sort((a, b) =>
+    a.isPrimaryPerson ? -1 : b.isPrimaryPerson ? 1 : 0,
+  );
+
   return concat;
 };
 
@@ -218,6 +187,7 @@ const getOwnedPersons = async userId => {
     GLOBAL_ENUM.PERSON,
     userId,
   );
+
   const primaryPersonId = await getPrimaryPersonIdFromUserId(userId);
   if (!persons || !primaryPersonId) {
     return;
@@ -340,42 +310,40 @@ const getConnectedApps = async userId => {
   return apps;
 };
 
-const unlinkFacebook = async user_id => {
-  return deleteFacebookId(user_id);
+const unlinkFacebook = async userId => {
+  return deleteFacebookId(userId);
 };
 
-const linkMessengerFromFBId = async (user_id, facebook_id) => {
+const linkMessengerFromFBId = async (userId, facebook_id) => {
   const messengerId = await getMessengerIdFromFbID(facebook_id);
   if (!messengerId) {
-    throw new errors[ERROR_ENUM.VALUE_IS_INVALID]();
+    throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
   }
   sendMessage(
     messengerId,
     Response.genText(i18n.__('connection.success')),
   );
   setChatbotInfos(messengerId, { state: BASIC_CHATBOT_STATES.HOME });
-  return setMessengerId(user_id, messengerId);
+  return setMessengerId(userId, messengerId);
 };
 
-const unlinkMessenger = async user_id => {
-  return deleteMessengerId(user_id);
+const unlinkMessenger = async userId => {
+  return deleteMessengerId(userId);
 };
 
-const updateNewsLetterSubscription = async (user_id, body) => {
+const updateNewsLetterSubscription = async (userId, body) => {
   const subscription = await updateNewsLetterSubscriptionHelper(
-    user_id,
+    userId,
     body,
   );
   return subscription;
 };
 
 module.exports = {
-  addEmail,
   changePassword,
   changeUserInfo,
   getEmails,
   userInfo,
-  getPrimaryPersonId,
   getOwnedPersons,
   updatePrimaryPerson,
   updateNewsLetterSubscription,

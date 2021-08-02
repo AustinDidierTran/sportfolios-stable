@@ -8,14 +8,14 @@ const {
   deleteFollowNotification,
 } = require('../helpers/notifications');
 
-const followAthlete = async (user_id, query) => {
-  await createFollowNotification(user_id, query);
-  return followAthleteWithId(user_id, query);
+const followAthlete = async (userId, query) => {
+  await createFollowNotification(userId, query);
+  return followAthleteWithId(userId, query);
 };
 
-const unfollowAthlete = async (user_id, query) => {
-  await deleteFollowNotification(user_id, query);
-  return unfollowAthleteWithId(user_id, query);
+const unfollowAthlete = async (userId, query) => {
+  await deleteFollowNotification(userId, query);
+  return unfollowAthleteWithId(userId, query);
 };
 
 module.exports = {
