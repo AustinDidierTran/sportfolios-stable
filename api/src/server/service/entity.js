@@ -99,6 +99,7 @@ const {
   getGraphMemberCount: getGraphMemberCountHelper,
   getGraphUserCount: getGraphUserCountHelper,
   getHasSpirit: getHasSpiritHelper,
+  updateGameRsvp: updateGameRsvpHelper,
   getLastRankedTeam: getLastRankedTeamHelper,
   getMembers: getMembersHelper,
   getMembership,
@@ -395,6 +396,23 @@ async function getRosterAllIncluded(rosterId, userId, withSub) {
     },
     eventId,
   };
+}
+
+async function updateGameRsvp(body, userId) {
+  const { id, rsvp, personId, rosterId, updateAll } = body;
+
+  if (!(await isAllowed(id, userId), ENTITIES_ROLE_ENUM.EDITOR)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return updateGameRsvpHelper(
+    id,
+    rsvp,
+    personId,
+    rosterId,
+    updateAll,
+    userId,
+  );
 }
 
 function getHasSpirit(eventId) {
@@ -2308,6 +2326,7 @@ module.exports = {
   getGraphUserCount,
   getInteractiveToolData,
   getHasSpirit,
+  updateGameRsvp,
   getMembers,
   getMemberships,
   getMostRecentMember,
