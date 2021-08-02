@@ -515,6 +515,18 @@ router.put(`${BASE_URL}/gameRsvp`, async ctx => {
   ctx.body = { data: entity };
 });
 
+router.put(`${BASE_URL}/gameRsvp`, async ctx => {
+  const entity = await queries.updateGameRsvp(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: entity };
+});
+
 router.put(`${BASE_URL}/updateGamesInteractiveTool`, async ctx => {
   const res = await service.updateGamesInteractiveTool(
     ctx.request.body,
