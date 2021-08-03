@@ -15,7 +15,6 @@ const {
 const { ERROR_ENUM } = require('../../../../common/errors');
 const randtoken = require('rand-token');
 const { generateToken } = require('./utils');
-const { getLanguageFromEmail } = require('./auth');
 
 async function confirmEmail({ email }) {
   await knex('user_email')
@@ -302,6 +301,14 @@ async function validateEmailIsConfirmed(email) {
   return response.length && response[0].confirmed_email_at !== null;
 }
 
+async function getLanguageFromEmail(email) {
+  const id = await getUserIdFromEmail(email);
+  if (!id) {
+    return;
+  }
+  return getLanguageFromUser(id);
+}
+
 async function sendNewConfirmationEmailAllIncluded(
   email,
   successRoute,
@@ -462,6 +469,7 @@ module.exports = {
   getTokenPromoCode,
   getTransferInfosFromToken,
   getUserIdFromEmail,
+  getLanguageFromEmail,
   getUserIdFromMessengerId,
   isRegistered,
   sendNewConfirmationEmailAllIncluded,

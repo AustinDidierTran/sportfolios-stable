@@ -1,3 +1,5 @@
+const knex = require('../../db/connection');
+
 const { v1: uuidv1 } = require('uuid');
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
 const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');

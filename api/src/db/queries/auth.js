@@ -1,9 +1,10 @@
+const knex = require('../connection');
+
 const {
   GLOBAL_ENUM,
   ENTITIES_ROLE_ENUM,
   NOTIFICATION_ARRAY,
 } = require('../../../../common/enums');
-const knex = require('../connection');
 
 async function createRecoveryEmailToken({ userId, token }) {
   await knex('recovery_email_token').insert({
@@ -105,14 +106,6 @@ async function getEmailFromToken({ token }) {
   return response[0].email;
 }
 
-async function getLanguageFromEmail(email) {
-  const id = await getUserIdFromEmail(email);
-  if (!id) {
-    return;
-  }
-  return getLanguageFromUser(id);
-}
-
 async function getUserIdFromRecoveryPasswordToken(token) {
   const [response] = await knex('recovery_email_token')
     .select(['user_id', 'expires_at', 'used_at'])
@@ -155,7 +148,6 @@ module.exports = {
   createRecoveryEmailToken,
   createUserComplete,
   getEmailFromToken,
-  getLanguageFromEmail,
   getUserIdFromRecoveryPasswordToken,
   setRecoveryTokenToUsed,
   validateEmailIsUnique,
