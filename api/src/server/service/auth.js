@@ -11,10 +11,11 @@ const {
   generateHashedPassword,
   getBasicUserInfoFromId,
   getHashedPasswordFromId,
+  getLanguageFromEmail,
+  getUserIdFromAuthToken,
   getUserIdFromEmail,
   updatePasswordFromUserId,
   validateEmailIsConfirmed,
-  getUserIdFromAuthToken,
 } = require('../../db/queries/user');
 
 const {
@@ -31,7 +32,6 @@ const {
   createRecoveryEmailToken,
   createUserComplete,
   getEmailFromToken,
-  getLanguageFromEmail,
   getUserIdFromRecoveryPasswordToken,
   setRecoveryTokenToUsed,
   validateEmailIsUnique,
@@ -49,7 +49,7 @@ async function signup({
   const isUnique = await validateEmailIsUnique(email);
 
   if (!isUnique) {
-    throw new Error(ERROR_ENUM.FORBIDDEN);
+    throw new Error(ERROR_ENUM.INVALID_EMAIL);
   }
 
   const hashedPassword = await generateHashedPassword(password);
@@ -75,25 +75,28 @@ async function signup({
     token: confirmationEmailToken,
     redirectUrl,
   });
-  return { code: STATUS_ENUM.SUCCESS };
+  return { confirmationEmailToken };
 }
 
 async function login({ email, password }) {
   // Validate account with this email exists
   const userId = await getUserIdFromEmail(email);
+
   if (!userId) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+    throw new Error(ERROR_ENUM.INVALID_EMAIL);
   }
 
   // Validate email is confirmed
   const emailIsConfirmed = await validateEmailIsConfirmed(email);
+
   if (!emailIsConfirmed) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+    throw new Error(ERROR_ENUM.UNCONFIRMED_EMAIL);
   }
 
   const hashedPassword = await getHashedPasswordFromId(userId);
+
   if (!hashedPassword) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
@@ -105,7 +108,7 @@ async function login({ email, password }) {
 
     return { token, userInfo };
   } else {
-    throw new Error(ERROR_ENUM.FORBIDDEN);
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 }
 

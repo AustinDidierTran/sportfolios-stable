@@ -9,10 +9,10 @@ const BASE_URL = '/api/auth';
 router.post(`${BASE_URL}/signup`, async ctx => {
   const res = await service.signup(ctx.request.body);
 
-  if (res.code === STATUS_ENUM.SUCCESS) {
-    ctx.body = { data: res };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  } else {
+    ctx.body = { data: res };
   }
 });
 
@@ -53,15 +53,12 @@ router.post(`${BASE_URL}/confirmEmail`, async ctx => {
 
 // Resend confirmation email
 router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
-  const code = await service.resendConfirmationEmail(
-    ctx.request.body,
-  );
+  const res = await service.resendConfirmationEmail(ctx.request.body);
 
-  if (code === STATUS_ENUM.SUCCESS) {
-    ctx.body = { data: code };
-  } else {
+  if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: res };
 });
 
 // Send password recovery email
