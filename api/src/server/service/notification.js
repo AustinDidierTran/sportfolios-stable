@@ -35,7 +35,6 @@ const {
 const {
   getEmailFromUserId,
   getLanguageFromUser,
-  getMessengerId,
   setChatbotInfos,
   getChatbotInfos,
 } = require('../../db/queries/user');
@@ -49,6 +48,7 @@ const {
   BASIC_CHATBOT_STATES,
 } = require('../../../../common/enums');
 const { getEmailsLandingPage } = require('./admin');
+const { getMessengerId } = require('../../db/queries/facebook');
 
 const seeNotifications = async userId => {
   return seeNotificationsHelper(userId);
