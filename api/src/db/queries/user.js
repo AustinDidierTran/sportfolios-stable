@@ -341,15 +341,18 @@ async function sendPersonTransferEmailAllIncluded({
   const senderPrimaryPersonId = await getPrimaryPersonIdFromUserId(
     senderUserId,
   );
+
   const senderPrimaryPerson = sender.persons.find(
-    person => person.entity_id === senderPrimaryPersonId,
+    person => person.personId === senderPrimaryPersonId,
   );
+
   const senderName =
     senderPrimaryPerson.name + ' ' + senderPrimaryPerson.surname;
 
   const sendedPerson = sender.persons.find(
-    person => person.entity_id === sendedPersonId,
+    person => person.personId === sendedPersonId,
   );
+
   const sendedName = sendedPerson.name + ' ' + sendedPerson.surname;
   //TODO Save token in db with person id and email
   const res = await createPersonTransferToken({
