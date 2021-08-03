@@ -174,6 +174,7 @@ const {
   updateEntityRole: updateEntityRoleHelper,
   updateEvent: updateEventHelper,
   updateGame: updateGameHelper,
+  updateGameRsvp: updateGameRsvpHelper,
   updateGamesInteractiveTool: updateGamesInteractiveToolHelper,
   updateGeneralInfos: updateGeneralInfosHelper,
   updateHasSpirit: updateHasSpiritHelper,
@@ -1424,6 +1425,23 @@ async function updatePracticeRsvp(body, userId) {
   );
 }
 
+async function updateGameRsvp(body, userId) {
+  const { id, rsvp, personId, rosterId, updateAll } = body;
+
+  if (!(await isAllowed(id, userId), ENTITIES_ROLE_ENUM.EDITOR)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return updateGameRsvpHelper(
+    id,
+    rsvp,
+    personId,
+    rosterId,
+    updateAll,
+    userId,
+  );
+}
+
 async function updateGamesInteractiveTool(body, userId) {
   const { eventId, games } = body;
   if (
@@ -2391,6 +2409,7 @@ module.exports = {
   updateEntityRole,
   updateEvent,
   updateGame,
+  updateGameRsvp,
   updateGamesInteractiveTool,
   updateGeneralInfos,
   updateHasSpirit,

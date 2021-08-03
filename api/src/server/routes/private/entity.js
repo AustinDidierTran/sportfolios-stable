@@ -162,7 +162,7 @@ router.get(`${BASE_URL}/phaseRanking`, async ctx => {
 router.get(`${BASE_URL}/roles`, async ctx => {
   const entity = await queries.getAllRolesEntity(ctx.query.id);
 
-  if (entity) {
+  if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   ctx.body = { data: entity };
@@ -555,6 +555,18 @@ router.put(`${BASE_URL}/practice`, async ctx => {
 
 router.put(`${BASE_URL}/practiceRsvp`, async ctx => {
   const entity = await queries.updatePracticeRsvp(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: entity };
+});
+
+router.put(`${BASE_URL}/gameRsvp`, async ctx => {
+  const entity = await queries.updateGameRsvp(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
