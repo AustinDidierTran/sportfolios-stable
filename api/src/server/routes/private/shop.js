@@ -1,20 +1,23 @@
 const Router = require('koa-router');
 const { ERROR_ENUM } = require('../../../../../common/errors');
-const queries = require('../../../db/queries/shop');
+const service = require('../../service/shop');
 
 const router = new Router();
 const BASE_URL = '/api/shop';
 
 router.get(`${BASE_URL}/sales`, async ctx => {
-  const data = await queries.getSales(
+  const data = await service.getSales(
     ctx.query.id,
     ctx.body.userInfo.id,
   );
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
   ctx.body = { data };
 });
 
 router.get(`${BASE_URL}/sales`, async ctx => {
-  const data = await queries.getSales(
+  const data = await service.getSales(
     ctx.query.id,
     ctx.body.userInfo.id,
   );
@@ -25,7 +28,7 @@ router.get(`${BASE_URL}/sales`, async ctx => {
 });
 
 router.get(`${BASE_URL}/getItems`, async ctx => {
-  const data = await queries.getItems(
+  const data = await service.getItems(
     ctx.query.id,
     ctx.body.userInfo.id,
   );
@@ -35,7 +38,7 @@ router.get(`${BASE_URL}/getItems`, async ctx => {
   ctx.body = { data };
 });
 router.get(`${BASE_URL}/getAllItems`, async ctx => {
-  const data = await queries.getAllItems(ctx.query.type);
+  const data = await service.getAllItems(ctx.query.type);
   if (!data) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -43,7 +46,7 @@ router.get(`${BASE_URL}/getAllItems`, async ctx => {
 });
 
 router.get(`${BASE_URL}/getItem`, async ctx => {
-  const data = await queries.getItem(
+  const data = await service.getItem(
     ctx.query.id,
     ctx.body.userInfo.id,
   );
@@ -54,7 +57,7 @@ router.get(`${BASE_URL}/getItem`, async ctx => {
 });
 
 router.get(`${BASE_URL}/purchases`, async ctx => {
-  const data = await queries.getPurchases(ctx.body.userInfo.id);
+  const data = await service.getPurchases(ctx.body.userInfo.id);
   if (!data) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -62,7 +65,7 @@ router.get(`${BASE_URL}/purchases`, async ctx => {
 });
 
 router.get(`${BASE_URL}/cartTotal`, async ctx => {
-  const data = await queries.getCartTotal(ctx.body.userInfo.id);
+  const data = await service.getCartTotal(ctx.body.userInfo.id);
   if (!data) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -70,7 +73,7 @@ router.get(`${BASE_URL}/cartTotal`, async ctx => {
 });
 
 router.get(`${BASE_URL}/getCartItems`, async ctx => {
-  const data = await queries.getCart(ctx.body.userInfo.id);
+  const data = await service.getCart(ctx.body.userInfo.id);
   if (!data) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -78,7 +81,7 @@ router.get(`${BASE_URL}/getCartItems`, async ctx => {
 });
 
 router.get(`${BASE_URL}/getCartItemsOrdered`, async ctx => {
-  const data = await queries.getCartItemsOrdered(
+  const data = await service.getCartItemsOrdered(
     ctx.query.id,
     ctx.body.userInfo.id,
   );
@@ -89,7 +92,7 @@ router.get(`${BASE_URL}/getCartItemsOrdered`, async ctx => {
 });
 
 router.post(`${BASE_URL}/addCartItem`, async ctx => {
-  const data = await queries.addToCart(
+  const data = await service.addToCart(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
@@ -100,7 +103,7 @@ router.post(`${BASE_URL}/addCartItem`, async ctx => {
 });
 
 router.post(`${BASE_URL}/updateCartItems`, async ctx => {
-  const data = await queries.updateCartItems(
+  const data = await service.updateCartItems(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
@@ -111,7 +114,7 @@ router.post(`${BASE_URL}/updateCartItems`, async ctx => {
 });
 
 router.delete(`${BASE_URL}/removeAllInstancesFromCart`, async ctx => {
-  const data = await queries.removeAllInstancesFromCart(
+  const data = await service.removeAllInstancesFromCart(
     ctx.query,
     ctx.body.userInfo.id,
   );
@@ -122,7 +125,7 @@ router.delete(`${BASE_URL}/removeAllInstancesFromCart`, async ctx => {
 });
 
 router.delete(`${BASE_URL}/removeCartItemInstance`, async ctx => {
-  const data = await queries.removeCartItemInstance(
+  const data = await service.removeCartItemInstance(
     ctx.query,
     ctx.body.userInfo.id,
   );
@@ -133,7 +136,7 @@ router.delete(`${BASE_URL}/removeCartItemInstance`, async ctx => {
 });
 
 router.delete(`${BASE_URL}/deleteCartItem`, async ctx => {
-  const data = await queries.deleteCartItem(ctx.query);
+  const data = await service.deleteCartItem(ctx.query);
   if (!data) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -141,7 +144,7 @@ router.delete(`${BASE_URL}/deleteCartItem`, async ctx => {
 });
 
 router.delete(`${BASE_URL}/deleteAllCartItems`, async ctx => {
-  const data = await queries.deleteAllCartItems(ctx.body.userInfo.id);
+  const data = await service.deleteAllCartItems(ctx.body.userInfo.id);
   if (!data) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }

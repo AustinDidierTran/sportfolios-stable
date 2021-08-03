@@ -1,5 +1,5 @@
 const { StateFactory } = require('./states');
-const { setChatbotInfos } = require('../../../db/queries/facebook');
+const { setChatbotInfos } = require('../../service/facebook');
 class Chatbot {
   constructor(messengerId, stateType, chatbotInfos) {
     this.messengerId = messengerId;

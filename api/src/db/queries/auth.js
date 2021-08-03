@@ -1,268 +1,163 @@
-const knex = require('../connection');
-const bcrypt = require('bcrypt');
 const {
-  sendConfirmationEmail,
-  sendRecoveryEmail,
-} = require('../../server/utils/nodeMailer');
-const { EXPIRATION_TIMES } = require('../../../../common/constants');
-const {
-  confirmEmail: confirmEmailHelper,
-  createConfirmationEmailToken,
-  createRecoveryEmailToken,
-  createUserComplete,
-  generateAuthToken,
-  generateHashedPassword,
-  generateToken,
-  getBasicUserInfoFromId,
-  getEmailFromToken,
-  getHashedPasswordFromId,
-  getLanguageFromEmail,
-  getUserIdFromEmail,
-  getUserIdFromRecoveryPasswordToken,
-  setRecoveryTokenToUsed,
-  updatePasswordFromUserId,
-  validateEmailIsConfirmed,
-  validateEmailIsUnique,
-  getUserIdFromAuthToken,
-} = require('../helpers');
-const {
+  GLOBAL_ENUM,
   ENTITIES_ROLE_ENUM,
-  PERSON_TRANSFER_STATUS_ENUM,
-  STATUS_ENUM,
+  NOTIFICATION_ARRAY,
 } = require('../../../../common/enums');
-const { ERROR_ENUM } = require('../../../../common/errors');
+const knex = require('../connection');
 
-const signup = async ({
-  firstName,
-  lastName,
-  email,
-  password,
-  redirectUrl,
-  newsLetterSubscription,
-}) => {
-  // Validate email is not already taken
-  const isUnique = await validateEmailIsUnique(email);
+async function createRecoveryEmailToken({ userId, token }) {
+  await knex('recovery_email_token').insert({
+    user_id: userId,
+    token,
+    expires_at: new Date(
+      Date.now() + EXPIRATION_TIMES.ACCOUNT_RECOVERY_TOKEN,
+    ),
+  });
+}
 
-  if (!isUnique) {
-    throw new Error(ERROR_ENUM.FORBIDDEN);
-  }
-
-  const hashedPassword = await generateHashedPassword(password);
-
-  const confirmationEmailToken = generateToken();
-
-  await createUserComplete({
-    password: hashedPassword,
+async function createUserComplete(body) {
+  const {
+    password,
     email,
-    name: firstName,
-    surname: lastName,
+    name,
+    surname,
+    facebook_id,
     newsLetterSubscription,
+  } = body;
+
+  await knex.transaction(async trx => {
+    // Create user
+    const [user_id] = await knex('users')
+      .insert({ password })
+      .returning('id')
+      .transacting(trx);
+
+    // Create user email
+    await knex('user_email')
+      .insert({
+        user_id,
+        email,
+        is_subscribed: newsLetterSubscription,
+      })
+      .transacting(trx);
+
+    // Create user info
+    const [entity_id] = await knex('entities')
+      .insert({
+        type: GLOBAL_ENUM.PERSON,
+      })
+      .returning('id')
+      .transacting(trx);
+
+    await knex('entities_general_infos')
+      .insert({
+        entity_id,
+        name,
+        surname,
+      })
+      .transacting(trx);
+
+    await knex('user_entity_role')
+      .insert({
+        user_id,
+        entity_id,
+        role: ENTITIES_ROLE_ENUM.ADMIN,
+      })
+      .transacting(trx);
+
+    await knex('user_primary_person')
+      .insert({ user_id, primary_person: entity_id })
+      .transacting(trx);
+    //Set app connections
+    await knex('user_apps_id')
+      .insert({
+        user_id,
+        facebook_id,
+      })
+      .transacting(trx);
+
+    await Promise.all(
+      NOTIFICATION_ARRAY.map(async notif => {
+        await knex('user_notification_setting')
+          .insert({
+            user_id,
+            type: notif.type,
+            email: notif.email,
+            chatbot: notif.chatbot,
+            in_app: notif.inApp,
+          })
+          .transacting(trx);
+      }),
+    );
+    return trx;
   });
-  await createConfirmationEmailToken({
-    email,
-    token: confirmationEmailToken,
-  });
-  const language = await getLanguageFromEmail(email);
-  // Send confirmation email with link
-  await sendConfirmationEmail({
-    email,
-    language,
-    token: confirmationEmailToken,
-    redirectUrl,
-  });
-  return { code: STATUS_ENUM.SUCCESS };
-};
+}
 
-const login = async ({ email, password }) => {
-  // Validate account with this email exists
-  const userId = await getUserIdFromEmail(email);
-  if (!userId) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+async function getEmailFromToken({ token }) {
+  const response = await knex('confirmation_email_token')
+    .select(['email', 'expires_at'])
+    .where({ token });
+
+  if (!response.length || Date.now() > response[0].expires_at) {
+    return null;
   }
 
-  // Validate email is confirmed
-  const emailIsConfirmed = await validateEmailIsConfirmed(email);
-  if (!emailIsConfirmed) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
+  return response[0].email;
+}
 
-  const hashedPassword = await getHashedPasswordFromId(userId);
-  if (!hashedPassword) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
-
-  const isSame = bcrypt.compareSync(password, hashedPassword);
-
-  if (isSame) {
-    const token = await generateAuthToken(userId);
-
-    const userInfo = await getBasicUserInfoFromId(userId);
-
-    return { token, userInfo };
-  } else {
-    throw new Error(ERROR_ENUM.FORBIDDEN);
-  }
-};
-
-const loginWithToken = async token => {
-  const userId = await getUserIdFromAuthToken(token);
-  if (!userId) {
+async function getLanguageFromEmail(email) {
+  const id = await getUserIdFromEmail(email);
+  if (!id) {
     return;
   }
-  return getBasicUserInfoFromId(userId);
-};
+  return getLanguageFromUser(id);
+}
 
-const confirmEmail = async ({ token }) => {
-  const email = await getEmailFromToken({ token });
+async function getUserIdFromRecoveryPasswordToken(token) {
+  const [response] = await knex('recovery_email_token')
+    .select(['user_id', 'expires_at', 'used_at'])
+    .where({ token });
 
-  if (!email) {
-    throw new Error(ERROR_ENUM.FORBIDDEN);
+  if (
+    !response ||
+    response.used_at ||
+    Date.now() > response.expires_at
+  ) {
+    return null;
   }
 
-  await confirmEmailHelper({ email });
+  return response.user_id;
+}
 
-  const authToken = generateToken();
-  const userId = await getUserIdFromEmail(email);
+async function setRecoveryTokenToUsed(token) {
+  await knex('recovery_email_token')
+    .update({ used_at: new Date() })
+    .where({ token });
+}
 
-  await knex('user_token').insert({
-    user_id: userId,
-    token_id: authToken,
-    expires_at: new Date(Date.now() + EXPIRATION_TIMES.AUTH_TOKEN),
-  });
+async function validateEmailIsUnique(email) {
+  const users = await knex('user_email')
+    .where({ email })
+    .returning(['id']);
+  return !users.length;
+}
 
-  const userInfo = await getBasicUserInfoFromId(userId);
+async function getUserIdFromAuthToken(token) {
+  const [{ user_id } = {}] = await knex('user_token')
+    .select('user_id')
+    .where('token_id', token)
+    .whereRaw('expires_at > now()');
 
-  return { token: authToken, userInfo };
-};
-
-const recoveryEmail = async ({ email }) => {
-  const userId = await getUserIdFromEmail(email);
-
-  if (!userId) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
-
-  const token = generateToken();
-
-  await createRecoveryEmailToken({ userId, token });
-  const language = await getLanguageFromEmail(email);
-  await sendRecoveryEmail({ email, token, language });
-
-  return STATUS_ENUM.SUCCESS;
-};
-
-const recoverPassword = async ({ token, password }) => {
-  const userId = await getUserIdFromRecoveryPasswordToken(token);
-
-  if (!userId) {
-    throw new Error(ERROR_ENUM.FORBIDDEN);
-  }
-
-  const hashedPassword = await generateHashedPassword(password);
-
-  await updatePasswordFromUserId({ id: userId, hashedPassword });
-
-  await setRecoveryTokenToUsed(token);
-
-  const authToken = await generateAuthToken(userId);
-
-  const userInfo = await getBasicUserInfoFromId(userId);
-
-  return { authToken, userInfo };
-};
-
-const resendConfirmationEmail = async ({ email, successRoute }) => {
-  const isEmailConfirmed = await validateEmailIsConfirmed(email);
-
-  if (isEmailConfirmed) {
-    throw new Error(ERROR_ENUM.FORBIDDEN);
-  }
-
-  const token = generateToken();
-  const language = await getLanguageFromEmail(email);
-
-  await createConfirmationEmailToken({ email, token });
-
-  await sendConfirmationEmail({
-    email,
-    language,
-    token,
-    successRoute,
-  });
-
-  return STATUS_ENUM.SUCCESS;
-};
-
-const transferPersonSignup = async ({
-  email,
-  password,
-  personId,
-}) => {
-  const hashedPassword = await generateHashedPassword(password);
-  const { token: authToken, user_id } = await knex.transaction(
-    async trx => {
-      // Create user
-      const [user_id] = await knex('users')
-        .insert({ password: hashedPassword })
-        .returning('id')
-        .transacting(trx);
-
-      if (!user_id) {
-        return;
-      }
-
-      // Create user email and confirm it right away
-      await knex('user_email')
-        .insert({ user_id, email, confirmed_email_at: new Date() })
-        .transacting(trx);
-
-      //Log the user
-      const token = generateToken();
-      await knex('user_token')
-        .insert({
-          user_id,
-          token_id: token,
-          expires_at: new Date(
-            Date.now() + EXPIRATION_TIMES.AUTH_TOKEN,
-          ),
-        })
-        .transacting(trx);
-      //transfer the person
-      await knex('user_entity_role')
-        .update({ user_id })
-        .where('entity_id', personId)
-        .andWhere('role', ENTITIES_ROLE_ENUM.ADMIN)
-        .returning('entity_id')
-        .transacting(trx);
-      await knex('transfered_person')
-        .update('status', PERSON_TRANSFER_STATUS_ENUM.ACCEPTED)
-        .where({ person_id: personId })
-        .andWhere('status', PERSON_TRANSFER_STATUS_ENUM.PENDING)
-        .transacting(trx);
-
-      //set person as primary person
-      await knex('user_primary_person')
-        .insert({
-          user_id,
-          primary_person: personId,
-        })
-        .transacting(trx);
-
-      return { token, user_id };
-    },
-  );
-  //get user infos
-  const userInfo = await getBasicUserInfoFromId(user_id);
-  return { authToken, userInfo };
-};
+  return user_id;
+}
 
 module.exports = {
-  confirmEmail,
-  login,
-  recoverPassword,
-  recoveryEmail,
-  resendConfirmationEmail,
-  signup,
-  transferPersonSignup,
-  loginWithToken,
+  createRecoveryEmailToken,
+  createUserComplete,
+  getEmailFromToken,
+  getLanguageFromEmail,
+  getUserIdFromRecoveryPasswordToken,
+  setRecoveryTokenToUsed,
+  validateEmailIsUnique,
+  getUserIdFromAuthToken,
 };

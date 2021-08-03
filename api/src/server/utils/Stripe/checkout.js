@@ -1,7 +1,7 @@
 const {
   INVOICE_STATUS_ENUM,
 } = require('../../../../../common/enums');
-const { getLanguageFromEmail } = require('../../../db/helpers');
+const { getLanguageFromEmail } = require('../../../db/queries/user');
 const {
   addMember,
   deleteRegistration,
@@ -13,10 +13,10 @@ const {
   getRoster,
   getEmailPerson,
   getUserIdFromPersonId,
-} = require('../../../db/helpers/entity');
+} = require('../../../db/queries/entity');
 const {
   addItemToPaidStoreItems,
-} = require('../../../db/helpers/shop');
+} = require('../../../db/queries/shop');
 const { sendCartItemAddedPlayerEmail } = require('../nodeMailer');
 
 const INVOICE_CREATED_ENUM = {

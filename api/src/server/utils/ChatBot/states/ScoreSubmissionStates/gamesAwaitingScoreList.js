@@ -9,10 +9,10 @@ const i18n = require('../../../../../i18n.config');
 const {
   getGamesWithAwaitingScore,
   getGameTeams,
-} = require('../../../../../db/helpers/entity');
+} = require('../../../../../db/queries/entity');
 const {
   getUserIdFromMessengerId,
-} = require('../../../../../db/helpers');
+} = require('../../../../../db/queries/user');
 const { MESSENGER_QUICK_REPLIES } = require('../../../enums');
 
 class gamesAwaitingScoreList extends State {

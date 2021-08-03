@@ -8,13 +8,13 @@ const Response = require('../../response');
 const i18n = require('../../../../../i18n.config');
 const {
   getUserNextGame,
-} = require('../../../../../db/helpers/entity');
+} = require('../../../../../db/queries/entity');
 const {
   getTimezoneFromPSID,
-} = require('../../../../../db/helpers/facebook');
+} = require('../../../../../db/queries/facebook');
 const {
   getUserIdFromMessengerId,
-} = require('../../../../../db/helpers');
+} = require('../../../../../db/queries/user');
 const moment = require('moment');
 class NextGameInfos extends State {
   async handleEvent(webhookEvent) {

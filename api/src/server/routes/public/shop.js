@@ -1,12 +1,12 @@
 const Router = require('koa-router');
 const { ERROR_ENUM } = require('../../../../../common/errors');
-const queries = require('../../../db/queries/shop');
+const service = require('../../service/shop');
 
 const router = new Router();
 const BASE_URL = '/api/shop';
 
 router.get(`${BASE_URL}/getItem`, async ctx => {
-  const data = await queries.getItem(ctx.query.id);
+  const data = await service.getItem(ctx.query.id);
   if (!data) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }

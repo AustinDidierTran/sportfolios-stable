@@ -1,4 +1,4 @@
-const knex = require('../connection');
+const knex = require('../../db/connection');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const moment = require('moment');
 

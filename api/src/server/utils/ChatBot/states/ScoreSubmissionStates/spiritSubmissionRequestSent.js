@@ -8,7 +8,7 @@ const Response = require('../../response');
 const i18n = require('../../../../../i18n.config');
 const {
   isSpiritAlreadySubmitted,
-} = require('../../../../../db/helpers/entity');
+} = require('../../../../../db/queries/entity');
 
 class SpiritSubmissionRequestSent extends State {
   async handleEvent(webhookEvent) {

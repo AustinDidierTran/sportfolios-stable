@@ -1,13 +1,13 @@
 const Router = require('koa-router');
 const { STATUS_ENUM } = require('../../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../../common/errors');
-const queries = require('../../../db/queries/auth');
+const service = require('../../service/auth');
 
 const router = new Router();
 const BASE_URL = '/api/auth';
 
 router.post(`${BASE_URL}/signup`, async ctx => {
-  const res = await queries.signup(ctx.request.body);
+  const res = await service.signup(ctx.request.body);
 
   if (res.code === STATUS_ENUM.SUCCESS) {
     ctx.body = { data: res };
@@ -17,7 +17,7 @@ router.post(`${BASE_URL}/signup`, async ctx => {
 });
 
 router.post(`${BASE_URL}/login`, async ctx => {
-  const { token, userInfo } = await queries.login(ctx.request.body);
+  const { token, userInfo } = await service.login(ctx.request.body);
 
   if (!token) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -26,7 +26,7 @@ router.post(`${BASE_URL}/login`, async ctx => {
 });
 
 router.get(`${BASE_URL}/loginWithToken`, async ctx => {
-  const res = await queries.loginWithToken(ctx.query.token);
+  const res = await service.loginWithToken(ctx.query.token);
   if (!res) {
     throw new Error(STATUS_ENUM.ERROR_STRING);
   }
@@ -34,7 +34,7 @@ router.get(`${BASE_URL}/loginWithToken`, async ctx => {
 });
 
 router.post(`${BASE_URL}/transferPersonSignup`, async ctx => {
-  const res = await queries.transferPersonSignup(ctx.request.body);
+  const res = await service.transferPersonSignup(ctx.request.body);
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -43,7 +43,7 @@ router.post(`${BASE_URL}/transferPersonSignup`, async ctx => {
 
 // Confirm email
 router.post(`${BASE_URL}/confirmEmail`, async ctx => {
-  const res = await queries.confirmEmail(ctx.request.body);
+  const res = await service.confirmEmail(ctx.request.body);
 
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -53,7 +53,7 @@ router.post(`${BASE_URL}/confirmEmail`, async ctx => {
 
 // Resend confirmation email
 router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
-  const code = await queries.resendConfirmationEmail(
+  const code = await service.resendConfirmationEmail(
     ctx.request.body,
   );
 
@@ -66,7 +66,7 @@ router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
 
 // Send password recovery email
 router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
-  const code = await queries.recoveryEmail(ctx.request.body);
+  const code = await service.recoveryEmail(ctx.request.body);
 
   if (code === STATUS_ENUM.SUCCESS) {
     ctx.body = { data: code };
@@ -77,7 +77,7 @@ router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
 
 // Reset password with token
 router.post(`${BASE_URL}/recoverPassword`, async ctx => {
-  const res = await queries.recoverPassword(ctx.request.body);
+  const res = await service.recoverPassword(ctx.request.body);
 
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);

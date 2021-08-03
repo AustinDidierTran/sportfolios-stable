@@ -1,7 +1,7 @@
 'use strict';
 
 const { GLOBAL_ENUM } = require('../../../../common/enums');
-const { addEntity } = require('../helpers/entity');
+const { addEntity } = require('../queries/entity');
 const knex = require('../connection');
 
 var dbm;

@@ -8,7 +8,7 @@ const i18n = require('../../../../../i18n.config');
 const Response = require('../../response');
 const {
   addSpiritSubmission,
-} = require('../../../../../db/helpers/entity');
+} = require('../../../../../db/queries/entity');
 const { ERROR_ENUM } = require('../../../../../../../common/errors');
 
 class AwaitingSpiritSubmissionConfirmation extends State {
