@@ -131,7 +131,7 @@ router.get(`${BASE_URL}/allOwned`, async ctx => {
 router.get(`${BASE_URL}/roles`, async ctx => {
   const entity = await service.getAllRolesEntity(ctx.query.id);
 
-  if (entity) {
+  if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   ctx.body = { data: entity };
