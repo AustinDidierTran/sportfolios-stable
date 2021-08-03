@@ -186,11 +186,9 @@ const setFacebookData = async (userId, data) => {
     const success = await trx('user_apps_id')
       .update({ facebook_id })
       .where({ user_id: userId });
-    if (!success) {
-      return;
+    if (success) {
+      return datas;
     }
-
-    return datas;
   });
 };
 

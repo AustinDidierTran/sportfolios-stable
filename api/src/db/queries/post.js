@@ -5,9 +5,7 @@ async function addLike(entity_id, post_id) {
     .insert({ entity_id, post_id })
     .returning('created_at');
 
-  const post = await getPost(post_id, entity_id);
-
-  return post;
+  return getPost(post_id, entity_id);
 }
 
 async function editComment(commentId, commentContent) {
@@ -42,9 +40,7 @@ async function deleteLike(entity_id, post_id) {
     })
     .del();
 
-  const post = await getPost(post_id, entity_id);
-
-  return post;
+  return getPost(post_id, entity_id);
 }
 async function addPost(body, location_id, entity_id) {
   const { content } = body;
@@ -53,8 +49,7 @@ async function addPost(body, location_id, entity_id) {
     .insert({ entity_id, content, location_id })
     .returning('id');
 
-  const post = await getPost(post_id, entity_id);
-  return post;
+  return getPost(post_id, entity_id);
 }
 
 async function deletePost(post_id) {
@@ -305,8 +300,7 @@ async function addComment(entity_id, post_id, content) {
     .insert({ post_id, entity_id, content })
     .returning('id');
 
-  const post = await getPost(post_id, entity_id);
-  return post;
+  return getPost(post_id, entity_id);
 }
 
 async function deleteComment(comment_id) {
