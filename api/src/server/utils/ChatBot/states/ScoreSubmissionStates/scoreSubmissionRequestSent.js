@@ -8,7 +8,7 @@ const Response = require('../../response');
 const i18n = require('../../../../../i18n.config');
 const {
   isScoreSuggestionAlreadySubmitted,
-} = require('../../../../../db/helpers/entity');
+} = require('../../../../../db/queries/entity');
 
 class ScoreSubmissionRequestSent extends State {
   async handleEvent(webhookEvent) {
