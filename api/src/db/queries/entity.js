@@ -26,6 +26,7 @@ const validator = require('validator');
 
 const _ = require('lodash');
 const { getTaxRates } = require('./shop');
+const { getEmailsEntity } = require('../helpers/entity');
 
 const addEntity = async (body, userId) => {
   const {
@@ -1453,6 +1454,7 @@ async function getAllTeamsRegisteredInfos(eventId, pills, userId) {
   });
   return res;
 }
+
 async function getAllTeamsAcceptedInfos(eventId, userId) {
   const teams = await getAllTeamsAcceptedRegistered(eventId);
 
@@ -1770,25 +1772,6 @@ const unregister = async body => {
   const { rosterId, eventId } = body;
   await deleteRegistration(rosterId, eventId);
 };
-
-async function getEmailsEntity(entityId) {
-  const emails = await knex('entities_role')
-    .select('email')
-    .leftJoin(
-      'user_entity_role',
-      'user_entity_role.entity_id',
-      '=',
-      'entities_role.entity_id_admin',
-    )
-    .leftJoin(
-      'user_email',
-      'user_email.user_id',
-      '=',
-      'user_entity_role.user_id',
-    )
-    .where('entities_role.entity_id', entityId);
-  return emails;
-}
 
 async function getUserIdFromEntityId(entityId) {
   const [{ user_id }] = await knex('entities_role')
@@ -7460,7 +7443,6 @@ module.exports = {
   getCreators,
   getCreatorsUserId,
   getEmailPerson,
-  getEmailsEntity,
   getEntitiesTypeById,
   getEntity,
   getEntityOwners,
