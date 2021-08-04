@@ -2272,15 +2272,19 @@ async function getTeamsPhase(phaseId) {
       const teamId = await getTeamIdFromRosterId(r.roster_id);
       return {
         rosterId: r.roster_id,
-        originPhase: r.origin_phase,
+        originPhase: {
+          id: r.origin_phase,
+        },
         originPosition: r.origin_position,
-        currentPhase: r.current_phase,
+        currentPhase: {
+          id: r.current_phase,
+          name: phaseName,
+        },
         initialPosition: r.initial_position,
         finalPosition: r.final_position,
         rankingId: r.ranking_id,
         teamId,
         name,
-        phaseName,
       };
     }),
   );

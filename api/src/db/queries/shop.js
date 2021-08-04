@@ -145,7 +145,14 @@ const getTaxRates = async stripe_price_id => {
       '=',
       stripe_price_id,
     );
-  return taxRates;
+  return {
+    id: taxRates.id,
+    displayName: taxRates.display_name,
+    description: taxRates.description,
+    inclusive: taxRates.inclusive,
+    percentage: taxRates.percentage,
+    active: taxRates.active,
+  };
 };
 
 const getCartItems = async userId => {
