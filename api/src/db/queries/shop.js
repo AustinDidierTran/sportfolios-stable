@@ -145,14 +145,14 @@ const getTaxRates = async stripe_price_id => {
       '=',
       stripe_price_id,
     );
-  return {
-    id: taxRates.id,
-    displayName: taxRates.display_name,
-    description: taxRates.description,
-    inclusive: taxRates.inclusive,
-    percentage: taxRates.percentage,
-    active: taxRates.active,
-  };
+  return taxRates.map(t=>({
+    id: t.id,
+    displayName: t.display_name,
+    description: t.description,
+    inclusive: t.inclusive,
+    percentage: t.percentage,
+    active: t.active,
+  }))
 };
 
 const getCartItems = async userId => {
