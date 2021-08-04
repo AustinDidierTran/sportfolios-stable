@@ -1,7 +1,7 @@
 const ejs = require('ejs');
 const i18n = require('../../i18n.config');
 
-module.exports = async function AddedToRosterEmail(infos) {
+module.exports = async function ScoreSubmissionRequestEmail(infos) {
   const { name, eventName, locale, buttonLink } = infos;
 
   const text = i18n.__(

@@ -1,5 +1,6 @@
 {
   "emails": {
+    "access": "Access",
     "added_to_event_button": "See current roster",
     "added_to_event_subject": "You have been added to an event",
     "added_to_event_text": "Hello %s, team %s added you to the event %s on Sportfolios. Click on the following button to see the event.",
@@ -17,6 +18,7 @@
     "import_member_text":"%s is currently transferring its registration platform to Sportfolios!🎉 </br> We noticed that you are currently an active member of %s. Here are the steps towards transferring your membership to their new platform. </br> <b> Your code is %s </b> </br> <p style='font-size: 14px; line-height: 1.5; word-break: break-word; text-align: start; mso-line-height-alt: 21px; margin: 0;'> 1) Go to your settings on Sportfolios. </br> 2) Enter your code <b> %s </b> in the coupon code section. </br> 3) You should now be a member of %s! </p>",
     "import_member_non_existing_button": "Sign up",
     "import_member_non_existing_text":"%s is currently transferring its registration platform to Sportfolios!🎉 </br> We noticed that you are currently an active member of %s. Here are the steps towards transferring your membership to their new platform. </br> <b> Your code is %s </b> </br> <p style='font-size: 14px; line-height: 1.5; word-break: break-word; text-align: start; mso-line-height-alt: 21px; margin: 0;'>1) Sign up to Sportfolios. </br> 2) Once you are logged into the platform, you should be redirected to your user settings. Otherwise, you can reach them here: https://sportfolios.app/page/userSettings. </br> 3) Enter your code <b> %s </b> in the coupon code section. </br> 4) You should now be a member of %s!</p>",
+    "other_team_submitted_score": "The team %s submitted the score: %s : %s %s : %s for your match of the event %s. Do you want to confirm this result?",
     "person_registration_button_free": "Event",
     "person_registration_button": "Cart",
     "person_registration_subject": "Registration %s | Sportfolios",
@@ -37,6 +39,7 @@
     "recovery_email_text":"You forgot your password? Click here to get it back",
     "score_submission_request_button": "Submit your score",
     "score_submission_request_subject": "Score submission reminder",
+    "other_team_score_submission_request_subject": "Score submission request",
     "score_submission_request_text": "Hello %s One of your game from the event %s just ended. Please submit your score on Sportfolios.",
     "send_receipt_button": "Receipt",
     "send_receipt_subject": "Order receipt | Sportfolios",

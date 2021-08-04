@@ -34,3 +34,5 @@ router.get(`${BASE_URL}/organizationMembers`, async ctx => {
   }
   ctx.body = { data: entity };
 });
+
+module.exports = router;

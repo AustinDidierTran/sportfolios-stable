@@ -75,3 +75,5 @@ router.put(`${BASE_URL}/originPhase`, async ctx => {
   }
   ctx.body = { data: entity };
 });
+
+module.exports = router;

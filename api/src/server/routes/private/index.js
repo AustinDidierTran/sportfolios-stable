@@ -7,6 +7,11 @@ const stripe = require('./stripe');
 const users = require('./user');
 const posts = require('./post');
 const trialist = require('./trialist');
+const interactiveTool = require('./interactiveTool');
+const organization = require('./organization');
+const facebook = require('./facebook');
+const phase = require('./phase');
+const phaseRanking = require('./phaseRanking');
 
 module.exports = [
   data,
@@ -18,4 +23,9 @@ module.exports = [
   stripe,
   users,
   trialist,
+  interactiveTool,
+  organization,
+  facebook,
+  phase,
+  phaseRanking,
 ];

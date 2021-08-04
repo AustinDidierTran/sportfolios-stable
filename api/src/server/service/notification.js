@@ -29,6 +29,7 @@ const {
   sendTeamRegistrationEmailToAdmin,
   sendTeamRefusedRegistrationEmail,
   sendImportMemberEmail,
+  sendOtherTeamSubmittedScore,
 } = require('../utils/nodeMailer');
 
 const {
@@ -227,6 +228,21 @@ const sendEmailNotification = async (type, userId, infos) => {
         language,
         organizationName,
         userId,
+      });
+      break;
+    }
+    case NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE: {
+      const { score, gameId, eventId, submittedBy, eventName, myRosterId } = infos;
+      sendOtherTeamSubmittedScore({
+        email,
+        score,
+        gameId,
+        eventId,
+        language,
+        userId,
+        submittedBy,
+        eventName,
+        myRosterId,
       });
       break;
     }

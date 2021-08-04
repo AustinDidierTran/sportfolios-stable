@@ -5,6 +5,7 @@ const EmailConfirmationEmail = require('./emailConfirmationEmail');
 const PersonRegistrationToAdminEmail = require('./personRegistrationToAdminEmail');
 const PersonPendingRegistrationToAdminEmail = require('./personPendingRegistrationToAdminEmail');
 const RecoveryEmail = require('./recoveryEmail');
+const OtherTeamSubmittedScore = require('./otherTeamSubmittedScore');
 const ScoreSubmissionRequestEmail = require('./scoreSubmissionRequestEmail');
 const SendReceiptEmail = require('./sendReceiptEmail');
 const TeamRegistrationToAdminEmail = require('./teamRegistrationToAdminEmail');
@@ -31,6 +32,7 @@ const map = {
   [NOTIFICATION_TYPE.PERSON_REGISTRATION_TO_ADMIN]: PersonRegistrationToAdminEmail,
   [NOTIFICATION_TYPE.PERSON_PENDING_REGISTRATION_TO_ADMIN]: PersonPendingRegistrationToAdminEmail,
   [NOTIFICATION_TYPE.RECOVERY_EMAIL]: RecoveryEmail,
+  [NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE]: OtherTeamSubmittedScore,
   [NOTIFICATION_TYPE.SCORE_SUBMISSION_REQUEST]: ScoreSubmissionRequestEmail,
   [NOTIFICATION_TYPE.SEND_RECEIPT]: SendReceiptEmail,
   [NOTIFICATION_TYPE.TEAM_REGISTRATION_TO_ADMIN]: TeamRegistrationToAdminEmail,

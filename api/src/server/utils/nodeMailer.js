@@ -17,6 +17,10 @@ const {
 } = require('../../db/emails/utils');
 let key;
 
+const {
+  getRosterName,
+} = require('../../db/queries/entity');
+
 try {
   key = require('./keys/google-keys.json');
 } catch (e) {
@@ -602,6 +606,46 @@ async function sendImportMemberEmail({
   const { html, subject, text } = fullEmail;
   sendMail({ html, email, subject, text });
 }
+async function sendOtherTeamSubmittedScore({
+  email,
+  score,
+  gameId,
+  eventId,
+  language,
+  userId,
+  submittedBy,
+  myRosterId,
+  eventName,
+}) {
+  const buttonLink = await formatLinkWithAuthToken(
+    userId,
+    formatRoute(ROUTES_ENUM.entity, { id: eventId }, { tab: TABS_ENUM.SCHEDULE, gameId }),
+  );
+
+  const scores = JSON.parse(score);
+  const otherTeamName = await getRosterName(submittedBy);
+  const otherTeamScore = scores[submittedBy];
+
+  const myTeamName = await getRosterName(myRosterId);
+  const myTeamScore = scores[myRosterId];
+
+  const fullEmail = await emailFactory({
+    type: NOTIFICATION_TYPE.OTHER_TEAM_SUBMITTED_A_SCORE,
+    locale: language,
+    buttonLink,
+    otherTeamName,
+    otherTeamScore,
+    myTeamName,
+    myTeamScore,
+    eventName,
+  });
+
+  if (!fullEmail) {
+    return;
+  }
+  const { html, subject, text } = fullEmail;
+  sendMail({ html, email, subject, text });
+}
 async function sendImportMemberNonExistingEmail({
   email,
   token,
@@ -634,6 +678,7 @@ module.exports = {
   sendCartItemAddedPlayerEmail,
   sendConfirmationEmail,
   sendImportMemberEmail,
+  sendOtherTeamSubmittedScore,
   sendImportMemberNonExistingEmail,
   sendMail,
   sendPersonRegistrationEmail,
