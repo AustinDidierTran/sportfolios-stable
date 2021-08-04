@@ -4,6 +4,7 @@ const { v1: uuidv1 } = require('uuid');
 const { EXPIRATION_TIMES } = require('../../../../common/constants');
 const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
 const { getEntityRole } = require('./entity');
+const knex = require('../connection');
 
 const generateToken = () => {
   return uuidv1();

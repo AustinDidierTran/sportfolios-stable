@@ -59,6 +59,7 @@
 		"back_to_menu": "Revenir au menu"
 	},
 	"emails": {
+		"access": "Accéder",
 		"added_to_event_button": "Voir l'événement",
 		"added_to_event_subject": "Vous avez été ajouté à un événement",
 		"added_to_event_text": "Bonjour %s, %s vous a ajouté à l'événement %s sur Sportfolios. Cliquez sur le bouton suivant pour consulter l'événement.",
@@ -76,6 +77,7 @@
 		"import_member_text": "%s est en train de transférer sa plateforme d'inscription vers Sportfolios! 🎉 </br> Nous avons remarqué que vous êtes un membre actif de %s. </br> Voici les étapes pour transférer votre affiliation vers leur nouvelle plateforme.</br> <b> Votre code est %s </b> </br> <p style='font-size. 14px; line-height: 1.5; word-break: break-word; text-align: start; mso-line-height-alt: 21px; margin: 0;'> 1) Allez dans vos paramètres sur Sportfolios. </br> 2) Entrez votre code <b> %s </b> dans la section code coupon. </br> 3) Vous êtes maintenant membre de %s!",
 		"import_member_non_existing_button": "S'enregistrer",
 		"import_member_non_existing_text": "%s est en train de transférer sa plateforme d'inscription vers Sportfolios! 🎉 </br> Nous avons remarqué que vous êtes un membre actif de %s. </br> Voici les étapes pour transférer votre affiliation vers leur nouvelle plateforme.</br> <b> Votre code est %s </b> </br> <p style='font-size: 14px; line-height: 1.5; word-break: break-word; text-align: start; mso-line-height-alt: 21px; margin: 0;'> 1) Enregistrez-vous sur Sportfolios. </br> 2) Une fois enregistré, vous devriez être redirigé vers vos paramètres. Sinon, vous pouvez y accéder ici: https://sportfolios.app/page/userSettings. </br> 3) Entrez votre code <b> %s </b> dans la section code coupon. </br> 4) Vous êtes maintenant membre de %s!",
+		"other_team_submitted_score": "L'équipe  %s a soumis le score: %s : %s %s : %s pour votre partie de l'événement %s. Voulez vous confirmer le résultat?",
 		"person_registration_button": "Panier",
 		"person_registration_button_free": "Événement",
 		"person_registration_subject": "Inscription %s | Sportfolios",
@@ -96,6 +98,7 @@
 		"recovery_email_text": "Vous avez oublié votre mot de passe? Cliquez pour le retrouver.",
 		"score_submission_request_button": "Soumettre le score",
 		"score_submission_request_subject": "Rappel de soumission de score",
+		"other_team_score_submission_request_subject": "Demande de soumission de score",
 		"score_submission_request_text": "Bonjour %s! Une de vos partie de l'événement %s vient de se terminer. Cliquez sur le lien afin de soumettre votre score sur Sportfolios.",
 		"send_receipt_button": "Reçu",
 		"send_receipt_subject": "Reçu de commande | Sportfolios",

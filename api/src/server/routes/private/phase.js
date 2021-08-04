@@ -62,3 +62,5 @@ router.del(`${BASE_URL}/phase`, async ctx => {
   }
   ctx.body = { data: phase };
 });
+
+module.exports = router;

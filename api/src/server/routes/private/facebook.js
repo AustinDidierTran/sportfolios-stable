@@ -60,3 +60,5 @@ router.delete(`${BASE_URL}/messengerConnection`, async ctx => {
   }
   ctx.body = { data: res };
 });
+
+module.exports = router;

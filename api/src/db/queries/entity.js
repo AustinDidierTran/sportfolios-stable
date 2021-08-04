@@ -2182,29 +2182,6 @@ async function getGameSubmissionInfos(gameId, myRosterId, eventId) {
     .select('spirit_score', 'comment')
     .where({ game_id: gameId, submitted_by_roster: myRosterId });
 
-  const presences = await knex('game_players_attendance')
-    .select(
-      knex.raw(
-        "string_agg(entities_general_infos.name || ' ' || entities_general_infos.surname, ' ') AS complete_name",
-      ),
-      'game_players_attendance.player_id',
-      'game_players_attendance.is_sub',
-    )
-    .leftJoin(
-      'entities_general_infos',
-      'entities_general_infos.entity_id',
-      '=',
-      'game_players_attendance.player_id',
-    )
-    .where({ game_id: gameId, roster_id: myRosterId })
-    .andWhere('status', '=', PLAYER_ATTENDANCE_STATUS.PRESENT)
-    .groupBy(
-      'entities_general_infos.name',
-      'entities_general_infos.surname',
-      'game_players_attendance.player_id',
-      'game_players_attendance.is_sub',
-    );
-
   const getSpirit = await getHasSpirit(eventId);
 
   return {
@@ -2233,11 +2210,6 @@ async function getGameSubmissionInfos(gameId, myRosterId, eventId) {
         ? spiritSubmission.spirit_score
         : null,
     },
-    presences: presences.map(p => ({
-      value: p.player_id,
-      display: p.complete_name,
-      isSub: p.is_sub,
-    })),
     hasSpirit: getSpirit.hasSpirit,
   };
 }
