@@ -38,6 +38,7 @@ const addEntity = async (body, userId) => {
     endDate,
     maximumSpots,
     eventType,
+    photoUrl,
   } = body;
 
   if (
@@ -57,6 +58,7 @@ const addEntity = async (body, userId) => {
         entity_id: entityId,
         name,
         surname,
+        photo_url: photoUrl,
       })
       .transacting(trx);
 
