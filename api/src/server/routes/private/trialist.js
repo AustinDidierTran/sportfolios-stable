@@ -30,10 +30,12 @@ router.post(`${BASE_URL}/createComment`, async ctx => {
     ctx.request.body.personId,
     ctx.request.body.exerciseId,
   );
+
   if (res) {
     ctx.status = STATUS_ENUM.SUCCESS;
     ctx.body = {
       status: STATUS_ENUM.SUCCESS_STRING,
+      data: res,
     };
   } else {
     ctx.status = STATUS_ENUM.ERROR;
