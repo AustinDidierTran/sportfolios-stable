@@ -12,7 +12,6 @@ const {
   PHASE_STATUS_ENUM,
   PHASE_TYPE_ENUM,
   PILL_TYPE_ENUM,
-  PLAYER_ATTENDANCE_STATUS,
   REJECTION_ENUM,
   ROSTER_ROLE_ENUM,
   SESSION_ENUM,
@@ -26,6 +25,7 @@ const validator = require('validator');
 
 const _ = require('lodash');
 const { getTaxRates } = require('./shop');
+const { getEmailsEntity } = require('../helpers/entity');
 
 const addEntity = async (body, userId) => {
   const {
@@ -37,6 +37,7 @@ const addEntity = async (body, userId) => {
     endDate,
     maximumSpots,
     eventType,
+    photoUrl,
   } = body;
 
   if (
@@ -56,6 +57,7 @@ const addEntity = async (body, userId) => {
         entity_id: entityId,
         name,
         surname,
+        photo_url: photoUrl,
       })
       .transacting(trx);
 
@@ -1453,6 +1455,7 @@ async function getAllTeamsRegisteredInfos(eventId, pills, userId) {
   });
   return res;
 }
+
 async function getAllTeamsAcceptedInfos(eventId, userId) {
   const teams = await getAllTeamsAcceptedRegistered(eventId);
 
@@ -1770,25 +1773,6 @@ const unregister = async body => {
   const { rosterId, eventId } = body;
   await deleteRegistration(rosterId, eventId);
 };
-
-async function getEmailsEntity(entityId) {
-  const emails = await knex('entities_role')
-    .select('email')
-    .leftJoin(
-      'user_entity_role',
-      'user_entity_role.entity_id',
-      '=',
-      'entities_role.entity_id_admin',
-    )
-    .leftJoin(
-      'user_email',
-      'user_email.user_id',
-      '=',
-      'user_entity_role.user_id',
-    )
-    .where('entities_role.entity_id', entityId);
-  return emails;
-}
 
 async function getUserIdFromEntityId(entityId) {
   const [{ user_id }] = await knex('entities_role')
@@ -2363,7 +2347,11 @@ const getTeams = async gameId => {
           .select('photo_url')
           .where('entity_id', realTeamId);
 
-        const roster = await getRoster(team.roster_id);
+        const roster = await getRosterWithRsvp(
+          team.roster_id,
+          gameId,
+        );
+
         return {
           gameId: team.game_id,
           rosterId: team.roster_id,
@@ -2392,6 +2380,54 @@ const getTeams = async gameId => {
 
   return teamInfo;
 };
+
+async function getRosterWithRsvp(rosterId, gameId) {
+  const roster = await knex('roster_players_infos')
+    .select(
+      'id',
+      'roster_id',
+      'name',
+      'person_id',
+      'role',
+      'is_sub',
+      'photo_url',
+      'payment_status',
+      'invoice_item_id',
+    )
+    .where({ roster_id: rosterId })
+    .orderByRaw(
+      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
+    );
+
+  //TODO: Make a call to know if has created an account or is child account
+  const status = TAG_TYPE_ENUM.REGISTERED;
+
+  const res = await Promise.all(
+    roster.map(async player => {
+      const [rsvp] = await knex('game_rsvp')
+        .select('status')
+        .where({
+          roster_id: rosterId,
+          game_id: gameId,
+          person_id: player.person_id,
+        });
+
+      return {
+        id: player.id,
+        name: player.name,
+        photoUrl: player.photo_url,
+        personId: player.person_id,
+        role: player.role,
+        isSub: player.is_sub,
+        status: status,
+        paymentStatus: player.payment_status,
+        invoiceItemId: player.invoice_item_id,
+        rsvp: rsvp.status,
+      };
+    }),
+  );
+  return res;
+}
 
 async function getSlots(eventId) {
   const res = await knex('event_time_slots')
@@ -5741,12 +5777,11 @@ async function updateGameRsvp(
         entities.map(e => e.id),
       )
       .returning('person_id');
-
     return res;
   }
 
   let primaryPersonId = personId;
-  if (!person_id) {
+  if (!personId) {
     const person = await getPrimaryPerson(userId);
     primaryPersonId = person.id;
   }
@@ -5758,7 +5793,6 @@ async function updateGameRsvp(
       game_id: id,
     })
     .returning('person_id');
-
   return res;
 }
 
@@ -7460,7 +7494,6 @@ module.exports = {
   getCreators,
   getCreatorsUserId,
   getEmailPerson,
-  getEmailsEntity,
   getEntitiesTypeById,
   getEntity,
   getEntityOwners,

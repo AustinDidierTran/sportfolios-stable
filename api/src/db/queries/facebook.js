@@ -249,6 +249,7 @@ module.exports = {
   getChatbotInfos,
   getFacebookId,
   getMessengerIdFromFbID,
+  getMessengerId,
   getNameFromPSID,
   getTimezoneFromPSID,
   isLinkedFacebookAccount,

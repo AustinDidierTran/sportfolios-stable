@@ -37,12 +37,9 @@ async function getPrerankPhase(eventId, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   const prerank = await getPrerankPhaseHelper(eventId);
-  const res = {
-    phaseId: prerank.id,
-    spots: prerank.spots,
-  };
-  return res;
+  return { phaseId: prerank.id, spots: prerank.spots };
 }
+
 async function updatePhase(body, userId) {
   const {
     eventId,

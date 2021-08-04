@@ -6,14 +6,14 @@ const router = new Router();
 const BASE_URL = '/api/entity';
 
 router.get(`${BASE_URL}/prerankPhase`, async ctx => {
-  const data = await service.getPrerankPhase(
+  const phase = await service.getPrerankPhase(
     ctx.query.eventId,
     ctx.body.userInfo.id,
   );
-  if (!data) {
+  if (!phase) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = { data };
+  ctx.body = { data: phase };
 });
 
 router.put(`${BASE_URL}/updatePhase`, async ctx => {

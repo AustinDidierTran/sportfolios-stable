@@ -2,7 +2,7 @@ const knex = require('../connection');
 const { stripeErrorLogger } = require('../../server/utils/logger');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const { GLOBAL_ENUM } = require('../../../../common/enums');
-const { getEmailsEntity } = require('./entity');
+const { getEmailsEntity } = require('../helpers/entity');
 
 const getItem = async stripePriceId => {
   const [item] = await knex('stripe_price')

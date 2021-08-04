@@ -1,8 +1,8 @@
 const Router = require('koa-router');
+const { ERROR_ENUM } = require('../../../../../common/errors');
 
 const router = new Router();
 const BASE_URL = '/api/posts';
-
 const service = require('../../service/post');
 
 router.post(`${BASE_URL}/create`, async ctx => {

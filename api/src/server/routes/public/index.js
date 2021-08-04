@@ -1,19 +1,19 @@
 const auth = require('./auth');
 const entity = require('./entity');
-const shop = require('./shop');
-const googleAnalytics = require('./googleAnalytics');
-const user = require('./user');
 const facebook = require('./facebook');
-const posts = require('./post');
-const notifications = require('./notification');
+const googleAnalytics = require('./googleAnalytics');
+const notification = require('./notification');
+const post = require('./post');
+const shop = require('./shop');
+const user = require('./user');
 
 module.exports = [
   auth,
   entity,
-  shop,
-  googleAnalytics,
-  user,
-  posts,
   facebook,
-  notifications,
+  googleAnalytics,
+  notification,
+  post,
+  shop,
+  user,
 ];
