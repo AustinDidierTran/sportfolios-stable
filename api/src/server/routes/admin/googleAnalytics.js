@@ -77,3 +77,5 @@ router.put(`${BASE_URL}/gaPageviews/:id`, async ctx => {
     },
   };
 });
+
+module.exports = router;
