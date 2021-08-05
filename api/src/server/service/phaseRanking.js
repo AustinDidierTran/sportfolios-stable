@@ -11,9 +11,8 @@ const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
 const { ERROR_ENUM } = require('../../../../common/errors');
 const { isAllowed } = require('../../db/queries/utils');
 
-async function getPhaseRanking(phaseId) {
-  const res = getPhaseRankingHelper(phaseId);
-  return res;
+function getPhaseRanking(phaseId) {
+  return getPhaseRankingHelper(phaseId);
 }
 
 async function updateInitialPositionPhase(body, userId) {
@@ -25,9 +24,9 @@ async function updateInitialPositionPhase(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  const res = await updateInitialPositionPhaseHelper(phaseId, teams);
-  return res;
+  return updateInitialPositionPhaseHelper(phaseId, teams);
 }
+
 async function updateFinalPositionPhase(body, userId) {
   const { phaseId, teams, eventId } = body;
 
@@ -36,8 +35,7 @@ async function updateFinalPositionPhase(body, userId) {
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  const res = await updateFinalPositionPhaseHelper(phaseId, teams);
-  return res;
+  return updateFinalPositionPhaseHelper(phaseId, teams);
 }
 
 async function updateTeamPhase(body, userId) {
@@ -55,14 +53,13 @@ async function updateTeamPhase(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  const res = await updateOriginPhaseHelper({
+  return updateOriginPhaseHelper({
     phaseId,
     eventId,
     originPhase,
     originPosition,
     initialPosition,
   });
-  return res;
 }
 
 async function deleteTeamPhase(body, userId) {
@@ -73,8 +70,7 @@ async function deleteTeamPhase(body, userId) {
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  const res = await deleteTeamPhaseHelper(phaseId, initialPosition);
-  return res;
+  return deleteTeamPhaseHelper(phaseId, initialPosition);
 }
 module.exports = {
   getPhaseRanking,
