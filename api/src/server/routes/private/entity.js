@@ -154,10 +154,6 @@ router.get(`${BASE_URL}/recentMember`, async ctx => {
     ctx.query.organizationId,
     ctx.body.userInfo.id,
   );
-
-  if (!member) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
   ctx.body = { data: member };
 });
 

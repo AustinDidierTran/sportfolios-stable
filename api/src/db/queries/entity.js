@@ -907,7 +907,10 @@ async function getMostRecentMember(personId, organizationId) {
     .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
     .andWhere({ organization_id: organizationId })
     .orderBy('memberships_infos.created_at', 'desc');
-  return { memberType: member.member_type };
+  if (member) {
+    return member.member_type;
+  }
+  return null;
 }
 
 async function getMembers(personId, organizationId) {

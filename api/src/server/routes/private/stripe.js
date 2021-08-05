@@ -57,17 +57,15 @@ router.get(`${BASE_URL}/eventAccounts`, async ctx => {
 });
 
 router.post(`${BASE_URL}/externalAccount`, async ctx => {
-  const { data, status, error } = await service.addExternalAccount(
+  const bankAccount = await service.addExternalAccount(
     ctx.request.body,
     ctx.request.ip,
   );
 
-  if (error) {
-    ctx.status = status;
-    ctx.body = { error: error.message };
-  } else {
-    ctx.body = { status, data };
+  if (!bankAccount) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  ctx.body = { data: bankAccount };
 });
 
 router.get(`${BASE_URL}/getCustomer`, async ctx => {

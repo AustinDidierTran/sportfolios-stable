@@ -41,7 +41,6 @@ function getAccountLink(ip, entityId) {
 }
 
 function addExternalAccount(body, ip) {
-  //TODO: Add verification on authorizations ( isAdmin ?)
   return createExternalAccount(body, ip);
 }
 
