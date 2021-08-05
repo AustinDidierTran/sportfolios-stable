@@ -52,7 +52,6 @@ const hasStripeBankAccount = async entityId => {
   return false;
 };
 
-
 const getEventAccounts = async eventId => {
   const admins = await getCreators(eventId);
   const res = await Promise.all(
@@ -210,7 +209,7 @@ const createExternalAccount = async (body, ip) => {
     .returning('*');
 
   stripeLogger('External Account Created', account.id);
-  return { status: 200, data: bankAccount };
+  return bankAccount;
 };
 
 module.exports = {

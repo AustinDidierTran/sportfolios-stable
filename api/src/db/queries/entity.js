@@ -907,7 +907,10 @@ async function getMostRecentMember(personId, organizationId) {
     .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
     .andWhere({ organization_id: organizationId })
     .orderBy('memberships_infos.created_at', 'desc');
-  return { memberType: member.member_type };
+  if (member) {
+    return member.member_type;
+  }
+  return null;
 }
 
 async function getMembers(personId, organizationId) {
@@ -1093,7 +1096,7 @@ async function getMemberships(entityId) {
     )
     .where({ entity_id: entityId });
 
-  return Promise.all(
+  const res = await Promise.all(
     memberships.map(async m => {
       const taxRates = await getTaxRates(m.stripe_price_id);
       const transactionFees = await getTransactionFeesFromStripePriceId(
@@ -1115,6 +1118,7 @@ async function getMemberships(entityId) {
       };
     }),
   );
+  return res;
 }
 
 async function getPartners(entityId) {
@@ -1134,12 +1138,10 @@ async function getPartners(entityId) {
 }
 
 async function getTransactionFeesFromStripePriceId(stripePriceId) {
-  const [{ transaction_fees: transactionFees }] = await knex(
-    'stripe_price',
-  )
+  const [stripePrice] = await knex('stripe_price')
     .select('*')
     .where({ stripe_price_id: stripePriceId });
-  return transactionFees;
+  return stripePrice.transaction_fees;
 }
 
 async function hasMemberships(organizationId) {
@@ -5714,6 +5716,7 @@ async function addMembership(
     description: entity.name,
     metadata: { type: GLOBAL_ENUM.MEMBERSHIP, id: entityId },
   };
+
   const product = await addProduct({ stripeProduct });
   const stripePrice = {
     currency: 'cad',
