@@ -1885,21 +1885,24 @@ async function getPhaseRanking(phaseId) {
 
   const rankingsWithName = await Promise.all(
     rankings.map(async r => {
+      const currentPhaseName = await getPhaseName(r.current_phase);
       if (r.roster_id) {
         const phaseName = await getPhaseName(r.origin_phase);
         const name = await getRosterName(r.roster_id);
         return {
           id: r.id,
           rosterId: r.roster_id,
-          originPhase: r.origin_phase,
+          originPhase: { id: r.origin_phase, name: phaseName },
           originPosition: r.origin_position,
-          currentPhase: r.current_phase,
+          currentPhase: {
+            id: r.current_phase,
+            name: currentPhaseName,
+          },
           initialPosition: r.initial_position,
           finalPosition: r.final_position,
           rankingId: r.ranking_id,
           name,
           teamName: name,
-          phaseName,
         };
       }
       if (r.origin_phase && r.origin_position && !r.roster_id) {
@@ -1907,21 +1910,26 @@ async function getPhaseRanking(phaseId) {
         return {
           id: r.id,
           rosterId: r.roster_id,
-          originPhase: r.origin_phase,
+          originPhase: { id: r.origin_phase, name: phaseName },
           originPosition: r.origin_position,
-          currentPhase: r.current_phase,
+          currentPhase: {
+            id: r.current_phase,
+            name: currentPhaseName,
+          },
           initialPosition: r.initial_position,
           finalPosition: r.final_position,
           rankingId: r.ranking_id,
-          phaseName,
         };
       } else {
         return {
           id: r.id,
           rosterId: r.roster_id,
-          originPhase: r.origin_phase,
+          originPhase: { id: r.origin_phase },
           originPosition: r.origin_position,
-          currentPhase: r.current_phase,
+          currentPhase: {
+            id: r.current_phase,
+            name: currentPhaseName,
+          },
           initialPosition: r.initial_position,
           finalPosition: r.final_position,
           rankingId: r.ranking_id,
