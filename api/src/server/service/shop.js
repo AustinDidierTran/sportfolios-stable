@@ -121,16 +121,17 @@ const deleteCartItem = async query => {
   if (type === GLOBAL_ENUM.MEMBERSHIP) {
     await deleteMembershipWithId(metadata.id);
   }
-  await deleteCartItemHelper(cartItemId);
+  return deleteCartItemHelper(cartItemId);
 };
 
 const deleteAllCartItems = async userId => {
   const cartItems = await getCartItems(userId);
-  await Promise.all(
+  const res = await Promise.all(
     cartItems.map(async c => {
-      await deleteCartItem({ cartItemId: c.id });
+      return deleteCartItem({ cartItemId: c.id });
     }),
   );
+  return res;
 };
 
 module.exports = {

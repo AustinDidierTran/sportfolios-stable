@@ -26,11 +26,11 @@ router.get(`${BASE_URL}/bankAccounts`, async ctx => {
 });
 
 router.get(`${BASE_URL}/hasStripeAccount`, async ctx => {
-  const data = await service.hasStripeAccount(ctx.query.entityId);
-  if (!data) {
+  const res = await service.hasStripeAccount(ctx.query.entityId);
+  if (!res && res != false) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = { data };
+  ctx.body = { data: res };
 });
 
 router.get(`${BASE_URL}/hasStripeBankAccount`, async ctx => {
@@ -340,7 +340,7 @@ router.del(`${BASE_URL}/creditCard`, async ctx => {
 
 router.del(`${BASE_URL}/bankAccount`, async ctx => {
   const data = await service.deleteBankAccount(ctx.query);
-  if (!data) {
+  if (!data && data !== 0) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   ctx.body = { data };

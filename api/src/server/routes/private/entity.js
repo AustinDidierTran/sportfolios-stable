@@ -235,13 +235,14 @@ router.get(`${BASE_URL}/organizationTokenPromoCode`, async ctx => {
 });
 
 router.get(`${BASE_URL}/memberships`, async ctx => {
-  const entity = await service.getMemberships(ctx.query.id);
+  const memberships = await service.getMemberships(ctx.query.id);
 
-  if (!entity) {
+  if (!memberships) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = { data: entity };
+  ctx.body = { data: memberships };
 });
+
 router.get(`${BASE_URL}/partners`, async ctx => {
   const partners = await service.getPartners(ctx.query.id);
 

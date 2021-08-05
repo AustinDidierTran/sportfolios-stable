@@ -80,7 +80,7 @@ const addPrice = async body => {
       );
     }
 
-    const res = await knex('store_items').insert({
+    await knex('store_items').insert({
       entity_id: entityId,
       stripe_price_id: price.id,
       photo_url: photoUrl,
@@ -88,7 +88,7 @@ const addPrice = async body => {
 
     stripeLogger(`Price created, ${price.id}`);
 
-    return res;
+    return price;
   } catch (err) {
     stripeErrorLogger('addPrice error', err);
     throw err;
