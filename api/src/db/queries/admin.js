@@ -84,7 +84,7 @@ function getAllSports() {
     .orderBy('name', 'asc');
 }
 
-async function getAllUsersAndSecond() {
+async function getAllUsersAndSecond(limitNumber) {
   const primaryUser = await knex
     .select(
       knex.raw(
@@ -125,7 +125,8 @@ async function getAllUsersAndSecond() {
       'user_app_role.app_role',
       'entities_general_infos.photo_url',
     )
-    .orderBy('entities_general_infos.name', 'asc');
+    .orderBy('entities_general_infos.name', 'asc')
+    .limit(limitNumber);
   return Promise.all(
     primaryUser.map(async user => {
       const secondAccount = await knex
