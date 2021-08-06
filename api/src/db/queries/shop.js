@@ -60,6 +60,7 @@ const getShopItems = async entityId => {
       'stripe_price.active',
       'store_items.photo_url',
       'stripe_product.metadata',
+      'taxRates.id as taxRatesId',
     )
     .leftJoin(
       'stripe_price',
@@ -72,6 +73,18 @@ const getShopItems = async entityId => {
       'stripe_product.stripe_product_id',
       '=',
       'stripe_price.stripe_product_id',
+    )
+    .leftJoin(
+      knex('tax_rates_stripe_price')
+        .select(
+          knex.raw('json_agg(tax_rate_id) AS id'),
+          'stripe_price_id',
+        )
+        .groupBy('stripe_price_id')
+        .as('taxRates'),
+      'taxRates.stripe_price_id',
+      '=',
+      'stripe_price.stripe_price_id',
     )
     .whereRaw(
       `stripe_product.metadata::jsonb @> '{"type": "shop_item"}'`,
@@ -89,6 +102,7 @@ const getShopItems = async entityId => {
     stripePriceId: i.stripe_price_id,
     stripeProductId: i.stripe_product_id,
     sizes: i.metadata.sizes,
+    taxRatesId: i.taxRatesId,
   }));
 };
 

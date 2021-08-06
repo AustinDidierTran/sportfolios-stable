@@ -101,10 +101,22 @@ const editPrice = async body => {
     entityId,
     photoUrl,
     stripePriceIdToUpdate,
+    taxRatesId,
   } = body;
   try {
     const price = await stripe.prices.create(stripePrice);
     let transactionFees = price.unit_amount;
+    if (taxRatesId) {
+      await Promise.all(
+        taxRatesId.map(async taxRateId => {
+          const [{ percentage }] = await knex('tax_rates')
+            .select('percentage')
+            .where({ id: taxRateId });
+          transactionFees =
+            transactionFees + price.unit_amount * (percentage / 100);
+        }),
+      );
+    }
 
     transactionFees = Math.floor(
       transactionFees * PLATEFORM_FEES + PLATEFORM_FEES_FIX,
@@ -121,6 +133,17 @@ const editPrice = async body => {
       owner_id: entityId,
     });
 
+    if (taxRatesId) {
+      await Promise.all(
+        taxRatesId.map(async taxRateId => {
+          await knex('tax_rates_stripe_price').insert({
+            stripe_price_id: price.id,
+            tax_rate_id: taxRateId,
+          });
+        }),
+      );
+    }
+
     const res = await knex('store_items')
       .update({
         stripe_price_id: price.id,
@@ -135,13 +158,19 @@ const editPrice = async body => {
 
     return res;
   } catch (err) {
-    stripeErrorLogger('addPrice error', err);
+    stripeErrorLogger('editPrice error', err);
     throw err;
   }
 };
 
 const createItem = async body => {
-  const { stripeProduct, stripePrice, entityId, photoUrl } = body;
+  const {
+    stripeProduct,
+    stripePrice,
+    entityId,
+    photoUrl,
+    taxRatesId,
+  } = body;
 
   try {
     const product = await addProduct({
@@ -161,6 +190,7 @@ const createItem = async body => {
       entityId,
       photoUrl,
       ownerId: entityId,
+      taxRatesId,
     });
 
     return price;
@@ -177,6 +207,7 @@ const editItem = async body => {
     entityId,
     photoUrl,
     stripePriceIdToUpdate,
+    taxRatesId,
   } = body;
   try {
     const product = await addProduct({
@@ -188,6 +219,7 @@ const editItem = async body => {
       entityId,
       photoUrl,
       stripePriceIdToUpdate,
+      taxRatesId,
     });
 
     return price;
@@ -210,6 +242,10 @@ const deletePrice = async stripePriceId => {
     .del();
 
   await knex('cart_items')
+    .where({ stripe_price_id: stripePriceId })
+    .del();
+
+  await knex('tax_rates_stripe_price')
     .where({ stripe_price_id: stripePriceId })
     .del();
 

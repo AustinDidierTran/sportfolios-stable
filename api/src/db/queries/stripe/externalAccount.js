@@ -81,10 +81,18 @@ const getOrCreateStripeConnectedAccountId = async (entityId, ip) => {
 };
 
 const getTaxes = async () => {
-  return knex('tax_rates')
+  const taxRates = await knex('tax_rates')
     .select('*')
     .whereNull('deleted_at')
     .andWhere({ active: true });
+  return taxRates.map(t => ({
+    id: t.id,
+    displayName: t.display_name,
+    description: t.description,
+    inclusive: t.inclusive,
+    active: t.active,
+    percentage: t.percentage,
+  }));
 };
 
 // REF: https://stripe.com/docs/api/accounts/create?lang=node

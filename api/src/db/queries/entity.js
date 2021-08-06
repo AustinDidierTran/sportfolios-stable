@@ -6844,6 +6844,11 @@ const deleteGame = async (gameId, forceDelete) => {
       .del()
       .transacting(trx);
 
+    await knex('game_rsvp')
+      .where('game_id', gameId)
+      .del()
+      .transacting(trx);
+
     await knex('entities')
       .where('id', gameId)
       .del()
