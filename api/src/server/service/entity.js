@@ -1784,72 +1784,78 @@ const unregisterTeams = async (body, userId) => {
   }
 
   try {
-    for (const rosterId of rosterIds) {
-      if (await canUnregisterTeamHelper(rosterId, eventId)) {
-        const { invoiceItemId, status } = await getRosterInvoiceItem({
-          eventId,
-          rosterId,
-        });
-
-        if (status === INVOICE_STATUS_ENUM.PAID) {
-          // Registration paid, refund please
-          await createRefund({ invoiceItemId });
-          await updateRegistrationHelper(
-            rosterId,
-            eventId,
+    const res = await Promise.all(
+      rosterIds.map(async rosterId => {
+        if (await canUnregisterTeamHelper(rosterId, eventId)) {
+          const {
             invoiceItemId,
-            INVOICE_STATUS_ENUM.REFUNDED,
-          );
-        } else if (status === INVOICE_STATUS_ENUM.OPEN) {
-          // Registration is not paid, remove from cart
-          await removeEventCartItemHelper({ rosterId });
-        }
+            status,
+          } = await getRosterInvoiceItem({
+            eventId,
+            rosterId,
+          });
 
-        const roster = await getRoster(rosterId, false);
-        for (const player of roster) {
-          if (player.paymentStatus === INVOICE_STATUS_ENUM.PAID) {
-            // Individual payment paid, refund please
-            await createRefund({
-              invoiceItemId: player.invoiceItemId,
-            });
-            await updatePlayerPaymentStatusHelper({
-              metadata: { buyerId: player.personId },
+          if (status === INVOICE_STATUS_ENUM.PAID) {
+            // Registration paid, refund please
+            await createRefund({ invoiceItemId });
+            await updateRegistrationHelper(
               rosterId,
-              status: INVOICE_STATUS_ENUM.REFUNDED,
-              invoiceItemId: player.invoiceItemId,
-            });
-          } else if (
-            player.paymentStatus === INVOICE_STATUS_ENUM.OPEN
-          ) {
-            // Individual payment is not paid, remove from cart
-            await removeIndividualPaymentCartItemHelper({
-              buyerId: player.personId,
-              rosterId,
-            });
+              eventId,
+              invoiceItemId,
+              INVOICE_STATUS_ENUM.REFUNDED,
+            );
+          } else if (status === INVOICE_STATUS_ENUM.OPEN) {
+            // Registration is not paid, remove from cart
+            await removeEventCartItemHelper({ rosterId });
           }
+
+          const roster = await getRoster(rosterId, false);
+
+          for (const player of roster) {
+            if (player.paymentStatus === INVOICE_STATUS_ENUM.PAID) {
+              // Individual payment paid, refund please
+              await createRefund({
+                invoiceItemId: player.invoiceItemId,
+              });
+              await updatePlayerPaymentStatusHelper({
+                metadata: { buyerId: player.personId },
+                rosterId,
+                status: INVOICE_STATUS_ENUM.REFUNDED,
+                invoiceItemId: player.invoiceItemId,
+              });
+            } else if (
+              player.paymentStatus === INVOICE_STATUS_ENUM.OPEN
+            ) {
+              // Individual payment is not paid, remove from cart
+              await removeIndividualPaymentCartItemHelper({
+                buyerId: player.personId,
+                rosterId,
+              });
+            }
+          }
+          // Remove all references to this this in this event and remove players.
+          const teamId = await getTeamIdFromRosterId(rosterId);
+          const captainUserId = await getTeamCreatorUserId(teamId);
+          const team = (await getEntity(teamId, captainUserId))
+            .basicInfos;
+          const event = (await getEntity(eventId)).basicInfos;
+          const infos = { team, event, status };
+          sendNotification(
+            NOTIFICATION_TYPE.TEAM_UNREGISTERED,
+            captainUserId,
+            infos,
+          );
+          await unregisterHelper({ rosterId, eventId });
+          return roster;
+        } else {
+          throw new Error(ERROR_ENUM.UNREGISTRATION_ERROR);
         }
-        // Remove all references to this this in this event and remove players.
-        const teamId = await getTeamIdFromRosterId(rosterId);
-        const captainUserId = await getTeamCreatorUserId(teamId);
-        const team = (await getEntity(teamId, captainUserId))
-          .basicInfos;
-        const event = (await getEntity(eventId)).basicInfos;
-        const infos = { team, event, status };
-        sendNotification(
-          NOTIFICATION_TYPE.TEAM_UNREGISTERED,
-          captainUserId,
-          infos,
-        );
-        await unregisterHelper({ rosterId, eventId });
-      } else {
-        throw new Error(ERROR_ENUM.UNREGISTRATION_ERROR);
-      }
-    }
+      }),
+    );
+    return res;
   } catch (error) {
     throw new Error(ERROR_ENUM.UNREGISTRATION_ERROR);
   }
-
-  return getAllTeamsRegisteredInfosHelper(eventId, userId);
 };
 
 async function unregisterPeople(body, userId) {
@@ -1861,37 +1867,39 @@ async function unregisterPeople(body, userId) {
   }
 
   try {
-    for (const person of people) {
-      const { personId, stripePrice } = person;
-      const { invoiceItemId, status } = await getPersonInvoiceItem({
-        eventId,
-        personId,
-      });
-
-      if (status === INVOICE_STATUS_ENUM.PAID) {
-        // Registration paid, refund please
-        await createRefund({ invoiceItemId });
-        await updateRegistrationPersonHelper(
-          personId,
+    const res = await Promise.all(
+      people.map(async person => {
+        const { personId, stripePrice } = person;
+        const { invoiceItemId, status } = await getPersonInvoiceItem({
           eventId,
-          invoiceItemId,
-          INVOICE_STATUS_ENUM.REFUNDED,
-        );
-      } else if (status === INVOICE_STATUS_ENUM.OPEN) {
-        // Registration is not paid, remove from cart
-        await removeIndividualEventCartItemHelper({
           personId,
-          eventId,
-          stripePrice,
         });
-      }
-      await deletePersonFromEvent({ personId, eventId });
-    }
+
+        if (status === INVOICE_STATUS_ENUM.PAID) {
+          // Registration paid, refund please
+          await createRefund({ invoiceItemId });
+          await updateRegistrationPersonHelper(
+            personId,
+            eventId,
+            invoiceItemId,
+            INVOICE_STATUS_ENUM.REFUNDED,
+          );
+        } else if (status === INVOICE_STATUS_ENUM.OPEN) {
+          // Registration is not paid, remove from cart
+          await removeIndividualEventCartItemHelper({
+            personId,
+            eventId,
+            stripePrice,
+          });
+        }
+        await deletePersonFromEvent({ personId, eventId });
+        return person;
+      }),
+    );
+    return res;
   } catch (error) {
     throw new Error(ERROR_ENUM.UNREGISTRATION_ERROR);
   }
-
-  return getAllPeopleRegisteredInfosHelper(eventId, userId);
 }
 
 async function addMembership(body, userId) {
