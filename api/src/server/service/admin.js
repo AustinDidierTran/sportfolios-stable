@@ -49,8 +49,8 @@ function getAllSports() {
   return getAllSportsHelper();
 }
 
-function getAllUsersAndSecond() {
-  return getAllUsersAndSecondHelper();
+function getAllUsersAndSecond(limitNumber) {
+  return getAllUsersAndSecondHelper(limitNumber);
 }
 
 function updateSport(id, sport) {
