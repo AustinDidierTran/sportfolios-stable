@@ -243,6 +243,18 @@ router.get(`${BASE_URL}/memberships`, async ctx => {
   ctx.body = { data: memberships };
 });
 
+router.get(`${BASE_URL}/membership`, async ctx => {
+  const membership = await service.getMembershipWithoutId(
+    ctx.query.organizationId,
+    ctx.query.membershipType,
+  );
+
+  if (!membership) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: membership };
+});
+
 router.get(`${BASE_URL}/partners`, async ctx => {
   const partners = await service.getPartners(ctx.query.id);
 
@@ -878,15 +890,25 @@ router.post(`${BASE_URL}/role`, async ctx => {
 });
 
 router.post(`${BASE_URL}/member`, async ctx => {
-  const entity = await service.addMember(
+  const member = await service.addMember(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
-
-  if (!entity) {
+  if (!member) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = { data: entity };
+  ctx.body = { data: member };
+});
+
+router.post(`${BASE_URL}/memberWithCoupon`, async ctx => {
+  const member = await service.addMemberWithCoupon(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (!member) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: member };
 });
 
 router.post(`${BASE_URL}/report`, async ctx => {
@@ -920,12 +942,12 @@ router.post(`${BASE_URL}/memberDonation`, async ctx => {
 });
 
 router.post(`${BASE_URL}/memberManually`, async ctx => {
-  const entity = await service.addMemberManually(ctx.request.body);
+  const member = await service.addMemberManually(ctx.request.body);
 
-  if (!entity) {
+  if (!member) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = { data: entity };
+  ctx.body = { data: member };
 });
 
 router.post(`${BASE_URL}/exercise`, async ctx => {
@@ -1120,8 +1142,9 @@ router.post(`${BASE_URL}/register`, async ctx => {
     ctx.body = { data: { status, reason } };
   } else if (!status) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  } else {
+    ctx.body = { data: { status, rosterId } };
   }
-  ctx.body = { data: { status, rosterId } };
 });
 
 router.post(`${BASE_URL}/addTeamAsAdmin`, async ctx => {
@@ -1228,12 +1251,12 @@ router.del(`${BASE_URL}/game`, async ctx => {
     ctx.query,
   );
   if (reason) {
-    ctx.status = STATUS_ENUM.ERROR;
     ctx.body = { data: { reason } };
   } else if (!game) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  } else {
+    ctx.body = { data: { game } };
   }
-  ctx.body = { data: { game } };
 });
 
 router.del(`${BASE_URL}/practice`, async ctx => {

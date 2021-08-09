@@ -1085,6 +1085,43 @@ async function getOptions(eventId) {
   );
 }
 
+async function getMembershipWithoutId(
+  organizationId,
+  membershipType,
+) {
+  const [membership] = await knex('entity_memberships')
+    .select('*', 'entity_memberships.id')
+    .leftJoin(
+      'terms_and_conditions',
+      'terms_and_conditions.id',
+      '=',
+      'entity_memberships.terms_and_conditions_id',
+    )
+    .where({
+      entity_id: organizationId,
+      membership_type: membershipType,
+    });
+
+  const taxRates = await getTaxRates(membership.stripe_price_id);
+  const transactionFees = await getTransactionFeesFromStripePriceId(
+    membership.stripe_price_id,
+  );
+  return {
+    id: membership.id,
+    entityId: membership.entity_id,
+    membershipType: membership.membership_type,
+    length: membership.length,
+    price: membership.price,
+    fixedDate: membership.fixed_date,
+    stripePriceId: membership.stripe_price_id,
+    description: membership.description,
+    fileName: membership.file_name,
+    fileUrl: membership.file_url,
+    transactionFees,
+    taxRates,
+    termsAndConditionsId: membership.terms_and_conditions_id,
+  };
+}
 async function getMemberships(entityId) {
   const memberships = await knex('entity_memberships')
     .select('*', 'entity_memberships.id')
@@ -4456,7 +4493,6 @@ async function addMember(body) {
     medicalConditions,
     termsAndConditionsId,
   } = body;
-
   const [add] = await knex('addresses')
     .insert({
       street_address: address.street_address,
@@ -4492,7 +4528,6 @@ async function addMember(body) {
       infos_supp_id: infos,
     })
     .returning('*');
-
   return res;
 }
 
@@ -7538,6 +7573,7 @@ module.exports = {
   getMembers,
   getMembership,
   getMemberships,
+  getMembershipWithoutId,
   getMostRecentMember,
   getMyPersonsAdminsOfTeam,
   getNbOfTeamsInEvent,

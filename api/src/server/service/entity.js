@@ -105,6 +105,7 @@ const {
   getMembers: getMembersHelper,
   getMembership,
   getMemberships: getMembershipsHelper,
+  getMembershipWithoutId: getMembershipWithoutIdHelper,
   getMostRecentMember: getMostRecentMemberHelper,
   getMyPersonsAdminsOfTeam: getMyPersonsAdminsOfTeamHelper,
   getNbOfTeamsInEvent: getNbOfTeamsInEventHelper,
@@ -211,6 +212,7 @@ const {
   getUserIdFromEmail,
   validateEmailIsUnique: validateEmailIsUniqueHelper,
   getPrimaryPersonIdFromUserId,
+  useToken,
 } = require('../../db/queries/user');
 const { sendNotification } = require('./notification');
 const { getOwnedPersons } = require('./user');
@@ -328,6 +330,10 @@ function eventInfos(id, userId) {
 
 function getMemberships(entityId) {
   return getMembershipsHelper(entityId);
+}
+
+function getMembershipWithoutId(organizationId, membershipType) {
+  return getMembershipWithoutIdHelper(organizationId, membershipType);
 }
 
 async function getMostRecentMember(organizationId, userId) {
@@ -1525,7 +1531,12 @@ async function addMember(body, userId) {
     },
     userId,
   );
+  return res;
+}
 
+async function addMemberWithCoupon(body) {
+  const res = await addMemberHelper(body);
+  await useToken(body.tokenId);
   return res;
 }
 
@@ -2261,6 +2272,7 @@ module.exports = {
   addGame,
   addGameAttendances,
   addMember,
+  addMemberWithCoupon,
   addMemberDonation,
   addMemberManually,
   addMembership,
@@ -2339,6 +2351,7 @@ module.exports = {
   updateGameRsvp,
   getMembers,
   getMemberships,
+  getMembershipWithoutId,
   getMostRecentMember,
   getMyRosterIds,
   getNewRosterInviteToken,
