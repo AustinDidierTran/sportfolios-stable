@@ -68,6 +68,7 @@ const {
   getAllPeopleRegisteredInfos: getAllPeopleRegisteredInfosHelper,
   getAllPlayersAcceptedRegistered: getAllPlayersAcceptedRegisteredHelper,
   getAllPlayersPending: getAllPlayersPendingHelper,
+  getAllPlayersRefused: getAllPlayersRefusedHelper,
   getAllTeamPlayersPending: getAllTeamPlayersPendingHelper,
   getMyTeamPlayersRequest: getMyTeamPlayersRequestHelper,
   getAllRolesEntity: getAllRolesEntityHelper,
@@ -223,7 +224,6 @@ async function getEntity(id, userId) {
   if (res.basicInfos.type === GLOBAL_ENUM.TEAM) {
     res.gamesInfos = await getTeamEventsInfosHelper(id);
   }
-
   return res;
 }
 
@@ -1007,12 +1007,15 @@ async function addPersonToEvent(body, userId) {
         );
         // send notification to organization admin
         const creatorUserIds = await getCreatorsUserId(eventId);
+        const newRemainingSpots = await getRemainingSpotsHelper(
+          eventId,
+        );
         await Promise.all(
           creatorUserIds.map(async userId => {
             const infos = {
               person,
               event,
-              placesLeft: remainingSpots,
+              placesLeft: newRemainingSpots,
             };
             sendNotification(
               NOTIFICATION_TYPE.PERSON_REGISTRATION_TO_ADMIN,
@@ -1874,7 +1877,6 @@ async function unregisterPeople(body, userId) {
           eventId,
           personId,
         });
-
         if (status === INVOICE_STATUS_ENUM.PAID) {
           // Registration paid, refund please
           await createRefund({ invoiceItemId });

@@ -4198,7 +4198,6 @@ const removeIndividualEventCartItem = async ({
     )
     .where('cartItems.eventid', eventId)
     .andWhere('cartItems.stripe_price_id', stripePrice);
-
   const ids = res
     .filter(r => {
       const person = JSON.parse(r.person);
