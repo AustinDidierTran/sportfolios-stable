@@ -1950,7 +1950,8 @@ async function getPositions(gameId) {
   await Promise.all(
     positions.map(async (p, index) => {
       if (p.roster_id) {
-        positions[index].teamName = p.name;
+        const t = await getTeamByRosterId(p.roster_id);
+        positions[index].teamName = t.basicInfos.name;
         const photoUrl = await getPhotoFromRosterId(p.roster_id);
         if (photoUrl) {
           positions[index].photoUrl = photoUrl;
@@ -1958,7 +1959,7 @@ async function getPositions(gameId) {
       }
       positions[index].gameId = p.game_id;
       positions[index].id = p.id;
-      positions[index].name = p.name;
+      positions[index].name = p.teamName;
       positions[index].position = p.position;
       positions[index].rankingId = p.ranking_id;
       positions[index].rosterId = p.roster_id;
@@ -1968,6 +1969,16 @@ async function getPositions(gameId) {
   );
 
   return positions;
+}
+
+async function getTeamByRosterId(rosterId) {
+  const [res] = await knex('team_rosters')
+    .select('team_id')
+    .where({
+      id: rosterId,
+    });
+
+  return getEntity(res);
 }
 
 async function getPhotoFromRosterId(rosterId) {
