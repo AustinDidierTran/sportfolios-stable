@@ -842,27 +842,27 @@ router.get(`${BASE_URL}/getAllExercises`, async ctx => {
 });
 
 router.post(`${BASE_URL}/unregisterTeams`, async ctx => {
-  const res = await service.unregisterTeams(
+  const teams = await service.unregisterTeams(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
 
-  if (!res) {
+  if (!teams) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = { data: res };
+  ctx.body = { data: teams };
 });
 
 router.post(`${BASE_URL}/unregisterPeople`, async ctx => {
-  const res = await service.unregisterPeople(
+  const people = await service.unregisterPeople(
     ctx.request.body,
     ctx.body.userInfo.id,
   );
 
-  if (!res) {
+  if (!people) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = { data: res };
+  ctx.body = { data: people };
 });
 
 router.post(`${BASE_URL}/role`, async ctx => {
