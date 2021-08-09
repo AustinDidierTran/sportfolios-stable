@@ -1978,7 +1978,7 @@ async function getTeamByRosterId(rosterId) {
       id: rosterId,
     });
 
-  return getEntity(res);
+  return getEntity(res.team_id);
 }
 
 async function getPhotoFromRosterId(rosterId) {
