@@ -67,6 +67,18 @@ router.get(`${BASE_URL}/role`, async ctx => {
   ctx.body = { data: role };
 });
 
+router.get(`${BASE_URL}/playerTeamRole`, async ctx => {
+  const role = await service.getPlayerTeamRole(
+    ctx.query.teamId,
+    ctx.body.userInfo.id,
+  );
+
+  if (!role) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: role };
+});
+
 router.get(`${BASE_URL}/forYouPage`, async ctx => {
   const entity = await service.getAllForYouPagePosts(ctx.query);
 
@@ -656,10 +668,7 @@ router.put(`${BASE_URL}/updatePreRanking`, async ctx => {
 });
 
 router.put(`${BASE_URL}/updateGeneralInfos`, async ctx => {
-  const entity = await service.updateGeneralInfos(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-  );
+  const entity = await service.updateGeneralInfos(ctx.request.body);
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -1237,10 +1246,7 @@ router.del(`${BASE_URL}/game`, async ctx => {
 });
 
 router.del(`${BASE_URL}/practice`, async ctx => {
-  const practice = await service.deletePractice(
-    ctx.body.userInfo.id,
-    ctx.query,
-  );
+  const practice = await service.deletePractice(ctx.query);
   if (!practice) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
