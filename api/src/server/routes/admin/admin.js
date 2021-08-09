@@ -6,7 +6,6 @@ const router = new Router();
 const BASE_URL = '/api/admin';
 
 router.get(`${BASE_URL}/users`, async ctx => {
-  const users = await service.getAllUsersAndSecond();
   const users = await service.getAllUsersAndSecond(
     ctx.query.limitNumber,
   );
