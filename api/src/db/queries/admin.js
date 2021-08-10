@@ -166,6 +166,12 @@ async function getAllUsersAndSecond(limitNumber) {
   );
 }
 
+async function updateUserRole(userId, newRole) {
+  return knex('user_app_role')
+    .insert({ user_id: userId, app_role: newRole })
+    .onConflict('user_id')
+    .merge();
+}
 async function getAllNewsLetterSubscriptions() {
   const users = await getAllUsersAndSecond();
   const res = await Promise.all(
@@ -227,4 +233,5 @@ module.exports = {
   deleteEmailLandingPage,
   deleteTaxRate,
   deleteEntities,
+  updateUserRole,
 };
