@@ -103,6 +103,16 @@ router.put(`${BASE_URL}/updateActiveStatusTaxRate`, async ctx => {
   }
   ctx.body = { data: taxRate };
 });
+router.post(`${BASE_URL}/updateUserRole`, async ctx => {
+  const newRole = await service.updateUserRole(
+    ctx.request.body.userId,
+    ctx.request.body.role,
+  );
+  if (!newRole) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: newRole };
+});
 
 router.del(`${BASE_URL}/deleteTaxRate`, async ctx => {
   const data = await service.deleteTaxRate(ctx.query);

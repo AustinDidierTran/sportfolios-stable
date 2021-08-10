@@ -12,6 +12,7 @@ const {
   deleteEmailLandingPage: deleteEmailLandingPageHelper,
   deleteTaxRate: deleteTaxRateHelper,
   deleteEntities: deleteEntitiesHelper,
+  updateUserRole: updateUserRoleHelper,
 } = require('../../db/queries/admin');
 
 function createSport(sport) {
@@ -65,6 +66,10 @@ function getAllNewsLetterSubscriptions() {
   return getAllNewsLetterSubscriptionsHelper();
 }
 
+function updateUserRole(userId, role) {
+  return updateUserRoleHelper(userId, role);
+}
+
 module.exports = {
   addEmailLandingPage,
   createSport,
@@ -79,4 +84,5 @@ module.exports = {
   deleteEmailLandingPage,
   deleteTaxRate,
   deleteEntities,
+  updateUserRole,
 };
