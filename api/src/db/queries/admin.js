@@ -167,9 +167,11 @@ async function getAllUsersAndSecond(limitNumber) {
 }
 
 async function updateUserRole(userId, newRole) {
+  console.log(userId, newRole);
   return knex('user_app_role')
-    .update({ app_role: newRole })
-    .where({ user_id: userId });
+    .insert({ user_id: userId, app_role: newRole })
+    .onConflict('user_id')
+    .merge();
 }
 async function getAllNewsLetterSubscriptions() {
   const users = await getAllUsersAndSecond();
