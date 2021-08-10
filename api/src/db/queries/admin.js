@@ -167,7 +167,6 @@ async function getAllUsersAndSecond(limitNumber) {
 }
 
 async function updateUserRole(userId, newRole) {
-  console.log(userId, newRole);
   return knex('user_app_role')
     .insert({ user_id: userId, app_role: newRole })
     .onConflict('user_id')
