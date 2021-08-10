@@ -893,6 +893,15 @@ async function getEntityRole(entityId, userId) {
   return Math.min(...roles);
 }
 
+async function getPlayerTeamRole(entityId, userId) {
+  const person = await getPrimaryPerson(userId);
+  const personId = person.id;
+  const [res] = await knex('team_players')
+    .select('role')
+    .where({ team_id: entityId, person_id: personId });
+  return res.role;
+}
+
 async function getMostRecentMember(personId, organizationId) {
   const [member] = await knex('memberships_infos')
     .select('member_type')
@@ -7140,29 +7149,21 @@ const getPracticeInfo = async (id, userId) => {
     )
     .where({ 'sessions.id': id });
 
-  let role = 3;
-  if (userId != -1) {
-    role = await getEntityRole(practiceInfo.team_id, userId);
-  }
-
   return {
-    practice: {
-      id: practiceInfo.id,
-      startDate: practiceInfo.start_date,
-      endDate: practiceInfo.end_date,
-      name: practiceInfo.name,
-      type: practiceInfo.type,
-      locationId: practiceInfo.locationId,
-      location: practiceInfo.location,
-      streetAddress: practiceInfo.street_address,
-      city: practiceInfo.city,
-      state: practiceInfo.state,
-      zip: practiceInfo.zip,
-      country: practiceInfo.country,
-      roster: practiceInfo.roster[0],
-      teamId: practiceInfo.team_id,
-    },
-    role,
+    id: practiceInfo.id,
+    startDate: practiceInfo.start_date,
+    endDate: practiceInfo.end_date,
+    name: practiceInfo.name,
+    type: practiceInfo.type,
+    locationId: practiceInfo.locationId,
+    location: practiceInfo.location,
+    streetAddress: practiceInfo.street_address,
+    city: practiceInfo.city,
+    state: practiceInfo.state,
+    zip: practiceInfo.zip,
+    country: practiceInfo.country,
+    roster: practiceInfo.roster[0],
+    teamId: practiceInfo.team_id,
   };
 };
 
@@ -7555,6 +7556,7 @@ module.exports = {
   getPhasesWithoutPrerank,
   getPlayerInvoiceItem,
   getPlayerSessionEvaluation,
+  getPlayerTeamRole,
   getIsTeamCoach,
   getPracticeBasicInfo,
   getPracticeInfo,

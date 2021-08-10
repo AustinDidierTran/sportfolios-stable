@@ -120,6 +120,7 @@ const {
   getPhasesWithoutPrerank: getPhasesWithoutPrerankHelper,
   getPlayerInvoiceItem: getPlayerInvoiceItemHelper,
   getPlayerSessionEvaluation: getPlayerSessionEvaluationHelper,
+  getPlayerTeamRole: getPlayerTeamRoleHelper,
   getIsTeamCoach: getIsTeamCoachHelper,
   getImages: getImagesHelper,
   getPracticeBasicInfo: getPracticeBasicInfoHelper,
@@ -426,6 +427,11 @@ function getEvent(eventId) {
 function getAlias(entityId) {
   return getAliasHelper(entityId);
 }
+
+function getPlayerTeamRole(teamId, userId) {
+  return getPlayerTeamRoleHelper(teamId, userId);
+}
+
 function getRole(entityId, userId) {
   return getEntityRoleHelper(entityId, userId);
 }
@@ -652,13 +658,9 @@ async function updatePreRanking(body, userId) {
   return updatePreRankingHelper(eventId, ranking);
 }
 
-async function updateGeneralInfos(body, userId) {
+async function updateGeneralInfos(body) {
   const { entityId, ...otherBody } = body;
-  if (
-    !(await isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
+
   return updateGeneralInfosHelper(entityId, otherBody);
 }
 
@@ -2126,11 +2128,8 @@ async function deleteGame(userId, query) {
   return deleteGameHelper(gameId);
 }
 
-async function deletePractice(userId, query) {
+async function deletePractice(query) {
   const { teamId, practiceId } = query;
-  if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
   return deletePracticeHelper(practiceId);
 }
 
@@ -2351,6 +2350,7 @@ module.exports = {
   getPlayerSessionEvaluation,
   getIsTeamCoach,
   getImages,
+  getPlayerTeamRole,
   getPossibleSubmissionerInfos,
   getPracticeBasicInfo,
   getPracticeInfo,
