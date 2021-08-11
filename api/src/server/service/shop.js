@@ -24,6 +24,7 @@ const {
 const {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
+  CART_ITEM,
 } = require('../../../../common/enums');
 const { isAllowed } = require('../../db/queries/utils');
 
@@ -118,7 +119,7 @@ const deleteCartItem = async query => {
       });
     }
   }
-  if (type === GLOBAL_ENUM.MEMBERSHIP) {
+  if (type === CART_ITEM.MEMBERSHIP) {
     await deleteMembershipWithId(metadata.id);
   }
   return deleteCartItemHelper(cartItemId);

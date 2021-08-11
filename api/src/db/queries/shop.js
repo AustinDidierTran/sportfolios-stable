@@ -1,7 +1,7 @@
 const knex = require('../connection');
 const { stripeErrorLogger } = require('../../server/utils/logger');
 const { ERROR_ENUM } = require('../../../../common/errors');
-const { GLOBAL_ENUM } = require('../../../../common/enums');
+const { CART_ITEM } = require('../../../../common/enums');
 const { getEmailsEntity } = require('../helpers/entity');
 
 const getItem = async stripePriceId => {
@@ -423,7 +423,7 @@ const addCartItem = async (body, userId) => {
       stripe_price_id: stripePriceId,
       user_id: userId,
       metadata: {
-        type: GLOBAL_ENUM.SHOP_ITEM,
+        type: CART_ITEM.SHOP_ITEM,
         ...metadata,
       },
       quantity: addedQuantity,
@@ -549,7 +549,7 @@ const addMembershipCartItem = async (body, userId) => {
   await knex('cart_items').insert({
     stripe_price_id,
     user_id: userId,
-    metadata: { ...body, type: GLOBAL_ENUM.MEMBERSHIP },
+    metadata: { ...body, type: CART_ITEM.MEMBERSHIP },
   });
 };
 

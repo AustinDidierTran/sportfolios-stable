@@ -7,7 +7,7 @@ const {
 const {
   PLATEFORM_FEES,
   PLATEFORM_FEES_FIX,
-  GLOBAL_ENUM,
+  CART_ITEM,
 } = require('../../../../../common/enums');
 
 const addProduct = async body => {
@@ -182,7 +182,7 @@ const createItem = async body => {
       unit_amount: stripePrice.unit_amount,
       active: stripePrice.active,
       product: product.id,
-      metadata: { type: GLOBAL_ENUM.SHOP_ITEM, id: entityId },
+      metadata: { type: CART_ITEM.SHOP_ITEM, id: entityId },
     };
 
     const price = await addPrice({

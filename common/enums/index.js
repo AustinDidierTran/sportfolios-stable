@@ -362,6 +362,9 @@ const GLOBAL_ENUM = {
   EVENT: 4,
   GAME: 5,
   SESSION: 6,
+};
+
+const CART_ITEM = {
   MEMBERSHIP: 'membership',
   DONATION: 'donation',
   SHOP_ITEM: 'shop_item',
@@ -549,6 +552,7 @@ module.exports = {
   FORM_DIALOG_TYPE_ENUM,
   GENDER_ENUM,
   GLOBAL_ENUM,
+  CART_ITEM,
   SESSION_ENUM,
   HEADER_FLYOUT_TYPE_ENUM,
   IMAGE_ENUM,

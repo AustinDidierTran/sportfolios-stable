@@ -6,6 +6,7 @@ const {
   ENTITIES_ROLE_ENUM,
   EVENT_TYPE,
   GLOBAL_ENUM,
+  CART_ITEM,
   INVOICE_STATUS_ENUM,
   MEMBERSHIP_LENGTH_TYPE_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
@@ -462,9 +463,9 @@ async function getAllForYouPagePosts() {
     }),
   );
   const fullMerch = merch
-    .filter(m => m.metadata.type === GLOBAL_ENUM.EVENT)
+    .filter(m => m.metadata.type === CART_ITEM.EVENT)
     .map(item => ({
-      type: GLOBAL_ENUM.SHOP_ITEM,
+      type: CART_ITEM.SHOP_ITEM,
       cardType: CARD_TYPE_ENUM.SHOP,
       label: item.label,
       amount: item.amount,
@@ -5110,10 +5111,10 @@ async function addMemberDonation(
   const entity = (await getEntity(organizationId, userId)).basicInfos;
 
   const stripeProduct = {
-    name: GLOBAL_ENUM.DONATION,
+    name: CART_ITEM.DONATION,
     active: true,
     description: entity.name,
-    metadata: { type: GLOBAL_ENUM.DONATION, id: organizationId },
+    metadata: { type: CART_ITEM.DONATION, id: organizationId },
   };
   const product = await addProduct({ stripeProduct });
 
@@ -5122,7 +5123,7 @@ async function addMemberDonation(
     unit_amount: amount,
     active: true,
     product: product.id,
-    metadata: { type: GLOBAL_ENUM.DONATION, id: organizationId },
+    metadata: { type: CART_ITEM.DONATION, id: organizationId },
   };
   const priceStripe = await addPrice({
     stripePrice,
@@ -5147,7 +5148,7 @@ async function addMemberDonation(
     sellerEntityId: organizationId,
     isIndividualOption: true,
     personId,
-    name: GLOBAL_ENUM.DONATION,
+    name: CART_ITEM.DONATION,
     buyerId: userId,
     organization: entity,
     person,
@@ -5157,7 +5158,7 @@ async function addMemberDonation(
   await knex('cart_items').insert({
     stripe_price_id: priceStripe.id,
     user_id: userId,
-    metadata: { ...metadata, type: GLOBAL_ENUM.DONATION },
+    metadata: { ...metadata, type: CART_ITEM.DONATION },
   });
 
   return newDonation;
@@ -5755,7 +5756,7 @@ async function addMembership(
     name: getMembershipName(membership),
     active: true,
     description: entity.name,
-    metadata: { type: GLOBAL_ENUM.MEMBERSHIP, id: entityId },
+    metadata: { type: CART_ITEM.MEMBERSHIP, id: entityId },
   };
 
   const product = await addProduct({ stripeProduct });
@@ -5764,7 +5765,7 @@ async function addMembership(
     unit_amount: price,
     active: true,
     product: product.id,
-    metadata: { type: GLOBAL_ENUM.MEMBERSHIP, id: entityId },
+    metadata: { type: CART_ITEM.MEMBERSHIP, id: entityId },
   };
   const priceStripe = await addPrice({
     stripePrice,
@@ -7098,7 +7099,7 @@ const getPracticeBasicInfo = async (teamId, userId) => {
   }));
 };
 
-const getPracticeInfo = async (id, userId) => {
+const getPracticeInfo = async (id) => {
   const [session] = await knex('sessions')
     .select('sessions.roster_id')
     .where({ 'sessions.id': id });
