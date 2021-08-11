@@ -8,6 +8,7 @@ const {
 const {
   STRIPE_STATUS_ENUM,
   GLOBAL_ENUM,
+  CART_ITEM,
   REJECTION_ENUM,
 } = require('../../../../../common/enums');
 const { deleteCartItem } = require('../shop');
@@ -440,7 +441,7 @@ const checkout = async (body, userId) => {
               receiptUrl,
               metadata: { ...metadata, type: GLOBAL_ENUM.EVENT },
             });
-          } else if (metadata.type === GLOBAL_ENUM.SHOP_ITEM) {
+          } else if (metadata.type === CART_ITEM.SHOP_ITEM) {
             await INVOICE_PAID_ENUM.STORE({
               sellerEntityId: metadata.seller_entity_id,
               quantity: invoiceItem.quantity,
@@ -451,9 +452,9 @@ const checkout = async (body, userId) => {
               buyerUserId: userId,
               invoiceItemId: invoiceItem.id,
               receiptUrl,
-              metadata: { ...metadata, type: GLOBAL_ENUM.SHOP_ITEM },
+              metadata: { ...metadata, type: CART_ITEM.SHOP_ITEM },
             });
-          } else if (metadata.type === GLOBAL_ENUM.MEMBERSHIP) {
+          } else if (metadata.type === CART_ITEM.MEMBERSHIP) {
             await INVOICE_PAID_ENUM.MEMBERSHIPS({
               sellerEntityId: metadata.sellerEntityId,
               quantity: invoiceItem.quantity,
@@ -466,10 +467,10 @@ const checkout = async (body, userId) => {
               receiptUrl,
               metadata: {
                 ...metadata,
-                type: GLOBAL_ENUM.MEMBERSHIP,
+                type: CART_ITEM.MEMBERSHIP,
               },
             });
-          } else if (metadata.type === GLOBAL_ENUM.DONATION) {
+          } else if (metadata.type === CART_ITEM.DONATION) {
             await INVOICE_PAID_ENUM.DONATION({
               sellerEntityId: metadata.sellerEntityId,
               quantity: invoiceItem.quantity,
@@ -482,7 +483,7 @@ const checkout = async (body, userId) => {
               receiptUrl,
               metadata: {
                 ...metadata,
-                type: GLOBAL_ENUM.DONATION,
+                type: CART_ITEM.DONATION,
               },
             });
           }

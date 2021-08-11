@@ -253,11 +253,8 @@ router.get(`${BASE_URL}/practiceBasicInfo`, async ctx => {
 });
 
 router.get(`${BASE_URL}/practiceInfo`, async ctx => {
-  const userId = getUserId(ctx);
-
   const practiceInfo = await service.getPracticeInfo(
     ctx.query.practiceId,
-    userId,
   );
 
   if (!practiceInfo) {

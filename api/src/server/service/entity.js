@@ -462,8 +462,8 @@ function getPracticeBasicInfo(teamId, userId) {
   return getPracticeBasicInfoHelper(teamId, userId);
 }
 
-function getPracticeInfo(practiceId, userId) {
-  return getPracticeInfoHelper(practiceId, userId);
+function getPracticeInfo(practiceId) {
+  return getPracticeInfoHelper(practiceId);
 }
 
 function getGames(eventId) {
@@ -2139,7 +2139,7 @@ async function deleteGame(userId, query) {
 }
 
 async function deletePractice(query) {
-  const { teamId, practiceId } = query;
+  const { practiceId } = query;
   return deletePracticeHelper(practiceId);
 }
 
