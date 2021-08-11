@@ -3998,19 +3998,41 @@ async function updatePartner(body) {
 
 async function updatePlayer(body) {
   const { id, role } = body;
+  const [player] = await knex('team_players')
+    .select('person_id', 'team_id')
+    .where({ id });
+  if (
+    (role === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
+      role === ROSTER_ROLE_ENUM.PLAYER) &&
+    !(await canRemoveCaptainorCoachFromTeam(
+      player.team_id,
+      player.person_id,
+    ))
+  ) {
+    throw new Error(ERROR_ENUM.FORBIDDEN);
+  }
   return knex('team_players')
-    .update({
-      role,
-    })
+    .update({ role })
     .where({ id });
 }
 
 async function updateRosterPlayer(body) {
   const { id, role } = body;
+  const [player] = await knex('roster_players')
+    .select('person_id', 'roster_id')
+    .where({ id });
+  if (
+    (role === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
+      role === ROSTER_ROLE_ENUM.PLAYER) &&
+    !(await canRemovePlayerFromRoster(
+      player.roster_id,
+      player.person_id,
+    ))
+  ) {
+    throw new Error(ERROR_ENUM.FORBIDDEN);
+  }
   return knex('roster_players')
-    .update({
-      role,
-    })
+    .update({ role })
     .where({ id });
 }
 
@@ -4062,6 +4084,19 @@ const getWichTeamsCanUnregister = async (rosterIds, eventId) => {
   return list;
 };
 
+const canRemoveCaptainorCoachFromTeam = async (teamId, personId) => {
+  const presentRoles = await knex('team_players')
+    .select('person_id', 'role')
+    .where({ team_id: teamId });
+  return (
+    presentRoles.filter(
+      item =>
+        item.person_id !== personId &&
+        item.role !== ROSTER_ROLE_ENUM.PLAYER &&
+        item.role !== ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN,
+    ).length >= 1
+  );
+};
 const canRemovePlayerFromRoster = async (rosterId, personId) => {
   const presentRoles = await knex('roster_players')
     .select('person_id', 'role')
@@ -4071,12 +4106,12 @@ const canRemovePlayerFromRoster = async (rosterId, personId) => {
         .select('roster_id')
         .where({ roster_id: rosterId, person_id: personId }),
     );
-
   return (
     presentRoles.filter(
       item =>
         item.person_id !== personId &&
-        item.role !== ROSTER_ROLE_ENUM.PLAYER,
+        item.role !== ROSTER_ROLE_ENUM.PLAYER &&
+        item.role !== ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN,
     ).length >= 1
   );
 };
@@ -4293,14 +4328,8 @@ async function updateRegistration(
   status,
 ) {
   return knex('event_rosters')
-    .update({
-      invoice_item_id: invoiceItemId,
-      status,
-    })
-    .where({
-      event_id: eventId,
-      roster_id: rosterId,
-    });
+    .update({ invoice_item_id: invoiceItemId, status })
+    .where({ event_id: eventId, roster_id: rosterId });
 }
 
 async function updateRegistrationPerson(
@@ -4310,18 +4339,15 @@ async function updateRegistrationPerson(
   status,
 ) {
   return knex('event_persons')
-    .update({
-      invoice_item_id: invoiceItemId,
-      status,
-    })
-    .where({
-      event_id: eventId,
-      person_id: personId,
-    });
+    .update({ invoice_item_id: invoiceItemId, status })
+    .where({ event_id: eventId, person_id: personId });
 }
 
 async function updateRosterRole(playerId, role) {
-  if (role === ROSTER_ROLE_ENUM.PLAYER) {
+  if (
+    role === ROSTER_ROLE_ENUM.PLAYER ||
+    role === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN
+  ) {
     const presentRoles = await knex('roster_players')
       .select('id', 'role')
       .where(
@@ -4330,13 +4356,15 @@ async function updateRosterRole(playerId, role) {
           .select('roster_id')
           .where({ id: playerId }),
       );
-
     if (
       !presentRoles.some(
-        p => p.role !== ROSTER_ROLE_ENUM.PLAYER && p.id !== playerId,
+        p =>
+          p.role !== ROSTER_ROLE_ENUM.PLAYER &&
+          p.role !== ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN &&
+          p.id !== playerId,
       )
     ) {
-      throw new Error(ERROR_ENUM.VALUE_IS_INVALID);
+      throw new Error(ERROR_ENUM.FORBIDDEN);
     }
   }
 
@@ -7098,7 +7126,7 @@ const getPracticeBasicInfo = async (teamId, userId) => {
   }));
 };
 
-const getPracticeInfo = async (id, userId) => {
+const getPracticeInfo = async (id) => {
   const [session] = await knex('sessions')
     .select('sessions.roster_id')
     .where({ 'sessions.id': id });
