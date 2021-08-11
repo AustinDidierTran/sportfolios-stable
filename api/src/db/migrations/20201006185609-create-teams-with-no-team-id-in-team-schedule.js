@@ -19,30 +19,6 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = async function(db) {
-  const names = await knex('schedule_teams')
-    .select('*')
-    .where({ roster_id: null });
-
-  for (const name of names) {
-    const userId = '8317ff33-3b04-49a1-afd3-420202cddf73';
-    const entity = await addEntity(
-      {
-        name: name.name,
-        type: GLOBAL_ENUM.TEAM,
-      },
-      userId,
-    );
-
-    const [roster] = await knex('team_rosters')
-      .insert({ team_id: entity.id })
-      .returning('id');
-
-    const res = await knex('schedule_teams')
-      .update({ roster_id: roster })
-      .where({ name: name.name })
-      .returning('*');
-  }
-
   return null;
 };
 

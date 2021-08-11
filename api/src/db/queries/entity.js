@@ -1959,7 +1959,7 @@ async function getPositions(gameId) {
       }
       positions[index].gameId = p.game_id;
       positions[index].id = p.id;
-      positions[index].name = p.teamName;
+      positions[index].name = p.name;
       positions[index].position = p.position;
       positions[index].rankingId = p.ranking_id;
       positions[index].rosterId = p.roster_id;
@@ -7569,6 +7569,7 @@ module.exports = {
   getPlayerInvoiceItem,
   getPlayerSessionEvaluation,
   getIsTeamCoach,
+  getPhaseRankingWithPhase,
   getPracticeBasicInfo,
   getPracticeInfo,
   getPreranking,

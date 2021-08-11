@@ -1,4 +1,4 @@
-ALTER TABLE phase_link
+ALTER TABLE IF EXISTS phase_link
   DROP CONSTRAINT phase_link_ufinal,
   DROP CONSTRAINT phase_link_pkey;
 
