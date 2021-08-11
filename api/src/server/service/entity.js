@@ -2063,7 +2063,6 @@ async function addPlayerToRoster(body, userId) {
     individualOption,
     teamId,
   });
-
   if (
     (roster.status === INVOICE_STATUS_ENUM.FREE ||
       roster.status === INVOICE_STATUS_ENUM.PAID) &&
