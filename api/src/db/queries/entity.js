@@ -822,6 +822,8 @@ async function eventInfos(id, userId) {
     maximumSpots: event.maximum_spots,
     startDate: event.start_date,
     endDate: event.end_date,
+    eventType: event.type,
+    hasSpirit: event.has_spirit,
     description: infos.description,
     quickDescription: infos.quickDescription,
     creator: {
@@ -6772,9 +6774,33 @@ const deletePartner = async id => {
 };
 
 const deletePlayer = async id => {
-  return knex('team_players')
+  const [player] = await knex('team_players')
     .where({ id })
+    .returning('*')
     .del();
+
+  const rosterPlayers = await knex('roster_players')
+    .select('roster_players.id')
+    .leftJoin(
+      'team_rosters',
+      'roster_players.roster_id',
+      '=',
+      'team_rosters.id',
+    )
+    .where({
+      'team_rosters.team_id': player.team_id,
+      'roster_players.person_id': player.person_id,
+      'team_rosters.active': true,
+    });
+
+  await knex('roster_players')
+    .whereIn(
+      'id',
+      rosterPlayers.map(r => r.id),
+    )
+    .del();
+
+  return player;
 };
 
 const deleteRoster = async id => {
