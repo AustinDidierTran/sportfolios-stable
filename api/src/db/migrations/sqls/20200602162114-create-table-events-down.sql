@@ -2,7 +2,7 @@ DROP TABLE event_rosters;
 
 DROP TABLE division_ranking;
 
-DROP TABLE phase_link;
+DROP TABLE IF EXISTS phase_link;
 
 DROP TABLE game_teams;
 

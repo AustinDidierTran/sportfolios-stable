@@ -7623,6 +7623,7 @@ module.exports = {
   getPlayerSessionEvaluation,
   getPlayerTeamRole,
   getIsTeamCoach,
+  getPhaseRankingWithPhase,
   getPracticeBasicInfo,
   getPracticeInfo,
   getPreranking,

@@ -14,7 +14,8 @@
     "lint": "eslint . --ext .js --ext .jsx",
     "prod": "NODE_ENV=prod node ./app/server.js",
     "storybook": "NODE_PATH=src start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "test": "./test.sh"
   },
   "repository": {
     "type": "git",

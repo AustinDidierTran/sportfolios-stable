@@ -1,7 +1,9 @@
+DROP VIEW roster_players_infos;
+
 ALTER TABLE roster_players
 DROP COLUMN rsvp;
 
-CREATE OR REPLACE VIEW roster_players_infos AS
+CREATE VIEW roster_players_infos AS
   SELECT 
   roster_players.id,
   roster_players.roster_id,
