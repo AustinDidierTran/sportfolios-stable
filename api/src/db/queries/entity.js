@@ -1461,18 +1461,21 @@ async function getAllTeamsRegisteredInfos(eventId, pills, userId) {
     }),
   );
 
-  if (pills.includes(PILL_TYPE_ENUM.NOT_PAID)) {
-    res = res.filter(
-      r =>
-        r.status === INVOICE_STATUS_ENUM.OPEN &&
-        r.registrationStatus === STATUS_ENUM.ACCEPTED,
-    );
-  }
-  if (pills.includes(PILL_TYPE_ENUM.NOT_MEMBER)) {
-    res = res.filter(
-      r =>
-        !r.isMember && r.registrationStatus === STATUS_ENUM.ACCEPTED,
-    );
+  if (pills) {
+    if (pills.includes(PILL_TYPE_ENUM.NOT_PAID)) {
+      res = res.filter(
+        r =>
+          r.status === INVOICE_STATUS_ENUM.OPEN &&
+          r.registrationStatus === STATUS_ENUM.ACCEPTED,
+      );
+    }
+    if (pills.includes(PILL_TYPE_ENUM.NOT_MEMBER)) {
+      res = res.filter(
+        r =>
+          !r.isMember &&
+          r.registrationStatus === STATUS_ENUM.ACCEPTED,
+      );
+    }
   }
 
   res.sort((a, b) => {
@@ -7127,7 +7130,7 @@ const getPracticeBasicInfo = async (teamId, userId) => {
   }));
 };
 
-const getPracticeInfo = async (id) => {
+const getPracticeInfo = async id => {
   const [session] = await knex('sessions')
     .select('sessions.roster_id')
     .where({ 'sessions.id': id });
