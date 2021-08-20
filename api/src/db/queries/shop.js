@@ -1,8 +1,8 @@
-const knex = require('../connection');
-const { stripeErrorLogger } = require('../../server/utils/logger');
-const { ERROR_ENUM } = require('../../../../common/errors');
-const { CART_ITEM } = require('../../../../common/enums');
-const { getEmailsEntity } = require('../helpers/entity');
+import knex from '../connection.js';
+import { stripeErrorLogger } from '../../server/utils/logger.js';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
+import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
+import { getEmailsEntity } from '../helpers/entity.js';
 
 const getItem = async stripePriceId => {
   const [item] = await knex('stripe_price')
@@ -661,7 +661,7 @@ const deleteCartItem = async cartItemId => {
   return cartItem;
 };
 
-module.exports = {
+export {
   addCartItem,
   addItemToPaidStoreItems,
   addMembershipCartItem,

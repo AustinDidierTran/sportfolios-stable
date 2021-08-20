@@ -1,13 +1,14 @@
-const auth = require('./auth');
-const entity = require('./entity');
-const facebook = require('./facebook');
-const googleAnalytics = require('./googleAnalytics');
-const notification = require('./notification');
-const post = require('./post');
-const shop = require('./shop');
-const user = require('./user');
+import auth from './auth.js';
+import entity from './entity.js';
+import facebook from './facebook.js';
+import googleAnalytics from './googleAnalytics.js';
+import notification from './notification.js';
+import post from './post.js';
+import shop from './shop.js';
+import user from './user.js';
+//import team from './team'
 
-module.exports = [
+export default [
   auth,
   entity,
   facebook,
@@ -16,4 +17,5 @@ module.exports = [
   post,
   shop,
   user,
+  //  team
 ];

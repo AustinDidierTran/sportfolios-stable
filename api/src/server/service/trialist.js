@@ -1,20 +1,20 @@
-const {
-  createEvaluation: createEvaluationHelper,
-  getAllCommentSuggestions: getAllCommentSuggestionsHelper,
-  getPlayerLastEvaluation: getPlayerLastEvaluationhelper,
-  getPlayerSessionsEvaluations: getPlayerSessionsEvaluationsHelper,
-  createTeamExercise: createTeamExerciseHelper,
-  updateExercise: updateExerciseHelper,
-  getSessionById: getSessionByIdHelper,
-  getCoachEvaluations: getCoachEvaluationsHelper,
-  getEvaluationComments: getEvaluationCommentsHelper,
-  getExerciseById: getExerciseByIdHelper,
-  addExerciseToSessions: addExerciseToSessionsHelper,
-  getSessionsByExerciseId: getSessionsByExerciseIdHelper,
-  addExercisesToSession: addExercisesToSessionHelper,
-  updateSession: updateSessionHelper,
-  createComment: createCommentHelper,
-} = require('../../db/queries/trialist');
+import {
+  createEvaluation as createEvaluationHelper,
+  getAllCommentSuggestions as getAllCommentSuggestionsHelper,
+  getPlayerLastEvaluation as getPlayerLastEvaluationhelper,
+  getPlayerSessionsEvaluations as getPlayerSessionsEvaluationsHelper,
+  createTeamExercise as createTeamExerciseHelper,
+  updateExercise as updateExerciseHelper,
+  getSessionById as getSessionByIdHelper,
+  getCoachEvaluations as getCoachEvaluationsHelper,
+  getEvaluationComments as getEvaluationCommentsHelper,
+  getExerciseById as getExerciseByIdHelper,
+  addExerciseToSessions as addExerciseToSessionsHelper,
+  getSessionsByExerciseId as getSessionsByExerciseIdHelper,
+  addExercisesToSession as addExercisesToSessionHelper,
+  updateSession as updateSessionHelper,
+  createComment as createCommentHelper,
+} from '../../db/queries/trialist.js';
 
 function createEvaluation(evaluation) {
   return createEvaluationHelper(evaluation);
@@ -76,7 +76,7 @@ function addExercisesToSession(sessionId, exercisesId) {
   return addExercisesToSessionHelper(sessionId, exercisesId);
 }
 
-module.exports = {
+export {
   createEvaluation,
   getAllCommentSuggestions,
   getPlayerLastEvaluation,

@@ -1,11 +1,11 @@
-const {
-  getEntity: getEntityHelper,
-  eventInfos: eventInfosHelper,
-  getRemainingSpots: getRemainingSpots,
+import {
+  getEntity as getEntityHelper,
+  eventInfos as eventInfosHelper,
+  getRemainingSpots,
   getOptions,
-} = require('../../db/queries/entity');
+} from '../../db/queries/entity.js';
 
-const moment = require('moment');
+import moment from 'moment';
 
 async function getEventInfo(eventId, userId) {
   const data = await eventInfosHelper(eventId, userId);
@@ -51,4 +51,4 @@ async function getEvent(eventId, userId) {
   };
 }
 
-module.exports = { getEvent };
+export { getEvent };

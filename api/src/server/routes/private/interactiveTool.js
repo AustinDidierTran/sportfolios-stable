@@ -1,5 +1,5 @@
-const Router = require('koa-router');
-const service = require('../../service/interactiveTool');
+import Router from 'koa-router';
+import * as service from '../../service/interactiveTool.js';
 const router = new Router();
 const BASE_URL = '/api/entity';
 
@@ -15,4 +15,4 @@ router.post(`${BASE_URL}/addAllInteractiveTool`, async ctx => {
   ctx.body = { data: res };
 });
 
-module.exports = router;
+export default router;

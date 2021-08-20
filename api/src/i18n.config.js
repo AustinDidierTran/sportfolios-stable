@@ -1,5 +1,10 @@
-const i18n = require('i18n'),
-  path = require('path');
+import i18n from 'i18n';
+import path from 'path';
+
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 i18n.configure({
   useSuspense: true,
@@ -13,4 +18,4 @@ i18n.configure({
   },
 });
 
-module.exports = i18n;
+export default i18n;

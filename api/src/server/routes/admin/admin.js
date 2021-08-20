@@ -1,6 +1,6 @@
-const Router = require('koa-router');
-const { ERROR_ENUM } = require('../../../../../common/errors');
-const service = require('../../service/admin');
+import Router from 'koa-router';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
+import * as service from '../../service/admin.js';
 
 const router = new Router();
 const BASE_URL = '/api/admin';
@@ -129,4 +129,4 @@ router.del(`${BASE_URL}/entities`, async ctx => {
   ctx.body = { data };
 });
 
-module.exports = router;
+export default router;

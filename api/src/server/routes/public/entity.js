@@ -1,8 +1,8 @@
-const Router = require('koa-router');
-const service = require('../../service/entity');
-const organizationService = require('../../service/organization');
-const eventService = require('../../service/event');
-const { GLOBAL_ENUM } = require('../../../../../common/enums');
+import Router from 'koa-router';
+import * as service from '../../service/entity.js';
+import * as organizationService from '../../service/organization.js';
+import * as eventService from '../../service/event.js';
+import { GLOBAL_ENUM } from '../../../../../common/enums/index.js';
 const router = new Router();
 const BASE_URL = '/api/entity';
 
@@ -329,4 +329,4 @@ router.get(`${BASE_URL}/hasSpirit`, async ctx => {
   ctx.body = { data: getHasSpirit };
 });
 
-module.exports = router;
+export default router;

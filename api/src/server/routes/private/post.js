@@ -1,9 +1,9 @@
-const Router = require('koa-router');
-const { ERROR_ENUM } = require('../../../../../common/errors');
+import Router from 'koa-router';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
 
 const router = new Router();
 const BASE_URL = '/api/posts';
-const service = require('../../service/post');
+import * as service from '../../service/post.js';
 
 router.post(`${BASE_URL}/create`, async ctx => {
   const post = await service.create(
@@ -88,4 +88,4 @@ router.put(`${BASE_URL}/comment`, async ctx => {
   );
 });
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-const knex = require('../connection');
+import knex from '../connection.js';
 
 async function createEvaluation(evaluation) {
   const [res] = await knex('evaluations')
@@ -274,7 +274,7 @@ async function addExercisesToSession(sessionId, exercisesId) {
   return res;
 }
 
-module.exports = {
+export {
   createEvaluation,
   getAllCommentSuggestions,
   getPlayerLastEvaluation,

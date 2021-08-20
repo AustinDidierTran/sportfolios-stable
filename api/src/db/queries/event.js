@@ -1,4 +1,4 @@
-const knex = require('../connection');
+import knex from '../connection.js';
 
 async function getEventPaymentOption(stripePriceId) {
   let [option] = await knex('event_payment_options')
@@ -14,6 +14,6 @@ async function getEventPaymentOption(stripePriceId) {
   return option;
 }
 
-module.exports = {
+export {
   getEventPaymentOption,
 };

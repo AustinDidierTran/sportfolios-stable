@@ -1,5 +1,5 @@
-const StateFactory = require('./stateFactory');
+import StateFactory from './stateFactory.js';
 
-module.exports = {
+export {
   StateFactory,
 };

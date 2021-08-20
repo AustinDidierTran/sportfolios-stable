@@ -1,6 +1,6 @@
-const Router = require('koa-router');
-const { ERROR_ENUM } = require('../../../../../common/errors');
-const service = require('../../service/user');
+import Router from 'koa-router';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
+import * as service from '../../service/user.js';
 
 const router = new Router();
 const BASE_URL = '/api/user';
@@ -159,4 +159,4 @@ router.put(`${BASE_URL}/changeSubscription`, async ctx => {
   ctx.body = { data };
 });
 
-module.exports = router;
+export default router;

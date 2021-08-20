@@ -1,23 +1,18 @@
-const {
-  addPhase: addPhaseHelper,
-  getPrerankPhase: getPrerankPhaseHelper,
-  updatePhase: updatePhaseHelper,
-  updatePhaseGamesRosterId: updatePhaseGamesRosterIdHelper,
-  updatePhaseOrder: updatePhaseOrderHelper,
-  updatePhaseRankingsSpots: updatePhaseRankingsSpotsHelper,
-  updatePhaseFinalRanking: updatePhaseFinalRankingHelper,
-  updateManualRanking: updateManualRankingHelper,
-  deletePhase: deletePhaseHelper,
-} = require('../../db/queries/entity');
+import {
+  addPhase as addPhaseHelper,
+  getPrerankPhase as getPrerankPhaseHelper,
+  updatePhase as updatePhaseHelper,
+  updatePhaseGamesRosterId as updatePhaseGamesRosterIdHelper,
+  updatePhaseOrder as updatePhaseOrderHelper,
+  updatePhaseRankingsSpots as updatePhaseRankingsSpotsHelper,
+  updatePhaseFinalRanking as updatePhaseFinalRankingHelper,
+  updateManualRanking as updateManualRankingHelper,
+  deletePhase as deletePhaseHelper,
+} from '../../db/queries/entity.js';
 
-const {
-  ENTITIES_ROLE_ENUM,
-  PHASE_STATUS_ENUM,
-  PHASE_TYPE_ENUM,
-} = require('../../../../common/enums');
-
-const { ERROR_ENUM } = require('../../../../common/errors');
-const { isAllowed } = require('../../db/queries/utils');
+import { ENTITIES_ROLE_ENUM, PHASE_STATUS_ENUM, PHASE_TYPE_ENUM } from '../../../../common/enums/index.js';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
+import { isAllowed } from '../../db/queries/utils.js';
 
 async function addPhase(body, userId) {
   const { phase, spots, eventId, type } = body;
@@ -110,7 +105,8 @@ async function deletePhase(query, userId) {
 
   return deletePhaseHelper(phaseId, eventId);
 }
-module.exports = {
+
+export {
   addPhase,
   getPrerankPhase,
   updatePhase,

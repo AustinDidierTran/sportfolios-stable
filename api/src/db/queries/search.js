@@ -1,9 +1,6 @@
-const knex = require('../connection');
-const { GLOBAL_ENUM } = require('../../../../common/enums');
-const {
-  getAllOwnedEntities,
-  isTeamRegisteredInEvent,
-} = require('./entity');
+import knex from '../connection.js';
+import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
+import { getAllOwnedEntities, isTeamRegisteredInEvent } from './entity.js';
 
 const addQueryToRecentSearches = async (user_id, search_query) => {
   return knex('previous_search_queries')
@@ -295,7 +292,7 @@ const getPreviousSearchQueriesFromId = async userId => {
   return search_queries;
 };
 
-module.exports = {
+export {
   addQueryToRecentSearches,
   getEntitiesFromQuery,
   getMyTeamsFromQuery,

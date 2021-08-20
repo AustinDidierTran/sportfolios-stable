@@ -1,26 +1,15 @@
-const State = require('../state');
-const {
-  BASIC_CHATBOT_STATES,
-  TABS_ENUM,
-} = require('../../../../../../../common/enums');
-const i18n = require('../../../../../i18n.config');
-const {
-  genWebUrlButton,
-  genButtonTemplate,
-  genPostbackButton,
-  genText,
-} = require('../../response');
-const { MESSENGER_PAYLOADS } = require('../../../enums');
-const {
-  getAttendanceSheet,
-} = require('../../../../../db/queries/entity');
-const { CLIENT_BASE_URL } = require('../../../../../../../conf');
-
+import State from '../state.js';
+import { BASIC_CHATBOT_STATES, TABS_ENUM } from '../../../../../../../common/enums/index.js';
+import i18n from '../../../../../i18n.config.js';
+import response from '../../response.js';
+import { MESSENGER_PAYLOADS } from '../../../enums/index.js';
+import { getAttendanceSheet } from '../../../../../db/queries/entity.js';
+import { CLIENT_BASE_URL } from '../../../../../../../conf.js';
 class AwaitingAttendance extends State {
   async handleEvent(webhookEvent) {
     this.sendMessages(
       webhookEvent.sender.id,
-      genText(i18n.__('back_to_menu')),
+      response.genText(i18n.__('back_to_menu')),
     );
     this.context.changeState(BASIC_CHATBOT_STATES.HOME);
   }
@@ -35,16 +24,16 @@ class AwaitingAttendance extends State {
     if (sheet.length === 0) {
       return {
         messages: [
-          genButtonTemplate(
+          response.genButtonTemplate(
             i18n.__(
               "Your team's attendance sheet has not been submitted yet for this game, please complete it on Sportfolios",
             ),
             [
-              genWebUrlButton(
+              response.genWebUrlButton(
                 i18n.__('Fill the attendance sheet'),
                 `${CLIENT_BASE_URL}/${chatbotInfos.eventId}?tab=${TABS_ENUM.SCHEDULE}&gameId=${chatbotInfos.gameId}`,
               ),
-              genPostbackButton(
+              response.genPostbackButton(
                 i18n.__('Skip'),
                 MESSENGER_PAYLOADS.SKIP,
               ),
@@ -55,12 +44,12 @@ class AwaitingAttendance extends State {
     } else {
       return {
         messages: [
-          genText(
+          response.genText(
             i18n.__(
               'Your team has already submitted an attendance sheet for this game',
             ),
           ),
-          genText(i18n.__('back_to_menu')),
+          response.genText(i18n.__('back_to_menu')),
         ],
         nextState: BASIC_CHATBOT_STATES.HOME,
       };
@@ -68,4 +57,4 @@ class AwaitingAttendance extends State {
   }
 }
 
-module.exports = AwaitingAttendance;
+export default AwaitingAttendance;

@@ -1,7 +1,7 @@
-const Router = require('koa-router');
-const { STATUS_ENUM } = require('../../../../../common/enums');
-const { ERROR_ENUM } = require('../../../../../common/errors');
-const service = require('../../service/stripe');
+import Router from 'koa-router';
+import { STATUS_ENUM } from '../../../../../common/enums/index.js';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
+import * as service from '../../service/stripe.js';
 
 const router = new Router();
 const BASE_URL = '/api/stripe';
@@ -284,17 +284,6 @@ router.post(`${BASE_URL}/sendReceiptEmail`, async ctx => {
   ctx.body = { data };
 });
 
-router.post(`${BASE_URL}/sendRegistrationEmail`, async ctx => {
-  const data = await service.sendRegistrationEmail(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-  );
-  if (!data) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = { data };
-});
-
 router.post(`${BASE_URL}/createRefund`, async ctx => {
   const data = await service.createRefund(
     ctx.request.body,
@@ -346,4 +335,4 @@ router.del(`${BASE_URL}/bankAccount`, async ctx => {
   ctx.body = { data };
 });
 
-module.exports = router;
+export default router;

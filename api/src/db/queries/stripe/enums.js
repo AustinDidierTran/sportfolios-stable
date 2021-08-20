@@ -76,7 +76,7 @@ const TEST_EXTERNAL_ACCOUNT = {
   },
 };
 
-module.exports = {
+export {
   BUSINESS_TYPE_ENUM,
   INVOICE_STATUS_ENUM,
   PAYMENT_METHOD_TYPE_ENUM,

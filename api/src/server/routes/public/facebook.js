@@ -1,11 +1,11 @@
-const Router = require('koa-router');
-const _ = require('lodash');
+import Router from 'koa-router';
+import _ from 'lodash';
 const router = new Router();
 const BASE_URL = '/api/fb';
-const { Chatbot } = require('../../utils/ChatBot');
-const service = require('../../service/facebook');
-const { FACEBOOK_VERIFY_TOKEN } = require('../../../../../conf');
-const { STATUS_ENUM } = require('../../../../../common/enums');
+import { Chatbot } from '../../utils/ChatBot/index.js';
+import * as service from '../../service/facebook.js';
+import { FACEBOOK_VERIFY_TOKEN } from '../../../../../conf.js';
+import { STATUS_ENUM } from '../../../../../common/enums/index.js';
 
 router.post(`${BASE_URL}/messengerHook`, async ctx => {
   let body = ctx.request.body;
@@ -13,7 +13,7 @@ router.post(`${BASE_URL}/messengerHook`, async ctx => {
   // Checks this is an event from a page subscription
   if (body.object === 'page') {
     // Iterates over each entry - there may be multiple if batched
-    body.entry.forEach(async function(entry) {
+    body.entry.forEach(async function (entry) {
       // Gets the message. entry.messaging is an array, but
       // will only ever contain one message, so we get index 0
       let webhookEvent = entry.messaging[0];
@@ -81,4 +81,4 @@ router.get(`${BASE_URL}/messengerHook`, async ctx => {
   }
 });
 
-module.exports = router;
+export default router;

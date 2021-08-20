@@ -1,6 +1,6 @@
-const Router = require('koa-router');
-const { ERROR_ENUM } = require('../../../../../common/errors');
-const service = require('../../service/facebook');
+import Router from 'koa-router';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
+import * as service from '../../service/facebook.js';
 const router = new Router();
 const BASE_URL = '/api/user';
 
@@ -61,4 +61,4 @@ router.delete(`${BASE_URL}/messengerConnection`, async ctx => {
   ctx.body = { data: res };
 });
 
-module.exports = router;
+export default router;

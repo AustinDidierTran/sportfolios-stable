@@ -1,32 +1,29 @@
-const {
+import {
   addCartItem,
-  deleteCartItem: deleteCartItemHelper,
+  deleteCartItem as deleteCartItemHelper,
   getAllShopItems,
   getCartItem,
   getCartItems,
-  getCartItemsOrdered: getCartItemsOrderedHelper,
-  getCartTotal: getCartTotalHelper,
-  getItem: getItemHelper,
-  getPurchases: getPurchasesHelper,
-  getSales: getSalesHelper,
+  getCartItemsOrdered as getCartItemsOrderedHelper,
+  getCartTotal as getCartTotalHelper,
+  getItem as getItemHelper,
+  getPurchases as getPurchasesHelper,
+  getSales as getSalesHelper,
   getShopItems,
-  removeAllInstancesFromCart: removeAllInstancesFromCartHelper,
-  removeCartItemInstance: removeCartItemInstanceHelper,
-  updateCartItems: updateCartItemsHelper,
-} = require('../../db/queries/shop');
+  removeAllInstancesFromCart as removeAllInstancesFromCartHelper,
+  removeCartItemInstance as removeCartItemInstanceHelper,
+  updateCartItems as updateCartItemsHelper,
+} from '../../db/queries/shop.js';
 
-const {
+import {
   deleteMembershipWithId,
   deletePersonFromEvent,
   deletePlayerFromRoster,
   deleteTeamFromEvent,
-} = require('../../db/queries/entity');
-const {
-  ENTITIES_ROLE_ENUM,
-  GLOBAL_ENUM,
-  CART_ITEM,
-} = require('../../../../common/enums');
-const { isAllowed } = require('../../db/queries/utils');
+} from '../../db/queries/entity.js';
+
+import { ENTITIES_ROLE_ENUM, GLOBAL_ENUM, CART_ITEM} from '../../../../common/enums/index.js';
+import { isAllowed } from '../../db/queries/utils.js';
 
 const getItem = async (stripePriceId, userId) => {
   return getItemHelper(stripePriceId, userId);
@@ -135,7 +132,7 @@ const deleteAllCartItems = async userId => {
   return res;
 };
 
-module.exports = {
+export {
   addToCart,
   deleteAllCartItems,
   deleteCartItem,

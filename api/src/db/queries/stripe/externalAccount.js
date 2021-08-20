@@ -1,15 +1,16 @@
-const { CLIENT_BASE_URL } = require('../../../../../conf');
+import { CLIENT_BASE_URL } from '../../../../../conf.js';
 // const stripeFactories = require('./factories');
 // const { accountParamsFactory } = stripeFactories;
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const knex = require('../../connection');
+import stripeLib from 'stripe';
+const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
+import knex from '../../connection.js';
+
 // const stripeEnums = require('./enums');
 // const { BUSINESS_TYPE_ENUM, TEST_EXTERNAL_ACCOUNT } = stripeEnums;
-const { stripeLogger } = require('../../../server/utils/logger');
-const {
-  fillWithZeros,
-} = require('../../../../../common/utils/stringFormat');
-const { getCreators } = require('../entity');
+import { stripeLogger } from '../../../server/utils/logger.js';
+
+import { fillWithZeros } from '../../../../../common/utils/stringFormat.js';
+import { getCreators } from '../entity.js';
 
 const getStripeAccount = async entityId => {
   const [account] = await knex('stripe_accounts')
@@ -220,7 +221,7 @@ const createExternalAccount = async (body, ip) => {
   return bankAccount;
 };
 
-module.exports = {
+export {
   createExternalAccount,
   createAccountLink,
   createAccountLink2,

@@ -1,40 +1,39 @@
-const {
+import {
   addPaymentMethodCustomer,
   addPrice,
   addProduct,
-  checkout: checkoutHelper,
+  checkout as checkoutHelper,
   createAccountLink,
   createCustomer,
   createExternalAccount,
   createInvoice,
   createInvoiceItem,
-  createItem: createItemHelper,
-  createPaymentMethod: createPaymentMethodHelper,
-  createRefund: createRefundHelper,
-  deleteItem: deleteItemHelper,
-  editItem: editItemHelper,
-  getEventAccounts: getEventAccountsHelper,
-  finalizeInvoice: finalizeInvoiceHelper,
-  getCustomer: getCustomerHelper,
-  getCustomerId: getCustomerIdHelper,
+  createItem as createItemHelper,
+  createPaymentMethod as createPaymentMethodHelper,
+  createRefund as createRefundHelper,
+  deleteItem as deleteItemHelper,
+  editItem as editItemHelper,
+  getEventAccounts as getEventAccountsHelper,
+  finalizeInvoice as finalizeInvoiceHelper,
+  getCustomer as getCustomerHelper,
+  getCustomerId as getCustomerIdHelper,
   getOrCreateCustomer,
-  getPaymentMethods: getPaymentMethodsHelper,
-  getReceipt: getReceiptHelper,
-  getTaxes: getTaxesHelper,
-  getBankAccounts: getBankAccountsHelper,
-  createAccountLink2: createAccountLink2Helper,
-  createStripeConnectedAccount: createStripeConnectedAccountHelper,
-  hasStripeAccount: hasStripeAccountHelper,
-  hasStripeBankAccount: hasStripeBankAccountHelper,
-  payInvoice: payInvoiceHelper,
+  getPaymentMethods as getPaymentMethodsHelper,
+  getReceipt as getReceiptHelper,
+  getTaxes as getTaxesHelper,
+  getBankAccounts as getBankAccountsHelper,
+  createAccountLink2 as createAccountLink2Helper,
+  createStripeConnectedAccount as createStripeConnectedAccountHelper,
+  hasStripeAccount as hasStripeAccountHelper,
+  hasStripeBankAccount as hasStripeBankAccountHelper,
+  payInvoice as payInvoiceHelper,
   removePaymentMethodCustomer,
-  sendReceiptEmail: sendReceiptEmailHelper,
-  sendRegistrationEmail: sendRegistrationEmailHelper,
-  updateDefaultCreditCard: updateDefaultCreditCardHelper,
-  updateDefaultBankAccount: updateDefaultBankAccountHelper,
-  deleteCreditCard: deleteCreditCardHelper,
-  deleteBankAccount: deleteBankAccountHelper,
-} = require('../../db/queries/stripe');
+  sendReceiptEmail as sendReceiptEmailHelper,
+  updateDefaultCreditCard as updateDefaultCreditCardHelper,
+  updateDefaultBankAccount as updateDefaultBankAccountHelper,
+  deleteCreditCard as deleteCreditCardHelper,
+  deleteBankAccount as deleteBankAccountHelper,
+} from '../../db/queries/stripe/index.js';
 
 function getAccountLink(ip, entityId) {
   return createAccountLink({ ip, entityId });
@@ -157,10 +156,6 @@ function sendReceiptEmail(body, userId) {
   return sendReceiptEmailHelper(body, userId);
 }
 
-function sendRegistrationEmail(body, userId) {
-  return sendRegistrationEmailHelper(body, userId);
-}
-
 function createRefund(body, userId) {
   return createRefundHelper(body, userId);
 }
@@ -181,7 +176,7 @@ function deleteBankAccount(body) {
   return deleteBankAccountHelper(body);
 }
 
-module.exports = {
+export {
   addCustomer,
   addExternalAccount,
   addInvoice,
@@ -213,7 +208,6 @@ module.exports = {
   hasStripeBankAccount,
   payInvoice,
   sendReceiptEmail,
-  sendRegistrationEmail,
   updateDefaultBankAccount,
   updateDefaultCreditCard,
 };

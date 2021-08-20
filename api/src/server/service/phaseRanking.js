@@ -1,15 +1,14 @@
-const {
-  updateInitialPositionPhase: updateInitialPositionPhaseHelper,
-  updateFinalPositionPhase: updateFinalPositionPhaseHelper,
-  updateOriginPhase: updateOriginPhaseHelper,
-  deleteTeamPhase: deleteTeamPhaseHelper,
-  getPhaseRanking: getPhaseRankingHelper,
-} = require('../../db/queries/entity');
+import {
+  updateInitialPositionPhase as updateInitialPositionPhaseHelper,
+  updateFinalPositionPhase as updateFinalPositionPhaseHelper,
+  updateOriginPhase as updateOriginPhaseHelper,
+  deleteTeamPhase as deleteTeamPhaseHelper,
+  getPhaseRanking as getPhaseRankingHelper,
+} from '../../db/queries/entity.js';
 
-const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
-
-const { ERROR_ENUM } = require('../../../../common/errors');
-const { isAllowed } = require('../../db/queries/utils');
+import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
+import { isAllowed } from '../../db/queries/utils.js';
 
 function getPhaseRanking(phaseId) {
   return getPhaseRankingHelper(phaseId);
@@ -72,7 +71,8 @@ async function deleteTeamPhase(body, userId) {
   }
   return deleteTeamPhaseHelper(phaseId, initialPosition);
 }
-module.exports = {
+
+export {
   getPhaseRanking,
   updateInitialPositionPhase,
   updateFinalPositionPhase,

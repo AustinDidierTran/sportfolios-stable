@@ -1,27 +1,27 @@
-const AddedToEventEmail = require('./addedToEventEmail');
-const AddedToTeamEmail = require('./addedToTeamEmail');
-const CartItemAddedPlayerEmail = require('./cartItemAddedPlayerEmail');
-const EmailConfirmationEmail = require('./emailConfirmationEmail');
-const PersonRegistrationToAdminEmail = require('./personRegistrationToAdminEmail');
-const PersonPendingRegistrationToAdminEmail = require('./personPendingRegistrationToAdminEmail');
-const RecoveryEmail = require('./recoveryEmail');
-const OtherTeamSubmittedScore = require('./otherTeamSubmittedScore');
-const ScoreSubmissionRequestEmail = require('./scoreSubmissionRequestEmail');
-const SendReceiptEmail = require('./sendReceiptEmail');
-const TeamRegistrationToAdminEmail = require('./teamRegistrationToAdminEmail');
-const TeamRegistrationEmail = require('./teamRegistrationEmail');
-const TeamUnregisteredEmail = require('./teamUnregisteredEmail');
-const TeamUnregisteredAndRefundedEmail = require('./teamUnregisteredAndRefundedEmail');
-const TeamRefusedRegistrationEmail = require('./teamRefusedRegistrationEmail');
-const PersonRefusedRegistrationEmail = require('./personRefusedRegistrationEmail');
-const TeamPendingRegistrationToAdminEmail = require('./teamPendingRegistrationToAdminEmail');
-const PersonRegistrationEmail = require('./personRegistrationEmail');
-const TransferPersonEmail = require('./transferPersonEmail');
-const ImportMemberEmail = require('./importMemberEmail');
-const ImportMemberNonExistingEmail = require('./importMemberNonExistingEmail');
-const { NOTIFICATION_TYPE } = require('./../../../../common/enums');
-const ejs = require('ejs');
-const i18n = require('../../i18n.config');
+import AddedToEventEmail from './addedToEventEmail.js';
+import AddedToTeamEmail from './addedToTeamEmail.js';
+import CartItemAddedPlayerEmail from './cartItemAddedPlayerEmail.js';
+import EmailConfirmationEmail from './emailConfirmationEmail.js';
+import PersonRegistrationToAdminEmail from './personRegistrationToAdminEmail.js';
+import PersonPendingRegistrationToAdminEmail from './personPendingRegistrationToAdminEmail.js';
+import RecoveryEmail from './recoveryEmail.js';
+import OtherTeamSubmittedScore from './otherTeamSubmittedScore.js';
+import ScoreSubmissionRequestEmail from './scoreSubmissionRequestEmail.js';
+import SendReceiptEmail from './sendReceiptEmail.js';
+import TeamRegistrationToAdminEmail from './teamRegistrationToAdminEmail.js';
+import TeamRegistrationEmail from './teamRegistrationEmail.js';
+import TeamUnregisteredEmail from './teamUnregisteredEmail.js';
+import TeamUnregisteredAndRefundedEmail from './teamUnregisteredAndRefundedEmail.js';
+import TeamRefusedRegistrationEmail from './teamRefusedRegistrationEmail.js';
+import PersonRefusedRegistrationEmail from './personRefusedRegistrationEmail.js';
+import TeamPendingRegistrationToAdminEmail from './teamPendingRegistrationToAdminEmail.js';
+import PersonRegistrationEmail from './personRegistrationEmail.js';
+import TransferPersonEmail from './transferPersonEmail.js';
+import ImportMemberEmail from './importMemberEmail.js';
+import ImportMemberNonExistingEmail from './importMemberNonExistingEmail.js';
+import { NOTIFICATION_TYPE } from './../../../../common/enums/index.js';
+import ejs from 'ejs';
+import i18n from '../../i18n.config.js';
 const map = {
   [NOTIFICATION_TYPE.ADDED_TO_EVENT]: AddedToEventEmail,
   [NOTIFICATION_TYPE.ADDED_TO_TEAM]: AddedToTeamEmail,
@@ -45,7 +45,8 @@ const map = {
   [NOTIFICATION_TYPE.TEAM_PENDING_REGISTRATION_ADMIN]: TeamPendingRegistrationToAdminEmail,
   [NOTIFICATION_TYPE.TRANSFER_PERSON]: TransferPersonEmail,
 };
-module.exports = async function EmailFactory(infos) {
+
+export default async function EmailFactory(infos) {
   const { type, ...otherInfos } = infos;
   const emailTemplate = map[type];
   if (!emailTemplate) {

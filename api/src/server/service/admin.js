@@ -1,19 +1,19 @@
-const {
-  addEmailLandingPage: addEmailLandingPageHelper,
-  createSport: createSportHelper,
-  createTaxRate: createTaxRateHelper,
-  getAllNewsLetterSubscriptions: getAllNewsLetterSubscriptionsHelper,
-  getAllSports: getAllSportsHelper,
-  getAllUsersAndSecond: getAllUsersAndSecondHelper,
-  getAllTaxRates: getAllTaxRatesHelper,
-  getEmailsLandingPage: getEmailsLandingPageHelper,
-  updateActiveStatusTaxRate: updateActiveStatusTaxRateHelper,
-  updateSport: updateSportHelper,
-  deleteEmailLandingPage: deleteEmailLandingPageHelper,
-  deleteTaxRate: deleteTaxRateHelper,
-  deleteEntities: deleteEntitiesHelper,
-  updateUserRole: updateUserRoleHelper,
-} = require('../../db/queries/admin');
+import {
+  addEmailLandingPage as addEmailLandingPageHelper,
+  createSport as createSportHelper,
+  createTaxRate as createTaxRateHelper,
+  getAllNewsLetterSubscriptions as getAllNewsLetterSubscriptionsHelper,
+  getAllSports as getAllSportsHelper,
+  getAllUsersAndSecond as getAllUsersAndSecondHelper,
+  getAllTaxRates as getAllTaxRatesHelper,
+  getEmailsLandingPage as getEmailsLandingPageHelper,
+  updateActiveStatusTaxRate as updateActiveStatusTaxRateHelper,
+  updateSport as updateSportHelper,
+  deleteEmailLandingPage as deleteEmailLandingPageHelper,
+  deleteTaxRate as deleteTaxRateHelper,
+  deleteEntities as deleteEntitiesHelper,
+  updateUserRole as updateUserRoleHelper,
+} from '../../db/queries/admin.js';
 
 function createSport(sport) {
   return createSportHelper(sport);
@@ -70,7 +70,7 @@ function updateUserRole(userId, role) {
   return updateUserRoleHelper(userId, role);
 }
 
-module.exports = {
+export {
   addEmailLandingPage,
   createSport,
   createTaxRate,

@@ -1,14 +1,9 @@
-const State = require('../state');
-const {
-  BASIC_CHATBOT_STATES,
-  SCORE_SUBMISSION_CHATBOT_STATES,
-} = require('../../../../../../../common/enums');
-const { MESSENGER_QUICK_REPLIES } = require('../../../enums');
-const Response = require('../../response');
-const i18n = require('../../../../../i18n.config');
-const {
-  isScoreSuggestionAlreadySubmitted,
-} = require('../../../../../db/queries/entity');
+import State from '../state.js';
+import { BASIC_CHATBOT_STATES, SCORE_SUBMISSION_CHATBOT_STATES } from '../../../../../../../common/enums/index.js';
+import { MESSENGER_QUICK_REPLIES } from '../../../enums/index.js';
+import Response from '../../response.js';
+import i18n from '../../../../../i18n.config.js';
+import { isScoreSuggestionAlreadySubmitted } from '../../../../../db/queries/entity.js';
 
 class ScoreSubmissionRequestSent extends State {
   async handleEvent(webhookEvent) {
@@ -57,14 +52,14 @@ class ScoreSubmissionRequestSent extends State {
       teamQuantity === 1
         ? opponentTeams[0].teamName
         : opponentTeams.reduce(
-            (acc, cur, i) =>
-              acc +
-              (i < teamQuantity - 1
-                ? ', '
-                : ' ' + i18n.__('and') + ' ') +
-              cur.teamName,
-            '',
-          );
+          (acc, cur, i) =>
+            acc +
+            (i < teamQuantity - 1
+              ? ', '
+              : ' ' + i18n.__('and') + ' ') +
+            cur.teamName,
+          '',
+        );
     return {
       messages: [
         Response.genQuickReply(
@@ -80,4 +75,4 @@ class ScoreSubmissionRequestSent extends State {
   }
 }
 
-module.exports = ScoreSubmissionRequestSent;
+export default ScoreSubmissionRequestSent;

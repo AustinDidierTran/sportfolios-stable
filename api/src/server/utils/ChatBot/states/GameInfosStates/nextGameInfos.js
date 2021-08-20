@@ -1,21 +1,12 @@
-const State = require('../state');
-const {
-  BASIC_CHATBOT_STATES,
-  MILLIS_TIME_ENUM,
-} = require('../../../../../../../common/enums');
-const { MESSENGER_QUICK_REPLIES } = require('../../../enums');
-const Response = require('../../response');
-const i18n = require('../../../../../i18n.config');
-const {
-  getUserNextGame,
-} = require('../../../../../db/queries/entity');
-const {
-  getTimezoneFromPSID,
-} = require('../../../../../db/queries/facebook');
-const {
-  getUserIdFromMessengerId,
-} = require('../../../../../db/queries/user');
-const moment = require('moment');
+import State from '../state.js';
+import { BASIC_CHATBOT_STATES, MILLIS_TIME_ENUM } from '../../../../../../../common/enums/index.js';
+import { MESSENGER_QUICK_REPLIES } from '../../../enums/index.js';
+import Response from '../../response.js';
+import i18n from '../../../../../i18n.config.js';
+import { getUserNextGame } from '../../../../../db/queries/entity.js';
+import { getTimezoneFromPSID } from '../../../../../db/queries/facebook.js';
+import { getUserIdFromMessengerId } from '../../../../../db/queries/user.js';
+import moment from 'moment';
 class NextGameInfos extends State {
   async handleEvent(webhookEvent) {
     let nextState;
@@ -49,7 +40,7 @@ class NextGameInfos extends State {
     }
     const date = new Date(
       new Date(game.timeslot).valueOf() +
-        timeZone * MILLIS_TIME_ENUM.ONE_HOUR,
+      timeZone * MILLIS_TIME_ENUM.ONE_HOUR,
     );
     const infos = {
       event: game.event_name,
@@ -70,4 +61,4 @@ class NextGameInfos extends State {
   }
 }
 
-module.exports = NextGameInfos;
+export default NextGameInfos;

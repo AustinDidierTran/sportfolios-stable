@@ -1,7 +1,7 @@
-const Home = require('./home');
-const NotLinked = require('./notLinked');
+import Home from './home.js';
+import NotLinked from './notLinked.js';
 
-module.exports = {
+export {
   Home,
   NotLinked,
 };

@@ -1,6 +1,7 @@
-const knex = require('../../db/connection');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const moment = require('moment');
+import knex from '../../db/connection.js';
+import stripeLib from 'stripe';
+const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
+import moment from 'moment';
 
 function createSport(sport) {
   return knex('sports')
@@ -219,7 +220,7 @@ async function getAllTaxRates() {
   return sorted;
 }
 
-module.exports = {
+export {
   addEmailLandingPage,
   createSport,
   createTaxRate,

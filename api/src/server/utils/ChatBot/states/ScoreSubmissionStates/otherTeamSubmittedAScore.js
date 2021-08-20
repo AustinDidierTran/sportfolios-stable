@@ -1,9 +1,7 @@
-const i18n = require('../../../../../i18n.config');
-const {
-  SCORE_SUBMISSION_CHATBOT_STATES,
-} = require('../../../../../../../common/enums');
-const { genText } = require('../../response');
-const State = require('../state');
+import i18n from '../../../../../i18n.config.js';
+import { SCORE_SUBMISSION_CHATBOT_STATES } from '../../../../../../../common/enums/index.js';
+import response from '../../response.js';
+import State from '../state.js';
 
 class otherTeamSubmittedAScore extends State {
   async getIntroMessages() {
@@ -13,7 +11,7 @@ class otherTeamSubmittedAScore extends State {
 
     return {
       messages: [
-        genText(
+        response.genText(
           i18n.__(
             '{{submittedBy}} submitted the following score for your game of the event {{eventName}}',
             { submittedBy, eventName },
@@ -26,4 +24,4 @@ class otherTeamSubmittedAScore extends State {
   }
 }
 
-module.exports = otherTeamSubmittedAScore;
+export default otherTeamSubmittedAScore;

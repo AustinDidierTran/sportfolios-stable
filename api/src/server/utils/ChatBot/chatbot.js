@@ -1,5 +1,5 @@
-const { StateFactory } = require('./states');
-const { setChatbotInfos } = require('../../service/facebook');
+import { StateFactory } from './states/index.js';
+import { setChatbotInfos } from '../../service/facebook.js';
 class Chatbot {
   constructor(messengerId, stateType, chatbotInfos) {
     this.messengerId = messengerId;
@@ -47,4 +47,4 @@ class Chatbot {
   }
 }
 
-module.exports = Chatbot;
+export default Chatbot;

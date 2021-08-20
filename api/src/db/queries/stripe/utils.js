@@ -1,4 +1,4 @@
-const knex = require('../../connection');
+import knex from '../../connection.js';
 
 async function getPaymentStatus(invoiceItemId) {
   const [refunded] = await knex('stripe_refund')
@@ -10,6 +10,6 @@ async function getPaymentStatus(invoiceItemId) {
   return INVOICE_STATUS_ENUM.PAID;
 }
 
-module.exports = {
+export {
   getPaymentStatus,
 };

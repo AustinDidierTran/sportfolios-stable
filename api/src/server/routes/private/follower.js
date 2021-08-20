@@ -1,5 +1,5 @@
-const Router = require('koa-router');
-const service = require('../../service/follower');
+import Router from 'koa-router';
+import * as service from '../../service/follower.js';
 
 const router = new Router();
 const BASE_URL = '/api/followers';
@@ -18,4 +18,4 @@ router.post(`${BASE_URL}/unfollow`, async ctx => {
   );
 });
 
-module.exports = router;
+export default router;

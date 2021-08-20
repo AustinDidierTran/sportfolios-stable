@@ -1,4 +1,4 @@
-const i18nbackEnd = require('../../../i18n.config');
+import i18nbackEnd from '../../../i18n.config.js';
 const MESSENGER_PAYLOADS = {
   GET_STARTED: 'GET_STARTED',
   START_OVER: 'START_OVER',
@@ -77,7 +77,7 @@ const MESSENGER_QUICK_REPLIES = {
   ],
 };
 
-module.exports = {
+export {
   MESSENGER_QUICK_REPLIES,
   MESSENGER_PAYLOADS,
 };

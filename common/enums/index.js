@@ -541,7 +541,7 @@ const EVENT_TYPE = {
   TEAM: 'team',
 };
 
-module.exports = {
+export {
   APP_ENUM,
   BASIC_CHATBOT_STATES,
   CARD_TYPE_ENUM,

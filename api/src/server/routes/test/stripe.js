@@ -1,7 +1,7 @@
-const Router = require('koa-router');
-const { STATUS_ENUM } = require('../../../../../common/enums');
-const { ERROR_ENUM } = require('../../../../../common/errors');
-const service = require('../../service/stripe');
+import Router from 'koa-router';
+import { STATUS_ENUM } from '../../../../../common/enums/index.js';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
+import * as service from '../../service/stripe.js';
 const router = new Router();
 const BASE_URL = '/api/test/stripe';
 
@@ -19,4 +19,4 @@ router.post(`${BASE_URL}/connectedAccount`, async ctx => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,14 +1,9 @@
-const State = require('../state');
-const {
-  SCORE_SUBMISSION_CHATBOT_STATES,
-  BASIC_CHATBOT_STATES,
-} = require('../../../../../../../common/enums');
-const { MESSENGER_QUICK_REPLIES } = require('../../../enums');
-const Response = require('../../response');
-const i18n = require('../../../../../i18n.config');
-const {
-  isSpiritAlreadySubmitted,
-} = require('../../../../../db/queries/entity');
+import State from '../state.js';
+import { SCORE_SUBMISSION_CHATBOT_STATES, BASIC_CHATBOT_STATES } from '../../../../../../../common/enums/index.js';
+import { MESSENGER_QUICK_REPLIES } from '../../../enums/index.js';
+import Response from '../../response.js';
+import i18n from '../../../../../i18n.config.js';
+import { isSpiritAlreadySubmitted } from '../../../../../db/queries/entity.js';
 
 class SpiritSubmissionRequestSent extends State {
   async handleEvent(webhookEvent) {
@@ -62,4 +57,4 @@ class SpiritSubmissionRequestSent extends State {
   }
 }
 
-module.exports = SpiritSubmissionRequestSent;
+export default SpiritSubmissionRequestSent;

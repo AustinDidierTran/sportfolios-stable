@@ -1,9 +1,10 @@
-const {
+import {
   BASIC_CHATBOT_STATES,
   SCORE_SUBMISSION_CHATBOT_STATES,
   GAME_INFOS_CHATBOT_STATES,
-} = require('../../../../../../common/enums');
-const {
+} from '../../../../../../common/enums/index.js';
+
+import {
   AwaitingScoreSubmission,
   ScoreSubmissionRequestSent,
   AwaitingScoreSubmissionConfirmation,
@@ -17,9 +18,10 @@ const {
   GamesAwaitingScoreList,
   AwaitingAttendance,
   OtherTeamSubmittedAScore,
-} = require('./ScoreSubmissionStates');
-const { Home, NotLinked } = require('./BasicStates');
-const { NextGameInfos } = require('./GameInfosStates');
+} from './ScoreSubmissionStates/index.js';
+
+import { Home, NotLinked } from './BasicStates/index.js';
+import { NextGameInfos } from './GameInfosStates/index.js';
 
 const stateMap = {
   [SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION]: AwaitingScoreSubmission,
@@ -50,4 +52,4 @@ function StateFactory(state) {
   return new stateClass();
 }
 
-module.exports = StateFactory;
+export default StateFactory;

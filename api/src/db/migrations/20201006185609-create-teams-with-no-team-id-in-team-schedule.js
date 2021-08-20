@@ -1,8 +1,8 @@
 'use strict';
 
-const { GLOBAL_ENUM } = require('../../../../common/enums');
-const { addEntity } = require('../queries/entity');
-const knex = require('../connection');
+import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
+import { addEntity } from '../queries/entity.js';
+import knex from '../connection.js';
 
 var dbm;
 var type;
@@ -12,20 +12,20 @@ var seed;
  * We receive the dbmigrate dependency from dbmigrate initially.
  * This enables us to not have to rely on NODE_PATH.
  */
-exports.setup = function(options, seedLink) {
+export function setup(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
-};
+}
 
-exports.up = async function(db) {
+export async function up(db) {
   return null;
-};
+}
 
-exports.down = function(db) {
+export function down(db) {
   return null;
-};
+}
 
-exports._meta = {
+export var _meta = {
   version: 1,
 };

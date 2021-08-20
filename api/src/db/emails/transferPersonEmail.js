@@ -1,7 +1,7 @@
-const ejs = require('ejs');
-const i18n = require('../../i18n.config');
+import ejs from 'ejs';
+import i18n from '../../i18n.config.js';
 
-module.exports = async function transferPersonEmail(infos) {
+export default async function transferPersonEmail(infos) {
   const { sendedName, senderName, buttonLink, locale } = infos;
 
   const text = i18n.__(

@@ -1,4 +1,4 @@
-const { MILLIS_TIME_ENUM } = require('../enums');
+import { MILLIS_TIME_ENUM } from '../enums/index.js';
 
 const EXPIRATION_TIMES = {
   EMAIL_CONFIRMATION_TOKEN: MILLIS_TIME_ENUM.ONE_HOUR,
@@ -8,4 +8,4 @@ const EXPIRATION_TIMES = {
   IMPORT_MEMBER: MILLIS_TIME_ENUM.ONE_MONTH,
 };
 
-module.exports = { EXPIRATION_TIMES };
+export { EXPIRATION_TIMES };

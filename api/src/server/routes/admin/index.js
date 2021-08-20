@@ -1,4 +1,3 @@
-const admin = require('./admin');
-const googleAnalytics = require('./googleAnalytics');
-
-module.exports = [admin, googleAnalytics];
+import admin from './admin.js';
+import googleAnalytics from './googleAnalytics.js';
+export default [admin, googleAnalytics];

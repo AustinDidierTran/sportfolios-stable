@@ -1,19 +1,10 @@
-const State = require('../state');
-const {
-  BASIC_CHATBOT_STATES,
-  SCORE_SUBMISSION_CHATBOT_STATES,
-  MONTH_NAMES,
-} = require('../../../../../../../common/enums');
-const Response = require('../../response');
-const i18n = require('../../../../../i18n.config');
-const {
-  getGamesWithAwaitingScore,
-  getGameTeams,
-} = require('../../../../../db/queries/entity');
-const {
-  getUserIdFromMessengerId,
-} = require('../../../../../db/queries/user');
-const { MESSENGER_QUICK_REPLIES } = require('../../../enums');
+import State from '../state.js';
+import { BASIC_CHATBOT_STATES, SCORE_SUBMISSION_CHATBOT_STATES, MONTH_NAMES } from '../../../../../../../common/enums/index.js';
+import Response from '../../response.js';
+import i18n from '../../../../../i18n.config.js';
+import { getGamesWithAwaitingScore, getGameTeams } from '../../../../../db/queries/entity.js';
+import { getUserIdFromMessengerId } from '../../../../../db/queries/user.js';
+import { MESSENGER_QUICK_REPLIES } from '../../../enums/index.js';
 
 class gamesAwaitingScoreList extends State {
   async handleEvent(webhookEvent) {
@@ -98,4 +89,4 @@ class gamesAwaitingScoreList extends State {
   }
 }
 
-module.exports = gamesAwaitingScoreList;
+export default gamesAwaitingScoreList;

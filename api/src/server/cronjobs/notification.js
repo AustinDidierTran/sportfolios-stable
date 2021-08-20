@@ -1,11 +1,7 @@
-const cron = require('node-cron');
-const knex = require('../../db/connection');
-const { sendNotification } = require('../service/notification');
-
-const {
-  NOTIFICATION_TYPE,
-  ROSTER_ROLE_ENUM,
-} = require('../../../../common/enums');
+import cron from 'node-cron';
+import knex from '../../db/connection.js';
+import { sendNotification } from '../service/notification.js';
+import { NOTIFICATION_TYPE, ROSTER_ROLE_ENUM } from '../../../../common/enums/index.js';
 
 /*
  ┌────────────── second (optional)

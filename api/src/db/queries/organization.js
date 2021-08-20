@@ -1,18 +1,13 @@
-const knex = require('../connection');
-const { getPrimaryPerson, getEntity } = require('./entity');
-const { getEventPaymentOption } = require('./event');
-const { getTaxRates } = require('./shop');
-const { getPaymentStatus } = require('./stripe/utils');
-const { getEmailUser } = require('./user');
-const moment = require('moment');
-const { isAllowed } = require('./utils');
-const {
-  CARD_TYPE_ENUM,
-  GLOBAL_ENUM,
-  ENTITIES_ROLE_ENUM,
-  REPORT_TYPE_ENUM,
-} = require('../../../../common/enums');
-const { ERROR_ENUM } = require('../../../../common/errors');
+import knex from '../connection.js';
+import { getPrimaryPerson, getEntity } from './entity.js';
+import { getEventPaymentOption } from './event.js';
+import { getTaxRates } from './shop.js';
+import { getPaymentStatus } from './stripe/utils.js';
+import { getEmailUser } from './user.js';
+import moment from 'moment';
+import { isAllowed } from './utils.js';
+import { CARD_TYPE_ENUM, GLOBAL_ENUM, ENTITIES_ROLE_ENUM, REPORT_TYPE_ENUM } from '../../../../common/enums/index.js';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
 
 async function generateReport(reportId) {
   const [report] = await knex('reports')
@@ -280,7 +275,7 @@ async function generateMembersReport(report) {
   return res;
 }
 
-module.exports = {
+export {
   generateSalesReport,
   generateMembersReport,
   getOwnedEvents,

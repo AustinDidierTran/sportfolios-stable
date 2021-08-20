@@ -1,6 +1,6 @@
-const Router = require('koa-router');
-const { ERROR_ENUM } = require('../../../../../common/errors');
-const service = require('../../service/googleAnalytics');
+import Router from 'koa-router';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
+import * as service from '../../service/googleAnalytics.js';
 
 const router = new Router();
 const BASE_URL = '/api/admin';
@@ -78,4 +78,4 @@ router.put(`${BASE_URL}/gaPageviews/:id`, async ctx => {
   };
 });
 
-module.exports = router;
+export default router;

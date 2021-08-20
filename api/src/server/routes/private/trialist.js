@@ -1,6 +1,6 @@
-const Router = require('koa-router');
-const { ERROR_ENUM } = require('../../../../../common/errors');
-const service = require('../../service/trialist');
+import Router from 'koa-router';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
+import * as service from '../../service/trialist.js';
 
 const router = new Router();
 const BASE_URL = '/api/trialist';
@@ -160,4 +160,4 @@ router.get(`${BASE_URL}/getSessionsByExerciseId`, async ctx => {
   ctx.body = { data: res };
 });
 
-module.exports = router;
+export default router;

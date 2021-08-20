@@ -1,6 +1,6 @@
-const Router = require('koa-router');
-const service = require('../../service/phase');
-const { ERROR_ENUM } = require('../../../../../common/errors');
+import Router from 'koa-router';
+import * as service from '../../service/phase.js';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
 
 const router = new Router();
 const BASE_URL = '/api/entity';
@@ -63,4 +63,4 @@ router.del(`${BASE_URL}/phase`, async ctx => {
   ctx.body = { data: phase };
 });
 
-module.exports = router;
+export default router;

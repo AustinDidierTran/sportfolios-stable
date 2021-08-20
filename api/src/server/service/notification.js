@@ -1,21 +1,19 @@
 //The notifications queries must not import any of the other queries to prevent circular dependency
-const {
-  getNotifications: getNotificationsHelper,
-  seeNotifications: seeNotificationsHelper,
-  countUnseenNotifications: countUnseenNotificationsHelper,
-  clickNotification: clickNotificationHelper,
-  deleteNotification: deleteNotificationHelper,
+import {
+  getNotifications as getNotificationsHelper,
+  seeNotifications as seeNotificationsHelper,
+  countUnseenNotifications as countUnseenNotificationsHelper,
+  clickNotification as clickNotificationHelper,
+  deleteNotification as deleteNotificationHelper,
   addNotification,
-  getNotificationsSettings: getNotificationsSettingsHelper,
+  getNotificationsSettings as getNotificationsSettingsHelper,
   upsertNotificationsSettings,
-  getRostersNames,
-} = require('../../db/queries/notification');
+} from '../../db/queries/notification.js';
 
-const Chatbot = require('../utils/ChatBot/chatbot');
+import Chatbot from '../utils/ChatBot/chatbot.js';
+import * as socket from '../websocket/socket.io.js';
 
-const socket = require('../websocket/socket.io');
-
-const {
+import {
   sendMail,
   sendAddedToEventEmail,
   sendAddedToTeamEmail,
@@ -30,25 +28,24 @@ const {
   sendTeamRefusedRegistrationEmail,
   sendImportMemberEmail,
   sendOtherTeamSubmittedScore,
-} = require('../utils/nodeMailer');
+} from '../utils/nodeMailer.js';
 
-const {
-  getEmailFromUserId,
-  getLanguageFromUser,
-  setChatbotInfos,
-  getChatbotInfos,
-} = require('../../db/queries/user');
-const { getGameTeams } = require('../../db/queries/entity');
+import { getEmailFromUserId, getLanguageFromUser } from '../../db/queries/user.js';
+import {
+  getGameTeams,
+  getRostersNames
+} from '../../db/queries/entity.js';
 
-const {
+import {
   SOCKET_EVENT,
   NOTIFICATION_TYPE,
   SCORE_SUBMISSION_CHATBOT_STATES,
   MILLIS_TIME_ENUM,
   BASIC_CHATBOT_STATES,
-} = require('../../../../common/enums');
-const { getEmailsLandingPage } = require('./admin');
-const { getMessengerId } = require('../../db/queries/facebook');
+} from '../../../../common/enums/index.js';
+
+import { getEmailsLandingPage } from './admin.js';
+import { getMessengerId, getChatbotInfos, setChatbotInfos } from '../../db/queries/facebook.js';
 
 const seeNotifications = async userId => {
   return seeNotificationsHelper(userId);
@@ -331,7 +328,7 @@ const sendChatbotNotification = async (type, userId, infos) => {
   if (
     state != BASIC_CHATBOT_STATES.HOME &&
     new Date(updated_at).valueOf() >
-      new Date().valueOf() - MILLIS_TIME_ENUM.ONE_HOUR * 3
+    new Date().valueOf() - MILLIS_TIME_ENUM.ONE_HOUR * 3
   ) {
     return;
   }
@@ -452,7 +449,7 @@ const setNotificationsSettings = async (userId, body) => {
   return upsertNotificationsSettings(userId, body);
 };
 
-module.exports = {
+export {
   getNotifications,
   seeNotifications,
   countUnseenNotifications,

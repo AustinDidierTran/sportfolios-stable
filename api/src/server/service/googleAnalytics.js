@@ -1,12 +1,12 @@
-const {
-  getEventCategories: getEventsCategoriesHelper,
-  getPageviewPathnames: getPageviewsPathnameHelper,
-  getActiveEventCategories: getActiveEventsHelper,
-  getActivePageviewsPathnames: getActivePageviewsHelper,
-  updateEventCategoryToggle: updateEventHelper,
-  updatePageviewsPathnameToggle: updatePageviewHelper,
-  addPageviewsPathname: addPageviewHelper,
-} = require('../../db/queries/googleAnalytics');
+import {
+  getEventCategories as getEventsCategoriesHelper,
+  getPageviewPathnames as getPageviewsPathnameHelper,
+  getActiveEventCategories as getActiveEventsHelper,
+  getActivePageviewsPathnames as getActivePageviewsHelper,
+  updateEventCategoryToggle as updateEventHelper,
+  updatePageviewsPathnameToggle as updatePageviewHelper,
+  addPageviewsPathname as addPageviewHelper,
+} from '../../db/queries/googleAnalytics.js';
 
 function getAllEvents() {
   return getEventsCategoriesHelper();
@@ -36,7 +36,7 @@ function addPageview(pathname, enabled) {
   return addPageviewHelper(pathname, enabled);
 }
 
-module.exports = {
+export {
   getAllEvents,
   getAllPageviews,
   getAllActiveEvents,
