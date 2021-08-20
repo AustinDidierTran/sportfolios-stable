@@ -3,7 +3,7 @@ const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
 
 import knex from '../../connection.js';
 import { stripeErrorLogger, stripeLogger } from '../../../server/utils/logger.js';
-import { PLATEFORM_FEES, PLATEFORM_FEES_FIX, GLOBAL_ENUM } from '../../../../../common/enums/index.js';
+import { PLATEFORM_FEES, PLATEFORM_FEES_FIX } from '../../../../../common/enums/index.js';
 
 const addProduct = async body => {
   const { stripeProduct } = body;
