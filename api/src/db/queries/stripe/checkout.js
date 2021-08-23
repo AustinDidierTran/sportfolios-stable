@@ -3,7 +3,7 @@ const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
 import knex from '../../connection.js';
 import { getCustomerId } from './customer.js';
 import { stripeErrorLogger, stripeLogger } from '../../../server/utils/logger.js';
-import { STRIPE_STATUS_ENUM, GLOBAL_ENUM, REJECTION_ENUM } from '../../../../../common/enums/index.js';
+import { STRIPE_STATUS_ENUM, GLOBAL_ENUM, REJECTION_ENUM, CART_ITEM } from '../../../../../common/enums/index.js';
 import { deleteCartItem } from '../shop.js';
 import { INVOICE_PAID_ENUM } from '../../../server/utils/stripe/checkout.js';
 import { sendReceiptEmail as sendReceiptEmailHelper } from '../../../server/utils/nodeMailer.js';
