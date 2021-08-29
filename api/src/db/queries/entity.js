@@ -993,7 +993,16 @@ async function getReports(entityId) {
   const sorted = reports.sort((a, b) => {
     return moment(b.created_at) - moment(a.created_at);
   });
-  return sorted;
+
+  return sorted.map(s => ({
+    reportId: s.report_id,
+    entity_id: s.entity_id,
+    entityId: s.entity_id,
+    type: s.type,
+    metadata: s.metadata,
+    createdAt: s.created_at,
+    updatedAt: s.updated_at
+  }));
 }
 
 async function getPrerankPhase(eventId) {
