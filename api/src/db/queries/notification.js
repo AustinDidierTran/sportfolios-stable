@@ -1,7 +1,7 @@
-const knex = require('../connection');
-const { attachPaginate } = require('knex-paginate');
-const { NOTIFICATION_TYPE } = require('../../../../common/enums');
-const { getRosterName, getRostersNames } = require('./entity');
+import knex from '../connection.js';
+import { attachPaginate } from 'knex-paginate';
+import { NOTIFICATION_TYPE } from '../../../../common/enums/index.js';
+import { getRosterName, getRostersNames } from './entity.js';
 attachPaginate();
 
 const addNotification = async infos => {
@@ -143,7 +143,7 @@ const enableAllChatbotNotification = async user_id => {
     .where({ user_id });
 };
 
-module.exports = {
+export {
   getNotifications,
   seeNotifications,
   countUnseenNotifications,

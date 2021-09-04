@@ -1,10 +1,7 @@
-const State = require('../state');
-const {
-  SCORE_SUBMISSION_CHATBOT_STATES,
-  BASIC_CHATBOT_STATES,
-} = require('../../../../../../../common/enums');
-const i18n = require('../../../../../i18n.config');
-const Response = require('../../response');
+import State from '../state.js';
+import { SCORE_SUBMISSION_CHATBOT_STATES, BASIC_CHATBOT_STATES } from '../../../../../../../common/enums/index.js';
+import i18n from '../../../../../i18n.config.js';
+import Response from '../../response.js';
 
 class AwaitingScoreSubmission extends State {
   async handleEvent(webhookEvent) {
@@ -71,4 +68,4 @@ class AwaitingScoreSubmission extends State {
   }
 }
 
-module.exports = AwaitingScoreSubmission;
+export default AwaitingScoreSubmission;

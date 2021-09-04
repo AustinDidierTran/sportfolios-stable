@@ -1,4 +1,4 @@
-const knex = require('../connection');
+import knex from '../connection.js';
 
 const followAthleteWithId = async (sender, target) => {
   return knex('followers').insert({
@@ -30,7 +30,7 @@ const getFollowingUsers = async sender => {
     .where('followers.sender', sender);
 };
 
-module.exports = {
+export {
   followAthleteWithId,
   unfollowAthleteWithId,
   getFollowingUsers,

@@ -1,4 +1,4 @@
-const knex = require('../connection');
+import knex from '../connection.js';
 
 async function addLike(entity_id, post_id) {
   await knex('post_like')
@@ -309,7 +309,7 @@ async function deleteComment(comment_id) {
     .del();
 }
 
-module.exports = {
+export {
   addComment,
   addLike,
   addPost,

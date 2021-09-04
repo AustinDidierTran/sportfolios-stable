@@ -1,6 +1,6 @@
-const { ERROR_ENUM } = require('../../../../common/errors');
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
 
-module.exports = async (ctx, next) => {
+export default async (ctx, next) => {
   if (
     ctx.body &&
     ctx.body.userInfo &&

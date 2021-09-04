@@ -1,24 +1,24 @@
-const {
-  sendMessage: sendMessageHelper,
-  logMessage: logMessageHelper,
+import {
+  sendMessage as sendMessageHelper,
+  logMessage as logMessageHelper,
   getMessengerIdFromFbID,
   setMessengerId,
-  getChatbotInfos: getChatbotInfosHelper,
-  setChatbotInfos: setChatbotInfosHelper,
+  getChatbotInfos as getChatbotInfosHelper,
+  setChatbotInfos as setChatbotInfosHelper,
   addChatbotId,
-  deleteChatbotInfos: deleteChatbotInfosHelper,
-  setFacebookData: setFacebookDataHelper,
+  deleteChatbotInfos as deleteChatbotInfosHelper,
+  setFacebookData as setFacebookDataHelper,
   deleteMessengerId,
   getMessengerId,
   getFacebookId,
   deleteFacebookId,
   isLinkedFacebookAccount,
-} = require('../../db/queries/facebook');
+} from '../../db/queries/facebook.js';
 
-const i18n = require('../../i18n.config');
-const Response = require('../utils/ChatBot/response');
-const { BASIC_CHATBOT_STATES } = require('../../../../common/enums');
-const { ERROR_ENUM } = require('../../../../common/errors');
+import i18n from '../../i18n.config.js';
+import Response from '../utils/ChatBot/response.js';
+import { BASIC_CHATBOT_STATES } from '../../../../common/enums/index.js';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
 
 const sendMessage = (messengerId, message) => {
   return sendMessageHelper(messengerId, message);
@@ -107,7 +107,7 @@ const logMessage = infos => {
   return logMessageHelper(infos);
 };
 
-module.exports = {
+export {
   deleteChatbotInfos,
   getChatbotInfos,
   getConnectedApps,

@@ -8,20 +8,20 @@ var seed;
   * We receive the dbmigrate dependency from dbmigrate initially.
   * This enables us to not have to rely on NODE_PATH.
   */
-exports.setup = function(options, seedLink) {
+export function setup(options, seedLink) {
   dbm = options.dbmigrate;
   type = dbm.dataType;
   seed = seedLink;
-};
+}
 
-exports.up = function(db) {
+export function up(db) {
   return null;
-};
+}
 
-exports.down = function(db) {
+export function down(db) {
   return null;
-};
+}
 
-exports._meta = {
+export var _meta = {
   "version": 1
 };

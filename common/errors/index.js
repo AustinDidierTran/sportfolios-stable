@@ -93,4 +93,4 @@ const errors = {
     code: 411,
   },
 };
-module.exports = { ERROR_ENUM, errors };
+export { ERROR_ENUM, errors };

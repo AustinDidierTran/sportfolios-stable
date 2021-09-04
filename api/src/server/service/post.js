@@ -1,15 +1,15 @@
-const {
+import {
   addPost,
   editPost,
   addPostImageUrl,
   getPostFeed,
-  addLike: addLikeHelper,
-  deleteLike: deleteLikeHelper,
-  addComment: addCommentHelper,
-  deleteComment: deleteCommentHelper,
-  deletePost: deletePostHelper,
-  editComment: editCommentHelper,
-} = require('../../db/queries/post');
+  addLike as addLikeHelper,
+  deleteLike as deleteLikeHelper,
+  addComment as addCommentHelper,
+  deleteComment as deleteCommentHelper,
+  deletePost as deletePostHelper,
+  editComment as editCommentHelper,
+} from '../../db/queries/post.js';
 
 function create(body, locationId, userId) {
   return addPost(body, locationId, userId);
@@ -57,7 +57,7 @@ function editComment(commentId, commentContent) {
   return editCommentHelper(commentId, commentContent);
 }
 
-module.exports = {
+export {
   create,
   edit,
   addImage,

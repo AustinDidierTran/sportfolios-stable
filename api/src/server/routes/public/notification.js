@@ -1,9 +1,8 @@
-const Router = require('koa-router');
-
-const { ERROR_ENUM } = require('../../../../../common/errors');
+import Router from 'koa-router';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
 const router = new Router();
 const BASE_URL = '/api/notifications';
-const service = require('../../service/notification');
+import * as service from '../../service/notification.js';
 
 router.post(
   `${BASE_URL}/sendMessageToSportfoliosAdmin`,
@@ -18,4 +17,4 @@ router.post(
   },
 );
 
-module.exports = router;
+export default router;

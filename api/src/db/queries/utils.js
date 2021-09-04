@@ -1,9 +1,8 @@
-const knex = require('../connection');
-
-const { v1: uuidv1 } = require('uuid');
-const { EXPIRATION_TIMES } = require('../../../../common/constants');
-const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
-const { getEntityRole } = require('./entity');
+import knex from '../connection.js';
+import { v1 as uuidv1 } from 'uuid';
+import { EXPIRATION_TIMES } from '../../../../common/constants/index.js';
+import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
+import { getEntityRole } from './entity.js';
 
 const generateToken = () => {
   return uuidv1();
@@ -28,4 +27,4 @@ async function isAllowed(
   return role <= acceptationRole;
 }
 
-module.exports = { generateAuthToken, generateToken, isAllowed };
+export { generateAuthToken, generateToken, isAllowed };

@@ -1,25 +1,11 @@
-const nodemailer = require('nodemailer');
-const {
-  NOTIFICATION_TYPE,
-  ROUTES_ENUM,
-  TABS_ENUM,
-  INVOICE_STATUS_ENUM,
-} = require('../../../../common/enums');
-const {
-  formatRoute,
-  formatClientRoute,
-} = require('../../../../common/utils/stringFormat');
-const emailFactory = require('../../db/emails/emailFactory');
-
-const {
-  formatLinkWithAuthToken,
-  formatFooterLink,
-} = require('../../db/emails/utils');
+import nodemailer from 'nodemailer';
+import { NOTIFICATION_TYPE, ROUTES_ENUM, TABS_ENUM, INVOICE_STATUS_ENUM } from '../../../../common/enums/index.js';
+import { formatRoute, formatClientRoute } from '../../../../common/utils/stringFormat.js';
+import emailFactory from '../../db/emails/emailFactory.js';
+import { formatLinkWithAuthToken, formatFooterLink } from '../../db/emails/utils.js';
 let key;
 
-const {
-  getRosterName,
-} = require('../../db/queries/entity');
+import { getRosterName } from '../../db/queries/entity.js';
 
 try {
   key = require('./keys/google-keys.json');
@@ -672,7 +658,7 @@ async function sendImportMemberNonExistingEmail({
   sendMail({ html, email, subject, text });
 }
 
-module.exports = {
+export {
   sendAddedToEventEmail,
   sendAddedToTeamEmail,
   sendCartItemAddedPlayerEmail,

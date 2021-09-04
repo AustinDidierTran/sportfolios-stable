@@ -1,6 +1,6 @@
-const Router = require('koa-router');
-const { ERROR_ENUM } = require('../../../../../common/errors');
-const service = require('../../service/notification');
+import Router from 'koa-router';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
+import * as service from '../../service/notification.js';
 const router = new Router();
 const BASE_URL = '/api/notifications';
 
@@ -72,4 +72,4 @@ router.put(`${BASE_URL}/settings`, async ctx => {
   }
   ctx.body = { data: res };
 });
-module.exports = router;
+export default router;

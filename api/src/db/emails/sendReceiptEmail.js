@@ -1,6 +1,7 @@
-const ejs = require('ejs');
-const i18n = require('../../i18n.config');
-module.exports = async function SendReceiptEmail(infos) {
+import ejs from 'ejs';
+import i18n from '../../i18n.config.js';
+
+export default async function SendReceiptEmail(infos) {
   const { receipt, locale } = infos;
 
   const buttonLink = receipt;

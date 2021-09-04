@@ -1,15 +1,10 @@
-const State = require('../state');
-const {
-  SCORE_SUBMISSION_CHATBOT_STATES,
-  BASIC_CHATBOT_STATES,
-} = require('../../../../../../../common/enums');
-const { MESSENGER_QUICK_REPLIES } = require('../../../enums');
-const i18n = require('../../../../../i18n.config');
-const Response = require('../../response');
-const {
-  addScoreSuggestion,
-} = require('../../../../../db/queries/entity');
-const { ERROR_ENUM } = require('../../../../../../../common/errors');
+import State from '../state.js';
+import { SCORE_SUBMISSION_CHATBOT_STATES, BASIC_CHATBOT_STATES } from '../../../../../../../common/enums/index.js';
+import { MESSENGER_QUICK_REPLIES } from '../../../enums/index.js';
+import i18n from '../../../../../i18n.config.js';
+import Response from '../../response.js';
+import { addScoreSuggestion } from '../../../../../db/queries/entity.js';
+import { ERROR_ENUM } from '../../../../../../../common/errors/index.js';
 
 class AwaitingScoreSubmissionConfirmation extends State {
   async handleEvent(webhookEvent) {
@@ -98,8 +93,8 @@ class AwaitingScoreSubmissionConfirmation extends State {
         myScore > opponentTeams[0].score
           ? 'score_submission.confirmation.victory'
           : myScore == opponentTeams[0].score
-          ? 'score_submission.confirmation.draw'
-          : 'score_submission.confirmation.defeat';
+            ? 'score_submission.confirmation.draw'
+            : 'score_submission.confirmation.defeat';
       return {
         messages: [
           Response.genQuickReply(
@@ -114,9 +109,8 @@ class AwaitingScoreSubmissionConfirmation extends State {
         ],
       };
     } else {
-      let scores = `${i18n.__('your_team')} (${
-        this.context.chatbotInfos.myTeamName
-      }): ${myScore}\n`;
+      let scores = `${i18n.__('your_team')} (${this.context.chatbotInfos.myTeamName
+        }): ${myScore}\n`;
       scores = opponentTeams.reduce(
         (acc, cur) => acc + `${cur.teamName}: ${cur.score}`,
         scores,
@@ -133,4 +127,4 @@ class AwaitingScoreSubmissionConfirmation extends State {
   }
 }
 
-module.exports = AwaitingScoreSubmissionConfirmation;
+export default AwaitingScoreSubmissionConfirmation;

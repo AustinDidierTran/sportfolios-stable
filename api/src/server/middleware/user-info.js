@@ -1,7 +1,7 @@
-const knex = require('../../db/connection');
-const { ERROR_ENUM } = require('../../../../common/errors');
+import knex from '../../db/connection.js';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
 
-module.exports = async (ctx, next) => {
+export default async (ctx, next) => {
   const token = ctx.headers['authorization'];
 
   if (!token || token === 'null') {

@@ -1,9 +1,7 @@
-const { CLIENT_BASE_URL } = require('../../../../conf');
-const {
-  formatRoute,
-} = require('../../../../common/utils/stringFormat');
-const { ROUTES_ENUM } = require('../../../../common/enums');
-const { generateAuthToken } = require('../queries/utils');
+import { CLIENT_BASE_URL } from '../../../../conf.js';
+import { formatRoute } from '../../../../common/utils/stringFormat.js';
+import { ROUTES_ENUM } from '../../../../common/enums/index.js';
+import { generateAuthToken } from '../queries/utils.js';
 
 async function formatLinkWithAuthToken(userId, route) {
   const token = await generateAuthToken(userId);
@@ -26,4 +24,4 @@ async function formatFooterLink(userId) {
   return res;
 }
 
-module.exports = { formatLinkWithAuthToken, formatFooterLink };
+export { formatLinkWithAuthToken, formatFooterLink };

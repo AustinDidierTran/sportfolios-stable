@@ -1,27 +1,13 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const knex = require('../../connection');
-const { getCustomerId } = require('./customer');
-const {
-  stripeErrorLogger,
-  stripeLogger,
-} = require('../../../server/utils/logger');
-const {
-  STRIPE_STATUS_ENUM,
-  GLOBAL_ENUM,
-  CART_ITEM,
-  REJECTION_ENUM,
-} = require('../../../../../common/enums');
-const { deleteCartItem } = require('../shop');
-const {
-  INVOICE_PAID_ENUM,
-} = require('../../../server/utils/Stripe/checkout');
-const {
-  sendReceiptEmail: sendReceiptEmailHelper,
-} = require('../../../server/utils/nodeMailer');
-const {
-  getEmailsFromUserId,
-  getLanguageFromEmail,
-} = require('../user');
+import stripeLib from 'stripe';
+const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
+import knex from '../../connection.js';
+import { getCustomerId } from './customer.js';
+import { stripeErrorLogger, stripeLogger } from '../../../server/utils/logger.js';
+import { STRIPE_STATUS_ENUM, GLOBAL_ENUM, REJECTION_ENUM, CART_ITEM } from '../../../../../common/enums/index.js';
+import { deleteCartItem } from '../shop.js';
+import { INVOICE_PAID_ENUM } from '../../../server/utils/stripe/checkout.js';
+import { sendReceiptEmail as sendReceiptEmailHelper } from '../../../server/utils/nodeMailer.js';
+import { getEmailsFromUserId, getLanguageFromEmail } from '../user.js';
 
 const formatMetadata = metadata =>
   Object.keys(metadata).reduce((prev, curr) => {
@@ -501,7 +487,7 @@ const checkout = async (body, userId) => {
   }
 };
 
-module.exports = {
+export {
   createInvoiceItem,
   createInvoice,
   finalizeInvoice,

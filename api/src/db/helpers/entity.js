@@ -1,4 +1,4 @@
-const knex = require('../connection');
+import knex from '../connection.js';
 
 function getEmailsEntity(entityId) {
   return knex('entities_role')
@@ -18,4 +18,4 @@ function getEmailsEntity(entityId) {
     .where('entities_role.entity_id', entityId);
 }
 
-module.exports = { getEmailsEntity };
+export { getEmailsEntity };

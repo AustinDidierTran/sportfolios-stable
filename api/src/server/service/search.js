@@ -1,6 +1,6 @@
-const { GLOBAL_ENUM } = require('../../../../common/enums');
+import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
 
-const {
+import {
   addQueryToRecentSearches,
   getEntitiesFromQuery,
   getOrganizationsFromQuery,
@@ -8,7 +8,7 @@ const {
   getPreviousSearchQueriesFromId,
   getMyTeamsFromQuery,
   getTeamsFromQuery,
-} = require('../../db/queries/search');
+} from '../../db/queries/search.js';
 
 async function globalSearch(
   user_id,
@@ -43,7 +43,7 @@ function getPreviousSearchQueries(userId) {
   return getPreviousSearchQueriesFromId(userId);
 }
 
-module.exports = {
+export {
   getPreviousSearchQueries,
   globalSearch,
   myTeamsSearch,

@@ -1,6 +1,6 @@
-const Router = require('koa-router');
-const service = require('../../service/organization');
-const { ERROR_ENUM } = require('../../../../../common/errors');
+import Router from 'koa-router';
+import * as service from '../../service/organization.js';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
 const router = new Router();
 const BASE_URL = '/api/entity';
 
@@ -35,4 +35,4 @@ router.get(`${BASE_URL}/organizationMembers`, async ctx => {
   ctx.body = { data: entity };
 });
 
-module.exports = router;
+export default router;

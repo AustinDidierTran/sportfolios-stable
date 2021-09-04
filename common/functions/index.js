@@ -1,4 +1,4 @@
-const { MEMBERSHIP_TYPE_ENUM } = require('../enums');
+import { MEMBERSHIP_TYPE_ENUM } from '../enums/index.js';
 
 const getMembershipName = type => {
   if (type === MEMBERSHIP_TYPE_ENUM.RECREATIONAL) {
@@ -14,6 +14,6 @@ const getMembershipName = type => {
   }
 };
 
-module.exports = {
+export {
   getMembershipName,
 };

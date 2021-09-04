@@ -1,3 +1,2 @@
-const NextGameInfos = require('./nextGameInfos');
-
-module.exports = { NextGameInfos };
+import NextGameInfos from './nextGameInfos.js';
+export { NextGameInfos };

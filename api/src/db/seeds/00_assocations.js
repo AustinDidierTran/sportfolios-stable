@@ -1,4 +1,4 @@
-exports.seed = function(knex) {
+export function seed(knex) {
   // Deletes ALL existing entries
   return knex('organizations')
     .del()
@@ -25,4 +25,4 @@ exports.seed = function(knex) {
         },
       ]);
     });
-};
+}

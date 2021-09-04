@@ -1,12 +1,11 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const knex = require('../../connection');
-const {
-  stripeErrorLogger,
-  stripeLogger,
-} = require('../../../server/utils/logger');
-const { ERROR_ENUM } = require('../../../../../common/errors');
-const { PAYMENT_METHOD_TYPE_ENUM } = require('./enums');
-const moment = require('moment');
+import stripeLib from 'stripe';
+const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
+
+import knex from '../../connection.js';
+import { stripeErrorLogger, stripeLogger } from '../../../server/utils/logger.js';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
+import { PAYMENT_METHOD_TYPE_ENUM } from './enums.js';
+import moment from 'moment';
 
 const getCustomerId = async paymentId => {
   const [{ customer_id = '' } = {}] = await knex
@@ -179,7 +178,7 @@ const addPaymentMethodCustomer = async (body, userId) => {
 
 const removePaymentMethodCustomer = async body => {
   const { payment_method_id } = body;
-  stripe.paymentMethods.detach(payment_method_id, async function(
+  stripe.paymentMethods.detach(payment_method_id, async function (
     err,
     paymentMethod,
   ) {
@@ -297,7 +296,7 @@ const deleteBankAccount = async body => {
   return deleted;
 };
 
-module.exports = {
+export {
   addPaymentMethodCustomer,
   createCustomer,
   createPaymentMethod,

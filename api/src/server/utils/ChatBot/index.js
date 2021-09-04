@@ -1,7 +1,7 @@
-const Chatbot = require('./chatbot');
-const { StateFactory } = require('./states');
+import Chatbot from './chatbot.js';
+import { StateFactory } from './states/index.js';
 
-module.exports = {
+export {
   Chatbot,
   StateFactory,
 };

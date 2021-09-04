@@ -1,6 +1,6 @@
-const Router = require('koa-router');
-const { ERROR_ENUM } = require('../../../../../common/errors');
-const service = require('../../service/search');
+import Router from 'koa-router';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
+import * as service from '../../service/search.js';
 
 const router = new Router();
 const BASE_URL = '/api/search';
@@ -47,4 +47,4 @@ router.get(`${BASE_URL}/previous`, async ctx => {
   };
 });
 
-module.exports = router;
+export default router;

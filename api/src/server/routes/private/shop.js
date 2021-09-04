@@ -1,6 +1,6 @@
-const Router = require('koa-router');
-const { ERROR_ENUM } = require('../../../../../common/errors');
-const service = require('../../service/shop');
+import Router from 'koa-router';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
+import * as service from '../../service/shop.js';
 
 const router = new Router();
 const BASE_URL = '/api/shop';
@@ -151,4 +151,4 @@ router.delete(`${BASE_URL}/deleteAllCartItems`, async ctx => {
   ctx.body = { data };
 });
 
-module.exports = router;
+export default router;

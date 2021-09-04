@@ -1,7 +1,7 @@
-const ejs = require('ejs');
-const i18n = require('../../i18n.config');
+import ejs from 'ejs';
+import i18n from '../../i18n.config.js';
 
-module.exports = async function importMemberNonExistingEmail(infos) {
+export default async function importMemberNonExistingEmail(infos) {
   const { organizationName, token, locale, buttonLink } = infos;
 
   const text = i18n.__(

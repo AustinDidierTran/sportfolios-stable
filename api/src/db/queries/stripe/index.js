@@ -3,14 +3,8 @@
  * Testing account numbers: https://stripe.com/docs/connect/testing#account-numbers
  */
 
-const checkoutHelpers = require('./checkout');
-const customerHelpers = require('./customer');
-const externalAccountHelpers = require('./externalAccount');
-const shopHelpers = require('./shop');
+export * from './checkout.js';
 
-module.exports = {
-  ...checkoutHelpers,
-  ...customerHelpers,
-  ...externalAccountHelpers,
-  ...shopHelpers,
-};
+export * from './customer.js';
+export * from './externalAccount.js';
+export * from './shop.js';

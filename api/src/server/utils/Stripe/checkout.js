@@ -1,8 +1,7 @@
-const {
-  INVOICE_STATUS_ENUM,
-} = require('../../../../../common/enums');
-const { getLanguageFromEmail } = require('../../../db/queries/user');
-const {
+import { INVOICE_STATUS_ENUM } from '../../../../../common/enums/index.js';
+import { getLanguageFromEmail } from '../../../db/queries/user.js';
+
+import {
   addMember,
   deleteRegistration,
   updateRegistration,
@@ -13,11 +12,10 @@ const {
   getRoster,
   getEmailPerson,
   getUserIdFromPersonId,
-} = require('../../../db/queries/entity');
-const {
-  addItemToPaidStoreItems,
-} = require('../../../db/queries/shop');
-const { sendCartItemAddedPlayerEmail } = require('../nodeMailer');
+} from '../../../db/queries/entity.js';
+
+import { addItemToPaidStoreItems } from '../../../db/queries/shop.js';
+import { sendCartItemAddedPlayerEmail } from '../nodeMailer.js';
 
 const INVOICE_CREATED_ENUM = {
   EVENT: async (metadata, stripe) => {
@@ -30,7 +28,7 @@ const INVOICE_CREATED_ENUM = {
       status,
     );
   },
-  STORE: () => {},
+  STORE: () => { },
   MEMBERSHIPS: async () => {
     await addMember({
       membershipType: Number(membershipType),
@@ -120,7 +118,7 @@ const INVOICE_REFUND_ENUM = {
   },
 };
 
-module.exports = {
+export {
   INVOICE_CREATED_ENUM,
   INVOICE_PAID_ENUM,
   INVOICE_REFUND_ENUM,

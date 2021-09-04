@@ -1,20 +1,10 @@
-const State = require('../state');
-const {
-  SCORE_SUBMISSION_CHATBOT_STATES,
-  GAME_INFOS_CHATBOT_STATES,
-} = require('../../../../../../../common/enums');
-const {
-  MESSENGER_QUICK_REPLIES,
-  MESSENGER_PAYLOADS,
-} = require('../../../enums');
-const Response = require('../../response');
-const i18n = require('../../../../../i18n.config');
-const {
-  getGamesWithAwaitingScore,
-} = require('../../../../../db/queries/entity');
-const {
-  getUserIdFromMessengerId,
-} = require('../../../../../db/queries/user');
+import State from '../state.js';
+import { SCORE_SUBMISSION_CHATBOT_STATES, GAME_INFOS_CHATBOT_STATES } from '../../../../../../../common/enums/index.js';
+import { MESSENGER_QUICK_REPLIES, MESSENGER_PAYLOADS } from '../../../enums/index.js';
+import Response from '../../response.js';
+import i18n from '../../../../../i18n.config.js';
+import { getGamesWithAwaitingScore } from '../../../../../db/queries/entity.js';
+import { getUserIdFromMessengerId } from '../../../../../db/queries/user.js';
 
 class Home extends State {
   isStartMock(webhookEvent) {
@@ -72,4 +62,4 @@ class Home extends State {
   }
 }
 
-module.exports = Home;
+export default Home;

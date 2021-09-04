@@ -1,20 +1,18 @@
-const knex = require('../connection');
-const bcrypt = require('bcrypt');
-const {
+import knex from '../connection.js';
+import bcrypt from 'bcrypt';
+
+import {
   ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
   PERSON_TRANSFER_STATUS_ENUM,
   COUPON_CODE_ENUM,
-} = require('../../../../common/enums');
+} from '../../../../common/enums/index.js';
 
-const { EXPIRATION_TIMES } = require('../../../../common/constants');
-const {
-  sendConfirmationEmail,
-  sendPersonTransferEmail,
-} = require('../../server/utils/nodeMailer');
-const { ERROR_ENUM } = require('../../../../common/errors');
-const randtoken = require('rand-token');
-const { generateToken } = require('./utils');
+import { EXPIRATION_TIMES } from '../../../../common/constants/index.js';
+import { sendConfirmationEmail, sendPersonTransferEmail } from '../../server/utils/nodeMailer.js';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
+import randtoken from 'rand-token';
+import { generateToken } from './utils.js';
 
 async function confirmEmail({ email }) {
   await knex('user_email')
@@ -452,7 +450,7 @@ async function getTransferInfosFromToken(token) {
     .first();
 }
 
-module.exports = {
+export {
   cancelPersonTransfer,
   confirmEmail,
   createConfirmationEmailToken,

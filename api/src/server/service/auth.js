@@ -1,41 +1,33 @@
-const knex = require('../../db/connection');
-const bcrypt = require('bcrypt');
-const {
-  sendConfirmationEmail,
-  sendRecoveryEmail,
-} = require('../utils/nodeMailer');
-const { EXPIRATION_TIMES } = require('../../../../common/constants');
-const {
-  confirmEmail: confirmEmailHelper,
+import knex from '../../db/connection.js';
+import bcrypt from 'bcrypt';
+import { sendConfirmationEmail, sendRecoveryEmail } from '../utils/nodeMailer.js';
+import { EXPIRATION_TIMES } from '../../../../common/constants/index.js';
+
+import {
+  confirmEmail as confirmEmailHelper,
   createConfirmationEmailToken,
   generateHashedPassword,
   getBasicUserInfoFromId,
   getHashedPasswordFromId,
   getLanguageFromEmail,
-  getUserIdFromAuthToken,
   getUserIdFromEmail,
   updatePasswordFromUserId,
   validateEmailIsConfirmed,
-} = require('../../db/queries/user');
+} from '../../db/queries/user.js';
 
-const {
-  ENTITIES_ROLE_ENUM,
-  PERSON_TRANSFER_STATUS_ENUM,
-  STATUS_ENUM,
-} = require('../../../../common/enums');
-const { ERROR_ENUM } = require('../../../../common/errors');
-const {
-  generateAuthToken,
-  generateToken,
-} = require('../../db/queries/utils');
-const {
+import { ENTITIES_ROLE_ENUM, PERSON_TRANSFER_STATUS_ENUM, STATUS_ENUM } from '../../../../common/enums/index.js';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
+import { generateAuthToken, generateToken } from '../../db/queries/utils.js';
+
+import {
   createRecoveryEmailToken,
   createUserComplete,
   getEmailFromToken,
   getUserIdFromRecoveryPasswordToken,
   setRecoveryTokenToUsed,
   validateEmailIsUnique,
-} = require('../../db/queries/auth');
+  getUserIdFromAuthToken,
+} from '../../db/queries/auth.js';
 
 async function signup({
   firstName,
@@ -260,7 +252,7 @@ async function transferPersonSignup({ email, password, personId }) {
   return { authToken, userInfo };
 }
 
-module.exports = {
+export {
   confirmEmail,
   login,
   recoverPassword,

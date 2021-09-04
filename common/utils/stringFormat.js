@@ -1,4 +1,4 @@
-const { CLIENT_BASE_URL } = require('../../conf');
+import { CLIENT_BASE_URL } from '../../conf.js';
 
 const fillWithZeros = (number, zeros = 0) => {
   if (!zeros) {
@@ -41,9 +41,9 @@ const formatRoute = (route, params, queryParams) => {
 
   const withParams = params
     ? Object.keys(params).reduce(
-        (prev, curr) => prev.replace(`:${curr}`, params[curr]),
-        route,
-      )
+      (prev, curr) => prev.replace(`:${curr}`, params[curr]),
+      route,
+    )
     : route;
 
   if (!queryParams) {
@@ -59,7 +59,7 @@ const formatRoute = (route, params, queryParams) => {
   );
 };
 
-module.exports = {
+export {
   formatPrice,
   fillWithZeros,
   formatRoute,

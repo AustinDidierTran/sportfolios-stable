@@ -1,19 +1,19 @@
-const entity = require('./entity');
-const facebook = require('./facebook');
-const follower = require('./follower');
-const interactiveTool = require('./interactiveTool');
-const notification = require('./notification');
-const organization = require('./organization');
-const phase = require('./phase');
-const phaseRanking = require('./phaseRanking');
-const post = require('./post');
-const search = require('./search');
-const shop = require('./shop');
-const stripe = require('./stripe');
-const trialist = require('./trialist');
-const user = require('./user');
+import entity from './entity.js';
+import facebook from './facebook.js';
+import follower from './follower.js';
+import interactiveTool from './interactiveTool.js';
+import notification from './notification.js';
+import organization from './organization.js';
+import phase from './phase.js';
+import phaseRanking from './phaseRanking.js';
+import post from './post.js';
+import search from './search.js';
+import shop from './shop.js';
+import stripe from './stripe.js';
+import trialist from './trialist.js';
+import user from './user.js';
 
-module.exports = [
+export default [
   entity,
   facebook,
   follower,

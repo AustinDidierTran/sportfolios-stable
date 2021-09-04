@@ -1,4 +1,4 @@
-const knex = require('../connection');
+import knex from '../connection.js';
 
 async function getEventCategories() {
   return knex('ga_toggles_events')
@@ -47,7 +47,7 @@ async function addPageviewsPathname(pathname, enabled) {
     .returning('*');
 }
 
-module.exports = {
+export {
   getEventCategories,
   getPageviewPathnames,
   getActiveEventCategories,

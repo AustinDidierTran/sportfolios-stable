@@ -1,13 +1,8 @@
-const {
-  GLOBAL_ENUM,
-  ENTITIES_ROLE_ENUM,
-  PERSON_TRANSFER_STATUS_ENUM,
-  STATUS_ENUM,
-} = require('../../../../common/enums');
-const { ERROR_ENUM } = require('../../../../common/errors');
-const bcrypt = require('bcrypt');
+import { GLOBAL_ENUM, ENTITIES_ROLE_ENUM, PERSON_TRANSFER_STATUS_ENUM, STATUS_ENUM } from '../../../../common/enums/index.js';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
+import bcrypt from 'bcrypt';
 
-const {
+import {
   generateHashedPassword,
   getBasicUserInfoFromId,
   getEmailsFromUserId,
@@ -18,30 +13,22 @@ const {
   getPrimaryPersonIdFromUserId,
   sendPersonTransferEmailAllIncluded,
   confirmEmail,
-  updatePrimaryPerson: updatePrimaryPersonHelper,
-  updateNewsLetterSubscription: updateNewsLetterSubscriptionHelper,
-  useToken: useTokenHelper,
-  getPeopleTransferedToUser: getPeopleTransferedToUserHelper,
-  transferPerson: transferPersonHelper,
-  getTokenPromoCode: getTokenPromoCodeHelper,
-  cancelPersonTransfer: cancelPersonTransferHelper,
-  declinePersonTransfer: declinePersonTransferHelper,
-  getTransferInfosFromToken: getTransferInfosHelper,
+  updatePrimaryPerson as updatePrimaryPersonHelper,
+  updateNewsLetterSubscription as updateNewsLetterSubscriptionHelper,
+  useToken as useTokenHelper,
+  getPeopleTransferedToUser as getPeopleTransferedToUserHelper,
+  transferPerson as transferPersonHelper,
+  getTokenPromoCode as getTokenPromoCodeHelper,
+  cancelPersonTransfer as cancelPersonTransferHelper,
+  declinePersonTransfer as declinePersonTransferHelper,
+  getTransferInfosFromToken as getTransferInfosHelper,
   validateEmailIsConfirmed,
   isRegistered,
   createConfirmationEmailToken,
-} = require('../../db/queries/user');
+} from '../../db/queries/user.js';
 
-const {
-  getAllOwnedEntities,
-  personIsAwaitingTransfer,
-} = require('../../db/queries/entity');
-
-const {
-  generateAuthToken,
-  generateToken,
-  isAllowed,
-} = require('../../db/queries/utils');
+import { getAllOwnedEntities, personIsAwaitingTransfer } from '../../db/queries/entity.js';
+import { generateAuthToken, generateToken, isAllowed } from '../../db/queries/utils.js';
 
 async function sendTransferPersonEmail(
   userId,
@@ -271,7 +258,7 @@ async function updateNewsLetterSubscription(userId, body) {
   return subscription;
 }
 
-module.exports = {
+export {
   cancelPersonTransfer,
   changePassword,
   changeUserInfo,

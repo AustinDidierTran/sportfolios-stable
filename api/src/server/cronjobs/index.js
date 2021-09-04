@@ -1,2 +1,2 @@
 //starts the cron job
-require('./notification');
+import './notification.js';

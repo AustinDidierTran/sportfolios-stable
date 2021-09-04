@@ -1,23 +1,24 @@
-require('dotenv').config();
+import dotenv from 'dotenv'
+dotenv.config()
 
-const Koa = require('koa');
-const bodyParser = require('koa-bodyparser');
-const cors = require('@koa/cors');
-const { validOrigins } = require('../../conf');
-const socket = require('./server/websocket/socket.io');
+import Koa from 'koa';
+import bodyParser from 'koa-bodyparser';
+import cors from '@koa/cors';
+import { validOrigins } from '../../conf.js';
+import * as socket from './server/websocket/socket.io.js';
 //starts the cron jobs
-require('./server/cronjobs');
+import './server/cronjobs/index.js'
 
 // Middlewares
-const getUserInfo = require('./server/middleware/user-info');
-const checkAuth = require('./server/middleware/check-auth');
-const adminOnly = require('./server/middleware/admin-only');
-const errorHandler = require('./server/middleware/error-handler');
+import getUserInfo from './server/middleware/user-info.js';
 
-const publicRoutes = require('./server/routes/public');
-const testRoutes = require('./server/routes/test');
-const privateRoutes = require('./server/routes/private');
-const adminRoutes = require('./server/routes/admin');
+import checkAuth from './server/middleware/check-auth.js';
+import adminOnly from './server/middleware/admin-only.js';
+import errorHandler from './server/middleware/error-handler.js';
+import publicRoutes from './server/routes/public/index.js';
+import testRoutes from './server/routes/test/index.js';
+import privateRoutes from './server/routes/private/index.js';
+import adminRoutes from './server/routes/admin/index.js';
 
 const app = new Koa();
 const PORT = process.env.PORT || 1337;
@@ -63,4 +64,4 @@ const server = app.listen(PORT, () => {
 
 socket.initialize(server);
 
-module.exports = server;
+export default server;

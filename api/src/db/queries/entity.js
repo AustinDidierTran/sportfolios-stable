@@ -1,7 +1,7 @@
-const knex = require('../connection');
+import knex from '../connection.js';
+import { getMembershipName } from '../../../../common/functions/index.js';
 
-const { getMembershipName } = require('../../../../common/functions');
-const {
+import {
   CARD_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,
   EVENT_TYPE,
@@ -18,15 +18,15 @@ const {
   SESSION_ENUM,
   STATUS_ENUM,
   TAG_TYPE_ENUM,
-} = require('../../../../common/enums');
-const { addProduct, addPrice } = require('./stripe/shop');
-const { ERROR_ENUM } = require('../../../../common/errors');
-const moment = require('moment');
-const validator = require('validator');
+} from '../../../../common/enums/index.js';
 
-const _ = require('lodash');
-const { getTaxRates } = require('./shop');
-const { getEmailsEntity } = require('../helpers/entity');
+import { addProduct, addPrice } from './stripe/shop.js';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
+import moment from 'moment';
+import validator from 'validator';
+import _ from 'lodash';
+import { getTaxRates } from './shop.js';
+import { getEmailsEntity } from '../helpers/entity.js';
 
 const addEntity = async (body, userId) => {
   const {
@@ -2220,9 +2220,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-        entityId: p.entity_id,
-        completeName: `${p.name} ${p.surname}`,
-      }))
+      entityId: p.entity_id,
+      completeName: `${p.name} ${p.surname}`,
+    }))
     : undefined;
 }
 
@@ -2702,7 +2702,7 @@ async function getGraphAmountGeneratedByEvent(
     };
   });
 
-  var data = dataIncome.map(function(v, i) {
+  var data = dataIncome.map(function (v, i) {
     return {
       incomeDate: v.incomeDate,
       totalIncomeAmount: v.totalIncomeAmount,
@@ -5432,7 +5432,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -5472,7 +5472,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -7528,7 +7528,7 @@ async function getAllExercises() {
   return res;
 }
 
-module.exports = {
+export {
   acceptScoreSuggestion,
   acceptScoreSuggestionIfPossible,
   addAllFields,

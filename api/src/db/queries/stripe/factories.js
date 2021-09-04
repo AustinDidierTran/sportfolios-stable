@@ -1,4 +1,4 @@
-const { BUSINESS_TYPE_ENUM } = require('./enums');
+import { BUSINESS_TYPE_ENUM } from './enums/index.js';
 
 const dobFormatter = dob => {
   if (!dob) {
@@ -67,4 +67,4 @@ const accountParamsFactory = params => {
   }
 };
 
-module.exports = { accountParamsFactory };
+export { accountParamsFactory };

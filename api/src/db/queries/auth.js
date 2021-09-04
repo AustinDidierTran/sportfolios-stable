@@ -1,10 +1,5 @@
-const knex = require('../connection');
-
-const {
-  GLOBAL_ENUM,
-  ENTITIES_ROLE_ENUM,
-  NOTIFICATION_ARRAY,
-} = require('../../../../common/enums');
+import knex from '../connection.js';
+import { GLOBAL_ENUM, ENTITIES_ROLE_ENUM, NOTIFICATION_ARRAY } from '../../../../common/enums/index.js';
 
 async function createRecoveryEmailToken({ userId, token }) {
   await knex('recovery_email_token').insert({
@@ -144,7 +139,7 @@ async function getUserIdFromAuthToken(token) {
   return user_id;
 }
 
-module.exports = {
+export {
   createRecoveryEmailToken,
   createUserComplete,
   getEmailFromToken,
@@ -153,3 +148,4 @@ module.exports = {
   validateEmailIsUnique,
   getUserIdFromAuthToken,
 };
+

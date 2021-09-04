@@ -1,10 +1,8 @@
-const State = require('../state');
-const {
-  BASIC_CHATBOT_STATES,
-} = require('../../../../../../../common/enums');
-const queries = require('../../../../service/facebook');
-const Response = require('../../response');
-const i18n = require('../../../../../i18n.config');
+import State from '../state.js';
+import { BASIC_CHATBOT_STATES } from '../../../../../../../common/enums/index.js';
+import * as queries from '../../../../service/facebook.js';
+import Response from '../../response.js';
+import i18n from '../../../../../i18n.config.js';
 
 class NotLinked extends State {
   async handleEvent(webhookEvent) {
@@ -45,4 +43,4 @@ class NotLinked extends State {
   }
 }
 
-module.exports = NotLinked;
+export default NotLinked;

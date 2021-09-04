@@ -1,9 +1,10 @@
-const { getEntity } = require('../../db/queries/entity');
-const {
-  getOrganizationMembers: getOrganizationMembersHelper,
-  getOwnedEvents: getOwnedEventsHelper,
-  generateReport: generateReportHelper,
-} = require('../../db/queries/organization');
+import { getEntity } from '../../db/queries/entity.js';
+
+import {
+  getOrganizationMembers as getOrganizationMembersHelper,
+  getOwnedEvents as getOwnedEventsHelper,
+  generateReport as generateReportHelper,
+} from '../../db/queries/organization.js';
 
 function getOwnedEvents(organizationId) {
   return getOwnedEventsHelper(organizationId);
@@ -25,7 +26,7 @@ async function getOrganization(organizationId, userId) {
   };
 }
 
-module.exports = {
+export {
   getOwnedEvents,
   generateReport,
   getOrganizationMembers,

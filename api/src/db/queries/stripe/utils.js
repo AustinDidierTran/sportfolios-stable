@@ -1,7 +1,7 @@
-const knex = require('../../connection');
-const {
+import knex from '../../connection.js';
+import {
   INVOICE_STATUS_ENUM,
-} = require('../../../../../common/enums');
+} from '../../../../../common/enums';
 
 async function getPaymentStatus(invoiceItemId) {
   const [refunded] = await knex('stripe_refund')
@@ -13,6 +13,6 @@ async function getPaymentStatus(invoiceItemId) {
   return INVOICE_STATUS_ENUM.PAID;
 }
 
-module.exports = {
+export {
   getPaymentStatus,
 };

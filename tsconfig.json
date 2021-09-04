@@ -1,16 +1,14 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
-    "module": "ESNext",
-    "target": "es5",
-    "jsx": "react",
+    "module": "commonjs",
+    "target": "es6",
     "allowJs": true,
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "noImplicitReturns": true,
-    "strict": true,
-    "noUnusedLocals": true
+    "lib": [
+      "es5",
+      "es6"
+    ]
   },
   "files.watcherExclude": {
     "**/.git/objects/**": true,

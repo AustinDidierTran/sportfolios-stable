@@ -1,14 +1,9 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const knex = require('../../connection');
-const {
-  stripeErrorLogger,
-  stripeLogger,
-} = require('../../../server/utils/logger');
-const {
-  PLATEFORM_FEES,
-  PLATEFORM_FEES_FIX,
-  CART_ITEM,
-} = require('../../../../../common/enums');
+import stripeLib from 'stripe';
+const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
+
+import knex from '../../connection.js';
+import { stripeErrorLogger, stripeLogger } from '../../../server/utils/logger.js';
+import { PLATEFORM_FEES, PLATEFORM_FEES_FIX, CART_ITEM } from '../../../../../common/enums/index.js';
 
 const addProduct = async body => {
   const { stripeProduct } = body;
@@ -267,7 +262,7 @@ const deleteItem = async body => {
   return false;
 };
 
-module.exports = {
+export {
   addProduct,
   addPrice,
   createItem,

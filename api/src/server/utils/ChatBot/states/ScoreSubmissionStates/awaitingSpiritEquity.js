@@ -1,11 +1,8 @@
-const State = require('../state');
-const {
-  SCORE_SUBMISSION_CHATBOT_STATES,
-  BASIC_CHATBOT_STATES,
-} = require('../../../../../../../common/enums');
-const { MESSENGER_QUICK_REPLIES } = require('../../../enums');
-const i18n = require('../../../../../i18n.config');
-const Response = require('../../response');
+import State from '../state.js';
+import { SCORE_SUBMISSION_CHATBOT_STATES, BASIC_CHATBOT_STATES } from '../../../../../../../common/enums/index.js';
+import { MESSENGER_QUICK_REPLIES } from '../../../enums/index.js';
+import i18n from '../../../../../i18n.config.js';
+import Response from '../../response.js';
 
 class AwaitingSpiritEquity extends State {
   async handleEvent(webhookEvent) {
@@ -40,4 +37,4 @@ class AwaitingSpiritEquity extends State {
   }
 }
 
-module.exports = AwaitingSpiritEquity;
+export default AwaitingSpiritEquity;

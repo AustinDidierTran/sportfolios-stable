@@ -1,4 +1,4 @@
-const { LOGGER_ENUM } = require('../../../../common/enums');
+import { LOGGER_ENUM } from '../../../../common/enums/index.js';
 
 const enabledEnums = [LOGGER_ENUM.STRIPE];
 
@@ -25,7 +25,7 @@ const stripeErrorLogger = (type = 'error', ...messages) => {
   logger(LOGGER_ENUM.STRIPE, messages, type);
 };
 
-module.exports = {
+export {
   stripeErrorLogger,
   stripeLogger,
 };

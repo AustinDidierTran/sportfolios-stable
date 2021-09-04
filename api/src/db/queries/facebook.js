@@ -1,9 +1,9 @@
 const FACEBOOK_BASE_URL = 'https://graph.facebook.com/v8.0';
-const crypto = require('crypto');
-const axios = require('axios');
-const knex = require('../connection');
-const { BASIC_CHATBOT_STATES } = require('../../../../common/enums');
-const util = require('util');
+import crypto from 'crypto';
+import axios from 'axios';
+import knex from '../connection.js';
+import { BASIC_CHATBOT_STATES } from '../../../../common/enums/index.js';
+import util from 'util';
 
 const getMessengerIdFromFbID = async facebook_id => {
   const hmac = crypto.createHmac(
@@ -13,7 +13,7 @@ const getMessengerIdFromFbID = async facebook_id => {
   hmac.update(process.env.FACEBOOK_APP_TOKEN);
   const appsecret_proof = hmac.digest('hex');
   const uri = `${FACEBOOK_BASE_URL}/${facebook_id}/ids_for_pages?page=${process.env.FACEBOOK_PAGE_ID}&access_token=${process.env.FACEBOOK_APP_TOKEN}&appsecret_proof=${appsecret_proof}`;
-  const res = await axios.get(uri).catch(function(error) {
+  const res = await axios.get(uri).catch(function (error) {
     // eslint-disable-next-line no-console
     console.log(error.response.data);
     return;
@@ -34,7 +34,7 @@ const sendMessage = async (messengerId, message) => {
     },
     message,
   };
-  const res = await axios.post(uri, body).catch(function(error) {
+  const res = await axios.post(uri, body).catch(function (error) {
     // eslint-disable-next-line no-console
     console.log(error.response.data);
     return;
@@ -44,7 +44,7 @@ const sendMessage = async (messengerId, message) => {
 
 const getNameFromPSID = async messengerId => {
   const uri = `${FACEBOOK_BASE_URL}/${messengerId}?fields=first_name&access_token=${process.env.FACEBOOK_PAGE_TOKEN}`;
-  const res = await axios.get(uri).catch(function(error) {
+  const res = await axios.get(uri).catch(function (error) {
     // eslint-disable-next-line no-console
     console.log(error.response.data);
     return;
@@ -63,7 +63,7 @@ const logMessage = async infos => {
 //Return Timezone, number relative to GMT
 const getTimezoneFromPSID = async messengerId => {
   const uri = `${FACEBOOK_BASE_URL}/${messengerId}?fields=timezone&access_token=${process.env.FACEBOOK_PAGE_TOKEN}`;
-  const res = await axios.get(uri).catch(function(error) {
+  const res = await axios.get(uri).catch(function (error) {
     // eslint-disable-next-line no-console
     console.log(error.response.data);
     return;
@@ -241,7 +241,7 @@ const isLinkedFacebookAccount = async facebookId => {
   ).exists;
 };
 
-module.exports = {
+export {
   addChatbotId,
   deleteChatbotInfos,
   deleteFacebookId,
@@ -257,4 +257,5 @@ module.exports = {
   sendMessage,
   setFacebookData,
   setMessengerId,
+  setChatbotInfos
 };

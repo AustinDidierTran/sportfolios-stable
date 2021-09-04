@@ -1,12 +1,12 @@
-const {
-  addAllFields: addAllFieldsHelper,
-  addAllTimeslots: addAllTimeslotsHelper,
-  addAllGames: addAllGamesHelper,
-} = require('../../db/queries/entity');
+import {
+  addAllFields as addAllFieldsHelper,
+  addAllTimeslots as addAllTimeslotsHelper,
+  addAllGames as addAllGamesHelper,
+} from '../../db/queries/entity.js';
 
-const { isAllowed } = require('../../db/queries/utils');
-const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
-const { ERROR_ENUM } = require('../../../../common/errors');
+import { isAllowed } from '../../db/queries/utils.js';
+import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
 
 async function addAll(body, userId) {
   const { eventId, fieldsArray, timeslotsArray, gamesArray } = body;
@@ -41,4 +41,4 @@ async function addAll(body, userId) {
   return res;
 }
 
-module.exports = { addAll };
+export { addAll };

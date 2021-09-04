@@ -1,11 +1,13 @@
-const { CLIENT_BASE_URL } = require('../../../../conf');
-const { SOCKET_EVENT } = require('../../../../common/enums');
+import { CLIENT_BASE_URL } from '../../../../conf.js';
+import { SOCKET_EVENT } from '../../../../common/enums/index.js';
+import { Server } from 'socket.io';
+
 const socketToUserMap = new Map();
 const userToSocketMap = new Map();
 let io;
 const initialize = server => {
   if (!io) {
-    io = require('socket.io')(server, {
+    io = new Server(server, {
       cors: {
         origin: CLIENT_BASE_URL,
         methods: ['GET', 'POST'],
@@ -60,4 +62,4 @@ const emit = (eventName, userId, message) => {
     }
   }
 };
-module.exports = { emit, initialize };
+export { emit, initialize };

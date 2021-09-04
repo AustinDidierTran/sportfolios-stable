@@ -1,7 +1,7 @@
-const { ERROR_ENUM } = require('../../../../common/errors');
-const { ENTITIES_ROLE_ENUM } = require('../../../../common/enums');
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
+import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
 
-module.exports = async (ctx, next) => {
+export default async (ctx, next) => {
   const { userInfo } = ctx.body;
 
   ENTITIES_ROLE_ENUM;

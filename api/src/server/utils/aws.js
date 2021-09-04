@@ -1,4 +1,4 @@
-const aws = require('aws-sdk');
+import aws from 'aws-sdk';
 
 try {
   keys = require('./keys/aws-keys.json');
@@ -35,6 +35,6 @@ const signS3Request = async (fileName, fileType) => {
   return { signedRequest, url };
 };
 
-module.exports = {
+export {
   signS3Request,
 };

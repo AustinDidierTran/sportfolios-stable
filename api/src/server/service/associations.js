@@ -1,4 +1,4 @@
-const knex = require('../../db/connection');
+import knex from '../../db/connection.js';
 
 function getAllAssociations(includeDeleted) {
   if (includeDeleted && includeDeleted !== 'false') {
@@ -42,7 +42,7 @@ function restoreAssociation(id) {
     .returning(['id', 'name']);
 }
 
-module.exports = {
+export {
   addAssociation,
   deleteAssociation,
   getAllAssociations,
