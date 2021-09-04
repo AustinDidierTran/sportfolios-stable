@@ -1,8 +1,6 @@
 import knex from '../connection.js';
-import { attachPaginate } from 'knex-paginate';
 import { NOTIFICATION_TYPE } from '../../../../common/enums/index.js';
 import { getRosterName, getRostersNames } from './entity.js';
-attachPaginate();
 
 const addNotification = async infos => {
   return knex('notifications').insert(infos);
@@ -48,7 +46,8 @@ const getNotifications = async (user_id, body) => {
     const { data } = await knex('notifications_view')
       .where({ user_id })
       .orderBy('created_at', 'desc')
-      .paginate({ perPage, currentPage });
+      .offset(currentPage * perPage)
+      .limit(perPage);
     res = data;
   } else {
     //Get all
