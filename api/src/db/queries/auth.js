@@ -5,7 +5,7 @@ import {
   NOTIFICATION_ARRAY,
 } from '../../../../common/enums/index.js';
 
-import { EXPIRATION_TIMES } from '../../../../common/constants';
+import { EXPIRATION_TIMES } from '../../../../common/constants/index.js';
 
 async function createRecoveryEmailToken({ userId, token }) {
   try {
