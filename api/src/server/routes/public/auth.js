@@ -65,7 +65,9 @@ router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
 
 // Send password recovery email
 router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
+  console.log('recoveryEmail route', 1);
   const code = await service.recoveryEmail(ctx.request.body);
+  console.log('recoveryEmail route', 2);
 
   if (code === STATUS_ENUM.SUCCESS) {
     ctx.body = { data: code };
