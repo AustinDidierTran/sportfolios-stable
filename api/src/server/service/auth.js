@@ -1,6 +1,9 @@
 import knex from '../../db/connection.js';
 import bcrypt from 'bcrypt';
-import { sendConfirmationEmail, sendRecoveryEmail } from '../utils/nodeMailer.js';
+import {
+  sendConfirmationEmail,
+  sendRecoveryEmail,
+} from '../utils/nodeMailer.js';
 import { EXPIRATION_TIMES } from '../../../../common/constants/index.js';
 
 import {
@@ -15,9 +18,16 @@ import {
   validateEmailIsConfirmed,
 } from '../../db/queries/user.js';
 
-import { ENTITIES_ROLE_ENUM, PERSON_TRANSFER_STATUS_ENUM, STATUS_ENUM } from '../../../../common/enums/index.js';
+import {
+  ENTITIES_ROLE_ENUM,
+  PERSON_TRANSFER_STATUS_ENUM,
+  STATUS_ENUM,
+} from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
-import { generateAuthToken, generateToken } from '../../db/queries/utils.js';
+import {
+  generateAuthToken,
+  generateToken,
+} from '../../db/queries/utils.js';
 
 import {
   createRecoveryEmailToken,
@@ -71,8 +81,10 @@ async function signup({
 }
 
 async function login({ email, password }) {
+  console.log('login service', 1);
   // Validate account with this email exists
   const userId = await getUserIdFromEmail(email);
+  console.log('login service', 2);
 
   if (!userId) {
     throw new Error(ERROR_ENUM.INVALID_EMAIL);
