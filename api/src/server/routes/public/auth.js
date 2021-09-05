@@ -17,9 +17,7 @@ router.post(`${BASE_URL}/signup`, async ctx => {
 });
 
 router.post(`${BASE_URL}/login`, async ctx => {
-  console.log('login route', 1);
   const { token, userInfo } = await service.login(ctx.request.body);
-  console.log('login route', 2);
 
   if (!token) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -65,9 +63,7 @@ router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
 
 // Send password recovery email
 router.post(`${BASE_URL}/recoveryEmail`, async ctx => {
-  console.log('recoveryEmail route', 1);
   const code = await service.recoveryEmail(ctx.request.body);
-  console.log('recoveryEmail route', 2);
 
   if (code === STATUS_ENUM.SUCCESS) {
     ctx.body = { data: code };

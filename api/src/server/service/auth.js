@@ -81,45 +81,35 @@ async function signup({
 }
 
 async function login({ email, password }) {
-  console.log('login service', 1, email, password);
   // Validate account with this email exists
   const userId = await getUserIdFromEmail(email);
-  console.log('login service', 2);
 
   if (!userId) {
     throw new Error(ERROR_ENUM.INVALID_EMAIL);
   }
-  console.log('login service', 3);
 
   // Validate email is confirmed
   const emailIsConfirmed = await validateEmailIsConfirmed(email);
-  console.log('login service', 4);
 
   if (!emailIsConfirmed) {
     throw new Error(ERROR_ENUM.UNCONFIRMED_EMAIL);
   }
-  console.log('login service', 5);
 
   const hashedPassword = await getHashedPasswordFromId(userId);
-  console.log('login service', 6);
 
   if (!hashedPassword) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  console.log('login service', 7);
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
-  console.log('login service', 8, isSame);
 
   if (isSame) {
-    console.log('login service', 9);
     const token = await generateAuthToken(userId);
 
     const userInfo = await getBasicUserInfoFromId(userId);
 
     return { token, userInfo };
   } else {
-    console.log('login service', 10);
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 }
@@ -156,52 +146,37 @@ async function confirmEmail({ token }) {
 }
 
 async function recoveryEmail({ email }) {
-  console.log('recovery email service', 1);
   const userId = await getUserIdFromEmail(email);
-  console.log('recovery email service', 2);
 
   if (!userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  console.log('recovery email service', 3);
 
   const token = generateToken();
-  console.log('recovery email service', 4);
 
   await createRecoveryEmailToken({ userId, token });
-  console.log('recovery email service', 5);
   const language = await getLanguageFromEmail(email);
-  console.log('recovery email service', 6);
   await sendRecoveryEmail({ email, token, language });
-  console.log('recovery email service', 7);
 
   return STATUS_ENUM.SUCCESS;
 }
 
 async function recoverPassword({ token, password }) {
-  console.log('recoverPassword service', 1);
   const userId = await getUserIdFromRecoveryPasswordToken(token);
-  console.log('recoverPassword service', 2);
 
   if (!userId) {
     throw new Error(ERROR_ENUM.FORBIDDEN);
   }
-  console.log('recoverPassword service', 3);
 
   const hashedPassword = await generateHashedPassword(password);
-  console.log('recoverPassword service', 4);
 
   await updatePasswordFromUserId({ id: userId, hashedPassword });
-  console.log('recoverPassword service', 5);
 
   await setRecoveryTokenToUsed(token);
-  console.log('recoverPassword service', 6);
 
   const authToken = await generateAuthToken(userId);
-  console.log('recoverPassword service', 7);
 
   const userInfo = await getBasicUserInfoFromId(userId);
-  console.log('recoverPassword service', 8);
 
   return { authToken, userInfo };
 }
