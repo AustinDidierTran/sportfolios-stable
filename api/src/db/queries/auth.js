@@ -5,6 +5,8 @@ import {
   NOTIFICATION_ARRAY,
 } from '../../../../common/enums/index.js';
 
+import { EXPIRATION_TIMES } from '../../../../common/constants';
+
 async function createRecoveryEmailToken({ userId, token }) {
   try {
     await knex('recovery_email_token').insert({
