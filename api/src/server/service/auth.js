@@ -156,17 +156,24 @@ async function confirmEmail({ token }) {
 }
 
 async function recoveryEmail({ email }) {
+  console.log('recovery email service', 1);
   const userId = await getUserIdFromEmail(email);
+  console.log('recovery email service', 2);
 
   if (!userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
+  console.log('recovery email service', 3);
 
   const token = generateToken();
+  console.log('recovery email service', 4);
 
   await createRecoveryEmailToken({ userId, token });
+  console.log('recovery email service', 5);
   const language = await getLanguageFromEmail(email);
+  console.log('recovery email service', 6);
   await sendRecoveryEmail({ email, token, language });
+  console.log('recovery email service', 7);
 
   return STATUS_ENUM.SUCCESS;
 }
