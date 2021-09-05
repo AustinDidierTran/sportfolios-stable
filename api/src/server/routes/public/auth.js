@@ -17,7 +17,9 @@ router.post(`${BASE_URL}/signup`, async ctx => {
 });
 
 router.post(`${BASE_URL}/login`, async ctx => {
+  console.log('login route', 1);
   const { token, userInfo } = await service.login(ctx.request.body);
+  console.log('login route', 2);
 
   if (!token) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);

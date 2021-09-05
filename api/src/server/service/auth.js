@@ -81,7 +81,7 @@ async function signup({
 }
 
 async function login({ email, password }) {
-  console.log('login service', 1);
+  console.log('login service', 1, email, password);
   // Validate account with this email exists
   const userId = await getUserIdFromEmail(email);
   console.log('login service', 2);
@@ -89,29 +89,37 @@ async function login({ email, password }) {
   if (!userId) {
     throw new Error(ERROR_ENUM.INVALID_EMAIL);
   }
+  console.log('login service', 3);
 
   // Validate email is confirmed
   const emailIsConfirmed = await validateEmailIsConfirmed(email);
+  console.log('login service', 4);
 
   if (!emailIsConfirmed) {
     throw new Error(ERROR_ENUM.UNCONFIRMED_EMAIL);
   }
+  console.log('login service', 5);
 
   const hashedPassword = await getHashedPasswordFromId(userId);
+  console.log('login service', 6);
 
   if (!hashedPassword) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+  console.log('login service', 7);
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
+  console.log('login service', 8);
 
   if (isSame) {
+    console.log('login service', 9);
     const token = await generateAuthToken(userId);
 
     const userInfo = await getBasicUserInfoFromId(userId);
 
     return { token, userInfo };
   } else {
+    console.log('login service', 10);
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 }
