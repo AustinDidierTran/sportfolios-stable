@@ -179,21 +179,29 @@ async function recoveryEmail({ email }) {
 }
 
 async function recoverPassword({ token, password }) {
+  console.log('recoverPassword service', 1);
   const userId = await getUserIdFromRecoveryPasswordToken(token);
+  console.log('recoverPassword service', 2);
 
   if (!userId) {
     throw new Error(ERROR_ENUM.FORBIDDEN);
   }
+  console.log('recoverPassword service', 3);
 
   const hashedPassword = await generateHashedPassword(password);
+  console.log('recoverPassword service', 4);
 
   await updatePasswordFromUserId({ id: userId, hashedPassword });
+  console.log('recoverPassword service', 5);
 
   await setRecoveryTokenToUsed(token);
+  console.log('recoverPassword service', 6);
 
   const authToken = await generateAuthToken(userId);
+  console.log('recoverPassword service', 7);
 
   const userInfo = await getBasicUserInfoFromId(userId);
+  console.log('recoverPassword service', 8);
 
   return { authToken, userInfo };
 }
