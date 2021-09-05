@@ -109,7 +109,7 @@ async function login({ email, password }) {
   console.log('login service', 7);
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
-  console.log('login service', 8);
+  console.log('login service', 8, isSame);
 
   if (isSame) {
     console.log('login service', 9);
