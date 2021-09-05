@@ -1,5 +1,5 @@
-import dotenv from 'dotenv'
-dotenv.config()
+import dotenv from 'dotenv';
+dotenv.config();
 
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
@@ -7,7 +7,7 @@ import cors from '@koa/cors';
 import { validOrigins } from '../../conf.js';
 import * as socket from './server/websocket/socket.io.js';
 //starts the cron jobs
-import './server/cronjobs/index.js'
+import './server/cronjobs/index.js';
 
 // Middlewares
 import getUserInfo from './server/middleware/user-info.js';

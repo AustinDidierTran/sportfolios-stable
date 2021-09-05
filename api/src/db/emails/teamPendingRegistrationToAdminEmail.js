@@ -1,10 +1,21 @@
 import ejs from 'ejs';
 import i18n from '../../i18n.config.js';
 
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 export default async function TeamPendingRegistrationToAdminEmail(
   infos,
 ) {
-  const { teamName, eventName, placesLeft, locale, buttonLink } = infos;
+  const {
+    teamName,
+    eventName,
+    placesLeft,
+    locale,
+    buttonLink,
+  } = infos;
 
   let text = '';
   if (placesLeft === 0) {
@@ -66,4 +77,4 @@ export default async function TeamPendingRegistrationToAdminEmail(
     { buttonLink, text, buttonText },
   );
   return { html, subject };
-};
+}

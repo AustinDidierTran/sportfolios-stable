@@ -204,7 +204,10 @@ import {
 } from '../../db/queries/entity.js';
 
 import { createRefund } from '../../db/queries/stripe/checkout.js';
-import { sendCartItemAddedPlayerEmail, sendImportMemberNonExistingEmail } from '../utils/nodeMailer.js';
+import {
+  sendCartItemAddedPlayerEmail,
+  sendImportMemberNonExistingEmail,
+} from '../utils/nodeMailer.js';
 import { addMembershipCartItem } from '../../db/queries/shop.js';
 
 import {
@@ -742,6 +745,7 @@ async function addTeamToEvent(body, userId) {
   });
 
   // Add roster
+  console.log(roster);
   if (roster) {
     await Promise.all(
       roster.map(async r => {

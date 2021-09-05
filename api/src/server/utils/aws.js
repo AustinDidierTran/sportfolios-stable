@@ -1,5 +1,8 @@
 import aws from 'aws-sdk';
 
+import { createRequire } from 'module'; // Bring in the ability to create the 'require' method
+const require = createRequire(import.meta.url); // construct the require method
+
 try {
   keys = require('./keys/aws-keys.json');
 } catch (e) {
@@ -35,6 +38,4 @@ const signS3Request = async (fileName, fileType) => {
   return { signedRequest, url };
 };
 
-export {
-  signS3Request,
-};
+export { signS3Request };

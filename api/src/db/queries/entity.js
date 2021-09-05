@@ -1001,7 +1001,7 @@ async function getReports(entityId) {
     type: s.type,
     metadata: s.metadata,
     createdAt: s.created_at,
-    updatedAt: s.updated_at
+    updatedAt: s.updated_at,
   }));
 }
 
@@ -2220,9 +2220,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-      entityId: p.entity_id,
-      completeName: `${p.name} ${p.surname}`,
-    }))
+        entityId: p.entity_id,
+        completeName: `${p.name} ${p.surname}`,
+      }))
     : undefined;
 }
 
@@ -2702,7 +2702,7 @@ async function getGraphAmountGeneratedByEvent(
     };
   });
 
-  var data = dataIncome.map(function (v, i) {
+  var data = dataIncome.map(function(v, i) {
     return {
       incomeDate: v.incomeDate,
       totalIncomeAmount: v.totalIncomeAmount,
@@ -5432,7 +5432,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -5472,7 +5472,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',

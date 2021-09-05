@@ -1,9 +1,19 @@
 import stripeLib from 'stripe';
+import dotenv from 'dotenv';
+dotenv.config();
+
 const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
 
 import knex from '../../connection.js';
-import { stripeErrorLogger, stripeLogger } from '../../../server/utils/logger.js';
-import { PLATEFORM_FEES, PLATEFORM_FEES_FIX, CART_ITEM } from '../../../../../common/enums/index.js';
+import {
+  stripeErrorLogger,
+  stripeLogger,
+} from '../../../server/utils/logger.js';
+import {
+  PLATEFORM_FEES,
+  PLATEFORM_FEES_FIX,
+  CART_ITEM,
+} from '../../../../../common/enums/index.js';
 
 const addProduct = async body => {
   const { stripeProduct } = body;
@@ -262,10 +272,4 @@ const deleteItem = async body => {
   return false;
 };
 
-export {
-  addProduct,
-  addPrice,
-  createItem,
-  editItem,
-  deleteItem,
-};
+export { addProduct, addPrice, createItem, editItem, deleteItem };

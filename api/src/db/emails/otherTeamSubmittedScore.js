@@ -1,6 +1,11 @@
 import ejs from 'ejs';
 import i18n from '../../i18n.config.js';
 
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 export default async function otherTeamSubmittedScore(infos) {
   const {
     eventName,
@@ -34,8 +39,8 @@ export default async function otherTeamSubmittedScore(infos) {
     {
       buttonLink,
       text,
-      buttonText
+      buttonText,
     },
   );
   return { html, subject };
-};
+}

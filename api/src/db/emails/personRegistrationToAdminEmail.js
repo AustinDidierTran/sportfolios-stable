@@ -1,9 +1,12 @@
 import ejs from 'ejs';
 import i18n from '../../i18n.config.js';
 
-export default async function personRegistrationToAdminEmail(
-  infos,
-) {
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+export default async function personRegistrationToAdminEmail(infos) {
   const {
     completeName,
     eventName,
@@ -63,4 +66,4 @@ export default async function personRegistrationToAdminEmail(
     { buttonLink, text, buttonText },
   );
   return { html, subject };
-};
+}
