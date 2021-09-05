@@ -1,14 +1,22 @@
 import knex from '../connection.js';
-import { GLOBAL_ENUM, ENTITIES_ROLE_ENUM, NOTIFICATION_ARRAY } from '../../../../common/enums/index.js';
+import {
+  GLOBAL_ENUM,
+  ENTITIES_ROLE_ENUM,
+  NOTIFICATION_ARRAY,
+} from '../../../../common/enums/index.js';
 
 async function createRecoveryEmailToken({ userId, token }) {
-  await knex('recovery_email_token').insert({
-    user_id: userId,
-    token,
-    expires_at: new Date(
-      Date.now() + EXPIRATION_TIMES.ACCOUNT_RECOVERY_TOKEN,
-    ),
-  });
+  try {
+    await knex('recovery_email_token').insert({
+      user_id: userId,
+      token,
+      expires_at: new Date(
+        Date.now() + EXPIRATION_TIMES.ACCOUNT_RECOVERY_TOKEN,
+      ),
+    });
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 async function createUserComplete(body) {
@@ -148,4 +156,3 @@ export {
   validateEmailIsUnique,
   getUserIdFromAuthToken,
 };
-
