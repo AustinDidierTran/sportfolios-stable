@@ -1,9 +1,12 @@
 import ejs from 'ejs';
 import i18n from '../../i18n.config.js';
 
-export default async function PersonRefusedRegistrationEmail(
-  infos,
-) {
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+export default async function PersonRefusedRegistrationEmail(infos) {
   const { personName, eventName, locale } = infos;
 
   const text = i18n.__(
@@ -24,4 +27,4 @@ export default async function PersonRefusedRegistrationEmail(
     { text },
   );
   return { html, subject };
-};
+}

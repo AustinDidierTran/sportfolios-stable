@@ -185,43 +185,44 @@ POSTGRES_PASSWORD: password
 In sportfolios-stable, create a knexfile.js with your own configuration. It should look like this:
 
 ```javascript
-const path = require('path');
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const BASE_PATH = path.join(__dirname, 'api', 'src', 'db');
 
-module.exports = {
-  test: {
-    client: 'pg',
-    connection:
-      'postgres://postgres:password@localhost/sportfolios_api_test',
-    migrations: {
-      directory: path.join(BASE_PATH, 'migrations'),
-    },
-    seeds: {
-      directory: path.join(BASE_PATH, 'seeds'),
-    },
+export const test = {
+  client: 'pg',
+  connection:
+    'postgres://postgres:password@localhost/sportfolios_api_test',
+  migrations: {
+    directory: path.join(BASE_PATH, 'migrations'),
   },
-  development: {
-    client: 'pg',
-    connection:
-      'postgres://postgres:password@localhost/sportfolios_api_dev',
-    migrations: {
-      directory: path.join(BASE_PATH, 'migrations'),
-    },
-    seeds: {
-      directory: path.join(BASE_PATH, 'seeds'),
-    },
+  seeds: {
+    directory: path.join(BASE_PATH, 'seeds'),
   },
-  production: {
-    client: 'pg',
-    connection:
-      'postgres://postgres:password@localhost/sportfolios_api',
-    migrations: {
-      directory: path.join(BASE_PATH, 'migrations'),
-    },
-    seeds: {
-      directory: path.join(BASE_PATH, 'seeds'),
-    },
+};
+export const development = {
+  client: 'pg',
+  connection:
+    'postgres://postgres:password@localhost/sportfolios_api_dev',
+  migrations: {
+    directory: path.join(BASE_PATH, 'migrations'),
+  },
+  seeds: {
+    directory: path.join(BASE_PATH, 'seeds'),
+  },
+};
+export const production = {
+  client: 'pg',
+  connection:
+    'postgres://postgres:password@localhost/sportfolios_api',
+  migrations: {
+    directory: path.join(BASE_PATH, 'migrations'),
+  },
+  seeds: {
+    directory: path.join(BASE_PATH, 'seeds'),
   },
 };
 ```
@@ -374,43 +375,44 @@ CREATE DATABASE sportfolios_api_test;
 In sportfolios-stable, create a knexfile.js with your own configuration. It should look like this:
 
 ```javascript
-const path = require('path');
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const BASE_PATH = path.join(__dirname, 'api', 'src', 'db');
 
-module.exports = {
-  test: {
-    client: 'pg',
-    connection:
-      'postgres://username:password@localhost/sportfolios_api_test',
-    migrations: {
-      directory: path.join(BASE_PATH, 'migrations'),
-    },
-    seeds: {
-      directory: path.join(BASE_PATH, 'seeds'),
-    },
+export const test = {
+  client: 'pg',
+  connection:
+    'postgres://postgres:password@localhost/sportfolios_api_test',
+  migrations: {
+    directory: path.join(BASE_PATH, 'migrations'),
   },
-  development: {
-    client: 'pg',
-    connection:
-      'postgres://username:password@localhost/sportfolios_api_dev',
-    migrations: {
-      directory: path.join(BASE_PATH, 'migrations'),
-    },
-    seeds: {
-      directory: path.join(BASE_PATH, 'seeds'),
-    },
+  seeds: {
+    directory: path.join(BASE_PATH, 'seeds'),
   },
-  production: {
-    client: 'pg',
-    connection:
-      'postgres://username:password@localhost/sportfolios_api',
-    migrations: {
-      directory: path.join(BASE_PATH, 'migrations'),
-    },
-    seeds: {
-      directory: path.join(BASE_PATH, 'seeds'),
-    },
+};
+export const development = {
+  client: 'pg',
+  connection:
+    'postgres://postgres:password@localhost/sportfolios_api_dev',
+  migrations: {
+    directory: path.join(BASE_PATH, 'migrations'),
+  },
+  seeds: {
+    directory: path.join(BASE_PATH, 'seeds'),
+  },
+};
+export const production = {
+  client: 'pg',
+  connection:
+    'postgres://postgres:password@localhost/sportfolios_api',
+  migrations: {
+    directory: path.join(BASE_PATH, 'migrations'),
+  },
+  seeds: {
+    directory: path.join(BASE_PATH, 'seeds'),
   },
 };
 ```

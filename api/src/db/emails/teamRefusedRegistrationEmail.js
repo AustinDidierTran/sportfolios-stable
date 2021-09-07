@@ -1,6 +1,11 @@
 import ejs from 'ejs';
 import i18n from '../../i18n.config.js';
 
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
 export default async function TeamRefusedRegistrationEmail(infos) {
   const { teamName, eventName, locale } = infos;
 
@@ -22,4 +27,4 @@ export default async function TeamRefusedRegistrationEmail(infos) {
     { text },
   );
   return { html, subject };
-};
+}

@@ -1,8 +1,22 @@
 import nodemailer from 'nodemailer';
-import { NOTIFICATION_TYPE, ROUTES_ENUM, TABS_ENUM, INVOICE_STATUS_ENUM } from '../../../../common/enums/index.js';
-import { formatRoute, formatClientRoute } from '../../../../common/utils/stringFormat.js';
+import {
+  NOTIFICATION_TYPE,
+  ROUTES_ENUM,
+  TABS_ENUM,
+  INVOICE_STATUS_ENUM,
+} from '../../../../common/enums/index.js';
+import {
+  formatRoute,
+  formatClientRoute,
+} from '../../../../common/utils/stringFormat.js';
 import emailFactory from '../../db/emails/emailFactory.js';
-import { formatLinkWithAuthToken, formatFooterLink } from '../../db/emails/utils.js';
+import {
+  formatLinkWithAuthToken,
+  formatFooterLink,
+} from '../../db/emails/utils.js';
+import { createRequire } from 'module'; // Bring in the ability to create the 'require' method
+const require = createRequire(import.meta.url); // construct the require method
+
 let key;
 
 import { getRosterName } from '../../db/queries/entity.js';
@@ -131,7 +145,7 @@ const sendAddedToEventEmail = async ({
   eventId,
   userId,
 }) => {
-  const footerLink = formatFooterLink(userId);
+  const footerLink = await formatFooterLink(userId);
   const buttonLink = await formatLinkWithAuthToken(
     userId,
     formatRoute(
@@ -166,7 +180,7 @@ const sendAddedToTeamEmail = async ({
   teamId,
   userId,
 }) => {
-  const footerLink = formatFooterLink(userId);
+  const footerLink = await formatFooterLink(userId);
   const buttonLink = await formatLinkWithAuthToken(
     userId,
     formatRoute(ROUTES_ENUM.entity, { id: teamId }),
@@ -195,7 +209,7 @@ const sendCartItemAddedPlayerEmail = async ({
   language,
   userId,
 }) => {
-  const footerLink = formatFooterLink(userId);
+  const footerLink = await formatFooterLink(userId);
 
   const buttonLink = await formatLinkWithAuthToken(
     userId,
@@ -225,7 +239,7 @@ async function sendReceiptEmail({
   language,
   userId,
 }) {
-  const footerLink = formatFooterLink(userId);
+  const footerLink = await formatFooterLink(userId);
 
   const fullEmail = await emailFactory({
     type: NOTIFICATION_TYPE.SEND_RECEIPT,
@@ -248,7 +262,7 @@ async function sendTeamRegistrationEmailToAdmin({
   language,
   userId,
 }) {
-  const footerLink = formatFooterLink(userId);
+  const footerLink = await formatFooterLink(userId);
 
   const buttonLink = await formatLinkWithAuthToken(
     userId,
@@ -283,7 +297,7 @@ async function sendTeamUnregisteredEmail({
   status,
   userId,
 }) {
-  const footerLink = formatFooterLink(userId);
+  const footerLink = await formatFooterLink(userId);
 
   let fullEmail = {};
 
@@ -333,7 +347,7 @@ async function sendPersonRegistrationEmailToAdmin({
   language,
   userId,
 }) {
-  const footerLink = formatFooterLink(userId);
+  const footerLink = await formatFooterLink(userId);
 
   const buttonLink = await formatLinkWithAuthToken(
     userId,
@@ -367,7 +381,7 @@ async function sendPersonPendingRegistrationEmailToAdmin({
   language,
   userId,
 }) {
-  const footerLink = formatFooterLink(userId);
+  const footerLink = await formatFooterLink(userId);
 
   const buttonLink = await formatLinkWithAuthToken(
     userId,
@@ -402,7 +416,7 @@ async function sendTeamAcceptedRegistrationEmail({
   isFreeOption,
   userId,
 }) {
-  const footerLink = formatFooterLink(userId);
+  const footerLink = await formatFooterLink(userId);
 
   let buttonLink = '';
   if (isFreeOption) {
@@ -482,7 +496,7 @@ async function sendTeamPendingRegistrationEmailToAdmin({
   placesLeft,
   userId,
 }) {
-  const footerLink = formatFooterLink(userId);
+  const footerLink = await formatFooterLink(userId);
 
   const buttonLink = await formatLinkWithAuthToken(
     userId,
@@ -517,7 +531,7 @@ async function sendPersonRegistrationEmail({
   isFreeOption,
   userId,
 }) {
-  const footerLink = formatFooterLink(userId);
+  const footerLink = await formatFooterLink(userId);
 
   let buttonLink = await formatLinkWithAuthToken(
     userId,
@@ -605,7 +619,11 @@ async function sendOtherTeamSubmittedScore({
 }) {
   const buttonLink = await formatLinkWithAuthToken(
     userId,
-    formatRoute(ROUTES_ENUM.entity, { id: eventId }, { tab: TABS_ENUM.SCHEDULE, gameId }),
+    formatRoute(
+      ROUTES_ENUM.entity,
+      { id: eventId },
+      { tab: TABS_ENUM.SCHEDULE, gameId },
+    ),
   );
 
   const scores = JSON.parse(score);
