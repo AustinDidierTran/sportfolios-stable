@@ -6,8 +6,9 @@ const router = new Router();
 const BASE_URL = '/api/admin';
 
 router.get(`${BASE_URL}/users`, async ctx => {
-  const users = await service.getAllUsersAndSecond(
-    ctx.query.limitNumber,
+  const users = await service.getUsersAndSecond(
+    ctx.query.offset,
+    ctx.query.filter
   );
   if (!users) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);

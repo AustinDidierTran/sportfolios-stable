@@ -220,13 +220,86 @@ async function getAllTaxRates() {
   return sorted;
 }
 
+const getUsersByFilter = async (offset, filter = '') => {
+  const primaryUser = await knex
+    .select(
+      knex.raw(
+        'user_primary_person.user_id, user_primary_person.primary_person, entities_general_infos.photo_url, array_agg(user_email.email ORDER BY user_email.email) AS emails, entities_general_infos.name, entities_general_infos.surname, user_app_role.app_role',
+      ),
+    )
+    .from('user_primary_person')
+    .leftJoin(
+      'user_email',
+      'user_primary_person.user_id',
+      '=',
+      'user_email.user_id',
+    )
+    .leftJoin(
+      'entities_general_infos',
+      'user_primary_person.primary_person',
+      '=',
+      'entities_general_infos.entity_id',
+    )
+    .leftJoin(
+      'user_app_role',
+      'user_primary_person.user_id',
+      '=',
+      'user_app_role.user_id',
+    )
+    .leftJoin(
+      'entities',
+      'user_primary_person.primary_person',
+      '=',
+      'entities.id',
+    )
+    .whereNull('entities.deleted_at')
+    .andWhereRaw(`CONCAT(entities_general_infos.name, ' ', entities_general_infos.surname) ILIKE '%${filter}%'`)
+    .groupBy(
+      'user_primary_person.user_id',
+      'user_primary_person.primary_person',
+      'entities_general_infos.name',
+      'entities_general_infos.surname',
+      'user_app_role.app_role',
+      'entities_general_infos.photo_url',
+    )
+    .orderBy('entities_general_infos.name', 'asc')
+    .offset(offset)
+    .limit(10);
+  return primaryUser;
+}
+
+const getSecondAccount = async (userId) => {
+  return await knex
+    .select(
+      'user_entity_role.entity_id',
+      'entities_general_infos.name',
+      'entities_general_infos.surname',
+      'entities_general_infos.photo_url',
+    )
+    .from('user_entity_role')
+    .leftJoin(
+      'entities_general_infos',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_general_infos.entity_id',
+    )
+    .leftJoin(
+      'entities',
+      'user_entity_role.entity_id',
+      '=',
+      'entities.id',
+    )
+    .whereRaw(
+      `entities.deleted_at is null and user_entity_role.user_id = '${userId}' AND user_entity_role.entity_id NOT IN (select primary_person from user_primary_person WHERE user_primary_person.primary_person is not null)`,
+    );
+}
+
 export {
   addEmailLandingPage,
   createSport,
   createTaxRate,
   getAllNewsLetterSubscriptions,
   getAllSports,
-  getAllUsersAndSecond,
   getAllTaxRates,
   getEmailsLandingPage,
   updateActiveStatusTaxRate,
@@ -235,4 +308,6 @@ export {
   deleteTaxRate,
   deleteEntities,
   updateUserRole,
+  getUsersByFilter,
+  getSecondAccount
 };
