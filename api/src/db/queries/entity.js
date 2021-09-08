@@ -26,7 +26,9 @@ import moment from 'moment';
 import validator from 'validator';
 import _ from 'lodash';
 import { getTaxRates } from './shop.js';
-import { getEmailsEntity } from '../helpers/entity.js';
+import { getPaymentOption } from '../../server/service/event.js';
+import { getRegistrationStatus } from './event.js';
+import { getRoster, getTeamCaptains, getRoleRoster } from '../../server/service/team.js';
 
 const addEntity = async (body, userId) => {
   const {
@@ -1320,45 +1322,6 @@ async function getPersonPaymentOption(personId, eventId) {
   };
 }
 
-async function getTeamCaptains(teamId, userId) {
-  const caps = await knex('entities_role')
-    .select('entity_id_admin')
-    .where('role', '=', ENTITIES_ROLE_ENUM.ADMIN)
-    .andWhere('entity_id', '=', teamId);
-
-  const captainIds = caps.map(c => c.entity_id_admin);
-
-  const captains = await Promise.all(
-    captainIds.map(async id => {
-      return (await getEntity(id, userId)).basicInfos;
-    }),
-  );
-  return captains;
-}
-async function getPaymentOption(paymentOptionId) {
-  const [option] = await knex('event_payment_options')
-    .select('*')
-    .where({ id: paymentOptionId });
-  if (!option) {
-    return null;
-  }
-  return {
-    teamStripePriceId: option.team_stripe_price_id,
-    eventId: option.event_id,
-    name: option.name,
-    teamPrice: option.team_price,
-    startTime: option.start_time,
-    endTime: option.end_time,
-    individualPrice: option.individual_price,
-    individualStripePriceId: option.individual_stripe_price_id,
-    id: option.id,
-    teamActivity: option.team_activity,
-    teamAcceptation: option.team_acceptation,
-    playerAcceptation: option.player_acceptation,
-    informations: option.informations,
-  };
-}
-
 async function getAllTeamsRegistered(eventId) {
   const teams = await knex('event_rosters')
     .select('*')
@@ -1737,68 +1700,6 @@ async function getPreranking(eventId) {
   return { preranking: res, prerankPhaseId: prerankPhase.id };
 }
 
-async function getRegistrationStatus(rosterId) {
-  const [registration] = await knex('event_rosters')
-    .select('registration_status')
-    .where({
-      roster_id: rosterId,
-    });
-
-  return registration.registration_status;
-}
-
-async function getRoster(rosterId, withSub, creatorId = '') {
-  let whereCond = { roster_id: rosterId };
-  if (!withSub) {
-    whereCond.is_sub = false;
-  }
-
-  const roster = await knex('roster_players_infos')
-    .select('*')
-    .where(whereCond)
-    .orderByRaw(
-      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
-    );
-
-  //TODO: Make a call to know if has created an account or is child account
-  const status = TAG_TYPE_ENUM.REGISTERED;
-
-  const playerIds = roster.map(p => p.person_id);
-
-  let memberships = [];
-
-  if (creatorId) {
-    memberships = await knex('memberships')
-      .whereIn('person_id', playerIds)
-      .andWhere('organization_id', creatorId);
-  }
-
-  const date = new Date();
-
-  const activeMemberships = memberships.filter(
-    m =>
-      moment(m.created_at).isSameOrBefore(moment(date), 'day') &&
-      moment(m.expiration_date).isSameOrAfter(moment(date), 'day'),
-  );
-
-  const props = roster.map(player => ({
-    id: player.id,
-    name: player.name,
-    photoUrl: player.photo_url,
-    personId: player.person_id,
-    role: player.role,
-    isSub: player.is_sub,
-    status: status,
-    paymentStatus: player.payment_status,
-    invoiceItemId: player.invoice_item_id,
-    isMember:
-      activeMemberships.filter(m => m.person_id === player.person_id)
-        .length > 0,
-  }));
-
-  return props;
-}
-
 const getPrimaryPerson = async user_id => {
   const [{ primary_person: id }] = await knex('user_primary_person')
     .select('primary_person')
@@ -1806,29 +1707,6 @@ const getPrimaryPerson = async user_id => {
   const primaryPerson = (await getEntity(id)).basicInfos;
   return primaryPerson;
 };
-
-async function getRoleRoster(rosterId, userId) {
-  if (userId === -1) {
-    return ROSTER_ROLE_ENUM.VIEWER;
-  }
-  const [{ role } = {}] = await knex('roster_players')
-    .select('roster_players.role')
-    .join(
-      'user_entity_role',
-      'user_entity_role.entity_id',
-      'roster_players.person_id',
-    )
-    .where({ roster_id: rosterId, user_id: userId })
-    .orderByRaw(
-      `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], roster_players.role)`,
-    )
-    .limit(1);
-  if (role) {
-    return role;
-  } else {
-    return ROSTER_ROLE_ENUM.VIEWER;
-  }
-}
 
 const getRosterInvoiceItem = async body => {
   const { eventId, rosterId } = body;
@@ -7570,6 +7448,25 @@ async function getAllExercises() {
   return res;
 }
 
+const getEmailsEntity = async (entityId) => {
+  return knex('entities_role')
+    .select('email')
+    .leftJoin(
+      'user_entity_role',
+      'user_entity_role.entity_id',
+      '=',
+      'entities_role.entity_id_admin',
+    )
+    .leftJoin(
+      'user_email',
+      'user_email.user_id',
+      '=',
+      'user_entity_role.user_id',
+    )
+    .where('entities_role.entity_id', entityId);
+}
+
+
 export {
   acceptScoreSuggestion,
   acceptScoreSuggestionIfPossible,
@@ -7714,12 +7611,9 @@ export {
   getRegistered,
   getRegisteredPersons,
   getRegistrationIndividualPaymentOption,
-  getRegistrationStatus,
   getRegistrationTeamPaymentOption,
   getRemainingSpots,
   getReports,
-  getRoleRoster,
-  getRoster,
   getRosterByEventAndUser,
   getRosterEventInfos,
   getRosterIdFromInviteToken,
@@ -7803,4 +7697,5 @@ export {
   updateRosterRole,
   updateSuggestionStatus,
   updateTeamAcceptation,
+  getEmailsEntity,
 };

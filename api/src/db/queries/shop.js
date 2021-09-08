@@ -1,7 +1,7 @@
 import knex from '../connection.js';
 import { stripeErrorLogger } from '../../server/utils/logger.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
-import { getEmailsEntity } from '../helpers/entity.js';
+import { getEmailsEntity } from '../queries/entity.js';
 import { CART_ITEM } from '../../../../common/enums/index.js';
 
 const getItem = async stripePriceId => {
