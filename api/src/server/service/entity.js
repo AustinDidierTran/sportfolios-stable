@@ -133,12 +133,9 @@ import {
   getRegistered as getRegisteredHelper,
   getRegisteredPersons,
   getRegistrationIndividualPaymentOption as getRegistrationIndividualPaymentOptionHelper,
-  getRegistrationStatus,
   getRegistrationTeamPaymentOption as getRegistrationTeamPaymentOptionHelper,
   getRemainingSpots as getRemainingSpotsHelper,
   getReports as getReportsHelper,
-  getRoleRoster,
-  getRoster as getRosterHelper,
   getRosterByEventAndUser as getRosterByEventAndUserHelper,
   getRosterEventInfos,
   getRosterIdFromInviteToken,
@@ -222,6 +219,8 @@ import { validateEmailIsUnique as validateEmailIsUniqueHelper } from '../../db/q
 import { sendNotification } from './notification.js';
 import { getOwnedPersons } from './user.js';
 import { isAllowed } from '../../db/queries/utils.js';
+import { getRoster, getRoleRoster } from './team.js'
+import { getRegistrationStatus } from '../../db/queries/event.js'
 
 async function getEntity(id, userId) {
   const res = await getEntityHelper(id, userId);
@@ -383,10 +382,6 @@ function getPreranking(eventId) {
 }
 function getPrimaryPerson(userId) {
   return getPrimaryPersonHelper(userId);
-}
-
-function getRoster(rosterId, withSub) {
-  return getRosterHelper(rosterId, withSub);
 }
 
 async function getRosterAllIncluded(rosterId, userId, withSub) {

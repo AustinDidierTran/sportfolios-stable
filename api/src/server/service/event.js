@@ -4,6 +4,9 @@ import {
   getRemainingSpots,
   getOptions,
 } from '../../db/queries/entity.js';
+import {
+  getPaymentOptionById,
+} from '../../db/queries/event.js';
 
 import * as queries from '../../db/queries/event.js';
 
@@ -93,3 +96,24 @@ export const getRankings = async eventId => {
 
   return rankings;
 };
+export async function getPaymentOption(paymentOptionId) {
+  const option = await getPaymentOptionById(paymentOptionId);
+  if (!option) {
+    return null;
+  }
+  return {
+    teamStripePriceId: option.team_stripe_price_id,
+    eventId: option.event_id,
+    name: option.name,
+    teamPrice: option.team_price,
+    startTime: option.start_time,
+    endTime: option.end_time,
+    individualPrice: option.individual_price,
+    individualStripePriceId: option.individual_stripe_price_id,
+    id: option.id,
+    teamActivity: option.team_activity,
+    teamAcceptation: option.team_acceptation,
+    playerAcceptation: option.player_acceptation,
+    informations: option.informations,
+  };
+}
