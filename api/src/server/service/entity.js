@@ -745,7 +745,6 @@ async function addTeamToEvent(body, userId) {
   });
 
   // Add roster
-  console.log(roster);
   if (roster) {
     await Promise.all(
       roster.map(async r => {
