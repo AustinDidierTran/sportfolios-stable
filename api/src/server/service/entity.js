@@ -709,13 +709,17 @@ async function addTeamToEvent(body, userId) {
     throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
   }
   // Reject team if there is already too many registered teams
-  const numberOfTeamsRemaining = getRemainingSpotsHelper(eventId);
-  if (
-    typeof numberOfTeamsRemaining === 'number' &&
-    numberOfTeamsRemaining < 1
-  ) {
+  const numberOfTeamsRemaining = await getRemainingSpotsHelper(
+    eventId,
+  );
+  if (typeof numberOfTeamsRemaining !== 'number') {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  if (numberOfTeamsRemaining < 1) {
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
+
     return { status: registrationStatus, reason };
   }
 
