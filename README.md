@@ -190,17 +190,17 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const BASE_PATH = path.join(__dirname, 'api', 'src', 'db');
+const BASE_PATH = join(__dirname, 'api', 'src', 'db');
 
 export const test = {
   client: 'pg',
   connection:
     'postgres://postgres:password@localhost/sportfolios_api_test',
   migrations: {
-    directory: path.join(BASE_PATH, 'migrations'),
+    directory: join(BASE_PATH, 'migrations'),
   },
   seeds: {
-    directory: path.join(BASE_PATH, 'seeds'),
+    directory: join(BASE_PATH, 'seeds'),
   },
 };
 export const development = {
@@ -208,10 +208,10 @@ export const development = {
   connection:
     'postgres://postgres:password@localhost/sportfolios_api_dev',
   migrations: {
-    directory: path.join(BASE_PATH, 'migrations'),
+    directory: join(BASE_PATH, 'migrations'),
   },
   seeds: {
-    directory: path.join(BASE_PATH, 'seeds'),
+    directory: join(BASE_PATH, 'seeds'),
   },
 };
 export const production = {
@@ -219,10 +219,10 @@ export const production = {
   connection:
     'postgres://postgres:password@localhost/sportfolios_api',
   migrations: {
-    directory: path.join(BASE_PATH, 'migrations'),
+    directory: join(BASE_PATH, 'migrations'),
   },
   seeds: {
-    directory: path.join(BASE_PATH, 'seeds'),
+    directory: join(BASE_PATH, 'seeds'),
   },
 };
 ```
@@ -380,17 +380,17 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const BASE_PATH = path.join(__dirname, 'api', 'src', 'db');
+const BASE_PATH = join(__dirname, 'api', 'src', 'db');
 
 export const test = {
   client: 'pg',
   connection:
     'postgres://postgres:password@localhost/sportfolios_api_test',
   migrations: {
-    directory: path.join(BASE_PATH, 'migrations'),
+    directory: join(BASE_PATH, 'migrations'),
   },
   seeds: {
-    directory: path.join(BASE_PATH, 'seeds'),
+    directory: join(BASE_PATH, 'seeds'),
   },
 };
 export const development = {
@@ -398,10 +398,10 @@ export const development = {
   connection:
     'postgres://postgres:password@localhost/sportfolios_api_dev',
   migrations: {
-    directory: path.join(BASE_PATH, 'migrations'),
+    directory: join(BASE_PATH, 'migrations'),
   },
   seeds: {
-    directory: path.join(BASE_PATH, 'seeds'),
+    directory: join(BASE_PATH, 'seeds'),
   },
 };
 export const production = {
@@ -409,10 +409,10 @@ export const production = {
   connection:
     'postgres://postgres:password@localhost/sportfolios_api',
   migrations: {
-    directory: path.join(BASE_PATH, 'migrations'),
+    directory: join(BASE_PATH, 'migrations'),
   },
   seeds: {
-    directory: path.join(BASE_PATH, 'seeds'),
+    directory: join(BASE_PATH, 'seeds'),
   },
 };
 ```

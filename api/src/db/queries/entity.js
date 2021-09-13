@@ -1677,9 +1677,15 @@ async function getRemainingSpots(eventId) {
   if (!event.maximum_spots) {
     return null;
   }
-  return (
-    event.maximum_spots - Number(countRosters) - Number(countPersons)
+
+  const remainingSpots = Math.max(
+    0,
+    Number(event.maximum_spots) -
+      Number(countRosters) -
+      Number(countPersons),
   );
+
+  return remainingSpots;
 }
 
 async function getPreranking(eventId) {
@@ -6514,7 +6520,7 @@ async function updateGame(
 
 async function updateGamesInteractiveTool(games) {
   return knex.transaction(trx => {
-    queries = games.map(game =>
+    const queries = games.map(game =>
       knex('games')
         .where('id', game.id)
         .update({
