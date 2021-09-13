@@ -6520,7 +6520,7 @@ async function updateGame(
 
 async function updateGamesInteractiveTool(games) {
   return knex.transaction(trx => {
-    queries = games.map(game =>
+    const queries = games.map(game =>
       knex('games')
         .where('id', game.id)
         .update({
