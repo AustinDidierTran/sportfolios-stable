@@ -4,7 +4,6 @@ import {
   createTaxRate as createTaxRateHelper,
   getAllNewsLetterSubscriptions as getAllNewsLetterSubscriptionsHelper,
   getAllSports as getAllSportsHelper,
-  getAllUsersAndSecond as getAllUsersAndSecondHelper,
   getAllTaxRates as getAllTaxRatesHelper,
   getEmailsLandingPage as getEmailsLandingPageHelper,
   updateActiveStatusTaxRate as updateActiveStatusTaxRateHelper,
@@ -13,6 +12,8 @@ import {
   deleteTaxRate as deleteTaxRateHelper,
   deleteEntities as deleteEntitiesHelper,
   updateUserRole as updateUserRoleHelper,
+  getUsersByFilter,
+  getSecondAccount
 } from '../../db/queries/admin.js';
 
 function createSport(sport) {
@@ -50,8 +51,23 @@ function getAllSports() {
   return getAllSportsHelper();
 }
 
-function getAllUsersAndSecond(limitNumber) {
-  return getAllUsersAndSecondHelper(limitNumber);
+async function getUsersAndSecond(offset, filter) {
+  const primaryUser = await getUsersByFilter(offset, filter);
+  return Promise.all(
+    primaryUser.map(async user => {
+      const secondAccount = await getSecondAccount(user.user_id);
+      return {
+        id: user.user_id,
+        entityId: user.primary_person,
+        emails: user.emails,
+        name: user.name,
+        surname: user.surname,
+        role: user.app_role,
+        photoUrl: user.photo_url,
+        secondAccount: secondAccount,
+      };
+    }),
+  );
 }
 
 function updateSport(id, sport) {
@@ -76,7 +92,6 @@ export {
   createTaxRate,
   getAllNewsLetterSubscriptions,
   getAllSports,
-  getAllUsersAndSecond,
   getAllTaxRates,
   getEmailsLandingPage,
   updateActiveStatusTaxRate,
@@ -85,4 +100,5 @@ export {
   deleteTaxRate,
   deleteEntities,
   updateUserRole,
+  getUsersAndSecond
 };
