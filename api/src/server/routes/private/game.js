@@ -20,8 +20,5 @@ router.put(`${BASE_URL}/score`, async ctx => {
 
   ctx.body = { data: game };
 });
-<<<<<<< HEAD
 
 export default router;
-=======
->>>>>>> 01dd1fb4 (Add new route for score submission)
