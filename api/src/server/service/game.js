@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import { isAllowed } from './entity.js';
+=======
+import { ENTITIES_ROLE_ENUM } from '../../../../common/enums';
+import { ERROR_ENUM } from '../../../../common/errors';
+import { isAllowed } from './entity';
+>>>>>>> 01dd1fb4 (Add new route for score submission)
 import * as queries from '../../db/queries/game.js';
 
 export const updateGameScore = async (body, userId) => {
