@@ -7,6 +7,10 @@ import {
 
 import moment from 'moment';
 
+import {
+  getAllPeopleRegisteredNotInTeamsInfos as getAllPeopleRegisteredNotInTeamsInfosHelper,
+} from '../../db/queries/event.js';
+
 async function getEventInfo(eventId, userId) {
   const data = await eventInfosHelper(eventId, userId);
   const remainingSpots = await getRemainingSpots(eventId);
@@ -51,4 +55,12 @@ async function getEvent(eventId, userId) {
   };
 }
 
-export { getEvent };
+async function getAllPeopleRegisteredNotInTeamsInfos(eventId, userId) {
+  const p = await getAllPeopleRegisteredNotInTeamsInfosHelper(eventId, userId);
+  return p;
+}
+
+export {
+  getEvent,
+  getAllPeopleRegisteredNotInTeamsInfos
+};
