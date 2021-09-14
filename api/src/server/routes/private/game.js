@@ -20,3 +20,5 @@ router.put(`${BASE_URL}/score`, async ctx => {
 
   ctx.body = { data: game };
 });
+
+export default router;
