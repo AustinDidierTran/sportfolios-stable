@@ -7,6 +7,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api
+      network: 'host'
+    ports:
+      - 1337:1337
     volumes:
       - '.:/sportfolios'
       - '/sportfolios/node_modules'
@@ -18,26 +21,7 @@ services:
       - db
 
     # allow to communicate with db if it's running on localhost
-    network_mode: 'host' # (Linux only)
-
-    # (Seems like it's not needed anymore)
-    # interactive mode for development only (fix a know bug where container don't start and exit with code 0)
-    #stdin_open: true
-
-  # App container
-  app:
-    container_name: sportfolios_app_dev
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    volumes:
-      - '.:/sportfolios'
-      - '/sportfolios/node_modules'
-    ports:
-      - 4000:3000
-    # make container listen to file changes
-    environment:
-      - CHOKIDAR_USEPOLLING=true
+    #network_mode: 'host' # (Linux only)
 
     # (Seems like it's not needed anymore)
     # interactive mode for development only (fix a know bug where container don't start and exit with code 0)
