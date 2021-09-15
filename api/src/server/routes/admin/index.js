@@ -1,3 +1,5 @@
 import admin from './admin.js';
 import googleAnalytics from './googleAnalytics.js';
-export default [admin, googleAnalytics];
+import team from './team.js';
+
+export default [admin, googleAnalytics, team];
