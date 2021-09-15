@@ -5,9 +5,11 @@ import {
   getOptions,
 } from '../../db/queries/entity.js';
 
+import * as queries from '../../db/queries/event.js';
+
 import moment from 'moment';
 
-async function getEventInfo(eventId, userId) {
+const getEventInfo = async (eventId, userId) => {
   const data = await eventInfosHelper(eventId, userId);
   const remainingSpots = await getRemainingSpots(eventId);
   const options = await getOptions(eventId);
@@ -40,15 +42,23 @@ async function getEventInfo(eventId, userId) {
     isEarly,
     isLate,
   };
-}
+};
 
-async function getEvent(eventId, userId) {
+export const getEvent = async (eventId, userId) => {
   let res = await getEntityHelper(eventId, userId);
   const eventInfo = await getEventInfo(eventId, userId);
   return {
     basicInfos: res.basicInfos,
     eventInfo,
   };
-}
+};
 
-export { getEvent };
+/**
+ * Currently only returns spirit rankings, but should eventually return
+ * prerankings and phase rankings
+ */
+export const getRankings = async eventId => {
+  const rankings = await queries.getRankings(eventId);
+
+  return rankings;
+};

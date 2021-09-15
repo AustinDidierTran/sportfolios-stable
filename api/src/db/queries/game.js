@@ -27,11 +27,11 @@ export const updateTeamGameScores = async (gameId, rosters) => {
   const teams = [];
   await Promise.all(
     rosters.map(async roster => {
-      const res = await knex('game_teams')
+      const [t] = await knex('game_teams')
         .where({ game_id: gameId, roster_id: roster.rosterId })
         .update({ score: roster.score, spirit: roster.spirit })
         .returning('*');
-      teams.push(res);
+      teams.push(t);
     }),
   );
 
@@ -46,6 +46,7 @@ export const updateTeamGameScores = async (gameId, rosters) => {
     pos0 = 2;
     pos1 = 1;
   }
+
   //update positions
   const [team0] = await knex('game_teams')
     .update({ position: pos0 })
@@ -188,7 +189,7 @@ export const updateTeamGameScores = async (gameId, rosters) => {
 
   return { gameId, rosters };
 
-  // This code has not been tested, so we don't want this. However, let's keep
+  // [SPO-56] This code has not been tested, so we don't want this. However, let's keep
   // this code in case of a refactoring!
   // // update score and spirit
   // await knex.transaction(trx => {
