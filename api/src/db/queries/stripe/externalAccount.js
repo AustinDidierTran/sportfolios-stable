@@ -26,7 +26,7 @@ const hasStripeAccount = async entityId => {
     const completeAccount = await stripe.accounts.retrieve(
       account.account_id,
     );
-    tosAcceptance = completeAccount.tos_acceptance;
+    const tosAcceptance = completeAccount.tos_acceptance;
     if (
       !tosAcceptance.date ||
       !tosAcceptance.ip ||

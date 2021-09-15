@@ -1,5 +1,6 @@
 import auth from './auth.js';
 import entity from './entity.js';
+import event from './event.js';
 import facebook from './facebook.js';
 import googleAnalytics from './googleAnalytics.js';
 import notification from './notification.js';
@@ -11,6 +12,7 @@ import user from './user.js';
 export default [
   auth,
   entity,
+  event,
   facebook,
   googleAnalytics,
   notification,
