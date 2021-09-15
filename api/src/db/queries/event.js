@@ -122,7 +122,6 @@ async function getEventPaymentOption(stripePriceId) {
   return option;
 }
 
-
 export {
   getEventPaymentOption,
   getAllPeopleRegisteredNotInTeamsInfos,
