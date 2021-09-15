@@ -1,7 +1,11 @@
 import knex from '../connection.js';
 import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
 
-export const getAllTeamsWithAdmins = async (limit = 10, page = 1) => {
+export const getAllTeamsWithAdmins = async (
+  limit = 10,
+  page = 1,
+  query = '',
+) => {
   const teams = await knex
     .select(
       'entities.id',
@@ -41,6 +45,7 @@ export const getAllTeamsWithAdmins = async (limit = 10, page = 1) => {
       'entities.id',
     )
     .where('entities.type', GLOBAL_ENUM.TEAM)
+    .where('entities_general_infos.name', 'ILIKE', `%${query}%`)
     .limit(limit)
     .offset(limit * Math.max(0, page - 1))
     .groupBy(
@@ -69,4 +74,16 @@ export const getAllTeamsWithAdmins = async (limit = 10, page = 1) => {
       })),
     })),
   };
+};
+
+export const restoreTeamById = id => {
+  return knex('entities')
+    .update('deleted_at', null)
+    .where({ id });
+};
+
+export const deleteTeamById = id => {
+  return knex('entities')
+    .del()
+    .where({ id });
 };

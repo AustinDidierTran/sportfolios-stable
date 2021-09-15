@@ -10,4 +10,8 @@ router.get(BASE_URL, async ctx => {
   ctx.body = { data };
 });
 
+router.del(BASE_URL, async ctx => {
+  await service.deleteTeam(ctx.query.id, ctx.query.restore);
+});
+
 export default router;
