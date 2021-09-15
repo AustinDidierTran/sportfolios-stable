@@ -2,6 +2,7 @@ import entity from './entity.js';
 import event from './event.js';
 import facebook from './facebook.js';
 import follower from './follower.js';
+import game from './game.js';
 import interactiveTool from './interactiveTool.js';
 import notification from './notification.js';
 import organization from './organization.js';
@@ -19,6 +20,7 @@ export default [
   event,
   facebook,
   follower,
+  game,
   interactiveTool,
   notification,
   organization,

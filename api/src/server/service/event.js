@@ -5,13 +5,15 @@ import {
   getOptions,
 } from '../../db/queries/entity.js';
 
+import * as queries from '../../db/queries/event.js';
+
 import moment from 'moment';
 
 import {
   getAllPeopleRegisteredNotInTeamsInfos as getAllPeopleRegisteredNotInTeamsInfosHelper,
 } from '../../db/queries/event.js';
 
-async function getEventInfo(eventId, userId) {
+const getEventInfo = async (eventId, userId) => {
   const data = await eventInfosHelper(eventId, userId);
   const remainingSpots = await getRemainingSpots(eventId);
   const options = await getOptions(eventId);
@@ -44,23 +46,28 @@ async function getEventInfo(eventId, userId) {
     isEarly,
     isLate,
   };
-}
+};
 
-async function getEvent(eventId, userId) {
+export const getEvent = async (eventId, userId) => {
   let res = await getEntityHelper(eventId, userId);
   const eventInfo = await getEventInfo(eventId, userId);
   return {
     basicInfos: res.basicInfos,
     eventInfo,
   };
-}
+};
 
-async function getAllPeopleRegisteredNotInTeamsInfos(eventId, userId) {
+export const getAllPeopleRegisteredNotInTeamsInfos = async (eventId, userId) => {
   const p = await getAllPeopleRegisteredNotInTeamsInfosHelper(eventId, userId);
   return p;
 }
 
-export {
-  getEvent,
-  getAllPeopleRegisteredNotInTeamsInfos
+/**
+ * Currently only returns spirit rankings, but should eventually return
+ * prerankings and phase rankings
+ */
+export const getRankings = async eventId => {
+  const rankings = await queries.getRankings(eventId);
+
+  return rankings;
 };
