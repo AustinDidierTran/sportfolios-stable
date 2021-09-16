@@ -1,1 +1,0 @@
-/* No down, cannot know which tables already had a created_at */

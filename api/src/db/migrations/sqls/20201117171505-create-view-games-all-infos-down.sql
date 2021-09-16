@@ -1,1 +1,0 @@
-DROP VIEW games_all_infos;
