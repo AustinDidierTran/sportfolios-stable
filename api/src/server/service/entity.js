@@ -198,7 +198,7 @@ import {
   updateRosterRole as updateRosterRoleHelper,
   updateSuggestionStatus as updateSuggestionStatusHelper,
   updateTeamAcceptation as updateTeamAcceptationHelper,
-} from '../../db/queries/entity.js';
+} from '../../db/queries/entity-deprecate.js';
 
 import { createRefund } from '../../db/queries/stripe/checkout.js';
 import {

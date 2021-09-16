@@ -2,7 +2,7 @@ import State from '../state.js';
 import { BASIC_CHATBOT_STATES, SCORE_SUBMISSION_CHATBOT_STATES, MONTH_NAMES } from '../../../../../../../common/enums/index.js';
 import Response from '../../response.js';
 import i18n from '../../../../../i18n.config.js';
-import { getGamesWithAwaitingScore, getGameTeams } from '../../../../../db/queries/entity.js';
+import { getGamesWithAwaitingScore, getGameTeams } from '../../../../../db/queries/entity-deprecate.js';
 import { getUserIdFromMessengerId } from '../../../../../db/queries/user.js';
 import { MESSENGER_QUICK_REPLIES } from '../../../enums/index.js';
 
