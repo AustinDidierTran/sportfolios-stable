@@ -1,1 +1,0 @@
-DROP TABLE recovery_email_token;

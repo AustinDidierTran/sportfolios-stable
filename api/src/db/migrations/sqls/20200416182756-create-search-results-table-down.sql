@@ -1,1 +1,0 @@
-DROP TABLE previous_search_queries;
