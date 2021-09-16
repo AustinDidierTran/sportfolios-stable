@@ -1,5 +1,6 @@
 import knex from '../connection.js';
 import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
+import { getEntity, getEmailPerson, getPaymentOption } from './entity-deprecate.js'
 import {
   getEntity,
   getEmailPerson,
