@@ -27,8 +27,6 @@ import {
   GLOBAL_ENUM,
   CART_ITEM,
 } from '../../../../common/enums/index.js';
-
-import { ENTITIES_ROLE_ENUM, GLOBAL_ENUM, CART_ITEM } from '../../../../common/enums/index.js';
 import { isAllowed } from '../../db/queries/utils.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 
