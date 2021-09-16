@@ -4,7 +4,6 @@ import { getEventInfoById, getTeamsRegisteredInfo, getTeamsAcceptedRegistered, g
 import { getPaymentOption } from '../../server/service/event.js'
 import { getEntity } from '../../db/queries/entity-deprecate.js'
 import { getRosterByIdAndSub, getTeamCaptainsById, getRoleRosterByIdAndUserId } from '../../db/queries/team.js'
-import * as teamQueries from '../../db/queries/team.js'
 import { getMembershipsByIdAndOrganizationId, getMembershipByPersonIds } from '../../db/queries/memberships.js'
 import { getEmailsEntity } from '../../db/queries/entity-deprecate.js'
 import {
@@ -130,7 +129,7 @@ const getTeamsRegisteredInfos = async (eventId, pills, userId) => {
 }
 
 const getRoster = async (rosterId, withSub, creatorId = '') => {
-  const roster = await teamQueries.getRosterByIdAndSub(rosterId, withSub);
+  const roster = await getRosterByIdAndSub(rosterId, withSub);
 
   const status = TAG_TYPE_ENUM.REGISTERED;
 
@@ -168,7 +167,7 @@ const getRoster = async (rosterId, withSub, creatorId = '') => {
 }
 
 async function getTeamCaptains(teamId, userId) {
-  const caps = await teamQueries.getTeamCaptainsById(teamId);
+  const caps = await getTeamCaptainsById(teamId);
 
   const captainIds = caps.map(c => c.entity_id_admin);
 
@@ -184,7 +183,7 @@ const getRoleRoster = async (rosterId, userId) => {
   if (userId === -1) {
     return ROSTER_ROLE_ENUM.VIEWER;
   }
-  const role = await teamQueries.getRoleRosterByIdAndUserId(rosterId, userId);
+  const role = await getRoleRosterByIdAndUserId(rosterId, userId);
   if (role) {
     return role;
   } else {
