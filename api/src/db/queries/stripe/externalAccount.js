@@ -10,7 +10,7 @@ import knex from '../../connection.js';
 import { stripeLogger } from '../../../server/utils/logger.js';
 
 import { fillWithZeros } from '../../../../../common/utils/stringFormat.js';
-import { getCreators } from '../entity.js';
+import { getCreators } from '../entity-deprecate.js';
 
 const getStripeAccount = async (entityId) => {
   const [account] = await knex('stripe_accounts')

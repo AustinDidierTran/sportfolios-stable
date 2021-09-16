@@ -2,11 +2,11 @@ import * as queries from '../../db/queries/team.js';
 import { getTeamExercisesByTeamId, getSessionExercisesBySessionId } from '../../db/queries/exercises.js'
 import { getEventInfoById, getTeamsRegisteredInfo, getTeamsAcceptedRegistered, getRegistrationStatus } from '../../db/queries/event.js'
 import { getPaymentOption } from '../../server/service/event.js'
-import { getEntity } from '../../db/queries/entity.js'
+import { getEntity } from '../../db/queries/entity-deprecate.js'
 import { getRosterByIdAndSub, getTeamCaptainsById, getRoleRosterByIdAndUserId } from '../../db/queries/team.js'
 import * as teamQueries from '../../db/queries/team.js'
 import { getMembershipsByIdAndOrganizationId, getMembershipByPersonIds } from '../../db/queries/memberships.js'
-import { getEmailsEntity } from '../../db/queries/entity.js'
+import { getEmailsEntity } from '../../db/queries/entity-deprecate.js'
 import {
   INVOICE_STATUS_ENUM,
   PILL_TYPE_ENUM,

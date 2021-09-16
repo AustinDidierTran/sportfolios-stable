@@ -3,7 +3,7 @@ import { SCORE_SUBMISSION_CHATBOT_STATES, BASIC_CHATBOT_STATES } from '../../../
 import { MESSENGER_QUICK_REPLIES } from '../../../enums/index.js';
 import Response from '../../response.js';
 import i18n from '../../../../../i18n.config.js';
-import { isSpiritAlreadySubmitted } from '../../../../../db/queries/entity.js';
+import { isSpiritAlreadySubmitted } from '../../../../../db/queries/entity-deprecate.js';
 
 class SpiritSubmissionRequestSent extends State {
   async handleEvent(webhookEvent) {

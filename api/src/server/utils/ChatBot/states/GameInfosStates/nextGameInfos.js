@@ -3,7 +3,7 @@ import { BASIC_CHATBOT_STATES, MILLIS_TIME_ENUM } from '../../../../../../../com
 import { MESSENGER_QUICK_REPLIES } from '../../../enums/index.js';
 import Response from '../../response.js';
 import i18n from '../../../../../i18n.config.js';
-import { getUserNextGame } from '../../../../../db/queries/entity.js';
+import { getUserNextGame } from '../../../../../db/queries/entity-deprecate.js';
 import { getTimezoneFromPSID } from '../../../../../db/queries/facebook.js';
 import { getUserIdFromMessengerId } from '../../../../../db/queries/user.js';
 import moment from 'moment';
