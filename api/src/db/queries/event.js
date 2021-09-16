@@ -1,5 +1,5 @@
 import knex from '../connection.js';
-import { getEntity, getEmailPerson, getPaymentOption } from './entity.js'
+import { getEntity } from './entity.js'
 import {
   STATUS_ENUM,
   TAG_TYPE_ENUM,
