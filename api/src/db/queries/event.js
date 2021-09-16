@@ -4,7 +4,7 @@ import {
   STATUS_ENUM,
 } from '../../../../common/enums/index.js';
 
-export async function getAllPeopleRegisteredNotInTeams(eventId) {
+async function getAllPeopleRegisteredNotInTeams(eventId) {
   const subquery = knex('event_rosters')
     .select('person_id')
     .join('roster_players', 'roster_players.roster_id', '=', 'event_rosters.roster_id')
