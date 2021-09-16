@@ -2,6 +2,7 @@ import knex from '../connection.js';
 import { getEntity, getEmailPerson, getPaymentOption } from './entity.js'
 import {
   STATUS_ENUM,
+  TAG_TYPE_ENUM,
 } from '../../../../common/enums/index.js';
 
 async function getAllPeopleRegisteredNotInTeams(eventId) {
@@ -35,15 +36,9 @@ export async function getAllPeopleRegisteredNotInTeamsInfos(eventId, userId) {
 
   const res = await Promise.all(
     people.map(async p => {
-      let invoice = null;
-      if (p.invoice_item_id) {
-        invoice = await getStripeInvoiceItem(p.invoice_item_id);
-      }
+
       const entity = (await getEntity(p.person_id, userId))
         .basicInfos;
-      const email = await getEmailPerson(p.person_id);
-      const option = await getPaymentOption(p.payment_option_id);
-      const date = new Date();
 
       const memberships = await knex('memberships_infos')
         .select('*')
@@ -52,6 +47,7 @@ export async function getAllPeopleRegisteredNotInTeamsInfos(eventId, userId) {
           organization_id: event.creator_id,
         });
 
+      const date = new Date();
       const active_membership = memberships.filter(m => {
         return (
           moment(m.created_at).isSameOrBefore(moment(date), 'day') &&
@@ -61,19 +57,16 @@ export async function getAllPeopleRegisteredNotInTeamsInfos(eventId, userId) {
 
       return {
         personId: p.person_id,
-        name: entity.name,
-        surname: entity.surname,
         completeName: `${entity.name} ${entity.surname}`,
         photoUrl: entity.photoUrl,
+        personId: p.person_id,
         invoiceItemId: p.invoice_item_id,
-        status: p.status,
+        status: TAG_TYPE_ENUM.REGISTERED,
+        paymentStatus: p.status,
+        isMember: active_membership.length > 0,
         registeredOn: p.created_at,
         informations: p.informations,
-        invoice,
-        email,
-        option,
         registrationStatus: p.registration_status,
-        isMember: active_membership.length > 0,
       };
     }),
   );
