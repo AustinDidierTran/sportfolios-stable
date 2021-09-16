@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import * as service from '../../service/entity.js';
+import * as service from '../../service/entity-deprecate.js';
 import * as organizationService from '../../service/organization.js';
 import * as eventService from '../../service/event.js';
 import { GLOBAL_ENUM } from '../../../../../common/enums/index.js';
