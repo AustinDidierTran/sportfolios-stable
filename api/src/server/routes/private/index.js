@@ -1,4 +1,5 @@
 import entity from './entity.js';
+import event from './event.js';
 import facebook from './facebook.js';
 import follower from './follower.js';
 import game from './game.js';
@@ -16,6 +17,7 @@ import user from './user.js';
 
 export default [
   entity,
+  event,
   facebook,
   follower,
   game,

@@ -12,3 +12,4 @@ api/src/db/connect_to_db.sh
 .env
 postgres-data/
 get-docker.sh
+docker-compose.yml

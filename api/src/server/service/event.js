@@ -53,6 +53,11 @@ export const getEvent = async (eventId, userId) => {
   };
 };
 
+export const getAllPeopleRegisteredNotInTeamsInfos = async (eventId, userId) => {
+  const p = await queries.getAllPeopleRegisteredNotInTeamsInfos(eventId, userId);
+  return p;
+}
+
 /**
  * Currently only returns spirit rankings, but should eventually return
  * prerankings and phase rankings

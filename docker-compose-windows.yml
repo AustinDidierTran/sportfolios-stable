@@ -22,7 +22,6 @@ services:
 
     # allow to communicate with db if it's running on localhost
     #network_mode: 'host' # (Linux only)
-
     # (Seems like it's not needed anymore)
     # interactive mode for development only (fix a know bug where container don't start and exit with code 0)
     #stdin_open: true
