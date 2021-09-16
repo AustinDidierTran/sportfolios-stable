@@ -11,7 +11,7 @@ import {
   addPlayerCartItem,
   getEmailPerson,
   getUserIdFromPersonId,
-} from '../../../db/queries/entity.js';
+} from '../../../db/queries/entity-deprecate.js';
 
 import { getRoster } from '../../service/team.js'
 import { addItemToPaidStoreItems } from '../../../db/queries/shop.js';
