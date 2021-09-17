@@ -22,15 +22,19 @@ import {
   deleteTeamFromEvent,
 } from '../../db/queries/entity.js';
 
-import { ENTITIES_ROLE_ENUM, GLOBAL_ENUM, CART_ITEM} from '../../../../common/enums/index.js';
+import {
+  ENTITIES_ROLE_ENUM,
+  GLOBAL_ENUM,
+  CART_ITEM,
+} from '../../../../common/enums/index.js';
 import { isAllowed } from '../../db/queries/utils.js';
 
 const getItem = async (stripePriceId, userId) => {
   return getItemHelper(stripePriceId, userId);
 };
 
-const getItems = async (entityId, userId) => {
-  return getShopItems(entityId, userId);
+const getItems = async entityId => {
+  return getShopItems(entityId);
 };
 const getAllItems = async type => {
   return getAllShopItems(type);
