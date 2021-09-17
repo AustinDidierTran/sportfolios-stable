@@ -1,5 +1,10 @@
 import knex from '../connection.js';
-import { GLOBAL_ENUM, ENTITIES_ROLE_ENUM, NOTIFICATION_ARRAY } from '../../../../common/enums/index.js';
+import {
+  GLOBAL_ENUM,
+  ENTITIES_ROLE_ENUM,
+  NOTIFICATION_ARRAY,
+} from '../../../../common/enums/index.js';
+import { EXPIRATION_TIMES } from '../../../../common/constants/index.js';
 
 async function createRecoveryEmailToken({ userId, token }) {
   await knex('recovery_email_token').insert({
@@ -148,4 +153,3 @@ export {
   validateEmailIsUnique,
   getUserIdFromAuthToken,
 };
-
