@@ -13,4 +13,12 @@ router.get(`${BASE_URL}/getItem`, async ctx => {
   ctx.body = { data };
 });
 
+router.get(`${BASE_URL}/getItems`, async ctx => {
+  const data = await service.getItems(ctx.query.id);
+  if (!data) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data };
+});
+
 export default router;

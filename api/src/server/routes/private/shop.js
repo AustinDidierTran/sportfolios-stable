@@ -27,16 +27,6 @@ router.get(`${BASE_URL}/sales`, async ctx => {
   ctx.body = { data };
 });
 
-router.get(`${BASE_URL}/getItems`, async ctx => {
-  const data = await service.getItems(
-    ctx.query.id,
-    ctx.body.userInfo.id,
-  );
-  if (!data) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = { data };
-});
 router.get(`${BASE_URL}/getAllItems`, async ctx => {
   const data = await service.getAllItems(ctx.query.type);
   if (!data) {
