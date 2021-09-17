@@ -191,7 +191,11 @@ async function getPostFeed(user_id, locationId, body) {
 
   if (body) {
     const { perPage, currentPage } = body;
-    const { data } = await knex
+
+    const limit = Number(perPage);
+    const offset = (Number(currentPage) - 1) * Number(perPage);
+
+    const data = await knex
       .select(
         'posts.id',
         'posts.entity_id',
@@ -214,7 +218,9 @@ async function getPostFeed(user_id, locationId, body) {
       )
       .where('posts.location_id', locationId)
       .orderBy('posts.created_at', 'desc')
-      .paginate({ perPage, currentPage });
+      .limit(limit)
+      .offset(offset);
+
     if (data) {
       const arrayPosts = await Promise.all(
         data.map(async objectSql => {
