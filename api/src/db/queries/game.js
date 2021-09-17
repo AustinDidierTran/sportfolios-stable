@@ -13,6 +13,59 @@ const getGameType = async gameId => {
   return game.type;
 };
 
+async function getPhaseInfo(phaseId) {
+  const [phase] = await knex('phase')
+    .select('type', 'name', 'status')
+    .where({ id: phaseId });
+  return phase;
+}
+
+async function getTeamByRosterId(id) {
+  const [team] = await knex('team_rosters')
+    .select('*')
+    .leftJoin(
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
+      '=',
+      'team_rosters.team_id',
+    )
+    .where({ id });
+
+  return team;
+}
+
+async function updateGameTeamName(ranking) {
+  let phaseId = null;
+
+  if (ranking.current_phase) {
+    phaseId = ranking.current_phase;
+  } else {
+    phaseId = ranking.phase_id;
+  }
+  const { type, name: phaseName, status } = await getPhaseInfo(
+    phaseId,
+  );
+
+  let fullName = `${ranking.initial_position}. ${phaseName}`;
+
+  if (ranking.roster_id) {
+    const { name: teamName } = await getTeamByRosterId(
+      ranking.roster_id,
+    );
+    if (type === PHASE_TYPE_ENUM.ELIMINATION_BRACKET) {
+      fullName = `${ranking.initial_position}. ${teamName}`;
+    } else if (status == PHASE_STATUS_ENUM.STARTED) {
+      fullName = teamName;
+    } else {
+      fullName = `${ranking.initial_position}. ${phaseName} (${teamName})`;
+    }
+  }
+
+  await knex('game_teams')
+    .update({ name: fullName })
+    .where({ ranking_id: ranking.ranking_id });
+}
+
 // Route when score and spirit has been added manually
 /**
  *
@@ -79,8 +132,7 @@ export const updateTeamGameScores = async (gameId, rosters) => {
       );
 
       //update winner and loser position
-      let ranking0 = null;
-      let ranking1 = null;
+
       let posTeam0 = winnerPos;
       let posTeam1 = loserPos;
 
@@ -95,7 +147,6 @@ export const updateTeamGameScores = async (gameId, rosters) => {
         .where({
           ranking_id: team0.ranking_id,
         });
-
       await knex('phase_rankings')
         .update({
           final_position: posTeam0,
@@ -105,7 +156,7 @@ export const updateTeamGameScores = async (gameId, rosters) => {
           current_phase: t0.phase_id,
         });
 
-      [ranking0] = await knex('elimination_bracket')
+      const [ranking0] = await knex('elimination_bracket')
         .update({
           roster_id: team0.roster_id,
         })
@@ -133,7 +184,7 @@ export const updateTeamGameScores = async (gameId, rosters) => {
           current_phase: t1.phase_id,
         });
 
-      [ranking1] = await knex('elimination_bracket')
+      const [ranking1] = await knex('elimination_bracket')
         .update({
           roster_id: team1.roster_id,
         })
