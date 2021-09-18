@@ -341,3 +341,49 @@ export const updateTeamGameScores = async (gameId, rosters) => {
   //   );
   // }
 };
+
+export const isSpiritAlreadySubmmited = async (
+  gameId,
+  submitedByRoster,
+  submittedForRoster,
+) => {
+  const [{ count }] = await knex('spirit_submission')
+    .count()
+    .where({
+      game_id: gameId,
+      submitted_by_roster: submitedByRoster,
+      submitted_for_roster: submittedForRoster,
+    });
+
+  return count !== 0;
+};
+
+export const submitSpiritScore = async ({
+  submittedByPerson,
+  submittedByRoster,
+  submittedForRoster,
+  gameId,
+  spiritScore,
+  comment,
+}) => {
+  return knex('spirit_submission').insert({
+    submitted_by_roster: submittedByRoster,
+    submitted_by_person: submittedByPerson,
+    submitted_for_roster: submittedForRoster,
+    game_id: gameId,
+    comment,
+    spirit_score: spiritScore,
+  });
+};
+
+export const updateGameSpirit = async ({
+  submittedForRoster,
+  gameId,
+  spiritScore,
+}) => {
+  return knex('game_teams')
+    .update({
+      spirit: spiritScore,
+    })
+    .where({ game_id: gameId, roster_id: submittedForRoster });
+};

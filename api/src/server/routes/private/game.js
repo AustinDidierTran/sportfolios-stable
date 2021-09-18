@@ -5,6 +5,15 @@ import * as service from '../../service/game.js';
 const router = new Router();
 const BASE_URL = '/api/game';
 
+router.post(`${BASE_URL}/spirit`, async ctx => {
+  const res = await service.submitSpiritScore(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  ctx.body = { data: res };
+});
+
 /**
  * Event admins who update scores
  */
