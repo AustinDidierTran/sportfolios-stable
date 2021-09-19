@@ -1,13 +1,21 @@
 import knex from '../connection.js';
-import { getEntity, getEmailPerson, getPaymentOption } from './entity.js'
 import {
-  STATUS_ENUM,
-} from '../../../../common/enums/index.js';
+  getEntity,
+  getEmailPerson,
+  getPaymentOption,
+} from './entity.js';
+import { STATUS_ENUM } from '../../../../common/enums/index.js';
+import moment from 'moment';
 
 async function getAllPeopleRegisteredNotInTeams(eventId) {
   const subquery = knex('event_rosters')
     .select('person_id')
-    .join('roster_players', 'roster_players.roster_id', '=', 'event_rosters.roster_id')
+    .join(
+      'roster_players',
+      'roster_players.roster_id',
+      '=',
+      'event_rosters.roster_id',
+    )
     .where({
       event_id: eventId,
     });
@@ -15,16 +23,23 @@ async function getAllPeopleRegisteredNotInTeams(eventId) {
   const people = await knex('event_persons')
     .select('*')
     .where({
-      'event_id': eventId,
+      event_id: eventId,
     })
-    .andWhere(
-      'person_id', 'not in', subquery
-    );
+    .andWhere('person_id', 'not in', subquery);
   return people;
 }
 
+const getStripeInvoiceItem = async invoiceItemId => {
+  const [res] = await knex('stripe_invoice_item')
+    .select('*')
+    .where({ invoice_item_id: invoiceItemId });
+  return res;
+};
 
-export async function getAllPeopleRegisteredNotInTeamsInfos(eventId, userId) {
+export async function getAllPeopleRegisteredNotInTeamsInfos(
+  eventId,
+  userId,
+) {
   const people = await getAllPeopleRegisteredNotInTeams(eventId);
 
   const [event] = await knex('events_infos')
@@ -106,7 +121,6 @@ export async function getAllPeopleRegisteredNotInTeamsInfos(eventId, userId) {
   });
   return res;
 }
-
 
 export const getEventPaymentOption = async stripePriceId => {
   let [option] = await knex('event_payment_options')
