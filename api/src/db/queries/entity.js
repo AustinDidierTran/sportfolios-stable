@@ -1427,7 +1427,11 @@ async function getAllTeamsRegisteredInfos(eventId, pills, userId) {
       }
       const entity = (await getEntity(t.team_id, userId)).basicInfos;
       const email = await getTeamCreatorEmail(t.team_id);
-      const players = await getRoster(t.roster_id, true);
+      const players = await getRoster(
+        t.roster_id,
+        true,
+        event.creator_id,
+      );
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.payment_option_id);
       const role = await getRoleRoster(t.roster_id, userId);
@@ -1522,12 +1526,22 @@ async function getAllTeamsRegisteredInfos(eventId, pills, userId) {
 async function getAllTeamsAcceptedInfos(eventId, userId) {
   const teams = await getAllTeamsAcceptedRegistered(eventId);
 
+  const [event] = await knex('events_infos')
+    .select('creator_id')
+    .where({
+      id: eventId,
+    });
+
   const res = await Promise.all(
     teams.map(async t => {
       const entity = (await getEntity(t.team_id, userId)).basicInfos;
 
       const emails = await getEmailsEntity(t.team_id);
-      const players = await getRoster(t.roster_id, true);
+      const players = await getRoster(
+        t.roster_id,
+        true,
+        event.creator_id,
+      );
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.payment_option_id);
       const role = await getRoleRoster(t.roster_id, userId);
@@ -1681,8 +1695,8 @@ async function getRemainingSpots(eventId) {
   const remainingSpots = Math.max(
     0,
     Number(event.maximum_spots) -
-    Number(countRosters) -
-    Number(countPersons),
+      Number(countRosters) -
+      Number(countPersons),
   );
 
   return remainingSpots;
@@ -1733,7 +1747,7 @@ async function getRegistrationStatus(rosterId) {
   return registration.registration_status;
 }
 
-async function getRoster(rosterId, withSub) {
+async function getRoster(rosterId, withSub, creatorId = '') {
   let whereCond = { roster_id: rosterId };
   if (!withSub) {
     whereCond.is_sub = false;
@@ -1749,6 +1763,24 @@ async function getRoster(rosterId, withSub) {
   //TODO: Make a call to know if has created an account or is child account
   const status = TAG_TYPE_ENUM.REGISTERED;
 
+  const playerIds = roster.map(p => p.person_id);
+
+  let memberships = [];
+
+  if (creatorId) {
+    memberships = await knex('memberships')
+      .whereIn('person_id', playerIds)
+      .andWhere('organization_id', creatorId);
+  }
+
+  const date = new Date();
+
+  const activeMemberships = memberships.filter(
+    m =>
+      moment(m.created_at).isSameOrBefore(moment(date), 'day') &&
+      moment(m.expiration_date).isSameOrAfter(moment(date), 'day'),
+  );
+
   const props = roster.map(player => ({
     id: player.id,
     name: player.name,
@@ -1759,6 +1791,9 @@ async function getRoster(rosterId, withSub) {
     status: status,
     paymentStatus: player.payment_status,
     invoiceItemId: player.invoice_item_id,
+    isMember:
+      activeMemberships.filter(m => m.person_id === player.person_id)
+        .length > 0,
   }));
 
   return props;
@@ -2226,9 +2261,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-      entityId: p.entity_id,
-      completeName: `${p.name} ${p.surname}`,
-    }))
+        entityId: p.entity_id,
+        completeName: `${p.name} ${p.surname}`,
+      }))
     : undefined;
 }
 
@@ -2708,7 +2743,7 @@ async function getGraphAmountGeneratedByEvent(
     };
   });
 
-  var data = dataIncome.map(function (v, i) {
+  var data = dataIncome.map(function(v, i) {
     return {
       incomeDate: v.incomeDate,
       totalIncomeAmount: v.totalIncomeAmount,
@@ -5438,7 +5473,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -5478,7 +5513,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function () {
+    .join('game_teams', function() {
       this.on(
         'game_teams.roster_id',
         '!=',
