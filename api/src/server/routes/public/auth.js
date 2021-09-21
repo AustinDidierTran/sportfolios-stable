@@ -6,7 +6,7 @@ import * as service from '../../service/auth.js';
 const router = new Router();
 const BASE_URL = '/api/auth';
 
-router.post(`${BASE_URL}/signup`, async ctx => {
+router.post(`${BASE_URL}/signupOld`, async ctx => {
   const res = await service.signup(ctx.request.body);
 
   if (!res) {
@@ -16,8 +16,27 @@ router.post(`${BASE_URL}/signup`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/login`, async ctx => {
+router.post(`${BASE_URL}/signup`, async ctx => {
+  const res = await service.signupCognito(ctx.request.body);
+
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  } else {
+    ctx.body = { data: res };
+  }
+});
+
+router.post(`${BASE_URL}/loginOld`, async ctx => {
   const { token, userInfo } = await service.login(ctx.request.body);
+
+  if (!token) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: JSON.stringify({ token, userInfo }) };
+});
+
+router.post(`${BASE_URL}/login`, async ctx => {
+  const { token, userInfo } = await service.loginCognito(ctx.request.body);
 
   if (!token) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
