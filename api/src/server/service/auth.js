@@ -39,10 +39,8 @@ import {
   getUserIdFromAuthToken,
 } from '../../db/queries/auth.js';
 
-import Amplify from 'aws-amplify';
-
-import { validateToken } from '../utils/tokenValidation.js';
-import { adminGetUser, adminCreateUser } from '../utils/aws.js';
+import UserPool from '../utils/Cognito/UserPool.js'
+import CognitoUserPool from 'amazon-cognito-identity-js';
 
 async function signup({
   firstName,
@@ -85,35 +83,25 @@ async function signup({
   return { confirmationEmailToken };
 }
 
-export const signupAmplify = async ({
+export const signupCognito = async (
   firstName,
   lastName,
   email,
+  password,
+  redirectUrl,
   newsLetterSubscription,
-}) => {
+) => {
+  UserPool.signUp(email, password, [], null, (err, data) => {
+    if (err) console.error(err);
+    console.log(data);
+  });
 
-  try {
-
-    const data = await adminGetUser(email);
-    const isUnique = await validateEmailIsUnique(email);
-
-    if (!isUnique || !data) {
-      throw new Error(ERROR_ENUM.INVALID_EMAIL);
-    }
-
-    await createUserComplete({
-      password: ' ',
-      email,
-      name: firstName,
-      surname: lastName,
-      newsLetterSubscription,
-      idUser: data.Username
-    });
-    return STATUS_ENUM.SUCCESS;
-  } catch (error) {
-    console.log('error signing up:', error);
-  }
-
+  await createUserComplete({
+    email,
+    name: firstName,
+    surname: lastName,
+    newsLetterSubscription,
+  });
 
 }
 
@@ -159,69 +147,40 @@ async function loginWithToken(token) {
   return getBasicUserInfoFromId(userId);
 }
 
-export const loginAmplify = async ({ email, token }) => {
-  try {
-    //const user = await Amplify.Auth.signIn(email, password);
+export const loginCognito = async (email, password) => {
+  const user = new CognitoUser({
+    Username: email,
+    Pool: UserPool
+  });
 
-    const decodedToken = await validateToken(token);
-    if (!decodedToken.email) {
-      throw new Error(ERROR_ENUM.ERROR_OCCURED);
-    }
-    const userId = await getUserIdFromEmail(email);
-    const userInfo = await getBasicUserInfoFromId(userId);
-    return { userInfo };
+  const authDetails = new AuthenticationDetails({
+    Username: email,
+    Password: password
+  });
 
-    //ValidateToken(user.signInUserSession.idToken.jwtToken);
-  } catch (error) {
-    console.log('error signing in', error);
-    if (error.code === 'NotAuthorizedException') {
-    }
-    else if (error.code === 'TokenExpiredError') {
-      console.log('TokenExpiredError')
-    }
+  user.authenticateUser(authDetails, {
+    onSuccess: data => {
+      console.log("onSuccess:", data);
 
-  }
-}
+      //const userInfo = await getBasicUserInfoFromId(userId);
+    },
 
-export const migrateToCognito = async ({ email, password }) => {
-  try {
-    //const user = await Amplify.Auth.signIn(email, password);
-    try {
-      const isUnique = await adminGetUser(email);
-      if (isUnique) {
-        throw new Error(ERROR_ENUM.INVALID_EMAIL);
+    onFailure: err => {
+      console.error("onFailure:", err);
+      if (err === UsernameExistsException) {
+
+        const { token, userInfo } = login(email, password)
+        UserPool.signUp(email, password, [], null, (err, data) => {
+          if (err) console.error(err);
+          console.log(data);
+        });
       }
+    },
+
+    newPasswordRequired: data => {
+      console.log("newPasswordRequired:", data);
     }
-    catch (err) {
-      console.log(err)
-      if (err.code !== 'UserNotFoundException') {
-        throw new Error(ERROR_ENUM.ERROR_OCCURED);
-      }
-    };
-
-
-    const user = await login({ email, password })
-    console.log(user);
-    if (user) {
-      //Create the user with AdminCreateUser()
-      const res = await adminCreateUser(email, password);
-      console.log('res: ', res);
-
-      return STATUS_ENUM.SUCCESS;
-    }
-
-
-
-    //ValidateToken(user.signInUserSession.idToken.jwtToken);
-  } catch (error) {
-    console.log('error signing in', error);
-    if (error.code === 'NotAuthorizedException') {
-    }
-    else if (error.code === 'TokenExpiredError') {
-      console.log('TokenExpiredError')
-    }
-
-  }
+  });
 }
 
 async function confirmEmail({ token }) {
