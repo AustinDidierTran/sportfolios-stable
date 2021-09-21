@@ -1,4 +1,6 @@
 import { getEntity } from '../../db/queries/entity.js';
+import * as queries from '../../db/queries/organization.js';
+
 
 import {
   getOrganizationMembers as getOrganizationMembersHelper,
@@ -25,6 +27,26 @@ async function getOrganization(organizationId, userId) {
     basicInfos: res.basicInfos,
   };
 }
+
+export const getAllOrganizationsWithAdmins = async({
+  limit, 
+  page, 
+  query,
+}) => {
+  return queries.getAllOrganizationsWithAdmins(
+    Number(limit),
+    Number(page), 
+    query, 
+  );
+};
+
+export const deleteOrganization = async (id, restore = 'false') => {
+  if (restore === 'false') {
+    return queries.deleteOrganizationById(id);
+  }
+
+  return queries.restoreOrganizationById(id);
+};
 
 export {
   getOwnedEvents,

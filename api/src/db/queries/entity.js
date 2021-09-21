@@ -2410,21 +2410,7 @@ const getPhaseName = async phaseId => {
     .where({ id: phaseId });
   return name;
 };
-const getAllTheEvents = () => {
-  const events = await knex('events')
-  .select('*')
-  const eventInfo = await Promise.all(
-    events.map(async event => {
-      return {
-       name : event.name,
-       id : event.id,
-       photoUrl: entities_photo.photo_url,
-      };
-    }      
-  )
-  )
-  return eventInfo;
-};
+
 
 const getTeams = async gameId => {
   const teams = await knex('game_teams')
