@@ -39,6 +39,9 @@ import {
   getUserIdFromAuthToken,
 } from '../../db/queries/auth.js';
 
+import UserPool from '../utils/Cognito/UserPool.js'
+import CognitoUserPool from 'amazon-cognito-identity-js';
+
 async function signup({
   firstName,
   lastName,
@@ -78,6 +81,28 @@ async function signup({
     redirectUrl,
   });
   return { confirmationEmailToken };
+}
+
+export const signupCognito = async (
+  firstName,
+  lastName,
+  email,
+  password,
+  redirectUrl,
+  newsLetterSubscription,
+) => {
+  UserPool.signUp(email, password, [], null, (err, data) => {
+    if (err) console.error(err);
+    console.log(data);
+  });
+
+  await createUserComplete({
+    email,
+    name: firstName,
+    surname: lastName,
+    newsLetterSubscription,
+  });
+
 }
 
 async function login({ email, password }) {
@@ -120,6 +145,42 @@ async function loginWithToken(token) {
     return;
   }
   return getBasicUserInfoFromId(userId);
+}
+
+export const loginCognito = async (email, password) => {
+  const user = new CognitoUser({
+    Username: email,
+    Pool: UserPool
+  });
+
+  const authDetails = new AuthenticationDetails({
+    Username: email,
+    Password: password
+  });
+
+  user.authenticateUser(authDetails, {
+    onSuccess: data => {
+      console.log("onSuccess:", data);
+
+      //const userInfo = await getBasicUserInfoFromId(userId);
+    },
+
+    onFailure: err => {
+      console.error("onFailure:", err);
+      if (err === UsernameExistsException) {
+
+        const { token, userInfo } = login(email, password)
+        UserPool.signUp(email, password, [], null, (err, data) => {
+          if (err) console.error(err);
+          console.log(data);
+        });
+      }
+    },
+
+    newPasswordRequired: data => {
+      console.log("newPasswordRequired:", data);
+    }
+  });
 }
 
 async function confirmEmail({ token }) {
