@@ -6,7 +6,6 @@ const BASE_URL = '/api/admin/person';
 
 router.get(BASE_URL, async ctx => {
   const data = await service.getAllPeopleWithAdmins(ctx.query);
-
   ctx.body = { data };
 });
 

@@ -6,72 +6,49 @@ export const getAllPeopleWithAdmins = async (
   page = 1,
   query = '',
 ) => {
-  const people = await knex
-    .select(
+  const people = await knex.select(
       'entities.id',
       'entities_general_infos.name',
+      'entities_general_infos.surname',
       'entities_general_infos.photo_url',
       'entities.deleted_at',
-      knex.raw('json_agg(entity_admins) AS entity_admins'),
     )
     .from(
-      knex
-        .select(
-          'entities_role.entity_id',
-          'entities_role.entity_id_admin',
-          'name',
-          'surname',
-          'photo_url',
-        )
-        .from('entities_role')
-        .leftJoin(
-          'entities_general_infos',
-          'entities_general_infos.entity_id',
-          '=',
-          'entities_role.entity_id_admin',
-        )
-        .as('entity_admins'),
+      knex.select(
+        'entity_id',
+        'name',
+        'surname',
+        'photo_url',
+        knex.raw(
+          "string_agg(entities_general_infos.name || ' ' || entities_general_infos.surname, ' ') AS complete_name",
+        ),
+      ).from('entities_general_infos')
+      .groupBy('entity_id', 'name', 'surname', 'photo_url')
+      .as('entities_general_infos')
     )
     .leftJoin(
       'entities',
-      'entities.id',
-      '=',
-      'entity_admins.entity_id',
-    )
-    .leftJoin(
-      'entities_general_infos',
       'entities_general_infos.entity_id',
       '=',
       'entities.id',
     )
     .where('entities.type', GLOBAL_ENUM.PERSON)
-    .where('entities_general_infos.name', 'ILIKE', `%${query}%`)
+    .andWhere('entities_general_infos.complete_name', 'ILIKE', `%${query}%`)
     .limit(limit)
-    .offset(limit * Math.max(0, page - 1))
-    .groupBy(
-      'entities.id',
-      'entities_general_infos.name',
-      'entities_general_infos.photo_url',
-      'entities.deleted_at',
-    );
+    .offset(limit * Math.max(0, page - 1));
 
   const [{ count }] = await knex('entities')
     .count('*')
     .where('type', GLOBAL_ENUM.PERSON);
 
-  return {
+  return { 
     count: Number(count),
     people: people.map(r => ({
       id: r.id,
       name: r.name,
+      surname:r.surname,
       photoUrl: r.photo_url,
       deletedAt: r.deleted_at,
-      admins: r.entity_admins.map(admin => ({
-        id: admin.entity_id_admin,
-        name: admin.name,
-        surname: admin.surname,
-        photoUrl: admin.photo_url,
-      })),
     })),
   }; 
 };
@@ -86,5 +63,6 @@ export const deletePersonById = id => {
   return knex('entities')
     .del()
     .where({ id });
+
 };
- 
+  
