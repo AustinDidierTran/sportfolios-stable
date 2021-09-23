@@ -716,7 +716,7 @@ async function addTeamToEvent(body, userId) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 
-  if (numberOfTeamsRemaining < 1) {
+  if (numberOfTeamsRemaining < 1 && numberOfTeamsRemaining !== -1) {
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
 

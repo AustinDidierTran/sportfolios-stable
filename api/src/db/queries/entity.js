@@ -1675,7 +1675,7 @@ async function getRemainingSpots(eventId) {
     .where({ id: eventId });
 
   if (!event.maximum_spots) {
-    return null;
+    return -1;
   }
 
   const remainingSpots = Math.max(
