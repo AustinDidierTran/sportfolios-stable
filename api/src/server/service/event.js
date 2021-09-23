@@ -53,6 +53,32 @@ export const getEvent = async (eventId, userId) => {
   };
 };
 
+
+
+
+export const getAllEventsWithAdmins = async({
+  limit, 
+  page, 
+  query,
+}) => {
+  return queries.getAllEventsWithAdmins(
+    Number(limit),
+    Number(page), 
+    query, 
+  );
+};
+
+export const deleteEvent = async (id, restore = 'false') => {
+  if (restore === 'false') {
+    return queries.deleteEventById(id);
+  }
+
+  return queries.restoreEventById(id);
+};
+
+
+
+
 export const getAllPeopleRegisteredNotInTeamsInfos = async (eventId, userId) => {
   const p = await queries.getAllPeopleRegisteredNotInTeamsInfos(eventId, userId);
   return p;

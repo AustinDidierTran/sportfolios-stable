@@ -26,4 +26,7 @@ router.get(`${BASE_URL}/getAllPeopleRegisteredNotInTeamsInfos`, async ctx => {
   ctx.body = { data: people };
 });
 
+
+
+
 export default router;

@@ -1,4 +1,5 @@
 import knex from '../connection.js';
+import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
 import {
   getEntity,
   getEmailPerson,
@@ -177,4 +178,92 @@ export const getRankings = async eventId => {
       }))
       .sort((a, b) => b.spirit - a.spirit),
   };
+};
+
+
+export const getAllEventsWithAdmins = async (
+  limit = 10,
+  page = 1,
+  query = '',
+) => {
+  const events = await knex
+    .select(
+      'entities.id',
+      'entities_general_infos.name',
+      'entities_general_infos.photo_url',
+      'entities.deleted_at',
+      knex.raw('json_agg(entity_admins) AS entity_admins'),
+    )
+    .from(
+      knex
+        .select(
+          'entities_role.entity_id',
+          'entities_role.entity_id_admin',
+          'name',
+          'surname',
+          'photo_url',
+        )
+        .from('entities_role')
+        .leftJoin(
+          'entities_general_infos',
+          'entities_general_infos.entity_id',
+          '=',
+          'entities_role.entity_id_admin',
+        )
+        .as('entity_admins'),
+    )
+    .leftJoin(
+      'entities',
+      'entities.id',
+      '=',
+      'entity_admins.entity_id',
+    )
+    .leftJoin(
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
+      '=',
+      'entities.id',
+    )
+    .where('entities.type', GLOBAL_ENUM.EVENT)
+    .where('entities_general_infos.name', 'ILIKE', `%${query}%`)
+    .limit(limit)
+    .offset(limit * Math.max(0, page - 1))
+    .groupBy(
+      'entities.id',
+      'entities_general_infos.name',
+      'entities_general_infos.photo_url',
+      'entities.deleted_at',
+    );
+
+  const [{ count }] = await knex('entities')
+    .count('*')
+    .where('type', GLOBAL_ENUM.EVENT);
+
+  return {
+    count: Number(count),
+    events: events.map(r => ({
+      id: r.id,
+      name: r.name,
+      photoUrl: r.photo_url,
+      deletedAt: r.deleted_at,
+      admins: r.entity_admins.map(admin => ({
+        id: admin.entity_id_admin,
+        name: admin.name,
+        surname: admin.surname,
+        photoUrl: admin.photo_url,
+      })),
+    })),
+  };
+};
+
+export const restoreTeamById = id => {
+  return knex('entities')
+    .update('deleted_at', null)
+    .where({ id });
+};
+
+export const deleteTeamById = id => {
+  return knex('entities')
+    .del()
+    .where({ id });
 };

@@ -2446,6 +2446,7 @@ const getPhaseName = async phaseId => {
   return name;
 };
 
+
 const getTeams = async gameId => {
   const teams = await knex('game_teams')
     .select('*')
