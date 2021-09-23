@@ -24,12 +24,14 @@ async function createUserComplete(body) {
     surname,
     facebook_id,
     newsLetterSubscription,
+    cognitoId,
   } = body;
 
   await knex.transaction(async trx => {
     // Create user
+
     const [user_id] = await knex('users')
-      .insert({ password })
+      .insert([{ password: password, cognito_id: cognitoId }])
       .returning('id')
       .transacting(trx);
 
@@ -142,6 +144,12 @@ async function getUserIdFromAuthToken(token) {
     .whereRaw('expires_at > now()');
 
   return user_id;
+}
+
+export const updateCognitoIdUser = async ({ idUser, cognitoId }) => {
+  await knex('users')
+    .update({ cognito_id: cognitoId })
+    .where({ id: idUser });
 }
 
 export {

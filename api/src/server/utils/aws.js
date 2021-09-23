@@ -38,4 +38,10 @@ const signS3Request = async (fileName, fileType) => {
   return { signedRequest, url };
 };
 
+export const getCognitoidentityserviceprovider = async () => {
+  aws.config.region = 'us-west-2'; // Region
+
+  return new aws.CognitoIdentityServiceProvider()
+};
+
 export { signS3Request };
