@@ -52,7 +52,6 @@ const hasStripeBankAccount = async (entityId) => {
   }
   return false;
 };
-//essaie
 const getEventAccounts = async (eventId) => {
   const admins = await getCreators(eventId);
   const res = await Promise.all(

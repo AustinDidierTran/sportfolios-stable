@@ -8,5 +8,3 @@ import person from './person.js';
 export default [admin, googleAnalytics, team, event, person, organization];
 
 
-//vraiment juste event? 
-//pourquoi on export ca? 
