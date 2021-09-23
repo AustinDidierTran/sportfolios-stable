@@ -16,8 +16,18 @@ router.post(`${BASE_URL}/signupOld`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/signup`, async ctx => {
+router.post(`${BASE_URL}/signupCognito`, async ctx => {
   const res = await service.signupCognito(ctx.request.body);
+
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  } else {
+    ctx.body = { data: res };
+  }
+});
+
+router.post(`${BASE_URL}/signup`, async ctx => {
+  const res = await service.signupAmplify(ctx.request.body);
 
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -36,13 +46,14 @@ router.post(`${BASE_URL}/loginOld`, async ctx => {
 });
 
 router.post(`${BASE_URL}/login`, async ctx => {
-  const { token, userInfo } = await service.loginCognito(ctx.request.body);
+  const { token, userInfo } = await service.loginAmplify(ctx.request.body);
 
   if (!token) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   ctx.body = { data: JSON.stringify({ token, userInfo }) };
 });
+
 
 router.get(`${BASE_URL}/loginWithToken`, async ctx => {
   const res = await service.loginWithToken(ctx.query.token);
@@ -70,9 +81,28 @@ router.post(`${BASE_URL}/confirmEmail`, async ctx => {
   ctx.body = { data: res };
 });
 
+// Confirm account
+router.post(`${BASE_URL}/confirmAccount`, async ctx => {
+  const res = await service.confirmAccountCognito(ctx.request.body);
+
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: res };
+});
+
 // Resend confirmation email
-router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
+router.post(`${BASE_URL}/sendConfirmationEmailOld`, async ctx => {
   const res = await service.resendConfirmationEmail(ctx.request.body);
+
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: res };
+});
+
+router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
+  const res = await service.resendConfirmationEmailCognito(ctx.request.body);
 
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
