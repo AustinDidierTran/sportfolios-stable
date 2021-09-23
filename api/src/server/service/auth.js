@@ -37,10 +37,27 @@ import {
   setRecoveryTokenToUsed,
   validateEmailIsUnique,
   getUserIdFromAuthToken,
+  updateCognitoIdUser,
 } from '../../db/queries/auth.js';
 
-import UserPool from '../utils/Cognito/UserPool.js'
-import CognitoUserPool from 'amazon-cognito-identity-js';
+import AmazonCognitoIdentity from 'amazon-cognito-identity-js';
+import { USER_POOL_ID, CLIENT_ID } from '../../../../conf.js';
+import userPool from '../utils/Cognito/UserPool.js';
+
+import { INDENTITY_POOL_ID, REGION } from '../../../../conf.js';
+import Amplify from 'aws-amplify';
+import { getCognitoidentityserviceprovider } from '../utils/aws.js'
+import * as jwt from "jsonwebtoken";
+import * as jwkToPem from 'jwk-to-pem';
+import aws from 'aws-sdk';
+
+Amplify.default.configure({
+  Auth: {
+    region: REGION,
+    userPoolId: USER_POOL_ID,
+    userPoolWebClientId: CLIENT_ID,
+  },
+});
 
 async function signup({
   firstName,
@@ -83,25 +100,36 @@ async function signup({
   return { confirmationEmailToken };
 }
 
-export const signupCognito = async (
+export const signupAmplify = async ({
   firstName,
   lastName,
   email,
   password,
   redirectUrl,
   newsLetterSubscription,
-) => {
-  UserPool.signUp(email, password, [], null, (err, data) => {
-    if (err) console.error(err);
-    console.log(data);
-  });
+}) => {
 
-  await createUserComplete({
-    email,
-    name: firstName,
-    surname: lastName,
-    newsLetterSubscription,
-  });
+  try {
+    const { user } = await Amplify.Auth.signUp({
+      username: email,
+      password: password,
+
+    });
+    if (user) {
+      await createUserComplete({
+        password: ' ',
+        email,
+        name: firstName,
+        surname: lastName,
+        newsLetterSubscription,
+        idUser: data.userSub
+      });
+      return STATUS_ENUM.SUCCESS;
+    }
+  } catch (error) {
+    console.log('error signing up:', error);
+  }
+
 
 }
 
@@ -147,40 +175,50 @@ async function loginWithToken(token) {
   return getBasicUserInfoFromId(userId);
 }
 
-export const loginCognito = async (email, password) => {
-  const user = new CognitoUser({
-    Username: email,
-    Pool: UserPool
-  });
+export const loginAmplify = async ({ email, password }) => {
+  try {
+    const user = await Amplify.Auth.signIn(email, password);
+    const token = user.signInUserSession.idToken.jwtToken;
+    const userId = await getUserIdFromEmail(user.attributes.email);
+    const userInfo = await getBasicUserInfoFromId(userId);
+    var jwk = aws.getJwkFromAWS();
+    var pem = jwkToPem(jwk);
+    jwt.verify(token, pem, { algorithms: ['RS256'] }, function (err, decodedToken) {
+    });
 
-  const authDetails = new AuthenticationDetails({
-    Username: email,
-    Password: password
-  });
+    return { token, userInfo };
+  } catch (error) {
+    console.log('error signing in', error);
+    if (error.code === 'NotAuthorizedException') {
 
-  user.authenticateUser(authDetails, {
-    onSuccess: data => {
-      console.log("onSuccess:", data);
-
-      //const userInfo = await getBasicUserInfoFromId(userId);
-    },
-
-    onFailure: err => {
-      console.error("onFailure:", err);
-      if (err === UsernameExistsException) {
-
-        const { token, userInfo } = login(email, password)
-        UserPool.signUp(email, password, [], null, (err, data) => {
-          if (err) console.error(err);
-          console.log(data);
-        });
+      const res = await login({ email, password })
+      //var cognitoidentityserviceprovider = new CognitoIdentityServiceProvider();
+      if (res) {
+        //Create the user with AdminCreateUser()
+        const params = {
+          UserPoolId: USER_POOL_ID,
+          Username: email,
+          MessageAction: 'SUPPRESS', //suppress the sending of an invitation to the user
+          TemporaryPassword: password,
+          UserAttributes: [
+            { Name: 'email', Value: email }, //using sign-in with email, so username is email
+            { Name: 'email_verified', Value: 'true' }]
+        };
+        var cognitoidentityserviceprovider = await getCognitoidentityserviceprovider();
+        cognitoidentityserviceprovider.adminCreateUser(params, function (err, data) {
+          if (err) {
+            console.log('Failed to Create migrating user in User Pool: ' + email);
+            console.log(err)
+            callback(err);
+            return;
+          } else {
+            //Successfully created the migrating user in the User Pool
+            console.log("Successful AdminCreateUser for migrating user: " + email);
+          }
+        })
       }
-    },
-
-    newPasswordRequired: data => {
-      console.log("newPasswordRequired:", data);
     }
-  });
+  }
 }
 
 async function confirmEmail({ token }) {
@@ -207,20 +245,9 @@ async function confirmEmail({ token }) {
 }
 
 export const confirmAccountAmplify = async ({ email, code }) => {
-  //need to be done frontend
   try {
     await Amplify.Auth.confirmSignUp(email, code);
-    const authToken = generateToken();
-    const userId = await getUserIdFromEmail(email);
-    await knex('user_token').insert({
-      user_id: userId,
-      token_id: authToken,
-      expires_at: new Date(Date.now() + EXPIRATION_TIMES.AUTH_TOKEN),
-    });
-
-    const userInfo = await getBasicUserInfoFromId(userId);
-
-    return { token: authToken, userInfo };
+    return STATUS_ENUM.SUCCESS;
   } catch (error) {
     console.log('error confirming sign up', error);
   }

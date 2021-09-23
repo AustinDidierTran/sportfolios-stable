@@ -146,10 +146,10 @@ async function getUserIdFromAuthToken(token) {
   return user_id;
 }
 
-export const updateCognitoIdUser = async ({ userId, cognitoId }) => {
+export const updateCognitoIdUser = async ({ idUser, cognitoId }) => {
   await knex('users')
     .update({ cognito_id: cognitoId })
-    .where({ id: userId });
+    .where({ id: idUser });
 }
 
 export {

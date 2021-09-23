@@ -39,48 +39,10 @@ const signS3Request = async (fileName, fileType) => {
   return { signedRequest, url };
 };
 
-export const adminGetUser = async (email) => {
-  aws.config.region = 'us-east-2'; // Region
-  const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider()
-  const params = {
-    UserPoolId: 'us-east-2_YFfg7m94Z',
-    Username: email,
-  };
+export const getCognitoidentityserviceprovider = async () => {
+  aws.config.region = 'us-west-2'; // Region
 
-  const data = new Promise((resolve, reject) => cognitoidentityserviceprovider.adminGetUser(params, (err, data) => {
-    if (err) {
-      reject(err);
-    }
-    resolve(data);
-  }));
-  return data.then((value) => {
-    return value
-  });
-};
-
-export const adminCreateUser = async (email, password) => {
-  aws.config.region = 'us-east-2'; // Region
-  const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider()
-
-  const params = {
-    UserPoolId: USER_POOL_ID,
-    Username: email,
-    MessageAction: 'SUPPRESS', //suppress the sending of an invitation to the user
-    TemporaryPassword: password,
-    UserAttributes: [
-      { Name: 'email', Value: email }, //using sign-in with email, so username is email
-      { Name: 'email_verified', Value: 'true' }]
-  };
-  const data = new Promise((resolve, reject) => cognitoidentityserviceprovider.adminCreateUser(params, (err, data) => {
-    if (err) {
-      reject(err);
-    }
-    resolve(data);
-  }));
-
-  return data.then((value) => {
-    return value
-  });
+  return new aws.CognitoIdentityServiceProvider()
 };
 
 export { signS3Request };
