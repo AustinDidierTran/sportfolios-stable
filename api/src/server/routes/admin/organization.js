@@ -10,6 +10,15 @@ router.get(BASE_URL, async ctx => {
   ctx.body = { data };
 });
 
+router.put(`${BASE_URL}/verify`, async ctx => {
+  const verified = await service.verifyOrganization(
+    ctx.query,
+    ctx.body.userInfo.id,
+  );
+
+  ctx.body = { verified };
+});
+
 router.del(BASE_URL, async ctx => {
   await service.deleteOrganization(ctx.query.id, ctx.query.restore);
 });
