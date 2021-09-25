@@ -1,11 +1,6 @@
 import knex from '../connection.js';
 import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
-import { getEntity, getEmailPerson, getPaymentOption } from './entity-deprecate.js'
-import {
-  getEntity,
-  getEmailPerson,
-  getPaymentOption,
-} from './entity.js';
+import { getEntity, getEmailPerson, getPaymentOption } from './entity-deprecate.js';
 import { STATUS_ENUM } from '../../../../common/enums/index.js';
 import moment from 'moment';
 
@@ -267,7 +262,7 @@ export const deleteTeamById = id => {
   return knex('entities')
     .del()
     .where({ id });
-};}
+};
 
 export const getEventInfoById = async (eventId) => {
   const [event] = await knex('events_infos')
