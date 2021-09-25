@@ -1,4 +1,4 @@
-import { getEntity } from '../../db/queries/entity.js';
+import { getEntity } from '../../db/queries/entity-deprecate.js';
 import * as queries from '../../db/queries/organization.js';
 
 

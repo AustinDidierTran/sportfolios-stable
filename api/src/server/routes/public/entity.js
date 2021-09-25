@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import * as service from '../../service/entity.js';
+import * as service from '../../service/entity-deprecate.js';
 import * as organizationService from '../../service/organization.js';
 import * as eventService from '../../service/event.js';
 import { GLOBAL_ENUM } from '../../../../../common/enums/index.js';
@@ -68,6 +68,7 @@ router.get(`${BASE_URL}/eventInfos`, async ctx => {
   ctx.body = { data: event };
 });
 
+//exported
 router.get(`${BASE_URL}/teamExercises`, async ctx => {
   const exercise = await service.getTeamExercises(ctx.query.teamId);
 
@@ -77,6 +78,7 @@ router.get(`${BASE_URL}/teamExercises`, async ctx => {
   ctx.body = { data: exercise };
 });
 
+//exported
 router.get(`${BASE_URL}/sessionExercises`, async ctx => {
   const exercise = await service.getSessionExercises(
     ctx.query.sessionId,
@@ -88,6 +90,7 @@ router.get(`${BASE_URL}/sessionExercises`, async ctx => {
   ctx.body = { data: exercise };
 });
 
+//exported
 router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
   const userId = getUserId(ctx);
   const teams = await service.getAllTeamsRegisteredInfos(
@@ -101,6 +104,8 @@ router.get(`${BASE_URL}/allTeamsRegisteredInfos`, async ctx => {
   }
   ctx.body = { data: teams };
 });
+
+//exported
 router.get(`${BASE_URL}/allTeamsAcceptedInfos`, async ctx => {
   const userId = getUserId(ctx);
   const teams = await service.getAllTeamsAcceptedInfos(

@@ -2,7 +2,7 @@ import {
   addAllFields as addAllFieldsHelper,
   addAllTimeslots as addAllTimeslotsHelper,
   addAllGames as addAllGamesHelper,
-} from '../../db/queries/entity.js';
+} from '../../db/queries/entity-deprecate.js';
 
 import { isAllowed } from '../../db/queries/utils.js';
 import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';

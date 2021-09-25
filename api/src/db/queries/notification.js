@@ -1,6 +1,6 @@
 import knex from '../connection.js';
 import { NOTIFICATION_TYPE } from '../../../../common/enums/index.js';
-import { getRosterName, getRostersNames } from './entity.js';
+import { getRosterName, getRostersNames } from './entity-deprecate.js';
 
 const addNotification = async infos => {
   return knex('notifications').insert(infos);

@@ -2,7 +2,7 @@ import knex from '../connection.js';
 import { v1 as uuidv1 } from 'uuid';
 import { EXPIRATION_TIMES } from '../../../../common/constants/index.js';
 import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
-import { getEntityRole } from './entity.js';
+import { getEntityRole } from './entity-deprecate.js';
 
 const generateToken = () => {
   return uuidv1();
