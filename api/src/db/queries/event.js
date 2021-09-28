@@ -1,6 +1,10 @@
 import knex from '../connection.js';
 import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
-import { getEntity, getEmailPerson, getPaymentOption } from './entity-deprecate.js';
+import {
+  getEntity,
+  getEmailPerson,
+  getPaymentOption,
+} from './entity-deprecate.js';
 import { STATUS_ENUM } from '../../../../common/enums/index.js';
 import moment from 'moment';
 
@@ -176,7 +180,6 @@ export const getRankings = async eventId => {
   };
 };
 
-
 export const getAllEventsWithAdmins = async (
   limit = 10,
   page = 1,
@@ -264,16 +267,16 @@ export const deleteTeamById = id => {
     .where({ id });
 };
 
-export const getEventInfoById = async (eventId) => {
+export const getEventInfoById = async eventId => {
   const [event] = await knex('events_infos')
     .select('creator_id')
     .where({
       id: eventId,
     });
   return event;
-}
+};
 
-export const getTeamsRegisteredInfo = async (eventId) => {
+export const getTeamsRegisteredInfo = async eventId => {
   return await knex('event_rosters')
     .select(
       'event_rosters.payment_option_id as paymentOptionId',
@@ -289,32 +292,46 @@ export const getTeamsRegisteredInfo = async (eventId) => {
       'event_rosters.invoice_item_id as invoiceItemId',
       'event_rosters.status as status',
       'event_rosters.created_at as registeredOn',
-      'event_rosters.informations as informations'
+      'event_rosters.informations as informations',
     )
     .where('event_rosters.event_id', eventId)
-    .leftJoin('stripe_invoice_item', function () {
-      this.on('stripe_invoice_item.invoice_item_id', '=', 'event_rosters.invoice_item_id').onNotNull('event_rosters.invoice_item_id')
+    .leftJoin('stripe_invoice_item', function() {
+      this.on(
+        'stripe_invoice_item.invoice_item_id',
+        '=',
+        'event_rosters.invoice_item_id',
+      ).onNotNull('event_rosters.invoice_item_id');
     })
-    .join('entities_role', function () {
-      this.on('entities_role.entity_id', '=', 'event_rosters.team_id').andOn('entities_role.role', '=', 1)
+    .join('entities_role', function() {
+      this.on(
+        'entities_role.entity_id',
+        '=',
+        'event_rosters.team_id',
+      ).andOn('entities_role.role', '=', 1);
     })
-    .join('user_entity_role', function () {
-      this.on('user_entity_role.entity_id', '=', 'entities_role.entity_id_admin')
+    .join('user_entity_role', function() {
+      this.on(
+        'user_entity_role.entity_id',
+        '=',
+        'entities_role.entity_id_admin',
+      );
     })
-    .leftJoin('user_email',
-      'user_email.user_id', '=', 'user_entity_role.user_id',
+    .leftJoin(
+      'user_email',
+      'user_email.user_id',
+      '=',
+      'user_entity_role.user_id',
     );
-}
+};
 
-export const getPaymentOptionById = async (paymentOptionId) => {
+export const getPaymentOptionById = async paymentOptionId => {
   const [option] = await knex('event_payment_options')
     .select('*')
     .where({ id: paymentOptionId });
   return option;
-}
+};
 
-
-export const getTeamsAcceptedRegistered = async (eventId) => {
+export const getTeamsAcceptedRegistered = async eventId => {
   const teams = await knex('event_rosters')
     .select('*')
     .whereIn('registration_status', [
@@ -325,9 +342,9 @@ export const getTeamsAcceptedRegistered = async (eventId) => {
       event_id: eventId,
     });
   return teams;
-}
+};
 
-export const getRegistrationStatus = async (rosterId) => {
+export const getRegistrationStatus = async rosterId => {
   const [registration] = await knex('event_rosters')
     .select('registration_status')
     .where({
@@ -335,4 +352,23 @@ export const getRegistrationStatus = async (rosterId) => {
     });
 
   return registration.registration_status;
-}
+};
+
+export const getTeamNameUniquenessInEvent = async (name, eventId) => {
+  const [{ count }] = await knex('event_rosters')
+    .count('*')
+    .leftJoin(
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
+      '=',
+      'event_rosters.team_id',
+    )
+    .where({ event_id: eventId })
+    .andWhere(
+      knex.raw('lower("event_entities_general_infos.name'),
+      '=',
+      name.toLowerCase(),
+    );
+
+  return count === 0;
+};
