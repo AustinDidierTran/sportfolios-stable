@@ -4,9 +4,7 @@ import {
   getRemainingSpots,
   getOptions,
 } from '../../db/queries/entity-deprecate.js';
-import {
-  getPaymentOptionById,
-} from '../../db/queries/event.js';
+import { getPaymentOptionById } from '../../db/queries/event.js';
 
 import * as queries from '../../db/queries/event.js';
 
@@ -56,18 +54,15 @@ export const getEvent = async (eventId, userId) => {
   };
 };
 
-
-
-
-export const getAllEventsWithAdmins = async({
-  limit, 
-  page, 
+export const getAllEventsWithAdmins = async ({
+  limit,
+  page,
   query,
 }) => {
   return queries.getAllEventsWithAdmins(
     Number(limit),
-    Number(page), 
-    query, 
+    Number(page),
+    query,
   );
 };
 
@@ -79,13 +74,25 @@ export const deleteEvent = async (id, restore = 'false') => {
   return queries.restoreEventById(id);
 };
 
-
-
-
-export const getAllPeopleRegisteredNotInTeamsInfos = async (eventId, userId) => {
-  const p = await queries.getAllPeopleRegisteredNotInTeamsInfos(eventId, userId);
+export const getAllPeopleRegisteredNotInTeamsInfos = async (
+  eventId,
+  userId,
+) => {
+  const p = await queries.getAllPeopleRegisteredNotInTeamsInfos(
+    eventId,
+    userId,
+  );
   return p;
-}
+};
+
+export const verifyTeamNameIsUnique = async ({ name, eventId }) => {
+  const teamNameIsUnique = await queries.getTeamNameUniquenessInEvent(
+    name,
+    eventId,
+  );
+
+  return teamNameIsUnique;
+};
 
 /**
  * Currently only returns spirit rankings, but should eventually return

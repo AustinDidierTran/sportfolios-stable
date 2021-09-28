@@ -13,20 +13,28 @@ const getUserId = ctx => {
   return userId;
 };
 
-router.get(`${BASE_URL}/getAllPeopleRegisteredNotInTeamsInfos`, async ctx => {
-  const userId = getUserId(ctx);
-  const people = await service.getAllPeopleRegisteredNotInTeamsInfos(
-    ctx.query.eventId,
-    userId,
+router.get(
+  `${BASE_URL}/getAllPeopleRegisteredNotInTeamsInfos`,
+  async ctx => {
+    const userId = getUserId(ctx);
+    const people = await service.getAllPeopleRegisteredNotInTeamsInfos(
+      ctx.query.eventId,
+      userId,
+    );
+
+    if (!people) {
+      throw new Error(ERROR_ENUM.ERROR_OCCURED);
+    }
+    ctx.body = { data: people };
+  },
+);
+
+router.get(`${BASE_URL}/verifyTeamNameIsUnique`, async ctx => {
+  const teamNameIsUnique = await service.verifyTeamNameIsUnique(
+    ctx.query,
   );
 
-  if (!people) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = { data: people };
+  ctx.body = { data: teamNameIsUnique };
 });
-
-
-
 
 export default router;
