@@ -366,5 +366,5 @@ export const getTeamNameUniquenessInEvent = async (name, eventId) => {
     .where({ event_id: eventId })
     .andWhere(knex.raw('lower("name")'), '=', name.toLowerCase());
 
-  return count === 0;
+  return Number(count) === 0;
 };
