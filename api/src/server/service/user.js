@@ -27,7 +27,7 @@ import {
   createConfirmationEmailToken,
 } from '../../db/queries/user.js';
 
-import { getAllOwnedEntities, personIsAwaitingTransfer } from '../../db/queries/entity.js';
+import { getAllOwnedEntities, personIsAwaitingTransfer } from '../../db/queries/entity-deprecate.js';
 import { generateAuthToken, generateToken, isAllowed } from '../../db/queries/utils.js';
 
 async function sendTransferPersonEmail(

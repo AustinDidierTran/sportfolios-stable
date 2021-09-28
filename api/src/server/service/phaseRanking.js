@@ -4,7 +4,7 @@ import {
   updateOriginPhase as updateOriginPhaseHelper,
   deleteTeamPhase as deleteTeamPhaseHelper,
   getPhaseRanking as getPhaseRankingHelper,
-} from '../../db/queries/entity.js';
+} from '../../db/queries/entity-deprecate.js';
 
 import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';

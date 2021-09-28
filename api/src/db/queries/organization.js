@@ -1,5 +1,5 @@
 import knex from '../connection.js';
-import { getPrimaryPerson, getEntity } from './entity.js';
+import { getPrimaryPerson, getEntity } from './entity-deprecate.js';
 import { getEventPaymentOption } from './event.js';
 import { getTaxRates } from './shop.js';
 import { getPaymentStatus } from './stripe/utils.js';
@@ -369,6 +369,7 @@ export const deleteOrganizationById = id => {
     .del()
     .where({ id });
 };
+
 
 export const verifyOrganization = async (
   id,

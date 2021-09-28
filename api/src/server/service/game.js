@@ -1,6 +1,6 @@
 import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
-import { isAllowed } from './entity.js';
+import { isAllowed } from './entity-deprecate.js';
 
 import * as queries from '../../db/queries/game.js';
 
