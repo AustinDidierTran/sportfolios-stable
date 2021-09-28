@@ -1,7 +1,6 @@
 import { getEntity } from '../../db/queries/entity-deprecate.js';
 import * as queries from '../../db/queries/organization.js';
 
-
 import {
   getOrganizationMembers as getOrganizationMembersHelper,
   getOwnedEvents as getOwnedEventsHelper,
@@ -28,16 +27,24 @@ async function getOrganization(organizationId, userId) {
   };
 }
 
-export const getAllOrganizationsWithAdmins = async({
-  limit, 
-  page, 
+export const getAllOrganizationsWithAdmins = async ({
+  limit,
+  page,
   query,
 }) => {
   return queries.getAllOrganizationsWithAdmins(
     Number(limit),
-    Number(page), 
-    query, 
+    Number(page),
+    query,
   );
+};
+
+export const verifyOrganization = async ({ id, verify }, userId) => {
+  if (verify === 'false') {
+    return queries.verifyOrganization(id, userId, false);
+  }
+
+  return queries.verifyOrganization(id, userId);
 };
 
 export const deleteOrganization = async (id, restore = 'false') => {

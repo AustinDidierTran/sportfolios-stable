@@ -6,7 +6,13 @@ import { getPaymentStatus } from './stripe/utils.js';
 import { getEmailUser } from './user.js';
 import moment from 'moment';
 import { isAllowed } from './utils.js';
-import { CARD_TYPE_ENUM, GLOBAL_ENUM, ENTITIES_ROLE_ENUM, INVOICE_STATUS_ENUM, REPORT_TYPE_ENUM } from '../../../../common/enums/index.js';
+import {
+  CARD_TYPE_ENUM,
+  GLOBAL_ENUM,
+  ENTITIES_ROLE_ENUM,
+  INVOICE_STATUS_ENUM,
+  REPORT_TYPE_ENUM,
+} from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 
 async function generateReport(reportId) {
@@ -286,6 +292,7 @@ export const getAllOrganizationsWithAdmins = async (
       'entities_general_infos.name',
       'entities_general_infos.photo_url',
       'entities.deleted_at',
+      'entities.verified_at',
       knex.raw('json_agg(entity_admins) AS entity_admins'),
     )
     .from(
@@ -340,6 +347,7 @@ export const getAllOrganizationsWithAdmins = async (
       name: r.name,
       photoUrl: r.photo_url,
       deletedAt: r.deleted_at,
+      verifiedAt: r.verified_at,
       admins: r.entity_admins.map(admin => ({
         id: admin.entity_id_admin,
         name: admin.name,
@@ -362,6 +370,26 @@ export const deleteOrganizationById = id => {
     .where({ id });
 };
 
+
+export const verifyOrganization = async (
+  id,
+  userId,
+  setVerified = true,
+) => {
+  if (setVerified) {
+    await knex('entities')
+      .update({ verified_at: 'now', verified_by: userId })
+      .where({ id });
+
+    return true;
+  }
+
+  await knex('entities')
+    .update({ verified_at: null, verified_by: null })
+    .where({ id });
+
+  return false;
+};
 
 export {
   generateSalesReport,
