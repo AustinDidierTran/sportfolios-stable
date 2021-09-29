@@ -40,24 +40,14 @@ import {
   updateCognitoIdUser,
 } from '../../db/queries/auth.js';
 
-import AmazonCognitoIdentity from 'amazon-cognito-identity-js';
-import { USER_POOL_ID, CLIENT_ID } from '../../../../conf.js';
-import userPool from '../utils/Cognito/UserPool.js';
+import { USER_POOL_ID } from '../../../../conf.js';
 
-import { INDENTITY_POOL_ID, REGION } from '../../../../conf.js';
 import Amplify from 'aws-amplify';
-import { getCognitoidentityserviceprovider } from '../utils/aws.js'
-import * as jwt from "jsonwebtoken";
-import * as jwkToPem from 'jwk-to-pem';
-import aws from 'aws-sdk';
 
-Amplify.default.configure({
-  Auth: {
-    region: REGION,
-    userPoolId: USER_POOL_ID,
-    userPoolWebClientId: CLIENT_ID,
-  },
-});
+
+//import * as aws from "@aws-sdk/client-cognito-identity-provider";
+import { validateToken } from '../utils/tokenValidation.js';
+import { adminGetUser, adminCreateUser } from "../utils/aws.js"
 
 async function signup({
   firstName,
@@ -110,22 +100,23 @@ export const signupAmplify = async ({
 }) => {
 
   try {
-    const { user } = await Amplify.Auth.signUp({
-      username: email,
-      password: password,
 
-    });
-    if (user) {
-      await createUserComplete({
-        password: ' ',
-        email,
-        name: firstName,
-        surname: lastName,
-        newsLetterSubscription,
-        idUser: data.userSub
-      });
-      return STATUS_ENUM.SUCCESS;
+    const data = await adminGetUser(email);
+    const isUnique = await validateEmailIsUnique(email);
+
+    if (!isUnique || !data) {
+      throw new Error(ERROR_ENUM.INVALID_EMAIL);
     }
+
+    await createUserComplete({
+      password: ' ',
+      email,
+      name: firstName,
+      surname: lastName,
+      newsLetterSubscription,
+      idUser: data.Username
+    });
+    return STATUS_ENUM.SUCCESS;
   } catch (error) {
     console.log('error signing up:', error);
   }
@@ -175,49 +166,68 @@ async function loginWithToken(token) {
   return getBasicUserInfoFromId(userId);
 }
 
-export const loginAmplify = async ({ email, password }) => {
+export const loginAmplify = async ({ email, token }) => {
   try {
-    const user = await Amplify.Auth.signIn(email, password);
-    const token = user.signInUserSession.idToken.jwtToken;
-    const userId = await getUserIdFromEmail(user.attributes.email);
-    const userInfo = await getBasicUserInfoFromId(userId);
-    var jwk = aws.getJwkFromAWS();
-    var pem = jwkToPem(jwk);
-    jwt.verify(token, pem, { algorithms: ['RS256'] }, function (err, decodedToken) {
-    });
+    //const user = await Amplify.Auth.signIn(email, password);
 
-    return { token, userInfo };
+    const decodedToken = await validateToken(token);
+    if (!decodedToken.email) {
+      throw new Error(ERROR_ENUM.ERROR_OCCURED);
+    }
+    const userId = await getUserIdFromEmail(email);
+    const userInfo = await getBasicUserInfoFromId(userId);
+    return { userInfo };
+
+    //ValidateToken(user.signInUserSession.idToken.jwtToken);
   } catch (error) {
     console.log('error signing in', error);
     if (error.code === 'NotAuthorizedException') {
+    }
+    else if (error.code === 'TokenExpiredError') {
+      console.log("TokenExpiredError")
+    }
 
-      const res = await login({ email, password })
-      //var cognitoidentityserviceprovider = new CognitoIdentityServiceProvider();
-      if (res) {
-        //Create the user with AdminCreateUser()
-        const params = {
-          UserPoolId: USER_POOL_ID,
-          Username: email,
-          MessageAction: 'SUPPRESS', //suppress the sending of an invitation to the user
-          TemporaryPassword: password,
-          UserAttributes: [
-            { Name: 'email', Value: email }, //using sign-in with email, so username is email
-            { Name: 'email_verified', Value: 'true' }]
-        };
-        var cognitoidentityserviceprovider = await getCognitoidentityserviceprovider();
-        cognitoidentityserviceprovider.adminCreateUser(params, function (err, data) {
-          if (err) {
-            console.log('Failed to Create migrating user in User Pool: ' + email);
-            console.log(err)
-            callback(err);
-            return;
-          } else {
-            //Successfully created the migrating user in the User Pool
-            console.log("Successful AdminCreateUser for migrating user: " + email);
-          }
-        })
+  }
+}
+
+export const migrateToCognito = async ({ email, password }) => {
+  try {
+    //const user = await Amplify.Auth.signIn(email, password);
+    try {
+      const isUnique = await adminGetUser(email);
+      if (isUnique) {
+        throw new Error(ERROR_ENUM.INVALID_EMAIL);
       }
     }
+    catch (err) {
+      console.log(err)
+      if (err.code !== 'UserNotFoundException') {
+        throw new Error(ERROR_ENUM.ERROR_OCCURED);
+      }
+    };
+
+
+    const user = await login({ email, password })
+    console.log(user);
+    if (user) {
+      //Create the user with AdminCreateUser()
+      const res = await adminCreateUser(email, password);
+      console.log('res: ', res);
+
+      return STATUS_ENUM.SUCCESS;
+    }
+
+
+
+    //ValidateToken(user.signInUserSession.idToken.jwtToken);
+  } catch (error) {
+    console.log('error signing in', error);
+    if (error.code === 'NotAuthorizedException') {
+    }
+    else if (error.code === 'TokenExpiredError') {
+      console.log("TokenExpiredError")
+    }
+
   }
 }
 
@@ -245,9 +255,20 @@ async function confirmEmail({ token }) {
 }
 
 export const confirmAccountAmplify = async ({ email, code }) => {
+  //need to be done frontend
   try {
     await Amplify.Auth.confirmSignUp(email, code);
-    return STATUS_ENUM.SUCCESS;
+    const authToken = generateToken();
+    const userId = await getUserIdFromEmail(email);
+    await knex('user_token').insert({
+      user_id: userId,
+      token_id: authToken,
+      expires_at: new Date(Date.now() + EXPIRATION_TIMES.AUTH_TOKEN),
+    });
+
+    const userInfo = await getBasicUserInfoFromId(userId);
+
+    return { token: authToken, userInfo };
   } catch (error) {
     console.log('error confirming sign up', error);
   }
