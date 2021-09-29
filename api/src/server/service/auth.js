@@ -37,10 +37,7 @@ import {
   setRecoveryTokenToUsed,
   validateEmailIsUnique,
   getUserIdFromAuthToken,
-  updateCognitoIdUser,
 } from '../../db/queries/auth.js';
-
-import { USER_POOL_ID } from '../../../../conf.js';
 
 import Amplify from 'aws-amplify';
 
