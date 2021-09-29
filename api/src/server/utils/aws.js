@@ -1,5 +1,5 @@
 import aws from 'aws-sdk';
-import { USER_POOL_ID, CLIENT_ID } from '../../../../conf.js';
+import { USER_POOL_ID } from '../../../../conf.js';
 
 import { createRequire } from 'module'; // Bring in the ability to create the 'require' method
 const require = createRequire(import.meta.url); // construct the require method
