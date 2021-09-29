@@ -16,16 +16,6 @@ router.post(`${BASE_URL}/signupOld`, async ctx => {
   }
 });
 
-router.post(`${BASE_URL}/signupCognito`, async ctx => {
-  const res = await service.signupCognito(ctx.request.body);
-
-  if (!res) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  } else {
-    ctx.body = { data: res };
-  }
-});
-
 router.post(`${BASE_URL}/signup`, async ctx => {
   const res = await service.signupAmplify(ctx.request.body);
 
@@ -46,12 +36,12 @@ router.post(`${BASE_URL}/loginOld`, async ctx => {
 });
 
 router.post(`${BASE_URL}/login`, async ctx => {
-  const { token, userInfo } = await service.loginAmplify(ctx.request.body);
+  const { userInfo } = await service.loginAmplify(ctx.request.body);
 
-  if (!token) {
+  if (!userInfo) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = { data: JSON.stringify({ token, userInfo }) };
+  ctx.body = { data: JSON.stringify({ userInfo }) };
 });
 
 
@@ -83,26 +73,29 @@ router.post(`${BASE_URL}/confirmEmail`, async ctx => {
 
 // Confirm account
 router.post(`${BASE_URL}/confirmAccount`, async ctx => {
-  const res = await service.confirmAccountCognito(ctx.request.body);
+  //need to be done frontend
+  const res = await service.confirmAccountAmplify(ctx.request.body);
 
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   ctx.body = { data: res };
+});
+
+// Migrate account to cognito
+router.post(`${BASE_URL}/migrate`, async ctx => {
+  const code = await service.migrateToCognito(ctx.request.body);
+
+  if (code === STATUS_ENUM.SUCCESS) {
+    ctx.body = { data: code };
+  } else {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
 });
 
 // Resend confirmation email
 router.post(`${BASE_URL}/sendConfirmationEmailOld`, async ctx => {
   const res = await service.resendConfirmationEmail(ctx.request.body);
-
-  if (!res) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = { data: res };
-});
-
-router.post(`${BASE_URL}/sendConfirmationEmail`, async ctx => {
-  const res = await service.resendConfirmationEmailCognito(ctx.request.body);
 
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);

@@ -1,5 +1,7 @@
 import knex from '../../db/connection.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
+import { getUserIdFromEmail } from '../../db/queries/user.js';
+import { validateToken } from '../utils/tokenValidation.js';
 
 export default async (ctx, next) => {
   const token = ctx.headers['authorization'];
@@ -7,22 +9,33 @@ export default async (ctx, next) => {
   if (!token || token === 'null') {
     return next();
   }
+  const decodedToken = await validateToken(token);
 
+  if (!decodedToken) {
+    return next();
+  }
+
+  const expires_at = decodedToken.exp;
+  const user_id = await getUserIdFromEmail(decodedToken.email);
+
+  /*
+  //old code
   const [user] = await knex('user_token')
     .select(['user_id', 'expires_at'])
     .where({ token_id: token });
-
   if (!user) {
     return next();
   }
 
   const { user_id, expires_at } = user;
+  */
+
 
   if (!user_id) {
     return next();
   }
 
-  if (expires_at < new Date()) {
+  if (expires_at < Math.round(new Date() / 1000)) {
     if (!ctx.body) {
       ctx.body = {};
     }
