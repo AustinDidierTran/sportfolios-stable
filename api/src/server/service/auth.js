@@ -41,10 +41,8 @@ import {
 
 import Amplify from 'aws-amplify';
 
-
-//import * as aws from "@aws-sdk/client-cognito-identity-provider";
 import { validateToken } from '../utils/tokenValidation.js';
-import { adminGetUser, adminCreateUser } from "../utils/aws.js"
+import { adminGetUser, adminCreateUser } from '../utils/aws.js';
 
 async function signup({
   firstName,
@@ -91,8 +89,6 @@ export const signupAmplify = async ({
   firstName,
   lastName,
   email,
-  password,
-  redirectUrl,
   newsLetterSubscription,
 }) => {
 
@@ -181,7 +177,7 @@ export const loginAmplify = async ({ email, token }) => {
     if (error.code === 'NotAuthorizedException') {
     }
     else if (error.code === 'TokenExpiredError') {
-      console.log("TokenExpiredError")
+      console.log('TokenExpiredError')
     }
 
   }
@@ -222,7 +218,7 @@ export const migrateToCognito = async ({ email, password }) => {
     if (error.code === 'NotAuthorizedException') {
     }
     else if (error.code === 'TokenExpiredError') {
-      console.log("TokenExpiredError")
+      console.log('TokenExpiredError')
     }
 
   }
