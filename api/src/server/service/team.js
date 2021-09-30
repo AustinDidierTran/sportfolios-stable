@@ -1,6 +1,6 @@
 import * as queries from '../../db/queries/team.js';
 import { getTeamExercisesByTeamId, getSessionExercisesBySessionId } from '../../db/queries/exercises.js'
-import { getEventInfoById, getTeamsRegisteredInfo, getTeamsAcceptedRegistered, getRegistrationStatus } from '../../db/queries/event.js'
+import * as eventQueries from '../../db/queries/event.js';
 import { getPaymentOption } from '../../server/service/event.js'
 import { getEntity } from '../../db/queries/entity-deprecate.js'
 import { getRosterByIdAndSub, getTeamCaptainsById, getRoleRosterByIdAndUserId } from '../../db/queries/team.js'
@@ -24,8 +24,8 @@ const getSessionExercises = async (sessionId) => {
 }
 
 const getTeamsRegisteredInfos = async (eventId, pills, userId) => {
-  const event = await getEventInfoById(eventId);
-  const teams = await getTeamsRegisteredInfo(eventId);
+  const event = await eventQueries.getEventInfoById(eventId);
+  const teams = await eventQueries.getTeamsRegisteredInfo(eventId);
 
 
 
@@ -191,37 +191,61 @@ const getRoleRoster = async (rosterId, userId) => {
   }
 }
 
-async function getTeamsAcceptedInfos(eventId, userId) {
-  const teams = await getTeamsAcceptedRegistered(eventId);
+export const getTeamsAcceptedInfos = async (eventId, userId) => {
+  const teams = await eventQueries.getTeamsAcceptedInfos(eventId, true);
 
   const res = await Promise.all(
     teams.map(async t => {
-      const entity = (await getEntity(t.team_id, userId)).basicInfos;
-
-      const emails = await getEmailsEntity(t.team_id);
-      const players = await getRoster(t.roster_id, true);
-      const captains = await getTeamCaptains(t.team_id, userId);
-      const option = await getPaymentOption(t.payment_option_id);
       const role = await getRoleRoster(t.roster_id, userId);
-      const registrationStatus = await getRegistrationStatus(
-        t.roster_id,
-      );
+
+      const players = t.rosterPlayersInfos.map(player => ({
+        id: player.id,
+        name: player.name,
+        photoUrl: player.photo_url,
+        personId: player.person_id,
+        role: player.role,
+        isSub: player.is_sub,
+        status: TAG_TYPE_ENUM.REGISTERED,
+        paymentStatus: player.payment_status,
+        invoiceItemId: player.invoice_item_id,
+        isMember: player.memberships.find(m => m.organization_id == t.eventsInfos.creatorId)?.filter(
+          m =>
+            moment(m.created_at).isSameOrBefore(moment(date), 'day') &&
+            moment(m.expiration_date).isSameOrAfter(moment(date), 'day'),
+        )?.filter(m => m.person_id === player.person_id)
+          .length > 0,
+      }));
+
+      const option = t.eventPaymentOptions ? {
+        teamStripePriceId: t.eventPaymentOptions.team_stripe_price_id,
+        eventId: t.eventPaymentOptions.event_id,
+        name: t.eventPaymentOptions.name,
+        teamPrice: t.eventPaymentOptions.team_price,
+        startTime: t.eventPaymentOptions.start_time,
+        endTime: t.eventPaymentOptions.end_time,
+        individualPrice: t.eventPaymentOptions.individual_price,
+        individualStripePriceId: t.eventPaymentOptions.individual_stripe_price_id,
+        id: t.eventPaymentOptions.id,
+        teamActivity: t.eventPaymentOptions.team_activity,
+        teamAcceptation: t.eventPaymentOptions.team_acceptation,
+        playerAcceptation: t.eventPaymentOptions.player_acceptation,
+        informations: t.eventPaymentOptions.informations,
+      } : null;
 
       return {
-        name: entity.name,
-        surname: entity.surname,
-        photoUrl: entity.photoUrl,
+        name: t.entitiesGeneralInfos.name,
+        surname: t.entitiesGeneralInfos.surname,
+        photoUrl: t.entitiesGeneralInfos.photo_url,
         rosterId: t.roster_id,
         teamId: t.team_id,
         invoiceItemId: t.invoice_item_id,
         informations: t.informations,
         status: t.status,
-        emails,
+        emails: t.entitiesRole.userEntityRole.userEmail,
         players,
-        captains,
         option,
         role,
-        registrationStatus,
+        registrationStatus: t.registration_status
       };
     }),
   );
@@ -266,5 +290,4 @@ export {
   getRoster,
   getTeamCaptains,
   getRoleRoster,
-  getTeamsAcceptedInfos
 }
