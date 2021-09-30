@@ -1,12 +1,18 @@
 import knex from '../connection.js';
-import { getPrimaryPerson, getEntity } from './entity.js';
+import { getPrimaryPerson, getEntity } from './entity-deprecate.js';
 import { getEventPaymentOption } from './event.js';
 import { getTaxRates } from './shop.js';
 import { getPaymentStatus } from './stripe/utils.js';
 import { getEmailUser } from './user.js';
 import moment from 'moment';
 import { isAllowed } from './utils.js';
-import { CARD_TYPE_ENUM, GLOBAL_ENUM, ENTITIES_ROLE_ENUM, INVOICE_STATUS_ENUM, REPORT_TYPE_ENUM } from '../../../../common/enums/index.js';
+import {
+  CARD_TYPE_ENUM,
+  GLOBAL_ENUM,
+  ENTITIES_ROLE_ENUM,
+  INVOICE_STATUS_ENUM,
+  REPORT_TYPE_ENUM,
+} from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 
 async function generateReport(reportId) {
@@ -67,49 +73,49 @@ async function getOwnedEvents(organizationId) {
 async function generateSalesReport(report) {
   const { date } = report.metadata;
   const sales = await knex('store_items_paid')
-  .select('*')
-  .where({ seller_entity_id: report.entity_id });
+    .select('*')
+    .where({ seller_entity_id: report.entity_id });
   const active = sales.filter(
     s =>
-    moment(s.created_at)
-    .set('hour', 0)
-    .set('minute', 0)
-    .set('second', 0) <
-    moment(date)
-    .set('hour', 0)
-    .set('minute', 0)
-    .set('second', 0)
-    .add(1, 'day'),
-    );
-    const res = await Promise.all(
-      active.map(async a => {
-        const person = await getPrimaryPerson(a.buyer_user_id);
-        const email = await getEmailUser(a.buyer_user_id);
-        const taxes = await getTaxRates(a.stripe_price_id);
-        const subtotal = a.amount;
-        const totalTax = taxes.reduce((prev, curr) => {
-          return prev + (curr.percentage / 100) * a.amount;
-        }, 0);
-        const total = subtotal + totalTax;
-        const plateformFees = a.transaction_fees;
-        const totalNet = total - plateformFees;
-        
-        if (a.metadata.type === GLOBAL_ENUM.EVENT) {
-          const event = await getEntity(a.metadata.id);
-          const option = await getEventPaymentOption(a.stripe_price_id);
-          a.metadata.event = event;
-          a.metadata.option = option;
-        }
-        
-        let status = INVOICE_STATUS_ENUM.FREE;
-        if (a.invoice_item_id) {
-          status = await getPaymentStatus(a.invoice_item_id);
-        }
-        
-        return {
-          id: a.id,
-          sellerEntityId: a.seller_entity_id,
-          quantity: a.quantity,
+      moment(s.created_at)
+        .set('hour', 0)
+        .set('minute', 0)
+        .set('second', 0) <
+      moment(date)
+        .set('hour', 0)
+        .set('minute', 0)
+        .set('second', 0)
+        .add(1, 'day'),
+  );
+  const res = await Promise.all(
+    active.map(async a => {
+      const person = await getPrimaryPerson(a.buyer_user_id);
+      const email = await getEmailUser(a.buyer_user_id);
+      const taxes = await getTaxRates(a.stripe_price_id);
+      const subtotal = a.amount;
+      const totalTax = taxes.reduce((prev, curr) => {
+        return prev + (curr.percentage / 100) * a.amount;
+      }, 0);
+      const total = subtotal + totalTax;
+      const plateformFees = a.transaction_fees;
+      const totalNet = total - plateformFees;
+
+      if (a.metadata.type === GLOBAL_ENUM.EVENT) {
+        const event = await getEntity(a.metadata.id);
+        const option = await getEventPaymentOption(a.stripe_price_id);
+        a.metadata.event = event;
+        a.metadata.option = option;
+      }
+
+      let status = INVOICE_STATUS_ENUM.FREE;
+      if (a.invoice_item_id) {
+        status = await getPaymentStatus(a.invoice_item_id);
+      }
+
+      return {
+        id: a.id,
+        sellerEntityId: a.seller_entity_id,
+        quantity: a.quantity,
         unitAmount: a.unit_amount,
         amount: a.amount,
         status: status,
@@ -130,15 +136,15 @@ async function generateSalesReport(report) {
         totalNet,
       };
     }),
-    );
-    return res;
-  }
-  
-  async function getOrganizationMembers(organizationId, userId) {
-    if (
-      !(await isAllowed(
-        organizationId,
-        userId,
+  );
+  return res;
+}
+
+async function getOrganizationMembers(organizationId, userId) {
+  if (
+    !(await isAllowed(
+      organizationId,
+      userId,
       ENTITIES_ROLE_ENUM.EDITOR,
     ))
   ) {
@@ -274,6 +280,176 @@ async function generateMembersReport(report) {
   );
   return res;
 }
+
+export const getAllOrganizationsWithAdmins = async (
+  limit = 10,
+  page = 1,
+  query = '',
+) => {
+  const organizations = await knex
+    .select(
+      'entities.id',
+      'entities_general_infos.name',
+      'entities_general_infos.photo_url',
+      'entities.deleted_at',
+      'entities.verified_at',
+      knex.raw('json_agg(entity_admins) AS entity_admins'),
+    )
+    .from(
+      knex
+        .select(
+          'entities_role.entity_id',
+          'entities_role.entity_id_admin',
+          'name',
+          'surname',
+          'photo_url',
+        )
+        .from('entities_role')
+        .leftJoin(
+          'entities_general_infos',
+          'entities_general_infos.entity_id',
+          '=',
+          'entities_role.entity_id_admin',
+        )
+        .as('entity_admins'),
+    )
+    .leftJoin(
+      'entities',
+      'entities.id',
+      '=',
+      'entity_admins.entity_id',
+    )
+    .leftJoin(
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
+      '=',
+      'entities.id',
+    )
+    .where('entities.type', GLOBAL_ENUM.ORGANIZATION)
+    .where('entities_general_infos.name', 'ILIKE', `%${query}%`)
+    .limit(limit)
+    .offset(limit * Math.max(0, page - 1))
+    .groupBy(
+      'entities.id',
+      'entities_general_infos.name',
+      'entities_general_infos.photo_url',
+      'entities.deleted_at',
+    );
+
+  const [{ count }] = await knex('entities')
+    .count('*')
+    .where('type', GLOBAL_ENUM.ORGANIZATION);
+
+  return {
+    count: Number(count),
+    organizations: organizations.map(r => ({
+      id: r.id,
+      name: r.name,
+      photoUrl: r.photo_url,
+      deletedAt: r.deleted_at,
+      verifiedAt: r.verified_at,
+      admins: r.entity_admins.map(admin => ({
+        id: admin.entity_id_admin,
+        name: admin.name,
+        surname: admin.surname,
+        photoUrl: admin.photo_url,
+      })),
+    })),
+  };
+};
+
+export const restoreOrganizationById = id => {
+  return knex('entities')
+    .update('deleted_at', null)
+    .where({ id });
+};
+
+export const deleteOrganizationById = id => {
+  return knex('entities')
+    .del()
+    .where({ id });
+};
+
+export const verifyOrganization = async (
+  id,
+  userId,
+  setVerified = true,
+) => {
+  if (setVerified) {
+    await knex('entities')
+      .update({ verified_at: 'now', verified_by: userId })
+      .where({ id });
+
+    return true;
+  }
+
+  await knex('entities')
+    .update({ verified_at: null, verified_by: null })
+    .where({ id });
+
+  return false;
+};
+
+/**
+ * [SPO-86] Optimize this query
+ * [] Make it all inside one call
+ * [] Make the filter inside the postgresql query
+ */
+export const getMembers = async (organizationId, searchQuery) => {
+  const members = await knex('memberships')
+    .select('*')
+    .rightJoin(
+      'entities',
+      'entities.id',
+      '=',
+      'memberships.person_id',
+    )
+    .whereNull('deleted_at')
+    .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
+    .andWhere({ organization_id: organizationId });
+  const reduce = members.reduce((prev, curr) => {
+    let addCurr = true;
+    const filter = prev.filter(p => {
+      if (
+        p.member_type != curr.member_type ||
+        p.person_id != curr.person_id
+      ) {
+        return true;
+      } else {
+        if (
+          moment(p.expiration_date) > moment(curr.expiration_date)
+        ) {
+          addCurr = false;
+          return true;
+        } else {
+          return false;
+        }
+      }
+    });
+    if (addCurr) {
+      return [...filter, curr];
+    }
+    return filter;
+  }, []);
+
+  const res = await Promise.all(
+    reduce.map(async m => ({
+      organizationId: m.organization_id,
+      person: (await getEntity(m.person_id)).basicInfos,
+      memberType: m.member_type,
+      expirationDate: m.expiration_date,
+      id: m.id,
+      createdAt: m.created_at,
+      status: m.status,
+    })),
+  );
+
+  return res.filter(m =>
+    `${m.person.name} ${m.person.surname}`
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase()),
+  );
+};
 
 export {
   generateSalesReport,

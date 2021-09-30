@@ -3,7 +3,8 @@ import {
   eventInfos as eventInfosHelper,
   getRemainingSpots,
   getOptions,
-} from '../../db/queries/entity.js';
+} from '../../db/queries/entity-deprecate.js';
+import { getPaymentOptionById } from '../../db/queries/event.js';
 
 import * as queries from '../../db/queries/event.js';
 
@@ -53,10 +54,45 @@ export const getEvent = async (eventId, userId) => {
   };
 };
 
-export const getAllPeopleRegisteredNotInTeamsInfos = async (eventId, userId) => {
-  const p = await queries.getAllPeopleRegisteredNotInTeamsInfos(eventId, userId);
+export const getAllEventsWithAdmins = async ({
+  limit,
+  page,
+  query,
+}) => {
+  return queries.getAllEventsWithAdmins(
+    Number(limit),
+    Number(page),
+    query,
+  );
+};
+
+export const deleteEvent = async (id, restore = 'false') => {
+  if (restore === 'false') {
+    return queries.deleteEventById(id);
+  }
+
+  return queries.restoreEventById(id);
+};
+
+export const getAllPeopleRegisteredNotInTeamsInfos = async (
+  eventId,
+  userId,
+) => {
+  const p = await queries.getAllPeopleRegisteredNotInTeamsInfos(
+    eventId,
+    userId,
+  );
   return p;
-}
+};
+
+export const verifyTeamNameIsUnique = async ({ name, eventId }) => {
+  const teamNameIsUnique = await queries.getTeamNameUniquenessInEvent(
+    name,
+    eventId,
+  );
+
+  return teamNameIsUnique;
+};
 
 /**
  * Currently only returns spirit rankings, but should eventually return
@@ -67,3 +103,24 @@ export const getRankings = async eventId => {
 
   return rankings;
 };
+export async function getPaymentOption(paymentOptionId) {
+  const option = await getPaymentOptionById(paymentOptionId);
+  if (!option) {
+    return null;
+  }
+  return {
+    teamStripePriceId: option.team_stripe_price_id,
+    eventId: option.event_id,
+    name: option.name,
+    teamPrice: option.team_price,
+    startTime: option.start_time,
+    endTime: option.end_time,
+    individualPrice: option.individual_price,
+    individualStripePriceId: option.individual_stripe_price_id,
+    id: option.id,
+    teamActivity: option.team_activity,
+    teamAcceptation: option.team_acceptation,
+    playerAcceptation: option.player_acceptation,
+    informations: option.informations,
+  };
+}

@@ -3,7 +3,7 @@ import { BASIC_CHATBOT_STATES, TABS_ENUM } from '../../../../../../../common/enu
 import i18n from '../../../../../i18n.config.js';
 import response from '../../response.js';
 import { MESSENGER_PAYLOADS } from '../../../enums/index.js';
-import { getAttendanceSheet } from '../../../../../db/queries/entity.js';
+import { getAttendanceSheet } from '../../../../../db/queries/entity-deprecate.js';
 import { CLIENT_BASE_URL } from '../../../../../../../conf.js';
 class AwaitingAttendance extends State {
   async handleEvent(webhookEvent) {

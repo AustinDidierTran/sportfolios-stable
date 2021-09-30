@@ -8,7 +8,7 @@ import {
   updatePhaseFinalRanking as updatePhaseFinalRankingHelper,
   updateManualRanking as updateManualRankingHelper,
   deletePhase as deletePhaseHelper,
-} from '../../db/queries/entity.js';
+} from '../../db/queries/entity-deprecate.js';
 
 import { ENTITIES_ROLE_ENUM, PHASE_STATUS_ENUM, PHASE_TYPE_ENUM } from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';

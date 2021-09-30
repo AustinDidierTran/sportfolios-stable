@@ -20,7 +20,7 @@ import {
   deletePersonFromEvent,
   deletePlayerFromRoster,
   deleteTeamFromEvent,
-} from '../../db/queries/entity.js';
+} from '../../db/queries/entity-deprecate.js';
 
 import {
   ENTITIES_ROLE_ENUM,
@@ -28,6 +28,7 @@ import {
   CART_ITEM,
 } from '../../../../common/enums/index.js';
 import { isAllowed } from '../../db/queries/utils.js';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
 
 const getItem = async (stripePriceId, userId) => {
   return getItemHelper(stripePriceId, userId);
@@ -63,13 +64,14 @@ const getPurchases = async userId => {
   return getPurchasesHelper(userId);
 };
 
-const getSales = async (entityId, userId) => {
+const getSales = async (query, userId) => {
+  console.log({ query });
   if (
-    !(await isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+    !(await isAllowed(query.id, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return getSalesHelper(entityId);
+  return getSalesHelper(query);
 };
 
 const updateCartItems = async (body, userId) => {

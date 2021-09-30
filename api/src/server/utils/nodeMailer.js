@@ -19,7 +19,7 @@ const require = createRequire(import.meta.url); // construct the require method
 
 let key;
 
-import { getRosterName } from '../../db/queries/entity.js';
+import { getRosterName } from '../../db/queries/entity-deprecate.js';
 
 try {
   key = require('./keys/google-keys.json');

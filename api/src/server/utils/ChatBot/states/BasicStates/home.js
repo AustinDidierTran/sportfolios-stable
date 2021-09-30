@@ -3,7 +3,7 @@ import { SCORE_SUBMISSION_CHATBOT_STATES, GAME_INFOS_CHATBOT_STATES } from '../.
 import { MESSENGER_QUICK_REPLIES, MESSENGER_PAYLOADS } from '../../../enums/index.js';
 import Response from '../../response.js';
 import i18n from '../../../../../i18n.config.js';
-import { getGamesWithAwaitingScore } from '../../../../../db/queries/entity.js';
+import { getGamesWithAwaitingScore } from '../../../../../db/queries/entity-deprecate.js';
 import { getUserIdFromMessengerId } from '../../../../../db/queries/user.js';
 
 class Home extends State {

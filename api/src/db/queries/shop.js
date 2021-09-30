@@ -1,7 +1,7 @@
 import knex from '../connection.js';
 import { stripeErrorLogger } from '../../server/utils/logger.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
-import { getEmailsEntity } from '../helpers/entity.js';
+import { getEmailsEntity } from '../queries/entity-deprecate.js';
 import { CART_ITEM } from '../../../../common/enums/index.js';
 
 const getItem = async stripePriceId => {
@@ -492,7 +492,11 @@ const getPurchases = async userId => {
   return res;
 };
 
-const getSales = async entityId => {
+const getSales = async body => {
+  // eslint-disable-next-line
+  const { id: entityId, query } = body;
+
+  // SPO-71 - Optimize this call so that it supports query
   const sales = await knex('store_items_paid')
     .select([
       'stripe_product.label',
@@ -500,6 +504,9 @@ const getSales = async entityId => {
       'store_items_paid.quantity',
       'store_items_paid.amount',
       'user_email.email',
+      'entities_general_infos.name',
+      'entities_general_infos.surname',
+      'entities_general_infos.photo_url AS personPhotoUrl',
       'store_items_paid.metadata',
       'store_items.photo_url',
       'store_items_paid.created_at',
@@ -528,19 +535,39 @@ const getSales = async entityId => {
       '=',
       'store_items.stripe_price_id',
     )
+    .leftJoin(
+      'user_primary_person',
+      'user_primary_person.user_id',
+      '=',
+      'store_items_paid.buyer_user_id',
+    )
+    .leftJoin(
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
+      '=',
+      'user_primary_person.primary_person',
+    )
     .whereRaw(
       `stripe_product.metadata::jsonb @> '{"type": "shop_item"}'`,
     )
     .where('store_items_paid.seller_entity_id', entityId);
+
   return sales.map(s => ({
-    label: s.label,
-    description: s.description,
-    quantity: s.quantity,
     amount: s.amount,
-    email: s.email,
+    createdAt: s.created_at,
+    description: s.description,
+    label: s.label,
     metadata: s.metadata,
     photoUrl: s.photo_url,
-    createdAt: s.created_at,
+    quantity: s.quantity,
+    buyer: {
+      email: s.email,
+      primaryPerson: {
+        name: s.name,
+        surname: s.surname,
+        photoUrl: s.personPhotoUrl,
+      },
+    },
   }));
 };
 

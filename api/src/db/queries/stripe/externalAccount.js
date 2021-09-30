@@ -10,16 +10,16 @@ import knex from '../../connection.js';
 import { stripeLogger } from '../../../server/utils/logger.js';
 
 import { fillWithZeros } from '../../../../../common/utils/stringFormat.js';
-import { getCreators } from '../entity.js';
+import { getCreators } from '../entity-deprecate.js';
 
-const getStripeAccount = async entityId => {
+const getStripeAccount = async (entityId) => {
   const [account] = await knex('stripe_accounts')
     .select('*')
     .where({ entity_id: entityId });
   return account;
 };
 
-const hasStripeAccount = async entityId => {
+const hasStripeAccount = async (entityId) => {
   const account = await getStripeAccount(entityId);
 
   if (account) {
@@ -39,7 +39,7 @@ const hasStripeAccount = async entityId => {
   return false;
 };
 
-const hasStripeBankAccount = async entityId => {
+const hasStripeBankAccount = async (entityId) => {
   const account = await getStripeAccount(entityId);
   if (account) {
     const bankAccounts = await knex('bank_accounts')
@@ -52,16 +52,15 @@ const hasStripeBankAccount = async entityId => {
   }
   return false;
 };
-
-const getEventAccounts = async eventId => {
+const getEventAccounts = async (eventId) => {
   const admins = await getCreators(eventId);
   const res = await Promise.all(
-    admins.map(async a => ({
+    admins.map(async (a) => ({
       hasBankAccount: await hasStripeBankAccount(a.id),
       ...a,
     })),
   );
-  const res2 = res.filter(a => a.hasBankAccount);
+  const res2 = res.filter((a) => a.hasBankAccount);
   return res2;
 };
 
@@ -86,7 +85,7 @@ const getTaxes = async () => {
     .select('*')
     .whereNull('deleted_at')
     .andWhere({ active: true });
-  return taxRates.map(t => ({
+  return taxRates.map((t) => ({
     id: t.id,
     displayName: t.display_name,
     description: t.description,
@@ -97,7 +96,7 @@ const getTaxes = async () => {
 };
 
 // REF: https://stripe.com/docs/api/accounts/create?lang=node
-const createStripeConnectedAccount = async props => {
+const createStripeConnectedAccount = async (props) => {
   const {
     // business_type,
     // city,
@@ -135,7 +134,7 @@ const createStripeConnectedAccount = async props => {
   return stripe.account.create(params);
 };
 
-const createAccountLink2 = async accountId => {
+const createAccountLink2 = async (accountId) => {
   const params = {
     account: accountId,
     failure_url: `${CLIENT_BASE_URL}/profile`,
@@ -146,7 +145,7 @@ const createAccountLink2 = async accountId => {
   return stripe.accountLinks.create(params);
 };
 
-const createAccountLink = async props => {
+const createAccountLink = async (props) => {
   const { ip, entityId } = props;
   const accountId = await getOrCreateStripeConnectedAccountId(
     entityId,

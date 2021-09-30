@@ -1,6 +1,6 @@
 import knex from '../connection.js';
 import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
-import { getAllOwnedEntities, isTeamRegisteredInEvent } from './entity.js';
+import { getAllOwnedEntities, isTeamRegisteredInEvent } from './entity-deprecate.js';
 
 const addQueryToRecentSearches = async (user_id, search_query) => {
   return knex('previous_search_queries')

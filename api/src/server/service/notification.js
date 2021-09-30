@@ -34,7 +34,7 @@ import { getEmailFromUserId, getLanguageFromUser } from '../../db/queries/user.j
 import {
   getGameTeams,
   getRostersNames
-} from '../../db/queries/entity.js';
+} from '../../db/queries/entity-deprecate.js';
 
 import {
   SOCKET_EVENT,
