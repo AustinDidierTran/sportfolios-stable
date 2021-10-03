@@ -7,6 +7,7 @@ import {
 } from './entity-deprecate.js';
 import moment from 'moment';
 import { eventRosters } from '../models/eventRosters.js';
+import { eventsInfos } from '../models/eventsInfos.js';
 import {
   ROSTER_ROLE_ENUM,
   STATUS_ENUM,
@@ -299,21 +300,21 @@ export const getTeamsRegisteredInfo = async eventId => {
       'event_rosters.informations as informations',
     )
     .where('event_rosters.event_id', eventId)
-    .leftJoin('stripe_invoice_item', function() {
+    .leftJoin('stripe_invoice_item', function () {
       this.on(
         'stripe_invoice_item.invoice_item_id',
         '=',
         'event_rosters.invoice_item_id',
       ).onNotNull('event_rosters.invoice_item_id');
     })
-    .join('entities_role', function() {
+    .join('entities_role', function () {
       this.on(
         'entities_role.entity_id',
         '=',
         'event_rosters.team_id',
       ).andOn('entities_role.role', '=', 1);
     })
-    .join('user_entity_role', function() {
+    .join('user_entity_role', function () {
       this.on(
         'user_entity_role.entity_id',
         '=',
@@ -387,3 +388,10 @@ export const getTeamNameUniquenessInEvent = async (name, eventId) => {
 
   return Number(count) === 0;
 };
+
+export const getEventVerified = async () => {
+  return await eventsInfos.query()
+    .withGraphJoined('[creatorEntities.entitiesGeneralInfos]')
+    .whereNull('events_infos.deleted_at')
+    .andWhere(function () { this.whereNotNull('creatorEntities.verified_by') });
+}
