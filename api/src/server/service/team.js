@@ -193,11 +193,14 @@ const getRoleRoster = async (rosterId, userId) => {
 }
 
 export const getTeamsAcceptedInfos = async (eventId, userId) => {
-  const teams = await eventQueries.getTeamsAcceptedInfos(eventId, true);
+  const order = [ROSTER_ROLE_ENUM.COACH, ROSTER_ROLE_ENUM.CAPTAIN, ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN, ROSTER_ROLE_ENUM.PLAYER];
+  const teams = await eventQueries.getTeamsAcceptedInfos(eventId, userId, true);
 
   const res = await Promise.all(
     teams.map(async t => {
-      const role = await getRoleRoster(t.roster_id, userId);
+      const role = t.rosterPlayers.length > 0 ? t.rosterPlayers.sort(function (a, b) {
+        return order.indexOf(a.role) - order.indexOf(b.role)
+      })[0].role : ROSTER_ROLE_ENUM.VIEWER;
 
       const players = t.rosterPlayersInfos.map(player => ({
         id: player.id,
@@ -245,7 +248,7 @@ export const getTeamsAcceptedInfos = async (eventId, userId) => {
         emails: t.entitiesRole.userEntityRole.userEmail,
         players,
         option,
-        role,
+        role: role,
         registrationStatus: t.registration_status
       };
     }),

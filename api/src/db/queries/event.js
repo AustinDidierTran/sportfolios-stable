@@ -336,10 +336,10 @@ export const getPaymentOptionById = async paymentOptionId => {
 };
 
 
-export const getTeamsAcceptedInfos = async (eventId, withSub = false) => {
+export const getTeamsAcceptedInfos = async (eventId, userId, withSub = false) => {
 
   const teams = await eventRosters.query()
-    .withGraphJoined('[entitiesGeneralInfos,entitiesRole.userEntityRole.userEmail, eventPaymentOptions, rosterPlayersInfos.memberships, eventsInfos]')
+    .withGraphJoined('[entitiesGeneralInfos,entitiesRole.userEntityRole.userEmail, eventPaymentOptions, rosterPlayersInfos.memberships, eventsInfos, rosterPlayers]')
     .whereIn('registration_status', [
       STATUS_ENUM.ACCEPTED,
       STATUS_ENUM.ACCEPTED_FREE,
@@ -348,11 +348,17 @@ export const getTeamsAcceptedInfos = async (eventId, withSub = false) => {
       'event_rosters.event_id': eventId,
     })
     .modifyGraph('rosterPlayersInfos', builder => {
-      builder.where('is_sub', withSub).orWhere('is_sub', false);
-      builder.orderByRaw(`array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,)
+      builder.where('is_sub', withSub).orWhere('is_sub', false).orderByRaw(`array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,);
     })
     .modifyGraph('entitiesRole.userEntityRole.userEmail', builder => {
       builder.select('email');
+    })
+    .modifyGraph('rosterPlayers', builder => {
+      if (userId != -1) {
+        builder.innerJoin('user_entity_role', 'user_entity_role.entity_id', 'person_id').where('user_id', userId);
+      }
+      else
+        builder.where(false);
     });
   return teams;
 };

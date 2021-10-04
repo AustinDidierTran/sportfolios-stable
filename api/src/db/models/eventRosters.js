@@ -5,6 +5,7 @@ import { eventPaymentOptions } from './eventPaymentOptions.js';
 import { rosterPlayersInfos } from './rosterPlayersInfos.js';
 import { entitiesRole } from './entitiesRole.js';
 import { eventsInfos } from './eventsInfos.js';
+import { rosterPlayers } from './rosterPlayers.js';
 
 export class eventRosters extends Model {
   static get tableName() {
@@ -61,6 +62,14 @@ export class eventRosters extends Model {
         join: {
           from: 'event_rosters.event_id',
           to: 'events_infos.id',
+        }
+      },
+      rosterPlayers: {
+        relation: Model.HasManyRelation,
+        modelClass: rosterPlayers,
+        join: {
+          from: 'event_rosters.roster_id',
+          to: 'roster_players.roster_id',
         }
       },
     };
