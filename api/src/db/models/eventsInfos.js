@@ -1,7 +1,6 @@
 import { Model } from 'objection';
 import { eventRosters } from './eventRosters.js';
 import { entities } from './entities.js';
-import { entitiesGeneralInfos } from './entitiesGeneralInfos.js';
 
 export class eventsInfos extends Model {
   static get tableName() {
