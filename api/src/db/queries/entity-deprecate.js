@@ -2,7 +2,6 @@ import knex from '../connection.js';
 import { getMembershipName } from '../../../../common/functions/index.js';
 
 import {
-  CARD_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,
   EVENT_TYPE,
   GLOBAL_ENUM,
