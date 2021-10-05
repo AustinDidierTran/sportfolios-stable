@@ -5,8 +5,12 @@ import {
   getEmailPerson,
   getPaymentOption,
 } from './entity-deprecate.js';
-import { STATUS_ENUM } from '../../../../common/enums/index.js';
 import moment from 'moment';
+import { eventRosters } from '../models/eventRosters.js';
+import {
+  ROSTER_ROLE_ENUM,
+  STATUS_ENUM,
+} from '../../../../common/enums/index.js';
 
 async function getAllPeopleRegisteredNotInTeams(eventId) {
   const subquery = knex('event_rosters')
@@ -331,15 +335,30 @@ export const getPaymentOptionById = async paymentOptionId => {
   return option;
 };
 
-export const getTeamsAcceptedRegistered = async eventId => {
-  const teams = await knex('event_rosters')
-    .select('*')
+
+export const getTeamsAcceptedInfos = async (eventId, userId, withSub = false) => {
+
+  const teams = await eventRosters.query()
+    .withGraphJoined('[entitiesGeneralInfos,entitiesRole.userEntityRole.userEmail, eventPaymentOptions, rosterPlayersInfos.memberships, eventsInfos, rosterPlayers]')
     .whereIn('registration_status', [
       STATUS_ENUM.ACCEPTED,
       STATUS_ENUM.ACCEPTED_FREE,
     ])
     .andWhere({
-      event_id: eventId,
+      'event_rosters.event_id': eventId,
+    })
+    .modifyGraph('rosterPlayersInfos', builder => {
+      builder.where('is_sub', withSub).orWhere('is_sub', false).orderByRaw(`array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,);
+    })
+    .modifyGraph('entitiesRole.userEntityRole.userEmail', builder => {
+      builder.select('email');
+    })
+    .modifyGraph('rosterPlayers', builder => {
+      if (userId != -1) {
+        builder.innerJoin('user_entity_role', 'user_entity_role.entity_id', 'person_id').where('user_id', userId);
+      }
+      else
+        builder.where(false);
     });
   return teams;
 };
