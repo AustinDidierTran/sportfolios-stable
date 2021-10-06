@@ -1,5 +1,5 @@
 # Use proper node image
-FROM node:14.4
+FROM node:14.18
 
 # Directory to use in container
 WORKDIR /sportfolios
