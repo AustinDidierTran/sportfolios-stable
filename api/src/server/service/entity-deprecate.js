@@ -595,7 +595,7 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
       if (!admins) {
         return;
       }
-      console.log(5);
+      console.log(5, t.rosterId);
       const myTeam = teamsList.find(
         team => team.rosterId === t.rosterId,
       );
