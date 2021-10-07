@@ -28,7 +28,11 @@ import _ from 'lodash';
 import { getTaxRates } from './shop.js';
 import { getPaymentOption } from '../../server/service/event.js';
 import { getRegistrationStatus } from './event.js';
-import { getRoster, getTeamCaptains, getRoleRoster } from '../../server/service/team.js';
+import {
+  getRoster,
+  getTeamCaptains,
+  getRoleRoster,
+} from '../../server/service/team.js';
 
 const addEntity = async (body, userId) => {
   const {
@@ -2136,7 +2140,7 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
       ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN,
     ])
     .andWhere('roster_players.roster_id', '=', rosterId);
-
+  console.log(101, res);
   return res.length
     ? res.map(p => ({
         entityId: p.entity_id,
@@ -2323,7 +2327,6 @@ const getPhaseName = async phaseId => {
     .where({ id: phaseId });
   return name;
 };
-
 
 const getTeams = async gameId => {
   const teams = await knex('game_teams')
@@ -7448,7 +7451,7 @@ async function getAllExercises() {
   return res;
 }
 
-const getEmailsEntity = async (entityId) => {
+const getEmailsEntity = async entityId => {
   return knex('entities_role')
     .select('email')
     .leftJoin(
@@ -7464,8 +7467,7 @@ const getEmailsEntity = async (entityId) => {
       'user_entity_role.user_id',
     )
     .where('entities_role.entity_id', entityId);
-}
-
+};
 
 export {
   acceptScoreSuggestion,

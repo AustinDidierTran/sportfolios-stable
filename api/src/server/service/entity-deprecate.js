@@ -219,8 +219,8 @@ import { validateEmailIsUnique as validateEmailIsUniqueHelper } from '../../db/q
 import { sendNotification } from './notification.js';
 import { getOwnedPersons } from './user.js';
 import { isAllowed } from '../../db/queries/utils.js';
-import { getRoster, getRoleRoster } from './team.js'
-import { getRegistrationStatus } from '../../db/queries/event.js'
+import { getRoster, getRoleRoster } from './team.js';
+import { getRegistrationStatus } from '../../db/queries/event.js';
 
 async function getEntity(id, userId) {
   const res = await getEntityHelper(id, userId);
@@ -581,22 +581,29 @@ function getRegistrationTeamPaymentOption(paymentOptionId) {
 }
 
 async function getPossibleSubmissionerInfos(gameId, teams, userId) {
+  console.log(1);
   const teamsList = JSON.parse(teams);
+  console.log(2);
   const adminsOfTeams = await Promise.all(
     teamsList.map(async t => {
+      console.log(3);
       const admins = await getMyPersonsAdminsOfTeamHelper(
         t.rosterId,
         userId,
       );
+      console.log(4, admins);
       if (!admins) {
         return;
       }
+      console.log(5);
       const myTeam = teamsList.find(
         team => team.rosterId === t.rosterId,
       );
+      console.log(6);
       const enemyTeam = teamsList.find(
         team => team.rosterId !== t.rosterId,
       );
+      console.log(7);
       return {
         myTeam: {
           rosterId: myTeam.rosterId,
@@ -610,7 +617,9 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
       };
     }),
   );
+  console.log(8, adminsOfTeams);
   const validTeams = adminsOfTeams.filter(res => res !== undefined);
+  console.log(9, validTeams);
   if (validTeams.length === 0) {
     return ERROR_ENUM.ACCESS_DENIED;
   }
