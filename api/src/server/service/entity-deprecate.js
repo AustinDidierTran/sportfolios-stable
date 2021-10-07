@@ -586,7 +586,7 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
   console.log(2);
   const adminsOfTeams = await Promise.all(
     teamsList.map(async t => {
-      console.log(3);
+      console.log(3, t);
       const admins = await getMyPersonsAdminsOfTeamHelper(
         t.rosterId,
         userId,
