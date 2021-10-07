@@ -583,7 +583,7 @@ function getRegistrationTeamPaymentOption(paymentOptionId) {
 async function getPossibleSubmissionerInfos(gameId, teams, userId) {
   console.log(1);
   const teamsList = JSON.parse(teams);
-  console.log(2);
+  console.log(2, teamsList);
   const adminsOfTeams = await Promise.all(
     teamsList.map(async t => {
       console.log(3, t);
