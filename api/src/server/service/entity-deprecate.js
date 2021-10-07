@@ -599,11 +599,11 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
       const myTeam = teamsList.find(
         team => team.rosterId === t.rosterId,
       );
-      console.log(6);
+      console.log(6, myTeam);
       const enemyTeam = teamsList.find(
         team => team.rosterId !== t.rosterId,
       );
-      console.log(7, 'youre supposed to log something...');
+      console.log(7, enemyTeam);
       return {
         myTeam: {
           rosterId: myTeam.rosterId,
