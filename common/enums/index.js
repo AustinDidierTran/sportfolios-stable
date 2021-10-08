@@ -537,8 +537,9 @@ const MESSENGER_MESSAGES_EN = {
 };
 
 const EVENT_TYPE = {
-  PLAYER: 'player',
-  TEAM: 'team',
+  PICK_UP_LEAGUE: 'player',
+  TEAM_LEAGUE: 'team',
+  TEAM_TOURNAMENT: 'teamTournament',
 };
 
 export {

@@ -46,7 +46,7 @@ describe('ValidateEliminationBracket', () => {
         maximumSpots: twoSpots,
         startDate: '2020-01-01',
         endDate: '2030-01-01',
-        eventType: EVENT_TYPE.TEAM,
+        eventType: EVENT_TYPE.TEAM_LEAGUE,
       },
       user.id,
     );
@@ -93,7 +93,7 @@ describe('ValidateEliminationBracket', () => {
         maximumSpots: fourSpots,
         startDate: '2020-01-01',
         endDate: '2030-01-01',
-        eventType: EVENT_TYPE.TEAM,
+        eventType: EVENT_TYPE.TEAM_LEAGUE,
       },
       user.id,
     );

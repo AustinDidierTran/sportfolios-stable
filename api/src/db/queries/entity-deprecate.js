@@ -28,7 +28,11 @@ import _ from 'lodash';
 import { getTaxRates } from './shop.js';
 import { getPaymentOption } from '../../server/service/event.js';
 import { getRegistrationStatus } from './event.js';
-import { getRoster, getTeamCaptains, getRoleRoster } from '../../server/service/team.js';
+import {
+  getRoster,
+  getTeamCaptains,
+  getRoleRoster,
+} from '../../server/service/team.js';
 
 const addEntity = async (body, userId) => {
   const {
@@ -2323,7 +2327,6 @@ const getPhaseName = async phaseId => {
     .where({ id: phaseId });
   return name;
 };
-
 
 const getTeams = async gameId => {
   const teams = await knex('game_teams')
@@ -5689,11 +5692,13 @@ async function addOption(
       individual_price: playerPrice === null ? 0 : playerPrice,
       end_time: new Date(endTime),
       start_time: new Date(startTime),
-      team_activity: eventType === EVENT_TYPE.TEAM,
+      team_activity: eventType === EVENT_TYPE.TEAM_LEAGUE,
       team_acceptation:
-        manualAcceptation && eventType === EVENT_TYPE.TEAM,
+        manualAcceptation &&
+        (eventType === EVENT_TYPE.TEAM_LEAGUE ||
+          eventType === EVENT_TYPE.TEAM_TOURNAMENT),
       player_acceptation:
-        manualAcceptation && eventType === EVENT_TYPE.PLAYER,
+        manualAcceptation && eventType === EVENT_TYPE.PICK_UP_LEAGUE,
       informations,
     })
     .returning('*');
@@ -7448,7 +7453,7 @@ async function getAllExercises() {
   return res;
 }
 
-const getEmailsEntity = async (entityId) => {
+const getEmailsEntity = async entityId => {
   return knex('entities_role')
     .select('email')
     .leftJoin(
@@ -7464,8 +7469,7 @@ const getEmailsEntity = async (entityId) => {
       'user_entity_role.user_id',
     )
     .where('entities_role.entity_id', entityId);
-}
-
+};
 
 export {
   acceptScoreSuggestion,
