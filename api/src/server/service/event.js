@@ -5,9 +5,7 @@ import {
   getOptions,
 } from '../../db/queries/entity-deprecate.js';
 import { getPaymentOptionById } from '../../db/queries/event.js';
-
 import * as queries from '../../db/queries/event.js';
-
 import moment from 'moment';
 
 const getEventInfo = async (eventId, userId) => {
@@ -124,3 +122,4 @@ export async function getPaymentOption(paymentOptionId) {
     informations: option.informations,
   };
 }
+

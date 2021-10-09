@@ -1,5 +1,6 @@
 import { Model } from 'objection';
 import { eventRosters } from './eventRosters.js';
+import { entities } from './entities.js';
 
 export class eventsInfos extends Model {
   static get tableName() {
@@ -15,7 +16,23 @@ export class eventsInfos extends Model {
           from: 'events_infos.id',
           to: 'event_rosters.event_id'
         }
-      }
+      },
+      entities: {
+        relation: Model.HasOneRelation,
+        modelClass: entities,
+        join: {
+          from: 'events_infos.id',
+          to: 'entities.id'
+        }
+      },
+      creatorEntities: {
+        relation: Model.HasOneRelation,
+        modelClass: entities,
+        join: {
+          from: 'events_infos.creator_id',
+          to: 'entities.id'
+        }
+      },
     };
   }
 }

@@ -64,7 +64,6 @@ import {
   getAlias as getAliasHelper,
   getAllEntities as getAllEntitiesHelper,
   getAllExercises as getAllExercisesHelper,
-  getAllForYouPagePosts as getAllForYouPagePostsHelper,
   getAllOwnedEntities as getAllOwnedEntitiesHelper,
   getAllPeopleRegisteredInfos as getAllPeopleRegisteredInfosHelper,
   getAllPlayersAcceptedRegistered as getAllPlayersAcceptedRegisteredHelper,
@@ -235,10 +234,6 @@ async function getEntity(id, userId) {
 
 function getAllEntities(params) {
   return getAllEntitiesHelper(params);
-}
-
-function getAllForYouPagePosts() {
-  return getAllForYouPagePostsHelper();
 }
 
 function getScoreSuggestion(gameId) {
@@ -2316,7 +2311,6 @@ export {
   getAlias,
   getAllEntities,
   getAllExercises,
-  getAllForYouPagePosts,
   getAllOwnedEntities,
   getAllPeopleRegisteredInfos,
   getAllPlayersAcceptedRegistered,

@@ -37,4 +37,13 @@ router.get(`${BASE_URL}/verifyTeamNameIsUnique`, async ctx => {
   ctx.body = { data: teamNameIsUnique };
 });
 
+router.get(`${BASE_URL}/forYouPage`, async ctx => {
+  const entity = await service.getForYouPagePosts(ctx.query);
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: entity };
+});
+
 export default router;
