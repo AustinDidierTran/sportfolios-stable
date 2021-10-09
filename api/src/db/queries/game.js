@@ -1,8 +1,10 @@
 import {
   PHASE_TYPE_ENUM,
   STATUS_ENUM,
+  GLOBAL_ENUM,
 } from '../../../../common/enums/index.js';
 import knex from '../connection.js';
+import { entities } from '../models/entities.js';
 
 const getGameType = async gameId => {
   const [game] = await knex('games')
@@ -387,3 +389,16 @@ export const updateGameSpirit = async ({
     })
     .where({ game_id: gameId, roster_id: submittedForRoster });
 };
+
+export const createGame = async (eventId, phaseId, ticketLimit, trx = null) => {
+  return await entities.query(trx).insertGraph(
+    {
+      type: GLOBAL_ENUM.GAME,
+      game: {
+        phase_id: phaseId,
+        event_id: eventId,
+        ticket_limit: ticketLimit,
+      }
+    }
+  );
+}

@@ -1,3 +1,4 @@
+import knex from '../../db/connection.js';
 import {
   getEntity as getEntityHelper,
   eventInfos as eventInfosHelper,
@@ -6,7 +7,9 @@ import {
 } from '../../db/queries/entity-deprecate.js';
 import { getPaymentOptionById } from '../../db/queries/event.js';
 import * as queries from '../../db/queries/event.js';
+import * as gameQueries from '../../db/queries/game.js';
 import moment from 'moment';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
 
 const getEventInfo = async (eventId, userId) => {
   const data = await eventInfosHelper(eventId, userId);
@@ -123,3 +126,48 @@ export async function getPaymentOption(paymentOptionId) {
   };
 }
 
+export const addEvent = async (
+  name,
+  startDate,
+  endDate,
+  photoUrl,
+  eventType,
+  maximumSpots,
+  creatorId,
+  ticketLimit,
+) => {
+  if (name && name.length > 64) {
+    throw ERROR_ENUM.VALUE_IS_INVALID;
+  }
+  if (!creatorId) {
+    throw ERROR_ENUM.VALUE_IS_REQUIRED;
+  }
+
+  const phaseRankings = Array(maximumSpots)
+    .fill(0)
+    .map((_, i) => ({ initial_position: i + 1 }));
+
+  const entity = await knex.transaction(async trx => {
+    const entity = await queries.createEvent(
+      name,
+      startDate,
+      endDate,
+      photoUrl,
+      eventType,
+      maximumSpots,
+      creatorId,
+      phaseRankings,
+      trx,
+    );
+    if (eventType == 'game') {
+      await gameQueries.createGame(
+        entity.event.id,
+        entity.event.phases[0].id,
+        ticketLimit,
+        trx,
+      );
+    }
+    return entity;
+  });
+  return { id: entity.id };
+};

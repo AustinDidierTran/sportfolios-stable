@@ -46,4 +46,22 @@ router.get(`${BASE_URL}/forYouPage`, async ctx => {
   ctx.body = { data: entity };
 });
 
+router.post(BASE_URL, async ctx => {
+  const entityId = await service.addEvent(
+    ctx.request.body.name,
+    ctx.request.body.startDate,
+    ctx.request.body.endDate,
+    ctx.request.body.photoUrl,
+    ctx.request.body.type,
+    ctx.request.body.maximumSpots,
+    ctx.request.body.creatorId,
+    ctx.request.body.ticketLimit,
+  );
+
+  if (!entityId) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: entityId };
+});
+
 export default router;
