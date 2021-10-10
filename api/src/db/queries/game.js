@@ -405,27 +405,3 @@ export const createGame = async (
     },
   });
 };
-
-export const getGameFromEvent = async eventId => {
-  const [{ id }] = await knex('games')
-    .select('id')
-    .where({ event_id: eventId });
-
-  return id;
-};
-
-export const updateGameInfo = async (
-  gameId,
-  gameInfo,
-  trx = null,
-) => {
-  // OLIVIER
-  return await entities
-    .query(trx)
-    .update({
-      name: gameInfo.name,
-      description: gameInfo.description,
-      ticketLimit: gameInfo.ticketLimit,
-    })
-    .where('id', gameId);
-};

@@ -64,15 +64,4 @@ router.post(BASE_URL, async ctx => {
   ctx.body = { data: entityId };
 });
 
-router.post(`${BASE_URL}/tickets`, async ctx => {
-  const userId = getUserId(ctx);
-
-  const cartItems = await service.addEventTickets(
-    ctx.request.body,
-    userId,
-  );
-
-  ctx.body = { data: cartItems };
-});
-
 export default router;
