@@ -1,5 +1,4 @@
 import knex from '../connection.js';
-import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
 import {
   getEntity,
   getEmailPerson,
@@ -8,9 +7,13 @@ import {
 import moment from 'moment';
 import { eventRosters } from '../models/eventRosters.js';
 import { eventsInfos } from '../models/eventsInfos.js';
+import { entities } from '../models/entities.js';
 import {
   ROSTER_ROLE_ENUM,
   STATUS_ENUM,
+  GLOBAL_ENUM,
+  PHASE_STATUS_ENUM,
+  ENTITIES_ROLE_ENUM,
 } from '../../../../common/enums/index.js';
 
 async function getAllPeopleRegisteredNotInTeams(eventId) {
@@ -413,7 +416,7 @@ export const getEventVerified = async () => {
     });
 };
 
-export const createEvent = async ({
+export const createEvent = async (
   name,
   startDate,
   endDate,
@@ -424,94 +427,33 @@ export const createEvent = async ({
   creatorId,
   phaseRankings,
   trx = null,
-}) => {
-  console.log({
-    name,
-    startDate,
-    endDate,
-    location,
-    photoUrl,
-    eventType,
-    maximumSpots,
-    creatorId,
-    phaseRankings,
-  });
-
-  try {
-    return entities.query(trx).insertGraph({
-      type: GLOBAL_ENUM.EVENT,
-      entitiesGeneralInfos: {
-        name,
-        photo_url: photoUrl,
-      },
-      entitiesRole: {
-        role: ENTITIES_ROLE_ENUM.ADMIN,
-        entity_id_admin: creatorId,
-      },
-      event: {
-        start_date: startDate,
-        start_varchar: startDate,
-        end_date: endDate,
-        end_varchar: endDate,
-        maximum_spots: maximumSpots,
-        type: eventType,
-        phases: [
-          {
-            name: 'prerank',
-            spots: maximumSpots,
-            phase_order: 0,
-            status: PHASE_STATUS_ENUM.NOT_STARTED,
-            phaseRankings: phaseRankings,
-          },
-        ],
-      },
-    });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export const getEventTypeGame = async eventId => {
-  return await events
-    .query()
-    .withGraphJoined(
-      '[eventsInfos.creatorEntities.entitiesGeneralInfos, games.eventTicketOptions.[eventTicketPaid.stripeInvoiceItem.[stripePrice, userEmail, userPrimaryPerson.entitiesGeneralInfos],stripePrice]]',
-      { minimize: true },
-    )
-    .modifyGraph(
-      'games.eventTicketOptions.eventTicketPaid',
-      builder => {
-        builder.orderBy('created_at');
-      },
-    )
-    .where({
-      '_t0.id': eventId,
-    });
-};
-
-export const getEventByRankingId = async rankingId => {
-  const [{ event_id }] = await knex('phase_rankings')
-    .select('event_id')
-    .leftJoin(
-      'phase',
-      'phase.id',
-      '=',
-      'phase_rankings.current_phase',
-    )
-    .where('phase_rankings.ranking_id', rankingId);
-
-  return event_id;
-};
-
-export const updateRosterIdInRankings = async (
-  newRosterId,
-  rankingId,
 ) => {
-  const res = await knex('phase_rankings')
-    .update({
-      roster_id: newRosterId,
-    })
-    .where('ranking_id', rankingId);
-
-  return res;
+  return await entities.query(trx).insertGraph({
+    type: GLOBAL_ENUM.EVENT,
+    entitiesGeneralInfos: {
+      name,
+      photo_url: photoUrl,
+    },
+    entitiesRole: {
+      role: ENTITIES_ROLE_ENUM.ADMIN,
+      entity_id_admin: creatorId,
+    },
+    event: {
+      start_date: startDate,
+      start_varchar: startDate,
+      end_date: endDate,
+      end_varchar: endDate,
+      maximum_spots: maximumSpots,
+      type: eventType,
+      phases: [
+        {
+          name: 'prerank',
+          spots: maximumSpots,
+          phase_order: 0,
+          status: PHASE_STATUS_ENUM.NOT_STARTED,
+          phaseRankings: phaseRankings,
+        },
+      ],
+    },
+  });
 };

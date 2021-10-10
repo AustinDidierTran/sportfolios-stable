@@ -1,3 +1,4 @@
+import knex from '../../db/connection.js';
 import {
   getEntity as getEntityHelper,
   eventInfos as eventInfosHelper,
@@ -6,14 +7,9 @@ import {
 } from '../../db/queries/entity-deprecate.js';
 import { getPaymentOptionById } from '../../db/queries/event.js';
 import * as queries from '../../db/queries/event.js';
+import * as gameQueries from '../../db/queries/game.js';
 import moment from 'moment';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
-import {
-  ENTITIES_ROLE_ENUM,
-  GLOBAL_ENUM,
-} from '../../../../common/enums/index.js';
-import { CART_ITEM } from '../../../../common/enums/index.js';
-import { isAllowed } from './entity-deprecate.js';
 
 const getEventInfo = async (eventId, userId) => {
   const data = await eventInfosHelper(eventId, userId);
@@ -143,7 +139,6 @@ export const addEvent = async (
   if (name && name.length > 64) {
     throw ERROR_ENUM.VALUE_IS_INVALID;
   }
-
   if (!creatorId) {
     throw ERROR_ENUM.VALUE_IS_REQUIRED;
   }
@@ -153,7 +148,7 @@ export const addEvent = async (
     .map((_, i) => ({ initial_position: i + 1 }));
 
   const entity = await knex.transaction(async trx => {
-    const entity = await queries.createEvent({
+    const entity = await queries.createEvent(
       name,
       startDate,
       endDate,
@@ -163,7 +158,7 @@ export const addEvent = async (
       creatorId,
       phaseRankings,
       trx,
-    });
+    );
     if (eventType == 'game') {
       await gameQueries.createGame(
         entity.event.id,
@@ -174,102 +169,5 @@ export const addEvent = async (
     }
     return entity;
   });
-
   return { id: entity.id };
-};
-
-export const getEventGameType = async (eventId, userId) => {
-  const [event] = await queries.getEventTypeGame(eventId);
-
-  return {
-    name: event.eventsInfos.name,
-    creator: {
-      id: event.eventsInfos.creatorEntities.id,
-      name:
-        event.eventsInfos.creatorEntities.entitiesGeneralInfos.name,
-      photoUrl:
-        event.eventsInfos.creatorEntities.entitiesGeneralInfos
-          .photo_url,
-      verifiedAt: event.eventsInfos.creatorEntities.verified_at,
-    },
-    startDate: event.eventsInfos.start_date,
-    photoUrl: event.eventsInfos.photo_url,
-    type: GLOBAL_ENUM.EVENT,
-    id: eventId,
-    eventType: event.type,
-    description: event.eventsInfos.description,
-    tickets: {
-      // Exceptionnally, filter is done after map to have consistent ticket number
-      options: event.games[0].eventTicketOptions.map(option => ({
-        id: option.id,
-        name: option.name,
-        description: option.description,
-        price: option.stripePrice.amount,
-        limit: event.games[0].ticket_limit,
-        purchased: option.eventTicketPaid
-          .map((paid, index) => ({
-            id: paid.id,
-            buyer: {
-              email: paid.stripeInvoiceItem.userEmail.email,
-              completeName:
-                paid.stripeInvoiceItem.userPrimaryPerson
-                  .entitiesGeneralInfos.name +
-                ' ' +
-                paid.stripeInvoiceItem.userPrimaryPerson
-                  .entitiesGeneralInfos.surname,
-              userId: paid.stripeInvoiceItem.user_id,
-            },
-            number: index + 1,
-            name: option.name,
-            optionId: option.id,
-          }))
-          .filter(ticket => ticket.buyer.userId === userId),
-      })),
-      limit: event.games[0].ticket_limit,
-    },
-  };
-};
-export const addEventTickets = async (body, userId) => {
-  const ticketOptions = await ticketQueries.getTicketOptionsByEventTicketOptionsIds(
-    body.map(ticket => ticket.id),
-  );
-
-  const ticketPaid = ticketOptions.map(
-    ticket => ticket.eventTicketPaid,
-  );
-  const ticketsRemaining =
-    ticketOptions[0].games.ticket_limit - ticketPaid.length;
-  const ticketBought = body.reduce(
-    (count, ticket) => count + ticket.quantity,
-    0,
-  );
-  if (ticketsRemaining < ticketBought) {
-    throw new Error(ERROR_ENUM.NOT_ENOUGH_PLACE_REMAINING);
-  }
-
-  await Promise.all(
-    body.map(async ticket =>
-      shopQueries.insertCartItem(
-        ticketOptions.find(to => to.id === ticket.id).stripe_price_id,
-        body,
-        ticket.quantity,
-        true,
-        CART_ITEM.EVENT_TICKET,
-        userId,
-      ),
-    ),
-  );
-};
-
-export const putRosterIdInRankings = async (body, userId) => {
-  const { newRosterId, rankingId } = body;
-  const eventId = await queries.getEventByRankingId(rankingId);
-
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
-
-  return queries.updateRosterIdInRankings(newRosterId, rankingId);
 };
