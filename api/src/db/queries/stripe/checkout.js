@@ -19,6 +19,12 @@ import {
   getEmailsFromUserId,
   getLanguageFromEmail,
 } from '../user.js';
+import {
+  getTicketOptionsByStripePriceIds,
+  getCountTicketPaidByGameId,
+} from '../ticket.js';
+import { ERROR_ENUM } from '../../../../../common/errors/index.js';
+import { stripePrice as stripePriceModel } from '../../models/stripePrice.js';
 
 const formatMetadata = metadata =>
   Object.keys(metadata).reduce((prev, curr) => {
@@ -320,9 +326,9 @@ const getTransactionFeesFromStripePriceId = async stripePriceId => {
 };
 
 const getMetadata = async (stripePriceId, cartItemId) => {
-  const [stripePrice] = await knex('stripe_price')
-    .select('*')
-    .where({ stripe_price_id: stripePriceId });
+  const [stripePrice] = await stripePriceModel
+    .query()
+    .where('stripe_price_id', stripePriceId);
 
   const [stripeProduct] = await knex('stripe_product')
     .select('*')
@@ -363,6 +369,47 @@ const checkout = async (body, userId) => {
   if (!prices.length) {
     const reason = REJECTION_ENUM.NO_CART_ITEMS_SELECTED;
     return { reason };
+  }
+
+  // Set ticket limit
+  if (false) {
+    const eventTickets = prices.filter(
+      price => price.metadata.type === CART_ITEM.EVENT_TICKET,
+    );
+
+    const ticketOptions = await getTicketOptionsByStripePriceIds(
+      eventTickets.map(ticket => ticket.stripe_price_id),
+    );
+
+    const gameIdsForTicketOptions = ticketOptions.reduce(
+      (prev, ticketOption) => ({
+        ...prev,
+        [ticketOption.stripe_price_id]: ticketOption.games.id,
+      }),
+      {},
+    );
+
+    const gamesWithLimit = ticketOptions.map(ticketOption => ({
+      ticketLimit: ticketOption.games.ticket_limit,
+      gameId: ticketOption.games.id,
+    }));
+
+    const eventTicketWithGame = eventTickets.map(eventTicket => ({
+      quantity: eventTicket.quantity,
+      gameId: gameIdsForTicketOptions[eventTicket.id],
+      ticketLimit: gamesWithLimit.find(
+        g =>
+          g.gameId ===
+          gameIdsForTicketOptions[eventTicket.stripe_price_id],
+      ).ticketLimit,
+    }));
+
+    eventTicketWithGame.forEach(async etwg => {
+      const sold = await getCountTicketPaidByGameId(etwg.gameId);
+      if (sold + etwg.quantity > etwg.ticketLimit) {
+        throw new Error(ERROR_ENUM.NOT_ENOUGH_PLACE_REMAINING);
+      }
+    });
   }
 
   try {
@@ -484,6 +531,10 @@ const checkout = async (body, userId) => {
               },
             });
           } else if (metadata.type === CART_ITEM.EVENT_TICKET) {
+            await INVOICE_PAID_ENUM.EVENT_TICKET({
+              invoiceItemId: invoiceItem.id,
+              quantity: invoiceItem.quantity,
+            });
           }
           deleteCartItem(cartItemId);
         },

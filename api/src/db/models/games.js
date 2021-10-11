@@ -1,6 +1,7 @@
 import { Model } from 'objection';
 import { events } from './events.js';
 import { entities } from './entities.js';
+import { eventTicketOptions } from './eventTicketOptions.js';
 
 export class games extends Model {
   static get tableName() {
@@ -25,6 +26,14 @@ export class games extends Model {
           to: 'entities.id'
         }
       },
+      eventTicketOptions: {
+        relation: Model.HasManyRelation,
+        modelClass: eventTicketOptions,
+        join: {
+          from: 'games.id',
+          to: 'event_ticket_options.game_id'
+        }
+      }
     };
   }
 }

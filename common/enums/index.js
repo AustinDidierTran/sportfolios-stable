@@ -145,6 +145,7 @@ const TABS_ENUM = {
   SCHEDULE: 'schedule',
   SETTINGS: 'settings',
   SHOP: 'shop',
+  TICKETS: 'tickets',
 };
 
 const FORM_DIALOG_TYPE_ENUM = {
@@ -365,6 +366,7 @@ const GLOBAL_ENUM = {
 };
 
 const CART_ITEM = {
+  EVENT_TICKET: 'event_ticket',
   MEMBERSHIP: 'membership',
   DONATION: 'donation',
   SHOP_ITEM: 'shop_item',

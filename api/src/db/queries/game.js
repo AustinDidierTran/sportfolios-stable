@@ -390,15 +390,42 @@ export const updateGameSpirit = async ({
     .where({ game_id: gameId, roster_id: submittedForRoster });
 };
 
-export const createGame = async (eventId, phaseId, ticketLimit, trx = null) => {
-  return await entities.query(trx).insertGraph(
-    {
-      type: GLOBAL_ENUM.GAME,
-      game: {
-        phase_id: phaseId,
-        event_id: eventId,
-        ticket_limit: ticketLimit,
-      }
-    }
-  );
-}
+export const createGame = async (
+  eventId,
+  phaseId,
+  ticketLimit,
+  trx = null,
+) => {
+  return await entities.query(trx).insertGraph({
+    type: GLOBAL_ENUM.GAME,
+    game: {
+      phase_id: phaseId,
+      event_id: eventId,
+      ticket_limit: ticketLimit,
+    },
+  });
+};
+
+export const getGameFromEvent = async eventId => {
+  const [{ id }] = await knex('games')
+    .select('id')
+    .where({ event_id: eventId });
+
+  return id;
+};
+
+export const updateGameInfo = async (
+  gameId,
+  gameInfo,
+  trx = null,
+) => {
+  // OLIVIER
+  return await entities
+    .query(trx)
+    .update({
+      name: gameInfo.name,
+      description: gameInfo.description,
+      ticketLimit: gameInfo.ticketLimit,
+    })
+    .where('id', gameId);
+};

@@ -1,6 +1,7 @@
 import { Model } from 'objection';
 import { entities } from './entities.js';
 import { personInfos } from './personInfos.js';
+import { userPrimaryPerson } from './userPrimaryPerson.js';
 
 export class entitiesGeneralInfos extends Model {
   static get tableName() {
@@ -26,6 +27,14 @@ export class entitiesGeneralInfos extends Model {
         join: {
           from: 'entities_general_infos.infos_supp_id',
           to: 'personInfos.id'
+        }
+      },
+      userPrimaryPerson: {
+        relation: Model.HasOneRelation,
+        modelClass: userPrimaryPerson,
+        join: {
+          from: 'entities_general_infos.entity_id',
+          to: 'user_primary_person.primary_person'
         }
       },
     };

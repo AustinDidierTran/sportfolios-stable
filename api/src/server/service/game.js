@@ -1,8 +1,94 @@
-import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
+import {
+  CART_ITEM,
+  ENTITIES_ROLE_ENUM,
+} from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
-import { isAllowed } from './entity-deprecate.js';
 
 import * as queries from '../../db/queries/game.js';
+import * as ticketQueries from '../../db/queries/ticket.js';
+
+import {
+  addProduct,
+  addPrice,
+} from '../../db/queries/stripe/shop.js';
+import { isAllowed } from '../../db/queries/utils.js';
+
+export const postTicketOption = async (body, userId) => {
+  const {
+    creatorId,
+    description,
+    eventId,
+    name,
+    photoUrl,
+    price,
+  } = body;
+
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  // Create the stripe product
+  const stripeProduct = await addProduct({
+    stripeProduct: {
+      name,
+      active: true,
+      description,
+      metadata: {
+        type: CART_ITEM.EVENT_TICKET,
+        id: eventId,
+      },
+    },
+  });
+
+  // Create the stripe price
+  const stripePrice = await addPrice({
+    stripePrice: {
+      currency: 'cad',
+      unit_amount: price,
+      active: true,
+      product: stripeProduct.id,
+      metadata: {
+        type: CART_ITEM.EVENT_TICKET,
+        id: eventId,
+      },
+    },
+    entityId: eventId,
+    photoUrl,
+    ownerId: creatorId,
+    taxRatesId: [], // To support tax rates
+  });
+
+  const gameId = await queries.getGameFromEvent(eventId);
+  console.log({ gameId });
+  // Insert inside the event ticket options
+  const res = await ticketQueries.createEventTicketOption(
+    stripePrice.id,
+    name,
+    description,
+    gameId,
+    photoUrl,
+  );
+  return res;
+};
+
+export const addTicketsToCart = async (body /* userId */) => {
+  const { ticketSelection } = body;
+
+  const ticketOptions = await ticketQueries.getTicketOptionsById(
+    Object.keys(ticketSelection),
+  );
+  // eslint-disable-next-line
+  const ticketOrder = ticketOptions
+    .map(to => ({
+      id: to.id,
+      stripe_price_id: to.stripe_price_id,
+      game_id: to.game_id,
+      quantity: ticketSelection[to.id],
+    }))
+    .filter(to => to.quantity);
+};
 
 export const submitSpiritScore = async (body, userId) => {
   const {
@@ -49,6 +135,22 @@ export const submitSpiritScore = async (body, userId) => {
   });
 };
 
+export const updateGameInfo = async (body, userId) => {
+  const { name, ticketLimit, description, gameId } = body;
+
+  if (!isAllowed(id, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  await queries.updateGameInfo(gameId, {
+    name,
+    ticketLimit,
+    description,
+  });
+
+  return true;
+};
+
 export const updateGameScore = async (body, userId) => {
   const { eventId, gameId, rosters } = body;
 
@@ -61,4 +163,44 @@ export const updateGameScore = async (body, userId) => {
   await queries.updateTeamGameScores(gameId, rosters);
 
   return gameId;
+};
+
+export const getPurchasedTickets = async (
+  gameId,
+  returnAllTickets,
+  userId,
+) => {
+  const purchasedTickets = await ticketQueries.getPurchasedTicketsByGameId(
+    gameId,
+  );
+
+  console.log({ purchasedTickets });
+
+  var purchasedTicketsObject = {
+    purchased: purchasedTickets.map((paid, index) => ({
+      id: paid.id,
+      buyer: {
+        email: paid.stripeInvoiceItem.userEmail.email,
+        completeName:
+          paid.stripeInvoiceItem.userPrimaryPerson
+            .entitiesGeneralInfos.name +
+          ' ' +
+          paid.stripeInvoiceItem.userPrimaryPerson
+            .entitiesGeneralInfos.surname,
+        userId: paid.stripeInvoiceItem.user_id,
+      },
+      number: index + 1,
+      name: paid.eventTicketOptions.name,
+      optionId: paid.eventTicketOptions.id,
+    })),
+  };
+  if (returnAllTickets) {
+    if (!isAllowed(gameId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+      throw new Error(ERROR_ENUM.ACCESS_DENIED);
+    }
+    return purchasedTicketsObject;
+  }
+  return purchasedTicketsObject.purchased.filter(
+    ticket => ticket.buyer.userId === userId,
+  );
 };
