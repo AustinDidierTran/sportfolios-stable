@@ -8,8 +8,13 @@ import {
 import { getPaymentOptionById } from '../../db/queries/event.js';
 import * as queries from '../../db/queries/event.js';
 import * as gameQueries from '../../db/queries/game.js';
+import * as shopQueries from '../../db/queries/shop.js';
+import * as ticketQueries from '../../db/queries/ticket.js';
+
 import moment from 'moment';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
+import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
+import { CART_ITEM } from '../../../../common/enums/index.js';
 
 const getEventInfo = async (eventId, userId) => {
   const data = await eventInfosHelper(eventId, userId);
@@ -147,6 +152,7 @@ export const addEvent = async (
   if (name && name.length > 64) {
     throw ERROR_ENUM.VALUE_IS_INVALID;
   }
+
   if (!creatorId) {
     throw ERROR_ENUM.VALUE_IS_REQUIRED;
   }
@@ -156,7 +162,7 @@ export const addEvent = async (
     .map((_, i) => ({ initial_position: i + 1 }));
 
   const entity = await knex.transaction(async trx => {
-    const entity = await queries.createEvent(
+    const entity = await queries.createEvent({
       name,
       startDate,
       endDate,
@@ -166,7 +172,7 @@ export const addEvent = async (
       creatorId,
       phaseRankings,
       trx,
-    );
+    });
     if (eventType == 'game') {
       await gameQueries.createGame(
         entity.event.id,
@@ -177,6 +183,7 @@ export const addEvent = async (
     }
     return entity;
   });
+
   return { id: entity.id };
 };
 
@@ -262,17 +269,4 @@ export const addEventTickets = async (body, userId) => {
       });
     }),
   );
-};
-
-export const putRosterIdInRankings = async (body, userId) => {
-  const { newRosterId, rankingId } = body;
-  const eventId = await queries.getEventByRankingId(rankingId);
-
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
-
-  return queries.updateRosterIdInRankings(newRosterId, rankingId);
 };

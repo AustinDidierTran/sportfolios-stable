@@ -2,6 +2,7 @@ import { Model } from 'objection';
 import { entities } from './entities.js';
 import { phase } from './phase.js';
 import { games } from './games.js';
+import { eventsInfos } from './eventsInfos.js';
 
 export class events extends Model {
   static get tableName() {
@@ -33,6 +34,14 @@ export class events extends Model {
           from: 'events.id',
           to: 'games.event_id',
         },
+      },
+      eventsInfos: {
+        relation: Model.HasOneRelation,
+        modelClass: eventsInfos,
+        join: {
+          from: 'events.id',
+          to: 'events_infos.id'
+        }
       },
     };
   }
