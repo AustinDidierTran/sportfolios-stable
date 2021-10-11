@@ -8,6 +8,7 @@ import moment from 'moment';
 import { eventRosters } from '../models/eventRosters.js';
 import { eventsInfos } from '../models/eventsInfos.js';
 import { entities } from '../models/entities.js';
+import { events } from '../models/events.js';
 import {
   ROSTER_ROLE_ENUM,
   STATUS_ENUM,
@@ -416,7 +417,7 @@ export const getEventVerified = async () => {
     });
 };
 
-export const createEvent = async (
+export const createEvent = async ({
   name,
   startDate,
   endDate,
@@ -427,33 +428,61 @@ export const createEvent = async (
   creatorId,
   phaseRankings,
   trx = null,
-) => {
-  return await entities.query(trx).insertGraph({
-    type: GLOBAL_ENUM.EVENT,
-    entitiesGeneralInfos: {
-      name,
-      photo_url: photoUrl,
-    },
-    entitiesRole: {
-      role: ENTITIES_ROLE_ENUM.ADMIN,
-      entity_id_admin: creatorId,
-    },
-    event: {
-      start_date: startDate,
-      start_varchar: startDate,
-      end_date: endDate,
-      end_varchar: endDate,
-      maximum_spots: maximumSpots,
-      type: eventType,
-      phases: [
-        {
-          name: 'prerank',
-          spots: maximumSpots,
-          phase_order: 0,
-          status: PHASE_STATUS_ENUM.NOT_STARTED,
-          phaseRankings: phaseRankings,
-        },
-      ],
-    },
+}) => {
+  console.log({
+    name,
+    startDate,
+    endDate,
+    location,
+    photoUrl,
+    eventType,
+    maximumSpots,
+    creatorId,
+    phaseRankings,
   });
+
+  try {
+    return entities.query(trx).insertGraph({
+      type: GLOBAL_ENUM.EVENT,
+      entitiesGeneralInfos: {
+        name,
+        photo_url: photoUrl,
+      },
+      entitiesRole: {
+        role: ENTITIES_ROLE_ENUM.ADMIN,
+        entity_id_admin: creatorId,
+      },
+      event: {
+        start_date: startDate,
+        start_varchar: startDate,
+        end_date: endDate,
+        end_varchar: endDate,
+        maximum_spots: maximumSpots,
+        type: eventType,
+        phases: [
+          {
+            name: 'prerank',
+            spots: maximumSpots,
+            phase_order: 0,
+            status: PHASE_STATUS_ENUM.NOT_STARTED,
+            phaseRankings: phaseRankings,
+          },
+        ],
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getEventTypeGame = async eventId => {
+  return await events
+    .query()
+    .withGraphJoined(
+      '[eventsInfos.creatorEntities.entitiesGeneralInfos, games.eventTicketOptions.stripePrice]',
+      { minimize: true },
+    )
+    .where({
+      '_t0.id': eventId,
+    });
 };

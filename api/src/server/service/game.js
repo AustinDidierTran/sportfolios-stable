@@ -61,7 +61,6 @@ export const postTicketOption = async (body, userId) => {
   });
 
   const gameId = await queries.getGameFromEvent(eventId);
-
   // Insert inside the event ticket options
   const res = await ticketQueries.createEventTicketOption(
     stripePrice.id,
@@ -166,51 +165,39 @@ export const updateGameScore = async (body, userId) => {
 };
 
 export const getPurchasedTickets = async (
-  { eventId, gameId, returnAllTickets },
+  gameId,
+  returnAllTickets,
   userId,
 ) => {
-  let finalGameId = gameId;
-
-  if (!finalGameId) {
-    finalGameId = await queries.getGameFromEvent(eventId);
-  }
-
   const purchasedTickets = await ticketQueries.getPurchasedTicketsByGameId(
-    finalGameId,
+    gameId,
   );
 
-  const purchasedTicketsObject = purchasedTickets.map(
-    (paid, index) => ({
+  var purchasedTicketsObject = {
+    purchased: purchasedTickets.map((paid, index) => ({
       id: paid.id,
       buyer: {
         email: paid.stripeInvoiceItem.userEmail.email,
-        primaryPerson: {
-          id: paid.stripeInvoiceItem.user_id,
-          name: paid.stripeInvoiceItem.userPrimaryPerson.entitiesGeneralInfos.name,
-          surname: paid.stripeInvoiceItem.userPrimaryPerson.entitiesGeneralInfos.surname,
-          photoUrl: paid.stripeInvoiceItem.userPrimaryPerson.entitiesGeneralInfos.photo_url,
-          verifiedAt: paid.stripeInvoiceItem.userPrimaryPerson.entitiesGeneralInfos.entities.verified_at,
-          deletedAt: paid.stripeInvoiceItem.userPrimaryPerson.entitiesGeneralInfos.entities.deleted_at,
-        }
+        completeName:
+          paid.stripeInvoiceItem.userPrimaryPerson
+            .entitiesGeneralInfos.name +
+          ' ' +
+          paid.stripeInvoiceItem.userPrimaryPerson
+            .entitiesGeneralInfos.surname,
+        userId: paid.stripeInvoiceItem.user_id,
       },
       number: index + 1,
-      option: {
-        id: paid.eventTicketOptions.id,
-        name: paid.eventTicketOptions.name,
-        description: paid.eventTicketOptions.description,
-        price: paid.eventTicketOptions.stripePrice.amount
-      }
-    }),
-  );
-
-  if (returnAllTickets && returnAllTickets !== 'false') {
+      name: paid.eventTicketOptions.name,
+      optionId: paid.eventTicketOptions.id,
+    })),
+  };
+  if (returnAllTickets) {
     if (!isAllowed(gameId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
     return purchasedTicketsObject;
   }
-
-  return purchasedTicketsObject.filter(
-    ticket => ticket.buyer.primaryPerson.id === userId,
+  return purchasedTicketsObject.purchased.filter(
+    ticket => ticket.buyer.userId === userId,
   );
 };

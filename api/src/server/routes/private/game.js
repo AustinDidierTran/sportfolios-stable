@@ -68,11 +68,8 @@ router.get(`${BASE_URL}/purchasedTickets`, async ctx => {
   const userId = getUserId(ctx);
 
   const purchasedTickets = await service.getPurchasedTickets(
-    {
-      gameId: ctx.query.gameId,
-      returnAllTickets: ctx.query.returnAllTickets,
-      eventId: ctx.query.eventId,
-    },
+    ctx.query.gameId,
+    ctx.query.returnAllTickets,
     userId,
   );
 
