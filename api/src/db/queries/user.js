@@ -9,7 +9,10 @@ import {
 } from '../../../../common/enums/index.js';
 
 import { EXPIRATION_TIMES } from '../../../../common/constants/index.js';
-import { sendConfirmationEmail, sendPersonTransferEmail } from '../../server/utils/nodeMailer.js';
+import {
+  sendConfirmationEmail,
+  sendPersonTransferEmail,
+} from '../../server/utils/nodeMailer.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import randtoken from 'rand-token';
 import { generateToken } from './utils.js';
@@ -30,7 +33,10 @@ async function getEmailUser(userId) {
 async function createUserEmail(body) {
   const { userId, email } = body;
 
-  await knex('user_email').insert({ user_id: userId, email });
+  await knex('user_email').insert({
+    user_id: userId,
+    email: email.toLowerCase(),
+  });
 }
 
 async function createConfirmationEmailToken({ email, token }) {
@@ -234,7 +240,7 @@ async function getPrimaryPersonIdFromUserId(user_id) {
 async function getUserIdFromEmail(email) {
   const [{ user_id } = {}] = await knex('user_email')
     .select(['user_id'])
-    .where({ email });
+    .where(knex.raw('lower("email")'), '=', email.toLowerCase());
   return user_id;
 }
 
@@ -293,7 +299,7 @@ async function useToken(tokenId) {
 
 async function validateEmailIsConfirmed(email) {
   const response = await knex('user_email')
-    .where({ email })
+    .where(knex.raw('lower("email")'), '=', email.toLowerCase())
     .returning(['confirmed_email_at']);
 
   return response.length && response[0].confirmed_email_at !== null;
