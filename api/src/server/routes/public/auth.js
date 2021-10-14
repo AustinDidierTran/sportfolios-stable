@@ -124,4 +124,12 @@ router.post(`${BASE_URL}/recoverPassword`, async ctx => {
   }
 });
 
+// Reset password with token
+router.post(`${BASE_URL}/validEmail`, async ctx => {
+  const res = await service.validEmail(ctx.request.body);
+  console.log(res)
+
+  ctx.body = { data: res };
+});
+
 export default router;
