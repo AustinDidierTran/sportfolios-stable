@@ -15,6 +15,60 @@ import {
 } from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 
+// [Refactoring] This should go into the generate report
+async function getPersonInfos(entityId) {
+  const [res] = await knex('person_all_infos')
+    .select('*')
+    .where({ id: entityId });
+
+  let resObj = {
+    photoUrl: res.photo_url,
+    name: res.name,
+    surname: res.surname,
+    birthDate: res.birth_date,
+    gender: res.gender,
+    phoneNumber: res.phone_number,
+    formattedAddress: res.address,
+    emergencyName: res.emergency_name,
+    emergencySurname: res.emergency_surname,
+    emergencyPhoneNumber: res.emergency_phone_number,
+    medicalConditions: res.medical_conditions,
+  };
+
+  const [fullAddress] = await knex('addresses')
+    .select('*')
+    .where({ id: res.address_id });
+
+  if (fullAddress) {
+    resObj.address = {
+      street_address: fullAddress.street_address,
+      city: fullAddress.city,
+      state: fullAddress.state,
+      zip: fullAddress.zip,
+      country: fullAddress.country,
+    };
+  }
+
+  return resObj;
+}
+
+// [Refactoring] This should go into the generate report
+async function getEmailPerson(person_id) {
+  const [{ email }] = await knex('user_entity_role')
+    .select('email')
+    .leftJoin(
+      'user_email',
+      'user_email.user_id',
+      '=',
+      'user_entity_role.user_id',
+    )
+    .where('user_entity_role.entity_id', person_id);
+  if (!email) {
+    return getEmailsEntity(person_id);
+  }
+  return email;
+}
+
 async function generateReport(reportId) {
   const [report] = await knex('reports')
     .select('*')
@@ -212,12 +266,11 @@ async function generateMembersReport(report) {
   const members = await knex('memberships_infos')
     .select('*')
     .where({ organization_id: report.entity_id });
-  const active = members.filter(m => {
-    return (
+  const active = members.filter(
+    m =>
       moment(m.created_at).isSameOrBefore(moment(date), 'day') &&
-      moment(m.expiration_date).isSameOrAfter(moment(date), 'day')
-    );
-  });
+      moment(m.expiration_date).isSameOrAfter(moment(date), 'day'),
+  );
 
   const reduce = active.reduce((prev, curr) => {
     let addCurr = true;
@@ -231,9 +284,8 @@ async function generateMembersReport(report) {
         ) {
           addCurr = false;
           return true;
-        } else {
-          return false;
         }
+        return false;
       }
       return true;
     });
