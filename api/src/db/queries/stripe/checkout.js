@@ -2,12 +2,23 @@ import stripeLib from 'stripe';
 const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
 import knex from '../../connection.js';
 import { getCustomerId } from './customer.js';
-import { stripeErrorLogger, stripeLogger } from '../../../server/utils/logger.js';
-import { STRIPE_STATUS_ENUM, GLOBAL_ENUM, REJECTION_ENUM, CART_ITEM } from '../../../../../common/enums/index.js';
+import {
+  stripeErrorLogger,
+  stripeLogger,
+} from '../../../server/utils/logger.js';
+import {
+  STRIPE_STATUS_ENUM,
+  GLOBAL_ENUM,
+  REJECTION_ENUM,
+  CART_ITEM,
+} from '../../../../../common/enums/index.js';
 import { deleteCartItem } from '../shop.js';
 import { INVOICE_PAID_ENUM } from '../../../server/utils/stripe/checkout.js';
 import { sendReceiptEmail as sendReceiptEmailHelper } from '../../../server/utils/nodeMailer.js';
-import { getEmailsFromUserId, getLanguageFromEmail } from '../user.js';
+import {
+  getEmailsFromUserId,
+  getLanguageFromEmail,
+} from '../user.js';
 
 const formatMetadata = metadata =>
   Object.keys(metadata).reduce((prev, curr) => {
@@ -472,6 +483,7 @@ const checkout = async (body, userId) => {
                 type: CART_ITEM.DONATION,
               },
             });
+          } else if (metadata.type === CART_ITEM.EVENT_TICKET) {
           }
           deleteCartItem(cartItemId);
         },
