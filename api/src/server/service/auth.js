@@ -393,6 +393,11 @@ async function transferPersonSignup({ email, password, personId }) {
   return { authToken, userInfo };
 }
 
+export const validEmail = async ({ email }) => {
+  // Validate email is not already taken
+  return await validateEmailIsUnique(email);
+}
+
 export {
   confirmEmail,
   login,
