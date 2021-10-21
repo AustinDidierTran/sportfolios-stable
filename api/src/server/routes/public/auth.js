@@ -17,7 +17,7 @@ router.post(`${BASE_URL}/signup`, async ctx => {
 });
 
 router.post(`${BASE_URL}/signupWithCognito`, async ctx => {
-  const res = await service.signupAmplify(ctx.request.body);
+  const res = await service.signupCognito(ctx.request.body);
 
   if (!res) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -36,7 +36,7 @@ router.post(`${BASE_URL}/login`, async ctx => {
 });
 
 router.post(`${BASE_URL}/loginWithCognito`, async ctx => {
-  const { userInfo } = await service.loginAmplify(ctx.request.body);
+  const { userInfo } = await service.loginCognito(ctx.request.body);
 
   if (!userInfo) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);

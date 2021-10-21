@@ -22,6 +22,9 @@ const ERROR_ENUM = {
   VALUE_IS_REQUIRED: 'value_is_required',
   VALUE_IS_TOO_LONG: 'value_is_too_long',
   NEW_PASSWORD_REQUIRE: 'new_password_require',
+  JWT_EXPIRED: 'TokenExpiredError',
+  JWT_INVALID: 'JsonWebTokenError',
+  USER_NOT_FOUND: 'UserNotFoundException'
 };
 
 const errors = {
