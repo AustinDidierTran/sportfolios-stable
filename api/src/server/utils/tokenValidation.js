@@ -4,32 +4,13 @@ import { CLIENT_ID, REGION, USER_POOL_ID } from '../../../../conf.js';
 import axios from 'axios';
 const url = 'https://cognito-idp.us-east-2.amazonaws.com/us-east-2_YFfg7m94Z/.well-known/jwks.json';
 const jsonWebKeys = await axios.get(url).catch(function (error) {
-    // eslint-disable-next-line no-console
     console.log(error.response.data);
     return;
 });
 
-// const jsonWebKeys = [  // from https://cognito-idp.us-east-2.amazonaws.com/us-east-2_YFfg7m94Z/.well-known/jwks.json
-//     {
-//         'alg': 'RS256',
-//         'e': 'AQAB',
-//         'kid': '7TMzwyAbug91PvKZDDVhBrK5QyblV+7nGo0r2CaD89Y=',
-//         'kty': 'RSA',
-//         'n': '7gOQ5A8qSmzEMoOajWsgzHdfoq5AmSv-zEniM6Kbkt3BBE5BemBSDMtptnfFNVhdL5MrcU1tucQ7ROZMTvsH1Ds-WEQziDW1EnTSEzKurph9Bdpr-k8ipAtwEBAPGTgQJYRMz3gqc2AHdYjVmKhXCLZmvQgUxu5s8E54XWrwbKEBsv6fWjEnzUEn0RtH7qgVpzxRKzcXz8c4XpjfvgkNw6Ndm73zx8jy7JBQOw9Q4S5cQ2LYrPHnyUqpllOLQ-dBOY2Fa4IJZKUL_5shxtwjO63CsYdQlsieN2x9ljaNIJRVXY-j_KimFYxFfzIqj5VADbAMDsR7opGTwq5JgLt4ZQ',
-//         'use': 'sig'
-//     },
-//     {
-//         'alg': 'RS256',
-//         'e': 'AQAB',
-//         'kid': '7TMzwyAbug91PvKZDDVhBrK5QyblV+7nGo0r2CaD89Y=',
-//         'kty': 'RSA',
-//         'n': '7gOQ5A8qSmzEMoOajWsgzHdfoq5AmSv-zEniM6Kbkt3BBE5BemBSDMtptnfFNVhdL5MrcU1tucQ7ROZMTvsH1Ds-WEQziDW1EnTSEzKurph9Bdpr-k8ipAtwEBAPGTgQJYRMz3gqc2AHdYjVmKhXCLZmvQgUxu5s8E54XWrwbKEBsv6fWjEnzUEn0RtH7qgVpzxRKzcXz8c4XpjfvgkNw6Ndm73zx8jy7JBQOw9Q4S5cQ2LYrPHnyUqpllOLQ-dBOY2Fa4IJZKUL_5shxtwjO63CsYdQlsieN2x9ljaNIJRVXY-j_KimFYxFfzIqj5VADbAMDsR7opGTwq5JgLt4ZQ',
-//         'use': 'sig'
-//     }
-// ]
 
 export function validateToken(token) {
-    const header = decodeTokenHeader(token);  // {'kid':'7TMzwyAbug91PvKZDDVhBrK5QyblV+7nGo0r2CaD89Y=', 'alg': 'RS256'}
+    const header = decodeTokenHeader(token);
     const jsonWebKey = getJsonWebKeyWithKID(header.kid);
     const decodedToken = verifyJsonWebTokenSignature(token, jsonWebKey)
     if (decodedToken.exp > Math.round(Date.now() / 1000)) {
