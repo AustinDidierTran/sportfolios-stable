@@ -182,7 +182,6 @@ export const loginCognito = async ({ email, token }) => {
 
 export const migrateToCognito = async ({ email, password }) => {
   try {
-    //const user = await Amplify.Auth.signIn(email, password);
     try {
       const isUnique = await adminGetUser(email);
       if (isUnique) {
