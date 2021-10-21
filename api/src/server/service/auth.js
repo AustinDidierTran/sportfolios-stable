@@ -167,10 +167,10 @@ export const loginCognito = async ({ email, token }) => {
     const userInfo = await getBasicUserInfoFromId(userId);
     return { userInfo };
   } catch (error) {
-    if (error.code === ERROR_ENUM.JWT_EXPIRED) {
+    if (error.name === ERROR_ENUM.JWT_EXPIRED) {
       throw new Error(ERROR_ENUM.JWT_EXPIRED);
     }
-    else if (error.code === ERROR_ENUM.JWT_INVALID) {
+    else if (error.name === ERROR_ENUM.JWT_INVALID) {
       throw new Error(ERROR_ENUM.JWT_INVALID);
     }
     else {
@@ -189,14 +189,12 @@ export const migrateToCognito = async ({ email, password }) => {
       }
     }
     catch (err) {
-      console.log(err)
       if (err.code !== ERROR_ENUM.USER_NOT_FOUND) {
         throw new Error(ERROR_ENUM.ERROR_OCCURED);
       }
     };
 
     const user = await login({ email, password })
-    console.log(user);
     if (user) {
       const res = await adminCreateUser(email, password);
       console.log('res: ', res);
@@ -204,7 +202,7 @@ export const migrateToCognito = async ({ email, password }) => {
       return STATUS_ENUM.SUCCESS;
     }
   } catch (error) {
-    if (error.code === ERROR_ENUM.JWT_EXPIRED) {
+    if (error.name === ERROR_ENUM.JWT_EXPIRED) {
       throw new Error(ERROR_ENUM.JWT_EXPIRED);
     }
     else {
