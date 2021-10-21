@@ -71,16 +71,6 @@ router.post(`${BASE_URL}/confirmEmail`, async ctx => {
   ctx.body = { data: res };
 });
 
-router.post(`${BASE_URL}/confirmAccount`, async ctx => {
-  //need to be done frontend
-  const res = await service.confirmAccountAmplify(ctx.request.body);
-
-  if (!res) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = { data: res };
-});
-
 // Migrate account to cognito
 router.post(`${BASE_URL}/migrate`, async ctx => {
   const code = await service.migrateToCognito(ctx.request.body);

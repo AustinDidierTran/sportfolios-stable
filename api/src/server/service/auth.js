@@ -39,8 +39,6 @@ import {
   getUserIdFromAuthToken,
 } from '../../db/queries/auth.js';
 
-import Amplify from 'aws-amplify';
-
 import { validateToken } from '../utils/tokenValidation.js';
 import { adminGetUser, adminCreateUser } from '../utils/aws.js';
 
@@ -247,25 +245,6 @@ async function confirmEmail({ token }) {
   return { token: authToken, userInfo };
 }
 
-export const confirmAccountAmplify = async ({ email, code }) => {
-  //need to be done frontend
-  try {
-    await Amplify.Auth.confirmSignUp(email, code);
-    const authToken = generateToken();
-    const userId = await getUserIdFromEmail(email);
-    await knex('user_token').insert({
-      user_id: userId,
-      token_id: authToken,
-      expires_at: new Date(Date.now() + EXPIRATION_TIMES.AUTH_TOKEN),
-    });
-
-    const userInfo = await getBasicUserInfoFromId(userId);
-
-    return { token: authToken, userInfo };
-  } catch (error) {
-    console.log('error confirming sign up', error);
-  }
-}
 
 async function recoveryEmail({ email }) {
   const userId = await getUserIdFromEmail(email);
@@ -323,15 +302,6 @@ async function resendConfirmationEmail({ email, successRoute }) {
   });
 
   return STATUS_ENUM.SUCCESS;
-}
-
-export const resendConfirmationEmailAmplify = async ({ email }) => {
-  try {
-    await Amplify.Auth.resendSignUp(email);
-    return STATUS_ENUM.SUCCESS;
-  } catch (error) {
-    console.log('error resend Confirmation Email Amplify:', error);
-  }
 }
 
 async function transferPersonSignup({ email, password, personId }) {
