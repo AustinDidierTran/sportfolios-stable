@@ -127,7 +127,7 @@ async function login({ email, password }) {
   }
 
   // Validate email is confirmed
-  const emailIsConfirmed = await validateEmailIsConfirmed(email);
+  //const emailIsConfirmed = await validateEmailIsConfirmed(email);
   /*
   if (!emailIsConfirmed) {
     throw new Error(ERROR_ENUM.UNCONFIRMED_EMAIL);
