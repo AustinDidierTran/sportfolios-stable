@@ -103,11 +103,12 @@ export const signupAmplify = async ({
 
     await createUserComplete({
       password: ' ',
-      email,
+      email: email,
       name: firstName,
       surname: lastName,
-      newsLetterSubscription,
-      idUser: data.Username
+      facebook_id: null,
+      newsLetterSubscription: newsLetterSubscription,
+      cognitoId: data.Username
     });
     return STATUS_ENUM.SUCCESS;
   } catch (error) {
@@ -127,11 +128,11 @@ async function login({ email, password }) {
 
   // Validate email is confirmed
   const emailIsConfirmed = await validateEmailIsConfirmed(email);
-
+  /*
   if (!emailIsConfirmed) {
     throw new Error(ERROR_ENUM.UNCONFIRMED_EMAIL);
   }
-
+  */
   const hashedPassword = await getHashedPasswordFromId(userId);
 
   if (!hashedPassword) {
