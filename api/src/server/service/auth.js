@@ -170,13 +170,13 @@ export const loginCognito = async ({ email, token }) => {
     if (error.name === ERROR_ENUM.JWT_EXPIRED) {
       throw new Error(ERROR_ENUM.JWT_EXPIRED);
     }
-    else if (error.name === ERROR_ENUM.JWT_INVALID) {
+    if (error.name === ERROR_ENUM.JWT_INVALID) {
       throw new Error(ERROR_ENUM.JWT_INVALID);
     }
-    else {
-      console.log('error signing in', error);
-      throw new Error(ERROR_ENUM.ERROR_OCCURED);
-    }
+
+    console.log('error signing in', error);
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+
   }
 }
 
