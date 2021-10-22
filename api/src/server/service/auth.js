@@ -103,11 +103,11 @@ export const signupAmplify = async ({
 
     await createUserComplete({
       password: ' ',
-      email: email,
+      email,
       name: firstName,
       surname: lastName,
       facebook_id: null,
-      newsLetterSubscription: newsLetterSubscription,
+      newsLetterSubscription,
       cognitoId: data.Username
     });
     return STATUS_ENUM.SUCCESS;
