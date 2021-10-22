@@ -83,7 +83,7 @@ async function signup({
   return { confirmationEmailToken };
 }
 
-export const signupAmplify = async ({
+export const signupCognito = async ({
   firstName,
   lastName,
   email,
@@ -157,33 +157,31 @@ async function loginWithToken(token) {
   return getBasicUserInfoFromId(userId);
 }
 
-export const loginAmplify = async ({ email, token }) => {
+export const loginCognito = async ({ email, token }) => {
   try {
-    //const user = await Amplify.Auth.signIn(email, password);
-
     const decodedToken = await validateToken(token);
-    if (!decodedToken.email) {
+    if (!decodedToken.email || (decodedToken.email !== email)) {
       throw new Error(ERROR_ENUM.ERROR_OCCURED);
     }
     const userId = await getUserIdFromEmail(email);
     const userInfo = await getBasicUserInfoFromId(userId);
     return { userInfo };
-
-    //ValidateToken(user.signInUserSession.idToken.jwtToken);
   } catch (error) {
+    if (error.name === ERROR_ENUM.JWT_EXPIRED) {
+      throw new Error(ERROR_ENUM.JWT_EXPIRED);
+    }
+    if (error.name === ERROR_ENUM.JWT_INVALID) {
+      throw new Error(ERROR_ENUM.JWT_INVALID);
+    }
+
     console.log('error signing in', error);
-    if (error.code === 'NotAuthorizedException') {
-    }
-    else if (error.code === 'TokenExpiredError') {
-      console.log('TokenExpiredError')
-    }
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
 
   }
 }
 
 export const migrateToCognito = async ({ email, password }) => {
   try {
-    //const user = await Amplify.Auth.signIn(email, password);
     try {
       const isUnique = await adminGetUser(email);
       if (isUnique) {
@@ -191,32 +189,25 @@ export const migrateToCognito = async ({ email, password }) => {
       }
     }
     catch (err) {
-      console.log(err)
-      if (err.code !== 'UserNotFoundException') {
+      if (err.code !== ERROR_ENUM.USER_NOT_FOUND) {
         throw new Error(ERROR_ENUM.ERROR_OCCURED);
       }
     };
 
-
     const user = await login({ email, password })
-    console.log(user);
     if (user) {
-      //Create the user with AdminCreateUser()
       const res = await adminCreateUser(email, password);
       console.log('res: ', res);
 
       return STATUS_ENUM.SUCCESS;
     }
-
-
-
-    //ValidateToken(user.signInUserSession.idToken.jwtToken);
   } catch (error) {
-    console.log('error signing in', error);
-    if (error.code === 'NotAuthorizedException') {
+    if (error.name === ERROR_ENUM.JWT_EXPIRED) {
+      throw new Error(ERROR_ENUM.JWT_EXPIRED);
     }
-    else if (error.code === 'TokenExpiredError') {
-      console.log('TokenExpiredError')
+    else {
+      console.log('error signing in', error);
+      throw new Error(ERROR_ENUM.ERROR_OCCURED);
     }
 
   }
