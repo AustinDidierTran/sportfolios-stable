@@ -3,6 +3,7 @@ import { stripeErrorLogger } from '../../server/utils/logger.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import { getEmailsEntity } from '../queries/entity-deprecate.js';
 import { CART_ITEM } from '../../../../common/enums/index.js';
+import { storeItemsAllInfos } from '../models/storeItemsAllInfos.js';
 
 const getItem = async stripePriceId => {
   const [item] = await knex('stripe_price')
@@ -687,6 +688,12 @@ const deleteCartItem = async cartItemId => {
     .returning('*');
   return cartItem;
 };
+
+export const getActiveStoreItemsAllInfos = async () => {
+  return await storeItemsAllInfos.query()
+    .withGraphJoined('stripePrice')
+    .where('store_items_all_infos.active', true);
+}
 
 export {
   addCartItem,

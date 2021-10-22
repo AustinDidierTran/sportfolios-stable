@@ -1,5 +1,6 @@
 import Router from 'koa-router';
 import * as service from '../../service/entity-deprecate.js';
+import * as entityService from '../../service/entity.js';
 import * as organizationService from '../../service/organization.js';
 import { STATUS_ENUM } from '../../../../../common/enums/index.js';
 import {
@@ -81,7 +82,7 @@ router.get(`${BASE_URL}/playerTeamRole`, async ctx => {
 });
 
 router.get(`${BASE_URL}/forYouPage`, async ctx => {
-  const entity = await service.getAllForYouPagePosts(ctx.query);
+  const entity = await entityService.getForYouPagePosts(ctx.query);
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);

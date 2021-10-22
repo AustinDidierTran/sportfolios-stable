@@ -2,7 +2,6 @@ import knex from '../connection.js';
 import { getMembershipName } from '../../../../common/functions/index.js';
 
 import {
-  CARD_TYPE_ENUM,
   ENTITIES_ROLE_ENUM,
   EVENT_TYPE,
   GLOBAL_ENUM,
@@ -426,65 +425,6 @@ async function getAllRolesEntity(entityId) {
       photoUrl: e.photo_url,
     };
   });
-}
-
-async function getAllForYouPagePosts() {
-  const events = await knex('events_infos')
-    .select('*')
-    .whereNull('deleted_at');
-  const merch = await knex('store_items_all_infos')
-    .select('*')
-    .leftJoin(
-      'stripe_price',
-      'stripe_price.stripe_price_id',
-      '=',
-      'store_items_all_infos.stripe_price_id',
-    )
-    .where('store_items_all_infos.active', true);
-
-  const fullEvents = await Promise.all(
-    events.map(async event => {
-      const { creator_id: creatorId } = event;
-      const creator = (await getEntity(creatorId)).basicInfos;
-      return {
-        type: GLOBAL_ENUM.EVENT,
-        cardType: CARD_TYPE_ENUM.EVENT,
-        eventId: event.id,
-        photoUrl: event.photo_url,
-        startDate: event.start_date,
-        endDate: event.end_date,
-        quickDescription: event.quick_description,
-        description: event.description,
-        location: event.location,
-        name: event.name,
-        createdAt: event.created_at,
-        creator: {
-          id: creator.id,
-          type: creator.type,
-          name: creator.name,
-          surname: creator.surname,
-          photoUrl: creator.photoUrl,
-        },
-      };
-    }),
-  );
-  const fullMerch = merch
-    .filter(m => m.metadata.type === CART_ITEM.EVENT)
-    .map(item => ({
-      type: CART_ITEM.SHOP_ITEM,
-      cardType: CARD_TYPE_ENUM.SHOP,
-      label: item.label,
-      amount: item.amount,
-      photoUrl: item.photo_url,
-      description: item.description,
-      stripePriceId: item.stripe_price_id,
-      stripeProductId: item.stripe_product_id,
-      createdAt: item.created_at,
-    }));
-
-  return [...fullEvents, ...fullMerch].sort(
-    (a, b) => b.createdAt - a.createdAt,
-  );
 }
 
 async function getNbOfTeamsInEvent(eventId) {
@@ -1662,8 +1602,8 @@ async function getRemainingSpots(eventId) {
   const remainingSpots = Math.max(
     0,
     Number(event.maximum_spots) -
-      Number(countRosters) -
-      Number(countPersons),
+    Number(countRosters) -
+    Number(countPersons),
   );
 
   return remainingSpots;
@@ -2143,9 +2083,9 @@ async function getMyPersonsAdminsOfTeam(rosterId, userId) {
 
   return res.length
     ? res.map(p => ({
-        entityId: p.entity_id,
-        completeName: `${p.name} ${p.surname}`,
-      }))
+      entityId: p.entity_id,
+      completeName: `${p.name} ${p.surname}`,
+    }))
     : undefined;
 }
 
@@ -2625,7 +2565,7 @@ async function getGraphAmountGeneratedByEvent(
     };
   });
 
-  var data = dataIncome.map(function(v, i) {
+  var data = dataIncome.map(function (v, i) {
     return {
       incomeDate: v.incomeDate,
       totalIncomeAmount: v.totalIncomeAmount,
@@ -5355,7 +5295,7 @@ async function getGamesWithAwaitingScore(user_id, limit = 100) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -5395,7 +5335,7 @@ async function getUserNextGame(user_id) {
       'user_entity_role.entity_id',
       'game_players_view.player_id',
     )
-    .join('game_teams', function() {
+    .join('game_teams', function () {
       this.on(
         'game_teams.roster_id',
         '!=',
@@ -7532,7 +7472,6 @@ export {
   getAlias,
   getAllEntities,
   getAllExercises,
-  getAllForYouPagePosts,
   getAllOwnedEntities,
   getAllPeopleRegistered,
   getAllPeopleRegisteredInfos,
