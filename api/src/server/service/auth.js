@@ -46,6 +46,7 @@ async function signup({
   password,
   redirectUrl,
   newsLetterSubscription,
+  language,
 }) {
   // Validate email is not already taken
   const isUnique = await validateEmailIsUnique(email);
@@ -64,12 +65,12 @@ async function signup({
     name: firstName,
     surname: lastName,
     newsLetterSubscription,
+    language,
   });
   await createConfirmationEmailToken({
     email,
     token: confirmationEmailToken,
   });
-  const language = await getLanguageFromEmail(email);
   // Send confirmation email with link
   await sendConfirmationEmail({
     email,
