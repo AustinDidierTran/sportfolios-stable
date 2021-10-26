@@ -184,17 +184,22 @@ export const getPurchasedTickets = async (
       id: paid.id,
       buyer: {
         email: paid.stripeInvoiceItem.userEmail.email,
-        completeName:
-          paid.stripeInvoiceItem.userPrimaryPerson
-            .entitiesGeneralInfos.name +
-          ' ' +
-          paid.stripeInvoiceItem.userPrimaryPerson
-            .entitiesGeneralInfos.surname,
-        userId: paid.stripeInvoiceItem.user_id,
+        primaryPerson: {
+          id: paid.stripeInvoiceItem.user_id,
+          name: paid.stripeInvoiceItem.userPrimaryPerson.entitiesGeneralInfos.name,
+          surname: paid.stripeInvoiceItem.userPrimaryPerson.entitiesGeneralInfos.surname,
+          photoUrl: paid.stripeInvoiceItem.userPrimaryPerson.entitiesGeneralInfos.photo_url,
+          verifiedAt: paid.stripeInvoiceItem.userPrimaryPerson.entitiesGeneralInfos.entities.verified_at,
+          deletedAt: paid.stripeInvoiceItem.userPrimaryPerson.entitiesGeneralInfos.entities.deleted_at,
+        }
       },
       number: index + 1,
-      name: paid.eventTicketOptions.name,
-      optionId: paid.eventTicketOptions.id,
+      option: {
+        id: paid.eventTicketOptions.id,
+        name: paid.eventTicketOptions.name,
+        description: paid.eventTicketOptions.description,
+        price: paid.eventTicketOptions.stripePrice.amount
+      }
     })),
   };
 
@@ -206,6 +211,6 @@ export const getPurchasedTickets = async (
   }
 
   return purchasedTicketsObject.purchased.filter(
-    ticket => ticket.buyer.userId === userId,
+    ticket => ticket.buyer.primaryPerson.id === userId,
   );
 };

@@ -95,10 +95,10 @@ export const getPurchasedTicketsByGameId = async gameId => {
   const res = await eventTicketPaid
     .query()
     .withGraphJoined(
-      '[stripeInvoiceItem.[stripePrice, userEmail, userPrimaryPerson.entitiesGeneralInfos], eventTicketOptions]',
+      '[stripeInvoiceItem.[stripePrice, userEmail, userPrimaryPerson.entitiesGeneralInfos.entities], eventTicketOptions.stripePrice]',
       { minimize: true },
     )
-    .where('_t5.game_id', gameId)
+    .where('_t6.game_id', gameId)
     .orderBy('event_ticket_paid.created_at');
   return res;
 };
