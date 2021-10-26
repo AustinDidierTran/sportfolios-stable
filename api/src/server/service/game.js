@@ -178,8 +178,8 @@ export const getPurchasedTickets = async (
     finalGameId,
   );
 
-  const purchasedTicketsObject = {
-    purchased: purchasedTickets.map((paid, index) => ({
+  const purchasedTicketsObject = purchasedTickets.map(
+    (paid, index) => ({
       id: paid.id,
       buyer: {
         email: paid.stripeInvoiceItem.userEmail.email,
@@ -194,17 +194,17 @@ export const getPurchasedTickets = async (
       number: index + 1,
       name: paid.eventTicketOptions.name,
       optionId: paid.eventTicketOptions.id,
-    })),
-  };
+    }),
+  );
 
-  if (returnAllTickets) {
+  if (returnAllTickets && returnAllTickets !== 'false') {
     if (!isAllowed(gameId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
     return purchasedTicketsObject;
   }
 
-  return purchasedTicketsObject.purchased.filter(
+  return purchasedTicketsObject.filter(
     ticket => ticket.buyer.userId === userId,
   );
 };
