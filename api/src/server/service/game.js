@@ -61,7 +61,7 @@ export const postTicketOption = async (body, userId) => {
   });
 
   const gameId = await queries.getGameFromEvent(eventId);
-  console.log({ gameId });
+
   // Insert inside the event ticket options
   const res = await ticketQueries.createEventTicketOption(
     stripePrice.id,
@@ -166,17 +166,20 @@ export const updateGameScore = async (body, userId) => {
 };
 
 export const getPurchasedTickets = async (
-  gameId,
-  returnAllTickets,
+  { eventId, gameId, returnAllTickets },
   userId,
 ) => {
+  let finalGameId = gameId;
+
+  if (!finalGameId) {
+    finalGameId = await queries.getGameFromEvent(eventId);
+  }
+
   const purchasedTickets = await ticketQueries.getPurchasedTicketsByGameId(
-    gameId,
+    finalGameId,
   );
 
-  console.log({ purchasedTickets });
-
-  var purchasedTicketsObject = {
+  const purchasedTicketsObject = {
     purchased: purchasedTickets.map((paid, index) => ({
       id: paid.id,
       buyer: {
@@ -194,12 +197,14 @@ export const getPurchasedTickets = async (
       optionId: paid.eventTicketOptions.id,
     })),
   };
+
   if (returnAllTickets) {
     if (!isAllowed(gameId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
     return purchasedTicketsObject;
   }
+
   return purchasedTicketsObject.purchased.filter(
     ticket => ticket.buyer.userId === userId,
   );
