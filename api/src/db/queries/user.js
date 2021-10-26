@@ -9,7 +9,10 @@ import {
 } from '../../../../common/enums/index.js';
 
 import { EXPIRATION_TIMES } from '../../../../common/constants/index.js';
-import { sendConfirmationEmail, sendPersonTransferEmail } from '../../server/utils/nodeMailer.js';
+import {
+  sendConfirmationEmail,
+  sendPersonTransferEmail,
+} from '../../server/utils/nodeMailer.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import randtoken from 'rand-token';
 import { generateToken } from './utils.js';
@@ -168,12 +171,14 @@ async function getBasicUserInfoFromId(user_id) {
 
   return {
     primaryPerson: {
+      id: primaryPerson.entity_id,
       personId: primaryPerson.entity_id,
       name: primaryPerson.name,
       photoUrl: primaryPerson.photo_url,
       surname: primaryPerson.surname,
     },
     persons: persons.map(person => ({
+      id: person.entity_id,
       personId: person.entity_id,
       name: person.name,
       photoUrl: person.photo_url,
