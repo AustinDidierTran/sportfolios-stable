@@ -165,15 +165,20 @@ export const updateGameScore = async (body, userId) => {
 };
 
 export const getPurchasedTickets = async (
-  gameId,
-  returnAllTickets,
+  { eventId, gameId, returnAllTickets },
   userId,
 ) => {
+  let finalGameId = gameId;
+
+  if (!finalGameId) {
+    finalGameId = await queries.getGameFromEvent(eventId);
+  }
+
   const purchasedTickets = await ticketQueries.getPurchasedTicketsByGameId(
-    gameId,
+    finalGameId,
   );
 
-  var purchasedTicketsObject = {
+  const purchasedTicketsObject = {
     purchased: purchasedTickets.map((paid, index) => ({
       id: paid.id,
       buyer: {
@@ -191,12 +196,14 @@ export const getPurchasedTickets = async (
       optionId: paid.eventTicketOptions.id,
     })),
   };
+
   if (returnAllTickets) {
     if (!isAllowed(gameId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
       throw new Error(ERROR_ENUM.ACCESS_DENIED);
     }
     return purchasedTicketsObject;
   }
+
   return purchasedTicketsObject.purchased.filter(
     ticket => ticket.buyer.userId === userId,
   );

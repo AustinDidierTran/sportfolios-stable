@@ -429,18 +429,6 @@ export const createEvent = async ({
   phaseRankings,
   trx = null,
 }) => {
-  console.log({
-    name,
-    startDate,
-    endDate,
-    location,
-    photoUrl,
-    eventType,
-    maximumSpots,
-    creatorId,
-    phaseRankings,
-  });
-
   try {
     return entities.query(trx).insertGraph({
       type: GLOBAL_ENUM.EVENT,
