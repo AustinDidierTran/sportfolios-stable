@@ -1,5 +1,5 @@
 import aws from 'aws-sdk';
-import { USER_POOL_ID } from '../../../../conf.js';
+import { USER_POOL_ID, REGION } from '../../../../conf.js';
 
 import { createRequire } from 'module'; // Bring in the ability to create the 'require' method
 const require = createRequire(import.meta.url); // construct the require method
@@ -40,10 +40,10 @@ const signS3Request = async (fileName, fileType) => {
 };
 
 export const adminGetUser = async (email) => {
-  aws.config.region = 'us-east-2'; // Region
+  aws.config.region = REGION; // Region
   const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider()
   const params = {
-    UserPoolId: 'us-east-2_YFfg7m94Z',
+    UserPoolId: USER_POOL_ID,
     Username: email,
   };
 
@@ -59,7 +59,7 @@ export const adminGetUser = async (email) => {
 };
 
 export const adminCreateUser = async (email, password) => {
-  aws.config.region = 'us-east-2'; // Region
+  aws.config.region = REGION; // Region
   const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider()
 
   const params = {

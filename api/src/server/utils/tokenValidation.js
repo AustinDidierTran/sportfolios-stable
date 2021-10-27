@@ -2,7 +2,7 @@ import jsonwebtoken from 'jsonwebtoken'
 import jwkToPem from 'jwk-to-pem'
 import { CLIENT_ID, REGION, USER_POOL_ID } from '../../../../conf.js';
 import axios from 'axios';
-const url = 'https://cognito-idp.us-east-2.amazonaws.com/us-east-2_YFfg7m94Z/.well-known/jwks.json';
+const url = 'https://cognito-idp.' + REGION + '.amazonaws.com/' + USER_POOL_ID + '/.well-known/jwks.json';
 const jsonWebKeys = await axios.get(url).catch(function (error) {
     console.log(error.response.data);
     return;
