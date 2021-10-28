@@ -1,4 +1,5 @@
 import aws from 'aws-sdk';
+import { USER_POOL_ID, REGION } from '../../../../conf.js';
 
 import { createRequire } from 'module'; // Bring in the ability to create the 'require' method
 const require = createRequire(import.meta.url); // construct the require method
@@ -36,6 +37,50 @@ const signS3Request = async (fileName, fileType) => {
   const url = `https://${process.env.AWS_S3_BUCKET}.s3.amazonaws.com/${finalFileName}`;
 
   return { signedRequest, url };
+};
+
+export const adminGetUser = async (email) => {
+  aws.config.region = REGION; // Region
+  const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider()
+  const params = {
+    UserPoolId: USER_POOL_ID,
+    Username: email,
+  };
+
+  const data = new Promise((resolve, reject) => cognitoidentityserviceprovider.adminGetUser(params, (err, data) => {
+    if (err) {
+      reject(err);
+    }
+    resolve(data);
+  }));
+  return data.then((value) => {
+    return value
+  });
+};
+
+export const adminCreateUser = async (email, password) => {
+  aws.config.region = REGION; // Region
+  const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider()
+
+  const params = {
+    UserPoolId: USER_POOL_ID,
+    Username: email,
+    MessageAction: 'SUPPRESS', //suppress the sending of an invitation to the user
+    TemporaryPassword: password,
+    UserAttributes: [
+      { Name: 'email', Value: email }, //using sign-in with email, so username is email
+      { Name: 'email_verified', Value: 'true' }]
+  };
+  const data = new Promise((resolve, reject) => cognitoidentityserviceprovider.adminCreateUser(params, (err, data) => {
+    if (err) {
+      reject(err);
+    }
+    resolve(data);
+  }));
+
+  return data.then((value) => {
+    return value
+  });
 };
 
 export { signS3Request };

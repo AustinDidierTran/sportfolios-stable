@@ -16,6 +16,16 @@ router.post(`${BASE_URL}/signup`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/signupWithCognito`, async ctx => {
+  const res = await service.signupCognito(ctx.request.body);
+
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  } else {
+    ctx.body = { data: res };
+  }
+});
+
 router.post(`${BASE_URL}/login`, async ctx => {
   const { token, userInfo } = await service.login(ctx.request.body);
 
@@ -24,6 +34,16 @@ router.post(`${BASE_URL}/login`, async ctx => {
   }
   ctx.body = { data: JSON.stringify({ token, userInfo }) };
 });
+
+router.post(`${BASE_URL}/loginWithCognito`, async ctx => {
+  const { userInfo } = await service.loginCognito(ctx.request.body);
+
+  if (!userInfo) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: JSON.stringify({ userInfo }) };
+});
+
 
 router.get(`${BASE_URL}/loginWithToken`, async ctx => {
   const res = await service.loginWithToken(ctx.query.token);
@@ -49,6 +69,17 @@ router.post(`${BASE_URL}/confirmEmail`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   ctx.body = { data: res };
+});
+
+// Migrate account to cognito
+router.post(`${BASE_URL}/migrate`, async ctx => {
+  const code = await service.migrateToCognito(ctx.request.body);
+
+  if (code !== STATUS_ENUM.SUCCESS) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = { data: code };
 });
 
 // Resend confirmation email
@@ -81,6 +112,13 @@ router.post(`${BASE_URL}/recoverPassword`, async ctx => {
   } else {
     ctx.body = { data: res };
   }
+});
+
+// Reset password with token
+router.post(`${BASE_URL}/validEmail`, async ctx => {
+  const res = await service.validEmail(ctx.request.body);
+
+  ctx.body = { data: res };
 });
 
 export default router;

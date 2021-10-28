@@ -39,6 +39,9 @@ import {
   getUserIdFromAuthToken,
 } from '../../db/queries/auth.js';
 
+import { validateToken } from '../utils/tokenValidation.js';
+import { adminGetUser, adminCreateUser } from '../utils/aws.js';
+
 async function signup({
   firstName,
   lastName,
@@ -81,6 +84,39 @@ async function signup({
   return { confirmationEmailToken };
 }
 
+export const signupCognito = async ({
+  firstName,
+  lastName,
+  email,
+  newsLetterSubscription,
+}) => {
+
+  try {
+
+    const data = await adminGetUser(email);
+    const isUnique = await validateEmailIsUnique(email);
+
+    if (!isUnique || !data) {
+      throw new Error(ERROR_ENUM.INVALID_EMAIL);
+    }
+
+    await createUserComplete({
+      password: ' ',
+      email,
+      name: firstName,
+      surname: lastName,
+      facebook_id: null,
+      newsLetterSubscription,
+      cognitoId: data.Username
+    });
+    return STATUS_ENUM.SUCCESS;
+  } catch (error) {
+    console.log('error signing up:', error);
+  }
+
+
+}
+
 async function login({ email, password }) {
   // Validate account with this email exists
   const userId = await getUserIdFromEmail(email);
@@ -90,12 +126,12 @@ async function login({ email, password }) {
   }
 
   // Validate email is confirmed
-  const emailIsConfirmed = await validateEmailIsConfirmed(email);
-
+  //const emailIsConfirmed = await validateEmailIsConfirmed(email);
+  /*
   if (!emailIsConfirmed) {
     throw new Error(ERROR_ENUM.UNCONFIRMED_EMAIL);
   }
-
+  */
   const hashedPassword = await getHashedPasswordFromId(userId);
 
   if (!hashedPassword) {
@@ -123,6 +159,62 @@ async function loginWithToken(token) {
   return getBasicUserInfoFromId(userId);
 }
 
+export const loginCognito = async ({ email, token }) => {
+  try {
+    const decodedToken = await validateToken(token);
+    if (!decodedToken.email || (decodedToken.email !== email)) {
+      throw new Error(ERROR_ENUM.ERROR_OCCURED);
+    }
+    const userId = await getUserIdFromEmail(email);
+    const userInfo = await getBasicUserInfoFromId(userId);
+    return { userInfo };
+  } catch (error) {
+    if (error.name === ERROR_ENUM.JWT_EXPIRED) {
+      throw new Error(ERROR_ENUM.JWT_EXPIRED);
+    }
+    if (error.name === ERROR_ENUM.JWT_INVALID) {
+      throw new Error(ERROR_ENUM.JWT_INVALID);
+    }
+
+    console.log('error signing in', error);
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+
+  }
+}
+
+export const migrateToCognito = async ({ email, password }) => {
+  try {
+    try {
+      const isUnique = await adminGetUser(email);
+      if (isUnique) {
+        throw new Error(ERROR_ENUM.INVALID_EMAIL);
+      }
+    }
+    catch (err) {
+      if (err.code !== ERROR_ENUM.USER_NOT_FOUND) {
+        throw new Error(ERROR_ENUM.ERROR_OCCURED);
+      }
+    };
+
+    const user = await login({ email, password })
+    if (user) {
+      const res = await adminCreateUser(email, password);
+      console.log('res: ', res);
+
+      return STATUS_ENUM.SUCCESS;
+    }
+  } catch (error) {
+    if (error.name === ERROR_ENUM.JWT_EXPIRED) {
+      throw new Error(ERROR_ENUM.JWT_EXPIRED);
+    }
+    else {
+      console.log('error signing in', error);
+      throw new Error(ERROR_ENUM.ERROR_OCCURED);
+    }
+
+  }
+}
+
 async function confirmEmail({ token }) {
   const email = await getEmailFromToken({ token });
 
@@ -145,6 +237,7 @@ async function confirmEmail({ token }) {
 
   return { token: authToken, userInfo };
 }
+
 
 async function recoveryEmail({ email }) {
   const userId = await getUserIdFromEmail(email);
@@ -261,6 +354,11 @@ async function transferPersonSignup({ email, password, personId }) {
   //get user infos
   const userInfo = await getBasicUserInfoFromId(user_id);
   return { authToken, userInfo };
+}
+
+export const validEmail = async ({ email }) => {
+  // Validate email is not already taken
+  return await validateEmailIsUnique(email);
 }
 
 export {

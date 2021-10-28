@@ -12,3 +12,8 @@ export const GOOGLE_PLACES_API_KEY =
   'AIzaSyCQaa2Wue1_hO6LkozWukxUFhrh2nwwZ7U';
 
 export const FACEBOOK_VERIFY_TOKEN = '';
+
+export const USER_POOL_ID = 'us-east-2_YFfg7m94Z';
+export const CLIENT_ID = '711jelco0umon99s8gg60qgn09';
+export const IDENTITY_POOL_ID = 'us-east-2:96bdf3db-5e58-432e-9a9f-49f080fc8f03';
+export const REGION = 'us-east-2';

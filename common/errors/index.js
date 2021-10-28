@@ -21,6 +21,11 @@ const ERROR_ENUM = {
   VALUE_IS_INVALID: 'value_is_invalid',
   VALUE_IS_REQUIRED: 'value_is_required',
   VALUE_IS_TOO_LONG: 'value_is_too_long',
+
+  NEW_PASSWORD_REQUIRE: 'new_password_require',
+  JWT_EXPIRED: 'TokenExpiredError',
+  JWT_INVALID: 'JsonWebTokenError',
+  USER_NOT_FOUND: 'UserNotFoundException'
   NOT_ENOUGH_PLACE_REMAINING: 'not_enough_place_remaining',
 };
 
@@ -92,6 +97,10 @@ const errors = {
   [ERROR_ENUM.REGISTRATION_ERROR]: {
     message: ERROR_ENUM.REGISTRATION_ERROR,
     code: 411,
+  },
+  [ERROR_ENUM.NEW_PASSWORD_REQUIRE]: {
+    message: ERROR_ENUM.NEW_PASSWORD_REQUIRE,
+    code: 426,
   },
 };
 export { ERROR_ENUM, errors };
