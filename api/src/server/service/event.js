@@ -270,3 +270,16 @@ export const addEventTickets = async (body, userId) => {
     }),
   );
 };
+
+export const putRosterIdInRankings = async (body, userId) => {
+  const { newRosterId, rankingId } = body;
+  const eventId = await queries.getEventByRankingId(rankingId);
+
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return queries.updateRosterIdInRankings(newRosterId, rankingId);
+};
