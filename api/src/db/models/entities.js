@@ -3,6 +3,8 @@ import { eventRosters } from './eventRosters.js';
 import { entitiesGeneralInfos } from './entitiesGeneralInfos.js';
 import { entitiesRole } from './entitiesRole.js';
 import { eventsInfos } from './eventsInfos.js';
+import { events } from './events.js';
+import { games } from './games.js';
 
 export class entities extends Model {
   static get tableName() {
@@ -42,7 +44,23 @@ export class entities extends Model {
           from: 'entities.id',
           to: 'events_infos.id'
         }
-      }
+      },
+      event: {
+        relation: Model.HasOneRelation,
+        modelClass: events,
+        join: {
+          from: 'entities.id',
+          to: 'events.id'
+        }
+      },
+      game: {
+        relation: Model.HasOneRelation,
+        modelClass: games,
+        join: {
+          from: 'entities.id',
+          to: 'games.id'
+        }
+      },
     };
   }
 }

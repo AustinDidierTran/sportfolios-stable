@@ -1,5 +1,4 @@
 import knex from '../connection.js';
-import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
 import {
   getEntity,
   getEmailPerson,
@@ -8,9 +7,14 @@ import {
 import moment from 'moment';
 import { eventRosters } from '../models/eventRosters.js';
 import { eventsInfos } from '../models/eventsInfos.js';
+import { entities } from '../models/entities.js';
+import { events } from '../models/events.js';
 import {
   ROSTER_ROLE_ENUM,
   STATUS_ENUM,
+  GLOBAL_ENUM,
+  PHASE_STATUS_ENUM,
+  ENTITIES_ROLE_ENUM,
 } from '../../../../common/enums/index.js';
 
 async function getAllPeopleRegisteredNotInTeams(eventId) {
@@ -300,21 +304,21 @@ export const getTeamsRegisteredInfo = async eventId => {
       'event_rosters.informations as informations',
     )
     .where('event_rosters.event_id', eventId)
-    .leftJoin('stripe_invoice_item', function () {
+    .leftJoin('stripe_invoice_item', function() {
       this.on(
         'stripe_invoice_item.invoice_item_id',
         '=',
         'event_rosters.invoice_item_id',
       ).onNotNull('event_rosters.invoice_item_id');
     })
-    .join('entities_role', function () {
+    .join('entities_role', function() {
       this.on(
         'entities_role.entity_id',
         '=',
         'event_rosters.team_id',
       ).andOn('entities_role.role', '=', 1);
     })
-    .join('user_entity_role', function () {
+    .join('user_entity_role', function() {
       this.on(
         'user_entity_role.entity_id',
         '=',
@@ -336,11 +340,16 @@ export const getPaymentOptionById = async paymentOptionId => {
   return option;
 };
 
-
-export const getTeamsAcceptedInfos = async (eventId, userId, withSub = false) => {
-
-  const teams = await eventRosters.query()
-    .withGraphJoined('[entitiesGeneralInfos,entitiesRole.userEntityRole.userEmail, eventPaymentOptions, rosterPlayersInfos.memberships, eventsInfos, rosterPlayers]')
+export const getTeamsAcceptedInfos = async (
+  eventId,
+  userId,
+  withSub = false,
+) => {
+  const teams = await eventRosters
+    .query()
+    .withGraphJoined(
+      '[entitiesGeneralInfos,entitiesRole.userEntityRole.userEmail, eventPaymentOptions, rosterPlayersInfos.memberships, eventsInfos, rosterPlayers]',
+    )
     .whereIn('registration_status', [
       STATUS_ENUM.ACCEPTED,
       STATUS_ENUM.ACCEPTED_FREE,
@@ -349,17 +358,26 @@ export const getTeamsAcceptedInfos = async (eventId, userId, withSub = false) =>
       'event_rosters.event_id': eventId,
     })
     .modifyGraph('rosterPlayersInfos', builder => {
-      builder.where('is_sub', withSub).orWhere('is_sub', false).orderByRaw(`array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,);
+      builder
+        .where('is_sub', withSub)
+        .orWhere('is_sub', false)
+        .orderByRaw(
+          `array_position(array['${ROSTER_ROLE_ENUM.COACH}'::varchar, '${ROSTER_ROLE_ENUM.CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN}'::varchar, '${ROSTER_ROLE_ENUM.PLAYER}'::varchar], role)`,
+        );
     })
     .modifyGraph('entitiesRole.userEntityRole.userEmail', builder => {
       builder.select('email');
     })
     .modifyGraph('rosterPlayers', builder => {
       if (userId != -1) {
-        builder.innerJoin('user_entity_role', 'user_entity_role.entity_id', 'person_id').where('user_id', userId);
-      }
-      else
-        builder.where(false);
+        builder
+          .innerJoin(
+            'user_entity_role',
+            'user_entity_role.entity_id',
+            'person_id',
+          )
+          .where('user_id', userId);
+      } else builder.where(false);
     });
   return teams;
 };
@@ -390,8 +408,69 @@ export const getTeamNameUniquenessInEvent = async (name, eventId) => {
 };
 
 export const getEventVerified = async () => {
-  return await eventsInfos.query()
+  return await eventsInfos
+    .query()
     .withGraphJoined('[creatorEntities.entitiesGeneralInfos]')
     .whereNull('events_infos.deleted_at')
-    .andWhere(function () { this.whereNotNull('creatorEntities.verified_by') });
-}
+    .andWhere(function() {
+      this.whereNotNull('creatorEntities.verified_by');
+    });
+};
+
+export const createEvent = async ({
+  name,
+  startDate,
+  endDate,
+  // location,
+  photoUrl,
+  eventType,
+  maximumSpots,
+  creatorId,
+  phaseRankings,
+  trx = null,
+}) => {
+  try {
+    return entities.query(trx).insertGraph({
+      type: GLOBAL_ENUM.EVENT,
+      entitiesGeneralInfos: {
+        name,
+        photo_url: photoUrl,
+      },
+      entitiesRole: {
+        role: ENTITIES_ROLE_ENUM.ADMIN,
+        entity_id_admin: creatorId,
+      },
+      event: {
+        start_date: startDate,
+        start_varchar: startDate,
+        end_date: endDate,
+        end_varchar: endDate,
+        maximum_spots: maximumSpots,
+        type: eventType,
+        phases: [
+          {
+            name: 'prerank',
+            spots: maximumSpots,
+            phase_order: 0,
+            status: PHASE_STATUS_ENUM.NOT_STARTED,
+            phaseRankings: phaseRankings,
+          },
+        ],
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getEventTypeGame = async eventId => {
+  return await events
+    .query()
+    .withGraphJoined(
+      '[eventsInfos.creatorEntities.entitiesGeneralInfos, games.eventTicketOptions.stripePrice]',
+      { minimize: true },
+    )
+    .where({
+      '_t0.id': eventId,
+    });
+};

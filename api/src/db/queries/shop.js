@@ -4,6 +4,7 @@ import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import { getEmailsEntity } from '../queries/entity-deprecate.js';
 import { CART_ITEM } from '../../../../common/enums/index.js';
 import { storeItemsAllInfos } from '../models/storeItemsAllInfos.js';
+import { cartItems } from '../models/cartItems.js';
 
 const getItem = async stripePriceId => {
   const [item] = await knex('stripe_price')
@@ -278,6 +279,73 @@ const getCartItem = async cartItemId => {
       'stripe_price.stripe_price_id',
     )
     .where('cart_items.id', cartItemId);
+
+  const taxRates = await getTaxRates(cartItem.stripe_price_id);
+
+  const res = {
+    active: cartItem.active,
+    amount: cartItem.amount,
+    description: cartItem.description,
+    id: cartItem.id,
+    label: cartItem.label,
+    metadata: cartItem.metadata,
+    quantity: cartItem.quantity,
+    selected: cartItem.selected,
+    photoUrl: cartItem.photo_url,
+    stripePriceId: cartItem.stripe_price_id,
+    stripePriceMetadata: cartItem.stripe_price_metadata,
+    stripeProductId: cartItem.stripe_product_id,
+    userId: cartItem.user_id,
+    taxRates,
+  };
+  return res;
+};
+
+export const getCartItemByStripePriceId = async (
+  stripePriceId,
+  userId,
+) => {
+  const [cartItem] = await knex('cart_items')
+    .select(
+      'cart_items.stripe_price_id',
+      'cart_items.metadata',
+      'cart_items.user_id',
+      'cart_items.id',
+      'cart_items.quantity',
+      'cart_items.selected',
+      'stripe_price.stripe_price_id',
+      'stripe_price.stripe_product_id',
+      'stripe_price.metadata AS stripe_price_metadata',
+      'stripe_product.label',
+      'stripe_product.description',
+      'stripe_price.amount',
+      'stripe_price.active',
+      'store_items.photo_url',
+    )
+    .leftJoin(
+      'stripe_price',
+      'stripe_price.stripe_price_id',
+      '=',
+      'cart_items.stripe_price_id',
+    )
+    .leftJoin(
+      'stripe_product',
+      'stripe_product.stripe_product_id',
+      '=',
+      'stripe_price.stripe_product_id',
+    )
+    .leftJoin(
+      'store_items',
+      'store_items.stripe_price_id',
+      '=',
+      'stripe_price.stripe_price_id',
+    )
+    .where('cart_items.stripe_price_id', stripePriceId)
+    .andWhere('cart_items.user_id', userId);
+
+  if (!cartItem) {
+    return null;
+  }
 
   const taxRates = await getTaxRates(cartItem.stripe_price_id);
 
@@ -592,25 +660,23 @@ const updateCartItems = async (body, userId) => {
       });
   }
 
-  if (quantity) {
-    let nbChanged;
+  let nbChanged;
 
-    if (quantity < 1) {
-      await knex('cart_items')
-        .where({ id: cartItemId, user_id: userId })
-        .del();
-    } else {
-      nbChanged = await knex('cart_items')
-        .update({ quantity })
-        .where({
-          id: cartItemId,
-          user_id: userId,
-        });
-    }
+  if (quantity < 1) {
+    await knex('cart_items')
+      .where({ id: cartItemId, user_id: userId })
+      .del();
+  } else {
+    nbChanged = await knex('cart_items')
+      .update({ quantity })
+      .where({
+        id: cartItemId,
+        user_id: userId,
+      });
+  }
 
-    if (nbChanged === 0) {
-      throw new Error(ERROR_ENUM.ACCESS_DENIED);
-    }
+  if (nbChanged === 0) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 };
 
@@ -690,10 +756,41 @@ const deleteCartItem = async cartItemId => {
 };
 
 export const getActiveStoreItemsAllInfos = async () => {
-  return await storeItemsAllInfos.query()
+  return await storeItemsAllInfos
+    .query()
     .withGraphJoined('stripePrice')
     .where('store_items_all_infos.active', true);
-}
+};
+
+export const insertCartItem = async ({
+  stripePriceId,
+  metadata,
+  quantity,
+  selected,
+  type,
+  userId,
+}) => {
+  return await cartItems.query().insert({
+    stripe_price_id: stripePriceId,
+    quantity,
+    selected,
+    user_id: userId,
+    metadata: { ...metadata, type },
+  });
+};
+
+export const updateCartItemQuantity = async (
+  quantity,
+  stripePriceId,
+  userId,
+) => {
+  return await cartItems
+    .query()
+    .patch({
+      quantity,
+    })
+    .where({ stripe_price_id: stripePriceId, user_id: userId });
+};
 
 export {
   addCartItem,

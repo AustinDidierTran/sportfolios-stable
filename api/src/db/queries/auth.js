@@ -25,13 +25,14 @@ async function createUserComplete(body) {
     facebook_id,
     newsLetterSubscription,
     cognitoId,
+    language,
   } = body;
 
   await knex.transaction(async trx => {
     // Create user
 
     const [user_id] = await knex('users')
-      .insert([{ password: password, cognito_id: cognitoId }])
+      .insert([{ password, cognito_id: cognitoId, language }])
       .returning('id')
       .transacting(trx);
 
