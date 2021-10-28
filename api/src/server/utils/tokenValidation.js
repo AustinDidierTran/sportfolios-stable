@@ -2,7 +2,7 @@ import jsonwebtoken from 'jsonwebtoken'
 import jwkToPem from 'jwk-to-pem'
 import { CLIENT_ID, REGION, USER_POOL_ID } from '../../../../conf.js';
 import axios from 'axios';
-const url = 'https://cognito-idp.' + REGION + '.amazonaws.com/' + USER_POOL_ID + '/.well-known/jwks.json';
+const url = `https://cognito-idp.${REGION}.amazonaws.com/${USER_POOL_ID}/.well-known/jwks.json`;
 const jsonWebKeys = await axios.get(url).catch(function (error) {
     console.log(error.response.data);
     return;
@@ -14,7 +14,7 @@ export function validateToken(token) {
     const jsonWebKey = getJsonWebKeyWithKID(header.kid);
     const decodedToken = verifyJsonWebTokenSignature(token, jsonWebKey)
     if (decodedToken.exp > Math.round(Date.now() / 1000)) {
-        if (decodedToken.aud === CLIENT_ID && decodedToken.iss === ('https://cognito-idp.' + REGION + '.amazonaws.com/' + USER_POOL_ID)) {
+        if (decodedToken.aud === CLIENT_ID && decodedToken.iss === (`https://cognito-idp.${REGION}.amazonaws.com/${USER_POOL_ID}`)) {
             return decodedToken;
         }
     }
