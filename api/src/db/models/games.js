@@ -15,16 +15,16 @@ export class games extends Model {
         modelClass: events,
         join: {
           from: 'games.event_id',
-          to: 'events.id'
-        }
+          to: 'events.id',
+        },
       },
       entity: {
         relation: Model.HasOneRelation,
         modelClass: entities,
         join: {
           from: 'games.id',
-          to: 'entities.id'
-        }
+          to: 'entities.id',
+        },
       },
       eventTicketOptions: {
         relation: Model.HasManyRelation,

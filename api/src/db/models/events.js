@@ -16,24 +16,24 @@ export class events extends Model {
         modelClass: entities,
         join: {
           from: 'events.id',
-          to: 'entities.id'
-        }
+          to: 'entities.id',
+        },
       },
       phases: {
         relation: Model.HasManyRelation,
         modelClass: phase,
         join: {
           from: 'events.id',
-          to: 'phase.event_id'
-        }
+          to: 'phase.event_id',
+        },
       },
       games: {
         relation: Model.HasManyRelation,
         modelClass: games,
         join: {
           from: 'events.id',
-          to: 'games.event_id'
-        }
+          to: 'games.event_id',
+        },
       },
       eventsInfos: {
         relation: Model.HasOneRelation,

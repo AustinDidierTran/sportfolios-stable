@@ -459,6 +459,7 @@ export const createEvent = async ({
       },
     });
   } catch (err) {
+    // eslint-disable-next-line
     console.log(err);
   }
 };
@@ -473,4 +474,17 @@ export const getEventTypeGame = async eventId => {
     .where({
       '_t0.id': eventId,
     });
+};
+
+export const updateRosterIdInRankings = async (
+  newRosterId,
+  rankingId,
+) => {
+  const res = await knex('phase_rankings')
+    .update({
+      roster_id: newRosterId,
+    })
+    .where('ranking_id', rankingId);
+
+  return res;
 };

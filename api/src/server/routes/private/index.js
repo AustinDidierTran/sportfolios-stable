@@ -4,6 +4,7 @@ import facebook from './facebook.js';
 import follower from './follower.js';
 import game from './game.js';
 import interactiveTool from './interactiveTool.js';
+import messaging from './messaging.js';
 import notification from './notification.js';
 import organization from './organization.js';
 import phase from './phase.js';
@@ -22,6 +23,7 @@ export default [
   follower,
   game,
   interactiveTool,
+  messaging,
   notification,
   organization,
   phase,

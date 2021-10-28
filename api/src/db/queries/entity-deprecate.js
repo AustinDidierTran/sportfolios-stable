@@ -751,11 +751,8 @@ async function getTeamCreatorUserId(teamId) {
 async function eventInfos(id, userId) {
   const entity = (await getEntity(id)).basicInfos;
   let role = -1;
-  console.log({ userId });
   if (userId !== -1) {
-    console.log(2);
     role = await getEntityRole(id, userId);
-    console.log(3, { role });
   }
   const event = await getEvent(id);
   const infos = await getGeneralInfos(id);

@@ -9,7 +9,7 @@ export default async (ctx, next) => {
     ctx.status = STATUS_ENUM.SUCCESS;
     await next();
   } catch ({ message }) {
-    /** eslint-disable-next-line */
+    // eslint-disable-next-line
     console.log(message);
     const error = errors[message] || errors[ERROR_ENUM.ERROR_OCCURED];
 
