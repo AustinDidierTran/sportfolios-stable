@@ -65,7 +65,6 @@ const getPurchases = async userId => {
 };
 
 const getSales = async (query, userId) => {
-  console.log({ query });
   if (
     !(await isAllowed(query.id, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {

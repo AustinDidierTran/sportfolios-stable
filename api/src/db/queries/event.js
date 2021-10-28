@@ -459,6 +459,7 @@ export const createEvent = async ({
       },
     });
   } catch (err) {
+    // eslint-disable-next-line
     console.log(err);
   }
 };

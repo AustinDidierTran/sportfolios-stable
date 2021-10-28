@@ -405,8 +405,6 @@ export const createGame = async (
     },
   });
 };
-<<<<<<< HEAD
-=======
 
 export const getGameFromEvent = async eventId => {
   const [{ id }] = await knex('games')
@@ -431,4 +429,3 @@ export const updateGameInfo = async (
     })
     .where('id', gameId);
 };
->>>>>>> 71efda4c (ajout get route)
