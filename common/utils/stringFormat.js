@@ -41,9 +41,9 @@ const formatRoute = (route, params, queryParams) => {
 
   const withParams = params
     ? Object.keys(params).reduce(
-      (prev, curr) => prev.replace(`:${curr}`, params[curr]),
-      route,
-    )
+        (prev, curr) => prev.replace(`:${curr}`, params[curr]),
+        route,
+      )
     : route;
 
   if (!queryParams) {
@@ -52,16 +52,13 @@ const formatRoute = (route, params, queryParams) => {
 
   return Object.keys(queryParams).reduce(
     (prev, key, index) =>
-      index === 0
+      !queryParams[key]
+        ? prev
+        : index === 0
         ? `${prev}?${key}=${queryParams[key]}`
         : `${prev}&${key}=${queryParams[key]}`,
     withParams,
   );
 };
 
-export {
-  formatPrice,
-  fillWithZeros,
-  formatRoute,
-  formatClientRoute,
-};
+export { formatPrice, fillWithZeros, formatRoute, formatClientRoute };

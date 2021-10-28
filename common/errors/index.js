@@ -21,6 +21,7 @@ const ERROR_ENUM = {
   VALUE_IS_INVALID: 'value_is_invalid',
   VALUE_IS_REQUIRED: 'value_is_required',
   VALUE_IS_TOO_LONG: 'value_is_too_long',
+  NOT_ENOUGH_PLACE_REMAINING: 'not_enough_place_remaining',
 };
 
 const errors = {

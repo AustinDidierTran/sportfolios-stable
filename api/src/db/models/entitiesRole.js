@@ -6,6 +6,9 @@ export class entitiesRole extends Model {
   static get tableName() {
     return 'entities_role';
   }
+  static get idColumn() {
+    return ['entity_id', 'entity_id_admin'];
+  }
 
   static get relationMappings() {
     return {

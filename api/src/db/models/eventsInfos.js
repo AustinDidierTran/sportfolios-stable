@@ -1,6 +1,7 @@
 import { Model } from 'objection';
 import { eventRosters } from './eventRosters.js';
 import { entities } from './entities.js';
+import { events } from './events.js';
 
 export class eventsInfos extends Model {
   static get tableName() {
@@ -31,6 +32,14 @@ export class eventsInfos extends Model {
         join: {
           from: 'events_infos.creator_id',
           to: 'entities.id'
+        }
+      },
+      event: {
+        relation: Model.HasOneRelation,
+        modelClass: events,
+        join: {
+          from: 'events_infos.id',
+          to: 'events.id'
         }
       },
     };

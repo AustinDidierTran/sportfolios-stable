@@ -13,9 +13,13 @@ import {
   getUserIdFromPersonId,
 } from '../../../db/queries/entity-deprecate.js';
 
-import { getRoster } from '../../service/team.js'
+import { getRoster } from '../../service/team.js';
 import { addItemToPaidStoreItems } from '../../../db/queries/shop.js';
 import { sendCartItemAddedPlayerEmail } from '../nodeMailer.js';
+import {
+  getTicketOptionByInvoiceItemId,
+  createEventTicketPaid,
+} from '../../../db/queries/ticket.js';
 
 const INVOICE_CREATED_ENUM = {
   EVENT: async (metadata, stripe) => {
@@ -28,7 +32,7 @@ const INVOICE_CREATED_ENUM = {
       status,
     );
   },
-  STORE: () => { },
+  STORE: () => {},
   MEMBERSHIPS: async () => {
     await addMember({
       membershipType: Number(membershipType),
@@ -107,6 +111,17 @@ const INVOICE_PAID_ENUM = {
   },
   DONATION: async body => {
     await addItemToPaidStoreItems(body);
+  },
+  EVENT_TICKET: async body => {
+    const ticketOptions = await getTicketOptionByInvoiceItemId(
+      body.invoiceItemId,
+    );
+
+    await createEventTicketPaid(
+      body.invoiceItemId,
+      ticketOptions.id,
+      body.quantity,
+    );
   },
 };
 

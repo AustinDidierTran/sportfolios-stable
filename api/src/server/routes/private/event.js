@@ -72,21 +72,7 @@ router.post(`${BASE_URL}/tickets`, async ctx => {
     userId,
   );
 
-  if (!cartItems) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
   ctx.body = { data: cartItems };
-});
-
-router.put(`${BASE_URL}/rosterIdInRankings`, async ctx => {
-  const userId = getUserId(ctx);
-
-  const res = await service.putRosterIdInRankings(
-    ctx.request.body,
-    userId,
-  );
-
-  ctx.body = { data: res };
 });
 
 export default router;
