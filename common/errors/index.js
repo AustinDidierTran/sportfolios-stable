@@ -25,7 +25,7 @@ const ERROR_ENUM = {
   NEW_PASSWORD_REQUIRE: 'new_password_require',
   JWT_EXPIRED: 'TokenExpiredError',
   JWT_INVALID: 'JsonWebTokenError',
-  USER_NOT_FOUND: 'UserNotFoundException'
+  USER_NOT_FOUND: 'UserNotFoundException',
   NOT_ENOUGH_PLACE_REMAINING: 'not_enough_place_remaining',
 };
 
