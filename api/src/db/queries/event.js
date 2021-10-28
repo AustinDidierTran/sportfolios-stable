@@ -475,3 +475,16 @@ export const getEventTypeGame = async eventId => {
       '_t0.id': eventId,
     });
 };
+
+export const updateRosterIdInRankings = async (
+  newRosterId,
+  rankingId,
+) => {
+  const res = await knex('phase_rankings')
+    .update({
+      roster_id: newRosterId,
+    })
+    .where('ranking_id', rankingId);
+
+  return res;
+};
