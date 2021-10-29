@@ -40,7 +40,7 @@ async function createUserComplete(body) {
     await knex('user_email')
       .insert({
         user_id,
-        email,
+        email: email.toLowerCase(),
         is_subscribed: newsLetterSubscription,
       })
       .transacting(trx);
@@ -133,7 +133,7 @@ async function setRecoveryTokenToUsed(token) {
 
 async function validateEmailIsUnique(email) {
   const users = await knex('user_email')
-    .where({ email })
+    .where(knex.raw('lower("email")'), '=', email.toLowerCase())
     .returning(['id']);
   return !users.length;
 }
