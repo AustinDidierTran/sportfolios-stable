@@ -3,6 +3,20 @@ import { conversationMessages } from '../models/conversationMessages.js';
 import { conversationParticipants } from '../models/conversationParticipants.js';
 import { conversations } from '../models/conversations.js';
 
+export const getConversationById = async conversationId => {
+  const [conversation] = await conversations
+    .query()
+    .withGraphJoined(
+      '[conversationParticipants.entitiesGeneralInfos, lastMessage.entitiesGeneralInfos]',
+    )
+    .modifyGraph('conversationMessages', builder =>
+      builder.orderBy('created_at', 'desc'),
+    )
+    .where('conversations.id', conversationId);
+
+  return conversation;
+};
+
 export const getConversations = async (
   {
     // recipientId, page

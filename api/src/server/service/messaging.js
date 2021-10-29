@@ -80,42 +80,38 @@ export const getConversationMessages = async (
   );
 
   // Find all the conversations id that have a person with search query
-  const conversations = await queries.getConversations({
-    recipientId,
-    page,
-    searchQuery,
-  });
+  const conversation = await queries.getConversationById(
+    conversationId,
+  );
 
   // Return these conversations
   return {
-    conversations: conversations
-      .map(convo => ({
-        id: convo.id,
-        lastMessage: convo.lastMessage && {
-          id: convo.lastMessage.id,
-          sender: {
-            id: convo.lastMessage.entitiesGeneralInfos.entity_id,
-            name: convo.lastMessage.entitiesGeneralInfos.name,
-            surname: convo.lastMessage.entitiesGeneralInfos.surname,
-            nickname: convo.lastMessage.entitiesGeneralInfos.nickname,
-            photoUrl:
-              convo.lastMessage.entitiesGeneralInfos.photo_url,
-          },
-          sentAt: convo.lastMessage.created_at,
-          content: convo.lastMessage.text,
+    conversations: {
+      id: conversation.id,
+      lastMessage: conversation.lastMessage && {
+        id: conversation.lastMessage.id,
+        sender: {
+          id: conversation.lastMessage.entitiesGeneralInfos.entity_id,
+          name: conversation.lastMessage.entitiesGeneralInfos.name,
+          surname:
+            conversation.lastMessage.entitiesGeneralInfos.surname,
+          nickname:
+            conversation.lastMessage.entitiesGeneralInfos.nickname,
+          photoUrl:
+            conversation.lastMessage.entitiesGeneralInfos.photo_url,
         },
-        name: convo.name,
-        participants: convo.conversationParticipants.map(cp => ({
-          id: cp.participant_id,
-          name: cp.entitiesGeneralInfos.name,
-          surname: cp.entitiesGeneralInfos.surname,
-          nickname: cp.entitiesGeneralInfos.nickname,
-          photoUrl: cp.entitiesGeneralInfos.photo_url,
-        })),
-      }))
-      .filter(conversation =>
-        conversation.participants.some(p => p.id === recipientId),
-      ),
+        sentAt: conversation.lastMessage.created_at,
+        content: conversation.lastMessage.text,
+      },
+      name: conversation.name,
+      participants: conversation.conversationParticipants.map(cp => ({
+        id: cp.participant_id,
+        name: cp.entitiesGeneralInfos.name,
+        surname: cp.entitiesGeneralInfos.surname,
+        nickname: cp.entitiesGeneralInfos.nickname,
+        photoUrl: cp.entitiesGeneralInfos.photo_url,
+      })),
+    },
     messages: messages.map(message => ({
       id: message.id,
       sentAt: message.createdAt,
