@@ -114,7 +114,7 @@ export const getConversationMessages = async (
     },
     messages: messages.map(message => ({
       id: message.id,
-      sentAt: message.createdAt,
+      sentAt: message.created_at,
       content: message.text,
       sender: {
         id: message.entitiesGeneralInfos.entity_id,
