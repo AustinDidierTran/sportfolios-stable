@@ -77,18 +77,55 @@ export const getConversationMessages = async (
     conversationId,
   );
 
-  // Return messages
-  return messages.map(message => ({
-    id: message.id,
-    sentAt: message.createdAt,
-    content: message.text,
-    sender: {
-      id: message.entitiesGeneralInfos.entity_id,
-      name: message.entitiesGeneralInfos.name,
-      surname: message.entitiesGeneralInfos.surname,
-      photoUrl: message.entitiesGeneralInfos.photo_url,
-    },
-  }));
+  // Find all the conversations id that have a person with search query
+  const conversations = await queries.getConversations({
+    recipientId,
+    page,
+    searchQuery,
+  });
+
+  // Return these conversations
+  return {
+    conversations: conversations
+      .map(convo => ({
+        id: convo.id,
+        lastMessage: convo.lastMessage && {
+          id: convo.lastMessage.id,
+          sender: {
+            id: convo.lastMessage.entitiesGeneralInfos.entity_id,
+            name: convo.lastMessage.entitiesGeneralInfos.name,
+            surname: convo.lastMessage.entitiesGeneralInfos.surname,
+            nickname: convo.lastMessage.entitiesGeneralInfos.nickname,
+            photoUrl:
+              convo.lastMessage.entitiesGeneralInfos.photo_url,
+          },
+          sentAt: convo.lastMessage.created_at,
+          content: convo.lastMessage.text,
+        },
+        name: convo.name,
+        participants: convo.conversationParticipants.map(cp => ({
+          id: cp.participant_id,
+          name: cp.entitiesGeneralInfos.name,
+          surname: cp.entitiesGeneralInfos.surname,
+          nickname: cp.entitiesGeneralInfos.nickname,
+          photoUrl: cp.entitiesGeneralInfos.photo_url,
+        })),
+      }))
+      .filter(conversation =>
+        conversation.participants.some(p => p.id === recipientId),
+      ),
+    messages: messages.map(message => ({
+      id: message.id,
+      sentAt: message.createdAt,
+      content: message.text,
+      sender: {
+        id: message.entitiesGeneralInfos.entity_id,
+        name: message.entitiesGeneralInfos.name,
+        surname: message.entitiesGeneralInfos.surname,
+        photoUrl: message.entitiesGeneralInfos.photo_url,
+      },
+    })),
+  };
 };
 
 export const sendMessage = async (
