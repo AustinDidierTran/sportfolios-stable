@@ -86,7 +86,7 @@ export const getConversationMessages = async (
 
   // Return these conversations
   return {
-    conversations: {
+    conversation: {
       id: conversation.id,
       lastMessage: conversation.lastMessage && {
         id: conversation.lastMessage.id,
