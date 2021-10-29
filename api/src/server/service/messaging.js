@@ -8,7 +8,9 @@ export const getConversations = async (
   userId,
 ) => {
   // Validate the recipient is accessible from the user
-  if (!isAllowed(recipientId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  if (
+    !(await isAllowed(recipientId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -133,7 +135,9 @@ export const sendMessage = async (
   userId,
 ) => {
   // Validate the senderId is accessible from the user
-  if (!isAllowed(senderId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  if (
+    !(await isAllowed(senderId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -150,7 +154,9 @@ export const createConversation = async (
   userId,
 ) => {
   // Validate that you have access to the user
-  if (!isAllowed(creatorId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  if (
+    !(await isAllowed(creatorId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
