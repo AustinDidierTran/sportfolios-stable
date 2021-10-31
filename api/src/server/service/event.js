@@ -13,8 +13,12 @@ import * as ticketQueries from '../../db/queries/ticket.js';
 
 import moment from 'moment';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
-import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
+import {
+  ENTITIES_ROLE_ENUM,
+  GLOBAL_ENUM,
+} from '../../../../common/enums/index.js';
 import { CART_ITEM } from '../../../../common/enums/index.js';
+import { isAllowed } from './entity-deprecate.js';
 
 const getEventInfo = async (eventId, userId) => {
   const data = await eventInfosHelper(eventId, userId);

@@ -417,6 +417,20 @@ export const getEventVerified = async () => {
     });
 };
 
+export const getEventByRankingId = async rankingId => {
+  const [{ event_id }] = await knex('phase_rankings')
+    .select('event_id')
+    .leftJoin(
+      'phase',
+      'phase.id',
+      '=',
+      'phase_rankings.current_phase',
+    )
+    .where('phase_rankings.ranking_id', rankingId);
+
+  return event_id;
+};
+
 export const createEvent = async ({
   name,
   startDate,
