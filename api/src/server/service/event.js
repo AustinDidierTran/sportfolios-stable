@@ -136,6 +136,38 @@ export const getRankings = async (eventId, userId) => {
       ), {})
   );
 
+  phases.forEach(phase => {
+    const rankingIndex = phase.phaseRankings.reduce((p, r, i) => ({ ...p, [r.ranking_id]: i }), {})
+    phase.games.forEach(game => {
+      const game0 = game.gameTeams[0];
+      const game1 = game.gameTeams[1];
+      const phaseRankingGame0 = phase.phaseRankings[rankingIndex[game0.ranking_id]];
+      const phaseRankingGame1 = phase.phaseRankings[rankingIndex[game1.ranking_id]];
+
+      phaseRankingGame0.pointFor = (phaseRankingGame0.pointFor ?? 0) + game0.score;
+      phaseRankingGame0.pointAgainst = (phaseRankingGame0.pointAgainst ?? 0) + game1.score;
+      phaseRankingGame1.pointFor = (phaseRankingGame1.pointFor ?? 0) + game1.score;
+      phaseRankingGame1.pointAgainst = (phaseRankingGame1.pointAgainst ?? 0) + game0.score;
+
+      if (game0.score !== null) {
+        if (Number(game0.score) > Number(game1.score)) {
+          phaseRankingGame0.wins = (phaseRankingGame0.wins ?? 0) + 1
+          phaseRankingGame1.loses = (phaseRankingGame1.loses ?? 0) + 1
+        }
+        else if (Number(game0.score) < Number(game1.score)) {
+          phaseRankingGame0.loses = (phaseRankingGame0.loses ?? 0) + 1
+          phaseRankingGame1.wins = (phaseRankingGame1.wins ?? 0) + 1
+        }
+        else {
+          phaseRankingGame0.ties = (phaseRankingGame0.ties ?? 0) + 1
+          phaseRankingGame1.ties = (phaseRankingGame1.ties ?? 0) + 1
+        }
+      }
+    });
+
+    //logic to order todo
+  });
+
   return {
     prerank: prerank.phaseRankings.map(r => ({
       id: r.ranking_id,
@@ -165,7 +197,12 @@ export const getRankings = async (eventId, userId) => {
           photoUrl: r.teamRoster.entitiesGeneralInfos.photo_url
         },
         initialPosition: r.initial_position,
-        finalPosition: r.final_position
+        finalPosition: r.final_position,
+        win: r.wins ?? 0,
+        loses: r.loses ?? 0,
+        ties: r.ties ?? 0,
+        pointFor: r.pointFor ?? 0,
+        pointAgainst: r.pointAgainst ?? 0
       }))
     })),
     spirit: teams.map(t => ({
