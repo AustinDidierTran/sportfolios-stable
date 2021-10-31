@@ -38,17 +38,14 @@ export const getConversations = async (
         content: convo.lastMessage.text,
       },
       name: convo.name,
-      participants: convo.conversationParticipants.map(cp => ({
+      participants: convo.conversationParticipants[0].conversations.conversationParticipants.map(cp => ({
         id: cp.participant_id,
         name: cp.entitiesGeneralInfos.name,
         surname: cp.entitiesGeneralInfos.surname,
         nickname: cp.entitiesGeneralInfos.nickname,
         photoUrl: cp.entitiesGeneralInfos.photo_url,
       })),
-    }))
-    .filter(conversation =>
-      conversation.participants.some(p => p.id === recipientId),
-    );
+    }));
 };
 
 export const getConversationMessages = async (
