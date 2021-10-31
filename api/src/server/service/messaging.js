@@ -8,7 +8,9 @@ export const getConversations = async (
   userId,
 ) => {
   // Validate the recipient is accessible from the user
-  if (!isAllowed(recipientId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  if (
+    !(await isAllowed(recipientId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -36,17 +38,14 @@ export const getConversations = async (
         content: convo.lastMessage.text,
       },
       name: convo.name,
-      participants: convo.conversationParticipants.map(cp => ({
+      participants: convo.conversationParticipants[0].conversations.conversationParticipants.map(cp => ({
         id: cp.participant_id,
         name: cp.entitiesGeneralInfos.name,
         surname: cp.entitiesGeneralInfos.surname,
         nickname: cp.entitiesGeneralInfos.nickname,
         photoUrl: cp.entitiesGeneralInfos.photo_url,
       })),
-    }))
-    .filter(conversation =>
-      conversation.participants.some(p => p.id === recipientId),
-    );
+    }));
 };
 
 export const getConversationMessages = async (
@@ -77,18 +76,51 @@ export const getConversationMessages = async (
     conversationId,
   );
 
-  // Return messages
-  return messages.map(message => ({
-    id: message.id,
-    sentAt: message.createdAt,
-    content: message.text,
-    sender: {
-      id: message.entitiesGeneralInfos.entity_id,
-      name: message.entitiesGeneralInfos.name,
-      surname: message.entitiesGeneralInfos.surname,
-      photoUrl: message.entitiesGeneralInfos.photo_url,
+  // Find all the conversations id that have a person with search query
+  const conversation = await queries.getConversationById(
+    conversationId,
+  );
+
+  // Return these conversations
+  return {
+    conversation: {
+      id: conversation.id,
+      lastMessage: conversation.lastMessage && {
+        id: conversation.lastMessage.id,
+        sender: {
+          id: conversation.lastMessage.entitiesGeneralInfos.entity_id,
+          name: conversation.lastMessage.entitiesGeneralInfos.name,
+          surname:
+            conversation.lastMessage.entitiesGeneralInfos.surname,
+          nickname:
+            conversation.lastMessage.entitiesGeneralInfos.nickname,
+          photoUrl:
+            conversation.lastMessage.entitiesGeneralInfos.photo_url,
+        },
+        sentAt: conversation.lastMessage.created_at,
+        content: conversation.lastMessage.text,
+      },
+      name: conversation.name,
+      participants: conversation.conversationParticipants.map(cp => ({
+        id: cp.participant_id,
+        name: cp.entitiesGeneralInfos.name,
+        surname: cp.entitiesGeneralInfos.surname,
+        nickname: cp.entitiesGeneralInfos.nickname,
+        photoUrl: cp.entitiesGeneralInfos.photo_url,
+      })),
     },
-  }));
+    messages: messages.map(message => ({
+      id: message.id,
+      sentAt: message.created_at,
+      content: message.text,
+      sender: {
+        id: message.entitiesGeneralInfos.entity_id,
+        name: message.entitiesGeneralInfos.name,
+        surname: message.entitiesGeneralInfos.surname,
+        photoUrl: message.entitiesGeneralInfos.photo_url,
+      },
+    })),
+  };
 };
 
 export const sendMessage = async (
@@ -96,7 +128,9 @@ export const sendMessage = async (
   userId,
 ) => {
   // Validate the senderId is accessible from the user
-  if (!isAllowed(senderId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  if (
+    !(await isAllowed(senderId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -113,7 +147,9 @@ export const createConversation = async (
   userId,
 ) => {
   // Validate that you have access to the user
-  if (!isAllowed(creatorId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+  if (
+    !(await isAllowed(creatorId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 

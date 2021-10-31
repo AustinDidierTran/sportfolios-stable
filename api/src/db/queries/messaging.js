@@ -3,26 +3,43 @@ import { conversationMessages } from '../models/conversationMessages.js';
 import { conversationParticipants } from '../models/conversationParticipants.js';
 import { conversations } from '../models/conversations.js';
 
+export const getConversationById = async conversationId => {
+  const [conversation] = await conversations
+    .query()
+    .withGraphJoined(
+      '[conversationParticipants.entitiesGeneralInfos, lastMessage.entitiesGeneralInfos]',
+    )
+    .modifyGraph('conversationMessages', builder =>
+      builder.orderBy('created_at', 'desc'),
+    )
+    .where('conversations.id', conversationId);
+
+  return conversation;
+};
+
 export const getConversations = async (
   {
-    // recipientId, page
+    recipientId,
+    // page
   },
 ) =>
-  // searchQuery,
-  {
-    // Search is not supported for now :)
-    // Implement search + filter
-    const convos = await conversations
-      .query()
-      .withGraphJoined(
-        '[conversationParticipants.entitiesGeneralInfos, lastMessage.entitiesGeneralInfos]',
-      )
-      .modifyGraph('conversationMessages', builder =>
-        builder.orderBy('created_at', 'desc'),
-      );
+// searchQuery,
+{
+  // Search is not supported for now :)
+  // Implement search + filter
+  const convos = await conversations
+    .query()
+    .withGraphJoined(
+      '[conversationParticipants.conversations.conversationParticipants.entitiesGeneralInfos, lastMessage.entitiesGeneralInfos]',
+      { minimize: true }
+    )
+    .modifyGraph('conversationMessages', builder =>
+      builder.orderBy('created_at', 'desc'),
+    )
+    .where('_t0.participant_id', recipientId);
 
-    return convos;
-  };
+  return convos;
+};
 
 export const getConversationParticipants = async conversationId => {
   const participants = await conversationParticipants
