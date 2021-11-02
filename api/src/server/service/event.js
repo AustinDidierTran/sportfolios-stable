@@ -13,7 +13,10 @@ import * as ticketQueries from '../../db/queries/ticket.js';
 
 import moment from 'moment';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
-import { ENTITIES_ROLE_ENUM, GLOBAL_ENUM } from '../../../../common/enums/index.js';
+import {
+  ENTITIES_ROLE_ENUM,
+  GLOBAL_ENUM,
+} from '../../../../common/enums/index.js';
 import { CART_ITEM } from '../../../../common/enums/index.js';
 import { isAllowed } from '../../db/queries/utils.js';
 
@@ -117,50 +120,77 @@ export const getRankings = async (eventId, userId) => {
   }
 
   const phasesWithPrerank = await queries.getRankings(eventId);
-  const [prerank] = phasesWithPrerank.filter(p => p.name === 'prerank' && p.phase_order === 0);
-  const phases = phasesWithPrerank.filter(p => p.name != 'prerank' || p.phase_order != 0);
+  const [prerank] = phasesWithPrerank.filter(
+    p => p.name === 'prerank' && p.phase_order === 0,
+  );
+  const phases = phasesWithPrerank.filter(
+    p => p.name != 'prerank' || p.phase_order != 0,
+  );
 
   const teams = Object.values(
     phases
-      .reduce((gameArray, phases) => [...gameArray, ...phases.games], [])
-      .reduce((teams, game) => (
-        game.gameTeams.reduce((newTeams, team) => ({
-          ...newTeams,
-          [team.roster_id]: {
-            rosterId: team.roster_id,
-            name: team.name,
-            amountOfSubmissions: (newTeams[team.roster_id]?.amountOfSubmissions || 0) + 1,
-            totalSpirit: (newTeams[team.roster_id]?.totalSpirit || 0) + team.spirit,
-          }
-        }), teams)
-      ), {})
+      .reduce(
+        (gameArray, phases) => [...gameArray, ...phases.games],
+        [],
+      )
+      .reduce(
+        (teams, game) =>
+          game.gameTeams.reduce(
+            (newTeams, team) => ({
+              ...newTeams,
+              [team.roster_id]: {
+                rosterId: team.roster_id,
+                name: team.name,
+                amountOfSubmissions:
+                  (newTeams[team.roster_id]?.amountOfSubmissions ||
+                    0) + 1,
+                totalSpirit:
+                  (newTeams[team.roster_id]?.totalSpirit || 0) +
+                  team.spirit,
+              },
+            }),
+            teams,
+          ),
+        {},
+      ),
   );
 
   phases.forEach(phase => {
-    const rankingIndex = phase.phaseRankings.reduce((p, r, i) => ({ ...p, [r.ranking_id]: i }), {})
+    const rankingIndex = phase.phaseRankings.reduce(
+      (p, r, i) => ({ ...p, [r.ranking_id]: i }),
+      {},
+    );
     phase.games.forEach(game => {
       const game0 = game.gameTeams[0];
       const game1 = game.gameTeams[1];
-      const phaseRankingGame0 = phase.phaseRankings[rankingIndex[game0.ranking_id]];
-      const phaseRankingGame1 = phase.phaseRankings[rankingIndex[game1.ranking_id]];
+      const phaseRankingGame0 =
+        phase.phaseRankings[rankingIndex[game0.ranking_id]];
+      const phaseRankingGame1 =
+        phase.phaseRankings[rankingIndex[game1.ranking_id]];
 
-      phaseRankingGame0.pointFor = (phaseRankingGame0.pointFor ?? 0) + game0.score;
-      phaseRankingGame0.pointAgainst = (phaseRankingGame0.pointAgainst ?? 0) + game1.score;
-      phaseRankingGame1.pointFor = (phaseRankingGame1.pointFor ?? 0) + game1.score;
-      phaseRankingGame1.pointAgainst = (phaseRankingGame1.pointAgainst ?? 0) + game0.score;
+      console.log({ phaseRankingsGame0, phaseRankingGame1 });
+
+      phaseRankingGame0.pointFor =
+        (phaseRankingGame0.pointFor ?? 0) + game0.score;
+      phaseRankingGame0.pointAgainst =
+        (phaseRankingGame0.pointAgainst ?? 0) + game1.score;
+      phaseRankingGame1.pointFor =
+        (phaseRankingGame1.pointFor ?? 0) + game1.score;
+      phaseRankingGame1.pointAgainst =
+        (phaseRankingGame1.pointAgainst ?? 0) + game0.score;
 
       if (game0.score !== null) {
         if (Number(game0.score) > Number(game1.score)) {
-          phaseRankingGame0.wins = (phaseRankingGame0.wins ?? 0) + 1
-          phaseRankingGame1.loses = (phaseRankingGame1.loses ?? 0) + 1
-        }
-        else if (Number(game0.score) < Number(game1.score)) {
-          phaseRankingGame0.loses = (phaseRankingGame0.loses ?? 0) + 1
-          phaseRankingGame1.wins = (phaseRankingGame1.wins ?? 0) + 1
-        }
-        else {
-          phaseRankingGame0.ties = (phaseRankingGame0.ties ?? 0) + 1
-          phaseRankingGame1.ties = (phaseRankingGame1.ties ?? 0) + 1
+          phaseRankingGame0.wins = (phaseRankingGame0.wins ?? 0) + 1;
+          phaseRankingGame1.loses =
+            (phaseRankingGame1.loses ?? 0) + 1;
+        } else if (Number(game0.score) < Number(game1.score)) {
+          phaseRankingGame0.loses =
+            (phaseRankingGame0.loses ?? 0) + 1;
+          phaseRankingGame1.wins = (phaseRankingGame1.wins ?? 0) + 1;
+        } else {
+          phaseRankingGame0.ties = (phaseRankingGame0.ties ?? 0) + 1;
+          phaseRankingGame1.ties = (phaseRankingGame1.ties ?? 0) + 1;
         }
       }
     });
@@ -174,9 +204,9 @@ export const getRankings = async (eventId, userId) => {
       team: {
         id: r.teamRoster.team_id,
         name: r.teamRoster.entitiesGeneralInfos.name,
-        photoUrl: r.teamRoster.entitiesGeneralInfos.photo_url
+        photoUrl: r.teamRoster.entitiesGeneralInfos.photo_url,
       },
-      position: r.initial_position
+      position: r.initial_position,
     })),
     phases: phases.map(p => ({
       id: p.id,
@@ -187,14 +217,14 @@ export const getRankings = async (eventId, userId) => {
       rankings: p.phaseRankings.map(r => ({
         originPosition: {
           phaseId: r.origin_phase,
-          position: r.origin_position
+          position: r.origin_position,
         },
         id: r.ranking_id,
         rosterId: r.teamRoster.id,
         team: {
           id: r.teamRoster.team_id,
           name: r.teamRoster.entitiesGeneralInfos.name,
-          photoUrl: r.teamRoster.entitiesGeneralInfos.photo_url
+          photoUrl: r.teamRoster.entitiesGeneralInfos.photo_url,
         },
         initialPosition: r.initial_position,
         finalPosition: r.final_position,
@@ -202,17 +232,17 @@ export const getRankings = async (eventId, userId) => {
         loses: r.loses ?? 0,
         ties: r.ties ?? 0,
         pointFor: r.pointFor ?? 0,
-        pointAgainst: r.pointAgainst ?? 0
-      }))
+        pointAgainst: r.pointAgainst ?? 0,
+      })),
     })),
     spirit: teams.map(t => ({
       rosterId: t.rosterId,
       name: t.name,
       spirit: t.totalSpirit,
-      amountOfSubmissions: t.amountOfSubmissions
-    }))
+      amountOfSubmissions: t.amountOfSubmissions,
+    })),
   };
-}
+};
 
 export async function getPaymentOption(paymentOptionId) {
   const option = await getPaymentOptionById(paymentOptionId);

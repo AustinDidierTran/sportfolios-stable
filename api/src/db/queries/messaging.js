@@ -17,29 +17,27 @@ export const getConversationById = async conversationId => {
   return conversation;
 };
 
-export const getConversations = async (
+export const getConversations = async ({
+  recipientId,
+  // page
+}) =>
+  // searchQuery,
   {
-    recipientId,
-    // page
-  },
-) =>
-// searchQuery,
-{
-  // Search is not supported for now :)
-  // Implement search + filter
-  const convos = await conversations
-    .query()
-    .withGraphJoined(
-      '[conversationParticipants.conversations.conversationParticipants.entitiesGeneralInfos, lastMessage.entitiesGeneralInfos]',
-      { minimize: true }
-    )
-    .modifyGraph('conversationMessages', builder =>
-      builder.orderBy('created_at', 'desc'),
-    )
-    .where('_t0.participant_id', recipientId);
+    // Search is not supported for now :)
+    // Implement search + filter
+    const convos = await conversations
+      .query()
+      .withGraphJoined(
+        '[conversationParticipants.conversations.conversationParticipants.entitiesGeneralInfos, lastMessage.entitiesGeneralInfos]',
+        { minimize: true },
+      )
+      .modifyGraph('conversationMessages', builder =>
+        builder.orderBy('created_at', 'desc'),
+      )
+      .where('_t0.participant_id', recipientId);
 
-  return convos;
-};
+    return convos;
+  };
 
 export const getConversationParticipants = async conversationId => {
   const participants = await conversationParticipants
@@ -53,12 +51,8 @@ export const getConversationParticipants = async conversationId => {
 };
 
 export const getConversationWithParticipants = async participants => {
-  const cParticipants = await conversationParticipants
-    .query()
-    .whereIn(
-      'conversation_participants.participant_id',
-      participants,
-    );
+  // [SPO-151]
+  const cParticipants = await conversationParticipants.query();
 
   // Make a list of all conversations inside conversationParticipants
   const participantsMap = Object.entries(
