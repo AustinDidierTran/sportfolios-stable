@@ -159,6 +159,28 @@ async function loginWithToken(token) {
   return getBasicUserInfoFromId(userId);
 }
 
+export const loginWithCognitoToken = async ({ token }) => {
+  try {
+    const decodedToken = await validateToken(token);
+    if (!decodedToken?.email) {
+      throw new Error(ERROR_ENUM.ERROR_OCCURED);
+    }
+    const userId = await getUserIdFromEmail(decodedToken.email);
+    const userInfo = await getBasicUserInfoFromId(userId);
+    return { userInfo };
+  } catch (error) {
+    if (error.name === ERROR_ENUM.JWT_EXPIRED) {
+      throw new Error(ERROR_ENUM.JWT_EXPIRED);
+    }
+    if (error.name === ERROR_ENUM.JWT_INVALID) {
+      throw new Error(ERROR_ENUM.JWT_INVALID);
+    }
+
+    console.log('error signing in', error);
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+}
+
 export const loginCognito = async ({ email, token }) => {
   try {
     const decodedToken = await validateToken(token);

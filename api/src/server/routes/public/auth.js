@@ -44,6 +44,14 @@ router.post(`${BASE_URL}/loginWithCognito`, async ctx => {
   ctx.body = { data: JSON.stringify({ userInfo }) };
 });
 
+router.post(`${BASE_URL}/loginWithCognitoToken`, async ctx => {
+  const { userInfo } = await service.loginWithCognitoToken(ctx.request.body);
+
+  if (!userInfo) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: JSON.stringify({ userInfo }) };
+});
 
 router.get(`${BASE_URL}/loginWithToken`, async ctx => {
   const res = await service.loginWithToken(ctx.query.token);
