@@ -25,10 +25,12 @@ import {
   validateEmailIsConfirmed,
   isRegistered,
   createConfirmationEmailToken,
+  createUserEmail,
 } from '../../db/queries/user.js';
 
 import { getAllOwnedEntities, personIsAwaitingTransfer } from '../../db/queries/entity-deprecate.js';
 import { generateAuthToken, generateToken, isAllowed } from '../../db/queries/utils.js';
+import { validateEmailIsUnique } from '../../db/queries/auth.js';
 
 async function sendTransferPersonEmail(
   userId,
@@ -87,6 +89,25 @@ async function changeUserInfo(userId, { language }) {
     userId,
     language,
   });
+
+  return STATUS_ENUM.SUCCESS;
+}
+
+export const addEmail = async (userId, email) => {
+  if (!userId) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  if (!email) {
+    throw new Error(ERROR_ENUM.INVALID_EMAIL);
+  }
+  const isUnique = await validateEmailIsUnique(email);
+
+  if (!isUnique) {
+    throw new Error(ERROR_ENUM.INVALID_EMAIL);
+  }
+  await createUserEmail({ userId, email });
+  await confirmEmail({ email });
 
   return STATUS_ENUM.SUCCESS;
 }
