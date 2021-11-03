@@ -159,4 +159,16 @@ router.put(`${BASE_URL}/changeSubscription`, async ctx => {
   ctx.body = { data };
 });
 
+router.post(`${BASE_URL}/addEmail`, async ctx => {
+  const res = await service.addEmail(
+    ctx.request.body.id,
+    ctx.request.body.email,
+  );
+
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+
+  ctx.body = { data: res };
+});
 export default router;
