@@ -1,7 +1,12 @@
-import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
+import {
+  ENTITIES_ROLE_ENUM,
+  SOCKET_EVENT,
+} from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import { isAllowed } from './entity-deprecate.js';
 import * as queries from '../../db/queries/messaging.js';
+import * as userQueries from '../../db/queries/user.js';
+import * as socket from '../websocket/socket.io.js';
 
 export const getConversations = async (
   { page, recipientId, searchQuery },
@@ -22,30 +27,31 @@ export const getConversations = async (
   });
 
   // Return these conversations
-  return conversations
-    .map(convo => ({
-      id: convo.id,
-      lastMessage: convo.lastMessage && {
-        id: convo.lastMessage.id,
-        sender: {
-          id: convo.lastMessage.entitiesGeneralInfos.entity_id,
-          name: convo.lastMessage.entitiesGeneralInfos.name,
-          surname: convo.lastMessage.entitiesGeneralInfos.surname,
-          nickname: convo.lastMessage.entitiesGeneralInfos.nickname,
-          photoUrl: convo.lastMessage.entitiesGeneralInfos.photo_url,
-        },
-        sentAt: convo.lastMessage.created_at,
-        content: convo.lastMessage.text,
+  return conversations.map(convo => ({
+    id: convo.id,
+    lastMessage: convo.lastMessage && {
+      id: convo.lastMessage.id,
+      sender: {
+        id: convo.lastMessage.entitiesGeneralInfos.entity_id,
+        name: convo.lastMessage.entitiesGeneralInfos.name,
+        surname: convo.lastMessage.entitiesGeneralInfos.surname,
+        nickname: convo.lastMessage.entitiesGeneralInfos.nickname,
+        photoUrl: convo.lastMessage.entitiesGeneralInfos.photo_url,
       },
-      name: convo.name,
-      participants: convo.conversationParticipants[0].conversations.conversationParticipants.map(cp => ({
+      sentAt: convo.lastMessage.created_at,
+      content: convo.lastMessage.text,
+    },
+    name: convo.name,
+    participants: convo.conversationParticipants[0].conversations.conversationParticipants.map(
+      cp => ({
         id: cp.participant_id,
         name: cp.entitiesGeneralInfos.name,
         surname: cp.entitiesGeneralInfos.surname,
         nickname: cp.entitiesGeneralInfos.nickname,
         photoUrl: cp.entitiesGeneralInfos.photo_url,
-      })),
-    }));
+      }),
+    ),
+  }));
 };
 
 export const getConversationMessages = async (
@@ -135,10 +141,46 @@ export const sendMessage = async (
   }
 
   // Create the message
-  await queries.createMessage({
+  const messageId = await queries.createMessage({
     conversationId,
     content,
     senderId,
+  });
+
+  // Send the websocket to all participants
+
+  // 1. Find all the participants
+  const participants = await queries.getConversationParticipants(
+    conversationId,
+  );
+
+  // 2. Find all the users from these participants
+  const participantIds = participants.map(p => p.participant_id);
+
+  const users = await userQueries.getUserIdFromEntityId(
+    participantIds,
+  );
+
+  const userIds = users
+    .map(user => user.user_id)
+    .filter((value, index, array) => array.indexOf(value) === index);
+
+  // 3. Get the message information
+  const message = await queries.getMessageById(messageId);
+
+  // 4. Send the new message to these users
+  userIds.forEach(userId => {
+    socket.emit(SOCKET_EVENT.MESSAGES, userId, {
+      id: message.id,
+      sentAt: message.created_at,
+      content: message.text,
+      sender: {
+        id: message.entitiesGeneralInfos.entity_id,
+        name: message.entitiesGeneralInfos.name,
+        surname: message.entitiesGeneralInfos.surname,
+        photoUrl: message.entitiesGeneralInfos.photo_url,
+      },
+    });
   });
 };
 

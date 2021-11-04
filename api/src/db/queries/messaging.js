@@ -17,29 +17,27 @@ export const getConversationById = async conversationId => {
   return conversation;
 };
 
-export const getConversations = async (
+export const getConversations = async ({
+  recipientId,
+  // page
+}) =>
+  // searchQuery,
   {
-    recipientId,
-    // page
-  },
-) =>
-// searchQuery,
-{
-  // Search is not supported for now :)
-  // Implement search + filter
-  const convos = await conversations
-    .query()
-    .withGraphJoined(
-      '[conversationParticipants.conversations.conversationParticipants.entitiesGeneralInfos, lastMessage.entitiesGeneralInfos]',
-      { minimize: true }
-    )
-    .modifyGraph('conversationMessages', builder =>
-      builder.orderBy('created_at', 'desc'),
-    )
-    .where('_t0.participant_id', recipientId);
+    // Search is not supported for now :)
+    // Implement search + filter
+    const convos = await conversations
+      .query()
+      .withGraphJoined(
+        '[conversationParticipants.conversations.conversationParticipants.entitiesGeneralInfos, lastMessage.entitiesGeneralInfos]',
+        { minimize: true },
+      )
+      .modifyGraph('conversationMessages', builder =>
+        builder.orderBy('created_at', 'desc'),
+      )
+      .where('_t0.participant_id', recipientId);
 
-  return convos;
-};
+    return convos;
+  };
 
 export const getConversationParticipants = async conversationId => {
   const participants = await conversationParticipants
@@ -95,6 +93,15 @@ export const getMessagesFromConversation = async conversationId => {
     .where('conversation_messages.conversation_id', conversationId);
 };
 
+export const getMessageById = async id => {
+  const [message] = await conversationMessages
+    .query()
+    .withGraphJoined('entitiesGeneralInfos')
+    .where('conversation_messages.id', id);
+
+  return message;
+};
+
 export const createConversation = async participants => {
   // Create conversation
   return knex.transaction(async trx => {
@@ -121,9 +128,11 @@ export const createMessage = async ({
   content,
   senderId,
 }) => {
-  await conversationMessages.query().insertGraph({
+  const message = await conversationMessages.query().insertGraph({
     text: content,
     conversation_id: conversationId,
     sender_id: senderId,
   });
+
+  return message.id;
 };
