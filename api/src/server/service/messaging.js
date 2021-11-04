@@ -31,6 +31,7 @@ export const getConversations = async (
     id: convo.id,
     lastMessage: convo.lastMessage && {
       id: convo.lastMessage.id,
+      conversationId: convo.lastMessage.conversation_id,
       sender: {
         id: convo.lastMessage.entitiesGeneralInfos.entity_id,
         name: convo.lastMessage.entitiesGeneralInfos.name,
@@ -93,6 +94,7 @@ export const getConversationMessages = async (
       id: conversation.id,
       lastMessage: conversation.lastMessage && {
         id: conversation.lastMessage.id,
+        conversationId: conversation.lastMessage.conversation_id,
         sender: {
           id: conversation.lastMessage.entitiesGeneralInfos.entity_id,
           name: conversation.lastMessage.entitiesGeneralInfos.name,
@@ -117,6 +119,7 @@ export const getConversationMessages = async (
     },
     messages: messages.map(message => ({
       id: message.id,
+      conversationId: message.conversation_id,
       sentAt: message.created_at,
       content: message.text,
       sender: {
@@ -168,10 +171,13 @@ export const sendMessage = async (
   // 3. Get the message information
   const message = await queries.getMessageById(messageId);
 
+  console.log({ message });
+
   // 4. Send the new message to these users
   userIds.forEach(userId => {
     socket.emit(SOCKET_EVENT.MESSAGES, userId, {
       id: message.id,
+      conversationId: message.conversation_id,
       sentAt: message.created_at,
       content: message.text,
       sender: {
