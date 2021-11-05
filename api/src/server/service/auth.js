@@ -162,7 +162,7 @@ async function loginWithToken(token) {
 export const loginCognito = async ({ email, token }) => {
   try {
     const decodedToken = await validateToken(token);
-    if (!decodedToken.email || (decodedToken.email !== email)) {
+    if (!decodedToken?.email || (decodedToken.email.toLowerCase() !== email.toLowerCase())) {
       throw new Error(ERROR_ENUM.ERROR_OCCURED);
     }
     const userId = await getUserIdFromEmail(email);
