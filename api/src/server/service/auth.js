@@ -41,6 +41,8 @@ import {
 
 import { validateToken } from '../utils/tokenValidation.js';
 import { adminGetUser, adminCreateUser } from '../utils/aws.js';
+import { updateEntityPhoto } from '../../db/queries/entitiesGeneralInfos.js'
+import { getPrimaryPersonIdFromUserId } from '../../db/queries/user.js'
 
 async function signup({
   firstName,
@@ -115,6 +117,42 @@ export const signupCognito = async ({
   }
 
 
+}
+
+export const signupGoogleToken = async ({
+  token,
+}) => {
+  try {
+    const decodedToken = await validateToken(token);
+    if (decodedToken.identities[0].providerName !== 'Google') {
+      return STATUS_ENUM.ERROR;
+    }
+
+    const isUnique = await validateEmailIsUnique(decodedToken.email);
+
+    if (!isUnique) {
+      throw new Error(ERROR_ENUM.INVALID_EMAIL);
+    }
+
+    await createUserComplete({
+      password: ' ',
+      email: decodedToken.email,
+      name: decodedToken.given_name,
+      surname: decodedToken.family_name,
+      facebook_id: null,
+      newsLetterSubscription: false,
+      cognitoId: decodedToken.sub
+    });
+
+    const userId = await getUserIdFromEmail(decodedToken.email);
+    const primaryPerson = await getPrimaryPersonIdFromUserId(userId);
+    await updateEntityPhoto(primaryPerson, decodedToken.picture);
+    await confirmEmailHelper({ email: decodedToken.email });
+
+    return STATUS_ENUM.SUCCESS;
+  } catch (error) {
+    console.log('error signing up:', error);
+  }
 }
 
 async function login({ email, password }) {

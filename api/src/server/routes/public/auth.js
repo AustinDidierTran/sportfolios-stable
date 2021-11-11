@@ -26,6 +26,16 @@ router.post(`${BASE_URL}/signupWithCognito`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/signupGoogleToken`, async ctx => {
+  const res = await service.signupGoogleToken(ctx.request.body);
+
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  } else {
+    ctx.body = { data: res };
+  }
+});
+
 router.post(`${BASE_URL}/login`, async ctx => {
   const { token, userInfo } = await service.login(ctx.request.body);
 
