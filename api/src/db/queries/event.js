@@ -448,7 +448,7 @@ export const updateRosterIdInRankings = async (
 };
 
 export const getRankings = async (eventId) => {
-  const phases = await phase.query().withGraphJoined('[phaseRankings.teamRoster.entitiesGeneralInfos, games.gameTeams.eventRoster.entitiesGeneralInfos]', { minimize: true })
+  const phases = await phase.query().withGraphJoined('[phaseRankings.[teamRoster.entitiesGeneralInfos, originPhase], games.gameTeams.eventRoster.entitiesGeneralInfos]', { minimize: true })
     .where('phase.event_id', eventId);
   return phases;
 }

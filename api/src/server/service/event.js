@@ -113,13 +113,7 @@ export const verifyTeamNameIsUnique = async ({ name, eventId }) => {
   return teamNameIsUnique;
 };
 
-export const getRankings = async (eventId, userId) => {
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
-    throw new Error(ERROR_ENUM.ACCESS_DENIED);
-  }
-
+export const getRankings = async (eventId) => {
   const phasesWithPrerank = await queries.getRankings(eventId);
   const [prerank] = phasesWithPrerank.filter(
     p => p.name === 'prerank' && p.phase_order === 0,
@@ -180,6 +174,7 @@ export const getRankings = async (eventId, userId) => {
         originPosition: {
           phaseId: r.origin_phase,
           position: r.origin_position,
+          name: r.originPhase.name,
         },
         id: r.ranking_id,
         rosterId: r.teamRoster.id,

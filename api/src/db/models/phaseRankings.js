@@ -28,6 +28,14 @@ export class phaseRankings extends Model {
           to: 'team_rosters.id'
         }
       },
+      originPhase: {
+        relation: Model.HasOneRelation,
+        modelClass: phase,
+        join: {
+          from: 'phase_rankings.origin_phase',
+          to: 'phase.id'
+        }
+      },
     };
   }
 }
