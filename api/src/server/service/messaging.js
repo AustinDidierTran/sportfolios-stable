@@ -144,11 +144,11 @@ export const sendMessage = async (
   }
 
   // Create the message
-  const messageId = await queries.createMessage({
+  const messageId = await queries.createMessage(
     conversationId,
-    content,
+    content.trim(),
     senderId,
-  });
+  );
 
   // Send the websocket to all participants
 
