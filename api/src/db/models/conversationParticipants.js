@@ -38,6 +38,14 @@ export class conversationParticipants extends Model {
           to: 'entities_general_infos.entity_id',
         },
       },
+      conversationsParticipant: {
+        relation: Model.HasManyRelation,
+        modelClass: conversationParticipants,
+        join: {
+          from: 'conversation_participants.conversation_id',
+          to: 'conversation_participants.conversation_id',
+        },
+      },
     };
   }
 }
