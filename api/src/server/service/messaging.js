@@ -225,11 +225,3 @@ export const createConversation = async (
   // Then, return the id
   return conversationId;
 };
-
-const seeMessages = async userId => {
-  return seeMessagesHelper(userId);
-};
-
-const countUnseenMessages = async userId => {
-  return countUnseenMessagesHelper(userId);
-};

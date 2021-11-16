@@ -33,16 +33,6 @@ router.get(`${BASE_URL}/messages`, async ctx => {
   ctx.body = { data: conversations };
 });
 
-router.get(`${BASE_URL}/unseenCount`, async ctx => {
-  const count = await service.countUnseenMessages(
-    ctx.body.userInfo.id,
-  );
-  if (!count) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = { data: count };
-});
-
 /** POST */
 router.post(`${BASE_URL}/message`, async ctx => {
   const userId = getUserId(ctx);
@@ -72,13 +62,3 @@ router.post(`${BASE_URL}/conversation`, async ctx => {
 });
 
 /** PUT */
-
-router.put(`${BASE_URL}/see`, async ctx => {
-  const res = await service.seeMessages(ctx.body.userInfo.id);
-  if (!res) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = { data: res };
-});
-
-export default router;
