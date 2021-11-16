@@ -128,3 +128,12 @@ router.put(`${BASE_URL}/nickname`, async ctx => {
 });
 
 export default router;
+/*
+router.put(`${BASE_URL}/see`, async ctx => {
+  const res = await service.seeMessages(ctx.body.userInfo.id);
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: res };
+});
+*/
