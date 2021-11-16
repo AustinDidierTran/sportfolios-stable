@@ -429,3 +429,12 @@ export const updateNickname = async (
     nickname,
   );
 };
+/*
+const seeMessages = async userId => {
+  return seeMessagesHelper(userId);
+};
+
+const countUnseenMessages = async userId => {
+  return countUnseenMessagesHelper(userId);
+};
+*/
