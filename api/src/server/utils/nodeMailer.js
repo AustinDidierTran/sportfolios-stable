@@ -14,8 +14,6 @@ import {
   formatLinkWithAuthToken,
   formatFooterLink,
 } from '../../db/emails/utils.js';
-import { createRequire } from 'module'; // Bring in the ability to create the 'require' method
-const require = createRequire(import.meta.url); // construct the require method
 
 let key;
 

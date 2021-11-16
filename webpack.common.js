@@ -52,7 +52,7 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.tsx'],
+    extensions: ['.js', '.jsx', '.tsx', '.ts'],
   },
   plugins: [
     new CleanWebpackPlugin(),

@@ -22,10 +22,6 @@ import ImportMemberNonExistingEmail from './importMemberNonExistingEmail.js';
 import { NOTIFICATION_TYPE } from './../../../../common/enums/index.js';
 import ejs from 'ejs';
 import i18n from '../../i18n.config.js';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const map = {
   [NOTIFICATION_TYPE.ADDED_TO_EVENT]: AddedToEventEmail,
