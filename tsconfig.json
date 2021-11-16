@@ -1,18 +1,30 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
-    "module": "commonjs",
-    "target": "es6",
+    "target": "ES6",
     "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
     "moduleResolution": "node",
-    "lib": [
-      "es5",
-      "es6"
-    ]
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": false,
+    "incremental": true
   },
-  "files.watcherExclude": {
-    "**/.git/objects/**": true,
-    "**/.git/subtree-cache/**": true,
-    "**/node_modules/*/**": true
-  }
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "knexfile.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.js",
+    "**/*.jsx",
+  ]
 }

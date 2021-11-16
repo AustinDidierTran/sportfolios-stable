@@ -27,13 +27,13 @@ const corsOptions = {
   origin: verifyOrigin,
 };
 
-function verifyOrigin(ctx) {
+function verifyOrigin(ctx: any) {
   const origin = ctx.headers.origin;
   if (!originIsValid(origin)) return false;
   return origin;
 }
 
-function originIsValid(origin) {
+function originIsValid(origin: string) {
   return validOrigins.indexOf(origin) != -1;
 }
 
