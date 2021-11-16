@@ -23,9 +23,9 @@ import adminRoutes from './server/routes/admin/index.js';
 const app = new Koa();
 const PORT = process.env.PORT || 1337;
 
-const corsOptions = {
-  origin: verifyOrigin,
-};
+function originIsValid(origin: string) {
+  return validOrigins.indexOf(origin) != -1;
+}
 
 function verifyOrigin(ctx: any) {
   const origin = ctx.headers.origin;
@@ -33,9 +33,9 @@ function verifyOrigin(ctx: any) {
   return origin;
 }
 
-function originIsValid(origin: string) {
-  return validOrigins.indexOf(origin) != -1;
-}
+const corsOptions = {
+  origin: verifyOrigin,
+};
 
 app.use(errorHandler);
 app.use(cors(corsOptions));

@@ -10,7 +10,7 @@ module.exports = {
     '\\.(css|scss)$': '<rootDir>/__mocks__/styleMock.js',
   },
   transform: {
-    "^.+\\.(t|j)sx?$": "ts-jest",
+    '^.+\\.(t|j)sx?$': 'ts-jest',
     // '^.+\\.(ts|tsx)?$': 'ts-jest',
     // '^.+\\.(js|jsx)$': 'babel-jest',
   },
