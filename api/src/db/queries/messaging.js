@@ -289,3 +289,22 @@ export const updateNickname = async (
     .where('conversation_id', conversationId)
     .andWhere('participant_id', participantId);
 };
+
+/*
+const countUnseenMessages = async user_id => {
+  const res = await knex('notifications')
+    .where({ user_id, seen_at: null })
+    .count('*')
+    .first();
+  if (res) {
+    return res.count;
+  }
+};
+
+const seeMessages = async user_id => {
+  return knex('notifications')
+    .update({ seen_at: new Date() })
+    .where({ user_id, seen_at: null })
+    .returning('id');
+};
+*/
