@@ -17,6 +17,24 @@ export const getConversationById = async conversationId => {
   return conversation;
 };
 
+const countUnseenMessages = async user_id => {
+  const res = await knex('notifications')
+    .where({ user_id, seen_at: null })
+    .count('*')
+    .first();
+  if (res) {
+    return res.count;
+  }
+};
+
+const seeMessages = async user_id => {
+  return knex('notifications')
+    .update({ seen_at: new Date() })
+    .where({ user_id, seen_at: null })
+    .returning('id');
+};
+//CHOSES A COMPLÉTÉS #1
+
 export const getConversations = async ({
   recipientId,
   // page

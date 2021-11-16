@@ -7,6 +7,13 @@ import { isAllowed } from './entity-deprecate.js';
 import * as queries from '../../db/queries/messaging.js';
 import * as userQueries from '../../db/queries/user.js';
 import * as socket from '../websocket/socket.io.js';
+import {
+  SOCKET_EVENT,
+  NOTIFICATION_TYPE,
+  SCORE_SUBMISSION_CHATBOT_STATES,
+  MILLIS_TIME_ENUM,
+  BASIC_CHATBOT_STATES,
+} from '../../../../common/enums/index.js';
 
 export const getConversations = async (
   { page, recipientId, searchQuery },
@@ -224,4 +231,12 @@ export const createConversation = async (
 
   // Then, return the id
   return conversationId;
+};
+
+const seeMessages = async userId => {
+  return seeMessagesHelper(userId);
+};
+
+const countUnseenMessages = async userId => {
+  return countUnseenMessagesHelper(userId);
 };
