@@ -34,6 +34,10 @@ function verifyOrigin(ctx) {
 }
 
 function originIsValid(origin) {
+  if (origin.endsWith('sportfolios.app')) {
+    return true;
+  }
+
   return validOrigins.indexOf(origin) != -1;
 }
 
