@@ -171,8 +171,6 @@ export const sendMessage = async (
   // 3. Get the message information
   const message = await queries.getMessageById(messageId);
 
-  console.log({ message });
-
   // 4. Send the new message to these users
   userIds.forEach(userId => {
     socket.emit(SOCKET_EVENT.MESSAGES, userId, {
