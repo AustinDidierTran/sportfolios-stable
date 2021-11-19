@@ -24,6 +24,10 @@ const app = new Koa();
 const PORT = process.env.PORT || 1337;
 
 function originIsValid(origin: string) {
+  if (origin.endsWith('sportfolios.app')) {
+    return true;
+  }
+
   return validOrigins.indexOf(origin) != -1;
 }
 
