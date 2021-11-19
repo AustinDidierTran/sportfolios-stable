@@ -378,6 +378,7 @@ const SESSION_ENUM = {
 
 const SOCKET_EVENT = {
   CONNECTED_USER: 'connectedUser',
+  MESSAGES: 'messages',
   NOTIFICATIONS: 'notifications',
 };
 

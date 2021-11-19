@@ -246,6 +246,15 @@ async function getUserIdFromEmail(email) {
   return user_id;
 }
 
+// [TODO]: Should support more than one level of deepness
+export const getUserIdFromEntityId = entityId => {
+  if (Array.isArray(entityId)) {
+    return knex('user_entity_role').whereIn('entity_id', entityId);
+  }
+
+  return knex('user_entity_role').where('entity_id', entityId);
+};
+
 async function getLanguageFromUser(id) {
   return (
     await knex('users')

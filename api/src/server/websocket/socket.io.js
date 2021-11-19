@@ -54,7 +54,7 @@ const emit = (eventName, userId, message) => {
     // eslint-disable-next-line no-console
     console.error('You need to call initialize before emitting!');
   } else {
-    sockets = userToSocketMap.get(userId);
+    const sockets = userToSocketMap.get(userId);
     if (sockets) {
       sockets.forEach(socket =>
         io.to(socket).emit(eventName, message),
