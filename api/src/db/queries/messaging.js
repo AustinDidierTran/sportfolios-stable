@@ -50,41 +50,15 @@ export const getConversationParticipants = async conversationId => {
   return participants;
 };
 
-export const getConversationWithParticipants = async participants => {
-  const cParticipants = await conversationParticipants
+export const getConversationWithParticipants = async (participants) => {
+  const [{ conversation_id } = {}] = await conversationParticipants
     .query()
-    .whereIn(
-      'conversation_participants.participant_id',
-      participants,
-    );
-
-  // Make a list of all conversations inside conversationParticipants
-  const participantsMap = Object.entries(
-    cParticipants.reduce(
-      (conversations, cp) => ({
-        ...conversations,
-        [cp.conversation_id]: conversations[cp.conversation_id]
-          ? [...conversations[cp.conversation_id], cp.participant_id]
-          : [cp.participant_id],
-      }),
-      {},
-    ),
-  );
-
-  // From all these conversations, find a conversation that has all of them, but no more than them
-  const [conversationId] =
-    participantsMap.find(([, ps]) => {
-      if (ps.length !== participants.length) {
-        return false;
-      }
-
-      return ps.every(
-        p1 => participants.findIndex(p2 => p1 === p2) !== -1,
-      );
-    }) || [];
-
-  return conversationId;
-};
+    .select('conversation_id')
+    .groupBy('conversation_id')
+    // eslint-disable-next-line
+    .havingRaw('sum(case when "participant_id" not in (' + participants.map(_ => '?').join(',') + ') then 1 else 0 end) = 0 and sum(case when "participant_id" in (' + participants.map(_ => '?').join(',') + ') then 1 else 0 end) = ?;', [...participants, ...participants, participants.length]);
+  return conversation_id;
+}
 
 export const getMessagesFromConversation = async conversationId => {
   return conversationMessages
