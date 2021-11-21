@@ -1,4 +1,6 @@
 import { Model } from 'objection';
+import { gameTeams } from './gameTeams.js';
+import { phase } from './phase.js'
 import { events } from './events.js';
 import { entities } from './entities.js';
 import { eventTicketOptions } from './eventTicketOptions.js';
@@ -10,6 +12,22 @@ export class games extends Model {
 
   static get relationMappings() {
     return {
+      phase: {
+        relation: Model.HasOneRelation,
+        modelClass: phase,
+        join: {
+          from: 'games.phase_id',
+          to: 'phase.id'
+        }
+      },
+      gameTeams: {
+        relation: Model.HasManyRelation,
+        modelClass: gameTeams,
+        join: {
+          from: 'games.id',
+          to: 'game_teams.game_id'
+        }
+      },
       event: {
         relation: Model.HasOneRelation,
         modelClass: events,

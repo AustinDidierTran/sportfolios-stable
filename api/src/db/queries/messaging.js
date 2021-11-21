@@ -51,12 +51,8 @@ export const getConversationParticipants = async conversationId => {
 };
 
 export const getConversationWithParticipants = async participants => {
-  const cParticipants = await conversationParticipants
-    .query()
-    .whereIn(
-      'conversation_participants.participant_id',
-      participants,
-    );
+  // [SPO-151]
+  const cParticipants = await conversationParticipants.query();
 
   // Make a list of all conversations inside conversationParticipants
   const participantsMap = Object.entries(

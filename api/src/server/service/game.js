@@ -178,21 +178,34 @@ export const getPurchasedTickets = async (
     finalGameId,
   );
 
+  console.log(purchasedTickets.map(pt => pt.stripeInvoiceItem));
+
   const purchasedTicketsObject = purchasedTickets.map(
     (paid, index) => ({
       id: paid.id,
       buyer: {
+        id: paid.stripeInvoiceItem.user_id,
         email: paid.stripeInvoiceItem.userEmail.email,
-        completeName:
-          paid.stripeInvoiceItem.userPrimaryPerson
-            .entitiesGeneralInfos.name +
-          ' ' +
-          paid.stripeInvoiceItem.userPrimaryPerson
-            .entitiesGeneralInfos.surname,
-        userId: paid.stripeInvoiceItem.user_id,
+        primaryPerson: {
+          name:
+            paid.stripeInvoiceItem.userPrimaryPerson
+              .entitiesGeneralInfos.name,
+          surname:
+            paid.stripeInvoiceItem.userPrimaryPerson
+              .entitiesGeneralInfos.surname,
+          photoUrl:
+            paid.stripeInvoiceItem.userPrimaryPerson
+              .entitiesGeneralInfos.photo_url,
+        },
       },
       number: index + 1,
       name: paid.eventTicketOptions.name,
+      option: {
+        id: paid.eventTicketOptions.id,
+        name: paid.eventTicketOptions.name,
+        description: paid.eventTicketOptions.description,
+        price: paid.stripeInvoiceItem.stripePrice.amount,
+      },
       optionId: paid.eventTicketOptions.id,
     }),
   );
@@ -205,6 +218,6 @@ export const getPurchasedTickets = async (
   }
 
   return purchasedTicketsObject.filter(
-    ticket => ticket.buyer.userId === userId,
+    ticket => ticket.buyer.id === userId,
   );
 };

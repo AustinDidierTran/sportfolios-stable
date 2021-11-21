@@ -13,8 +13,13 @@ import * as ticketQueries from '../../db/queries/ticket.js';
 
 import moment from 'moment';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
-import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
+import {
+  ENTITIES_ROLE_ENUM,
+  GLOBAL_ENUM,
+} from '../../../../common/enums/index.js';
 import { CART_ITEM } from '../../../../common/enums/index.js';
+import { isAllowed } from '../../db/queries/utils.js';
+import { applyAllRules } from '../helper/rankingsRules.js';
 
 const getEventInfo = async (eventId, userId) => {
   const data = await eventInfosHelper(eventId, userId);
@@ -108,15 +113,94 @@ export const verifyTeamNameIsUnique = async ({ name, eventId }) => {
   return teamNameIsUnique;
 };
 
-/**
- * Currently only returns spirit rankings, but should eventually return
- * prerankings and phase rankings
- */
-export const getRankings = async eventId => {
-  const rankings = await queries.getRankings(eventId);
+export const getRankings = async (eventId) => {
+  const phasesWithPrerank = await queries.getRankings(eventId);
+  const [prerank] = phasesWithPrerank.filter(
+    p => p.name === 'prerank' && p.phase_order === 0,
+  );
+  const phases = phasesWithPrerank.filter(
+    p => p.name != 'prerank' || p.phase_order != 0,
+  );
 
-  return rankings;
+  const teams = Object.values(
+    phases
+      .reduce(
+        (gameArray, phases) => [...gameArray, ...phases.games],
+        [],
+      )
+      .reduce(
+        (teams, game) =>
+          game.gameTeams.reduce(
+            (newTeams, team) => ({
+              ...newTeams,
+              [team.roster_id]: {
+                rosterId: team.roster_id,
+                name: team.name,
+                amountOfSubmissions:
+                  (newTeams[team.roster_id]?.amountOfSubmissions ||
+                    0) + 1,
+                totalSpirit:
+                  (newTeams[team.roster_id]?.totalSpirit || 0) +
+                  team.spirit,
+              },
+            }),
+            teams,
+          ),
+        {},
+      ),
+  );
+
+  phases.forEach(phase => {
+    phase.phaseRankings = applyAllRules(phase.games, phase.phaseRankings);
+  });
+
+  return {
+    prerank: prerank.phaseRankings.map(r => ({
+      id: r.ranking_id,
+      team: {
+        id: r.teamRoster.team_id,
+        name: r.teamRoster.entitiesGeneralInfos.name,
+        photoUrl: r.teamRoster.entitiesGeneralInfos.photo_url,
+      },
+      position: r.initial_position,
+    })),
+    phases: phases.map(p => ({
+      id: p.id,
+      name: p.name,
+      spots: p.spots,
+      order: p.phase_order,
+      type: p.type,
+      rankings: p.phaseRankings.map(r => ({
+        originPosition: {
+          phaseId: r.origin_phase,
+          position: r.origin_position,
+          name: r.originPhase.name,
+        },
+        id: r.ranking_id,
+        rosterId: r.teamRoster.id,
+        team: {
+          id: r.teamRoster.team_id,
+          name: r.teamRoster.entitiesGeneralInfos.name,
+          photoUrl: r.teamRoster.entitiesGeneralInfos.photo_url,
+        },
+        initialPosition: r.initial_position,
+        finalPosition: r.final_position,
+        win: r.wins ?? 0,
+        loses: r.loses ?? 0,
+        ties: r.ties ?? 0,
+        pointFor: r.pointFor ?? 0,
+        pointAgainst: r.pointAgainst ?? 0,
+      })),
+    })),
+    spirit: teams.map(t => ({
+      rosterId: t.rosterId,
+      name: t.name,
+      spirit: t.totalSpirit,
+      amountOfSubmissions: t.amountOfSubmissions,
+    })),
+  };
 };
+
 export async function getPaymentOption(paymentOptionId) {
   const option = await getPaymentOptionById(paymentOptionId);
   if (!option) {
