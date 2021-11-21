@@ -97,11 +97,11 @@ export const createConversation = async participants => {
   });
 };
 
-export const createMessage = async ({
+export const createMessage = async (
   conversationId,
   content,
   senderId,
-}) => {
+) => {
   const message = await conversationMessages.query().insertGraph({
     text: content,
     conversation_id: conversationId,
