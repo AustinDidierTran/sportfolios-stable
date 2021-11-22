@@ -34,6 +34,14 @@ export class userEntityRole extends Model {
           to: 'roster_players.person_id'
         }
       },
+      conversation_participants: {
+        relation: Model.HasManyRelation,
+        modelClass: userEntityRole,
+        join: {
+          from: 'userEntityRole.entity_id',
+          to: 'conversation_participants.participant_id'
+        },
+      }
     };
   }
 }

@@ -21,23 +21,23 @@ export const getConversations = async ({
   recipientId,
   // page
 }) =>
-  // searchQuery,
-  {
-    // Search is not supported for now :)
-    // Implement search + filter
-    const convos = await conversations
-      .query()
-      .withGraphJoined(
-        '[conversationParticipants.conversations.conversationParticipants.entitiesGeneralInfos, lastMessage.entitiesGeneralInfos]',
-        { minimize: true },
-      )
-      .modifyGraph('conversationMessages', builder =>
-        builder.orderBy('created_at', 'desc'),
-      )
-      .where('_t0.participant_id', recipientId);
+// searchQuery,
+{
+  // Search is not supported for now :)
+  // Implement search + filter
+  const convos = await conversations
+    .query()
+    .withGraphJoined(
+      '[conversationParticipants.conversations.conversationParticipants.entitiesGeneralInfos, lastMessage.entitiesGeneralInfos]',
+      { minimize: true },
+    )
+    .modifyGraph('conversationMessages', builder =>
+      builder.orderBy('created_at', 'desc'),
+    )
+    .where('_t0.participant_id', recipientId);
 
-    return convos;
-  };
+  return convos;
+};
 
 export const getConversationParticipants = async conversationId => {
   const participants = await conversationParticipants
@@ -46,6 +46,19 @@ export const getConversationParticipants = async conversationId => {
       'conversation_participants.conversation_id',
       conversationId,
     );
+
+  return participants;
+};
+
+export const getConversationParticipantsByUserId = async (conversationId, userId) => {
+  const participants = await conversationParticipants
+    .query()
+    .withGraphJoined('userEntityRole')
+    .where(
+      'conversation_participants.conversation_id',
+      conversationId,
+    )
+    .andWhere('userEntityRole.user_id', userId);
 
   return participants;
 };
@@ -109,4 +122,35 @@ export const createMessage = async (
   });
 
   return message.id;
+};
+
+export const addParticipants = async (conversationId, participantIds) => {
+  return await conversationParticipants
+    .query()
+    .insertGraph(
+      participantIds.map(p => ({ conversation_id: conversationId, participant_id: p }))
+    ).returning('conversation_id');
+};
+
+export const removeParticipant = async (conversationId, participantId) => {
+  return await conversationParticipants
+    .query()
+    .delete()
+    .where("conversation_id", conversationId)
+    .andWhere("participant_id", participantId);
+};
+
+export const updateConversationName = async (conversationId, name) => {
+  return await conversations
+    .query()
+    .patch({ name: name })
+    .where("conversation_id", conversationId);
+};
+
+export const updateNickname = async (conversationId, participantId, nickname) => {
+  return await conversationParticipants
+    .query()
+    .patch({ nickname: nickname })
+    .where("conversation_id", conversationId)
+    .andWhere("participant_id", participantId);
 };

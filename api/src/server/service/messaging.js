@@ -223,3 +223,40 @@ export const createConversation = async (
   // Then, return the id
   return conversationId;
 };
+
+
+const isUserInConversation = async (conversationId, userId) => {
+  const participants = await queries.getConversationParticipantsByUserId(
+    conversationId,
+    userId
+  );
+  return participants.length > 0;
+}
+
+export const addParticipants = async (conversationId, participantIds, userId) => {
+  if (!(await isUserInConversation(userId))) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return queries.addParticipants(conversationId, participantIds);
+};
+
+export const removeParticipant = async (conversationId, participantId, userId) => {
+  if (!(await isUserInConversation(userId))) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return queries.removeParticipant(conversationId, participantIds);
+};
+
+export const updateConversationName = async (conversationId, name, userId) => {
+  if (!(await isUserInConversation(userId))) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return queries.updateConversationName(conversationId, name);
+};
+
+export const updateNickname = async (conversationId, participantId, nickname, userId) => {
+  if (!(await isUserInConversation(userId))) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return queries.updateNickname(conversationId, participantId, nickname);
+};
