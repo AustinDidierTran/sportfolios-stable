@@ -58,7 +58,7 @@ export const getConversationParticipantsByUserId = async (conversationId, userId
       'conversation_participants.conversation_id',
       conversationId,
     )
-    .andWhere('userEntityRole.user_id', userId);
+    .andWhere('userEntityRole.user_id', userId).debug();
 
   return participants;
 };
@@ -144,7 +144,7 @@ export const updateConversationName = async (conversationId, name) => {
   return await conversations
     .query()
     .patch({ name: name })
-    .where('conversation_id', conversationId);
+    .where('id', conversationId);
 };
 
 export const updateNickname = async (conversationId, participantId, nickname) => {

@@ -38,7 +38,7 @@ export class userEntityRole extends Model {
         relation: Model.HasManyRelation,
         modelClass: userEntityRole,
         join: {
-          from: 'userEntityRole.entity_id',
+          from: 'user_entity_role.entity_id',
           to: 'conversation_participants.participant_id'
         },
       }

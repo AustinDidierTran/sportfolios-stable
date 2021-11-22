@@ -44,7 +44,7 @@ export class conversationParticipants extends Model {
         modelClass: userEntityRole,
         join: {
           from: 'conversation_participants.participant_id',
-          to: 'userEntityRole.entity_id',
+          to: 'user_entity_role.entity_id',
         },
       }
     };
