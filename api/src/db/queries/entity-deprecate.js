@@ -542,7 +542,7 @@ async function getEntity(id, userId) {
       surname: entity.surname,
       photoUrl: entity.photo_url,
       role,
-      numberOfMembers: memberCount.count,
+      numberOfMembers: memberCount,
     },
   };
 }
