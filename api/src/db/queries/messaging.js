@@ -136,21 +136,21 @@ export const removeParticipant = async (conversationId, participantId) => {
   return await conversationParticipants
     .query()
     .delete()
-    .where("conversation_id", conversationId)
-    .andWhere("participant_id", participantId);
+    .where('conversation_id', conversationId)
+    .andWhere('participant_id', participantId);
 };
 
 export const updateConversationName = async (conversationId, name) => {
   return await conversations
     .query()
     .patch({ name: name })
-    .where("conversation_id", conversationId);
+    .where('conversation_id', conversationId);
 };
 
 export const updateNickname = async (conversationId, participantId, nickname) => {
   return await conversationParticipants
     .query()
     .patch({ nickname: nickname })
-    .where("conversation_id", conversationId)
-    .andWhere("participant_id", participantId);
+    .where('conversation_id', conversationId)
+    .andWhere('participant_id', participantId);
 };
