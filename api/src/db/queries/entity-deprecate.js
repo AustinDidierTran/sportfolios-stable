@@ -520,6 +520,12 @@ async function getEntity(id, userId) {
     )
     .where('entities.id', '=', id);
 
+  const [memberCount] = await knex('memberships')
+    .count('*')
+    .where({ organization_id: id })
+    .andWhere('created_at', '<', 'now()')
+    .andWhere('expiration_date', '>', 'now()');
+
   let role = -1;
   if (userId !== -1) {
     role = await getEntityRole(id, userId);
@@ -536,6 +542,7 @@ async function getEntity(id, userId) {
       surname: entity.surname,
       photoUrl: entity.photo_url,
       role,
+      numberOfMembers: memberCount,
     },
   };
 }
