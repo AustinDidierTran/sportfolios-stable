@@ -113,7 +113,7 @@ export const getConversationMessages = async (
         id: cp.participant_id,
         name: cp.entitiesGeneralInfos.name,
         surname: cp.entitiesGeneralInfos.surname,
-        nickname: cp.entitiesGeneralInfos.nickname,
+        nickname: cp.nickname,
         photoUrl: cp.entitiesGeneralInfos.photo_url,
       })),
     },
@@ -224,39 +224,59 @@ export const createConversation = async (
   return conversationId;
 };
 
-
 const isUserInConversation = async (conversationId, userId) => {
   const participants = await queries.getConversationParticipantsByUserId(
     conversationId,
-    userId
+    userId,
   );
   return participants.length > 0;
-}
+};
 
-export const addParticipants = async (conversationId, participantIds, userId) => {
+export const addParticipants = async (
+  conversationId,
+  participantIds,
+  userId,
+) => {
   if (!(await isUserInConversation(conversationId, userId))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return queries.addParticipants(conversationId, participantIds);
 };
 
-export const removeParticipant = async (conversationId, participantId, userId) => {
+export const removeParticipant = async (
+  conversationId,
+  participantId,
+  userId,
+) => {
   if (!(await isUserInConversation(conversationId, userId))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return queries.removeParticipant(conversationId, participantId);
 };
 
-export const updateConversationName = async (conversationId, name, userId) => {
+export const updateConversationName = async (
+  conversationId,
+  name,
+  userId,
+) => {
   if (!(await isUserInConversation(conversationId, userId))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return queries.updateConversationName(conversationId, name);
 };
 
-export const updateNickname = async (conversationId, participantId, nickname, userId) => {
+export const updateNickname = async (
+  conversationId,
+  participantId,
+  nickname,
+  userId,
+) => {
   if (!(await isUserInConversation(conversationId, userId))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return queries.updateNickname(conversationId, participantId, nickname);
+  return queries.updateNickname(
+    conversationId,
+    participantId,
+    nickname,
+  );
 };
