@@ -61,4 +61,5 @@ router.post(`${BASE_URL}/conversation`, async ctx => {
   ctx.body = { data: conversationId };
 });
 
+export default router;
 /** PUT */

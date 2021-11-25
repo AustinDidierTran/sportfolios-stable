@@ -98,6 +98,7 @@ async function getPost(post_id, user_id) {
       'entities_general_infos.name',
       'entities_general_infos.surname',
       'entities_general_infos.photo_url',
+      'entities.verified_at',
       knex.raw(
         `(SELECT COUNT(*) > 0 AS liked FROM post_like WHERE entity_id = '${user_id}' AND post_id = '${post_id}')`,
       ),
@@ -109,6 +110,7 @@ async function getPost(post_id, user_id) {
       '=',
       'entities_general_infos.entity_id',
     )
+    .leftJoin('entities', 'posts.entity_id', '=', 'entities.id')
     .where('posts.id', post_id);
   if (data) {
     const images = await knex
@@ -141,6 +143,7 @@ async function getPost(post_id, user_id) {
         'entities_general_infos.name',
         'entities_general_infos.surname',
         'entities_general_infos.photo_url',
+        'entities.verified_at',
       )
       .from('post_comment')
       .leftJoin(
@@ -148,6 +151,12 @@ async function getPost(post_id, user_id) {
         'post_comment.entity_id',
         '=',
         'entities_general_infos.entity_id',
+      )
+      .leftJoin(
+        'entities',
+        'post_comment.entity_id',
+        '=',
+        'entities.id',
       )
       .where('post_comment.post_id', data.id)
       .orderBy('post_comment.created_at', 'desc');
@@ -164,6 +173,7 @@ async function getPost(post_id, user_id) {
         name: c.name,
         surname: c.surname,
         photoUrl: c.photo_url,
+        verifiedAt: c.verified_at,
       })),
       content: data.content,
       createdAt: data.created_at,
@@ -178,6 +188,7 @@ async function getPost(post_id, user_id) {
       name: data.name,
       photoUrl: data.photo_url,
       surname: data.surname,
+      verifiedAt: data.verified_at,
       updatedAt: data.updated_at,
     };
   }
@@ -205,6 +216,7 @@ async function getPostFeed(user_id, locationId, body) {
         'entities_general_infos.name',
         'entities_general_infos.surname',
         'entities_general_infos.photo_url',
+        'entities.verified_at',
         knex.raw(
           `(SELECT COUNT(*) > 0 AS liked FROM post_like WHERE entity_id = '${user_id}' AND post_id = posts.id)`,
         ),
@@ -216,6 +228,7 @@ async function getPostFeed(user_id, locationId, body) {
         '=',
         'entities_general_infos.entity_id',
       )
+      .leftJoin('entities', 'posts.entity_id', '=', 'entities.id')
       .where('posts.location_id', locationId)
       .orderBy('posts.created_at', 'desc')
       .limit(limit)
@@ -254,6 +267,7 @@ async function getPostFeed(user_id, locationId, body) {
               'entities_general_infos.name',
               'entities_general_infos.surname',
               'entities_general_infos.photo_url',
+              'entities.verified_at',
             )
             .from('post_comment')
             .leftJoin(
@@ -261,6 +275,12 @@ async function getPostFeed(user_id, locationId, body) {
               'post_comment.entity_id',
               '=',
               'entities_general_infos.entity_id',
+            )
+            .leftJoin(
+              'entities',
+              'post_comment.entity_id',
+              '=',
+              'entities.id',
             )
             .where('post_comment.post_id', objectSql.id)
             .orderBy('post_comment.created_at', 'desc');
@@ -279,6 +299,7 @@ async function getPostFeed(user_id, locationId, body) {
           createdAt: c.created_at,
           name: c.name,
           surname: c.surname,
+          verifiedAt: c.verified_at,
           photoUrl: c.photo_url,
         })),
         content: a.content,
@@ -294,6 +315,7 @@ async function getPostFeed(user_id, locationId, body) {
         name: a.name,
         photoUrl: a.photo_url,
         surname: a.surname,
+        verifiedAt: a.verified_at,
         updatedAt: a.updated_at,
       }));
     }
