@@ -308,3 +308,51 @@ const seeMessages = async user_id => {
     .returning('id');
 };
 */
+
+export const addParticipants = async (
+  conversationId,
+  participantIds,
+) => {
+  return await conversationParticipants
+    .query()
+    .insertGraph(
+      participantIds.map(p => ({
+        conversation_id: conversationId,
+        participant_id: p,
+      })),
+    )
+    .returning('conversation_id');
+};
+
+export const removeParticipant = async (
+  conversationId,
+  participantId,
+) => {
+  return await conversationParticipants
+    .query()
+    .delete()
+    .where('conversation_id', conversationId)
+    .andWhere('participant_id', participantId);
+};
+
+export const updateConversationName = async (
+  conversationId,
+  name,
+) => {
+  return await conversations
+    .query()
+    .patch({ name: name })
+    .where('id', conversationId);
+};
+
+export const updateNickname = async (
+  conversationId,
+  participantId,
+  nickname,
+) => {
+  return await conversationParticipants
+    .query()
+    .patch({ nickname: nickname })
+    .where('conversation_id', conversationId)
+    .andWhere('participant_id', participantId);
+};
