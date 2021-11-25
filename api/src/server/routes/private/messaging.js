@@ -137,3 +137,50 @@ router.put(`${BASE_URL}/see`, async ctx => {
   ctx.body = { data: res };
 });
 */
+
+router.put(`${BASE_URL}/addParticipants`, async ctx => {
+  const userId = getUserId(ctx);
+  const messages = await service.addParticipants(
+    ctx.request.body.conversationId,
+    ctx.request.body.participantIds,
+    userId,
+  );
+
+  ctx.body = { data: messages };
+});
+
+router.put(`${BASE_URL}/removeParticipant`, async ctx => {
+  const userId = getUserId(ctx);
+  const messages = await service.removeParticipant(
+    ctx.request.body.conversationId,
+    ctx.request.body.participantId,
+    userId,
+  );
+
+  ctx.body = { data: messages };
+});
+
+router.put(`${BASE_URL}/conversationName`, async ctx => {
+  const userId = getUserId(ctx);
+  const messages = await service.updateConversationName(
+    ctx.request.body.conversationId,
+    ctx.request.body.name,
+    userId,
+  );
+
+  ctx.body = { data: messages };
+});
+
+router.put(`${BASE_URL}/nickname`, async ctx => {
+  const userId = getUserId(ctx);
+  const messages = await service.updateNickname(
+    ctx.request.body.conversationId,
+    ctx.request.body.participantId,
+    ctx.request.body.nickname,
+    userId,
+  );
+
+  ctx.body = { data: messages };
+});
+
+export default router;
