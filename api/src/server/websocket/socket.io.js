@@ -1,4 +1,4 @@
-import { CLIENT_BASE_URL } from '../../../../conf.js';
+import { validOrigins } from '../../../../conf.js';
 import { SOCKET_EVENT } from '../../../../common/enums/index.js';
 import { Server } from 'socket.io';
 
@@ -9,7 +9,7 @@ const initialize = server => {
   if (!io) {
     io = new Server(server, {
       cors: {
-        origin: CLIENT_BASE_URL,
+        origin: validOrigins,
         methods: ['GET', 'POST'],
       },
     });
