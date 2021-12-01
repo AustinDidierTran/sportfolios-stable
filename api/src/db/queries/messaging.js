@@ -31,8 +31,8 @@ export const getConversations = async ({
       '[conversationParticipants.conversations.conversationParticipants.entitiesGeneralInfos, lastMessage.entitiesGeneralInfos]',
       { minimize: true },
     )
-    .modifyGraph('conversationMessages', builder =>
-      builder.orderBy('created_at', 'desc'),
+    .modifyGraph('lastMessage', builder =>
+      builder.orderBy('created_at', 'asc'),
     )
     .where('_t0.participant_id', recipientId);
 
