@@ -3,7 +3,7 @@ import {
   ENTITIES_ROLE_ENUM,
   ROSTER_ROLE_ENUM,
 } from '../../../../common/enums/index.js';
-
+import { teamPlayers } from '../models/teamPlayers.js'
 import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
 
 export const getAllTeamsWithAdmins = async (
@@ -127,3 +127,10 @@ export const getRoleRosterByIdAndUserId = async (rosterId, userId) => {
     .limit(1);
   return role;
 }
+
+export const addPlayersToTeam = async (teamId, playersIds) => {
+  return await teamPlayers.query()
+    .insertGraph(
+      playersIds.map(p => ({ team_id: teamId, person_id: p, role: 'player' }))
+    );
+};

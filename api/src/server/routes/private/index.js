@@ -13,6 +13,7 @@ import post from './post.js';
 import search from './search.js';
 import shop from './shop.js';
 import stripe from './stripe.js';
+import team from './team.js';
 import trialist from './trialist.js';
 import user from './user.js';
 
@@ -32,6 +33,7 @@ export default [
   search,
   shop,
   stripe,
+  team,
   trialist,
   user,
 ];
