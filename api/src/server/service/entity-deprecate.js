@@ -245,12 +245,8 @@ function getAllOwnedEntities(type, userId, querry, onlyAdmin) {
   return getAllOwnedEntitiesHelper(type, userId, querry, onlyAdmin);
 }
 
-function getAllOwnedEntitiesMessaging(userId, querry, onlyAdmin) {
-  return getAllOwnedEntitiesMessagingHelper(
-    userId,
-    querry,
-    onlyAdmin,
-  );
+function getAllOwnedEntitiesMessaging(userId, onlyAdmin) {
+  return getAllOwnedEntitiesMessagingHelper(userId, onlyAdmin);
 }
 
 function getAllTypeEntities(type) {

@@ -37,7 +37,6 @@ router.get(`${BASE_URL}/messages`, async ctx => {
 router.get(`${BASE_URL}/allOwned`, async ctx => {
   const entity = await getAllOwnedEntitiesMessaging(
     ctx.body.userInfo.id,
-    '',
     ctx.query.onlyAdmin,
   );
 

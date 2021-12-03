@@ -355,7 +355,6 @@ async function getAllOwnedEntities(
 
 async function getAllOwnedEntitiesMessaging(
   userId,
-  query = '',
   onlyAdmin = false,
 ) {
   // getPersons
