@@ -65,6 +65,7 @@ import {
   getAllEntities as getAllEntitiesHelper,
   getAllExercises as getAllExercisesHelper,
   getAllOwnedEntities as getAllOwnedEntitiesHelper,
+  getAllOwnedEntitiesMessaging as getAllOwnedEntitiesMessagingHelper,
   getAllPeopleRegisteredInfos as getAllPeopleRegisteredInfosHelper,
   getAllPlayersAcceptedRegistered as getAllPlayersAcceptedRegisteredHelper,
   getAllPlayersPending as getAllPlayersPendingHelper,
@@ -218,8 +219,8 @@ import { validateEmailIsUnique as validateEmailIsUniqueHelper } from '../../db/q
 import { sendNotification } from './notification.js';
 import { getOwnedPersons } from './user.js';
 import { isAllowed } from '../../db/queries/utils.js';
-import { getRoster, getRoleRoster } from './team.js'
-import { getRegistrationStatus } from '../../db/queries/event.js'
+import { getRoster, getRoleRoster } from './team.js';
+import { getRegistrationStatus } from '../../db/queries/event.js';
 
 async function getEntity(id, userId) {
   const res = await getEntityHelper(id, userId);
@@ -242,6 +243,14 @@ function getScoreSuggestion(gameId) {
 
 function getAllOwnedEntities(type, userId, querry, onlyAdmin) {
   return getAllOwnedEntitiesHelper(type, userId, querry, onlyAdmin);
+}
+
+function getAllOwnedEntitiesMessaging(userId, querry, onlyAdmin) {
+  return getAllOwnedEntitiesMessagingHelper(
+    userId,
+    querry,
+    onlyAdmin,
+  );
 }
 
 function getAllTypeEntities(type) {
@@ -2312,6 +2321,7 @@ export {
   getAllEntities,
   getAllExercises,
   getAllOwnedEntities,
+  getAllOwnedEntitiesMessaging,
   getAllPeopleRegisteredInfos,
   getAllPlayersAcceptedRegistered,
   getAllPlayersPendingAndRefused,

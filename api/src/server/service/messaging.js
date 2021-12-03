@@ -12,20 +12,29 @@ export const getConversations = async (
   { page, recipientId, searchQuery },
   userId,
 ) => {
+  console.log(
+    'page : ',
+    page,
+    'recipientId : ',
+    recipientId,
+    'searchQuery : ',
+    searchQuery,
+  );
   // Validate the recipient is accessible from the user
   if (
     !(await isAllowed(recipientId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-
+  console.log('2');
   // Find all the conversations id that have a person with search query
   const conversations = await queries.getConversations({
     recipientId,
     page,
     searchQuery,
   });
-
+  console.log('3');
+  console.log('conversations : ', conversations);
   // Return these conversations
   return conversations.map(convo => ({
     id: convo.id,
@@ -36,7 +45,7 @@ export const getConversations = async (
         id: convo.lastMessage.entitiesGeneralInfos.entity_id,
         name: convo.lastMessage.entitiesGeneralInfos.name,
         surname: convo.lastMessage.entitiesGeneralInfos.surname,
-        nickname: convo.lastMessage.entitiesGeneralInfos.nickname,
+        nickname: convo.lastMessage.nickname,
         photoUrl: convo.lastMessage.entitiesGeneralInfos.photo_url,
       },
       sentAt: convo.lastMessage.created_at,
@@ -48,7 +57,7 @@ export const getConversations = async (
         id: cp.participant_id,
         name: cp.entitiesGeneralInfos.name,
         surname: cp.entitiesGeneralInfos.surname,
-        nickname: cp.entitiesGeneralInfos.nickname,
+        nickname: cp.nickname,
         photoUrl: cp.entitiesGeneralInfos.photo_url,
       }),
     ),
