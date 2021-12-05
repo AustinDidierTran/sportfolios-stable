@@ -2,7 +2,6 @@ import knex from '../connection.js';
 import { conversationMessages } from '../models/conversationMessages.js';
 import { conversationParticipants } from '../models/conversationParticipants.js';
 import { conversations } from '../models/conversations.js';
-const { raw } = require('objection');
 
 export const getConversationById = async conversationId => {
   const [conversation] = await conversations
