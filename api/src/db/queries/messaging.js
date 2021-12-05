@@ -151,7 +151,7 @@ export const updateNickname = async (conversationId, participantId, nickname) =>
 
 export const getLastMessageByConversationIds = async conversationIds => {
   const messages = await knex.select('*')
-    .from(knex.select(knex.raw('MAX(created_at) AS maxDate'), 'conversation_id AS cId').from('conversation_messages').whereIn('conversation_id', conversationIds).groupBy('conversation_messages.conversation_id').as("lastMessage"))
+    .from(knex.select(knex.raw('MAX(created_at) AS maxDate'), 'conversation_id AS cId').from('conversation_messages').whereIn('conversation_id', conversationIds).groupBy('conversation_messages.conversation_id').as('lastMessage'))
     .innerJoin('conversation_messages', 'cId', 'conversation_messages.conversation_id').where(knex.raw('conversation_messages.created_at = maxDate'))
     .innerJoin('entities_general_infos', 'conversation_messages.sender_id', 'entities_general_infos.entity_id');
 
