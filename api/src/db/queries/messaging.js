@@ -25,7 +25,6 @@ export const getConversations = async ({
   {
     // Search is not supported for now :)
     // Implement search + filter
-    console.log('recipientId2 : ', recipientId);
     const convos = await conversations
       .query()
       .withGraphJoined(
