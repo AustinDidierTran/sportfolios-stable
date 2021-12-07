@@ -18,20 +18,21 @@ export const getConversations = async ({
   recipientId,
   // page
 }) =>
-  // searchQuery,
-  {
-    // Search is not supported for now :)
-    // Implement search + filter
-    const convos = await conversationParticipants
-      .query()
-      .withGraphJoined(
-        '[conversation.[conversationParticipants.entitiesGeneralInfos]]',
-        { minimize: true },
-      )
-      .where('conversation_participants.participant_id', recipientId);
+// searchQuery,
+{
+  // Search is not supported for now :)
+  // Implement search + filter
+  const convos = await conversationParticipants
+    .query()
+    .withGraphJoined(
+      '[conversation.[conversationParticipants.entitiesGeneralInfos]]',
+      { minimize: true },
+    )
+    .where('conversation_participants.participant_id', recipientId);
 
-    return convos;
-  };
+  return convos;
+};
+
 
 export const getConversationParticipants = async conversationId => {
   const participants = await conversationParticipants
@@ -202,6 +203,5 @@ export const getLastMessageByConversationIds = async conversationIds => {
       'conversation_messages.sender_id',
       'entities_general_infos.entity_id',
     );
-
   return messages;
 };
