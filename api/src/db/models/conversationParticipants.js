@@ -15,7 +15,7 @@ export class conversationParticipants extends Model {
 
   static get relationMappings() {
     return {
-      conversations: {
+      conversation: {
         relation: Model.HasOneRelation,
         modelClass: conversations,
         join: {

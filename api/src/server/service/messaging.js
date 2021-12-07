@@ -20,39 +20,43 @@ export const getConversations = async (
   }
 
   // Find all the conversations id that have a person with search query
-  const conversations = await queries.getConversations({
+  const conversationsParticipants = await queries.getConversations({
     recipientId,
     page,
     searchQuery,
   });
+  const lastMessages = await queries.getLastMessageByConversationIds(conversationsParticipants.map(c => c.conversation_id));
 
   // Return these conversations
-  return conversations.map(convo => ({
-    id: convo.id,
-    lastMessage: convo.lastMessage && {
-      id: convo.lastMessage.id,
-      conversationId: convo.lastMessage.conversation_id,
-      sender: {
-        id: convo.lastMessage.entitiesGeneralInfos.entity_id,
-        name: convo.lastMessage.entitiesGeneralInfos.name,
-        surname: convo.lastMessage.entitiesGeneralInfos.surname,
-        nickname: convo.lastMessage.entitiesGeneralInfos.nickname,
-        photoUrl: convo.lastMessage.entitiesGeneralInfos.photo_url,
+  return conversationsParticipants.map((convo) => {
+    const convoLastMessage = lastMessages.find(m => m.conversation_id === convo.conversation_id)
+    return {
+      id: convo.conversation.id,
+      lastMessage: convoLastMessage && {
+        id: convoLastMessage.id,
+        conversationId: convoLastMessage.conversation_id,
+        sender: {
+          id: convoLastMessage.entity_id,
+          name: convoLastMessage.name,
+          surname: convoLastMessage.surname,
+          nickname: convoLastMessage.nickname,
+          photoUrl: convoLastMessage.photo_url,
+        },
+        sentAt: convoLastMessage.maxdate,
+        content: convoLastMessage.text,
       },
-      sentAt: convo.lastMessage.created_at,
-      content: convo.lastMessage.text,
-    },
-    name: convo.name,
-    participants: convo.conversationParticipants[0].conversations.conversationParticipants.map(
-      cp => ({
-        id: cp.participant_id,
-        name: cp.entitiesGeneralInfos.name,
-        surname: cp.entitiesGeneralInfos.surname,
-        nickname: cp.entitiesGeneralInfos.nickname,
-        photoUrl: cp.entitiesGeneralInfos.photo_url,
-      }),
-    ),
-  }));
+      name: convo.conversation.name,
+      participants: convo.conversation.conversationParticipants.map(
+        cp => ({
+          id: cp.participant_id,
+          name: cp.entitiesGeneralInfos.name,
+          surname: cp.entitiesGeneralInfos.surname,
+          nickname: cp.entitiesGeneralInfos.nickname,
+          photoUrl: cp.entitiesGeneralInfos.photo_url,
+        }),
+      ),
+    }
+  });
 };
 
 export const getConversationMessages = async (
@@ -87,26 +91,27 @@ export const getConversationMessages = async (
   const conversation = await queries.getConversationById(
     conversationId,
   );
+  const [lastMessage] = await queries.getLastMessageByConversationIds([conversationId]);
 
   // Return these conversations
   return {
     conversation: {
       id: conversation.id,
-      lastMessage: conversation.lastMessage && {
-        id: conversation.lastMessage.id,
-        conversationId: conversation.lastMessage.conversation_id,
+      lastMessage: lastMessage && {
+        id: lastMessage.id,
+        conversationId: lastMessage.conversation_id,
         sender: {
-          id: conversation.lastMessage.entitiesGeneralInfos.entity_id,
-          name: conversation.lastMessage.entitiesGeneralInfos.name,
+          id: lastMessage.entity_id,
+          name: lastMessage.name,
           surname:
-            conversation.lastMessage.entitiesGeneralInfos.surname,
+            lastMessage.surname,
           nickname:
-            conversation.lastMessage.entitiesGeneralInfos.nickname,
+            lastMessage.nickname,
           photoUrl:
-            conversation.lastMessage.entitiesGeneralInfos.photo_url,
+            lastMessage.photo_url,
         },
-        sentAt: conversation.lastMessage.created_at,
-        content: conversation.lastMessage.text,
+        sentAt: lastMessage.maxdate,
+        content: lastMessage.text,
       },
       name: conversation.name,
       participants: conversation.conversationParticipants.map(cp => ({
