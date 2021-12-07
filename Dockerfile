@@ -9,7 +9,8 @@ COPY . ./
 
 # Install modules into container
 RUN npm install && npm cache clean --force
-RUN apt-get update && apt-get install awscli
+RUN apt-get update -y
+RUN apt-get install awscli -y
 
 #open port
 EXPOSE 1337
