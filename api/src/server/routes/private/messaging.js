@@ -1,7 +1,6 @@
 import Router from 'koa-router';
 import { getUserId } from '../../helper/userHelper.js';
 import * as service from '../../service/messaging.js';
-import { getAllOwnedEntitiesMessaging } from '../../service/entity-deprecate.js';
 
 const router = new Router();
 const BASE_URL = '/api/messaging';
@@ -34,7 +33,7 @@ router.get(`${BASE_URL}/messages`, async ctx => {
   ctx.body = { data: conversations };
 });
 router.get(`${BASE_URL}/allOwned`, async ctx => {
-  const entity = await getAllOwnedEntitiesMessaging(
+  const entity = await service.getAllOwnedPersonsOrganizations(
     ctx.body.userInfo.id,
     ctx.query.onlyAdmin,
   );

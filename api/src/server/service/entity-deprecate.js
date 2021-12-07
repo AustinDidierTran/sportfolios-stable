@@ -65,7 +65,6 @@ import {
   getAllEntities as getAllEntitiesHelper,
   getAllExercises as getAllExercisesHelper,
   getAllOwnedEntities as getAllOwnedEntitiesHelper,
-  getAllOwnedEntitiesMessaging as getAllOwnedEntitiesMessagingHelper,
   getAllPeopleRegisteredInfos as getAllPeopleRegisteredInfosHelper,
   getAllPlayersAcceptedRegistered as getAllPlayersAcceptedRegisteredHelper,
   getAllPlayersPending as getAllPlayersPendingHelper,
@@ -243,10 +242,6 @@ function getScoreSuggestion(gameId) {
 
 function getAllOwnedEntities(type, userId, querry, onlyAdmin) {
   return getAllOwnedEntitiesHelper(type, userId, querry, onlyAdmin);
-}
-
-function getAllOwnedEntitiesMessaging(userId, onlyAdmin) {
-  return getAllOwnedEntitiesMessagingHelper(userId, onlyAdmin);
 }
 
 function getAllTypeEntities(type) {
@@ -2317,7 +2312,6 @@ export {
   getAllEntities,
   getAllExercises,
   getAllOwnedEntities,
-  getAllOwnedEntitiesMessaging,
   getAllPeopleRegisteredInfos,
   getAllPlayersAcceptedRegistered,
   getAllPlayersPendingAndRefused,
