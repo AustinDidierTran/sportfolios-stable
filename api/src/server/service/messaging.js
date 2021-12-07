@@ -18,18 +18,22 @@ export const getConversations = async (
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-
   // Find all the conversations id that have a person with search query
   const conversationsParticipants = await queries.getConversations({
     recipientId,
     page,
     searchQuery,
   });
-  const lastMessages = await queries.getLastMessageByConversationIds(conversationsParticipants.map(c => c.conversation_id));
 
+  const lastMessages = await queries.getLastMessageByConversationIds(
+    conversationsParticipants.map(c => c.conversation_id),
+  );
   // Return these conversations
-  return conversationsParticipants.map((convo) => {
-    const convoLastMessage = lastMessages.find(m => m.conversation_id === convo.conversation_id)
+  return conversationsParticipants.map(convo => {
+    const convoLastMessage = lastMessages.find(
+      m => m.conversation_id === convo.conversation_id,
+    );
+
     return {
       id: convo.conversation.id,
       lastMessage: convoLastMessage && {
@@ -55,8 +59,19 @@ export const getConversations = async (
           photoUrl: cp.entitiesGeneralInfos.photo_url,
         }),
       ),
-    }
+    };
   });
+};
+
+export const getAllOwnedPersonsOrganizations = async (
+  userId,
+  onlyAdmin,
+) => {
+  const entities = await queries.getAllOwnedEntitiesMessaging(
+    userId,
+    onlyAdmin,
+  );
+  return entities;
 };
 
 export const getConversationMessages = async (
@@ -91,7 +106,10 @@ export const getConversationMessages = async (
   const conversation = await queries.getConversationById(
     conversationId,
   );
-  const [lastMessage] = await queries.getLastMessageByConversationIds([conversationId]);
+
+  const [
+    lastMessage,
+  ] = await queries.getLastMessageByConversationIds([conversationId]);
 
   // Return these conversations
   return {
@@ -103,12 +121,9 @@ export const getConversationMessages = async (
         sender: {
           id: lastMessage.entity_id,
           name: lastMessage.name,
-          surname:
-            lastMessage.surname,
-          nickname:
-            lastMessage.nickname,
-          photoUrl:
-            lastMessage.photo_url,
+          surname: lastMessage.surname,
+          nickname: lastMessage.nickname,
+          photoUrl: lastMessage.photo_url,
         },
         sentAt: lastMessage.maxdate,
         content: lastMessage.text,

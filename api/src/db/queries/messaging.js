@@ -2,6 +2,7 @@ import knex from '../connection.js';
 import { conversationMessages } from '../models/conversationMessages.js';
 import { conversationParticipants } from '../models/conversationParticipants.js';
 import { conversations } from '../models/conversations.js';
+import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
 
 export const getConversationById = async conversationId => {
   const [conversation] = await conversations
@@ -18,20 +19,20 @@ export const getConversations = async ({
   recipientId,
   // page
 }) =>
-// searchQuery,
-{
-  // Search is not supported for now :)
-  // Implement search + filter
-  const convos = await conversationParticipants
-    .query()
-    .withGraphJoined(
-      '[conversation.[conversationParticipants.entitiesGeneralInfos]]',
-      { minimize: true },
-    )
-    .where('conversation_participants.participant_id', recipientId);
+  // searchQuery,
+  {
+    // Search is not supported for now :)
+    // Implement search + filter
+    const convos = await conversationParticipants
+      .query()
+      .withGraphJoined(
+        '[conversation.[conversationParticipants.entitiesGeneralInfos]]',
+        { minimize: true },
+      )
+      .where('conversation_participants.participant_id', recipientId);
 
-  return convos;
-};
+    return convos;
+  };
 
 export const getConversationParticipants = async conversationId => {
   const participants = await conversationParticipants
@@ -44,7 +45,10 @@ export const getConversationParticipants = async conversationId => {
   return participants;
 };
 
-export const getConversationParticipantsByUserId = async (conversationId, userId) => {
+export const getConversationParticipantsByUserId = async (
+  conversationId,
+  userId,
+) => {
   const participants = await conversationParticipants
     .query()
     .withGraphJoined('userEntityRole')
@@ -52,20 +56,28 @@ export const getConversationParticipantsByUserId = async (conversationId, userId
       'conversation_participants.conversation_id',
       conversationId,
     )
-    .andWhere('userEntityRole.user_id', userId).debug();
+    .andWhere('userEntityRole.user_id', userId)
+    .debug();
 
   return participants;
 };
 
-export const getConversationWithParticipants = async (participants) => {
+export const getConversationWithParticipants = async participants => {
   const [{ conversation_id } = {}] = await conversationParticipants
     .query()
     .select('conversation_id')
     .groupBy('conversation_id')
     // eslint-disable-next-line
-    .havingRaw('sum(case when "participant_id" not in (' + participants.map(_ => '?').join(',') + ') then 1 else 0 end) = 0 and sum(case when "participant_id" in (' + participants.map(_ => '?').join(',') + ') then 1 else 0 end) = ?;', [...participants, ...participants, participants.length]);
+    .havingRaw(
+      'sum(case when "participant_id" not in (' +
+        participants.map(_ => '?').join(',') +
+        ') then 1 else 0 end) = 0 and sum(case when "participant_id" in (' +
+        participants.map(_ => '?').join(',') +
+        ') then 1 else 0 end) = ?;',
+      [...participants, ...participants, participants.length],
+    );
   return conversation_id;
-}
+};
 
 export const getMessagesFromConversation = async conversationId => {
   return conversationMessages
@@ -118,15 +130,25 @@ export const createMessage = async (
   return message.id;
 };
 
-export const addParticipants = async (conversationId, participantIds) => {
+export const addParticipants = async (
+  conversationId,
+  participantIds,
+) => {
   return await conversationParticipants
     .query()
     .insertGraph(
-      participantIds.map(p => ({ conversation_id: conversationId, participant_id: p }))
-    ).returning('conversation_id');
+      participantIds.map(p => ({
+        conversation_id: conversationId,
+        participant_id: p,
+      })),
+    )
+    .returning('conversation_id');
 };
 
-export const removeParticipant = async (conversationId, participantId) => {
+export const removeParticipant = async (
+  conversationId,
+  participantId,
+) => {
   return await conversationParticipants
     .query()
     .delete()
@@ -134,14 +156,21 @@ export const removeParticipant = async (conversationId, participantId) => {
     .andWhere('participant_id', participantId);
 };
 
-export const updateConversationName = async (conversationId, name) => {
+export const updateConversationName = async (
+  conversationId,
+  name,
+) => {
   return await conversations
     .query()
     .patch({ name: name })
     .where('id', conversationId);
 };
 
-export const updateNickname = async (conversationId, participantId, nickname) => {
+export const updateNickname = async (
+  conversationId,
+  participantId,
+  nickname,
+) => {
   return await conversationParticipants
     .query()
     .patch({ nickname: nickname })
@@ -150,10 +179,125 @@ export const updateNickname = async (conversationId, participantId, nickname) =>
 };
 
 export const getLastMessageByConversationIds = async conversationIds => {
-  const messages = await knex.select('*')
-    .from(knex.select(knex.raw('MAX(created_at) AS maxDate'), 'conversation_id AS cId').from('conversation_messages').whereIn('conversation_id', conversationIds).groupBy('conversation_messages.conversation_id').as('lastMessage'))
-    .innerJoin('conversation_messages', 'cId', 'conversation_messages.conversation_id').where(knex.raw('conversation_messages.created_at = maxDate'))
-    .innerJoin('entities_general_infos', 'conversation_messages.sender_id', 'entities_general_infos.entity_id');
-
+  const messages = await knex
+    .select('*')
+    .from(
+      knex
+        .select(
+          knex.raw('MAX(created_at) AS maxDate'),
+          'conversation_id AS cId',
+        )
+        .from('conversation_messages')
+        .whereIn('conversation_id', conversationIds)
+        .groupBy('conversation_messages.conversation_id')
+        .as('lastMessage'),
+    )
+    .innerJoin(
+      'conversation_messages',
+      'cId',
+      'conversation_messages.conversation_id',
+    )
+    .where(knex.raw('conversation_messages.created_at = maxDate'))
+    .innerJoin(
+      'entities_general_infos',
+      'conversation_messages.sender_id',
+      'entities_general_infos.entity_id',
+    );
   return messages;
+};
+
+export const getAllOwnedEntitiesMessaging = async (
+  userId,
+  onlyAdmin = false,
+) => {
+  // getPersons
+  let entityIds = (
+    await knex('user_entity_role')
+      .select('entity_id')
+      .where({
+        user_id: userId,
+      })
+      .andWhere(
+        'role',
+        '<=',
+        onlyAdmin
+          ? ENTITIES_ROLE_ENUM.ADMIN
+          : ENTITIES_ROLE_ENUM.EDITOR,
+      )
+  ).map(person => ({
+    entity_id: person.entity_id,
+    role: ENTITIES_ROLE_ENUM.ADMIN,
+  }));
+
+  let count = 0;
+  let newEntityIds = [];
+
+  // get all entities owned by persons and sub persons
+  do {
+    entityIds = [...newEntityIds, ...entityIds];
+    entityIds = entityIds.filter(
+      (entity, index) =>
+        entityIds.findIndex(e => e.entity_id === entity.entity_id) ===
+        index,
+    );
+
+    newEntityIds = (
+      await knex('entities_role')
+        .select('entity_id', 'entity_id_admin', 'role')
+        .whereIn(
+          'entity_id_admin',
+          entityIds.map(e => e.entity_id),
+        )
+        .andWhere(
+          'role',
+          '<=',
+          onlyAdmin
+            ? ENTITIES_ROLE_ENUM.ADMIN
+            : ENTITIES_ROLE_ENUM.EDITOR,
+        )
+    ).map(entity => ({
+      ...entity,
+      role: Math.max(
+        entity.role,
+        entityIds.find(e => e.entity_id === entity.entity_id_admin)
+          .role,
+      ),
+    }));
+
+    count++;
+  } while (
+    newEntityIds.some(
+      id => !entityIds.find(e => e.entity_id === id),
+    ) &&
+    count < 5
+  );
+
+  const entities = await knex
+    .select('*')
+    .from(
+      knex
+        .select('id', 'type', 'name', 'surname', 'photo_url')
+        .from('entities_all_infos')
+        .whereNull('deleted_at')
+        .whereIn(
+          'entities_all_infos.id',
+          entityIds.map(e => e.entity_id),
+        )
+        .groupBy(
+          'entities_all_infos.id',
+          'entities_all_infos.type',
+          'entities_all_infos.name',
+          'entities_all_infos.surname',
+          'entities_all_infos.photo_url',
+        )
+        .as('res'),
+    )
+    .where('type', '<=', '2');
+
+  return entities.map(entity => ({
+    ...entity,
+    photo_url: undefined,
+    photoUrl: entity.photo_url,
+    entity_id_admin: undefined,
+  }));
 };

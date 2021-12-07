@@ -32,7 +32,17 @@ router.get(`${BASE_URL}/messages`, async ctx => {
 
   ctx.body = { data: conversations };
 });
+router.get(`${BASE_URL}/allOwned`, async ctx => {
+  const entity = await service.getAllOwnedPersonsOrganizations(
+    ctx.body.userInfo.id,
+    ctx.query.onlyAdmin,
+  );
 
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: entity };
+});
 /** POST */
 router.post(`${BASE_URL}/message`, async ctx => {
   const userId = getUserId(ctx);
