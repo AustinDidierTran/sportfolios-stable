@@ -22,9 +22,11 @@ jobs:
       with:
         images: sportfoliosapp/sportfolios-stable
     - name: Build and push Docker image
-      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      uses: docker/build-push-action@v2
       with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
         context: .
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: staging
         labels: ${{ steps.meta.outputs.labels }}
