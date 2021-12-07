@@ -16,4 +16,4 @@ RUN apt-get install awscli -y
 EXPOSE 1337
 
 # Start the api
-CMD startStaging.sh 
+CMD bash startStaging.sh 
