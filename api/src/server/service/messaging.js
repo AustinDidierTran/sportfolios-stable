@@ -26,7 +26,6 @@ export const getConversations = async (
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  console.log('2');
   // Find all the conversations id that have a person with search query
   const conversationsParticipants = await queries.getConversations({
     recipientId,

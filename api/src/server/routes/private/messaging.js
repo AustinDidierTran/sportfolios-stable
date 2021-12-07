@@ -17,7 +17,6 @@ router.get(BASE_URL, async ctx => {
     },
     userId,
   );
-  console.log('1');
 
   ctx.body = { data: conversations };
 });
