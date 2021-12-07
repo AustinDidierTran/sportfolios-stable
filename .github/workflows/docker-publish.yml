@@ -26,6 +26,7 @@ jobs:
       with:
         username: ${{ secrets.USERNAME_DOCKER }}
         password: ${{ secrets.PASSWORD_DOCKER }}
+        repository: sportfoliosapp/sportfolios-stable
         context: .
         push: true
         tags: ${{ steps.meta.outputs.tags }}
