@@ -98,10 +98,6 @@ export const getConversationMessages = async (
     conversationId,
   ]);
 
-  const [lastMessage] = await queries.getLastMessageByConversationIds([
-    conversationId,
-  ]);
-
   // Return these conversations
   return {
     conversation: {
