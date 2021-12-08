@@ -218,8 +218,8 @@ import { validateEmailIsUnique as validateEmailIsUniqueHelper } from '../../db/q
 import { sendNotification } from './notification.js';
 import { getOwnedPersons } from './user.js';
 import { isAllowed } from '../../db/queries/utils.js';
-import { getRoster, getRoleRoster } from './team.js'
-import { getRegistrationStatus } from '../../db/queries/event.js'
+import { getRoster, getRoleRoster } from './team.js';
+import { getRegistrationStatus } from '../../db/queries/event.js';
 
 async function getEntity(id, userId) {
   const res = await getEntityHelper(id, userId);

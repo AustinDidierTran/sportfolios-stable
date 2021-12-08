@@ -18,7 +18,6 @@ export const getConversations = async (
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-
   // Find all the conversations id that have a person with search query
   const conversationsParticipants = await queries.getConversations({
     recipientId,
@@ -29,6 +28,9 @@ export const getConversations = async (
     conversationsParticipants.map(c => c.conversation_id),
   );
 
+  const lastMessages = await queries.getLastMessageByConversationIds(
+    conversationsParticipants.map(c => c.conversation_id),
+  );
   // Return these conversations
   return conversationsParticipants.map(convo => {
     const convoLastMessage = lastMessages.find(
@@ -63,6 +65,17 @@ export const getConversations = async (
   });
 };
 
+export const getAllOwnedPersonsOrganizations = async (
+  userId,
+  onlyAdmin,
+) => {
+  const entities = await queries.getAllOwnedEntitiesMessaging(
+    userId,
+    onlyAdmin,
+  );
+  return entities;
+};
+
 export const getConversationMessages = async (
   {
     conversationId,
@@ -95,6 +108,10 @@ export const getConversationMessages = async (
   const conversation = await queries.getConversationById(
     conversationId,
   );
+  const [
+    lastMessage,
+  ] = await queries.getLastMessageByConversationIds([conversationId]);
+
   const [
     lastMessage,
   ] = await queries.getLastMessageByConversationIds([conversationId]);
@@ -232,6 +249,16 @@ export const createConversation = async (
   return conversationId;
 };
 
+
+const isUserInConversation = async (conversationId, userId) => {
+  const participants = await queries.getConversationParticipantsByUserId(
+    conversationId,
+    userId,
+  );
+  return participants.length > 0;
+};
+
+
 export const addParticipants = async (
   conversationId,
   participantIds,
@@ -280,6 +307,7 @@ export const updateNickname = async (
     nickname,
   );
 };
+
 /*
 const seeMessages = async userId => {
   return seeMessagesHelper(userId);
@@ -290,10 +318,3 @@ const countUnseenMessages = async userId => {
 };
 */
 
-const isUserInConversation = async (conversationId, userId) => {
-  const participants = await queries.getConversationParticipantsByUserId(
-    conversationId,
-    userId,
-  );
-  return participants.length > 0;
-};

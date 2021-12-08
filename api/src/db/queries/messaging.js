@@ -2,6 +2,7 @@ import knex from '../connection.js';
 import { conversationMessages } from '../models/conversationMessages.js';
 import { conversationParticipants } from '../models/conversationParticipants.js';
 import { conversations } from '../models/conversations.js';
+import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
 
 export const getConversationById = async conversationId => {
   const [conversation] = await conversations
@@ -202,9 +203,106 @@ export const getLastMessageByConversationIds = async conversationIds => {
       'conversation_messages.sender_id',
       'entities_general_infos.entity_id',
     );
-
   return messages;
 };
+
+export const getAllOwnedEntitiesMessaging = async (
+  userId,
+  onlyAdmin = false,
+) => {
+  // getPersons
+  let entityIds = (
+    await knex('user_entity_role')
+      .select('entity_id')
+      .where({
+        user_id: userId,
+      })
+      .andWhere(
+        'role',
+        '<=',
+        onlyAdmin
+          ? ENTITIES_ROLE_ENUM.ADMIN
+          : ENTITIES_ROLE_ENUM.EDITOR,
+      )
+  ).map(person => ({
+    entity_id: person.entity_id,
+    role: ENTITIES_ROLE_ENUM.ADMIN,
+  }));
+
+  let count = 0;
+  let newEntityIds = [];
+
+  // get all entities owned by persons and sub persons
+  do {
+    entityIds = [...newEntityIds, ...entityIds];
+    entityIds = entityIds.filter(
+      (entity, index) =>
+        entityIds.findIndex(e => e.entity_id === entity.entity_id) ===
+        index,
+    );
+
+    newEntityIds = (
+      await knex('entities_role')
+        .select('entity_id', 'entity_id_admin', 'role')
+        .whereIn(
+          'entity_id_admin',
+          entityIds.map(e => e.entity_id),
+        )
+        .andWhere(
+          'role',
+          '<=',
+          onlyAdmin
+            ? ENTITIES_ROLE_ENUM.ADMIN
+            : ENTITIES_ROLE_ENUM.EDITOR,
+        )
+    ).map(entity => ({
+      ...entity,
+      role: Math.max(
+        entity.role,
+        entityIds.find(e => e.entity_id === entity.entity_id_admin)
+          .role,
+      ),
+    }));
+
+    count++;
+  } while (
+    newEntityIds.some(
+      id => !entityIds.find(e => e.entity_id === id),
+    ) &&
+    count < 5
+  );
+
+  const entities = await knex
+    .select('*')
+    .from(
+      knex
+        .select('id', 'type', 'name', 'surname', 'photo_url')
+        .from('entities_all_infos')
+        .whereNull('deleted_at')
+        .whereIn(
+          'entities_all_infos.id',
+          entityIds.map(e => e.entity_id),
+        )
+        .groupBy(
+          'entities_all_infos.id',
+          'entities_all_infos.type',
+          'entities_all_infos.name',
+          'entities_all_infos.surname',
+          'entities_all_infos.photo_url',
+        )
+        .as('res'),
+    )
+    .where('type', '<=', '2');
+
+  return entities.map(entity => ({
+    ...entity,
+    photo_url: undefined,
+    photoUrl: entity.photo_url,
+    entity_id_admin: undefined,
+  }));
+};
+
+
 /*
 const countUnseenMessages = async user_id => {
   const res = await knex('notifications')
