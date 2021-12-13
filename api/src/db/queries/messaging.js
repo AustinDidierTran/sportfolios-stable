@@ -80,23 +80,6 @@ export const getConversationWithParticipants = async participants => {
   return conversationId;
 };
 
-export const getConversationWithParticipants = async participants => {
-  const [{ conversation_id } = {}] = await conversationParticipants
-    .query()
-    .select('conversation_id')
-    .groupBy('conversation_id')
-    // eslint-disable-next-line
-    .havingRaw(
-      'sum(case when "participant_id" not in (' +
-      participants.map(_ => '?').join(',') +
-      ') then 1 else 0 end) = 0 and sum(case when "participant_id" in (' +
-      participants.map(_ => '?').join(',') +
-      ') then 1 else 0 end) = ?;',
-      [...participants, ...participants, participants.length],
-    );
-  return conversation_id;
-};
-
 export const getMessagesFromConversation = async conversationId => {
   return conversationMessages
     .query()
