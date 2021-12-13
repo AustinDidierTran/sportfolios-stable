@@ -16,6 +16,7 @@ import {
   PHASE_STATUS_ENUM,
   ENTITIES_ROLE_ENUM,
 } from '../../../../common/enums/index.js';
+import { phase } from '../models/phase.js';
 
 async function getAllPeopleRegisteredNotInTeams(eventId) {
   const subquery = knex('event_rosters')
@@ -146,49 +147,6 @@ export const getEventPaymentOption = async stripePriceId => {
   return option;
 };
 
-/**
- * Currently only returns spirit rankings, but should eventually return
- * prerankings and phase rankings
- * Return {Object: { spirit }}
- */
-export const getRankings = async eventId => {
-  const spirit = await knex
-    .select(
-      'entities_general_infos.name',
-      'game_teams.roster_id AS rosterId',
-    )
-    .sum('game_teams.spirit')
-    .from('phase')
-    .leftJoin('games', 'games.phase_id', '=', 'phase.id')
-    .leftJoin('game_teams', 'games.id', '=', 'game_teams.game_id')
-    .leftJoin(
-      'event_rosters',
-      'game_teams.roster_id',
-      '=',
-      'event_rosters.roster_id',
-    )
-    .leftJoin(
-      'entities_general_infos',
-      'entities_general_infos.entity_id',
-      '=',
-      'event_rosters.team_id',
-    )
-    .where('phase.event_id', eventId)
-    .whereNotNull('entities_general_infos.name')
-    .whereNotNull('game_teams.roster_id')
-    .groupBy('entities_general_infos.name', 'game_teams.roster_id');
-
-  return {
-    spirit: spirit
-      .map(s => ({
-        name: s.name,
-        rosterId: s.rosterId,
-        spirit: Number(s.sum) || 0,
-      }))
-      .sort((a, b) => b.spirit - a.spirit),
-  };
-};
-
 export const getAllEventsWithAdmins = async (
   limit = 10,
   page = 1,
@@ -304,21 +262,21 @@ export const getTeamsRegisteredInfo = async eventId => {
       'event_rosters.informations as informations',
     )
     .where('event_rosters.event_id', eventId)
-    .leftJoin('stripe_invoice_item', function() {
+    .leftJoin('stripe_invoice_item', function () {
       this.on(
         'stripe_invoice_item.invoice_item_id',
         '=',
         'event_rosters.invoice_item_id',
       ).onNotNull('event_rosters.invoice_item_id');
     })
-    .join('entities_role', function() {
+    .join('entities_role', function () {
       this.on(
         'entities_role.entity_id',
         '=',
         'event_rosters.team_id',
       ).andOn('entities_role.role', '=', 1);
     })
-    .join('user_entity_role', function() {
+    .join('user_entity_role', function () {
       this.on(
         'user_entity_role.entity_id',
         '=',
@@ -412,7 +370,7 @@ export const getEventVerified = async () => {
     .query()
     .withGraphJoined('[creatorEntities.entitiesGeneralInfos]')
     .whereNull('events_infos.deleted_at')
-    .andWhere(function() {
+    .andWhere(function () {
       this.whereNotNull('creatorEntities.verified_by');
     });
 };
@@ -488,3 +446,9 @@ export const updateRosterIdInRankings = async (
 
   return res;
 };
+
+export const getRankings = async (eventId) => {
+  const phases = await phase.query().withGraphJoined('[phaseRankings.[teamRoster.entitiesGeneralInfos, originPhase], games.gameTeams.eventRoster.entitiesGeneralInfos]', { minimize: true })
+    .where('phase.event_id', eventId);
+  return phases;
+}

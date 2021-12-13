@@ -5,12 +5,12 @@ import { getUserId } from '../../helper/userHelper.js';
 const router = new Router();
 const BASE_URL = '/api/event';
 
-/**
- * Currently only returns spirits ranking, should eventually return
- * preranking and phase rankings as well
- */
 router.get(`${BASE_URL}/rankings`, async ctx => {
-  const rankings = await service.getRankings(ctx.query.eventId);
+
+  const rankings = await service.getRankings(
+    ctx.query.eventId,
+    ctx.body.userInfo.id,
+  );
 
   if (!rankings) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);

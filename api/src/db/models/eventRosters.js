@@ -72,6 +72,14 @@ export class eventRosters extends Model {
           to: 'roster_players.roster_id',
         }
       },
+      gameTeam: {
+        relation: Model.HasManyRelation,
+        modelClass: eventRosters,
+        join: {
+          from: 'event_rosters.roster_id',
+          to: 'game_teams.roster_id'
+        }
+      },
     };
   }
 }

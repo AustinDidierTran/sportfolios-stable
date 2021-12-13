@@ -19,20 +19,23 @@ export const getConversations = async ({
   recipientId,
   // page
 }) =>
-  // searchQuery,
-  {
-    // Search is not supported for now :)
-    // Implement search + filter
-    const convos = await conversationParticipants
-      .query()
-      .withGraphJoined(
-        '[conversation.[conversationParticipants.entitiesGeneralInfos]]',
-        { minimize: true },
-      )
-      .where('conversation_participants.participant_id', recipientId);
+// searchQuery,
+{
+  // Search is not supported for now :)
+  // Implement search + filter
+  const convos = await conversations
+    .query()
+    .withGraphJoined(
+      '[conversationParticipants.conversations.conversationParticipants.entitiesGeneralInfos, lastMessage.entitiesGeneralInfos]',
+      { minimize: true },
+    )
+    .modifyGraph('conversationMessages', builder =>
+      builder.orderBy('created_at', 'desc'),
+    )
+    .where('_t0.participant_id', recipientId);
 
-    return convos;
-  };
+  return convos;
+};
 
 export const getConversationParticipants = async conversationId => {
   const participants = await conversationParticipants
@@ -45,21 +48,36 @@ export const getConversationParticipants = async conversationId => {
   return participants;
 };
 
-export const getConversationParticipantsByUserId = async (
-  conversationId,
-  userId,
-) => {
-  const participants = await conversationParticipants
-    .query()
-    .withGraphJoined('userEntityRole')
-    .where(
-      'conversation_participants.conversation_id',
-      conversationId,
-    )
-    .andWhere('userEntityRole.user_id', userId)
-    .debug();
+export const getConversationWithParticipants = async participants => {
+  // [SPO-151]
+  const cParticipants = await conversationParticipants.query();
 
-  return participants;
+  // Make a list of all conversations inside conversationParticipants
+  const participantsMap = Object.entries(
+    cParticipants.reduce(
+      (conversations, cp) => ({
+        ...conversations,
+        [cp.conversation_id]: conversations[cp.conversation_id]
+          ? [...conversations[cp.conversation_id], cp.participant_id]
+          : [cp.participant_id],
+      }),
+      {},
+    ),
+  );
+
+  // From all these conversations, find a conversation that has all of them, but no more than them
+  const [conversationId] =
+    participantsMap.find(([, ps]) => {
+      if (ps.length !== participants.length) {
+        return false;
+      }
+
+      return ps.every(
+        p1 => participants.findIndex(p2 => p1 === p2) !== -1,
+      );
+    }) || [];
+
+  return conversationId;
 };
 
 export const getConversationWithParticipants = async participants => {
@@ -70,10 +88,10 @@ export const getConversationWithParticipants = async participants => {
     // eslint-disable-next-line
     .havingRaw(
       'sum(case when "participant_id" not in (' +
-        participants.map(_ => '?').join(',') +
-        ') then 1 else 0 end) = 0 and sum(case when "participant_id" in (' +
-        participants.map(_ => '?').join(',') +
-        ') then 1 else 0 end) = ?;',
+      participants.map(_ => '?').join(',') +
+      ') then 1 else 0 end) = 0 and sum(case when "participant_id" in (' +
+      participants.map(_ => '?').join(',') +
+      ') then 1 else 0 end) = ?;',
       [...participants, ...participants, participants.length],
     );
   return conversation_id;
