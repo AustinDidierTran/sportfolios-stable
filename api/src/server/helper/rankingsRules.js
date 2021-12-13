@@ -155,14 +155,6 @@ const applyRules = (games, initialRanking) => {
   return applyDifferentialRule(rankingWithGameBetweenRules);
 };
 
-export const applyAllRules = (games, initialRanking) => {
-  const rankings = getRankingInfos(games, initialRanking);
-  if (!initialRanking[0].final_position) {
-    return applyRandomRule(applyRules(games, rankings));
-  }
-  return initialRanking.sort((a, b) => a.final_position - b.final_position);
-}
-
 const getRankingInfos = (games, initialRanking) => {
   const rankings = JSON.parse(JSON.stringify(initialRanking));
   rankings.forEach(ranking => {
@@ -201,4 +193,12 @@ const getRankingInfos = (games, initialRanking) => {
     }
   });
   return [rankings];
+}
+
+export const applyAllRules = (games, initialRanking) => {
+  const rankings = getRankingInfos(games, initialRanking);
+  if (!initialRanking[0].final_position) {
+    return applyRandomRule(applyRules(games, rankings));
+  }
+  return initialRanking.sort((a, b) => a.final_position - b.final_position);
 }

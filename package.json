@@ -11,7 +11,9 @@
     "webserver": "nodemon --config nodemon.json api/src/server.ts",
     "dev": "nodemon --config nodemon.json api/src/server.ts",
     "lint": "eslint . --ext .js --ext .jsx --ext .ts --ext .tsx",
-    "test": "./test.sh"
+    "testScript": "./test.sh",
+    "test": "jest",
+    "clear_jest": "jest --clearCache"
   },
   "repository": {
     "type": "git",
@@ -55,7 +57,7 @@
     "html-webpack-plugin": "^4.3.0",
     "husky": "^4.2.5",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^26.6.3",
+    "jest": "^27.4.4",
     "jest-localstorage-mock": "^2.4.2",
     "mini-css-extract-plugin": "^0.9.0",
     "mocha": "^7.1.1",
@@ -187,6 +189,7 @@
     "socket.io-client": "^3.0.2",
     "stripe": "^8.122.1",
     "to-regex-range": "^5.0.1",
+    "ts-jest": "^27.1.1",
     "ts-node": "^10.4.0",
     "utf8": "^3.0.0",
     "uuid": "^8.3.2",

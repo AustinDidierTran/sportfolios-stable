@@ -2,28 +2,28 @@ import {
   addEntity,
   addPhase,
   getGames,
-  getPhaseRankingWithPhase,
-} from '../src/db/queries/entity';
+  getPhaseRankingWithPhase
+} from '../src/db/queries/entity-deprecate.js';
 process.env.NODE_ENV = 'test';
 const {
   PHASE_TYPE_ENUM,
   GLOBAL_ENUM,
   EVENT_TYPE,
 } = require('../../common/enums');
-const knex = require('../src/db/connection');
+import knex from '../src/db/connection';
 
 describe('ValidateEliminationBracket', () => {
-  afterAll(async done => {
+  afterAll(async () => {
     // Closing the DB connection allows Jest to exit successfully.
     knex.destroy();
-    done();
+    // done();
   });
 
   let user;
-  beforeAll(async done => {
+  beforeAll(async () => {
     const [res] = await knex('users').select('id');
     user = res;
-    done();
+    // done();
   });
 
   const phaseTwoName = '2teamTournament';
@@ -38,7 +38,7 @@ describe('ValidateEliminationBracket', () => {
   const fourthTeamName = '4. ';
   const twoSpots = 2;
   const fourSpots = 4;
-  it('should return 2 teams', async done => {
+  it('should return 2 teams', async () => {
     const data = await addEntity(
       {
         name: 'test',
@@ -82,10 +82,9 @@ describe('ValidateEliminationBracket', () => {
 
     expect(getFirstTeamRanking.initial_position).toBe(one);
     expect(getSecondTeamRanking.initial_position).toBe(two);
-    done();
   });
 
-  it('should return 4 teams', async done => {
+  it('should return 4 teams', async () => {
     const data = await addEntity(
       {
         name: 'test',
@@ -172,6 +171,6 @@ describe('ValidateEliminationBracket', () => {
     expect(getSixthTeamRanking.initial_position).toBe(two);
     expect(getSeventhTeamRanking.initial_position).toBe(three);
     expect(getEigthTeamRanking.initial_position).toBe(four);
-    done();
+
   });
 });
