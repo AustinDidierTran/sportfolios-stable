@@ -19,20 +19,20 @@ export const getConversations = async ({
   recipientId,
   // page
 }) =>
-  // searchQuery,
-  {
-    // Search is not supported for now :)
-    // Implement search + filter
-    const convos = await conversationParticipants
-      .query()
-      .withGraphJoined(
-        '[conversation.[conversationParticipants.entitiesGeneralInfos]]',
-        { minimize: true },
-      )
-      .where('conversation_participants.participant_id', recipientId);
+// searchQuery,
+{
+  // Search is not supported for now :)
+  // Implement search + filter
+  const convos = await conversationParticipants
+    .query()
+    .withGraphJoined(
+      '[conversation.[conversationParticipants.entitiesGeneralInfos]]',
+      { minimize: true },
+    )
+    .where('conversation_participants.participant_id', recipientId);
 
-    return convos;
-  };
+  return convos;
+};
 
 export const getConversationParticipants = async conversationId => {
   const participants = await conversationParticipants
@@ -62,6 +62,7 @@ export const getConversationParticipantsByUserId = async (
   return participants;
 };
 
+/* eslint-disable no-unused-vars */
 export const getConversationWithParticipants = async participants => {
   const [{ conversation_id } = {}] = await conversationParticipants
     .query()
@@ -70,14 +71,15 @@ export const getConversationWithParticipants = async participants => {
     // eslint-disable-next-line
     .havingRaw(
       'sum(case when "participant_id" not in (' +
-        participants.map(_ => '?').join(',') +
-        ') then 1 else 0 end) = 0 and sum(case when "participant_id" in (' +
-        participants.map(_ => '?').join(',') +
-        ') then 1 else 0 end) = ?;',
+      participants.map(_ => '?').join(',') +
+      ') then 1 else 0 end) = 0 and sum(case when "participant_id" in (' +
+      participants.map(_ => '?').join(',') +
+      ') then 1 else 0 end) = ?;',
       [...participants, ...participants, participants.length],
     );
   return conversation_id;
 };
+/* eslint-disable no-unused-vars */
 
 export const getMessagesFromConversation = async conversationId => {
   return conversationMessages
