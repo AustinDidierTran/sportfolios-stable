@@ -1,4 +1,4 @@
-import { CLIENT_BASE_URL } from '../../../../conf.js';
+import { validOrigins } from '../../../../conf.js';
 import { SOCKET_EVENT } from '../../../../common/enums/index.js';
 import { Server } from 'socket.io';
 
@@ -9,7 +9,7 @@ const initialize = server => {
   if (!io) {
     io = new Server(server, {
       cors: {
-        origin: CLIENT_BASE_URL,
+        origin: validOrigins,
         methods: ['GET', 'POST'],
       },
     });
@@ -54,7 +54,7 @@ const emit = (eventName, userId, message) => {
     // eslint-disable-next-line no-console
     console.error('You need to call initialize before emitting!');
   } else {
-    sockets = userToSocketMap.get(userId);
+    const sockets = userToSocketMap.get(userId);
     if (sockets) {
       sockets.forEach(socket =>
         io.to(socket).emit(eventName, message),

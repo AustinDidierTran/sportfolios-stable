@@ -3,16 +3,20 @@ import jwkToPem from 'jwk-to-pem'
 import { CLIENT_ID, REGION, USER_POOL_ID } from '../../../../conf.js';
 import axios from 'axios';
 const url = `https://cognito-idp.${REGION}.amazonaws.com/${USER_POOL_ID}/.well-known/jwks.json`;
-const jsonWebKeys = await axios.get(url).catch(function (error) {
-    console.log(error.response.data);
-    return;
-});
 
+const getWebKeys = async () => {
+    const resp = await axios.get(url).catch(function (error) {
+        console.log(error);
+        return;
+    })
+    return resp;
+};
 
-export function validateToken(token) {
-    const header = decodeTokenHeader(token);
-    const jsonWebKey = getJsonWebKeyWithKID(header.kid);
-    const decodedToken = verifyJsonWebTokenSignature(token, jsonWebKey)
+export const validateToken = async (token) => {
+    const webKeys = await getWebKeys();
+    const header = await decodeTokenHeader(token);
+    const jsonWebKey = await getJsonWebKeyWithKID(header.kid, webKeys.data);
+    const decodedToken = await verifyJsonWebTokenSignature(token, jsonWebKey)
     if (decodedToken.exp > Math.round(Date.now() / 1000)) {
         if (decodedToken.aud === CLIENT_ID && decodedToken.iss === (`https://cognito-idp.${REGION}.amazonaws.com/${USER_POOL_ID}`)) {
             return decodedToken;
@@ -28,8 +32,8 @@ function decodeTokenHeader(token) {
     return JSON.parse(text);
 }
 
-function getJsonWebKeyWithKID(kid) {
-    for (let jwk of jsonWebKeys.data.keys) {
+const getJsonWebKeyWithKID = (kid, webKeys) => {
+    for (let jwk of webKeys.keys) {
         if (jwk.kid === kid) {
             return jwk;
         }

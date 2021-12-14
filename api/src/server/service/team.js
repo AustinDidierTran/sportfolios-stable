@@ -12,8 +12,11 @@ import {
   ROSTER_ROLE_ENUM,
   STATUS_ENUM,
   TAG_TYPE_ENUM,
+  ENTITIES_ROLE_ENUM
 } from '../../../../common/enums/index.js';
+import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import moment from 'moment';
+import { isAllowed } from '../../db/queries/utils.js';
 
 
 const getTeamExercises = async (teamId) => {
@@ -287,6 +290,16 @@ export const deleteTeam = async (id, restore = 'false') => {
 
   return queries.restoreTeamById(id);
 };
+
+export const addPlayersToTeam = async (teamId, players, userId) => {
+  if (
+    !(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+  return await queries.addPlayersToTeam(teamId, players.map(p => p.id));
+};
+
 export {
   getTeamExercises,
   getSessionExercises,

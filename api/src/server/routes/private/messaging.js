@@ -32,7 +32,17 @@ router.get(`${BASE_URL}/messages`, async ctx => {
 
   ctx.body = { data: conversations };
 });
+router.get(`${BASE_URL}/allOwned`, async ctx => {
+  const entity = await service.getAllOwnedPersonsOrganizations(
+    ctx.body.userInfo.id,
+    ctx.query.onlyAdmin,
+  );
 
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: entity };
+});
 /** POST */
 router.post(`${BASE_URL}/message`, async ctx => {
   const userId = getUserId(ctx);
@@ -59,6 +69,53 @@ router.post(`${BASE_URL}/conversation`, async ctx => {
   );
 
   ctx.body = { data: conversationId };
+});
+
+/** PUT */
+
+router.put(`${BASE_URL}/addParticipants`, async ctx => {
+  const userId = getUserId(ctx);
+  const messages = await service.addParticipants(
+    ctx.request.body.conversationId,
+    ctx.request.body.participantIds,
+    userId,
+  );
+
+  ctx.body = { data: messages };
+});
+
+router.put(`${BASE_URL}/removeParticipant`, async ctx => {
+  const userId = getUserId(ctx);
+  const messages = await service.removeParticipant(
+    ctx.request.body.conversationId,
+    ctx.request.body.participantId,
+    userId,
+  );
+
+  ctx.body = { data: messages };
+});
+
+router.put(`${BASE_URL}/conversationName`, async ctx => {
+  const userId = getUserId(ctx);
+  const messages = await service.updateConversationName(
+    ctx.request.body.conversationId,
+    ctx.request.body.name,
+    userId,
+  );
+
+  ctx.body = { data: messages };
+});
+
+router.put(`${BASE_URL}/nickname`, async ctx => {
+  const userId = getUserId(ctx);
+  const messages = await service.updateNickname(
+    ctx.request.body.conversationId,
+    ctx.request.body.participantId,
+    ctx.request.body.nickname,
+    userId,
+  );
+
+  ctx.body = { data: messages };
 });
 
 export default router;

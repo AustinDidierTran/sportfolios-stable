@@ -2,6 +2,7 @@ import { Model } from 'objection';
 import { conversationMessages } from './conversationMessages.js';
 import { conversations } from './conversations.js';
 import { entitiesGeneralInfos } from './entitiesGeneralInfos.js';
+import { userEntityRole } from './userEntityRole.js';
 
 export class conversationParticipants extends Model {
   static get tableName() {
@@ -14,7 +15,7 @@ export class conversationParticipants extends Model {
 
   static get relationMappings() {
     return {
-      conversations: {
+      conversation: {
         relation: Model.HasOneRelation,
         modelClass: conversations,
         join: {
@@ -38,6 +39,14 @@ export class conversationParticipants extends Model {
           to: 'entities_general_infos.entity_id',
         },
       },
+      userEntityRole: {
+        relation: Model.HasOneRelation,
+        modelClass: userEntityRole,
+        join: {
+          from: 'conversation_participants.participant_id',
+          to: 'user_entity_role.entity_id',
+        },
+      }
     };
   }
 }
