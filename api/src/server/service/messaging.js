@@ -13,9 +13,7 @@ export const getConversations = async (
   userId,
 ) => {
   // Validate the recipient is accessible from the user
-  if (
-    !(await isAllowed(recipientId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(recipientId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   // Find all the conversations id that have a person with search query
@@ -50,23 +48,19 @@ export const getConversations = async (
         content: convoLastMessage.text,
       },
       name: convo.conversation.name,
-      participants: convo.conversation.conversationParticipants.map(
-        cp => ({
-          id: cp.participant_id,
-          name: cp.entitiesGeneralInfos.name,
-          surname: cp.entitiesGeneralInfos.surname,
-          nickname: cp.entitiesGeneralInfos.nickname,
-          photoUrl: cp.entitiesGeneralInfos.photo_url,
-        }),
-      ),
+      participants: convo.conversation.conversationParticipants.map(cp => ({
+        id: cp.participant_id,
+        name: cp.entitiesGeneralInfos.name,
+        surname: cp.entitiesGeneralInfos.surname,
+        nickname: cp.entitiesGeneralInfos.nickname,
+        photoUrl: cp.entitiesGeneralInfos.photo_url,
+        readLastMessageAt: cp.read_last_message_at,
+      })),
     };
   });
 };
 
-export const getAllOwnedPersonsOrganizations = async (
-  userId,
-  onlyAdmin,
-) => {
+export const getAllOwnedPersonsOrganizations = async (userId, onlyAdmin) => {
   const entities = await queries.getAllOwnedEntitiesMessaging(
     userId,
     onlyAdmin,
@@ -81,35 +75,37 @@ export const getConversationMessages = async (
   },
   userId,
 ) => {
+  console.log(1);
   // Find all the people from the conversation
   const participants = await queries.getConversationParticipants(
     conversationId,
   );
 
+  console.log(2);
   // Validate that the user has access to at least one user
   const userIsAllowed = await Promise.all(
     participants.map(async p =>
       isAllowed(p.participant_id, userId, ENTITIES_ROLE_ENUM.EDITOR),
     ),
   );
+  console.log(3);
 
   if (!userIsAllowed.some(userIsAllowed => userIsAllowed)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
+  console.log(4);
   // Get messages based on paging
-  const messages = await queries.getMessagesFromConversation(
-    conversationId,
-  );
+  const messages = await queries.getMessagesFromConversation(conversationId);
 
   // Find all the conversations id that have a person with search query
-  const conversation = await queries.getConversationById(
+  console.log(5);
+  const conversation = await queries.getConversationById(conversationId);
+  console.log(6);
+  const [lastMessage] = await queries.getLastMessageByConversationIds([
     conversationId,
-  );
-
-  const [
-    lastMessage,
-  ] = await queries.getLastMessageByConversationIds([conversationId]);
+  ]);
+  console.log(7);
 
   // Return these conversations
   return {
@@ -157,9 +153,7 @@ export const sendMessage = async (
   userId,
 ) => {
   // Validate the senderId is accessible from the user
-  if (
-    !(await isAllowed(senderId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(senderId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -180,9 +174,7 @@ export const sendMessage = async (
   // 2. Find all the users from these participants
   const participantIds = participants.map(p => p.participant_id);
 
-  const users = await userQueries.getUserIdFromEntityId(
-    participantIds,
-  );
+  const users = await userQueries.getUserIdFromEntityId(participantIds);
 
   const userIds = users
     .map(user => user.user_id)
@@ -206,6 +198,14 @@ export const sendMessage = async (
       },
     });
   });
+
+  // 5. Increment unread messages count
+  await queries.incrementUnreadMessageCount(
+    participantIds.filter(id => id !== senderId),
+  );
+
+  // 6. Set read receipts to null
+  await queries.resetReadReceipts(participantIds.filter(id => id !== senderId));
 };
 
 export const createConversation = async (
@@ -213,9 +213,7 @@ export const createConversation = async (
   userId,
 ) => {
   // Validate that you have access to the user
-  if (
-    !(await isAllowed(creatorId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(creatorId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -226,19 +224,14 @@ export const createConversation = async (
   // If the conversation exists, return the id
   let conversationId;
 
-  conversationId = await queries.getConversationWithParticipants(
-    participants,
-  );
+  conversationId = await queries.getConversationWithParticipants(participants);
 
   if (conversationId) {
     return conversationId;
   }
 
   // Else, create the conversation
-  conversationId = await queries.createConversation(
-    participants,
-    creatorId,
-  );
+  conversationId = await queries.createConversation(participants, creatorId);
 
   // Then, return the id
   return conversationId;
@@ -274,11 +267,7 @@ export const removeParticipant = async (
   return queries.removeParticipant(conversationId, participantId);
 };
 
-export const updateConversationName = async (
-  conversationId,
-  name,
-  userId,
-) => {
+export const updateConversationName = async (conversationId, name, userId) => {
   if (!(await isUserInConversation(conversationId, userId))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
@@ -294,9 +283,21 @@ export const updateNickname = async (
   if (!(await isUserInConversation(conversationId, userId))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return queries.updateNickname(
-    conversationId,
-    participantId,
-    nickname,
-  );
+  return queries.updateNickname(conversationId, participantId, nickname);
+};
+
+export const seeMessages = async (entityId, userId) => {
+  if (!isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return queries.resetUnreadMessages(entityId);
+};
+
+export const seeConversation = async (entityId, conversationId, userId) => {
+  if (!(await isUserInConversation(conversationId, userId))) {
+    throw new error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  return queries.updateReadReceipt(entityId, conversationId);
 };

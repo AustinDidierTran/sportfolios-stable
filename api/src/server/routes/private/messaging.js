@@ -118,4 +118,18 @@ router.put(`${BASE_URL}/nickname`, async ctx => {
   ctx.body = { data: messages };
 });
 
+router.post(`${BASE_URL}/seeMessages`, async ctx => {
+  const userId = getUserId(ctx);
+  await service.seeMessages(ctx.request.body.entityId, userId);
+});
+
+router.post(`${BASE_URL}/seeConversation`, async ctx => {
+  const userId = getUserId(ctx);
+  await service.seeConversation(
+    ctx.request.body.entityId,
+    ctx.request.body.conversationId,
+    userId,
+  );
+});
+
 export default router;
