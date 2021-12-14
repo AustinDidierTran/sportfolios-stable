@@ -36,6 +36,16 @@ router.post(`${BASE_URL}/signupGoogleToken`, async ctx => {
   }
 });
 
+router.post(`${BASE_URL}/signupFacebookToken`, async ctx => {
+  const res = await service.signupFacebookToken(ctx.request.body);
+
+  if (!res) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  } else {
+    ctx.body = { data: res };
+  }
+});
+
 router.post(`${BASE_URL}/login`, async ctx => {
   const { token, userInfo } = await service.login(ctx.request.body);
 

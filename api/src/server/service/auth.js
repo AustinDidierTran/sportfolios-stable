@@ -155,6 +155,43 @@ export const signupGoogleToken = async ({
   }
 }
 
+export const signupFacebookToken = async ({
+  token,
+}) => {
+  try {
+    const decodedToken = await validateToken(token);
+    if (decodedToken.identities[0].providerName !== 'Facebook') {
+      return STATUS_ENUM.ERROR;
+    }
+
+    const isUnique = await validateEmailIsUnique(decodedToken.email);
+
+    if (!isUnique) {
+      throw new Error(ERROR_ENUM.INVALID_EMAIL);
+    }
+
+    await createUserComplete({
+      password: ' ',
+      email: decodedToken.email,
+      name: decodedToken.given_name,
+      surname: decodedToken.family_name,
+      facebook_id: null,
+      newsLetterSubscription: false,
+      cognitoId: decodedToken.sub
+    });
+
+    const userId = await getUserIdFromEmail(decodedToken.email);
+    const primaryPerson = await getPrimaryPersonIdFromUserId(userId);
+    await updateEntityPhoto(primaryPerson, JSON.parse(decodedToken.picture).data.url);
+
+    await confirmEmailHelper({ email: decodedToken.email });
+
+    return STATUS_ENUM.SUCCESS;
+  } catch (error) {
+    console.log('error signing up:', error);
+  }
+}
+
 async function login({ email, password }) {
   // Validate account with this email exists
   const userId = await getUserIdFromEmail(email);
