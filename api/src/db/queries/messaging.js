@@ -389,32 +389,3 @@ export const getAllOwnedEntitiesMessaging = async (
     entity_id_admin: undefined,
   }));
 };
-
-export const incrementUnreadMessageCount = async participantIds => {
-  return knex('entities_general_infos')
-    .update(
-      'unread_messages_amount',
-      knex.raw('unread_messages_amount::int + 1'),
-    )
-    .whereIn('entity_id', participantIds);
-};
-
-export const resetUnreadMessages = async entityId => {
-  return knex('entities_general_infos')
-    .update('unread_messages_amount', 0)
-    .where('entity_id', entityId);
-};
-
-export const updateReadReceipt = async (entityId, conversationId) => {
-  return knex('conversation_participants')
-    .update('read_last_message_at', 'now()')
-    .where('conversation_id', conversationId)
-    .andWhere('participant_id', entityId);
-};
-
-export const resetReadReceipts = async (participantIds, conversationId) => {
-  return knex('conversation_participants')
-    .update('read_last_message_at', null)
-    .whereIn('participant_id', participantIds)
-    .andWhere('conversation_id', conversationId);
-};
