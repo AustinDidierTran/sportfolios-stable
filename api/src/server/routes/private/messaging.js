@@ -120,7 +120,6 @@ router.put(`${BASE_URL}/nickname`, async ctx => {
 
 router.post(`${BASE_URL}/seeMessages`, async ctx => {
   const userId = getUserId(ctx);
-  console.log('entityId0 : ', ctx.request.body.entityId);
   await service.seeMessages(ctx.request.body.entityId, userId);
 });
 

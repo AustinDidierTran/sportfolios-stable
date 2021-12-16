@@ -75,37 +75,32 @@ export const getConversationMessages = async (
   },
   userId,
 ) => {
-  console.log(1);
   // Find all the people from the conversation
   const participants = await queries.getConversationParticipants(
     conversationId,
   );
 
-  console.log(2);
   // Validate that the user has access to at least one user
   const userIsAllowed = await Promise.all(
     participants.map(async p =>
       isAllowed(p.participant_id, userId, ENTITIES_ROLE_ENUM.EDITOR),
     ),
   );
-  console.log(3);
 
   if (!userIsAllowed.some(userIsAllowed => userIsAllowed)) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  console.log(4);
   // Get messages based on paging
   const messages = await queries.getMessagesFromConversation(conversationId);
 
   // Find all the conversations id that have a person with search query
-  console.log(5);
+
   const conversation = await queries.getConversationById(conversationId);
-  console.log(6);
+
   const [lastMessage] = await queries.getLastMessageByConversationIds([
     conversationId,
   ]);
-  console.log(7);
 
   // Return these conversations
   return {
@@ -290,12 +285,9 @@ export const updateNickname = async (
 };
 
 export const seeMessages = async (entityId, userId) => {
-  console.log('entity_id1 : ', entityId);
   if (!isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
-    console.log('entity_id2 : ', entityId);
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  console.log('entity_id3 : ', entityId);
   return queries.resetUnreadMessages(entityId);
 };
 
