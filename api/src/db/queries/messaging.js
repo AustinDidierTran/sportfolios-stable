@@ -283,6 +283,7 @@ export const incrementUnreadMessageCount = async participantIds => {
 };
 
 export const resetUnreadMessages = async entityId => {
+  console.log(entityId);
   return knex('entities_general_infos')
     .update('unread_messages_amount', 0)
     .where('entity_id', entityId);

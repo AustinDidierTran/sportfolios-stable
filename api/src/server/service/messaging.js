@@ -205,7 +205,10 @@ export const sendMessage = async (
   );
 
   // 6. Set read receipts to null
-  await queries.resetReadReceipts(participantIds.filter(id => id !== senderId));
+  await queries.resetReadReceipts(
+    participantIds.filter(id => id !== senderId),
+    conversationId,
+  );
 };
 
 export const createConversation = async (
@@ -287,10 +290,12 @@ export const updateNickname = async (
 };
 
 export const seeMessages = async (entityId, userId) => {
+  console.log('entity_id1 : ', entityId);
   if (!isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+    console.log('entity_id2 : ', entityId);
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-
+  console.log('entity_id3 : ', entityId);
   return queries.resetUnreadMessages(entityId);
 };
 
