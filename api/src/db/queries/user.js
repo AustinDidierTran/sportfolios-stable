@@ -49,21 +49,14 @@ async function createConfirmationEmailToken({ email, token }) {
   });
 }
 
-async function createPersonTransferToken({
-  email,
-  personId,
-  token,
-  senderId,
-}) {
+async function createPersonTransferToken({ email, personId, token, senderId }) {
   return knex('transfered_person')
     .insert({
       email,
       token,
       person_id: personId,
       sender_id: senderId,
-      expires_at: new Date(
-        Date.now() + EXPIRATION_TIMES.PERSON_TRANSFER_TOKEN,
-      ),
+      expires_at: new Date(Date.now() + EXPIRATION_TIMES.PERSON_TRANSFER_TOKEN),
     })
     .returning('*');
 }
@@ -96,9 +89,7 @@ async function generateMemberImportToken(
   try {
     await knex('token_promo_code').insert({
       token_id: token,
-      expires_at: new Date(
-        Date.now() + EXPIRATION_TIMES.IMPORT_MEMBER,
-      ),
+      expires_at: new Date(Date.now() + EXPIRATION_TIMES.IMPORT_MEMBER),
       email,
       metadata: {
         type: COUPON_CODE_ENUM.BECOME_MEMBER,
@@ -125,18 +116,8 @@ async function getBasicUserInfoFromId(user_id) {
     .select('language')
     .where({ id: user_id });
   const [primaryPerson] = await knex('user_entity_role')
-    .select(
-      'user_entity_role.entity_id',
-      'name',
-      'surname',
-      'photo_url',
-    )
-    .leftJoin(
-      'entities',
-      'user_entity_role.entity_id',
-      '=',
-      'entities.id',
-    )
+    .select('*')
+    .leftJoin('entities', 'user_entity_role.entity_id', '=', 'entities.id')
     .leftJoin(
       'entities_general_infos',
       'user_entity_role.entity_id',
@@ -145,24 +126,12 @@ async function getBasicUserInfoFromId(user_id) {
     )
     .where('entities.type', GLOBAL_ENUM.PERSON)
     .andWhere({
-      'user_entity_role.entity_id': await getPrimaryPersonIdFromUserId(
-        user_id,
-      ),
+      'user_entity_role.entity_id': await getPrimaryPersonIdFromUserId(user_id),
     });
   // soon to be changed/deprecated
   const persons = await knex('user_entity_role')
-    .select(
-      'user_entity_role.entity_id',
-      'name',
-      'surname',
-      'photo_url',
-    )
-    .leftJoin(
-      'entities',
-      'user_entity_role.entity_id',
-      '=',
-      'entities.id',
-    )
+    .select('*')
+    .leftJoin('entities', 'user_entity_role.entity_id', '=', 'entities.id')
     .leftJoin(
       'entities_general_infos',
       'user_entity_role.entity_id',
@@ -179,6 +148,7 @@ async function getBasicUserInfoFromId(user_id) {
       name: primaryPerson.name,
       photoUrl: primaryPerson.photo_url,
       surname: primaryPerson.surname,
+      unreadMessagesAmount: primaryPerson.unread_messages_amount,
     },
     persons: persons.map(person => ({
       id: person.entity_id,
@@ -186,6 +156,7 @@ async function getBasicUserInfoFromId(user_id) {
       name: person.name,
       photoUrl: person.photo_url,
       surname: person.surname,
+      unreadMessagesAmount: person.unread_messages_amount,
     })),
     appRole: app_role,
     language,
@@ -324,10 +295,7 @@ async function getLanguageFromEmail(email) {
   return getLanguageFromUser(id);
 }
 
-async function sendNewConfirmationEmailAllIncluded(
-  email,
-  successRoute,
-) {
+async function sendNewConfirmationEmailAllIncluded(email, successRoute) {
   const confirmationEmailToken = generateToken();
   const language = await getLanguageFromEmail(email);
 
@@ -351,8 +319,7 @@ async function sendPersonTransferEmailAllIncluded({
 }) {
   const personTransferToken = generateToken();
   const sender = await getBasicUserInfoFromId(senderUserId);
-  const language =
-    (await getLanguageFromEmail(email)) || sender.language;
+  const language = (await getLanguageFromEmail(email)) || sender.language;
   const senderPrimaryPersonId = await getPrimaryPersonIdFromUserId(
     senderUserId,
   );

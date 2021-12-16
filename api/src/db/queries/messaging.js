@@ -7,9 +7,9 @@ import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
 export const getConversationById = async conversationId => {
   const [conversation] = await conversations
     .query()
-    .withGraphJoined(
-      '[conversationParticipants.entitiesGeneralInfos]',
-    )
+    .withGraphJoined('[conversationParticipants.entitiesGeneralInfos]', {
+      minimize: true,
+    })
     .where('conversations.id', conversationId);
 
   return conversation;
@@ -19,28 +19,25 @@ export const getConversations = async ({
   recipientId,
   // page
 }) =>
-// searchQuery,
-{
-  // Search is not supported for now :)
-  // Implement search + filter
-  const convos = await conversationParticipants
-    .query()
-    .withGraphJoined(
-      '[conversation.[conversationParticipants.entitiesGeneralInfos]]',
-      { minimize: true },
-    )
-    .where('conversation_participants.participant_id', recipientId);
+  // searchQuery,
+  {
+    // Search is not supported for now :)
+    // Implement search + filter
+    const convos = await conversationParticipants
+      .query()
+      .withGraphJoined(
+        '[conversation.[conversationParticipants.entitiesGeneralInfos]]',
+        { minimize: true },
+      )
+      .where('conversation_participants.participant_id', recipientId);
 
-  return convos;
-};
+    return convos;
+  };
 
 export const getConversationParticipants = async conversationId => {
   const participants = await conversationParticipants
     .query()
-    .where(
-      'conversation_participants.conversation_id',
-      conversationId,
-    );
+    .where('conversation_participants.conversation_id', conversationId);
 
   return participants;
 };
@@ -52,17 +49,13 @@ export const getConversationParticipantsByUserId = async (
   const participants = await conversationParticipants
     .query()
     .withGraphJoined('userEntityRole')
-    .where(
-      'conversation_participants.conversation_id',
-      conversationId,
-    )
+    .where('conversation_participants.conversation_id', conversationId)
     .andWhere('userEntityRole.user_id', userId)
     .debug();
 
   return participants;
 };
 
-/* eslint-disable no-unused-vars */
 export const getConversationWithParticipants = async participants => {
   const [{ conversation_id } = {}] = await conversationParticipants
     .query()
@@ -71,15 +64,14 @@ export const getConversationWithParticipants = async participants => {
     // eslint-disable-next-line
     .havingRaw(
       'sum(case when "participant_id" not in (' +
-      participants.map(_ => '?').join(',') +
-      ') then 1 else 0 end) = 0 and sum(case when "participant_id" in (' +
-      participants.map(_ => '?').join(',') +
-      ') then 1 else 0 end) = ?;',
+        participants.map(() => '?').join(',') +
+        ') then 1 else 0 end) = 0 and sum(case when "participant_id" in (' +
+        participants.map(() => '?').join(',') +
+        ') then 1 else 0 end) = ?;',
       [...participants, ...participants, participants.length],
     );
   return conversation_id;
 };
-/* eslint-disable no-unused-vars */
 
 export const getMessagesFromConversation = async conversationId => {
   return conversationMessages
@@ -110,19 +102,13 @@ export const createConversation = async participants => {
       participant_id: p,
     }));
 
-    await conversationParticipants
-      .query(trx)
-      .insertGraph(participantsObj);
+    await conversationParticipants.query(trx).insertGraph(participantsObj);
 
     return conversationId;
   });
 };
 
-export const createMessage = async (
-  conversationId,
-  content,
-  senderId,
-) => {
+export const createMessage = async (conversationId, content, senderId) => {
   const message = await conversationMessages.query().insertGraph({
     text: content,
     conversation_id: conversationId,
@@ -132,10 +118,7 @@ export const createMessage = async (
   return message.id;
 };
 
-export const addParticipants = async (
-  conversationId,
-  participantIds,
-) => {
+export const addParticipants = async (conversationId, participantIds) => {
   return await conversationParticipants
     .query()
     .insertGraph(
@@ -147,10 +130,7 @@ export const addParticipants = async (
     .returning('conversation_id');
 };
 
-export const removeParticipant = async (
-  conversationId,
-  participantId,
-) => {
+export const removeParticipant = async (conversationId, participantId) => {
   return await conversationParticipants
     .query()
     .delete()
@@ -158,10 +138,7 @@ export const removeParticipant = async (
     .andWhere('participant_id', participantId);
 };
 
-export const updateConversationName = async (
-  conversationId,
-  name,
-) => {
+export const updateConversationName = async (conversationId, name) => {
   return await conversations
     .query()
     .patch({ name: name })
@@ -222,9 +199,7 @@ export const getAllOwnedEntitiesMessaging = async (
       .andWhere(
         'role',
         '<=',
-        onlyAdmin
-          ? ENTITIES_ROLE_ENUM.ADMIN
-          : ENTITIES_ROLE_ENUM.EDITOR,
+        onlyAdmin ? ENTITIES_ROLE_ENUM.ADMIN : ENTITIES_ROLE_ENUM.EDITOR,
       )
   ).map(person => ({
     entity_id: person.entity_id,
@@ -239,8 +214,7 @@ export const getAllOwnedEntitiesMessaging = async (
     entityIds = [...newEntityIds, ...entityIds];
     entityIds = entityIds.filter(
       (entity, index) =>
-        entityIds.findIndex(e => e.entity_id === entity.entity_id) ===
-        index,
+        entityIds.findIndex(e => e.entity_id === entity.entity_id) === index,
     );
 
     newEntityIds = (
@@ -253,24 +227,19 @@ export const getAllOwnedEntitiesMessaging = async (
         .andWhere(
           'role',
           '<=',
-          onlyAdmin
-            ? ENTITIES_ROLE_ENUM.ADMIN
-            : ENTITIES_ROLE_ENUM.EDITOR,
+          onlyAdmin ? ENTITIES_ROLE_ENUM.ADMIN : ENTITIES_ROLE_ENUM.EDITOR,
         )
     ).map(entity => ({
       ...entity,
       role: Math.max(
         entity.role,
-        entityIds.find(e => e.entity_id === entity.entity_id_admin)
-          .role,
+        entityIds.find(e => e.entity_id === entity.entity_id_admin).role,
       ),
     }));
 
     count++;
   } while (
-    newEntityIds.some(
-      id => !entityIds.find(e => e.entity_id === id),
-    ) &&
+    newEntityIds.some(id => !entityIds.find(e => e.entity_id === id)) &&
     count < 5
   );
 
@@ -302,4 +271,33 @@ export const getAllOwnedEntitiesMessaging = async (
     photoUrl: entity.photo_url,
     entity_id_admin: undefined,
   }));
+};
+
+export const incrementUnreadMessageCount = async participantIds => {
+  return knex('entities_general_infos')
+    .update(
+      'unread_messages_amount',
+      knex.raw('unread_messages_amount::int + 1'),
+    )
+    .whereIn('entity_id', participantIds);
+};
+
+export const resetUnreadMessages = async entityId => {
+  return knex('entities_general_infos')
+    .update('unread_messages_amount', 0)
+    .where('entity_id', entityId);
+};
+
+export const updateReadReceipt = async (entityId, conversationId) => {
+  return knex('conversation_participants')
+    .update('read_last_message_at', 'now()')
+    .where('conversation_id', conversationId)
+    .andWhere('participant_id', entityId);
+};
+
+export const resetReadReceipts = async (participantIds, conversationId) => {
+  return knex('conversation_participants')
+    .update('read_last_message_at', null)
+    .whereIn('participant_id', participantIds)
+    .andWhere('conversation_id', conversationId);
 };

@@ -13,6 +13,10 @@ export class conversationParticipants extends Model {
     return ['conversation_id', 'participant_id'];
   }
 
+  fullName() {
+    return this.firstName + ' ' + this.lastName;
+  }
+
   static get relationMappings() {
     return {
       conversation: {
@@ -46,7 +50,7 @@ export class conversationParticipants extends Model {
           from: 'conversation_participants.participant_id',
           to: 'user_entity_role.entity_id',
         },
-      }
+      },
     };
   }
 }
