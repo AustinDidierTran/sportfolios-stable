@@ -4,30 +4,38 @@ A sport platform looking to generate sport portfolios (Sportfolios) automaticall
 
 ## Table of content
 
-- [Project setup](#project-setup)
-- [Install node, npm, nvm](#install-node-npm-nvm)
-- [Install db migrate](#install-db-migrate)
-- [Setup the project](#setup-the-project)
-- [Using Docker](#using-docker)
-  - [Install Docker](#install-docker)
-  - [Setup db migration](#setup-db-migration-docker)
-  - [How to run the application](#how-to-run-the-application-docker)
-- [Using pm2](#using-pm2)
-  - [Install pm2](#install-pm2)
-  - [Install postgresql](#install-postgresql)
-  - [Setup db migration](#setup-db-migration-pm2)
-  - [How to run the application](#how-to-run-the-application-pm2)
-- [How to run migrations](#how-to-run-migrations)
-- [How to run the application](#how-to-run-the-application)
-- [How email are displayed](#how-email-are-displayed)
-  - [With Docker](#with-docker)
-  - [With pm2](#with-pm2)
-- [How to follow git flow and make standard pull requests](#how-to-follow-git-flow-and-make-standard-pull-requests)
-- [FAQ](#faq)
-  - [What to do if you can't connect to SSH](#what-to-do-if-you-can't-connect-to-ssh)
-- [References](#references)
-  - [Webpack setup](#webpack-setup)
-  - [How to create SSL certificates](#how-to-create-ssl-certificates)
+- [Sportfolios](#sportfolios)
+  - [Table of content](#table-of-content)
+  - [Project setup](#project-setup)
+  - [Install node, npm, nvm](#install-node-npm-nvm)
+  - [Install db migrate](#install-db-migrate)
+  - [Setup the project](#setup-the-project)
+  - [Using Docker](#using-docker)
+    - [Install Docker](#install-docker)
+    - [Setup docker-compose file](#setup-docker-compose-file)
+    - [Setup db migration Docker](#setup-db-migration-docker)
+    - [How to run the application Docker](#how-to-run-the-application-docker)
+  - [Using pm2](#using-pm2)
+    - [Install pm2](#install-pm2)
+    - [Install postgresql](#install-postgresql)
+    - [Setup db migration pm2](#setup-db-migration-pm2)
+    - [How to run the application pm2](#how-to-run-the-application-pm2)
+  - [How to run migrations](#how-to-run-migrations)
+  - [How to access your local DB with pgAdmin4](#how-to-access-your-local-db-with-pgadmin4)
+  - [Quick way to populate your db](#quick-way-to-populate-your-db)
+  - [How email are displayed](#how-email-are-displayed)
+    - [With Docker](#with-docker)
+    - [With pm2](#with-pm2)
+  - [How to follow git flow and make standard pull requests](#how-to-follow-git-flow-and-make-standard-pull-requests)
+  - [FAQ](#faq)
+    - [What to do if you can't connect to SSH](#what-to-do-if-you-cant-connect-to-ssh)
+  - [References](#references)
+    - [Webpack setup](#webpack-setup)
+    - [How to create SSL certificates](#how-to-create-ssl-certificates)
+  - [PWA](#pwa)
+    - [What is a PWA](#what-is-a-pwa)
+    - [Service workers](#service-workers)
+  - [What's next?](#whats-next)
 
 ## Project setup
 
@@ -174,6 +182,9 @@ Mac:
 
 Install Docker Desktop from https://hub.docker.com/editions/community/docker-ce-desktop-mac
 
+### Setup docker-compose file
+Rename one of the docker-compose-*****.yml (depend on which os you use) to docker-compose.yml.
+
 ### Setup db migration Docker
 
 Edit one line in the files `docker-compose.yml` and `docker-compose.prod.yml` to change your postgres password (optional):
@@ -185,10 +196,7 @@ POSTGRES_PASSWORD: password
 In sportfolios-stable, create a knexfile.js with your own configuration. It should look like this:
 
 ```javascript
-import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { join } from 'path';
 
 const BASE_PATH = join(__dirname, 'api', 'src', 'db');
 
@@ -218,6 +226,46 @@ export const production = {
   client: 'pg',
   connection:
     'postgres://postgres:password@localhost/sportfolios_api',
+  migrations: {
+    directory: join(BASE_PATH, 'migrations'),
+  },
+  seeds: {
+    directory: join(BASE_PATH, 'seeds'),
+  },
+};
+```
+if you use Docker-compose:
+```javascript
+import { join } from 'path';
+
+const BASE_PATH = join(__dirname, 'api', 'src', 'db');
+
+export const test = {
+  client: 'pg',
+  connection:
+    'postgres://postgres:password@db/sportfolios_api_test',
+  migrations: {
+    directory: join(BASE_PATH, 'migrations'),
+  },
+  seeds: {
+    directory: join(BASE_PATH, 'seeds'),
+  },
+};
+export const development = {
+  client: 'pg',
+  connection:
+    'postgres://postgres:password@db/sportfolios_api_dev',
+  migrations: {
+    directory: join(BASE_PATH, 'migrations'),
+  },
+  seeds: {
+    directory: join(BASE_PATH, 'seeds'),
+  },
+};
+export const production = {
+  client: 'pg',
+  connection:
+    'postgres://postgres:password@db/sportfolios_api',
   migrations: {
     directory: join(BASE_PATH, 'migrations'),
   },
