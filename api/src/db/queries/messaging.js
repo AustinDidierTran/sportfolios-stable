@@ -247,19 +247,33 @@ export const getAllOwnedEntitiesMessaging = async (
     .select('*')
     .from(
       knex
-        .select('id', 'type', 'name', 'surname', 'photo_url')
-        .from('entities_all_infos')
+        .select(
+          'entity_id',
+          'type',
+          'name',
+          'surname',
+          'photo_url',
+          'unread_messages_amount',
+        )
+        .from('entities_general_infos')
+        .leftJoin(
+          'entities',
+          'entities_general_infos.entity_id',
+          '=',
+          'entities.id',
+        )
         .whereNull('deleted_at')
         .whereIn(
-          'entities_all_infos.id',
+          'entities_general_infos.entity_id',
           entityIds.map(e => e.entity_id),
         )
         .groupBy(
-          'entities_all_infos.id',
-          'entities_all_infos.type',
-          'entities_all_infos.name',
-          'entities_all_infos.surname',
-          'entities_all_infos.photo_url',
+          'entities_general_infos.entity_id',
+          'entities.type',
+          'entities_general_infos.name',
+          'entities_general_infos.surname',
+          'entities_general_infos.photo_url',
+          'entities_general_infos.unread_messages_amount',
         )
         .as('res'),
     )
@@ -270,6 +284,10 @@ export const getAllOwnedEntitiesMessaging = async (
     photo_url: undefined,
     photoUrl: entity.photo_url,
     entity_id_admin: undefined,
+    unread_messages_amount: undefined,
+    unreadMessagesAmount: entity.unread_messages_amount,
+    entity_id: undefined,
+    id: entity.entity_id,
   }));
 };
 
