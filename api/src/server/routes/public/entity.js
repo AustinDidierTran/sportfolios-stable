@@ -1,6 +1,6 @@
 import Router from 'koa-router';
 import * as service from '../../service/entity-deprecate.js';
-import * as organizationService from '../../service/organization.js';
+import * as organizationService from '../../service/organization.ts';
 import * as eventService from '../../service/event.js';
 import { GLOBAL_ENUM } from '../../../../../common/enums/index.js';
 const router = new Router();
@@ -21,10 +21,7 @@ router.get(BASE_URL, async ctx => {
 
   switch (type) {
     case GLOBAL_ENUM.ORGANIZATION:
-      entity = await organizationService.getOrganization(
-        ctx.query.id,
-        userId,
-      );
+      entity = await organizationService.getOrganization(ctx.query.id, userId);
       break;
     case GLOBAL_ENUM.EVENT:
       entity = await eventService.getEvent(ctx.query.id, userId);
@@ -80,9 +77,7 @@ router.get(`${BASE_URL}/teamExercises`, async ctx => {
 
 //exported
 router.get(`${BASE_URL}/sessionExercises`, async ctx => {
-  const exercise = await service.getSessionExercises(
-    ctx.query.sessionId,
-  );
+  const exercise = await service.getSessionExercises(ctx.query.sessionId);
 
   if (!exercise) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -182,10 +177,7 @@ router.get(`${BASE_URL}/remainingSpots`, async ctx => {
 });
 
 router.get(`${BASE_URL}/getRoster`, async ctx => {
-  const roster = await service.getRoster(
-    ctx.query.rosterId,
-    ctx.query.withSub,
-  );
+  const roster = await service.getRoster(ctx.query.rosterId, ctx.query.withSub);
 
   if (!roster) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -222,10 +214,7 @@ router.get(`${BASE_URL}/games`, async ctx => {
 
 router.get(`${BASE_URL}/gameInfo`, async ctx => {
   const userId = getUserId(ctx);
-  const gameInfo = await service.getGameInfo(
-    ctx.query.gameId,
-    userId,
-  );
+  const gameInfo = await service.getGameInfo(ctx.query.gameId, userId);
 
   if (!gameInfo) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -234,9 +223,7 @@ router.get(`${BASE_URL}/gameInfo`, async ctx => {
 });
 
 router.get(`${BASE_URL}/teamLocations`, async ctx => {
-  const locations = await service.getSessionLocations(
-    ctx.query.teamId,
-  );
+  const locations = await service.getSessionLocations(ctx.query.teamId);
 
   if (!locations) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -258,9 +245,7 @@ router.get(`${BASE_URL}/practiceBasicInfo`, async ctx => {
 });
 
 router.get(`${BASE_URL}/practiceInfo`, async ctx => {
-  const practiceInfo = await service.getPracticeInfo(
-    ctx.query.practiceId,
-  );
+  const practiceInfo = await service.getPracticeInfo(ctx.query.practiceId);
 
   if (!practiceInfo) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
