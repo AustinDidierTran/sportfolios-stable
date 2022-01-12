@@ -23,7 +23,7 @@ import {
 import { ERROR_ENUM } from '../../../../../common/errors/index.js';
 import { stripePrice as stripePriceModel } from '../../models/stripePrice.js';
 
-const formatMetadata = (metadata) =>
+const formatMetadata = metadata =>
   Object.keys(metadata).reduce((prev, curr) => {
     const currentValue = metadata[curr];
     if (typeof currentValue === 'string') {
@@ -151,7 +151,7 @@ const createTransfer = async (params, invoiceItemId) => {
   }
 };
 
-const getExternalAccount = async (stripePriceId) => {
+const getExternalAccount = async stripePriceId => {
   const [{ owner_id: ownerId }] = await knex('stripe_price')
     .select('owner_id')
     .where({ stripe_price_id: stripePriceId });
@@ -161,10 +161,10 @@ const getExternalAccount = async (stripePriceId) => {
   return externalAccount;
 };
 
-const createTransfers = async (invoice) => {
+const createTransfers = async invoice => {
   try {
     const transfers = await Promise.all(
-      invoice.lines.data.map(async (item) => {
+      invoice.lines.data.map(async item => {
         const { amount, currency, invoice_item: invoiceItemId } = item;
 
         const [invoiceItem] = await knex('stripe_invoice_item')
@@ -186,7 +186,7 @@ const createTransfers = async (invoice) => {
           .where({ stripe_price_id: invoiceItem.stripe_price_id });
 
         const taxRates = await Promise.all(
-          taxRatesId.map(async (t) => {
+          taxRatesId.map(async t => {
             const [{ percentage }] = await knex('tax_rates')
               .select('percentage')
               .where({ id: t.tax_rate_id });
@@ -227,21 +227,28 @@ const createTransfers = async (invoice) => {
   }
 };
 
-const createRefund = async (body) => {
+const createRefund = async body => {
   const { invoiceItemId } = body;
+  console.log(100, { body });
   const invoiceItem = await stripe.invoiceItems.retrieve(invoiceItemId);
+  console.log(101, { invoiceItem });
 
   const invoice = await stripe.invoices.retrieve(invoiceItem.invoice);
+  console.log(102, { invoice });
 
   const amount = invoiceItem.amount;
+  console.log(103, { amount });
   const charge = invoice.charge;
+  console.log(104, { charge });
 
   const params = {
     charge,
     amount,
   };
+  console.log(105, { params });
 
   const refund = await stripe.refunds.create(params);
+  console.log(106, { refund });
 
   await knex('stripe_refund').insert({
     invoice_item_id: invoiceItemId,
@@ -254,15 +261,17 @@ const createRefund = async (body) => {
     .where({
       invoice_item_id: invoiceItemId,
     });
+  console.log(107, { transferId });
 
   const reversedTransfer = await stripe.transfers.createReversal(transferId, {
     refund_application_fee: true,
   });
+  console.log(108, { reversedTransfer });
 
   return { refund, reversedTransfer };
 };
 
-const getReceipt = async (query) => {
+const getReceipt = async query => {
   const { chargeId, invoiceId } = query;
   const params = chargeId;
 
@@ -290,14 +299,14 @@ const sendReceiptEmail = async (body, userId) => {
   return sendReceiptEmailHelper({ email, receipt, language, userId });
 };
 
-const getTaxRatesFromStripePrice = async (stripePriceId) => {
+const getTaxRatesFromStripePrice = async stripePriceId => {
   const taxRatesId = await knex('tax_rates_stripe_price')
     .select('tax_rate_id')
     .where({ stripe_price_id: stripePriceId });
 
-  return taxRatesId.map((t) => t.tax_rate_id);
+  return taxRatesId.map(t => t.tax_rate_id);
 };
-const getTransactionFeesFromStripePriceId = async (stripePriceId) => {
+const getTransactionFeesFromStripePriceId = async stripePriceId => {
   const [{ transaction_fees: transactionFees }] = await knex('stripe_price')
     .select('transaction_fees')
     .where({ stripe_price_id: stripePriceId });
@@ -353,11 +362,11 @@ const checkout = async (body, userId) => {
   // Set ticket limit
   if (false) {
     const eventTickets = prices.filter(
-      (price) => price.metadata.type === CART_ITEM.EVENT_TICKET,
+      price => price.metadata.type === CART_ITEM.EVENT_TICKET,
     );
 
     const ticketOptions = await getTicketOptionsByStripePriceIds(
-      eventTickets.map((ticket) => ticket.stripe_price_id),
+      eventTickets.map(ticket => ticket.stripe_price_id),
     );
 
     const gameIdsForTicketOptions = ticketOptions.reduce(
@@ -368,21 +377,20 @@ const checkout = async (body, userId) => {
       {},
     );
 
-    const gamesWithLimit = ticketOptions.map((ticketOption) => ({
+    const gamesWithLimit = ticketOptions.map(ticketOption => ({
       ticketLimit: ticketOption.games.ticket_limit,
       gameId: ticketOption.games.id,
     }));
 
-    const eventTicketWithGame = eventTickets.map((eventTicket) => ({
+    const eventTicketWithGame = eventTickets.map(eventTicket => ({
       quantity: eventTicket.quantity,
       gameId: gameIdsForTicketOptions[eventTicket.id],
       ticketLimit: gamesWithLimit.find(
-        (g) =>
-          g.gameId === gameIdsForTicketOptions[eventTicket.stripe_price_id],
+        g => g.gameId === gameIdsForTicketOptions[eventTicket.stripe_price_id],
       ).ticketLimit,
     }));
 
-    eventTicketWithGame.forEach(async (etwg) => {
+    eventTicketWithGame.forEach(async etwg => {
       const sold = await getCountTicketPaidByGameId(etwg.gameId);
       if (sold + etwg.quantity > etwg.ticketLimit) {
         throw new Error(ERROR_ENUM.NOT_ENOUGH_PLACE_REMAINING);
@@ -392,7 +400,7 @@ const checkout = async (body, userId) => {
 
   try {
     const invoicesAndMetadatas = await Promise.all(
-      prices.map(async (price) => {
+      prices.map(async price => {
         const stripePriceId = price.stripe_price_id;
 
         const quantity = price.quantity;
