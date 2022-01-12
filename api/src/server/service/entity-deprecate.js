@@ -260,29 +260,13 @@ function getSessionExercises(sessionId) {
   return getSessionExercisesHelper(sessionId);
 }
 
-async function getPlayerSessionEvaluation(
-  exerciseId,
-  sessionId,
-  userId,
-) {
-  return getPlayerSessionEvaluationHelper(
-    exerciseId,
-    sessionId,
-    userId,
-  );
+async function getPlayerSessionEvaluation(exerciseId, sessionId, userId) {
+  return getPlayerSessionEvaluationHelper(exerciseId, sessionId, userId);
 }
 
-async function getCoachSessionEvaluation(
-  exerciseId,
-  sessionId,
-  userId,
-) {
+async function getCoachSessionEvaluation(exerciseId, sessionId, userId) {
   const coachId = await getPrimaryPersonIdFromUserId(userId);
-  return getCoachSessionEvaluationHelper(
-    exerciseId,
-    sessionId,
-    coachId,
-  );
+  return getCoachSessionEvaluationHelper(exerciseId, sessionId, coachId);
 }
 
 async function getIsTeamCoach(teamId, userId) {
@@ -311,13 +295,7 @@ function hasMemberships(organizationId) {
 }
 
 async function getOrganizationTokenPromoCode(organizationId, userId) {
-  if (
-    !(await isAllowed(
-      organizationId,
-      userId,
-      ENTITIES_ROLE_ENUM.EDITOR,
-    ))
-  ) {
+  if (!(await isAllowed(organizationId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return getOrganizationTokenPromoCodeHelper(organizationId);
@@ -406,14 +384,7 @@ async function updateGameRsvp(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  return updateGameRsvpHelper(
-    id,
-    rsvp,
-    personId,
-    rosterId,
-    updateAll,
-    userId,
-  );
+  return updateGameRsvpHelper(id, rsvp, personId, rosterId, updateAll, userId);
 }
 
 function getHasSpirit(eventId) {
@@ -525,16 +496,8 @@ function getGeneralInfos(entityId, userId) {
   return getGeneralInfosHelper(entityId, userId);
 }
 
-function getGraphAmountGeneratedByEvent(
-  eventPaymentId,
-  language,
-  date,
-) {
-  return getGraphAmountGeneratedByEventHelper(
-    eventPaymentId,
-    language,
-    date,
-  );
+function getGraphAmountGeneratedByEvent(eventPaymentId, language, date) {
+  return getGraphAmountGeneratedByEventHelper(eventPaymentId, language, date);
 }
 
 function getGraphUserCount(date, language) {
@@ -579,19 +542,12 @@ async function getPossibleSubmissionerInfos(gameId, teams, userId) {
   const teamsList = JSON.parse(teams);
   const adminsOfTeams = await Promise.all(
     teamsList.map(async t => {
-      const admins = await getMyPersonsAdminsOfTeamHelper(
-        t.rosterId,
-        userId,
-      );
+      const admins = await getMyPersonsAdminsOfTeamHelper(t.rosterId, userId);
       if (!admins) {
         return;
       }
-      const myTeam = teamsList.find(
-        team => team.rosterId === t.rosterId,
-      );
-      const enemyTeam = teamsList.find(
-        team => team.rosterId !== t.rosterId,
-      );
+      const myTeam = teamsList.find(team => team.rosterId === t.rosterId);
+      const enemyTeam = teamsList.find(team => team.rosterId !== t.rosterId);
       return {
         myTeam: {
           rosterId: myTeam.rosterId,
@@ -617,9 +573,7 @@ async function updateEvent(body, userId) {
   const { eventId, maximumSpots, startDate, endDate } = body;
   const nbOfTeams = await getNbOfTeamsInEventHelper(eventId);
   const lastTeamInPrerank = await getLastRankedTeamHelper(eventId);
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -627,10 +581,7 @@ async function updateEvent(body, userId) {
     const reason = REJECTION_ENUM.TOO_MANY_TEAMS;
     return { reason };
   }
-  if (
-    typeof maximumSpots === 'number' &&
-    lastTeamInPrerank > maximumSpots
-  ) {
+  if (typeof maximumSpots === 'number' && lastTeamInPrerank > maximumSpots) {
     const reason = REJECTION_ENUM.LAST_TEAM_HIGHER_THAN_SPOTS;
     return { reason };
   }
@@ -650,9 +601,7 @@ function getRealId(id) {
 
 async function updatePreRanking(body, userId) {
   const { eventId, ranking } = body;
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return updatePreRankingHelper(eventId, ranking);
@@ -665,9 +614,7 @@ async function updateGeneralInfos(body) {
 }
 
 async function updateHasSpirit(eventId, hasSpirit, userId) {
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return updateHasSpiritHelper(eventId, hasSpirit);
@@ -675,23 +622,14 @@ async function updateHasSpirit(eventId, hasSpirit, userId) {
 
 async function updatePersonInfos(body, userId) {
   const { entityId, ...otherBody } = body;
-  if (
-    !(await isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(entityId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return updatePersonInfosHelper(entityId, otherBody);
 }
 
 async function addTeamToEvent(body, userId) {
-  const {
-    teamId,
-    eventId,
-    paymentOption,
-    roster,
-    status,
-    informations,
-  } = body;
+  const { teamId, eventId, paymentOption, roster, status, informations } = body;
   if (!(await isAllowed(teamId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
@@ -699,9 +637,7 @@ async function addTeamToEvent(body, userId) {
     throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
   }
   // Reject team if there is already too many registered teams
-  const numberOfTeamsRemaining = await getRemainingSpotsHelper(
-    eventId,
-  );
+  const numberOfTeamsRemaining = await getRemainingSpotsHelper(eventId);
   if (typeof numberOfTeamsRemaining !== 'number') {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -789,11 +725,7 @@ async function addTeamToEvent(body, userId) {
     }
 
     const infos = { team, event, isFreeOption };
-    sendNotification(
-      NOTIFICATION_TYPE.TEAM_REGISTRATION,
-      userId,
-      infos,
-    );
+    sendNotification(NOTIFICATION_TYPE.TEAM_REGISTRATION, userId, infos);
 
     creatorUserIds.map(async userId => {
       const placesLeft = await getRemainingSpotsHelper(event.id);
@@ -853,9 +785,7 @@ const addPlayerCartItem = async body => {
 
 async function addTeamAsAdmin(body, userId) {
   const { eventId, name } = body;
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   // Reject team if there is already too many registered teams
@@ -902,13 +832,7 @@ async function addTeamAsAdmin(body, userId) {
 }
 
 async function addPersonToEvent(body, userId) {
-  const {
-    eventId,
-    paymentOption,
-    persons,
-    status,
-    informations,
-  } = body;
+  const { eventId, paymentOption, persons, status, informations } = body;
 
   if (!paymentOption) {
     throw new Error(ERROR_ENUM.VALUE_IS_REQUIRED);
@@ -916,10 +840,7 @@ async function addPersonToEvent(body, userId) {
 
   const remainingSpots = await getRemainingSpotsHelper(eventId);
   // Reject team if there is already too many registered teams
-  if (
-    typeof remainingSpots === 'number' &&
-    remainingSpots < persons.length
-  ) {
+  if (typeof remainingSpots === 'number' && remainingSpots < persons.length) {
     const registrationStatus = STATUS_ENUM.REFUSED;
     const reason = REJECTION_ENUM.NO_REMAINING_SPOTS;
     return { status: registrationStatus, reason };
@@ -941,10 +862,7 @@ async function addPersonToEvent(body, userId) {
     registrationStatus = STATUS_ENUM.PENDING;
   }
 
-  const registeredPersons = await getRegisteredPersons(
-    persons,
-    eventId,
-  );
+  const registeredPersons = await getRegisteredPersons(persons, eventId);
 
   if (registeredPersons.length > 0) {
     return {
@@ -988,8 +906,7 @@ async function addPersonToEvent(body, userId) {
           );
           await addEventCartItem(
             {
-              stripePriceId:
-                individualPaymentOption.individual_stripe_price_id,
+              stripePriceId: individualPaymentOption.individual_stripe_price_id,
               metadata: {
                 eventId: event.id,
                 sellerEntityId: ownerId,
@@ -1006,16 +923,10 @@ async function addPersonToEvent(body, userId) {
           isFreeOption,
         };
         //send notification to person
-        sendNotification(
-          NOTIFICATION_TYPE.PERSON_REGISTRATION,
-          userId,
-          infos,
-        );
+        sendNotification(NOTIFICATION_TYPE.PERSON_REGISTRATION, userId, infos);
         // send notification to organization admin
         const creatorUserIds = await getCreatorsUserId(eventId);
-        const newRemainingSpots = await getRemainingSpotsHelper(
-          eventId,
-        );
+        const newRemainingSpots = await getRemainingSpotsHelper(eventId);
         await Promise.all(
           creatorUserIds.map(async userId => {
             const infos = {
@@ -1091,20 +1002,13 @@ async function getS3Signature(userId, { fileType }) {
 
 async function updateEntityRole(body, userId) {
   const { entity_id, entity_id_admin, role } = body;
-  if (
-    !(await isAllowed(entity_id, userId, ENTITIES_ROLE_ENUM.ADMIN))
-  ) {
+  if (!(await isAllowed(entity_id, userId, ENTITIES_ROLE_ENUM.ADMIN))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   if (role === ENTITIES_ROLE_ENUM.VIEWER) {
     return removeEntityRoleHelper(entity_id, entity_id_admin, userId);
   } else {
-    return updateEntityRoleHelper(
-      entity_id,
-      entity_id_admin,
-      role,
-      userId,
-    );
+    return updateEntityRoleHelper(entity_id, entity_id_admin, role, userId);
   }
 }
 
@@ -1113,12 +1017,7 @@ async function updateRegistration(body, userId) {
   if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.ADMIN))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
-  return updateRegistrationHelper(
-    rosterId,
-    eventId,
-    invoiceItemId,
-    status,
-  );
+  return updateRegistrationHelper(rosterId, eventId, invoiceItemId, status);
 }
 
 async function updateRosterRole(body, userId) {
@@ -1140,21 +1039,14 @@ async function updateRosterRole(body, userId) {
 
 async function addEntityRole(body, userId) {
   const { entity_id, entity_id_admin, role } = body;
-  if (
-    !(await isAllowed(entity_id, userId, ENTITIES_ROLE_ENUM.ADMIN))
-  ) {
+  if (!(await isAllowed(entity_id, userId, ENTITIES_ROLE_ENUM.ADMIN))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return addEntityRoleHelper(entity_id, entity_id_admin, role);
 }
 
 async function updateMember(body) {
-  const {
-    member_type,
-    organization_id,
-    person_id,
-    expiration_date,
-  } = body;
+  const { member_type, organization_id, person_id, expiration_date } = body;
   const res = await updateMemberHelper(
     member_type,
     organization_id,
@@ -1227,11 +1119,7 @@ async function updateTeamAcceptation(body) {
     }
 
     const infos = { team, event, isFreeOption: false };
-    sendNotification(
-      NOTIFICATION_TYPE.TEAM_REGISTRATION,
-      userId,
-      infos,
-    );
+    sendNotification(NOTIFICATION_TYPE.TEAM_REGISTRATION, userId, infos);
   }
 
   if (registrationStatus === STATUS_ENUM.REFUSED) {
@@ -1247,11 +1135,7 @@ async function updateTeamAcceptation(body) {
 
 async function updateTeamPlayerAcceptation(body) {
   const { teamId, personId, status } = body;
-  const res = await updateTeamPlayerAcceptationHelper(
-    teamId,
-    personId,
-    status,
-  );
+  const res = await updateTeamPlayerAcceptationHelper(teamId, personId, status);
   return res;
 }
 
@@ -1269,10 +1153,7 @@ async function updatePlayerAcceptation(body) {
   const userId = await getUserIdFromPersonId(personId);
 
   if (registrationStatus === STATUS_ENUM.ACCEPTED) {
-    const personPaymentOption = await getPersonPaymentOption(
-      personId,
-      eventId,
-    );
+    const personPaymentOption = await getPersonPaymentOption(personId, eventId);
 
     const ownerId = await getOwnerStripePrice(
       personPaymentOption.individualStripePriceId,
@@ -1292,19 +1173,11 @@ async function updatePlayerAcceptation(body) {
     );
 
     const infos = { person, event, isFreeOption: false };
-    sendNotification(
-      NOTIFICATION_TYPE.PERSON_REGISTRATION,
-      userId,
-      infos,
-    );
+    sendNotification(NOTIFICATION_TYPE.PERSON_REGISTRATION, userId, infos);
   }
   if (registrationStatus === STATUS_ENUM.ACCEPTED_FREE) {
     const infos = { person, event, isFreeOption: true };
-    sendNotification(
-      NOTIFICATION_TYPE.PERSON_REGISTRATION,
-      userId,
-      infos,
-    );
+    sendNotification(NOTIFICATION_TYPE.PERSON_REGISTRATION, userId, infos);
   }
   if (registrationStatus === STATUS_ENUM.REFUSED) {
     const infos = { person, event };
@@ -1414,20 +1287,12 @@ async function updatePracticeRsvp(body, userId) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  return updatePracticeRsvpHelper(
-    id,
-    rsvp,
-    personId,
-    updateAll,
-    userId,
-  );
+  return updatePracticeRsvpHelper(id, rsvp, personId, updateAll, userId);
 }
 
 async function updateGamesInteractiveTool(body, userId) {
   const { eventId, games } = body;
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return updateGamesInteractiveToolHelper(games);
@@ -1435,9 +1300,7 @@ async function updateGamesInteractiveTool(body, userId) {
 
 async function updateSuggestionStatus(body, userId) {
   const { eventId } = body;
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return updateSuggestionStatusHelper(body);
@@ -1477,11 +1340,7 @@ async function importMembers(body) {
           token,
           organizationName: organization.basicInfos.name,
         };
-        sendNotification(
-          NOTIFICATION_TYPE.IMPORT_MEMBER,
-          userId,
-          infos,
-        );
+        sendNotification(NOTIFICATION_TYPE.IMPORT_MEMBER, userId, infos);
       }
       return m;
     }),
@@ -1550,9 +1409,7 @@ async function addGame(body, userId) {
     rankingId2,
   } = body;
 
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -1607,11 +1464,7 @@ async function addSpiritSubmission(body, userId) {
   const { submitted_by_person } = body;
   if (
     submitted_by_person &&
-    !(await isAllowed(
-      submitted_by_person,
-      userId,
-      ENTITIES_ROLE_ENUM.EDITOR,
-    ))
+    !(await isAllowed(submitted_by_person, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
@@ -1625,9 +1478,7 @@ function getRostersNames(rosterArray) {
 
 async function setGameScore(body, userId) {
   const { eventId, gameId, score, isManualAdd } = body;
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return setGameScoreHelper(gameId, score, isManualAdd);
@@ -1637,11 +1488,7 @@ async function acceptScoreSuggestion(body, userId) {
   const { submitted_by_person } = body;
   if (
     submitted_by_person &&
-    !(await isAllowed(
-      submitted_by_person,
-      userId,
-      ENTITIES_ROLE_ENUM.EDITOR,
-    ))
+    !(await isAllowed(submitted_by_person, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
@@ -1653,11 +1500,7 @@ async function addScoreSuggestion(body, userId) {
 
   if (
     submitted_by_person &&
-    !(await isAllowed(
-      submitted_by_person,
-      userId,
-      ENTITIES_ROLE_ENUM.EDITOR,
-    ))
+    !(await isAllowed(submitted_by_person, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
@@ -1725,9 +1568,7 @@ async function addScoreSuggestion(body, userId) {
 
 async function addField(body, userId) {
   const { field, eventId } = body;
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return addFieldHelper(field, eventId);
@@ -1735,9 +1576,7 @@ async function addField(body, userId) {
 
 async function addTimeSlot(body, userId) {
   const { date, eventId } = body;
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   return addTimeSlotHelper(date, eventId);
@@ -1758,9 +1597,7 @@ async function addOption(body, userId) {
     informations,
     manualAcceptation,
   } = body;
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   const res = await addOptionHelper(
@@ -1782,18 +1619,13 @@ async function addOption(body, userId) {
 }
 
 const canUnregisterTeamsList = async (rosterIds, eventId) => {
-  return getWichTeamsCanUnregisterHelper(
-    JSON.parse(rosterIds),
-    eventId,
-  );
+  return getWichTeamsCanUnregisterHelper(JSON.parse(rosterIds), eventId);
 };
 
 const unregisterTeams = async (body, userId) => {
   const { eventId, rosterIds } = body;
 
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -1801,10 +1633,7 @@ const unregisterTeams = async (body, userId) => {
     const res = await Promise.all(
       rosterIds.map(async rosterId => {
         if (await canUnregisterTeamHelper(rosterId, eventId)) {
-          const {
-            invoiceItemId,
-            status,
-          } = await getRosterInvoiceItem({
+          const { invoiceItemId, status } = await getRosterInvoiceItem({
             eventId,
             rosterId,
           });
@@ -1837,9 +1666,7 @@ const unregisterTeams = async (body, userId) => {
                 status: INVOICE_STATUS_ENUM.REFUNDED,
                 invoiceItemId: player.invoiceItemId,
               });
-            } else if (
-              player.paymentStatus === INVOICE_STATUS_ENUM.OPEN
-            ) {
+            } else if (player.paymentStatus === INVOICE_STATUS_ENUM.OPEN) {
               // Individual payment is not paid, remove from cart
               await removeIndividualPaymentCartItemHelper({
                 buyerId: player.personId,
@@ -1850,8 +1677,7 @@ const unregisterTeams = async (body, userId) => {
           // Remove all references to this this in this event and remove players.
           const teamId = await getTeamIdFromRosterId(rosterId);
           const captainUserId = await getTeamCreatorUserId(teamId);
-          const team = (await getEntity(teamId, captainUserId))
-            .basicInfos;
+          const team = (await getEntity(teamId, captainUserId)).basicInfos;
           const event = (await getEntity(eventId)).basicInfos;
           const infos = { team, event, status };
           sendNotification(
@@ -1873,39 +1699,48 @@ const unregisterTeams = async (body, userId) => {
 };
 
 async function unregisterPeople(body, userId) {
+  console.log('trying to unregister people');
   const { eventId, people } = body;
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  console.log(1, { body });
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
   try {
     const res = await Promise.all(
       people.map(async person => {
+        console.log(2, { person });
         const { personId, stripePrice } = person;
         const { invoiceItemId, status } = await getPersonInvoiceItem({
           eventId,
           personId,
         });
+        console.log(3, { invoiceItemId, status });
         if (status === INVOICE_STATUS_ENUM.PAID) {
           // Registration paid, refund please
+          console.log(4);
           await createRefund({ invoiceItemId });
+          console.log(5);
           await updateRegistrationPersonHelper(
             personId,
             eventId,
             invoiceItemId,
             INVOICE_STATUS_ENUM.REFUNDED,
           );
+          console.log(6);
         } else if (status === INVOICE_STATUS_ENUM.OPEN) {
+          console.log(7);
           // Registration is not paid, remove from cart
           await removeIndividualEventCartItemHelper({
             personId,
             eventId,
             stripePrice,
           });
+          console.log(8);
         }
+        console.log(9);
         await deletePersonFromEvent({ personId, eventId });
+        console.log(10);
         return person;
       }),
     );
@@ -2007,11 +1842,7 @@ async function addPlayersToTeam(body, userId) {
       const res = await addPlayerToTeamHelper(player, teamId);
       const userId = await getUserIdFromPersonId(player.id);
       const infos = { team };
-      sendNotification(
-        NOTIFICATION_TYPE.ADDED_TO_TEAM,
-        userId,
-        infos,
-      );
+      sendNotification(NOTIFICATION_TYPE.ADDED_TO_TEAM, userId, infos);
       return res;
     }),
   );
@@ -2080,11 +1911,7 @@ async function addPlayerToRoster(body, userId) {
     name,
   };
 
-  sendNotification(
-    NOTIFICATION_TYPE.ADDED_TO_EVENT,
-    playerUserId,
-    infos,
-  );
+  sendNotification(NOTIFICATION_TYPE.ADDED_TO_EVENT, playerUserId, infos);
   return res;
 }
 
@@ -2127,9 +1954,7 @@ async function deletePlayerFromRoster(id, userId) {
 
 async function deleteGame(userId, query) {
   const { eventId, gameId } = query;
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -2142,14 +1967,7 @@ async function deletePractice(query) {
 }
 
 async function addExercise(query) {
-  const {
-    exerciseId,
-    name,
-    description,
-    type,
-    sessionId,
-    teamId,
-  } = query;
+  const { exerciseId, name, description, type, sessionId, teamId } = query;
 
   return addExerciseHelper(
     exerciseId,
@@ -2162,10 +1980,7 @@ async function addExercise(query) {
 }
 
 async function createRosterInviteToken(userId, rosterId) {
-  const admins = await getMyPersonsAdminsOfTeamHelper(
-    rosterId,
-    userId,
-  );
+  const admins = await getMyPersonsAdminsOfTeamHelper(rosterId, userId);
   if (!admins) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
@@ -2174,10 +1989,7 @@ async function createRosterInviteToken(userId, rosterId) {
 }
 
 async function getRosterInviteToken(userId, rosterId) {
-  const admins = await getMyPersonsAdminsOfTeamHelper(
-    rosterId,
-    userId,
-  );
+  const admins = await getMyPersonsAdminsOfTeamHelper(rosterId, userId);
   if (!admins) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
@@ -2189,10 +2001,7 @@ async function getRosterInviteToken(userId, rosterId) {
 }
 
 async function cancelRosterInviteToken(userId, rosterId) {
-  const admins = await getMyPersonsAdminsOfTeamHelper(
-    rosterId,
-    userId,
-  );
+  const admins = await getMyPersonsAdminsOfTeamHelper(rosterId, userId);
   if (!admins) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
@@ -2200,10 +2009,7 @@ async function cancelRosterInviteToken(userId, rosterId) {
 }
 
 async function getNewRosterInviteToken(userId, rosterId) {
-  const admins = await getMyPersonsAdminsOfTeamHelper(
-    rosterId,
-    userId,
-  );
+  const admins = await getMyPersonsAdminsOfTeamHelper(rosterId, userId);
   if (!admins) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
