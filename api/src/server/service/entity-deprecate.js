@@ -1699,9 +1699,7 @@ const unregisterTeams = async (body, userId) => {
 };
 
 async function unregisterPeople(body, userId) {
-  console.log('trying to unregister people');
   const { eventId, people } = body;
-  console.log(1, { body });
   if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
@@ -1709,38 +1707,29 @@ async function unregisterPeople(body, userId) {
   try {
     const res = await Promise.all(
       people.map(async person => {
-        console.log(2, { person });
         const { personId, stripePrice } = person;
         const { invoiceItemId, status } = await getPersonInvoiceItem({
           eventId,
           personId,
         });
-        console.log(3, { invoiceItemId, status });
         if (status === INVOICE_STATUS_ENUM.PAID) {
           // Registration paid, refund please
-          console.log(4);
           await createRefund({ invoiceItemId });
-          console.log(5);
           await updateRegistrationPersonHelper(
             personId,
             eventId,
             invoiceItemId,
             INVOICE_STATUS_ENUM.REFUNDED,
           );
-          console.log(6);
         } else if (status === INVOICE_STATUS_ENUM.OPEN) {
-          console.log(7);
           // Registration is not paid, remove from cart
           await removeIndividualEventCartItemHelper({
             personId,
             eventId,
             stripePrice,
           });
-          console.log(8);
         }
-        console.log(9);
         await deletePersonFromEvent({ personId, eventId });
-        console.log(10);
         return person;
       }),
     );
