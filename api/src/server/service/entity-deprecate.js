@@ -1746,6 +1746,7 @@ async function unregisterPeople(body, userId) {
     );
     return res;
   } catch (error) {
+    console.log({ error });
     throw new Error(ERROR_ENUM.UNREGISTRATION_ERROR);
   }
 }
