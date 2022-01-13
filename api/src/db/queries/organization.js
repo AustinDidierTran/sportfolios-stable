@@ -136,7 +136,7 @@ async function getOwnedEvents(organizationId) {
   return fullEvents;
 }
 
-export const getActiveSales = async (entityId, date) => {
+export const getActiveSales = async (entityId /* date */) => {
   const sales = await knex('store_items_paid')
     .select('*')
     .where({ seller_entity_id: entityId });

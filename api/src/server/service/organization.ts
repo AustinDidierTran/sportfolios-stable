@@ -1,4 +1,3 @@
-import { String } from 'aws-sdk/clients/batch';
 import {
   ENTITIES_ROLE_ENUM,
   REPORT_TYPE_ENUM,
@@ -7,42 +6,39 @@ import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import { getEntity } from '../../db/queries/entity-deprecate.js';
 import * as queries from '../../db/queries/organization.js';
 
-import * as entityQueries from '../../db/queries/entity.js';
-import * as eventQueries from '../../db/queries/event.js';
-import * as stripePayoutQueries from '../../db/queries/stripe/payout.js';
 import * as shopQueries from '../../db/queries/shop.js';
 import * as userQueries from '../../db/queries/user.js';
 
 import { isAllowed } from './entity-deprecate.js';
 
-export function getOwnedEvents(organizationId: string) {
+export const getOwnedEvents = (organizationId: string): any => {
   return queries.getOwnedEvents(organizationId);
-}
+};
 
-export function generateReport(reportId: string, userId: String) {
+export const generateReport = (reportId: string /** userId: string */): any => {
   // If no version if specified
   return queries.generateReport(reportId);
-}
+};
 
-interface IReportInfo {
+interface ReportInfo {
   organizationId: string;
   type: string;
   metadata: any;
 }
 
-interface IStripePayout {
+interface StripePayout {
   id: string;
   createdAt: Date;
 }
 
-interface ISale {
+interface Sale {
   amount: number;
   buyerUserId: string;
   createdAt: Date;
   id: string;
   invoiceItemId: string;
   metadata: any;
-  payout?: IStripePayout;
+  payout?: StripePayout;
   quantity: number;
   receiptId: string;
   sellerEntityId: string;
@@ -52,7 +48,7 @@ interface ISale {
   unitAmount: number;
 }
 
-interface ISaleReportInfo {
+interface SaleReportInfo {
   id: string;
   sellerEntityId: string;
   quantity: number;
@@ -76,7 +72,7 @@ interface ISaleReportInfo {
   totalNet: number;
 }
 
-interface IUserInfo {
+interface UserInfo {
   primaryPerson: {
     id: string;
     name: string;
@@ -86,11 +82,11 @@ interface IUserInfo {
   userId: string;
 }
 
-interface IUserInfoMap {
-  [primaryPersonId: string]: IUserInfo;
+interface UserInfoMap {
+  [primaryPersonId: string]: UserInfo;
 }
 
-interface ITaxRate {
+interface TaxRate {
   active: boolean;
   description: string;
   displayName: string;
@@ -100,7 +96,7 @@ interface ITaxRate {
   stripePriceId: string;
 }
 
-interface IEntity {
+interface Entity {
   basicInfos: {
     description: string;
     id: string;
@@ -116,20 +112,20 @@ interface IEntity {
   };
 }
 
-interface IEntityMap {
-  [id: string]: IEntity;
+interface EntityMap {
+  [id: string]: Entity;
 }
 
-interface ITaxRatesMap {
-  [stripePriceId: string]: ITaxRate[];
+interface TaxRatesMap {
+  [stripePriceId: string]: TaxRate[];
 }
 
 export const generateReportV2 = async (
   reportId: string,
   userId: string,
-): Promise<ISaleReportInfo[]> => {
+): Promise<SaleReportInfo[]> => {
   // Get Organization Id for report
-  const reportInfo: IReportInfo = await queries.getReportInfo(reportId);
+  const reportInfo: ReportInfo = await queries.getReportInfo(reportId);
 
   // See if user is authorized for report
   if (
@@ -145,10 +141,10 @@ export const generateReportV2 = async (
   // Generate report based on type
   if (reportInfo.type === REPORT_TYPE_ENUM.SALES) {
     /** Update Active Sales Payout */
-    await stripePayoutQueries.updatePayouts();
+    // await stripePayoutQueries.updatePayouts();
 
     /** Get Active Sales */
-    const activeSales: ISale[] = await queries.getActiveSales(
+    const activeSales: Sale[] = await queries.getActiveSales(
       reportInfo.organizationId,
     );
 
@@ -158,7 +154,7 @@ export const generateReportV2 = async (
     );
 
     const relevantUserInfosMap = relevantUserInfos.reduce(
-      (prev: IUserInfoMap, curr: IUserInfo) => ({
+      (prev: UserInfoMap, curr: UserInfo) => ({
         ...prev,
         [curr.userId]: curr,
       }),
@@ -166,12 +162,12 @@ export const generateReportV2 = async (
     );
 
     /** Get all tax rates */
-    const taxRates: ITaxRate[] = await shopQueries.getTaxRates(
+    const taxRates: TaxRate[] = await shopQueries.getTaxRates(
       activeSales.map(sale => sale.stripePriceId),
     );
 
-    const taxRatesMap: ITaxRatesMap = taxRates.reduce(
-      (prev: ITaxRatesMap, curr: ITaxRate) => ({
+    const taxRatesMap: TaxRatesMap = taxRates.reduce(
+      (prev: TaxRatesMap, curr: TaxRate) => ({
         ...prev,
         [curr.stripePriceId]: prev[curr.stripePriceId]
           ? [...prev[curr.stripePriceId], curr]
@@ -187,7 +183,7 @@ export const generateReportV2 = async (
 
       const totalTax: number =
         taxRatesMap[sale.stripePriceId]?.reduce(
-          (prev: number, curr: ITaxRate) =>
+          (prev: number, curr: TaxRate) =>
             prev + Math.floor((curr.percentage / 100) * subtotal),
           0,
         ) || 0;
@@ -225,17 +221,23 @@ export const generateReportV2 = async (
   }
 };
 
-export function getOrganizationMembers(organizationId: string, userId: string) {
+export const getOrganizationMembers = (
+  organizationId: string,
+  userId: string,
+): any => {
   return queries.getOrganizationMembers(organizationId, userId);
-}
+};
 
-export async function getOrganization(organizationId: string, userId: string) {
+export const getOrganization = async (
+  organizationId: string,
+  userId: string,
+): Promise<any> => {
   const res = await getEntity(organizationId, userId);
 
   return {
     basicInfos: res.basicInfos,
   };
-}
+};
 
 export const getAllOrganizationsWithAdmins = async ({
   limit,
@@ -245,18 +247,13 @@ export const getAllOrganizationsWithAdmins = async ({
   limit: string;
   page: string;
   query: string;
-}) => {
-  return queries.getAllOrganizationsWithAdmins(
-    Number(limit),
-    Number(page),
-    query,
-  );
-};
+}): Promise<any> =>
+  queries.getAllOrganizationsWithAdmins(Number(limit), Number(page), query);
 
 export const verifyOrganization = async (
   { id, verify }: { id: string; verify: string },
   userId: string,
-) => {
+): Promise<any> => {
   if (verify === 'false') {
     return queries.verifyOrganization(id, userId, false);
   }
@@ -266,8 +263,8 @@ export const verifyOrganization = async (
 
 export const deleteOrganization = async (
   id: string,
-  restore: string = 'false',
-) => {
+  restore = 'false',
+): Promise<any> => {
   if (restore === 'false') {
     return queries.deleteOrganizationById(id);
   }
@@ -284,7 +281,7 @@ export const getMembers = async (
     searchQuery: string;
   },
   userId: string,
-) => {
+): Promise<any> => {
   if (!(await isAllowed(id, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }

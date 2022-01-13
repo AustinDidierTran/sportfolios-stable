@@ -24,10 +24,7 @@ import {
   STATUS_ENUM,
 } from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
-import {
-  generateAuthToken,
-  generateToken,
-} from '../../db/queries/utils.js';
+import { generateAuthToken, generateToken } from '../../db/queries/utils.js';
 
 import {
   createRecoveryEmailToken,
@@ -41,8 +38,8 @@ import {
 
 import { validateToken } from '../utils/tokenValidation.js';
 import { adminGetUser, adminCreateUser } from '../utils/aws.js';
-import { updateEntityPhoto } from '../../db/queries/entitiesGeneralInfos.js'
-import { getPrimaryPersonIdFromUserId } from '../../db/queries/user.js'
+import { updateEntityPhoto } from '../../db/queries/entitiesGeneralInfos.js';
+import { getPrimaryPersonIdFromUserId } from '../../db/queries/user.js';
 
 async function signup({
   firstName,
@@ -92,9 +89,7 @@ export const signupCognito = async ({
   email,
   newsLetterSubscription,
 }) => {
-
   try {
-
     const data = await adminGetUser(email);
     const isUnique = await validateEmailIsUnique(email);
 
@@ -109,19 +104,16 @@ export const signupCognito = async ({
       surname: lastName,
       facebook_id: null,
       newsLetterSubscription,
-      cognitoId: data.Username
+      cognitoId: data.Username,
     });
     return STATUS_ENUM.SUCCESS;
   } catch (error) {
-    console.log('error signing up:', error);
+    // eslint-disable-next-line
+    console.error('error signing up:', error);
   }
+};
 
-
-}
-
-export const signupGoogleToken = async ({
-  token,
-}) => {
+export const signupGoogleToken = async ({ token }) => {
   try {
     const decodedToken = await validateToken(token);
     if (decodedToken.identities[0].providerName !== 'Google') {
@@ -141,7 +133,7 @@ export const signupGoogleToken = async ({
       surname: decodedToken.family_name,
       facebook_id: null,
       newsLetterSubscription: false,
-      cognitoId: decodedToken.sub
+      cognitoId: decodedToken.sub,
     });
 
     const userId = await getUserIdFromEmail(decodedToken.email);
@@ -151,13 +143,12 @@ export const signupGoogleToken = async ({
 
     return STATUS_ENUM.SUCCESS;
   } catch (error) {
+    // eslint-disable-next-line
     console.log('error signing up:', error);
   }
-}
+};
 
-export const signupFacebookToken = async ({
-  token,
-}) => {
+export const signupFacebookToken = async ({ token }) => {
   try {
     const decodedToken = await validateToken(token);
     if (decodedToken.identities[0].providerName !== 'Facebook') {
@@ -177,20 +168,24 @@ export const signupFacebookToken = async ({
       surname: decodedToken.family_name,
       facebook_id: null,
       newsLetterSubscription: false,
-      cognitoId: decodedToken.sub
+      cognitoId: decodedToken.sub,
     });
 
     const userId = await getUserIdFromEmail(decodedToken.email);
     const primaryPerson = await getPrimaryPersonIdFromUserId(userId);
-    await updateEntityPhoto(primaryPerson, JSON.parse(decodedToken.picture).data.url);
+    await updateEntityPhoto(
+      primaryPerson,
+      JSON.parse(decodedToken.picture).data.url,
+    );
 
     await confirmEmailHelper({ email: decodedToken.email });
 
     return STATUS_ENUM.SUCCESS;
   } catch (error) {
+    // eslint-disable-next-line
     console.log('error signing up:', error);
   }
-}
+};
 
 async function login({ email, password }) {
   // Validate account with this email exists
@@ -250,16 +245,19 @@ export const loginWithCognitoToken = async ({ token }) => {
     if (error.name === ERROR_ENUM.JWT_INVALID) {
       throw new Error(ERROR_ENUM.JWT_INVALID);
     }
-
+    // eslint-disable-next-line
     console.log('error signing in', error);
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-}
+};
 
 export const loginCognito = async ({ email, token }) => {
   try {
     const decodedToken = await validateToken(token);
-    if (!decodedToken?.email || (decodedToken.email.toLowerCase() !== email.toLowerCase())) {
+    if (
+      !decodedToken?.email ||
+      decodedToken.email.toLowerCase() !== email.toLowerCase()
+    ) {
       throw new Error(ERROR_ENUM.ERROR_OCCURED);
     }
     const userId = await getUserIdFromEmail(email);
@@ -273,11 +271,11 @@ export const loginCognito = async ({ email, token }) => {
       throw new Error(ERROR_ENUM.JWT_INVALID);
     }
 
+    // eslint-disable-next-line
     console.log('error signing in', error);
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
-
   }
-}
+};
 
 export const migrateToCognito = async ({ email, password }) => {
   try {
@@ -286,31 +284,31 @@ export const migrateToCognito = async ({ email, password }) => {
       if (isUnique) {
         throw new Error(ERROR_ENUM.INVALID_EMAIL);
       }
-    }
-    catch (err) {
+    } catch (err) {
       if (err.code !== ERROR_ENUM.USER_NOT_FOUND) {
         throw new Error(ERROR_ENUM.ERROR_OCCURED);
       }
-    };
-
-    const user = await login({ email, password })
-    if (user) {
-      const res = await adminCreateUser(email, password);
-      console.log('res: ', res);
-
-      return STATUS_ENUM.SUCCESS;
     }
+
+    const user = await login({ email, password });
+    if (!user) {
+      // eslint-disable-next-line
+      console.error('user not found', { email, password });
+      throw new Error(ERROR_ENUM.USER_NOT_FOUND);
+    }
+
+    await adminCreateUser(email, password);
+    return STATUS_ENUM.SUCCESS;
   } catch (error) {
     if (error.name === ERROR_ENUM.JWT_EXPIRED) {
       throw new Error(ERROR_ENUM.JWT_EXPIRED);
-    }
-    else {
+    } else {
+      // eslint-disable-next-line
       console.log('error signing in', error);
       throw new Error(ERROR_ENUM.ERROR_OCCURED);
     }
-
   }
-}
+};
 
 async function confirmEmail({ token }) {
   const email = await getEmailFromToken({ token });
@@ -334,7 +332,6 @@ async function confirmEmail({ token }) {
 
   return { token: authToken, userInfo };
 }
-
 
 async function recoveryEmail({ email }) {
   const userId = await getUserIdFromEmail(email);
@@ -396,58 +393,54 @@ async function resendConfirmationEmail({ email, successRoute }) {
 
 async function transferPersonSignup({ email, password, personId }) {
   const hashedPassword = await generateHashedPassword(password);
-  const { token: authToken, user_id } = await knex.transaction(
-    async trx => {
-      // Create user
-      const [user_id] = await knex('users')
-        .insert({ password: hashedPassword })
-        .returning('id')
-        .transacting(trx);
+  const { token: authToken, user_id } = await knex.transaction(async trx => {
+    // Create user
+    const [user_id] = await knex('users')
+      .insert({ password: hashedPassword })
+      .returning('id')
+      .transacting(trx);
 
-      if (!user_id) {
-        return;
-      }
+    if (!user_id) {
+      return;
+    }
 
-      // Create user email and confirm it right away
-      await knex('user_email')
-        .insert({ user_id, email, confirmed_email_at: new Date() })
-        .transacting(trx);
+    // Create user email and confirm it right away
+    await knex('user_email')
+      .insert({ user_id, email, confirmed_email_at: new Date() })
+      .transacting(trx);
 
-      //Log the user
-      const token = generateToken();
-      await knex('user_token')
-        .insert({
-          user_id,
-          token_id: token,
-          expires_at: new Date(
-            Date.now() + EXPIRATION_TIMES.AUTH_TOKEN,
-          ),
-        })
-        .transacting(trx);
-      //transfer the person
-      await knex('user_entity_role')
-        .update({ user_id })
-        .where('entity_id', personId)
-        .andWhere('role', ENTITIES_ROLE_ENUM.ADMIN)
-        .returning('entity_id')
-        .transacting(trx);
-      await knex('transfered_person')
-        .update('status', PERSON_TRANSFER_STATUS_ENUM.ACCEPTED)
-        .where({ person_id: personId })
-        .andWhere('status', PERSON_TRANSFER_STATUS_ENUM.PENDING)
-        .transacting(trx);
+    //Log the user
+    const token = generateToken();
+    await knex('user_token')
+      .insert({
+        user_id,
+        token_id: token,
+        expires_at: new Date(Date.now() + EXPIRATION_TIMES.AUTH_TOKEN),
+      })
+      .transacting(trx);
+    //transfer the person
+    await knex('user_entity_role')
+      .update({ user_id })
+      .where('entity_id', personId)
+      .andWhere('role', ENTITIES_ROLE_ENUM.ADMIN)
+      .returning('entity_id')
+      .transacting(trx);
+    await knex('transfered_person')
+      .update('status', PERSON_TRANSFER_STATUS_ENUM.ACCEPTED)
+      .where({ person_id: personId })
+      .andWhere('status', PERSON_TRANSFER_STATUS_ENUM.PENDING)
+      .transacting(trx);
 
-      //set person as primary person
-      await knex('user_primary_person')
-        .insert({
-          user_id,
-          primary_person: personId,
-        })
-        .transacting(trx);
+    //set person as primary person
+    await knex('user_primary_person')
+      .insert({
+        user_id,
+        primary_person: personId,
+      })
+      .transacting(trx);
 
-      return { token, user_id };
-    },
-  );
+    return { token, user_id };
+  });
   //get user infos
   const userInfo = await getBasicUserInfoFromId(user_id);
   return { authToken, userInfo };
@@ -456,7 +449,7 @@ async function transferPersonSignup({ email, password, personId }) {
 export const validEmail = async ({ email }) => {
   // Validate email is not already taken
   return await validateEmailIsUnique(email);
-}
+};
 
 export {
   confirmEmail,
