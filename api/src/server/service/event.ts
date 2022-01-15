@@ -58,6 +58,39 @@ const getEventInfo = async (eventId: any, userId: any) => {
   };
 };
 
+export const getEventGameType = async (eventId: any) => {
+  const [event]: any = await queries.getEventTypeGame(eventId);
+
+  return {
+    name: event.eventsInfos.name,
+    creator: {
+      id: event.eventsInfos.creatorEntities.id,
+      name:
+        event.eventsInfos.creatorEntities.entitiesGeneralInfos.name,
+      photoUrl:
+        event.eventsInfos.creatorEntities.entitiesGeneralInfos
+          .photo_url,
+      verifiedAt: event.eventsInfos.creatorEntities.verified_at,
+    },
+    startDate: event.eventsInfos.start_date,
+    photoUrl: event.eventsInfos.photo_url,
+    type: GLOBAL_ENUM.EVENT,
+    id: eventId,
+    eventType: event.type,
+    description: event.eventsInfos.description,
+    tickets: {
+      options: event.games[0].eventTicketOptions.map((option: any) => ({
+        id: option.id,
+        name: option.name,
+        description: option.description,
+        price: option.stripePrice.amount,
+        limit: event.games[0].ticket_limit,
+      })),
+      limit: event.games[0].ticket_limit,
+    },
+  };
+};
+
 export const getEvent = async (eventId: any , userId: any) => {
   const res = await getEntityHelper(eventId, userId);
   const eventInfo = await getEventInfo(eventId, userId);
@@ -79,7 +112,7 @@ export const getAllEventsWithAdmins = async ({
   limit,
   page,
   query,
-}:any) => {
+}: any) => {
   return queries.getAllEventsWithAdmins(
     Number(limit),
     Number(page),
@@ -169,7 +202,7 @@ export const addEvent = async (
     .fill(0)
     .map((_, i) => ({ initial_position: i + 1 }));
 
-  const entity = await knex.transaction(async (trx:any) => {
+  const entity = await knex.transaction(async (trx: any) => {
     const entity: any = await queries.createEvent({
       name,
       startDate,
@@ -195,38 +228,7 @@ export const addEvent = async (
   return { id: entity.id };
 };
 
-export const getEventGameType = async (eventId: any) => {
-  const [event]: any = await queries.getEventTypeGame(eventId);
 
-  return {
-    name: event.eventsInfos.name,
-    creator: {
-      id: event.eventsInfos.creatorEntities.id,
-      name:
-        event.eventsInfos.creatorEntities.entitiesGeneralInfos.name,
-      photoUrl:
-        event.eventsInfos.creatorEntities.entitiesGeneralInfos
-          .photo_url,
-      verifiedAt: event.eventsInfos.creatorEntities.verified_at,
-    },
-    startDate: event.eventsInfos.start_date,
-    photoUrl: event.eventsInfos.photo_url,
-    type: GLOBAL_ENUM.EVENT,
-    id: eventId,
-    eventType: event.type,
-    description: event.eventsInfos.description,
-    tickets: {
-      options: event.games[0].eventTicketOptions.map((option: any) => ({
-        id: option.id,
-        name: option.name,
-        description: option.description,
-        price: option.stripePrice.amount,
-        limit: event.games[0].ticket_limit,
-      })),
-      limit: event.games[0].ticket_limit,
-    },
-  };
-};
 export const addEventTickets = async (body: any, userId: any) => {
   const ticketOptions: any = await ticketQueries.getTicketOptionsByEventTicketOptionsIds(
     body.map((ticket: any) => ticket.id),
