@@ -1,4 +1,4 @@
-import { Roster, Person } from '../../../../typescript/types';
+import moment from 'moment';
 import knex from '../../db/connection.js';
 import {
   getEntity as getEntityHelper,
@@ -12,8 +12,6 @@ import * as gameQueries from '../../db/queries/game.js';
 import * as shopQueries from '../../db/queries/shop.js';
 import * as ticketQueries from '../../db/queries/ticket.js';
 import * as entityQueries from '../../db/queries/entity.js';
-
-import moment from 'moment';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
 import { CART_ITEM } from '../../../../common/enums/index.js';
@@ -21,7 +19,7 @@ import { isAllowed } from '../../db/queries/utils.js';
 import {
   ENTITIES_ROLE_ENUM,
 } from '../../../../common/enums/index.js';
-
+import { Roster, Person } from '../../../../typescript/types';
 
 const getEventInfo = async (eventId: any, userId: any) => {
   const data = await eventInfosHelper(eventId, userId);
