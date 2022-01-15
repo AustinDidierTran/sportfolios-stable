@@ -136,3 +136,22 @@ export const insertEntity = async body => {
     type: entity.type,
   };
 };
+
+export const deleteEventById = async entity_id => {
+  return await entities
+    .query()
+    .delete()
+    .where({
+      id: entity_id,
+    });
+};
+export const restoreEventById = async entity_id => {
+  return await entities
+    .query()
+    .patch({
+      deleted_at: null,
+    })
+    .where({
+      id: entity_id,
+    });
+};

@@ -463,6 +463,15 @@ export const getEventTypeGame = async eventId => {
     });
 };
 
+export const getEventByRankingId = async rankingId => {
+  const [{ event_id }] = await knex('phase_rankings')
+    .select('event_id')
+    .leftJoin('phase', 'phase.id', '=', 'phase_rankings.current_phase')
+    .where('phase_rankings.ranking_id', rankingId);
+
+  return event_id;
+};
+
 export const updateRosterIdInRankings = async (newRosterId, rankingId) => {
   const res = await knex('phase_rankings')
     .update({
@@ -471,4 +480,16 @@ export const updateRosterIdInRankings = async (newRosterId, rankingId) => {
     .where('ranking_id', rankingId);
 
   return res;
+};
+
+export const getRostersEmails = async eventId => {
+  return await eventRosters
+    .query()
+    .withGraphJoined(
+      '[rosterPlayers.[userEntityRole.userEmail, entitiesGeneralInfos],entitiesGeneralInfos]',
+      { minimize: true },
+    )
+    .where({
+      'event_rosters.event_id': eventId,
+    });
 };
