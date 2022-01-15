@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import * as service from '../../service/event.js';
+import * as service from '../../service/event';
 
 const router = new Router();
 const BASE_URL = '/api/admin/event';

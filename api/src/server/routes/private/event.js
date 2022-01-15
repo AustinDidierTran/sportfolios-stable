@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import * as service from '../../service/event.js';
+import * as service from '../../service/event';
 import { ERROR_ENUM } from '../../../../../common/errors/index.js';
 
 const router = new Router();
@@ -39,6 +39,17 @@ router.get(`${BASE_URL}/verifyTeamNameIsUnique`, async ctx => {
 
 router.get(`${BASE_URL}/forYouPage`, async ctx => {
   const entity = await service.getForYouPagePosts(ctx.query);
+
+  if (!entity) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: entity };
+});
+
+router.get(`${BASE_URL}/rosters`, async ctx => {
+  const userId = getUserId(ctx);
+
+  const entity = await service.getRostersEmails(ctx.query.eventId, userId);
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);

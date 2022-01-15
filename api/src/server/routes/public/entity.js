@@ -1,7 +1,7 @@
 import Router from 'koa-router';
 import * as service from '../../service/entity-deprecate.js';
 import * as organizationService from '../../service/organization.js';
-import * as eventService from '../../service/event.js';
+import * as eventService from '../../service/event';
 import { GLOBAL_ENUM } from '../../../../../common/enums/index.js';
 const router = new Router();
 const BASE_URL = '/api/entity';
