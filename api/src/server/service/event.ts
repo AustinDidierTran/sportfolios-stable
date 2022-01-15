@@ -1,4 +1,4 @@
-import { roster, Person } from '../../../../typescript/types';
+import { Roster, Person } from '../../../../typescript/types';
 import knex from '../../db/connection.js';
 import {
   getEntity as getEntityHelper,
@@ -197,9 +197,9 @@ export const addEvent = async (
   if (!creatorId) {
     throw ERROR_ENUM.VALUE_IS_REQUIRED;
   }
-
   const phaseRankings = Array(maximumSpots)
     .fill(0)
+    // eslint-disable-next-line
     .map((_, i) => ({ initial_position: i + 1 }));
 
   const entity = await knex.transaction(async (trx: any) => {
@@ -294,7 +294,7 @@ export const putRosterIdInRankings = async (body: any, userId: any) => {
   return queries.updateRosterIdInRankings(newRosterId, rankingId);
 };
 
-export const getRostersEmails = async (eventId: string, userId: string): Promise<roster[]> => {
+export const getRostersEmails = async (eventId: string, userId: string): Promise<Roster[]> => {
   if (
     !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
@@ -303,7 +303,7 @@ export const getRostersEmails = async (eventId: string, userId: string): Promise
 
   const rostersEmails = await queries.getRostersEmails(eventId);
 
-  return rostersEmails.map((r: any) => <roster>({
+  return rostersEmails.map((r: any) => ({
     id: r.roster_id,
     team: {
       name: r.entitiesGeneralInfos.name,
@@ -312,7 +312,7 @@ export const getRostersEmails = async (eventId: string, userId: string): Promise
       verifiedAt: r.entitiesGeneralInfos.verified_at,
       deletedAt: r.entitiesGeneralInfos.deleted_at
     },
-    players: r.rosterPlayers.map((p: any) => <Person>({
+    players: r.rosterPlayers.map((p: any) => ({
       surname: p.entitiesGeneralInfos.surname,
       name: p.entitiesGeneralInfos.name,
       id: p.person_id,
@@ -320,6 +320,6 @@ export const getRostersEmails = async (eventId: string, userId: string): Promise
       verifiedAt: p.entitiesGeneralInfos.verified_at,
       deletedAt: p.entitiesGeneralInfos.deleted_at,
       emails: p.userEntityRole.userEmail.map((u: any) => u.email)
-    }))
-  }));
+    })as Person)
+  })as Roster);
 };

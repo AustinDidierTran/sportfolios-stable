@@ -11,7 +11,7 @@ export interface Person extends Entity {
   emails: string[];
 }
 
-export interface roster {
+export interface Roster {
   id: string;
   team: Entity;
   players: Person[];
