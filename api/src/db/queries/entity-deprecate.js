@@ -25,7 +25,7 @@ import moment from 'moment';
 import validator from 'validator';
 import _ from 'lodash';
 import { getTaxRates } from './shop.js';
-import { getPaymentOption } from '../../server/service/event.js';
+import { getPaymentOption } from '../../server/service/event';
 import { getRegistrationStatus } from './event.js';
 import {
   getRoster,

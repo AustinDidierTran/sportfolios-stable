@@ -1,7 +1,7 @@
 import * as queries from '../../db/queries/team.js';
 import { getTeamExercisesByTeamId, getSessionExercisesBySessionId } from '../../db/queries/exercises.js'
 import * as eventQueries from '../../db/queries/event.js';
-import { getPaymentOption } from '../../server/service/event.js'
+import { getPaymentOption } from '../../server/service/event'
 import { getEntity } from '../../db/queries/entity-deprecate.js'
 import { getRosterByIdAndSub, getTeamCaptainsById, getRoleRosterByIdAndUserId } from '../../db/queries/team.js'
 import { getMembershipsByIdAndOrganizationId, getMembershipByPersonIds } from '../../db/queries/memberships.js'
