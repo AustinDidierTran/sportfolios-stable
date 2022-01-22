@@ -1,10 +1,10 @@
 import * as queries from '../../db/queries/cart.js';
 import { Buyer, Seller,Item, TaxRates, CartTotal } from '../../../../typescript/types';
 
-export const getCartItems = async (userId:string) => {
+export const getCartItems = async (userId: string) => {
   const cartItems: any = await queries.getCartItems(userId);
   const groupedMap = cartItems.reduce(
-    (entryMap:any, e:any) => {
+    (entryMap: any, e: any) => {
       if(!entryMap[e.stripePrice.owner_id]){
         entryMap[e.stripePrice.owner_id] = [];
       }
@@ -25,7 +25,7 @@ export const getCartItems = async (userId:string) => {
           deletedAt: groupedMap[key][0].stripePrice.owner.deleted_at,
         },
         isMember:false, //todo when personId is available
-        items: groupedMap[key].map((i:any)=>({
+        items: groupedMap[key].map((i: any)=>({
           id: i.id,
           metadata: i.metadata,
           price: i.stripePrice.amount,
@@ -33,7 +33,7 @@ export const getCartItems = async (userId:string) => {
           label: i.stripePrice.stripeProduct.label,
           photoUrl: i.stripePrice.storeItems.photo_url,
           quantity: i.quantity,
-          taxRates: i.stripePrice.taxRates.map((t:any)=>({
+          taxRates: i.stripePrice.taxRates.map((t: any)=>({
             display: t.display_name,
             id: t.id,
             percentage: t.percentage,
@@ -46,9 +46,9 @@ export const getCartItems = async (userId:string) => {
     } as Buyer]
   };
 
-  const subTotal = cartItems.filter((c:any) => c.selected ).reduce((previous:number, obj:any) => previous + obj.quantity*obj.stripePrice.amount,0);
-  const taxes = cartItems.filter((c:any) => c.selected ).reduce((previous:any, obj:any) => {
-    obj.stripePrice.taxRates.reduce((e:any, tax:any) => {
+  const subTotal = cartItems.filter((c: any) => c.selected ).reduce((previous: number, obj: any) => previous + obj.quantity*obj.stripePrice.amount,0);
+  const taxes = cartItems.filter((c: any) => c.selected ).reduce((previous: any, obj: any) => {
+    obj.stripePrice.taxRates.reduce((e: any, tax: any) => {
       if(!previous[tax.id]){
         previous[tax.id] = 
         {
@@ -73,7 +73,7 @@ export const getCartItems = async (userId:string) => {
           percentage: taxes[key].percentage,
           amount: taxes[key].amount
         })as TaxRates),
-        total: subTotal +  Object.keys(taxes).reduce((previous:number, key:any) => previous + taxes[key].amount ,0)
+        total: subTotal +  Object.keys(taxes).reduce((previous: number, key: any) => previous + taxes[key].amount ,0)
     } as CartTotal,
     buyers:buyers
   }
