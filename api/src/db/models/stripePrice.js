@@ -4,7 +4,6 @@ import { stripeInvoiceItem } from './stripeInvoiceItem.js';
 import { eventTicketOptions } from './eventTicketOptions.js';
 import { storeItems } from './storeItems.js';
 import { stripeProduct } from './stripeProduct.js';
-import { taxRatesStripePrice } from './taxRatesStripePrice.js';
 import { taxRates } from './taxRates.js';
 import { entitiesGeneralInfos } from './entitiesGeneralInfos.js';
 
