@@ -1,3 +1,4 @@
+import cart from './cart.js';
 import entity from './entity.js';
 import event from './event.js';
 import facebook from './facebook.js';
@@ -19,6 +20,7 @@ import trialist from './trialist.js';
 import user from './user.js';
 
 export default [
+  cart,
   entity,
   event,
   facebook,

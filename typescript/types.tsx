@@ -16,3 +16,41 @@ export interface Roster {
   team: Entity;
   players: Person[];
 }
+
+
+export interface TaxRates{
+  display: string;
+  id: string;
+  percentage: number; 
+  amount: number;
+}
+
+export interface CartTotal{
+  subTotal: number;
+  total: number;
+  taxes: TaxRates[];   
+}
+
+export interface Item{
+  id: string;
+  metadata: any;
+  price: number;
+  description: string;
+  label: string;
+  photoUrl: string;
+  quantity: number;
+  taxRates: TaxRates[];
+  checked: boolean;
+  requiresMembeship: boolean;
+}
+
+export interface Buyer{
+  person: Person;
+  sellers: Seller[];
+}
+
+export interface Seller{
+  isMember: boolean;
+  entity: Entity;
+  items: Item[];
+}
