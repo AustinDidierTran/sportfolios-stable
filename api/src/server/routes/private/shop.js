@@ -51,14 +51,6 @@ router.get(`${BASE_URL}/cartTotal`, async ctx => {
   ctx.body = { data };
 });
 
-router.get(`${BASE_URL}/getCartItems`, async ctx => {
-  const data = await service.getCart(ctx.body.userInfo.id);
-  if (!data) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = { data };
-});
-
 router.get(`${BASE_URL}/getCartItemsOrdered`, async ctx => {
   const data = await service.getCartItemsOrdered(
     ctx.query.id,
