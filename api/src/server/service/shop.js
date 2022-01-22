@@ -29,6 +29,8 @@ import {
 } from '../../../../common/enums/index.js';
 import { isAllowed } from '../../db/queries/utils.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
+import * as serviceCart from './cart.ts';
+
 
 const getItem = async (stripePriceId, userId) => {
   return getItemHelper(stripePriceId, userId);
@@ -41,12 +43,6 @@ const getAllItems = async type => {
   return getAllShopItems(type);
 };
 
-const getCart = async userId => {
-  const items = await getCartItems(userId);
-  const total = await getCartTotal(userId);
-  return { items, total };
-};
-
 const getCartTotal = async userId => {
   return getCartTotalHelper(userId);
 };
@@ -57,7 +53,7 @@ const getCartItemsOrdered = async (entityId, userId) => {
 
 const addToCart = async (body, userId) => {
   await addCartItem(body, userId);
-  return getCartItems(userId);
+  return await serviceCart.getCartItems(userId);
 };
 
 const getPurchases = async userId => {
@@ -75,20 +71,17 @@ const getSales = async (query, userId) => {
 
 const updateCartItems = async (body, userId) => {
   await updateCartItemsHelper(body, userId);
-
-  const items = await getCartItems(userId);
-  const total = await getCartTotal(userId);
-  return { items, total };
+  return await serviceCart.getCartItems(userId);
 };
 
 const removeCartItemInstance = async (query, userId) => {
   await removeCartItemInstanceHelper(query, userId);
-  return getCartItems(userId);
+  return await serviceCart.getCartItems(userId);
 };
 
 const removeAllInstancesFromCart = async (query, userId) => {
   await removeAllInstancesFromCartHelper(query, userId);
-  return getCartItems(userId);
+  return await serviceCart.getCartItems(userId);
 };
 
 const deleteCartItem = async query => {
@@ -142,7 +135,6 @@ export {
   deleteAllCartItems,
   deleteCartItem,
   getAllItems,
-  getCart,
   getCartItemsOrdered,
   getCartTotal,
   getItem,
