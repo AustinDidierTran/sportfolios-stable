@@ -18,6 +18,7 @@ export const validateToken = async token => {
   const header = await decodeTokenHeader(token);
   const jsonWebKey = await getJsonWebKeyWithKID(header.kid, webKeys.data);
   const decodedToken = await verifyJsonWebTokenSignature(token, jsonWebKey);
+
   if (decodedToken.exp > Math.round(Date.now() / 1000)) {
     if (
       decodedToken.aud === CLIENT_ID &&
@@ -48,8 +49,10 @@ const getJsonWebKeyWithKID = (kid, webKeys) => {
 
 function verifyJsonWebTokenSignature(token, jsonWebKey) {
   const pem = jwkToPem(jsonWebKey);
+  console.log(123, { token, pem });
   const decodedToken = jsonwebtoken.verify(token, pem, {
     algorithms: ['RS256'],
   });
+  console.log(123, { decodedToken });
   return decodedToken;
 }

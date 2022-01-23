@@ -14,9 +14,10 @@ import {
   REPORT_TYPE_ENUM,
 } from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
+import { memberships } from '../models/memberships';
 
 // [Refactoring] This should go into the generate report
-async function getPersonInfos(entityId) {
+export const getPersonInfos = async entityId => {
   const [res] = await knex('person_all_infos')
     .select('*')
     .where({ id: entityId });
@@ -50,10 +51,10 @@ async function getPersonInfos(entityId) {
   }
 
   return resObj;
-}
+};
 
 // [Refactoring] This should go into the generate report
-async function getEmailPerson(person_id) {
+export const getEmailPerson = async person_id => {
   const [{ email }] = await knex('user_entity_role')
     .select('email')
     .leftJoin(
@@ -67,9 +68,9 @@ async function getEmailPerson(person_id) {
     return getEmailsEntity(person_id);
   }
   return email;
-}
+};
 
-async function generateReport(reportId) {
+export const generateReport = async reportId => {
   const [report] = await knex('reports')
     .select('*')
     .where({ report_id: reportId });
@@ -81,7 +82,7 @@ async function generateReport(reportId) {
   const getReport = ReportMap[report.type];
 
   return getReport(report);
-}
+};
 
 export const getReportInfo = async reportId => {
   const [report] = await knex('reports')
@@ -95,7 +96,7 @@ export const getReportInfo = async reportId => {
   };
 };
 
-async function getOwnedEvents(organizationId) {
+export const getOwnedEvents = async organizationId => {
   const events = await knex('events_infos')
     .select('*')
     .leftJoin(
@@ -134,7 +135,7 @@ async function getOwnedEvents(organizationId) {
     }),
   );
   return fullEvents;
-}
+};
 
 export const getActiveSales = async (entityId /* date */) => {
   const sales = await knex('store_items_paid')
@@ -158,7 +159,7 @@ export const getActiveSales = async (entityId /* date */) => {
   }));
 };
 
-async function generateSalesReport(report) {
+export const generateSalesReport = async report => {
   const { date } = report.metadata;
   const sales = await knex('store_items_paid')
     .select('*')
@@ -227,9 +228,9 @@ async function generateSalesReport(report) {
     }),
   );
   return res;
-}
+};
 
-async function getOrganizationMembers(organizationId, userId) {
+export const getOrganizationMembers = async (organizationId, userId) => {
   if (!(await isAllowed(organizationId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
@@ -271,7 +272,7 @@ async function getOrganizationMembers(organizationId, userId) {
     })),
   );
   return res;
-}
+};
 
 const getPriceFromMembershipId = async membershipId => {
   const [{ price }] = await knex('entity_memberships')
@@ -280,7 +281,20 @@ const getPriceFromMembershipId = async membershipId => {
   return price;
 };
 
-async function generateMembersReport(report) {
+export const getMemberships = async (organizationId, options = {}) => {
+  const { minDate, maxDate } = options;
+
+  const fetchedMemberships = await memberships
+    .query()
+    .withGraphJoined(
+      '[personInfos.addresses, personGeneralInfos, entityMembership, userEntityRole.userEmail]',
+    )
+    .where('organization_id', organizationId);
+
+  return fetchedMemberships;
+};
+
+export const generateMembersReport = async report => {
   const { date } = report.metadata;
   const members = await knex('memberships_infos')
     .select('*')
@@ -348,7 +362,7 @@ async function generateMembersReport(report) {
     }),
   );
   return res;
-}
+};
 
 export const getAllOrganizationsWithAdmins = async (
   limit = 10,
@@ -501,10 +515,21 @@ export const getMembers = async (organizationId, searchQuery) => {
   );
 };
 
-export {
-  generateSalesReport,
-  generateMembersReport,
-  getOwnedEvents,
-  getOrganizationMembers,
-  generateReport,
+export const getReports = async entityId => {
+  const reports = await knex('reports')
+    .select('*')
+    .where({ entity_id: entityId });
+
+  const sorted = reports.sort((a, b) => {
+    return moment(b.created_at) - moment(a.created_at);
+  });
+
+  return sorted.map(report => ({
+    reportId: report.report_id,
+    entityId: report.entity_id,
+    type: report.type,
+    metadata: report.metadata,
+    createdAt: report.created_at,
+    updatedAt: report.updated_at,
+  }));
 };

@@ -26,4 +26,13 @@ router.get(`${BASE_URL}/generateReport`, async ctx => {
   ctx.body = { data: report };
 });
 
+router.get(`${BASE_URL}/reports`, async ctx => {
+  const reports = await service.getReports(ctx.query.id);
+
+  if (!reports) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: reports };
+});
+
 export default router;
