@@ -1,7 +1,5 @@
 import {
-  CART_ITEM,
   ENTITIES_ROLE_ENUM,
-  GLOBAL_ENUM,
   MEMBERSHIP_TYPE_ENUM,
   REPORT_TYPE_ENUM,
 } from '../../../../common/enums/index.js';
@@ -14,23 +12,22 @@ import * as shopQueries from '../../db/queries/shop.js';
 import * as userQueries from '../../db/queries/user.js';
 import {
   MemberReportData,
+  RefundQueryData,
   ReportInfo,
   ReportResponse,
   Sale,
-  SaleMetadata,
   SaleReportData,
 } from '../../typescript/report.js';
 import { TaxRate, TaxRatesMap } from '../../typescript/stripe.js';
 import { UserInfo, UserInfoMap } from '../../typescript/user.js';
 
 import { isAllowed } from './entity-deprecate.js';
-import { getEventPaymentOption } from '../../db/queries/event.js';
 import moment from 'moment';
 import {
   formatAddress,
   formatPrice,
 } from '../../../../common/utils/stringFormat.js';
-import { Person } from '../../typescript/entity.js';
+import { formatRefunds, formatSales } from '../helper/reportHelpers';
 
 export const getOwnedEvents = (organizationId: string): any => {
   return queries.getOwnedEvents(organizationId);
@@ -66,7 +63,7 @@ interface SaleReportInfo {
   totalNet: number;
 }
 
-export const getReports = async (entityId: string) => {
+export const getReports = async (entityId: string): any => {
   const reports = await queries.getReports(entityId);
 
   return reports;
@@ -83,25 +80,6 @@ export const getMembershipName = (type: number): string => {
     return 'junior_member';
   } else {
     return '';
-  }
-};
-
-const getProductDetail = async (metadata: SaleMetadata) => {
-  switch (`${metadata.type}`) {
-    case CART_ITEM.MEMBERSHIP:
-      return getMembershipName(metadata.membership_type);
-    case CART_ITEM.SHOP_ITEM:
-      return '';
-    case `${GLOBAL_ENUM.EVENT}`:
-      const event = await getEntity(metadata.eventId);
-
-      if (!event) {
-        console.log(`event not found with id ${metadata.eventId}`);
-      }
-
-      return event.basicInfos.name;
-    default:
-      return '';
   }
 };
 
@@ -130,6 +108,11 @@ export const generateReportV2 = async (
 
     /** Get Active Sales */
     const activeSales: Sale[] = await queries.getActiveSales(
+      reportInfo.organizationId,
+    );
+
+    /** Get Active Refunds */
+    const activeRefunds: RefundQueryData[] = await queries.getActiveRefunds(
       reportInfo.organizationId,
     );
 
@@ -162,146 +145,21 @@ export const generateReportV2 = async (
     );
 
     // Add stripe deposit moment
-
-    const data = await Promise.all(
-      activeSales.map(
-        async (sale: Sale): Promise<SaleReportData> => {
-          const subtotal = sale.amount;
-
-          const totalTax: number =
-            taxRatesMap[sale.stripePriceId]?.reduce(
-              (prev: number, curr: TaxRate) =>
-                prev + Math.floor((curr.percentage / 100) * subtotal),
-              0,
-            ) || 0;
-
-          const total: number = subtotal + totalTax;
-
-          const platformFees = sale.transactionFees * sale.quantity;
-
-          const totalNet = total - platformFees;
-
-          if (sale.metadata.type === CART_ITEM.MEMBERSHIP) {
-            return {
-              type: { valueKey: 'reports.types.membership' },
-              detail: {
-                valueKey: getMembershipName(sale.metadata.membership_type),
-              },
-              registrationFor: {
-                value: `${sale.metadata?.person?.name} ${sale.metadata?.person?.surname}`,
-              },
-              transactionType: { valueKey: 'reports.transaction_type.payment' },
-              status: {},
-              email: { value: relevantUserInfosMap[sale.buyerUserId].email },
-              madeOn: {
-                value: moment(sale.createdAt).format('YYYY-MM-DD HH:mm'),
-              },
-              quantity: { value: sale.quantity.toString() },
-              subtotal: { value: formatPrice(subtotal) },
-              totalTax: { value: formatPrice(totalTax) },
-              total: { value: formatPrice(total) },
-              platformFees: { value: formatPrice(platformFees) },
-              totalNet: {
-                value: formatPrice(totalNet),
-              },
-              buyerUserId: { value: sale.buyerUserId },
-              id: { value: sale.id },
-              unitPrice: { value: formatPrice(sale.unitAmount) },
-            };
-          }
-
-          if (sale.metadata.type === CART_ITEM.DONATION) {
-            return {
-              type: { valueKey: 'reports.types.donation' },
-              detail: { value: '' },
-              registrationFor: { value: '' },
-              transactionType: { valueKey: 'reports.transaction_type.payment' },
-              status: {},
-              email: { value: relevantUserInfosMap[sale.buyerUserId].email },
-              madeOn: {
-                value: moment(sale.createdAt).format('YYYY-MM-DD HH:mm'),
-              },
-              quantity: { value: sale.quantity.toString() },
-              subtotal: { value: formatPrice(subtotal) },
-              totalTax: { value: formatPrice(totalTax) },
-              total: { value: formatPrice(total) },
-              platformFees: { value: formatPrice(platformFees) },
-              totalNet: {
-                value: formatPrice(totalNet),
-              },
-              buyerUserId: { value: sale.buyerUserId },
-              id: { value: sale.id },
-              unitPrice: { value: formatPrice(sale.unitAmount) },
-            };
-          }
-
-          if (sale.metadata.type === CART_ITEM.SHOP_ITEM) {
-            return {
-              type: { valueKey: 'reports.types.shop_item' },
-              detail: { value: '' },
-              registrationFor: { value: '' },
-              transactionType: { valueKey: 'reports.transaction_type.payment' },
-              status: {},
-              email: { value: relevantUserInfosMap[sale.buyerUserId].email },
-              madeOn: {
-                value: moment(sale.createdAt).format('YYYY-MM-DD HH:mm'),
-              },
-              quantity: { value: sale.quantity.toString() },
-              subtotal: { value: formatPrice(subtotal) },
-              totalTax: { value: formatPrice(totalTax) },
-              total: { value: formatPrice(total) },
-              platformFees: { value: formatPrice(platformFees) },
-              totalNet: {
-                value: formatPrice(totalNet),
-              },
-              buyerUserId: { value: sale.buyerUserId },
-              id: { value: sale.id },
-              unitPrice: { value: formatPrice(sale.unitAmount) },
-            };
-          }
-
-          if (`${sale.metadata.type}` === `${GLOBAL_ENUM.EVENT}`) {
-            const event = await getEntity(sale.metadata.eventId);
-            const person: Person = sale.metadata.personId
-              ? await getEntity(sale.metadata.personId)
-              : null;
-
-            return {
-              type: { valueKey: 'reports.types.event' },
-              detail: { value: event.basicInfos.name },
-              registrationFor: {
-                value: sale.metadata.isIndividualOption
-                  ? sale.metadata.name || sale.metadata.person
-                    ? `${sale.metadata.person?.name} ${sale.metadata.person?.surname}`
-                    : `${person?.basicInfos.name} ${person?.basicInfos.surname}`
-                  : sale.metadata.team?.name,
-              },
-              transactionType: { valueKey: 'reports.transaction_type.payment' },
-              status: {},
-              email: { value: relevantUserInfosMap[sale.buyerUserId].email },
-              madeOn: {
-                value: moment(sale.createdAt).format('YYYY-MM-DD HH:mm'),
-              },
-              quantity: { value: sale.quantity.toString() },
-              unitPrice: { value: formatPrice(sale.unitAmount) },
-              subtotal: { value: formatPrice(subtotal) },
-              totalTax: { value: formatPrice(totalTax) },
-              total: { value: formatPrice(total) },
-              platformFees: { value: formatPrice(platformFees) },
-              totalNet: {
-                value: formatPrice(totalNet),
-              },
-              buyerUserId: { value: sale.buyerUserId },
-              id: { value: sale.id },
-            };
-          }
-
-          console.log('going into error...', sale.metadata.type);
-
-          throw new Error(ERROR_ENUM.ERROR_OCCURED);
-        },
-      ),
+    const formattedSales: SaleReportData[] = await formatSales(
+      activeSales,
+      taxRatesMap,
+      relevantUserInfosMap,
     );
+
+    const formattedRefunds: SaleReportData[] = await formatRefunds(
+      activeRefunds,
+      formattedSales,
+    );
+
+    const data = [...formattedSales, ...formattedRefunds].sort((a, b) =>
+      moment(a.createdAt).isBefore(b.createdAt) ? 1 : -1,
+    );
+
     const headers = [
       { labelKey: 'reports.headers.sales.id', key: 'id' },
       { labelKey: 'reports.headers.sales.type', key: 'type' },
@@ -334,7 +192,7 @@ export const generateReportV2 = async (
   }
 
   if (reportInfo.type === REPORT_TYPE_ENUM.MEMBERS) {
-    const { date } = reportInfo.metadata;
+    // const { date } = reportInfo.metadata;
 
     const memberships: any[] = await queries.getMemberships(
       reportInfo.organizationId,

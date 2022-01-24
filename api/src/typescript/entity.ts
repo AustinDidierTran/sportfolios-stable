@@ -17,9 +17,13 @@ export interface EntityMap {
   [id: string]: Entity;
 }
 
-export interface Event extends Entity {}
+export interface Event extends Entity {
+  surname?: string;
+}
 
-export interface Person extends Entity {}
+export interface Person extends Entity {
+  surname?: string;
+}
 
 export interface Team extends Entity {
   name?: string;

@@ -12,6 +12,7 @@ import {
   ENTITIES_ROLE_ENUM,
   INVOICE_STATUS_ENUM,
   REPORT_TYPE_ENUM,
+  TRANSACTION_TYPE_ENUM,
 } from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import { memberships } from '../models/memberships';
@@ -135,6 +136,52 @@ export const getOwnedEvents = async organizationId => {
     }),
   );
   return fullEvents;
+};
+
+export const getActiveRefunds = async entityId => {
+  const organizations = Array.isArray(entityId) ? entityId : [entityId];
+
+  const refunds = await knex('stripe_refund')
+    .select(
+      'stripe_refund.amount as refund_amount',
+      'stripe_refund.refund_id',
+      'stripe_refund.invoice_item_id',
+      'stripe_refund.created_at',
+      'store_items_paid.quantity',
+      'store_items_paid.unit_amount',
+      'store_items_paid.amount',
+      'store_items_paid.stripe_price_id',
+      'store_items_paid.buyer_user_id',
+      'store_items_paid.metadata',
+      'store_items_paid.receipt_id',
+      'store_items_paid.transaction_fees',
+      'store_items_paid.seller_entity_id',
+    )
+    .leftJoin(
+      'store_items_paid',
+      'stripe_refund.invoice_item_id',
+      '=',
+      'store_items_paid.invoice_item_id',
+    )
+    .whereIn('store_items_paid.seller_entity_id', organizations);
+
+  return refunds.map(refund => ({
+    refundAmount: refund.refund_amount,
+    refundId: refund.refund_id,
+    invoiceItemId: refund.invoice_item_id,
+    createdAt: refund.created_at,
+    quantity: refund.quantity,
+    unitAmount: refund.unit_amount,
+    amount: refund.amount,
+    stripePriceId: refund.stripe_price_id,
+    buyerUserId: refund.buyer_user_id,
+    metadata: refund.metadata,
+    receiptId: refund.receipt_id,
+    sellerEntityId: refund.seller_entity_id,
+    status: INVOICE_STATUS_ENUM.REFUNDED,
+    transactionType: TRANSACTION_TYPE_ENUM.REFUND,
+    transactionFees: refund.transaction_fees,
+  }));
 };
 
 export const getActiveSales = async (entityId /* date */) => {
@@ -281,8 +328,8 @@ const getPriceFromMembershipId = async membershipId => {
   return price;
 };
 
-export const getMemberships = async (organizationId, options = {}) => {
-  const { minDate, maxDate } = options;
+export const getMemberships = async (organizationId /** options = {} */) => {
+  // const { minDate, maxDate } = options;
 
   const fetchedMemberships = await memberships
     .query()

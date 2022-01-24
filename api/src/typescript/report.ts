@@ -1,4 +1,4 @@
-import { Event, Team } from './entity';
+import { Team } from './entity';
 import { StripePayout } from './stripe';
 
 interface Option {
@@ -16,12 +16,21 @@ export interface ReportHeader {
   key: string;
 }
 
-export interface ReportData {}
-
-export interface ReportResponse {
-  fileName: string;
-  data: ReportData[];
-  headers: ReportHeader[];
+export interface RefundQueryData {
+  refundAmount: string;
+  refundId: string;
+  invoiceItemId: string;
+  createdAt: Date;
+  quantity: string;
+  unitAmount: string;
+  amount: string;
+  stripePriceId: string;
+  buyerUserId: string;
+  metadata: SaleMetadata;
+  receiptId: string;
+  sellerEntityId: string;
+  transactionType: string;
+  transactionFees: string;
 }
 
 export interface Sale {
@@ -39,8 +48,6 @@ export interface Sale {
   stripePriceId: string;
   transactionFees: number;
   unitAmount: number;
-  // name: string;
-  // surname: string;
 }
 
 export interface SaleMetadata {
@@ -60,7 +67,7 @@ interface ReportDataStructure {
   valueKey?: string;
 }
 
-export interface MemberReportData extends ReportData {
+export interface MemberReportData {
   name: ReportDataStructure;
   surname: ReportDataStructure;
   membership: ReportDataStructure;
@@ -85,7 +92,8 @@ export interface MemberReportData extends ReportData {
   employer: ReportDataStructure;
 }
 
-export interface SaleReportData extends ReportData {
+export interface SaleReportData {
+  createdAt: Date;
   id: ReportDataStructure;
   type: ReportDataStructure;
   detail: ReportDataStructure;
@@ -94,6 +102,7 @@ export interface SaleReportData extends ReportData {
   buyerUserId: ReportDataStructure;
   email: ReportDataStructure;
   madeOn: ReportDataStructure;
+  invoiceItemId: ReportDataStructure;
   unitPrice: ReportDataStructure;
   quantity: ReportDataStructure;
   status: ReportDataStructure;
@@ -102,4 +111,10 @@ export interface SaleReportData extends ReportData {
   total: ReportDataStructure;
   platformFees: ReportDataStructure;
   totalNet: ReportDataStructure;
+}
+
+export interface ReportResponse {
+  fileName: string;
+  data: SaleReportData[] | MemberReportData[];
+  headers: ReportHeader[];
 }

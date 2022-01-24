@@ -49,10 +49,8 @@ const getJsonWebKeyWithKID = (kid, webKeys) => {
 
 function verifyJsonWebTokenSignature(token, jsonWebKey) {
   const pem = jwkToPem(jsonWebKey);
-  console.log(123, { token, pem });
   const decodedToken = jsonwebtoken.verify(token, pem, {
     algorithms: ['RS256'],
   });
-  console.log(123, { decodedToken });
   return decodedToken;
 }
