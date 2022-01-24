@@ -1,6 +1,6 @@
 import { CLIENT_BASE_URL } from '../../conf.js';
 
-const fillWithZeros = (number, zeros = 0) => {
+export const fillWithZeros = (number, zeros = 0) => {
   if (!zeros) {
     return number;
   }
@@ -18,18 +18,14 @@ const fillWithZeros = (number, zeros = 0) => {
   return zerosArray.reduce(prev => `0${prev}`, `${parsedNumber}`);
 };
 
-const formatPrice = price => (price / 100).toFixed(2);
+export const formatPrice = price => (price / 100).toFixed(2);
 
-const formatClientRoute = (route, params, queryParams) => {
-  const res = formatRoute(
-    `${CLIENT_BASE_URL}${route}`,
-    params,
-    queryParams,
-  );
+export const formatClientRoute = (route, params, queryParams) => {
+  const res = formatRoute(`${CLIENT_BASE_URL}${route}`, params, queryParams);
   return res;
 };
 
-const formatRoute = (route, params, queryParams) => {
+export const formatRoute = (route, params, queryParams) => {
   if (!route) {
     /* eslint-disable-next-line */
     console.error('Route is undefined');
@@ -61,4 +57,9 @@ const formatRoute = (route, params, queryParams) => {
   );
 };
 
-export { formatPrice, fillWithZeros, formatRoute, formatClientRoute };
+export const formatAddress = address => {
+  if (!address) {
+    return '';
+  }
+  return `${address.street_address}, ${address.city} ${address.state} ${address.country}, ${address.zip}`;
+};

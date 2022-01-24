@@ -1,12 +1,9 @@
 import Router from 'koa-router';
 import * as service from '../../service/entity-deprecate.js';
 import * as entityService from '../../service/entity.js';
-import * as organizationService from '../../service/organization.js';
+import * as organizationService from '../../service/organization.ts';
 import { STATUS_ENUM } from '../../../../../common/enums/index.js';
-import {
-  ERROR_ENUM,
-  errors,
-} from '../../../../../common/errors/index.js';
+import { ERROR_ENUM, errors } from '../../../../../common/errors/index.js';
 
 const router = new Router();
 const BASE_URL = '/api/entity';
@@ -58,10 +55,7 @@ router.get(`${BASE_URL}/all`, async ctx => {
 });
 
 router.get(`${BASE_URL}/role`, async ctx => {
-  const role = await service.getRole(
-    ctx.query.entityId,
-    ctx.body.userInfo.id,
-  );
+  const role = await service.getRole(ctx.query.entityId, ctx.body.userInfo.id);
 
   if (!role) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -118,9 +112,7 @@ router.get(`${BASE_URL}/getPossibleSubmissionerInfos`, async ctx => {
 });
 
 router.get(`${BASE_URL}/scoreSuggestion`, async ctx => {
-  const suggestion = await service.getScoreSuggestion(
-    ctx.query.gameId,
-  );
+  const suggestion = await service.getScoreSuggestion(ctx.query.gameId);
 
   if (!suggestion) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -228,9 +220,7 @@ router.get(`${BASE_URL}/reports`, async ctx => {
 });
 
 router.get(`${BASE_URL}/hasMemberships`, async ctx => {
-  const entity = await service.hasMemberships(
-    ctx.query.organizationId,
-  );
+  const entity = await service.hasMemberships(ctx.query.organizationId);
   if (!entity && entity != false) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -358,9 +348,7 @@ router.get(`${BASE_URL}/personInfos`, async ctx => {
 });
 
 router.get(`${BASE_URL}/teamsPendingAndRefused`, async ctx => {
-  const teams = await service.getAllTeamsPendingAndRefused(
-    ctx.query.eventId,
-  );
+  const teams = await service.getAllTeamsPendingAndRefused(ctx.query.eventId);
 
   if (!teams) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -380,9 +368,7 @@ router.get(`${BASE_URL}/playersPendingAndRefused`, async ctx => {
 });
 
 router.get(`${BASE_URL}/teamPlayersPending`, async ctx => {
-  const players = await service.getAllTeamPlayersPending(
-    ctx.query.teamId,
-  );
+  const players = await service.getAllTeamPlayersPending(ctx.query.teamId);
 
   if (!players) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -402,9 +388,7 @@ router.get(`${BASE_URL}/ownedEvents`, async ctx => {
 });
 
 router.get(`${BASE_URL}/generateReport`, async ctx => {
-  const report = await organizationService.generateReport(
-    ctx.query.reportId,
-  );
+  const report = await organizationService.generateReport(ctx.query.reportId);
 
   if (!report) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -627,9 +611,7 @@ router.put(`${BASE_URL}/teamAcceptation`, async ctx => {
 });
 
 router.put(`${BASE_URL}/playerAcceptation`, async ctx => {
-  const team = await service.updatePlayerAcceptation(
-    ctx.request.body,
-  );
+  const team = await service.updatePlayerAcceptation(ctx.request.body);
 
   if (!team) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -638,9 +620,7 @@ router.put(`${BASE_URL}/playerAcceptation`, async ctx => {
 });
 
 router.put(`${BASE_URL}/teamPlayerAcceptation`, async ctx => {
-  const player = await service.updateTeamPlayerAcceptation(
-    ctx.request.body,
-  );
+  const player = await service.updateTeamPlayerAcceptation(ctx.request.body);
 
   if (!player) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -756,24 +736,19 @@ router.put(`${BASE_URL}/updateOption`, async ctx => {
   ctx.body = { data: option };
 });
 
-router.put(
-  `${BASE_URL}/updateMembershipTermsAndConditions`,
-  async ctx => {
-    const membership = await service.updateMembershipTermsAndConditions(
-      ctx.request.body,
-    );
-
-    if (!membership) {
-      throw new Error(ERROR_ENUM.ERROR_OCCURED);
-    }
-    ctx.body = { data: membership };
-  },
-);
-
-router.put(`${BASE_URL}/memberOptionalField`, async ctx => {
-  const entity = await service.updateMemberOptionalField(
+router.put(`${BASE_URL}/updateMembershipTermsAndConditions`, async ctx => {
+  const membership = await service.updateMembershipTermsAndConditions(
     ctx.request.body,
   );
+
+  if (!membership) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: membership };
+});
+
+router.put(`${BASE_URL}/memberOptionalField`, async ctx => {
+  const entity = await service.updateMemberOptionalField(ctx.request.body);
 
   if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -858,9 +833,7 @@ router.post(`${BASE_URL}/partner`, async ctx => {
 });
 
 router.get(`${BASE_URL}/getTeamCoachedByUser`, async ctx => {
-  const teams = await service.getTeamCoachedByUser(
-    ctx.query.personId,
-  );
+  const teams = await service.getTeamCoachedByUser(ctx.query.personId);
 
   if (!teams) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -878,9 +851,7 @@ router.get(`${BASE_URL}/getAllTeamGames`, async ctx => {
 });
 
 router.get(`${BASE_URL}/getAllTeamPractices`, async ctx => {
-  const practices = await service.getAllTeamPractices(
-    ctx.query.teamId,
-  );
+  const practices = await service.getAllTeamPractices(ctx.query.teamId);
 
   if (!practices) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -1007,10 +978,7 @@ router.post(`${BASE_URL}/exercise`, async ctx => {
 });
 
 router.post(`${BASE_URL}/game`, async ctx => {
-  const game = await service.addGame(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-  );
+  const game = await service.addGame(ctx.request.body, ctx.body.userInfo.id);
 
   if (!game) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
@@ -1084,10 +1052,7 @@ router.post(`${BASE_URL}/gameAttendances`, async ctx => {
 });
 
 router.post(`${BASE_URL}/field`, async ctx => {
-  const field = await service.addField(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-  );
+  const field = await service.addField(ctx.request.body, ctx.body.userInfo.id);
 
   if (!field) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);

@@ -1,5 +1,8 @@
 import State from '../state.js';
-import { BASIC_CHATBOT_STATES, SCORE_SUBMISSION_CHATBOT_STATES } from '../../../../../../../common/enums/index.js';
+import {
+  BASIC_CHATBOT_STATES,
+  SCORE_SUBMISSION_CHATBOT_STATES,
+} from '../../../../../../../common/enums/index.js';
 import { MESSENGER_QUICK_REPLIES } from '../../../enums/index.js';
 import Response from '../../response.js';
 import i18n from '../../../../../i18n.config.js';
@@ -18,15 +21,12 @@ class ScoreSubmissionRequestSent extends State {
       ) {
         this.sendMessages(
           webhookEvent.sender.id,
-          Response.genText(
-            i18n.__('score_submission.already_submitted'),
-          ),
+          Response.genText(i18n.__('score_submission.already_submitted')),
         );
         nextState =
           SCORE_SUBMISSION_CHATBOT_STATES.SPIRIT_SUBMISSION_REQUEST_SENT;
       } else {
-        nextState =
-          SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION;
+        nextState = SCORE_SUBMISSION_CHATBOT_STATES.AWAITING_SCORE_SUBMISSION;
       }
     } else if (this.isNo(webhookEvent)) {
       this.sendMessages(
@@ -52,22 +52,16 @@ class ScoreSubmissionRequestSent extends State {
       teamQuantity === 1
         ? opponentTeams[0].teamName
         : opponentTeams.reduce(
-          (acc, cur, i) =>
-            acc +
-            (i < teamQuantity - 1
-              ? ', '
-              : ' ' + i18n.__('and') + ' ') +
-            cur.teamName,
-          '',
-        );
+            (acc, cur, i) =>
+              acc +
+              (i < teamQuantity - 1 ? ', ' : ' ' + i18n.__('and') + ' ') +
+              cur.teamName,
+            '',
+          );
     return {
       messages: [
         Response.genQuickReply(
-          i18n.__(
-            'score_submission.request',
-            userName,
-            opponentTeamName,
-          ),
+          i18n.__('score_submission.request', userName, opponentTeamName),
           MESSENGER_QUICK_REPLIES.CONFIRMATION,
         ),
       ],

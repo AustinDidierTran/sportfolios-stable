@@ -15,7 +15,7 @@ import {
   CART_ITEM,
 } from '../../../../../common/enums/index.js';
 
-const addProduct = async body => {
+export const addProduct = async body => {
   const { stripeProduct } = body;
   try {
     const product = await stripe.products.create(stripeProduct);
@@ -36,14 +36,8 @@ const addProduct = async body => {
   }
 };
 
-const addPrice = async body => {
-  const {
-    stripePrice,
-    entityId,
-    photoUrl,
-    ownerId,
-    taxRatesId,
-  } = body;
+export const addPrice = async body => {
+  const { stripePrice, entityId, photoUrl, ownerId, taxRatesId } = body;
   try {
     const price = await stripe.prices.create(stripePrice);
     let transactionFees = price.unit_amount;
@@ -100,7 +94,7 @@ const addPrice = async body => {
   }
 };
 
-const editPrice = async body => {
+export const editPrice = async body => {
   const {
     stripePrice,
     entityId,
@@ -168,14 +162,8 @@ const editPrice = async body => {
   }
 };
 
-const createItem = async body => {
-  const {
-    stripeProduct,
-    stripePrice,
-    entityId,
-    photoUrl,
-    taxRatesId,
-  } = body;
+export const createItem = async body => {
+  const { stripeProduct, stripePrice, entityId, photoUrl, taxRatesId } = body;
 
   try {
     const product = await addProduct({
@@ -205,7 +193,7 @@ const createItem = async body => {
   }
 };
 
-const editItem = async body => {
+export const editItem = async body => {
   const {
     stripeProduct,
     stripePrice,
@@ -234,14 +222,14 @@ const editItem = async body => {
   }
 };
 
-const deleteProduct = async stripeProductId => {
+export const deleteProduct = async stripeProductId => {
   const numberDeleted = await knex('stripe_product')
     .where({ stripe_product_id: stripeProductId })
     .del();
   return numberDeleted;
 };
 
-const deletePrice = async stripePriceId => {
+export const deletePrice = async stripePriceId => {
   const numberDeleted = await knex('store_items')
     .where({ stripe_price_id: stripePriceId })
     .del();
@@ -260,7 +248,7 @@ const deletePrice = async stripePriceId => {
   return numberDeleted;
 };
 
-const deleteItem = async body => {
+export const deleteItem = async body => {
   const { stripeProductId, stripePriceId } = body;
 
   const numberPriceDeleted = await deletePrice(stripePriceId);
@@ -271,5 +259,3 @@ const deleteItem = async body => {
   }
   return false;
 };
-
-export { addProduct, addPrice, createItem, editItem, deleteItem };

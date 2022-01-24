@@ -21,7 +21,7 @@
     "**/*.ts",
     "**/*.tsx",
     "knexfile.js"
-  ],
+, "api/src/db/queries/organization.js", "api/src/db/queries/organization.js"  ],
   "exclude": [
     "node_modules",
     "**/*.js",

@@ -1,5 +1,5 @@
 import { Model } from 'objection';
-import { adresses } from './adresses.js';
+import { addresses } from './addresses.js';
 import { entitiesGeneralInfos } from './entitiesGeneralInfos.js';
 
 export class personInfos extends Model {
@@ -9,21 +9,21 @@ export class personInfos extends Model {
 
   static get relationMappings() {
     return {
-      adresses: {
+      addresses: {
         relation: Model.HasOneRelation,
-        modelClass: adresses,
+        modelClass: addresses,
         join: {
           from: 'person_infos.address_id',
-          to: 'adresses.id'
-        }
+          to: 'addresses.id',
+        },
       },
       entitiesGeneralInfos: {
         relation: Model.HasOneRelation,
         modelClass: entitiesGeneralInfos,
         join: {
           from: 'person_infos.id',
-          to: 'entities_general_infos.infos_supp_id'
-        }
+          to: 'entities_general_infos.infos_supp_id',
+        },
       },
     };
   }

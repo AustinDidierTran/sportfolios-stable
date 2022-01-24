@@ -434,6 +434,40 @@ async function getTransferInfosFromToken(token) {
     .first();
 }
 
+export const getUserInfosById = async ids => {
+  const userInfos = await knex('user_primary_person')
+    .select(
+      'entities_general_infos.name',
+      'entities_general_infos.surname',
+      'user_primary_person.primary_person',
+      'user_email.email',
+      'user_email.user_id',
+    )
+    .leftJoin(
+      'user_email',
+      'user_email.user_id',
+      '=',
+      'user_primary_person.user_id',
+    )
+    .leftJoin(
+      'entities_general_infos',
+      'entities_general_infos.entity_id',
+      '=',
+      'user_primary_person.primary_person',
+    )
+    .whereIn('user_primary_person.user_id', ids);
+
+  return userInfos.map(userInfo => ({
+    email: userInfo.email,
+    primaryPerson: {
+      id: userInfo.primary_person,
+      name: userInfo.name,
+      surname: userInfo.surname,
+    },
+    userId: userInfo.user_id,
+  }));
+};
+
 export {
   cancelPersonTransfer,
   confirmEmail,

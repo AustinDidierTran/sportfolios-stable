@@ -46,10 +46,7 @@ const getStripeInvoiceItem = async invoiceItemId => {
   return res;
 };
 
-export async function getAllPeopleRegisteredNotInTeamsInfos(
-  eventId,
-  userId,
-) {
+export async function getAllPeopleRegisteredNotInTeamsInfos(eventId, userId) {
   const people = await getAllPeopleRegisteredNotInTeams(eventId);
 
   const [event] = await knex('events_infos')
@@ -64,8 +61,7 @@ export async function getAllPeopleRegisteredNotInTeamsInfos(
       if (p.invoice_item_id) {
         invoice = await getStripeInvoiceItem(p.invoice_item_id);
       }
-      const entity = (await getEntity(p.person_id, userId))
-        .basicInfos;
+      const entity = (await getEntity(p.person_id, userId)).basicInfos;
       const email = await getEmailPerson(p.person_id);
       const option = await getPaymentOption(p.payment_option_id);
       const date = new Date();
@@ -133,17 +129,16 @@ export async function getAllPeopleRegisteredNotInTeamsInfos(
 }
 
 export const getEventPaymentOption = async stripePriceId => {
-  let [option] = await knex('event_payment_options')
-    .select('*')
-    .where({ team_stripe_price_id: stripePriceId });
-  if (option) {
-    return option;
-  }
+  const stripePriceIds = Array.isArray(stripePriceId)
+    ? stripePriceId
+    : [stripePriceId];
 
-  [option] = await knex('event_payment_options')
+  const options = await knex('event_payment_options')
     .select('*')
-    .where({ individual_stripe_price_id: stripePriceId });
-  return option;
+    .whereIn('team_stripe_price_id', stripePriceIds)
+    .orWhereIn('individual_stripe_price_id', stripePriceIds);
+
+  return options;
 };
 
 /**
@@ -153,10 +148,7 @@ export const getEventPaymentOption = async stripePriceId => {
  */
 export const getRankings = async eventId => {
   const spirit = await knex
-    .select(
-      'entities_general_infos.name',
-      'game_teams.roster_id AS rosterId',
-    )
+    .select('entities_general_infos.name', 'game_teams.roster_id AS rosterId')
     .sum('game_teams.spirit')
     .from('phase')
     .leftJoin('games', 'games.phase_id', '=', 'phase.id')
@@ -220,12 +212,7 @@ export const getAllEventsWithAdmins = async (
         )
         .as('entity_admins'),
     )
-    .leftJoin(
-      'entities',
-      'entities.id',
-      '=',
-      'entity_admins.entity_id',
-    )
+    .leftJoin('entities', 'entities.id', '=', 'entity_admins.entity_id')
     .leftJoin(
       'entities_general_infos',
       'entities_general_infos.entity_id',
@@ -312,11 +299,11 @@ export const getTeamsRegisteredInfo = async eventId => {
       ).onNotNull('event_rosters.invoice_item_id');
     })
     .join('entities_role', function() {
-      this.on(
-        'entities_role.entity_id',
+      this.on('entities_role.entity_id', '=', 'event_rosters.team_id').andOn(
+        'entities_role.role',
         '=',
-        'event_rosters.team_id',
-      ).andOn('entities_role.role', '=', 1);
+        1,
+      );
     })
     .join('user_entity_role', function() {
       this.on(
@@ -476,10 +463,7 @@ export const getEventTypeGame = async eventId => {
     });
 };
 
-export const updateRosterIdInRankings = async (
-  newRosterId,
-  rankingId,
-) => {
+export const updateRosterIdInRankings = async (newRosterId, rankingId) => {
   const res = await knex('phase_rankings')
     .update({
       roster_id: newRosterId,
