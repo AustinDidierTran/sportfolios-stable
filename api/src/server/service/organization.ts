@@ -326,7 +326,11 @@ export const generateReportV2 = async (
       { labelKey: 'reports.headers.sales.total_net', key: 'totalNet' },
     ];
 
-    return { data, headers };
+    const fileName = `${reportInfo.metadata.organizationName}_sales_${moment(
+      reportInfo.metadata.date,
+    ).format('YYYY-MM-DD')}.csv`;
+
+    return { data, headers, fileName };
   }
 
   if (reportInfo.type === REPORT_TYPE_ENUM.MEMBERS) {
@@ -412,7 +416,12 @@ export const generateReportV2 = async (
       { labelKey: 'reports.headers.members.job_title', key: 'jobTitle' },
       { labelKey: 'reports.headers.members.employer', key: 'employer' },
     ];
-    return { data, headers };
+
+    const fileName = `${reportInfo.metadata.organizationName}_members_${moment(
+      reportInfo.metadata.date,
+    ).format('YYYY-MM-DD')}.csv`;
+
+    return { data, headers, fileName };
   }
 };
 

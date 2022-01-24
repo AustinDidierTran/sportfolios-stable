@@ -19,6 +19,7 @@ export interface ReportHeader {
 export interface ReportData {}
 
 export interface ReportResponse {
+  fileName: string;
   data: ReportData[];
   headers: ReportHeader[];
 }
