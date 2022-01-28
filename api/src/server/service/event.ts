@@ -301,7 +301,7 @@ export const getRosters = async (eventId: string, userId: string): Promise<Roste
 
   const rosters = await queries.getRosters(eventId);
 
-  return rosters.map((r: any) => <Roster>({
+  return rosters.map((r: any) => ({
     id: r.roster_id,
     team: {
       name: r.entitiesGeneralInfos.name,
