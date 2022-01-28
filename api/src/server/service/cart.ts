@@ -40,7 +40,7 @@ export const getCartItems = async (userId: string) => {
             amount: Math.floor(i.stripePrice.amount * i.quantity * t.percentage/100)
           })as TaxRates),
           checked: i.selected,
-          requiresMembeship: false, //todo
+          requiresMembership: false, //todo
         })as Item)
       })as Seller)
     } as Buyer]
