@@ -41,7 +41,7 @@ export interface Item{
   quantity: number;
   taxRates: TaxRates[];
   checked: boolean;
-  requiresMembeship: boolean;
+  requiresMembership: boolean;
 }
 
 export interface Buyer{
