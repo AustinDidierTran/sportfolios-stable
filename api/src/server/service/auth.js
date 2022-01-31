@@ -83,12 +83,7 @@ async function signup({
   return { confirmationEmailToken };
 }
 
-export const signupCognito = async ({
-  firstName,
-  lastName,
-  email,
-  newsLetterSubscription,
-}) => {
+export const signupCognito = async ({ email, newsLetterSubscription }) => {
   try {
     const data = await adminGetUser(email);
     const isUnique = await validateEmailIsUnique(email);
@@ -96,6 +91,8 @@ export const signupCognito = async ({
     if (!isUnique || !data) {
       throw new Error(ERROR_ENUM.INVALID_EMAIL);
     }
+
+    // Create user, user_email and user_notification_setting
 
     await createUserComplete({
       password: ' ',
@@ -210,15 +207,15 @@ async function login({ email, password }) {
 
   const isSame = bcrypt.compareSync(password, hashedPassword);
 
-  if (isSame) {
-    const token = await generateAuthToken(userId);
-
-    const userInfo = await getBasicUserInfoFromId(userId);
-
-    return { token, userInfo };
-  } else {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  if (!isSame) {
+    throw new Error(ERROR_ENUM.AUTHENTICATION_ERROR);
   }
+
+  const token = await generateAuthToken(userId);
+
+  const userInfo = await getBasicUserInfoFromId(userId);
+
+  return { token, userInfo };
 }
 
 async function loginWithToken(token) {
@@ -302,11 +299,14 @@ export const migrateToCognito = async ({ email, password }) => {
   } catch (error) {
     if (error.name === ERROR_ENUM.JWT_EXPIRED) {
       throw new Error(ERROR_ENUM.JWT_EXPIRED);
-    } else {
-      // eslint-disable-next-line
-      console.log('error signing in', error);
-      throw new Error(ERROR_ENUM.ERROR_OCCURED);
     }
+    if (error.name === ERROR_ENUM.AUTHENTICATION_ERROR) {
+      throw new Error(ERROR_ENUM.AUTHENTICATION_ERROR);
+    }
+
+    // eslint-disable-next-line
+    console.log('error signing in', error);
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
 };
 

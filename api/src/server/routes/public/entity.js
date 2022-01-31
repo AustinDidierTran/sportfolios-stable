@@ -30,11 +30,11 @@ router.get(BASE_URL, async ctx => {
       entity = await service.getEntity(ctx.query.id, userId);
   }
 
-  if (entity) {
-    ctx.body = { data: entity };
-  } else {
+  if (!entity) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
+
+  ctx.body = { data: entity };
 });
 
 router.get(`${BASE_URL}/realId`, async ctx => {
