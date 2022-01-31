@@ -46,10 +46,7 @@ const addEntity = async (body, userId) => {
     photoUrl,
   } = body;
 
-  if (
-    (name && name.length > 64) ||
-    (surname && surname.length > 64)
-  ) {
+  if ((name && name.length > 64) || (surname && surname.length > 64)) {
     throw ERROR_ENUM.VALUE_IS_INVALID;
   }
   return knex.transaction(async trx => {
@@ -162,9 +159,7 @@ const addEntity = async (body, userId) => {
           })
           .transacting(trx);
 
-        const [{ id: event_id, maximum_spots: spots }] = await knex(
-          'events',
-        )
+        const [{ id: event_id, maximum_spots: spots }] = await knex('events')
           .insert({
             id: entityId,
             start_date: startDate,
@@ -260,9 +255,7 @@ async function getAllOwnedEntities(
       .andWhere(
         'role',
         '<=',
-        onlyAdmin
-          ? ENTITIES_ROLE_ENUM.ADMIN
-          : ENTITIES_ROLE_ENUM.EDITOR,
+        onlyAdmin ? ENTITIES_ROLE_ENUM.ADMIN : ENTITIES_ROLE_ENUM.EDITOR,
       )
   ).map(person => ({
     entity_id: person.entity_id,
@@ -277,8 +270,7 @@ async function getAllOwnedEntities(
     entityIds = [...newEntityIds, ...entityIds];
     entityIds = entityIds.filter(
       (entity, index) =>
-        entityIds.findIndex(e => e.entity_id === entity.entity_id) ===
-        index,
+        entityIds.findIndex(e => e.entity_id === entity.entity_id) === index,
     );
 
     newEntityIds = (
@@ -291,24 +283,19 @@ async function getAllOwnedEntities(
         .andWhere(
           'role',
           '<=',
-          onlyAdmin
-            ? ENTITIES_ROLE_ENUM.ADMIN
-            : ENTITIES_ROLE_ENUM.EDITOR,
+          onlyAdmin ? ENTITIES_ROLE_ENUM.ADMIN : ENTITIES_ROLE_ENUM.EDITOR,
         )
     ).map(entity => ({
       ...entity,
       role: Math.max(
         entity.role,
-        entityIds.find(e => e.entity_id === entity.entity_id_admin)
-          .role,
+        entityIds.find(e => e.entity_id === entity.entity_id_admin).role,
       ),
     }));
 
     count++;
   } while (
-    newEntityIds.some(
-      id => !entityIds.find(e => e.entity_id === id),
-    ) &&
+    newEntityIds.some(id => !entityIds.find(e => e.entity_id === id)) &&
     count < 5
   );
 
@@ -387,31 +374,21 @@ async function getEntitiesTypeById(entityId) {
     .select('type')
     .where('id', entityId);
 
+  console.log({ data });
+
   return data.type;
 }
 
 async function getAllRolesEntity(entityId) {
   const entities_role = await knex('entities_role')
-    .select(
-      'entity_id_admin',
-      'role',
-      'name',
-      'surname',
-      'photo_url',
-      'type',
-    )
+    .select('entity_id_admin', 'role', 'name', 'surname', 'photo_url', 'type')
     .leftJoin(
       'entities_general_infos',
       'entities_role.entity_id_admin',
       '=',
       'entities_general_infos.entity_id',
     )
-    .leftJoin(
-      'entities',
-      'entities_role.entity_id_admin',
-      '=',
-      'entities.id',
-    )
+    .leftJoin('entities', 'entities_role.entity_id_admin', '=', 'entities.id')
     .where('entities_role.entity_id', entityId)
     .orderBy('entities_role.role');
 
@@ -479,6 +456,7 @@ async function getScoreSuggestion(gameId) {
 }
 
 async function getRealId(id) {
+  console.log({ id });
   const [res] = await knex('alias')
     .select('id')
     .where({ reduced_alias: id.replace(/\./g, '').toLowerCase() });
@@ -489,6 +467,7 @@ async function getRealId(id) {
 }
 
 async function getEntity(id, userId) {
+  console.log({ id, userId });
   const [entity] = await knex('entities')
     .select(
       'entities.id',
@@ -513,24 +492,22 @@ async function getEntity(id, userId) {
       '=',
       'person_infos.id',
     )
-    .leftJoin(
-      'addresses',
-      'addresses.id',
-      '=',
-      'person_infos.address_id',
-    )
+    .leftJoin('addresses', 'addresses.id', '=', 'person_infos.address_id')
     .where('entities.id', '=', id);
 
+  console.log(2, { entity });
   const [memberCount] = await knex('memberships')
     .count('*')
     .where({ organization_id: id })
     .andWhere('created_at', '<', 'now()')
     .andWhere('expiration_date', '>', 'now()');
 
+  console.log(3);
   let role = -1;
   if (userId !== -1) {
     role = await getEntityRole(id, userId);
   }
+  console.log(4);
 
   return {
     basicInfos: {
@@ -646,12 +623,7 @@ async function getTeamEventsInfos(id) {
   const gameIds = (
     await knex('team_rosters')
       .select('games.id')
-      .leftJoin(
-        'game_teams',
-        'game_teams.roster_id',
-        '=',
-        'team_rosters.id',
-      )
+      .leftJoin('game_teams', 'game_teams.roster_id', '=', 'team_rosters.id')
       .leftJoin('games', 'games.id', '=', 'game_teams.game_id')
       .whereNotNull('games.id')
       .andWhere({ team_id: id })
@@ -682,12 +654,7 @@ async function getTeamEventsInfos(id) {
       '=',
       'games_all_infos.id',
     )
-    .leftJoin(
-      'phase',
-      'phase.event_id',
-      '=',
-      'games_all_infos.phase_id',
-    )
+    .leftJoin('phase', 'phase.event_id', '=', 'games_all_infos.phase_id')
     .whereIn('games_all_infos.id', gameIds)
     .andWhere(
       'games_all_infos.timeslot',
@@ -797,12 +764,7 @@ const findRole = async (entityId, lookedFor, role, cpt) => {
   }
   const entities = await knex('entities_role')
     .select('*')
-    .leftJoin(
-      'entities',
-      'entities.id',
-      '=',
-      'entities_role.entity_id',
-    )
+    .leftJoin('entities', 'entities.id', '=', 'entities_role.entity_id')
     .whereNull('entities.deleted_at')
     .where({ entity_id_admin: entityId });
 
@@ -812,12 +774,7 @@ const findRole = async (entityId, lookedFor, role, cpt) => {
       if (entity.entity_id === lookedFor) {
         return maxRole;
       } else {
-        return findRole(
-          entity.entity_id,
-          lookedFor,
-          maxRole,
-          cpt + 1,
-        );
+        return findRole(entity.entity_id, lookedFor, maxRole, cpt + 1);
       }
     }),
   );
@@ -831,12 +788,7 @@ async function getEntityRole(entityId, userId) {
   }
   const entities = await knex('user_entity_role')
     .select('*')
-    .leftJoin(
-      'entities',
-      'entities.id',
-      '=',
-      'user_entity_role.entity_id',
-    )
+    .leftJoin('entities', 'entities.id', '=', 'user_entity_role.entity_id')
     .whereNull('entities.deleted_at')
     .where({ user_id: userId });
   const roles = await Promise.all(
@@ -863,12 +815,7 @@ async function getPlayerTeamRole(entityId, userId) {
 async function getMostRecentMember(personId, organizationId) {
   const [member] = await knex('memberships_infos')
     .select('member_type')
-    .rightJoin(
-      'entities',
-      'entities.id',
-      '=',
-      'memberships_infos.person_id',
-    )
+    .rightJoin('entities', 'entities.id', '=', 'memberships_infos.person_id')
     .whereIn('status', ['paid', 'free'])
     .andWhere('entities.id', '=', personId)
     .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
@@ -883,12 +830,7 @@ async function getMostRecentMember(personId, organizationId) {
 async function getMembers(personId, organizationId) {
   const members = await knex('memberships_infos')
     .select('*')
-    .rightJoin(
-      'entities',
-      'entities.id',
-      '=',
-      'memberships_infos.person_id',
-    )
+    .rightJoin('entities', 'entities.id', '=', 'memberships_infos.person_id')
     .where('entities.id', '=', personId)
     .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
     .andWhere({ organization_id: organizationId });
@@ -899,9 +841,7 @@ async function getMembers(personId, organizationId) {
       if (p.member_type != curr.member_type) {
         return true;
       } else {
-        if (
-          moment(p.expiration_date) > moment(curr.expiration_date)
-        ) {
+        if (moment(p.expiration_date) > moment(curr.expiration_date)) {
           addCurr = false;
           return true;
         } else {
@@ -974,9 +914,7 @@ async function getPrerankPhase(eventId) {
 async function getOrganizationTokenPromoCode(organizationId) {
   const res = await knex('token_promo_code')
     .select('token_id', 'expires_at', 'used', 'email')
-    .where(
-      knex.raw(`metadata ->> 'organizationId' = '${organizationId}'`),
-    )
+    .where(knex.raw(`metadata ->> 'organizationId' = '${organizationId}'`))
     .orderBy('created_at');
 
   return res;
@@ -1020,21 +958,15 @@ async function getOptions(eventId) {
         teamTransactionFees = await getTransactionFeesFromStripePriceId(
           r.team_stripe_price_id,
         );
-        const ownerId = await getOwnerStripePrice(
-          r.team_stripe_price_id,
-        );
+        const ownerId = await getOwnerStripePrice(r.team_stripe_price_id);
         owner = await getEntity(ownerId);
       }
       if (r.individual_stripe_price_id) {
-        individualTaxRates = await getTaxRates(
-          r.individual_stripe_price_id,
-        );
+        individualTaxRates = await getTaxRates(r.individual_stripe_price_id);
         individualTransactionFees = await getTransactionFeesFromStripePriceId(
           r.individual_stripe_price_id,
         );
-        const ownerId = await getOwnerStripePrice(
-          r.individual_stripe_price_id,
-        );
+        const ownerId = await getOwnerStripePrice(r.individual_stripe_price_id);
         owner = await getEntity(ownerId);
       }
 
@@ -1061,10 +993,7 @@ async function getOptions(eventId) {
   );
 }
 
-async function getMembershipWithoutId(
-  organizationId,
-  membershipType,
-) {
+async function getMembershipWithoutId(organizationId, membershipType) {
   const [membership] = await knex('entity_memberships')
     .select('*', 'entity_memberships.id')
     .leftJoin(
@@ -1192,12 +1121,8 @@ async function getRegistrationTeamPaymentOption(paymentOptionId) {
 
   return teamPaymentOption;
 }
-async function getRegistrationIndividualPaymentOption(
-  paymentOptionId,
-) {
-  const [individualPaymentOption] = await knex(
-    'event_payment_options',
-  )
+async function getRegistrationIndividualPaymentOption(paymentOptionId) {
+  const [individualPaymentOption] = await knex('event_payment_options')
     .select(
       'individual_price',
       'individual_stripe_price_id',
@@ -1221,11 +1146,7 @@ async function getIndividualPaymentOptionFromRosterId(rosterId) {
     .where({ roster_id: rosterId });
 
   const [option] = await knex('event_payment_options')
-    .select(
-      'individual_price',
-      'individual_stripe_price_id',
-      'event_id',
-    )
+    .select('individual_price', 'individual_stripe_price_id', 'event_id')
     .where({ id: roster.payment_option_id });
 
   return {
@@ -1343,17 +1264,11 @@ async function getAllTeamsRegisteredInfos(eventId, pills, userId) {
       }
       const entity = (await getEntity(t.team_id, userId)).basicInfos;
       const email = await getTeamCreatorEmail(t.team_id);
-      const players = await getRoster(
-        t.roster_id,
-        true,
-        event.creator_id,
-      );
+      const players = await getRoster(t.roster_id, true, event.creator_id);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.payment_option_id);
       const role = await getRoleRoster(t.roster_id, userId);
-      const registrationStatus = await getRegistrationStatus(
-        t.roster_id,
-      );
+      const registrationStatus = await getRegistrationStatus(t.roster_id);
       const date = new Date();
 
       const memberships = await knex('memberships_infos')
@@ -1402,9 +1317,7 @@ async function getAllTeamsRegisteredInfos(eventId, pills, userId) {
     }
     if (pills.includes(PILL_TYPE_ENUM.NOT_MEMBER)) {
       res = res.filter(
-        r =>
-          !r.isMember &&
-          r.registrationStatus === STATUS_ENUM.ACCEPTED,
+        r => !r.isMember && r.registrationStatus === STATUS_ENUM.ACCEPTED,
       );
     }
   }
@@ -1453,17 +1366,11 @@ async function getAllTeamsAcceptedInfos(eventId, userId) {
       const entity = (await getEntity(t.team_id, userId)).basicInfos;
 
       const emails = await getEmailsEntity(t.team_id);
-      const players = await getRoster(
-        t.roster_id,
-        true,
-        event.creator_id,
-      );
+      const players = await getRoster(t.roster_id, true, event.creator_id);
       const captains = await getTeamCaptains(t.team_id, userId);
       const option = await getPaymentOption(t.payment_option_id);
       const role = await getRoleRoster(t.roster_id, userId);
-      const registrationStatus = await getRegistrationStatus(
-        t.roster_id,
-      );
+      const registrationStatus = await getRegistrationStatus(t.roster_id);
       return {
         name: entity.name,
         surname: entity.surname,
@@ -1511,8 +1418,7 @@ async function getAllPeopleRegisteredInfos(eventId, userId) {
       if (p.invoice_item_id) {
         invoice = await getStripeInvoiceItem(p.invoice_item_id);
       }
-      const entity = (await getEntity(p.person_id, userId))
-        .basicInfos;
+      const entity = (await getEntity(p.person_id, userId)).basicInfos;
       const email = await getEmailPerson(p.person_id);
       const option = await getPaymentOption(p.payment_option_id);
       const date = new Date();
@@ -1610,9 +1516,7 @@ async function getRemainingSpots(eventId) {
 
   const remainingSpots = Math.max(
     0,
-    Number(event.maximum_spots) -
-      Number(countRosters) -
-      Number(countPersons),
+    Number(event.maximum_spots) - Number(countRosters) - Number(countPersons),
   );
 
   return remainingSpots;
@@ -1693,12 +1597,7 @@ const getPlayerInvoiceItem = async id => {
       roster_id: rosterId,
     },
   ] = await knex('roster_players')
-    .select([
-      'invoice_item_id',
-      'payment_status',
-      'person_id',
-      'roster_id',
-    ])
+    .select(['invoice_item_id', 'payment_status', 'person_id', 'roster_id'])
     .where({ id });
 
   return { invoiceItemId, status, personId, rosterId };
@@ -1747,10 +1646,7 @@ async function getEvent(eventId) {
 
 async function getEventAdmins(entityId) {
   const admins = await knex('entities_role')
-    .select(
-      'user_entity_role.user_id',
-      'entities_role.entity_id_admin',
-    )
+    .select('user_entity_role.user_id', 'entities_role.entity_id_admin')
     .leftJoin(
       'user_entity_role',
       'user_entity_role.entity_id',
@@ -1903,9 +1799,7 @@ async function getPositions(gameId) {
 
 async function getPhotoFromRosterId(rosterId) {
   const teamId = await getTeamIdFromRosterId(rosterId);
-  const [{ photo_url: photoUrl }] = await knex(
-    'entities_general_infos',
-  )
+  const [{ photo_url: photoUrl }] = await knex('entities_general_infos')
     .select('photo_url')
     .where({ entity_id: teamId });
   return photoUrl;
@@ -1970,12 +1864,7 @@ async function getRosterByEventAndUser(eventId, userId) {
       '=',
       'roster_players.roster_id',
     )
-    .leftJoin(
-      'team_rosters',
-      'event_rosters.roster_id',
-      '=',
-      'team_rosters.id',
-    )
+    .leftJoin('team_rosters', 'event_rosters.roster_id', '=', 'team_rosters.id')
     .leftJoin(
       'entities_general_infos',
       'team_rosters.team_id',
@@ -2028,13 +1917,7 @@ async function getAttendanceSheet(infos) {
 
 async function getGamePlayersWithRole(game_id) {
   return knex('game_players_view')
-    .select(
-      'player_id',
-      'event_id',
-      'player_owner',
-      'event_name',
-      'roster_id',
-    )
+    .select('player_id', 'event_id', 'player_owner', 'event_name', 'roster_id')
     .where({ game_id })
     .whereNot({ player_role: ROSTER_ROLE_ENUM.PLAYER });
 }
@@ -2051,12 +1934,7 @@ async function getGameTeams(game_id, player_id) {
       .where({ game_id, player_id })
       .as('players');
     return knex
-      .select(
-        'game_id',
-        'game_teams.roster_id',
-        'players.player_id',
-        'name',
-      )
+      .select('game_id', 'game_teams.roster_id', 'players.player_id', 'name')
       .from('game_teams')
       .where({ game_id })
       .leftJoin(players, 'game_teams.roster_id', 'players.roster_id');
@@ -2131,9 +2009,7 @@ async function getGameSubmissionInfos(gameId, myRosterId, eventId) {
         ? spiritSubmission.submitted_for_roster
         : null,
       comment: spiritSubmission ? spiritSubmission.comment : null,
-      spiritScore: spiritSubmission
-        ? spiritSubmission.spirit_score
-        : null,
+      spiritScore: spiritSubmission ? spiritSubmission.spirit_score : null,
     },
     hasSpirit: getSpirit.hasSpirit,
   };
@@ -2285,17 +2161,12 @@ const getTeams = async gameId => {
   const teamInfo = await Promise.all(
     teams.map(async team => {
       if (team.roster_id) {
-        const realTeamId = await getTeamIdFromRosterId(
-          team.roster_id,
-        );
+        const realTeamId = await getTeamIdFromRosterId(team.roster_id);
         const [entities_photo] = await knex('entities_general_infos')
           .select('photo_url')
           .where('entity_id', realTeamId);
 
-        const roster = await getRosterWithRsvp(
-          team.roster_id,
-          gameId,
-        );
+        const roster = await getRosterWithRsvp(team.roster_id, gameId);
 
         return {
           gameId: team.game_id,
@@ -2505,17 +2376,9 @@ async function getGeneralInfos(entityId) {
   };
 }
 
-async function getGraphAmountGeneratedByEvent(
-  eventPaymentId,
-  language,
-  date,
-) {
+async function getGraphAmountGeneratedByEvent(eventPaymentId, language, date) {
   const [ids] = await knex('event_payment_options')
-    .select(
-      'name',
-      'team_stripe_price_id',
-      'individual_stripe_price_id',
-    )
+    .select('name', 'team_stripe_price_id', 'individual_stripe_price_id')
     .where('id', eventPaymentId);
 
   const graphIncomeData = await knex.select(
@@ -2755,9 +2618,7 @@ async function getAllTeamsPending(eventId) {
       const team = (await getEntity(t.team_id)).basicInfos;
       const event = (await getEntity(eventId)).basicInfos;
       const roster = await getRoster(t.roster_id);
-      const paymentOption = await getPaymentOption(
-        t.payment_option_id,
-      );
+      const paymentOption = await getPaymentOption(t.payment_option_id);
       return {
         id: t.roster_id,
         name: team.name,
@@ -2784,9 +2645,7 @@ async function getAllTeamsRefused(eventId) {
       const team = (await getEntity(t.team_id)).basicInfos;
       const event = (await getEntity(eventId)).basicInfos;
       const roster = await getRoster(t.roster_id);
-      const paymentOption = await getPaymentOption(
-        t.payment_option_id,
-      );
+      const paymentOption = await getPaymentOption(t.payment_option_id);
       return {
         id: t.roster_id,
         name: team.name,
@@ -2814,9 +2673,7 @@ async function getAllPlayersRefused(eventId) {
     registeredPlayers.map(async p => {
       const person = await getPersonInfos(p.person_id);
       const event = (await getEntity(eventId)).basicInfos;
-      const paymentOption = await getPaymentOption(
-        p.payment_option_id,
-      );
+      const paymentOption = await getPaymentOption(p.payment_option_id);
       return {
         id: p.person_id,
         name: person.name,
@@ -2865,9 +2722,7 @@ async function getMyTeamPlayersRequest(teamId, personIds) {
       status: STATUS_ENUM.PENDING,
     });
 
-  const filtered = pendingPlayers.filter(p =>
-    personIds.includes(p.person_id),
-  );
+  const filtered = pendingPlayers.filter(p => personIds.includes(p.person_id));
 
   const pending = await Promise.all(
     filtered.map(async p => {
@@ -2920,9 +2775,7 @@ async function getAllPlayersPending(eventId) {
     registeredPlayers.map(async p => {
       const person = await getPersonInfos(p.person_id);
       const event = (await getEntity(eventId)).basicInfos;
-      const paymentOption = await getPaymentOption(
-        p.payment_option_id,
-      );
+      const paymentOption = await getPaymentOption(p.payment_option_id);
 
       return {
         id: p.person_id,
@@ -2942,11 +2795,7 @@ async function getAllPlayersPending(eventId) {
   return res;
 }
 
-async function getRankingRoster(
-  eventId,
-  originPhaseId,
-  originPosition,
-) {
+async function getRankingRoster(eventId, originPhaseId, originPosition) {
   const prerankPhase = await getPrerankPhase(eventId);
   if (originPhaseId === prerankPhase.id) {
     const res = await knex('phase_rankings')
@@ -2977,12 +2826,7 @@ async function updateEntityRole(entityId, entityIdAdmin, role) {
   return entity;
 }
 
-async function updateEvent(
-  eventId,
-  maximumSpots,
-  startDate,
-  endDate,
-) {
+async function updateEvent(eventId, maximumSpots, startDate, endDate) {
   const [entity] = await knex('events')
     .update({
       maximum_spots: maximumSpots,
@@ -3024,12 +2868,7 @@ async function updatePrerankSpots(eventId, newSpots) {
       .returning('*');
 
     const res = await knex('phase_rankings')
-      .select(
-        'initial_position',
-        'current_phase',
-        'roster_id',
-        'ranking_id',
-      )
+      .select('initial_position', 'current_phase', 'roster_id', 'ranking_id')
       .where({
         current_phase: prerank.id,
       });
@@ -3068,19 +2907,11 @@ async function updatePrerankSpots(eventId, newSpots) {
 
     const spotsToAdd = Number(newSpots - countSpots);
 
-    await addSpotsPreranking(
-      spotsToAdd,
-      Number(countSpots),
-      prerank.id,
-    );
+    await addSpotsPreranking(spotsToAdd, Number(countSpots), prerank.id);
   } else if (newSpots > Number(prerank.spots)) {
     const spotsToAdd = Number(newSpots - prerank.spots);
 
-    await addSpotsPreranking(
-      spotsToAdd,
-      Number(prerank.spots),
-      prerank.id,
-    );
+    await addSpotsPreranking(spotsToAdd, Number(prerank.spots), prerank.id);
   } else if (newSpots < Number(prerank.spots)) {
     const spotsToDelete = Number(prerank.spots - newSpots);
 
@@ -3088,15 +2919,12 @@ async function updatePrerankSpots(eventId, newSpots) {
       .select('*')
       .where({ current_phase: prerank.id, roster_id: null });
 
-    emptyRankings.sort(
-      (a, b) => a.initial_position - b.initial_position,
-    );
+    emptyRankings.sort((a, b) => a.initial_position - b.initial_position);
 
     for (let i = 0; i < spotsToDelete; ++i) {
       const [rank] = await knex('phase_rankings')
         .where({
-          ranking_id:
-            emptyRankings[emptyRankings.length - 1 - i].ranking_id,
+          ranking_id: emptyRankings[emptyRankings.length - 1 - i].ranking_id,
         })
         .del()
         .returning('*');
@@ -3194,13 +3022,7 @@ async function updatePractice(
     });
 }
 
-async function updatePracticeRsvp(
-  id,
-  rsvp,
-  personId,
-  updateAll,
-  userId,
-) {
+async function updatePracticeRsvp(id, rsvp, personId, updateAll, userId) {
   const [roster] = await knex('sessions')
     .select('roster_id')
     .where({ id });
@@ -3485,11 +3307,7 @@ async function updateOriginPhase(body) {
 
   const type = await getPhaseType(phaseId);
 
-  const [roster] = await getRankingRoster(
-    eventId,
-    originPhase,
-    originPosition,
-  );
+  const [roster] = await getRankingRoster(eventId, originPhase, originPosition);
 
   if (roster !== undefined) {
     const [res] = await knex('phase_rankings')
@@ -3749,13 +3567,7 @@ async function updatePersonInfosHelper(entityId, body) {
   let addressId = null;
 
   if (personInfos.address.length != 0) {
-    let {
-      street_address,
-      city,
-      state,
-      zip,
-      country,
-    } = personInfos.address;
+    let { street_address, city, state, zip, country } = personInfos.address;
 
     const [res] = await knex('addresses')
       .insert({
@@ -3891,10 +3703,7 @@ async function updatePlayer(body) {
   if (
     (role === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
       role === ROSTER_ROLE_ENUM.PLAYER) &&
-    !(await canRemoveCaptainorCoachFromTeam(
-      player.team_id,
-      player.person_id,
-    ))
+    !(await canRemoveCaptainorCoachFromTeam(player.team_id, player.person_id))
   ) {
     throw new Error(ERROR_ENUM.FORBIDDEN);
   }
@@ -3911,10 +3720,7 @@ async function updateRosterPlayer(body) {
   if (
     (role === ROSTER_ROLE_ENUM.ASSISTANT_CAPTAIN ||
       role === ROSTER_ROLE_ENUM.PLAYER) &&
-    !(await canRemovePlayerFromRoster(
-      player.roster_id,
-      player.person_id,
-    ))
+    !(await canRemovePlayerFromRoster(player.roster_id, player.person_id))
   ) {
     throw new Error(ERROR_ENUM.FORBIDDEN);
   }
@@ -4033,12 +3839,7 @@ const canUnregisterTeam = async (rosterId, eventId) => {
 
   const startedPhasesWithRosterId = await knex('phase_rankings')
     .select('current_phase')
-    .leftJoin(
-      'phase',
-      'phase.id',
-      '=',
-      'phase_rankings.current_phase',
-    )
+    .leftJoin('phase', 'phase.id', '=', 'phase_rankings.current_phase')
     .where({ roster_id: rosterId })
     .whereNot({ status: 'not_started' });
 
@@ -4088,9 +3889,7 @@ const deleteRegistration = async (rosterId, eventId) => {
 
     if (dependantRanking !== undefined) {
       // update name in game_teams if it was in a game
-      const phaseName = await getPhaseName(
-        dependantRanking.current_phase,
-      );
+      const phaseName = await getPhaseName(dependantRanking.current_phase);
 
       await knex('game_teams')
         .where({
@@ -4177,10 +3976,7 @@ const removeIndividualEventCartItem = async ({
   return ids;
 };
 
-const removeIndividualPaymentCartItem = async ({
-  buyerId,
-  rosterId,
-}) => {
+const removeIndividualPaymentCartItem = async ({ buyerId, rosterId }) => {
   const [res] = await knex
     .select('id')
     .from(
@@ -4208,12 +4004,7 @@ const removeIndividualPaymentCartItem = async ({
   return res ? res.id : null;
 };
 
-async function updateRegistration(
-  rosterId,
-  eventId,
-  invoiceItemId,
-  status,
-) {
+async function updateRegistration(rosterId, eventId, invoiceItemId, status) {
   return knex('event_rosters')
     .update({ invoice_item_id: invoiceItemId, status })
     .where({ event_id: eventId, roster_id: rosterId });
@@ -4377,12 +4168,7 @@ async function getMembershipId(membershipType, organizationId) {
 }
 
 async function addMemberManually(body) {
-  const {
-    membershipType,
-    organizationId,
-    personId,
-    expirationDate,
-  } = body;
+  const { membershipType, organizationId, personId, expirationDate } = body;
 
   const id = await getMembershipId(membershipType, organizationId);
 
@@ -4618,16 +4404,9 @@ async function getSessionExercises(sessionId) {
   return res;
 }
 
-async function getCoachSessionEvaluation(
-  exerciseId,
-  sessionId,
-  coachId,
-) {
+async function getCoachSessionEvaluation(exerciseId, sessionId, coachId) {
   const users = await knex('sessions')
-    .select(
-      'sessions.id as sessionId',
-      'roster_players_infos.person_id',
-    )
+    .select('sessions.id as sessionId', 'roster_players_infos.person_id')
     .leftJoin(
       'roster_players_infos',
       'roster_players_infos.roster_id',
@@ -4695,11 +4474,7 @@ async function getCoachSessionEvaluation(
   return res;
 }
 
-async function getPlayerSessionEvaluation(
-  exerciseId,
-  sessionId,
-  userId,
-) {
+async function getPlayerSessionEvaluation(exerciseId, sessionId, userId) {
   const entities = await getAllOwnedEntities(
     GLOBAL_ENUM.PERSON,
     userId,
@@ -4950,11 +4725,7 @@ async function addSpiritSubmission(infos) {
 }
 
 async function isSpiritAlreadySubmitted(infos) {
-  const {
-    game_id,
-    submitted_by_roster,
-    submitted_for_roster,
-  } = infos;
+  const { game_id, submitted_by_roster, submitted_for_roster } = infos;
   const res = await knex('spirit_submission')
     .select()
     .where({ game_id, submitted_by_roster, submitted_for_roster });
@@ -4993,9 +4764,7 @@ async function addScoreSuggestion(infos) {
     .insert(infos)
     .returning('*');
 
-  const suggestion = await acceptScoreSuggestionIfPossible(
-    infos.game_id,
-  );
+  const suggestion = await acceptScoreSuggestionIfPossible(infos.game_id);
 
   return {
     ...newSuggestion,
@@ -5162,14 +4931,8 @@ async function setGameScore(gameId, score, isManualAdd = false) {
       .where({ ranking_id: team1.ranking_id });
 
     if (t0 && t1) {
-      const loserPos = Math.max(
-        t0.initial_position,
-        t1.initial_position,
-      );
-      const winnerPos = Math.min(
-        t0.initial_position,
-        t1.initial_position,
-      );
+      const loserPos = Math.max(t0.initial_position, t1.initial_position);
+      const winnerPos = Math.min(t0.initial_position, t1.initial_position);
 
       //update winner and loser position
       let ranking0 = null;
@@ -5418,11 +5181,7 @@ async function generateGamesPool(phaseId, eventId, rankings) {
   }
 }
 
-async function generateGamesElimnationBracket(
-  phaseId,
-  eventId,
-  rankings,
-) {
+async function generateGamesElimnationBracket(phaseId, eventId, rankings) {
   const spots = rankings.length;
   if (
     spots === 2 ||
@@ -5432,11 +5191,7 @@ async function generateGamesElimnationBracket(
     spots === 32
   ) {
     const steps = Math.log2(spots);
-    for (
-      let currentStep = 1;
-      currentStep < steps + 1;
-      ++currentStep
-    ) {
+    for (let currentStep = 1; currentStep < steps + 1; ++currentStep) {
       const originStep = currentStep - 1;
       const factor = Math.pow(2, currentStep) / 2;
       for (let i = 1; i < factor + 1; ++i) {
@@ -5476,14 +5231,7 @@ async function generateBracket(
       originStep,
       phaseId,
     );
-    await addGame(
-      eventId,
-      phaseId,
-      null,
-      null,
-      rankingId1,
-      rankingId2,
-    );
+    await addGame(eventId, phaseId, null, null, rankingId1, rankingId2);
   }
 }
 
@@ -5631,9 +5379,7 @@ async function addOption(
     .insert({
       event_id: eventId,
       name,
-      team_stripe_price_id: teamPriceStripe
-        ? teamPriceStripe.id
-        : null,
+      team_stripe_price_id: teamPriceStripe ? teamPriceStripe.id : null,
       team_price: teamPrice === null ? 0 : teamPrice,
       individual_stripe_price_id: individualPriceStripe
         ? individualPriceStripe.id
@@ -5727,14 +5473,7 @@ async function addMembership(
   }
 }
 
-async function updateGameRsvp(
-  id,
-  rsvp,
-  personId,
-  rosterId,
-  updateAll,
-  userId,
-) {
+async function updateGameRsvp(id, rsvp, personId, rosterId, updateAll, userId) {
   if (updateAll) {
     const entities = await getAllOwnedEntities(
       GLOBAL_ENUM.PERSON,
@@ -5865,9 +5604,7 @@ async function getRegisteredPersons(persons, eventId) {
     .whereIn('person_id', ids)
     .andWhere({ event_id: eventId });
 
-  const res = persons.filter(p =>
-    registered.some(r => r.person_id === p.id),
-  );
+  const res = persons.filter(p => registered.some(r => r.person_id === p.id));
   return res;
 }
 
@@ -5946,14 +5683,7 @@ const addPartner = async body => {
 };
 
 const addPlayerToRoster = async body => {
-  const {
-    personId,
-    rosterId,
-    role,
-    isSub,
-    individualOption,
-    teamId,
-  } = body;
+  const { personId, rosterId, role, isSub, individualOption, teamId } = body;
   let paymentStatus = INVOICE_STATUS_ENUM.FREE;
   if (individualOption && individualOption.individual_price > 0) {
     paymentStatus = INVOICE_STATUS_ENUM.OPEN;
@@ -6043,9 +5773,7 @@ const addPlayerCartItem = async body => {
     return;
   }
 
-  const paymentOption = await getIndividualPaymentOptionFromRosterId(
-    rosterId,
-  );
+  const paymentOption = await getIndividualPaymentOptionFromRosterId(rosterId);
   if (paymentOption.individual_price <= 0) {
     return;
   }
@@ -6053,8 +5781,7 @@ const addPlayerCartItem = async body => {
   const eventId = await getEventIdFromRosterId(rosterId);
   const userId = await getUserIdFromPersonId(personId);
   const event = (await getEntity(eventId, userId)).basicInfos;
-  const team = (await getEntity(paymentOption.teamId, userId))
-    .basicInfos;
+  const team = (await getEntity(paymentOption.teamId, userId)).basicInfos;
 
   const ownerId = await getOwnerStripePrice(
     paymentOption.individual_stripe_price_id,
@@ -6153,11 +5880,7 @@ async function updateMemberOptionalField(
   return res;
 }
 
-async function updateTeamAcceptation(
-  eventId,
-  rosterId,
-  registrationStatus,
-) {
+async function updateTeamAcceptation(eventId, rosterId, registrationStatus) {
   const prerankPhase = await getPrerankPhase(eventId);
   const [res] = await knex('event_rosters')
     .where({
@@ -6209,11 +5932,7 @@ async function updateTeamPlayerAcceptation(teamId, personId, status) {
   return res;
 }
 
-async function updatePlayerAcceptation(
-  eventId,
-  personId,
-  registrationStatus,
-) {
+async function updatePlayerAcceptation(eventId, personId, registrationStatus) {
   const [res] = await knex('event_persons')
     .where({
       event_id: eventId,
@@ -6290,12 +6009,7 @@ async function updateGameTimeslotId(gameId, timeslotId) {
   return r;
 }
 
-async function updateGameRanking(
-  gameId,
-  rankingId,
-  oldRanking,
-  phase,
-) {
+async function updateGameRanking(gameId, rankingId, oldRanking, phase) {
   let ranking = null;
 
   [ranking] = await knex('phase_rankings')
@@ -6365,22 +6079,12 @@ async function updateGame(
   }
 
   if (rankingId1) {
-    const r = await updateGameRanking(
-      gameId,
-      rankingId1,
-      oldRanking1,
-      phase,
-    );
+    const r = await updateGameRanking(gameId, rankingId1, oldRanking1, phase);
     res.push(r);
   }
 
   if (rankingId2) {
-    const r = await updateGameRanking(
-      gameId,
-      rankingId2,
-      oldRanking2,
-      phase,
-    );
+    const r = await updateGameRanking(gameId, rankingId2, oldRanking2, phase);
     res.push(r);
   }
   return Promise.all(res);
@@ -6489,11 +6193,7 @@ const deleteEntityMembership = async membershipId => {
     .select('*')
     .from(
       knex
-        .select(
-          knex.raw(
-            "id, metadata ->> 'membershipId' AS membership_id",
-          ),
-        )
+        .select(knex.raw("id, metadata ->> 'membershipId' AS membership_id"))
         .from('cart_items')
         .as('cartItems'),
     )
@@ -6585,11 +6285,7 @@ const deleteMembershipWithId = async membershipId => {
   }
 };
 
-const deleteMembership = async (
-  memberType,
-  organizationId,
-  personId,
-) => {
+const deleteMembership = async (memberType, organizationId, personId) => {
   const [res] = await knex('memberships')
     .where({
       member_type: memberType,
@@ -6630,9 +6326,7 @@ const deleteMembership = async (
       id: r.id,
     }));
     const res4 = res3.filter(r => {
-      return (
-        r.organizationId === organizationId && r.personId === personId
-      );
+      return r.organizationId === organizationId && r.personId === personId;
     });
     await Promise.all(
       res4.map(async r => {
@@ -6857,24 +6551,9 @@ const getSessionLocations = async teamId => {
       'addresses.country',
     )
     .distinctOn('locations.id')
-    .leftJoin(
-      'sessions',
-      'sessions.roster_id',
-      '=',
-      'team_rosters.id',
-    )
-    .leftJoin(
-      'locations',
-      'locations.id',
-      '=',
-      'sessions.location_id',
-    )
-    .leftJoin(
-      'addresses',
-      'addresses.id',
-      '=',
-      'locations.address_id',
-    )
+    .leftJoin('sessions', 'sessions.roster_id', '=', 'team_rosters.id')
+    .leftJoin('locations', 'locations.id', '=', 'sessions.location_id')
+    .leftJoin('addresses', 'addresses.id', '=', 'locations.address_id')
     .whereNotNull('locations.id')
     .where({ team_id: teamId });
 
@@ -6905,24 +6584,9 @@ const getPracticeBasicInfo = async (teamId, userId) => {
         'addresses.zip',
         'addresses.country',
       )
-      .leftJoin(
-        'sessions',
-        'sessions.roster_id',
-        '=',
-        'team_rosters.id',
-      )
-      .leftJoin(
-        'locations',
-        'locations.id',
-        '=',
-        'sessions.location_id',
-      )
-      .leftJoin(
-        'addresses',
-        'addresses.id',
-        '=',
-        'locations.address_id',
-      )
+      .leftJoin('sessions', 'sessions.roster_id', '=', 'team_rosters.id')
+      .leftJoin('locations', 'locations.id', '=', 'sessions.location_id')
+      .leftJoin('addresses', 'addresses.id', '=', 'locations.address_id')
       .whereNotNull('sessions.id')
       .where({ team_id: teamId })
       .orderBy('sessions.start_date', 'asc');
@@ -6964,24 +6628,9 @@ const getPracticeBasicInfo = async (teamId, userId) => {
       'myPlayer.rsvp as myRsvp',
       'player.rsvp as rsvp',
     )
-    .leftJoin(
-      'sessions',
-      'sessions.roster_id',
-      '=',
-      'team_rosters.id',
-    )
-    .leftJoin(
-      'locations',
-      'locations.id',
-      '=',
-      'sessions.location_id',
-    )
-    .leftJoin(
-      'addresses',
-      'addresses.id',
-      '=',
-      'locations.address_id',
-    )
+    .leftJoin('sessions', 'sessions.roster_id', '=', 'team_rosters.id')
+    .leftJoin('locations', 'locations.id', '=', 'sessions.location_id')
+    .leftJoin('addresses', 'addresses.id', '=', 'locations.address_id')
     .leftJoin(
       knex('roster_players_infos')
         .select(
@@ -7061,18 +6710,8 @@ const getPracticeInfo = async id => {
       'team.roster',
       'team.team_id',
     )
-    .leftJoin(
-      'locations',
-      'locations.id',
-      '=',
-      'sessions.location_id',
-    )
-    .leftJoin(
-      'addresses',
-      'addresses.id',
-      '=',
-      'locations.address_id',
-    )
+    .leftJoin('locations', 'locations.id', '=', 'sessions.location_id')
+    .leftJoin('addresses', 'addresses.id', '=', 'locations.address_id')
     .leftJoin(
       knex('team_rosters')
         .select(
@@ -7323,12 +6962,7 @@ async function getAllTeamGames(team_id) {
   const res = await knex('team_rosters')
     .select('date', 'end_time', 'games.id')
     .where({ team_id })
-    .leftJoin(
-      'game_teams',
-      'team_rosters.id',
-      '=',
-      'game_teams.roster_id',
-    )
+    .leftJoin('game_teams', 'team_rosters.id', '=', 'game_teams.roster_id')
     .leftJoin('games', 'games.id', '=', 'game_teams.game_id')
     .leftJoin(
       'event_time_slots',
@@ -7359,24 +6993,9 @@ async function getAllTeamPractices(id) {
       'addresses.zip',
       'addresses.country',
     )
-    .leftJoin(
-      'sessions',
-      'sessions.roster_id',
-      '=',
-      'team_rosters.id',
-    )
-    .leftJoin(
-      'locations',
-      'locations.id',
-      '=',
-      'sessions.location_id',
-    )
-    .leftJoin(
-      'addresses',
-      'addresses.id',
-      '=',
-      'locations.address_id',
-    )
+    .leftJoin('sessions', 'sessions.roster_id', '=', 'team_rosters.id')
+    .leftJoin('locations', 'locations.id', '=', 'sessions.location_id')
+    .leftJoin('addresses', 'addresses.id', '=', 'locations.address_id')
     .whereNotNull('sessions.id')
     .where({ team_id: id })
     .orderBy('sessions.start_date', 'asc');
