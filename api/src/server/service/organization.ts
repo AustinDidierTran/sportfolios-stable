@@ -63,7 +63,7 @@ interface SaleReportInfo {
   totalNet: number;
 }
 
-export const getReports = async (entityId: string): any => {
+export const getReports = async (entityId: string): Promise<any> => {
   const reports = await queries.getReports(entityId);
 
   return reports;
