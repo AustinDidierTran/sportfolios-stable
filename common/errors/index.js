@@ -6,6 +6,7 @@ const ERROR_ENUM = {
   FORBIDDEN: 'Forbidden',
   INVALID_EMAIL: 'invalid_email',
   INVALID_INFORMATION: 'invalid_information',
+  AUTHENTICATION_ERROR: 'authentication_error',
   INVALID_TRANSIT_NUMBER:
     'Invalid transit number. The number should be in the format xxxxx-yyy or xxxxxyyy.',
   REGISTRATION_ERROR: 'There was an error with your registration',
@@ -44,6 +45,10 @@ const errors = {
   },
   [ERROR_ENUM.INVALID_EMAIL]: {
     message: ERROR_ENUM.INVALID_EMAIL,
+    code: 403,
+  },
+  [ERROR_ENUM.AUTHENTICATION_ERROR]: {
+    message: ERROR_ENUM.AUTHENTICATION_ERROR,
     code: 403,
   },
   [ERROR_ENUM.FORBIDDEN]: {

@@ -6,17 +6,58 @@ import {
 } from '../../../../common/enums/index.js';
 import { EXPIRATION_TIMES } from '../../../../common/constants/index.js';
 
-async function createRecoveryEmailToken({ userId, token }) {
+export const createRecoveryEmailToken = async ({ userId, token }) => {
   await knex('recovery_email_token').insert({
     user_id: userId,
     token,
-    expires_at: new Date(
-      Date.now() + EXPIRATION_TIMES.ACCOUNT_RECOVERY_TOKEN,
-    ),
+    expires_at: new Date(Date.now() + EXPIRATION_TIMES.ACCOUNT_RECOVERY_TOKEN),
   });
-}
+};
 
-async function createUserComplete(body) {
+export const createUser = async body => {
+  const {
+    password,
+    email,
+    name,
+    surname,
+    facebook_id,
+    newsLetterSubscription,
+    cognitoId,
+    language,
+  } = body;
+
+  await knex.transaction(async trx => {
+    const [user_id] = await knex('users')
+      .insert([{ password, cognito_id: cognitoId, language }])
+      .returning('id')
+      .transacting(trx);
+
+    // Create user email
+    await knex('user_email')
+      .insert({
+        user_id,
+        email: email.toLowerCase(),
+        is_subscribed: newsLetterSubscription,
+      })
+      .transacting(trx);
+
+    await Promise.all(
+      NOTIFICATION_ARRAY.map(async notif => {
+        await knex('user_notification_setting')
+          .insert({
+            user_id,
+            type: notif.type,
+            email: notif.email,
+            chatbot: notif.chatbot,
+            in_app: notif.inApp,
+          })
+          .transacting(trx);
+      }),
+    );
+  });
+};
+
+export const createUserComplete = async body => {
   const {
     password,
     email,
@@ -30,7 +71,6 @@ async function createUserComplete(body) {
 
   await knex.transaction(async trx => {
     // Create user
-
     const [user_id] = await knex('users')
       .insert([{ password, cognito_id: cognitoId, language }])
       .returning('id')
@@ -95,9 +135,9 @@ async function createUserComplete(body) {
     );
     return trx;
   });
-}
+};
 
-async function getEmailFromToken({ token }) {
+export const getEmailFromToken = async ({ token }) => {
   const response = await knex('confirmation_email_token')
     .select(['email', 'expires_at'])
     .where({ token });
@@ -107,58 +147,44 @@ async function getEmailFromToken({ token }) {
   }
 
   return response[0].email;
-}
+};
 
-async function getUserIdFromRecoveryPasswordToken(token) {
+export const getUserIdFromRecoveryPasswordToken = async token => {
   const [response] = await knex('recovery_email_token')
     .select(['user_id', 'expires_at', 'used_at'])
     .where({ token });
 
-  if (
-    !response ||
-    response.used_at ||
-    Date.now() > response.expires_at
-  ) {
+  if (!response || response.used_at || Date.now() > response.expires_at) {
     return null;
   }
 
   return response.user_id;
-}
+};
 
-async function setRecoveryTokenToUsed(token) {
+export const setRecoveryTokenToUsed = async token => {
   await knex('recovery_email_token')
     .update({ used_at: new Date() })
     .where({ token });
-}
+};
 
-async function validateEmailIsUnique(email) {
+export const validateEmailIsUnique = async email => {
   const users = await knex('user_email')
     .where(knex.raw('lower("email")'), '=', email.toLowerCase())
     .returning(['id']);
   return !users.length;
-}
+};
 
-async function getUserIdFromAuthToken(token) {
+export const getUserIdFromAuthToken = async token => {
   const [{ user_id } = {}] = await knex('user_token')
     .select('user_id')
     .where('token_id', token)
     .whereRaw('expires_at > now()');
 
   return user_id;
-}
+};
 
 export const updateCognitoIdUser = async ({ userId, cognitoId }) => {
   await knex('users')
     .update({ cognito_id: cognitoId })
     .where({ id: userId });
-}
-
-export {
-  createRecoveryEmailToken,
-  createUserComplete,
-  getEmailFromToken,
-  getUserIdFromRecoveryPasswordToken,
-  setRecoveryTokenToUsed,
-  validateEmailIsUnique,
-  getUserIdFromAuthToken,
 };
