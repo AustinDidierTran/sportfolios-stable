@@ -23,19 +23,19 @@ import adminRoutes from './server/routes/admin/index.js';
 const app = new Koa();
 const PORT = process.env.PORT || 1337;
 
-function originIsValid(origin: string) {
+const originIsValid = (origin: string): boolean => {
   if (origin.endsWith('sportfolios.app')) {
     return true;
   }
 
   return validOrigins.indexOf(origin) != -1;
-}
+};
 
-function verifyOrigin(ctx: any) {
+const verifyOrigin = (ctx: any): any => {
   const origin = ctx.headers.origin;
   if (!originIsValid(origin)) return false;
   return origin;
-}
+};
 
 const corsOptions = {
   origin: verifyOrigin,

@@ -12,11 +12,13 @@ import {
   ENTITIES_ROLE_ENUM,
   INVOICE_STATUS_ENUM,
   REPORT_TYPE_ENUM,
+  TRANSACTION_TYPE_ENUM,
 } from '../../../../common/enums/index.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
+import { memberships } from '../models/memberships';
 
 // [Refactoring] This should go into the generate report
-async function getPersonInfos(entityId) {
+export const getPersonInfos = async entityId => {
   const [res] = await knex('person_all_infos')
     .select('*')
     .where({ id: entityId });
@@ -50,10 +52,10 @@ async function getPersonInfos(entityId) {
   }
 
   return resObj;
-}
+};
 
 // [Refactoring] This should go into the generate report
-async function getEmailPerson(person_id) {
+export const getEmailPerson = async person_id => {
   const [{ email }] = await knex('user_entity_role')
     .select('email')
     .leftJoin(
@@ -67,9 +69,9 @@ async function getEmailPerson(person_id) {
     return getEmailsEntity(person_id);
   }
   return email;
-}
+};
 
-async function generateReport(reportId) {
+export const generateReport = async reportId => {
   const [report] = await knex('reports')
     .select('*')
     .where({ report_id: reportId });
@@ -81,9 +83,21 @@ async function generateReport(reportId) {
   const getReport = ReportMap[report.type];
 
   return getReport(report);
-}
+};
 
-async function getOwnedEvents(organizationId) {
+export const getReportInfo = async reportId => {
+  const [report] = await knex('reports')
+    .select('entity_id', 'metadata', 'type')
+    .where({ report_id: reportId });
+
+  return {
+    metadata: report.metadata,
+    organizationId: report.entity_id,
+    type: report.type,
+  };
+};
+
+export const getOwnedEvents = async organizationId => {
   const events = await knex('events_infos')
     .select('*')
     .leftJoin(
@@ -122,9 +136,77 @@ async function getOwnedEvents(organizationId) {
     }),
   );
   return fullEvents;
-}
+};
 
-async function generateSalesReport(report) {
+export const getActiveRefunds = async entityId => {
+  const organizations = Array.isArray(entityId) ? entityId : [entityId];
+
+  const refunds = await knex('stripe_refund')
+    .select(
+      'stripe_refund.amount as refund_amount',
+      'stripe_refund.refund_id',
+      'stripe_refund.invoice_item_id',
+      'stripe_refund.created_at',
+      'store_items_paid.quantity',
+      'store_items_paid.unit_amount',
+      'store_items_paid.amount',
+      'store_items_paid.stripe_price_id',
+      'store_items_paid.buyer_user_id',
+      'store_items_paid.metadata',
+      'store_items_paid.receipt_id',
+      'store_items_paid.transaction_fees',
+      'store_items_paid.seller_entity_id',
+    )
+    .leftJoin(
+      'store_items_paid',
+      'stripe_refund.invoice_item_id',
+      '=',
+      'store_items_paid.invoice_item_id',
+    )
+    .whereIn('store_items_paid.seller_entity_id', organizations);
+
+  return refunds.map(refund => ({
+    refundAmount: refund.refund_amount,
+    refundId: refund.refund_id,
+    invoiceItemId: refund.invoice_item_id,
+    createdAt: refund.created_at,
+    quantity: refund.quantity,
+    unitAmount: refund.unit_amount,
+    amount: refund.amount,
+    stripePriceId: refund.stripe_price_id,
+    buyerUserId: refund.buyer_user_id,
+    metadata: refund.metadata,
+    receiptId: refund.receipt_id,
+    sellerEntityId: refund.seller_entity_id,
+    status: INVOICE_STATUS_ENUM.REFUNDED,
+    transactionType: TRANSACTION_TYPE_ENUM.REFUND,
+    transactionFees: refund.transaction_fees,
+  }));
+};
+
+export const getActiveSales = async (entityId /* date */) => {
+  const sales = await knex('store_items_paid')
+    .select('*')
+    .where({ seller_entity_id: entityId });
+
+  return sales.map(sale => ({
+    amount: sale.amount,
+    id: sale.id,
+    buyerUserId: sale.buyer_user_id,
+    createdAt: sale.created_at,
+    invoiceItemId: sale.invoice_item_id,
+    metadata: sale.metadata,
+    quantity: sale.quantity,
+    receiptId: sale.receipt_id,
+    sellerEntityId: sale.seller_entity_id,
+    status: INVOICE_STATUS_ENUM.PAID,
+    stripePriceId: sale.stripe_price_id,
+    transactionFees: sale.transaction_fees,
+    unitAmount: sale.unit_amount,
+  }));
+};
+
+export const generateSalesReport = async report => {
   const { date } = report.metadata;
   const sales = await knex('store_items_paid')
     .select('*')
@@ -141,6 +223,7 @@ async function generateSalesReport(report) {
         .set('second', 0)
         .add(1, 'day'),
   );
+
   const res = await Promise.all(
     active.map(async a => {
       const person = await getPrimaryPerson(a.buyer_user_id);
@@ -179,7 +262,7 @@ async function generateSalesReport(report) {
         metadata: a.metadata,
         createdAt: a.created_at,
         receiptId: a.receipt_id,
-        transactionFees: a.transaction_fees,
+        transactionFees: a.transaction_fees * a.quantity,
         name: person.name,
         surname: person.surname,
         email,
@@ -192,41 +275,25 @@ async function generateSalesReport(report) {
     }),
   );
   return res;
-}
+};
 
-async function getOrganizationMembers(organizationId, userId) {
-  if (
-    !(await isAllowed(
-      organizationId,
-      userId,
-      ENTITIES_ROLE_ENUM.EDITOR,
-    ))
-  ) {
+export const getOrganizationMembers = async (organizationId, userId) => {
+  if (!(await isAllowed(organizationId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
   const members = await knex('memberships')
     .select('*')
-    .rightJoin(
-      'entities',
-      'entities.id',
-      '=',
-      'memberships.person_id',
-    )
+    .rightJoin('entities', 'entities.id', '=', 'memberships.person_id')
     .whereNull('deleted_at')
     .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
     .andWhere({ organization_id: organizationId });
   const reduce = members.reduce((prev, curr) => {
     let addCurr = true;
     const filter = prev.filter(p => {
-      if (
-        p.member_type != curr.member_type ||
-        p.person_id != curr.person_id
-      ) {
+      if (p.member_type != curr.member_type || p.person_id != curr.person_id) {
         return true;
       } else {
-        if (
-          moment(p.expiration_date) > moment(curr.expiration_date)
-        ) {
+        if (moment(p.expiration_date) > moment(curr.expiration_date)) {
           addCurr = false;
           return true;
         } else {
@@ -252,7 +319,7 @@ async function getOrganizationMembers(organizationId, userId) {
     })),
   );
   return res;
-}
+};
 
 const getPriceFromMembershipId = async membershipId => {
   const [{ price }] = await knex('entity_memberships')
@@ -261,7 +328,20 @@ const getPriceFromMembershipId = async membershipId => {
   return price;
 };
 
-async function generateMembersReport(report) {
+export const getMemberships = async (organizationId /** options = {} */) => {
+  // const { minDate, maxDate } = options;
+
+  const fetchedMemberships = await memberships
+    .query()
+    .withGraphJoined(
+      '[personInfos.addresses, personGeneralInfos, entityMembership, userEntityRole.userEmail]',
+    )
+    .where('organization_id', organizationId);
+
+  return fetchedMemberships;
+};
+
+export const generateMembersReport = async report => {
   const { date } = report.metadata;
   const members = await knex('memberships_infos')
     .select('*')
@@ -279,9 +359,7 @@ async function generateMembersReport(report) {
         p.member_type === curr.member_type &&
         p.person_id === curr.person_id
       ) {
-        if (
-          moment(p.expiration_date) > moment(curr.expiration_date)
-        ) {
+        if (moment(p.expiration_date) > moment(curr.expiration_date)) {
           addCurr = false;
           return true;
         }
@@ -331,7 +409,7 @@ async function generateMembersReport(report) {
     }),
   );
   return res;
-}
+};
 
 export const getAllOrganizationsWithAdmins = async (
   limit = 10,
@@ -365,12 +443,7 @@ export const getAllOrganizationsWithAdmins = async (
         )
         .as('entity_admins'),
     )
-    .leftJoin(
-      'entities',
-      'entities.id',
-      '=',
-      'entity_admins.entity_id',
-    )
+    .leftJoin('entities', 'entities.id', '=', 'entity_admins.entity_id')
     .leftJoin(
       'entities_general_infos',
       'entities_general_infos.entity_id',
@@ -422,11 +495,7 @@ export const deleteOrganizationById = id => {
     .where({ id });
 };
 
-export const verifyOrganization = async (
-  id,
-  userId,
-  setVerified = true,
-) => {
+export const verifyOrganization = async (id, userId, setVerified = true) => {
   if (setVerified) {
     await knex('entities')
       .update({ verified_at: 'now', verified_by: userId })
@@ -450,27 +519,17 @@ export const verifyOrganization = async (
 export const getMembers = async (organizationId, searchQuery) => {
   const members = await knex('memberships')
     .select('*')
-    .rightJoin(
-      'entities',
-      'entities.id',
-      '=',
-      'memberships.person_id',
-    )
+    .rightJoin('entities', 'entities.id', '=', 'memberships.person_id')
     .whereNull('deleted_at')
     .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
     .andWhere({ organization_id: organizationId });
   const reduce = members.reduce((prev, curr) => {
     let addCurr = true;
     const filter = prev.filter(p => {
-      if (
-        p.member_type != curr.member_type ||
-        p.person_id != curr.person_id
-      ) {
+      if (p.member_type != curr.member_type || p.person_id != curr.person_id) {
         return true;
       } else {
-        if (
-          moment(p.expiration_date) > moment(curr.expiration_date)
-        ) {
+        if (moment(p.expiration_date) > moment(curr.expiration_date)) {
           addCurr = false;
           return true;
         } else {
@@ -503,10 +562,21 @@ export const getMembers = async (organizationId, searchQuery) => {
   );
 };
 
-export {
-  generateSalesReport,
-  generateMembersReport,
-  getOwnedEvents,
-  getOrganizationMembers,
-  generateReport,
+export const getReports = async entityId => {
+  const reports = await knex('reports')
+    .select('*')
+    .where({ entity_id: entityId });
+
+  const sorted = reports.sort((a, b) => {
+    return moment(b.created_at) - moment(a.created_at);
+  });
+
+  return sorted.map(report => ({
+    reportId: report.report_id,
+    entityId: report.entity_id,
+    type: report.type,
+    metadata: report.metadata,
+    createdAt: report.created_at,
+    updatedAt: report.updated_at,
+  }));
 };

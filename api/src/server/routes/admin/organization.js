@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import * as service from '../../service/organization.js';
+import * as service from '../../service/organization.ts';
 
 const router = new Router();
 const BASE_URL = '/api/admin/organization';

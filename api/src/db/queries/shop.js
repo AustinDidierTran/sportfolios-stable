@@ -78,19 +78,14 @@ const getShopItems = async entityId => {
     )
     .leftJoin(
       knex('tax_rates_stripe_price')
-        .select(
-          knex.raw('json_agg(tax_rate_id) AS id'),
-          'stripe_price_id',
-        )
+        .select(knex.raw('json_agg(tax_rate_id) AS id'), 'stripe_price_id')
         .groupBy('stripe_price_id')
         .as('taxRates'),
       'taxRates.stripe_price_id',
       '=',
       'stripe_price.stripe_price_id',
     )
-    .whereRaw(
-      `stripe_product.metadata::jsonb @> '{"type": "shop_item"}'`,
-    )
+    .whereRaw(`stripe_product.metadata::jsonb @> '{"type": "shop_item"}'`)
     .where('store_items.entity_id', entityId)
     .orderBy('store_items.created_at', 'asc');
 
@@ -148,6 +143,10 @@ const getAllShopItems = async type => {
 };
 
 const getTaxRates = async stripe_price_id => {
+  const stripePriceIds = Array.isArray(stripe_price_id)
+    ? stripe_price_id
+    : [stripe_price_id];
+
   const taxRates = await knex('tax_rates')
     .select('*')
     .leftJoin(
@@ -156,18 +155,16 @@ const getTaxRates = async stripe_price_id => {
       '=',
       'tax_rates.id',
     )
-    .where(
-      'tax_rates_stripe_price.stripe_price_id',
-      '=',
-      stripe_price_id,
-    );
+    .whereIn('tax_rates_stripe_price.stripe_price_id', stripePriceIds);
+
   return taxRates.map(t => ({
-    id: t.id,
-    displayName: t.display_name,
+    active: t.active,
     description: t.description,
+    displayName: t.display_name,
+    id: t.id,
     inclusive: t.inclusive,
     percentage: t.percentage,
-    active: t.active,
+    stripePriceId: t.stripe_price_id,
   }));
 };
 
@@ -301,10 +298,7 @@ const getCartItem = async cartItemId => {
   return res;
 };
 
-export const getCartItemByStripePriceId = async (
-  stripePriceId,
-  userId,
-) => {
+export const getCartItemByStripePriceId = async (stripePriceId, userId) => {
   const [cartItem] = await knex('cart_items')
     .select(
       'cart_items.stripe_price_id',
@@ -461,11 +455,7 @@ const getCartItemsOrdered = async userId => {
 };
 
 const addCartItem = async (body, userId) => {
-  const {
-    stripePriceId,
-    metadata,
-    quantity: addedQuantity = 1,
-  } = body;
+  const { stripePriceId, metadata, quantity: addedQuantity = 1 } = body;
 
   const { size } = metadata;
 
@@ -539,12 +529,7 @@ const getPurchases = async userId => {
       '=',
       'store_items_paid.stripe_price_id',
     )
-    .leftJoin(
-      'receipts',
-      'receipts.id',
-      '=',
-      'store_items_paid.receipt_id',
-    )
+    .leftJoin('receipts', 'receipts.id', '=', 'store_items_paid.receipt_id')
     .where('store_items_paid.buyer_user_id', userId);
 
   const res = await Promise.all(
@@ -616,9 +601,7 @@ const getSales = async body => {
       '=',
       'user_primary_person.primary_person',
     )
-    .whereRaw(
-      `stripe_product.metadata::jsonb @> '{"type": "shop_item"}'`,
-    )
+    .whereRaw(`stripe_product.metadata::jsonb @> '{"type": "shop_item"}'`)
     .where('store_items_paid.seller_entity_id', entityId);
 
   return sales.map(s => ({

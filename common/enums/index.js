@@ -1,4 +1,4 @@
-const MONTH_NAMES = [
+export const MONTH_NAMES = [
   'January',
   'February',
   'March',
@@ -13,29 +13,29 @@ const MONTH_NAMES = [
   'December',
 ];
 
-const FIELD_GROUP_ENUM = {
+export const FIELD_GROUP_ENUM = {
   ADD_PAYMENT_OPTION: 'add payment option',
 };
 
-const ENTITIES_ROLE_ENUM = {
+export const ENTITIES_ROLE_ENUM = {
   ADMIN: 1,
   EDITOR: 2,
   VIEWER: 3,
 };
 
-const APP_ENUM = {
+export const APP_ENUM = {
   FACEBOOK: 'Facebook',
   MESSENGER: 'Messenger',
   GOOGLE: 'Google',
   APPLE: 'Apple',
 };
 
-const PILL_TYPE_ENUM = {
+export const PILL_TYPE_ENUM = {
   NOT_PAID: 'not paid',
   NOT_MEMBER: 'not member',
 };
 
-const SIZES_ENUM = {
+export const SIZES_ENUM = {
   XXXS: '3x-small',
   XXS: '2x-small',
   XS: 'x-small',
@@ -47,13 +47,13 @@ const SIZES_ENUM = {
   XXXL: '3x-large',
 };
 
-const PHASE_TYPE_ENUM = {
+export const PHASE_TYPE_ENUM = {
   CUSTOM: 'custom',
   POOL: 'pool',
   ELIMINATION_BRACKET: 'elimination bracket',
 };
 
-const COMPONENT_TYPE_ENUM = {
+export const COMPONENT_TYPE_ENUM = {
   LIST: 'list',
   SELECT: 'select',
   TEXTFIELD: 'textfield',
@@ -66,7 +66,7 @@ const COMPONENT_TYPE_ENUM = {
   EMPTY: 'empty',
 };
 
-const ROSTER_ROLE_ENUM = {
+export const ROSTER_ROLE_ENUM = {
   CAPTAIN: 'captain',
   ASSISTANT_CAPTAIN: 'assistant-captain',
   COACH: 'coach',
@@ -74,7 +74,7 @@ const ROSTER_ROLE_ENUM = {
   VIEWER: 'viewer',
 };
 
-const TAG_TYPE_ENUM = {
+export const TAG_TYPE_ENUM = {
   ACCEPTED: 'accepted',
   ACCEPTED_FREE: 'accepted free',
   PENDING: 'pending',
@@ -83,17 +83,17 @@ const TAG_TYPE_ENUM = {
   DEFAULT: 'default',
 };
 
-const MEMBERSHIP_LENGTH_ENUM = {
+export const MEMBERSHIP_LENGTH_ENUM = {
   ONE_MONTH: 1,
   SIX_MONTH: 2,
   ONE_YEAR: 3,
 };
-const MEMBERSHIP_LENGTH_TYPE_ENUM = {
+export const MEMBERSHIP_LENGTH_TYPE_ENUM = {
   FIXED: 'fixed',
   LENGTH: 'length',
 };
 
-const MEMBERSHIP_TYPE_ENUM = {
+export const MEMBERSHIP_TYPE_ENUM = {
   ELITE: 1,
   COMPETITIVE: 2,
   RECREATIONAL: 3,
@@ -101,17 +101,17 @@ const MEMBERSHIP_TYPE_ENUM = {
   NOT_SPECIFIED: 5,
 };
 
-const PHASE_STATUS_ENUM = {
+export const PHASE_STATUS_ENUM = {
   NOT_STARTED: 'not_started',
   STARTED: 'started',
   DONE: 'done',
 };
 
-const PLATEFORM_FEES = 0.059;
-const PLATEFORM_FEES_FIX = 30;
-const MIN_AMOUNT_FEES = 500;
+export const PLATEFORM_FEES = 0.059;
+export const PLATEFORM_FEES_FIX = 30;
+export const MIN_AMOUNT_FEES = 500;
 
-const CARD_TYPE_ENUM = {
+export const CARD_TYPE_ENUM = {
   CART: 'cart',
   CART_SUMMARY: 'cart summary',
   DELETE_ENTITY: 'delete entity',
@@ -127,7 +127,7 @@ const CARD_TYPE_ENUM = {
   TWO_TEAM_GAME_PROFILE: 'twoTeamGameProfile',
 };
 
-const TABS_ENUM = {
+export const TABS_ENUM = {
   ABOUT: 'about',
   CART: 'cart',
   EDIT_EVENTS: 'editEvents',
@@ -148,7 +148,7 @@ const TABS_ENUM = {
   TICKETS: 'tickets',
 };
 
-const FORM_DIALOG_TYPE_ENUM = {
+export const FORM_DIALOG_TYPE_ENUM = {
   SUBMIT_SCORE: 'score',
   SUBMIT_SCORE_AND_SPIRIT: 'score and spirit',
   ENTER_EMAIL: 'email',
@@ -166,7 +166,7 @@ const FORM_DIALOG_TYPE_ENUM = {
   EDIT_MEMBER_IMPORT: 'edit member import',
 };
 
-const HEADER_FLYOUT_TYPE_ENUM = {
+export const HEADER_FLYOUT_TYPE_ENUM = {
   ACCOUNT: 'account',
   CLOSED: 'closed',
   CREATE: 'create',
@@ -174,27 +174,27 @@ const HEADER_FLYOUT_TYPE_ENUM = {
   PLUS: 'plus',
 };
 
-const REPORT_TYPE_ENUM = {
+export const REPORT_TYPE_ENUM = {
   MEMBERS: 'members',
   SALES: 'sales',
 };
 
-const LANGUAGE_ENUM = {
+export const LANGUAGE_ENUM = {
   ENGLISH: 'en',
   FRANCAIS: 'fr',
 };
 
-const SELECT_ENUM = {
+export const SELECT_ENUM = {
   ALL: 'all',
 };
 
-const GENDER_ENUM = {
+export const GENDER_ENUM = {
   MALE: 'Male',
   FEMALE: 'Female',
   NOT_SPECIFIED: 'Other',
 };
 
-const INVOICE_STATUS_ENUM = {
+export const INVOICE_STATUS_ENUM = {
   DELETED: 'deleted',
   DRAFT: 'draft',
   FREE: 'free',
@@ -205,11 +205,17 @@ const INVOICE_STATUS_ENUM = {
   VOID: 'void',
 };
 
-const COUPON_CODE_ENUM = {
+export const TRANSACTION_TYPE_ENUM = {
+  REFUND: 'refund',
+  PAYMENT: 'payment',
+  FREE: 'free',
+};
+
+export const COUPON_CODE_ENUM = {
   BECOME_MEMBER: 'become member',
 };
 
-const ROUTES_ENUM = {
+export const ROUTES_ENUM = {
   addBankAccount: '/page/addBankAccount',
   addPaymentMethod: '/page/addPaymentMethod',
   adminPanel: '/page/adminPanel',
@@ -255,7 +261,7 @@ const ROUTES_ENUM = {
   rosterInviteLink: '/page/invite/roster/:token',
 };
 
-const STATUS_ENUM = {
+export const STATUS_ENUM = {
   SUCCESS: 200,
   CREATED: 201,
   BAD_REQUEST: 400,
@@ -271,24 +277,24 @@ const STATUS_ENUM = {
   SUCCESS_STRING: 'success',
 };
 
-const PERSON_TRANSFER_STATUS_ENUM = {
+export const PERSON_TRANSFER_STATUS_ENUM = {
   ACCEPTED: 'accepted',
   PENDING: 'pending',
   REFUSED: 'refused',
   CANCELED: 'canceled',
 };
 
-const FACEBOOK_STATUS_ENUM = {
+export const FACEBOOK_STATUS_ENUM = {
   CONNECTED: 'connected',
   NOT_AUTHORIZED: 'not_authorized',
 };
 
-const BASIC_CHATBOT_STATES = {
+export const BASIC_CHATBOT_STATES = {
   NOT_LINKED: 'not_linked',
   HOME: 'home',
 };
 
-const SCORE_SUBMISSION_CHATBOT_STATES = {
+export const SCORE_SUBMISSION_CHATBOT_STATES = {
   SCORE_SUBMISSION_REQUEST_SENT: 'score_submission_request_sent',
   AWAITING_SCORE_SUBMISSION: 'awaiting_score_submission',
   AWAITING_SCORE_SUBMISSION_CONFIRMATION:
@@ -305,11 +311,11 @@ const SCORE_SUBMISSION_CHATBOT_STATES = {
   OTHER_TEAM_SUBMITTED_A_SCORE: 'other_team_submitted_a_score',
 };
 
-const GAME_INFOS_CHATBOT_STATES = {
+export const GAME_INFOS_CHATBOT_STATES = {
   NEXT_GAME_INFOS: 'next_games_infos',
 };
 
-const REJECTION_ENUM = {
+export const REJECTION_ENUM = {
   NO_REMAINING_SPOTS: 'no_remaining_spots',
   ALREADY_REGISTERED: 'already_registered',
   TOO_MANY_TEAMS: 'too_many_teams',
@@ -320,14 +326,14 @@ const REJECTION_ENUM = {
   OTHER_GAMES_DEPENDS_ON_IT: 'other_games_depends_on_it',
 };
 
-const VIEW_ENUM = {
+export const VIEW_ENUM = {
   MENU: 'menu',
   HOME: '',
   CART: 'cart',
   ORGANIZATION_LIST: 'organizationList',
 };
 
-const POSITION_ENUM = {
+export const POSITION_ENUM = {
   BOTTOM: 'bottom',
   TOP: 'top',
   CENTER: 'center',
@@ -335,28 +341,27 @@ const POSITION_ENUM = {
   RIGHT: 'right',
 };
 
-const SEVERITY_ENUM = {
+export const SEVERITY_ENUM = {
   SUCCESS: 'success',
   ERROR: 'error',
   INFO: 'info',
 };
 
-const SPIRIT_CATEGORY_ENUM = {
+export const SPIRIT_CATEGORY_ENUM = {
   RULES_KNOWLEDGE_AND_USE: 'rules_knowledge_and_use',
   FOULS_AND_BODY_CONTACT: 'fouls_and_body_contact',
   FAIR_MINDEDNESS: 'fair_mindedness',
-  POSITIVE_ATTITUDE_AND_SELF_CONTROL:
-    'positive_attitude_and_self_control',
+  POSITIVE_ATTITUDE_AND_SELF_CONTROL: 'positive_attitude_and_self_control',
   COMMUNICATION: 'communication',
 };
 
-const LOGIN_STATE_ENUM = {
+export const LOGIN_STATE_ENUM = {
   LOGIN: 'login',
   SIGNUP: 'signup',
   FORGOT_PASSWORD: 'forgotPassword',
 };
 
-const GLOBAL_ENUM = {
+export const GLOBAL_ENUM = {
   PERSON: 1,
   ORGANIZATION: 2,
   TEAM: 3,
@@ -365,24 +370,24 @@ const GLOBAL_ENUM = {
   SESSION: 6,
 };
 
-const CART_ITEM = {
+export const CART_ITEM = {
   EVENT_TICKET: 'event_ticket',
   MEMBERSHIP: 'membership',
   DONATION: 'donation',
   SHOP_ITEM: 'shop_item',
 };
 
-const SESSION_ENUM = {
+export const SESSION_ENUM = {
   PRACTICE: 'practice',
 };
 
-const SOCKET_EVENT = {
+export const SOCKET_EVENT = {
   CONNECTED_USER: 'connectedUser',
   MESSAGES: 'messages',
   NOTIFICATIONS: 'notifications',
 };
 
-const NOTIFICATION_TYPE = {
+export const NOTIFICATION_TYPE = {
   ADDED_TO_EVENT: 'added to event',
   ADDED_TO_TEAM: 'added to team',
   CART_ITEM_ADDED_PLAYER: 'cart item added player',
@@ -390,8 +395,7 @@ const NOTIFICATION_TYPE = {
   IMPORT_MEMBER_NON_EXISTING: 'import member non existing',
   IMPORT_MEMBER: 'import member',
   OTHER_TEAM_SUBMITTED_A_SCORE: 'other team submitted a score',
-  PERSON_PENDING_REGISTRATION_TO_ADMIN:
-    'person pending registration to admin',
+  PERSON_PENDING_REGISTRATION_TO_ADMIN: 'person pending registration to admin',
   PERSON_REFUSED_REGISTRATION: 'person refused registration',
   PERSON_REGISTRATION_TO_ADMIN: 'person registration to admin',
   PERSON_REGISTRATION: 'person registration',
@@ -409,7 +413,7 @@ const NOTIFICATION_TYPE = {
   TRANSFER_PERSON: 'transfer person',
 };
 
-const NOTIFICATION_ARRAY = [
+export const NOTIFICATION_ARRAY = [
   {
     type: 'added to event',
     email: true,
@@ -460,12 +464,12 @@ const NOTIFICATION_ARRAY = [
   },
 ];
 
-const NOTIFICATION_MEDIA = {
+export const NOTIFICATION_MEDIA = {
   EMAIL: 'email',
   CHATBOT: 'chatbot',
 };
 
-const LIST_ITEM_ENUM = {
+export const LIST_ITEM_ENUM = {
   APP_ITEM: 'app item',
   BANK_ACCOUNT: 'bank account',
   CART_ITEM: 'cart item',
@@ -492,7 +496,7 @@ const LIST_ITEM_ENUM = {
   NOTIFICATION_SETTING: 'notification setting',
 };
 
-const MILLIS_TIME_ENUM = {
+export const MILLIS_TIME_ENUM = {
   ONE_MINUTE: 60 * 1000,
   ONE_HOUR: 60 * 60 * 1000,
   ONE_DAY: 24 * 60 * 60 * 1000,
@@ -500,24 +504,24 @@ const MILLIS_TIME_ENUM = {
   ONE_MONTH: 31 * 24 * 60 * 60 * 1000,
 };
 
-const LOGGER_ENUM = {
+export const LOGGER_ENUM = {
   STRIPE: '[STRIPE]',
 };
 
-const STRIPE_STATUS_ENUM = {
+export const STRIPE_STATUS_ENUM = {
   DONE: 'done',
   NOT_DONE: 'not done',
 };
 
-const STRIPE_ERROR_ENUM = {
+export const STRIPE_ERROR_ENUM = {
   CHARGE_ALREADY_REFUNDED: 'charge_already_refunded',
 };
-const IMAGE_ENUM = {
+export const IMAGE_ENUM = {
   ULTIMATE_TOURNAMENT:
     'https://sportfolios-images.s3.amazonaws.com/development/images/entity/20200716-u8zhq-8317ff33-3b04-49a1-afd3-420202cddf73',
 };
 
-const MESSENGER_MESSAGES_EN = {
+export const MESSENGER_MESSAGES_EN = {
   CONNECTION_SUCCESS: {
     text:
       "You have been signed up to Sportfolios' chatbot successfully! Come again after your next match to submit your scores",
@@ -539,66 +543,8 @@ const MESSENGER_MESSAGES_EN = {
   },
 };
 
-const EVENT_TYPE = {
+export const EVENT_TYPE = {
   PICK_UP_LEAGUE: 'player',
   TEAM_LEAGUE: 'team',
   TEAM_TOURNAMENT: 'teamTournament',
-};
-
-export {
-  APP_ENUM,
-  BASIC_CHATBOT_STATES,
-  CARD_TYPE_ENUM,
-  COMPONENT_TYPE_ENUM,
-  ENTITIES_ROLE_ENUM,
-  FIELD_GROUP_ENUM,
-  FACEBOOK_STATUS_ENUM,
-  FORM_DIALOG_TYPE_ENUM,
-  GENDER_ENUM,
-  GLOBAL_ENUM,
-  CART_ITEM,
-  SESSION_ENUM,
-  HEADER_FLYOUT_TYPE_ENUM,
-  IMAGE_ENUM,
-  INVOICE_STATUS_ENUM,
-  LANGUAGE_ENUM,
-  LIST_ITEM_ENUM,
-  LOGGER_ENUM,
-  LOGIN_STATE_ENUM,
-  MEMBERSHIP_LENGTH_ENUM,
-  MEMBERSHIP_LENGTH_TYPE_ENUM,
-  MEMBERSHIP_TYPE_ENUM,
-  MESSENGER_MESSAGES_EN,
-  MILLIS_TIME_ENUM,
-  NOTIFICATION_ARRAY,
-  NOTIFICATION_MEDIA,
-  NOTIFICATION_TYPE,
-  PERSON_TRANSFER_STATUS_ENUM,
-  PHASE_STATUS_ENUM,
-  POSITION_ENUM,
-  COUPON_CODE_ENUM,
-  REJECTION_ENUM,
-  REPORT_TYPE_ENUM,
-  ROUTES_ENUM,
-  PILL_TYPE_ENUM,
-  ROSTER_ROLE_ENUM,
-  SCORE_SUBMISSION_CHATBOT_STATES,
-  SELECT_ENUM,
-  SEVERITY_ENUM,
-  SIZES_ENUM,
-  SOCKET_EVENT,
-  SPIRIT_CATEGORY_ENUM,
-  STATUS_ENUM,
-  STRIPE_ERROR_ENUM,
-  STRIPE_STATUS_ENUM,
-  PLATEFORM_FEES,
-  PLATEFORM_FEES_FIX,
-  MIN_AMOUNT_FEES,
-  TABS_ENUM,
-  TAG_TYPE_ENUM,
-  VIEW_ENUM,
-  MONTH_NAMES,
-  GAME_INFOS_CHATBOT_STATES,
-  EVENT_TYPE,
-  PHASE_TYPE_ENUM,
 };
