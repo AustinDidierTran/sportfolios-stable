@@ -4,7 +4,6 @@ import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import { getEmailsEntity } from '../queries/entity-deprecate.js';
 import { CART_ITEM } from '../../../../common/enums/index.js';
 import { storeItemsAllInfos } from '../models/storeItemsAllInfos.js';
-import { cartItems } from '../models/cartItems.js';
 
 const getItem = async stripePriceId => {
   const [item] = await knex('stripe_price')
