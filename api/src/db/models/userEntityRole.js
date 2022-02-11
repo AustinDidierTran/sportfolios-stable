@@ -2,6 +2,7 @@ import { Model } from 'objection';
 import { entitiesRole } from './entitiesRole.js';
 import { userEmail } from './userEmail.js';
 import { rosterPlayers } from './rosterPlayers.js';
+import { users } from './users.js';
 
 export class userEntityRole extends Model {
   static get tableName() {
@@ -41,7 +42,15 @@ export class userEntityRole extends Model {
           from: 'user_entity_role.entity_id',
           to: 'conversation_participants.participant_id'
         },
-      }
+      },
+      user: {
+        relation: Model.HasOneRelation,
+        modelClass: users,
+        join: {
+          from: 'user_entity_role.user_id',
+          to: 'users.id'
+        }
+      },
     };
   }
 }

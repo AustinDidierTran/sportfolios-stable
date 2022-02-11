@@ -12,14 +12,22 @@ import * as gameQueries from '../../db/queries/game.js';
 import * as shopQueries from '../../db/queries/shop.js';
 import * as ticketQueries from '../../db/queries/ticket.js';
 import * as entityQueries from '../../db/queries/entity.js';
+import * as cartQueries from '../../db/queries/cart.js';
+import * as personQueries from '../../db/queries/person.js';
+import * as teamQueries from '../../db/queries/team.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
-import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
-import { CART_ITEM } from '../../../../common/enums/index.js';
 import { isAllowed } from '../../db/queries/utils.js';
 import {
-  ENTITIES_ROLE_ENUM,
+  ENTITIES_ROLE_ENUM,  
+  GLOBAL_ENUM,
+  CART_ITEM,
+  INVOICE_STATUS_ENUM,
+  NOTIFICATION_TYPE,
 } from '../../../../common/enums/index.js';
 import { Roster, Person } from '../../../../typescript/types';
+import { sendNotification } from './notification.js';
+import { sendCartItemAddedPlayerEmail } from '../utils/nodeMailer.js'; 
+
 
 const getEventInfo = async (eventId: any, userId: any) => {
   const data = await eventInfosHelper(eventId, userId);
@@ -259,7 +267,7 @@ export const addEventTickets = async (body: any, userId: any) => {
 
       // If yes, simply increase the quantity
       if (item) {
-        return shopQueries.updateCartItemQuantity(
+        return cartQueries.updateCartItemQuantity(
           item.quantity + ticket.quantity,
           stripePriceId,
           userId,
@@ -267,7 +275,7 @@ export const addEventTickets = async (body: any, userId: any) => {
       }
 
       // Else, insert
-      return shopQueries.insertCartItem({
+      return cartQueries.insertCartItem({
         stripePriceId,
         metadata: ticket.metadata,
         quantity: ticket.quantity,
@@ -321,3 +329,76 @@ export const getRostersEmails = async (eventId: string, userId: string): Promise
     })as Person)
   })as Roster);
 };
+
+export const addPlayerToRoster = async (body: any, userId: string) => {
+  const { personId, role, isSub, rosterId } = body;
+  const [eventRoster] = await queries.getEventAndTeamFromRoster(rosterId) as any;
+  const [personInfos] = await personQueries.getPersonAllInfos(personId) as any;
+
+  if (
+    !(await isAllowed(eventRoster.teamRoster.team_id, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  let paymentStatus = INVOICE_STATUS_ENUM.FREE;
+  if (eventRoster.eventPaymentOptions && eventRoster.eventPaymentOptions.individual_price > 0) {
+    paymentStatus = INVOICE_STATUS_ENUM.OPEN;
+  }
+  const infos = {
+     event:{id:eventRoster.event_id, name: eventRoster.eventGeneralInfos.name},
+     team:{id:eventRoster.teamRoster.team_id, name: eventRoster.entitiesGeneralInfos.name},
+      name:personInfos.name,
+  };
+
+  const res = await teamQueries.addPlayerToRoster(eventRoster.roster_id, personId, isSub, paymentStatus, role)
+  await teamQueries.addPlayersToTeam(eventRoster.team_id, [personId],  role)
+
+  if (
+    (eventRoster.status === INVOICE_STATUS_ENUM.FREE ||
+      eventRoster.status === INVOICE_STATUS_ENUM.PAID) &&
+      eventRoster.eventPaymentOptions && eventRoster.eventPaymentOptions.individual_price > 0 &&
+      !isSub
+  ) {
+    const cartItem = cartQueries.insertCartItem({      
+      stripePriceId: eventRoster.eventPaymentOptions.individual_stripe_price_id,
+      metadata: {
+        eventId: eventRoster.event_id,
+        sellerEntityId: eventRoster.eventPaymentOptions.stripePrice.owner_id,
+        isIndividualOption: true,
+        personId,
+        name: personInfos.name,
+        buyerId: personId,
+        rosterId,
+        team: infos.team,
+      },
+      quantity: 1,
+      selected: true,
+      type: GLOBAL_ENUM.EVENT,
+      userId: personInfos.userEntityRole.user_id,
+      personId,
+    });
+
+    if(cartItem){
+      await sendCartItemAddedPlayerEmail({
+        email: personInfos.userEntityRole.userEmail[0].email,
+        teamName: infos.team.name,
+        eventName: infos.event.name,
+        language: personInfos.userEntityRole.user.language,
+        userId: personInfos.userEntityRole.user_id,
+      });
+    }
+  }
+
+  if (personInfos.userEntityRole.user_id === userId) {
+    return res;
+  }
+ 
+  sendNotification(
+    NOTIFICATION_TYPE.ADDED_TO_EVENT,
+    personInfos.userEntityRole.user_id,
+    infos,
+  );
+
+  return res;
+}
