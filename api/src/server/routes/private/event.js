@@ -86,4 +86,15 @@ router.put(`${BASE_URL}/rosterIdInRankings`, async ctx => {
   ctx.body = { data: res };
 });
 
+router.post(`${BASE_URL}/addPlayerToRoster`, async ctx => {
+  const player = await service.addPlayerToRoster(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+
+  if (!player) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: player };
+});
 export default router;

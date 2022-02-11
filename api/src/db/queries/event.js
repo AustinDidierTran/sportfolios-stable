@@ -493,3 +493,15 @@ export const getRostersEmails = async eventId => {
       'event_rosters.event_id': eventId,
     });
 };
+
+export const getEventAndTeamFromRoster = async rosterId => {
+  return await eventRosters
+    .query()
+    .withGraphJoined(
+      '[entitiesGeneralInfos, eventGeneralInfos, teamRoster, eventPaymentOptions.stripePrice]',
+      { minimize: true },
+    )
+    .where({
+      'event_rosters.roster_id': rosterId,
+    });
+};

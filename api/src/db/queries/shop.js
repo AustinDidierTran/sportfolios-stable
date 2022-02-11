@@ -745,35 +745,6 @@ export const getActiveStoreItemsAllInfos = async () => {
     .where('store_items_all_infos.active', true);
 };
 
-export const insertCartItem = async ({
-  stripePriceId,
-  metadata,
-  quantity,
-  selected,
-  type,
-  userId,
-}) => {
-  return await cartItems.query().insert({
-    stripe_price_id: stripePriceId,
-    quantity,
-    selected,
-    user_id: userId,
-    metadata: { ...metadata, type },
-  });
-};
-
-export const updateCartItemQuantity = async (
-  quantity,
-  stripePriceId,
-  userId,
-) => {
-  return await cartItems
-    .query()
-    .patch({
-      quantity,
-    })
-    .where({ stripe_price_id: stripePriceId, user_id: userId });
-};
 
 export {
   addCartItem,

@@ -1,5 +1,6 @@
 import knex from '../connection.js';
 import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
+import { personAllInfos } from '../models/personAllInfos.js';
 
 import { userPrimaryPerson } from '../models/userPrimaryPerson.js';
 
@@ -77,4 +78,11 @@ export const deletePersonById = id => {
   return knex('entities')
     .del()
     .where({ id });
+};
+
+export const getPersonAllInfos = async personId => {
+  return await personAllInfos
+    .query()
+    .withGraphJoined('[userEntityRole.[userEmail,user]]')
+    .where('person_all_infos.id', personId);
 };

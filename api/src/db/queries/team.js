@@ -4,6 +4,7 @@ import {
   ROSTER_ROLE_ENUM,
 } from '../../../../common/enums/index.js';
 import { teamPlayers } from '../models/teamPlayers.js'
+import { rosterPlayers } from '../models/rosterPlayers.js'
 import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
 
 export const getAllTeamsWithAdmins = async (
@@ -128,9 +129,24 @@ export const getRoleRosterByIdAndUserId = async (rosterId, userId) => {
   return role;
 }
 
-export const addPlayersToTeam = async (teamId, playersIds) => {
+export const addPlayersToTeam = async (teamId, playersIds,  role='player') => {
   return await teamPlayers.query()
-    .insertGraph(
-      playersIds.map(p => ({ team_id: teamId, person_id: p, role: 'player' }))
-    );
+    .insert(
+      playersIds.map(p => ({ team_id: teamId, person_id: p, role: role }))
+    ).onConflict(['person_id', 'team_id']).merge();
 };
+
+
+export const addPlayerToRoster = async (rosterId, personId, isSub, paymentStatus, role) => {
+  return await rosterPlayers.query()
+    .insert(
+      {
+        roster_id: rosterId,
+        person_id: personId,
+        is_sub: isSub,
+        payment_status: paymentStatus,
+        role
+      }   
+    ).onConflict(['person_id', 'roster_id']).merge().returning('*');
+};
+

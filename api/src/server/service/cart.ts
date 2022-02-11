@@ -1,50 +1,69 @@
+import moment from 'moment';
 import * as queries from '../../db/queries/cart.js';
 import { Buyer, Seller,Item, TaxRates, CartTotal } from '../../../../typescript/types';
 
 export const getCartItems = async (userId: string) => {
   const cartItems: any = await queries.getCartItems(userId);
-  const groupedMap = cartItems.reduce(
+  const groupedBuyers = cartItems.reduce(
     (entryMap: any, e: any) => {
-      if(!entryMap[e.stripePrice.owner_id]){
-        entryMap[e.stripePrice.owner_id] = [];
+      if(!entryMap[e.person_id]){
+        entryMap[e.person_id] = [];
       }
-      entryMap[e.stripePrice.owner_id].push(e);
+      entryMap[e.person_id].push(e);
       return entryMap;
     },
     {}
   );
-  const buyers = { 
-    buyers: [{ //TODO add logic for multiple buyer
-      sellers: Object.keys(groupedMap).map((key) => (
-      {
-        entity:{
-          id: groupedMap[key][0].stripePrice.owner.entity_id,
-          name: groupedMap[key][0].stripePrice.owner.name,
-          photoUrl: groupedMap[key][0].stripePrice.owner.photo_url,
-          verifiedAt: groupedMap[key][0].stripePrice.owner.verified_at,
-          deletedAt: groupedMap[key][0].stripePrice.owner.deleted_at,
+  const buyers =  Object.keys(groupedBuyers).map((keyBuyer) => {
+      const groupedSellers = groupedBuyers[keyBuyer].reduce(
+        (entryMap: any, e: any) => {
+          if(!entryMap[e.stripePrice.owner_id]){
+            entryMap[e.stripePrice.owner_id] = [];
+          }
+          entryMap[e.stripePrice.owner_id].push(e);
+          return entryMap;
         },
-        isMember:false, //todo when personId is available
-        items: groupedMap[key].map((i: any)=>({
-          id: i.id,
-          metadata: i.metadata,
-          price: i.stripePrice.amount,
-          description: i.stripePrice.stripeProduct.description,
-          label: i.stripePrice.stripeProduct.label,
-          photoUrl: i.stripePrice.storeItems.photo_url,
-          quantity: i.quantity,
-          taxRates: i.stripePrice.taxRates.map((t: any)=>({
-            display: t.display_name,
-            id: t.id,
-            percentage: t.percentage,
-            amount: Math.floor(i.stripePrice.amount * i.quantity * t.percentage/100)
-          })as TaxRates),
-          checked: i.selected,
-          requiresMembership: false, //todo
-        })as Item)
-      })as Seller)
-    } as Buyer]
-  };
+        {}
+      );
+      return {     
+        person:{
+          id:groupedBuyers[keyBuyer][0].person_id,
+          surname:groupedBuyers[keyBuyer][0].personEntity?.entitiesGeneralInfos.surname,
+          name:groupedBuyers[keyBuyer][0].personEntity?.entitiesGeneralInfos.name,
+          photoUrl: groupedBuyers[keyBuyer][0].personEntity?.entitiesGeneralInfos.photo_url,
+          verifiedAt: groupedBuyers[keyBuyer][0].personEntity?.verified_at,
+          deletedAt: groupedBuyers[keyBuyer][0].personEntity?.deleted_at,
+        }, 
+        sellers: Object.keys(groupedSellers).map((key) => (
+          {
+            entity:{
+              id: groupedSellers[key][0].stripePrice.owner.entity_id,
+              name: groupedSellers[key][0].stripePrice.owner.name,
+              photoUrl: groupedSellers[key][0].stripePrice.owner.photo_url,
+              verifiedAt: groupedSellers[key][0].stripePrice.owner.verified_at,
+              deletedAt: groupedSellers[key][0].stripePrice.owner.deleted_at,
+            },
+            isMember: groupedBuyers[keyBuyer][0].personMemberships.filter((m: any) => (m.organization_id == groupedSellers[key][0].stripePrice.owner.entity_id) && moment(m.expiration_date) > moment() ).length > 0,
+            items: groupedSellers[key].map((i: any)=>({
+              id: i.id,
+              metadata: i.metadata,
+              price: i.stripePrice.amount,
+              description: i.stripePrice.stripeProduct.description,
+              label: i.stripePrice.stripeProduct.label,
+              photoUrl: i.stripePrice.storeItems.photo_url,
+              quantity: i.quantity,
+              taxRates: i.stripePrice.taxRates.map((t: any)=>({
+                display: t.display_name,
+                id: t.id,
+                percentage: t.percentage,
+                amount: Math.floor(i.stripePrice.amount * i.quantity * t.percentage/100)
+              })as TaxRates),
+              checked: i.selected,
+              requiresMembership: i.stripePrice.stripeProduct.require_membership,
+            })as Item)
+          })as Seller)
+    }as Buyer
+  });  
 
   const subTotal = cartItems.filter((c: any) => c.selected ).reduce((previous: number, obj: any) => previous + obj.quantity*obj.stripePrice.amount,0);
   const taxes = cartItems.filter((c: any) => c.selected ).reduce((previous: any, obj: any) => {

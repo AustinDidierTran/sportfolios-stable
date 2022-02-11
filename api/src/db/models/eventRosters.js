@@ -6,6 +6,7 @@ import { rosterPlayersInfos } from './rosterPlayersInfos.js';
 import { entitiesRole } from './entitiesRole.js';
 import { eventsInfos } from './eventsInfos.js';
 import { rosterPlayers } from './rosterPlayers.js';
+import { teamRosters } from './teamRosters.js';
 
 export class eventRosters extends Model {
   static get tableName() {
@@ -70,6 +71,22 @@ export class eventRosters extends Model {
         join: {
           from: 'event_rosters.roster_id',
           to: 'roster_players.roster_id',
+        }
+      },
+      teamRoster:{
+        relation: Model.HasOneRelation,
+        modelClass: teamRosters,
+        join: {
+          from: 'event_rosters.roster_id',
+          to: 'team_rosters.id',
+        }
+      },
+      eventGeneralInfos: {
+        relation: Model.HasOneRelation,
+        modelClass: entitiesGeneralInfos,
+        join: {
+          from: 'event_rosters.event_id',
+          to: 'entities_general_infos.entity_id'
         }
       },
     };
