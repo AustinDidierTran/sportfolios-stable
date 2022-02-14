@@ -7,25 +7,13 @@ import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import * as queries from '../../db/queries/game.js';
 import * as ticketQueries from '../../db/queries/ticket.js';
 
-import {
-  addProduct,
-  addPrice,
-} from '../../db/queries/stripe/shop.js';
+import { addProduct, addPrice } from '../../db/queries/stripe/shop.js';
 import { isAllowed } from '../../db/queries/utils.js';
 
 export const postTicketOption = async (body, userId) => {
-  const {
-    creatorId,
-    description,
-    eventId,
-    name,
-    photoUrl,
-    price,
-  } = body;
+  const { creatorId, description, eventId, name, photoUrl, price } = body;
 
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -96,15 +84,12 @@ export const submitSpiritScore = async (body, userId) => {
     submittedForRoster,
     gameId,
     spiritScore,
+    spiritDetails,
     comment,
   } = body;
 
   if (
-    !(await isAllowed(
-      submittedByPerson,
-      userId,
-      ENTITIES_ROLE_ENUM.EDITOR,
-    ))
+    !(await isAllowed(submittedByPerson, userId, ENTITIES_ROLE_ENUM.EDITOR))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
@@ -123,6 +108,7 @@ export const submitSpiritScore = async (body, userId) => {
       submittedForRoster,
       gameId,
       spiritScore,
+      spiritDetails,
       comment,
     });
 
@@ -153,9 +139,7 @@ export const updateGameInfo = async (body, userId) => {
 export const updateGameScore = async (body, userId) => {
   const { eventId, gameId, rosters } = body;
 
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
@@ -178,24 +162,20 @@ export const getPurchasedTickets = async (
     finalGameId,
   );
 
-  const purchasedTicketsObject = purchasedTickets.map(
-    (paid, index) => ({
-      id: paid.id,
-      buyer: {
-        email: paid.stripeInvoiceItem.userEmail.email,
-        completeName:
-          paid.stripeInvoiceItem.userPrimaryPerson
-            .entitiesGeneralInfos.name +
-          ' ' +
-          paid.stripeInvoiceItem.userPrimaryPerson
-            .entitiesGeneralInfos.surname,
-        userId: paid.stripeInvoiceItem.user_id,
-      },
-      number: index + 1,
-      name: paid.eventTicketOptions.name,
-      optionId: paid.eventTicketOptions.id,
-    }),
-  );
+  const purchasedTicketsObject = purchasedTickets.map((paid, index) => ({
+    id: paid.id,
+    buyer: {
+      email: paid.stripeInvoiceItem.userEmail.email,
+      completeName:
+        paid.stripeInvoiceItem.userPrimaryPerson.entitiesGeneralInfos.name +
+        ' ' +
+        paid.stripeInvoiceItem.userPrimaryPerson.entitiesGeneralInfos.surname,
+      userId: paid.stripeInvoiceItem.user_id,
+    },
+    number: index + 1,
+    name: paid.eventTicketOptions.name,
+    optionId: paid.eventTicketOptions.id,
+  }));
 
   if (returnAllTickets && returnAllTickets !== 'false') {
     if (!isAllowed(gameId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
