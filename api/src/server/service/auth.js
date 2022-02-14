@@ -28,6 +28,7 @@ import { generateAuthToken, generateToken } from '../../db/queries/utils.js';
 
 import {
   createRecoveryEmailToken,
+  createUser,
   createUserComplete,
   getEmailFromToken,
   getUserIdFromRecoveryPasswordToken,
@@ -93,13 +94,8 @@ export const signupCognito = async ({ email, newsLetterSubscription }) => {
     }
 
     // Create user, user_email and user_notification_setting
-
-    await createUserComplete({
-      password: ' ',
+    await createUser({
       email,
-      name: firstName,
-      surname: lastName,
-      facebook_id: null,
       newsLetterSubscription,
       cognitoId: data.Username,
     });
@@ -192,13 +188,6 @@ async function login({ email, password }) {
     throw new Error(ERROR_ENUM.INVALID_EMAIL);
   }
 
-  // Validate email is confirmed
-  //const emailIsConfirmed = await validateEmailIsConfirmed(email);
-  /*
-  if (!emailIsConfirmed) {
-    throw new Error(ERROR_ENUM.UNCONFIRMED_EMAIL);
-  }
-  */
   const hashedPassword = await getHashedPasswordFromId(userId);
 
   if (!hashedPassword) {
@@ -233,8 +222,14 @@ export const loginWithCognitoToken = async ({ token }) => {
       throw new Error(ERROR_ENUM.ERROR_OCCURED);
     }
     const userId = await getUserIdFromEmail(decodedToken.email);
+
     const userInfo = await getBasicUserInfoFromId(userId);
-    return { userInfo };
+
+    if (!userInfo) {
+      throw new Error(ERROR_ENUM.ERROR_OCCURED);
+    }
+
+    return userInfo;
   } catch (error) {
     if (error.name === ERROR_ENUM.JWT_EXPIRED) {
       throw new Error(ERROR_ENUM.JWT_EXPIRED);
@@ -258,8 +253,14 @@ export const loginCognito = async ({ email, token }) => {
       throw new Error(ERROR_ENUM.ERROR_OCCURED);
     }
     const userId = await getUserIdFromEmail(email);
+
     const userInfo = await getBasicUserInfoFromId(userId);
-    return { userInfo };
+
+    if (!userInfo) {
+      throw new Error(ERROR_ENUM.ERROR_OCCURED);
+    }
+
+    return userInfo;
   } catch (error) {
     if (error.name === ERROR_ENUM.JWT_EXPIRED) {
       throw new Error(ERROR_ENUM.JWT_EXPIRED);

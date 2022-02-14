@@ -389,7 +389,7 @@ const getCartTotal = async userId => {
   const res = withTaxes.reduce((prev, curr) => {
     const res = curr.taxes.map(t => ({
       id: t.id,
-      amount: curr.quantity * curr.amount * (t.percentage / 100),
+      amount: Math.round(curr.quantity * curr.amount * t.percentage) / 100,
       displayName: t.displayName,
       percentage: t.percentage,
       description: t.description,
