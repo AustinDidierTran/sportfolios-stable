@@ -109,25 +109,34 @@ async function generateMemberImportToken(
 }
 
 async function getBasicUserInfoFromId(user_id) {
+  const primaryPersonId = await getPrimaryPersonIdFromUserId(user_id);
+
   const [{ app_role } = {}] = await knex('user_app_role')
     .select(['app_role'])
     .where({ user_id });
   const [{ language } = {}] = await knex('users')
     .select('language')
     .where({ id: user_id });
-  const [primaryPerson] = await knex('user_entity_role')
-    .select('*')
-    .leftJoin('entities', 'user_entity_role.entity_id', '=', 'entities.id')
-    .leftJoin(
-      'entities_general_infos',
-      'user_entity_role.entity_id',
-      '=',
-      'entities_general_infos.entity_id',
-    )
-    .where('entities.type', GLOBAL_ENUM.PERSON)
-    .andWhere({
-      'user_entity_role.entity_id': await getPrimaryPersonIdFromUserId(user_id),
-    });
+
+  let primaryPerson;
+
+  if (primaryPersonId) {
+    const res = await knex('user_entity_role')
+      .select('*')
+      .leftJoin('entities', 'user_entity_role.entity_id', '=', 'entities.id')
+      .leftJoin(
+        'entities_general_infos',
+        'user_entity_role.entity_id',
+        '=',
+        'entities_general_infos.entity_id',
+      )
+      .where('entities.type', GLOBAL_ENUM.PERSON)
+      .andWhere({
+        'user_entity_role.entity_id': primaryPersonId,
+      });
+    primaryPerson = res[0];
+  }
+
   // soon to be changed/deprecated
   const persons = await knex('user_entity_role')
     .select('*')
@@ -142,7 +151,7 @@ async function getBasicUserInfoFromId(user_id) {
     .andWhere({ user_id });
 
   return {
-    primaryPerson: {
+    primaryPerson: primaryPerson && {
       id: primaryPerson.entity_id,
       personId: primaryPerson.entity_id,
       name: primaryPerson.name,
@@ -204,7 +213,7 @@ async function getHashedPasswordFromId(id) {
 }
 
 async function getPrimaryPersonIdFromUserId(user_id) {
-  const [{ primary_person: id }] = await knex('user_primary_person')
+  const [{ primary_person: id } = {}] = await knex('user_primary_person')
     .select('primary_person')
     .where({ user_id });
   return id;
