@@ -44,16 +44,12 @@ async function updateGameTeamName(ranking) {
   } else {
     phaseId = ranking.phase_id;
   }
-  const { type, name: phaseName, status } = await getPhaseInfo(
-    phaseId,
-  );
+  const { type, name: phaseName, status } = await getPhaseInfo(phaseId);
 
   let fullName = `${ranking.initial_position}. ${phaseName}`;
 
   if (ranking.roster_id) {
-    const { name: teamName } = await getTeamByRosterId(
-      ranking.roster_id,
-    );
+    const { name: teamName } = await getTeamByRosterId(ranking.roster_id);
     if (type === PHASE_TYPE_ENUM.ELIMINATION_BRACKET) {
       fullName = `${ranking.initial_position}. ${teamName}`;
     } else if (status == PHASE_STATUS_ENUM.STARTED) {
@@ -124,14 +120,8 @@ export const updateTeamGameScores = async (gameId, rosters) => {
       .where({ ranking_id: team1.ranking_id });
 
     if (t0 && t1) {
-      const loserPos = Math.max(
-        t0.initial_position,
-        t1.initial_position,
-      );
-      const winnerPos = Math.min(
-        t0.initial_position,
-        t1.initial_position,
-      );
+      const loserPos = Math.max(t0.initial_position, t1.initial_position);
+      const winnerPos = Math.min(t0.initial_position, t1.initial_position);
 
       //update winner and loser position
 
@@ -231,8 +221,7 @@ export const updateTeamGameScores = async (gameId, rosters) => {
     await knex('score_suggestion')
       .update({
         status: rosters.every(
-          roster =>
-            suggestion.score[roster.rosterId] === roster.score,
+          roster => suggestion.score[roster.rosterId] === roster.score,
         )
           ? STATUS_ENUM.ACCEPTED
           : STATUS_ENUM.REFUSED,
@@ -366,6 +355,7 @@ export const submitSpiritScore = async ({
   submittedForRoster,
   gameId,
   spiritScore,
+  spiritDetails,
   comment,
 }) => {
   return knex('spirit_submission').insert({
@@ -375,6 +365,7 @@ export const submitSpiritScore = async ({
     game_id: gameId,
     comment,
     spirit_score: spiritScore,
+    details: spiritDetails,
   });
 };
 
@@ -390,12 +381,7 @@ export const updateGameSpirit = async ({
     .where({ game_id: gameId, roster_id: submittedForRoster });
 };
 
-export const createGame = async (
-  eventId,
-  phaseId,
-  ticketLimit,
-  trx = null,
-) => {
+export const createGame = async (eventId, phaseId, ticketLimit, trx = null) => {
   return await entities.query(trx).insertGraph({
     type: GLOBAL_ENUM.GAME,
     game: {
@@ -414,11 +400,7 @@ export const getGameFromEvent = async eventId => {
   return id;
 };
 
-export const updateGameInfo = async (
-  gameId,
-  gameInfo,
-  trx = null,
-) => {
+export const updateGameInfo = async (gameId, gameInfo, trx = null) => {
   // OLIVIER
   return await entities
     .query(trx)
