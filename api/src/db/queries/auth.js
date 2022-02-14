@@ -16,19 +16,16 @@ export const createRecoveryEmailToken = async ({ userId, token }) => {
 
 export const createUser = async body => {
   const {
-    password,
     email,
-    name,
-    surname,
-    facebook_id,
     newsLetterSubscription,
     cognitoId,
     language,
+    signupInfo,
   } = body;
 
   await knex.transaction(async trx => {
     const [user_id] = await knex('users')
-      .insert([{ password, cognito_id: cognitoId, language }])
+      .insert([{ cognito_id: cognitoId, language, signup_info: signupInfo }])
       .returning('id')
       .transacting(trx);
 
