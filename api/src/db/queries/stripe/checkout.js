@@ -239,6 +239,8 @@ const createRefund = async body => {
     amount,
   };
 
+  // Find the total amount with the taxes
+
   const refund = await stripe.refunds.create(params);
 
   await knex('stripe_refund').insert({

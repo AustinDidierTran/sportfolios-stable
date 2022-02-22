@@ -1,6 +1,8 @@
 import stripeLib from 'stripe';
 const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
 
+import { stripeCustomer } from '../../models/stripeCustomer.js';
+
 import knex from '../../connection.js';
 import {
   stripeErrorLogger,
@@ -9,6 +11,40 @@ import {
 import { ERROR_ENUM } from '../../../../../common/errors/index.js';
 import { PAYMENT_METHOD_TYPE_ENUM } from './enums.js';
 import moment from 'moment';
+
+export const insertCustomer = async body => {
+  const {
+    userId,
+    customerId,
+    informations,
+    paymentMethodId,
+    last4,
+    isDefault,
+  } = body;
+  const customer = await stripeCustomer
+    .query()
+    .insertGraph({
+      user_id: userId,
+      customer_id: customerId,
+      payment_method_id: paymentMethodId,
+      informations,
+      last4,
+      is_default: isDefault,
+    })
+    .returning('*');
+
+  return {
+    userId: customer.user_id,
+    customerId: customer.customer_id,
+    informations: customer.informations,
+    last4: customer.last4,
+    isDefault: customer.is_default,
+  };
+};
+
+/**
+ * LEGACY CODE
+ */
 
 const getCustomerId = async paymentId => {
   const [{ customer_id = '' } = {}] = await knex

@@ -30,7 +30,6 @@ export default async (ctx, next) => {
   const { user_id, expires_at } = user;
   */
 
-
   if (!user_id) {
     return next();
   }

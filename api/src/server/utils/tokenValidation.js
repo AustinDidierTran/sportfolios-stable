@@ -5,9 +5,8 @@ import axios from 'axios';
 const url = `https://cognito-idp.${REGION}.amazonaws.com/${USER_POOL_ID}/.well-known/jwks.json`;
 
 const getWebKeys = async () => {
-  const resp = await axios.get(url).catch(function(error) {
+  const resp = await axios.get(url).catch(function() {
     // eslint-disable-next-line
-    console.log(error);
     return;
   });
   return resp;

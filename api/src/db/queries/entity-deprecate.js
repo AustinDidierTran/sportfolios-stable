@@ -374,8 +374,6 @@ async function getEntitiesTypeById(entityId) {
     .select('type')
     .where('id', entityId);
 
-  console.log({ data });
-
   return data.type;
 }
 
@@ -456,7 +454,6 @@ async function getScoreSuggestion(gameId) {
 }
 
 async function getRealId(id) {
-  console.log({ id });
   const [res] = await knex('alias')
     .select('id')
     .where({ reduced_alias: id.replace(/\./g, '').toLowerCase() });
@@ -467,7 +464,6 @@ async function getRealId(id) {
 }
 
 async function getEntity(id, userId) {
-  console.log({ id, userId });
   const [entity] = await knex('entities')
     .select(
       'entities.id',
@@ -495,19 +491,16 @@ async function getEntity(id, userId) {
     .leftJoin('addresses', 'addresses.id', '=', 'person_infos.address_id')
     .where('entities.id', '=', id);
 
-  console.log(2, { entity });
   const [memberCount] = await knex('memberships')
     .count('*')
     .where({ organization_id: id })
     .andWhere('created_at', '<', 'now()')
     .andWhere('expiration_date', '>', 'now()');
 
-  console.log(3);
   let role = -1;
   if (userId !== -1) {
     role = await getEntityRole(id, userId);
   }
-  console.log(4);
 
   return {
     basicInfos: {
