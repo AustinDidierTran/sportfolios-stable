@@ -247,6 +247,8 @@ const createRefund = async body => {
   };
   console.log(105, { params });
 
+  // Find the total amount with the taxes
+
   const refund = await stripe.refunds.create(params);
   console.log(106, { refund });
 

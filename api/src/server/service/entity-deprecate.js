@@ -216,7 +216,7 @@ import {
 
 import { validateEmailIsUnique as validateEmailIsUniqueHelper } from '../../db/queries/auth.js';
 import { sendNotification } from './notification.js';
-import { getOwnedPersons } from './user.js';
+import { getOwnedPersons } from './user';
 import { isAllowed } from '../../db/queries/utils.js';
 import { getRoster, getRoleRoster } from './team.js';
 import { getRegistrationStatus } from '../../db/queries/event.js';
@@ -1921,6 +1921,7 @@ async function deletePlayerFromRoster(id, userId) {
     // status is paid and event admin is removing
     const { eventId } = await getRosterEventInfos(rosterId);
     if (await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR)) {
+      // Set
       await createRefund({ invoiceItemId });
       await updatePlayerPaymentStatusHelper({
         metadata: { buyerId: personId },

@@ -1,11 +1,50 @@
 import stripeLib from 'stripe';
 const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
 
+import { stripeCustomer } from '../../models/stripeCustomer.js';
+
 import knex from '../../connection.js';
-import { stripeErrorLogger, stripeLogger } from '../../../server/utils/logger.js';
+import {
+  stripeErrorLogger,
+  stripeLogger,
+} from '../../../server/utils/logger.js';
 import { ERROR_ENUM } from '../../../../../common/errors/index.js';
 import { PAYMENT_METHOD_TYPE_ENUM } from './enums.js';
 import moment from 'moment';
+
+export const insertCustomer = async body => {
+  const {
+    userId,
+    customerId,
+    informations,
+    paymentMethodId,
+    last4,
+    isDefault,
+  } = body;
+  const customer = await stripeCustomer
+    .query()
+    .insertGraph({
+      user_id: userId,
+      customer_id: customerId,
+      payment_method_id: paymentMethodId,
+      informations,
+      last4,
+      is_default: isDefault,
+    })
+    .returning('*');
+
+  return {
+    userId: customer.user_id,
+    customerId: customer.customer_id,
+    informations: customer.informations,
+    last4: customer.last4,
+    isDefault: customer.is_default,
+  };
+};
+
+/**
+ * LEGACY CODE
+ */
 
 const getCustomerId = async paymentId => {
   const [{ customer_id = '' } = {}] = await knex
@@ -93,10 +132,7 @@ const getOrCreateCustomer = async (body, userId) => {
 };
 
 const getPaymentMethods = async userId => {
-  const paymentMethods = await knex('stripe_customer').where(
-    'user_id',
-    userId,
-  );
+  const paymentMethods = await knex('stripe_customer').where('user_id', userId);
   return paymentMethods;
 };
 
@@ -178,14 +214,12 @@ const addPaymentMethodCustomer = async (body, userId) => {
 
 const removePaymentMethodCustomer = async body => {
   const { payment_method_id } = body;
-  stripe.paymentMethods.detach(payment_method_id, async function (
+  stripe.paymentMethods.detach(payment_method_id, async function(
     err,
     paymentMethod,
   ) {
     if (paymentMethod) {
-      stripeLogger(
-        `PaymentMethod successfully detached from customer`,
-      );
+      stripeLogger(`PaymentMethod successfully detached from customer`);
     }
     if (err) {
       stripeErrorLogger(`Error failed to detach from customer`);
@@ -212,11 +246,9 @@ const updateDefaultBankAccount = async body => {
     .select('account_id')
     .where({ bank_account_id: bankAccountId });
 
-  await stripe.accounts.updateExternalAccount(
-    accountId,
-    bankAccountId,
-    { default_for_currency: true },
-  );
+  await stripe.accounts.updateExternalAccount(accountId, bankAccountId, {
+    default_for_currency: true,
+  });
 
   await knex('bank_accounts')
     .update({ is_default: false })

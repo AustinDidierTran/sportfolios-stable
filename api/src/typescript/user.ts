@@ -4,7 +4,7 @@ export interface UserInfo {
     name: string;
     surname: string;
   };
-  email: string;
+  email?: string;
   userId: string;
 }
 
