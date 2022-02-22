@@ -1,6 +1,7 @@
 import Router from 'koa-router';
 import { ERROR_ENUM } from '../../../../../common/errors/index.js';
-import * as service from '../../service/user.js';
+import { getUserId } from '../../helper/userHelper.js';
+import * as service from '../../service/user';
 
 const router = new Router();
 const BASE_URL = '/api/user';
@@ -120,9 +121,7 @@ router.delete(`${BASE_URL}/transferPerson`, async ctx => {
 });
 
 router.get(`${BASE_URL}/transferedPeople`, async ctx => {
-  const people = await service.getPeopleTransferedToUser(
-    ctx.body.userInfo.id,
-  );
+  const people = await service.getPeopleTransferedToUser(ctx.body.userInfo.id);
   if (!people) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
@@ -171,4 +170,12 @@ router.post(`${BASE_URL}/addEmail`, async ctx => {
 
   ctx.body = { data: res };
 });
+
+router.post(`${BASE_URL}/initialUserConfig`, async ctx => {
+  const userId = getUserId(ctx);
+  const res = await service.postInitialConfig(ctx.request.body, userId);
+
+  ctx.body = { data: res };
+});
+
 export default router;

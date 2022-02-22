@@ -2,6 +2,8 @@ import knex from '../connection.js';
 
 import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
 
+import { entities } from '../models/entities.js';
+
 const findRole = async (entityId, lookedFor, role, cpt) => {
   if (cpt > 5) {
     return ENTITIES_ROLE_ENUM.VIEWER;
@@ -119,4 +121,18 @@ export const getEntities = async (id, userId) => {
       numberOfMembers: memberCounts[entity.id],
     },
   }));
+};
+
+export const insertEntity = async body => {
+  const { type } = body;
+
+  const entity = await entities
+    .query()
+    .insert({ type })
+    .returning('*');
+
+  return {
+    id: entity.id,
+    type: entity.type,
+  };
 };

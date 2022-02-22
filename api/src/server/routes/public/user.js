@@ -1,6 +1,6 @@
 import Router from 'koa-router';
 import { ERROR_ENUM } from '../../../../../common/errors/index.js';
-import * as service from '../../service/user.js';
+import * as service from '../../service/user';
 const router = new Router();
 const BASE_URL = '/api/user';
 
