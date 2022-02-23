@@ -2622,24 +2622,23 @@ async function getGraphUserCount(date, language) {
     knex.raw(
       `count(*) as total, COALESCE(count(*) - COALESCE(lag(count(*)) over(order by date), 0) , 0) as new,date
       FROM (select * ,generate_series
-      ( ('${date}'::timestamp - interval '30' day )::timestamp
-      , '${date}'::timestamp
+        ( ('${date}'::timestamp - interval '30' day )::timestamp
+        , '${date}'::timestamp
       , interval '1 day')::date AS date
       FROM users e
       ) s
-    where created_at::date <= date
-    group by date
-    order by date asc`,
+      where created_at::date <= date
+      group by date
+      order by date asc`,
     ),
   );
 
   const [data2] = await knex('users').min('created_at');
 
+  moment.locale(language);
   const data = graphData.map(o => {
     return {
-      name: moment(o.date)
-        .locale(language)
-        .format('ll'),
+      name: moment(o.date).format('ll'),
       totalMember: Number(o.total),
     };
   });
