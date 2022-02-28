@@ -8,15 +8,10 @@ import {
   getPreviousSearchQueriesFromId,
   getMyTeamsFromQuery,
   getTeamsFromQuery,
+  getEventsFromQuery,
 } from '../../db/queries/search.js';
 
-async function globalSearch(
-  user_id,
-  query,
-  typeProps,
-  blackList,
-  whiteList,
-) {
+async function globalSearch(user_id, query, typeProps, blackList, whiteList) {
   const type = Number(typeProps);
   let entities;
 
@@ -26,6 +21,8 @@ async function globalSearch(
     entities = await getOrganizationsFromQuery(query);
   } else if (type === GLOBAL_ENUM.TEAM) {
     entities = await getTeamsFromQuery(query, blackList, whiteList);
+  } else if (type === GLOBAL_ENUM.EVENT) {
+    entities = await getEventsFromQuery(query, blackList, whiteList);
   } else {
     await addQueryToRecentSearches(user_id, query);
     entities = await getEntitiesFromQuery(query, blackList);
@@ -43,8 +40,4 @@ function getPreviousSearchQueries(userId) {
   return getPreviousSearchQueriesFromId(userId);
 }
 
-export {
-  getPreviousSearchQueries,
-  globalSearch,
-  myTeamsSearch,
-};
+export { getPreviousSearchQueries, globalSearch, myTeamsSearch };
