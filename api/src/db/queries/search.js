@@ -1,8 +1,11 @@
 import knex from '../connection.js';
 import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
-import { getAllOwnedEntities, isTeamRegisteredInEvent } from './entity-deprecate.js';
+import {
+  getAllOwnedEntities,
+  isTeamRegisteredInEvent,
+} from './entity-deprecate.js';
 
-const addQueryToRecentSearches = async (user_id, search_query) => {
+export const addQueryToRecentSearches = async (user_id, search_query) => {
   return knex('previous_search_queries')
     .insert({
       user_id,
@@ -11,7 +14,7 @@ const addQueryToRecentSearches = async (user_id, search_query) => {
     .returning('*');
 };
 
-const getEntitiesFromQuery = async (query, blackList) => {
+export const getEntitiesFromQuery = async (query, blackList) => {
   const mappingFunction = e => {
     if (e.type === GLOBAL_ENUM.PERSON) {
       return {
@@ -69,12 +72,10 @@ const getEntitiesFromQuery = async (query, blackList) => {
   }
 
   const parsed = JSON.parse(blackList);
-  return entities
-    .filter(e => !parsed.includes(e.id))
-    .map(mappingFunction);
+  return entities.filter(e => !parsed.includes(e.id)).map(mappingFunction);
 };
 
-const getPersonsFromQuery = async (query, blackList, whiteList) => {
+export const getPersonsFromQuery = async (query, blackList, whiteList) => {
   const mappingFunction = e => ({
     id: e.id,
     type: e.type,
@@ -130,7 +131,7 @@ const getPersonsFromQuery = async (query, blackList, whiteList) => {
   return finalList.map(mappingFunction);
 };
 
-const getTeamsFromQuery = async (query, blackList, whiteList) => {
+export const getTeamsFromQuery = async (query, blackList, whiteList) => {
   const mappingFunction = e => ({
     id: e.id,
     type: e.type,
@@ -152,6 +153,7 @@ const getTeamsFromQuery = async (query, blackList, whiteList) => {
           'name',
           'surname',
           'photo_url',
+          'type',
           knex.raw(
             "string_agg(entities_general_infos.name || ' ' || entities_general_infos.surname, ' ') AS complete_name",
           ),
@@ -175,22 +177,75 @@ const getTeamsFromQuery = async (query, blackList, whiteList) => {
 
   if (whiteList) {
     const parsed = JSON.parse(whiteList);
-    return entities
-      .filter(t => parsed.includes(t.id))
-      .map(mappingFunction);
+    return entities.filter(t => parsed.includes(t.id)).map(mappingFunction);
   }
 
   if (blackList) {
     const parsed = JSON.parse(blackList);
-    return entities
-      .filter(e => !parsed.includes(e.id))
-      .map(mappingFunction);
+    return entities.filter(e => !parsed.includes(e.id)).map(mappingFunction);
   }
 
   return entities.map(mappingFunction);
 };
 
-const getMyTeamsFromQuery = async (userId, eventId, query) => {
+export const getEventsFromQuery = async (query, blackList, whiteList) => {
+  const mappingFunction = e => ({
+    id: e.id,
+    type: e.type,
+    photoUrl: e.photo_url,
+    name: e.complete_name || e.name,
+  });
+  const entities = await knex
+    .select(
+      'entities_formatted.name',
+      'entities_formatted.id',
+      'entities_formatted.type',
+      'entities_formatted.photo_url',
+      'entities_formatted.complete_name',
+    )
+    .from(
+      knex
+        .select(
+          'id',
+          'name',
+          'surname',
+          'photo_url',
+          'type',
+          knex.raw(
+            "string_agg(entities_general_infos.name || ' ' || entities_general_infos.surname, ' ') AS complete_name",
+          ),
+        )
+        .from('entities')
+        .leftJoin(
+          'entities_general_infos',
+          'entities.id',
+          '=',
+          'entities_general_infos.entity_id',
+        )
+        .where('entities.type', GLOBAL_ENUM.EVENT)
+        .groupBy('id', 'type', 'name', 'surname', 'photo_url')
+        .as('entities_formatted')
+        .whereNull('deleted_at'),
+    )
+    .where('complete_name', 'ILIKE', `%${query}%`)
+    .orWhere('name', 'ILIKE', `%${query}%`)
+    .orWhere('surname', 'ILIKE', `%${query}%`)
+    .limit(15);
+
+  if (whiteList) {
+    const parsed = JSON.parse(whiteList);
+    return entities.filter(t => parsed.includes(t.id)).map(mappingFunction);
+  }
+
+  if (blackList) {
+    const parsed = JSON.parse(blackList);
+    return entities.filter(e => !parsed.includes(e.id)).map(mappingFunction);
+  }
+
+  return entities.map(mappingFunction);
+};
+
+export const getMyTeamsFromQuery = async (userId, eventId, query) => {
   const mappingFunction = async e => ({
     ...e,
     surname: undefined,
@@ -198,16 +253,12 @@ const getMyTeamsFromQuery = async (userId, eventId, query) => {
     isRegistered: await isTeamRegisteredInEvent(e.id, eventId),
   });
 
-  const entities = await getAllOwnedEntities(
-    GLOBAL_ENUM.TEAM,
-    userId,
-    query,
-  );
+  const entities = await getAllOwnedEntities(GLOBAL_ENUM.TEAM, userId, query);
 
   return Promise.all(entities.map(mappingFunction));
 };
 
-const getOrganizationsFromQuery = async query => {
+export const getOrganizationsFromQuery = async query => {
   const mappingFunction = e => ({
     id: e.id,
     type: e.type,
@@ -251,24 +302,10 @@ const getOrganizationsFromQuery = async query => {
     .orWhere('surname', 'ILIKE', `%${query}%`)
     .limit(15);
 
-  if (whiteList) {
-    const parsed = JSON.parse(whiteList);
-    return entities
-      .filter(t => parsed.includes(t.id))
-      .map(mappingFunction);
-  }
-
-  if (blackList) {
-    const parsed = JSON.parse(blackList);
-    return entities
-      .filter(e => !parsed.includes(e.id))
-      .map(mappingFunction);
-  }
-
   return entities.map(mappingFunction);
 };
 
-const getPreviousSearchQueriesFromId = async userId => {
+export const getPreviousSearchQueriesFromId = async userId => {
   const [{ search_queries } = {}] = await knex
     .select(knex.raw('array_agg(search_query) AS search_queries'))
     .from(
@@ -290,14 +327,4 @@ const getPreviousSearchQueriesFromId = async userId => {
     return [];
   }
   return search_queries;
-};
-
-export {
-  addQueryToRecentSearches,
-  getEntitiesFromQuery,
-  getMyTeamsFromQuery,
-  getOrganizationsFromQuery,
-  getPersonsFromQuery,
-  getPreviousSearchQueriesFromId,
-  getTeamsFromQuery,
 };

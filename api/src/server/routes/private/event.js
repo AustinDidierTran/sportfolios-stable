@@ -13,26 +13,21 @@ const getUserId = ctx => {
   return userId;
 };
 
-router.get(
-  `${BASE_URL}/getAllPeopleRegisteredNotInTeamsInfos`,
-  async ctx => {
-    const userId = getUserId(ctx);
-    const people = await service.getAllPeopleRegisteredNotInTeamsInfos(
-      ctx.query.eventId,
-      userId,
-    );
+router.get(`${BASE_URL}/getAllPeopleRegisteredNotInTeamsInfos`, async ctx => {
+  const userId = getUserId(ctx);
+  const people = await service.getAllPeopleRegisteredNotInTeamsInfos(
+    ctx.query.eventId,
+    userId,
+  );
 
-    if (!people) {
-      throw new Error(ERROR_ENUM.ERROR_OCCURED);
-    }
-    ctx.body = { data: people };
-  },
-);
+  if (!people) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: people };
+});
 
 router.get(`${BASE_URL}/verifyTeamNameIsUnique`, async ctx => {
-  const teamNameIsUnique = await service.verifyTeamNameIsUnique(
-    ctx.query,
-  );
+  const teamNameIsUnique = await service.verifyTeamNameIsUnique(ctx.query);
 
   ctx.body = { data: teamNameIsUnique };
 });
@@ -67,10 +62,7 @@ router.post(BASE_URL, async ctx => {
 router.post(`${BASE_URL}/tickets`, async ctx => {
   const userId = getUserId(ctx);
 
-  const cartItems = await service.addEventTickets(
-    ctx.request.body,
-    userId,
-  );
+  const cartItems = await service.addEventTickets(ctx.request.body, userId);
 
   ctx.body = { data: cartItems };
 });
@@ -78,10 +70,7 @@ router.post(`${BASE_URL}/tickets`, async ctx => {
 router.put(`${BASE_URL}/rosterIdInRankings`, async ctx => {
   const userId = getUserId(ctx);
 
-  const res = await service.putRosterIdInRankings(
-    ctx.request.body,
-    userId,
-  );
+  const res = await service.putRosterIdInRankings(ctx.request.body, userId);
 
   ctx.body = { data: res };
 });
