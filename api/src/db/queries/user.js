@@ -16,6 +16,7 @@ import {
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import randtoken from 'rand-token';
 import { generateToken } from './utils.js';
+import { users } from '../models/users';
 
 export const confirmEmail = async ({ email }) => {
   await knex('user_email')
@@ -114,67 +115,78 @@ export const generateMemberImportToken = async (
 };
 
 export const getBasicUserInfoFromId = async user_id => {
-  const primaryPersonId = await getPrimaryPersonIdFromUserId(user_id);
-
-  const [{ app_role } = {}] = await knex('user_app_role')
-    .select(['app_role'])
-    .where({ user_id });
-  const [{ language } = {}] = await knex('users')
-    .select('language')
-    .where({ id: user_id });
-
-  let primaryPerson;
-
-  if (primaryPersonId) {
-    const res = await knex('user_entity_role')
-      .select('*')
-      .leftJoin('entities', 'user_entity_role.entity_id', '=', 'entities.id')
-      .leftJoin(
-        'entities_general_infos',
-        'user_entity_role.entity_id',
-        '=',
-        'entities_general_infos.entity_id',
-      )
-      .where('entities.type', GLOBAL_ENUM.PERSON)
-      .andWhere({
-        'user_entity_role.entity_id': primaryPersonId,
-      });
-    primaryPerson = res[0];
-  }
-
-  // soon to be changed/deprecated
-  const persons = await knex('user_entity_role')
-    .select('*')
-    .leftJoin('entities', 'user_entity_role.entity_id', '=', 'entities.id')
-    .leftJoin(
-      'entities_general_infos',
-      'user_entity_role.entity_id',
-      '=',
-      'entities_general_infos.entity_id',
-    )
-    .where('entities.type', GLOBAL_ENUM.PERSON)
-    .andWhere({ user_id });
+  const [userInfo] = await users  
+  .query()
+  .withGraphJoined(
+    '[userPrimaryPerson.entitiesGeneralInfos, userEntityRole.[entity.entitiesGeneralInfos, entitiesRole.entity.entitiesGeneralInfos], userAppRole, notifications]', { minimize: true }
+  )
+  .modifyGraph('notifications', builder => {
+    builder
+      .where('seen_at', null)      
+  })
+  .where('users.id', user_id);
+  
+  const entityRelated = userInfo.userEntityRole.reduce((prev, curr) => {
+    return prev.concat(curr.entitiesRole);
+  }, []);
 
   return {
-    primaryPerson: primaryPerson && {
-      id: primaryPerson.entity_id,
-      personId: primaryPerson.entity_id,
-      name: primaryPerson.name,
-      photoUrl: primaryPerson.photo_url,
-      surname: primaryPerson.surname,
-      unreadMessagesAmount: primaryPerson.unread_messages_amount,
+    primaryPerson: {
+      id: userInfo.userPrimaryPerson.primary_person,
+      personId: userInfo.userPrimaryPerson.primary_person,
+      name: userInfo.userPrimaryPerson.entitiesGeneralInfos.name,
+      photoUrl: userInfo.userPrimaryPerson.entitiesGeneralInfos.photo_url,
+      surname: userInfo.userPrimaryPerson.entitiesGeneralInfos.surname,
+      unreadMessagesAmount: userInfo.userPrimaryPerson.entitiesGeneralInfos.unread_messages_amount,
     },
-    persons: persons.map(person => ({
+    persons: userInfo.userEntityRole.filter(e=> e.entity.type == GLOBAL_ENUM.PERSON).map(person => ({
       id: person.entity_id,
       personId: person.entity_id,
-      name: person.name,
-      photoUrl: person.photo_url,
-      surname: person.surname,
-      unreadMessagesAmount: person.unread_messages_amount,
+      name: person.entity.entitiesGeneralInfos.name,
+      photoUrl: person.entity.entitiesGeneralInfos.photo_url,
+      surname: person.entity.entitiesGeneralInfos.surname,
+      unreadMessagesAmount: person.entity.entitiesGeneralInfos.unread_messages_amount,
     })),
-    appRole: app_role,
-    language,
-    userId: user_id,
+    events: entityRelated.filter(e=> e.entity.type == GLOBAL_ENUM.EVENT).map(e => ({
+      basicInfos: {
+        description: e.entity.entitiesGeneralInfos.description,
+        id: e.entity.id,
+        name: e.entity.entitiesGeneralInfos.name,
+        quickDescription?: e.entity.entitiesGeneralInfos.quick_description,
+        photoUrl: e.entity.entitiesGeneralInfos.photo_url,
+        unreadMessagesAmount: e.entity.entitiesGeneralInfos.unread_messages_amount,
+      }
+    })),
+    organizations: entityRelated.filter(e=> e.entity.type == GLOBAL_ENUM.ORGANIZATION).map(e => ({
+      basicInfos: {
+        description: e.entity.entitiesGeneralInfos.description,
+        id: e.entity.id,
+        type: e.entity.type,
+        name: e.entity.entitiesGeneralInfos.name,
+        verifiedAt:  e.entity.verified_at,
+        quickDescription?: e.entity.entitiesGeneralInfos.quick_description,
+        photoUrl: e.entity.entitiesGeneralInfos.photo_url,
+        role: e.role,
+        unreadMessagesAmount: e.entity.entitiesGeneralInfos.unread_messages_amount,
+      }
+    })),
+    teams: entityRelated.filter(e=> e.entity.type == GLOBAL_ENUM.TEAM).map(e => ({
+      basicInfos: {
+        description: e.entity.entitiesGeneralInfos.description,
+        id: e.entity.id,
+        type: e.entity.type,
+        name: e.entity.entitiesGeneralInfos.name,
+        verifiedAt:  e.entity.verified_at,
+        quickDescription?: e.entity.entitiesGeneralInfos.quick_description,
+        photoUrl: e.entity.entitiesGeneralInfos.photo_url,
+        role: e.role,
+        unreadMessagesAmount: e.entity.entitiesGeneralInfos.unread_messages_amount,
+      }
+    })),
+    appRole: userInfo.userAppRole?.app_role,
+    language: userInfo.language,
+    userId: userInfo.id,
+    unseenCount: userInfo.notifications.length
   };
 };
 

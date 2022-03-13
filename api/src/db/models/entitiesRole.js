@@ -12,8 +12,8 @@ export class entitiesRole extends Model {
 
   static get relationMappings() {
     return {
-      entities: {
-        relation: Model.HasManyRelation,
+      entity: {
+        relation: Model.HasOneRelation,
         modelClass: entities,
         join: {
           from: 'entities_role.entity_id',
