@@ -149,37 +149,31 @@ export const getBasicUserInfoFromId = async user_id => {
     })),
     events: entityRelated.filter(e=> e.entity.type == GLOBAL_ENUM.EVENT).map(e => ({
       basicInfos: {
-        description: e.entity.entitiesGeneralInfos.description,
         id: e.entity.id,
+        personId: e.entity_id_admin,
         name: e.entity.entitiesGeneralInfos.name,
-        quickDescription?: e.entity.entitiesGeneralInfos.quick_description,
+        surname: e.entity.entitiesGeneralInfos.surname,
         photoUrl: e.entity.entitiesGeneralInfos.photo_url,
         unreadMessagesAmount: e.entity.entitiesGeneralInfos.unread_messages_amount,
       }
     })),
     organizations: entityRelated.filter(e=> e.entity.type == GLOBAL_ENUM.ORGANIZATION).map(e => ({
       basicInfos: {
-        description: e.entity.entitiesGeneralInfos.description,
         id: e.entity.id,
-        type: e.entity.type,
+        personId: e.entity_id_admin,
         name: e.entity.entitiesGeneralInfos.name,
-        verifiedAt:  e.entity.verified_at,
-        quickDescription?: e.entity.entitiesGeneralInfos.quick_description,
+        surname: e.entity.entitiesGeneralInfos.surname,
         photoUrl: e.entity.entitiesGeneralInfos.photo_url,
-        role: e.role,
         unreadMessagesAmount: e.entity.entitiesGeneralInfos.unread_messages_amount,
       }
     })),
     teams: entityRelated.filter(e=> e.entity.type == GLOBAL_ENUM.TEAM).map(e => ({
       basicInfos: {
-        description: e.entity.entitiesGeneralInfos.description,
         id: e.entity.id,
-        type: e.entity.type,
+        personId: e.entity_id_admin,
         name: e.entity.entitiesGeneralInfos.name,
-        verifiedAt:  e.entity.verified_at,
-        quickDescription?: e.entity.entitiesGeneralInfos.quick_description,
+        surname: e.entity.entitiesGeneralInfos.surname,
         photoUrl: e.entity.entitiesGeneralInfos.photo_url,
-        role: e.role,
         unreadMessagesAmount: e.entity.entitiesGeneralInfos.unread_messages_amount,
       }
     })),
