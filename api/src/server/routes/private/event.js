@@ -44,12 +44,12 @@ router.get(`${BASE_URL}/forYouPage`, async ctx => {
 router.get(`${BASE_URL}/rosters`, async ctx => {
   const userId = getUserId(ctx);
 
-  const entity = await service.getRosters(ctx.query.eventId, userId);
+  const rosters = await service.getRosters(ctx.query.eventId, userId);
 
-  if (!entity) {
+  if (!rosters) {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
-  ctx.body = { data: entity };
+  ctx.body = { data: rosters };
 });
 
 router.post(BASE_URL, async ctx => {

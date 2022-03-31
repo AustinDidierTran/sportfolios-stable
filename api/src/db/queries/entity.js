@@ -3,8 +3,6 @@ import { entities } from '../models/entities.js';
 
 import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
 
-import { entities } from '../models/entities.js';
-
 const findRole = async (entityId, lookedFor, role, cpt) => {
   if (cpt > 5) {
     return ENTITIES_ROLE_ENUM.VIEWER;
