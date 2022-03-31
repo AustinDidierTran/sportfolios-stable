@@ -254,7 +254,6 @@ const createRefund = async body => {
     .where({
       invoice_item_id: invoiceItemId,
     });
-
   const reversedTransfer = await stripe.transfers.createReversal(transferId, {
     refund_application_fee: true,
   });
