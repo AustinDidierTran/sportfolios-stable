@@ -1,4 +1,5 @@
 import knex from '../connection.js';
+import { entities } from '../models/entities.js';
 
 import { ENTITIES_ROLE_ENUM } from '../../../../common/enums/index.js';
 
@@ -122,6 +123,26 @@ export const getEntities = async (id, userId) => {
     },
   }));
 };
+
+export const deleteEventById = async (entity_id) => {
+  return await entities
+    .query()
+    .delete()
+    .where({
+      'id': entity_id,
+    });
+}
+
+export const restoreEventById = async (entity_id) => {
+  return await entities
+    .query()
+    .patch({
+      deleted_at: null
+    })    
+    .where({
+      'id': entity_id
+    });
+}
 
 export const insertEntity = async body => {
   const { type } = body;
