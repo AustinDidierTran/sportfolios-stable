@@ -18,7 +18,7 @@ import * as teamQueries from '../../db/queries/team.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import { isAllowed } from '../../db/queries/utils.js';
 import {
-  ENTITIES_ROLE_ENUM,  
+  ENTITIES_ROLE_ENUM,
   GLOBAL_ENUM,
   CART_ITEM,
   INVOICE_STATUS_ENUM,
@@ -26,10 +26,9 @@ import {
 } from '../../../../common/enums/index.js';
 import { Roster, Person } from '../../../../typescript/types';
 import { sendNotification } from './notification.js';
-import { sendCartItemAddedPlayerEmail } from '../utils/nodeMailer.js'; 
+import { sendCartItemAddedPlayerEmail } from '../utils/nodeMailer.js';
 
-
-const getEventInfo = async (eventId: any, userId: any) => {
+const getEventInfo = async (eventId: any, userId: any): Promise<any> => {
   const data = await eventInfosHelper(eventId, userId);
   const remainingSpots = await getRemainingSpots(eventId);
   const options = await getOptions(eventId);
@@ -38,12 +37,8 @@ const getEventInfo = async (eventId: any, userId: any) => {
     isLate = true;
 
   if (Array.isArray(options) && options.length) {
-    isLate = options.every(
-      option => moment(option.endTime) < moment(),
-    );
-    isEarly = options.every(
-      option => moment(option.startTime) > moment(),
-    );
+    isLate = options.every(option => moment(option.endTime) < moment());
+    isEarly = options.every(option => moment(option.startTime) > moment());
     registrationStart = options.reduce(
       (a, b) => (moment(a) < moment(b.startTime) ? a : b.startTime),
       options[0].startTime,
@@ -64,18 +59,16 @@ const getEventInfo = async (eventId: any, userId: any) => {
   };
 };
 
-export const getEventGameType = async (eventId: any) => {
+export const getEventGameType = async (eventId: any): Promise<any> => {
   const [event]: any = await queries.getEventTypeGame(eventId);
 
   return {
     name: event.eventsInfos.name,
     creator: {
       id: event.eventsInfos.creatorEntities.id,
-      name:
-        event.eventsInfos.creatorEntities.entitiesGeneralInfos.name,
+      name: event.eventsInfos.creatorEntities.entitiesGeneralInfos.name,
       photoUrl:
-        event.eventsInfos.creatorEntities.entitiesGeneralInfos
-          .photo_url,
+        event.eventsInfos.creatorEntities.entitiesGeneralInfos.photo_url,
       verifiedAt: event.eventsInfos.creatorEntities.verified_at,
     },
     startDate: event.eventsInfos.start_date,
@@ -97,7 +90,7 @@ export const getEventGameType = async (eventId: any) => {
   };
 };
 
-export const getEvent = async (eventId: any , userId: any) => {
+export const getEvent = async (eventId: any, userId: any): Promise<any> => {
   const res = await getEntityHelper(eventId, userId);
   const eventInfo = await getEventInfo(eventId, userId);
 
@@ -118,12 +111,8 @@ export const getAllEventsWithAdmins = async ({
   limit,
   page,
   query,
-}: any) => {
-  return queries.getAllEventsWithAdmins(
-    Number(limit),
-    Number(page),
-    query,
-  );
+}: any): Promise<any> => {
+  return queries.getAllEventsWithAdmins(Number(limit), Number(page), query);
 };
 
 export const deleteEvent = async (id: any, restore = 'false') => {
@@ -145,7 +134,10 @@ export const getAllPeopleRegisteredNotInTeamsInfos = async (
   return p;
 };
 
-export const verifyTeamNameIsUnique = async ({ name, eventId }: any) => {
+export const verifyTeamNameIsUnique = async ({
+  name,
+  eventId,
+}: any): Promise<any> => {
   const teamNameIsUnique = await queries.getTeamNameUniquenessInEvent(
     name,
     eventId,
@@ -158,13 +150,13 @@ export const verifyTeamNameIsUnique = async ({ name, eventId }: any) => {
  * Currently only returns spirit rankings, but should eventually return
  * prerankings and phase rankings
  */
-export const getRankings = async (eventId: any) => {
+export const getRankings = async (eventId: any): Promise<any> => {
   const rankings = await queries.getRankings(eventId);
 
   return rankings;
 };
 
-export async function getPaymentOption(paymentOptionId: any) {
+export async function getPaymentOption(paymentOptionId: any): Promise<any> {
   const option = await getPaymentOptionById(paymentOptionId);
   if (!option) {
     return null;
@@ -195,7 +187,7 @@ export const addEvent = async (
   maximumSpots: any,
   creatorId: any,
   ticketLimit: any,
-) => {
+): Promise<any> => {
   if (name && name.length > 64) {
     throw ERROR_ENUM.VALUE_IS_INVALID;
   }
@@ -234,8 +226,7 @@ export const addEvent = async (
   return { id: entity.id };
 };
 
-
-export const addEventTickets = async (body: any, userId: any) => {
+export const addEventTickets = async (body: any, userId: any): Promise<any> => {
   const ticketOptions: any = await ticketQueries.getTicketOptionsByEventTicketOptionsIds(
     body.map((ticket: any) => ticket.id),
   );
@@ -256,9 +247,8 @@ export const addEventTickets = async (body: any, userId: any) => {
   await Promise.all(
     body.map(async (ticket: any) => {
       // See if item already exist
-      const stripePriceId = ticketOptions.find(
-        (to: any) => to.id === ticket.id,
-      ).stripe_price_id;
+      const stripePriceId = ticketOptions.find((to: any) => to.id === ticket.id)
+        .stripe_price_id;
 
       const item = await shopQueries.getCartItemByStripePriceId(
         stripePriceId,
@@ -287,80 +277,115 @@ export const addEventTickets = async (body: any, userId: any) => {
   );
 };
 
-export const putRosterIdInRankings = async (body: any, userId: any) => {
+export const putRosterIdInRankings = async (
+  body: any,
+  userId: any,
+): Promise<any> => {
   const { newRosterId, rankingId } = body;
   const eventId = await queries.getEventByRankingId(rankingId);
 
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
   return queries.updateRosterIdInRankings(newRosterId, rankingId);
 };
 
-export const getRostersEmails = async (eventId: string, userId: string): Promise<Roster[]> => {
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+export const getRostersEmails = async (
+  eventId: string,
+  userId: string,
+): Promise<Roster[]> => {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
   const rostersEmails = await queries.getRostersEmails(eventId);
 
-  return rostersEmails.map((r: any) => ({
-    id: r.roster_id,
-    team: {
-      name: r.entitiesGeneralInfos.name,
-      id: r.team_id,
-      photoUrl: r.entitiesGeneralInfos.photo_url,
-      verifiedAt: r.entitiesGeneralInfos.verified_at,
-      deletedAt: r.entitiesGeneralInfos.deleted_at
-    },
-    players: r.rosterPlayers.map((p: any) => ({
-      surname: p.entitiesGeneralInfos.surname,
-      name: p.entitiesGeneralInfos.name,
-      id: p.person_id,
-      photoUrl: p.entitiesGeneralInfos.photo_url,
-      verifiedAt: p.entitiesGeneralInfos.verified_at,
-      deletedAt: p.entitiesGeneralInfos.deleted_at,
-      emails: p.userEntityRole.userEmail.map((u: any) => u.email)
-    })as Person)
-  })as Roster);
+  return rostersEmails.map(
+    (r: any) =>
+      ({
+        id: r.roster_id,
+        team: {
+          name: r.entitiesGeneralInfos.name,
+          id: r.team_id,
+          photoUrl: r.entitiesGeneralInfos.photo_url,
+          verifiedAt: r.entitiesGeneralInfos.verified_at,
+          deletedAt: r.entitiesGeneralInfos.deleted_at,
+        },
+        players: r.rosterPlayers.map(
+          (p: any) =>
+            ({
+              surname: p.entitiesGeneralInfos.surname,
+              name: p.entitiesGeneralInfos.name,
+              id: p.person_id,
+              photoUrl: p.entitiesGeneralInfos.photo_url,
+              verifiedAt: p.entitiesGeneralInfos.verified_at,
+              deletedAt: p.entitiesGeneralInfos.deleted_at,
+              emails: p.userEntityRole.userEmail.map((u: any) => u.email),
+            } as Person),
+        ),
+      } as Roster),
+  );
 };
 
-export const addPlayerToRoster = async (body: any, userId: string) => {
+export const addPlayerToRoster = async (
+  body: any,
+  userId: string,
+): Promise<any> => {
   const { personId, role, isSub, rosterId } = body;
-  const [eventRoster] = await queries.getEventAndTeamFromRoster(rosterId) as any;
-  const [personInfos] = await personQueries.getPersonAllInfos(personId) as any;
+  const [eventRoster] = (await queries.getEventAndTeamFromRoster(
+    rosterId,
+  )) as any;
+  const [personInfos] = (await personQueries.getPersonAllInfos(
+    personId,
+  )) as any;
 
   if (
-    !(await isAllowed(eventRoster.teamRoster.team_id, userId, ENTITIES_ROLE_ENUM.EDITOR))
+    !(await isAllowed(
+      eventRoster.teamRoster.team_id,
+      userId,
+      ENTITIES_ROLE_ENUM.EDITOR,
+    ))
   ) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
   let paymentStatus = INVOICE_STATUS_ENUM.FREE;
-  if (eventRoster.eventPaymentOptions && eventRoster.eventPaymentOptions.individual_price > 0) {
+  if (
+    eventRoster.eventPaymentOptions &&
+    eventRoster.eventPaymentOptions.individual_price > 0
+  ) {
     paymentStatus = INVOICE_STATUS_ENUM.OPEN;
   }
   const infos = {
-     event:{id:eventRoster.event_id, name: eventRoster.eventGeneralInfos.name},
-     team:{id:eventRoster.teamRoster.team_id, name: eventRoster.entitiesGeneralInfos.name},
-      name:personInfos.name,
+    event: {
+      id: eventRoster.event_id,
+      name: eventRoster.eventGeneralInfos.name,
+    },
+    team: {
+      id: eventRoster.teamRoster.team_id,
+      name: eventRoster.entitiesGeneralInfos.name,
+    },
+    name: personInfos.name,
   };
 
-  const res = await teamQueries.addPlayerToRoster(eventRoster.roster_id, personId, isSub, paymentStatus, role)
-  await teamQueries.addPlayersToTeam(eventRoster.team_id, [personId],  role)
+  const res = await teamQueries.addPlayerToRoster(
+    eventRoster.roster_id,
+    personId,
+    isSub,
+    paymentStatus,
+    role,
+  );
+  await teamQueries.addPlayersToTeam(eventRoster.team_id, [personId], role);
 
   if (
     (eventRoster.status === INVOICE_STATUS_ENUM.FREE ||
       eventRoster.status === INVOICE_STATUS_ENUM.PAID) &&
-      eventRoster.eventPaymentOptions && eventRoster.eventPaymentOptions.individual_price > 0 &&
-      !isSub
+    eventRoster.eventPaymentOptions &&
+    eventRoster.eventPaymentOptions.individual_price > 0 &&
+    !isSub
   ) {
-    const cartItem = cartQueries.insertCartItem({      
+    const cartItem = cartQueries.insertCartItem({
       stripePriceId: eventRoster.eventPaymentOptions.individual_stripe_price_id,
       metadata: {
         eventId: eventRoster.event_id,
@@ -379,7 +404,7 @@ export const addPlayerToRoster = async (body: any, userId: string) => {
       personId,
     });
 
-    if(cartItem){
+    if (cartItem) {
       await sendCartItemAddedPlayerEmail({
         email: personInfos.userEntityRole.userEmail[0].email,
         teamName: infos.team.name,
@@ -393,7 +418,7 @@ export const addPlayerToRoster = async (body: any, userId: string) => {
   if (personInfos.userEntityRole.user_id === userId) {
     return res;
   }
- 
+
   sendNotification(
     NOTIFICATION_TYPE.ADDED_TO_EVENT,
     personInfos.userEntityRole.user_id,
@@ -401,4 +426,4 @@ export const addPlayerToRoster = async (body: any, userId: string) => {
   );
 
   return res;
-}
+};
