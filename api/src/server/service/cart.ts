@@ -7,6 +7,57 @@ import {
   CartTotal,
 } from '../../../../typescript/types';
 
+const getSubtotal = (list: any): number => { 
+  return list
+  .filter((c: any) => c.selected)
+  .reduce(
+    (previous: number, obj: any) =>
+      previous + obj.quantity * obj.stripePrice.amount,
+    0,
+  );
+}
+
+const getTransactionFee = (list: any): number => { 
+  return list
+  .filter((c: any) => c.selected)
+  .reduce(
+    (previous: number, obj: any) =>
+      previous + obj.quantity * obj.stripePrice.transaction_fees,
+    0,
+  );
+}
+
+const getTaxes = (list: any): TaxRates[] => { 
+  const taxes = list.filter((c: any) => c.selected)
+  .reduce((previous: any, obj: any) => {
+    obj.stripePrice.taxRates.reduce((e: any, tax: any) => {
+      if (!previous[tax.id]) {
+        previous[tax.id] = {
+          display: tax.display_name,
+          id: tax.id,
+          percentage: tax.percentage,
+          amount: 0,            
+        };
+      }
+      previous[tax.id].amount =
+        previous[tax.id].amount +
+        Math.floor(
+          (obj.stripePrice.amount * obj.quantity * tax.percentage) / 100,
+        );
+    }, {});
+    return previous;
+  }, {});  
+  return Object.keys(taxes).map(
+    key =>
+      ({
+        display: taxes[key].display,
+        id: taxes[key].id,
+        percentage: taxes[key].percentage,
+        amount: taxes[key].amount,
+      } as TaxRates),
+  )
+}
+
 export const getCartItems = async (userId: string): Promise<any> => {
   const cartItems: any = await queries.getCartItems(userId);
   const groupedBuyers = cartItems.reduce((entryMap: any, e: any) => {
@@ -134,53 +185,3 @@ export const getCartItems = async (userId: string): Promise<any> => {
   };
 };
 
-const getSubtotal = (list: any): number => { 
-  return list
-  .filter((c: any) => c.selected)
-  .reduce(
-    (previous: number, obj: any) =>
-      previous + obj.quantity * obj.stripePrice.amount,
-    0,
-  );
-}
-
-const getTransactionFee = (list: any): number => { 
-  return list
-  .filter((c: any) => c.selected)
-  .reduce(
-    (previous: number, obj: any) =>
-      previous + obj.quantity * obj.stripePrice.transaction_fees,
-    0,
-  );
-}
-
-const getTaxes = (list: any): TaxRates[] => { 
-  const taxes = list.filter((c: any) => c.selected)
-  .reduce((previous: any, obj: any) => {
-    obj.stripePrice.taxRates.reduce((e: any, tax: any) => {
-      if (!previous[tax.id]) {
-        previous[tax.id] = {
-          display: tax.display_name,
-          id: tax.id,
-          percentage: tax.percentage,
-          amount: 0,            
-        };
-      }
-      previous[tax.id].amount =
-        previous[tax.id].amount +
-        Math.floor(
-          (obj.stripePrice.amount * obj.quantity * tax.percentage) / 100,
-        );
-    }, {});
-    return previous;
-  }, {});  
-  return Object.keys(taxes).map(
-    key =>
-      ({
-        display: taxes[key].display,
-        id: taxes[key].id,
-        percentage: taxes[key].percentage,
-        amount: taxes[key].amount,
-      } as TaxRates),
-  )
-}
