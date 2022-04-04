@@ -1,5 +1,5 @@
 import Router from 'koa-router';
-import * as service from '../../service/event.js';
+import * as service from '../../service/event';
 import { ERROR_ENUM } from '../../../../../common/errors/index.js';
 
 const router = new Router();
@@ -39,6 +39,17 @@ router.get(`${BASE_URL}/forYouPage`, async ctx => {
     throw new Error(ERROR_ENUM.ERROR_OCCURED);
   }
   ctx.body = { data: entity };
+});
+
+router.get(`${BASE_URL}/rosters`, async ctx => {
+  const userId = getUserId(ctx);
+
+  const rosters = await service.getRosters(ctx.query.eventId, userId);
+
+  if (!rosters) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: rosters };
 });
 
 router.post(BASE_URL, async ctx => {

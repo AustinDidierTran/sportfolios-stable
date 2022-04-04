@@ -1,3 +1,4 @@
+import moment from 'moment';
 import knex from '../../db/connection.js';
 import {
   getEntity as getEntityHelper,
@@ -10,13 +11,17 @@ import * as queries from '../../db/queries/event.js';
 import * as gameQueries from '../../db/queries/game.js';
 import * as shopQueries from '../../db/queries/shop.js';
 import * as ticketQueries from '../../db/queries/ticket.js';
-
-import moment from 'moment';
+import * as entityQueries from '../../db/queries/entity.js';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
 import { CART_ITEM } from '../../../../common/enums/index.js';
+import { isAllowed } from '../../db/queries/utils.js';
+import {
+  ENTITIES_ROLE_ENUM,
+} from '../../../../common/enums/index.js';
+import { Roster, Person } from '../../../../typescript/types';
 
-const getEventInfo = async (eventId, userId) => {
+const getEventInfo = async (eventId: any, userId: any) => {
   const data = await eventInfosHelper(eventId, userId);
   const remainingSpots = await getRemainingSpots(eventId);
   const options = await getOptions(eventId);
@@ -51,7 +56,40 @@ const getEventInfo = async (eventId, userId) => {
   };
 };
 
-export const getEvent = async (eventId, userId) => {
+export const getEventGameType = async (eventId: any) => {
+  const [event]: any = await queries.getEventTypeGame(eventId);
+
+  return {
+    name: event.eventsInfos.name,
+    creator: {
+      id: event.eventsInfos.creatorEntities.id,
+      name:
+        event.eventsInfos.creatorEntities.entitiesGeneralInfos.name,
+      photoUrl:
+        event.eventsInfos.creatorEntities.entitiesGeneralInfos
+          .photo_url,
+      verifiedAt: event.eventsInfos.creatorEntities.verified_at,
+    },
+    startDate: event.eventsInfos.start_date,
+    photoUrl: event.eventsInfos.photo_url,
+    type: GLOBAL_ENUM.EVENT,
+    id: eventId,
+    eventType: event.type,
+    description: event.eventsInfos.description,
+    tickets: {
+      options: event.games[0].eventTicketOptions.map((option: any) => ({
+        id: option.id,
+        name: option.name,
+        description: option.description,
+        price: option.stripePrice.amount,
+        limit: event.games[0].ticket_limit,
+      })),
+      limit: event.games[0].ticket_limit,
+    },
+  };
+};
+
+export const getEvent = async (eventId: any , userId: any) => {
   const res = await getEntityHelper(eventId, userId);
   const eventInfo = await getEventInfo(eventId, userId);
 
@@ -72,7 +110,7 @@ export const getAllEventsWithAdmins = async ({
   limit,
   page,
   query,
-}) => {
+}: any) => {
   return queries.getAllEventsWithAdmins(
     Number(limit),
     Number(page),
@@ -80,17 +118,17 @@ export const getAllEventsWithAdmins = async ({
   );
 };
 
-export const deleteEvent = async (id, restore = 'false') => {
+export const deleteEvent = async (id: any, restore = 'false') => {
   if (restore === 'false') {
-    return queries.deleteEventById(id);
+    return entityQueries.deleteEventById(id);
   }
 
-  return queries.restoreEventById(id);
+  return entityQueries.restoreEventById(id);
 };
 
 export const getAllPeopleRegisteredNotInTeamsInfos = async (
-  eventId,
-  userId,
+  eventId: any,
+  userId: any,
 ) => {
   const p = await queries.getAllPeopleRegisteredNotInTeamsInfos(
     eventId,
@@ -99,7 +137,7 @@ export const getAllPeopleRegisteredNotInTeamsInfos = async (
   return p;
 };
 
-export const verifyTeamNameIsUnique = async ({ name, eventId }) => {
+export const verifyTeamNameIsUnique = async ({ name, eventId }: any) => {
   const teamNameIsUnique = await queries.getTeamNameUniquenessInEvent(
     name,
     eventId,
@@ -112,12 +150,13 @@ export const verifyTeamNameIsUnique = async ({ name, eventId }) => {
  * Currently only returns spirit rankings, but should eventually return
  * prerankings and phase rankings
  */
-export const getRankings = async eventId => {
+export const getRankings = async (eventId: any) => {
   const rankings = await queries.getRankings(eventId);
 
   return rankings;
 };
-export async function getPaymentOption(paymentOptionId) {
+
+export async function getPaymentOption(paymentOptionId: any) {
   const option = await getPaymentOptionById(paymentOptionId);
   if (!option) {
     return null;
@@ -140,14 +179,14 @@ export async function getPaymentOption(paymentOptionId) {
 }
 
 export const addEvent = async (
-  name,
-  startDate,
-  endDate,
-  photoUrl,
-  eventType,
-  maximumSpots,
-  creatorId,
-  ticketLimit,
+  name: any,
+  startDate: any,
+  endDate: any,
+  photoUrl: any,
+  eventType: any,
+  maximumSpots: any,
+  creatorId: any,
+  ticketLimit: any,
 ) => {
   if (name && name.length > 64) {
     throw ERROR_ENUM.VALUE_IS_INVALID;
@@ -156,13 +195,13 @@ export const addEvent = async (
   if (!creatorId) {
     throw ERROR_ENUM.VALUE_IS_REQUIRED;
   }
-
   const phaseRankings = Array(maximumSpots)
     .fill(0)
+    // eslint-disable-next-line
     .map((_, i) => ({ initial_position: i + 1 }));
 
-  const entity = await knex.transaction(async trx => {
-    const entity = await queries.createEvent({
+  const entity = await knex.transaction(async (trx: any) => {
+    const entity: any = await queries.createEvent({
       name,
       startDate,
       endDate,
@@ -187,41 +226,10 @@ export const addEvent = async (
   return { id: entity.id };
 };
 
-export const getEventGameType = async eventId => {
-  const [event] = await queries.getEventTypeGame(eventId);
 
-  return {
-    name: event.eventsInfos.name,
-    creator: {
-      id: event.eventsInfos.creatorEntities.id,
-      name:
-        event.eventsInfos.creatorEntities.entitiesGeneralInfos.name,
-      photoUrl:
-        event.eventsInfos.creatorEntities.entitiesGeneralInfos
-          .photo_url,
-      verifiedAt: event.eventsInfos.creatorEntities.verified_at,
-    },
-    startDate: event.eventsInfos.start_date,
-    photoUrl: event.eventsInfos.photo_url,
-    type: GLOBAL_ENUM.EVENT,
-    id: eventId,
-    eventType: event.type,
-    description: event.eventsInfos.description,
-    tickets: {
-      options: event.games[0].eventTicketOptions.map(option => ({
-        id: option.id,
-        name: option.name,
-        description: option.description,
-        price: option.stripePrice.amount,
-        limit: event.games[0].ticket_limit,
-      })),
-      limit: event.games[0].ticket_limit,
-    },
-  };
-};
-export const addEventTickets = async (body, userId) => {
-  const ticketOptions = await ticketQueries.getTicketOptionsByEventTicketOptionsIds(
-    body.map(ticket => ticket.id),
+export const addEventTickets = async (body: any, userId: any) => {
+  const ticketOptions: any = await ticketQueries.getTicketOptionsByEventTicketOptionsIds(
+    body.map((ticket: any) => ticket.id),
   );
 
   // const ticketPaid = ticketOptions.map(
@@ -238,10 +246,10 @@ export const addEventTickets = async (body, userId) => {
   // }
 
   await Promise.all(
-    body.map(async ticket => {
+    body.map(async (ticket: any) => {
       // See if item already exist
       const stripePriceId = ticketOptions.find(
-        to => to.id === ticket.id,
+        (to: any) => to.id === ticket.id,
       ).stripe_price_id;
 
       const item = await shopQueries.getCartItemByStripePriceId(
@@ -271,7 +279,7 @@ export const addEventTickets = async (body, userId) => {
   );
 };
 
-export const putRosterIdInRankings = async (body, userId) => {
+export const putRosterIdInRankings = async (body: any, userId: any) => {
   const { newRosterId, rankingId } = body;
   const eventId = await queries.getEventByRankingId(rankingId);
 
@@ -282,4 +290,34 @@ export const putRosterIdInRankings = async (body, userId) => {
   }
 
   return queries.updateRosterIdInRankings(newRosterId, rankingId);
+};
+
+export const getRosters = async (eventId: string, userId: string): Promise<Roster[]> => {
+  if (
+    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
+  ) {
+    throw new Error(ERROR_ENUM.ACCESS_DENIED);
+  }
+
+  const rosters = await queries.getRosters(eventId);
+
+  return rosters.map((r: any) => ({
+    id: r.roster_id,
+    team: {
+      name: r.entitiesGeneralInfos.name,
+      id: r.team_id,
+      photoUrl: r.entitiesGeneralInfos.photo_url,
+      verifiedAt: r.entitiesGeneralInfos.verified_at,
+      deletedAt: r.entitiesGeneralInfos.deleted_at
+    },
+    players: r.rosterPlayers.map((p: any) => ({
+      surname: p.entitiesGeneralInfos.surname,
+      name: p.entitiesGeneralInfos.name,
+      id: p.person_id,
+      photoUrl: p.entitiesGeneralInfos.photo_url,
+      verifiedAt: p.entitiesGeneralInfos.verified_at,
+      deletedAt: p.entitiesGeneralInfos.deleted_at,
+      emails: p.userEntityRole.userEmail.map((u: any) => u.email)
+    })as Person)
+  })as Roster);
 };

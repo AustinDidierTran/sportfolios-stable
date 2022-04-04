@@ -291,21 +291,21 @@ export const getTeamsRegisteredInfo = async eventId => {
       'event_rosters.informations as informations',
     )
     .where('event_rosters.event_id', eventId)
-    .leftJoin('stripe_invoice_item', function() {
+    .leftJoin('stripe_invoice_item', function () {
       this.on(
         'stripe_invoice_item.invoice_item_id',
         '=',
         'event_rosters.invoice_item_id',
       ).onNotNull('event_rosters.invoice_item_id');
     })
-    .join('entities_role', function() {
+    .join('entities_role', function () {
       this.on('entities_role.entity_id', '=', 'event_rosters.team_id').andOn(
         'entities_role.role',
         '=',
         1,
       );
     })
-    .join('user_entity_role', function() {
+    .join('user_entity_role', function () {
       this.on(
         'user_entity_role.entity_id',
         '=',
@@ -399,7 +399,7 @@ export const getEventVerified = async () => {
     .query()
     .withGraphJoined('[creatorEntities.entitiesGeneralInfos]')
     .whereNull('events_infos.deleted_at')
-    .andWhere(function() {
+    .andWhere(function () {
       this.whereNotNull('creatorEntities.verified_by');
     });
 };
@@ -463,6 +463,20 @@ export const getEventTypeGame = async eventId => {
     });
 };
 
+export const getEventByRankingId = async rankingId => {
+  const [{ event_id }] = await knex('phase_rankings')
+    .select('event_id')
+    .leftJoin(
+      'phase',
+      'phase.id',
+      '=',
+      'phase_rankings.current_phase',
+    )
+    .where('phase_rankings.ranking_id', rankingId);
+
+  return event_id;
+};
+
 export const updateRosterIdInRankings = async (newRosterId, rankingId) => {
   const res = await knex('phase_rankings')
     .update({
@@ -472,3 +486,16 @@ export const updateRosterIdInRankings = async (newRosterId, rankingId) => {
 
   return res;
 };
+
+export const getRosters = async (eventId) => {
+  return await eventRosters
+    .query()
+    .withGraphJoined(
+      '[rosterPlayers.[userEntityRole.userEmail, entitiesGeneralInfos],entitiesGeneralInfos]',
+      { minimize: true },
+    )
+    .where({
+      'event_rosters.event_id': eventId,
+    });
+}
+
