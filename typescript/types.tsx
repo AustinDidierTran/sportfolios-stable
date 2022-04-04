@@ -29,6 +29,7 @@ export interface CartTotal{
   subTotal: number;
   total: number;
   taxes: TaxRates[];   
+  transactionFees: number;
 }
 
 export interface Item{
@@ -47,10 +48,18 @@ export interface Item{
 export interface Buyer{
   person: Person;
   sellers: Seller[];
+  subTotal: number;
+  transactionFees: number;
+  taxes: TaxRates[];
+  total: number;
 }
 
 export interface Seller{
-  isMember: boolean;
+  membership?: Date;
   entity: Entity;
   items: Item[];
+  subTotal: number;
+  transactionFees: number;
+  taxes: TaxRates[];
+  total: number;
 }
