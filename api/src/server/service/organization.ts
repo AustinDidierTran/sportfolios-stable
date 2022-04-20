@@ -200,7 +200,7 @@ export const generateReportV2 = async (
 
     const data: MemberReportData[] = memberships.map(membership => ({
       name: { value: membership.personGeneralInfos.name },
-      surname: { value: membership.personGeneralInfos.name },
+      surname: { value: membership.personGeneralInfos.surname },
       membership: { valueKey: getMembershipName(membership.member_type) },
       price: { value: formatPrice(membership.entityMembership.price) },
       status: { valueKey: `reports.payment_status.${membership.status}` },
