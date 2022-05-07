@@ -820,44 +820,6 @@ async function getMostRecentMember(personId, organizationId) {
   return null;
 }
 
-async function getMembers(personId, organizationId) {
-  const members = await knex('memberships_infos')
-    .select('*')
-    .rightJoin('entities', 'entities.id', '=', 'memberships_infos.person_id')
-    .where('entities.id', '=', personId)
-    .andWhere('entities.type', '=', GLOBAL_ENUM.PERSON)
-    .andWhere({ organization_id: organizationId });
-
-  const reduce = members.reduce((prev, curr) => {
-    let addCurr = true;
-    const filter = prev.filter(p => {
-      if (p.member_type != curr.member_type) {
-        return true;
-      } else {
-        if (moment(p.expiration_date) > moment(curr.expiration_date)) {
-          addCurr = false;
-          return true;
-        } else {
-          return false;
-        }
-      }
-    });
-    if (addCurr) {
-      return [...filter, curr];
-    }
-    return filter;
-  }, []);
-  const res = reduce.map(m => ({
-    membershipId: m.membership_id,
-    organizationId: m.organization_id,
-    personId: m.person_id,
-    memberType: m.member_type,
-    expirationDate: m.expiration_date,
-    id: m.id,
-    status: m.status,
-  }));
-  return res;
-}
 
 // NOT USED FOR THE MOMENT
 // async function getPriceFromInvoice(invoiceItemId) {
@@ -7141,7 +7103,6 @@ export {
   getIndividualPaymentOptionFromRosterId,
   getHasSpirit,
   getLastRankedTeam,
-  getMembers,
   getMembership,
   getMemberships,
   getMembershipWithoutId,

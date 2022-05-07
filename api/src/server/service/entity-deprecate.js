@@ -102,7 +102,6 @@ import {
   getHasSpirit as getHasSpiritHelper,
   updateGameRsvp as updateGameRsvpHelper,
   getLastRankedTeam as getLastRankedTeamHelper,
-  getMembers as getMembersHelper,
   getMembership,
   getMemberships as getMembershipsHelper,
   getMembershipWithoutId as getMembershipWithoutIdHelper,
@@ -280,10 +279,6 @@ async function getImages(type) {
 
 function getAllRolesEntity(id) {
   return getAllRolesEntityHelper(id);
-}
-
-function getMembers(persons, organizationId) {
-  return getMembersHelper(persons, organizationId);
 }
 
 function getReports(entityId) {

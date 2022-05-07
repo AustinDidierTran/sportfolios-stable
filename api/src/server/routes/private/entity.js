@@ -143,18 +143,6 @@ router.get(`${BASE_URL}/roles`, async ctx => {
   ctx.body = { data: entity };
 });
 
-router.get(`${BASE_URL}/members`, async ctx => {
-  const entity = await service.getMembers(
-    ctx.query.personId,
-    ctx.query.organizationId,
-  );
-
-  if (!entity) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = { data: entity };
-});
-
 router.get(`${BASE_URL}/recentMember`, async ctx => {
   const member = await service.getMostRecentMember(
     ctx.query.organizationId,
