@@ -2101,7 +2101,6 @@ export {
   getInteractiveToolData,
   getHasSpirit,
   updateGameRsvp,
-  getMembers,
   getMemberships,
   getMembershipWithoutId,
   getMostRecentMember,

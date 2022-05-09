@@ -9,7 +9,7 @@ import {getEntity } from '../service/entity-deprecate.js';
 export const getMembers = async (personId: any, organizationId: any): Promise<any> =>  {
   const members: any = await queries.getMembers(personId, organizationId);
 
-  const reduce = members.reduce((prev :any, curr: any) => {
+  const reduce = members.reduce((prev: any, curr: any) => {
     let addCurr = true;
     const filter = prev.filter((p: any) => {
       if (p.member_type != curr.member_type) {
