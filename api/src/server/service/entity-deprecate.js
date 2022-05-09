@@ -102,7 +102,6 @@ import {
   getHasSpirit as getHasSpiritHelper,
   updateGameRsvp as updateGameRsvpHelper,
   getLastRankedTeam as getLastRankedTeamHelper,
-  getMembership,
   getMemberships as getMembershipsHelper,
   getMembershipWithoutId as getMembershipWithoutIdHelper,
   getMostRecentMember as getMostRecentMemberHelper,
@@ -203,7 +202,6 @@ import {
   sendCartItemAddedPlayerEmail,
   sendImportMemberNonExistingEmail,
 } from '../utils/nodeMailer.js';
-import { addMembershipCartItem } from '../../db/queries/shop.js';
 
 import {
   generateMemberImportToken,
