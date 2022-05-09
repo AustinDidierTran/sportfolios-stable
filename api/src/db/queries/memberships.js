@@ -1,5 +1,6 @@
 import knex from '../connection.js';
 import {memberships} from '../models/memberships.js'
+import {membersNumber} from '../models/membersNumber.js'
 
 export const getMembershipsByIdAndOrganizationId = async (personId, organizationId) => {
   return await knex('memberships_infos')
@@ -17,7 +18,6 @@ export const getMembershipByPersonIds = async (playerIds, creatorId) => {
 }
 
 export const getMembers = async (personId, organizationId) => {
-
   return await memberships
     .query()
     .select('*')
@@ -29,3 +29,17 @@ export const getMembers = async (personId, organizationId) => {
     .andWhere('memberships.person_id', personId);
 }
 
+export const getMemberNumber = async (personId, organizationId) => {
+  return await membersNumber
+    .query()
+    .where('members_number.organization_id', organizationId)
+    .andWhere('members_number.person_id', personId);
+}
+
+export const addMemberNumber = async (personId, organizationId) => {
+  return await membersNumber
+    .query().insert({
+      person_id: personId,
+      organization_id: organizationId
+    });    
+}

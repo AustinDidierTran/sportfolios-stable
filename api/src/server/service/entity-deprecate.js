@@ -1356,38 +1356,6 @@ async function addMemberDonation(body, userId) {
   return res;
 }
 
-async function addMember(body, userId) {
-  const { membershipId, organizationId, personId } = body;
-
-  const membership = await getMembership(membershipId);
-  if (membership.price === 0) {
-    return addMemberManuallyHelper({
-      ...body,
-      termsAndConditionsId: membership.terms_and_conditions_id,
-    });
-  }
-
-  const res = await addMemberHelper({
-    ...body,
-    termsAndConditionsId: membership.terms_and_conditions_id,
-  });
-  const person = (await getEntity(personId)).basicInfos;
-  const organization = (await getEntity(organizationId)).basicInfos;
-
-  await addMembershipCartItem(
-    {
-      ...membership,
-      membershipId: membership.id,
-      id: res.id,
-      person,
-      organization,
-      sellerEntityId: organizationId,
-    },
-    userId,
-  );
-  return res;
-}
-
 async function addMemberWithCoupon(body) {
   const res = await addMemberHelper(body);
   await useToken(body.tokenId);
@@ -2058,7 +2026,6 @@ export {
   addField,
   addGame,
   addGameAttendances,
-  addMember,
   addMemberWithCoupon,
   addMemberDonation,
   addMemberManually,

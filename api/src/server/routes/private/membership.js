@@ -18,4 +18,15 @@ router.get(`${BASE_URL}/members`, async ctx => {
     ctx.body = { data: entity };
   });
 
+router.post(`${BASE_URL}/member`, async ctx => {
+  const member = await service.addMember(
+    ctx.request.body,
+    ctx.body.userInfo.id,
+  );
+  if (!member) {
+    throw new Error(ERROR_ENUM.ERROR_OCCURED);
+  }
+  ctx.body = { data: member };
+});
+
 export default router;

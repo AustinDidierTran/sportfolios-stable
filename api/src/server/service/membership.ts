@@ -1,8 +1,13 @@
 import moment from 'moment';
 import * as queries from '../../db/queries/memberships.js';
+import * as shopQueries from '../../db/queries/shop.js';
 
-export const getMembers = async (personId: any, organisationId: any): Promise<any> =>  {
-  const members: any = await queries.getMembers(personId, organisationId);
+import {getMembership, addMemberManually, addMember as addMemberHelper } from '../../db/queries/entity-deprecate.js';
+import {getEntity } from '../service/entity-deprecate.js';
+
+
+export const getMembers = async (personId: any, organizationId: any): Promise<any> =>  {
+  const members: any = await queries.getMembers(personId, organizationId);
 
   const reduce = members.reduce((prev :any, curr: any) => {
     let addCurr = true;
@@ -36,3 +41,41 @@ export const getMembers = async (personId: any, organisationId: any): Promise<an
   }));
   return res;
 };
+
+export const addMember = async (body: any , userId: any): Promise<any> => {
+  const { membershipId, organizationId, personId } = body;
+
+  const membership = await getMembership(membershipId);
+  if (membership.price === 0) {
+    return addMemberManually({
+      ...body,
+      termsAndConditionsId: membership.terms_and_conditions_id,
+    });
+  }
+
+  const [memberNumber] = await queries.getMemberNumber(personId, organizationId);
+  if(memberNumber === undefined){
+    await queries.addMemberNumber(personId, organizationId);
+  }
+
+  const res = await addMemberHelper({
+    ...body,
+    termsAndConditionsId: membership.terms_and_conditions_id,
+  });
+  
+  const person = (await getEntity(personId)).basicInfos;
+  const organization = (await getEntity(organizationId)).basicInfos;
+
+  await shopQueries.addMembershipCartItem(
+    {
+      ...membership,
+      membershipId: membership.id,
+      id: res.id,
+      person,
+      organization,
+      sellerEntityId: organizationId,
+    },
+    userId,
+  );
+  return res;
+}

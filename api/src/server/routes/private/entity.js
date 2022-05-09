@@ -892,17 +892,6 @@ router.post(`${BASE_URL}/role`, async ctx => {
   ctx.body = { data: entity };
 });
 
-router.post(`${BASE_URL}/member`, async ctx => {
-  const member = await service.addMember(
-    ctx.request.body,
-    ctx.body.userInfo.id,
-  );
-  if (!member) {
-    throw new Error(ERROR_ENUM.ERROR_OCCURED);
-  }
-  ctx.body = { data: member };
-});
-
 router.post(`${BASE_URL}/memberWithCoupon`, async ctx => {
   const member = await service.addMemberWithCoupon(
     ctx.request.body,
