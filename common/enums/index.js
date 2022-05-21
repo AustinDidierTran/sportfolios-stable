@@ -176,6 +176,7 @@ export const HEADER_FLYOUT_TYPE_ENUM = {
 
 export const REPORT_TYPE_ENUM = {
   MEMBERS: 'members',
+  PAYOUTS: 'payouts',
   SALES: 'sales',
 };
 

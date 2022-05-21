@@ -10,6 +10,7 @@ import organization from './organization.js';
 import phase from './phase.js';
 import phaseRanking from './phaseRanking.js';
 import post from './post.js';
+import report from './report.js';
 import search from './search.js';
 import shop from './shop.js';
 import stripe from './stripe.js';
@@ -30,6 +31,7 @@ export default [
   phase,
   phaseRanking,
   post,
+  report,
   search,
   shop,
   stripe,

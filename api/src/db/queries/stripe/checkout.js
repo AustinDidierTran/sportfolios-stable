@@ -229,26 +229,17 @@ const createTransfers = async invoice => {
 
 const createRefund = async body => {
   const { invoiceItemId } = body;
-  console.log(100, { body });
   const invoiceItem = await stripe.invoiceItems.retrieve(invoiceItemId);
-  console.log(101, { invoiceItem });
-
   const invoice = await stripe.invoices.retrieve(invoiceItem.invoice);
-  console.log(102, { invoice });
-
   const amount = invoiceItem.amount;
-  console.log(103, { amount });
   const charge = invoice.charge;
-  console.log(104, { charge });
 
   const params = {
     charge,
     amount,
   };
-  console.log(105, { params });
 
   const refund = await stripe.refunds.create(params);
-  console.log(106, { refund });
 
   await knex('stripe_refund').insert({
     invoice_item_id: invoiceItemId,
@@ -261,13 +252,10 @@ const createRefund = async body => {
     .where({
       invoice_item_id: invoiceItemId,
     });
-  console.log(107, { transferId });
 
   const reversedTransfer = await stripe.transfers.createReversal(transferId, {
     refund_application_fee: true,
   });
-  console.log(108, { reversedTransfer });
-
   return { refund, reversedTransfer };
 };
 
