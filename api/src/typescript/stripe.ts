@@ -16,3 +16,7 @@ export interface TaxRate {
 export interface TaxRatesMap {
   [stripePriceId: string]: TaxRate[];
 }
+
+export enum STRIPE_REPORT_TYPES {
+  PAYOUT_RECONCILIATION = 'payout_reconciliation.itemized.5',
+}

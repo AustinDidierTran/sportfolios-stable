@@ -219,3 +219,15 @@ export const formatRefunds = async (
     };
   });
 };
+
+export const setToValue = (object: any): any => {
+  const keys = Object.keys(object);
+
+  return keys.reduce(
+    (prev, key) => ({
+      ...prev,
+      [key]: { value: object[key] },
+    }),
+    {},
+  );
+};
