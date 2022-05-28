@@ -113,7 +113,11 @@ const generateMembersReport = async (
     expirationDate: {
       value: moment(membership.expiration_date).format('YYYY-MM-DD HH:mm'),
     },
-    email: { value: membership.userEntityRole.userEmail.email },
+    email: {
+      value: membership.userEntityRole.userEmail
+        .map((ue: any) => ue.email)
+        .join(', '),
+    },
     phoneNumber: { value: membership.personInfos?.phone_number },
     birthDate: { value: membership.personInfos?.birth_date },
     gender: { value: membership.personInfos?.gender },
