@@ -17,22 +17,21 @@ export interface Roster {
   players: Person[];
 }
 
-
-export interface TaxRates{
+export interface TaxRates {
   display: string;
   id: string;
-  percentage: number; 
+  percentage: number;
   amount: number;
 }
 
-export interface CartTotal{
+export interface CartTotal {
   subTotal: number;
   total: number;
-  taxes: TaxRates[];   
+  taxes: TaxRates[];
   transactionFees: number;
 }
 
-export interface Item{
+export interface Item {
   id: string;
   metadata: any;
   price: number;
@@ -45,7 +44,7 @@ export interface Item{
   requiresMembership: boolean;
 }
 
-export interface Buyer{
+export interface Buyer {
   person: Person;
   sellers: Seller[];
   subTotal: number;
@@ -54,7 +53,7 @@ export interface Buyer{
   total: number;
 }
 
-export interface Seller{
+export interface Seller {
   membership?: Date;
   entity: Entity;
   items: Item[];

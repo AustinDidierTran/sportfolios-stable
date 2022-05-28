@@ -16,6 +16,20 @@ import {
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
 import randtoken from 'rand-token';
 import { generateToken } from './utils.js';
+import { userEntityRole } from '../models/userEntityRole.js';
+
+export const getUserPeople = async userId => {
+  const people = await userEntityRole
+    .query()
+    .withGraphJoined('[entitiesGeneralInfos]')
+    .where('user_entity_role.user_id', userId);
+
+  console.log('people', people);
+
+  return people;
+};
+
+/** LEGACY CODE */
 
 export const confirmEmail = async ({ email }) => {
   await knex('user_email')

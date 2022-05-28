@@ -3,7 +3,9 @@ import { cartItems } from '../models/cartItems.js';
 export const getCartItems = async userId => {
   const res = await cartItems
     .query()
-    .withGraphJoined('[stripePrice.[stripeProduct, storeItems, taxRates, owner], personEntity.entitiesGeneralInfos, personMemberships]')
+    .withGraphJoined(
+      '[stripePrice.[stripeProduct, storeItems, taxRates, owner], personEntity.entitiesGeneralInfos, personMemberships]',
+    )
     .where('cart_items.user_id', userId);
 
   return res;
@@ -24,8 +26,18 @@ export const insertCartItem = async ({
     selected,
     user_id: userId,
     metadata: { ...metadata, type },
-    person_id: personId
+    person_id: personId,
   });
+};
+
+export const putSelectedItems = async (cartItemId, userId, selected) => {
+  return cartItems
+    .query()
+    .update({ selected })
+    .where({
+      id: cartItemId,
+      user_id: userId,
+    });
 };
 
 export const updateCartItemQuantity = async (
