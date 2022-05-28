@@ -94,46 +94,48 @@ export const createReport = async (
 const generateMembersReport = async (
   reportInfo: any,
 ): Promise<ReportInformation> => {
-  // const { date } = reportInfo.metadata;
+  const { date } = reportInfo.metadata;
 
   const memberships: any[] = await organizationQueries.getMemberships(
     reportInfo.entity_id,
   );
 
-  const data: MemberReportData[] = memberships.map(membership => ({
-    name: { value: membership.personGeneralInfos.name },
-    surname: { value: membership.personGeneralInfos.surname },
-    membership: { valueKey: getMembershipName(membership.member_type) },
-    price: { value: formatPrice(membership.entityMembership.price) },
-    status: { valueKey: `reports.payment_status.${membership.status}` },
-    paidOn: { value: moment(membership.paid_on).format('YYYY-MM-DD HH:mm') },
-    createdAt: {
-      value: moment(membership.created_at).format('YYYY-MM-DD HH:mm'),
-    },
-    expirationDate: {
-      value: moment(membership.expiration_date).format('YYYY-MM-DD HH:mm'),
-    },
-    email: {
-      value: membership.userEntityRole.userEmail
-        .map((ue: any) => ue.email)
-        .join(', '),
-    },
-    phoneNumber: { value: membership.personInfos?.phone_number },
-    birthDate: { value: membership.personInfos?.birth_date },
-    gender: { value: membership.personInfos?.gender },
-    address: { value: formatAddress(membership.personInfos?.addresses) },
-    emergencyName: { value: membership.personInfos?.emergency_name },
-    emergencySurname: { value: membership.personInfos?.emergency_surname },
-    emergencyPhoneNumber: {
-      value: membership.personInfos?.emergency_phone_number,
-    },
-    medicalConditions: { value: membership.personInfos?.medical_conditions },
-    heardOrganization: { value: membership.heard_organization },
-    gettingInvolved: { value: membership.getting_involved },
-    frequentedSchool: { value: membership.frequented_school },
-    jobTitle: { value: membership.job_title },
-    employer: { value: membership.employer },
-  }));
+  const data: MemberReportData[] = memberships
+    .map(membership => ({
+      name: { value: membership.personGeneralInfos.name },
+      surname: { value: membership.personGeneralInfos.surname },
+      membership: { valueKey: getMembershipName(membership.member_type) },
+      price: { value: formatPrice(membership.entityMembership.price) },
+      status: { valueKey: `reports.payment_status.${membership.status}` },
+      paidOn: { value: moment(membership.paid_on).format('YYYY-MM-DD HH:mm') },
+      createdAt: {
+        value: moment(membership.created_at).format('YYYY-MM-DD HH:mm'),
+      },
+      expirationDate: {
+        value: moment(membership.expiration_date).format('YYYY-MM-DD HH:mm'),
+      },
+      email: {
+        value: membership.userEntityRole.userEmail
+          .map((ue: any) => ue.email)
+          .join(', '),
+      },
+      phoneNumber: { value: membership.personInfos?.phone_number },
+      birthDate: { value: membership.personInfos?.birth_date },
+      gender: { value: membership.personInfos?.gender },
+      address: { value: formatAddress(membership.personInfos?.addresses) },
+      emergencyName: { value: membership.personInfos?.emergency_name },
+      emergencySurname: { value: membership.personInfos?.emergency_surname },
+      emergencyPhoneNumber: {
+        value: membership.personInfos?.emergency_phone_number,
+      },
+      medicalConditions: { value: membership.personInfos?.medical_conditions },
+      heardOrganization: { value: membership.heard_organization },
+      gettingInvolved: { value: membership.getting_involved },
+      frequentedSchool: { value: membership.frequented_school },
+      jobTitle: { value: membership.job_title },
+      employer: { value: membership.employer },
+    }))
+    .filter(m => moment(date).isBefore(moment(m.expirationDate.value)));
 
   const headers = [
     { labelKey: 'reports.headers.members.name', key: 'name' },
