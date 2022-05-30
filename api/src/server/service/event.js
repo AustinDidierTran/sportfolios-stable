@@ -13,8 +13,12 @@ import * as ticketQueries from '../../db/queries/ticket.js';
 
 import moment from 'moment';
 import { ERROR_ENUM } from '../../../../common/errors/index.js';
-import { GLOBAL_ENUM } from '../../../../common/enums/index.js';
+import {
+  ENTITIES_ROLE_ENUM,
+  GLOBAL_ENUM,
+} from '../../../../common/enums/index.js';
 import { CART_ITEM } from '../../../../common/enums/index.js';
+import { isAllowed } from './entity-deprecate.js';
 
 const getEventInfo = async (eventId, userId) => {
   const data = await eventInfosHelper(eventId, userId);
@@ -25,12 +29,8 @@ const getEventInfo = async (eventId, userId) => {
     isLate = true;
 
   if (Array.isArray(options) && options.length) {
-    isLate = options.every(
-      option => moment(option.endTime) < moment(),
-    );
-    isEarly = options.every(
-      option => moment(option.startTime) > moment(),
-    );
+    isLate = options.every(option => moment(option.endTime) < moment());
+    isEarly = options.every(option => moment(option.startTime) > moment());
     registrationStart = options.reduce(
       (a, b) => (moment(a) < moment(b.startTime) ? a : b.startTime),
       options[0].startTime,
@@ -68,16 +68,8 @@ export const getEvent = async (eventId, userId) => {
   };
 };
 
-export const getAllEventsWithAdmins = async ({
-  limit,
-  page,
-  query,
-}) => {
-  return queries.getAllEventsWithAdmins(
-    Number(limit),
-    Number(page),
-    query,
-  );
+export const getAllEventsWithAdmins = async ({ limit, page, query }) => {
+  return queries.getAllEventsWithAdmins(Number(limit), Number(page), query);
 };
 
 export const deleteEvent = async (id, restore = 'false') => {
@@ -194,11 +186,9 @@ export const getEventGameType = async eventId => {
     name: event.eventsInfos.name,
     creator: {
       id: event.eventsInfos.creatorEntities.id,
-      name:
-        event.eventsInfos.creatorEntities.entitiesGeneralInfos.name,
+      name: event.eventsInfos.creatorEntities.entitiesGeneralInfos.name,
       photoUrl:
-        event.eventsInfos.creatorEntities.entitiesGeneralInfos
-          .photo_url,
+        event.eventsInfos.creatorEntities.entitiesGeneralInfos.photo_url,
       verifiedAt: event.eventsInfos.creatorEntities.verified_at,
     },
     startDate: event.eventsInfos.start_date,
@@ -240,9 +230,8 @@ export const addEventTickets = async (body, userId) => {
   await Promise.all(
     body.map(async ticket => {
       // See if item already exist
-      const stripePriceId = ticketOptions.find(
-        to => to.id === ticket.id,
-      ).stripe_price_id;
+      const stripePriceId = ticketOptions.find(to => to.id === ticket.id)
+        .stripe_price_id;
 
       const item = await shopQueries.getCartItemByStripePriceId(
         stripePriceId,
@@ -273,11 +262,9 @@ export const addEventTickets = async (body, userId) => {
 
 export const putRosterIdInRankings = async (body, userId) => {
   const { newRosterId, rankingId } = body;
-  const eventId = await queries.getEventByRankingId(rankingId);
+  const eventId = await queries.getEventIdByRankingId(rankingId);
 
-  if (
-    !(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))
-  ) {
+  if (!(await isAllowed(eventId, userId, ENTITIES_ROLE_ENUM.EDITOR))) {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 

@@ -120,7 +120,7 @@ const generateMembersReport = async (
           .join(', '),
       },
       phoneNumber: { value: membership.personInfos?.phone_number },
-      birthDate: { value: membership.personInfos?.birth_date },
+      birthDate: { value: `${membership.personInfos?.birth_date} 12:00` },
       gender: { value: membership.personInfos?.gender },
       address: { value: formatAddress(membership.personInfos?.addresses) },
       emergencyName: { value: membership.personInfos?.emergency_name },

@@ -272,6 +272,14 @@ export const getEventInfoById = async eventId => {
   return event;
 };
 
+export const getEventIdByRankingId = async rankingId => {
+  const [{ event_id } = {}] = await knex('phase_rankings')
+    .select('event_id')
+    .leftJoin('phase', 'phase.id', '=', 'phase_rankings.current_phase')
+    .where('ranking_id', rankingId);
+  return event_id;
+};
+
 export const getTeamsRegisteredInfo = async eventId => {
   return await knex('event_rosters')
     .select(
