@@ -411,3 +411,13 @@ export const updateGameInfo = async (gameId, gameInfo, trx = null) => {
     })
     .where('id', gameId);
 };
+
+export const updateRosterInGames = async (newRosterId, rankingId) => {
+  const res = await knex('game_teams')
+    .update({
+      roster_id: newRosterId,
+    })
+    .where('ranking_id', rankingId);
+
+  return res;
+};

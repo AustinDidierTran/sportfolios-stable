@@ -268,5 +268,7 @@ export const putRosterIdInRankings = async (body, userId) => {
     throw new Error(ERROR_ENUM.ACCESS_DENIED);
   }
 
-  return queries.updateRosterIdInRankings(newRosterId, rankingId);
+  await queries.updateRosterIdInRankings(newRosterId, rankingId);
+
+  await gameQueries.updateRosterInGames(newRosterId, rankingId);
 };
